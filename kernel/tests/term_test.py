@@ -110,5 +110,33 @@ class TermTest(unittest.TestCase):
     def testSubstFail(self):
         self.assertRaises(TermSubstitutionException, a.subst, {"a" : b})
 
+    def testSubstBound(self):
+        test_data = [
+            (Abs("x", Ta, B0), c, c),
+            (Abs("x", Ta, a), c, a),
+            (Abs("x", Ta, Abs("y", Tb, B0)), c, Abs("y", Tb, B0)),
+            (Abs("x", Ta, Abs("y", Tb, B1)), c, Abs("y", Tb, c)),
+            (Abs("x", Ta, Abs("y", Tb, Comb(Comb(f2, B1), B0))), c, Abs("y", Tb, Comb(Comb(f2, c), B0))),
+        ]
+
+        for (t, subst, res) in test_data:
+            self.assertEqual(t.subst_bound(subst), res)
+
+    def testSubstBoundFail(self):
+        t = Abs("x", Ta, B0)
+        self.assertRaises(TermSubstitutionException, t.subst_bound, b)
+
+    def testSubstBoundFail2(self):
+        self.assertRaises(TermSubstitutionException, a.subst_bound, b)
+
+    def testBetaConv(self):
+        test_data = [
+            (Comb(Abs("x", Ta, B0), c), c),
+            (Comb(Abs("x", Ta, a), c), a)
+        ]
+
+        for (t, res) in test_data:
+            self.assertEqual(t.beta_conv(), res)
+
 if __name__ == "__main__":
     unittest.main()

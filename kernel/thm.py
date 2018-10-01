@@ -195,6 +195,21 @@ class Thm(abc.ABC):
         A[s] |- B[s]  where s is substitution on terms
 
         """
-        assums_new = [assum.subst(subst) for assum in th.assums]
-        concl_new = th.concl.subst(subst)
+        try:
+            assums_new = [assum.subst(subst) for assum in th.assums]
+            concl_new = th.concl.subst(subst)
+        except TermSubstitutionException:
+            raise InvalidDerivationException()
         return Thm(assums_new, concl_new)
+
+    @staticmethod
+    def beta_conv(t):
+        """Derivation rule BETA_CONV:
+
+        |- (%x. t1) t2 = t1[t2/x]
+        """
+        try:
+            t_new = t.beta_conv()
+        except TermSubstitutionException:
+            raise InvalidDerivationException()
+        return Thm([], Term.mk_equals(t, t_new))

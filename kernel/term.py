@@ -45,8 +45,8 @@ class Term(abc.ABC):
             raise UnknownTermException()
 
     def _repr(self, bd_vars):
-        """Print the term in short form. Note we do not yet handle name
-        collisions in lambda terms.
+        """Helper function for __repr__. bd_vars is the list of names of
+        bound variables.
 
         """
         if self.ty == Term.VAR or self.ty == Term.CONST:
@@ -74,6 +74,10 @@ class Term(abc.ABC):
             raise UnknownTermException()
 
     def __repr__(self):
+        """Print the term in short form. Note we do not yet handle name
+        collisions in lambda terms.
+
+        """
         return self._repr([])
 
     def __hash__(self):
@@ -110,7 +114,9 @@ class Term(abc.ABC):
             raise UnknownTermException()
 
     def _type_of(self, bd_vars):
-        """Returns type of the term, with minimal type-checking.
+        """Helper function for type_of. bd_vars is the list of types of
+        the bound variables.
+
         """
         if self.ty == Term.VAR or self.ty == Term.CONST:
             return self.T
@@ -131,6 +137,7 @@ class Term(abc.ABC):
             raise UnknownTermException()
     
     def type_of(self):
+        """Returns type of the term, with minimal type-checking."""
         return self._type_of([])
 
     @staticmethod
@@ -272,6 +279,48 @@ class Term(abc.ABC):
         """Construct the term s = t."""
         T = s.type_of()
         return Term.list_comb(Term.equals(T), [s, t])
+
+    def _subst_bound(self, t, n):
+        """Helper function for subst_bound. Replace Bound n by t outside any
+        Abs. When entering into an Abs, increment n.
+
+        """
+        if self.ty == Term.VAR or self.ty == Term.CONST:
+            return self
+        elif self.ty == Term.COMB:
+            return Comb(self.fun._subst_bound(t,n), self.arg._subst_bound(t,n))
+        elif self.ty == Term.ABS:
+            return Abs(self.var_name, self.T, self.body._subst_bound(t, n+1))
+        elif self.ty == Term.BOUND:
+            if self.n == n:
+                return t
+            else:
+                return self
+        else:
+            raise UnknownTermException()
+
+    def subst_bound(self, t):
+        """Given an Abs(x,T,body), substitute x for t in the body. t should
+        have type T.
+
+        """
+        if self.ty == Term.ABS:
+            if self.T == t.type_of():
+                return self.body._subst_bound(t, 0)
+            else:
+                raise TermSubstitutionException()
+        else:
+            raise TermSubstitutionException()
+
+    def beta_conv(self):
+        """Beta-conversion: given a term of the form (%x. t1) t2, return the
+        term t1[t2/x] which is beta-equivalent.
+
+        """
+        if self.ty == Term.COMB:
+            return self.fun.subst_bound(self.arg)
+        else:
+            raise TermSubstitutionException()
 
 # Export constructors of terms to global namespace.
 Var = Term.Var

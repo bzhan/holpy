@@ -158,7 +158,14 @@ class ThmTest(unittest.TestCase):
     def testSubstitutionFail(self):
         x_eq_y = Term.mk_equals(x,y)
         th = Thm([x_eq_y], x_eq_y)
-        self.assertRaises(TermSubstitutionException, Thm.substitution, th, {"x" : Var("a", Tb)})
+        self.assertRaises(InvalidDerivationException, Thm.substitution, th, {"x" : Var("a", Tb)})
+
+    def testBetaConv(self):
+        t = Comb(Abs("x", Ta, Bound(0)), x)
+        self.assertEqual(Thm.beta_conv(t), Thm([], Term.mk_equals(t, x)))
+
+    def testBetaConvFail(self):
+        self.assertRaises(InvalidDerivationException, Thm.beta_conv, x)
 
 if __name__ == "__main__":
     unittest.main()
