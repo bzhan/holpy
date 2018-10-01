@@ -149,5 +149,16 @@ class ThmTest(unittest.TestCase):
         xb_eq_yb = mk_equals(Var("x", Tb), Var("y", Tb))
         self.assertEqual(Thm.subst_type(th, {"a" : Tb}), Thm([xb_eq_yb], xb_eq_yb))
 
+    def testSubstitution(self):
+        x_eq_y = mk_equals(x,y)
+        th = Thm([x_eq_y], x_eq_y)
+        y_eq_x = mk_equals(y,x)
+        self.assertEqual(Thm.substitution(th, {"x" : y, "y" : x}), Thm([y_eq_x], y_eq_x))
+
+    def testSubstitutionFail(self):
+        x_eq_y = mk_equals(x,y)
+        th = Thm([x_eq_y], x_eq_y)
+        self.assertRaises(TermSubstitutionException, Thm.substitution, th, {"x" : Var("a", Tb)})
+
 if __name__ == "__main__":
     unittest.main()

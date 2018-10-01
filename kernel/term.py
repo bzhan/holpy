@@ -13,6 +13,9 @@ class OpenTermException(Exception):
 class InvalidTermException(Exception):
     pass
 
+class TermSubstitutionException(Exception):
+    pass
+
 class Term(abc.ABC):
     """Represents a term in higher-order logic.
     """
@@ -170,6 +173,7 @@ class Term(abc.ABC):
         return t
 
     def subst_type(self, subst):
+        """Perform substitution on type variables."""
         if self.ty == Term.VAR:
             return Var(self.name, self.T.subst(subst))
         elif self.ty == Term.CONST:
@@ -178,6 +182,36 @@ class Term(abc.ABC):
             return Comb(self.fun.subst_type(subst), self.arg.subst_type(subst))
         elif self.ty == Term.ABS:
             return Abs(self.var_name, self.T.subst(subst), self.body.subst_type(subst))
+        elif self.ty == Term.BOUND:
+            return self
+        else:
+            raise UnknownTermException()
+
+    def subst(self, subst):
+        """Perform substitution on term variables.
+
+        Here subst must be a dictionary mapping from variable names to the
+        substituted term. The type of the substituted term must match *exactly*
+        the type of the variable. If substitution on types is needed, it should
+        be performed before calling subst.
+
+        """
+        assert isinstance(subst, dict), "subst must be a dictionary"
+        if self.ty == Term.VAR:
+            if self.name in subst:
+                t = subst[self.name]
+                if t.type_of() == self.T:
+                    return subst[self.name]
+                else:
+                    raise TermSubstitutionException()
+            else:
+                return self
+        elif self.ty == Term.CONST:
+            return self
+        elif self.ty == Term.COMB:
+            return Comb(self.fun.subst(subst), self.arg.subst(subst))
+        elif self.ty == Term.ABS:
+            return Abs(self.var_name, self.T, self.body.subst(subst))
         elif self.ty == Term.BOUND:
             return self
         else:

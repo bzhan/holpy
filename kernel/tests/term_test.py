@@ -95,5 +95,20 @@ class TermTest(unittest.TestCase):
         for (t, subst, res) in test_data:
             self.assertEqual(t.subst_type(subst), res)
 
+    def testSubst(self):
+        test_data = [
+            (a, {"a" : c}, c),
+            (c, {"a" : c}, c),
+            (Comb(f, a), {"a" : c}, Comb(f, c)),
+            (Abs("x", Ta, B0), {"a" : c}, Abs("x", Ta, B0)),
+            (Abs("x", Ta, a), {"a" : c}, Abs("x", Ta, c)),
+        ]
+
+        for (t, subst, res) in test_data:
+            self.assertEqual(t.subst(subst), res)
+
+    def testSubstFail(self):
+        self.assertRaises(TermSubstitutionException, a.subst, {"a" : b})
+
 if __name__ == "__main__":
     unittest.main()

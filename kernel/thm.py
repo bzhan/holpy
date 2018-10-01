@@ -177,8 +177,24 @@ class Thm(abc.ABC):
 
         A |- B
         ----------
-        A[s] |- B[s]
+        A[s] |- B[s]  where s is substitution on types
+
         """
         assums_new = [assum.subst_type(subst) for assum in th.assums]
         concl_new = th.concl.subst_type(subst)
+        return Thm(assums_new, concl_new)
+
+    @staticmethod
+    def substitution(th, subst):
+        """Derivation rule SUBSTITUTION:
+
+        Perform substitution on the term variables.
+
+        A |- B
+        ------------
+        A[s] |- B[s]  where s is substitution on terms
+
+        """
+        assums_new = [assum.subst(subst) for assum in th.assums]
+        concl_new = th.concl.subst(subst)
         return Thm(assums_new, concl_new)
