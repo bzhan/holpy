@@ -6,6 +6,9 @@ from enum import Enum
 class UnknownTypeException(Exception):
     pass
 
+class TypeMatchException(Exception):
+    pass
+
 class HOLType(abc.ABC):
     """Represents a type in higher-order logic.
     """
@@ -102,6 +105,34 @@ class HOLType(abc.ABC):
     def TFun(arg1, arg2):
         return Type("fun", [arg1, arg2])
 
+    def match_incr(self, T, subst):
+        """Incremental match. Here subst is the dictionary of partial
+        matchings. This is updated by the matching process.
+
+        """
+        if self.ty == HOLType.VAR:
+            if self.name in subst:
+                if T != subst[self.name]:
+                    raise TypeMatchException()
+            else:
+                subst[self.name] = T
+        elif self.ty == HOLType.COMB:
+            if T.ty != HOLType.COMB or T.name != self.name:
+                raise TypeMatchException()
+            else:
+                for (arg, argT) in zip(self.args, T.args):
+                    arg.match_incr(argT, subst)
+        else:
+            raise UnknownTypeException()
+
+    def match(self, T):
+        """Match self with T. Returns either a dictionary containing the
+        match, or raise TypeMatchException.
+
+        """
+        subst = dict()
+        self.match_incr(T, subst)
+        return subst
 
 TVar = HOLType.TVar
 Type = HOLType.Type

@@ -16,6 +16,9 @@ class InvalidTermException(Exception):
 class TermSubstitutionException(Exception):
     pass
 
+class TypeCheckException(Exception):
+    pass
+
 class Term(abc.ABC):
     """Represents a term in higher-order logic.
     """
@@ -367,6 +370,35 @@ class Term(abc.ABC):
             return Abs(t.name, t.T, self._abstract_over(t,0))
         else:
             raise TermSubstitutionException()
+
+    def _checked_get_type(self, bd_vars):
+        """Helper function for checked_get_type. bd_vars is the list of
+        types of the bound variables.
+
+        """
+        if self.ty == Term.VAR or self.ty == Term.CONST:
+            return self.T
+        elif self.ty == Term.COMB:
+            funT = self.fun._checked_get_type(bd_vars)
+            argT = self.arg._checked_get_type(bd_vars)
+            if funT.is_fun() and funT.domain_type() == argT:
+                return funT.range_type()
+            else:
+                raise TypeCheckException()
+        elif self.ty == Term.ABS:
+            bodyT = self.body._checked_get_type([self.T] + bd_vars)
+            return TFun(self.T, bodyT)
+        elif self.ty == Term.BOUND:
+            if self.n >= len(bd_vars):
+                raise OpenTermException()
+            else:
+                return bd_vars[self.n]
+        else:
+            return UnknownTermException()
+
+    def checked_get_type(self):
+        """Perform type-checking and return the type of self."""
+        return self._checked_get_type([])
 
 # Export constructors of terms to global namespace.
 Var = Term.Var

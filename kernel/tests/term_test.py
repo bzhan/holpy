@@ -64,7 +64,7 @@ class TermTest(unittest.TestCase):
         for (t1, t2) in test_data:
             self.assertEqual(t1, t2)
 
-    def testTypeOf(self):
+    def testGetType(self):
         test_data = [
             (a, Ta),
             (f, Tab),
@@ -169,6 +169,31 @@ class TermTest(unittest.TestCase):
 
     def testAbstractOverFail2(self):
         self.assertRaises(TermSubstitutionException, a.abstract_over, Var("a", Tb))
+
+    def testCheckedGetType(self):
+        test_data = [
+            (a, Ta),
+            (c, Ta),
+            (Comb(f, a), Tb),
+            (Comb(Comb(f2, a), a), Tb),
+            (Comb(f, Comb(g, a)), Tb),
+            (Comb(Abs("x", Ta, B0), a), Ta),
+        ]
+
+        for (t, T) in test_data:
+            self.assertEqual(t.checked_get_type(), T)
+
+    def testCheckedGetTypeFail(self):
+        test_data = [
+            Comb(a, a),
+            Comb(f, f),
+            Comb(Comb(f, a), a),
+            Comb(f, b),
+            Comb(Abs("x", Ta, B0), b),
+        ]
+
+        for t in test_data:
+            self.assertRaises(TypeCheckException, t.checked_get_type)
 
 if __name__ == "__main__":
     unittest.main()

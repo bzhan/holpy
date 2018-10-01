@@ -2,6 +2,7 @@
 
 import abc
 from kernel.type import *
+from kernel.term import *
 
 class TheoryException(Exception):
     pass
@@ -98,4 +99,29 @@ class Theory(abc.ABC):
                 raise TheoryException()
             else:
                 for arg in T.args:
-                    Theory.check_type(self, arg)
+                    self.check_type(arg)
+        else:
+            raise UnknownTypeException()
+
+    def check_term(self, t):
+        """Check the well-formedness of the term t. This means checking
+        that all constant terms exist and have the right type according to
+        the theory.
+
+        """
+        if t.ty == Term.VAR:
+            return None
+        elif t.ty == Term.CONST:
+            try:
+                self.get_term_sig(t.name).match(t.T)
+            except TypeMatchException:
+                raise TheoryException()
+        elif t.ty == Term.COMB:
+            self.check_term(t.fun)
+            self.check_term(t.arg)
+        elif t.ty == Term.ABS:
+            self.check_term(t.body)
+        elif t.ty == Term.BOUND:
+            return None
+        else:
+            raise UnknownTermException()

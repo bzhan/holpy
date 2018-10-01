@@ -7,6 +7,12 @@ thy = Theory.EmptyTheory()
 
 Ta = TVar("a")
 Tb = TVar("b")
+Tab = TFun(Ta, Tb)
+a = Var("a", Ta)
+b = Var("b", Ta)
+f = Var("f", Tab)
+A = Var("A", hol_bool)
+B = Var("B", hol_bool)
 
 class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
@@ -39,6 +45,32 @@ class TheoryTest(unittest.TestCase):
 
         for T in test_data:
             self.assertRaises(TheoryException, thy.check_type, T)
+
+    def testCheckTerm(self):
+        test_data = [
+            a,
+            Term.mk_equals(a, b),
+            Term.mk_equals(f, f),
+            Term.mk_implies(A, B),
+            Abs("x", Ta, Term.mk_equals(a, b)),
+        ]
+
+        for t in test_data:
+            self.assertEqual(thy.check_term(t), None)
+
+    def testCheckTermFail(self):
+        test_data = [
+            Const("random", Ta),
+            Const("equals", TFun(Ta, TFun(Tb, hol_bool))),
+            Const("equals", TFun(Ta, TFun(Ta, Tb))),
+            Const("implies", TFun(Ta, TFun(Ta, hol_bool))),
+            Comb(Const("random", Tab), a),
+            Comb(f, Const("random", Ta)),
+            Abs("x", Ta, Const("random", Ta)),
+        ]
+
+        for t in test_data:
+            self.assertRaises(TheoryException, thy.check_term, t)
 
 if __name__ == "__main__":
     unittest.main()
