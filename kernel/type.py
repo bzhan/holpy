@@ -18,6 +18,14 @@ class HOLType(abc.ABC):
 
     def is_fun(self):
         return self.ty == HOLType._COMP and self.name == "fun"
+    
+    def domain_type(self):
+        assert(self.is_fun())
+        return self.args[0]
+    
+    def range_type(self):
+        assert(self.is_fun())
+        return self.args[1]
         
     def __str__(self):
         if self.ty == HOLType._VAR:

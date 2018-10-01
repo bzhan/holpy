@@ -64,5 +64,24 @@ class TermTest(unittest.TestCase):
         for (t1, t2) in test_data:
             self.assertEqual(t1, t2)
 
+    def testTypeOf(self):
+        test_data = [
+            (a, Ta),
+            (f, Tab),
+            (c, Ta),
+            (Comb(f, a), Tb),
+            (Comb(Comb(f2, a), a), Tb),
+            (Comb(f, Comb(g, a)), Tb),
+            (Abs("x", Ta, b), Tab),
+            (Abs("x", Ta, B0), Taa),
+            (Abs("x", Ta, Abs("y", Tb, B0)), TFun(Ta,TFun(Tb,Tb))),
+            (Abs("x", Ta, Abs("y", Tb, B1)), TFun(Ta,TFun(Tb,Ta))),
+            (Abs("x", Ta, Abs("y", Ta, Comb(f,B0))), TFun(Ta,TFun(Ta,Tb))),
+            (Abs("x", Ta, Abs("y", Ta, Comb(Comb(f2, B1), B0))), TFun(Ta,TFun(Ta,Tb))),
+        ]
+
+        for (t, T) in test_data:
+            self.assertEqual(t.type_of(), T)
+
 if __name__ == "__main__":
     unittest.main()

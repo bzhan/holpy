@@ -2,11 +2,15 @@
 
 import abc
 from enum import Enum
+from kernel.type import *
 
 class UnknownTermException(Exception):
     pass
 
 class OpenTermException(Exception):
+    pass
+
+class InvalidTermException(Exception):
     pass
 
 class Term(abc.ABC):
@@ -91,6 +95,30 @@ class Term(abc.ABC):
             return self.n == other.n
         else:
             raise UnknownTermException()
+
+    def _type_of(self, bd_vars):
+        """Returns type of the term, with minimal type-checking.
+        """
+        if self.ty == Term.VAR or self.ty == Term.CONST:
+            return self.T
+        elif self.ty == Term.COMB:
+            type_fun = self.fun._type_of(bd_vars)
+            if type_fun.is_fun():
+                return type_fun.range_type()
+            else:
+                raise InvalidTermException()
+        elif self.ty == Term.ABS:
+            return TFun(self.T, self.body._type_of([self.T] + bd_vars))
+        elif self.ty == Term.BOUND:
+            if self.n >= len(bd_vars):
+                raise OpenTermException
+            else:
+                return bd_vars[self.n]
+        else:
+            raise UnknownTermException()
+    
+    def type_of(self):
+        return self._type_of([])
 
 def Var(name, T):
     t = Term(Term.VAR)
