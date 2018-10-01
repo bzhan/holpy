@@ -10,13 +10,13 @@ class HOLType(abc.ABC):
     """Represents a type in higher-order logic.
     """
 
-    (VAR, COMP) = range(2)
+    (VAR, COMB) = range(2)
 
     def __init__(self, ty):
         self.ty = ty
 
     def is_fun(self):
-        return self.ty == HOLType.COMP and self.name == "fun"
+        return self.ty == HOLType.COMB and self.name == "fun"
     
     def domain_type(self):
         assert(self.is_fun())
@@ -29,7 +29,7 @@ class HOLType(abc.ABC):
     def __str__(self):
         if self.ty == HOLType.VAR:
             return "'" + self.name
-        elif self.ty == HOLType.COMP:
+        elif self.ty == HOLType.COMB:
             if len(self.args) == 0:
                 return self.name
             elif len(self.args) == 1:
@@ -52,15 +52,15 @@ class HOLType(abc.ABC):
     def __hash__(self):
         if self.ty == HOLType.VAR:
             return hash(("VAR", self.name))
-        elif self.ty == HOLType.COMP:
-            return hash(("COMP", self.name, tuple(hash(arg) for arg in self.args)))
+        elif self.ty == HOLType.COMB:
+            return hash(("COMB", self.name, tuple(hash(arg) for arg in self.args)))
     
     def __eq__(self, other):
         if self.ty != other.ty:
             return False
         elif self.ty == HOLType.VAR:
             return self.name == other.name
-        elif self.ty == HOLType.COMP:
+        elif self.ty == HOLType.COMB:
             return self.name == other.name and self.args == other.args
         else:
             raise UnknownTypeException()
@@ -77,7 +77,7 @@ class HOLType(abc.ABC):
                 return subst[self.name]
             else:
                 return self
-        elif self.ty == HOLType.COMP:
+        elif self.ty == HOLType.COMB:
             return Type(self.name, [T.subst(subst) for T in self.args])
         else:
             raise UnknownTypeException()
@@ -90,7 +90,7 @@ class HOLType(abc.ABC):
 
     @staticmethod
     def Type(name, args = []):
-        T = HOLType(HOLType.COMP)
+        T = HOLType(HOLType.COMB)
         T.name = name
         if isinstance(args, list):
             T.args = args

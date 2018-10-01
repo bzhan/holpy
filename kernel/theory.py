@@ -1,0 +1,101 @@
+# Author: Bohua Zhan
+
+import abc
+from kernel.type import *
+
+class TheoryException(Exception):
+    pass
+
+class Theory(abc.ABC):
+    """Theory objects contain all information about the current theory.
+
+    The data of the theory is structured as a dictionary. The keys are
+    strings indicating the type of the data. The values are the dictionary
+    for that type of data.
+
+    """
+    def __init__(self):
+        self.data = dict()
+
+    def add_data_type(self, name):
+        """Add a new data type."""
+        if name in self.data:
+            raise TheoryException()
+        
+        self.data[name] = dict()
+
+    def get_data(self, name):
+        return self.data[name]
+
+    def add_data(self, name, key, val):
+        """Apply key:val to the current data."""
+        if name not in self.data:
+            raise TheoryException()
+
+        self.data[name][key] = val
+
+    def add_type_sig(self, name, n):
+        """Add to the type signature. The type constructor with the given name
+        is associated to arity n.
+
+        """
+        self.add_data("type_sig", name, n)
+
+    def get_type_sig(self, name):
+        """Returns the arity of the type."""
+        data = self.get_data("type_sig")
+        if name not in data:
+            raise TheoryException()
+
+        return data[name]
+
+    def add_term_sig(self, name, T):
+        """Add to the term signature. The constant term with the given name
+        is defined in the theory with the given most general type.
+
+        """
+        self.add_data("term_sig", name, T)
+
+    def get_term_sig(self, name):
+        """Returns the most general type of the term."""
+        data = self.get_data("term_sig")
+        if name not in data:
+            raise TheoryException()
+
+        return data[name]
+
+    @staticmethod
+    def EmptyTheory():
+        """Empty theory, with the absolute minimum setup."""
+        thy = Theory()
+
+        # Fundamental data structures, needed for proof checking.
+        thy.add_data_type("type_sig")
+        thy.add_data_type("term_sig")
+        thy.add_data_type("term_macro")
+        thy.add_data_type("proof_macro")
+
+        # Fundamental types.
+        thy.add_type_sig("bool", 0)
+        thy.add_type_sig("fun", 2)
+
+        # Fundamental terms.
+        thy.add_term_sig("equals", TFun(TVar("a"), TFun(TVar("a"), hol_bool)))
+        thy.add_term_sig("implies", TFun(hol_bool, TFun(hol_bool, hol_bool)))
+        
+        return thy
+
+    def check_type(self, T):
+        """Check the well-formedness of the type T. This means checking
+        that all type constructors exist and are instantiated with the right
+        arity.
+
+        """
+        if T.ty == HOLType.VAR:
+            return None
+        elif T.ty == HOLType.COMB:
+            if self.get_type_sig(T.name) != len(T.args):
+                raise TheoryException()
+            else:
+                for arg in T.args:
+                    Theory.check_type(self, arg)
