@@ -176,7 +176,7 @@ class Thm(abc.ABC):
         Perform substitution on the type variables.
 
         A |- B
-        ----------
+        ------------
         A[s] |- B[s]  where s is substitution on types
 
         """
@@ -213,3 +213,23 @@ class Thm(abc.ABC):
         except TermSubstitutionException:
             raise InvalidDerivationException()
         return Thm([], Term.mk_equals(t, t_new))
+
+    @staticmethod
+    def abstraction(x, th):
+        """Derivation rule ABSTRACTION:
+
+        A |- t1 = t2
+        ------------------------
+        A |- (%x. t1) = (%x. t2)  where x does not occur in A.
+        """
+        if any(assum.occurs_var(x) for assum in th.assums):
+            raise InvalidDerivationException()
+        elif th.concl.is_equals():
+            (t1, t2) = th.concl.dest_binop()
+            try:
+                (t1_new, t2_new) = (t1.abstract_over(x), t2.abstract_over(x))
+            except TermSubstitutionException:
+                raise InvalidDerivationException()
+            return Thm(th.assums, Term.mk_equals(t1_new, t2_new))
+        else:
+            raise InvalidDerivationException()

@@ -281,8 +281,8 @@ class Term(abc.ABC):
         return Term.list_comb(Term.equals(T), [s, t])
 
     def _subst_bound(self, t, n):
-        """Helper function for subst_bound. Replace Bound n by t outside any
-        Abs. When entering into an Abs, increment n.
+        """Helper function for subst_bound. Here self is an open term. Replace
+        Bound n by t outside any Abs. When entering into an Abs, increment n.
 
         """
         if self.ty == Term.VAR or self.ty == Term.CONST:
@@ -319,6 +319,52 @@ class Term(abc.ABC):
         """
         if self.ty == Term.COMB:
             return self.fun.subst_bound(self.arg)
+        else:
+            raise TermSubstitutionException()
+
+    def occurs_var(self, t):
+        """Whether the variable t occurs in self."""
+        if self.ty == Term.VAR:
+            return self == t
+        elif self.ty == Term.CONST:
+            return False
+        elif self.ty == Term.COMB:
+            return self.fun.occurs_var(t) or self.arg.occurs_var(t)
+        elif self.ty == Term.ABS:
+            return self.body.occurs_var(t)
+        elif self.ty == Term.BOUND:
+            return False
+        else:
+            raise UnknownTermException
+
+    def _abstract_over(self, t, n):
+        """Helper function for abstract_over. Here self is an open term.
+        t should be replaced by Bound n.
+
+        """
+        if self.ty == Term.VAR:
+            if self.name == t.name:
+                if self.T != t.T:
+                    raise TermSubstitutionException()
+                else:
+                    return Bound(n)
+            else:
+                return self
+        elif self.ty == Term.CONST:
+            return self
+        elif self.ty == Term.COMB:
+            return Comb(self.fun._abstract_over(t,n), self.arg._abstract_over(t,n))
+        elif self.ty == Term.ABS:
+            return Abs(self.var_name, self.T, self.body._abstract_over(t, n+1))
+        elif self.ty == Term.BOUND:
+            return self
+        else:
+            raise UnknownTermException
+
+    def abstract_over(self, t):
+        """Abstract over the variable t."""
+        if t.ty == Term.VAR:
+            return Abs(t.name, t.T, self._abstract_over(t,0))
         else:
             raise TermSubstitutionException()
 

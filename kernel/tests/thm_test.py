@@ -167,5 +167,27 @@ class ThmTest(unittest.TestCase):
     def testBetaConvFail(self):
         self.assertRaises(InvalidDerivationException, Thm.beta_conv, x)
 
+    def testAbstractOver(self):
+        th = Thm([], Term.mk_equals(x,y))
+        t_res = Term.mk_equals(Abs("x",Ta,Bound(0)),Abs("x",Ta,y))
+        self.assertEqual(Thm.abstraction(x, th), Thm([], t_res))
+
+    def testAbstractOverFail(self):
+        x_eq_y = Term.mk_equals(x,y)
+        th = Thm([x_eq_y], x_eq_y)
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, x, th)
+
+    def testAbstractOverFail2(self):
+        th = Thm([], Term.mk_equals(x,y))
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, Var("x", Tb), th)
+
+    def testAbstractOverFail3(self):
+        th = Thm([], Term.mk_equals(x,y))
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, Comb(f,x), th)
+
+    def testAbstractOverFail4(self):
+        th = Thm([], Term.mk_implies(x,y))
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, x, th)
+
 if __name__ == "__main__":
     unittest.main()

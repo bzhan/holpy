@@ -132,11 +132,43 @@ class TermTest(unittest.TestCase):
     def testBetaConv(self):
         test_data = [
             (Comb(Abs("x", Ta, B0), c), c),
-            (Comb(Abs("x", Ta, a), c), a)
+            (Comb(Abs("x", Ta, a), c), a),
         ]
 
         for (t, res) in test_data:
             self.assertEqual(t.beta_conv(), res)
+
+    def testOccursVar(self):
+        test_data = [
+            (a, a, True),
+            (a, b, False),
+            (Comb(f,a), a, True),
+            (Comb(f,a), b, False),
+            (Abs("a", Ta, a), a, True),
+            (Abs("a", Ta, b), b, True),
+            (Abs("a", Ta, B0), a, False),
+        ]
+
+        for (s, t, res) in test_data:
+            self.assertEqual(s.occurs_var(t), res)
+
+    def testAbstractOver(self):
+        test_data = [
+            (a, a, Abs("a", Ta, B0)),
+            (Abs("b", Ta, a), a, Abs("a", Ta, Abs("b", Ta, B1))),
+            (Abs("a", Ta, a), a, Abs("a", Ta, Abs("a", Ta, B1))),
+            (Comb(f,a), a, Abs("a", Ta, Comb(f,B0))),
+            (c, a, Abs("a", Ta, c)),
+        ]
+
+        for (s, t, res) in test_data:
+            self.assertEqual(s.abstract_over(t), res)
+
+    def testAbstractOverFail(self):
+        self.assertRaises(TermSubstitutionException, Comb(f,a).abstract_over, Comb(f,a))
+
+    def testAbstractOverFail2(self):
+        self.assertRaises(TermSubstitutionException, a.abstract_over, Var("a", Tb))
 
 if __name__ == "__main__":
     unittest.main()
