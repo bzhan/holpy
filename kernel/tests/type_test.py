@@ -22,8 +22,8 @@ class TypeTest(unittest.TestCase):
             (TFun(TVar("a"), Type("list", TVar("b"))), "'a => 'b list"),
         ]
 
-        for (t, str_t) in test_data:
-            self.assertEqual(str(t), str_t)
+        for (T, str_T) in test_data:
+            self.assertEqual(str(T), str_T)
 
 if __name__ == "__main__":
     unittest.main()
