@@ -113,21 +113,21 @@ class Term(abc.ABC):
         else:
             raise UnknownTermException()
 
-    def _type_of(self, bd_vars):
-        """Helper function for type_of. bd_vars is the list of types of
+    def _get_type(self, bd_vars):
+        """Helper function for get_type. bd_vars is the list of types of
         the bound variables.
 
         """
         if self.ty == Term.VAR or self.ty == Term.CONST:
             return self.T
         elif self.ty == Term.COMB:
-            type_fun = self.fun._type_of(bd_vars)
+            type_fun = self.fun._get_type(bd_vars)
             if type_fun.is_fun():
                 return type_fun.range_type()
             else:
                 raise InvalidTermException()
         elif self.ty == Term.ABS:
-            return TFun(self.T, self.body._type_of([self.T] + bd_vars))
+            return TFun(self.T, self.body._get_type([self.T] + bd_vars))
         elif self.ty == Term.BOUND:
             if self.n >= len(bd_vars):
                 raise OpenTermException
@@ -136,9 +136,9 @@ class Term(abc.ABC):
         else:
             raise UnknownTermException()
     
-    def type_of(self):
+    def get_type(self):
         """Returns type of the term, with minimal type-checking."""
-        return self._type_of([])
+        return self._get_type([])
 
     @staticmethod
     def Var(name, T):
@@ -203,7 +203,7 @@ class Term(abc.ABC):
         if self.ty == Term.VAR:
             if self.name in subst:
                 t = subst[self.name]
-                if t.type_of() == self.T:
+                if t.get_type() == self.T:
                     return subst[self.name]
                 else:
                     raise TermSubstitutionException()
@@ -235,10 +235,10 @@ class Term(abc.ABC):
         else:
             return (self, [])
 
-    def head_of(self):
+    def get_head(self):
         """Given a term f t1 t2 ... tn, returns f."""
         if self.ty == Term.COMB:
-            return self.fun.head_of()
+            return self.fun.get_head()
         else:
             return self
 
@@ -253,7 +253,7 @@ class Term(abc.ABC):
     def is_implies(self):
         """Whether self is of the form A --> B."""
         implies = Const("implies", TFun(hol_bool, TFun(hol_bool, hol_bool)))
-        return self.is_binop() and self.head_of() == implies
+        return self.is_binop() and self.get_head() == implies
 
     @staticmethod
     def mk_implies(s, t):
@@ -269,7 +269,7 @@ class Term(abc.ABC):
     def is_equals(self):
         """Whether self is of the form A = B."""
         if self.is_binop():
-            f = self.head_of()
+            f = self.get_head()
             return f.ty == Term.CONST and f.name == "equals"
         else:
             return False
@@ -277,7 +277,7 @@ class Term(abc.ABC):
     @staticmethod
     def mk_equals(s, t):
         """Construct the term s = t."""
-        T = s.type_of()
+        T = s.get_type()
         return Term.list_comb(Term.equals(T), [s, t])
 
     def _subst_bound(self, t, n):
@@ -305,7 +305,7 @@ class Term(abc.ABC):
 
         """
         if self.ty == Term.ABS:
-            if self.T == t.type_of():
+            if self.T == t.get_type():
                 return self.body._subst_bound(t, 0)
             else:
                 raise TermSubstitutionException()

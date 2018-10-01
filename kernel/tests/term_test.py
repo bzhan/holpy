@@ -81,7 +81,7 @@ class TermTest(unittest.TestCase):
         ]
 
         for (t, T) in test_data:
-            self.assertEqual(t.type_of(), T)
+            self.assertEqual(t.get_type(), T)
 
     def testSubstType(self):
         test_data = [
