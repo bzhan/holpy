@@ -143,5 +143,11 @@ class ThmTest(unittest.TestCase):
         th2 = Thm([B], B)
         self.assertRaises(InvalidDerivationException, Thm.equal_elim, th1, th2)
 
+    def testSubstType(self):
+        x_eq_y = mk_equals(x,y)
+        th = Thm([x_eq_y], x_eq_y)
+        xb_eq_yb = mk_equals(Var("x", Tb), Var("y", Tb))
+        self.assertEqual(Thm.subst_type(th, {"a" : Tb}), Thm([xb_eq_yb], xb_eq_yb))
+
 if __name__ == "__main__":
     unittest.main()

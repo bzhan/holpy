@@ -134,35 +134,61 @@ class Term(abc.ABC):
     def type_of(self):
         return self._type_of([])
 
-def Var(name, T):
-    t = Term(Term.VAR)
-    t.name = name
-    t.T = T
-    return t
+    @staticmethod
+    def Var(name, T):
+        t = Term(Term.VAR)
+        t.name = name
+        t.T = T
+        return t
 
-def Const(name, T):
-    t = Term(Term.CONST)
-    t.name = name
-    t.T = T
-    return t
+    @staticmethod
+    def Const(name, T):
+        t = Term(Term.CONST)
+        t.name = name
+        t.T = T
+        return t
 
-def Comb(fun, arg):
-    t = Term(Term.COMB)
-    t.fun = fun
-    t.arg = arg
-    return t
+    @staticmethod
+    def Comb(fun, arg):
+        t = Term(Term.COMB)
+        t.fun = fun
+        t.arg = arg
+        return t
 
-def Abs(var_name, T, body):
-    t = Term(Term.ABS)
-    t.var_name = var_name
-    t.T = T
-    t.body = body
-    return t
+    @staticmethod
+    def Abs(var_name, T, body):
+        t = Term(Term.ABS)
+        t.var_name = var_name
+        t.T = T
+        t.body = body
+        return t
 
-def Bound(n):
-    t = Term(Term.BOUND)
-    t.n = n
-    return t
+    @staticmethod
+    def Bound(n):
+        t = Term(Term.BOUND)
+        t.n = n
+        return t
+
+    def subst_type(self, subst):
+        if self.ty == Term.VAR:
+            return Var(self.name, self.T.subst(subst))
+        elif self.ty == Term.CONST:
+            return Const(self.name, self.T.subst(subst))
+        elif self.ty == Term.COMB:
+            return Comb(self.fun.subst_type(subst), self.arg.subst_type(subst))
+        elif self.ty == Term.ABS:
+            return Abs(self.var_name, self.T.subst(subst), self.body.subst_type(subst))
+        elif self.ty == Term.BOUND:
+            return self
+        else:
+            raise UnknownTermException()
+
+# Export constructors of terms to global namespace.
+Var = Term.Var
+Const = Term.Const
+Comb = Term.Comb
+Abs = Term.Abs
+Bound = Term.Bound
 
 def list_comb(f, ts):
     """Returns the term f t1 t2 ... tn."""

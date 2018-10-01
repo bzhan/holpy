@@ -168,3 +168,17 @@ class Thm(abc.ABC):
                 raise InvalidDerivationException()
         else:
             raise InvalidDerivationException()
+
+    @staticmethod
+    def subst_type(th, subst):
+        """Derivation rule SUBST_TYPE:
+
+        Perform substitution on the type variables.
+
+        A |- B
+        ----------
+        A[s] |- B[s]
+        """
+        assums_new = [assum.subst_type(subst) for assum in th.assums]
+        concl_new = th.concl.subst_type(subst)
+        return Thm(assums_new, concl_new)

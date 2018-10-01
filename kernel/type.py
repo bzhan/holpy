@@ -66,6 +66,23 @@ class HOLType(abc.ABC):
         else:
             raise UnknownTypeException()
 
+    def subst(self, subst):
+        """Given a dictionary subst mapping from names to types,
+        simultaneously substitute for the type variables using the
+        dictionary.
+
+        """
+        assert isinstance(subst, dict), "subst must be a dictionary"
+        if self.ty == HOLType.VAR:
+            if self.name in subst:
+                return subst[self.name]
+            else:
+                return self
+        elif self.ty == HOLType.COMP:
+            return Type(self.name, [T.subst(subst) for T in self.args])
+        else:
+            raise UnknownTypeException()
+
 def TVar(name):
     T = HOLType(HOLType.VAR)
     T.name = name
