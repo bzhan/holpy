@@ -49,6 +49,12 @@ class HOLType(abc.ABC):
 
     def __repr__(self):
         return str(self)
+
+    def __hash__(self):
+        if self.ty == HOLType.VAR:
+            return hash(("VAR", self.name))
+        elif self.ty == HOLType.COMP:
+            return hash(("COMP", self.name, tuple(hash(arg) for arg in self.args)))
     
     def __eq__(self, other):
         if self.ty != other.ty:
@@ -76,3 +82,5 @@ def Type(name, args = []):
 
 def TFun(arg1, arg2):
     return Type("fun", [arg1, arg2])
+
+hol_bool = Type("bool")

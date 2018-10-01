@@ -77,6 +77,20 @@ class Term(abc.ABC):
     def __repr__(self):
         return self._repr([])
 
+    def __hash__(self):
+        if self.ty == Term.VAR:
+            return hash(("VAR", self.name, hash(self.T)))
+        elif self.ty == Term.CONST:
+            return hash(("CONST", self.name, hash(self.T)))
+        elif self.ty == Term.COMB:
+            return hash(("COMB", hash(self.fun), hash(self.arg)))
+        elif self.ty == Term.ABS:
+            return hash(("ABS", hash(self.T), hash(self.body)))
+        elif self.ty == Term.BOUND:
+            return hash(("BOUND", n))
+        else:
+            raise UnknownTermException()
+
     def __eq__(self, other):
         """Equality on terms is defined by alpha-conversion. This ignores
         suggested names in lambda terms.
@@ -149,3 +163,55 @@ def Bound(n):
     t = Term(Term.BOUND)
     t.n = n
     return t
+
+def list_comb(f, ts):
+    """Returns the term f t1 t2 ... tn."""
+    for t in ts:
+        f = Comb(f, t)
+    return f
+
+def strip_comb(t):
+    """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
+    if t.ty == Term.COMB:
+        (f, args) = strip_comb(t.fun)
+        return (f, args + [t.arg])
+    else:
+        return (t, [])
+
+def head_of(t):
+    """Given a term f t1 t2 ... tn, returns f."""
+    if t.ty == Term.COMB:
+        return head_of(t.fun)
+    else:
+        return t
+
+def is_binop(t):
+    """Whether t is of the form f t1 t2."""
+    return t.ty == Term.COMB and t.fun.ty == Term.COMB
+
+def dest_binop(t):
+    """Given a term f t1 t2, return (t1, t2)."""
+    return (t.fun.arg, t.arg)
+
+implies = Const("implies", TFun(hol_bool, TFun(hol_bool, hol_bool)))
+
+def is_implies(t):
+    """Whether t is of the form A --> B."""
+    return is_binop(t) and head_of(t) == implies
+
+def mk_implies(s, t):
+    """Construct the term s --> t."""
+    return list_comb(implies, [s, t])
+
+def equals(T):
+    """Returns the equals constant for the given type."""
+    return Const("equals", TFun(T, TFun(T, hol_bool)))
+
+def is_equals(t):
+    """Whether t is of the form A = B."""
+    return is_binop(t) and head_of(t).ty == Term.CONST and head_of(t).name == "equals"
+
+def mk_equals(s, t):
+    """Construct the term s = t."""
+    T = s.type_of()
+    return list_comb(equals(T), [s, t])
