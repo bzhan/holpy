@@ -53,7 +53,7 @@ class Thm(abc.ABC):
         |- A --> B
         """
         if A in list(th.assums):
-            return Thm(th.assums.difference({A}), mk_implies(A, th.concl))
+            return Thm(th.assums.difference({A}), Term.mk_implies(A, th.concl))
         else:
             raise InvalidDerivationException()
 
@@ -66,8 +66,8 @@ class Thm(abc.ABC):
         ------------
         |- B
         """
-        if is_implies(th1.concl):
-            (A, B) = dest_binop(th1.concl)
+        if th1.concl.is_implies():
+            (A, B) = th1.concl.dest_binop()
             if A == th2.concl:
                 return Thm(th1.assums.union(th2.assums), B)
             else:
@@ -81,7 +81,7 @@ class Thm(abc.ABC):
 
         |- x = x
         """
-        return Thm([], mk_equals(x,x))
+        return Thm([], Term.mk_equals(x,x))
 
     @staticmethod
     def symmetric(th):
@@ -91,9 +91,9 @@ class Thm(abc.ABC):
         ------------
         |- y = x
         """
-        if is_equals(th.concl):
-            (x, y) = dest_binop(th.concl)
-            return Thm(th.assums, mk_equals(y,x))
+        if th.concl.is_equals():
+            (x, y) = th.concl.dest_binop()
+            return Thm(th.assums, Term.mk_equals(y,x))
         else:
             raise InvalidDerivationException()
 
@@ -106,11 +106,11 @@ class Thm(abc.ABC):
         ------------
         |- x = z
         """
-        if is_equals(th1.concl) and is_equals(th2.concl):
-            (x, y1) = dest_binop(th1.concl)
-            (y2, z) = dest_binop(th2.concl)
+        if th1.concl.is_equals() and th2.concl.is_equals():
+            (x, y1) = th1.concl.dest_binop()
+            (y2, z) = th2.concl.dest_binop()
             if y1 == y2:
-                return Thm(th1.assums.union(th2.assums), mk_equals(x,z))
+                return Thm(th1.assums.union(th2.assums), Term.mk_equals(x,z))
             else:
                 raise InvalidDerivationException()
         else:
@@ -125,10 +125,10 @@ class Thm(abc.ABC):
         ------------
         |- f x = g y
         """
-        if is_equals(th1.concl) and is_equals(th2.concl):
-            (f, g) = dest_binop(th1.concl)
-            (x, y) = dest_binop(th2.concl)
-            return Thm(th1.assums.union(th2.assums), mk_equals(Comb(f,x), Comb(g,y)))
+        if th1.concl.is_equals() and th2.concl.is_equals():
+            (f, g) = th1.concl.dest_binop()
+            (x, y) = th2.concl.dest_binop()
+            return Thm(th1.assums.union(th2.assums), Term.mk_equals(Comb(f,x), Comb(g,y)))
         else:
             raise InvalidDerivationException()
 
@@ -141,11 +141,11 @@ class Thm(abc.ABC):
         ------------
         |- A = B
         """
-        if is_implies(th1.concl) and is_implies(th2.concl):
-            (A1, B1) = dest_binop(th1.concl)
-            (B2, A2) = dest_binop(th2.concl)
+        if th1.concl.is_implies() and th2.concl.is_implies():
+            (A1, B1) = th1.concl.dest_binop()
+            (B2, A2) = th2.concl.dest_binop()
             if A1 == A2 and B1 == B2:
-                return Thm(th1.assums.union(th2.assums), mk_equals(A1, B1))
+                return Thm(th1.assums.union(th2.assums), Term.mk_equals(A1, B1))
             else:
                 raise InvalidDerivationException()
         else:
@@ -160,8 +160,8 @@ class Thm(abc.ABC):
         ------------
         |- B
         """
-        if is_equals(th1.concl):
-            (A, B) = dest_binop(th1.concl)
+        if th1.concl.is_equals():
+            (A, B) = th1.concl.dest_binop()
             if A == th2.concl:
                 return Thm(th1.assums.union(th2.assums), B)
             else:

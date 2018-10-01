@@ -20,11 +20,7 @@ class Term(abc.ABC):
     """Represents a term in higher-order logic.
     """
 
-    VAR = 1
-    CONST = 2
-    COMB = 3
-    ABS = 4
-    BOUND = 5
+    (VAR, CONST, COMB, ABS, BOUND) = range(5)
 
     def __init__(self, ty):
         self.ty = ty
@@ -217,61 +213,69 @@ class Term(abc.ABC):
         else:
             raise UnknownTermException()
 
+    @staticmethod
+    def list_comb(f, ts):
+        """Returns the term f t1 t2 ... tn."""
+        for t in ts:
+            f = Comb(f, t)
+        return f
+
+    def strip_comb(self):
+        """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
+        if self.ty == Term.COMB:
+            (f, args) = strip_comb(self.fun)
+            return (f, args + [self.arg])
+        else:
+            return (self, [])
+
+    def head_of(self):
+        """Given a term f t1 t2 ... tn, returns f."""
+        if self.ty == Term.COMB:
+            return self.fun.head_of()
+        else:
+            return self
+
+    def is_binop(self):
+        """Whether self is of the form f t1 t2."""
+        return self.ty == Term.COMB and self.fun.ty == Term.COMB
+
+    def dest_binop(self):
+        """Given a term f t1 t2, return (t1, t2)."""
+        return (self.fun.arg, self.arg)
+
+    def is_implies(self):
+        """Whether self is of the form A --> B."""
+        implies = Const("implies", TFun(hol_bool, TFun(hol_bool, hol_bool)))
+        return self.is_binop() and self.head_of() == implies
+
+    @staticmethod
+    def mk_implies(s, t):
+        """Construct the term s --> t."""
+        implies = Const("implies", TFun(hol_bool, TFun(hol_bool, hol_bool)))
+        return Term.list_comb(implies, [s, t])
+
+    @staticmethod
+    def equals(T):
+        """Returns the equals constant for the given type."""
+        return Const("equals", TFun(T, TFun(T, hol_bool)))
+
+    def is_equals(self):
+        """Whether self is of the form A = B."""
+        if self.is_binop():
+            f = self.head_of()
+            return f.ty == Term.CONST and f.name == "equals"
+        else:
+            return False
+
+    @staticmethod
+    def mk_equals(s, t):
+        """Construct the term s = t."""
+        T = s.type_of()
+        return Term.list_comb(Term.equals(T), [s, t])
+
 # Export constructors of terms to global namespace.
 Var = Term.Var
 Const = Term.Const
 Comb = Term.Comb
 Abs = Term.Abs
 Bound = Term.Bound
-
-def list_comb(f, ts):
-    """Returns the term f t1 t2 ... tn."""
-    for t in ts:
-        f = Comb(f, t)
-    return f
-
-def strip_comb(t):
-    """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
-    if t.ty == Term.COMB:
-        (f, args) = strip_comb(t.fun)
-        return (f, args + [t.arg])
-    else:
-        return (t, [])
-
-def head_of(t):
-    """Given a term f t1 t2 ... tn, returns f."""
-    if t.ty == Term.COMB:
-        return head_of(t.fun)
-    else:
-        return t
-
-def is_binop(t):
-    """Whether t is of the form f t1 t2."""
-    return t.ty == Term.COMB and t.fun.ty == Term.COMB
-
-def dest_binop(t):
-    """Given a term f t1 t2, return (t1, t2)."""
-    return (t.fun.arg, t.arg)
-
-implies = Const("implies", TFun(hol_bool, TFun(hol_bool, hol_bool)))
-
-def is_implies(t):
-    """Whether t is of the form A --> B."""
-    return is_binop(t) and head_of(t) == implies
-
-def mk_implies(s, t):
-    """Construct the term s --> t."""
-    return list_comb(implies, [s, t])
-
-def equals(T):
-    """Returns the equals constant for the given type."""
-    return Const("equals", TFun(T, TFun(T, hol_bool)))
-
-def is_equals(t):
-    """Whether t is of the form A = B."""
-    return is_binop(t) and head_of(t).ty == Term.CONST and head_of(t).name == "equals"
-
-def mk_equals(s, t):
-    """Construct the term s = t."""
-    T = s.type_of()
-    return list_comb(equals(T), [s, t])

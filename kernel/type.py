@@ -10,8 +10,7 @@ class HOLType(abc.ABC):
     """Represents a type in higher-order logic.
     """
 
-    VAR = 1
-    COMP = 2
+    (VAR, COMP) = range(2)
 
     def __init__(self, ty):
         self.ty = ty
@@ -83,21 +82,28 @@ class HOLType(abc.ABC):
         else:
             raise UnknownTypeException()
 
-def TVar(name):
-    T = HOLType(HOLType.VAR)
-    T.name = name
-    return T
+    @staticmethod
+    def TVar(name):
+        T = HOLType(HOLType.VAR)
+        T.name = name
+        return T
 
-def Type(name, args = []):
-    T = HOLType(HOLType.COMP)
-    T.name = name
-    if isinstance(args, list):
-        T.args = args
-    else:
-        T.args = [args]
-    return T
+    @staticmethod
+    def Type(name, args = []):
+        T = HOLType(HOLType.COMP)
+        T.name = name
+        if isinstance(args, list):
+            T.args = args
+        else:
+            T.args = [args]
+        return T
 
-def TFun(arg1, arg2):
-    return Type("fun", [arg1, arg2])
+    @staticmethod
+    def TFun(arg1, arg2):
+        return Type("fun", [arg1, arg2])
 
+
+TVar = HOLType.TVar
+Type = HOLType.Type
+TFun = HOLType.TFun
 hol_bool = Type("bool")
