@@ -93,7 +93,7 @@ class Term(abc.ABC):
         elif self.ty == Term.ABS:
             return hash(("ABS", hash(self.T), hash(self.body)))
         elif self.ty == Term.BOUND:
-            return hash(("BOUND", n))
+            return hash(("BOUND", self.n))
         else:
             raise UnknownTermException()
 
@@ -237,6 +237,10 @@ class Term(abc.ABC):
             return (f, args + [self.arg])
         else:
             return (self, [])
+
+    @staticmethod
+    def Comb2(f, x, y):
+        return Term.list_comb(f, [x, y])
 
     def get_head(self):
         """Given a term f t1 t2 ... tn, returns f."""
@@ -406,3 +410,4 @@ Const = Term.Const
 Comb = Term.Comb
 Abs = Term.Abs
 Bound = Term.Bound
+Comb2 = Term.Comb2

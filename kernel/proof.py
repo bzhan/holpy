@@ -64,6 +64,14 @@ class Proof(abc.ABC):
         """Returns the list of items."""
         return self.proof
 
+    def get_last_item(self):
+        """Returns the last item."""
+        return self.proof[-1]
+
+    def get_num_item(self):
+        """Returns the number of items."""
+        return len(self.proof)
+
     def get_thm(self):
         """Returns the theorem obtained by the proof."""
         if self.proof:
