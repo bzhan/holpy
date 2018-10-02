@@ -4,6 +4,7 @@ import abc
 from kernel.type import *
 from kernel.term import *
 from kernel.thm import *
+from kernel.extension import *
 
 class TheoryException(Exception):
     pass
@@ -168,6 +169,9 @@ class Theory(abc.ABC):
                 except TheoryException:
                     raise CheckProofException("theorem not found")
             else:
+                if seq.rule not in base_deriv:
+                    raise CheckProofException("proof method not found")
+
                 rule_fun = base_deriv[seq.rule]
 
                 # Obtain list of previous sequents.
@@ -199,3 +203,39 @@ class Theory(abc.ABC):
             seq_dict[seq.id] = seq.th
 
         return prf.get_thm()
+
+    def extend_constant(self, ext):
+        assert ext.ty == Extension.CONSTANT, "extend_constant"
+
+        const = ext.get_const_term()
+        self.add_term_sig(const.name, const.T)
+        self.add_theorem(const.name + "_def", ext.get_eq_thm())
+
+    def unchecked_extend(self, thy_ext):
+        """Perform the given extension without checking any proofs."""
+        for ext in thy_ext.get_extensions():
+            if ext.ty == Extension.CONSTANT:
+                self.extend_constant(ext)
+            elif ext.ty == Extension.THEOREM:
+                self.add_theorem(ext.name, ext.th)
+            else:
+                raise UnknownExtensionException()
+
+    def checked_extend(self, thy_ext):
+        """Perform the given extension, checking all proofs."""
+        ext_report = ExtensionReport()
+
+        for ext in thy_ext.get_extensions():
+            if ext.ty == Extension.CONSTANT:
+                self.extend_constant(ext)
+            elif ext.ty == Extension.THEOREM:
+                if ext.prf:
+                    self.check_proof(ext.prf)
+                else:  # No proof - add as axiom
+                    ext_report.add_axiom(ext.name, ext.th)
+
+                self.add_theorem(ext.name, ext.th)
+            else:
+                raise UnknownExtensionException()
+
+        return ext_report

@@ -90,3 +90,27 @@ class TheoryExtension(abc.ABC):
 
     def __repr__(self):
         return str(self)
+
+class ExtensionReport(abc.ABC):
+    """A report of a theory extension. This contains:
+
+    axioms -- list of axioms added.
+
+    """
+    def __init__(self):
+        self.axioms = []
+
+    def add_axiom(self, name, th):
+        self.axioms.append((name, th))
+
+    def get_axioms(self):
+        return self.axioms
+
+    @staticmethod
+    def _str_axiom(axiom):
+        (name, th) = axiom
+        return name + ": " + str(th)
+
+    def __str__(self):
+        return "Axiom added: " + str(len(self.axioms)) + "\n" + \
+            "\n".join(ExtensionReport._str_axiom(axiom) for axiom in self.axioms)

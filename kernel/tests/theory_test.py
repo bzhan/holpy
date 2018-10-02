@@ -18,8 +18,6 @@ A = Var("A", hol_bool)
 B = Var("B", hol_bool)
 C = Var("C", hol_bool)
 
-thy.add_theorem("trivial", Thm([], Term.mk_implies(A,A)))
-
 class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
         self.assertEqual(thy.get_type_sig("bool"), 0)
@@ -110,6 +108,9 @@ class TheoryTest(unittest.TestCase):
 
     def testCheckProof4(self):
         """Proof of |- x = y --> x = y by instantiating an existing theorem."""
+        thy = Theory.EmptyTheory()
+        thy.add_theorem("trivial", Thm([], Term.mk_implies(A,A)))
+
         x_eq_y = Term.mk_equals(x,y)
         th = Thm([], Term.mk_implies(x_eq_y,x_eq_y))
         prf = Proof()
@@ -154,15 +155,81 @@ class TheoryTest(unittest.TestCase):
         self.assertRaisesRegex(CheckProofException, "theorem not found", thy.check_proof, prf)
 
     def testCheckProofFail6(self):
-        """Typing error: non-boolean case."""
+        """Typing error: statement is not non-boolean."""
         prf = Proof(x)
 
         self.assertRaisesRegex(CheckProofException, "typing error", thy.check_proof, prf)
 
     def testCheckProofFail7(self):
+        """Typing error: type-checking failed."""
         prf = Proof(Comb(Var("P", TFun(Tb, hol_bool)), x))
 
         self.assertRaisesRegex(CheckProofException, "typing error", thy.check_proof, prf)
+
+    def testCheckProofFail8(self):
+        """Proof method not found."""
+        prf = Proof()
+        prf.add_item("C", Thm([], Term.mk_implies(A,B)), "random", None, None)
+
+        self.assertRaisesRegex(CheckProofException, "proof method not found", thy.check_proof, prf)
+
+    def testUncheckedExtend(self):
+        """Unchecked extension."""
+        thy = Theory.EmptyTheory()
+        thy_ext = TheoryExtension()
+
+        id_const = Const("id", TFun(Ta,Ta))
+        id_def = Abs("x", Ta, Bound(0))
+        id_simps = Term.mk_equals(Comb(id_const,x), x)
+
+        thy_ext.add_extension(Extension.Constant("id", id_def))        
+        thy_ext.add_extension(Extension.Theorem("id.simps", Thm([], id_simps)))
+
+        self.assertEqual(thy.unchecked_extend(thy_ext), None)
+        self.assertEqual(thy.get_term_sig("id"), TFun(Ta, Ta))
+        self.assertEqual(thy.get_theorem("id_def"), Thm([], Term.mk_equals(id_const, id_def)))
+        self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
+
+    def testCheckedExtend(self):
+        """Checked extension: adding an axiom."""
+        thy = Theory.EmptyTheory()
+        thy_ext = TheoryExtension()
+
+        id_simps = Term.mk_equals(Comb(Const("id", TFun(Ta,Ta)),x), x)
+        thy_ext.add_extension(Extension.Theorem("id.simps", Thm([], id_simps)))
+
+        ext_report = thy.checked_extend(thy_ext)
+        self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
+        self.assertEqual(ext_report.get_axioms(), [("id.simps", Thm([], id_simps))])
+
+    def testCheckedExtend2(self):
+        """Checked extension: proved theorem."""
+        thy = Theory.EmptyTheory()
+        thy_ext = TheoryExtension()
+
+        id_const = Const("id", TFun(Ta,Ta))
+        id_def = Abs("x", Ta, Bound(0))
+        id_simps = Term.mk_equals(Comb(id_const,x), x)
+
+        # Proof of |- id x = x from |- id = (%x. x)
+        prf = Proof()
+        th1 = Thm([], Term.mk_equals(id_const, id_def))  # id = (%x. x)
+        th2 = Thm.reflexive(x)  # x = x
+        th3 = Thm.combination(th1, th2)  # id x = (%x. x) x
+        th4 = Thm.beta_conv(Comb(id_def, x))  # (%x. x) x = x
+        th5 = Thm.transitive(th3, th4)  # id x = x
+        prf.add_item("S1", th1, "theorem", "id_def", None)
+        prf.add_item("S2", th2, "reflexive", x, None)
+        prf.add_item("S3", th3, "combination", None, ["S1", "S2"])
+        prf.add_item("S4", th4, "beta_conv", Comb(id_def, x), None)
+        prf.add_item("C", th5, "transitive", None, ["S3", "S4"])
+
+        thy_ext.add_extension(Extension.Constant("id", id_def))
+        thy_ext.add_extension(Extension.Theorem("id.simps", th5, prf))
+
+        ext_report = thy.checked_extend(thy_ext)
+        self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
+        self.assertEqual(ext_report.get_axioms(), [])
 
 if __name__ == "__main__":
     unittest.main()
