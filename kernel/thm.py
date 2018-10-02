@@ -52,10 +52,7 @@ class Thm(abc.ABC):
         ------------
         |- A --> B
         """
-        if A in list(th.assums):
-            return Thm(th.assums.difference({A}), Term.mk_implies(A, th.concl))
-        else:
-            raise InvalidDerivationException()
+        return Thm(th.assums.difference({A}), Term.mk_implies(A, th.concl))
 
     @staticmethod
     def implies_elim(th1, th2):

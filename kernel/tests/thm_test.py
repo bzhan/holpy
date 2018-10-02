@@ -38,9 +38,9 @@ class ThmTest(unittest.TestCase):
         th = Thm([A, B], B)
         self.assertEqual(Thm.implies_intr(A, th), Thm([B], Term.mk_implies(A,B)))
 
-    def testImpliesIntrFail(self):
+    def testImpliesIntr3(self):
         th = Thm([], B)
-        self.assertRaises(InvalidDerivationException, Thm.implies_intr, A, th)
+        self.assertEqual(Thm.implies_intr(A, th), Thm([], Term.mk_implies(A,B)))
 
     def testImpliesElim(self):
         th1 = Thm([], Term.mk_implies(A,B))
