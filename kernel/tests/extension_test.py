@@ -33,6 +33,12 @@ class ExtensionTest(unittest.TestCase):
 
         self.assertEqual(str(thy_ext), str_thy_ext)
 
+    def testPrintTheoryExtension2(self):
+        thy_ext = TheoryExtension()
+        thy_ext.add_extension(Extension.AxConstant("id", TFun(Ta,Ta)))
+        
+        self.assertEqual(str(thy_ext), "AxConstant id :: 'a => 'a")
+
 class ExtensionReportTest(unittest.TestCase):
     def testPrintExtensionReport(self):
         ext_report = ExtensionReport()
@@ -44,6 +50,16 @@ class ExtensionReportTest(unittest.TestCase):
         str_ext_report = "\n".join([
             "Axiom added: 1",
             "id.simps: |- equals (id x) x"])
+
+        self.assertEqual(str(ext_report), str_ext_report)
+
+    def testPrintExtensionReport2(self):
+        ext_report = ExtensionReport()
+        ext_report.add_axiom("id", TFun(Ta,Ta))
+
+        str_ext_report = "\n".join([
+            "Axiom added: 1",
+            "id :: 'a => 'a"])
 
         self.assertEqual(str(ext_report), str_ext_report)
 

@@ -10,13 +10,27 @@ class UnknownExtensionException(Exception):
 class Extension(abc.ABC):
     """A single extension to a theory.
     
-    ty -- type of the extension (add new type, constant, or theorem).    
+    ty -- type of the extension (add new type, axiomatized constant,
+    defined constant, or theorem).    
 
     """
-    (TYPE, CONSTANT, THEOREM) = range(3)
+    (TYPE, AX_CONSTANT, CONSTANT, THEOREM) = range(4)
 
     def __init__(self, ty):
         self.ty = ty
+
+    @staticmethod
+    def AxConstant(name, T):
+        """Extending the theory by adding an axiomatized constant.
+
+        name -- name of the constant.
+        T -- type of the constant.
+        
+        """
+        t = Extension(Extension.AX_CONSTANT)
+        t.name = name
+        t.T = T
+        return t
 
     @staticmethod
     def Constant(name, expr):
@@ -47,7 +61,9 @@ class Extension(abc.ABC):
         return t
 
     def __str__(self):
-        if self.ty == Extension.CONSTANT:
+        if self.ty == Extension.AX_CONSTANT:
+            return "AxConstant " + self.name + " :: " + str(self.T)
+        elif self.ty == Extension.CONSTANT:
             return "Constant " + self.name + " = " + str(self.expr)
         elif self.ty == Extension.THEOREM:
             return "Theorem " + self.name + ": " + str(self.th)
@@ -94,22 +110,29 @@ class TheoryExtension(abc.ABC):
 class ExtensionReport(abc.ABC):
     """A report of a theory extension. This contains:
 
-    axioms -- list of axioms added.
+    axioms -- list of axioms added. Each axiom is given by a pair,
+    the first entry is the name of the constant or theorem. The second
+    entry is type of the term or statement of the theorem.
 
     """
     def __init__(self):
         self.axioms = []
 
-    def add_axiom(self, name, th):
-        self.axioms.append((name, th))
+    def add_axiom(self, name, info):
+        self.axioms.append((name, info))
 
     def get_axioms(self):
         return self.axioms
 
     @staticmethod
     def _str_axiom(axiom):
-        (name, th) = axiom
-        return name + ": " + str(th)
+        (name, info) = axiom
+        if isinstance(info, HOLType):
+            return name + " :: " + str(info)
+        elif isinstance(info, Thm):
+            return name + ": " + str(info)
+        else:
+            raise AssertionError("_str_axiom")
 
     def __str__(self):
         return "Axiom added: " + str(len(self.axioms)) + "\n" + \

@@ -204,6 +204,11 @@ class Theory(abc.ABC):
 
         return prf.get_thm()
 
+    def extend_axiom_constant(self, ext):
+        assert ext.ty == Extension.AX_CONSTANT, "extend_axiom_constant"
+
+        self.add_term_sig(ext.name, ext.T)
+
     def extend_constant(self, ext):
         assert ext.ty == Extension.CONSTANT, "extend_constant"
 
@@ -214,7 +219,9 @@ class Theory(abc.ABC):
     def unchecked_extend(self, thy_ext):
         """Perform the given extension without checking any proofs."""
         for ext in thy_ext.get_extensions():
-            if ext.ty == Extension.CONSTANT:
+            if ext.ty == Extension.AX_CONSTANT:
+                self.extend_axiom_constant(ext)
+            elif ext.ty == Extension.CONSTANT:
                 self.extend_constant(ext)
             elif ext.ty == Extension.THEOREM:
                 self.add_theorem(ext.name, ext.th)
@@ -226,7 +233,10 @@ class Theory(abc.ABC):
         ext_report = ExtensionReport()
 
         for ext in thy_ext.get_extensions():
-            if ext.ty == Extension.CONSTANT:
+            if ext.ty == Extension.AX_CONSTANT:
+                self.extend_axiom_constant(ext)
+                ext_report.add_axiom(ext.name, ext.T)
+            elif ext.ty == Extension.CONSTANT:
                 self.extend_constant(ext)
             elif ext.ty == Extension.THEOREM:
                 if ext.prf:

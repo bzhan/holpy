@@ -231,5 +231,15 @@ class TheoryTest(unittest.TestCase):
         self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
         self.assertEqual(ext_report.get_axioms(), [])
 
+    def testCheckedExtend3(self):
+        """Axiomatized constant."""
+        thy = Theory.EmptyTheory()
+        thy_ext = TheoryExtension()
+
+        thy_ext.add_extension(Extension.AxConstant("id", TFun(Ta,Ta)))
+        ext_report = thy.checked_extend(thy_ext)
+        self.assertEqual(thy.get_term_sig("id"), TFun(Ta,Ta))
+        self.assertEqual(ext_report.get_axioms(), [("id", TFun(Ta,Ta))])
+
 if __name__ == "__main__":
     unittest.main()
