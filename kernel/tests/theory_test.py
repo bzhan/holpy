@@ -10,12 +10,13 @@ thy = Theory.EmptyTheory()
 Ta = TVar("a")
 Tb = TVar("b")
 Tab = TFun(Ta, Tb)
-a = Var("a", Ta)
-b = Var("b", Ta)
+x = Var("x", Ta)
+y = Var("y", Ta)
+z = Var("z", Ta)
 f = Var("f", Tab)
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)
-A_to_B = Term.mk_implies(A, B)
+C = Var("C", hol_bool)
 
 class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
@@ -51,11 +52,11 @@ class TheoryTest(unittest.TestCase):
 
     def testCheckTerm(self):
         test_data = [
-            a,
-            Term.mk_equals(a, b),
+            x,
+            Term.mk_equals(x, y),
             Term.mk_equals(f, f),
             Term.mk_implies(A, B),
-            Abs("x", Ta, Term.mk_equals(a, b)),
+            Abs("x", Ta, Term.mk_equals(x, y)),
         ]
 
         for t in test_data:
@@ -67,7 +68,7 @@ class TheoryTest(unittest.TestCase):
             Const("equals", TFun(Ta, TFun(Tb, hol_bool))),
             Const("equals", TFun(Ta, TFun(Ta, Tb))),
             Const("implies", TFun(Ta, TFun(Ta, hol_bool))),
-            Comb(Const("random", Tab), a),
+            Comb(Const("random", Tab), x),
             Comb(f, Const("random", Ta)),
             Abs("x", Ta, Const("random", Ta)),
         ]
@@ -76,12 +77,62 @@ class TheoryTest(unittest.TestCase):
             self.assertRaises(TheoryException, thy.check_term, t)
 
     def testCheckProof(self):
-        prf = Proof()
-        prf.add_item("A1", Thm([A_to_B], A_to_B), "assume", A_to_B, None)
-        prf.add_item("A2", Thm([A], A), "assume", A, None)
-        prf.add_item("C", Thm([A, A_to_B], B), "implies_elim", None, ["A1", "A2"])
+        """Proof of [A, A --> B] |- B."""
+        A_to_B = Term.mk_implies(A, B)
+        th = Thm([A, A_to_B], B)
+        prf = Proof(A_to_B, A)
+        prf.add_item("C", th, "implies_elim", None, ["A1", "A2"])
 
-        self.assertEqual(thy.check_proof(prf), Thm([A, A_to_B], B))
+        self.assertEqual(thy.check_proof(prf), th)
+
+    def testCheckProof2(self):
+        """Proof of |- A --> A."""
+        th = Thm([], Term.mk_implies(A,A))
+        prf = Proof(A)
+        prf.add_item("C", th, "implies_intr", A, ["A1"])
+
+        self.assertEqual(thy.check_proof(prf), th)
+
+    def testCheckProof3(self):
+        """Proof of [x = y, y = z] |- f z = f x."""
+        x_eq_y = Term.mk_equals(x,y)
+        y_eq_z = Term.mk_equals(y,z)
+        th = Thm([x_eq_y, y_eq_z], Term.mk_equals(Comb(f,z), Comb(f,x)))
+        prf = Proof(x_eq_y, y_eq_z)
+        prf.add_item("S1", Thm([x_eq_y, y_eq_z], Term.mk_equals(x,z)), "transitive", None, ["A1", "A2"])
+        prf.add_item("S2", Thm([x_eq_y, y_eq_z], Term.mk_equals(z,x)), "symmetric", None, ["S1"])
+        prf.add_item("S3", Thm([], Term.mk_equals(f,f)), "reflexive", f, None)
+        prf.add_item("C", th, "combination", None, ["S3", "S2"])
+
+        self.assertEqual(thy.check_proof(prf), th)
+
+    def testCheckProofFail(self):
+        """Previous item not found."""
+        prf = Proof()
+        prf.add_item("C", Thm([], A), "implies_intr", None, ["A1"])
+
+        self.assertRaisesRegex(CheckProofException, "previous item not found", thy.check_proof, prf)
+
+    def testCheckProofFail2(self):
+        """Invalid derivation."""
+        prf = Proof(A)
+        prf.add_item("C", Thm([A], A), "symmetric", None, ["A1"])
+
+        self.assertRaisesRegex(CheckProofException, "invalid derivation", thy.check_proof, prf)
+
+    def testCheckProofFail3(self):
+        """Invalid input to derivation."""
+        prf = Proof(A)
+        prf.add_item("C", Thm([], Term.mk_implies(A,A)), "implies_intr", None, ["A1"])
+
+        self.assertRaisesRegex(CheckProofException, "invalid input to derivation", thy.check_proof, prf)
+
+    def testCheckProofFail4(self):
+        """Output does not match."""
+        prf = Proof(A)
+        prf.add_item("C", Thm([], Term.mk_implies(A,B)), "implies_intr", A, ["A1"])
+
+        self.assertRaisesRegex(CheckProofException, "output does not match", thy.check_proof, prf)
 
 if __name__ == "__main__":
     unittest.main()

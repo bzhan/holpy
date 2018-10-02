@@ -3,13 +3,15 @@
 import abc
 from kernel.type import *
 from kernel.term import *
-from kernel.thm import base_deriv
+from kernel.thm import *
 
 class TheoryException(Exception):
     pass
 
 class CheckProofException(Exception):
-    pass
+    """Exception when checking proof. Provides error message."""
+    def __init__(self, str):
+        self.str = str
 
 class Theory(abc.ABC):
     """Theory objects contain all information about the current theory.
@@ -146,7 +148,7 @@ class Theory(abc.ABC):
             if seq.prevs:
                 for prev in seq.prevs:
                     if prev not in seq_dict:
-                        raise CheckProofException()
+                        raise CheckProofException("previous item not found")
                     else:
                         prev_ths.append(seq_dict[prev])
 
@@ -159,10 +161,12 @@ class Theory(abc.ABC):
             try:
                 th2 = rule_fun(*prev_ths, *args)
             except InvalidDerivationException:
-                raise CheckProofException()
+                raise CheckProofException("invalid derivation")
+            except TypeError:
+                raise CheckProofException("invalid input to derivation")
 
             if seq.th != th2:
-                raise CheckProofException()
+                raise CheckProofException("output does not match")
 
             seq_dict[seq.id] = seq.th
 

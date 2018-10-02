@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import abc
+from kernel.thm import *
 
 class ProofException(Exception):
     pass
@@ -45,8 +46,15 @@ class Proof(abc.ABC):
     deduction rules.
 
     """
-    def __init__(self):
+    def __init__(self, *assums):
+        """Initialization can take a list of n assumptions, and generates
+        first n steps A1, ..., An using Thm.assume on the assumptions.
+
+        """
         self.proof = []
+        for (id, assum) in zip(range(len(assums)), assums):
+            item = ProofItem("A" + str(id+1), Thm.assume(assum), "assume", assum, None)
+            self.proof.append(item)
 
     def add_item(self, id, th, rule, args, prevs):
         """Add the given item to the end of the proof."""
