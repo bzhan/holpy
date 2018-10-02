@@ -4,6 +4,7 @@ import abc
 from kernel.type import *
 from kernel.term import *
 from kernel.thm import *
+from kernel.macro import *
 from kernel.extension import *
 
 class TheoryException(Exception):
@@ -87,6 +88,26 @@ class Theory(abc.ABC):
 
         return data[name]
 
+    def add_proof_macro(self, name, macro):
+        """Add the given proof macro."""
+        if not isinstance(macro, ProofMacro):
+            raise TheoryException()
+
+        self.add_data("proof_macro", name, macro)
+
+    def has_proof_macro(self, name):
+        """Whether the given name corresponds to a proof macro."""
+        data = self.get_data("proof_macro")
+        return name in data
+
+    def get_proof_macro(self, name):
+        """Returns the proof macro with that name."""
+        data = self.get_data("proof_macro")
+        if name not in data:
+            raise TheoryException()
+        
+        return data[name]
+
     @staticmethod
     def EmptyTheory():
         """Empty theory, with the absolute minimum setup."""
@@ -96,7 +117,6 @@ class Theory(abc.ABC):
         thy.add_data_type("type_sig")
         thy.add_data_type("term_sig")
         thy.add_data_type("theorems")
-        thy.add_data_type("term_macro")
         thy.add_data_type("proof_macro")
 
         # Fundamental types.
@@ -149,47 +169,55 @@ class Theory(abc.ABC):
         else:
             raise UnknownTermException()
 
-    def check_proof(self, prf):
-        """Verify the given proof object. Returns the final theorem if check
-        passes. Otherwise throws CheckProofException.
+    def get_check_level(self):
+        """Returns the trust level for the proof checking. Trust all macros
+        with macro.level <= self.check_level.
+
+        """
+        if hasattr(self, "check_level"):
+            return self.check_level
+        else:
+            return 0
+
+    def _check_proof_item(self, seq_dict, seq):
+        """Check a single proof item. seq_dict is the dictionary of existing
+        sequents.
         
         """
-        # Map from id to already seen sequents.
-        seq_dict = dict()
+        # First, check the current statement is correctly typed.
+        try:
+            seq.th.check_thm_type()
+        except TypeCheckException:
+            raise CheckProofException("typing error")
 
-        for seq in prf.get_items():
+        if seq.rule == "theorem":
+            # Copies an existing theorem in the theory into the proof.
             try:
-                seq.th.check_thm_type()
-            except TypeCheckException:
-                raise CheckProofException("typing error")
+                res_th = self.get_theorem(seq.args)
+            except TheoryException:
+                raise CheckProofException("theorem not found")
+        else:
+            # Otherwise, apply one of the proof methods. First, we
+            # obtain list of previous sequents used by the proof method:
+            prev_ths = []
+            if seq.prevs:
+                assert isinstance(seq.prevs, list), "prevs should be None or a list"
+                for prev in seq.prevs:
+                    if prev not in seq_dict:
+                        raise CheckProofException("previous item not found")
+                    else:
+                        prev_ths.append(seq_dict[prev])
 
-            if seq.rule == "theorem":
-                try:
-                    res_th = self.get_theorem(seq.args)
-                except TheoryException:
-                    raise CheckProofException("theorem not found")
+            # Next, obtain list of arguments to pass in:
+            if seq.args:
+                args = [seq.args]
             else:
-                if seq.rule not in base_deriv:
-                    raise CheckProofException("proof method not found")
+                args = []
 
+            if seq.rule in base_deriv:
+                # If the method is one of the base derivations, obtain and
+                # apply that base derivation.
                 rule_fun = base_deriv[seq.rule]
-
-                # Obtain list of previous sequents.
-                prev_ths = []
-                if seq.prevs:
-                    assert isinstance(seq.prevs, list), "prevs should be None or a list"
-                    for prev in seq.prevs:
-                        if prev not in seq_dict:
-                            raise CheckProofException("previous item not found")
-                        else:
-                            prev_ths.append(seq_dict[prev])
-
-                # Obtain list of arguments to pass in
-                if seq.args:
-                    args = [seq.args]
-                else:
-                    args = []
-
                 try:
                     res_th = rule_fun(*prev_ths, *args)
                 except InvalidDerivationException:
@@ -197,11 +225,41 @@ class Theory(abc.ABC):
                 except TypeError:
                     raise CheckProofException("invalid input to derivation")
 
-            if seq.th != res_th:
-                raise CheckProofException("output does not match")
+            elif self.has_proof_macro(seq.rule):
+                # Otherwise, the proof method corresponds to a macro. If
+                # the level of the macro is less than or equal to the current
+                # trust level, simply evaluate the macro to check that results
+                # match. Otherwise, expand the macro and check all of the steps.
+                macro = self.get_proof_macro(seq.rule)
+                if macro.level <= self.get_check_level():
+                    res_th = macro.eval(*prev_ths, *args)
+                else:
+                    seqs = macro.expand(seq.id, seq.prevs, *prev_ths, *args)
+                    seq_dict_copy = seq_dict.copy()
+                    self._check_proof_items(seq_dict_copy, seqs)
+                    res_th = seqs[-1].th
+            else:
+                raise CheckProofException("proof method not found")
 
-            seq_dict[seq.id] = seq.th
+        if seq.th != res_th:
+            raise CheckProofException("output does not match")
 
+        seq_dict[seq.id] = seq.th
+
+    def _check_proof_items(self, seq_dict, seqs):
+        """Check a sequence of proof items. seq_dict is the dictionary
+        of existing sequents.
+        
+        """
+        for seq in seqs:
+            self._check_proof_item(seq_dict, seq)
+
+    def check_proof(self, prf):
+        """Verify the given proof object. Returns the final theorem if check
+        passes. Otherwise throws CheckProofException.
+        
+        """
+        self._check_proof_items(dict(), prf.get_items())
         return prf.get_thm()
 
     def extend_axiom_constant(self, ext):

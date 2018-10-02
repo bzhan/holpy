@@ -3,6 +3,7 @@
 import unittest
 from kernel.thm import *
 from kernel.proof import *
+from kernel.macro import *
 from kernel.theory import *
 
 thy = Theory.EmptyTheory()
@@ -17,6 +18,30 @@ f = Var("f", Tab)
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)
 C = Var("C", hol_bool)
+
+# A simple macro
+def beta_conv_rhs_eval(th):
+    assert Term.is_equals(th.concl), "beta_conv_rhs"
+    (_, rhs) = th.concl.dest_binop()
+
+    return Thm.transitive(th, Thm.beta_conv(rhs))
+
+def beta_conv_rhs_expand(id, ids, th):
+    assert Term.is_equals(th.concl), "beta_conv_rhs"
+    (_, rhs) = th.concl.dest_binop()
+
+    th1 = Thm.beta_conv(rhs)
+    th2 = Thm.transitive(th, th1)
+    prf = [
+        ProofItem(id + ".S1", th1, "beta_conv", rhs, []),
+        ProofItem("C", th2, "transitive", [], [ids[0], id + ".S1"])]
+    return prf
+
+beta_conv_rhs_macro = ProofMacro(
+    "Reduce the right side of th by beta-conversion.",
+    beta_conv_rhs_eval,
+    beta_conv_rhs_expand
+)
 
 class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
@@ -172,6 +197,20 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("C", Thm([], Term.mk_implies(A,B)), "random", None, None)
 
         self.assertRaisesRegex(CheckProofException, "proof method not found", thy.check_proof, prf)
+
+    def testCheckProofMacro(self):
+        """Proof checking with simple macro."""
+        thy = Theory.EmptyTheory()
+        thy.add_proof_macro("beta_conv_rhs", beta_conv_rhs_macro)
+        
+        t = Comb(Abs("x", Ta, Bound(0)), x)
+        th = Thm([], Term.mk_equals(t,x))
+
+        prf = Proof()
+        prf.add_item("S1", Thm([], Term.mk_equals(t,t)), "reflexive", t, [])
+        prf.add_item("C", th, "beta_conv_rhs", None, ["S1"])
+
+        self.assertEqual(thy.check_proof(prf), th)
 
     def testUncheckedExtend(self):
         """Unchecked extension."""
