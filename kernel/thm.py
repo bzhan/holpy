@@ -36,6 +36,15 @@ class Thm(abc.ABC):
         """
         return self.assums == other.assums and self.concl == other.concl
 
+    def check_thm_type(self):
+        """Make sure the all assums and concl type-check and have type
+        boolean.
+        
+        """
+        for t in list(self.assums) + [self.concl]:
+            if t.checked_get_type() != hol_bool:
+                raise TypeCheckException()
+
     @staticmethod
     def assume(A):
         """Derivation rule ASSUME:

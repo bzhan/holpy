@@ -153,5 +153,16 @@ class TheoryTest(unittest.TestCase):
 
         self.assertRaisesRegex(CheckProofException, "theorem not found", thy.check_proof, prf)
 
+    def testCheckProofFail6(self):
+        """Typing error: non-boolean case."""
+        prf = Proof(x)
+
+        self.assertRaisesRegex(CheckProofException, "typing error", thy.check_proof, prf)
+
+    def testCheckProofFail7(self):
+        prf = Proof(Comb(Var("P", TFun(Tb, hol_bool)), x))
+
+        self.assertRaisesRegex(CheckProofException, "typing error", thy.check_proof, prf)
+
 if __name__ == "__main__":
     unittest.main()

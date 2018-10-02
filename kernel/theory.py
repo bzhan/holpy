@@ -157,6 +157,11 @@ class Theory(abc.ABC):
         seq_dict = dict()
 
         for seq in prf.get_items():
+            try:
+                seq.th.check_thm_type()
+            except TypeCheckException:
+                raise CheckProofException("typing error")
+
             if seq.rule == "theorem":
                 try:
                     res_th = self.get_theorem(seq.args)

@@ -27,6 +27,12 @@ class ThmTest(unittest.TestCase):
         for (th, str_th) in test_data:
             self.assertEqual(str(th), str_th)
 
+    def testCheckThmType(self):
+        self.assertEqual(Thm([A], A).check_thm_type(), None)
+
+    def testCheckThmTypeFail(self):
+        self.assertRaises(TypeCheckException, Thm([x], x).check_thm_type)
+
     def testAssume(self):
         self.assertEqual(Thm.assume(A), Thm([A], A))
 
