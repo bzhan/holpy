@@ -45,7 +45,7 @@ class Thm(abc.ABC):
         return Thm([A], A)
     
     @staticmethod
-    def implies_intr(A, th):
+    def implies_intr(th, A):
         """Derivation rule IMPLIES_INTR:
 
         A |- B
@@ -212,7 +212,7 @@ class Thm(abc.ABC):
         return Thm([], Term.mk_equals(t, t_new))
 
     @staticmethod
-    def abstraction(x, th):
+    def abstraction(th, x):
         """Derivation rule ABSTRACTION:
 
         A |- t1 = t2
@@ -230,3 +230,10 @@ class Thm(abc.ABC):
             return Thm(th.assums, Term.mk_equals(t1_new, t2_new))
         else:
             raise InvalidDerivationException()
+
+# Table of base derivations
+base_deriv = {
+    "assume" : Thm.assume,
+    "implies_intr" : Thm.implies_intr,
+    "implies_elim" : Thm.implies_elim,
+}

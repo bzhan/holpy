@@ -32,15 +32,15 @@ class ThmTest(unittest.TestCase):
 
     def testImpliesIntr(self):
         th = Thm([A], B)
-        self.assertEqual(Thm.implies_intr(A, th), Thm([], Term.mk_implies(A,B)))
+        self.assertEqual(Thm.implies_intr(th, A), Thm([], Term.mk_implies(A,B)))
 
     def testImpliesIntr2(self):
         th = Thm([A, B], B)
-        self.assertEqual(Thm.implies_intr(A, th), Thm([B], Term.mk_implies(A,B)))
+        self.assertEqual(Thm.implies_intr(th, A), Thm([B], Term.mk_implies(A,B)))
 
     def testImpliesIntr3(self):
         th = Thm([], B)
-        self.assertEqual(Thm.implies_intr(A, th), Thm([], Term.mk_implies(A,B)))
+        self.assertEqual(Thm.implies_intr(th, A), Thm([], Term.mk_implies(A,B)))
 
     def testImpliesElim(self):
         th1 = Thm([], Term.mk_implies(A,B))
@@ -170,24 +170,24 @@ class ThmTest(unittest.TestCase):
     def testAbstractOver(self):
         th = Thm([], Term.mk_equals(x,y))
         t_res = Term.mk_equals(Abs("x",Ta,Bound(0)),Abs("x",Ta,y))
-        self.assertEqual(Thm.abstraction(x, th), Thm([], t_res))
+        self.assertEqual(Thm.abstraction(th, x), Thm([], t_res))
 
     def testAbstractOverFail(self):
         x_eq_y = Term.mk_equals(x,y)
         th = Thm([x_eq_y], x_eq_y)
-        self.assertRaises(InvalidDerivationException, Thm.abstraction, x, th)
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, x)
 
     def testAbstractOverFail2(self):
         th = Thm([], Term.mk_equals(x,y))
-        self.assertRaises(InvalidDerivationException, Thm.abstraction, Var("x", Tb), th)
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, Var("x", Tb))
 
     def testAbstractOverFail3(self):
         th = Thm([], Term.mk_equals(x,y))
-        self.assertRaises(InvalidDerivationException, Thm.abstraction, Comb(f,x), th)
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, Comb(f,x))
 
     def testAbstractOverFail4(self):
         th = Thm([], Term.mk_implies(x,y))
-        self.assertRaises(InvalidDerivationException, Thm.abstraction, x, th)
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, x)
 
 if __name__ == "__main__":
     unittest.main()

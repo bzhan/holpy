@@ -1,6 +1,8 @@
 # Author: Bohua Zhan
 
 import unittest
+from kernel.thm import *
+from kernel.proof import *
 from kernel.theory import *
 
 thy = Theory.EmptyTheory()
@@ -13,6 +15,7 @@ b = Var("b", Ta)
 f = Var("f", Tab)
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)
+A_to_B = Term.mk_implies(A, B)
 
 class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
@@ -71,6 +74,14 @@ class TheoryTest(unittest.TestCase):
 
         for t in test_data:
             self.assertRaises(TheoryException, thy.check_term, t)
+
+    def testCheckProof(self):
+        prf = Proof()
+        prf.add_item("A1", Thm([A_to_B], A_to_B), "assume", A_to_B, None)
+        prf.add_item("A2", Thm([A], A), "assume", A, None)
+        prf.add_item("C", Thm([A, A_to_B], B), "implies_elim", None, ["A1", "A2"])
+
+        self.assertEqual(thy.check_proof(prf), Thm([A, A_to_B], B))
 
 if __name__ == "__main__":
     unittest.main()

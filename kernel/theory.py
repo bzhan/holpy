@@ -3,8 +3,12 @@
 import abc
 from kernel.type import *
 from kernel.term import *
+from kernel.thm import base_deriv
 
 class TheoryException(Exception):
+    pass
+
+class CheckProofException(Exception):
     pass
 
 class Theory(abc.ABC):
@@ -125,3 +129,41 @@ class Theory(abc.ABC):
             return None
         else:
             raise UnknownTermException()
+
+    def check_proof(self, prf):
+        """Verify the given proof object. Returns the final theorem if check
+        passes. Otherwise throws CheckProofException.
+        
+        """
+        # Map from id to already seen sequents.
+        seq_dict = dict()
+
+        for seq in prf.get_items():
+            rule_fun = base_deriv[seq.rule]
+
+            # Obtain list of previous sequents.
+            prev_ths = []
+            if seq.prevs:
+                for prev in seq.prevs:
+                    if prev not in seq_dict:
+                        raise CheckProofException()
+                    else:
+                        prev_ths.append(seq_dict[prev])
+
+            # Obtain list of arguments to pass in
+            if seq.args:
+                args = [seq.args]
+            else:
+                args = []
+
+            try:
+                th2 = rule_fun(*prev_ths, *args)
+            except InvalidDerivationException:
+                raise CheckProofException()
+
+            if seq.th != th2:
+                raise CheckProofException()
+
+            seq_dict[seq.id] = seq.th
+
+        return prf.get_thm()
