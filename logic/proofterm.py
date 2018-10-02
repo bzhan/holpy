@@ -43,6 +43,10 @@ class ProofTerm(abc.ABC):
     def beta_conv(x):
         return ProofTerm(Thm.beta_conv(x), "beta_conv", x, [])
 
+    @staticmethod
+    def theorem(th_name, th):
+        return ProofTerm(th, "theorem", th_name, [])
+
     def _export(self, seq_to_id, prf):
         """Helper function for _export.
         

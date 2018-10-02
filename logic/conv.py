@@ -165,3 +165,26 @@ class top_conv(Conv):
 
     def get_proof_term(self, t):
         return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(t)
+
+class rewr_conv(Conv):
+    """Rewrite using the given equality theorem. Currently perform
+    no matching.
+
+    """
+    def __init__(self, th_name, th):
+        assert isinstance(th, Thm), "rewr_conv: argument"
+        self.th = th
+        self.th_name = th_name
+
+    def eval(self, t):
+        if t == self.th.concl.dest_binop()[0]:
+            return self.th
+        else:
+            raise ConvException()
+
+    def get_proof_term(self, t):
+        if t == self.th.concl.dest_binop()[0]:
+            return ProofTerm.theorem(self.th_name, self.th)
+        else:
+            raise ConvException()
+
