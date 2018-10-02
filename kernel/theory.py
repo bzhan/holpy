@@ -71,6 +71,21 @@ class Theory(abc.ABC):
 
         return data[name]
 
+    def add_theorem(self, name, th):
+        """Add the given theorem under the given name."""
+        if not isinstance(th, Thm):
+            raise TheoryException()
+
+        self.add_data("theorems", name, th)
+    
+    def get_theorem(self, name):
+        """Returns the theorem under that name."""
+        data = self.get_data("theorems")
+        if name not in data:
+            raise TheoryException()
+
+        return data[name]
+
     @staticmethod
     def EmptyTheory():
         """Empty theory, with the absolute minimum setup."""
@@ -79,6 +94,7 @@ class Theory(abc.ABC):
         # Fundamental data structures, needed for proof checking.
         thy.add_data_type("type_sig")
         thy.add_data_type("term_sig")
+        thy.add_data_type("theorems")
         thy.add_data_type("term_macro")
         thy.add_data_type("proof_macro")
 
@@ -141,31 +157,38 @@ class Theory(abc.ABC):
         seq_dict = dict()
 
         for seq in prf.get_items():
-            rule_fun = base_deriv[seq.rule]
-
-            # Obtain list of previous sequents.
-            prev_ths = []
-            if seq.prevs:
-                for prev in seq.prevs:
-                    if prev not in seq_dict:
-                        raise CheckProofException("previous item not found")
-                    else:
-                        prev_ths.append(seq_dict[prev])
-
-            # Obtain list of arguments to pass in
-            if seq.args:
-                args = [seq.args]
+            if seq.rule == "theorem":
+                try:
+                    res_th = self.get_theorem(seq.args)
+                except TheoryException:
+                    raise CheckProofException("theorem not found")
             else:
-                args = []
+                rule_fun = base_deriv[seq.rule]
 
-            try:
-                th2 = rule_fun(*prev_ths, *args)
-            except InvalidDerivationException:
-                raise CheckProofException("invalid derivation")
-            except TypeError:
-                raise CheckProofException("invalid input to derivation")
+                # Obtain list of previous sequents.
+                prev_ths = []
+                if seq.prevs:
+                    assert isinstance(seq.prevs, list), "prevs should be None or a list"
+                    for prev in seq.prevs:
+                        if prev not in seq_dict:
+                            raise CheckProofException("previous item not found")
+                        else:
+                            prev_ths.append(seq_dict[prev])
 
-            if seq.th != th2:
+                # Obtain list of arguments to pass in
+                if seq.args:
+                    args = [seq.args]
+                else:
+                    args = []
+
+                try:
+                    res_th = rule_fun(*prev_ths, *args)
+                except InvalidDerivationException:
+                    raise CheckProofException("invalid derivation")
+                except TypeError:
+                    raise CheckProofException("invalid input to derivation")
+
+            if seq.th != res_th:
                 raise CheckProofException("output does not match")
 
             seq_dict[seq.id] = seq.th

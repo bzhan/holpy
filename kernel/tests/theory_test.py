@@ -18,6 +18,8 @@ A = Var("A", hol_bool)
 B = Var("B", hol_bool)
 C = Var("C", hol_bool)
 
+thy.add_theorem("trivial", Thm([], Term.mk_implies(A,A)))
+
 class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
         self.assertEqual(thy.get_type_sig("bool"), 0)
@@ -106,6 +108,16 @@ class TheoryTest(unittest.TestCase):
 
         self.assertEqual(thy.check_proof(prf), th)
 
+    def testCheckProof4(self):
+        """Proof of |- x = y --> x = y by instantiating an existing theorem."""
+        x_eq_y = Term.mk_equals(x,y)
+        th = Thm([], Term.mk_implies(x_eq_y,x_eq_y))
+        prf = Proof()
+        prf.add_item("S1", Thm([], Term.mk_implies(A,A)), "theorem", "trivial", [])
+        prf.add_item("C", th, "substitution", {"A" : x_eq_y}, ["S1"])
+
+        self.assertEqual(thy.check_proof(prf), th)
+
     def testCheckProofFail(self):
         """Previous item not found."""
         prf = Proof()
@@ -133,6 +145,13 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("C", Thm([], Term.mk_implies(A,B)), "implies_intr", A, ["A1"])
 
         self.assertRaisesRegex(CheckProofException, "output does not match", thy.check_proof, prf)
+
+    def testCheckProofFail5(self):
+        """Theorem not found."""
+        prf = Proof()
+        prf.add_item("C", Thm([], Term.mk_implies(A,B)), "theorem", "random", None)
+
+        self.assertRaisesRegex(CheckProofException, "theorem not found", thy.check_proof, prf)
 
 if __name__ == "__main__":
     unittest.main()
