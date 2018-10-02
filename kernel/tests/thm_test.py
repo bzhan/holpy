@@ -69,7 +69,7 @@ class ThmTest(unittest.TestCase):
         self.assertRaises(InvalidDerivationException, Thm.implies_elim, th1, th2)
 
     def testReflexive(self):
-        self.assertEqual(Thm.reflexive(x), Thm([], Term.mk_equals(x,x)))
+        self.assertEqual(Thm.reflexive(x), Thm.mk_equals(x,x))
 
     def testSymmetric(self):
         th = Thm([A], Term.mk_equals(x,y))
@@ -85,18 +85,18 @@ class ThmTest(unittest.TestCase):
         self.assertEqual(Thm.transitive(th1, th2), Thm([A,B], Term.mk_equals(x,z)))
 
     def testTransitiveFail(self):
-        th1 = Thm([], Term.mk_equals(x,y))
+        th1 = Thm.mk_equals(x,y)
         th2 = Thm([], B)
         self.assertRaises(InvalidDerivationException, Thm.transitive, th1, th2)
 
     def testTransitiveFail2(self):
         th1 = Thm([], A)
-        th2 = Thm([], Term.mk_equals(x,y))
+        th2 = Thm.mk_equals(x,y)
         self.assertRaises(InvalidDerivationException, Thm.transitive, th1, th2)
 
     def testTransitiveFail3(self):
-        th1 = Thm([], Term.mk_equals(x,y))
-        th2 = Thm([], Term.mk_equals(z,x))
+        th1 = Thm.mk_equals(x,y)
+        th2 = Thm.mk_equals(z,x)
         self.assertRaises(InvalidDerivationException, Thm.transitive, th1, th2)
 
     def testCombination(self):
@@ -105,13 +105,13 @@ class ThmTest(unittest.TestCase):
         self.assertEqual(Thm.combination(th1, th2), Thm([A,B], Term.mk_equals(Comb(f,x),Comb(g,y))))
 
     def testCombinationFail(self):
-        th1 = Thm([], Term.mk_equals(x,y))
+        th1 = Thm.mk_equals(x,y)
         th2 = Thm([], B)
         self.assertRaises(InvalidDerivationException, Thm.combination, th1, th2)
 
     def testCombinationFail2(self):
         th1 = Thm([], A)
-        th2 = Thm([], Term.mk_equals(x,y))
+        th2 = Thm.mk_equals(x,y)
         self.assertRaises(InvalidDerivationException, Thm.combination, th1, th2)
 
     def testEqualIntr(self):
@@ -168,13 +168,13 @@ class ThmTest(unittest.TestCase):
 
     def testBetaConv(self):
         t = Comb(Abs("x", Ta, Bound(0)), x)
-        self.assertEqual(Thm.beta_conv(t), Thm([], Term.mk_equals(t, x)))
+        self.assertEqual(Thm.beta_conv(t), Thm.mk_equals(t, x))
 
     def testBetaConvFail(self):
         self.assertRaises(InvalidDerivationException, Thm.beta_conv, x)
 
     def testAbstractOver(self):
-        th = Thm([], Term.mk_equals(x,y))
+        th = Thm.mk_equals(x,y)
         t_res = Term.mk_equals(Abs("x",Ta,Bound(0)),Abs("x",Ta,y))
         self.assertEqual(Thm.abstraction(th, x), Thm([], t_res))
 
@@ -184,11 +184,11 @@ class ThmTest(unittest.TestCase):
         self.assertRaises(InvalidDerivationException, Thm.abstraction, th, x)
 
     def testAbstractOverFail2(self):
-        th = Thm([], Term.mk_equals(x,y))
+        th = Thm.mk_equals(x,y)
         self.assertRaises(InvalidDerivationException, Thm.abstraction, th, Var("x", Tb))
 
     def testAbstractOverFail3(self):
-        th = Thm([], Term.mk_equals(x,y))
+        th = Thm.mk_equals(x,y)
         self.assertRaises(InvalidDerivationException, Thm.abstraction, th, Comb(f,x))
 
     def testAbstractOverFail4(self):

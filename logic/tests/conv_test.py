@@ -46,9 +46,9 @@ class ConvTest(unittest.TestCase):
         nat1 = Const("1", natT)
 
         # Add axioms 1 = 0
-        thy.add_theorem("1_eq_0", Thm([], Term.mk_equals(nat1, nat0)))
+        thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
         cv = rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))
-        eq_th = Thm([], Term.mk_equals(nat1, nat0))
+        eq_th = Thm.mk_equals(nat1, nat0)
         self.assertEqual(cv.eval(nat1), eq_th)
         self.assertEqual(thy.check_proof(cv.get_proof_term(nat1).export()), eq_th)
         self.assertRaises(ConvException, cv.eval, nat0)
@@ -58,7 +58,7 @@ class ConvTest(unittest.TestCase):
         cv = top_conv(beta_conv())
         t = Comb(lf, Comb(lf, x))
         res = Comb2(f, Comb2(f,x,x), Comb2(f,x,x))
-        res_th = Thm([], Term.mk_equals(t, res))
+        res_th = Thm.mk_equals(t, res)
         self.assertEqual(cv.eval(t), res_th)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(prf.get_num_item(), 6)
@@ -68,7 +68,7 @@ class ConvTest(unittest.TestCase):
         cv = bottom_conv(beta_conv())
         t = Comb(lf, Comb(lf, x))
         res = Comb2(f, Comb2(f,x,x), Comb2(f,x,x))
-        res_th = Thm([], Term.mk_equals(t, res))
+        res_th = Thm.mk_equals(t, res)
         self.assertEqual(cv.eval(t), res_th)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(prf.get_num_item(), 5)
@@ -83,9 +83,9 @@ class ConvTest(unittest.TestCase):
             t = Comb(lf, t)
             res = Comb2(f, res, res)
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv.eval(t), Thm([], Term.mk_equals(t, res)))
+        self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
         self.assertEqual(prf.get_num_item(), 30)
-        self.assertEqual(thy.check_proof(prf), Thm([], Term.mk_equals(t, res)))
+        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
     def testBottomBetaConvLarge(self):
         """Stress test for beta conversion in the bottom-up order."""
@@ -96,9 +96,9 @@ class ConvTest(unittest.TestCase):
             t = Comb(lf, t)
             res = Comb2(f, res, res)
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv.eval(t), Thm([], Term.mk_equals(t, res)))
+        self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
         self.assertEqual(prf.get_num_item(), 23)
-        self.assertEqual(thy.check_proof(prf), Thm([], Term.mk_equals(t, res)))
+        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
     def testLargeSum(self):
         thy = Theory.EmptyTheory()
@@ -120,8 +120,8 @@ class ConvTest(unittest.TestCase):
         plus = Const("+", natFunT2)
 
         # Add axioms 1 = 0 and f 0 = g 0
-        thy.add_theorem("1_eq_0", Thm([], Term.mk_equals(nat1, nat0)))
-        thy.add_theorem("f0_eq_g0", Thm([], Term.mk_equals(Comb(f,nat0), Comb(g,nat0))))
+        thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
+        thy.add_theorem("f0_eq_g0", Thm.mk_equals(Comb(f,nat0), Comb(g,nat0)))
 
         cv = then_conv(
             top_conv(rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))),
@@ -136,8 +136,8 @@ class ConvTest(unittest.TestCase):
             res = Comb2(plus, res, g0)
 
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv.eval(t), Thm([], Term.mk_equals(t, res)))
-        self.assertEqual(thy.check_proof(prf), Thm([], Term.mk_equals(t, res)))
+        self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
+        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
 if __name__ == "__main__":
     unittest.main()

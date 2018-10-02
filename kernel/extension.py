@@ -81,7 +81,7 @@ class Extension(abc.ABC):
     def get_eq_thm(self):
         """Return the equality theorem to be added in the Constant extension."""
         assert self.ty == Extension.CONSTANT, "get_eq_thm"
-        return Thm([], Term.mk_equals(self.get_const_term(), self.expr))
+        return Thm.mk_equals(self.get_const_term(), self.expr)
     
 class TheoryExtension(abc.ABC):
     """A theory extension contains a list of extensions to a theory. These

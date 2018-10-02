@@ -126,7 +126,7 @@ class TheoryTest(unittest.TestCase):
         prf = Proof(x_eq_y, y_eq_z)
         prf.add_item("S1", Thm([x_eq_y, y_eq_z], Term.mk_equals(x,z)), "transitive", None, ["A1", "A2"])
         prf.add_item("S2", Thm([x_eq_y, y_eq_z], Term.mk_equals(z,x)), "symmetric", None, ["S1"])
-        prf.add_item("S3", Thm([], Term.mk_equals(f,f)), "reflexive", f, None)
+        prf.add_item("S3", Thm.mk_equals(f,f), "reflexive", f, None)
         prf.add_item("C", th, "combination", None, ["S3", "S2"])
 
         self.assertEqual(thy.check_proof(prf), th)
@@ -204,10 +204,10 @@ class TheoryTest(unittest.TestCase):
         thy.add_proof_macro("beta_conv_rhs", beta_conv_rhs_macro)
         
         t = Comb(Abs("x", Ta, Bound(0)), x)
-        th = Thm([], Term.mk_equals(t,x))
+        th = Thm.mk_equals(t,x)
 
         prf = Proof()
-        prf.add_item("S1", Thm([], Term.mk_equals(t,t)), "reflexive", t, [])
+        prf.add_item("S1", Thm.mk_equals(t,t), "reflexive", t, [])
         prf.add_item("C", th, "beta_conv_rhs", None, ["S1"])
 
         self.assertEqual(thy.check_proof(prf), th)
@@ -226,7 +226,7 @@ class TheoryTest(unittest.TestCase):
 
         self.assertEqual(thy.unchecked_extend(thy_ext), None)
         self.assertEqual(thy.get_term_sig("id"), TFun(Ta, Ta))
-        self.assertEqual(thy.get_theorem("id_def"), Thm([], Term.mk_equals(id_const, id_def)))
+        self.assertEqual(thy.get_theorem("id_def"), Thm.mk_equals(id_const, id_def))
         self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
 
     def testCheckedExtend(self):
@@ -252,7 +252,7 @@ class TheoryTest(unittest.TestCase):
 
         # Proof of |- id x = x from |- id = (%x. x)
         prf = Proof()
-        th1 = Thm([], Term.mk_equals(id_const, id_def))  # id = (%x. x)
+        th1 = Thm.mk_equals(id_const, id_def)  # id = (%x. x)
         th2 = Thm.reflexive(x)  # x = x
         th3 = Thm.combination(th1, th2)  # id x = (%x. x) x
         th4 = Thm.beta_conv(Comb(id_def, x))  # (%x. x) x = x

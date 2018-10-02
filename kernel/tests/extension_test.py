@@ -15,7 +15,7 @@ class ExtensionTest(unittest.TestCase):
         id_def = Abs("x", Ta, Bound(0))
         ext = Extension.Constant("id", id_def)
         self.assertEqual(ext.get_const_term(), id_const)
-        self.assertEqual(ext.get_eq_thm(), Thm([], Term.mk_equals(id_const, id_def)))
+        self.assertEqual(ext.get_eq_thm(), Thm.mk_equals(id_const, id_def))
 
     def testPrintTheoryExtension(self):
         thy_ext = TheoryExtension()

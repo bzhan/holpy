@@ -49,6 +49,10 @@ class Thm(abc.ABC):
                 raise TypeCheckException()
 
     @staticmethod
+    def mk_equals(x, y):
+        return Thm([], Term.mk_equals(x, y))
+
+    @staticmethod
     def assume(A):
         """Derivation rule ASSUME:
 
@@ -90,7 +94,7 @@ class Thm(abc.ABC):
 
         |- x = x
         """
-        return Thm([], Term.mk_equals(x,x))
+        return Thm.mk_equals(x, x)
 
     @staticmethod
     def symmetric(th):
@@ -221,7 +225,7 @@ class Thm(abc.ABC):
             t_new = t.beta_conv()
         except TermSubstitutionException:
             raise InvalidDerivationException()
-        return Thm([], Term.mk_equals(t, t_new))
+        return Thm.mk_equals(t, t_new)
 
     @staticmethod
     def abstraction(th, x):
