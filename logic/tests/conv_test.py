@@ -37,22 +37,44 @@ class ConvTest(unittest.TestCase):
     def testRewrConv(self):
         thy = Theory.EmptyTheory()
 
-        # Setup a theory containing nat, 0, 1.
+        # Setup a theory containing nat, 0, 1, f, g, +.
         thy.add_type_sig("nat", 0)
         natT = Type("nat")
         thy.add_term_sig("0", natT)
         thy.add_term_sig("1", natT)
+        natFunT = TFun(natT, natT)
+        natFunT2 = TFun(natT, natFunT)
+        thy.add_term_sig("f", natFunT)
+        thy.add_term_sig("g", natFunT)
+        thy.add_term_sig("+", natFunT2)
         nat0 = Const("0", natT)
         nat1 = Const("1", natT)
+        f = Const("f", natFunT)
+        g = Const("g", natFunT)
+        plus = Const("+", natFunT2)
 
-        # Add axioms 1 = 0
+        # Add axioms 1 = 0 and f 0 = g 0
         thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
-        cv = rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))
+        thy.add_theorem("f_eq_g", Thm.mk_equals(Comb(f,Var("x",natT)), Comb(g,Var("x",natT))))
+
+        # Test conversion using 1 = 0
+        cv1 = rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))
         eq_th = Thm.mk_equals(nat1, nat0)
-        self.assertEqual(cv.eval(nat1), eq_th)
-        self.assertEqual(thy.check_proof(cv.get_proof_term(nat1).export()), eq_th)
-        self.assertRaises(ConvException, cv.eval, nat0)
-        self.assertRaises(ConvException, cv.get_proof_term, nat0)
+        self.assertEqual(cv1.eval(nat1), eq_th)
+        self.assertEqual(thy.check_proof(cv1.get_proof_term(nat1).export()), eq_th)
+        self.assertRaises(ConvException, cv1.eval, nat0)
+        self.assertRaises(ConvException, cv1.get_proof_term, nat0)
+
+        # Test conversion using f x = g x
+        cv2 = rewr_conv("f_eq_g", thy.get_theorem("f_eq_g"))
+        eq0 = Thm.mk_equals(Comb(f,nat0), Comb(g,nat0))
+        eq1 = Thm.mk_equals(Comb(f,nat1), Comb(g,nat1))
+        self.assertEqual(cv2.eval(Comb(f,nat0)), eq0)
+        self.assertEqual(cv2.eval(Comb(f,nat1)), eq1)
+        self.assertEqual(thy.check_proof(cv2.get_proof_term(Comb(f,nat0)).export()), eq0)
+        self.assertEqual(thy.check_proof(cv2.get_proof_term(Comb(f,nat1)).export()), eq1)
+        self.assertRaises(ConvException, cv1.eval, nat0)
+        self.assertRaises(ConvException, cv1.get_proof_term, nat0)
 
     def testTopBetaConv(self):
         cv = top_conv(beta_conv())
@@ -121,11 +143,11 @@ class ConvTest(unittest.TestCase):
 
         # Add axioms 1 = 0 and f 0 = g 0
         thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
-        thy.add_theorem("f0_eq_g0", Thm.mk_equals(Comb(f,nat0), Comb(g,nat0)))
+        thy.add_theorem("f_eq_g", Thm.mk_equals(Comb(f,Var("x",natT)), Comb(g,Var("x",natT))))
 
-        cv = then_conv(
-            top_conv(rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))),
-            top_conv(rewr_conv("f0_eq_g0", thy.get_theorem("f0_eq_g0"))))
+        cv = top_conv(else_conv(
+            rewr_conv("f_eq_g", thy.get_theorem("f_eq_g")),
+            rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))))
 
         f1 = Comb(f,nat1)
         g0 = Comb(g,nat0)

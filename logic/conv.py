@@ -5,6 +5,7 @@ import abc
 from kernel.term import *
 from kernel.thm import *
 from logic.proofterm import *
+from logic.matcher import *
 
 class ConvException(Exception):
     pass
@@ -177,14 +178,23 @@ class rewr_conv(Conv):
         self.th_name = th_name
 
     def eval(self, t):
-        if t == self.th.concl.dest_binop()[0]:
-            return self.th
-        else:
+        pat = self.th.concl.dest_arg1()
+        inst = dict()
+
+        try:
+            inst = Matcher.first_order_match(pat, t)
+        except MatchException:
             raise ConvException()
+
+        return Thm.substitution(self.th, inst)
 
     def get_proof_term(self, t):
-        if t == self.th.concl.dest_binop()[0]:
-            return ProofTerm.theorem(self.th_name, self.th)
-        else:
+        pat = self.th.concl.dest_arg1()
+        inst = dict()
+
+        try:
+            inst = Matcher.first_order_match(pat, t)
+        except MatchException:
             raise ConvException()
 
+        return ProofTerm.substitution(ProofTerm.theorem(self.th_name, self.th), inst)

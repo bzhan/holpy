@@ -144,6 +144,19 @@ class TheoryTest(unittest.TestCase):
 
         self.assertEqual(thy.check_proof(prf), th)
 
+    def testCheckProof5(self):
+        """Empty instantiation."""
+        thy = Theory.EmptyTheory()
+        thy.add_theorem("trivial", Thm([], Term.mk_implies(A,A)))
+
+        x_eq_y = Term.mk_equals(x,y)
+        th = Thm([], Term.mk_implies(A,A))
+        prf = Proof()
+        prf.add_item("S1", th, "theorem", args = "trivial")
+        prf.add_item("C", th, "substitution", args = {}, prevs = ["S1"])
+
+        self.assertEqual(thy.check_proof(prf), th)
+
     def testCheckProofFail(self):
         """Previous item not found."""
         prf = Proof()

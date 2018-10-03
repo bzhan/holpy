@@ -40,6 +40,10 @@ class ProofTerm(abc.ABC):
         return ProofTerm(Thm.combination(pt1.th, pt2.th), "combination", None, [pt1, pt2])
 
     @staticmethod
+    def substitution(pt, inst):
+        return ProofTerm(Thm.substitution(pt.th, inst), "substitution", inst, [pt])
+
+    @staticmethod
     def beta_conv(x):
         return ProofTerm(Thm.beta_conv(x), "beta_conv", x, [])
 

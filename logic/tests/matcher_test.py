@@ -37,7 +37,7 @@ class MatcherTest(unittest.TestCase):
         ]
 
         for (pat, t, inst) in test_data:
-            if inst != None:
+            if inst is not None:
                 self.assertEqual(Matcher.first_order_match(pat, t), inst)
             else:
                 self.assertRaises(MatchException, Matcher.first_order_match, pat, t)

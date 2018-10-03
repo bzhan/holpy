@@ -208,7 +208,7 @@ class Theory(abc.ABC):
                     prev_ths.append(seq_dict[prev])
 
             # Next, obtain list of arguments to pass in:
-            if seq.args:
+            if seq.args is not None:
                 args = [seq.args]
             else:
                 args = []
@@ -222,7 +222,7 @@ class Theory(abc.ABC):
                 except InvalidDerivationException:
                     raise CheckProofException("invalid derivation")
                 except TypeError:
-                    raise CheckProofException("invalid input to derivation")
+                    raise CheckProofException("invalid input to derivation " + seq.rule)
 
             elif self.has_proof_macro(seq.rule):
                 # Otherwise, the proof method corresponds to a macro. If
