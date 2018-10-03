@@ -14,10 +14,10 @@ def arg_combination_expand(depth, ids, th, f):
 
     th1 = Thm.reflexive(f)
     th2 = Thm.combination(th1, th)
-    return [
-        ProofItem((depth, "S1"), th1, "reflexive", args = f),
-        ProofItem("C", th2, "combination", prevs = [(depth, "S1"), ids[0]])
-    ]
+    prf = Proof()
+    prf.add_item((depth, "S1"), th1, "reflexive", args = f)
+    prf.add_item("C", th2, "combination", prevs = [(depth, "S1"), ids[0]])
+    return prf
 
 arg_combination_macro = ProofMacro(
     "Given theorem x = y and term f, return f x = f y.",
@@ -34,10 +34,10 @@ def fun_combination_expand(depth, ids, th, f):
 
     th1 = Thm.reflexive(f)
     th2 = Thm.combination(th, th1)
-    return [
-        ProofItem((depth, "S1"), th1, "reflexive", args = f),
-        ProofItem("C", th2, "combination", prevs = [ids[0], (depth, "S1")])
-    ]
+    prf = Proof()
+    prf.add_item((depth, "S1"), th1, "reflexive", args = f)
+    prf.add_item("C", th2, "combination", prevs = [ids[0], (depth, "S1")])
+    return prf
 
 fun_combination_macro = ProofMacro(
     "Given theorem f = g and term x, return f x = g x.",

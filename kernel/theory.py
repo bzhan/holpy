@@ -235,10 +235,8 @@ class Theory(abc.ABC):
                 if macro.level <= self.get_check_level():
                     res_th = macro.eval(*prev_ths, *args)
                 else:
-                    seqs = macro.expand(depth+1, seq.prevs, *prev_ths, *args)
-                    seq_dict_copy = seq_dict.copy()
-                    self._check_proof_items(depth+1, seq_dict_copy, seqs)
-                    res_th = seqs[-1].th
+                    prf = macro.expand(depth+1, seq.prevs, *prev_ths, *args)
+                    res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf)
             else:
                 raise CheckProofException("proof method not found")
 
@@ -246,25 +244,26 @@ class Theory(abc.ABC):
             raise CheckProofException("output does not match\n" + str(seq.th) + "\n vs.\n" + str(res_th))
 
         seq_dict[seq.id] = seq.th
+        return None
 
-    def _check_proof_items(self, depth, seq_dict, seqs):
-        """Check a sequence of proof items.
+    def check_proof_incr(self, depth, seq_dict, prf):
+        """Incremental version of check_proof.
         
         depth -- depth in macro expansion.
         
         seq_dict -- dictionary of existing sequents.
         
         """
-        for seq in seqs:
+        for seq in prf.get_items():
             self._check_proof_item(depth, seq_dict, seq)
+        return prf.get_thm()
 
     def check_proof(self, prf):
         """Verify the given proof object. Returns the final theorem if check
         passes. Otherwise throws CheckProofException.
         
         """
-        self._check_proof_items(0, dict(), prf.get_items())
-        return prf.get_thm()
+        return self.check_proof_incr(0, dict(), prf)
 
     def extend_axiom_constant(self, ext):
         assert ext.ty == Extension.AX_CONSTANT, "extend_axiom_constant"

@@ -18,8 +18,8 @@ class BasicTest(unittest.TestCase):
         prf = arg_combination_macro.expand(1, [(0, "S1")], th, f)
         
         thy = Theory.EmptyTheory()
-        self.assertEqual(len(prf), 2)
-        self.assertEqual(thy._check_proof_items(1, {(0, "S1"): th}, prf), None)
+        self.assertEqual(prf.get_num_item(), 2)
+        self.assertEqual(thy.check_proof_incr(1, {(0, "S1"): th}, prf), res)
 
     def testFunCombination(self):
         th = Thm.mk_equals(f,g)
@@ -28,8 +28,8 @@ class BasicTest(unittest.TestCase):
         prf = fun_combination_macro.expand(1, [(0, "S1")], th, x)
 
         thy = Theory.EmptyTheory()
-        self.assertEqual(len(prf), 2)
-        self.assertEqual(thy._check_proof_items(1, {(0, "S1"): th}, prf), None)
+        self.assertEqual(prf.get_num_item(), 2)
+        self.assertEqual(thy.check_proof_incr(1, {(0, "S1"): th}, prf), res)
 
 if __name__ == "__main__":
     unittest.main()
