@@ -15,7 +15,7 @@ class ProofItem(abc.ABC):
     - args: the arguments to the rule.
     - prevs: the previous sequents used.
     """
-    def __init__(self, id, th, rule, args, prevs):
+    def __init__(self, id, th, rule, args = None, prevs = []):
         self.id = id
         self.th = th
         self.rule = rule
@@ -53,10 +53,10 @@ class Proof(abc.ABC):
         """
         self.proof = []
         for (id, assum) in zip(range(len(assums)), assums):
-            item = ProofItem("A" + str(id+1), Thm.assume(assum), "assume", assum, None)
+            item = ProofItem("A" + str(id+1), Thm.assume(assum), "assume", args = assum)
             self.proof.append(item)
 
-    def add_item(self, id, th, rule, args, prevs):
+    def add_item(self, id, th, rule, args = None, prevs = []):
         """Add the given item to the end of the proof."""
         self.proof.append(ProofItem(id, th, rule, args, prevs))
 

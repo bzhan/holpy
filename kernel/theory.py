@@ -200,13 +200,12 @@ class Theory(abc.ABC):
             # Otherwise, apply one of the proof methods. First, we
             # obtain list of previous sequents used by the proof method:
             prev_ths = []
-            if seq.prevs:
-                assert isinstance(seq.prevs, list), "prevs should be None or a list"
-                for prev in seq.prevs:
-                    if prev not in seq_dict:
-                        raise CheckProofException("previous item not found")
-                    else:
-                        prev_ths.append(seq_dict[prev])
+            assert isinstance(seq.prevs, list), "prevs should be a list"
+            for prev in seq.prevs:
+                if prev not in seq_dict:
+                    raise CheckProofException("previous item not found")
+                else:
+                    prev_ths.append(seq_dict[prev])
 
             # Next, obtain list of arguments to pass in:
             if seq.args:

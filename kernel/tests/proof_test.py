@@ -12,7 +12,7 @@ A_to_B = Term.mk_implies(A,B)
 class ProofTest(unittest.TestCase):
     def testProof(self):
         prf = Proof(A_to_B, A)
-        prf.add_item("C", Thm([A, A_to_B], B), "implies_elim", None, ["A1", "A2"])
+        prf.add_item("C", Thm([A, A_to_B], B), "implies_elim", prevs = ["A1", "A2"])
 
         self.assertEqual(prf.get_num_item(), 3)
         self.assertEqual(prf.get_thm(), Thm([A, A_to_B], B))

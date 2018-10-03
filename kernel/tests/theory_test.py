@@ -33,8 +33,8 @@ def beta_conv_rhs_expand(id, ids, th):
     th1 = Thm.beta_conv(rhs)
     th2 = Thm.transitive(th, th1)
     prf = [
-        ProofItem(id + ".S1", th1, "beta_conv", rhs, []),
-        ProofItem("C", th2, "transitive", [], [ids[0], id + ".S1"])]
+        ProofItem(id + ".S1", th1, "beta_conv", args = rhs),
+        ProofItem("C", th2, "transitive", prevs = [ids[0], id + ".S1"])]
     return prf
 
 beta_conv_rhs_macro = ProofMacro(
@@ -106,7 +106,7 @@ class TheoryTest(unittest.TestCase):
         A_to_B = Term.mk_implies(A, B)
         th = Thm([A, A_to_B], B)
         prf = Proof(A_to_B, A)
-        prf.add_item("C", th, "implies_elim", None, ["A1", "A2"])
+        prf.add_item("C", th, "implies_elim", prevs = ["A1", "A2"])
 
         self.assertEqual(thy.check_proof(prf), th)
 
@@ -114,7 +114,7 @@ class TheoryTest(unittest.TestCase):
         """Proof of |- A --> A."""
         th = Thm([], Term.mk_implies(A,A))
         prf = Proof(A)
-        prf.add_item("C", th, "implies_intr", A, ["A1"])
+        prf.add_item("C", th, "implies_intr", args = A, prevs = ["A1"])
 
         self.assertEqual(thy.check_proof(prf), th)
 
@@ -124,10 +124,10 @@ class TheoryTest(unittest.TestCase):
         y_eq_z = Term.mk_equals(y,z)
         th = Thm([x_eq_y, y_eq_z], Term.mk_equals(Comb(f,z), Comb(f,x)))
         prf = Proof(x_eq_y, y_eq_z)
-        prf.add_item("S1", Thm([x_eq_y, y_eq_z], Term.mk_equals(x,z)), "transitive", None, ["A1", "A2"])
-        prf.add_item("S2", Thm([x_eq_y, y_eq_z], Term.mk_equals(z,x)), "symmetric", None, ["S1"])
-        prf.add_item("S3", Thm.mk_equals(f,f), "reflexive", f, None)
-        prf.add_item("C", th, "combination", None, ["S3", "S2"])
+        prf.add_item("S1", Thm([x_eq_y, y_eq_z], Term.mk_equals(x,z)), "transitive", prevs = ["A1", "A2"])
+        prf.add_item("S2", Thm([x_eq_y, y_eq_z], Term.mk_equals(z,x)), "symmetric", prevs = ["S1"])
+        prf.add_item("S3", Thm.mk_equals(f,f), "reflexive", args = f)
+        prf.add_item("C", th, "combination", prevs = ["S3", "S2"])
 
         self.assertEqual(thy.check_proof(prf), th)
 
@@ -139,43 +139,43 @@ class TheoryTest(unittest.TestCase):
         x_eq_y = Term.mk_equals(x,y)
         th = Thm([], Term.mk_implies(x_eq_y,x_eq_y))
         prf = Proof()
-        prf.add_item("S1", Thm([], Term.mk_implies(A,A)), "theorem", "trivial", [])
-        prf.add_item("C", th, "substitution", {"A" : x_eq_y}, ["S1"])
+        prf.add_item("S1", Thm([], Term.mk_implies(A,A)), "theorem", args = "trivial")
+        prf.add_item("C", th, "substitution", args = {"A" : x_eq_y}, prevs = ["S1"])
 
         self.assertEqual(thy.check_proof(prf), th)
 
     def testCheckProofFail(self):
         """Previous item not found."""
         prf = Proof()
-        prf.add_item("C", Thm([], A), "implies_intr", None, ["A1"])
+        prf.add_item("C", Thm([], A), "implies_intr", prevs = ["A1"])
 
         self.assertRaisesRegex(CheckProofException, "previous item not found", thy.check_proof, prf)
 
     def testCheckProofFail2(self):
         """Invalid derivation."""
         prf = Proof(A)
-        prf.add_item("C", Thm([A], A), "symmetric", None, ["A1"])
+        prf.add_item("C", Thm([A], A), "symmetric", prevs = ["A1"])
 
         self.assertRaisesRegex(CheckProofException, "invalid derivation", thy.check_proof, prf)
 
     def testCheckProofFail3(self):
         """Invalid input to derivation."""
         prf = Proof(A)
-        prf.add_item("C", Thm([], Term.mk_implies(A,A)), "implies_intr", None, ["A1"])
+        prf.add_item("C", Thm([], Term.mk_implies(A,A)), "implies_intr", prevs = ["A1"])
 
         self.assertRaisesRegex(CheckProofException, "invalid input to derivation", thy.check_proof, prf)
 
     def testCheckProofFail4(self):
         """Output does not match."""
         prf = Proof(A)
-        prf.add_item("C", Thm([], Term.mk_implies(A,B)), "implies_intr", A, ["A1"])
+        prf.add_item("C", Thm([], Term.mk_implies(A,B)), "implies_intr", args = A, prevs = ["A1"])
 
         self.assertRaisesRegex(CheckProofException, "output does not match", thy.check_proof, prf)
 
     def testCheckProofFail5(self):
         """Theorem not found."""
         prf = Proof()
-        prf.add_item("C", Thm([], Term.mk_implies(A,B)), "theorem", "random", None)
+        prf.add_item("C", Thm([], Term.mk_implies(A,B)), "theorem", args = "random")
 
         self.assertRaisesRegex(CheckProofException, "theorem not found", thy.check_proof, prf)
 
@@ -194,7 +194,7 @@ class TheoryTest(unittest.TestCase):
     def testCheckProofFail8(self):
         """Proof method not found."""
         prf = Proof()
-        prf.add_item("C", Thm([], Term.mk_implies(A,B)), "random", None, None)
+        prf.add_item("C", Thm([], Term.mk_implies(A,B)), "random")
 
         self.assertRaisesRegex(CheckProofException, "proof method not found", thy.check_proof, prf)
 
@@ -207,8 +207,8 @@ class TheoryTest(unittest.TestCase):
         th = Thm.mk_equals(t,x)
 
         prf = Proof()
-        prf.add_item("S1", Thm.mk_equals(t,t), "reflexive", t, [])
-        prf.add_item("C", th, "beta_conv_rhs", None, ["S1"])
+        prf.add_item("S1", Thm.mk_equals(t,t), "reflexive", args = t)
+        prf.add_item("C", th, "beta_conv_rhs", prevs = ["S1"])
 
         self.assertEqual(thy.check_proof(prf), th)
 
@@ -257,11 +257,11 @@ class TheoryTest(unittest.TestCase):
         th3 = Thm.combination(th1, th2)  # id x = (%x. x) x
         th4 = Thm.beta_conv(Comb(id_def, x))  # (%x. x) x = x
         th5 = Thm.transitive(th3, th4)  # id x = x
-        prf.add_item("S1", th1, "theorem", "id_def", None)
-        prf.add_item("S2", th2, "reflexive", x, None)
-        prf.add_item("S3", th3, "combination", None, ["S1", "S2"])
-        prf.add_item("S4", th4, "beta_conv", Comb(id_def, x), None)
-        prf.add_item("C", th5, "transitive", None, ["S3", "S4"])
+        prf.add_item("S1", th1, "theorem", args = "id_def")
+        prf.add_item("S2", th2, "reflexive", args = x)
+        prf.add_item("S3", th3, "combination", prevs = ["S1", "S2"])
+        prf.add_item("S4", th4, "beta_conv", args = Comb(id_def, x))
+        prf.add_item("C", th5, "transitive", prevs = ["S3", "S4"])
 
         thy_ext.add_extension(Extension.Constant("id", id_def))
         thy_ext.add_extension(Extension.Theorem("id.simps", th5, prf))
