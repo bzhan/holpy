@@ -9,6 +9,17 @@ from kernel.report import *
 Ta = TVar("a")
 x = Var("x", Ta)
 
+class ProofReportTest(unittest.TestCase):
+    def testStepCount(self):
+        rpt = ProofReport()
+        self.assertEqual(rpt.count_steps, True)
+        self.assertEqual(rpt.get_step_count(), 0)
+        rpt.incr_step_count()
+        self.assertEqual(rpt.get_step_count(), 1)
+        rpt.count_steps = False
+        rpt.incr_step_count()
+        self.assertEqual(rpt.get_step_count(), 1)
+
 class ExtensionReportTest(unittest.TestCase):
     def testPrintExtensionReport(self):
         ext_report = ExtensionReport()

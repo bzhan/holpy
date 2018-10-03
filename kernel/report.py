@@ -3,6 +3,30 @@
 import abc
 from kernel.thm import *
 
+class ProofReport(abc.ABC):
+    """A report of proof checking. This contains:
+
+    steps -- number of primitive steps taken to check the proof.
+    Each base derivation and each unexpanded macro counts as one step.
+
+    """
+    def __init__(self):
+        self.count_steps = True
+        self.step_count = 0
+
+    def __str__(self):
+        return "Steps: " + str(self.step_count)
+
+    def __repr__(self):
+        return str(self)
+
+    def incr_step_count(self):
+        if self.count_steps:
+            self.step_count += 1
+
+    def get_step_count(self):
+        return self.step_count
+
 class ExtensionReport(abc.ABC):
     """A report of a theory extension. This contains:
 

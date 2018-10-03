@@ -40,7 +40,8 @@ def beta_conv_rhs_expand(depth, ids, th):
 beta_conv_rhs_macro = ProofMacro(
     "Reduce the right side of th by beta-conversion.",
     beta_conv_rhs_eval,
-    beta_conv_rhs_expand
+    beta_conv_rhs_expand,
+    level = 1
 )
 
 class TheoryTest(unittest.TestCase):
@@ -108,7 +109,9 @@ class TheoryTest(unittest.TestCase):
         prf = Proof(A_to_B, A)
         prf.add_item("C", th, "implies_elim", prevs = ["A1", "A2"])
 
-        self.assertEqual(thy.check_proof(prf), th)
+        rpt = report.ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.get_step_count(), 3)
 
     def testCheckProof2(self):
         """Proof of |- A --> A."""
@@ -116,7 +119,9 @@ class TheoryTest(unittest.TestCase):
         prf = Proof(A)
         prf.add_item("C", th, "implies_intr", args = A, prevs = ["A1"])
 
-        self.assertEqual(thy.check_proof(prf), th)
+        rpt = report.ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.get_step_count(), 2)
 
     def testCheckProof3(self):
         """Proof of [x = y, y = z] |- f z = f x."""
@@ -129,7 +134,9 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("S3", Thm.mk_equals(f,f), "reflexive", args = f)
         prf.add_item("C", th, "combination", prevs = ["S3", "S2"])
 
-        self.assertEqual(thy.check_proof(prf), th)
+        rpt = report.ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.get_step_count(), 6)
 
     def testCheckProof4(self):
         """Proof of |- x = y --> x = y by instantiating an existing theorem."""
@@ -142,7 +149,9 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("S1", Thm([], Term.mk_implies(A,A)), "theorem", args = "trivial")
         prf.add_item("C", th, "substitution", args = {"A" : x_eq_y}, prevs = ["S1"])
 
-        self.assertEqual(thy.check_proof(prf), th)
+        rpt = report.ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.get_step_count(), 2)
 
     def testCheckProof5(self):
         """Empty instantiation."""
@@ -155,7 +164,9 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("S1", th, "theorem", args = "trivial")
         prf.add_item("C", th, "substitution", args = {}, prevs = ["S1"])
 
-        self.assertEqual(thy.check_proof(prf), th)
+        rpt = report.ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.get_step_count(), 2)
 
     def testCheckProofFail(self):
         """Previous item not found."""
@@ -223,7 +234,16 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("S1", Thm.mk_equals(t,t), "reflexive", args = t)
         prf.add_item("C", th, "beta_conv_rhs", prevs = ["S1"])
 
-        self.assertEqual(thy.check_proof(prf), th)
+        # Check proof without trusting beta_conv_rhs
+        rpt = report.ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.get_step_count(), 3)
+
+        # Check proof while trusting beta_conv_rhs
+        rpt = report.ProofReport()
+        thy.check_level = 1
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.get_step_count(), 2)
 
     def testUncheckedExtend(self):
         """Unchecked extension."""

@@ -125,6 +125,7 @@ class ConvTest(unittest.TestCase):
 
     def testLargeSum(self):
         thy = BasicTheory()
+        thy.check_level = 1
 
         # Setup a theory containing nat, 0, 1, f, g, +.
         thy.add_type_sig("nat", 0)

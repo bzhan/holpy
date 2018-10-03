@@ -6,7 +6,7 @@ from kernel.term import *
 from kernel.thm import *
 from kernel.macro import *
 from kernel.extension import *
-from kernel.report import *
+import kernel.report as report
 
 class TheoryException(Exception):
     pass
@@ -23,9 +23,15 @@ class Theory(abc.ABC):
     strings indicating the type of the data. The values are the dictionary
     for that type of data.
 
+    The theory also contains parameters for proof checking:
+
+    check_level -- trust level for the proof checking. Trust all macros
+    with macro.level <= self.check_level.
+
     """
     def __init__(self):
         self.data = dict()
+        self.check_level = 0
 
     def add_data_type(self, name):
         """Add a new data type."""
@@ -170,21 +176,13 @@ class Theory(abc.ABC):
         else:
             raise UnknownTermException()
 
-    def get_check_level(self):
-        """Returns the trust level for the proof checking. Trust all macros
-        with macro.level <= self.check_level.
-
-        """
-        if hasattr(self, "check_level"):
-            return self.check_level
-        else:
-            return 0
-
-    def _check_proof_item(self, depth, seq_dict, seq):
+    def _check_proof_item(self, depth, seq_dict, seq, rpt):
         """Check a single proof item.
         
         depth -- depth in macro expansion.
         seq_dict -- dictionary of existing sequents.
+        seq -- proof item to be checked.
+        rpt -- report for proof-checking. Modified by the function.
         
         """
         # First, check the current statement is correctly typed.
@@ -197,6 +195,8 @@ class Theory(abc.ABC):
             # Copies an existing theorem in the theory into the proof.
             try:
                 res_th = self.get_theorem(seq.args)
+                if rpt is not None:
+                    rpt.incr_step_count()
             except TheoryException:
                 raise CheckProofException("theorem not found")
         else:
@@ -222,6 +222,8 @@ class Theory(abc.ABC):
                 rule_fun = base_deriv[seq.rule]
                 try:
                     res_th = rule_fun(*prev_ths, *args)
+                    if rpt is not None:
+                        rpt.incr_step_count()
                 except InvalidDerivationException:
                     raise CheckProofException("invalid derivation")
                 except TypeError:
@@ -233,11 +235,13 @@ class Theory(abc.ABC):
                 # trust level, simply evaluate the macro to check that results
                 # match. Otherwise, expand the macro and check all of the steps.
                 macro = self.get_proof_macro(seq.rule)
-                if macro.level <= self.get_check_level():
+                if macro.level <= self.check_level:
                     res_th = macro.eval(*prev_ths, *args)
+                    if rpt is not None:
+                        rpt.incr_step_count()
                 else:
                     prf = macro.expand(depth+1, seq.prevs, *prev_ths, *args)
-                    res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf)
+                    res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt)
             else:
                 raise CheckProofException("proof method not found")
 
@@ -247,24 +251,28 @@ class Theory(abc.ABC):
         seq_dict[seq.id] = seq.th
         return None
 
-    def check_proof_incr(self, depth, seq_dict, prf):
+    def check_proof_incr(self, depth, seq_dict, prf, rpt = None):
         """Incremental version of check_proof.
         
         depth -- depth in macro expansion.
-        
         seq_dict -- dictionary of existing sequents.
+        prf -- proof to be checked.
+        rpt -- report for proof-checking. Modified by the function.
         
         """
         for seq in prf.get_items():
-            self._check_proof_item(depth, seq_dict, seq)
+            self._check_proof_item(depth, seq_dict, seq, rpt)
         return prf.get_thm()
 
-    def check_proof(self, prf):
+    def check_proof(self, prf, rpt = None):
         """Verify the given proof object. Returns the final theorem if check
         passes. Otherwise throws CheckProofException.
+
+        prf -- proof to be checked.
+        rpt -- report for proof-checking. Modified by the function.
         
         """
-        return self.check_proof_incr(0, dict(), prf)
+        return self.check_proof_incr(0, dict(), prf, rpt)
 
     def extend_axiom_constant(self, ext):
         assert ext.ty == Extension.AX_CONSTANT, "extend_axiom_constant"
@@ -292,7 +300,7 @@ class Theory(abc.ABC):
 
     def checked_extend(self, thy_ext):
         """Perform the given extension, checking all proofs."""
-        ext_report = ExtensionReport()
+        ext_report = report.ExtensionReport()
 
         for ext in thy_ext.get_extensions():
             if ext.ty == Extension.AX_CONSTANT:

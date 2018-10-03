@@ -22,7 +22,8 @@ def arg_combination_expand(depth, ids, th, f):
 arg_combination_macro = ProofMacro(
     "Given theorem x = y and term f, return f x = f y.",
     arg_combination_eval,
-    arg_combination_expand
+    arg_combination_expand,
+    level = 1
 )
 
 def fun_combination_eval(th, f):
@@ -42,7 +43,8 @@ def fun_combination_expand(depth, ids, th, f):
 fun_combination_macro = ProofMacro(
     "Given theorem f = g and term x, return f x = g x.",
     fun_combination_eval,
-    fun_combination_expand
+    fun_combination_expand,
+    level = 1
 )
 
 def BasicTheory():
