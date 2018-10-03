@@ -178,36 +178,53 @@ class Term(abc.ABC):
         t.n = n
         return t
 
-    def subst_type(self, subst):
+    def _is_open(self, n):
+        """Helper function for is_open."""
+        if self.ty == Term.VAR or self.ty == Term.CONST:
+            return False
+        elif self.ty == Term.COMB:
+            return self.fun._is_open(n) or self.arg._is_open(n)
+        elif self.ty == Term.ABS:
+            return self.body._is_open(n+1)
+        elif self.ty == Term.BOUND:
+            return self.n >= n
+        else:
+            raise UnknownTermException()
+
+    def is_open(self):
+        """Whether t is an open term."""
+        return self._is_open(0)
+
+    def subst_type(self, tyinst):
         """Perform substitution on type variables."""
         if self.ty == Term.VAR:
-            return Var(self.name, self.T.subst(subst))
+            return Var(self.name, self.T.subst(tyinst))
         elif self.ty == Term.CONST:
-            return Const(self.name, self.T.subst(subst))
+            return Const(self.name, self.T.subst(tyinst))
         elif self.ty == Term.COMB:
-            return Comb(self.fun.subst_type(subst), self.arg.subst_type(subst))
+            return Comb(self.fun.subst_type(tyinst), self.arg.subst_type(tyinst))
         elif self.ty == Term.ABS:
-            return Abs(self.var_name, self.T.subst(subst), self.body.subst_type(subst))
+            return Abs(self.var_name, self.T.subst(tyinst), self.body.subst_type(tyinst))
         elif self.ty == Term.BOUND:
             return self
         else:
             raise UnknownTermException()
 
-    def subst(self, subst):
+    def subst(self, inst):
         """Perform substitution on term variables.
 
-        Here subst must be a dictionary mapping from variable names to the
+        Here inst must be a dictionary mapping from variable names to the
         substituted term. The type of the substituted term must match *exactly*
         the type of the variable. If substitution on types is needed, it should
         be performed before calling subst.
 
         """
-        assert isinstance(subst, dict), "subst must be a dictionary"
+        assert isinstance(inst, dict), "inst must be a dictionary"
         if self.ty == Term.VAR:
-            if self.name in subst:
-                t = subst[self.name]
+            if self.name in inst:
+                t = inst[self.name]
                 if t.get_type() == self.T:
-                    return subst[self.name]
+                    return inst[self.name]
                 else:
                     raise TermSubstitutionException()
             else:
@@ -215,9 +232,9 @@ class Term(abc.ABC):
         elif self.ty == Term.CONST:
             return self
         elif self.ty == Term.COMB:
-            return Comb(self.fun.subst(subst), self.arg.subst(subst))
+            return Comb(self.fun.subst(inst), self.arg.subst(inst))
         elif self.ty == Term.ABS:
-            return Abs(self.var_name, self.T, self.body.subst(subst))
+            return Abs(self.var_name, self.T, self.body.subst(inst))
         elif self.ty == Term.BOUND:
             return self
         else:

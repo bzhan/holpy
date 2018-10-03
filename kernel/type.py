@@ -68,20 +68,20 @@ class HOLType(abc.ABC):
         else:
             raise UnknownTypeException()
 
-    def subst(self, subst):
-        """Given a dictionary subst mapping from names to types,
+    def subst(self, tyinst):
+        """Given a dictionary tyinst mapping from names to types,
         simultaneously substitute for the type variables using the
         dictionary.
 
         """
-        assert isinstance(subst, dict), "subst must be a dictionary"
+        assert isinstance(tyinst, dict), "tyinst must be a dictionary"
         if self.ty == HOLType.VAR:
-            if self.name in subst:
-                return subst[self.name]
+            if self.name in tyinst:
+                return tyinst[self.name]
             else:
                 return self
         elif self.ty == HOLType.COMB:
-            return Type(self.name, [T.subst(subst) for T in self.args])
+            return Type(self.name, [T.subst(tyinst) for T in self.args])
         else:
             raise UnknownTypeException()
 
@@ -105,23 +105,23 @@ class HOLType(abc.ABC):
     def TFun(arg1, arg2):
         return Type("fun", [arg1, arg2])
 
-    def match_incr(self, T, subst):
-        """Incremental match. Here subst is the dictionary of partial
-        matchings. This is updated by the matching process.
+    def match_incr(self, T, tyinst):
+        """Incremental match. Here tyinst is the current instantiation.
+        This is updated by the function.
 
         """
         if self.ty == HOLType.VAR:
-            if self.name in subst:
-                if T != subst[self.name]:
+            if self.name in tyinst:
+                if T != tyinst[self.name]:
                     raise TypeMatchException()
             else:
-                subst[self.name] = T
+                tyinst[self.name] = T
         elif self.ty == HOLType.COMB:
             if T.ty != HOLType.COMB or T.name != self.name:
                 raise TypeMatchException()
             else:
                 for (arg, argT) in zip(self.args, T.args):
-                    arg.match_incr(argT, subst)
+                    arg.match_incr(argT, tyinst)
         else:
             raise UnknownTypeException()
 
@@ -130,9 +130,9 @@ class HOLType(abc.ABC):
         match, or raise TypeMatchException.
 
         """
-        subst = dict()
-        self.match_incr(T, subst)
-        return subst
+        tyinst = dict()
+        self.match_incr(T, tyinst)
+        return tyinst
 
 TVar = HOLType.TVar
 Type = HOLType.Type

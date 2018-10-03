@@ -83,6 +83,22 @@ class TermTest(unittest.TestCase):
         for (t, T) in test_data:
             self.assertEqual(t.get_type(), T)
 
+    def testIsOpen(self):
+        test_data = [
+            (a, False),
+            (Comb(f, a), False),
+            (B0, True),
+            (Comb(f, B0), True),
+            (Abs("x", Ta, B0), False),
+            (Abs("x", Ta, B1), True),
+            (Abs("x", Ta, Abs("y", Ta, B0)), False),
+            (Abs("x", Ta, Abs("y", Ta, B1)), False),
+            (Abs("x", Ta, Abs("y", Ta, Bound(2))), True),
+        ]
+
+        for (t, res) in test_data:
+            self.assertEqual(t.is_open(), res)
+
     def testSubstType(self):
         test_data = [
             (a, {"a" : Tb}, Var("a", Tb)),
@@ -92,8 +108,8 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, a), {"a" : Tb}, Abs("x", Tb, Var("a", Tb))),
         ]
 
-        for (t, subst, res) in test_data:
-            self.assertEqual(t.subst_type(subst), res)
+        for (t, tyinst, res) in test_data:
+            self.assertEqual(t.subst_type(tyinst), res)
 
     def testSubst(self):
         test_data = [
@@ -104,8 +120,8 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, a), {"a" : c}, Abs("x", Ta, c)),
         ]
 
-        for (t, subst, res) in test_data:
-            self.assertEqual(t.subst(subst), res)
+        for (t, inst, res) in test_data:
+            self.assertEqual(t.subst(inst), res)
 
     def testSubstFail(self):
         self.assertRaises(TermSubstitutionException, a.subst, {"a" : b})
@@ -119,8 +135,8 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, Abs("y", Tb, Comb(Comb(f2, B1), B0))), c, Abs("y", Tb, Comb(Comb(f2, c), B0))),
         ]
 
-        for (t, subst, res) in test_data:
-            self.assertEqual(t.subst_bound(subst), res)
+        for (t, s, res) in test_data:
+            self.assertEqual(t.subst_bound(s), res)
 
     def testSubstBoundFail(self):
         t = Abs("x", Ta, B0)

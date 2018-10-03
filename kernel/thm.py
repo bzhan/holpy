@@ -183,7 +183,7 @@ class Thm(abc.ABC):
             raise InvalidDerivationException()
 
     @staticmethod
-    def subst_type(th, subst):
+    def subst_type(th, tyinst):
         """Derivation rule SUBST_TYPE:
 
         Perform substitution on the type variables.
@@ -193,12 +193,12 @@ class Thm(abc.ABC):
         A[s] |- B[s]  where s is substitution on types
 
         """
-        assums_new = [assum.subst_type(subst) for assum in th.assums]
-        concl_new = th.concl.subst_type(subst)
+        assums_new = [assum.subst_type(tyinst) for assum in th.assums]
+        concl_new = th.concl.subst_type(tyinst)
         return Thm(assums_new, concl_new)
 
     @staticmethod
-    def substitution(th, subst):
+    def substitution(th, inst):
         """Derivation rule SUBSTITUTION:
 
         Perform substitution on the term variables.
@@ -209,8 +209,8 @@ class Thm(abc.ABC):
 
         """
         try:
-            assums_new = [assum.subst(subst) for assum in th.assums]
-            concl_new = th.concl.subst(subst)
+            assums_new = [assum.subst(inst) for assum in th.assums]
+            concl_new = th.concl.subst(inst)
         except TermSubstitutionException:
             raise InvalidDerivationException()
         return Thm(assums_new, concl_new)
