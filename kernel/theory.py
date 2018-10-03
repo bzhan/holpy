@@ -6,6 +6,7 @@ from kernel.term import *
 from kernel.thm import *
 from kernel.macro import *
 from kernel.extension import *
+from kernel.report import *
 
 class TheoryException(Exception):
     pass
