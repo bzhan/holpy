@@ -52,12 +52,16 @@ class Thm(abc.ABC):
     def mk_equals(x, y):
         return Thm([], Term.mk_equals(x, y))
 
+    def is_reflexive(self):
+        return self.concl.is_equals() and self.concl.dest_arg1() == self.concl.dest_arg()
+
     @staticmethod
     def assume(A):
         """Derivation rule ASSUME:
 
         A |- A
         """
+        assert isinstance(A, Term), "Thm.assume"
         return Thm([A], A)
     
     @staticmethod

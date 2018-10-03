@@ -40,6 +40,16 @@ class ProofTerm(abc.ABC):
         return ProofTerm(Thm.combination(pt1.th, pt2.th), "combination", None, [pt1, pt2])
 
     @staticmethod
+    def arg_combination(pt, f):
+        """Given x = y and term f, return f x = f y."""
+        return ProofTerm(Thm.combination(Thm.reflexive(f), pt.th), "arg_combination", f, [pt])
+
+    @staticmethod
+    def fun_combination(pt, f):
+        """Given f = g and term x, return f x = g x."""
+        return ProofTerm(Thm.combination(pt.th, Thm.reflexive(f)), "fun_combination", f, [pt])
+
+    @staticmethod
     def substitution(pt, inst):
         return ProofTerm(Thm.substitution(pt.th, inst), "substitution", inst, [pt])
 

@@ -32,10 +32,10 @@ def beta_conv_rhs_expand(id, ids, th):
 
     th1 = Thm.beta_conv(rhs)
     th2 = Thm.transitive(th, th1)
-    prf = [
+    return [
         ProofItem(id + ".S1", th1, "beta_conv", args = rhs),
-        ProofItem("C", th2, "transitive", prevs = [ids[0], id + ".S1"])]
-    return prf
+        ProofItem("C", th2, "transitive", prevs = [ids[0], id + ".S1"])
+    ]
 
 beta_conv_rhs_macro = ProofMacro(
     "Reduce the right side of th by beta-conversion.",

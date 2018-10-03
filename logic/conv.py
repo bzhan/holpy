@@ -57,7 +57,16 @@ class combination_conv(Conv):
     def get_proof_term(self, t):
         if t.ty != Term.COMB:
             raise ConvException()
-        return ProofTerm.combination(self.cv1.get_proof_term(t.fun), self.cv2.get_proof_term(t.arg))
+        pt1 = self.cv1.get_proof_term(t.fun)
+        pt2 = self.cv2.get_proof_term(t.arg)
+
+        # Obtain some savings if one of pt1 and pt2 is reflexivity:
+        if pt1.th.is_reflexive():
+            return ProofTerm.arg_combination(pt2, pt1.th.concl.arg)
+        elif pt2.th.is_reflexive():
+            return ProofTerm.fun_combination(pt1, pt2.th.concl.arg)
+        else:
+            return ProofTerm.combination(pt1, pt2)
 
 class then_conv(Conv):
     """Applies cv1, followed by cv2."""
@@ -78,10 +87,9 @@ class then_conv(Conv):
         pt2 = self.cv2.get_proof_term(t2)
         
         # Obtain some savings if one of pt1 and pt2 is reflexivity:
-        (_, t3) = pt2.th.concl.dest_binop()
-        if t == t2:
+        if pt1.th.is_reflexive():
             return pt2
-        elif t2 == t3:
+        elif pt2.th.is_reflexive():
             return pt1
         else:
             return ProofTerm.transitive(pt1, pt2)
@@ -197,4 +205,8 @@ class rewr_conv(Conv):
         except MatchException:
             raise ConvException()
 
-        return ProofTerm.substitution(ProofTerm.theorem(self.th_name, self.th), inst)
+        if inst:
+            return ProofTerm.substitution(ProofTerm.theorem(self.th_name, self.th), inst)
+        else:
+            return ProofTerm.theorem(self.th_name, self.th)
+

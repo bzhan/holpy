@@ -3,9 +3,10 @@
 import unittest
 from kernel.term import *
 from kernel.theory import *
+from logic.basic import *
 from logic.conv import *
 
-thy = Theory.EmptyTheory()
+thy = BasicTheory()
 Ta = TVar("a")
 Tf = TFun(Ta,TFun(Ta,Ta))
 
@@ -35,7 +36,7 @@ class ConvTest(unittest.TestCase):
         self.assertEqual(cv.eval(x), Thm.reflexive(x))
 
     def testRewrConv(self):
-        thy = Theory.EmptyTheory()
+        thy = BasicTheory()
 
         # Setup a theory containing nat, 0, 1, f, g, +.
         thy.add_type_sig("nat", 0)
@@ -83,7 +84,7 @@ class ConvTest(unittest.TestCase):
         res_th = Thm.mk_equals(t, res)
         self.assertEqual(cv.eval(t), res_th)
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(prf.get_num_item(), 6)
+        self.assertEqual(prf.get_num_item(), 5)
         self.assertEqual(thy.check_proof(prf), res_th)
 
     def testBottomBetaConv(self):
@@ -93,7 +94,7 @@ class ConvTest(unittest.TestCase):
         res_th = Thm.mk_equals(t, res)
         self.assertEqual(cv.eval(t), res_th)
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(prf.get_num_item(), 5)
+        self.assertEqual(prf.get_num_item(), 4)
         self.assertEqual(thy.check_proof(prf), res_th)
 
     def testTopBetaConvLarge(self):
@@ -106,7 +107,7 @@ class ConvTest(unittest.TestCase):
             res = Comb2(f, res, res)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
-        self.assertEqual(prf.get_num_item(), 30)
+        self.assertEqual(prf.get_num_item(), 29)
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
     def testBottomBetaConvLarge(self):
@@ -119,11 +120,11 @@ class ConvTest(unittest.TestCase):
             res = Comb2(f, res, res)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
-        self.assertEqual(prf.get_num_item(), 23)
+        self.assertEqual(prf.get_num_item(), 22)
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
     def testLargeSum(self):
-        thy = Theory.EmptyTheory()
+        thy = BasicTheory()
 
         # Setup a theory containing nat, 0, 1, f, g, +.
         thy.add_type_sig("nat", 0)
