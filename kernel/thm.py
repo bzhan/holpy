@@ -145,7 +145,11 @@ class Thm(abc.ABC):
         if th1.concl.is_equals() and th2.concl.is_equals():
             (f, g) = th1.concl.dest_binop()
             (x, y) = th2.concl.dest_binop()
-            return Thm(th1.assums.union(th2.assums), Term.mk_equals(Comb(f,x), Comb(g,y)))
+            Tf = f.get_type()
+            if Tf.is_fun() and Tf.domain_type() == x.get_type():
+                return Thm(th1.assums.union(th2.assums), Term.mk_equals(Comb(f,x), Comb(g,y)))
+            else:
+                raise InvalidDerivationException()
         else:
             raise InvalidDerivationException()
 

@@ -9,14 +9,14 @@ def arg_combination_eval(th, f):
     assert th.concl.is_equals(), "arg_combination"
     return Thm.combination(Thm.reflexive(f), th)
 
-def arg_combination_expand(id, ids, th, f):
+def arg_combination_expand(depth, ids, th, f):
     assert th.concl.is_equals(), "arg_combination"
 
     th1 = Thm.reflexive(f)
     th2 = Thm.combination(th1, th)
     return [
-        ProofItem(id + ".S1", th1, "reflexive", args = f),
-        ProofItem("C", th2, "combination", prevs = [id + ".S1", ids[0]])
+        ProofItem((depth, "S1"), th1, "reflexive", args = f),
+        ProofItem("C", th2, "combination", prevs = [(depth, "S1"), ids[0]])
     ]
 
 arg_combination_macro = ProofMacro(
@@ -29,14 +29,14 @@ def fun_combination_eval(th, f):
     assert th.concl.is_equals(), "fun_combination"
     return Thm.combination(th, Thm.reflexive(f))
 
-def fun_combination_expand(id, ids, th, f):
+def fun_combination_expand(depth, ids, th, f):
     assert th.concl.is_equals(), "fun_combination"
 
     th1 = Thm.reflexive(f)
     th2 = Thm.combination(th, th1)
     return [
-        ProofItem(id + ".S1", th1, "reflexive", args = f),
-        ProofItem("C", th2, "combination", prevs = [ids[0], id + ".S1"])
+        ProofItem((depth, "S1"), th1, "reflexive", args = f),
+        ProofItem("C", th2, "combination", prevs = [ids[0], (depth, "S1")])
     ]
 
 fun_combination_macro = ProofMacro(

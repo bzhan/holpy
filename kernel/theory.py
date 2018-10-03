@@ -179,9 +179,11 @@ class Theory(abc.ABC):
         else:
             return 0
 
-    def _check_proof_item(self, seq_dict, seq):
-        """Check a single proof item. seq_dict is the dictionary of existing
-        sequents.
+    def _check_proof_item(self, depth, seq_dict, seq):
+        """Check a single proof item.
+        
+        depth -- depth in macro expansion.
+        seq_dict -- dictionary of existing sequents.
         
         """
         # First, check the current statement is correctly typed.
@@ -233,32 +235,35 @@ class Theory(abc.ABC):
                 if macro.level <= self.get_check_level():
                     res_th = macro.eval(*prev_ths, *args)
                 else:
-                    seqs = macro.expand(seq.id, seq.prevs, *prev_ths, *args)
+                    seqs = macro.expand(depth+1, seq.prevs, *prev_ths, *args)
                     seq_dict_copy = seq_dict.copy()
-                    self._check_proof_items(seq_dict_copy, seqs)
+                    self._check_proof_items(depth+1, seq_dict_copy, seqs)
                     res_th = seqs[-1].th
             else:
                 raise CheckProofException("proof method not found")
 
         if seq.th != res_th:
-            raise CheckProofException("output does not match")
+            raise CheckProofException("output does not match\n" + str(seq.th) + "\n vs.\n" + str(res_th))
 
         seq_dict[seq.id] = seq.th
 
-    def _check_proof_items(self, seq_dict, seqs):
-        """Check a sequence of proof items. seq_dict is the dictionary
-        of existing sequents.
+    def _check_proof_items(self, depth, seq_dict, seqs):
+        """Check a sequence of proof items.
+        
+        depth -- depth in macro expansion.
+        
+        seq_dict -- dictionary of existing sequents.
         
         """
         for seq in seqs:
-            self._check_proof_item(seq_dict, seq)
+            self._check_proof_item(depth, seq_dict, seq)
 
     def check_proof(self, prf):
         """Verify the given proof object. Returns the final theorem if check
         passes. Otherwise throws CheckProofException.
         
         """
-        self._check_proof_items(dict(), prf.get_items())
+        self._check_proof_items(0, dict(), prf.get_items())
         return prf.get_thm()
 
     def extend_axiom_constant(self, ext):
