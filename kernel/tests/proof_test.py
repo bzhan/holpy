@@ -1,9 +1,10 @@
 # Author: Bohua Zhan
 
 import unittest
-from kernel.term import *
-from kernel.thm import *
-from kernel.proof import *
+from kernel.type import hol_bool
+from kernel.term import Term, Var
+from kernel.thm import Thm
+from kernel.proof import Proof
 
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)

@@ -1,7 +1,8 @@
 # Author: Bohua Zhan
 
 import abc
-from kernel.thm import *
+from kernel.type import HOLType
+from kernel.thm import Thm
 
 class ProofReport(abc.ABC):
     """A report of proof checking. This contains:

@@ -1,8 +1,8 @@
 # Author: Bohua Zhan
 
 import abc
-from kernel.type import *
-from kernel.term import *
+from kernel.type import Type, hol_bool
+from kernel.term import Term, Var, Comb, TermSubstitutionException, TypeCheckException
 
 class InvalidDerivationException(Exception):
     pass

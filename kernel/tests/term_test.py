@@ -1,8 +1,8 @@
 # Author: Bohua Zhan
 
 import unittest
-from kernel.type import *
-from kernel.term import *
+from kernel.type import TVar, Type, TFun
+from kernel.term import Var, Const, Comb, Abs, Bound, TermSubstitutionException, TypeCheckException
 
 Ta = TVar("a")
 Tb = TVar("b")

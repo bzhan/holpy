@@ -1,12 +1,12 @@
 # Author: Bohua Zhan
 
 import abc
-from kernel.type import *
-from kernel.term import *
-from kernel.thm import *
-from kernel.macro import *
-from kernel.extension import *
-import kernel.report as report
+from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
+from kernel.term import Term, TypeCheckException
+from kernel.thm import Thm, base_deriv, InvalidDerivationException
+from kernel.macro import ProofMacro
+from kernel.extension import Extension
+from kernel.report import ExtensionReport
 
 class TheoryException(Exception):
     pass
@@ -300,7 +300,7 @@ class Theory(abc.ABC):
 
     def checked_extend(self, thy_ext):
         """Perform the given extension, checking all proofs."""
-        ext_report = report.ExtensionReport()
+        ext_report = ExtensionReport()
 
         for ext in thy_ext.get_extensions():
             if ext.ty == Extension.AX_CONSTANT:

@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 import abc
-from kernel.thm import *
+from kernel.thm import Thm
 
 class ProofException(Exception):
     pass

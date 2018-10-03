@@ -2,7 +2,7 @@
 
 import abc
 from enum import Enum
-from kernel.type import *
+from kernel.type import TFun, hol_bool
 
 class UnknownTermException(Exception):
     pass

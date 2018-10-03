@@ -4,6 +4,7 @@ import abc
 from kernel.thm import *
 from kernel.proof import *
 from kernel.theory import *
+from kernel.macro import ProofMacro
 
 def arg_combination_eval(th, f):
     assert th.concl.is_equals(), "arg_combination"

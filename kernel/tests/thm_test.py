@@ -1,9 +1,9 @@
 # Author: Bohua Zhan
 
 import unittest
-from kernel.type import *
-from kernel.term import *
-from kernel.thm import *
+from kernel.type import TVar, TFun, hol_bool
+from kernel.term import Term, Var, Comb, Abs, Bound, TypeCheckException
+from kernel.thm import Thm, InvalidDerivationException
 
 Ta = TVar("a")
 Tb = TVar("b")

@@ -1,10 +1,10 @@
 # Author: Bohua Zhan
 
 import unittest
-from kernel.type import *
-from kernel.term import *
-from kernel.thm import *
-from kernel.report import *
+from kernel.type import TVar, TFun
+from kernel.term import Term, Var, Const, Comb
+from kernel.thm import Thm
+from kernel.report import ProofReport, ExtensionReport
 
 Ta = TVar("a")
 x = Var("x", Ta)

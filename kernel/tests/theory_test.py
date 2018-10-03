@@ -1,10 +1,14 @@
 # Author: Bohua Zhan
 
 import unittest
-from kernel.thm import *
-from kernel.proof import *
-from kernel.macro import *
-from kernel.theory import *
+from kernel.type import Type, TVar, TFun, hol_bool
+from kernel.term import Term, Var, Const, Comb, Abs, Bound
+from kernel.thm import Thm
+from kernel.proof import Proof
+from kernel.macro import ProofMacro
+from kernel.theory import Theory, TheoryException, CheckProofException
+from kernel.extension import Extension, TheoryExtension
+from kernel.report import ProofReport
 
 thy = Theory.EmptyTheory()
 
@@ -109,7 +113,7 @@ class TheoryTest(unittest.TestCase):
         prf = Proof(A_to_B, A)
         prf.add_item("C", th, "implies_elim", prevs = ["A1", "A2"])
 
-        rpt = report.ProofReport()
+        rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.get_step_count(), 3)
 
@@ -119,7 +123,7 @@ class TheoryTest(unittest.TestCase):
         prf = Proof(A)
         prf.add_item("C", th, "implies_intr", args = A, prevs = ["A1"])
 
-        rpt = report.ProofReport()
+        rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.get_step_count(), 2)
 
@@ -134,7 +138,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("S3", Thm.mk_equals(f,f), "reflexive", args = f)
         prf.add_item("C", th, "combination", prevs = ["S3", "S2"])
 
-        rpt = report.ProofReport()
+        rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.get_step_count(), 6)
 
@@ -149,7 +153,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("S1", Thm([], Term.mk_implies(A,A)), "theorem", args = "trivial")
         prf.add_item("C", th, "substitution", args = {"A" : x_eq_y}, prevs = ["S1"])
 
-        rpt = report.ProofReport()
+        rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.get_step_count(), 2)
 
@@ -164,7 +168,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("S1", th, "theorem", args = "trivial")
         prf.add_item("C", th, "substitution", args = {}, prevs = ["S1"])
 
-        rpt = report.ProofReport()
+        rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.get_step_count(), 2)
 
@@ -235,12 +239,12 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("C", th, "beta_conv_rhs", prevs = ["S1"])
 
         # Check proof without trusting beta_conv_rhs
-        rpt = report.ProofReport()
+        rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.get_step_count(), 3)
 
         # Check proof while trusting beta_conv_rhs
-        rpt = report.ProofReport()
+        rpt = ProofReport()
         thy.check_level = 1
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.get_step_count(), 2)
