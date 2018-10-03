@@ -10,23 +10,62 @@ class ProofReport(abc.ABC):
     steps -- number of primitive steps taken to check the proof.
     Each base derivation and each unexpanded macro counts as one step.
 
+    thm_steps -- number of invocation of existing theorems (counting
+    multiplicity).
+
+    base_steps -- number of invocations of base derivation.
+
+    macro_steps -- number of invocations of macros.
+
+    th_names -- name of set of theorems used.
+
+    macros_eval -- name of set of macros evaluated.
+
+    macros_expand -- name of set of macros expanded.
+
     """
     def __init__(self):
-        self.count_steps = True
-        self.step_count = 0
+        self.steps = 0
+        self.thm_steps = 0
+        self.base_steps = 0
+        self.macro_steps = 0
+        self.th_names = set()
+        self.macros_eval = set()
+        self.macros_expand = set()
 
     def __str__(self):
-        return "Steps: " + str(self.step_count)
+        return "\n".join([
+            "Steps: " + str(self.steps),
+            "  Theorems: " + str(self.thm_steps),
+            "  Base: " + str(self.base_steps),
+            "  Macro: " + str(self.macro_steps),
+            "Theorems applied: " + ",".join(self.th_names),
+            "Macros evaluated: " + ",".join(self.macros_eval),
+            "Macros expanded: " + ",".join(self.macros_expand)])
 
     def __repr__(self):
         return str(self)
 
-    def incr_step_count(self):
-        if self.count_steps:
-            self.step_count += 1
+    def apply_theorem(self, th_name):
+        self.steps += 1
+        self.thm_steps += 1
+        self.th_names.add(th_name)
 
-    def get_step_count(self):
-        return self.step_count
+    def apply_base_deriv(self):
+        self.steps += 1
+        self.base_steps += 1
+
+    def eval_macro(self, macro_name):
+        self.steps += 1
+        self.macro_steps += 1
+        self.macros_eval.add(macro_name)
+
+    def expand_macro(self, macro_name):
+        self.macros_expand.add(macro_name)
+
+    def steps_stat(self):
+        """Return the triple of thm_steps, base_steps, macro_steps."""
+        return (self.thm_steps, self.base_steps, self.macro_steps)
 
 class ExtensionReport(abc.ABC):
     """A report of a theory extension. This contains:

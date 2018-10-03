@@ -12,13 +12,18 @@ x = Var("x", Ta)
 class ProofReportTest(unittest.TestCase):
     def testStepCount(self):
         rpt = ProofReport()
-        self.assertEqual(rpt.count_steps, True)
-        self.assertEqual(rpt.get_step_count(), 0)
-        rpt.incr_step_count()
-        self.assertEqual(rpt.get_step_count(), 1)
-        rpt.count_steps = False
-        rpt.incr_step_count()
-        self.assertEqual(rpt.get_step_count(), 1)
+        self.assertEqual(rpt.steps, 0)
+        for i in range(10):
+            rpt.apply_base_deriv()
+        rpt.apply_theorem("th1")
+        rpt.apply_theorem("th2")
+        rpt.expand_macro("macro1")
+        rpt.eval_macro("macro2")
+        self.assertEqual(rpt.steps, 13)
+        self.assertEqual(rpt.steps_stat(), (2, 10, 1))
+        self.assertEqual(rpt.th_names, {"th1", "th2"})
+        self.assertEqual(rpt.macros_expand, {"macro1"})
+        self.assertEqual(rpt.macros_eval, {"macro2"})
 
 class ExtensionReportTest(unittest.TestCase):
     def testPrintExtensionReport(self):

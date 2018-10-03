@@ -196,7 +196,7 @@ class Theory(abc.ABC):
             try:
                 res_th = self.get_theorem(seq.args)
                 if rpt is not None:
-                    rpt.incr_step_count()
+                    rpt.apply_theorem(seq.args)
             except TheoryException:
                 raise CheckProofException("theorem not found")
         else:
@@ -223,7 +223,7 @@ class Theory(abc.ABC):
                 try:
                     res_th = rule_fun(*prev_ths, *args)
                     if rpt is not None:
-                        rpt.incr_step_count()
+                        rpt.apply_base_deriv()
                 except InvalidDerivationException:
                     raise CheckProofException("invalid derivation")
                 except TypeError:
@@ -238,9 +238,11 @@ class Theory(abc.ABC):
                 if macro.level <= self.check_level:
                     res_th = macro.eval(*prev_ths, *args)
                     if rpt is not None:
-                        rpt.incr_step_count()
+                        rpt.eval_macro(seq.rule)
                 else:
                     prf = macro.expand(depth+1, seq.prevs, *prev_ths, *args)
+                    if rpt is not None:
+                        rpt.expand_macro(seq.rule)
                     res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt)
             else:
                 raise CheckProofException("proof method not found")

@@ -115,7 +115,7 @@ class TheoryTest(unittest.TestCase):
 
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.get_step_count(), 3)
+        self.assertEqual(rpt.steps, 3)
 
     def testCheckProof2(self):
         """Proof of |- A --> A."""
@@ -125,7 +125,7 @@ class TheoryTest(unittest.TestCase):
 
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.get_step_count(), 2)
+        self.assertEqual(rpt.steps, 2)
 
     def testCheckProof3(self):
         """Proof of [x = y, y = z] |- f z = f x."""
@@ -140,7 +140,7 @@ class TheoryTest(unittest.TestCase):
 
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.get_step_count(), 6)
+        self.assertEqual(rpt.steps, 6)
 
     def testCheckProof4(self):
         """Proof of |- x = y --> x = y by instantiating an existing theorem."""
@@ -155,7 +155,7 @@ class TheoryTest(unittest.TestCase):
 
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.get_step_count(), 2)
+        self.assertEqual(rpt.steps, 2)
 
     def testCheckProof5(self):
         """Empty instantiation."""
@@ -170,7 +170,8 @@ class TheoryTest(unittest.TestCase):
 
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.get_step_count(), 2)
+        self.assertEqual(rpt.steps_stat(), (1, 1, 0))
+        self.assertEqual(rpt.th_names, {"trivial"})
 
     def testCheckProofFail(self):
         """Previous item not found."""
@@ -241,13 +242,15 @@ class TheoryTest(unittest.TestCase):
         # Check proof without trusting beta_conv_rhs
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.get_step_count(), 3)
+        self.assertEqual(rpt.steps_stat(), (0, 3, 0))
+        self.assertEqual(rpt.macros_expand, {"beta_conv_rhs"})
 
         # Check proof while trusting beta_conv_rhs
         rpt = ProofReport()
         thy.check_level = 1
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.get_step_count(), 2)
+        self.assertEqual(rpt.steps_stat(), (0, 1, 1))
+        self.assertEqual(rpt.macros_eval, {"beta_conv_rhs"})
 
     def testUncheckedExtend(self):
         """Unchecked extension."""
