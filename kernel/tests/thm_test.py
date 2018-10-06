@@ -102,7 +102,7 @@ class ThmTest(unittest.TestCase):
     def testCombination(self):
         th1 = Thm([A], Term.mk_equals(f,g))
         th2 = Thm([B], Term.mk_equals(x,y))
-        self.assertEqual(Thm.combination(th1, th2), Thm([A,B], Term.mk_equals(Comb(f,x),Comb(g,y))))
+        self.assertEqual(Thm.combination(th1, th2), Thm([A,B], Term.mk_equals(f(x),g(y))))
 
     def testCombinationFail(self):
         th1 = Thm.mk_equals(x,y)
@@ -189,7 +189,7 @@ class ThmTest(unittest.TestCase):
 
     def testAbstractOverFail3(self):
         th = Thm.mk_equals(x,y)
-        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, Comb(f,x))
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, f(x))
 
     def testAbstractOverFail4(self):
         th = Thm([], Term.mk_implies(x,y))

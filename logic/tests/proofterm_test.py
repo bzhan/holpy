@@ -13,7 +13,7 @@ Ta = TVar("a")
 x = Var("x", Ta)
 y = Var("y", Ta)
 z = Var("z", Ta)
-f = Var("f", TFun(Ta,TFun(Ta,Ta)))
+f = Var("f", TFun(Ta,Ta,Ta))
 
 class ProofTermTest(unittest.TestCase):
     def testExport(self):

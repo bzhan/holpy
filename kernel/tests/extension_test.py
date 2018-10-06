@@ -2,7 +2,7 @@
 
 import unittest
 from kernel.type import TVar, TFun
-from kernel.term import Term, Var, Const, Comb, Abs, Bound
+from kernel.term import Term, Var, Const, Abs, Bound
 from kernel.thm import Thm
 from kernel.extension import Extension, TheoryExtension
 
@@ -22,7 +22,7 @@ class ExtensionTest(unittest.TestCase):
 
         id_const = Const("id", TFun(Ta,Ta))
         id_def = Abs("x", Ta, Bound(0))
-        id_simps = Term.mk_equals(Comb(id_const,x), x)
+        id_simps = Term.mk_equals(id_const(x), x)
         
         thy_ext.add_extension(Extension.Constant("id", id_def))
         thy_ext.add_extension(Extension.Theorem("id.simps", Thm([], id_simps)))

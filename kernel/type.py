@@ -102,8 +102,12 @@ class HOLType(abc.ABC):
         return T
 
     @staticmethod
-    def TFun(arg1, arg2):
-        return Type("fun", [arg1, arg2])
+    def TFun(*args):
+        """Returns the function type arg1 => arg2 => ... => argn."""
+        res = args[-1]
+        for arg in reversed(args[:-1]):
+            res = Type("fun", [arg, res])
+        return res
 
     def match_incr(self, T, tyinst):
         """Incremental match. Here tyinst is the current instantiation.

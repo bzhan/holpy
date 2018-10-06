@@ -8,19 +8,19 @@ from logic.conv import *
 
 thy = BasicTheory()
 Ta = TVar("a")
-Tf = TFun(Ta,TFun(Ta,Ta))
+Tf = TFun(Ta,Ta,Ta)
 
 x = Var("x", Ta)
 f = Var("f", Tf)
 B0 = Bound(0)
 
 # The term %x. f x x
-lf = Abs("x", Ta, Comb2(f, B0, B0))
+lf = Abs("x", Ta, f(B0, B0))
 
 class ConvTest(unittest.TestCase):
     def testBetaConv(self):
         cv = beta_conv()
-        t = Comb(lf, x)
+        t = lf(x)
         self.assertEqual(cv.eval(t), Thm.beta_conv(t))
         self.assertEqual(thy.check_proof(cv.get_proof_term(t).export()), Thm.beta_conv(t))
 
@@ -31,7 +31,7 @@ class ConvTest(unittest.TestCase):
 
     def testTryConv(self):
         cv = try_conv(beta_conv())
-        t = Comb(lf, x)
+        t = lf(x)
         self.assertEqual(cv.eval(t), Thm.beta_conv(t))
         self.assertEqual(cv.eval(x), Thm.reflexive(x))
 
@@ -44,7 +44,7 @@ class ConvTest(unittest.TestCase):
         thy.add_term_sig("0", natT)
         thy.add_term_sig("1", natT)
         natFunT = TFun(natT, natT)
-        natFunT2 = TFun(natT, natFunT)
+        natFunT2 = TFun(natT, natT, natT)
         thy.add_term_sig("f", natFunT)
         thy.add_term_sig("g", natFunT)
         thy.add_term_sig("+", natFunT2)
@@ -56,7 +56,7 @@ class ConvTest(unittest.TestCase):
 
         # Add axioms 1 = 0 and f 0 = g 0
         thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
-        thy.add_theorem("f_eq_g", Thm.mk_equals(Comb(f,Var("x",natT)), Comb(g,Var("x",natT))))
+        thy.add_theorem("f_eq_g", Thm.mk_equals(f(Var("x",natT)), g(Var("x",natT))))
 
         # Test conversion using 1 = 0
         cv1 = rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))
@@ -68,19 +68,19 @@ class ConvTest(unittest.TestCase):
 
         # Test conversion using f x = g x
         cv2 = rewr_conv("f_eq_g", thy.get_theorem("f_eq_g"))
-        eq0 = Thm.mk_equals(Comb(f,nat0), Comb(g,nat0))
-        eq1 = Thm.mk_equals(Comb(f,nat1), Comb(g,nat1))
-        self.assertEqual(cv2.eval(Comb(f,nat0)), eq0)
-        self.assertEqual(cv2.eval(Comb(f,nat1)), eq1)
-        self.assertEqual(thy.check_proof(cv2.get_proof_term(Comb(f,nat0)).export()), eq0)
-        self.assertEqual(thy.check_proof(cv2.get_proof_term(Comb(f,nat1)).export()), eq1)
+        eq0 = Thm.mk_equals(f(nat0), g(nat0))
+        eq1 = Thm.mk_equals(f(nat1), g(nat1))
+        self.assertEqual(cv2.eval(f(nat0)), eq0)
+        self.assertEqual(cv2.eval(f(nat1)), eq1)
+        self.assertEqual(thy.check_proof(cv2.get_proof_term(f(nat0)).export()), eq0)
+        self.assertEqual(thy.check_proof(cv2.get_proof_term(f(nat1)).export()), eq1)
         self.assertRaises(ConvException, cv1.eval, nat0)
         self.assertRaises(ConvException, cv1.get_proof_term, nat0)
 
     def testTopBetaConv(self):
         cv = top_conv(beta_conv())
-        t = Comb(lf, Comb(lf, x))
-        res = Comb2(f, Comb2(f,x,x), Comb2(f,x,x))
+        t = lf(lf(x))
+        res = f(f(x,x),f(x,x))
         res_th = Thm.mk_equals(t, res)
         self.assertEqual(cv.eval(t), res_th)
         prf = cv.get_proof_term(t).export()
@@ -89,8 +89,8 @@ class ConvTest(unittest.TestCase):
 
     def testBottomBetaConv(self):
         cv = bottom_conv(beta_conv())
-        t = Comb(lf, Comb(lf, x))
-        res = Comb2(f, Comb2(f,x,x), Comb2(f,x,x))
+        t = lf(lf(x))
+        res = f(f(x,x),f(x,x))
         res_th = Thm.mk_equals(t, res)
         self.assertEqual(cv.eval(t), res_th)
         prf = cv.get_proof_term(t).export()
@@ -103,8 +103,8 @@ class ConvTest(unittest.TestCase):
         t = x
         res = x
         for i in range(8):
-            t = Comb(lf, t)
-            res = Comb2(f, res, res)
+            t = lf(t)
+            res = f(res, res)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
         self.assertEqual(prf.get_num_item(), 29)
@@ -116,8 +116,8 @@ class ConvTest(unittest.TestCase):
         t = x
         res = x
         for i in range(8):
-            t = Comb(lf, t)
-            res = Comb2(f, res, res)
+            t = lf(t)
+            res = f(res, res)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
         self.assertEqual(prf.get_num_item(), 22)
@@ -145,19 +145,19 @@ class ConvTest(unittest.TestCase):
 
         # Add axioms 1 = 0 and f 0 = g 0
         thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
-        thy.add_theorem("f_eq_g", Thm.mk_equals(Comb(f,Var("x",natT)), Comb(g,Var("x",natT))))
+        thy.add_theorem("f_eq_g", Thm.mk_equals(f(Var("x",natT)), g(Var("x",natT))))
 
         cv = top_conv(else_conv(
             rewr_conv("f_eq_g", thy.get_theorem("f_eq_g")),
             rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))))
 
-        f1 = Comb(f,nat1)
-        g0 = Comb(g,nat0)
+        f1 = f(nat1)
+        g0 = g(nat0)
         t = f1
         res = g0
         for i in range(25):
-            t = Comb2(plus, t, f1)
-            res = Comb2(plus, res, g0)
+            t = plus(t, f1)
+            res = plus(res, g0)
 
         prf = cv.get_proof_term(t).export()
         self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))

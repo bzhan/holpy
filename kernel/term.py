@@ -116,6 +116,12 @@ class Term(abc.ABC):
         else:
             raise UnknownTermException()
 
+    def __call__(self, *args):
+        res = self
+        for arg in args:
+            res = Comb(res, arg)
+        return res
+
     def _get_type(self, bd_vars):
         """Helper function for get_type. bd_vars is the list of types of
         the bound variables.
@@ -165,12 +171,21 @@ class Term(abc.ABC):
         return t
 
     @staticmethod
-    def Abs(var_name, T, body):
-        t = Term(Term.ABS)
-        t.var_name = var_name
-        t.T = T
-        t.body = body
-        return t
+    def Abs(*args):
+        """The input to Abs is the list x1, T1, ..., xn, Tn, body. The result is
+
+        %x1 : T1. ... %xn : Tn. body.
+        """
+        if not args:
+            raise TypeError()
+        elif len(args) == 1:
+            return args[0]
+        else:
+            t = Term(Term.ABS)
+            t.var_name = args[0]
+            t.T = args[1]
+            t.body = Term.Abs(*args[2:])
+            return t
 
     @staticmethod
     def Bound(n):
@@ -240,13 +255,6 @@ class Term(abc.ABC):
         else:
             raise UnknownTermException()
 
-    @staticmethod
-    def list_comb(f, ts):
-        """Returns the term f t1 t2 ... tn."""
-        for t in ts:
-            f = Comb(f, t)
-        return f
-
     def strip_comb(self):
         """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
         if self.ty == Term.COMB:
@@ -254,10 +262,6 @@ class Term(abc.ABC):
             return (f, args + [self.arg])
         else:
             return (self, [])
-
-    @staticmethod
-    def Comb2(f, x, y):
-        return Term.list_comb(f, [x, y])
 
     def get_head(self):
         """Given a term f t1 t2 ... tn, returns f."""
@@ -282,19 +286,19 @@ class Term(abc.ABC):
 
     def is_implies(self):
         """Whether self is of the form A --> B."""
-        implies = Const("implies", TFun(hol_bool, TFun(hol_bool, hol_bool)))
+        implies = Const("implies", TFun(hol_bool, hol_bool, hol_bool))
         return self.is_binop() and self.get_head() == implies
 
     @staticmethod
     def mk_implies(s, t):
         """Construct the term s --> t."""
-        implies = Const("implies", TFun(hol_bool, TFun(hol_bool, hol_bool)))
-        return Term.list_comb(implies, [s, t])
+        implies = Const("implies", TFun(hol_bool, hol_bool, hol_bool))
+        return implies(s, t)
 
     @staticmethod
     def equals(T):
         """Returns the equals constant for the given type."""
-        return Const("equals", TFun(T, TFun(T, hol_bool)))
+        return Const("equals", TFun(T, T, hol_bool))
 
     def is_equals(self):
         """Whether self is of the form A = B."""
@@ -307,8 +311,8 @@ class Term(abc.ABC):
     @staticmethod
     def mk_equals(s, t):
         """Construct the term s = t."""
-        T = s.get_type()
-        return Term.list_comb(Term.equals(T), [s, t])
+        eq_t = Term.equals(s.get_type())
+        return eq_t(s, t)
 
     def _subst_bound(self, t, n):
         """Helper function for subst_bound. Here self is an open term. Replace
@@ -433,4 +437,3 @@ Const = Term.Const
 Comb = Term.Comb
 Abs = Term.Abs
 Bound = Term.Bound
-Comb2 = Term.Comb2

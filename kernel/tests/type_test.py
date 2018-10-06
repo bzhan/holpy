@@ -17,7 +17,7 @@ class TypeTest(unittest.TestCase):
             (Type("list", Type("list", Ta)), "'a list list"),
             (Type("tree", [Ta, Tb]), "('a, 'b) tree"),
             (TFun(Ta, Tb), "'a => 'b"),
-            (TFun(Ta, TFun(Tb, Tc)), "'a => 'b => 'c"),
+            (TFun(Ta, Tb, Tc), "'a => 'b => 'c"),
             (TFun(TFun(Ta, Tb), Tc), "('a => 'b) => 'c"),
             (TFun(Type("list", Ta), Tb), "'a list => 'b"),
             (TFun(Ta, Type("list", Tb)), "'a => 'b list"),

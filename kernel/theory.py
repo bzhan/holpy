@@ -131,8 +131,8 @@ class Theory(abc.ABC):
         thy.add_type_sig("fun", 2)
 
         # Fundamental terms.
-        thy.add_term_sig("equals", TFun(TVar("a"), TFun(TVar("a"), hol_bool)))
-        thy.add_term_sig("implies", TFun(hol_bool, TFun(hol_bool, hol_bool)))
+        thy.add_term_sig("equals", TFun(TVar("a"), TVar("a"), hol_bool))
+        thy.add_term_sig("implies", TFun(hol_bool, hol_bool, hol_bool))
         
         return thy
 

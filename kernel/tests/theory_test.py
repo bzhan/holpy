@@ -52,8 +52,8 @@ class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
         self.assertEqual(thy.get_type_sig("bool"), 0)
         self.assertEqual(thy.get_type_sig("fun"), 2)
-        self.assertEqual(thy.get_term_sig("equals"), TFun(Ta,TFun(Ta,hol_bool)))
-        self.assertEqual(thy.get_term_sig("implies"), TFun(hol_bool,TFun(hol_bool,hol_bool)))
+        self.assertEqual(thy.get_term_sig("equals"), TFun(Ta,Ta,hol_bool))
+        self.assertEqual(thy.get_term_sig("implies"), TFun(hol_bool,hol_bool,hol_bool))
 
     def testCheckType(self):
         test_data = [
@@ -95,11 +95,11 @@ class TheoryTest(unittest.TestCase):
     def testCheckTermFail(self):
         test_data = [
             Const("random", Ta),
-            Const("equals", TFun(Ta, TFun(Tb, hol_bool))),
-            Const("equals", TFun(Ta, TFun(Ta, Tb))),
-            Const("implies", TFun(Ta, TFun(Ta, hol_bool))),
+            Const("equals", TFun(Ta, Tb, hol_bool)),
+            Const("equals", TFun(Ta, Ta, Tb)),
+            Const("implies", TFun(Ta, Ta, hol_bool)),
             Comb(Const("random", Tab), x),
-            Comb(f, Const("random", Ta)),
+            f(Const("random", Ta)),
             Abs("x", Ta, Const("random", Ta)),
         ]
 
@@ -131,7 +131,7 @@ class TheoryTest(unittest.TestCase):
         """Proof of [x = y, y = z] |- f z = f x."""
         x_eq_y = Term.mk_equals(x,y)
         y_eq_z = Term.mk_equals(y,z)
-        th = Thm([x_eq_y, y_eq_z], Term.mk_equals(Comb(f,z), Comb(f,x)))
+        th = Thm([x_eq_y, y_eq_z], Term.mk_equals(f(z),f(x)))
         prf = Proof(x_eq_y, y_eq_z)
         prf.add_item("S1", Thm([x_eq_y, y_eq_z], Term.mk_equals(x,z)), "transitive", prevs = ["A1", "A2"])
         prf.add_item("S2", Thm([x_eq_y, y_eq_z], Term.mk_equals(z,x)), "symmetric", prevs = ["S1"])
@@ -259,7 +259,7 @@ class TheoryTest(unittest.TestCase):
 
         id_const = Const("id", TFun(Ta,Ta))
         id_def = Abs("x", Ta, Bound(0))
-        id_simps = Term.mk_equals(Comb(id_const,x), x)
+        id_simps = Term.mk_equals(id_const(x), x)
 
         thy_ext.add_extension(Extension.Constant("id", id_def))        
         thy_ext.add_extension(Extension.Theorem("id.simps", Thm([], id_simps)))
@@ -288,19 +288,19 @@ class TheoryTest(unittest.TestCase):
 
         id_const = Const("id", TFun(Ta,Ta))
         id_def = Abs("x", Ta, Bound(0))
-        id_simps = Term.mk_equals(Comb(id_const,x), x)
+        id_simps = Term.mk_equals(id_const(x), x)
 
         # Proof of |- id x = x from |- id = (%x. x)
         prf = Proof()
         th1 = Thm.mk_equals(id_const, id_def)  # id = (%x. x)
         th2 = Thm.reflexive(x)  # x = x
         th3 = Thm.combination(th1, th2)  # id x = (%x. x) x
-        th4 = Thm.beta_conv(Comb(id_def, x))  # (%x. x) x = x
+        th4 = Thm.beta_conv(id_def(x))  # (%x. x) x = x
         th5 = Thm.transitive(th3, th4)  # id x = x
         prf.add_item("S1", th1, "theorem", args = "id_def")
         prf.add_item("S2", th2, "reflexive", args = x)
         prf.add_item("S3", th3, "combination", prevs = ["S1", "S2"])
-        prf.add_item("S4", th4, "beta_conv", args = Comb(id_def, x))
+        prf.add_item("S4", th4, "beta_conv", args = id_def(x))
         prf.add_item("C", th5, "transitive", prevs = ["S3", "S4"])
 
         thy_ext.add_extension(Extension.Constant("id", id_def))

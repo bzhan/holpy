@@ -6,9 +6,9 @@ from kernel.term import Var, Const, Comb, Abs, Bound, TermSubstitutionException,
 
 Ta = TVar("a")
 Tb = TVar("b")
-Taa = TFun(Ta, Ta)             # 'a => 'a
-Tab = TFun(Ta, Tb)             # 'a => 'b
-Taab = TFun(Ta, TFun(Ta, Tb))  # 'a => 'a => 'b
+Taa = TFun(Ta, Ta)        # 'a => 'a
+Tab = TFun(Ta, Tb)        # 'a => 'b
+Taab = TFun(Ta, Ta, Tb)   # 'a => 'a => 'b
 a = Var("a", Ta)
 b = Var("b", Tb)
 c = Const("c", Ta)
@@ -24,13 +24,13 @@ class TermTest(unittest.TestCase):
             (a, "Var(a,'a)"),
             (f, "Var(f,'a => 'b)"),
             (c, "Const(c,'a)"),
-            (Comb(f, a), "Var(f,'a => 'b) $ Var(a,'a)"),
-            (Comb(Comb(f2, a), a), "Var(f2,'a => 'a => 'b) $ Var(a,'a) $ Var(a,'a)"),
-            (Comb(f, Comb(g, a)), "Var(f,'a => 'b) $ (Var(g,'a => 'a) $ Var(a,'a))"),
+            (f(a), "Var(f,'a => 'b) $ Var(a,'a)"),
+            (f2(a,a), "Var(f2,'a => 'a => 'b) $ Var(a,'a) $ Var(a,'a)"),
+            (f(g(a)), "Var(f,'a => 'b) $ (Var(g,'a => 'a) $ Var(a,'a))"),
             (Abs("x", Ta, b), "Abs(x,'a,Var(b,'b))"),
             (Abs("x", Ta, B0), "Abs(x,'a,Bound 0)"),
-            (Abs("x", Ta, Abs("y", Ta, B0)), "Abs(x,'a,Abs(y,'a,Bound 0))"),
-            (Abs("x", Ta, Abs("y", Ta, B1)), "Abs(x,'a,Abs(y,'a,Bound 1))"),
+            (Abs("x", Ta, "y", Ta, B0), "Abs(x,'a,Abs(y,'a,Bound 0))"),
+            (Abs("x", Ta, "y", Ta, B1), "Abs(x,'a,Abs(y,'a,Bound 1))"),
         ]
 
         for (t, str_t) in test_data:
@@ -41,15 +41,15 @@ class TermTest(unittest.TestCase):
             (a, "a"),
             (f, "f"),
             (c, "c"),
-            (Comb(f, a), "f a"),
-            (Comb(Comb(f2, a), a), "f2 a a"),
-            (Comb(f, Comb(g, a)), "f (g a)"),
+            (f(a), "f a"),
+            (f2(a,a), "f2 a a"),
+            (f(g(a)), "f (g a)"),
             (Abs("x", Ta, b), "%x. b"),
             (Abs("x", Ta, B0), "%x. x"),
-            (Abs("x", Ta, Abs("y", Ta, B0)), "%x. %y. y"),
-            (Abs("x", Ta, Abs("y", Ta, B1)), "%x. %y. x"),
-            (Abs("x", Ta, Abs("y", Ta, Comb(f,B0))), "%x. %y. f y"),
-            (Abs("x", Ta, Abs("y", Ta, Comb(Comb(f2, B1), B0))), "%x. %y. f2 x y"),
+            (Abs("x", Ta, "y", Ta, B0), "%x. %y. y"),
+            (Abs("x", Ta, "y", Ta, B1), "%x. %y. x"),
+            (Abs("x", Ta, "y", Ta, f(B0)), "%x. %y. f y"),
+            (Abs("x", Ta, "y", Ta, f2(B1,B0)), "%x. %y. f2 x y"),
         ]
 
         for (t, repr_t) in test_data:
@@ -58,7 +58,7 @@ class TermTest(unittest.TestCase):
     def testEquals(self):
         test_data = [
             (Abs("x", Ta, b), Abs("y", Ta, b)),
-            (Abs("x", Tb, Comb(f, B0)), Abs("y", Tb, Comb(f, B0))),
+            (Abs("x", Tb, f(B0)), Abs("y", Tb, f(B0))),
         ]
 
         for (t1, t2) in test_data:
@@ -69,15 +69,15 @@ class TermTest(unittest.TestCase):
             (a, Ta),
             (f, Tab),
             (c, Ta),
-            (Comb(f, a), Tb),
-            (Comb(Comb(f2, a), a), Tb),
-            (Comb(f, Comb(g, a)), Tb),
+            (f(a), Tb),
+            (f2(a,a), Tb),
+            (f(g(a)), Tb),
             (Abs("x", Ta, b), Tab),
             (Abs("x", Ta, B0), Taa),
-            (Abs("x", Ta, Abs("y", Tb, B0)), TFun(Ta,TFun(Tb,Tb))),
-            (Abs("x", Ta, Abs("y", Tb, B1)), TFun(Ta,TFun(Tb,Ta))),
-            (Abs("x", Ta, Abs("y", Ta, Comb(f,B0))), TFun(Ta,TFun(Ta,Tb))),
-            (Abs("x", Ta, Abs("y", Ta, Comb(Comb(f2, B1), B0))), TFun(Ta,TFun(Ta,Tb))),
+            (Abs("x", Ta, "y", Tb, B0), TFun(Ta,Tb,Tb)),
+            (Abs("x", Ta, "y", Tb, B1), TFun(Ta,Tb,Ta)),
+            (Abs("x", Ta, "y", Ta, f(B0)), TFun(Ta,Ta,Tb)),
+            (Abs("x", Ta, "y", Ta, f2(B1,B0)), TFun(Ta,Ta,Tb)),
         ]
 
         for (t, T) in test_data:
@@ -86,14 +86,14 @@ class TermTest(unittest.TestCase):
     def testIsOpen(self):
         test_data = [
             (a, False),
-            (Comb(f, a), False),
+            (f(a), False),
             (B0, True),
-            (Comb(f, B0), True),
+            (f(B0), True),
             (Abs("x", Ta, B0), False),
             (Abs("x", Ta, B1), True),
-            (Abs("x", Ta, Abs("y", Ta, B0)), False),
-            (Abs("x", Ta, Abs("y", Ta, B1)), False),
-            (Abs("x", Ta, Abs("y", Ta, Bound(2))), True),
+            (Abs("x", Ta, "y", Ta, B0), False),
+            (Abs("x", Ta, "y", Ta, B1), False),
+            (Abs("x", Ta, "y", Ta, Bound(2)), True),
         ]
 
         for (t, res) in test_data:
@@ -103,7 +103,7 @@ class TermTest(unittest.TestCase):
         test_data = [
             (a, {"a" : Tb}, Var("a", Tb)),
             (c, {"a" : Tb}, Const("c", Tb)),
-            (Comb(f, a), {"a" : Tb}, Comb(Var("f", TFun(Tb,Tb)), Var("a", Tb))),
+            (f(a), {"a" : Tb}, Comb(Var("f", TFun(Tb,Tb)), Var("a", Tb))),
             (Abs("x", Ta, B0), {"a" : Tb}, Abs("x", Tb, B0)),
             (Abs("x", Ta, a), {"a" : Tb}, Abs("x", Tb, Var("a", Tb))),
         ]
@@ -115,7 +115,7 @@ class TermTest(unittest.TestCase):
         test_data = [
             (a, {"a" : c}, c),
             (c, {"a" : c}, c),
-            (Comb(f, a), {"a" : c}, Comb(f, c)),
+            (f(a), {"a" : c}, f(c)),
             (Abs("x", Ta, B0), {"a" : c}, Abs("x", Ta, B0)),
             (Abs("x", Ta, a), {"a" : c}, Abs("x", Ta, c)),
         ]
@@ -130,9 +130,9 @@ class TermTest(unittest.TestCase):
         test_data = [
             (Abs("x", Ta, B0), c, c),
             (Abs("x", Ta, a), c, a),
-            (Abs("x", Ta, Abs("y", Tb, B0)), c, Abs("y", Tb, B0)),
-            (Abs("x", Ta, Abs("y", Tb, B1)), c, Abs("y", Tb, c)),
-            (Abs("x", Ta, Abs("y", Tb, Comb(Comb(f2, B1), B0))), c, Abs("y", Tb, Comb(Comb(f2, c), B0))),
+            (Abs("x", Ta, "y", Tb, B0), c, Abs("y", Tb, B0)),
+            (Abs("x", Ta, "y", Tb, B1), c, Abs("y", Tb, c)),
+            (Abs("x", Ta, "y", Tb, f2(B1,B0)), c, Abs("y", Tb, f2(c,B0))),
         ]
 
         for (t, s, res) in test_data:
@@ -158,8 +158,8 @@ class TermTest(unittest.TestCase):
         test_data = [
             (a, a, True),
             (a, b, False),
-            (Comb(f,a), a, True),
-            (Comb(f,a), b, False),
+            (f(a), a, True),
+            (f(a), b, False),
             (Abs("a", Ta, a), a, True),
             (Abs("a", Ta, b), b, True),
             (Abs("a", Ta, B0), a, False),
@@ -173,7 +173,7 @@ class TermTest(unittest.TestCase):
             (a, a, Abs("a", Ta, B0)),
             (Abs("b", Ta, a), a, Abs("a", Ta, Abs("b", Ta, B1))),
             (Abs("a", Ta, a), a, Abs("a", Ta, Abs("a", Ta, B1))),
-            (Comb(f,a), a, Abs("a", Ta, Comb(f,B0))),
+            (f(a), a, Abs("a", Ta, f(B0))),
             (c, a, Abs("a", Ta, c)),
         ]
 
@@ -190,9 +190,9 @@ class TermTest(unittest.TestCase):
         test_data = [
             (a, Ta),
             (c, Ta),
-            (Comb(f, a), Tb),
-            (Comb(Comb(f2, a), a), Tb),
-            (Comb(f, Comb(g, a)), Tb),
+            (f(a), Tb),
+            (f2(a,a), Tb),
+            (f(g(a)), Tb),
             (Comb(Abs("x", Ta, B0), a), Ta),
         ]
 
@@ -201,10 +201,10 @@ class TermTest(unittest.TestCase):
 
     def testCheckedGetTypeFail(self):
         test_data = [
-            Comb(a, a),
-            Comb(f, f),
-            Comb(Comb(f, a), a),
-            Comb(f, b),
+            Comb(a,a),
+            Comb(f,f),
+            f(a,a),
+            f(b),
             Comb(Abs("x", Ta, B0), b),
         ]
 

@@ -2,7 +2,7 @@
 
 import abc
 from kernel.type import Type, hol_bool
-from kernel.term import Term, Var, Comb, TermSubstitutionException, TypeCheckException
+from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
 
 class InvalidDerivationException(Exception):
     pass
@@ -147,7 +147,7 @@ class Thm(abc.ABC):
             (x, y) = th2.concl.dest_binop()
             Tf = f.get_type()
             if Tf.is_fun() and Tf.domain_type() == x.get_type():
-                return Thm(th1.assums.union(th2.assums), Term.mk_equals(Comb(f,x), Comb(g,y)))
+                return Thm(th1.assums.union(th2.assums), Term.mk_equals(f(x),g(y)))
             else:
                 raise InvalidDerivationException()
         else:

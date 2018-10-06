@@ -6,7 +6,7 @@ from kernel.term import *
 from logic.matcher import *
 
 Ta = TVar("a")
-Tf = TFun(Ta, TFun(Ta, Ta))
+Tf = TFun(Ta, Ta, Ta)
 a = Const("a", Ta)
 b = Const("b", Ta)
 c = Const("c", Ta)
@@ -23,17 +23,17 @@ class MatcherTest(unittest.TestCase):
             (x, a, {"x" : a}),
             (a, a, {}),
             (a, b, None),
-            (Comb2(f,x,y), Comb2(f,a,b), {"x" : a, "y" : b}),
-            (Comb2(f,x,x), Comb2(f,a,a), {"x" : a}),
-            (Comb2(f,x,x), Comb2(f,a,b), None),
+            (f(x,y), f(a,b), {"x" : a, "y" : b}),
+            (f(x,x), f(a,a), {"x" : a}),
+            (f(x,x), f(a,b), None),
             (Abs("x",Ta,x), Abs("x",Ta,a), {"x" : a}),
             (Abs("x",Ta,a), Abs("x",Ta,a), {}),
             (Abs("x",Ta,a), Abs("x",Ta,b), None),
             (Abs("x",Ta,x), Abs("x",Ta,B0), None),
-            (Abs("x",Ta,x), Abs("x",Ta,Abs("y",Ta,B0)), {"x" : Abs("y",Ta,B0)}),
-            (Abs("x",Ta,x), Abs("x",Ta,Abs("y",Ta,B1)), None),
+            (Abs("x",Ta,x), Abs("x",Ta,"y",Ta,B0), {"x" : Abs("y",Ta,B0)}),
+            (Abs("x",Ta,x), Abs("x",Ta,"y",Ta,B1), None),
             (Abs("x",Ta,B0), Abs("x",Ta,B0), {}),
-            (Abs("x",Ta,Abs("y",Ta,B0)), Abs("x",Ta,Abs("y",Ta,B1)), None),
+            (Abs("x",Ta,"y",Ta,B0), Abs("x",Ta,"y",Ta,B1), None),
         ]
 
         for (pat, t, inst) in test_data:

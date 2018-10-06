@@ -2,7 +2,7 @@
 
 import unittest
 from kernel.type import TVar, TFun
-from kernel.term import Term, Var, Const, Comb
+from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from kernel.report import ProofReport, ExtensionReport
 
@@ -30,7 +30,7 @@ class ExtensionReportTest(unittest.TestCase):
         ext_report = ExtensionReport()
 
         id_const = Const("id", TFun(Ta,Ta))
-        id_simps = Term.mk_equals(Comb(id_const,x), x)
+        id_simps = Term.mk_equals(id_const(x), x)
         ext_report.add_axiom("id.simps", Thm([], id_simps))
 
         str_ext_report = "\n".join([
