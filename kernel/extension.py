@@ -5,57 +5,11 @@ from kernel.term import Const
 from kernel.thm import Thm
 
 class Extension(abc.ABC):
-    """A single extension to a theory.
-    
-    ty -- type of the extension (add new type, axiomatized constant,
-    defined constant, or theorem).    
+    """A single extension to a theory. There are currently three kinds
+    of extensions, to be defined below.
 
     """
-    (TYPE, AX_CONSTANT, CONSTANT, THEOREM) = range(4)
-
-    def __init__(self, ty):
-        self.ty = ty
-
-    @staticmethod
-    def AxConstant(name, T):
-        """Extending the theory by adding an axiomatized constant.
-
-        name -- name of the constant.
-        T -- type of the constant.
-        
-        """
-        t = Extension(Extension.AX_CONSTANT)
-        t.name = name
-        t.T = T
-        return t
-
-    @staticmethod
-    def Constant(name, expr):
-        """Extending the theory by adding a constant.
-        
-        name -- name of the constant.
-        expr -- the value the constant is equal to.
-
-        """
-        t = Extension(Extension.CONSTANT)
-        t.name = name
-        t.expr = expr
-        return t
-
-    @staticmethod
-    def Theorem(name, th, prf = None):
-        """Extending the theory by adding an axiom/theorem.
-
-        name -- name of the theorem.
-        th -- statement of the theorem.
-        prf -- proof of the theorem. If None, this is an axiomatic extension.
-
-        """
-        t = Extension(Extension.THEOREM)
-        t.name = name
-        t.th = th
-        t.prf = prf
-        return t
+    (AX_CONSTANT, CONSTANT, THEOREM) = range(3)
 
     def __str__(self):
         if self.ty == Extension.AX_CONSTANT:
@@ -80,6 +34,44 @@ class Extension(abc.ABC):
         assert self.ty == Extension.CONSTANT, "get_eq_thm"
         return Thm.mk_equals(self.get_const_term(), self.expr)
     
+class AxConstant(Extension):
+    def __init__(self, name, T):
+        """Extending the theory by adding an axiomatized constant.
+
+        name -- name of the constant.
+        T -- type of the constant.
+        
+        """
+        self.ty = Extension.AX_CONSTANT
+        self.name = name
+        self.T = T
+
+class Constant(Extension):
+    def __init__(self, name, expr):
+        """Extending the theory by adding a constant by definition.
+        
+        name -- name of the constant.
+        expr -- the expression the constant is equal to.
+
+        """
+        self.ty = Extension.CONSTANT
+        self.name = name
+        self.expr = expr
+
+class Theorem(Extension):
+    def __init__(self, name, th, prf = None):
+        """Extending the theory by adding an axiom/theorem.
+
+        name -- name of the theorem.
+        th -- statement of the theorem.
+        prf -- proof of the theorem. If None, this is an axiomatic extension.
+
+        """
+        self.ty = Extension.THEOREM
+        self.name = name
+        self.th = th
+        self.prf = prf
+
 class TheoryExtension(abc.ABC):
     """A theory extension contains a list of extensions to a theory. These
     may involve new types, constants, and theorems. Definition of

@@ -14,13 +14,11 @@ class TypeCheckException(Exception):
     pass
 
 class Term(abc.ABC):
-    """Represents a term in higher-order logic.
+    """Represents a term in higher-order logic. There are five
+    term constructors, to be defined below.
+
     """
-
     (VAR, CONST, COMB, ABS, BOUND) = range(5)
-
-    def __init__(self, ty):
-        self.ty = ty
 
     def __str__(self):
         if self.ty == Term.VAR:
@@ -142,50 +140,6 @@ class Term(abc.ABC):
     def get_type(self):
         """Returns type of the term, with minimal type-checking."""
         return self._get_type([])
-
-    @staticmethod
-    def Var(name, T):
-        t = Term(Term.VAR)
-        t.name = name
-        t.T = T
-        return t
-
-    @staticmethod
-    def Const(name, T):
-        t = Term(Term.CONST)
-        t.name = name
-        t.T = T
-        return t
-
-    @staticmethod
-    def Comb(fun, arg):
-        t = Term(Term.COMB)
-        t.fun = fun
-        t.arg = arg
-        return t
-
-    @staticmethod
-    def Abs(*args):
-        """The input to Abs is the list x1, T1, ..., xn, Tn, body. The result is
-
-        %x1 : T1. ... %xn : Tn. body.
-        """
-        if not args:
-            raise TypeError()
-        elif len(args) == 1:
-            return args[0]
-        else:
-            t = Term(Term.ABS)
-            t.var_name = args[0]
-            t.T = args[1]
-            t.body = Term.Abs(*args[2:])
-            return t
-
-    @staticmethod
-    def Bound(n):
-        t = Term(Term.BOUND)
-        t.n = n
-        return t
 
     def _is_open(self, n):
         """Helper function for is_open."""
@@ -425,9 +379,46 @@ class Term(abc.ABC):
         """Perform type-checking and return the type of self."""
         return self._checked_get_type([])
 
-# Export constructors of terms to global namespace.
-Var = Term.Var
-Const = Term.Const
-Comb = Term.Comb
-Abs = Term.Abs
-Bound = Term.Bound
+class Var(Term):
+    """Variable, specified by name and type."""
+    def __init__(self, name, T):
+        self.ty = Term.VAR
+        self.name = name
+        self.T = T
+
+class Const(Term):
+    """Constant, specified by name and type."""
+    def __init__(self, name, T):
+        self.ty = Term.CONST
+        self.name = name
+        self.T = T
+
+class Comb(Term):
+    """Combination."""
+    def __init__(self, fun, arg):
+        self.ty = Term.COMB
+        self.fun = fun
+        self.arg = arg
+
+class Abs(Term):
+    """Abstraction. The input to Abs is the list x1, T1, ..., xn, Tn, body.
+    
+    The result is %x1 : T1. ... %xn : Tn. body.
+    """
+    def __init__(self, *args):
+        if len(args) < 3:
+            raise TypeError()
+        else:
+            self.ty = Term.ABS
+            self.var_name = args[0]
+            self.T = args[1]
+            if len(args) == 3:
+                self.body = args[2]
+            else:
+                self.body = Abs(*args[2:])
+
+class Bound(Term):
+    """Bound variable, with de Bruijn index n."""
+    def __init__(self, n):
+        self.ty = Term.BOUND
+        self.n = n

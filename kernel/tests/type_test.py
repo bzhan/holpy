@@ -15,7 +15,7 @@ class TypeTest(unittest.TestCase):
             (Type("bool"), "bool"),
             (Type("list", Ta), "'a list"),
             (Type("list", Type("list", Ta)), "'a list list"),
-            (Type("tree", [Ta, Tb]), "('a, 'b) tree"),
+            (Type("tree", Ta, Tb), "('a, 'b) tree"),
             (TFun(Ta, Tb), "'a => 'b"),
             (TFun(Ta, Tb, Tc), "'a => 'b => 'c"),
             (TFun(TFun(Ta, Tb), Tc), "('a => 'b) => 'c"),

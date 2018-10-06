@@ -7,7 +7,7 @@ from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.macro import ProofMacro
 from kernel.theory import Theory, TheoryException, CheckProofException
-from kernel.extension import Extension, TheoryExtension
+from kernel.extension import AxConstant, Constant, Theorem, TheoryExtension
 from kernel.report import ProofReport
 
 thy = Theory.EmptyTheory()
@@ -261,8 +261,8 @@ class TheoryTest(unittest.TestCase):
         id_def = Abs("x", Ta, Bound(0))
         id_simps = Term.mk_equals(id_const(x), x)
 
-        thy_ext.add_extension(Extension.Constant("id", id_def))        
-        thy_ext.add_extension(Extension.Theorem("id.simps", Thm([], id_simps)))
+        thy_ext.add_extension(Constant("id", id_def))        
+        thy_ext.add_extension(Theorem("id.simps", Thm([], id_simps)))
 
         self.assertEqual(thy.unchecked_extend(thy_ext), None)
         self.assertEqual(thy.get_term_sig("id"), TFun(Ta, Ta))
@@ -275,7 +275,7 @@ class TheoryTest(unittest.TestCase):
         thy_ext = TheoryExtension()
 
         id_simps = Term.mk_equals(Comb(Const("id", TFun(Ta,Ta)),x), x)
-        thy_ext.add_extension(Extension.Theorem("id.simps", Thm([], id_simps)))
+        thy_ext.add_extension(Theorem("id.simps", Thm([], id_simps)))
 
         ext_report = thy.checked_extend(thy_ext)
         self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
@@ -303,8 +303,8 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("S4", th4, "beta_conv", args = id_def(x))
         prf.add_item("C", th5, "transitive", prevs = ["S3", "S4"])
 
-        thy_ext.add_extension(Extension.Constant("id", id_def))
-        thy_ext.add_extension(Extension.Theorem("id.simps", th5, prf))
+        thy_ext.add_extension(Constant("id", id_def))
+        thy_ext.add_extension(Theorem("id.simps", th5, prf))
 
         ext_report = thy.checked_extend(thy_ext)
         self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
@@ -315,7 +315,7 @@ class TheoryTest(unittest.TestCase):
         thy = Theory.EmptyTheory()
         thy_ext = TheoryExtension()
 
-        thy_ext.add_extension(Extension.AxConstant("id", TFun(Ta,Ta)))
+        thy_ext.add_extension(AxConstant("id", TFun(Ta,Ta)))
         ext_report = thy.checked_extend(thy_ext)
         self.assertEqual(thy.get_term_sig("id"), TFun(Ta,Ta))
         self.assertEqual(ext_report.get_axioms(), [("id", TFun(Ta,Ta))])

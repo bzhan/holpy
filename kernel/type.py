@@ -7,13 +7,11 @@ class TypeMatchException(Exception):
     pass
 
 class HOLType(abc.ABC):
-    """Represents a type in higher-order logic.
+    """Represents a type in higher-order logic. There are two
+    type constructors, to be defined below.
+
     """
-
     (VAR, COMB) = range(2)
-
-    def __init__(self, ty):
-        self.ty = ty
 
     def is_fun(self):
         return self.ty == HOLType.COMB and self.name == "fun"
@@ -78,33 +76,9 @@ class HOLType(abc.ABC):
             else:
                 return self
         elif self.ty == HOLType.COMB:
-            return Type(self.name, [T.subst(tyinst) for T in self.args])
+            return Type(self.name, *(T.subst(tyinst) for T in self.args))
         else:
             raise TypeError()
-
-    @staticmethod
-    def TVar(name):
-        T = HOLType(HOLType.VAR)
-        T.name = name
-        return T
-
-    @staticmethod
-    def Type(name, args = []):
-        T = HOLType(HOLType.COMB)
-        T.name = name
-        if isinstance(args, list):
-            T.args = args
-        else:
-            T.args = [args]
-        return T
-
-    @staticmethod
-    def TFun(*args):
-        """Returns the function type arg1 => arg2 => ... => argn."""
-        res = args[-1]
-        for arg in reversed(args[:-1]):
-            res = Type("fun", [arg, res])
-        return res
 
     def match_incr(self, T, tyinst):
         """Incremental match. Here tyinst is the current instantiation.
@@ -135,7 +109,25 @@ class HOLType(abc.ABC):
         self.match_incr(T, tyinst)
         return tyinst
 
-TVar = HOLType.TVar
-Type = HOLType.Type
-TFun = HOLType.TFun
+class TVar(HOLType):
+    """Type variable."""
+    def __init__(self, name):
+        self.ty = HOLType.VAR
+        self.name = name
+
+class Type(HOLType):
+    """Type constant, applied to a list of arguments."""
+    def __init__(self, name, *args):
+        self.ty = HOLType.COMB
+        self.name = name
+        self.args = args
+
+def TFun(*args):
+    """Returns the function type arg1 => arg2 => ... => argn."""
+    res = args[-1]
+    for arg in reversed(args[:-1]):
+        res = Type("fun", arg, res)
+    return res
+
+"""Boolean type."""
 hol_bool = Type("bool")
