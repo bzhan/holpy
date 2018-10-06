@@ -4,13 +4,7 @@ import abc
 from enum import Enum
 from kernel.type import TFun, hol_bool
 
-class UnknownTermException(Exception):
-    pass
-
 class OpenTermException(Exception):
-    pass
-
-class InvalidTermException(Exception):
     pass
 
 class TermSubstitutionException(Exception):
@@ -45,7 +39,7 @@ class Term(abc.ABC):
         elif self.ty == Term.BOUND:
             return "Bound " + str(self.n)
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     def _repr(self, bd_vars):
         """Helper function for __repr__. bd_vars is the list of names of
@@ -74,7 +68,7 @@ class Term(abc.ABC):
             else:
                 return bd_vars[self.n]
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     def __repr__(self):
         """Print the term in short form. Note we do not yet handle name
@@ -95,7 +89,7 @@ class Term(abc.ABC):
         elif self.ty == Term.BOUND:
             return hash(("BOUND", self.n))
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     def __eq__(self, other):
         """Equality on terms is defined by alpha-conversion. This ignores
@@ -114,7 +108,7 @@ class Term(abc.ABC):
         elif self.ty == Term.BOUND:
             return self.n == other.n
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     def __call__(self, *args):
         res = self
@@ -134,16 +128,16 @@ class Term(abc.ABC):
             if type_fun.is_fun():
                 return type_fun.range_type()
             else:
-                raise InvalidTermException()
+                raise TypeCheckException()
         elif self.ty == Term.ABS:
             return TFun(self.T, self.body._get_type([self.T] + bd_vars))
         elif self.ty == Term.BOUND:
             if self.n >= len(bd_vars):
-                raise OpenTermException
+                raise OpenTermException()
             else:
                 return bd_vars[self.n]
         else:
-            raise UnknownTermException()
+            raise TypeError()
     
     def get_type(self):
         """Returns type of the term, with minimal type-checking."""
@@ -204,7 +198,7 @@ class Term(abc.ABC):
         elif self.ty == Term.BOUND:
             return self.n >= n
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     def is_open(self):
         """Whether t is an open term."""
@@ -223,7 +217,7 @@ class Term(abc.ABC):
         elif self.ty == Term.BOUND:
             return self
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     def subst(self, inst):
         """Perform substitution on term variables.
@@ -253,7 +247,7 @@ class Term(abc.ABC):
         elif self.ty == Term.BOUND:
             return self
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     def strip_comb(self):
         """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
@@ -331,7 +325,7 @@ class Term(abc.ABC):
             else:
                 return self
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     def subst_bound(self, t):
         """Given an Abs(x,T,body), substitute x for t in the body. t should
@@ -369,7 +363,7 @@ class Term(abc.ABC):
         elif self.ty == Term.BOUND:
             return False
         else:
-            raise UnknownTermException
+            raise TypeError()
 
     def _abstract_over(self, t, n):
         """Helper function for abstract_over. Here self is an open term.
@@ -393,7 +387,7 @@ class Term(abc.ABC):
         elif self.ty == Term.BOUND:
             return self
         else:
-            raise UnknownTermException
+            raise TypeError()
 
     def abstract_over(self, t):
         """Abstract over the variable t."""
@@ -425,7 +419,7 @@ class Term(abc.ABC):
             else:
                 return bd_vars[self.n]
         else:
-            return UnknownTermException()
+            return TypeError()
 
     def checked_get_type(self):
         """Perform type-checking and return the type of self."""

@@ -4,9 +4,6 @@ import abc
 from kernel.term import Const
 from kernel.thm import Thm
 
-class UnknownExtensionException(Exception):
-    pass
-
 class Extension(abc.ABC):
     """A single extension to a theory.
     
@@ -68,7 +65,7 @@ class Extension(abc.ABC):
         elif self.ty == Extension.THEOREM:
             return "Theorem " + self.name + ": " + str(self.th)
         else:
-            raise UnknownExtensionException()
+            raise TypeError()
 
     def __repr__(self):
         return str(self)

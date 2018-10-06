@@ -45,7 +45,7 @@ class Matcher(abc.ABC):
             else:
                 raise MatchException()
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     @staticmethod
     def first_order_match(pat, t):

@@ -151,7 +151,7 @@ class Theory(abc.ABC):
                 for arg in T.args:
                     self.check_type(arg)
         else:
-            raise UnknownTypeException()
+            raise TypeError()
 
     def check_term(self, t):
         """Check the well-formedness of the term t. This means checking
@@ -174,7 +174,7 @@ class Theory(abc.ABC):
         elif t.ty == Term.BOUND:
             return None
         else:
-            raise UnknownTermException()
+            raise TypeError()
 
     def _check_proof_item(self, depth, seq_dict, seq, rpt):
         """Check a single proof item.
@@ -298,7 +298,7 @@ class Theory(abc.ABC):
             elif ext.ty == Extension.THEOREM:
                 self.add_theorem(ext.name, ext.th)
             else:
-                raise UnknownExtensionException()
+                raise TypeError()
 
     def checked_extend(self, thy_ext):
         """Perform the given extension, checking all proofs."""
@@ -318,6 +318,6 @@ class Theory(abc.ABC):
 
                 self.add_theorem(ext.name, ext.th)
             else:
-                raise UnknownExtensionException()
+                raise TypeError()
 
         return ext_report

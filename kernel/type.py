@@ -3,9 +3,6 @@
 import abc
 from enum import Enum
 
-class UnknownTypeException(Exception):
-    pass
-
 class TypeMatchException(Exception):
     pass
 
@@ -47,7 +44,7 @@ class HOLType(abc.ABC):
             else:
                 return "(" + ", ".join(str(t) for t in self.args) + ") " + self.name
         else:
-            raise UnknownTypeException()
+            raise TypeError()
 
     def __repr__(self):
         return str(self)
@@ -66,7 +63,7 @@ class HOLType(abc.ABC):
         elif self.ty == HOLType.COMB:
             return self.name == other.name and self.args == other.args
         else:
-            raise UnknownTypeException()
+            raise TypeError()
 
     def subst(self, tyinst):
         """Given a dictionary tyinst mapping from names to types,
@@ -83,7 +80,7 @@ class HOLType(abc.ABC):
         elif self.ty == HOLType.COMB:
             return Type(self.name, [T.subst(tyinst) for T in self.args])
         else:
-            raise UnknownTypeException()
+            raise TypeError()
 
     @staticmethod
     def TVar(name):
@@ -127,7 +124,7 @@ class HOLType(abc.ABC):
                 for (arg, argT) in zip(self.args, T.args):
                     arg.match_incr(argT, tyinst)
         else:
-            raise UnknownTypeException()
+            raise TypeError()
 
     def match(self, T):
         """Match self with T. Returns either a dictionary containing the
