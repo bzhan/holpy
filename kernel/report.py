@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import abc
+
 from kernel.type import HOLType
 from kernel.thm import Thm
 

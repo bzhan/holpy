@@ -1,8 +1,9 @@
 # Author: Bohua Zhan
 
 import abc
-from kernel.thm import *
-from kernel.proof import *
+
+from kernel.thm import Thm
+from kernel.proof import Proof
 
 class ProofTerm(abc.ABC):
     """A proof term contains the derivation tree of a theorem.

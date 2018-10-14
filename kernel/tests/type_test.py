@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import unittest
+
 from kernel.type import TVar, Type, TFun, hol_bool, TypeMatchException
 
 Ta = TVar("a")

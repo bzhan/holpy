@@ -1,10 +1,12 @@
 # Author: Bohua Zhan
 
 import unittest
-from kernel.term import *
-from kernel.theory import *
-from logic.basic import *
-from logic.conv import *
+
+from kernel.type import TVar, Type, TFun
+from kernel.term import Var, Const, Abs, Bound
+from kernel.thm import Thm
+from logic.basic import BasicTheory
+from logic.conv import beta_conv, else_conv, try_conv, top_conv, bottom_conv, rewr_conv, ConvException
 
 thy = BasicTheory()
 Ta = TVar("a")

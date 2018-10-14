@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 import abc
-from enum import Enum
+
 from kernel.type import TFun, hol_bool
 
 class OpenTermException(Exception):

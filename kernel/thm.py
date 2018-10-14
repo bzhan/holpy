@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import abc
+
 from kernel.type import Type, hol_bool
 from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
 

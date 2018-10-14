@@ -1,9 +1,9 @@
 # Author: Bohua Zhan
 
-import abc
-from kernel.thm import *
-from kernel.proof import *
-from kernel.theory import *
+from kernel.term import Var
+from kernel.thm import Thm
+from kernel.proof import Proof
+from kernel.theory import Theory
 from kernel.macro import ProofMacro
 
 def arg_combination_eval(th, f):

@@ -1,8 +1,12 @@
 # Author: Bohua Zhan
 
 import unittest
-from kernel.theory import *
-from logic.basic import *
+
+from kernel.type import TVar, TFun
+from kernel.term import Var
+from kernel.thm import Thm
+from kernel.theory import Theory
+import logic.basic as basic
 
 Ta = TVar("a")
 x = Var("x", Ta)
@@ -14,8 +18,8 @@ class BasicTest(unittest.TestCase):
     def testArgCombination(self):
         th = Thm.mk_equals(x,y)
         res = Thm.mk_equals(f(x),f(y))
-        self.assertEqual(arg_combination_macro.eval(th, f), res)
-        prf = arg_combination_macro.expand(1, [(0, "S1")], th, f)
+        self.assertEqual(basic.arg_combination_macro.eval(th, f), res)
+        prf = basic.arg_combination_macro.expand(1, [(0, "S1")], th, f)
         
         thy = Theory.EmptyTheory()
         self.assertEqual(prf.get_num_item(), 2)
@@ -24,8 +28,8 @@ class BasicTest(unittest.TestCase):
     def testFunCombination(self):
         th = Thm.mk_equals(f,g)
         res = Thm.mk_equals(f(x),g(x))
-        self.assertEqual(fun_combination_macro.eval(th, x), res)
-        prf = fun_combination_macro.expand(1, [(0, "S1")], th, x)
+        self.assertEqual(basic.fun_combination_macro.eval(th, x), res)
+        prf = basic.fun_combination_macro.expand(1, [(0, "S1")], th, x)
 
         thy = Theory.EmptyTheory()
         self.assertEqual(prf.get_num_item(), 2)

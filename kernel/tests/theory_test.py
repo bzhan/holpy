@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import unittest
+
 from kernel.type import Type, TVar, TFun, hol_bool
 from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from kernel.thm import Thm

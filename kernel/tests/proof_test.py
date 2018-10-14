@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import unittest
+
 from kernel.type import hol_bool
 from kernel.term import Term, Var
 from kernel.thm import Thm

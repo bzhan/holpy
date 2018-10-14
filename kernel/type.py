@@ -1,7 +1,6 @@
 # Author: Bohua Zhan
 
 import abc
-from enum import Enum
 
 class TypeMatchException(Exception):
     pass

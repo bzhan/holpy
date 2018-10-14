@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import abc
+
 from kernel.term import Const
 from kernel.thm import Thm
 

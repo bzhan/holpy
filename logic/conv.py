@@ -2,10 +2,11 @@
 
 import abc
 
-from kernel.term import *
-from kernel.thm import *
-from logic.proofterm import *
-from logic.matcher import *
+from kernel.type import Type
+from kernel.term import Term
+from kernel.thm import Thm, InvalidDerivationException
+from logic.proofterm import ProofTerm
+from logic.matcher import Matcher, MatchException
 
 class ConvException(Exception):
     pass

@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import unittest
+
 from kernel.macro import ProofMacro
 
 def dummy_eval():

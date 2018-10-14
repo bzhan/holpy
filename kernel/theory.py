@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import abc
+
 from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
 from kernel.term import Term, TypeCheckException
 from kernel.thm import Thm, base_deriv, InvalidDerivationException

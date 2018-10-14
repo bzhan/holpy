@@ -1,9 +1,10 @@
 # Author: Bohua Zhan
 
 import unittest
-from kernel.type import *
-from kernel.term import *
-from logic.matcher import *
+
+from kernel.type import TVar, TFun
+from kernel.term import Var, Const, Abs, Bound
+from logic.matcher import Matcher, MatchException
 
 Ta = TVar("a")
 Tf = TFun(Ta, Ta, Ta)

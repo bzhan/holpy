@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import unittest
+
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Var, Comb, Abs, Bound, TypeCheckException
 from kernel.thm import Thm, InvalidDerivationException

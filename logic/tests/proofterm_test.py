@@ -1,11 +1,11 @@
 # Author: Bohua Zhan
 
 import unittest
-from kernel.term import *
-from kernel.type import *
-from kernel.theory import *
-from logic.basic import *
-from logic.proofterm import *
+
+from kernel.type import TVar, TFun
+from kernel.term import Var, Term
+from logic.basic import BasicTheory
+from logic.proofterm import ProofTerm
 
 thy = BasicTheory()
 

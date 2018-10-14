@@ -1,7 +1,8 @@
 # Author: Bohua Zhan
 
 import abc
-from kernel.term import *
+
+from kernel.term import Term
 
 class MatchException(Exception):
     pass
