@@ -176,10 +176,7 @@ class top_conv(Conv):
         return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(t)
 
 class rewr_conv(Conv):
-    """Rewrite using the given equality theorem. Currently perform
-    no matching.
-
-    """
+    """Rewrite using the given equality theorem."""
     def __init__(self, th_name, th):
         assert isinstance(th, Thm), "rewr_conv: argument"
         self.th = th

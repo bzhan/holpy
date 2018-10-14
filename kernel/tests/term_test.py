@@ -145,6 +145,11 @@ class TermTest(unittest.TestCase):
     def testSubstBoundFail2(self):
         self.assertRaises(TermSubstitutionException, a.subst_bound, b)
 
+    def testStripComb(self):
+        self.assertEqual(f2.strip_comb(), (f2, []))
+        self.assertEqual(f2(a).strip_comb(), (f2, [a]))
+        self.assertEqual(f2(a,b).strip_comb(), (f2, [a, b]))
+
     def testBetaConv(self):
         test_data = [
             (Comb(Abs("x", Ta, B0), c), c),

@@ -206,7 +206,7 @@ class Term(abc.ABC):
     def strip_comb(self):
         """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
         if self.ty == Term.COMB:
-            (f, args) = strip_comb(self.fun)
+            (f, args) = self.fun.strip_comb()
             return (f, args + [self.arg])
         else:
             return (self, [])
@@ -373,7 +373,7 @@ class Term(abc.ABC):
             else:
                 return bd_vars[self.n]
         else:
-            return TypeError()
+            raise TypeError()
 
     def checked_get_type(self):
         """Perform type-checking and return the type of self."""

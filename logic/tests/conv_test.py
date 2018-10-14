@@ -54,7 +54,7 @@ class ConvTest(unittest.TestCase):
         g = Const("g", natFunT)
         plus = Const("+", natFunT2)
 
-        # Add axioms 1 = 0 and f 0 = g 0
+        # Add axioms 1 = 0 and f x = g x
         thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
         thy.add_theorem("f_eq_g", Thm.mk_equals(f(Var("x",natT)), g(Var("x",natT))))
 
@@ -143,7 +143,7 @@ class ConvTest(unittest.TestCase):
         g = Const("g", natFunT)
         plus = Const("+", natFunT2)
 
-        # Add axioms 1 = 0 and f 0 = g 0
+        # Add axioms 1 = 0 and f x = g x
         thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
         thy.add_theorem("f_eq_g", Thm.mk_equals(f(Var("x",natT)), g(Var("x",natT))))
 
