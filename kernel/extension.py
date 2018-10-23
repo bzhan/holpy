@@ -6,8 +6,20 @@ from kernel.term import Const
 from kernel.thm import Thm
 
 class Extension(abc.ABC):
-    """A single extension to a theory. There are currently three kinds
-    of extensions, to be defined below.
+    """Represents a single extension to the theory.
+
+    There are currently three kinds of extensions:
+
+    AxConstant(name, T): extend the theory by axiomatically defining
+    a constant with the given name and type.
+
+    Constant(name, e): extend the theory by adding a constant with the
+    given name, and setting the constant to be equal to the expression e
+    (whose type provides the type of the constant).
+
+    Theorem(name, th, prf): extend the theory by adding a theorem with
+    the given name and statement. If prf = None, then the theorem should
+    be accepted as an axiom. Otherwise prf is a proof of the theorem.
 
     """
     (AX_CONSTANT, CONSTANT, THEOREM) = range(3)

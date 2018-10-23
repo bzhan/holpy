@@ -42,6 +42,11 @@ class Theory(abc.ABC):
     check_level -- trust level for proof checking. Trust all macros
     with macro.level <= self.check_level.
 
+    Theory object can be extended by a theory extension, which contains
+    a list of new types, constants, and theorems to add to a theory.
+    Theory object is responsible for checking all proofs in a theory
+    extension.
+
     """
     def __init__(self):
         self.data = dict()
@@ -292,11 +297,16 @@ class Theory(abc.ABC):
         return self.check_proof_incr(0, dict(), prf, rpt)
 
     def extend_axiom_constant(self, ext):
+        """Extend the theory by adding an axiomatic constant."""
         assert ext.ty == Extension.AX_CONSTANT, "extend_axiom_constant"
 
         self.add_term_sig(ext.name, ext.T)
 
     def extend_constant(self, ext):
+        """Extend the theory by adding a constant, which is set to be
+        equal to a certain expression.
+
+        """
         assert ext.ty == Extension.CONSTANT, "extend_constant"
 
         const = ext.get_const_term()
@@ -304,7 +314,7 @@ class Theory(abc.ABC):
         self.add_theorem(const.name + "_def", ext.get_eq_thm())
 
     def unchecked_extend(self, thy_ext):
-        """Perform the given extension without checking any proofs."""
+        """Perform the given theory extension without proof checking."""
         for ext in thy_ext.get_extensions():
             if ext.ty == Extension.AX_CONSTANT:
                 self.extend_axiom_constant(ext)
@@ -316,7 +326,7 @@ class Theory(abc.ABC):
                 raise TypeError()
 
     def checked_extend(self, thy_ext):
-        """Perform the given extension, checking all proofs."""
+        """Perform the given theory extension with proof checking."""
         ext_report = ExtensionReport()
 
         for ext in thy_ext.get_extensions():
