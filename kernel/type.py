@@ -6,20 +6,61 @@ class TypeMatchException(Exception):
     pass
 
 class HOLType(abc.ABC):
-    """Represents a type in higher-order logic. There are two
-    type constructors, to be defined below.
+    """Represents a type in higher-order logic.
+    
+    Types in HOL are formed by two kinds of constructors: TVar and Type.
+
+    TVar(name) represents a type variable with the given name. Type(f, args)
+    represents a type constant applied to a list of arguments.
+    
+    There are two fundamental type constants:
+    
+    - booleans, with name "bool" and no arguments.
+    
+    - functions, with name "fun" and two arguments: the domain and codomain
+    types. Type("fun", a, b) is printed as a => b. The => sign associates to
+    the right.
+    
+    Further defined type constants include:
+    
+    - natural numbers, with name "nat" and no arguments.
+    
+    - lists, with name "list" and one argument.
+
+    - product, with name "prod" and two arguments. Type("prod", a, b) is
+    printed as a * b.
+    
+    Examples:
+    
+    nat => bool: functions from natural numbers to booleans (predicates on
+    natural numbers).
+
+    nat => nat: functions from natural numbers to natural numbers.
+
+    nat => nat => nat: or nat => (nat => nat), functions from two natural
+    numbers to natural numbers.
+
+    nat * nat => nat: functions from a pair of natural numbers to natural
+    numbers.
+
+    nat list: list of natural numbers.
+
+    nat list list: list of lists of natural numbers.
 
     """
     (VAR, COMB) = range(2)
 
     def is_fun(self):
+        """Whether self is of the form a => b."""
         return self.ty == HOLType.COMB and self.name == "fun"
     
     def domain_type(self):
+        """Given a type of form a => b, return a."""
         assert(self.is_fun())
         return self.args[0]
     
     def range_type(self):
+        """Given a type of form a => b, return b."""
         assert(self.is_fun())
         return self.args[1]
         
@@ -80,8 +121,8 @@ class HOLType(abc.ABC):
             raise TypeError()
 
     def match_incr(self, T, tyinst):
-        """Incremental match. Here tyinst is the current instantiation.
-        This is updated by the function.
+        """Incremental match. Match self (as a pattern) with T. Here tyinst
+        is the current instantiation. This is updated by the function.
 
         """
         if self.ty == HOLType.VAR:
@@ -100,8 +141,8 @@ class HOLType(abc.ABC):
             raise TypeError()
 
     def match(self, T):
-        """Match self with T. Returns either a dictionary containing the
-        match, or raise TypeMatchException.
+        """Match self (as a pattern) with T. Returns either a dictionary
+        containing the match, or raise TypeMatchException.
 
         """
         tyinst = dict()

@@ -15,7 +15,7 @@ class ProofReportTest(unittest.TestCase):
         rpt = ProofReport()
         self.assertEqual(rpt.steps, 0)
         for i in range(10):
-            rpt.apply_base_deriv()
+            rpt.apply_primitive_deriv()
         rpt.apply_theorem("th1")
         rpt.apply_theorem("th2")
         rpt.expand_macro("macro1")

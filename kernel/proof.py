@@ -10,11 +10,12 @@ class ProofException(Exception):
 class ProofItem(abc.ABC):
     """An item in a proof, consisting of the following data:
 
-    - id: a string identifier, for reference from later sequents.
-    - th: the sequent statement.
-    - rule: the derivation rule used to derive the sequent.
-    - args: the arguments to the rule.
-    - prevs: the previous sequents used.
+    - id: an identifier for reference by later proof items.
+    - th: theorem statement (as a sequent).
+    - rule: derivation rule used to derive the theorem.
+    - args: arguments to the rule.
+    - prevs: previous sequents used.
+
     """
     def __init__(self, id, th, rule, args = None, prevs = []):
         self.id = id
@@ -43,8 +44,8 @@ class Proof(abc.ABC):
     """Proof objects represent proofs in the natural deduction format.
 
     Each proof consists of a list of items, where each item contains a
-    sequent following from zero or more previous sequents by one of the
-    deduction rules.
+    theorem, which is derived from zero or more previous theorems using
+    one of the deduction rules.
 
     """
     def __init__(self, *assums):

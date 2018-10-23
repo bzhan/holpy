@@ -14,8 +14,44 @@ class TypeCheckException(Exception):
     pass
 
 class Term(abc.ABC):
-    """Represents a term in higher-order logic. There are five
-    term constructors, to be defined below.
+    """Represents a term in higher-order logic.
+    
+    There are five term constructors:
+
+    Var(name, T): variable with given name and type.
+
+    Const(name, T): constant with given name and type.
+
+    Comb(f, a): the function f applied to a, written as f a (or f(a)).
+
+    Abs(x, T, body): abstraction. x is the suggested name of the bound
+    variable, and T is the type of the bound variable. body is the body of
+    the abstraction. This is written as %x::T. body, where the type T is
+    usually omitted.
+
+    Bound(n): bound variable with de Bruijn index n.
+
+    Examples:
+
+    Var("a", nat) is a variable of type nat.
+
+    Const("0", nat) is constant zero.
+
+    Comb(Const("Suc", nat => nat), Const("0", nat)) is the successor function
+    applied to zero, or the constant 1.
+
+    Comb(Comb(Const("plus", nat => nat => nat), Var("a", nat)), Var("b", nat))
+    is the term a + b.
+    
+    Bound variables in the lambda calculus are represented using de Bruijn
+    indices, where Bound(i) represents the bound variable that is i
+    abstractions away.
+
+    Examples:
+    
+    Abs("x", T, P(Bound(0))) is %x::T. P x.
+
+    Abs("x", S, Abs("y", T, Q(Bound(1), Bound(0)))) is %x::S. %y::T. Q x y.
 
     """
     (VAR, CONST, COMB, ABS, BOUND) = range(5)
@@ -109,6 +145,7 @@ class Term(abc.ABC):
             raise TypeError()
 
     def __call__(self, *args):
+        """Apply self (as a function) to a list of arguments."""
         res = self
         for arg in args:
             res = Comb(res, arg)
@@ -138,7 +175,7 @@ class Term(abc.ABC):
             raise TypeError()
     
     def get_type(self):
-        """Returns type of the term, with minimal type-checking."""
+        """Returns type of the term with minimal type-checking."""
         return self._get_type([])
 
     def _is_open(self, n):
@@ -219,6 +256,7 @@ class Term(abc.ABC):
             return self
 
     def dest_arg(self):
+        """Given a term f a, returns a."""
         return self.arg
 
     def is_binop(self):
@@ -230,6 +268,7 @@ class Term(abc.ABC):
         return (self.fun.arg, self.arg)
 
     def dest_arg1(self):
+        """Given a term f a b, return a."""
         return self.fun.arg
 
     def is_implies(self):

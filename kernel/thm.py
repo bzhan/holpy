@@ -9,15 +9,31 @@ class InvalidDerivationException(Exception):
     pass
 
 class Thm(abc.ABC):
-    """Represents a theorem in the sequent calculus.
+    """Represents a theorem in sequent calculus.
 
     A theorem is given by a set of assumptions and the conclusion.
-    The theorem (As, C) is usually written as:
+    The theorem (As, C) means the set of assumptions As implies the
+    conclusion C. It is usually written as:
 
     A1, ... An |- C.
-    """
 
+    For a theorem statement to be well-formed, every item in the set As
+    as well as C must be well-formed terms of type boolean.
+
+    This module also contains the list of primitive deduction rules for
+    higher-order logic. Each primitive deduction rule represents a logically
+    sound way of constructing a new theorem from a (possibly empty) list of
+    old theorems. In principle, every theorem should be constructed using
+    primitive deduction rules from the initial axioms. However, this is not
+    enforced by this module, nor is the proof object stored in the theorem.
+    Proof objects are managed by the Proof module.
+
+    """
     def __init__(self, assums, concl):
+        """Create a theorem with the given list of assumptions and
+        conclusion.
+
+        """
         self.assums = set(assums)
         self.concl = concl
 
@@ -37,6 +53,7 @@ class Thm(abc.ABC):
     def __eq__(self, other):
         """Note order of assumptions does not matter when comparing for
         equality.
+
         """
         return self.assums == other.assums and self.concl == other.concl
 
@@ -51,9 +68,11 @@ class Thm(abc.ABC):
 
     @staticmethod
     def mk_equals(x, y):
+        """Returns the theorem x = y."""
         return Thm([], Term.mk_equals(x, y))
 
     def is_reflexive(self):
+        """Check whether the conclusion of the theorem is of the form x = y."""
         return self.concl.is_equals() and self.concl.dest_arg1() == self.concl.dest_arg()
 
     @staticmethod
@@ -256,8 +275,8 @@ class Thm(abc.ABC):
         else:
             raise InvalidDerivationException()
 
-# Table of base derivations
-base_deriv = {
+# Table of primitive derivations
+primitive_deriv = {
     "assume" : Thm.assume,
     "implies_intr" : Thm.implies_intr,
     "implies_elim" : Thm.implies_elim,

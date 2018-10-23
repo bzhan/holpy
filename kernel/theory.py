@@ -4,7 +4,7 @@ import abc
 
 from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
 from kernel.term import Term, TypeCheckException
-from kernel.thm import Thm, base_deriv, InvalidDerivationException
+from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.macro import ProofMacro
 from kernel.extension import Extension
 from kernel.report import ExtensionReport
@@ -18,15 +18,28 @@ class CheckProofException(Exception):
         self.str = str
 
 class Theory(abc.ABC):
-    """Theory objects contain all information about the current theory.
+    """Represents the current state of the theory.
 
-    The data of the theory is structured as a dictionary. The keys are
-    strings indicating the type of the data. The values are the dictionary
-    for that type of data.
+    Data contained in the theory include the following:
 
-    The theory also contains parameters for proof checking:
+    type_sig: type signature. The arity of each type constant.
 
-    check_level -- trust level for the proof checking. Trust all macros
+    term_sig: term signature. The most general type of each term constant.
+
+    theorems: list of currently proved theorems.
+
+    proof_macro: list of macros for abbreviating proofs.
+
+    One can also define new kinds of data to be kept in the theory.
+
+    The data in the theory is structured as a two-level dictionary.
+    The keys of self.data are strings indicating the type of the data.
+    The corresponding values is the dictionary for that type of data.
+
+    Theory object is also responsible for proof checking. Parameters for
+    proof checking include:
+
+    check_level -- trust level for proof checking. Trust all macros
     with macro.level <= self.check_level.
 
     """
@@ -42,6 +55,7 @@ class Theory(abc.ABC):
         self.data[name] = dict()
 
     def get_data(self, name):
+        """Returns data for the given type."""
         return self.data[name]
 
     def add_data(self, name, key, val):
@@ -217,14 +231,14 @@ class Theory(abc.ABC):
             else:
                 args = []
 
-            if seq.rule in base_deriv:
-                # If the method is one of the base derivations, obtain and
-                # apply that base derivation.
-                rule_fun = base_deriv[seq.rule]
+            if seq.rule in primitive_deriv:
+                # If the method is one of the primitive derivations, obtain and
+                # apply that primitive derivation.
+                rule_fun = primitive_deriv[seq.rule]
                 try:
                     res_th = rule_fun(*prev_ths, *args)
                     if rpt is not None:
-                        rpt.apply_base_deriv()
+                        rpt.apply_primitive_deriv()
                 except InvalidDerivationException:
                     raise CheckProofException("invalid derivation")
                 except TypeError:
