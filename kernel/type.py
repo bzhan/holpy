@@ -1,11 +1,9 @@
 # Author: Bohua Zhan
 
-import abc
-
 class TypeMatchException(Exception):
     pass
 
-class HOLType(abc.ABC):
+class HOLType():
     """Represents a type in higher-order logic.
     
     Types in HOL are formed by two kinds of constructors: TVar and Type.

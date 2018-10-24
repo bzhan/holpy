@@ -1,13 +1,11 @@
 # Author: Bohua Zhan
 
-import abc
-
 from kernel.term import Term
 
 class MatchException(Exception):
     pass
 
-class Matcher(abc.ABC):
+class Matcher():
     """Matching between two terms.
 
     By default, all variables in the pattern can be instantiated.

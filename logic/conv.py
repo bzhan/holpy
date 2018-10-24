@@ -1,7 +1,5 @@
 # Author: Bohua Zhan
 
-import abc
-
 from kernel.type import Type
 from kernel.term import Term
 from kernel.thm import Thm, InvalidDerivationException
@@ -11,7 +9,7 @@ from logic.matcher import Matcher, MatchException
 class ConvException(Exception):
     pass
 
-class Conv(abc.ABC):
+class Conv():
     """A conversion is a function for rewriting a term.
 
     A Conv object has two main methods:
@@ -19,11 +17,9 @@ class Conv(abc.ABC):
     get_proof_term - function to obtain the proof term for the equality.
 
     """
-    @abc.abstractmethod
     def eval(self, t):
         pass
 
-    @abc.abstractmethod
     def get_proof_term(self, t):
         pass
 

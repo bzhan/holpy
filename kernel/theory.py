@@ -1,7 +1,5 @@
 # Author: Bohua Zhan
 
-import abc
-
 from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
 from kernel.term import Term, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
@@ -17,7 +15,7 @@ class CheckProofException(Exception):
     def __init__(self, str):
         self.str = str
 
-class Theory(abc.ABC):
+class Theory():
     """Represents the current state of the theory.
 
     Data contained in the theory include the following:

@@ -1,11 +1,9 @@
 # Author: Bohua Zhan
 
-import abc
-
 from kernel.term import Const
 from kernel.thm import Thm
 
-class Extension(abc.ABC):
+class Extension():
     """Represents a single extension to the theory.
 
     There are currently three kinds of extensions:
@@ -85,7 +83,7 @@ class Theorem(Extension):
         self.th = th
         self.prf = prf
 
-class TheoryExtension(abc.ABC):
+class TheoryExtension():
     """A theory extension contains a list of extensions to a theory. These
     may involve new types, constants, and theorems. Definition of
     new types, constants, and theorems may be accompanied by proof, which

@@ -1,13 +1,11 @@
 # Author: Bohua Zhan
 
-import abc
-
 from kernel.thm import Thm
 
 class ProofException(Exception):
     pass
 
-class ProofItem(abc.ABC):
+class ProofItem():
     """An item in a proof, consisting of the following data:
 
     - id: an identifier for reference by later proof items.
@@ -40,7 +38,7 @@ class ProofItem(abc.ABC):
     def __repr__(self):
         return str(self)
 
-class Proof(abc.ABC):
+class Proof():
     """Proof objects represent proofs in the natural deduction format.
 
     Each proof consists of a list of items, where each item contains a

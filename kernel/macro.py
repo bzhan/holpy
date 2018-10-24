@@ -1,8 +1,6 @@
 # Author: Bohua Zhan
 
-import abc
-
-class ProofMacro(abc.ABC):
+class ProofMacro():
     """A proof macro represents a derived proof method. It consists
     of the following data:
     

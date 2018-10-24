@@ -1,14 +1,12 @@
 # Author: Bohua Zhan
 
-import abc
-
 from kernel.type import Type, hol_bool
 from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
 
 class InvalidDerivationException(Exception):
     pass
 
-class Thm(abc.ABC):
+class Thm():
     """Represents a theorem in sequent calculus.
 
     A theorem is given by a set of assumptions and the conclusion.

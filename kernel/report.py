@@ -1,11 +1,9 @@
 # Author: Bohua Zhan
 
-import abc
-
 from kernel.type import HOLType
 from kernel.thm import Thm
 
-class ProofReport(abc.ABC):
+class ProofReport():
     """A report of proof checking. This contains:
 
     steps -- number of primitive steps taken to check the proof.
@@ -68,7 +66,7 @@ class ProofReport(abc.ABC):
         """Return the triple of thm_steps, prim_steps, macro_steps."""
         return (self.thm_steps, self.prim_steps, self.macro_steps)
 
-class ExtensionReport(abc.ABC):
+class ExtensionReport():
     """A report of a theory extension. This contains:
 
     axioms -- list of axioms added. Each axiom is given by a pair,

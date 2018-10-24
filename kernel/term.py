@@ -1,7 +1,5 @@
 # Author: Bohua Zhan
 
-import abc
-
 from kernel.type import TFun, hol_bool
 
 class OpenTermException(Exception):
@@ -13,7 +11,7 @@ class TermSubstitutionException(Exception):
 class TypeCheckException(Exception):
     pass
 
-class Term(abc.ABC):
+class Term():
     """Represents a term in higher-order logic.
     
     There are five term constructors:
