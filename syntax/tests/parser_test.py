@@ -4,10 +4,12 @@ import unittest
 
 from kernel.type import TVar, TFun, HOLType, hol_bool
 from kernel.term import Term
-from kernel.theory import Theory
+from logic.basic import BasicTheory
+from syntax.printer import print_term
 from syntax.parser import type_parser, term_parser
 
-thy = Theory.EmptyTheory()
+thy = BasicTheory()
+
 ctxt = {
     "A" : hol_bool,
     "B" : hol_bool,
@@ -57,9 +59,12 @@ class ParserTest(unittest.TestCase):
         parseT = type_parser(thy).parse
 
         test_data = [
+            # Atoms
             ("A", "bool"),
             ("P", "'a => bool"),
             ("a", "'a"),
+
+            # Function application
             ("P a", "bool"),
             ("P2 a", "'a => bool"),
             ("P2 a b", "bool"),
@@ -68,20 +73,23 @@ class ParserTest(unittest.TestCase):
             ("P (f (f a))", "bool"),
             ("P2 (f a) b", "bool"),
             ("P2 a (f b)", "bool"),
+
+            # Abstraction
             ("%x::'a. x", "'a => 'a"),
             ("%x::'a. P x", "'a => bool"),
             ("%x::'a. %y::'a. P2 x y", "'a => 'a => bool"),
-        ]
 
-        test_data2 = [
-            ("a = b", "bool", "equals a b"),
-            ("A --> B", "bool", "implies A B"),
-            ("f a = b", "bool", "equals (f a) b"),
-            ("A --> B --> C", "bool", "implies A (implies B C)"),
-            ("(A --> B) --> C", "bool", "implies (implies A B) C"),
-            ("a = b --> C", "bool", "implies (equals a b) C"),
-            ("A = (B --> C)", "bool", "equals A (implies B C)"),
-            ("P a --> Q b", "bool", "implies (P a) (Q b)"),
+            # Logical symbols
+            ("a = b", "bool"),
+            ("A --> B", "bool"),
+            ("f a = b", "bool"),
+            ("A --> B --> C", "bool"),
+            ("(A --> B) --> C", "bool"),
+            ("a = b --> C", "bool"),
+            ("A = (B --> C)", "bool"),
+            ("P a --> Q b", "bool"),
+            ("A = B = C", "bool"),
+            ("A = (B = C)", "bool"),
         ]
 
         for (s, Ts) in test_data:
@@ -89,14 +97,7 @@ class ParserTest(unittest.TestCase):
             T = parseT(Ts)
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(t.repr_with_abs_type(), s)
-
-        for (s, Ts, repr_s) in test_data2:
-            t = parse(s)
-            T = parseT(Ts)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(t.repr_with_abs_type(), repr_s)
+            self.assertEqual(print_term(thy, t, print_abs_type=True), s)
 
 if __name__ == "__main__":
     unittest.main()

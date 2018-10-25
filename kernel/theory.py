@@ -30,9 +30,10 @@ class Theory():
 
     One can also define new kinds of data to be kept in the theory.
 
-    The data in the theory is structured as a two-level dictionary.
-    The keys of self.data are strings indicating the type of the data.
-    The corresponding values is the dictionary for that type of data.
+    The data in the theory is contained in the dictionary self.data.
+    The keys of self.data are strings indicating the type of data.
+    The corresponding values are dictionaries by default, but can be
+    objects of any class in general.
 
     Theory object is also responsible for proof checking. Parameters for
     proof checking include:
@@ -50,23 +51,47 @@ class Theory():
         self.data = dict()
         self.check_level = 0
 
-    def add_data_type(self, name):
-        """Add a new data type."""
+    def add_data_type(self, name, init = None):
+        """Add a new data type.
+        
+        init - initial data. Default value is dict().
+        
+        """
         if name in self.data:
             raise TheoryException()
         
-        self.data[name] = dict()
-
-    def get_data(self, name):
-        """Returns data for the given type."""
-        return self.data[name]
+        if init is None:
+            init = dict()
+        self.data[name] = init
 
     def add_data(self, name, key, val):
-        """Apply key:val to the current data."""
+        """Add the given key-value pair to the data for the given data
+        type. This can be used to modify theory data of dictionary type only.
+        
+        """
         if name not in self.data:
             raise TheoryException()
 
+        assert isinstance(self.data[name], dict), "add_data: data must be a dictionary"
+
         self.data[name][key] = val
+
+    def update_data(self, name, f):
+        """Update data for the given data type with the function f. This
+        can be used to update theory data that is not a dictionary.
+        
+        f is applied to the current data, and the output of f becomes the
+        new data.
+        
+        """
+        if name not in self.data:
+            raise TheoryException()
+
+        self.data[name] = f(self.data[name])
+
+    def get_data(self, name):
+        """Returns data for the given data type."""
+        return self.data[name]
 
     def add_type_sig(self, name, n):
         """Add to the type signature. The type constructor with the given name

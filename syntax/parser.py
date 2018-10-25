@@ -19,7 +19,7 @@ grammar = r"""
 
     ?comb: comb atom | atom
 
-    ?eq: comb "=" comb | comb
+    ?eq: eq "=" comb | comb
 
     ?implies: eq "-->" implies | eq
 
@@ -33,12 +33,16 @@ grammar = r"""
 
 @v_args(inline=True)
 class HOLTransformer(Transformer):
-    def __init__(self, thy, ctxt = dict()):
-        """thy is the current Theory object. ctxt is a dictionary
-        from names of free variables to their types.
+    def __init__(self, thy, ctxt = None):
+        """thy is the current Theory object.
+        
+        ctxt is a dictionary from names of free variables to their types.
+        Default to the empty dictionary.
 
         """
         self.thy = thy
+        if ctxt is None:
+            ctxt = dict()
         self.ctxt = ctxt
 
     def tvar(self, s):
