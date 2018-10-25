@@ -4,6 +4,10 @@ Implementation of higher-order logic in Python.
 
 This project is developed under Python 3.
 
+Required packages:
+
+Lark parser: https://github.com/lark-parser/lark
+
 Directory structure:
 
 * [`kernel`](kernel/): kernel for higher-order logic.
