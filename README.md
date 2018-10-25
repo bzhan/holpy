@@ -2,7 +2,7 @@
 
 Implementation of higher-order logic in Python.
 
-This project is developed under Python 3.6.
+This project is developed under Python 3.
 
 Directory structure:
 

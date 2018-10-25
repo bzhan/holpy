@@ -46,7 +46,7 @@ class Thm():
         return str(self)
 
     def __hash__(self):
-        return hash(("ASSUM", *self.assums, "CONCL", self.concl))
+        return hash(("ASSUM", tuple(self.assums), "CONCL", self.concl))
 
     def __eq__(self, other):
         """Note order of assumptions does not matter when comparing for
