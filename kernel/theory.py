@@ -144,12 +144,12 @@ class Theory():
 
         return data[name]
 
-    def add_proof_macro(self, name, macro):
+    def add_proof_macro(self, macro):
         """Add the given proof macro."""
         if not isinstance(macro, ProofMacro):
             raise TheoryException()
 
-        self.add_data("proof_macro", name, macro)
+        self.add_data("proof_macro", macro.name, macro)
 
     def has_proof_macro(self, name):
         """Whether the given name corresponds to a proof macro."""

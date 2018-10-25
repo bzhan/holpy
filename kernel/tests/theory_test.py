@@ -25,29 +25,26 @@ B = Var("B", hol_bool)
 C = Var("C", hol_bool)
 
 # A simple macro
-def beta_conv_rhs_eval(th):
-    assert Term.is_equals(th.concl), "beta_conv_rhs"
-    (_, rhs) = th.concl.dest_binop()
-
-    return Thm.transitive(th, Thm.beta_conv(rhs))
-
-def beta_conv_rhs_expand(depth, ids, th):
-    assert Term.is_equals(th.concl), "beta_conv_rhs"
-    (_, rhs) = th.concl.dest_binop()
-
-    th1 = Thm.beta_conv(rhs)
-    th2 = Thm.transitive(th, th1)
-    prf = Proof()
-    prf.add_item((depth, "S1"), th1, "beta_conv", args = rhs)
-    prf.add_item("C", th2, "transitive", prevs = [ids[0], (depth, "S1")])
-    return prf
-
-beta_conv_rhs_macro = ProofMacro(
+def beta_conv_rhs_macro():
     "Reduce the right side of th by beta-conversion.",
-    beta_conv_rhs_eval,
-    beta_conv_rhs_expand,
-    level = 1
-)
+    def eval(th):
+        assert Term.is_equals(th.concl), "beta_conv_rhs"
+        (_, rhs) = th.concl.dest_binop()
+
+        return Thm.transitive(th, Thm.beta_conv(rhs))
+
+    def expand(depth, ids, th):
+        assert Term.is_equals(th.concl), "beta_conv_rhs"
+        (_, rhs) = th.concl.dest_binop()
+
+        th1 = Thm.beta_conv(rhs)
+        th2 = Thm.transitive(th, th1)
+        prf = Proof()
+        prf.add_item((depth, "S1"), th1, "beta_conv", args = rhs)
+        prf.add_item("C", th2, "transitive", prevs = [ids[0], (depth, "S1")])
+        return prf
+
+    return ProofMacro("beta_conv_rhs", eval, expand, level = 1)
 
 class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
@@ -231,7 +228,7 @@ class TheoryTest(unittest.TestCase):
     def testCheckProofMacro(self):
         """Proof checking with simple macro."""
         thy = Theory.EmptyTheory()
-        thy.add_proof_macro("beta_conv_rhs", beta_conv_rhs_macro)
+        thy.add_proof_macro(beta_conv_rhs_macro())
         
         t = Comb(Abs("x", Ta, Bound(0)), x)
         th = Thm.mk_equals(t,x)

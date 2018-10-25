@@ -4,7 +4,7 @@ class ProofMacro():
     """A proof macro represents a derived proof method. It consists
     of the following data:
     
-    desc -- description of the macro.
+    name -- name of the macro.
 
     eval -- function to obtain the final result. Input is list of
     previous theorems, followed by arguments of the proof method.
@@ -18,8 +18,8 @@ class ProofMacro():
     trustworthiness.
 
     """
-    def __init__(self, desc, eval, expand = None, level = 10):
-        self.desc = desc
+    def __init__(self, name, eval, expand = None, level = 10):
+        self.name = name
         self.eval = eval
         self.expand = expand
         self.level = level
@@ -35,4 +35,4 @@ class ProofMacro():
         else:
             str_no_expand = ", no expand"
 
-        return self.desc + " (level " + str(self.level) + str_no_eval + str_no_expand + ")"
+        return self.name + " (level " + str(self.level) + str_no_eval + str_no_expand + ")"
