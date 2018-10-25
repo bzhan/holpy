@@ -3,7 +3,7 @@
 from lark import Lark, Transformer
 
 from kernel.type import TVar, Type, TFun
-from kernel.term import Var, Const, Comb, Abs, Bound
+from kernel.term import Var, Const, Comb, Abs, Bound, Term
 
 grammar = r"""
     ?type: "'" CNAME -> tvar              // Type variable
@@ -17,7 +17,13 @@ grammar = r"""
         | "%" CNAME "::" type ". " term -> abs  // Abstraction
         | "(" term ")"                          // Parenthesis
 
-    ?term: term atom | atom
+    ?comb: comb atom | atom
+
+    ?eq: comb "=" comb | comb
+
+    ?implies: eq "-->" implies | eq
+
+    ?term: implies
 
     %import common.CNAME
     %import common.WS
@@ -59,8 +65,8 @@ class HOLTransformer(Transformer):
             # s not found, presumably a bound variable
             return Var(s, None)
 
-    def term(self, args):
-        assert len(args) == 2, "term: two arguments expected"
+    def comb(self, args):
+        assert len(args) == 2, "comb: two arguments expected"
         return Comb(args[0], args[1])
 
     def abs(self, args):
@@ -71,6 +77,14 @@ class HOLTransformer(Transformer):
         # Abstract over it, and remember to change the type to T.
         t = body.abstract_over(Var(var_name, None))
         return Abs(var_name, T, t.body)
+
+    def eq(self, args):
+        assert len(args) == 2, "eq: two arguments expected"
+        return Term.mk_equals(*args)
+
+    def implies(self, args):
+        assert len(args) == 2, "implies: two arguments expected"
+        return Term.mk_implies(*args)
 
 def type_parser(thy):
     return Lark(grammar, start="type", parser="lalr", transformer=HOLTransformer(thy))

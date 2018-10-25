@@ -71,10 +71,17 @@ class ParserTest(unittest.TestCase):
             ("%x::'a. x", "'a => 'a"),
             ("%x::'a. P x", "'a => bool"),
             ("%x::'a. %y::'a. P2 x y", "'a => 'a => bool"),
-            ("equals a b", "bool"),
-            ("implies A B", "bool"),
-            ("equals (f a) b", "bool"),
-            ("implies (implies A B) C", "bool"),
+        ]
+
+        test_data2 = [
+            ("a = b", "bool", "equals a b"),
+            ("A --> B", "bool", "implies A B"),
+            ("f a = b", "bool", "equals (f a) b"),
+            ("A --> B --> C", "bool", "implies A (implies B C)"),
+            ("(A --> B) --> C", "bool", "implies (implies A B) C"),
+            ("a = b --> C", "bool", "implies (equals a b) C"),
+            ("A = (B --> C)", "bool", "equals A (implies B C)"),
+            ("P a --> Q b", "bool", "implies (P a) (Q b)"),
         ]
 
         for (s, Ts) in test_data:
@@ -83,6 +90,13 @@ class ParserTest(unittest.TestCase):
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
             self.assertEqual(t.repr_with_abs_type(), s)
+
+        for (s, Ts, repr_s) in test_data2:
+            t = parse(s)
+            T = parseT(Ts)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(t.checked_get_type(), T)
+            self.assertEqual(t.repr_with_abs_type(), repr_s)
 
 if __name__ == "__main__":
     unittest.main()
