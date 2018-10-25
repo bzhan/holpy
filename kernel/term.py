@@ -73,9 +73,11 @@ class Term():
         else:
             raise TypeError()
 
-    def _repr(self, bd_vars):
+    def _repr(self, bd_vars, *, print_abs_type = False):
         """Helper function for __repr__. bd_vars is the list of names of
         bound variables.
+
+        print_abs_type: print type information for bound variables.
 
         """
         if self.ty == Term.VAR or self.ty == Term.CONST:
@@ -93,7 +95,9 @@ class Term():
                 str_arg = self.arg._repr(bd_vars)
             return str_fun + " " + str_arg
         elif self.ty == Term.ABS:
-            return "%" + self.var_name + ". " + self.body._repr([self.var_name] + bd_vars)
+            var_str = self.var_name + "::" + repr(self.T) if print_abs_type else self.var_name
+            body_repr = self.body._repr([self.var_name] + bd_vars, print_abs_type = print_abs_type)
+            return "%" + var_str + ". " + body_repr
         elif self.ty == Term.BOUND:
             if self.n >= len(bd_vars):
                 raise OpenTermException
@@ -108,6 +112,10 @@ class Term():
 
         """
         return self._repr([])
+
+    def repr_with_abs_type(self):
+        """Print the term with type information for bound variables."""
+        return self._repr([], print_abs_type = True)
 
     def __hash__(self):
         if self.ty == Term.VAR:

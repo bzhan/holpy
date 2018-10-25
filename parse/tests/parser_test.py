@@ -2,12 +2,28 @@
 
 import unittest
 
-from kernel.type import TVar, Type, HOLType
-from parse.parser import type_parser
+from kernel.type import TVar, TFun, HOLType, hol_bool
+from kernel.term import Term
+from kernel.theory import Theory
+from parse.parser import type_parser, term_parser
+
+thy = Theory.EmptyTheory()
+ctxt = {
+    "A" : hol_bool,
+    "B" : hol_bool,
+    "C" : hol_bool,
+    "P" : TFun(TVar("a"), hol_bool),
+    "Q" : TFun(TVar("a"), hol_bool),
+    "P2" : TFun(TVar("a"), TVar("a"), hol_bool),
+    "a" : TVar("a"),
+    "b" : TVar("a"),
+    "c" : TVar("a"),
+    "f" : TFun(TVar("a"), TVar("a"))
+}
 
 class ParserTest(unittest.TestCase):
     def testParseType(self):
-        parse = type_parser.parse
+        parse = type_parser(thy).parse
 
         test_data = [
             "'b",
@@ -35,6 +51,38 @@ class ParserTest(unittest.TestCase):
             T = parse(s)
             self.assertIsInstance(T, HOLType)
             self.assertEqual(str(T), s)
+
+    def testParseTerm(self):
+        parse = term_parser(thy, ctxt).parse
+        parseT = type_parser(thy).parse
+
+        test_data = [
+            ("A", "bool"),
+            ("P", "'a => bool"),
+            ("a", "'a"),
+            ("P a", "bool"),
+            ("P2 a", "'a => bool"),
+            ("P2 a b", "bool"),
+            ("f a", "'a"),
+            ("P (f a)", "bool"),
+            ("P (f (f a))", "bool"),
+            ("P2 (f a) b", "bool"),
+            ("P2 a (f b)", "bool"),
+            ("%x::'a. x", "'a => 'a"),
+            ("%x::'a. P x", "'a => bool"),
+            ("%x::'a. %y::'a. P2 x y", "'a => 'a => bool"),
+            ("equals a b", "bool"),
+            ("implies A B", "bool"),
+            ("equals (f a) b", "bool"),
+            ("implies (implies A B) C", "bool"),
+        ]
+
+        for (s, Ts) in test_data:
+            t = parse(s)
+            T = parseT(Ts)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(t.checked_get_type(), T)
+            self.assertEqual(t.repr_with_abs_type(), s)
 
 if __name__ == "__main__":
     unittest.main()

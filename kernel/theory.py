@@ -75,6 +75,9 @@ class Theory():
         """
         self.add_data("type_sig", name, n)
 
+    def has_type_sig(self, name):
+        return name in self.get_data("type_sig")
+
     def get_type_sig(self, name):
         """Returns the arity of the type."""
         data = self.get_data("type_sig")
@@ -89,6 +92,9 @@ class Theory():
 
         """
         self.add_data("term_sig", name, T)
+
+    def has_term_sig(self, name):
+        return name in self.get_data("term_sig")
 
     def get_term_sig(self, name):
         """Returns the most general type of the term."""

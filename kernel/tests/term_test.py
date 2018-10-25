@@ -56,6 +56,15 @@ class TermTest(unittest.TestCase):
         for (t, repr_t) in test_data:
             self.assertEqual(repr(t), repr_t)
 
+    def testReprTermWithAbsType(self):
+        test_data = [
+            (Abs("x", Ta, b), "%x::'a. b"),
+            (Abs("x", Ta, "y", Ta, b), "%x::'a. %y::'a. b"),
+        ]
+
+        for (t, repr_t) in test_data:
+            self.assertEqual(t.repr_with_abs_type(), repr_t)
+
     def testEquals(self):
         test_data = [
             (Abs("x", Ta, b), Abs("y", Ta, b)),
