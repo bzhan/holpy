@@ -79,7 +79,7 @@ class ParserTest(unittest.TestCase):
             ("%x::'a. P x", "'a => bool"),
             ("%x::'a. %y::'a. P2 x y", "'a => 'a => bool"),
 
-            # Logical symbols
+            # Equality and implies
             ("a = b", "bool"),
             ("A --> B", "bool"),
             ("f a = b", "bool"),
@@ -90,6 +90,22 @@ class ParserTest(unittest.TestCase):
             ("P a --> Q b", "bool"),
             ("A = B = C", "bool"),
             ("A = (B = C)", "bool"),
+
+            # Conjunction and disjunction
+            ("A & B", "bool"),
+            ("A & B & C", "bool"),
+            ("(A & B) & C", "bool"),
+            ("A | B", "bool"),
+            ("A | B | C", "bool"),
+            ("(A | B) | C", "bool"),
+            ("A & B | B & C", "bool"),
+            ("(A | B) & (B | C)", "bool"),
+            
+            # Mixed
+            ("A --> B & C", "bool"),
+            ("A | B --> C", "bool"),
+            ("(A --> B) & C", "bool"),
+            ("A | (B --> C)", "bool"),
         ]
 
         for (s, Ts) in test_data:

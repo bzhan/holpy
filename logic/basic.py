@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
-from kernel.term import Var, Term
+from kernel.type import TFun, hol_bool
+from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.theory import Theory
@@ -19,6 +20,8 @@ class OperatorData():
         data = [
             ("=", "equals", 50, OperatorData.LEFT_ASSOC),
             ("-->", "implies", 25, OperatorData.RIGHT_ASSOC),
+            ("&", "conj", 35, OperatorData.RIGHT_ASSOC),
+            ("|", "disj", 30, OperatorData.RIGHT_ASSOC),
         ]
 
         self.op_dict = dict()
@@ -90,7 +93,37 @@ def BasicTheory():
     # Operators
     thy.add_data_type("operator", OperatorData())
 
+    # Logical terms
+    thy.add_term_sig("conj", TFun(hol_bool, hol_bool, hol_bool))
+    thy.add_term_sig("disj", TFun(hol_bool, hol_bool, hol_bool))
+
     # Basic macros
     thy.add_proof_macro(arg_combination_macro())
     thy.add_proof_macro(fun_combination_macro())
     return thy
+
+class Logic():
+    """Utility functions for logic."""
+
+    conj = Const("conj", TFun(hol_bool, hol_bool, hol_bool))
+    disj = Const("disj", TFun(hol_bool, hol_bool, hol_bool))
+        
+    @staticmethod
+    def is_conj(t):
+        """Whether t is of the form s & t."""
+        return self.is_binop() and self.get_head() == Logic.conj
+
+    @staticmethod
+    def mk_conj(s, t):
+        """Construct the term s & t."""
+        return Logic.conj(s, t)
+
+    @staticmethod
+    def is_disj(t):
+        """Whether t is of the form s | t."""
+        return self.is_binop() and self.get_head() == Logic.disj
+
+    @staticmethod
+    def mk_disj(s, t):
+        """Construct the term s | t."""
+        return Logic.disj(s, t)

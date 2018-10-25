@@ -4,6 +4,7 @@ from lark import Lark, Transformer, v_args
 
 from kernel.type import TVar, Type, TFun
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
+from logic.basic import Logic
 
 grammar = r"""
     ?type: "'" CNAME -> tvar              // Type variable
@@ -19,11 +20,15 @@ grammar = r"""
 
     ?comb: comb atom | atom
 
-    ?eq: eq "=" comb | comb
+    ?eq: eq "=" comb | comb      // Equality: priority 50
 
-    ?implies: eq "-->" implies | eq
+    ?conj: eq "&" conj | eq      // Conjunction: priority 35
 
-    ?term: implies
+    ?disj: conj "|" disj | conj  // Disjunction: priority 30
+
+    ?imp: disj "-->" imp | disj  // Implies: priority 25
+
+    ?term: imp
 
     %import common.CNAME
     %import common.WS
@@ -77,7 +82,13 @@ class HOLTransformer(Transformer):
     def eq(self, lhs, rhs):
         return Term.mk_equals(lhs, rhs)
 
-    def implies(self, s, t):
+    def conj(self, s, t):
+        return Logic.mk_conj(s, t)
+
+    def disj(self, s, t):
+        return Logic.mk_disj(s, t)
+
+    def imp(self, s, t):
         return Term.mk_implies(s, t)
 
 def type_parser(thy):

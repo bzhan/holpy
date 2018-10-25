@@ -4,7 +4,7 @@ import unittest
 
 from kernel.type import TVar, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
-from logic.basic import BasicTheory
+from logic.basic import BasicTheory, Logic
 from syntax.printer import print_term
 
 thy = BasicTheory()
@@ -17,6 +17,8 @@ a = Var("a", Ta)
 b = Var("b", Ta)
 eq = Term.mk_equals
 imp = Term.mk_implies
+conj = Logic.mk_conj
+disj = Logic.mk_disj
 
 class PrinterTest(unittest.TestCase):
     def testPrintAbsType(self):
@@ -30,6 +32,7 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintLogical(self):
         test_data = [
+            # Equality and implies
             (eq(a, b), "a = b"),
             (imp(A, B), "A --> B"),
             (imp(A, imp(B, C)), "A --> B --> C"),
@@ -38,6 +41,26 @@ class PrinterTest(unittest.TestCase):
             (eq(imp(A, B), imp(B, C)), "(A --> B) = (B --> C)"),
             (eq(A, eq(B, C)), "A = (B = C)"),
             (eq(eq(A, B), C), "A = B = C"),
+
+            # Conjunction and disjunction
+            (conj(A, B), "A & B"),
+            (disj(A, B), "A | B"),
+            (conj(A, conj(B, C)), "A & B & C"),
+            (conj(conj(A, B), C), "(A & B) & C"),
+            (disj(A, disj(B, C)), "A | B | C"),
+            (disj(disj(A, B), C), "(A | B) | C"),
+            (disj(conj(A, B), C), "A & B | C"),
+            (conj(disj(A, B), C), "(A | B) & C"),
+            (disj(A, conj(B, C)), "A | B & C"),
+            (conj(A, disj(B, C)), "A & (B | C)"),
+            (disj(conj(A, B), conj(B, C)), "A & B | B & C"),
+            (conj(disj(A, B), disj(B, C)), "(A | B) & (B | C)"),
+
+            # Mixed
+            (imp(conj(A, B), C), "A & B --> C"),
+            (imp(A, disj(B, C)), "A --> B | C"),
+            (conj(A, imp(B, C)), "A & (B --> C)"),
+            (disj(imp(A, B), C), "(A --> B) | C"),
         ]
 
         for t, s in test_data:
