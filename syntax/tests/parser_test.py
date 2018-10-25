@@ -5,7 +5,7 @@ import unittest
 from kernel.type import TVar, TFun, HOLType, hol_bool
 from kernel.term import Term
 from kernel.theory import Theory
-from parse.parser import type_parser, term_parser
+from syntax.parser import type_parser, term_parser
 
 thy = Theory.EmptyTheory()
 ctxt = {
