@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from lark import Lark, Transformer
+from lark import Lark, Transformer, v_args
 
 from kernel.type import TVar, Type, TFun
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
@@ -31,6 +31,7 @@ grammar = r"""
     %ignore WS
 """
 
+@v_args(inline=True)
 class HOLTransformer(Transformer):
     def __init__(self, thy, ctxt = dict()):
         """thy is the current Theory object. ctxt is a dictionary
@@ -40,21 +41,16 @@ class HOLTransformer(Transformer):
         self.thy = thy
         self.ctxt = ctxt
 
-    def tvar(self, args):
-        assert len(args) == 1, "tvar: one argument expected"
-        return TVar(args[0])
+    def tvar(self, s):
+        return TVar(s)
 
-    def type(self, args):
+    def type(self, *args):
         return Type(args[-1], *args[:-1])
 
-    def funtype(self, args):
-        assert len(args) == 2, "funtype: two arguments expected"
-        return TFun(*args)
+    def funtype(self, t1, t2):
+        return TFun(t1, t2)
 
-    def vname(self, args):
-        assert len(args) == 1, "vname: one argument expected"
-        s = args[0]
-
+    def vname(self, s):
         if self.thy.has_term_sig(s):
             # s is the name of a constant in the theory
             return Const(s, self.thy.get_term_sig(s))
@@ -65,26 +61,20 @@ class HOLTransformer(Transformer):
             # s not found, presumably a bound variable
             return Var(s, None)
 
-    def comb(self, args):
-        assert len(args) == 2, "comb: two arguments expected"
-        return Comb(args[0], args[1])
+    def comb(self, fun, arg):
+        return Comb(fun, arg)
 
-    def abs(self, args):
-        assert len(args) == 3, "abs: three arguments expected"
-        var_name, T, body = args
-
+    def abs(self, var_name, T, body):
         # Bound variables should be represented by Var(var_name, None).
         # Abstract over it, and remember to change the type to T.
         t = body.abstract_over(Var(var_name, None))
         return Abs(var_name, T, t.body)
 
-    def eq(self, args):
-        assert len(args) == 2, "eq: two arguments expected"
-        return Term.mk_equals(*args)
+    def eq(self, lhs, rhs):
+        return Term.mk_equals(lhs, rhs)
 
-    def implies(self, args):
-        assert len(args) == 2, "implies: two arguments expected"
-        return Term.mk_implies(*args)
+    def implies(self, s, t):
+        return Term.mk_implies(s, t)
 
 def type_parser(thy):
     return Lark(grammar, start="type", parser="lalr", transformer=HOLTransformer(thy))
