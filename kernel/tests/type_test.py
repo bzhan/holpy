@@ -22,6 +22,10 @@ class TypeTest(unittest.TestCase):
             (TFun(TFun(Ta, Tb), Tc), "('a => 'b) => 'c"),
             (TFun(Type("list", Ta), Tb), "'a list => 'b"),
             (TFun(Ta, Type("list", Tb)), "'a => 'b list"),
+            (Type("list", TFun(Ta, Tb)), "('a => 'b) list"),
+            (Type("list", Type("list", TFun(Ta, Tb))), "('a => 'b) list list"),
+            (TFun(Type("list", Ta), Type("list", Tb)), "'a list => 'b list"),
+            (Type("list", TFun(Type("list", Ta), Tb)), "('a list => 'b) list"),
         ]
 
         for (T, str_T) in test_data:

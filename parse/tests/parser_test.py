@@ -17,6 +17,18 @@ class ParserTest(unittest.TestCase):
             "('a, 'b) prod",
             "nat list list",
             "(nat, 'a) prod",
+            "'a => 'b",
+            "'a => 'b => 'c",
+            "('a => 'b) => 'c",
+            "('a => 'b) => 'c => 'd",
+            "(('a => 'b) => 'c) => 'd",
+            "'a => 'b list",
+            "('a => 'b) list",
+            "'a list list",
+            "'a list => 'b list",
+            "('a list => 'b) list",
+            "('a => 'b, 'c) prod",
+            "('a list, 'b => 'c) prod",
         ]
 
         for s in test_data:

@@ -69,7 +69,11 @@ class HOLType():
             if len(self.args) == 0:
                 return self.name
             elif len(self.args) == 1:
-                return str(self.args[0]) + " " + self.name
+                # Insert parenthesis if the single argument is a function.
+                if HOLType.is_fun(self.args[0]):
+                    return "(" + str(self.args[0]) + ") " + self.name
+                else:
+                    return str(self.args[0]) + " " + self.name
             elif HOLType.is_fun(self):
                 # 'a => 'b => 'c associates to the right. So parenthesis is
                 # needed to express ('a => 'b) => 'c.
