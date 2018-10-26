@@ -87,21 +87,6 @@ def fun_combination_macro():
 
     return ProofMacro("fun_combination", eval, expand, level = 1)
 
-def BasicTheory():
-    thy = Theory.EmptyTheory()
-
-    # Operators
-    thy.add_data_type("operator", OperatorData())
-
-    # Logical terms
-    thy.add_term_sig("conj", TFun(hol_bool, hol_bool, hol_bool))
-    thy.add_term_sig("disj", TFun(hol_bool, hol_bool, hol_bool))
-
-    # Basic macros
-    thy.add_proof_macro(arg_combination_macro())
-    thy.add_proof_macro(fun_combination_macro())
-    return thy
-
 class Logic():
     """Utility functions for logic."""
 
@@ -127,3 +112,26 @@ class Logic():
     def mk_disj(s, t):
         """Construct the term s | t."""
         return Logic.disj(s, t)
+
+def BasicTheory():
+    thy = Theory.EmptyTheory()
+
+    # Operators
+    thy.add_data_type("operator", OperatorData())
+
+    # Logical terms
+    thy.add_term_sig("conj", TFun(hol_bool, hol_bool, hol_bool))
+    thy.add_term_sig("disj", TFun(hol_bool, hol_bool, hol_bool))
+
+    # Axioms for conjugation
+    A = Var("A", hol_bool)
+    B = Var("B", hol_bool)
+    conjAB = Logic.mk_conj(A, B)
+    thy.add_theorem("conjI", Thm([], Term.mk_implies(A, Term.mk_implies(B, conjAB))))
+    thy.add_theorem("conjD1", Thm([], Term.mk_implies(conjAB, A)))
+    thy.add_theorem("conjD2", Thm([], Term.mk_implies(conjAB, B)))
+
+    # Basic macros
+    thy.add_proof_macro(arg_combination_macro())
+    thy.add_proof_macro(fun_combination_macro())
+    return thy
