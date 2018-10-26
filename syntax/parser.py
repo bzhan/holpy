@@ -4,6 +4,7 @@ from lark import Lark, Transformer, v_args
 
 from kernel.type import TVar, Type, TFun
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
+from kernel.thm import Thm
 from logic.basic import Logic
 
 grammar = r"""
@@ -29,6 +30,9 @@ grammar = r"""
     ?imp: disj "-->" imp | disj  // Implies: priority 25
 
     ?term: imp
+
+    thm: "|-" term
+        | term ("," term)* "|-" term
 
     %import common.CNAME
     %import common.WS
@@ -91,8 +95,14 @@ class HOLTransformer(Transformer):
     def imp(self, s, t):
         return Term.mk_implies(s, t)
 
+    def thm(self, *args):
+        return Thm(args[:-1], args[-1])
+
 def type_parser(thy):
     return Lark(grammar, start="type", parser="lalr", transformer=HOLTransformer(thy))
 
 def term_parser(thy, ctxt):
     return Lark(grammar, start="term", parser="lalr", transformer=HOLTransformer(thy, ctxt))
+
+def thm_parser(thy, ctxt):
+    return Lark(grammar, start="thm", parser="lalr", transformer=HOLTransformer(thy, ctxt))

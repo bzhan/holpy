@@ -3,10 +3,11 @@
 import unittest
 
 from kernel.type import TVar, TFun, HOLType, hol_bool
-from kernel.term import Term
-from logic.basic import BasicTheory
+from kernel.term import Var, Term
+from kernel.thm import Thm
+from logic.basic import BasicTheory, Logic
 from syntax.printer import print_term
-from syntax.parser import type_parser, term_parser
+from syntax.parser import type_parser, term_parser, thm_parser
 
 thy = BasicTheory()
 
@@ -114,6 +115,23 @@ class ParserTest(unittest.TestCase):
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
             self.assertEqual(print_term(thy, t, print_abs_type=True), s)
+
+    def testParseThm(self):
+        A = Var("A", hol_bool)
+        B = Var("B", hol_bool)
+        C = Var("C", hol_bool)
+        parse_thm = thm_parser(thy, ctxt).parse
+
+        test_data = [
+            ("|- A", Thm([], A)),
+            ("|- A & B", Thm([], Logic.mk_conj(A, B))),
+            ("A |- B", Thm([A], B)),
+            ("A, B |- C", Thm([A, B], C)),
+        ]
+
+        for (s, th) in test_data:
+            print(parse_thm(s))
+            self.assertEqual(parse_thm(s), th)
 
 if __name__ == "__main__":
     unittest.main()
