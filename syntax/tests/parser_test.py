@@ -130,7 +130,6 @@ class ParserTest(unittest.TestCase):
         ]
 
         for (s, th) in test_data:
-            print(parse_thm(s))
             self.assertEqual(parse_thm(s), th)
 
 if __name__ == "__main__":

@@ -14,14 +14,15 @@ A_to_B = Term.mk_implies(A,B)
 class ProofTest(unittest.TestCase):
     def testProof(self):
         prf = Proof(A_to_B, A)
-        prf.add_item("C", Thm([A, A_to_B], B), "implies_elim", prevs = ["A1", "A2"])
+        th = Thm([A, A_to_B], B)
+        prf.add_item("C", "implies_elim", prevs = ["A1", "A2"], th = th)
 
         self.assertEqual(prf.get_num_item(), 3)
-        self.assertEqual(prf.get_thm(), Thm([A, A_to_B], B))
+        self.assertEqual(prf.get_thm(), th)
 
         str_prf = "\n".join([
-            "A1: implies A B |- implies A B by assume implies A B",
-            "A2: A |- A by assume A",
+            "A1: by assume implies A B",
+            "A2: by assume A",
             "C: A, implies A B |- B by implies_elim from A1, A2"])
         
         self.assertEqual(str(prf), str_prf)

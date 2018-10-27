@@ -60,11 +60,9 @@ def arg_combination_macro():
     def expand(depth, ids, th, f):
         assert th.concl.is_equals(), "arg_combination"
 
-        th1 = Thm.reflexive(f)
-        th2 = Thm.combination(th1, th)
         prf = Proof()
-        prf.add_item((depth, "S1"), th1, "reflexive", args = f)
-        prf.add_item("C", th2, "combination", prevs = [(depth, "S1"), ids[0]])
+        prf.add_item((depth, "S1"), "reflexive", args = f)
+        prf.add_item("C", "combination", prevs = [(depth, "S1"), ids[0]])
         return prf
 
     return ProofMacro("arg_combination", eval, expand, level = 1)
@@ -78,11 +76,9 @@ def fun_combination_macro():
     def expand(depth, ids, th, f):
         assert th.concl.is_equals(), "fun_combination"
 
-        th1 = Thm.reflexive(f)
-        th2 = Thm.combination(th, th1)
         prf = Proof()
-        prf.add_item((depth, "S1"), th1, "reflexive", args = f)
-        prf.add_item("C", th2, "combination", prevs = [ids[0], (depth, "S1")])
+        prf.add_item((depth, "S1"), "reflexive", args = f)
+        prf.add_item("C", "combination", prevs = [ids[0], (depth, "S1")])
         return prf
 
     return ProofMacro("fun_combination", eval, expand, level = 1)

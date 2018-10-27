@@ -234,12 +234,6 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
-        # First, check the current statement is correctly typed.
-        try:
-            seq.th.check_thm_type()
-        except TypeCheckException:
-            raise CheckProofException("typing error")
-
         if seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
@@ -296,8 +290,17 @@ class Theory():
             else:
                 raise CheckProofException("proof method not found")
 
-        if seq.th != res_th:
+        if seq.th is None:
+            # No expected theorem is provided
+            seq.th = res_th
+        elif seq.th != res_th:
             raise CheckProofException("output does not match\n" + str(seq.th) + "\n vs.\n" + str(res_th))
+
+        # Check the current statement is correctly typed.
+        try:
+            seq.th.check_thm_type()
+        except TypeCheckException:
+            raise CheckProofException("typing error")
 
         seq_dict[seq.id] = seq.th
         return None
