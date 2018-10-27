@@ -11,20 +11,22 @@ class ProofItem():
     - id: an identifier for reference by later proof items.
     - rule: derivation rule used to derive the theorem.
     - args: arguments to the rule.
-    - prevs: previous sequents used.
+    - prevs: previous sequents used. Default to [].
     - th: optional theorem statement (as a sequent).
 
     """
-    def __init__(self, id, rule, *, args = None, prevs = [], th = None):
+    def __init__(self, id, rule, *, args = None, prevs = None, th = None):
         self.id = id
         self.rule = rule
         self.args = args
-        self.prevs = prevs
+        self.prevs = prevs if prevs is not None else []
         self.th = th
 
     def __str__(self):
         if isinstance(self.args, str):
             str_args = " " + self.args
+        elif isinstance(self.args, dict):
+            str_args = " {" + ", ".join(key + ": " + repr(val) for key, val in self.args.items()) + "}"
         else:
             str_args = " " + repr(self.args) if self.args else ""
 
@@ -35,6 +37,10 @@ class ProofItem():
 
     def __repr__(self):
         return str(self)
+
+    def __eq__(self, other):
+        return self.id == other.id and self.rule == other.rule and self.args == other.args \
+            and self.prevs == other.prevs and self.th == other.th
 
 class Proof():
     """Proof objects represent proofs in the natural deduction format.

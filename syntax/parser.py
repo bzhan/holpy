@@ -4,7 +4,9 @@ from lark import Lark, Transformer, v_args
 
 from kernel.type import TVar, Type, TFun
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
+from kernel.macro import MacroSig
 from kernel.thm import Thm
+from kernel.proof import ProofItem
 from logic.basic import Logic
 
 grammar = r"""
@@ -33,6 +35,16 @@ grammar = r"""
 
     thm: "|-" term
         | term ("," term)* "|-" term
+
+    term_pair: CNAME ":" term
+
+    inst: "{}"
+        | "{" term_pair ("," term_pair)* "}"
+
+    type_pair: CNAME ":" type
+
+    tyinst: "{}"
+        | "{" type_pair ("," type_pair)* "}"
 
     %import common.CNAME
     %import common.WS
@@ -98,6 +110,18 @@ class HOLTransformer(Transformer):
     def thm(self, *args):
         return Thm(args[:-1], args[-1])
 
+    def term_pair(self, name, T):
+        return (name, T)
+
+    def type_pair(self, name, T):
+        return (name, T)
+
+    def inst(self, *args):
+        return dict(args)
+
+    def tyinst(self, *args):
+        return dict(args)
+
 def type_parser(thy):
     """Parse a type."""
     return Lark(grammar, start="type", parser="lalr", transformer=HOLTransformer(thy))
@@ -109,6 +133,14 @@ def term_parser(thy, ctxt):
 def thm_parser(thy, ctxt):
     """Parse a theorem (sequent)."""
     return Lark(grammar, start="thm", parser="lalr", transformer=HOLTransformer(thy, ctxt))
+
+def inst_parser(thy, ctxt):
+    """Parse a term instantiation."""
+    return Lark(grammar, start="inst", parser="lalr", transformer=HOLTransformer(thy, ctxt))
+
+def tyinst_parser(thy):
+    """Parse a type instantiation."""
+    return Lark(grammar, start="tyinst", parser="lalr", transformer=HOLTransformer(thy, ctxt))
 
 def split_proof_rule(s):
     """Split proof rule into parseable parts.
@@ -136,4 +168,20 @@ def parse_proof_rule(thy, ctxt, s):
 
     """
     (id, rule_name, args, prevs) = split_proof_rule(s)
-
+    sig = thy.get_proof_rule_sig(rule_name)
+    if sig == MacroSig.NONE:
+        assert args == "", "rule expects no argument."
+        return ProofItem(id, rule_name, prevs = prevs)
+    elif sig == MacroSig.STRING:
+        return ProofItem(id, rule_name, args = args, prevs = prevs)
+    elif sig == MacroSig.TERM:
+        t = term_parser(thy, ctxt).parse(args)
+        return ProofItem(id, rule_name, args = t, prevs = prevs)
+    elif sig == MacroSig.INST:
+        inst = inst_parser(thy, ctxt).parse(args)
+        return ProofItem(id, rule_name, args = inst, prevs = prevs)
+    elif sig == MacroSig.TYINST:
+        tyinst = tyinst_parser(thy, ctxt).parse(args)
+        return ProofItem(id, rule_name, args = tyinst, prevs = prevs)
+    else:
+        raise TypeError()

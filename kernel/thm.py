@@ -285,8 +285,8 @@ primitive_deriv = {
     "combination" : (Thm.combination, MacroSig.NONE),
     "equal_intr" : (Thm.equal_intr, MacroSig.NONE),
     "equal_elim" : (Thm.equal_elim, MacroSig.NONE),
-    "subst_type" : (Thm.subst_type, MacroSig.DICT_TYPE),
-    "substitution" : (Thm.substitution, MacroSig.DICT),
+    "subst_type" : (Thm.subst_type, MacroSig.TYINST),
+    "substitution" : (Thm.substitution, MacroSig.INST),
     "beta_conv" : (Thm.beta_conv, MacroSig.TERM),
     "abstraction" : (Thm.abstraction, MacroSig.TERM),
 }

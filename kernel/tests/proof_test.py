@@ -5,13 +5,26 @@ import unittest
 from kernel.type import hol_bool
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import Proof
+from kernel.proof import ProofItem, Proof
 
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)
 A_to_B = Term.mk_implies(A,B)
 
 class ProofTest(unittest.TestCase):
+    def testProofItem(self):
+        test_data = [
+            (ProofItem("S1", "theorem", args = "conjD1"), "S1: theorem conjD1"),
+            (ProofItem("S2", "assume", args = A_to_B), "S2: assume implies A B"),
+            (ProofItem("S6", "substitution", args = {"A": B, "B": A}, prevs = ["S5"]),
+                "S6: substitution {A: B, B: A} from S5"),
+            (ProofItem("S7", "implies_elim", prevs = ["S6", "S4"]),
+                "S7: implies_elim from S6, S4"),
+        ]
+
+        for item, s in test_data:
+            self.assertEqual(str(item), s)
+
     def testProof(self):
         prf = Proof(A_to_B, A)
         th = Thm([A, A_to_B], B)

@@ -3,7 +3,7 @@
 from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
 from kernel.term import Term, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
-from kernel.macro import ProofMacro
+from kernel.macro import MacroSig, ProofMacro
 from kernel.extension import Extension
 from kernel.report import ExtensionReport
 
@@ -327,6 +327,16 @@ class Theory():
         
         """
         return self.check_proof_incr(0, dict(), prf, rpt)
+
+    def get_proof_rule_sig(self, name):
+        """Obtain the argument signature of the proof rule."""
+        if name == "theorem":
+            return MacroSig.STRING
+        elif name in primitive_deriv:
+            _, sig = primitive_deriv[name]
+            return sig
+        else:
+            raise NotImplementedError()
 
     def extend_axiom_constant(self, ext):
         """Extend the theory by adding an axiomatic constant."""

@@ -5,6 +5,7 @@ import unittest
 from kernel.type import TVar, TFun, HOLType, hol_bool
 from kernel.term import Var, Term
 from kernel.thm import Thm
+from kernel.proof import ProofItem
 from logic.basic import BasicTheory, Logic
 from syntax.printer import print_term
 import syntax.parser as parser
@@ -23,6 +24,10 @@ ctxt = {
     "c" : TVar("a"),
     "f" : TFun(TVar("a"), TVar("a"))
 }
+
+A = Var("A", hol_bool)
+B = Var("B", hol_bool)
+C = Var("C", hol_bool)
 
 class ParserTest(unittest.TestCase):
     def testParseType(self):
@@ -117,9 +122,6 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(print_term(thy, t, print_abs_type=True), s)
 
     def testParseThm(self):
-        A = Var("A", hol_bool)
-        B = Var("B", hol_bool)
-        C = Var("C", hol_bool)
         parse_thm = parser.thm_parser(thy, ctxt).parse
 
         test_data = [
@@ -142,6 +144,19 @@ class ParserTest(unittest.TestCase):
 
         for (s, res) in test_data:
             self.assertEqual(parser.split_proof_rule(s), res)
+
+    def testParseProofRule(self):
+        test_data = [
+            ("S1: theorem conjD1", ProofItem("S1", "theorem", args = "conjD1", prevs = [])),
+            ("S2: implies_elim from S1, A1", ProofItem("S2", "implies_elim", prevs = ["S1", "A1"])),
+            ("S6: substitution {A: B, B: A} from S5", ProofItem(
+                "S6", "substitution", args = {'A': B, 'B': A}, prevs = ["S5"])),
+            ("S9: implies_intr conj A B from S8", ProofItem(
+                "S9", "implies_intr", args = Logic.mk_conj(A, B), prevs = ["S8"])),
+        ]
+
+        for (s, res) in test_data:
+            self.assertEqual(parser.parse_proof_rule(thy, ctxt, s), res)
 
 if __name__ == "__main__":
     unittest.main()
