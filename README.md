@@ -25,3 +25,10 @@ Directory structure:
   * [`matcher`](logic/matcher.py): matching of terms.
   * [`proofterm`](logic/proofterm.py): tree-like representation of a proof. Used for convenient construction of proofs, and can be transformed to the linear representation.
   * [`conv`](logic/conv.py): conversions.
+
+* [`syntax`](syntax/): parsing and printing.
+  * [`printer`](syntax/printer.py): printing functions.
+  * [`parser`](syntax/parser.py): parsing functions, built using Lark parser.
+
+* [`server`](server/): toplevel functions.
+  * [`server`](server/server.py): toplevel proof checking.
