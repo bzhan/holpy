@@ -20,7 +20,7 @@ server = Server(thy, ctxt)
 class ServerTest(unittest.TestCase):
     def testCheckProof(self):
         input = "\n".join([
-            "A1: assume conj A B",
+            "A1: assume A & B",
             "S1: theorem conjD1",
             "S2: implies_elim from S1, A1",
             "S3: theorem conjD2",
@@ -29,21 +29,19 @@ class ServerTest(unittest.TestCase):
             "S6: substitution {A: B, B: A} from S5",
             "S7: implies_elim from S6, S4",
             "S8: implies_elim from S7, S2",
-            "S9: implies_intr conj A B from S8"])
+            "S9: implies_intr A & B from S8"])
 
-        input_stream = io.StringIO(input)
-        prf = server.check_proof(input_stream)
-        
         output = "\n".join([
-            "A1: conj A B |- conj A B by assume conj A B",
-            "S1: |- implies (conj A B) A by theorem conjD1",
-            "S2: conj A B |- A by implies_elim from S1, A1",
-            "S3: |- implies (conj A B) B by theorem conjD2",
-            "S4: conj A B |- B by implies_elim from S3, A1",
-            "S5: |- implies A (implies B (conj A B)) by theorem conjI",
-            "S6: |- implies B (implies A (conj B A)) by substitution {A: B, B: A} from S5",
-            "S7: conj A B |- implies A (conj B A) by implies_elim from S6, S4",
-            "S8: conj A B |- conj B A by implies_elim from S7, S2",
-            "S9: |- implies (conj A B) (conj B A) by implies_intr conj A B from S8"])
+            "A1: A & B |- A & B by assume A & B",
+            "S1: |- A & B --> A by theorem conjD1",
+            "S2: A & B |- A by implies_elim from S1, A1",
+            "S3: |- A & B --> B by theorem conjD2",
+            "S4: A & B |- B by implies_elim from S3, A1",
+            "S5: |- A --> B --> A & B by theorem conjI",
+            "S6: |- B --> A --> B & A by substitution {A: B, B: A} from S5",
+            "S7: A & B |- A --> B & A by implies_elim from S6, S4",
+            "S8: A & B |- B & A by implies_elim from S7, S2",
+            "S9: |- A & B --> B & A by implies_intr A & B from S8"])
         
-        self.assertEqual(str(prf), output)
+        res = server.check_proof(io.StringIO(input))
+        self.assertEqual(res, output)

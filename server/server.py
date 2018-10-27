@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.proof import Proof
+import syntax.printer as printer
 import syntax.parser as parser
 
 class Server():
@@ -27,4 +28,4 @@ class Server():
         self.thy.check_proof(prf)
 
         # Return the checked proof
-        return prf
+        return prf.str_with_printer(term_printer = lambda t: printer.print_term(self.thy, t))

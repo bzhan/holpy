@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel.term import Term
 from kernel.thm import Thm
 
 class ProofException(Exception):
@@ -22,18 +23,29 @@ class ProofItem():
         self.prevs = prevs if prevs is not None else []
         self.th = th
 
-    def __str__(self):
+    def str_with_printer(self, *, term_printer):
+        """Output function with custom printer for terms."""
+
+        def repr_val(val):
+            if isinstance(val, Term):
+                return term_printer(val)
+            else:
+                return repr(val)
+
         if isinstance(self.args, str):
             str_args = " " + self.args
         elif isinstance(self.args, dict):
-            str_args = " {" + ", ".join(key + ": " + repr(val) for key, val in self.args.items()) + "}"
+            str_args = " {" + ", ".join(key + ": " + repr_val(val) for key, val in self.args.items()) + "}"
         else:
-            str_args = " " + repr(self.args) if self.args else ""
+            str_args = " " + repr_val(self.args) if self.args else ""
 
         str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
-        str_th = str(self.th) + " by " if self.th else ""
+        str_th = self.th.str_with_printer(term_printer = term_printer) + " by " if self.th else ""
 
         return self.id + ": " + str_th + self.rule + str_args + str_prevs
+
+    def __str__(self):
+        return self.str_with_printer(term_printer = repr)
 
     def __repr__(self):
         return str(self)
@@ -83,8 +95,11 @@ class Proof():
         else:
             raise ProofException()
 
+    def str_with_printer(self, *, term_printer = repr):
+        return "\n".join(item.str_with_printer(term_printer = term_printer) for item in self.proof)
+
     def __str__(self):
-        return "\n".join(str(item) for item in self.proof)
+        return self.str_with_printer()
 
     def __repr__(self):
         return str(self)
