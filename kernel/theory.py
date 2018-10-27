@@ -262,7 +262,7 @@ class Theory():
             if seq.rule in primitive_deriv:
                 # If the method is one of the primitive derivations, obtain and
                 # apply that primitive derivation.
-                rule_fun = primitive_deriv[seq.rule]
+                rule_fun, _ = primitive_deriv[seq.rule]
                 try:
                     res_th = rule_fun(*(prev_ths + args))
                     if rpt is not None:

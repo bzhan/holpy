@@ -23,11 +23,15 @@ class ProofItem():
         self.th = th
 
     def __str__(self):
-        str_args = " " + repr(self.args) if self.args else ""
-        str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
-        str_th = " " + str(self.th) if self.th else ""
+        if isinstance(self.args, str):
+            str_args = " " + self.args
+        else:
+            str_args = " " + repr(self.args) if self.args else ""
 
-        return self.id + ":" + str_th + " by " + self.rule + str_args + str_prevs
+        str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
+        str_th = str(self.th) + " by " if self.th else ""
+
+        return self.id + ": " + str_th + self.rule + str_args + str_prevs
 
     def __repr__(self):
         return str(self)

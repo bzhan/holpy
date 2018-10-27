@@ -7,7 +7,7 @@ from kernel.term import Var, Term
 from kernel.thm import Thm
 from logic.basic import BasicTheory, Logic
 from syntax.printer import print_term
-from syntax.parser import type_parser, term_parser, thm_parser
+import syntax.parser as parser
 
 thy = BasicTheory()
 
@@ -26,7 +26,7 @@ ctxt = {
 
 class ParserTest(unittest.TestCase):
     def testParseType(self):
-        parse = type_parser(thy).parse
+        parse = parser.type_parser(thy).parse
 
         test_data = [
             "'b",
@@ -56,8 +56,8 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(str(T), s)
 
     def testParseTerm(self):
-        parse = term_parser(thy, ctxt).parse
-        parseT = type_parser(thy).parse
+        parse = parser.term_parser(thy, ctxt).parse
+        parseT = parser.type_parser(thy).parse
 
         test_data = [
             # Atoms
@@ -120,7 +120,7 @@ class ParserTest(unittest.TestCase):
         A = Var("A", hol_bool)
         B = Var("B", hol_bool)
         C = Var("C", hol_bool)
-        parse_thm = thm_parser(thy, ctxt).parse
+        parse_thm = parser.thm_parser(thy, ctxt).parse
 
         test_data = [
             ("|- A", Thm([], A)),
@@ -131,6 +131,17 @@ class ParserTest(unittest.TestCase):
 
         for (s, th) in test_data:
             self.assertEqual(parse_thm(s), th)
+
+    def testSplitProofRule(self):
+        test_data = [
+            ("S1: theorem conjD1", ("S1", "theorem", "conjD1", [])),
+            ("S2: implies_elim from S1, A1", ("S2", "implies_elim", "", ["S1", "A1"])),
+            ("S6: substitution {'A': B, 'B': A} from S5", ("S6", "substitution", "{'A': B, 'B': A}", ["S5"])),
+            ("S9: implies_intr conj A B from S8", ("S9", "implies_intr", "conj A B", ["S8"])),
+        ]
+
+        for (s, res) in test_data:
+            self.assertEqual(parser.split_proof_rule(s), res)
 
 if __name__ == "__main__":
     unittest.main()

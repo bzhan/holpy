@@ -21,8 +21,8 @@ class ProofTest(unittest.TestCase):
         self.assertEqual(prf.get_thm(), th)
 
         str_prf = "\n".join([
-            "A1: by assume implies A B",
-            "A2: by assume A",
+            "A1: assume implies A B",
+            "A2: assume A",
             "C: A, implies A B |- B by implies_elim from A1, A2"])
         
         self.assertEqual(str(prf), str_prf)

@@ -99,10 +99,41 @@ class HOLTransformer(Transformer):
         return Thm(args[:-1], args[-1])
 
 def type_parser(thy):
+    """Parse a type."""
     return Lark(grammar, start="type", parser="lalr", transformer=HOLTransformer(thy))
 
 def term_parser(thy, ctxt):
+    """Parse a term."""
     return Lark(grammar, start="term", parser="lalr", transformer=HOLTransformer(thy, ctxt))
 
 def thm_parser(thy, ctxt):
+    """Parse a theorem (sequent)."""
     return Lark(grammar, start="thm", parser="lalr", transformer=HOLTransformer(thy, ctxt))
+
+def split_proof_rule(s):
+    """Split proof rule into parseable parts.
+
+    Currently able to handle string of the form:
+    [id]: [rule_name] [args] by [prevs]
+
+    """
+    id, rest = s.split(": ", 1)  # split off id
+    id = id.strip()
+    rule_name, rest = rest.split(" ", 1)  # split off name of rule
+    rule_name = rule_name.strip()
+
+    if rest.count("from") > 0:
+        args, rest = rest.split("from", 1)
+        return (id, rule_name, args.strip(), [prev.strip() for prev in rest.split(",")])
+    else:
+        return (id, rule_name, rest.strip(), [])
+
+def parse_proof_rule(thy, ctxt, s):
+    """Parse a proof rule.
+
+    This need to be written by hand because different proof rules
+    require different parsing of the arguments.
+
+    """
+    (id, rule_name, args, prevs) = split_proof_rule(s)
+

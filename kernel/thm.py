@@ -2,6 +2,7 @@
 
 from kernel.type import Type, hol_bool
 from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
+from kernel.macro import MacroSig
 
 class InvalidDerivationException(Exception):
     pass
@@ -275,17 +276,17 @@ class Thm():
 
 # Table of primitive derivations
 primitive_deriv = {
-    "assume" : Thm.assume,
-    "implies_intr" : Thm.implies_intr,
-    "implies_elim" : Thm.implies_elim,
-    "reflexive" : Thm.reflexive,
-    "symmetric" : Thm.symmetric,
-    "transitive" : Thm.transitive,
-    "combination" : Thm.combination,
-    "equal_intr" : Thm.equal_intr,
-    "equal_elim" : Thm.equal_elim,
-    "subst_type" : Thm.subst_type,
-    "substitution" : Thm.substitution,
-    "beta_conv" : Thm.beta_conv,
-    "abstraction" : Thm.abstraction,
+    "assume" : (Thm.assume, MacroSig.TERM),
+    "implies_intr" : (Thm.implies_intr, MacroSig.TERM),
+    "implies_elim" : (Thm.implies_elim, MacroSig.NONE),
+    "reflexive" : (Thm.reflexive, MacroSig.TERM),
+    "symmetric" : (Thm.symmetric, MacroSig.NONE),
+    "transitive" : (Thm.transitive, MacroSig.NONE),
+    "combination" : (Thm.combination, MacroSig.NONE),
+    "equal_intr" : (Thm.equal_intr, MacroSig.NONE),
+    "equal_elim" : (Thm.equal_elim, MacroSig.NONE),
+    "subst_type" : (Thm.subst_type, MacroSig.DICT_TYPE),
+    "substitution" : (Thm.substitution, MacroSig.DICT),
+    "beta_conv" : (Thm.beta_conv, MacroSig.TERM),
+    "abstraction" : (Thm.abstraction, MacroSig.TERM),
 }

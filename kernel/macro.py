@@ -1,5 +1,10 @@
 # Author: Bohua Zhan
 
+class MacroSig():
+    """Signature for the arguments of proof macro."""
+    NONE, TERM, DICT_TYPE, DICT, STRING = range(5)
+
+
 class ProofMacro():
     """A proof macro represents a derived proof method. It consists
     of the following data:
