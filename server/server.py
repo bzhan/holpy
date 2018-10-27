@@ -22,7 +22,12 @@ class Server():
         # First: read input into proof object
         prf = Proof()
         for line in input:
-            prf.proof.append(parser.parse_proof_rule(self.thy, self.ctxt, line))
+            if line.startswith("var "):
+                name, T = parser.var_decl_parser(self.thy).parse(line)
+                assert name not in self.ctxt, "variable already declared"
+                self.ctxt[name] = T
+            else:
+                prf.proof.append(parser.parse_proof_rule(self.thy, self.ctxt, line))
 
         # Next: check the proof
         self.thy.check_proof(prf)

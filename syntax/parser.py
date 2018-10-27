@@ -46,6 +46,8 @@ grammar = r"""
     tyinst: "{}"
         | "{" type_pair ("," type_pair)* "}"
 
+    var_decl: "var" CNAME "::" type
+
     %import common.CNAME
     %import common.WS
 
@@ -122,6 +124,9 @@ class HOLTransformer(Transformer):
     def tyinst(self, *args):
         return dict(args)
 
+    def var_decl(self, name, T):
+        return (name, T)
+
 def type_parser(thy):
     """Parse a type."""
     return Lark(grammar, start="type", parser="lalr", transformer=HOLTransformer(thy))
@@ -140,7 +145,11 @@ def inst_parser(thy, ctxt):
 
 def tyinst_parser(thy):
     """Parse a type instantiation."""
-    return Lark(grammar, start="tyinst", parser="lalr", transformer=HOLTransformer(thy, ctxt))
+    return Lark(grammar, start="tyinst", parser="lalr", transformer=HOLTransformer(thy))
+
+def var_decl_parser(thy):
+    """Parse a variable declaration."""
+    return Lark(grammar, start="var_decl", parser="lalr", transformer=HOLTransformer(thy))
 
 def split_proof_rule(s):
     """Split proof rule into parseable parts.

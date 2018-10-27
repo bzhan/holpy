@@ -7,19 +7,13 @@ from kernel.type import hol_bool
 from logic.basic import BasicTheory
 from server.server import Server
 
-thy = BasicTheory()
-
-ctxt = {
-    "A": hol_bool,
-    "B": hol_bool,
-    "C": hol_bool,
-}
-
-server = Server(thy, ctxt)
+server = Server(BasicTheory())
 
 class ServerTest(unittest.TestCase):
     def testCheckProof(self):
         input = "\n".join([
+            "var A :: bool",
+            "var B :: bool",
             "A1: assume A & B",
             "S1: theorem conjD1",
             "S2: implies_elim from S1, A1",
