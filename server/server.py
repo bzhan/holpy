@@ -33,4 +33,4 @@ class Server():
         self.thy.check_proof(prf)
 
         # Return the checked proof
-        return prf.str_with_printer(term_printer = lambda t: printer.print_term(self.thy, t))
+        return prf.print(term_printer = lambda t: printer.print_term(self.thy, t))
