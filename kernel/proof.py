@@ -35,7 +35,8 @@ class ProofItem():
         if isinstance(self.args, str):
             str_args = " " + self.args
         elif isinstance(self.args, dict):
-            str_args = " {" + ", ".join(key + ": " + repr_val(val) for key, val in self.args.items()) + "}"
+            items = sorted(self.args.items(), key = lambda pair: pair[0])
+            str_args = " {" + ", ".join(key + ": " + repr_val(val) for key, val in items) + "}"
         else:
             str_args = " " + repr_val(self.args) if self.args else ""
 
