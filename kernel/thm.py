@@ -328,4 +328,6 @@ primitive_deriv = {
     "substitution" : (Thm.substitution, MacroSig.INST),
     "beta_conv" : (Thm.beta_conv, MacroSig.TERM),
     "abstraction" : (Thm.abstraction, MacroSig.TERM),
+    "forall_intr" : (Thm.forall_intr, MacroSig.TERM),
+    "forall_elim" : (Thm.forall_elim, MacroSig.TERM)
 }

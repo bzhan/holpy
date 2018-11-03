@@ -78,5 +78,35 @@ class BasicTest(unittest.TestCase):
         th = Thm([], Term.mk_implies(disjAB, disjBA))
         self.assertEqual(thy.check_proof(prf), th)
 
+    def testAllConj(self):
+        """Proof of the following: !x. A x & B x --> (!x. A x) & (!x. B x)."""
+        thy = basic.BasicTheory()
+        Ta = TVar("a")
+        A = Var("A", TFun(Ta, hol_bool))
+        B = Var("B", TFun(Ta, hol_bool))
+        x = Var("x", Ta)
+        all_conj = Term.mk_all(x, Logic.mk_conj(A(x), B(x)))
+        all_A = Term.mk_all(x, A(x))
+        all_B = Term.mk_all(x, B(x))
+        conj_all = Logic.mk_conj(all_A, all_B)
+
+        prf = Proof(all_conj)
+        prf.add_item("S1", "forall_elim", args = x, prevs = ["A1"])
+        prf.add_item("S2", "theorem", args = "conjD1")
+        prf.add_item("S3", "substitution", args = {"A": A(x), "B": B(x)}, prevs = ["S2"])
+        prf.add_item("S4", "implies_elim", prevs = ["S3", "S1"])
+        prf.add_item("S5", "forall_intr", args = x, prevs = ["S4"])
+        prf.add_item("S6", "theorem", args = "conjD2")
+        prf.add_item("S7", "substitution", args = {"A": A(x), "B": B(x)}, prevs = ["S6"])
+        prf.add_item("S8", "implies_elim", prevs = ["S7", "S1"])
+        prf.add_item("S9", "forall_intr", args = x, prevs = ["S8"])
+        prf.add_item("S10", "theorem", args = "conjI")
+        prf.add_item("S11", "substitution", args = {"A": all_A, "B": all_B}, prevs = ["S10"])
+        prf.add_item("S12", "implies_elim", prevs = ["S11", "S5"])
+        prf.add_item("S13", "implies_elim", prevs = ["S12", "S9"])
+        prf.add_item("S14", "implies_intr", args = all_conj, prevs = ["S13"])
+        th = Thm([], Term.mk_implies(all_conj, conj_all))
+        self.assertEqual(thy.check_proof(prf), th)
+        
 if __name__ == "__main__":
     unittest.main()
