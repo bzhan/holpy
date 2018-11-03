@@ -57,6 +57,12 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
 
                 return str_arg1 + " " + str_op + " " + str_arg2
 
+            elif t.is_all():
+                all_str = "!" if not unicode else "∀"
+                var_str = t.arg.var_name + "::" + repr(t.arg.T) if print_abs_type else t.arg.var_name
+                body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
+                return all_str + var_str + ". " + body_repr
+
             # a b c associates to the left. So parenthesis is needed to express
             # a (b c). Parenthesis is also needed for lambda terms.
             elif t.fun.ty == Term.ABS:

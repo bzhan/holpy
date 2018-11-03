@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, hol_bool
+from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from logic.basic import BasicTheory, Logic
 from syntax.printer import print_term
@@ -15,10 +15,12 @@ C = Var("C", hol_bool)
 Ta = TVar("a")
 a = Var("a", Ta)
 b = Var("b", Ta)
+P = Var("P", TFun(Ta, hol_bool))
 eq = Term.mk_equals
 imp = Term.mk_implies
 conj = Logic.mk_conj
 disj = Logic.mk_disj
+all = Term.mk_all
 
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
@@ -52,6 +54,10 @@ class PrinterTest(unittest.TestCase):
             (imp(A, disj(B, C)), "A --> B | C"),
             (conj(A, imp(B, C)), "A & (B --> C)"),
             (disj(imp(A, B), C), "(A --> B) | C"),
+
+            # Quantifiers
+            (all(a, P(a)), "!a. P a"),
+            (all(a, all(b, conj(P(a),P(b)))), "!a. !b. P a & P b"),
         ]
 
         for t, s in test_data:
@@ -61,6 +67,8 @@ class PrinterTest(unittest.TestCase):
         test_data = [
             (Abs("x", Ta, b), "%x::'a. b"),
             (Abs("x", Ta, "y", Ta, b), "%x::'a. %y::'a. b"),
+            (all(a, P(a)), "!a::'a. P a"),
+            (all(a, all(b, conj(P(a),P(b)))), "!a::'a. !b::'a. P a & P b"),
         ]
 
         for t, repr_t in test_data:
@@ -72,6 +80,7 @@ class PrinterTest(unittest.TestCase):
             (disj(A, B), "A ∨ B"),
             (imp(A, B), "A ⟶ B"),
             (Abs("x", Ta, b), "λx. b"),
+            (all(a, P(a)), "∀a. P a"),
         ]
 
         for t, s in test_data:

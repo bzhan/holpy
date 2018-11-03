@@ -112,6 +112,10 @@ class ParserTest(unittest.TestCase):
             ("A | B --> C", "bool"),
             ("(A --> B) & C", "bool"),
             ("A | (B --> C)", "bool"),
+
+            # Quantifiers
+            ("!x::'a. P x", "bool"),
+            ("!x::'a. !y::'a. P2 x y", "bool"),
         ]
 
         for s, Ts in test_data:
@@ -129,6 +133,7 @@ class ParserTest(unittest.TestCase):
             ("A ⟶ B ⟶ C", "A --> B --> C"),
             ("A ∧ B | C", "A & B | C"),
             ("λx::'a. x", "%x. x"),
+            ("∀x::'a. x", "!x. x"),
         ]
 
         for s, ascii_s in test_data:

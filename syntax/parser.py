@@ -2,7 +2,7 @@
 
 from lark import Lark, Transformer, v_args
 
-from kernel.type import TVar, Type, TFun
+from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.macro import MacroSig
 from kernel.thm import Thm
@@ -19,6 +19,7 @@ grammar = r"""
 
     ?atom: CNAME -> vname                 // Constant, variable, or bound variable
         | ("%"|"λ") CNAME "::" type ". " term -> abs  // Abstraction
+        | ("!"|"∀") CNAME "::" type ". " term -> all  // Forall quantification
         | "(" term ")"                    // Parenthesis
 
     ?comb: comb atom | atom
@@ -96,6 +97,13 @@ class HOLTransformer(Transformer):
         # Abstract over it, and remember to change the type to T.
         t = body.abstract_over(Var(var_name, None))
         return Abs(var_name, T, t.body)
+
+    def all(self, var_name, T, body):
+        # Similar parsing mechanism as for abs.
+        t = body.abstract_over(Var(var_name, None))
+        t.T = T
+        all_t = Const("all", TFun(TFun(T, hol_bool), hol_bool))
+        return all_t(t)
 
     def eq(self, lhs, rhs):
         return Term.mk_equals(lhs, rhs)
