@@ -114,7 +114,7 @@ class ParserTest(unittest.TestCase):
             ("A | (B --> C)", "bool"),
         ]
 
-        for (s, Ts) in test_data:
+        for s, Ts in test_data:
             t = parse(s)
             T = parseT(Ts)
             self.assertIsInstance(t, Term)
@@ -146,7 +146,7 @@ class ParserTest(unittest.TestCase):
             ("A, B |- C", Thm([A, B], C)),
         ]
 
-        for (s, th) in test_data:
+        for s, th in test_data:
             self.assertEqual(parse_thm(s), th)
 
     def testSplitProofRule(self):
@@ -157,7 +157,7 @@ class ParserTest(unittest.TestCase):
             ("S9: implies_intr conj A B from S8", ("S9", "implies_intr", "conj A B", ["S8"])),
         ]
 
-        for (s, res) in test_data:
+        for s, res in test_data:
             self.assertEqual(parser.split_proof_rule(s), res)
 
     def testParseProofRule(self):
@@ -170,7 +170,7 @@ class ParserTest(unittest.TestCase):
                 "S9", "implies_intr", args = Logic.mk_conj(A, B), prevs = ["S8"])),
         ]
 
-        for (s, res) in test_data:
+        for s, res in test_data:
             self.assertEqual(parser.parse_proof_rule(thy, ctxt, s), res)
 
 if __name__ == "__main__":

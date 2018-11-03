@@ -37,7 +37,7 @@ class MatcherTest(unittest.TestCase):
             (Abs("x",Ta,"y",Ta,B0), Abs("x",Ta,"y",Ta,B1), None),
         ]
 
-        for (pat, t, inst) in test_data:
+        for pat, t, inst in test_data:
             if inst is not None:
                 self.assertEqual(Matcher.first_order_match(pat, t), inst)
             else:

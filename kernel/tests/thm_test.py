@@ -25,7 +25,7 @@ class ThmTest(unittest.TestCase):
             (Thm([A,B], A), "A, B |- A"),
         ]
 
-        for (th, str_th) in test_data:
+        for th, str_th in test_data:
             self.assertEqual(str(th), str_th)
 
     def testCheckThmType(self):

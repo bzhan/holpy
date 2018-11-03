@@ -28,7 +28,7 @@ class TypeTest(unittest.TestCase):
             (Type("list", TFun(Type("list", Ta), Tb)), "('a list => 'b) list"),
         ]
 
-        for (T, str_T) in test_data:
+        for T, str_T in test_data:
             self.assertEqual(str(T), str_T)
 
     def testSubst(self):
@@ -40,7 +40,7 @@ class TypeTest(unittest.TestCase):
             (Type("list", Ta), {"a" : Tb}, Type("list", Tb)),
         ]
 
-        for (T, tyinst, res) in test_data:
+        for T, tyinst, res in test_data:
             self.assertEqual(T.subst(tyinst), res)
 
     def testMatch(self):
@@ -51,7 +51,7 @@ class TypeTest(unittest.TestCase):
             (TFun(Ta,hol_bool), TFun(hol_bool,hol_bool), {"a" : hol_bool}),
         ]
 
-        for (pat, T, tyinst) in test_data:
+        for pat, T, tyinst in test_data:
             self.assertEqual(pat.match(T), tyinst)
 
     def testMatchFail(self):
@@ -60,7 +60,7 @@ class TypeTest(unittest.TestCase):
             (hol_bool, Ta),
         ]
         
-        for (pat, T) in test_data:
+        for pat, T in test_data:
             self.assertRaises(TypeMatchException, pat.match, T)
 
 if __name__ == "__main__":

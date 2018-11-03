@@ -34,7 +34,7 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, "y", Ta, B1), "Abs(x,'a,Abs(y,'a,Bound 1))"),
         ]
 
-        for (t, str_t) in test_data:
+        for t, str_t in test_data:
             self.assertEqual(str(t), str_t)
 
     def testReprTerm(self):
@@ -53,7 +53,7 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, "y", Ta, f2(B1,B0)), "%x. %y. f2 x y"),
         ]
 
-        for (t, repr_t) in test_data:
+        for t, repr_t in test_data:
             self.assertEqual(repr(t), repr_t)
 
     def testReprTermWithAbsType(self):
@@ -62,7 +62,7 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, "y", Ta, b), "%x::'a. %y::'a. b"),
         ]
 
-        for (t, repr_t) in test_data:
+        for t, repr_t in test_data:
             self.assertEqual(t.repr_with_abs_type(), repr_t)
 
     def testEquals(self):
@@ -71,7 +71,7 @@ class TermTest(unittest.TestCase):
             (Abs("x", Tb, f(B0)), Abs("y", Tb, f(B0))),
         ]
 
-        for (t1, t2) in test_data:
+        for t1, t2 in test_data:
             self.assertEqual(t1, t2)
 
     def testGetType(self):
@@ -90,7 +90,7 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, "y", Ta, f2(B1,B0)), TFun(Ta,Ta,Tb)),
         ]
 
-        for (t, T) in test_data:
+        for t, T in test_data:
             self.assertEqual(t.get_type(), T)
 
     def testIsOpen(self):
@@ -106,7 +106,7 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, "y", Ta, Bound(2)), True),
         ]
 
-        for (t, res) in test_data:
+        for t, res in test_data:
             self.assertEqual(t.is_open(), res)
 
     def testSubstType(self):
@@ -118,7 +118,7 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, a), {"a" : Tb}, Abs("x", Tb, Var("a", Tb))),
         ]
 
-        for (t, tyinst, res) in test_data:
+        for t, tyinst, res in test_data:
             self.assertEqual(t.subst_type(tyinst), res)
 
     def testSubst(self):
@@ -130,7 +130,7 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, a), {"a" : c}, Abs("x", Ta, c)),
         ]
 
-        for (t, inst, res) in test_data:
+        for t, inst, res in test_data:
             self.assertEqual(t.subst(inst), res)
 
     def testSubstFail(self):
@@ -145,7 +145,7 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, "y", Tb, f2(B1,B0)), c, Abs("y", Tb, f2(c,B0))),
         ]
 
-        for (t, s, res) in test_data:
+        for t, s, res in test_data:
             self.assertEqual(t.subst_bound(s), res)
 
     def testSubstBoundFail(self):
@@ -166,7 +166,7 @@ class TermTest(unittest.TestCase):
             (Comb(Abs("x", Ta, a), c), a),
         ]
 
-        for (t, res) in test_data:
+        for t, res in test_data:
             self.assertEqual(t.beta_conv(), res)
 
     def testOccursVar(self):
@@ -180,7 +180,7 @@ class TermTest(unittest.TestCase):
             (Abs("a", Ta, B0), a, False),
         ]
 
-        for (s, t, res) in test_data:
+        for s, t, res in test_data:
             self.assertEqual(s.occurs_var(t), res)
 
     def testAbstractOver(self):
@@ -192,7 +192,7 @@ class TermTest(unittest.TestCase):
             (c, a, Abs("a", Ta, c)),
         ]
 
-        for (s, t, res) in test_data:
+        for s, t, res in test_data:
             self.assertEqual(s.abstract_over(t), res)
 
     def testAbstractOverFail(self):
@@ -211,7 +211,7 @@ class TermTest(unittest.TestCase):
             (Comb(Abs("x", Ta, B0), a), Ta),
         ]
 
-        for (t, T) in test_data:
+        for t, T in test_data:
             self.assertEqual(t.checked_get_type(), T)
 
     def testCheckedGetTypeFail(self):

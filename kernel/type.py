@@ -137,7 +137,7 @@ class HOLType():
             if T.ty != HOLType.COMB or T.name != self.name:
                 raise TypeMatchException()
             else:
-                for (arg, argT) in zip(self.args, T.args):
+                for arg, argT in zip(self.args, T.args):
                     arg.match_incr(argT, tyinst)
         else:
             raise TypeError()

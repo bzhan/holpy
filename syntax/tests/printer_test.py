@@ -63,7 +63,7 @@ class PrinterTest(unittest.TestCase):
             (Abs("x", Ta, "y", Ta, b), "%x::'a. %y::'a. b"),
         ]
 
-        for (t, repr_t) in test_data:
+        for t, repr_t in test_data:
             self.assertEqual(print_term(thy, t, print_abs_type = True), repr_t)
 
     def testPrintUnicode(self):

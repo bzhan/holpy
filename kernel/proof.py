@@ -72,7 +72,7 @@ class Proof():
 
         """
         self.proof = []
-        for (id, assum) in zip(range(len(assums)), assums):
+        for id, assum in zip(range(len(assums)), assums):
             item = ProofItem("A" + str(id+1), "assume", args = assum)
             self.proof.append(item)
 
