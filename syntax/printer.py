@@ -16,8 +16,8 @@ def print_term(thy, t, *, print_abs_type = False):
     def get_priority(t):
         if t.ty == Term.COMB:
             if t.is_binop() and get_info_for_binop(t) is not None:
-                _, priority, _ = get_info_for_binop(t)
-                return priority
+                op_data = get_info_for_binop(t)
+                return op_data.priority
             else:
                 return 95  # Function application
         elif t.ty == Term.ABS:
@@ -33,24 +33,24 @@ def print_term(thy, t, *, print_abs_type = False):
             # First, we take care of the case of operators
             if t.is_binop() and get_info_for_binop(t) is not None:
                 # Obtain the priority and the string of the operator
-                op_str, priority, assoc = get_info_for_binop(t)
+                op_data = get_info_for_binop(t)
                 arg1, arg2 = t.dest_binop()
 
                 # Obtain output for first argument, enclose in parenthesis
                 # if necessary.
                 str_arg1 = helper(arg1, bd_vars)
-                if (assoc == OperatorData.LEFT_ASSOC and get_priority(arg1) < priority or
-                    assoc == OperatorData.RIGHT_ASSOC and get_priority(arg1) <= priority):
+                if (op_data.assoc == OperatorData.LEFT_ASSOC and get_priority(arg1) < op_data.priority or
+                    op_data.assoc == OperatorData.RIGHT_ASSOC and get_priority(arg1) <= op_data.priority):
                     str_arg1 = "(" + str_arg1 + ")"
 
                 # Obtain output for second argument, enclose in parenthesis
                 # if necessary.
                 str_arg2 = helper(arg2, bd_vars)
-                if (assoc == OperatorData.LEFT_ASSOC and get_priority(arg2) <= priority or
-                    assoc == OperatorData.RIGHT_ASSOC and get_priority(arg2) < priority):
+                if (op_data.assoc == OperatorData.LEFT_ASSOC and get_priority(arg2) <= op_data.priority or
+                    op_data.assoc == OperatorData.RIGHT_ASSOC and get_priority(arg2) < op_data.priority):
                     str_arg2 = "(" + str_arg2 + ")"
 
-                return str_arg1 + " " + op_str + " " + str_arg2
+                return str_arg1 + " " + op_data.ascii_op + " " + str_arg2
 
             # a b c associates to the left. So parenthesis is needed to express
             # a (b c). Parenthesis is also needed for lambda terms.
