@@ -35,7 +35,7 @@ class PrinterTest(unittest.TestCase):
             # Equality and implies
             (eq(a, b), "a = b"),
             (imp(A, B), "A --> B"),
-            (imp(A, imp(B, C)), "A --> B --> C"),
+            (imp(A, B, C), "A --> B --> C"),
             (imp(imp(A, B), C), "(A --> B) --> C"),
             (imp(A, eq(a, b)), "A --> a = b"),
             (eq(imp(A, B), imp(B, C)), "(A --> B) = (B --> C)"),

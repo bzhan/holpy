@@ -126,7 +126,7 @@ def BasicTheory():
 
     # Axioms for conjugation
     conjAB = Logic.mk_conj(A, B)
-    thy.add_theorem("conjI", Thm([], imp(A, imp(B, conjAB))))
+    thy.add_theorem("conjI", Thm([], imp(A, B, conjAB)))
     thy.add_theorem("conjD1", Thm([], imp(conjAB, A)))
     thy.add_theorem("conjD2", Thm([], imp(conjAB, B)))
 
@@ -134,7 +134,7 @@ def BasicTheory():
     disjAB = Logic.mk_disj(A, B)
     thy.add_theorem("disjI1", Thm([], imp(A, disjAB)))
     thy.add_theorem("disjI2", Thm([], imp(B, disjAB)))
-    thy.add_theorem("disjE", Thm([], imp(imp(A, C), imp(imp(B, C), imp(disjAB, C)))))
+    thy.add_theorem("disjE", Thm([], imp(imp(A, C), imp(B, C), imp(disjAB, C))))
 
     # Basic macros
     thy.add_proof_macro(arg_combination_macro())

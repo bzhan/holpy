@@ -280,10 +280,13 @@ class Term():
         return self.is_binop() and self.get_head() == implies
 
     @staticmethod
-    def mk_implies(s, t):
-        """Construct the term s --> t."""
+    def mk_implies(*args):
+        """Construct the term s1 --> ... --> sn --> t."""
         implies = Const("implies", TFun(hol_bool, hol_bool, hol_bool))
-        return implies(s, t)
+        res = args[-1]
+        for s in reversed(args[:-1]):
+            res = implies(s, res)
+        return res
 
     @staticmethod
     def equals(T):
