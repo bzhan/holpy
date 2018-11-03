@@ -27,11 +27,12 @@ class OperatorTable():
     
     """
     def __init__(self):
+        LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
         self.data = [
-            OperatorData("equals", 50, assoc = OperatorData.LEFT_ASSOC, ascii_op = "="),
-            OperatorData("implies", 25, assoc = OperatorData.RIGHT_ASSOC, ascii_op = "-->"),
-            OperatorData("conj", 35, assoc = OperatorData.RIGHT_ASSOC, ascii_op = "&"),
-            OperatorData("disj", 30, assoc = OperatorData.RIGHT_ASSOC, ascii_op = "|"),
+            OperatorData("equals", 50, assoc = LEFT, ascii_op = "="),
+            OperatorData("implies", 25, assoc = RIGHT, ascii_op = "-->", unicode_op = "⟶"),
+            OperatorData("conj", 35, assoc = RIGHT, ascii_op = "&", unicode_op = "∧"),
+            OperatorData("disj", 30, assoc = RIGHT, ascii_op = "|", unicode_op = "∨"),
         ]
 
     def get_info_for_op(self, op_str):

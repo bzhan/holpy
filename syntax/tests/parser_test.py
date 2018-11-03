@@ -121,6 +121,20 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(t.checked_get_type(), T)
             self.assertEqual(print_term(thy, t, print_abs_type=True), s)
 
+    def testParseUnicode(self):
+        parse = parser.term_parser(thy, ctxt).parse
+        test_data = [
+            ("A ∧ B", "A & B"),
+            ("A ∨ B", "A | B"),
+            ("A ⟶ B ⟶ C", "A --> B --> C"),
+            ("A ∧ B | C", "A & B | C"),
+        ]
+
+        for s, ascii_s in test_data:
+            t = parse(s)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(print_term(thy, t), ascii_s)
+
     def testParseThm(self):
         parse_thm = parser.thm_parser(thy, ctxt).parse
 

@@ -3,7 +3,7 @@
 from kernel.term import Term
 from logic.basic import OperatorData
 
-def print_term(thy, t, *, print_abs_type = False):
+def print_term(thy, t, *, print_abs_type = False, unicode = False):
     """More sophisticated printing function for terms. Handles printing
     of operators.
     
@@ -50,7 +50,12 @@ def print_term(thy, t, *, print_abs_type = False):
                     op_data.assoc == OperatorData.RIGHT_ASSOC and get_priority(arg2) < op_data.priority):
                     str_arg2 = "(" + str_arg2 + ")"
 
-                return str_arg1 + " " + op_data.ascii_op + " " + str_arg2
+                if unicode and op_data.unicode_op is not None:
+                    str_op = op_data.unicode_op
+                else:
+                    str_op = op_data.ascii_op
+
+                return str_arg1 + " " + str_op + " " + str_arg2
 
             # a b c associates to the left. So parenthesis is needed to express
             # a (b c). Parenthesis is also needed for lambda terms.

@@ -25,11 +25,11 @@ grammar = r"""
 
     ?eq: eq "=" comb | comb      // Equality: priority 50
 
-    ?conj: eq "&" conj | eq      // Conjunction: priority 35
+    ?conj: eq ("&"|"∧") conj | eq      // Conjunction: priority 35
 
-    ?disj: conj "|" disj | conj  // Disjunction: priority 30
+    ?disj: conj ("|"|"∨") disj | conj  // Disjunction: priority 30
 
-    ?imp: disj "-->" imp | disj  // Implies: priority 25
+    ?imp: disj ("-->"|"⟶") imp | disj  // Implies: priority 25
 
     ?term: imp
 

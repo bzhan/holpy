@@ -21,15 +21,6 @@ conj = Logic.mk_conj
 disj = Logic.mk_disj
 
 class PrinterTest(unittest.TestCase):
-    def testPrintAbsType(self):
-        test_data = [
-            (Abs("x", Ta, b), "%x::'a. b"),
-            (Abs("x", Ta, "y", Ta, b), "%x::'a. %y::'a. b"),
-        ]
-
-        for (t, repr_t) in test_data:
-            self.assertEqual(t.repr_with_abs_type(), repr_t)
-
     def testPrintLogical(self):
         test_data = [
             # Equality and implies
@@ -65,6 +56,25 @@ class PrinterTest(unittest.TestCase):
 
         for t, s in test_data:
             self.assertEqual(print_term(thy, t), s)
+
+    def testPrintAbsType(self):
+        test_data = [
+            (Abs("x", Ta, b), "%x::'a. b"),
+            (Abs("x", Ta, "y", Ta, b), "%x::'a. %y::'a. b"),
+        ]
+
+        for (t, repr_t) in test_data:
+            self.assertEqual(print_term(thy, t, print_abs_type = True), repr_t)
+
+    def testPrintUnicode(self):
+        test_data = [
+            (conj(A, B), "A ∧ B"),
+            (disj(A, B), "A ∨ B"),
+            (imp(A, B), "A ⟶ B"),
+        ]
+
+        for t, s in test_data:
+            self.assertEqual(print_term(thy, t, unicode = True), s)
 
 if __name__ == "__main__":
     unittest.main()
