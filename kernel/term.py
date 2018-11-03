@@ -288,6 +288,24 @@ class Term():
             res = implies(s, res)
         return res
 
+    def is_all(self):
+        """Whether self is of the form !x. P x.
+        
+        Note that unlike many other systems, we require the argument of
+        all to be in abstraction form.
+        
+        """
+        return self.ty == Term.COMB and self.fun.ty == Term.CONST and \
+            self.fun.name == "all" and self.arg.ty == Term.ABS
+
+    def mk_all(x, body):
+        """Given a variable x and a term t possibly depending on x, return
+        the term !x. t.
+
+        """
+        all_t = Const("all", TFun(TFun(x.T, hol_bool), hol_bool))
+        return all_t(body.abstract_over(x))
+
     @staticmethod
     def equals(T):
         """Returns the equals constant for the given type."""

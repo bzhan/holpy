@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, TFun, hol_bool
-from kernel.term import Term, Var, Comb, Abs, Bound, TypeCheckException
+from kernel.term import Term, Var, Const, Comb, Abs, Bound, TypeCheckException
 from kernel.thm import Thm, InvalidDerivationException
 
 Ta = TVar("a")
@@ -195,6 +195,40 @@ class ThmTest(unittest.TestCase):
     def testAbstractOverFail4(self):
         th = Thm([], Term.mk_implies(x,y))
         self.assertRaises(InvalidDerivationException, Thm.abstraction, th, x)
+
+    def testForallIntr(self):
+        th = Thm.mk_equals(x,y)
+        t_res = Term.mk_all(x, Term.mk_equals(x, y))
+        self.assertEqual(Thm.forall_intr(th, x), Thm([], t_res))
+
+    def testForallIntr2(self):
+        """Also OK if the variable does not appear in theorem."""
+        th = Thm.mk_equals(x,y)
+        t_res = Term.mk_all(z, Term.mk_equals(x, y))
+        self.assertEqual(Thm.forall_intr(th, z), Thm([], t_res))
+
+    def testForallIntrFail(self):
+        x_eq_y = Term.mk_equals(x,y)
+        th = Thm([x_eq_y], x_eq_y)
+        self.assertRaises(InvalidDerivationException, Thm.forall_intr, th, x)
+
+    def testForallIntrFail2(self):
+        th = Thm.mk_equals(x,y)
+        self.assertRaises(InvalidDerivationException, Thm.forall_intr, th, Const("c", Ta))
+
+    def testForallElim(self):
+        P = Var("P", TFun(Ta, hol_bool))
+        th = Thm([], Term.mk_all(x, P(x)))
+        self.assertEqual(Thm.forall_elim(th, y), Thm([], P(y)))
+
+    def testForallElimFail(self):
+        th = Thm.mk_equals(x,y)
+        self.assertRaises(InvalidDerivationException, Thm.forall_elim, th, x)
+
+    def testForallElimFail2(self):
+        P = Var("P", TFun(Ta, hol_bool))
+        th = Thm([], Term.mk_all(x, P(x)))
+        self.assertRaises(InvalidDerivationException, Thm.forall_elim, th, A)
 
 if __name__ == "__main__":
     unittest.main()

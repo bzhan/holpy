@@ -182,6 +182,7 @@ class Theory():
         # Fundamental terms.
         thy.add_term_sig("equals", TFun(TVar("a"), TVar("a"), hol_bool))
         thy.add_term_sig("implies", TFun(hol_bool, hol_bool, hol_bool))
+        thy.add_term_sig("all", TFun(TFun(TVar("a"), hol_bool), hol_bool))
         
         return thy
 

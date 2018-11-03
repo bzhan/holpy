@@ -282,6 +282,37 @@ class Thm():
         else:
             raise InvalidDerivationException()
 
+    @staticmethod
+    def forall_intr(th, x):
+        """Derivation rule FORALL_INTR:
+
+        A |- t
+        ------------
+        A |- !x. t    where x does not occur in A.
+        """
+        if any(assum.occurs_var(x) for assum in th.assums):
+            raise InvalidDerivationException()
+        elif x.ty != Term.VAR:
+            raise InvalidDerivationException()
+        else:
+            return Thm(th.assums, Term.mk_all(x, th.concl))
+
+    @staticmethod
+    def forall_elim(th, s):
+        """Derivation rule FORALL_ELIM:
+
+        |- !x. t
+        ------------
+        |- t[s/x]
+        """
+        if th.concl.is_all():
+            if th.concl.arg.T != s.get_type():
+                raise InvalidDerivationException()
+            else:
+                return Thm(th.assums, th.concl.arg.subst_bound(s))
+        else:
+            raise InvalidDerivationException()
+
 # Table of primitive derivations
 primitive_deriv = {
     "assume" : (Thm.assume, MacroSig.TERM),
