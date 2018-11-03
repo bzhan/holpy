@@ -71,6 +71,7 @@ class PrinterTest(unittest.TestCase):
             (conj(A, B), "A ∧ B"),
             (disj(A, B), "A ∨ B"),
             (imp(A, B), "A ⟶ B"),
+            (Abs("x", Ta, b), "λx. b"),
         ]
 
         for t, s in test_data:

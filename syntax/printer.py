@@ -71,7 +71,8 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
         elif t.ty == Term.ABS:
             var_str = t.var_name + "::" + repr(t.T) if print_abs_type else t.var_name
             body_repr = helper(t.body, [t.var_name] + bd_vars)
-            return "%" + var_str + ". " + body_repr
+            lambda_str = "%" if not unicode else "λ"
+            return lambda_str + var_str + ". " + body_repr
         elif t.ty == Term.BOUND:
             if t.n >= len(bd_vars):
                 raise OpenTermException

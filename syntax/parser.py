@@ -17,17 +17,17 @@ grammar = r"""
         | "(" type ("," type)* ")" CNAME  // Type constructor with multiple arguments
         | "(" type ")"                    // Parenthesis
 
-    ?atom: CNAME -> vname                       // Constant, variable, or bound variable
-        | "%" CNAME "::" type ". " term -> abs  // Abstraction
-        | "(" term ")"                          // Parenthesis
+    ?atom: CNAME -> vname                 // Constant, variable, or bound variable
+        | ("%"|"λ") CNAME "::" type ". " term -> abs  // Abstraction
+        | "(" term ")"                    // Parenthesis
 
     ?comb: comb atom | atom
 
-    ?eq: eq "=" comb | comb      // Equality: priority 50
+    ?eq: eq "=" comb | comb             // Equality: priority 50
 
-    ?conj: eq ("&"|"∧") conj | eq      // Conjunction: priority 35
+    ?conj: eq ("&"|"∧") conj | eq       // Conjunction: priority 35
 
-    ?disj: conj ("|"|"∨") disj | conj  // Disjunction: priority 30
+    ?disj: conj ("|"|"∨") disj | conj   // Disjunction: priority 30
 
     ?imp: disj ("-->"|"⟶") imp | disj  // Implies: priority 25
 

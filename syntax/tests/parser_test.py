@@ -128,6 +128,7 @@ class ParserTest(unittest.TestCase):
             ("A ∨ B", "A | B"),
             ("A ⟶ B ⟶ C", "A --> B --> C"),
             ("A ∧ B | C", "A & B | C"),
+            ("λx::'a. x", "%x. x"),
         ]
 
         for s, ascii_s in test_data:
