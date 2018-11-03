@@ -119,13 +119,22 @@ def BasicTheory():
     thy.add_term_sig("conj", TFun(hol_bool, hol_bool, hol_bool))
     thy.add_term_sig("disj", TFun(hol_bool, hol_bool, hol_bool))
 
-    # Axioms for conjugation
     A = Var("A", hol_bool)
     B = Var("B", hol_bool)
+    C = Var("C", hol_bool)
+    imp = Term.mk_implies
+
+    # Axioms for conjugation
     conjAB = Logic.mk_conj(A, B)
-    thy.add_theorem("conjI", Thm([], Term.mk_implies(A, Term.mk_implies(B, conjAB))))
-    thy.add_theorem("conjD1", Thm([], Term.mk_implies(conjAB, A)))
-    thy.add_theorem("conjD2", Thm([], Term.mk_implies(conjAB, B)))
+    thy.add_theorem("conjI", Thm([], imp(A, imp(B, conjAB))))
+    thy.add_theorem("conjD1", Thm([], imp(conjAB, A)))
+    thy.add_theorem("conjD2", Thm([], imp(conjAB, B)))
+
+    # Axioms for disjunction
+    disjAB = Logic.mk_disj(A, B)
+    thy.add_theorem("disjI1", Thm([], imp(A, disjAB)))
+    thy.add_theorem("disjI2", Thm([], imp(B, disjAB)))
+    thy.add_theorem("disjE", Thm([], imp(imp(A, C), imp(imp(B, C), imp(disjAB, C)))))
 
     # Basic macros
     thy.add_proof_macro(arg_combination_macro())

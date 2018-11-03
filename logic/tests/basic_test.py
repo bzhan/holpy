@@ -8,6 +8,7 @@ from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.theory import Theory
 import logic.basic as basic
+from logic.basic import Logic
 
 Ta = TVar("a")
 x = Var("x", Ta)
@@ -41,8 +42,8 @@ class BasicTest(unittest.TestCase):
         thy = basic.BasicTheory()
         A = Var("A", hol_bool)
         B = Var("B", hol_bool)
-        conjAB = basic.Logic.mk_conj(A, B)
-        conjBA = basic.Logic.mk_conj(B, A)
+        conjAB = Logic.mk_conj(A, B)
+        conjBA = Logic.mk_conj(B, A)
 
         prf = Proof(conjAB)
         prf.add_item("S1", "theorem", args = "conjD1")
@@ -50,11 +51,31 @@ class BasicTest(unittest.TestCase):
         prf.add_item("S3", "theorem", args = "conjD2")
         prf.add_item("S4", "implies_elim", prevs = ["S3", "A1"])
         prf.add_item("S5", "theorem", args = "conjI")
-        prf.add_item("S6", "substitution", args = {"A" : B, "B" : A}, prevs = ["S5"])
+        prf.add_item("S6", "substitution", args = {"A": B, "B": A}, prevs = ["S5"])
         prf.add_item("S7", "implies_elim", prevs = ["S6", "S4"])
         prf.add_item("S8", "implies_elim", prevs = ["S7", "S2"])
         prf.add_item("S9", "implies_intr", args = conjAB, prevs = ["S8"])
         th = Thm([], Term.mk_implies(conjAB, conjBA))
+        self.assertEqual(thy.check_proof(prf), th)
+
+    def testDisjComm(self):
+        """Proof of commutativity of disjunction."""
+        thy = basic.BasicTheory()
+        A = Var("A", hol_bool)
+        B = Var("B", hol_bool)
+        disjAB = Logic.mk_disj(A, B)
+        disjBA = Logic.mk_disj(B, A)
+
+        prf = Proof(disjAB)
+        prf.add_item("S1", "theorem", args = "disjI2")
+        prf.add_item("S2", "substitution", args = {"A": B, "B": A}, prevs = ["S1"])
+        prf.add_item("S3", "theorem", args = "disjI1")
+        prf.add_item("S4", "substitution", args = {"A": B, "B": A}, prevs = ["S3"])
+        prf.add_item("S5", "theorem", args = "disjE")
+        prf.add_item("S6", "substitution", args = {"C": disjBA}, prevs = ["S5"])
+        prf.add_item("S7", "implies_elim", prevs = ["S6", "S2"])
+        prf.add_item("S8", "implies_elim", prevs = ["S7", "S4"])
+        th = Thm([], Term.mk_implies(disjAB, disjBA))
         self.assertEqual(thy.check_proof(prf), th)
 
 if __name__ == "__main__":
