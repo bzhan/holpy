@@ -80,7 +80,7 @@ class Thm():
 
     def is_reflexive(self):
         """Check whether the conclusion of the theorem is of the form x = y."""
-        return self.concl.is_equals() and self.concl.dest_arg1() == self.concl.dest_arg()
+        return self.concl.is_equals() and self.concl.arg1 == self.concl.arg
 
     @staticmethod
     def assume(A):

@@ -180,7 +180,7 @@ class rewr_conv(Conv):
         self.th_name = th_name
 
     def eval(self, t):
-        pat = self.th.concl.dest_arg1()
+        pat = self.th.concl.arg1
         inst = dict()
 
         try:
@@ -191,7 +191,7 @@ class rewr_conv(Conv):
         return Thm.substitution(self.th, inst)
 
     def get_proof_term(self, t):
-        pat = self.th.concl.dest_arg1()
+        pat = self.th.concl.arg1
         inst = dict()
 
         try:

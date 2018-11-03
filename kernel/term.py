@@ -261,10 +261,6 @@ class Term():
         else:
             return self
 
-    def dest_arg(self):
-        """Given a term f a, returns a."""
-        return self.arg
-
     def is_binop(self):
         """Whether self is of the form f t1 t2."""
         return self.ty == Term.COMB and self.fun.ty == Term.COMB
@@ -273,7 +269,8 @@ class Term():
         """Given a term f t1 t2, return (t1, t2)."""
         return (self.fun.arg, self.arg)
 
-    def dest_arg1(self):
+    @property
+    def arg1(self):
         """Given a term f a b, return a."""
         return self.fun.arg
 
