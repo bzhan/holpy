@@ -17,6 +17,9 @@ a = Var("a", Ta)
 b = Var("b", Ta)
 P = Var("P", TFun(Ta, hol_bool))
 Q = Var("Q", TFun(Ta, hol_bool))
+R = Var("R", TFun(Ta, Ta, hol_bool))
+f = Var("f", TFun(Ta, Ta))
+n = Var("n", TFun(hol_bool, hol_bool))
 eq = Term.mk_equals
 imp = Term.mk_implies
 conj = Logic.mk_conj
@@ -67,6 +70,18 @@ class PrinterTest(unittest.TestCase):
             (all(a, imp(P(a), Q(a))), "!a. P a --> Q a"),
             (imp(all(a, P(a)), Q(a)), "(!a. P a) --> Q a"),
             (eq(A, all(a, P(a))), "A = (!a. P a)"),
+        ]
+
+        for t, s in test_data:
+            self.assertEqual(print_term(thy, t), s)
+
+    def testPrintFunction(self):
+        test_data = [
+            (P(a), "P a"),
+            (P(f(a)), "P (f a)"),
+            (R(a,a), "R a a"),
+            (n(conj(A,B)), "n (A & B)"),
+            (conj(n(A), B), "n A & B"),
         ]
 
         for t, s in test_data:

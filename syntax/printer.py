@@ -28,6 +28,8 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
             return 100  # Atom case
 
     def helper(t, bd_vars):
+        LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
+
         if t.ty == Term.VAR or t.ty == Term.CONST:
             return t.name
 
@@ -41,15 +43,15 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
                 # Obtain output for first argument, enclose in parenthesis
                 # if necessary.
                 str_arg1 = helper(arg1, bd_vars)
-                if (op_data.assoc == OperatorData.LEFT_ASSOC and get_priority(arg1) < op_data.priority or
-                    op_data.assoc == OperatorData.RIGHT_ASSOC and get_priority(arg1) <= op_data.priority):
+                if (op_data.assoc == LEFT and get_priority(arg1) < op_data.priority or
+                    op_data.assoc == RIGHT and get_priority(arg1) <= op_data.priority):
                     str_arg1 = "(" + str_arg1 + ")"
 
                 # Obtain output for second argument, enclose in parenthesis
                 # if necessary.
                 str_arg2 = helper(arg2, bd_vars)
-                if (op_data.assoc == OperatorData.LEFT_ASSOC and get_priority(arg2) <= op_data.priority or
-                    op_data.assoc == OperatorData.RIGHT_ASSOC and get_priority(arg2) < op_data.priority):
+                if (op_data.assoc == LEFT and get_priority(arg2) <= op_data.priority or
+                    op_data.assoc == RIGHT and get_priority(arg2) < op_data.priority):
                     str_arg2 = "(" + str_arg2 + ")"
 
                 if unicode and op_data.unicode_op is not None:
@@ -59,28 +61,30 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
 
                 return str_arg1 + " " + str_op + " " + str_arg2
 
+            # Next, the case of binders
             elif t.is_all():
                 all_str = "!" if not unicode else "∀"
                 var_str = t.arg.var_name + "::" + repr(t.arg.T) if print_abs_type else t.arg.var_name
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
                 return all_str + var_str + ". " + body_repr
 
-            # a b c associates to the left. So parenthesis is needed to express
-            # a (b c). Parenthesis is also needed for lambda terms.
-            elif t.fun.ty == Term.ABS:
-                str_fun = "(" + helper(t.fun, bd_vars) + ")"
+            # Finally, usual function application
             else:
                 str_fun = helper(t.fun, bd_vars)
-            if t.arg.ty == Term.COMB or t.arg.ty == Term.ABS:
-                str_arg = "(" + helper(t.arg, bd_vars) + ")"
-            else:
+                if get_priority(t.fun) < 95:
+                    str_fun = "(" + helper(t.fun, bd_vars) + ")"
+
                 str_arg = helper(t.arg, bd_vars)
-            return str_fun + " " + str_arg
+                if get_priority(t.arg) <= 95:
+                    str_arg = "(" + helper(t.arg, bd_vars) + ")"
+                return str_fun + " " + str_arg
+
         elif t.ty == Term.ABS:
             var_str = t.var_name + "::" + repr(t.T) if print_abs_type else t.var_name
             body_repr = helper(t.body, [t.var_name] + bd_vars)
             lambda_str = "%" if not unicode else "λ"
             return lambda_str + var_str + ". " + body_repr
+
         elif t.ty == Term.BOUND:
             if t.n >= len(bd_vars):
                 raise OpenTermException

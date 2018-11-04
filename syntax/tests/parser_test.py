@@ -22,7 +22,8 @@ ctxt = {
     "a" : TVar("a"),
     "b" : TVar("a"),
     "c" : TVar("a"),
-    "f" : TFun(TVar("a"), TVar("a"))
+    "f" : TFun(TVar("a"), TVar("a")),
+    "n" : TFun(hol_bool, hol_bool),
 }
 
 A = Var("A", hol_bool)
@@ -112,6 +113,8 @@ class ParserTest(unittest.TestCase):
             ("A | B --> C", "bool"),
             ("(A --> B) & C", "bool"),
             ("A | (B --> C)", "bool"),
+            ("n (A & B)", "bool"),
+            ("n A & B", "bool"),
 
             # Quantifiers
             ("!x::'a. P x", "bool"),
