@@ -18,6 +18,8 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
             if t.is_binop() and get_info_for_binop(t) is not None:
                 op_data = get_info_for_binop(t)
                 return op_data.priority
+            elif t.is_all():
+                return 10
             else:
                 return 95  # Function application
         elif t.ty == Term.ABS:

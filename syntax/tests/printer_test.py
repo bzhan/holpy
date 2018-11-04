@@ -16,6 +16,7 @@ Ta = TVar("a")
 a = Var("a", Ta)
 b = Var("b", Ta)
 P = Var("P", TFun(Ta, hol_bool))
+Q = Var("Q", TFun(Ta, hol_bool))
 eq = Term.mk_equals
 imp = Term.mk_implies
 conj = Logic.mk_conj
@@ -55,9 +56,17 @@ class PrinterTest(unittest.TestCase):
             (conj(A, imp(B, C)), "A & (B --> C)"),
             (disj(imp(A, B), C), "(A --> B) | C"),
 
+            # Abstraction
+            (Abs("x", Ta, conj(P(a), Q(a))), "%x. P a & Q a"),
+
             # Quantifiers
             (all(a, P(a)), "!a. P a"),
             (all(a, all(b, conj(P(a),P(b)))), "!a. !b. P a & P b"),
+            (all(a, conj(P(a), Q(a))), "!a. P a & Q a"),
+            (conj(all(a, P(a)), Q(a)), "(!a. P a) & Q a"),
+            (all(a, imp(P(a), Q(a))), "!a. P a --> Q a"),
+            (imp(all(a, P(a)), Q(a)), "(!a. P a) --> Q a"),
+            (eq(A, all(a, P(a))), "A = (!a. P a)"),
         ]
 
         for t, s in test_data:
