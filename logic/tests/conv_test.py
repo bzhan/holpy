@@ -35,19 +35,19 @@ class ConvTest(unittest.TestCase):
     def testBetaConv(self):
         cv = beta_conv()
         t = lf(x)
-        self.assertEqual(cv.eval(t), Thm.beta_conv(t))
+        self.assertEqual(cv(t), Thm.beta_conv(t))
         self.assertEqual(thy.check_proof(cv.get_proof_term(t).export()), Thm.beta_conv(t))
 
     def testBetaConvFail(self):
         cv = beta_conv()
-        self.assertRaises(ConvException, cv.eval, x)
+        self.assertRaises(ConvException, cv, x)
         self.assertRaises(ConvException, cv.get_proof_term, x)
 
     def testTryConv(self):
         cv = try_conv(beta_conv())
         t = lf(x)
-        self.assertEqual(cv.eval(t), Thm.beta_conv(t))
-        self.assertEqual(cv.eval(x), Thm.reflexive(x))
+        self.assertEqual(cv(t), Thm.beta_conv(t))
+        self.assertEqual(cv(x), Thm.reflexive(x))
 
     def testRewrConv(self):
         thy = arith_thy
@@ -65,20 +65,20 @@ class ConvTest(unittest.TestCase):
         # Test conversion using 1 = 0
         cv1 = rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))
         eq_th = Thm.mk_equals(nat1, nat0)
-        self.assertEqual(cv1.eval(nat1), eq_th)
+        self.assertEqual(cv1(nat1), eq_th)
         self.assertEqual(thy.check_proof(cv1.get_proof_term(nat1).export()), eq_th)
-        self.assertRaises(ConvException, cv1.eval, nat0)
+        self.assertRaises(ConvException, cv1, nat0)
         self.assertRaises(ConvException, cv1.get_proof_term, nat0)
 
         # Test conversion using f x = g x
         cv2 = rewr_conv("f_eq_g", thy.get_theorem("f_eq_g"))
         eq0 = Thm.mk_equals(f(nat0), g(nat0))
         eq1 = Thm.mk_equals(f(nat1), g(nat1))
-        self.assertEqual(cv2.eval(f(nat0)), eq0)
-        self.assertEqual(cv2.eval(f(nat1)), eq1)
+        self.assertEqual(cv2(f(nat0)), eq0)
+        self.assertEqual(cv2(f(nat1)), eq1)
         self.assertEqual(thy.check_proof(cv2.get_proof_term(f(nat0)).export()), eq0)
         self.assertEqual(thy.check_proof(cv2.get_proof_term(f(nat1)).export()), eq1)
-        self.assertRaises(ConvException, cv1.eval, nat0)
+        self.assertRaises(ConvException, cv1, nat0)
         self.assertRaises(ConvException, cv1.get_proof_term, nat0)
 
     def testAbsConv(self):
@@ -94,7 +94,7 @@ class ConvTest(unittest.TestCase):
         t = f(x).abstract_over(x)
         cv = abs_conv(rewr_conv("f_eq_g", thy.get_theorem("f_eq_g")))
         res_th = Thm.mk_equals(t, g(x).abstract_over(x))
-        self.assertEqual(cv.eval(t), res_th)
+        self.assertEqual(cv(t), res_th)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(thy.check_proof(prf), res_th)
 
@@ -103,7 +103,7 @@ class ConvTest(unittest.TestCase):
         t = lf(lf(x))
         res = f(f(x,x),f(x,x))
         res_th = Thm.mk_equals(t, res)
-        self.assertEqual(cv.eval(t), res_th)
+        self.assertEqual(cv(t), res_th)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(prf.get_num_item(), 5)
         self.assertEqual(thy.check_proof(prf), res_th)
@@ -113,7 +113,7 @@ class ConvTest(unittest.TestCase):
         t = lf(lf(x))
         res = f(f(x,x),f(x,x))
         res_th = Thm.mk_equals(t, res)
-        self.assertEqual(cv.eval(t), res_th)
+        self.assertEqual(cv(t), res_th)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(prf.get_num_item(), 4)
         self.assertEqual(thy.check_proof(prf), res_th)
@@ -127,7 +127,7 @@ class ConvTest(unittest.TestCase):
             t = lf(t)
             res = f(res, res)
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
+        self.assertEqual(cv(t), Thm.mk_equals(t, res))
         self.assertEqual(prf.get_num_item(), 29)
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
@@ -140,7 +140,7 @@ class ConvTest(unittest.TestCase):
             t = lf(t)
             res = f(res, res)
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
+        self.assertEqual(cv(t), Thm.mk_equals(t, res))
         self.assertEqual(prf.get_num_item(), 22)
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
@@ -171,7 +171,7 @@ class ConvTest(unittest.TestCase):
             res = plus(res, g0)
 
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv.eval(t), Thm.mk_equals(t, res))
+        self.assertEqual(cv(t), Thm.mk_equals(t, res))
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
 if __name__ == "__main__":

@@ -13,11 +13,11 @@ class Conv():
     """A conversion is a function for rewriting a term.
 
     A Conv object has two main methods:
-    eval - function to obtain the equality from the term.
+    __call__ - function to obtain the equality from the term.
     get_proof_term - function to obtain the proof term for the equality.
 
     """
-    def eval(self, t):
+    def __call__(self, t):
         pass
 
     def get_proof_term(self, t):
@@ -25,7 +25,7 @@ class Conv():
 
 class all_conv(Conv):
     """Returns the trivial equality t = t."""
-    def eval(self, t):
+    def __call__(self, t):
         return Thm.reflexive(t)
 
     def get_proof_term(self, t):
@@ -33,7 +33,7 @@ class all_conv(Conv):
 
 class no_conv(Conv):
     """Always fails."""
-    def eval(self, t):
+    def __call__(self, t):
         raise ConvException()
 
     def get_proof_term(self, t):
@@ -46,10 +46,10 @@ class combination_conv(Conv):
         self.cv1 = cv1
         self.cv2 = cv2
 
-    def eval(self, t):
+    def __call__(self, t):
         if t.ty != Term.COMB:
             raise ConvException()
-        return Thm.combination(self.cv1.eval(t.fun), self.cv2.eval(t.arg))
+        return Thm.combination(self.cv1(t.fun), self.cv2(t.arg))
 
     def get_proof_term(self, t):
         if t.ty != Term.COMB:
@@ -72,10 +72,10 @@ class then_conv(Conv):
         self.cv1 = cv1
         self.cv2 = cv2
 
-    def eval(self, t):
-        th1 = self.cv1.eval(t)
+    def __call__(self, t):
+        th1 = self.cv1(t)
         (_, t2) = th1.concl.dest_binop()
-        th2 = self.cv2.eval(t2)
+        th2 = self.cv2(t2)
         return Thm.transitive(th1, th2)
 
     def get_proof_term(self, t):
@@ -98,11 +98,11 @@ class else_conv(Conv):
         self.cv1 = cv1
         self.cv2 = cv2
 
-    def eval(self, t):
+    def __call__(self, t):
         try:
-            return self.cv1.eval(t)
+            return self.cv1(t)
         except ConvException:
-            return self.cv2.eval(t)
+            return self.cv2(t)
 
     def get_proof_term(self, t):
         try:
@@ -112,7 +112,7 @@ class else_conv(Conv):
 
 class beta_conv(Conv):
     """Applies beta-conversion."""
-    def eval(self, t):
+    def __call__(self, t):
         try:
             return Thm.beta_conv(t)
         except InvalidDerivationException:
@@ -130,14 +130,14 @@ class abs_conv(Conv):
         assert isinstance(cv, Conv)
         self.cv = cv
     
-    def eval(self, t):
+    def __call__(self, t):
         if t.ty != Term.ABS:
             raise ConvException()
         
         # Find a new variable x and substitute for body
         v = Var(t.var_name, t.T)
         t2 = t.subst_bound(v)
-        return Thm.abstraction(self.cv.eval(t2), v)
+        return Thm.abstraction(self.cv(t2), v)
 
     def get_proof_term(self, t):
         if t.ty != Term.ABS:
@@ -178,8 +178,8 @@ class bottom_conv(Conv):
         assert isinstance(cv, Conv), "bottom_conv: argument"
         self.cv = cv
 
-    def eval(self, t):
-        return then_conv(sub_conv(self), try_conv(self.cv)).eval(t)
+    def __call__(self, t):
+        return then_conv(sub_conv(self), try_conv(self.cv))(t)
 
     def get_proof_term(self, t):
         return then_conv(sub_conv(self), try_conv(self.cv)).get_proof_term(t)
@@ -190,8 +190,8 @@ class top_conv(Conv):
         assert isinstance(cv, Conv), "top_conv: argument"
         self.cv = cv
 
-    def eval(self, t):
-        return then_conv(try_conv(self.cv), sub_conv(self)).eval(t)
+    def __call__(self, t):
+        return then_conv(try_conv(self.cv), sub_conv(self))(t)
 
     def get_proof_term(self, t):
         return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(t)
@@ -203,7 +203,7 @@ class rewr_conv(Conv):
         self.th = th
         self.th_name = th_name
 
-    def eval(self, t):
+    def __call__(self, t):
         pat = self.th.concl.arg1
         inst = dict()
 
