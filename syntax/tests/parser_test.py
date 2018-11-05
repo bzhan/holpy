@@ -162,6 +162,7 @@ class ParserTest(unittest.TestCase):
             ("∀x::'a. x", "!x. x"),
             ("∀x::'a. P x ∧ Q x", "!x. P x & Q x"),
             ("(∀x::'a. P x) & Q x", "(!x. P x) & Q x"),
+            ("∃x::'a. x", "?x. x"),
         ]
 
         for s, ascii_s in test_data:

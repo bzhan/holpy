@@ -123,6 +123,7 @@ class PrinterTest(unittest.TestCase):
             (imp(A, B), "A ⟶ B"),
             (Abs("x", Ta, b), "λx. b"),
             (all(a, P(a)), "∀a. P a"),
+            (exists(a, P(a)), "∃a. P a"),
             (neg(A), "¬A"),
         ]
 
