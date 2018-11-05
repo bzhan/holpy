@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type
-from kernel.term import Term
+from kernel.term import Var, Term
 from kernel.thm import Thm, InvalidDerivationException
 from logic.proofterm import ProofTerm
 from logic.matcher import Matcher, MatchException
@@ -123,6 +123,30 @@ class beta_conv(Conv):
             return ProofTerm.beta_conv(t)
         except InvalidDerivationException:
             raise ConvException()
+
+class abs_conv(Conv):
+    """Applies conversion to the body of abstraction."""
+    def __init__(self, cv):
+        assert isinstance(cv, Conv)
+        self.cv = cv
+    
+    def eval(self, t):
+        if t.ty != Term.ABS:
+            raise ConvException()
+        
+        # Find a new variable x and substitute for body
+        v = Var(t.var_name, t.T)
+        t2 = t.subst_bound(v)
+        return Thm.abstraction(self.cv.eval(t2), v)
+
+    def get_proof_term(self, t):
+        if t.ty != Term.ABS:
+            raise ConvException()
+
+        # Find a new variable x and substitute for body
+        v = Var(t.var_name, t.T)
+        t2 = t.subst_bound(v)
+        return ProofTerm.abstraction(self.cv.get_proof_term(t2), v)
 
 def try_conv(cv):
     return else_conv(cv, all_conv())

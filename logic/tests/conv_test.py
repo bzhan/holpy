@@ -6,7 +6,7 @@ from kernel.type import TVar, Type, TFun
 from kernel.term import Var, Const, Abs, Bound
 from kernel.thm import Thm
 from logic.basic import BasicTheory
-from logic.conv import beta_conv, else_conv, try_conv, top_conv, bottom_conv, rewr_conv, ConvException
+from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, rewr_conv, ConvException
 
 thy = BasicTheory()
 Ta = TVar("a")
@@ -18,6 +18,18 @@ B0 = Bound(0)
 
 # The term %x. f x x
 lf = Abs("x", Ta, f(B0, B0))
+
+# Setup a theory with nat, 0, 1, f, g, +
+arith_thy = BasicTheory()
+arith_thy.add_type_sig("nat", 0)
+natT = Type("nat")
+arith_thy.add_term_sig("0", natT)
+arith_thy.add_term_sig("1", natT)
+natFunT = TFun(natT, natT)
+natFunT2 = TFun(natT, natT, natT)
+arith_thy.add_term_sig("f", natFunT)
+arith_thy.add_term_sig("g", natFunT)
+arith_thy.add_term_sig("+", natFunT2)
 
 class ConvTest(unittest.TestCase):
     def testBetaConv(self):
@@ -38,18 +50,8 @@ class ConvTest(unittest.TestCase):
         self.assertEqual(cv.eval(x), Thm.reflexive(x))
 
     def testRewrConv(self):
-        thy = BasicTheory()
+        thy = arith_thy
 
-        # Setup a theory containing nat, 0, 1, f, g, +.
-        thy.add_type_sig("nat", 0)
-        natT = Type("nat")
-        thy.add_term_sig("0", natT)
-        thy.add_term_sig("1", natT)
-        natFunT = TFun(natT, natT)
-        natFunT2 = TFun(natT, natT, natT)
-        thy.add_term_sig("f", natFunT)
-        thy.add_term_sig("g", natFunT)
-        thy.add_term_sig("+", natFunT2)
         nat0 = Const("0", natT)
         nat1 = Const("1", natT)
         f = Const("f", natFunT)
@@ -78,6 +80,23 @@ class ConvTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(cv2.get_proof_term(f(nat1)).export()), eq1)
         self.assertRaises(ConvException, cv1.eval, nat0)
         self.assertRaises(ConvException, cv1.get_proof_term, nat0)
+
+    def testAbsConv(self):
+        thy = arith_thy
+
+        nat0 = Const("0", natT)
+        nat1 = Const("1", natT)
+        f = Const("f", natFunT)
+        g = Const("g", natFunT)
+        x = Var("x", natT)
+
+        thy.add_theorem("f_eq_g", Thm.mk_equals(f(x), g(x)))
+        t = f(x).abstract_over(x)
+        cv = abs_conv(rewr_conv("f_eq_g", thy.get_theorem("f_eq_g")))
+        res_th = Thm.mk_equals(t, g(x).abstract_over(x))
+        self.assertEqual(cv.eval(t), res_th)
+        prf = cv.get_proof_term(t).export()
+        self.assertEqual(thy.check_proof(prf), res_th)
 
     def testTopBetaConv(self):
         cv = top_conv(beta_conv())
@@ -126,19 +145,9 @@ class ConvTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
     def testLargeSum(self):
-        thy = BasicTheory()
+        thy = arith_thy
         thy.check_level = 1
 
-        # Setup a theory containing nat, 0, 1, f, g, +.
-        thy.add_type_sig("nat", 0)
-        natT = Type("nat")
-        thy.add_term_sig("0", natT)
-        thy.add_term_sig("1", natT)
-        natFunT = TFun(natT, natT)
-        natFunT2 = TFun(natT, natFunT)
-        thy.add_term_sig("f", natFunT)
-        thy.add_term_sig("g", natFunT)
-        thy.add_term_sig("+", natFunT2)
         nat0 = Const("0", natT)
         nat1 = Const("1", natT)
         f = Const("f", natFunT)

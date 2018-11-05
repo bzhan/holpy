@@ -57,6 +57,10 @@ class ProofTerm():
         return ProofTerm(Thm.beta_conv(x), "beta_conv", x, [])
 
     @staticmethod
+    def abstraction(pt, x):
+        return ProofTerm(Thm.abstraction(pt.th, x), "abstraction", x, [pt])
+
+    @staticmethod
     def theorem(th_name, th):
         return ProofTerm(th, "theorem", th_name, [])
 
