@@ -61,8 +61,8 @@ class ProofTerm():
         return ProofTerm(Thm.abstraction(pt.th, x), "abstraction", x, [pt])
 
     @staticmethod
-    def theorem(th_name, th):
-        return ProofTerm(th, "theorem", th_name, [])
+    def theorem(thy, th_name):
+        return ProofTerm(thy.get_theorem(th_name), "theorem", th_name, [])
 
     def _export(self, seq_to_id, prf):
         """Helper function for _export.

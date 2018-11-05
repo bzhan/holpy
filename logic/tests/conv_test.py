@@ -3,9 +3,10 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun
-from kernel.term import Var, Const, Abs, Bound
+from kernel.term import Var, Const, Abs, Bound, Term
 from kernel.thm import Thm
 from logic.basic import BasicTheory
+from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, rewr_conv, ConvException
 
 thy = BasicTheory()
@@ -63,7 +64,7 @@ class ConvTest(unittest.TestCase):
         thy.add_theorem("f_eq_g", Thm.mk_equals(f(Var("x",natT)), g(Var("x",natT))))
 
         # Test conversion using 1 = 0
-        cv1 = rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))
+        cv1 = rewr_conv(ProofTerm.theorem(thy, "1_eq_0"))
         eq_th = Thm.mk_equals(nat1, nat0)
         self.assertEqual(cv1(nat1), eq_th)
         self.assertEqual(thy.check_proof(cv1.get_proof_term(nat1).export()), eq_th)
@@ -71,7 +72,7 @@ class ConvTest(unittest.TestCase):
         self.assertRaises(ConvException, cv1.get_proof_term, nat0)
 
         # Test conversion using f x = g x
-        cv2 = rewr_conv("f_eq_g", thy.get_theorem("f_eq_g"))
+        cv2 = rewr_conv(ProofTerm.theorem(thy, "f_eq_g"))
         eq0 = Thm.mk_equals(f(nat0), g(nat0))
         eq1 = Thm.mk_equals(f(nat1), g(nat1))
         self.assertEqual(cv2(f(nat0)), eq0)
@@ -92,7 +93,7 @@ class ConvTest(unittest.TestCase):
 
         thy.add_theorem("f_eq_g", Thm.mk_equals(f(x), g(x)))
         t = f(x).abstract_over(x)
-        cv = abs_conv(rewr_conv("f_eq_g", thy.get_theorem("f_eq_g")))
+        cv = abs_conv(rewr_conv(ProofTerm.theorem(thy, "f_eq_g")))
         res_th = Thm.mk_equals(t, g(x).abstract_over(x))
         self.assertEqual(cv(t), res_th)
         prf = cv.get_proof_term(t).export()
@@ -159,8 +160,8 @@ class ConvTest(unittest.TestCase):
         thy.add_theorem("f_eq_g", Thm.mk_equals(f(Var("x",natT)), g(Var("x",natT))))
 
         cv = top_conv(else_conv(
-            rewr_conv("f_eq_g", thy.get_theorem("f_eq_g")),
-            rewr_conv("1_eq_0", thy.get_theorem("1_eq_0"))))
+            rewr_conv(ProofTerm.theorem(thy, "f_eq_g")),
+            rewr_conv(ProofTerm.theorem(thy, "1_eq_0"))))
 
         f1 = f(nat1)
         g0 = g(nat0)

@@ -198,10 +198,10 @@ class top_conv(Conv):
 
 class rewr_conv(Conv):
     """Rewrite using the given equality theorem."""
-    def __init__(self, th_name, th):
-        assert isinstance(th, Thm), "rewr_conv: argument"
-        self.th = th
-        self.th_name = th_name
+    def __init__(self, pt):
+        assert isinstance(pt, ProofTerm), "rewr_conv: argument"
+        self.pt = pt
+        self.th = pt.th
 
     def __call__(self, t):
         pat = self.th.concl.arg1
@@ -224,7 +224,6 @@ class rewr_conv(Conv):
             raise ConvException()
 
         if inst:
-            return ProofTerm.substitution(ProofTerm.theorem(self.th_name, self.th), inst)
+            return ProofTerm.substitution(self.pt, inst)
         else:
-            return ProofTerm.theorem(self.th_name, self.th)
-
+            return self.pt
