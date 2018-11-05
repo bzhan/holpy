@@ -137,6 +137,9 @@ class ParserTest(unittest.TestCase):
             ("!x::'a. P x --> Q x", "bool"),
             ("(!x::'a. P x) --> Q a", "bool"),
             ("A = (!x::'a. P x)", "bool"),
+            ("?x::'a. P x", "bool"),
+            ("?x::'a. !y::'a. P2 x y", "bool"),
+            ("!x::'a. ?y::'a. P2 x y", "bool"),
         ]
 
         for s, Ts in test_data:

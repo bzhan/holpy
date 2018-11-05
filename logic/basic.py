@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import TFun, hol_bool
+from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 from kernel.proof import Proof
@@ -117,6 +117,21 @@ class Logic():
         """Whether t is of the form ~ A."""
         return self.ty == Term.COMB and self.fun == Logic.neg
 
+    @staticmethod
+    def is_exists(t):
+        """Whether t is of the form ?x. P x."""
+        return t.ty == Term.COMB and t.fun.ty == Term.CONST and \
+            t.fun.name == "exists" and t.arg.ty == Term.ABS
+
+    @staticmethod
+    def mk_exists(x, body):
+        """Given a variable x and a term t possibly depending on x, return
+        the term ?x. t.
+
+        """
+        exists_t = Const("exists", TFun(TFun(x.T, hol_bool), hol_bool))
+        return exists_t(body.abstract_over(x))
+
 def BasicTheory():
     thy = Theory.EmptyTheory()
 
@@ -129,10 +144,13 @@ def BasicTheory():
     thy.add_term_sig("neg", TFun(hol_bool, hol_bool))
     thy.add_term_sig("true", hol_bool)
     thy.add_term_sig("false", hol_bool)
+    thy.add_term_sig("exists", TFun(TFun(TVar("a"), hol_bool), hol_bool))
 
     A = Var("A", hol_bool)
     B = Var("B", hol_bool)
     C = Var("C", hol_bool)
+    P = Var("P", TFun(TVar("a"), hol_bool))
+    a = Var("a", TVar("a"))
     imp = Term.mk_implies
 
     # Axioms for conjugation
@@ -156,6 +174,10 @@ def BasicTheory():
 
     # Axioms for false
     thy.add_theorem("falseE", Thm([], imp(Logic.false, A)))
+
+    # Axioms for exists
+    thy.add_theorem("exI", Thm([], imp(P(a), Logic.mk_exists(a, P(a)))))
+    thy.add_theorem("exE", Thm([], imp(Logic.mk_exists(a, P(a)), Term.mk_all(a, imp(P(a), C)), C)))
 
     # Classical axiom
     thy.add_theorem("classical", Thm([], Logic.disj(A, Logic.neg(A))))

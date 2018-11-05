@@ -79,7 +79,7 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), th)
 
     def testAllConj(self):
-        """Proof of the following: !x. A x & B x --> (!x. A x) & (!x. B x)."""
+        """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
         thy = basic.BasicTheory()
         Ta = TVar("a")
         A = Var("A", TFun(Ta, hol_bool))
@@ -169,5 +169,41 @@ class BasicTest(unittest.TestCase):
         th = Thm([], Term.mk_implies(A, Logic.mk_conj(Logic.true, A)))
         self.assertEqual(thy.check_proof(prf), th)
         
+    def testExistsConj(self):
+        """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
+        thy = basic.BasicTheory()
+        Ta = TVar("a")
+        A = Var("A", TFun(Ta, hol_bool))
+        B = Var("B", TFun(Ta, hol_bool))
+        x = Var("x", Ta)
+        conjAB = Logic.mk_conj(A(x), B(x))
+        exists_conj = Logic.mk_exists(x, conjAB)
+        exists_A = Logic.mk_exists(x, A(x))
+        exists_B = Logic.mk_exists(x, B(x))
+        conj_exists = Logic.mk_conj(exists_A, exists_B)
+
+        prf = Proof(exists_conj)
+        prf.add_item("S1", "assume", args = conjAB)
+        prf.add_item("S2", "theorem", args = "conjD1")
+        prf.add_item("S3", "substitution", args = {"A": A(x), "B": B(x)}, prevs = ["S2"])
+        prf.add_item("S4", "implies_elim", prevs = ["S3", "S1"])
+        prf.add_item("S5", "theorem", args = "conjD2")
+        prf.add_item("S6", "substitution", args = {"A": A(x), "B": B(x)}, prevs = ["S5"])
+        prf.add_item("S7", "implies_elim", prevs = ["S6", "S1"])
+        prf.add_item("S8", "theorem", args = "exI")
+        prf.add_item("S9", "substitution", args = {"P": A, "a": x}, prevs = ["S8"])
+        prf.add_item("S10", "implies_elim", prevs = ["S9", "S4"])
+        prf.add_item("S11", "substitution", args = {"P": B, "a": x}, prevs = ["S8"])
+        prf.add_item("S12", "implies_elim", prevs = ["S11", "S7"])
+        prf.add_item("S13", "implies_intr", args = conjAB, prevs = ["S10"])
+        prf.add_item("S14", "implies_intr", args = conjAB, prevs = ["S12"])
+        prf.add_item("S15", "forall_intr", args = x, prevs = ["S13"])
+        prf.add_item("S16", "forall_intr", args = x, prevs = ["S14"])
+        prf.add_item("S17", "theorem", args = "exE")
+        prf.add_item("S18", "substitution", args = {"P": conjAB.abstract_over(x), "C": exists_A}, prevs = ["S17"])
+        # Unfinished proof
+        thy.check_proof(prf)
+
+
 if __name__ == "__main__":
     unittest.main()

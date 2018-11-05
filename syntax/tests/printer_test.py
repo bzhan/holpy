@@ -26,6 +26,7 @@ conj = Logic.mk_conj
 disj = Logic.mk_disj
 all = Term.mk_all
 neg = Logic.neg
+exists = Logic.mk_exists
 
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
@@ -84,6 +85,9 @@ class PrinterTest(unittest.TestCase):
             (all(a, imp(P(a), Q(a))), "!a. P a --> Q a"),
             (imp(all(a, P(a)), Q(a)), "(!a. P a) --> Q a"),
             (eq(A, all(a, P(a))), "A = (!a. P a)"),
+            (exists(a, P(a)), "?a. P a"),
+            (exists(a, all(b, R(a, b))), "?a. !b. R a b"),
+            (all(a, exists(b, R(a, b))), "!a. ?b. R a b"),
         ]
 
         for t, s in test_data:

@@ -18,8 +18,9 @@ grammar = r"""
         | "(" type ")"                    // Parenthesis
 
     ?atom: CNAME -> vname                 // Constant, variable, or bound variable
-        | ("%"|"λ") CNAME "::" type ". " term -> abs  // Abstraction
-        | ("!"|"∀") CNAME "::" type ". " term -> all  // Forall quantification
+        | ("%"|"λ") CNAME "::" type ". " term -> abs     // Abstraction
+        | ("!"|"∀") CNAME "::" type ". " term -> all     // Forall quantification
+        | ("?"|"∃") CNAME "::" type ". " term -> exists   // Exists quantification
         | "(" term ")"                    // Parenthesis
 
     ?comb: comb atom | atom
@@ -106,6 +107,13 @@ class HOLTransformer(Transformer):
         t.T = T
         all_t = Const("all", TFun(TFun(T, hol_bool), hol_bool))
         return all_t(t)
+
+    def exists(self, var_name, T, body):
+        # Similar parsing mechanism as for abs.
+        t = body.abstract_over(Var(var_name, None))
+        t.T = T
+        exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
+        return exists_t(t)
 
     def eq(self, lhs, rhs):
         return Term.mk_equals(lhs, rhs)
