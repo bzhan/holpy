@@ -107,6 +107,67 @@ class BasicTest(unittest.TestCase):
         prf.add_item("S14", "implies_intr", args = all_conj, prevs = ["S13"])
         th = Thm([], Term.mk_implies(all_conj, conj_all))
         self.assertEqual(thy.check_proof(prf), th)
+
+    def testDoubleNeg(self):
+        """Proof of A --> ~~A."""
+        thy = basic.BasicTheory()
+        A = Var("A", hol_bool)
+        neg = Logic.neg
+
+        prf = Proof(A)
+        prf.add_item("S1", "assume", args = neg(A))
+        prf.add_item("S2", "theorem", args = "negE")
+        prf.add_item("S3", "implies_elim", prevs = ["S2", "S1"])
+        prf.add_item("S4", "implies_elim", prevs = ["S3", "A1"])
+        prf.add_item("S5", "implies_intr", args = neg(A), prevs = ["S4"])
+        prf.add_item("S6", "theorem", args = "negI")
+        prf.add_item("S7", "substitution", args = {"A": neg(A)}, prevs = ["S6"])
+        prf.add_item("S8", "implies_elim", prevs = ["S7", "S5"])
+        prf.add_item("S9", "implies_intr", args = A, prevs = ["S8"])
+        th = Thm([], Term.mk_implies(A, neg(neg(A))))
+        self.assertEqual(thy.check_proof(prf), th)
+
+    def testDoubleNegInv(self):
+        """Proof of ~~A --> A, requires classical axiom."""
+        thy = basic.BasicTheory()
+        A = Var("A", hol_bool)
+        neg = Logic.neg
+
+        prf = Proof(neg(neg(A)))
+        prf.add_item("S1", "theorem", args = "classical")
+        prf.add_item("S2", "assume", args = A)
+        prf.add_item("S3", "assume", args = neg(A))
+        prf.add_item("S4", "theorem", args = "negE")
+        prf.add_item("S5", "substitution", args = {"A": neg(A)}, prevs = ["S4"])
+        prf.add_item("S6", "implies_elim", prevs = ["S5", "A1"])
+        prf.add_item("S7", "implies_elim", prevs = ["S6", "S3"])
+        prf.add_item("S8", "theorem", args = "falseE")
+        prf.add_item("S9", "implies_elim", prevs = ["S8", "S7"])
+        prf.add_item("S10", "implies_intr", args = A, prevs = ["S2"])
+        prf.add_item("S11", "implies_intr", args = neg(A), prevs = ["S9"])
+        prf.add_item("S12", "theorem", args = "disjE")
+        prf.add_item("S13", "substitution", args = {"B": neg(A), "C": A}, prevs = ["S12"])
+        prf.add_item("S14", "implies_elim", prevs = ["S13", "S10"])
+        prf.add_item("S15", "implies_elim", prevs = ["S14", "S11"])
+        prf.add_item("S16", "implies_elim", prevs = ["S15", "S1"])
+        prf.add_item("S17", "implies_intr", args = neg(neg(A)), prevs = ["S16"])
+        th = Thm([], Term.mk_implies(neg(neg(A)), A))
+        self.assertEqual(thy.check_proof(prf), th)
+
+    def testTrueAbsorb(self):
+        """Proof of A --> true & A."""
+        thy = basic.BasicTheory()
+        A = Var("A", hol_bool)
+
+        prf = Proof(A)
+        prf.add_item("S1", "theorem", args = "trueI")
+        prf.add_item("S2", "theorem", args = "conjI")
+        prf.add_item("S3", "substitution", args = {"A": Logic.true, "B": A}, prevs = ["S2"])
+        prf.add_item("S4", "implies_elim", prevs = ["S3", "S1"])
+        prf.add_item("S5", "implies_elim", prevs = ["S4", "A1"])
+        prf.add_item("S6", "implies_intr", args = A, prevs = ["S5"])
+        th = Thm([], Term.mk_implies(A, Logic.mk_conj(Logic.true, A)))
+        self.assertEqual(thy.check_proof(prf), th)
         
 if __name__ == "__main__":
     unittest.main()

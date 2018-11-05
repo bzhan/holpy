@@ -26,7 +26,9 @@ grammar = r"""
 
     ?eq: eq "=" comb | comb             // Equality: priority 50
 
-    ?conj: eq ("&"|"∧") conj | eq       // Conjunction: priority 35
+    ?neg: ("~"|"¬") neg -> neg | eq     // Negation: priority 40 
+
+    ?conj: neg ("&"|"∧") conj | neg     // Conjunction: priority 35
 
     ?disj: conj ("|"|"∨") disj | conj   // Disjunction: priority 30
 
@@ -107,6 +109,9 @@ class HOLTransformer(Transformer):
 
     def eq(self, lhs, rhs):
         return Term.mk_equals(lhs, rhs)
+
+    def neg(self, t):
+        return Logic.neg(t)
 
     def conj(self, s, t):
         return Logic.mk_conj(s, t)

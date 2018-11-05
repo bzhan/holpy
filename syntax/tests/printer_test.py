@@ -25,6 +25,7 @@ imp = Term.mk_implies
 conj = Logic.mk_conj
 disj = Logic.mk_disj
 all = Term.mk_all
+neg = Logic.neg
 
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
@@ -53,11 +54,24 @@ class PrinterTest(unittest.TestCase):
             (disj(conj(A, B), conj(B, C)), "A & B | B & C"),
             (conj(disj(A, B), disj(B, C)), "(A | B) & (B | C)"),
 
+            # Negation
+            (neg(A), "~A"),
+            (neg(neg(A)), "~~A"),
+
+            # Constants
+            (Logic.true, "true"),
+            (Logic.false, "false"),
+
             # Mixed
             (imp(conj(A, B), C), "A & B --> C"),
             (imp(A, disj(B, C)), "A --> B | C"),
             (conj(A, imp(B, C)), "A & (B --> C)"),
             (disj(imp(A, B), C), "(A --> B) | C"),
+            (neg(conj(A, B)), "~(A & B)"),
+            (neg(imp(A, B)), "~(A --> B)"),
+            (neg(eq(A, B)), "~A = B"),
+            (eq(neg(A), B), "(~A) = B"),
+            (eq(neg(A), neg(B)), "(~A) = (~B)"),
 
             # Abstraction
             (Abs("x", Ta, conj(P(a), Q(a))), "%x. P a & Q a"),
@@ -105,6 +119,7 @@ class PrinterTest(unittest.TestCase):
             (imp(A, B), "A ⟶ B"),
             (Abs("x", Ta, b), "λx. b"),
             (all(a, P(a)), "∀a. P a"),
+            (neg(A), "¬A"),
         ]
 
         for t, s in test_data:

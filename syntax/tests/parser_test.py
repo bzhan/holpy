@@ -108,11 +108,24 @@ class ParserTest(unittest.TestCase):
             ("A & B | B & C", "bool"),
             ("(A | B) & (B | C)", "bool"),
             
+            # Negation
+            ("~A", "bool"),
+            ("~~A", "bool"),
+
+            # Constants
+            ("true", "bool"),
+            ("false", "bool"),
+
             # Mixed
             ("A --> B & C", "bool"),
             ("A | B --> C", "bool"),
             ("(A --> B) & C", "bool"),
             ("A | (B --> C)", "bool"),
+            ("~A & B", "bool"),
+            ("~(A & B)", "bool"),
+            ("~A = B", "bool"),
+            ("(~A) = B", "bool"),
+            ("(~A) = (~B)", "bool"),
             ("n (A & B)", "bool"),
             ("n A & B", "bool"),
 
@@ -140,6 +153,7 @@ class ParserTest(unittest.TestCase):
             ("A ∨ B", "A | B"),
             ("A ⟶ B ⟶ C", "A --> B --> C"),
             ("A ∧ B | C", "A & B | C"),
+            ("¬A", "~A"),
             ("λx::'a. x", "%x. x"),
             ("∀x::'a. x", "!x. x"),
             ("∀x::'a. P x ∧ Q x", "!x. P x & Q x"),

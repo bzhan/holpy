@@ -11,11 +11,14 @@ class OperatorData():
     """Represents information for one operator."""
     
     LEFT_ASSOC, RIGHT_ASSOC = range(2)
+    UNARY, BINARY = range(2)
 
-    def __init__(self, fun_name, priority, *, assoc = None, ascii_op = None, unicode_op = None):
+    def __init__(self, fun_name, priority, *, assoc = None, arity = BINARY, ascii_op = None, unicode_op = None):
+        """Instantiate data for an operator."""
         self.fun_name = fun_name
         self.priority = priority
         self.assoc = assoc
+        self.arity = arity
         self.ascii_op = ascii_op
         self.unicode_op = unicode_op
 
@@ -33,18 +36,8 @@ class OperatorTable():
             OperatorData("implies", 25, assoc = RIGHT, ascii_op = "-->", unicode_op = "⟶"),
             OperatorData("conj", 35, assoc = RIGHT, ascii_op = "&", unicode_op = "∧"),
             OperatorData("disj", 30, assoc = RIGHT, ascii_op = "|", unicode_op = "∨"),
-        ]
-
-    def get_info_for_op(self, op_str):
-        """Returns data associated to an operator. The result is None
-        if the operator is not found.
-        
-        """
-        for d in self.data:
-            if d.ascii_op == op_str or d.unicode_op == op_str:
-                return d
-
-        return None
+            OperatorData("neg", 40, arity = OperatorData.UNARY, ascii_op = "~", unicode_op = "¬")
+        ]        
 
     def get_info_for_fun(self, t):
         """Returns data associated to a function term. The result is None
@@ -95,10 +88,13 @@ class Logic():
 
     conj = Const("conj", TFun(hol_bool, hol_bool, hol_bool))
     disj = Const("disj", TFun(hol_bool, hol_bool, hol_bool))
+    neg = Const("neg", TFun(hol_bool, hol_bool))
+    true = Const("true", hol_bool)
+    false = Const("false", hol_bool)
         
     @staticmethod
     def is_conj(t):
-        """Whether t is of the form s & t."""
+        """Whether t is of the form A & B."""
         return self.is_binop() and self.get_head() == Logic.conj
 
     @staticmethod
@@ -108,13 +104,18 @@ class Logic():
 
     @staticmethod
     def is_disj(t):
-        """Whether t is of the form s | t."""
+        """Whether t is of the form A | B."""
         return self.is_binop() and self.get_head() == Logic.disj
 
     @staticmethod
     def mk_disj(s, t):
         """Construct the term s | t."""
         return Logic.disj(s, t)
+
+    @staticmethod
+    def is_neg(t):
+        """Whether t is of the form ~ A."""
+        return self.ty == Term.COMB and self.fun == Logic.neg
 
 def BasicTheory():
     thy = Theory.EmptyTheory()
@@ -125,6 +126,9 @@ def BasicTheory():
     # Logical terms
     thy.add_term_sig("conj", TFun(hol_bool, hol_bool, hol_bool))
     thy.add_term_sig("disj", TFun(hol_bool, hol_bool, hol_bool))
+    thy.add_term_sig("neg", TFun(hol_bool, hol_bool))
+    thy.add_term_sig("true", hol_bool)
+    thy.add_term_sig("false", hol_bool)
 
     A = Var("A", hol_bool)
     B = Var("B", hol_bool)
@@ -142,6 +146,19 @@ def BasicTheory():
     thy.add_theorem("disjI1", Thm([], imp(A, disjAB)))
     thy.add_theorem("disjI2", Thm([], imp(B, disjAB)))
     thy.add_theorem("disjE", Thm([], imp(imp(A, C), imp(B, C), imp(disjAB, C))))
+
+    # Axioms for negation
+    thy.add_theorem("negI", Thm([], imp(imp(A, Logic.false), Logic.neg(A))))
+    thy.add_theorem("negE", Thm([], imp(Logic.neg(A), A, Logic.false)))
+
+    # Axioms for true
+    thy.add_theorem("trueI", Thm([], Logic.true))
+
+    # Axioms for false
+    thy.add_theorem("falseE", Thm([], imp(Logic.false, A)))
+
+    # Classical axiom
+    thy.add_theorem("classical", Thm([], Logic.disj(A, Logic.neg(A))))
 
     # Basic macros
     thy.add_proof_macro(arg_combination_macro())
