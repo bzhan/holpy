@@ -12,17 +12,18 @@ import syntax.parser as parser
 
 thy = BasicTheory()
 
+Ta = TVar("a")
 ctxt = {
     "A" : hol_bool,
     "B" : hol_bool,
     "C" : hol_bool,
-    "P" : TFun(TVar("a"), hol_bool),
-    "Q" : TFun(TVar("a"), hol_bool),
-    "P2" : TFun(TVar("a"), TVar("a"), hol_bool),
-    "a" : TVar("a"),
-    "b" : TVar("a"),
-    "c" : TVar("a"),
-    "f" : TFun(TVar("a"), TVar("a")),
+    "P" : TFun(Ta, hol_bool),
+    "Q" : TFun(Ta, hol_bool),
+    "R" : TFun(Ta, Ta, hol_bool),
+    "a" : Ta,
+    "b" : Ta,
+    "c" : Ta,
+    "f" : TFun(Ta, Ta),
     "n" : TFun(hol_bool, hol_bool),
 }
 
@@ -73,18 +74,18 @@ class ParserTest(unittest.TestCase):
 
             # Function application
             ("P a", "bool"),
-            ("P2 a", "'a => bool"),
-            ("P2 a b", "bool"),
+            ("R a", "'a => bool"),
+            ("R a b", "bool"),
             ("f a", "'a"),
             ("P (f a)", "bool"),
             ("P (f (f a))", "bool"),
-            ("P2 (f a) b", "bool"),
-            ("P2 a (f b)", "bool"),
+            ("R (f a) b", "bool"),
+            ("R a (f b)", "bool"),
 
             # Abstraction
             ("%x::'a. x", "'a => 'a"),
             ("%x::'a. P x", "'a => bool"),
-            ("%x::'a. %y::'a. P2 x y", "'a => 'a => bool"),
+            ("%x::'a. %y::'a. R x y", "'a => 'a => bool"),
 
             # Equality and implies
             ("a = b", "bool"),
@@ -131,15 +132,15 @@ class ParserTest(unittest.TestCase):
 
             # Quantifiers
             ("!x::'a. P x", "bool"),
-            ("!x::'a. !y::'a. P2 x y", "bool"),
+            ("!x::'a. !y::'a. R x y", "bool"),
             ("!x::'a. P x & Q x", "bool"),
             ("(!x::'a. P x) & Q a", "bool"),
             ("!x::'a. P x --> Q x", "bool"),
             ("(!x::'a. P x) --> Q a", "bool"),
             ("A = (!x::'a. P x)", "bool"),
             ("?x::'a. P x", "bool"),
-            ("?x::'a. !y::'a. P2 x y", "bool"),
-            ("!x::'a. ?y::'a. P2 x y", "bool"),
+            ("?x::'a. !y::'a. R x y", "bool"),
+            ("!x::'a. ?y::'a. R x y", "bool"),
         ]
 
         for s, Ts in test_data:
