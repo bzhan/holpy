@@ -298,13 +298,17 @@ class Term():
         return self.ty == Term.COMB and self.fun.ty == Term.CONST and \
             self.fun.name == "all" and self.arg.ty == Term.ABS
 
-    def mk_all(x, body):
+    def mk_all(x, body, *, var_name = None, T = None):
         """Given a variable x and a term t possibly depending on x, return
-        the term !x. t.
+        the term !x. t. Optional arguments var_name and T specify the
+        suggested name and type of the bound variable.
 
         """
-        all_t = Const("all", TFun(TFun(x.T, hol_bool), hol_bool))
-        return all_t(body.abstract_over(x))
+        if T is None:
+            T = x.T
+
+        all_t = Const("all", TFun(TFun(T, hol_bool), hol_bool))
+        return all_t(Term.mk_abs(x, body, var_name = var_name, T = T))
 
     @staticmethod
     def equals(T):
@@ -412,6 +416,20 @@ class Term():
             return Abs(t.name, t.T, self._abstract_over(t,0))
         else:
             raise TermSubstitutionException()
+
+    @staticmethod
+    def mk_abs(t, body, *, var_name = None, T = None):
+        """Given body in terms of t, return the term %t. body. Optional
+        arguments var_name and T specify the suggested variable name and
+        type of the abstraction (default to those of t).
+
+        """
+        res = body.abstract_over(t)
+        if var_name is not None:
+            res.var_name = var_name
+        if T is not None:
+            res.T = T
+        return res
 
     def _checked_get_type(self, bd_vars):
         """Helper function for checked_get_type. bd_vars is the list of

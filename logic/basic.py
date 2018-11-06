@@ -124,13 +124,16 @@ class Logic():
             t.fun.name == "exists" and t.arg.ty == Term.ABS
 
     @staticmethod
-    def mk_exists(x, body):
+    def mk_exists(x, body, *, var_name = None, T = None):
         """Given a variable x and a term t possibly depending on x, return
         the term ?x. t.
 
         """
-        exists_t = Const("exists", TFun(TFun(x.T, hol_bool), hol_bool))
-        return exists_t(body.abstract_over(x))
+        if T is None:
+            T = x.T
+
+        exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
+        return exists_t(Term.mk_abs(x, body, var_name = var_name, T = T))
 
 def BasicTheory():
     thy = Theory.EmptyTheory()

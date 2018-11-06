@@ -92,9 +92,9 @@ class ConvTest(unittest.TestCase):
         x = Var("x", natT)
 
         thy.add_theorem("f_eq_g", Thm.mk_equals(f(x), g(x)))
-        t = f(x).abstract_over(x)
+        t = Term.mk_abs(x, f(x))
         cv = abs_conv(rewr_conv(ProofTerm.theorem(thy, "f_eq_g")))
-        res_th = Thm.mk_equals(t, g(x).abstract_over(x))
+        res_th = Thm.mk_equals(t, Term.mk_abs(x, g(x)))
         self.assertEqual(cv(t), res_th)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(thy.check_proof(prf), res_th)

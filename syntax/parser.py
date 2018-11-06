@@ -98,21 +98,19 @@ class HOLTransformer(Transformer):
     def abs(self, var_name, T, body):
         # Bound variables should be represented by Var(var_name, None).
         # Abstract over it, and remember to change the type to T.
-        t = body.abstract_over(Var(var_name, None))
+        t = Term.mk_abs(Var(var_name, None), body, T = T)
         return Abs(var_name, T, t.body)
 
     def all(self, var_name, T, body):
         # Similar parsing mechanism as for abs.
-        t = body.abstract_over(Var(var_name, None))
-        t.T = T
         all_t = Const("all", TFun(TFun(T, hol_bool), hol_bool))
+        t = Term.mk_abs(Var(var_name, None), body, T = T)
         return all_t(t)
 
     def exists(self, var_name, T, body):
         # Similar parsing mechanism as for abs.
-        t = body.abstract_over(Var(var_name, None))
-        t.T = T
         exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
+        t = Term.mk_abs(Var(var_name, None), body, T = T)
         return exists_t(t)
 
     def eq(self, lhs, rhs):

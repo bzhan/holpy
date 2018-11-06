@@ -275,7 +275,7 @@ class Thm():
         elif th.concl.is_equals():
             (t1, t2) = th.concl.dest_binop()
             try:
-                (t1_new, t2_new) = (t1.abstract_over(x), t2.abstract_over(x))
+                (t1_new, t2_new) = (Term.mk_abs(x, t1), Term.mk_abs(x, t2))
             except TermSubstitutionException:
                 raise InvalidDerivationException()
             return Thm(th.assums, Term.mk_equals(t1_new, t2_new))

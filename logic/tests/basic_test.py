@@ -200,7 +200,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item("S15", "forall_intr", args = x, prevs = ["S13"])
         prf.add_item("S16", "forall_intr", args = x, prevs = ["S14"])
         prf.add_item("S17", "theorem", args = "exE")
-        prf.add_item("S18", "substitution", args = {"P": conjAB.abstract_over(x), "C": exists_A}, prevs = ["S17"])
+        prf.add_item("S18", "substitution", args = {"P": Term.mk_abs(x, conjAB), "C": exists_A}, prevs = ["S17"])
         # Unfinished proof
         thy.check_proof(prf)
 
