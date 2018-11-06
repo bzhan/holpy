@@ -38,9 +38,9 @@ class ProofReport():
             "  Theorems:  " + str(self.thm_steps),
             "  Primitive: " + str(self.prim_steps),
             "  Macro:     " + str(self.macro_steps),
-            "Theorems applied: " + ",".join(self.th_names),
-            "Macros evaluated: " + ",".join(self.macros_eval),
-            "Macros expanded: " + ",".join(self.macros_expand)])
+            "Theorems applied: " + ", ".join(self.th_names),
+            "Macros evaluated: " + ", ".join(self.macros_eval),
+            "Macros expanded: " + ", ".join(self.macros_expand)])
 
     def __repr__(self):
         return str(self)

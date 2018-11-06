@@ -6,6 +6,8 @@ from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.theory import Theory
 from kernel.macro import MacroSig, ProofMacro
+from logic.proofterm import ProofTerm
+from logic.conv import beta_conv, top_conv
 
 class OperatorData():
     """Represents information for one operator."""
@@ -88,6 +90,24 @@ class fun_combination_macro(ProofMacro):
         prf.add_item((depth, "S1"), "reflexive", args = f)
         prf.add_item("C", "combination", prevs = [ids[0], (depth, "S1")])
         return prf
+
+class beta_norm_macro(ProofMacro):
+    """Given theorem th, return the normalization of th."""
+
+    def __init__(self):
+        self.level = 1
+        self.sig = MacroSig.NONE
+
+    def __call__(self, th):
+        cv = top_conv(beta_conv())
+        eq_th = cv(th.concl)
+        return Thm(th.assums, eq_th.concl.arg)
+
+    def expand(self, depth, ids, th):
+        cv = top_conv(beta_conv())
+        pt = cv.get_proof_term(th.concl)
+        pt2 = ProofTerm.equal_elim(pt, ProofTerm.atom(ids[0], th))
+        return pt2.export(depth)
 
 class Logic():
     """Utility functions for logic."""
@@ -194,4 +214,5 @@ def BasicTheory():
     # Basic macros
     thy.add_proof_macro("arg_combination", arg_combination_macro())
     thy.add_proof_macro("fun_combination", fun_combination_macro())
+    thy.add_proof_macro("beta_norm", beta_norm_macro())
     return thy

@@ -250,7 +250,7 @@ class Theory():
             assert isinstance(seq.prevs, list), "prevs should be a list"
             for prev in seq.prevs:
                 if prev not in seq_dict:
-                    raise CheckProofException("previous item not found")
+                    raise CheckProofException("previous item not found: " + str(prev))
                 else:
                     prev_ths.append(seq_dict[prev])
 

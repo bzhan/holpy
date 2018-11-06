@@ -6,6 +6,7 @@ from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import Proof
+from kernel.report import ProofReport
 from kernel.theory import Theory
 import logic.basic as basic
 from logic.basic import Logic
@@ -51,6 +52,25 @@ class BasicTest(unittest.TestCase):
         prf.add_item("S5", "implies_intr", args = Term.mk_equals(f,g), prevs = ["S4"])
         th = Thm([], Term.mk_implies(Term.mk_equals(f,g), Term.mk_equals(x,y), Term.mk_equals(f(x),g(y))))
         self.assertEqual(thy.check_proof(prf), th)
+
+    def testBetaNorm(self):
+        thy = basic.BasicTheory()
+
+        t = Term.mk_abs(x, f(x))
+        prf = Proof(Term.mk_equals(t(x), y))
+        prf.add_item("S1", "beta_norm", prevs = ["A1"])
+        prf.add_item("S2", "implies_intr", args = Term.mk_equals(t(x), y), prevs = ["S1"])
+
+        th = Thm([], Term.mk_implies(Term.mk_equals(t(x), y), Term.mk_equals(f(x), y)))
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.prim_steps, 8)
+
+        thy.check_level = 1
+        rpt2 = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt2), th)
+        self.assertEqual(rpt2.prim_steps, 2)
+        self.assertEqual(rpt2.macro_steps, 1)
 
     def testConjComm(self):
         """Proof of commutativity of conjunction."""
@@ -216,8 +236,20 @@ class BasicTest(unittest.TestCase):
         prf.add_item("S16", "forall_intr", args = x, prevs = ["S14"])
         prf.add_item("S17", "theorem", args = "exE")
         prf.add_item("S18", "substitution", args = {"P": Term.mk_abs(x, conjAB), "C": exists_A}, prevs = ["S17"])
-        # Unfinished proof
-        thy.check_proof(prf)
+        prf.add_item("S19", "beta_norm", prevs = ["S18"])
+        prf.add_item("S20", "implies_elim", prevs = ["S19", "A1"])
+        prf.add_item("S21", "implies_elim", prevs = ["S20", "S15"])
+        prf.add_item("S22", "substitution", args = {"P": Term.mk_abs(x, conjAB), "C": exists_B}, prevs = ["S17"])
+        prf.add_item("S23", "beta_norm", prevs = ["S22"])
+        prf.add_item("S24", "implies_elim", prevs = ["S23", "A1"])
+        prf.add_item("S25", "implies_elim", prevs = ["S24", "S16"])
+        prf.add_item("S26", "theorem", args = "conjI")
+        prf.add_item("S27", "substitution", args = {"A": exists_A, "B": exists_B}, prevs = ["S26"])
+        prf.add_item("S28", "implies_elim", prevs = ["S27", "S21"])
+        prf.add_item("S29", "implies_elim", prevs = ["S28", "S25"])
+        prf.add_item("S30", "implies_intr", args = exists_conj, prevs = ["S29"])
+        th = Thm([], Term.mk_implies(exists_conj, conj_exists))
+        self.assertEqual(thy.check_proof(prf), th)
 
 
 if __name__ == "__main__":
