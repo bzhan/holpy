@@ -66,12 +66,13 @@ class arg_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "arg_combination"
         return Thm.combination(Thm.reflexive(f), th)
 
-    def expand(self, depth, ids, f, th):
+    def expand(self, depth, f, *prevs):
+        id, th = prevs[0]
         assert th.concl.is_equals(), "arg_combination"
 
         prf = Proof()
         prf.add_item((depth, "S1"), "reflexive", args = f)
-        prf.add_item("C", "combination", prevs = [(depth, "S1"), ids[0]])
+        prf.add_item("C", "combination", prevs = [(depth, "S1"), id])
         return prf
 
 class fun_combination_macro(ProofMacro):
@@ -86,12 +87,13 @@ class fun_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "fun_combination"
         return Thm.combination(th, Thm.reflexive(x))
 
-    def expand(self, depth, ids, x, th):
+    def expand(self, depth, x, *prevs):
+        id, th = prevs[0]
         assert th.concl.is_equals(), "fun_combination"
 
         prf = Proof()
         prf.add_item((depth, "S1"), "reflexive", args = x)
-        prf.add_item("C", "combination", prevs = [ids[0], (depth, "S1")])
+        prf.add_item("C", "combination", prevs = [id, (depth, "S1")])
         return prf
 
 class beta_norm_macro(ProofMacro):
@@ -107,10 +109,11 @@ class beta_norm_macro(ProofMacro):
         eq_th = cv(th.concl)
         return Thm(th.assums, eq_th.concl.arg)
 
-    def expand(self, depth, ids, th):
+    def expand(self, depth, *prevs):
+        id, th = prevs[0]
         cv = top_conv(beta_conv())
         pt = cv.get_proof_term(th.concl)
-        pt2 = ProofTerm.equal_elim(pt, ProofTerm.atom(ids[0], th))
+        pt2 = ProofTerm.equal_elim(pt, ProofTerm.atom(id, th))
         return pt2.export(depth)
 
 class apply_theorem_macro(ProofMacro):
@@ -123,26 +126,26 @@ class apply_theorem_macro(ProofMacro):
         self.sig = MacroSig.STRING
         self.has_theory = True
 
-    def __call__(self, thy, name, *args):
+    def __call__(self, thy, name, *prevs):
         th = thy.get_theorem(name)
         inst = dict()
 
         As, C = th.concl.strip_implies()
-        for idx, arg in enumerate(args):
+        for idx, arg in enumerate(prevs):
             Matcher.first_order_match_incr(As[idx], arg.concl, inst)
         return Thm(th.assums, C.subst(inst))
 
-    def expand(self, depth, ids, thy, name, *args):
+    def expand(self, depth, thy, name, *prevs):
         th = thy.get_theorem(name)
         inst = dict()
 
         As, C = th.concl.strip_implies()
-        for idx, arg in enumerate(args):
+        for idx, (_, arg) in enumerate(prevs):
             Matcher.first_order_match_incr(As[idx], arg.concl, inst)
 
         pt = ProofTerm.substitution(inst, ProofTerm.theorem(thy, name))
-        for idx, id in enumerate(ids):
-            pt = ProofTerm.implies_elim(pt, ProofTerm.atom(id, args[idx]))
+        for idx, (id, prev) in enumerate(prevs):
+            pt = ProofTerm.implies_elim(pt, ProofTerm.atom(id, prev))
         return pt.export(depth)
 
 class Logic():

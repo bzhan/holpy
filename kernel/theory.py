@@ -285,7 +285,7 @@ class Theory():
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
                 else:
-                    prf = macro.expand(depth+1, seq.prevs, *(args + prev_ths))
+                    prf = macro.expand(depth+1, *(args + list(zip(seq.prevs, prev_ths))))
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
                     res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt)

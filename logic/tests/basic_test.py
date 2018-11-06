@@ -23,7 +23,7 @@ class BasicTest(unittest.TestCase):
         res = Thm.mk_equals(f(x),f(y))
         macro = basic.arg_combination_macro()
         self.assertEqual(macro(f, th), res)
-        prf = macro.expand(1, [(0, "S1")], f, th)
+        prf = macro.expand(1, f, ((0, "S1"), th))
         
         thy = Theory.EmptyTheory()
         self.assertEqual(prf.get_num_item(), 2)
@@ -34,7 +34,7 @@ class BasicTest(unittest.TestCase):
         res = Thm.mk_equals(f(x),g(x))
         macro = basic.fun_combination_macro()
         self.assertEqual(macro(x, th), res)
-        prf = macro.expand(1, [(0, "S1")], x, th)
+        prf = macro.expand(1, x, ((0, "S1"), th))
 
         thy = Theory.EmptyTheory()
         self.assertEqual(prf.get_num_item(), 2)

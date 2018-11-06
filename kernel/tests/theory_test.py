@@ -39,13 +39,14 @@ class beta_conv_rhs_macro(ProofMacro):
 
         return Thm.transitive(th, Thm.beta_conv(rhs))
 
-    def expand(self, depth, ids, th):
+    def expand(self, depth, *prevs):
+        id, th = prevs[0]
         assert Term.is_equals(th.concl), "beta_conv_rhs"
         (_, rhs) = th.concl.dest_binop()
 
         prf = Proof()
         prf.add_item((depth, "S1"), "beta_conv", args = rhs)
-        prf.add_item("C", "transitive", prevs = [ids[0], (depth, "S1")])
+        prf.add_item("C", "transitive", prevs = [id, (depth, "S1")])
         return prf
 
 
