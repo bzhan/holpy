@@ -10,13 +10,13 @@ class ProofMacro():
     of the following data:
     
     __call__ -- obtain the result of applying the proof method. Input
-    is list of previous theorems, followed by arguments of the proof
-    method.
+    is the argument of the proof method, followed by the list of previous
+    theorems.
 
-    expand -- obtain the detail proof of the derivation. Input is
-    current depth (used to avoid name conflict), list of ids
-    of previous theorems, list of previous theorems, and arguments
-    of the proof method.
+    expand -- obtain the detail proof of the derivation. Input is the
+    current depth (used to avoid name conflict), optionally the current
+    theory, argument of the proof method, and the list of ids and statements
+    of previous theorems.
 
     sig -- signature of the macro, of type MacroSig.
 
