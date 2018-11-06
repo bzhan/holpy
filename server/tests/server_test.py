@@ -98,3 +98,6 @@ class ServerTest(unittest.TestCase):
         server = Server(BasicTheory())
         res = server.check_proof(io.StringIO(input))
         self.assertEqual(res, output)
+
+if __name__ == "__main__":
+    unittest.main()
