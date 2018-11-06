@@ -39,15 +39,15 @@ class ThmTest(unittest.TestCase):
 
     def testImpliesIntr(self):
         th = Thm([A], B)
-        self.assertEqual(Thm.implies_intr(th, A), Thm([], Term.mk_implies(A,B)))
+        self.assertEqual(Thm.implies_intr(A, th), Thm([], Term.mk_implies(A,B)))
 
     def testImpliesIntr2(self):
         th = Thm([A, B], B)
-        self.assertEqual(Thm.implies_intr(th, A), Thm([B], Term.mk_implies(A,B)))
+        self.assertEqual(Thm.implies_intr(A, th), Thm([B], Term.mk_implies(A,B)))
 
     def testImpliesIntr3(self):
         th = Thm([], B)
-        self.assertEqual(Thm.implies_intr(th, A), Thm([], Term.mk_implies(A,B)))
+        self.assertEqual(Thm.implies_intr(A, th), Thm([], Term.mk_implies(A,B)))
 
     def testImpliesElim(self):
         th1 = Thm([], Term.mk_implies(A,B))
@@ -154,18 +154,18 @@ class ThmTest(unittest.TestCase):
         x_eq_y = Term.mk_equals(x,y)
         th = Thm([x_eq_y], x_eq_y)
         xb_eq_yb = Term.mk_equals(Var("x", Tb), Var("y", Tb))
-        self.assertEqual(Thm.subst_type(th, {"a" : Tb}), Thm([xb_eq_yb], xb_eq_yb))
+        self.assertEqual(Thm.subst_type({"a" : Tb}, th), Thm([xb_eq_yb], xb_eq_yb))
 
     def testSubstitution(self):
         x_eq_y = Term.mk_equals(x,y)
         th = Thm([x_eq_y], x_eq_y)
         y_eq_x = Term.mk_equals(y,x)
-        self.assertEqual(Thm.substitution(th, {"x" : y, "y" : x}), Thm([y_eq_x], y_eq_x))
+        self.assertEqual(Thm.substitution({"x" : y, "y" : x}, th), Thm([y_eq_x], y_eq_x))
 
     def testSubstitutionFail(self):
         x_eq_y = Term.mk_equals(x,y)
         th = Thm([x_eq_y], x_eq_y)
-        self.assertRaises(InvalidDerivationException, Thm.substitution, th, {"x" : Var("a", Tb)})
+        self.assertRaises(InvalidDerivationException, Thm.substitution, {"x" : Var("a", Tb)}, th)
 
     def testBetaConv(self):
         t = Comb(Abs("x", Ta, Bound(0)), x)
@@ -177,58 +177,58 @@ class ThmTest(unittest.TestCase):
     def testAbstractOver(self):
         th = Thm.mk_equals(x,y)
         t_res = Term.mk_equals(Abs("x",Ta,Bound(0)),Abs("x",Ta,y))
-        self.assertEqual(Thm.abstraction(th, x), Thm([], t_res))
+        self.assertEqual(Thm.abstraction(x, th), Thm([], t_res))
 
     def testAbstractOverFail(self):
         x_eq_y = Term.mk_equals(x,y)
         th = Thm([x_eq_y], x_eq_y)
-        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, x)
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, x, th)
 
     def testAbstractOverFail2(self):
         th = Thm.mk_equals(x,y)
-        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, Var("x", Tb))
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, Var("x", Tb), th)
 
     def testAbstractOverFail3(self):
         th = Thm.mk_equals(x,y)
-        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, f(x))
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, f(x), th)
 
     def testAbstractOverFail4(self):
         th = Thm([], Term.mk_implies(x,y))
-        self.assertRaises(InvalidDerivationException, Thm.abstraction, th, x)
+        self.assertRaises(InvalidDerivationException, Thm.abstraction, x, th)
 
     def testForallIntr(self):
         th = Thm.mk_equals(x,y)
         t_res = Term.mk_all(x, Term.mk_equals(x, y))
-        self.assertEqual(Thm.forall_intr(th, x), Thm([], t_res))
+        self.assertEqual(Thm.forall_intr(x, th), Thm([], t_res))
 
     def testForallIntr2(self):
         """Also OK if the variable does not appear in theorem."""
         th = Thm.mk_equals(x,y)
         t_res = Term.mk_all(z, Term.mk_equals(x, y))
-        self.assertEqual(Thm.forall_intr(th, z), Thm([], t_res))
+        self.assertEqual(Thm.forall_intr(z, th), Thm([], t_res))
 
     def testForallIntrFail(self):
         x_eq_y = Term.mk_equals(x,y)
         th = Thm([x_eq_y], x_eq_y)
-        self.assertRaises(InvalidDerivationException, Thm.forall_intr, th, x)
+        self.assertRaises(InvalidDerivationException, Thm.forall_intr, x, th)
 
     def testForallIntrFail2(self):
         th = Thm.mk_equals(x,y)
-        self.assertRaises(InvalidDerivationException, Thm.forall_intr, th, Const("c", Ta))
+        self.assertRaises(InvalidDerivationException, Thm.forall_intr, Const("c", Ta), th)
 
     def testForallElim(self):
         P = Var("P", TFun(Ta, hol_bool))
         th = Thm([], Term.mk_all(x, P(x)))
-        self.assertEqual(Thm.forall_elim(th, y), Thm([], P(y)))
+        self.assertEqual(Thm.forall_elim(y, th), Thm([], P(y)))
 
     def testForallElimFail(self):
         th = Thm.mk_equals(x,y)
-        self.assertRaises(InvalidDerivationException, Thm.forall_elim, th, x)
+        self.assertRaises(InvalidDerivationException, Thm.forall_elim, x, th)
 
     def testForallElimFail2(self):
         P = Var("P", TFun(Ta, hol_bool))
         th = Thm([], Term.mk_all(x, P(x)))
-        self.assertRaises(InvalidDerivationException, Thm.forall_elim, th, A)
+        self.assertRaises(InvalidDerivationException, Thm.forall_elim, A, th)
 
 if __name__ == "__main__":
     unittest.main()

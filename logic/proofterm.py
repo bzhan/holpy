@@ -44,18 +44,18 @@ class ProofTerm():
         return ProofTermDeriv(Thm.equal_elim(pt1.th, pt2.th), "equal_elim", None, [pt1, pt2])
 
     @staticmethod
-    def arg_combination(pt, f):
+    def arg_combination(f, pt):
         """Given x = y and term f, return f x = f y."""
         return ProofTermDeriv(Thm.combination(Thm.reflexive(f), pt.th), "arg_combination", f, [pt])
 
     @staticmethod
-    def fun_combination(pt, f):
+    def fun_combination(x, pt):
         """Given f = g and term x, return f x = g x."""
-        return ProofTermDeriv(Thm.combination(pt.th, Thm.reflexive(f)), "fun_combination", f, [pt])
+        return ProofTermDeriv(Thm.combination(pt.th, Thm.reflexive(x)), "fun_combination", x, [pt])
 
     @staticmethod
-    def substitution(pt, inst):
-        return ProofTermDeriv(Thm.substitution(pt.th, inst), "substitution", inst, [pt])
+    def substitution(inst, pt):
+        return ProofTermDeriv(Thm.substitution(inst, pt.th), "substitution", inst, [pt])
 
     @staticmethod
     def beta_conv(x):
@@ -63,7 +63,7 @@ class ProofTerm():
 
     @staticmethod
     def abstraction(pt, x):
-        return ProofTermDeriv(Thm.abstraction(pt.th, x), "abstraction", x, [pt])
+        return ProofTermDeriv(Thm.abstraction(x, pt.th), "abstraction", x, [pt])
 
     @staticmethod
     def theorem(thy, th_name):

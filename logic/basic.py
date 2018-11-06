@@ -60,11 +60,11 @@ class arg_combination_macro(ProofMacro):
         self.level = 1
         self.sig = MacroSig.TERM
 
-    def __call__(self, th, f):
+    def __call__(self, f, th):
         assert th.concl.is_equals(), "arg_combination"
         return Thm.combination(Thm.reflexive(f), th)
 
-    def expand(self, depth, ids, th, f):
+    def expand(self, depth, ids, f, th):
         assert th.concl.is_equals(), "arg_combination"
 
         prf = Proof()
@@ -79,15 +79,15 @@ class fun_combination_macro(ProofMacro):
         self.level = 1
         self.sig = MacroSig.TERM
 
-    def __call__(self, th, f):
+    def __call__(self, x, th):
         assert th.concl.is_equals(), "fun_combination"
-        return Thm.combination(th, Thm.reflexive(f))
+        return Thm.combination(th, Thm.reflexive(x))
 
-    def expand(self, depth, ids, th, f):
+    def expand(self, depth, ids, x, th):
         assert th.concl.is_equals(), "fun_combination"
 
         prf = Proof()
-        prf.add_item((depth, "S1"), "reflexive", args = f)
+        prf.add_item((depth, "S1"), "reflexive", args = x)
         prf.add_item("C", "combination", prevs = [ids[0], (depth, "S1")])
         return prf
 

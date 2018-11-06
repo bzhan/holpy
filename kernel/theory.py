@@ -265,7 +265,7 @@ class Theory():
                 # apply that primitive derivation.
                 rule_fun, _ = primitive_deriv[seq.rule]
                 try:
-                    res_th = rule_fun(*(prev_ths + args))
+                    res_th = rule_fun(*(args + prev_ths))
                     if rpt is not None:
                         rpt.apply_primitive_deriv()
                 except InvalidDerivationException:
@@ -280,11 +280,11 @@ class Theory():
                 # match. Otherwise, expand the macro and check all of the steps.
                 macro = self.get_proof_macro(seq.rule)
                 if macro.level <= self.check_level:
-                    res_th = macro(*(prev_ths + args))
+                    res_th = macro(*(args + prev_ths))
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
                 else:
-                    prf = macro.expand(depth+1, seq.prevs, *(prev_ths + args))
+                    prf = macro.expand(depth+1, seq.prevs, *(args + prev_ths))
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
                     res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt)

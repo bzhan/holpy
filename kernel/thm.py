@@ -92,7 +92,7 @@ class Thm():
         return Thm([A], A)
     
     @staticmethod
-    def implies_intr(th, A):
+    def implies_intr(A, th):
         """Derivation rule IMPLIES_INTR:
 
         A |- B
@@ -218,7 +218,7 @@ class Thm():
             raise InvalidDerivationException()
 
     @staticmethod
-    def subst_type(th, tyinst):
+    def subst_type(tyinst, th):
         """Derivation rule SUBST_TYPE:
 
         Perform substitution on the type variables.
@@ -233,7 +233,7 @@ class Thm():
         return Thm(assums_new, concl_new)
 
     @staticmethod
-    def substitution(th, inst):
+    def substitution(inst, th):
         """Derivation rule SUBSTITUTION:
 
         Perform substitution on the term variables.
@@ -263,7 +263,7 @@ class Thm():
         return Thm.mk_equals(t, t_new)
 
     @staticmethod
-    def abstraction(th, x):
+    def abstraction(x, th):
         """Derivation rule ABSTRACTION:
 
         A |- t1 = t2
@@ -283,7 +283,7 @@ class Thm():
             raise InvalidDerivationException()
 
     @staticmethod
-    def forall_intr(th, x):
+    def forall_intr(x, th):
         """Derivation rule FORALL_INTR:
 
         A |- t
@@ -298,7 +298,7 @@ class Thm():
             return Thm(th.assums, Term.mk_all(x, th.concl))
 
     @staticmethod
-    def forall_elim(th, s):
+    def forall_elim(s, th):
         """Derivation rule FORALL_ELIM:
 
         |- !x. t

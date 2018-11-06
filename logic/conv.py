@@ -59,9 +59,9 @@ class combination_conv(Conv):
 
         # Obtain some savings if one of pt1 and pt2 is reflexivity:
         if pt1.th.is_reflexive():
-            return ProofTerm.arg_combination(pt2, pt1.th.concl.arg)
+            return ProofTerm.arg_combination(pt1.th.concl.arg, pt2)
         elif pt2.th.is_reflexive():
-            return ProofTerm.fun_combination(pt1, pt2.th.concl.arg)
+            return ProofTerm.fun_combination(pt2.th.concl.arg, pt1)
         else:
             return ProofTerm.combination(pt1, pt2)
 
@@ -137,7 +137,7 @@ class abs_conv(Conv):
         # Find a new variable x and substitute for body
         v = Var(t.var_name, t.T)
         t2 = t.subst_bound(v)
-        return Thm.abstraction(self.cv(t2), v)
+        return Thm.abstraction(v, self.cv(t2))
 
     def get_proof_term(self, t):
         if t.ty != Term.ABS:
@@ -219,7 +219,7 @@ class rewr_conv(Conv):
         except MatchException:
             raise ConvException()
 
-        return Thm.substitution(self.th, inst)
+        return Thm.substitution(inst, self.th)
 
     def get_proof_term(self, t):
         pat = self.th.concl.arg1
@@ -231,6 +231,6 @@ class rewr_conv(Conv):
             raise ConvException()
 
         if inst:
-            return ProofTerm.substitution(self.pt, inst)
+            return ProofTerm.substitution(inst, self.pt)
         else:
             return self.pt
