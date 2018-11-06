@@ -169,8 +169,15 @@ def fun2_conv(cv):
 def binop_conv(cv):
     return combination_conv(arg_conv(cv), cv)
 
-def sub_conv(cv):
-    return try_conv(comb_conv(cv))
+class sub_conv(Conv):
+    def __init__(self, cv):
+        self.cv = cv
+
+    def __call__(self, t):
+        return try_conv(else_conv(comb_conv(self.cv), abs_conv(self.cv)))(t)
+
+    def get_proof_term(self, t):
+        return try_conv(else_conv(comb_conv(self.cv), abs_conv(self.cv))).get_proof_term(t)
 
 class bottom_conv(Conv):
     """Applies cv repeatedly in the bottom-up manner."""

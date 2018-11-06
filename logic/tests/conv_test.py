@@ -145,6 +145,18 @@ class ConvTest(unittest.TestCase):
         self.assertEqual(prf.get_num_item(), 22)
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
 
+    def testTopBetaConvAbs(self):
+        cv = top_conv(beta_conv())
+
+        # %x. (%a. f a) x reduces to %x. f x.
+        t = Abs("x", Ta, Abs("a", Ta, f(B0))(B0))
+        res = Abs("x", Ta, f(B0))
+
+        prf = cv.get_proof_term(t).export()
+        self.assertEqual(cv(t), Thm.mk_equals(t, res))
+        self.assertEqual(prf.get_num_item(), 2)
+        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
+
     def testLargeSum(self):
         thy = arith_thy
         thy.check_level = 1
@@ -167,7 +179,7 @@ class ConvTest(unittest.TestCase):
         g0 = g(nat0)
         t = f1
         res = g0
-        for i in range(25):
+        for i in range(10):
             t = plus(t, f1)
             res = plus(res, g0)
 
