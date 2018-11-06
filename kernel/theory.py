@@ -279,6 +279,7 @@ class Theory():
                 # trust level, simply evaluate the macro to check that results
                 # match. Otherwise, expand the macro and check all of the steps.
                 macro = self.get_proof_macro(seq.rule)
+                args = [self] + args if macro.has_theory else args
                 if macro.level <= self.check_level:
                     res_th = macro(*(args + prev_ths))
                     if rpt is not None:
@@ -289,7 +290,7 @@ class Theory():
                         rpt.expand_macro(seq.rule)
                     res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt)
             else:
-                raise CheckProofException("proof method not found")
+                raise CheckProofException("proof method not found: " + seq.rule)
 
         if seq.th is None:
             # No expected theorem is provided

@@ -6,6 +6,7 @@ from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.theory import Theory
 from kernel.macro import MacroSig, ProofMacro
+from logic.matcher import Matcher
 from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, top_conv
 
@@ -59,6 +60,7 @@ class arg_combination_macro(ProofMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.TERM
+        self.has_theory = False
 
     def __call__(self, f, th):
         assert th.concl.is_equals(), "arg_combination"
@@ -78,6 +80,7 @@ class fun_combination_macro(ProofMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.TERM
+        self.has_theory = False
 
     def __call__(self, x, th):
         assert th.concl.is_equals(), "fun_combination"
@@ -97,6 +100,7 @@ class beta_norm_macro(ProofMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.NONE
+        self.has_theory = False
 
     def __call__(self, th):
         cv = top_conv(beta_conv())
@@ -108,6 +112,38 @@ class beta_norm_macro(ProofMacro):
         pt = cv.get_proof_term(th.concl)
         pt2 = ProofTerm.equal_elim(pt, ProofTerm.atom(ids[0], th))
         return pt2.export(depth)
+
+class apply_theorem_macro(ProofMacro):
+    """Apply existing theorem in the theory to a list of current
+    results in the proof.
+
+    """
+    def __init__(self):
+        self.level = 1
+        self.sig = MacroSig.STRING
+        self.has_theory = True
+
+    def __call__(self, thy, name, *args):
+        th = thy.get_theorem(name)
+        inst = dict()
+
+        As, C = th.concl.strip_implies()
+        for idx, arg in enumerate(args):
+            Matcher.first_order_match_incr(As[idx], arg.concl, inst)
+        return Thm(th.assums, C.subst(inst))
+
+    def expand(self, depth, ids, thy, name, *args):
+        th = thy.get_theorem(name)
+        inst = dict()
+
+        As, C = th.concl.strip_implies()
+        for idx, arg in enumerate(args):
+            Matcher.first_order_match_incr(As[idx], arg.concl, inst)
+
+        pt = ProofTerm.substitution(inst, ProofTerm.theorem(thy, name))
+        for idx, id in enumerate(ids):
+            pt = ProofTerm.implies_elim(pt, ProofTerm.atom(id, args[idx]))
+        return pt.export(depth)
 
 class Logic():
     """Utility functions for logic."""
@@ -215,4 +251,5 @@ def BasicTheory():
     thy.add_proof_macro("arg_combination", arg_combination_macro())
     thy.add_proof_macro("fun_combination", fun_combination_macro())
     thy.add_proof_macro("beta_norm", beta_norm_macro())
+    thy.add_proof_macro("apply_theorem", apply_theorem_macro())
     return thy

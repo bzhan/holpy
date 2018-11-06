@@ -24,6 +24,11 @@ class ProofMacro():
     trustworthiness.
 
     """
+    def __init__(self):
+        self.level = None
+        self.sig = None
+        self.has_theory = None
+
     def __str__(self):
         if hasattr(self, "__call__"):
             str_no_eval = ""

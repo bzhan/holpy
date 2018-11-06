@@ -77,10 +77,8 @@ class BasicTest(unittest.TestCase):
         thy = basic.BasicTheory()
         A = Var("A", hol_bool)
         B = Var("B", hol_bool)
-        conjAB = Logic.mk_conj(A, B)
-        conjBA = Logic.mk_conj(B, A)
 
-        prf = Proof(conjAB)
+        prf = Proof(Logic.mk_conj(A, B))
         prf.add_item("S1", "theorem", args = "conjD1")
         prf.add_item("S2", "implies_elim", prevs = ["S1", "A1"])
         prf.add_item("S3", "theorem", args = "conjD2")
@@ -89,8 +87,22 @@ class BasicTest(unittest.TestCase):
         prf.add_item("S6", "substitution", args = {"A": B, "B": A}, prevs = ["S5"])
         prf.add_item("S7", "implies_elim", prevs = ["S6", "S4"])
         prf.add_item("S8", "implies_elim", prevs = ["S7", "S2"])
-        prf.add_item("S9", "implies_intr", args = conjAB, prevs = ["S8"])
-        th = Thm([], Term.mk_implies(conjAB, conjBA))
+        prf.add_item("S9", "implies_intr", args = Logic.mk_conj(A, B), prevs = ["S8"])
+        th = Thm([], Term.mk_implies(Logic.mk_conj(A, B), Logic.mk_conj(B, A)))
+        self.assertEqual(thy.check_proof(prf), th)
+
+    def testConjCommWithMacro(self):
+        """Proof of commutativity of conjunction, with macros."""
+        thy = basic.BasicTheory()
+        A = Var("A", hol_bool)
+        B = Var("B", hol_bool)
+
+        prf = Proof(Logic.mk_conj(A, B))
+        prf.add_item("S1", "apply_theorem", args = "conjD1", prevs = ["A1"])
+        prf.add_item("S2", "apply_theorem", args = "conjD2", prevs = ["A1"])
+        prf.add_item("S3", "apply_theorem", args = "conjI", prevs = ["S2", "S1"])
+        prf.add_item("S4", "implies_intr", args = Logic.mk_conj(A, B), prevs = ["S3"])
+        th = Thm([], Term.mk_implies(Logic.mk_conj(A, B), Logic.mk_conj(B, A)))
         self.assertEqual(thy.check_proof(prf), th)
 
     def testDisjComm(self):
@@ -186,6 +198,25 @@ class BasicTest(unittest.TestCase):
         prf.add_item("S15", "implies_elim", prevs = ["S14", "S11"])
         prf.add_item("S16", "implies_elim", prevs = ["S15", "S1"])
         prf.add_item("S17", "implies_intr", args = neg(neg(A)), prevs = ["S16"])
+        th = Thm([], Term.mk_implies(neg(neg(A)), A))
+        self.assertEqual(thy.check_proof(prf), th)
+
+    def testDoubleNegInvWithMacro(self):
+        """Proof of ~~A --> A, using macros."""
+        thy = basic.BasicTheory()
+        A = Var("A", hol_bool)
+        neg = Logic.neg
+
+        prf = Proof(neg(neg(A)))
+        prf.add_item("S1", "theorem", args = "classical")
+        prf.add_item("S2", "assume", args = A)
+        prf.add_item("S3", "assume", args = neg(A))
+        prf.add_item("S4", "apply_theorem", args = "negE", prevs = ["A1", "S3"])
+        prf.add_item("S5", "apply_theorem", args = "falseE", prevs = ["S4"])
+        prf.add_item("S6", "implies_intr", args = A, prevs = ["S2"])
+        prf.add_item("S7", "implies_intr", args = neg(A), prevs = ["S5"])
+        prf.add_item("S8", "apply_theorem", args = "disjE", prevs = ["S6", "S7", "S1"])
+        prf.add_item("S9", "implies_intr", args = neg(neg(A)), prevs = ["S8"])
         th = Thm([], Term.mk_implies(neg(neg(A)), A))
         self.assertEqual(thy.check_proof(prf), th)
 

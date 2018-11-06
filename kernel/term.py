@@ -288,6 +288,14 @@ class Term():
             res = implies(s, res)
         return res
 
+    def strip_implies(self):
+        """Given s1 --> ... --> sn --> t, return ([s1, ..., sn], t)."""
+        if self.is_implies():
+            rest, c = self.arg.strip_implies()
+            return ([self.arg1] + rest, c)
+        else:
+            return ([], self)
+
     def is_all(self):
         """Whether self is of the form !x. P x.
         

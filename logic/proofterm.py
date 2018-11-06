@@ -54,6 +54,10 @@ class ProofTerm():
         return ProofTermDeriv(Thm.combination(pt.th, Thm.reflexive(x)), "fun_combination", x, [pt])
 
     @staticmethod
+    def implies_elim(pt1, pt2):
+        return ProofTermDeriv(Thm.implies_elim(pt1.th, pt2.th), "implies_elim", None, [pt1, pt2])
+
+    @staticmethod
     def substitution(inst, pt):
         return ProofTermDeriv(Thm.substitution(inst, pt.th), "substitution", inst, [pt])
 

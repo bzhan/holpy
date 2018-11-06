@@ -7,10 +7,9 @@ from kernel.type import hol_bool
 from logic.basic import BasicTheory
 from server.server import Server
 
-server = Server(BasicTheory())
-
 class ServerTest(unittest.TestCase):
     def testCheckProof(self):
+        """Proof of A & B --> B & A."""
         input = "\n".join([
             "var A :: bool",
             "var B :: bool",
@@ -37,10 +36,12 @@ class ServerTest(unittest.TestCase):
             "S8: A & B |- B & A by implies_elim from S7, S2",
             "S9: |- A & B --> B & A by implies_intr A & B from S8"])
         
+        server = Server(BasicTheory())
         res = server.check_proof(io.StringIO(input))
         self.assertEqual(res, output)
 
     def testCheckProofMacro(self):
+        """Proof of f = g --> x = y --> f x = g y."""
         input = "\n".join([
             "var x :: 'a",
             "var y :: 'a",
@@ -63,5 +64,37 @@ class ServerTest(unittest.TestCase):
             "S4: f = g |- x = y --> f x = g y by implies_intr x = y from S3",
             "S5: |- f = g --> x = y --> f x = g y by implies_intr f = g from S4"])
 
+        server = Server(BasicTheory())
+        res = server.check_proof(io.StringIO(input))
+        self.assertEqual(res, output)
+
+    def testCheckProofDoubleNegInv(self):
+        """Proof of ~~A --> A."""
+        input = "\n".join([
+            "var A :: bool",
+            "A1: assume ~~A",
+            "S1: theorem classical",
+            "S2: assume A",
+            "S3: assume ~A",
+            "S4: apply_theorem negE from A1, S3",
+            "S5: apply_theorem falseE from S4",
+            "S6: implies_intr A from S2",
+            "S7: implies_intr ~A from S5",
+            "S8: apply_theorem disjE from S6, S7, S1",
+            "S9: implies_intr ~~A from S8"])
+
+        output = "\n".join([
+            "A1: ~~A |- ~~A by assume ~~A",
+            "S1: |- A | ~A by theorem classical",
+            "S2: A |- A by assume A",
+            "S3: ~A |- ~A by assume ~A",
+            "S4: ~A, ~~A |- false by apply_theorem negE from A1, S3",
+            "S5: ~A, ~~A |- A by apply_theorem falseE from S4",
+            "S6: |- A --> A by implies_intr A from S2",
+            "S7: ~~A |- ~A --> A by implies_intr ~A from S5",
+            "S8: ~~A |- A by apply_theorem disjE from S6, S7, S1",
+            "S9: |- ~~A --> A by implies_intr ~~A from S8"])
+
+        server = Server(BasicTheory())
         res = server.check_proof(io.StringIO(input))
         self.assertEqual(res, output)
