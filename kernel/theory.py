@@ -144,12 +144,12 @@ class Theory():
 
         return data[name]
 
-    def add_proof_macro(self, macro):
+    def add_proof_macro(self, name, macro):
         """Add the given proof macro."""
         if not isinstance(macro, ProofMacro):
             raise TheoryException()
 
-        self.add_data("proof_macro", macro.name, macro)
+        self.add_data("proof_macro", name, macro)
 
     def has_proof_macro(self, name):
         """Whether the given name corresponds to a proof macro."""
@@ -280,7 +280,7 @@ class Theory():
                 # match. Otherwise, expand the macro and check all of the steps.
                 macro = self.get_proof_macro(seq.rule)
                 if macro.level <= self.check_level:
-                    res_th = macro.eval(*(prev_ths + args))
+                    res_th = macro(*(prev_ths + args))
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
                 else:

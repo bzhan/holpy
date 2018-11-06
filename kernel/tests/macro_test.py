@@ -4,24 +4,42 @@ import unittest
 
 from kernel.macro import ProofMacro
 
-def dummy_eval():
-    raise NotImplementedError
+class TestMacro1(ProofMacro):
+    def __init__(self):
+        self.level = 10
 
-def dummy_expand():
-    raise NotImplementedError
+    def __call__(self):
+        pass
+
+class TestMacro2(ProofMacro):
+    def __init__(self):
+        self.level = 5
+
+    def __call__(self):
+        pass
+
+    def expand(self):
+        pass
+
+class TestMacro3(ProofMacro):
+    def __init__(self):
+        self.level = 5
+
+    def expand(self):
+        pass
 
 class ProofMacroTest(unittest.TestCase):
     def testPrintMacro(self):
-        macro = ProofMacro("test", dummy_eval)
-        self.assertEqual(str(macro), "test (level 10, no expand)")
+        macro = TestMacro1()
+        self.assertEqual(str(macro), "level 10, no expand")
 
     def testPrintMacro2(self):
-        macro = ProofMacro("test2", dummy_eval, dummy_expand, 5)
-        self.assertEqual(str(macro), "test2 (level 5)")
+        macro = TestMacro2()
+        self.assertEqual(str(macro), "level 5")
 
     def testPrintMacro3(self):
-        macro = ProofMacro("test3", None, dummy_expand, 5)
-        self.assertEqual(str(macro), "test3 (level 5, no eval)")
+        macro = TestMacro3()
+        self.assertEqual(str(macro), "level 5, no eval")
 
 if __name__ == "__main__":
     unittest.main()

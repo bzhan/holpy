@@ -25,15 +25,19 @@ B = Var("B", hol_bool)
 C = Var("C", hol_bool)
 
 # A simple macro
-def beta_conv_rhs_macro():
-    "Reduce the right side of th by beta-conversion.",
-    def eval(th):
+class beta_conv_rhs_macro(ProofMacro):
+    """Reduce the right side of th by beta-conversion."""
+
+    def __init__(self):
+        self.level = 1
+
+    def __call__(self, th):
         assert Term.is_equals(th.concl), "beta_conv_rhs"
         (_, rhs) = th.concl.dest_binop()
 
         return Thm.transitive(th, Thm.beta_conv(rhs))
 
-    def expand(depth, ids, th):
+    def expand(self, depth, ids, th):
         assert Term.is_equals(th.concl), "beta_conv_rhs"
         (_, rhs) = th.concl.dest_binop()
 
@@ -42,7 +46,6 @@ def beta_conv_rhs_macro():
         prf.add_item("C", "transitive", prevs = [ids[0], (depth, "S1")])
         return prf
 
-    return ProofMacro("beta_conv_rhs", eval, expand, level = 1)
 
 class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
@@ -224,7 +227,7 @@ class TheoryTest(unittest.TestCase):
     def testCheckProofMacro(self):
         """Proof checking with simple macro."""
         thy = Theory.EmptyTheory()
-        thy.add_proof_macro(beta_conv_rhs_macro())
+        thy.add_proof_macro("beta_conv_rhs", beta_conv_rhs_macro())
         
         t = Comb(Abs("x", Ta, Bound(0)), x)
 

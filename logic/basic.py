@@ -51,13 +51,17 @@ class OperatorTable():
 
         return None
 
-def arg_combination_macro():
+class arg_combination_macro(ProofMacro):
     """Given theorem x = y and term f, return f x = f y."""
-    def eval(th, f):
+
+    def __init__(self):
+        self.level = 1
+
+    def __call__(self, th, f):
         assert th.concl.is_equals(), "arg_combination"
         return Thm.combination(Thm.reflexive(f), th)
 
-    def expand(depth, ids, th, f):
+    def expand(self, depth, ids, th, f):
         assert th.concl.is_equals(), "arg_combination"
 
         prf = Proof()
@@ -65,23 +69,23 @@ def arg_combination_macro():
         prf.add_item("C", "combination", prevs = [(depth, "S1"), ids[0]])
         return prf
 
-    return ProofMacro("arg_combination", eval, expand, level = 1)
-
-def fun_combination_macro():
+class fun_combination_macro(ProofMacro):
     """Given theorem f = g and term x, return f x = g x."""
-    def eval(th, f):
+
+    def __init__(self):
+        self.level = 1
+
+    def __call__(self, th, f):
         assert th.concl.is_equals(), "fun_combination"
         return Thm.combination(th, Thm.reflexive(f))
 
-    def expand(depth, ids, th, f):
+    def expand(self, depth, ids, th, f):
         assert th.concl.is_equals(), "fun_combination"
 
         prf = Proof()
         prf.add_item((depth, "S1"), "reflexive", args = f)
         prf.add_item("C", "combination", prevs = [ids[0], (depth, "S1")])
         return prf
-
-    return ProofMacro("fun_combination", eval, expand, level = 1)
 
 class Logic():
     """Utility functions for logic."""
@@ -186,6 +190,6 @@ def BasicTheory():
     thy.add_theorem("classical", Thm([], Logic.disj(A, Logic.neg(A))))
 
     # Basic macros
-    thy.add_proof_macro(arg_combination_macro())
-    thy.add_proof_macro(fun_combination_macro())
+    thy.add_proof_macro("arg_combination", arg_combination_macro())
+    thy.add_proof_macro("fun_combination", fun_combination_macro())
     return thy
