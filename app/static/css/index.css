@@ -1,0 +1,75 @@
+body {
+    margin: 0;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+.home-header {
+    height: 40px;
+    border-bottom: 1px solid #bfbfbf;
+    background-color: #fff;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 0 10px;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.home-header-left {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+
+.home-header-right {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: end;
+    -ms-flex-pack: end;
+    justify-content: flex-end;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+#close_tab {
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    margin-left: 8px;
+    -webkit-appearance: none;
+}
+
+#file-button {
+    margin-left: 10px;
+}
+
+.pans {
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    position: relative;
+}
+
+.code-pan {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+.output-pan {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}

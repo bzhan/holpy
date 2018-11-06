@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--begin code mirror -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<link rel="stylesheet" href="../static/codemirror-5.41.0/lib/codemirror.css"/>
+<link rel="stylesheet" href="../static/css/index.css">
+<link rel="stylesheet" href="../static/css/client.css">
+<link rel="stylesheet" href="../static/css/vendor.css">
+<link rel="stylesheet" href="../static/codemirror-5.41.0/addon/scroll/simplescrollbars.css">
+<script src="../static/js/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/popper.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+<script src="../static/codemirror-5.41.0/lib/codemirror.js"></script>
+<script src="../static/codemirror-5.41.0/addon/scroll/simplescrollbars.js"></script>
+<!--Java代码高亮必须引入-->
+<script src="../static/codemirror-5.41.0/mode/clike/clike.js"></script>
+<!--Python代码高亮-->
+<script src="../static/codemirror-5.41.0/mode/python/python.js"></script>
+<!--groovy代码高亮-->
+<script src="../static/codemirror-5.41.0/mode/groovy/groovy.js"></script>
+<!--引入css文件，用以支持主题-->
+<link rel="stylesheet" href="../static/codemirror-5.41.0/theme/material.css"/>
+
+<!--支持代码折叠-->
+<link rel="stylesheet" href="../static/codemirror-5.41.0/addon/fold/foldgutter.css"/>
+<script src="../static/codemirror-5.41.0/addon/fold/foldcode.js"></script>
+<script src="../static/codemirror-5.41.0/addon/fold/foldgutter.js"></script>
+<script src="../static/codemirror-5.41.0/addon/fold/brace-fold.js"></script>
+<script src="../static/codemirror-5.41.0/addon/fold/comment-fold.js"></script>
+<!--括号匹配-->
+<script src="../static/codemirror-5.41.0/addon/edit/matchbrackets.js"></script>
+<!--end Code Mirror -->
+
+<head>
+    <meta charset="utf-8"/>
+    <title>Holy</title>
+</head>
+<body>
+<!-- begin code -->
+<header class="home-header">
+    <div class="home-header-left">
+        <button data-v-bfe775a4="" type="button" id="add-page"
+                class="el-button el-button--default el-button--mini el-dropdown-selfdefine"
+                data-vivaldi-spatnav-clickable="1" aria-controls="dropdown-menu-5964" role="button"
+                tabindex="0"><!----><i class="el-icon-document" data-vivaldi-spatnav-clickable="1"></i>
+            <span data-vivaldi-spatnav-clickable="1">Add Page</span>
+        </button>
+
+        <div>
+            <button data-v-bfe775a4="" type="button" onclick="$('#open-file').click()"
+                    id="file-button"
+                    class="el-button home-header-left-item el-button--default el-button--mini"
+                    data-vivaldi-spatnav-clickable="1" style="margin-right: 0;"><!---->
+                <i class="el-icon-plus" data-vivaldi-spatnav-clickable="1"></i>
+                <span data-vivaldi-spatnav-clickable="1">Open File</span>
+            </button>
+            <input type="file" id="open-file" style="display:none">
+
+        </div>
+    </div>
+    <div class="home-header-right">
+        <label data-v-bfe775a4="" role="checkbox"
+               class="el-checkbox el-checkbox--mini is-bordered" id="auto-run">
+            <span id="check-box" aria-checked="mixed" class="el-checkbox__input">
+        <span id="check-box-inner" class="el-checkbox__inner"></span>
+        <input type="checkbox" class="el-checkbox__original" value=""></span>
+            <span class="el-checkbox__label">Auto-run<!----></span>
+        </label>
+        <button data-v-bfe775a4="" type="button" id="run-button"
+                class="el-button home-header-right-item el-button--primary el-button--mini is-plain"><!---->
+            <i class="el-icon-refresh"></i>
+            <span>Run</span>
+        </button>
+        <button data-v-bfe775a4="" type="button"
+                class="el-button home-header-right-item el-button--default el-button--mini is-plain" data-tooltipped=""
+                aria-describedby="tippy-tooltip-1" data-original-title="Login to save"><!---->
+            <i class="el-icon-upload2"></i>
+            <span>Save</span>
+        </button>
+        <div class="dropdown">
+            <button data-v-bfe775a4="" type="button" id="additional_option" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"
+                    class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle"
+                    data-vivaldi-spatnav-clickable="1"
+                    role="button"
+                    tabindex="0"><!----><i class="el-icon-more" data-vivaldi-spatnav-clickable="1"></i><span
+                    data-vivaldi-spatnav-clickable="1">
+      </span></button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#" id="clear">Clear Output</a>
+                <a class="dropdown-item" href="#">Link 2</a>
+                <a class="dropdown-item" href="#">Link 3</a>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="pans">
+    <div class="code-pan" style="left: 0; right: 50%;">
+        <div class="pan-head" style="font-family: Georgia,serif; font-size: 18px;">Input</div>
+        <ul class="nav nav-tabs" id="codeTab"></ul>
+        <div class="tab-content" id="codeTabContent"></div>
+    </div>
+    <div class="output-pan" style="left: 50%; right: 0;">
+        <div class="pan-head" style="font-family: Georgia,serif; font-size: 18px;">Output</div>
+        <ul class="nav nav-tabs" id="outputTab" style="height: 39px">
+        </ul>
+        <label for="output-iframe"></label>
+        <textarea id="output-iframe" class="output-iframe"></textarea>
+    </div>
+</div>
+<script src="../static/js/main.js"></script>
+</body>
+</html>
