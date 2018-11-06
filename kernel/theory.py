@@ -337,7 +337,8 @@ class Theory():
             _, sig = primitive_deriv[name]
             return sig
         else:
-            raise NotImplementedError()
+            macro = self.get_proof_macro(name)
+            return macro.sig
 
     def extend_axiom_constant(self, ext):
         """Extend the theory by adding an axiomatic constant."""

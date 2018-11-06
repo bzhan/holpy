@@ -39,3 +39,29 @@ class ServerTest(unittest.TestCase):
         
         res = server.check_proof(io.StringIO(input))
         self.assertEqual(res, output)
+
+    def testCheckProofMacro(self):
+        input = "\n".join([
+            "var x :: 'a",
+            "var y :: 'a",
+            "var f :: 'a => 'a",
+            "var g :: 'a => 'a",
+            "A1: assume f = g",
+            "A2: assume x = y",
+            "S1: arg_combination f from A2",
+            "S2: fun_combination y from A1",
+            "S3: transitive from S1, S2",
+            "S4: implies_intr x = y from S3",
+            "S5: implies_intr f = g from S4"])
+
+        output = "\n".join([
+            "A1: f = g |- f = g by assume f = g",
+            "A2: x = y |- x = y by assume x = y",
+            "S1: x = y |- f x = f y by arg_combination f from A2",
+            "S2: f = g |- f y = g y by fun_combination y from A1",
+            "S3: f = g, x = y |- f x = g y by transitive from S1, S2",
+            "S4: f = g |- x = y --> f x = g y by implies_intr x = y from S3",
+            "S5: |- f = g --> x = y --> f x = g y by implies_intr f = g from S4"])
+
+        res = server.check_proof(io.StringIO(input))
+        self.assertEqual(res, output)

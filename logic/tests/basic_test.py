@@ -39,6 +39,19 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(prf.get_num_item(), 2)
         self.assertEqual(thy.check_proof_incr(1, {(0, "S1"): th}, prf), res)
 
+    def testCombination(self):
+        """Test arg and fun combination together using proofs."""
+        thy = basic.BasicTheory()
+
+        prf = Proof(Term.mk_equals(f,g), Term.mk_equals(x,y))
+        prf.add_item("S1", "arg_combination", args = f, prevs = ["A2"])
+        prf.add_item("S2", "fun_combination", args = y, prevs = ["A1"])
+        prf.add_item("S3", "transitive", prevs = ["S1", "S2"])
+        prf.add_item("S4", "implies_intr", args = Term.mk_equals(x,y), prevs = ["S3"])
+        prf.add_item("S5", "implies_intr", args = Term.mk_equals(f,g), prevs = ["S4"])
+        th = Thm([], Term.mk_implies(Term.mk_equals(f,g), Term.mk_equals(x,y), Term.mk_equals(f(x),g(y))))
+        self.assertEqual(thy.check_proof(prf), th)
+
     def testConjComm(self):
         """Proof of commutativity of conjunction."""
         thy = basic.BasicTheory()

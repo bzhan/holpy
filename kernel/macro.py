@@ -18,6 +18,8 @@ class ProofMacro():
     of previous theorems, list of previous theorems, and arguments
     of the proof method.
 
+    sig -- signature of the macro, of type MacroSig.
+
     level -- trustworthiness level of a macro. Smaller is greater
     trustworthiness.
 

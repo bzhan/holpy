@@ -5,7 +5,7 @@ from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.theory import Theory
-from kernel.macro import ProofMacro
+from kernel.macro import MacroSig, ProofMacro
 
 class OperatorData():
     """Represents information for one operator."""
@@ -56,6 +56,7 @@ class arg_combination_macro(ProofMacro):
 
     def __init__(self):
         self.level = 1
+        self.sig = MacroSig.TERM
 
     def __call__(self, th, f):
         assert th.concl.is_equals(), "arg_combination"
@@ -74,6 +75,7 @@ class fun_combination_macro(ProofMacro):
 
     def __init__(self):
         self.level = 1
+        self.sig = MacroSig.TERM
 
     def __call__(self, th, f):
         assert th.concl.is_equals(), "fun_combination"
