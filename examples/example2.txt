@@ -1,0 +1,11 @@
+var x :: 'a
+var y :: 'a
+var f :: 'a => 'a
+var g :: 'a => 'a
+A1: assume f = g
+A2: assume x = y
+S1: arg_combination f from A2
+S2: fun_combination y from A1
+S3: transitive from S1, S2
+S4: implies_intr x = y from S3
+S5: implies_intr f = g from S4
