@@ -9,7 +9,7 @@ from kernel.proof import Proof
 from kernel.report import ProofReport
 from kernel.theory import Theory
 import logic.basic as basic
-from logic.basic import Logic
+from logic.basic import Logic, Nat
 
 Ta = TVar("a")
 x = Var("x", Ta)
@@ -282,6 +282,28 @@ class BasicTest(unittest.TestCase):
         th = Thm([], Term.mk_implies(exists_conj, conj_exists))
         self.assertEqual(thy.check_proof(prf), th)
 
+    def testAddZeroRight(self):
+        """Proof of n + 0 = n by induction."""
+        thy = basic.BasicTheory()
+        n = Var("n", Nat.nat)
+        eq = Term.mk_equals
+        prf = Proof()
+        prf.add_item("S1", "theorem", args = "nat.induct")
+        prf.add_item("S2", "substitution", args = {"P": Term.mk_abs(n, eq(Nat.plus(n,Nat.zero),n))}, prevs = ["S1"])
+        prf.add_item("S3", "beta_norm", prevs = ["S2"])
+        prf.add_item("S4", "theorem", args = "nat.add_0")
+        prf.add_item("S5", "substitution", args = {"n": Nat.zero}, prevs = ["S4"])
+        prf.add_item("S6", "implies_elim", prevs = ["S3", "S5"])
+        prf.add_item("S7", "assume", args = eq(Nat.plus(n,Nat.zero), n))
+        prf.add_item("S8", "theorem", args = "nat.add_Suc")
+        prf.add_item("S9", "substitution", args = {"m": n, "n": Nat.zero}, prevs = ["S8"])
+        prf.add_item("S10", "arg_combination", args = Nat.Suc, prevs = ["S7"])
+        prf.add_item("S11", "transitive", prevs = ["S9", "S10"])
+        prf.add_item("S12", "implies_intr", args = eq(Nat.plus(n,Nat.zero), n), prevs = ["S11"])
+        prf.add_item("S13", "forall_intr", args = n, prevs = ["S12"])
+        prf.add_item("S14", "implies_elim", prevs = ["S6", "S13"])
+        th = Thm.mk_equals(Nat.plus(n, Nat.zero), n)
+        self.assertEqual(thy.check_proof(prf), th)
 
 if __name__ == "__main__":
     unittest.main()

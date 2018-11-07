@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import TVar, TFun, hol_bool
+from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 from kernel.proof import Proof
@@ -200,6 +200,14 @@ class Logic():
         exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
         return exists_t(Term.mk_abs(x, body, var_name = var_name, T = T))
 
+class Nat():
+    """Utility functions for natural number arithmetic."""
+
+    nat = Type("nat")
+    zero = Const("0", nat)
+    Suc = Const("Suc", TFun(nat, nat))
+    plus = Const("+", TFun(nat, nat, nat))
+
 def BasicTheory():
     thy = Theory.EmptyTheory()
 
@@ -217,9 +225,8 @@ def BasicTheory():
     A = Var("A", hol_bool)
     B = Var("B", hol_bool)
     C = Var("C", hol_bool)
-    P = Var("P", TFun(TVar("a"), hol_bool))
-    a = Var("a", TVar("a"))
     imp = Term.mk_implies
+    eq = Term.mk_equals
 
     # Axioms for conjugation
     conjAB = Logic.mk_conj(A, B)
@@ -244,11 +251,33 @@ def BasicTheory():
     thy.add_theorem("falseE", Thm([], imp(Logic.false, A)))
 
     # Axioms for exists
+    P = Var("P", TFun(TVar("a"), hol_bool))
+    a = Var("a", TVar("a"))
     thy.add_theorem("exI", Thm([], imp(P(a), Logic.mk_exists(a, P(a)))))
     thy.add_theorem("exE", Thm([], imp(Logic.mk_exists(a, P(a)), Term.mk_all(a, imp(P(a), C)), C)))
 
     # Classical axiom
     thy.add_theorem("classical", Thm([], Logic.disj(A, Logic.neg(A))))
+
+    # Natural numbers
+    nat = Nat.nat
+    thy.add_type_sig("nat", 0)
+    thy.add_term_sig("0", nat)
+    thy.add_term_sig("Suc", TFun(nat, nat))
+
+    m = Var("m", nat)
+    n = Var("n", nat)
+    P = Var("P", TFun(nat, hol_bool))
+    S = Nat.Suc
+    thy.add_theorem("nat.Suc_inject", Thm([], imp(eq(S(m), S(n)), eq(m, n))))
+    thy.add_theorem("nat.Suc_not_zero", Thm([], Logic.neg(eq(S(m), Nat.zero))))
+    thy.add_theorem("nat.induct", Thm([], imp(P(Nat.zero), Term.mk_all(n, imp(P(n), P(S(n)))), P(n))))
+
+    # Addition on natural numbers
+    plus = Nat.plus
+    thy.add_term_sig("+", TFun(nat, nat, nat))
+    thy.add_theorem("nat.add_0", Thm([], eq(plus(Nat.zero, n), n)))
+    thy.add_theorem("nat.add_Suc", Thm([], eq(plus(S(m), n), S(plus(m, n)))))
 
     # Basic macros
     thy.add_proof_macro("arg_combination", arg_combination_macro())
