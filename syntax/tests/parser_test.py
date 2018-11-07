@@ -6,7 +6,7 @@ from kernel.type import TVar, TFun, HOLType, hol_bool
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
-from logic.basic import BasicTheory, Logic
+from logic.basic import BasicTheory, Logic, Nat
 from syntax.printer import print_term
 import syntax.parser as parser
 
@@ -24,7 +24,10 @@ ctxt = {
     "b" : Ta,
     "c" : Ta,
     "f" : TFun(Ta, Ta),
-    "n" : TFun(hol_bool, hol_bool),
+    "nn" : TFun(hol_bool, hol_bool),
+    "m" : Nat.nat,
+    "n" : Nat.nat,
+    "p" : Nat.nat,
 }
 
 A = Var("A", hol_bool)
@@ -127,8 +130,8 @@ class ParserTest(unittest.TestCase):
             ("~A = B", "bool"),
             ("(~A) = B", "bool"),
             ("(~A) = (~B)", "bool"),
-            ("n (A & B)", "bool"),
-            ("n A & B", "bool"),
+            ("nn (A & B)", "bool"),
+            ("nn A & B", "bool"),
 
             # Quantifiers
             ("!x::'a. P x", "bool"),
@@ -141,6 +144,14 @@ class ParserTest(unittest.TestCase):
             ("?x::'a. P x", "bool"),
             ("?x::'a. !y::'a. R x y", "bool"),
             ("!x::'a. ?y::'a. R x y", "bool"),
+
+            # Arithmetic
+            ("m + n", "nat"),
+            ("m * n", "nat"),
+            ("m + n + p", "nat"),
+            ("m + (n + p)", "nat"),
+            ("m + n * p", "nat"),
+            ("m * (n + p)", "nat"),
         ]
 
         for s, Ts in test_data:

@@ -39,7 +39,9 @@ class OperatorTable():
             OperatorData("implies", 25, assoc = RIGHT, ascii_op = "-->", unicode_op = "⟶"),
             OperatorData("conj", 35, assoc = RIGHT, ascii_op = "&", unicode_op = "∧"),
             OperatorData("disj", 30, assoc = RIGHT, ascii_op = "|", unicode_op = "∨"),
-            OperatorData("neg", 40, arity = OperatorData.UNARY, ascii_op = "~", unicode_op = "¬")
+            OperatorData("neg", 40, arity = OperatorData.UNARY, ascii_op = "~", unicode_op = "¬"),
+            OperatorData("plus", 65, assoc = LEFT, ascii_op = "+"),
+            OperatorData("times", 70, assoc = LEFT, ascii_op = "*"),
         ]        
 
     def get_info_for_fun(self, t):
@@ -207,8 +209,8 @@ class Nat():
     zero = Const("0", nat)
     Suc = Const("Suc", TFun(nat, nat))
     one = Suc(zero)
-    plus = Const("+", TFun(nat, nat, nat))
-    times = Const("*", TFun(nat, nat, nat))
+    plus = Const("plus", TFun(nat, nat, nat))
+    times = Const("times", TFun(nat, nat, nat))
 
 def BasicTheory():
     thy = Theory.EmptyTheory()
@@ -277,13 +279,13 @@ def BasicTheory():
 
     # Addition on natural numbers
     plus = Nat.plus
-    thy.add_term_sig("+", TFun(nat, nat, nat))
+    thy.add_term_sig("plus", TFun(nat, nat, nat))
     thy.add_theorem("nat.add_0", Thm([], eq(plus(Nat.zero, n), n)))
     thy.add_theorem("nat.add_Suc", Thm([], eq(plus(S(m), n), S(plus(m, n)))))
 
     # Multiplication on natural numbers
     times = Nat.times
-    thy.add_term_sig("*", TFun(nat, nat, nat))
+    thy.add_term_sig("times", TFun(nat, nat, nat))
     thy.add_theorem("nat.mult_0", Thm([], eq(times(Nat.zero, n), Nat.zero)))
     thy.add_theorem("nat.mult_Suc", Thm([], eq(times(S(m), n), plus(n, times(m, n)))))
 
