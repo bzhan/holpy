@@ -305,5 +305,30 @@ class BasicTest(unittest.TestCase):
         th = Thm.mk_equals(Nat.plus(n, Nat.zero), n)
         self.assertEqual(thy.check_proof(prf), th)
 
+    def testMultZeroRight(self):
+        """Proof of n * 0 = 0 by induction."""
+        thy = basic.BasicTheory()
+        n = Var("n", Nat.nat)
+        eq = Term.mk_equals
+        prf = Proof()
+        prf.add_item("S1", "theorem", args = "nat.induct")
+        prf.add_item("S2", "substitution", args = {"P": Term.mk_abs(n, eq(Nat.times(n,Nat.zero),Nat.zero))}, prevs = ["S1"])
+        prf.add_item("S3", "beta_norm", prevs = ["S2"])
+        prf.add_item("S4", "theorem", args = "nat.mult_0")
+        prf.add_item("S5", "substitution", args = {"n": Nat.zero}, prevs = ["S4"])
+        prf.add_item("S6", "implies_elim", prevs = ["S3", "S5"])
+        prf.add_item("S7", "assume", args = eq(Nat.times(n,Nat.zero), Nat.zero))
+        prf.add_item("S8", "theorem", args = "nat.mult_Suc")
+        prf.add_item("S9", "substitution", args = {"m": n, "n": Nat.zero}, prevs = ["S8"])
+        prf.add_item("S10", "theorem", args = "nat.add_0")
+        prf.add_item("S11", "substitution", args = {"n": Nat.times(n,Nat.zero)}, prevs = ["S10"])
+        prf.add_item("S12", "transitive", prevs = ["S9", "S11"])
+        prf.add_item("S13", "transitive", prevs = ["S12", "S7"])
+        prf.add_item("S14", "implies_intr", args = eq(Nat.times(n,Nat.zero), Nat.zero), prevs = ["S13"])
+        prf.add_item("S15", "forall_intr", args = n, prevs = ["S14"])
+        prf.add_item("S16", "implies_elim", prevs = ["S6", "S15"])
+        th = Thm.mk_equals(Nat.times(n, Nat.zero), Nat.zero)
+        self.assertEqual(thy.check_proof(prf), th)
+
 if __name__ == "__main__":
     unittest.main()

@@ -206,7 +206,9 @@ class Nat():
     nat = Type("nat")
     zero = Const("0", nat)
     Suc = Const("Suc", TFun(nat, nat))
+    one = Suc(zero)
     plus = Const("+", TFun(nat, nat, nat))
+    times = Const("*", TFun(nat, nat, nat))
 
 def BasicTheory():
     thy = Theory.EmptyTheory()
@@ -278,6 +280,12 @@ def BasicTheory():
     thy.add_term_sig("+", TFun(nat, nat, nat))
     thy.add_theorem("nat.add_0", Thm([], eq(plus(Nat.zero, n), n)))
     thy.add_theorem("nat.add_Suc", Thm([], eq(plus(S(m), n), S(plus(m, n)))))
+
+    # Multiplication on natural numbers
+    times = Nat.times
+    thy.add_term_sig("*", TFun(nat, nat, nat))
+    thy.add_theorem("nat.mult_0", Thm([], eq(times(Nat.zero, n), Nat.zero)))
+    thy.add_theorem("nat.mult_Suc", Thm([], eq(times(S(m), n), plus(n, times(m, n)))))
 
     # Basic macros
     thy.add_proof_macro("arg_combination", arg_combination_macro())
