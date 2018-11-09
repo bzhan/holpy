@@ -192,9 +192,9 @@ class Theory():
         arity.
 
         """
-        if T.ty == HOLType.VAR:
+        if T.ty == HOLType.TVAR:
             return None
-        elif T.ty == HOLType.COMB:
+        elif T.ty == HOLType.TYPE:
             if self.get_type_sig(T.name) != len(T.args):
                 raise TheoryException()
             else:

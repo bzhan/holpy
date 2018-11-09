@@ -46,11 +46,11 @@ class HOLType():
     nat list list: list of lists of natural numbers.
 
     """
-    (VAR, COMB) = range(2)
+    (TVAR, TYPE) = range(2)
 
     def is_fun(self):
         """Whether self is of the form a => b."""
-        return self.ty == HOLType.COMB and self.name == "fun"
+        return self.ty == HOLType.TYPE and self.name == "fun"
     
     def domain_type(self):
         """Given a type of form a => b, return a."""
@@ -63,9 +63,9 @@ class HOLType():
         return self.args[1]
         
     def __str__(self):
-        if self.ty == HOLType.VAR:
+        if self.ty == HOLType.TVAR:
             return "'" + self.name
-        elif self.ty == HOLType.COMB:
+        elif self.ty == HOLType.TYPE:
             if len(self.args) == 0:
                 return self.name
             elif len(self.args) == 1:
@@ -90,17 +90,17 @@ class HOLType():
         return str(self)
 
     def __hash__(self):
-        if self.ty == HOLType.VAR:
+        if self.ty == HOLType.TVAR:
             return hash(("VAR", self.name))
-        elif self.ty == HOLType.COMB:
+        elif self.ty == HOLType.TYPE:
             return hash(("COMB", self.name, tuple(hash(arg) for arg in self.args)))
     
     def __eq__(self, other):
         if self.ty != other.ty:
             return False
-        elif self.ty == HOLType.VAR:
+        elif self.ty == HOLType.TVAR:
             return self.name == other.name
-        elif self.ty == HOLType.COMB:
+        elif self.ty == HOLType.TYPE:
             return self.name == other.name and self.args == other.args
         else:
             raise TypeError()
@@ -112,12 +112,12 @@ class HOLType():
 
         """
         assert isinstance(tyinst, dict), "tyinst must be a dictionary"
-        if self.ty == HOLType.VAR:
+        if self.ty == HOLType.TVAR:
             if self.name in tyinst:
                 return tyinst[self.name]
             else:
                 return self
-        elif self.ty == HOLType.COMB:
+        elif self.ty == HOLType.TYPE:
             return Type(self.name, *(T.subst(tyinst) for T in self.args))
         else:
             raise TypeError()
@@ -127,14 +127,14 @@ class HOLType():
         is the current instantiation. This is updated by the function.
 
         """
-        if self.ty == HOLType.VAR:
+        if self.ty == HOLType.TVAR:
             if self.name in tyinst:
                 if T != tyinst[self.name]:
                     raise TypeMatchException()
             else:
                 tyinst[self.name] = T
-        elif self.ty == HOLType.COMB:
-            if T.ty != HOLType.COMB or T.name != self.name:
+        elif self.ty == HOLType.TYPE:
+            if T.ty != HOLType.TYPE or T.name != self.name:
                 raise TypeMatchException()
             else:
                 for arg, argT in zip(self.args, T.args):
@@ -154,13 +154,13 @@ class HOLType():
 class TVar(HOLType):
     """Type variable."""
     def __init__(self, name):
-        self.ty = HOLType.VAR
+        self.ty = HOLType.TVAR
         self.name = name
 
 class Type(HOLType):
     """Type constant, applied to a list of arguments."""
     def __init__(self, name, *args):
-        self.ty = HOLType.COMB
+        self.ty = HOLType.TYPE
         self.name = name
         self.args = args
 
