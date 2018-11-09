@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, TFun
+from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Var, Const, Abs, Bound
 from logic.matcher import Matcher, MatchException
 
@@ -42,6 +42,25 @@ class MatcherTest(unittest.TestCase):
                 self.assertEqual(Matcher.first_order_match(pat, t), inst)
             else:
                 self.assertRaises(MatchException, Matcher.first_order_match, pat, t)
+
+    def testFirstOrderMatchFun(self):
+        """First-order matching of variables in function position."""
+        P = Var("P", TFun(Ta, hol_bool))
+        Q = Var("Q", TFun(Ta, hol_bool))
+        conj = Const("conj", TFun(hol_bool, hol_bool, hol_bool))
+
+        test_data = [
+            (Abs("x",Ta,P(B0)), Abs("x",Ta,conj(P(B0),Q(B0))), {"P" : Abs("x",Ta,conj(P(B0),Q(B0)))}),
+            (Abs("x",Ta,conj(P(B0),Q(B0))), Abs("x",Ta,conj(Q(B0),P(B0))), {"P": Abs("x",Ta,Q(B0)), "Q": Abs("x",Ta,P(B0))}),
+            (Abs("x",Ta,conj(P(B0),P(B0))), Abs("x",Ta,conj(conj(P(B0),Q(B0)),conj(P(B0),Q(B0)))), {"P": Abs("x",Ta,conj(P(B0),Q(B0)))}),
+        ]
+
+        for pat, t, inst in test_data:
+            if inst is not None:
+                self.assertEqual(Matcher.first_order_match(pat, t), inst)
+            else:
+                self.assertRaises(MatchException, Matcher.first_order_match, pat, t)
+
 
 if __name__ == "__main__":
     unittest.main()

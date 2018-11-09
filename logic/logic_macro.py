@@ -88,7 +88,7 @@ class apply_theorem_macro(ProofMacro):
         As, C = th.concl.strip_implies()
         for idx, arg in enumerate(prevs):
             Matcher.first_order_match_incr(As[idx], arg.concl, inst)
-        return Thm(th.assums, C.subst(inst))
+        return Thm(th.assums, C.subst_norm(inst))
 
     def expand(self, depth, thy, name, *prevs):
         th = thy.get_theorem(name)
@@ -99,6 +99,10 @@ class apply_theorem_macro(ProofMacro):
             Matcher.first_order_match_incr(As[idx], arg.concl, inst)
 
         pt = ProofTerm.substitution(inst, ProofTerm.theorem(thy, name))
+        cv = top_conv(beta_conv())
+        pt2 = cv.get_proof_term(pt.th.concl)
+        pt3 = ProofTerm.equal_elim(pt2, pt)
         for idx, (id, prev) in enumerate(prevs):
-            pt = ProofTerm.implies_elim(pt, ProofTerm.atom(id, prev))
-        return pt.export(depth)
+            pt3 = ProofTerm.implies_elim(pt3, ProofTerm.atom(id, prev))
+
+        return pt3.export(depth)

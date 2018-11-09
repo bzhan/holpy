@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.type import TFun, hol_bool
-from kernel.term import Term, Const
+from kernel.term import Term, Const, Abs
 
 class Logic():
     """Utility functions for logic."""
@@ -54,3 +54,30 @@ class Logic():
 
         exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
         return exists_t(Term.mk_abs(x, body, var_name = var_name, T = T))
+
+    @staticmethod
+    def beta_norm(t):
+        """Normalize t using beta-conversion."""
+        if t.ty == Term.VAR or t.ty == Term.CONST:
+            return t
+        elif t.ty == Term.COMB:
+            f = Logic.beta_norm(t.fun)
+            x = Logic.beta_norm(t.arg)
+            if f.ty == Term.ABS:
+                return f(x).beta_conv()
+            else:
+                return f(x)
+        elif t.ty == Term.ABS:
+            return Abs(t.var_name, t.T, Logic.beta_norm(t.body))
+        elif t.ty == Term.BOUND:
+            return t
+        else:
+            raise TypeError()
+
+    @staticmethod
+    def subst_norm(t, inst):
+        """Substitute using the given instantiation, then normalize with
+        respect to beta-conversion.
+
+        """
+        return Logic.beta_norm(t.subst(inst))

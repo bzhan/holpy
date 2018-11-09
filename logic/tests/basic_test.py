@@ -282,6 +282,32 @@ class BasicTest(unittest.TestCase):
         th = Thm.mk_implies(exists_conj, conj_exists)
         self.assertEqual(thy.check_proof(prf), th)
 
+    def testExistsConjMacro(self):
+        thy = basic.BasicTheory()
+        Ta = TVar("a")
+        A = Var("A", TFun(Ta, hol_bool))
+        B = Var("B", TFun(Ta, hol_bool))
+        x = Var("x", Ta)
+        conjAB = Logic.mk_conj(A(x), B(x))
+        exists_conj = Logic.mk_exists(x, conjAB)
+        exists_A = Logic.mk_exists(x, A(x))
+        exists_B = Logic.mk_exists(x, B(x))
+        conj_exists = Logic.mk_conj(exists_A, exists_B)
+
+        prf = Proof(exists_conj)
+        prf.add_item("S1", "assume", args = conjAB)
+        prf.add_item("S2", "apply_theorem", args = "conjD1", prevs = ["S1"])
+        prf.add_item("S3", "apply_theorem", args = "conjD2", prevs = ["S1"])
+        prf.add_item("S4", "apply_theorem", args = "exI", prevs = ["S2"])
+        prf.add_item("S5", "apply_theorem", args = "exI", prevs = ["S3"])
+        prf.add_item("S6", "apply_theorem", args = "conjI", prevs = ["S4", "S5"])
+        prf.add_item("S7", "implies_intr", args = conjAB, prevs = ["S6"])
+        prf.add_item("S8", "forall_intr", args = x, prevs = ["S7"])
+        prf.add_item("S9", "apply_theorem", args = "exE", prevs = ["A1", "S8"])
+        prf.add_item("S10", "implies_intr", args = exists_conj, prevs = ["S9"])
+        th = Thm.mk_implies(exists_conj, conj_exists)
+        self.assertEqual(thy.check_proof(prf), th)
+
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
         thy = basic.BasicTheory()

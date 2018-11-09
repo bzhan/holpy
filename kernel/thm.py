@@ -5,7 +5,9 @@ from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
 from kernel.macro import MacroSig
 
 class InvalidDerivationException(Exception):
-    pass
+    """Exception during derivation. Provides error message."""
+    def __init__(self, str):
+        self.str = str
 
 class Thm():
     """Represents a theorem in sequent calculus.
@@ -120,9 +122,9 @@ class Thm():
             if A == th2.concl:
                 return Thm(th1.assums.union(th2.assums), B)
             else:
-                raise InvalidDerivationException()
+                raise InvalidDerivationException("implies_elim: " + repr(A) + " ~= " + repr(th2.concl))
         else:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("implies_elim")
 
     @staticmethod
     def reflexive(x):
@@ -144,7 +146,7 @@ class Thm():
             (x, y) = th.concl.dest_binop()
             return Thm(th.assums, Term.mk_equals(y,x))
         else:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("symmetric")
 
     @staticmethod
     def transitive(th1, th2):
@@ -161,9 +163,9 @@ class Thm():
             if y1 == y2:
                 return Thm(th1.assums.union(th2.assums), Term.mk_equals(x,z))
             else:
-                raise InvalidDerivationException()
+                raise InvalidDerivationException("transitive")
         else:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("transitive")
 
     @staticmethod
     def combination(th1, th2):
@@ -181,9 +183,9 @@ class Thm():
             if Tf.is_fun() and Tf.domain_type() == x.get_type():
                 return Thm(th1.assums.union(th2.assums), Term.mk_equals(f(x),g(y)))
             else:
-                raise InvalidDerivationException()
+                raise InvalidDerivationException("combination")
         else:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("combination")
 
     @staticmethod
     def equal_intr(th1, th2):
@@ -200,9 +202,9 @@ class Thm():
             if A1 == A2 and B1 == B2:
                 return Thm(th1.assums.union(th2.assums), Term.mk_equals(A1, B1))
             else:
-                raise InvalidDerivationException()
+                raise InvalidDerivationException("equal_intr")
         else:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("equal_intr")
 
     @staticmethod
     def equal_elim(th1, th2):
@@ -218,9 +220,9 @@ class Thm():
             if A == th2.concl:
                 return Thm(th1.assums.union(th2.assums), B)
             else:
-                raise InvalidDerivationException()
+                raise InvalidDerivationException("equal_elim")
         else:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("equal_elim")
 
     @staticmethod
     def subst_type(tyinst, th):
@@ -252,7 +254,7 @@ class Thm():
             assums_new = [assum.subst(inst) for assum in th.assums]
             concl_new = th.concl.subst(inst)
         except TermSubstitutionException:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("substitution")
         return Thm(assums_new, concl_new)
 
     @staticmethod
@@ -264,7 +266,7 @@ class Thm():
         try:
             t_new = t.beta_conv()
         except TermSubstitutionException:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("beta_conv")
         return Thm.mk_equals(t, t_new)
 
     @staticmethod
@@ -276,16 +278,16 @@ class Thm():
         A |- (%x. t1) = (%x. t2)  where x does not occur in A.
         """
         if any(assum.occurs_var(x) for assum in th.assums):
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("abstraction")
         elif th.concl.is_equals():
             (t1, t2) = th.concl.dest_binop()
             try:
                 (t1_new, t2_new) = (Term.mk_abs(x, t1), Term.mk_abs(x, t2))
             except TermSubstitutionException:
-                raise InvalidDerivationException()
+                raise InvalidDerivationException("abstraction")
             return Thm(th.assums, Term.mk_equals(t1_new, t2_new))
         else:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("abstraction")
 
     @staticmethod
     def forall_intr(x, th):
@@ -296,9 +298,9 @@ class Thm():
         A |- !x. t    where x does not occur in A.
         """
         if any(assum.occurs_var(x) for assum in th.assums):
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("forall_intr")
         elif x.ty != Term.VAR:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("forall_intr")
         else:
             return Thm(th.assums, Term.mk_all(x, th.concl))
 
@@ -312,11 +314,11 @@ class Thm():
         """
         if th.concl.is_all():
             if th.concl.arg.T != s.get_type():
-                raise InvalidDerivationException()
+                raise InvalidDerivationException("forall_elim")
             else:
                 return Thm(th.assums, th.concl.arg.subst_bound(s))
         else:
-            raise InvalidDerivationException()
+            raise InvalidDerivationException("forall_elim")
 
 # Table of primitive derivations
 primitive_deriv = {
