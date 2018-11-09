@@ -6,7 +6,9 @@ from kernel.type import TVar, TFun, HOLType, hol_bool
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
-from logic.basic import BasicTheory, Logic, Nat
+from logic.logic import Logic
+from logic.nat import Nat
+from logic.basic import BasicTheory
 from syntax.printer import print_term
 import syntax.parser as parser
 

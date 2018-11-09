@@ -1,7 +1,8 @@
 # Author: Bohua Zhan
 
 from kernel.term import Term
-from logic.basic import Logic, OperatorData
+from logic.operator import OperatorData
+from logic.logic import Logic
 
 def print_term(thy, t, *, print_abs_type = False, unicode = False):
     """More sophisticated printing function for terms. Handles printing

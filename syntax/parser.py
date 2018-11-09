@@ -7,7 +7,8 @@ from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.macro import MacroSig
 from kernel.thm import Thm
 from kernel.proof import ProofItem
-from logic.basic import Logic, Nat
+from logic.logic import Logic
+from logic.nat import Nat
 
 grammar = r"""
     ?type: "'" CNAME -> tvar              // Type variable

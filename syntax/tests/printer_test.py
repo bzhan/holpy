@@ -4,7 +4,9 @@ import unittest
 
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
-from logic.basic import BasicTheory, Logic, Nat
+from logic.logic import Logic
+from logic.nat import Nat
+from logic.basic import BasicTheory
 from syntax.printer import print_term
 
 thy = BasicTheory()
