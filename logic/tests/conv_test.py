@@ -3,34 +3,26 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun
-from kernel.term import Var, Const, Abs, Bound, Term
+from kernel.term import Term, Var, Const, Abs, Bound, Term
 from kernel.thm import Thm
 from logic.basic import BasicTheory
 from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, rewr_conv, ConvException
+from logic.nat import Nat
 
 thy = BasicTheory()
+abs = Term.mk_abs
+eq = Thm.mk_equals
+
 Ta = TVar("a")
-Tf = TFun(Ta,Ta,Ta)
-
 x = Var("x", Ta)
-f = Var("f", Tf)
-B0 = Bound(0)
+f = Var("f", TFun(Ta, Ta, Ta))
+lf = abs(x, f(x,x))
 
-# The term %x. f x x
-lf = Abs("x", Ta, f(B0, B0))
-
-# Setup a theory with nat, 0, 1, f, g, +
-arith_thy = BasicTheory()
-arith_thy.add_type_sig("nat", 0)
-natT = Type("nat")
-arith_thy.add_term_sig("0", natT)
-arith_thy.add_term_sig("1", natT)
-natFunT = TFun(natT, natT)
-natFunT2 = TFun(natT, natT, natT)
-arith_thy.add_term_sig("f", natFunT)
-arith_thy.add_term_sig("g", natFunT)
-arith_thy.add_term_sig("+", natFunT2)
+nat = Nat.nat
+zero = Nat.zero
+one = Nat.one
+plus = Nat.mk_plus
 
 class ConvTest(unittest.TestCase):
     def testBetaConv(self):
@@ -51,50 +43,45 @@ class ConvTest(unittest.TestCase):
         self.assertEqual(cv(x), Thm.reflexive(x))
 
     def testRewrConv(self):
-        thy = arith_thy
+        f = Const("f", TFun(nat, nat))
+        g = Const("g", TFun(nat, nat))
+        x = Var("x", nat)
 
-        nat0 = Const("0", natT)
-        nat1 = Const("1", natT)
-        f = Const("f", natFunT)
-        g = Const("g", natFunT)
-        plus = Const("+", natFunT2)
-
-        # Add axioms 1 = 0 and f x = g x
-        thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
-        thy.add_theorem("f_eq_g", Thm.mk_equals(f(Var("x",natT)), g(Var("x",natT))))
+        seq_dict = {"A1": eq(one, zero), "A2": eq(f(x), g(x))}
 
         # Test conversion using 1 = 0
-        cv1 = rewr_conv(ProofTerm.theorem(thy, "1_eq_0"))
-        eq_th = Thm.mk_equals(nat1, nat0)
-        self.assertEqual(cv1(nat1), eq_th)
-        self.assertEqual(thy.check_proof(cv1.get_proof_term(nat1).export()), eq_th)
-        self.assertRaises(ConvException, cv1, nat0)
-        self.assertRaises(ConvException, cv1.get_proof_term, nat0)
+        cv1 = rewr_conv(ProofTerm.atom("A1", seq_dict["A1"]))
+        eq_th = eq(one, zero)
+        prf = cv1.get_proof_term(one).export()
+        self.assertEqual(cv1(one), eq_th)
+        self.assertEqual(thy.check_proof_incr(0, seq_dict, prf), eq_th)
+        self.assertRaises(ConvException, cv1, zero)
+        self.assertRaises(ConvException, cv1.get_proof_term, zero)
 
         # Test conversion using f x = g x
-        cv2 = rewr_conv(ProofTerm.theorem(thy, "f_eq_g"))
-        eq0 = Thm.mk_equals(f(nat0), g(nat0))
-        eq1 = Thm.mk_equals(f(nat1), g(nat1))
-        self.assertEqual(cv2(f(nat0)), eq0)
-        self.assertEqual(cv2(f(nat1)), eq1)
-        self.assertEqual(thy.check_proof(cv2.get_proof_term(f(nat0)).export()), eq0)
-        self.assertEqual(thy.check_proof(cv2.get_proof_term(f(nat1)).export()), eq1)
-        self.assertRaises(ConvException, cv1, nat0)
-        self.assertRaises(ConvException, cv1.get_proof_term, nat0)
+        cv2 = rewr_conv(ProofTerm.atom("A2", seq_dict["A2"]))
+        eq0 = eq(f(zero), g(zero))
+        eq1 = eq(f(one), g(one))
+        self.assertEqual(cv2(f(zero)), eq0)
+        self.assertEqual(cv2(f(one)), eq1)
+        prf0 = cv2.get_proof_term(f(zero)).export()
+        prf1 = cv2.get_proof_term(f(one)).export()
+        self.assertEqual(thy.check_proof_incr(0, seq_dict, prf0), eq0)
+        self.assertEqual(thy.check_proof_incr(0, seq_dict, prf1), eq1)
+        self.assertRaises(ConvException, cv1, zero)
+        self.assertRaises(ConvException, cv1.get_proof_term, zero)
 
     def testAbsConv(self):
-        thy = arith_thy
+        nat0 = Const("0", nat)
+        nat1 = Const("1", nat)
+        f = Const("f", TFun(nat, nat))
+        g = Const("g", TFun(nat, nat))
+        x = Var("x", nat)
 
-        nat0 = Const("0", natT)
-        nat1 = Const("1", natT)
-        f = Const("f", natFunT)
-        g = Const("g", natFunT)
-        x = Var("x", natT)
-
-        thy.add_theorem("f_eq_g", Thm.mk_equals(f(x), g(x)))
+        thy.add_theorem("f_eq_g", eq(f(x), g(x)))
         t = Term.mk_abs(x, f(x))
         cv = abs_conv(rewr_conv(ProofTerm.theorem(thy, "f_eq_g")))
-        res_th = Thm.mk_equals(t, Term.mk_abs(x, g(x)))
+        res_th = eq(t, Term.mk_abs(x, g(x)))
         self.assertEqual(cv(t), res_th)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(thy.check_proof(prf), res_th)
@@ -103,7 +90,7 @@ class ConvTest(unittest.TestCase):
         cv = top_conv(beta_conv())
         t = lf(lf(x))
         res = f(f(x,x),f(x,x))
-        res_th = Thm.mk_equals(t, res)
+        res_th = eq(t, res)
         self.assertEqual(cv(t), res_th)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(prf.get_num_item(), 5)
@@ -113,7 +100,7 @@ class ConvTest(unittest.TestCase):
         cv = bottom_conv(beta_conv())
         t = lf(lf(x))
         res = f(f(x,x),f(x,x))
-        res_th = Thm.mk_equals(t, res)
+        res_th = eq(t, res)
         self.assertEqual(cv(t), res_th)
         prf = cv.get_proof_term(t).export()
         self.assertEqual(prf.get_num_item(), 4)
@@ -128,9 +115,9 @@ class ConvTest(unittest.TestCase):
             t = lf(t)
             res = f(res, res)
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv(t), Thm.mk_equals(t, res))
+        self.assertEqual(cv(t), eq(t, res))
         self.assertEqual(prf.get_num_item(), 29)
-        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
+        self.assertEqual(thy.check_proof(prf), eq(t, res))
 
     def testBottomBetaConvLarge(self):
         """Stress test for beta conversion in the bottom-up order."""
@@ -141,51 +128,42 @@ class ConvTest(unittest.TestCase):
             t = lf(t)
             res = f(res, res)
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv(t), Thm.mk_equals(t, res))
+        self.assertEqual(cv(t), eq(t, res))
         self.assertEqual(prf.get_num_item(), 22)
-        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
+        self.assertEqual(thy.check_proof(prf), eq(t, res))
 
     def testTopBetaConvAbs(self):
         cv = top_conv(beta_conv())
 
         # %x. (%a. f a) x reduces to %x. f x.
-        t = Abs("x", Ta, Abs("a", Ta, f(B0))(B0))
-        res = Abs("x", Ta, f(B0))
+        a = Var("a", Ta)
+        t = abs(x, abs(a, f(a))(x))
+        res = abs(x, f(x))
 
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv(t), Thm.mk_equals(t, res))
+        self.assertEqual(cv(t), eq(t, res))
         self.assertEqual(prf.get_num_item(), 2)
-        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
+        self.assertEqual(thy.check_proof(prf), eq(t, res))
 
     def testLargeSum(self):
-        thy = arith_thy
         thy.check_level = 1
 
-        nat0 = Const("0", natT)
-        nat1 = Const("1", natT)
-        f = Const("f", natFunT)
-        g = Const("g", natFunT)
-        plus = Const("+", natFunT2)
+        f = Const("f", TFun(nat, nat))
+        g = Const("g", TFun(nat, nat))
+        x = Var("x", nat)
 
-        # Add axioms 1 = 0 and f x = g x
-        thy.add_theorem("1_eq_0", Thm.mk_equals(nat1, nat0))
-        thy.add_theorem("f_eq_g", Thm.mk_equals(f(Var("x",natT)), g(Var("x",natT))))
-
+        seq_dict = {"A1": eq(one, zero), "A2": eq(f(x), g(x))}
         cv = top_conv(else_conv(
-            rewr_conv(ProofTerm.theorem(thy, "f_eq_g")),
-            rewr_conv(ProofTerm.theorem(thy, "1_eq_0"))))
+            rewr_conv(ProofTerm.atom("A1", seq_dict["A1"])),
+            rewr_conv(ProofTerm.atom("A2", seq_dict["A2"]))))
 
-        f1 = f(nat1)
-        g0 = g(nat0)
-        t = f1
-        res = g0
-        for i in range(10):
-            t = plus(t, f1)
-            res = plus(res, g0)
-
+        f1 = f(one)
+        g0 = g(zero)
+        t = plus(*([f1] * 10))
+        res = plus(*([g0] * 10))
         prf = cv.get_proof_term(t).export()
-        self.assertEqual(cv(t), Thm.mk_equals(t, res))
-        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
+        self.assertEqual(cv(t), eq(t, res))
+        self.assertEqual(thy.check_proof_incr(0, seq_dict, prf), eq(t, res))
 
 if __name__ == "__main__":
     unittest.main()

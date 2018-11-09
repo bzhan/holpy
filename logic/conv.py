@@ -230,7 +230,4 @@ class rewr_conv(Conv):
         except MatchException:
             raise ConvException()
 
-        if inst:
-            return ProofTerm.substitution(inst, self.pt)
-        else:
-            return self.pt
+        return ProofTerm.substitution(inst, self.pt)

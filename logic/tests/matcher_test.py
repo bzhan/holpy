@@ -3,19 +3,17 @@
 import unittest
 
 from kernel.type import TVar, TFun, hol_bool
-from kernel.term import Var, Const, Abs, Bound
+from kernel.term import Term, Var, Const, Abs, Bound
 from logic.matcher import Matcher, MatchException
 
 Ta = TVar("a")
-Tf = TFun(Ta, Ta, Ta)
 a = Const("a", Ta)
 b = Const("b", Ta)
 c = Const("c", Ta)
-f = Const("f", Tf)
+f = Const("f", TFun(Ta, Ta, Ta))
 x = Var("x", Ta)
 y = Var("y", Ta)
-B0 = Bound(0)
-B1 = Bound(1)
+abs = Term.mk_abs
 
 class MatcherTest(unittest.TestCase):
     def testFirstOrderMatch(self):
@@ -27,14 +25,14 @@ class MatcherTest(unittest.TestCase):
             (f(x,y), f(a,b), {"x" : a, "y" : b}),
             (f(x,x), f(a,a), {"x" : a}),
             (f(x,x), f(a,b), None),
-            (Abs("x",Ta,x), Abs("x",Ta,a), {"x" : a}),
-            (Abs("x",Ta,a), Abs("x",Ta,a), {}),
-            (Abs("x",Ta,a), Abs("x",Ta,b), None),
-            (Abs("x",Ta,x), Abs("x",Ta,B0), None),
-            (Abs("x",Ta,x), Abs("x",Ta,"y",Ta,B0), {"x" : Abs("y",Ta,B0)}),
-            (Abs("x",Ta,x), Abs("x",Ta,"y",Ta,B1), None),
-            (Abs("x",Ta,B0), Abs("x",Ta,B0), {}),
-            (Abs("x",Ta,"y",Ta,B0), Abs("x",Ta,"y",Ta,B1), None),
+            (abs(x,y), abs(x,a), {"y" : a}),
+            (abs(x,a), abs(x,a), {}),
+            (abs(x,a), abs(x,b), None),
+            (abs(x,y), abs(x,x), None),
+            (abs(x,y), abs(x,abs(y,y)), {"y" : abs(y,y)}),
+            (abs(x,y), abs(x,abs(y,x)), None),
+            (abs(x,x), abs(x,x), {}),
+            (abs(x,abs(y,y)), abs(x,abs(y,x)), None),
         ]
 
         for pat, t, inst in test_data:
@@ -47,12 +45,12 @@ class MatcherTest(unittest.TestCase):
         """First-order matching of variables in function position."""
         P = Var("P", TFun(Ta, hol_bool))
         Q = Var("Q", TFun(Ta, hol_bool))
-        conj = Const("conj", TFun(hol_bool, hol_bool, hol_bool))
+        C = Const("C", TFun(hol_bool, hol_bool, hol_bool))
 
         test_data = [
-            (Abs("x",Ta,P(B0)), Abs("x",Ta,conj(P(B0),Q(B0))), {"P" : Abs("x",Ta,conj(P(B0),Q(B0)))}),
-            (Abs("x",Ta,conj(P(B0),Q(B0))), Abs("x",Ta,conj(Q(B0),P(B0))), {"P": Abs("x",Ta,Q(B0)), "Q": Abs("x",Ta,P(B0))}),
-            (Abs("x",Ta,conj(P(B0),P(B0))), Abs("x",Ta,conj(conj(P(B0),Q(B0)),conj(P(B0),Q(B0)))), {"P": Abs("x",Ta,conj(P(B0),Q(B0)))}),
+            (abs(x,P(x)), abs(x,C(P(x),Q(x))), {"P" : abs(x,C(P(x),Q(x)))}),
+            (abs(x,C(P(x),Q(x))), abs(x,C(Q(x),P(x))), {"P": abs(x,Q(x)), "Q": abs(x,P(x))}),
+            (abs(x,C(P(x),P(x))), abs(x,C(C(P(x),Q(x)),C(P(x),Q(x)))), {"P": abs(x,C(P(x),Q(x)))}),
         ]
 
         for pat, t, inst in test_data:
