@@ -87,7 +87,12 @@ class HOLType():
             raise TypeError()
 
     def __repr__(self):
-        return str(self)
+        if self.ty == HOLType.TVAR:
+            return "TVar(" + self.name + ")"
+        elif self.ty == HOLType.TYPE:
+            return "Type(" + self.name + ", " + str(list(self.args)) + ")"
+        else:
+            raise TypeError()
 
     def __hash__(self):
         if self.ty == HOLType.TVAR:
