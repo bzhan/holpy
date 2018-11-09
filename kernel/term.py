@@ -54,7 +54,47 @@ class Term():
     """
     (VAR, CONST, COMB, ABS, BOUND) = range(5)
 
+    def print(self, *, print_abs_type = False):
+        """Printing function for terms. Note we do not yet handle collision
+        in lambda terms.
+
+        print_abs_type: print type information for bound variables.
+
+        """
+        def helper(t, bd_vars):
+            """bd_vars is the list of names of bound variables."""
+            if t.ty == Term.VAR or t.ty == Term.CONST:
+                return t.name
+            elif t.ty == Term.COMB:
+                # a b c associates to the left. So parenthesis is needed to express
+                # a (b c). Parenthesis is also needed for lambda terms.
+                if t.fun.ty == Term.ABS:
+                    str_fun = "(" + helper(t.fun, bd_vars) + ")"
+                else:
+                    str_fun = helper(t.fun, bd_vars)
+                if t.arg.ty == Term.COMB or t.arg.ty == Term.ABS:
+                    str_arg = "(" + helper(t.arg, bd_vars) + ")"
+                else:
+                    str_arg = helper(t.arg, bd_vars)
+                return str_fun + " " + str_arg
+            elif t.ty == Term.ABS:
+                var_str = t.var_name + "::" + str(t.T) if print_abs_type else t.var_name
+                body_repr = helper(t.body, [t.var_name] + bd_vars)
+                return "%" + var_str + ". " + body_repr
+            elif t.ty == Term.BOUND:
+                if t.n >= len(bd_vars):
+                    raise OpenTermException
+                else:
+                    return bd_vars[t.n]
+            else:
+                raise TypeError()
+
+        return helper(self, [])
+
     def __str__(self):
+        return self.print()
+
+    def __repr__(self):
         if self.ty == Term.VAR:
             return "Var(" + self.name + "," + str(self.T) + ")"
         elif self.ty == Term.CONST:
@@ -63,59 +103,15 @@ class Term():
             # a $ b $ c associates to the left. So parenthesis is needed to
             # express a $ (b $ c).
             if self.arg.ty == Term.COMB:
-                return str(self.fun) + " $ (" + str(self.arg) + ")"
+                return repr(self.fun) + " $ (" + repr(self.arg) + ")"
             else:
-                return str(self.fun) + " $ " + str(self.arg)
+                return repr(self.fun) + " $ " + repr(self.arg)
         elif self.ty == Term.ABS:
-            return "Abs(" + self.var_name + "," + str(self.T) + "," + str(self.body) + ")"
+            return "Abs(" + self.var_name + "," + str(self.T) + "," + repr(self.body) + ")"
         elif self.ty == Term.BOUND:
             return "Bound " + str(self.n)
         else:
             raise TypeError()
-
-    def _repr(self, bd_vars, *, print_abs_type = False):
-        """Helper function for __repr__. bd_vars is the list of names of
-        bound variables.
-
-        print_abs_type: print type information for bound variables.
-
-        """
-        if self.ty == Term.VAR or self.ty == Term.CONST:
-            return self.name
-        elif self.ty == Term.COMB:
-            # a b c associates to the left. So parenthesis is needed to express
-            # a (b c). Parenthesis is also needed for lambda terms.
-            if self.fun.ty == Term.ABS:
-                str_fun = "(" + self.fun._repr(bd_vars) + ")"
-            else:
-                str_fun = self.fun._repr(bd_vars)
-            if self.arg.ty == Term.COMB or self.arg.ty == Term.ABS:
-                str_arg = "(" + self.arg._repr(bd_vars) + ")"
-            else:
-                str_arg = self.arg._repr(bd_vars)
-            return str_fun + " " + str_arg
-        elif self.ty == Term.ABS:
-            var_str = self.var_name + "::" + repr(self.T) if print_abs_type else self.var_name
-            body_repr = self.body._repr([self.var_name] + bd_vars, print_abs_type = print_abs_type)
-            return "%" + var_str + ". " + body_repr
-        elif self.ty == Term.BOUND:
-            if self.n >= len(bd_vars):
-                raise OpenTermException
-            else:
-                return bd_vars[self.n]
-        else:
-            raise TypeError()
-
-    def __repr__(self):
-        """Print the term in short form. Note we do not yet handle name
-        collisions in lambda terms.
-
-        """
-        return self._repr([])
-
-    def repr_with_abs_type(self):
-        """Print the term with type information for bound variables."""
-        return self._repr([], print_abs_type = True)
 
     def __hash__(self):
         if self.ty == Term.VAR:

@@ -38,7 +38,7 @@ class Thm():
         self.assums = set(assums)
         self.concl = concl
 
-    def print(self, *, term_printer = repr):
+    def print(self, *, term_printer = str):
         """Print the given theorem.
 
         term_printer: specify the printing function for terms.
@@ -122,7 +122,7 @@ class Thm():
             if A == th2.concl:
                 return Thm(th1.assums.union(th2.assums), B)
             else:
-                raise InvalidDerivationException("implies_elim: " + repr(A) + " ~= " + repr(th2.concl))
+                raise InvalidDerivationException("implies_elim: " + str(A) + " ~= " + str(th2.concl))
         else:
             raise InvalidDerivationException("implies_elim")
 

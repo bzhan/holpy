@@ -29,19 +29,19 @@ class ProofItem():
         term_printer: specify the printing function for terms.
 
         """
-        def repr_val(val):
+        def str_val(val):
             if isinstance(val, Term):
                 return term_printer(val)
             else:
-                return repr(val)
+                return str(val)
 
         if isinstance(self.args, str):
             str_args = " " + self.args
         elif isinstance(self.args, dict):
             items = sorted(self.args.items(), key = lambda pair: pair[0])
-            str_args = " {" + ", ".join(key + ": " + repr_val(val) for key, val in items) + "}"
+            str_args = " {" + ", ".join(key + ": " + str_val(val) for key, val in items) + "}"
         else:
-            str_args = " " + repr_val(self.args) if self.args else ""
+            str_args = " " + str_val(self.args) if self.args else ""
 
         str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
         str_th = self.th.print(term_printer = term_printer) + " by " if self.th else ""
@@ -49,7 +49,7 @@ class ProofItem():
         return self.id + ": " + str_th + self.rule + str_args + str_prevs
 
     def __str__(self):
-        return self.print(term_printer = repr)
+        return self.print(term_printer = str)
 
     def __repr__(self):
         return str(self)
@@ -99,7 +99,7 @@ class Proof():
         else:
             raise ProofException()
 
-    def print(self, *, term_printer = repr):
+    def print(self, *, term_printer = str):
         """Print the given proof object.
 
         term_printer: specify the printing function for terms.
