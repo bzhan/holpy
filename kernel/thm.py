@@ -74,6 +74,11 @@ class Thm():
                 raise TypeCheckException()
 
     @staticmethod
+    def mk_implies(*args):
+        """Returns the theorem s1 --> ... --> sn --> t."""
+        return Thm([], Term.mk_implies(*args))
+
+    @staticmethod
     def mk_equals(x, y):
         """Returns the theorem x = y."""
         return Thm([], Term.mk_equals(x, y))

@@ -124,7 +124,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("C", "implies_intr", args = A, prevs = ["A1"])
 
         rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), Thm([], Term.mk_implies(A,A)))
+        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(A,A))
         self.assertEqual(rpt.steps, 2)
 
     def testCheckProof3(self):
@@ -145,7 +145,7 @@ class TheoryTest(unittest.TestCase):
     def testCheckProof4(self):
         """Proof of |- x = y --> x = y by instantiating an existing theorem."""
         thy = Theory.EmptyTheory()
-        thy.add_theorem("trivial", Thm([], Term.mk_implies(A,A)))
+        thy.add_theorem("trivial", Thm.mk_implies(A,A))
 
         x_eq_y = Term.mk_equals(x,y)
         prf = Proof()
@@ -153,14 +153,14 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("C", "substitution", args = {"A" : x_eq_y}, prevs = ["S1"])
 
         rpt = ProofReport()
-        th = Thm([], Term.mk_implies(x_eq_y,x_eq_y))
+        th = Thm.mk_implies(x_eq_y,x_eq_y)
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.steps, 2)
 
     def testCheckProof5(self):
         """Empty instantiation."""
         thy = Theory.EmptyTheory()
-        thy.add_theorem("trivial", Thm([], Term.mk_implies(A,A)))
+        thy.add_theorem("trivial", Thm.mk_implies(A,A))
 
         x_eq_y = Term.mk_equals(x,y)
         prf = Proof()
@@ -168,7 +168,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("C", "substitution", args = {}, prevs = ["S1"])
 
         rpt = ProofReport()
-        th = Thm([], Term.mk_implies(A,A))
+        th = Thm.mk_implies(A,A)
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.steps_stat(), (1, 1, 0))
         self.assertEqual(rpt.th_names, {"trivial"})
@@ -197,7 +197,7 @@ class TheoryTest(unittest.TestCase):
     def testCheckProofFail4(self):
         """Output does not match."""
         prf = Proof(A)
-        prf.add_item("C", "implies_intr", args = A, prevs = ["A1"], th = Thm([], Term.mk_implies(A,B)))
+        prf.add_item("C", "implies_intr", args = A, prevs = ["A1"], th = Thm.mk_implies(A,B))
 
         self.assertRaisesRegex(CheckProofException, "output does not match", thy.check_proof, prf)
 
