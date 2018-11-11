@@ -158,3 +158,22 @@ def apply_backward_step(prf, id, thy, th_name, *, prevs = None):
 
     prf = set_line(prf, "S" + str(start + num_goal), "apply_theorem", args = th_name, prevs = prevs + all_ids)
     return prf
+
+def introduction(prf, id):
+    """Introduce assumptions for a goal of the form A1 --> ... --> An --> C."""
+    cur_item = get_proof_item(prf, id)
+    assert cur_item.rule == "sorry", "introduction: id is not a gap"
+
+    As, C = cur_item.th.concl.strip_implies()
+    prf = add_line_before(prf, id, 2 * len(As))
+    start = int(id[1:])
+    for i, A in enumerate(As):
+        new_id = "S" + str(start + i)
+        prf = set_line(prf, new_id, "assume", args = A)
+    prf = set_line(prf, "S" + str(start + len(As)), "sorry", th = Thm(list(cur_item.th.assums) + As, C))
+    for i, A in enumerate(reversed(As)):
+        prev_id = "S" + str(start + len(As) + i)
+        new_id = "S" + str(start + len(As) + i + 1)
+        prf = set_line(prf, new_id, "implies_intr", args = A, prevs = [prev_id])
+
+    return prf

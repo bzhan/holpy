@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import hol_bool
-from kernel.term import Var
+from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
@@ -77,6 +77,16 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(disj(A, B), disj(B, A)))
         self.assertEqual(len(rpt.gaps), 2)
 
+    def testIntroduction(self):
+        prf = tactic.init_proof([A, B], [], Term.mk_implies(disj(A, B), disj(B, A)))
+        prf = tactic.introduction(prf, "S1")
+        self.assertEqual(thy.check_proof(prf), Thm.mk_implies(disj(A, B), disj(B, A)))
+
+    def testIntroduction2(self):
+        prf = tactic.init_proof([A, B], [], Term.mk_implies(A, B, conj(A, B)))
+        prf = tactic.introduction(prf, "S1")
+        self.assertEqual(thy.check_proof(prf), Thm.mk_implies(A, B, conj(A, B)))
+
     def testConjComm(self):
         """Proof of A & B --> B & A."""
         prf = tactic.init_proof([A, B], [conj(A, B)], conj(B, A))
@@ -87,6 +97,26 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(conj(A, B), conj(B, A)))
         self.assertEqual(len(rpt.gaps), 0)
 
+    def testDisjComm(self):
+        """Proof of A | B --> B | A."""
+        prf = tactic.init_proof([A, B], [disj(A, B)], disj(B, A))
+        thy.check_proof(prf)
+        prf = tactic.apply_backward_step(prf, "S1", thy, "disjE", prevs = ["A1"])
+        prf = tactic.introduction(prf, "S1")
+        prf = tactic.add_line_after(prf, "S1")
+        prf = tactic.set_line(prf, "S2", "theorem", args = "disjI2")
+        prf = tactic.add_line_after(prf, "S2")
+        prf = tactic.set_line(prf, "S3", "substitution", args = {"A": B, "B": A}, prevs = ["S2"])
+        prf = tactic.set_line(prf, "S4", "implies_elim", prevs = ["S3", "S1"])
+        prf = tactic.introduction(prf, "S6")
+        prf = tactic.add_line_after(prf, "S6")
+        prf = tactic.set_line(prf, "S7", "theorem", args = "disjI1")
+        prf = tactic.add_line_after(prf, "S7")
+        prf = tactic.set_line(prf, "S8", "substitution", args = {"A": B, "B": A}, prevs = ["S7"])
+        prf = tactic.set_line(prf, "S9", "implies_elim", prevs = ["S8", "S6"])
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(disj(A, B), disj(B, A)))
+        self.assertEqual(len(rpt.gaps), 0)
 
 if __name__ == "__main__":
     unittest.main()
