@@ -16,6 +16,7 @@ thy = BasicTheory()
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)
 conj = Logic.mk_conj
+disj = Logic.mk_disj
 
 class TacticTest(unittest.TestCase):
     def testInitProof(self):
@@ -55,16 +56,25 @@ class TacticTest(unittest.TestCase):
 
     def testSetLine(self):
         prf = tactic.init_proof([A, B], [conj(A, B)], conj(B, A))
-        prf2 = tactic.add_line_after(prf, "A1")
-        prf2 = tactic.set_line(prf2, "S1", "theorem", args = "conjD1")
-        self.assertEqual(prf2.get_num_item(), 4)
-        self.assertEqual(thy.check_proof(prf2), Thm.mk_implies(conj(A, B), conj(B, A)))
+        prf = tactic.add_line_after(prf, "A1")
+        prf = tactic.set_line(prf, "S1", "theorem", args = "conjD1")
+        self.assertEqual(prf.get_num_item(), 4)
+        self.assertEqual(thy.check_proof(prf), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testApplyBackwardStep(self):
         prf = tactic.init_proof([A, B], [conj(A, B)], conj(B, A))
-        prf2 = tactic.apply_backward_step(prf, "S1", thy, "conjI")
+        prf = tactic.apply_backward_step(prf, "S1", thy, "conjI")
         rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf2, rpt), Thm.mk_implies(conj(A, B), conj(B, A)))
+        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(conj(A, B), conj(B, A)))
+        self.assertEqual(len(rpt.gaps), 2)
+
+    def testApplyBackwardStep2(self):
+        """Case where one or more assumption also needs to be matched."""
+        prf = tactic.init_proof([A, B], [disj(A, B)], disj(B, A))
+        thy.check_proof(prf)
+        prf = tactic.apply_backward_step(prf, "S1", thy, "disjE", prevs = ["A1"])
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(disj(A, B), disj(B, A)))
         self.assertEqual(len(rpt.gaps), 2)
 
     def testConjComm(self):

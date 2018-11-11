@@ -117,8 +117,19 @@ def set_line(prf, id, rule, *, args = None, prevs = None, th = None):
 
     return new_prf
 
-def apply_backward_step(prf, id, thy, th_name):
+def get_proof_item(prf, id):
+    """Obtain the proof item with the given id."""
+    for item in prf.proof:
+        if item.id == id:
+            return item
+    
+    raise TacticException()
+
+def apply_backward_step(prf, id, thy, th_name, *, prevs = None):
     """Apply backward step using the given theorem."""
+    if prevs is None:
+        prevs = []
+
     # Obtain the statement to be proved.
     for i, item in enumerate(prf.proof):
         if item.id == id:
@@ -126,19 +137,24 @@ def apply_backward_step(prf, id, thy, th_name):
 
     assert cur_item.rule == "sorry", "apply_backward_step: id is not a gap"
 
-    # Instantiate the given theorem
+    # Instantiate the given theorem.
     th = thy.get_theorem(th_name)
-    _, C = th.concl.strip_implies()
-    inst = Matcher.first_order_match(C, cur_item.th.concl)
+    As, C = th.concl.strip_implies()
+    inst = dict()
+    for pat, prev in zip(As, prevs):
+        item = get_proof_item(prf, prev)
+        Matcher.first_order_match_incr(pat, item.th.concl, inst)
+    Matcher.first_order_match_incr(C, cur_item.th.concl, inst)
 
     th2 = Thm.substitution(inst, th)
     As, _ = th2.concl.strip_implies()
 
-    prf = add_line_before(prf, id, len(As))
+    num_goal = len(As) - len(prevs)
+    prf = add_line_before(prf, id, num_goal)
     start = int(id[1:])
-    all_ids = ["S" + str(start + i) for i in range(len(As))]
-    for new_id, A in zip(all_ids, As):
+    all_ids = ["S" + str(start + i - len(prevs)) for i in range(len(prevs), len(As))]
+    for new_id, A in zip(all_ids, As[len(prevs):]):
         prf = set_line(prf, new_id, "sorry", th = Thm(cur_item.th.assums, A))
 
-    prf = set_line(prf, "S" + str(start + len(As)), "apply_theorem", args = th_name, prevs = all_ids)
+    prf = set_line(prf, "S" + str(start + num_goal), "apply_theorem", args = th_name, prevs = prevs + all_ids)
     return prf

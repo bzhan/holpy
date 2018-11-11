@@ -39,7 +39,7 @@ def BasicTheory():
     disjAB = Logic.mk_disj(A, B)
     thy.add_theorem("disjI1", Thm([], imp(A, disjAB)))
     thy.add_theorem("disjI2", Thm([], imp(B, disjAB)))
-    thy.add_theorem("disjE", Thm([], imp(imp(A, C), imp(B, C), imp(disjAB, C))))
+    thy.add_theorem("disjE", Thm([], imp(disjAB, imp(A, C), imp(B, C), C)))
 
     # Axioms for negation
     thy.add_theorem("negI", Thm([], imp(imp(A, Logic.false), Logic.neg(A))))

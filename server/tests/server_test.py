@@ -80,7 +80,7 @@ class ServerTest(unittest.TestCase):
             "S5: apply_theorem falseE from S4",
             "S6: implies_intr A from S2",
             "S7: implies_intr ~A from S5",
-            "S8: apply_theorem disjE from S6, S7, S1",
+            "S8: apply_theorem disjE from S1, S6, S7",
             "S9: implies_intr ~~A from S8"])
 
         output = "\n".join([
@@ -92,7 +92,7 @@ class ServerTest(unittest.TestCase):
             "S5: ~A, ~~A |- A by apply_theorem falseE from S4",
             "S6: |- A --> A by implies_intr A from S2",
             "S7: ~~A |- ~A --> A by implies_intr ~A from S5",
-            "S8: ~~A |- A by apply_theorem disjE from S6, S7, S1",
+            "S8: ~~A |- A by apply_theorem disjE from S1, S6, S7",
             "S9: |- ~~A --> A by implies_intr ~~A from S8"])
 
         server = Server(BasicTheory())
