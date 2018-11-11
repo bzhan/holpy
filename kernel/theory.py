@@ -235,7 +235,12 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
-        if seq.rule == "theorem":
+        if seq.rule == "sorry":
+            assert seq.th is not None, "sorry must have explicit statement."
+            res_th = seq.th
+            if rpt is not None:
+                rpt.add_gap(seq.th)
+        elif seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
                 res_th = self.get_theorem(seq.args)

@@ -255,6 +255,17 @@ class TheoryTest(unittest.TestCase):
         self.assertEqual(rpt.steps_stat(), (0, 1, 1))
         self.assertEqual(rpt.macros_eval, {"beta_conv_rhs"})
 
+    def testCheckProofGap(self):
+        """Check proof with gap."""
+        prf = Proof()
+        prf.add_item("S1", "sorry", th = Thm.mk_implies(A,B))
+        prf.add_item("S2", "sorry", th = Thm([], A))
+        prf.add_item("S3", "implies_elim", prevs = ["S1", "S2"])
+
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), Thm([], B))
+        self.assertEqual(rpt.gaps, [Thm.mk_implies(A, B), Thm([], A)])
+
     def testUncheckedExtend(self):
         """Unchecked extension."""
         thy = Theory.EmptyTheory()
