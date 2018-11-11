@@ -235,7 +235,11 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
+        if seq.rule == "":
+            # Empty line in the proof
+            return None
         if seq.rule == "sorry":
+            # Gap in the proof
             assert seq.th is not None, "sorry must have explicit statement."
             res_th = seq.th
             if rpt is not None:
