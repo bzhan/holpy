@@ -1,0 +1,11 @@
+var A :: bool
+A1: assume ~~A
+S1: theorem classical
+S2: assume A
+S3: assume ~A
+S4: apply_theorem negE from A1, S3
+S5: apply_theorem falseE from S4
+S6: implies_intr A from S2
+S7: implies_intr ~A from S5
+S8: apply_theorem disjE from S1, S6, S7
+S9: implies_intr ~~A from S8

@@ -29,7 +29,7 @@ class ExtensionTest(unittest.TestCase):
         thy_ext.add_extension(Theorem("id.simps", Thm([], id_simps)))
 
         str_thy_ext = "\n".join([
-            "Constant id = Abs(x,'a,Bound 0)",
+            "Constant id = %x. x",
             "Theorem id.simps: |- equals (id x) x"])
 
         self.assertEqual(str(thy_ext), str_thy_ext)

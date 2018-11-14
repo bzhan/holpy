@@ -9,6 +9,18 @@ Tb = TVar("b")
 Tc = TVar("c")
 
 class TypeTest(unittest.TestCase):
+    def testReprType(self):
+        test_data = [
+            (Ta, "TVar(a)"),
+            (Type("bool"), "Type(bool, [])"),
+            (Type("list", Ta), "Type(list, [TVar(a)])"),
+            (Type("tree", Ta, Tb), "Type(tree, [TVar(a), TVar(b)])"),
+            (Type("fun", Ta, Tb), "Type(fun, [TVar(a), TVar(b)])"),
+        ]
+
+        for T, repr_T in test_data:
+            self.assertEqual(repr(T), repr_T)
+
     def testPrintType(self):
         test_data = [
             (Ta, "'a"),

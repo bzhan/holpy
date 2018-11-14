@@ -1,0 +1,12 @@
+var A :: bool
+var B :: bool
+A1: assume A & B
+S1: theorem conjD1
+S2: implies_elim from S1, A1
+S3: theorem conjD2
+S4: implies_elim from S3, A1
+S5: theorem conjI
+S6: substitution {A: B, B: A} from S5
+S7: implies_elim from S6, S4
+S8: implies_elim from S7, S2
+S9: implies_intr A & B from S8

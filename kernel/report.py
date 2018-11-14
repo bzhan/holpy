@@ -31,6 +31,7 @@ class ProofReport():
         self.th_names = set()
         self.macros_eval = set()
         self.macros_expand = set()
+        self.gaps = []
 
     def __str__(self):
         return "\n".join([
@@ -40,7 +41,8 @@ class ProofReport():
             "  Macro:     " + str(self.macro_steps),
             "Theorems applied: " + ", ".join(self.th_names),
             "Macros evaluated: " + ", ".join(self.macros_eval),
-            "Macros expanded: " + ", ".join(self.macros_expand)])
+            "Macros expanded: " + ", ".join(self.macros_expand),
+            "Gaps: " + len(self.gaps)])
 
     def __repr__(self):
         return str(self)
@@ -61,6 +63,10 @@ class ProofReport():
 
     def expand_macro(self, macro_name):
         self.macros_expand.add(macro_name)
+
+    def add_gap(self, th):
+        """Register a gap with conclusion theorem t."""
+        self.gaps.append(th)
 
     def steps_stat(self):
         """Return the triple of thm_steps, prim_steps, macro_steps."""

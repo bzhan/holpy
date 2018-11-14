@@ -20,7 +20,7 @@ B0 = Bound(0)
 B1 = Bound(1)
 
 class TermTest(unittest.TestCase):
-    def testPrintTerm(self):
+    def testReprTerm(self):
         test_data = [
             (a, "Var(a,'a)"),
             (f, "Var(f,'a => 'b)"),
@@ -34,10 +34,10 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, "y", Ta, B1), "Abs(x,'a,Abs(y,'a,Bound 1))"),
         ]
 
-        for t, str_t in test_data:
-            self.assertEqual(str(t), str_t)
+        for t, repr_t in test_data:
+            self.assertEqual(repr(t), repr_t)
 
-    def testReprTerm(self):
+    def testPrintTerm(self):
         test_data = [
             (a, "a"),
             (f, "f"),
@@ -53,17 +53,17 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, "y", Ta, f2(B1,B0)), "%x. %y. f2 x y"),
         ]
 
-        for t, repr_t in test_data:
-            self.assertEqual(repr(t), repr_t)
+        for t, str_t in test_data:
+            self.assertEqual(str(t), str_t)
 
-    def testReprTermWithAbsType(self):
+    def testPrintTermWithAbsType(self):
         test_data = [
             (Abs("x", Ta, b), "%x::'a. b"),
             (Abs("x", Ta, "y", Ta, b), "%x::'a. %y::'a. b"),
         ]
 
-        for t, repr_t in test_data:
-            self.assertEqual(t.repr_with_abs_type(), repr_t)
+        for t, str_t in test_data:
+            self.assertEqual(t.print(print_abs_type=True), str_t)
 
     def testEquals(self):
         test_data = [

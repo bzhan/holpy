@@ -4,7 +4,9 @@ import unittest
 
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
-from logic.basic import BasicTheory, Logic
+from logic.logic import Logic
+from logic.nat import Nat
+from logic.basic import BasicTheory
 from syntax.printer import print_term
 
 thy = BasicTheory()
@@ -19,7 +21,10 @@ P = Var("P", TFun(Ta, hol_bool))
 Q = Var("Q", TFun(Ta, hol_bool))
 R = Var("R", TFun(Ta, Ta, hol_bool))
 f = Var("f", TFun(Ta, Ta))
-n = Var("n", TFun(hol_bool, hol_bool))
+nn = Var("n", TFun(hol_bool, hol_bool))
+m = Var("m", Nat.nat)
+n = Var("n", Nat.nat)
+p = Var("p", Nat.nat)
 eq = Term.mk_equals
 imp = Term.mk_implies
 conj = Logic.mk_conj
@@ -98,10 +103,25 @@ class PrinterTest(unittest.TestCase):
             (P(a), "P a"),
             (P(f(a)), "P (f a)"),
             (R(a,a), "R a a"),
-            (n(conj(A,B)), "n (A & B)"),
-            (conj(n(A), B), "n A & B"),
+            (nn(conj(A,B)), "n (A & B)"),
+            (conj(nn(A), B), "n A & B"),
         ]
 
+        for t, s in test_data:
+            self.assertEqual(print_term(thy, t), s)
+
+    def testPrintArithmetic(self):
+        test_data = [
+            (Nat.plus(m, n), "m + n"),
+            (Nat.plus(Nat.plus(m, n), p), "m + n + p"),
+            (Nat.plus(m, Nat.plus(n, p)), "m + (n + p)"),
+            (Nat.times(m, n), "m * n"),
+            (Nat.times(Nat.times(m, n), p), "m * n * p"),
+            (Nat.times(m, Nat.times(n, p)), "m * (n * p)"),
+            (Nat.plus(m, Nat.times(n, p)), "m + n * p"),
+            (Nat.times(m, Nat.plus(n, p)), "m * (n + p)"),
+        ]
+        
         for t, s in test_data:
             self.assertEqual(print_term(thy, t), s)
 
@@ -125,6 +145,8 @@ class PrinterTest(unittest.TestCase):
             (all(a, P(a)), "∀a. P a"),
             (exists(a, P(a)), "∃a. P a"),
             (neg(A), "¬A"),
+            (Nat.plus(m, n), "m + n"),
+            (Nat.times(m, n), "m * n"),
         ]
 
         for t, s in test_data:

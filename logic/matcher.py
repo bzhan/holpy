@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.term import Term
+from kernel.term import Term, Abs, Bound
 
 class MatchException(Exception):
     pass
@@ -34,8 +34,17 @@ class Matcher():
             else:
                 raise MatchException()
         elif pat.ty == Term.COMB:
-            Matcher.first_order_match_incr(pat.fun, t.fun, inst)
-            Matcher.first_order_match_incr(pat.arg, t.arg, inst)
+            if pat.fun.ty == Term.VAR and pat.arg == Bound(0):
+                if pat.fun.name not in inst:
+                    inst[pat.fun.name] = Abs("x", pat.fun.T.domain_type(), t)
+                else:
+                    if inst[pat.fun.name].body == t:
+                        pass
+                    else:
+                        raise MatchException()
+            else:
+                Matcher.first_order_match_incr(pat.fun, t.fun, inst)
+                Matcher.first_order_match_incr(pat.arg, t.arg, inst)
         elif pat.ty == Term.ABS:
             Matcher.first_order_match_incr(pat.body, t.body, inst)
         elif pat.ty == Term.BOUND:

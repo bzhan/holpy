@@ -1,7 +1,8 @@
 # Author: Bohua Zhan
 
 from kernel.term import Term
-from logic.basic import Logic, OperatorData
+from logic.operator import OperatorData
+from logic.logic import Logic
 
 def print_term(thy, t, *, print_abs_type = False, unicode = False):
     """More sophisticated printing function for terms. Handles printing
@@ -81,13 +82,13 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
             # Next, the case of binders
             elif t.is_all():
                 all_str = "!" if not unicode else "∀"
-                var_str = t.arg.var_name + "::" + repr(t.arg.T) if print_abs_type else t.arg.var_name
+                var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
                 return all_str + var_str + ". " + body_repr
 
             elif Logic.is_exists(t):
                 exists_str = "?" if not unicode else "∃"
-                var_str = t.arg.var_name + "::" + repr(t.arg.T) if print_abs_type else t.arg.var_name
+                var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
                 return exists_str + var_str + ". " + body_repr
 
@@ -103,7 +104,7 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
                 return str_fun + " " + str_arg
 
         elif t.ty == Term.ABS:
-            var_str = t.var_name + "::" + repr(t.T) if print_abs_type else t.var_name
+            var_str = t.var_name + "::" + str(t.T) if print_abs_type else t.var_name
             body_repr = helper(t.body, [t.var_name] + bd_vars)
             lambda_str = "%" if not unicode else "λ"
             return lambda_str + var_str + ". " + body_repr

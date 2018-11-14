@@ -192,9 +192,9 @@ class Theory():
         arity.
 
         """
-        if T.ty == HOLType.VAR:
+        if T.ty == HOLType.TVAR:
             return None
-        elif T.ty == HOLType.COMB:
+        elif T.ty == HOLType.TYPE:
             if self.get_type_sig(T.name) != len(T.args):
                 raise TheoryException()
             else:
@@ -235,7 +235,16 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
-        if seq.rule == "theorem":
+        if seq.rule == "":
+            # Empty line in the proof
+            return None
+        if seq.rule == "sorry":
+            # Gap in the proof
+            assert seq.th is not None, "sorry must have explicit statement."
+            res_th = seq.th
+            if rpt is not None:
+                rpt.add_gap(seq.th)
+        elif seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
                 res_th = self.get_theorem(seq.args)

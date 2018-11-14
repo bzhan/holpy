@@ -7,7 +7,8 @@ from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.macro import MacroSig
 from kernel.thm import Thm
 from kernel.proof import ProofItem
-from logic.basic import Logic
+from logic.logic import Logic
+from logic.nat import Nat
 
 grammar = r"""
     ?type: "'" CNAME -> tvar              // Type variable
@@ -25,7 +26,11 @@ grammar = r"""
 
     ?comb: comb atom | atom
 
-    ?eq: eq "=" comb | comb             // Equality: priority 50
+    ?times: times "*" comb | comb       // Multiplication: priority 70
+
+    ?plus: plus "+" times | times       // Addition: priority 65
+
+    ?eq: eq "=" plus | plus             // Equality: priority 50
 
     ?neg: ("~"|"¬") neg -> neg | eq     // Negation: priority 40 
 
@@ -112,6 +117,12 @@ class HOLTransformer(Transformer):
         exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
         t = Term.mk_abs(Var(var_name, None), body, T = T)
         return exists_t(t)
+
+    def times(self, lhs, rhs):
+        return Nat.times(lhs, rhs)
+
+    def plus(self, lhs, rhs):
+        return Nat.plus(lhs, rhs)
 
     def eq(self, lhs, rhs):
         return Term.mk_equals(lhs, rhs)
