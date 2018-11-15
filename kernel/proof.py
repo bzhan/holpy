@@ -38,7 +38,7 @@ class ProofItem():
         if isinstance(self.args, str):
             str_args = " " + self.args
         elif isinstance(self.args, dict):
-            items = sorted(self.args.items(), key = lambda pair: pair[0])
+            items = sorted(self.args.items(), key = lambda pair: pair[0])#@@@
             str_args = " {" + ", ".join(key + ": " + str_val(val) for key, val in items) + "}"
         else:
             str_args = " " + str_val(self.args) if self.args else ""
@@ -72,7 +72,7 @@ class Proof():
 
         """
         self.proof = []
-        for id, assum in zip(range(len(assums)), assums):
+        for id, assum in zip(range(len(assums)), assums):#enumerate()函数？
             item = ProofItem("A" + str(id+1), "assume", args = assum)
             self.proof.append(item)
 
