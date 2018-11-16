@@ -6,7 +6,9 @@ class MacroSig():
 
 
 class ProofMacro():
-    """A proof macro represents a derived proof method. It consists
+    """
+    To define the macro to simplify the proof.
+    A proof macro represents a derived proof method. It consists
     of the following data:
     
     __call__ -- obtain the result of applying the proof method. Input
