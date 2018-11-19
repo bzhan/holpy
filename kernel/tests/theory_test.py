@@ -72,10 +72,12 @@ class TheoryTest(unittest.TestCase):
     def testCheckTypeFail(self):
         test_data = [
             Type("bool", Ta),
-            Type("bool", [Ta, Ta]),
+            Type("bool", Ta, Ta),
             Type("fun"),
             Type("fun", Ta),
-            Type("fun", [Ta, Ta, Ta]),
+            Type("fun", Ta, Ta, Ta),
+            TFun(Type("bool", Ta), Type("bool")),
+            TFun(Type("bool"), Type("bool", Ta)),
             Type("random")
         ]
 
