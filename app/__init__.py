@@ -93,5 +93,5 @@ def get_cell_state():
         id = data.get('id')
         if cells.get(id):
             cell = cells.get(id)
-            return jsonify(cell.orgin)
+            return jsonify(cell.origin)
     return jsonify({})

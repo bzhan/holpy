@@ -174,10 +174,10 @@
                 document.querySelector('#conclusions .CodeMirror').CodeMirror.setOption('readOnly', false);
                 set_theorem_select(cm);
                 get_cell_state();
-                var line_number = cm.getCursor().line;
-                var line = cm.getLine(line_number);
-                if (line !== '' && line.indexOf('by') !== -1)
-                    proof_line_cov(cm);
+                // var line_number = cm.getCursor().line;
+                // var line = cm.getLine(line_number);
+                // if (line !== '' && line.indexOf('by') !== -1)
+                //     proof_line_cov(cm);
             });
             editor.on("change", function (cm, changed) {
                 $(document).ready(function () {
