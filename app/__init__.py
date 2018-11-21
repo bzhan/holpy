@@ -83,6 +83,17 @@ def add_line_after():
         cell.proof = tactic.add_line_after(cell.proof, id)
     return jsonify({"result": cell.proof.print(print_vars=True)})
 
+@app.route('/api/introduction', methods=['POST'])
+def introduction():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells[data.get('id')]
+        len_before = cell.proof.get_num_item()
+        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
+        cell.proof = tactic.introduction(cell.proof, id)
+        line_diff = (cell.proof.get_num_item() - len_before) / 2
+    return jsonify({"line-diff": line_diff, "result": cell.proof.print(print_vars=True)})
+
 @app.route('/api/check-type', methods=['POST'])
 def check_type():
     data = json.loads(request.get_data().decode("utf-8"))

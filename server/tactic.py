@@ -71,6 +71,7 @@ def add_line_before(prf, id, n):
 
     id_new = int(id[1:])
     new_prf = Proof()
+    new_prf.vars = prf.vars
     for item in prf.proof:
         if item.id == id:
             for i in range(n):
@@ -102,6 +103,7 @@ def remove_line(prf, id):
     # Remove the given line. Replace all S{i} with S{i-1} whenever
     # i > id_remove.
     new_prf = Proof()
+    new_prf.vars = prf.vars
     for item in prf.proof:
         if not item.id == id:
             new_prf.proof.append(decr_proof_item(item))
@@ -111,6 +113,7 @@ def remove_line(prf, id):
 def set_line(prf, id, rule, *, args = None, prevs = None, th = None):
     """Set the item with the given id to the following data."""
     new_prf = Proof()
+    new_prf.vars = prf.vars
     for item in prf.proof:
         if item.id == id:
             new_prf.proof.append(ProofItem(id, rule, args = args, prevs = prevs, th = th))
