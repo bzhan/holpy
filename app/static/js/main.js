@@ -159,9 +159,10 @@
                 if (event.code === 'Enter') {
                     let line_no = cm.getCursor().line;
                     let line = cm.getLine(line_no);
-                    if (line.indexOf('|-') === -1) {
-
-                    }
+                    console.log("keydown-enter")
+                    add_line_after(cm);
+                    // if (line.indexOf('|-') === -1) {
+                    // }
                 }
             });
             editor.on("focus", function (cm, event) {
@@ -232,6 +233,29 @@
                                 value += result[i] + '\n';
                             }
                             document.querySelector('.code-cell.selected .output pre').innerHTML = value;
+                        }
+                    })
+                }
+            )
+        }
+
+        function add_line_after(cm) {
+            $(document).ready(function () {
+                    var line_number = cm.getCursor().line - 1;
+                    var line = cm.getLine(line_number);
+                    var input = {
+                        "id": document.querySelector('.code-cell.selected textarea').id,
+                        "line": line,
+                    }
+                    var data = JSON.stringify(input);
+
+                    $.ajax({
+                        url: "/api/add-line-after",
+                        type: "POST",
+                        data: data,
+                        success: function (result) {
+                            cm.setValue(result['result']);
+                            cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
                         }
                     })
                 }

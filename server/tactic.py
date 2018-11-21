@@ -56,6 +56,7 @@ def add_line_after(prf, id):
         id_new = 1
 
     new_prf = Proof()
+    new_prf.vars = prf.vars
     for item in prf.proof:
         new_prf.proof.append(incr_proof_item(item, id_new, 1))
         if item.id == id:
