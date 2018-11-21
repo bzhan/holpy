@@ -1,7 +1,7 @@
 import json
-from typing import Dict, AnyStr
+# from typing import Dict, AnyStr
 
-from cell import Cell
+from app.cell import Cell
 from flask import Flask, request, render_template
 from flask.json import jsonify
 from kernel import thm
@@ -15,7 +15,8 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config.from_object('config')
 
-cells: Dict[AnyStr, Cell] = dict()
+# Dict[AnyStr, Cell]
+cells = dict()
 
 thy = BasicTheory()
 ctxt = dict()
@@ -41,7 +42,7 @@ def data_process():
 
 @app.route('/api/init', methods=['POST'])
 def init_component():
-    data = json.loads(request.get_data())
+    data = json.loads(request.get_data().decode("utf-8"))
     if data.get('event') == 'init_theorem':
         macro_dict = {0: 'NONE', 1: 'TERM', 2: 'TYINST', 3: 'INST', 4: 'STRING'}
         result = {}
@@ -73,7 +74,7 @@ def init_component():
 
 @app.route('/api/check-type', methods=['POST'])
 def check_type():
-    data = json.loads(request.get_data())
+    data = json.loads(request.get_data().decode("utf-8"))
     if data:
         thy = BasicTheory()
         line = data['line']
@@ -86,7 +87,7 @@ def check_type():
 
 @app.route('/api/get-cell-state', methods=['POST'])
 def get_cell_state():
-    data = json.loads(request.get_data())
+    data = json.loads(request.get_data().decode("utf-8"))
     if data:
         id = data.get('id')
         if cells.get(id):
