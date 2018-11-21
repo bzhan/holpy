@@ -25,6 +25,8 @@ class ServerTest(unittest.TestCase):
             "S9: implies_intr A & B from S8"])
 
         output = "\n".join([
+            "var A :: bool",
+            "var B :: bool",
             "A1: A & B |- A & B by assume A & B",
             "S1: |- A & B --> A by theorem conjD1",
             "S2: A & B |- A by implies_elim from S1, A1",
@@ -50,6 +52,8 @@ class ServerTest(unittest.TestCase):
             "S2: implies_intr A & B from S1"])
 
         output = "\n".join([
+            "var A :: bool",
+            "var B :: bool",
             "A1: A & B |- A & B by assume A & B",
             "S1: A & B |- B & A by sorry",
             "S2: |- A & B --> B & A by implies_intr A & B from S1"])
@@ -74,6 +78,10 @@ class ServerTest(unittest.TestCase):
             "S5: implies_intr f = g from S4"])
 
         output = "\n".join([
+            "var x :: 'a",
+            "var y :: 'a",
+            "var f :: 'a => 'a",
+            "var g :: 'a => 'a",
             "A1: f = g |- f = g by assume f = g",
             "A2: x = y |- x = y by assume x = y",
             "S1: x = y |- f x = f y by arg_combination f from A2",
@@ -102,6 +110,7 @@ class ServerTest(unittest.TestCase):
             "S9: implies_intr ~~A from S8"])
 
         output = "\n".join([
+            "var A :: bool",
             "A1: ~~A |- ~~A by assume ~~A",
             "S1: |- A | ~A by theorem classical",
             "S2: A |- A by assume A",

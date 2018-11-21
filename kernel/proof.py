@@ -71,6 +71,7 @@ class Proof():
         first n steps A1, ..., An using Thm.assume on the assumptions.
 
         """
+        self.vars = []
         self.proof = []
         for id, assum in zip(range(len(assums)), assums):
             item = ProofItem("A" + str(id+1), "assume", args = assum)
@@ -99,13 +100,20 @@ class Proof():
         else:
             raise ProofException()
 
-    def print(self, *, term_printer = str):
+    def print(self, *, term_printer = str, print_vars = False):
         """Print the given proof object.
 
         term_printer: specify the printing function for terms.
 
         """
-        return "\n".join(item.print(term_printer = term_printer) for item in self.proof)
+        def print_var(t):
+            return "var " + t.name + " :: " + str(t.T)
+
+        if print_vars:
+            str_vars = "\n".join(print_var(t) for t in self.vars) + "\n"
+        else:
+            str_vars = ""
+        return str_vars + "\n".join(item.print(term_printer = term_printer) for item in self.proof)
 
     def __str__(self):
         return self.print()

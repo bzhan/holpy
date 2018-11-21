@@ -27,6 +27,7 @@ def init_proof(vars, assums, concl):
     """
     prf = Proof(*assums)
     prf.add_item("S1", "sorry", th = Thm(assums, concl))
+    prf.vars = vars
     for n, assum in enumerate(reversed(assums), 2):
         prf.add_item("S" + str(n), "implies_intr", args = assum, prevs = ["S" + str(n-1)])
     return prf    

@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel.term import Var
 from kernel.proof import Proof
 import syntax.printer as printer
 import syntax.parser as parser
@@ -26,6 +27,7 @@ class Server():
                 name, T = parser.var_decl_parser(self.thy).parse(line)
                 assert name not in self.ctxt, "variable already declared"
                 self.ctxt[name] = T
+                prf.vars.append(Var(name, T))
             else:
                 prf.proof.append(parser.parse_proof_rule(self.thy, self.ctxt, line))
 
@@ -33,4 +35,4 @@ class Server():
         self.thy.check_proof(prf)
 
         # Return the checked proof
-        return prf.print(term_printer = lambda t: printer.print_term(self.thy, t))
+        return prf.print(term_printer = lambda t: printer.print_term(self.thy, t), print_vars=True)

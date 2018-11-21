@@ -69,7 +69,7 @@ def init_component():
                                                                           'assumes': assumes,
                                                                           'conclunsion': conclusion})
         cells[data.get('id')] = cell
-        return jsonify({"result": "\n".join(variables) + "\n" + str(cell.proof)})
+        return jsonify({"result": cell.proof.print(print_vars=True)})
     return jsonify({})
 
 
