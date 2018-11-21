@@ -4,7 +4,7 @@ from kernel.type import HOLType
 from kernel.thm import Thm
 
 class ProofReport():
-    """A report of proof checking. This contains:
+    """A report of proof checking#@@@. This contains:
 
     steps -- number of primitive steps taken to check the proof.
     Each primitive derivation and each unexpanded macro counts as one step.

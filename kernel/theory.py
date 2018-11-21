@@ -225,7 +225,7 @@ class Theory():
             return None
         else:
             raise TypeError()
-
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     def _check_proof_item(self, depth, seq_dict, seq, rpt):
         """Check a single proof item.
         
