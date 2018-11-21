@@ -343,6 +343,8 @@ class Theory():
         """Obtain the argument signature of the proof rule."""
         if name == "theorem":
             return MacroSig.STRING
+        elif name == "sorry":
+            return MacroSig.NONE
         elif name in primitive_deriv:
             _, sig = primitive_deriv[name]
             return sig

@@ -190,14 +190,21 @@ def split_proof_rule(s):
     """
     id, rest = s.split(": ", 1)  # split off id
     id = id.strip()
-    rule_name, rest = rest.split(" ", 1)  # split off name of rule
+    if rest.count(" by ") > 0:
+        th, rest = rest.split(" by ", 1)
+    else:
+        th, rest = "", rest
+    if rest.count(" ") > 0:
+        rule_name, rest = rest.split(" ", 1)  # split off name of rule
+    else:
+        rule_name, rest = rest, ""
     rule_name = rule_name.strip()
 
     if rest.count("from") > 0:
         args, rest = rest.split("from", 1)
-        return (id, rule_name, args.strip(), [prev.strip() for prev in rest.split(",")])
+        return (id, rule_name, args.strip(), [prev.strip() for prev in rest.split(",")], th)
     else:
-        return (id, rule_name, rest.strip(), [])
+        return (id, rule_name, rest.strip(), [], th)
 
 def parse_proof_rule(thy, ctxt, s):
     """Parse a proof rule.
@@ -206,21 +213,27 @@ def parse_proof_rule(thy, ctxt, s):
     require different parsing of the arguments.
 
     """
-    (id, rule_name, args, prevs) = split_proof_rule(s)
+    (id, rule_name, args, prevs, th) = split_proof_rule(s)
+
+    if th == "":
+        th = None
+    else:
+        th = thm_parser(thy, ctxt).parse(th)
+
     sig = thy.get_proof_rule_sig(rule_name)
     if sig == MacroSig.NONE:
         assert args == "", "rule expects no argument."
-        return ProofItem(id, rule_name, prevs = prevs)
+        return ProofItem(id, rule_name, prevs = prevs, th = th)
     elif sig == MacroSig.STRING:
-        return ProofItem(id, rule_name, args = args, prevs = prevs)
+        return ProofItem(id, rule_name, args = args, prevs = prevs, th = th)
     elif sig == MacroSig.TERM:
         t = term_parser(thy, ctxt).parse(args)
-        return ProofItem(id, rule_name, args = t, prevs = prevs)
+        return ProofItem(id, rule_name, args = t, prevs = prevs, th = th)
     elif sig == MacroSig.INST:
         inst = inst_parser(thy, ctxt).parse(args)
-        return ProofItem(id, rule_name, args = inst, prevs = prevs)
+        return ProofItem(id, rule_name, args = inst, prevs = prevs, th = th)
     elif sig == MacroSig.TYINST:
         tyinst = tyinst_parser(thy, ctxt).parse(args)
-        return ProofItem(id, rule_name, args = tyinst, prevs = prevs)
+        return ProofItem(id, rule_name, args = tyinst, prevs = prevs, th = th)
     else:
         raise TypeError()
