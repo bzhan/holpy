@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-size: 14px;
-    overflow: visible;
+    overflow: auto;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
@@ -60,7 +60,6 @@ body {
     display: -ms-flexbox;
     display: flex;
     position: relative;
-    overflow: auto;
 }
 
 .code-pan {
@@ -92,7 +91,7 @@ div.CodeMirror-lines {
 
 }
 
-#input-box {
+.input-box {
     width: -webkit-fill-available;
 }
 
@@ -114,4 +113,12 @@ div.output-wrapper pre {
     color: black;
     background-color: transparent;
     border-radius: 0;
+}
+
+#variables{
+    margin-left: 19px;
+}
+
+#assumes {
+    margin-left: 21px;
 }
