@@ -4,7 +4,8 @@ import json
 from app.cell import Cell
 from flask import Flask, request, render_template
 from flask.json import jsonify
-from kernel import thm
+from kernel.term import Var
+from kernel.thm import primitive_deriv
 from logic.basic import BasicTheory
 from server.server import Server
 from syntax import parser
@@ -46,7 +47,7 @@ def init_component():
     if data.get('event') == 'init_theorem':
         macro_dict = {0: 'NONE', 1: 'TERM', 2: 'TYINST', 3: 'INST', 4: 'STRING'}
         result = {}
-        for key, value in thm.primitive_deriv.items():
+        for key, value in primitive_deriv.items():
             result[key] = macro_dict[value[1]]
         return jsonify(result)
     elif data.get('event') == 'init_cell':
@@ -58,7 +59,7 @@ def init_component():
         for variable in variables:
             name, t = parser.var_decl_parser(thy).parse(variable)
             if name and t:
-                variables_parser.append(thm.Var(name, t))
+                variables_parser.append(Var(name, t))
         for assume in assumes:
             term = term_parser(thy, ctxt).parse(assume)
             if term:

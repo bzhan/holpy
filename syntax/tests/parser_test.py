@@ -198,10 +198,11 @@ class ParserTest(unittest.TestCase):
 
     def testSplitProofRule(self):
         test_data = [
-            ("S1: theorem conjD1", ("S1", "theorem", "conjD1", [])),
-            ("S2: implies_elim from S1, A1", ("S2", "implies_elim", "", ["S1", "A1"])),
-            ("S6: substitution {'A': B, 'B': A} from S5", ("S6", "substitution", "{'A': B, 'B': A}", ["S5"])),
-            ("S9: implies_intr conj A B from S8", ("S9", "implies_intr", "conj A B", ["S8"])),
+            ("S1: theorem conjD1", ("S1", "theorem", "conjD1", [], "")),
+            ("S2: implies_elim from S1, A1", ("S2", "implies_elim", "", ["S1", "A1"], "")),
+            ("S6: substitution {'A': B, 'B': A} from S5", ("S6", "substitution", "{'A': B, 'B': A}", ["S5"], "")),
+            ("S9: implies_intr conj A B from S8", ("S9", "implies_intr", "conj A B", ["S8"], "")),
+            ("S1: conj A B |- conj B A by sorry", ("S1", "sorry", "", [], "conj A B |- conj B A")),
         ]
 
         for s, res in test_data:
@@ -215,6 +216,8 @@ class ParserTest(unittest.TestCase):
                 "S6", "substitution", args = {'A': B, 'B': A}, prevs = ["S5"])),
             ("S9: implies_intr conj A B from S8", ProofItem(
                 "S9", "implies_intr", args = Logic.mk_conj(A, B), prevs = ["S8"])),
+            ("S1: conj A B |- conj B A by sorry", ProofItem(
+                "S1", "sorry", th = Thm([Logic.mk_conj(A, B)], Logic.mk_conj(B, A)))),
         ]
 
         for s, res in test_data:

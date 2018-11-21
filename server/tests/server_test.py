@@ -40,6 +40,24 @@ class ServerTest(unittest.TestCase):
         res = server.check_proof(io.StringIO(input))
         self.assertEqual(res, output)
 
+    def testCheckProof2(self):
+        """Proof of A & B --> B & A, partial."""
+        input = "\n".join([
+            "var A :: bool",
+            "var B :: bool",
+            "A1: assume A & B",
+            "S1: A & B |- B & A by sorry",
+            "S2: implies_intr A & B from S1"])
+
+        output = "\n".join([
+            "A1: A & B |- A & B by assume A & B",
+            "S1: A & B |- B & A by sorry",
+            "S2: |- A & B --> B & A by implies_intr A & B from S1"])
+
+        server = Server(BasicTheory())
+        res = server.check_proof(io.StringIO(input))
+        self.assertEqual(res, output)
+
     def testCheckProofMacro(self):
         """Proof of f = g --> x = y --> f x = g y."""
         input = "\n".join([
