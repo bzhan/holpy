@@ -51,7 +51,10 @@ def init_component():
         for key, value in primitive_deriv.items():
             result[key] = macro_dict[value[1]]
         return jsonify(result)
+    elif data.get('event') == 'init_theorem_abs':
+        pass
     elif data.get('event') == 'init_cell':
+        ctxt = {}
         variables = data.get('variables')
         assumes = data.get('assumes')
         conclusion = data.get('conclusion')
@@ -61,14 +64,20 @@ def init_component():
             name, t = parser.var_decl_parser(thy).parse(variable)
             if name and t:
                 variables_parser.append(Var(name, t))
+                ctxt[name] = t
         for assume in assumes:
             term = term_parser(thy, ctxt).parse(assume)
             if term:
                 assumes_parser.append(term)
         conclusion_parser = term_parser(thy, ctxt).parse(conclusion)
-        cell = Cell(variables_parser, assumes_parser, conclusion_parser, {'variables': variables,
-                                                                          'assumes': assumes,
-                                                                          'conclunsion': conclusion})
+        origin = {'variables': variables,
+                  'assumes': assumes,
+                  'conclunsion': conclusion}
+        cell = Cell(variables_parser,
+                    assumes_parser,
+                    conclusion_parser,
+                    origin,
+                    ctxt=ctxt)
         cells[data.get('id')] = cell
         return jsonify({"result": cell.proof.print(print_vars=True)})
     return jsonify({})
@@ -81,24 +90,39 @@ def add_line_after():
         cell = cells[data.get('id')]
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.proof = tactic.add_line_after(cell.proof, id)
-    return jsonify({"result": cell.proof.print(print_vars=True)})
+        return jsonify({"result": cell.proof.print(print_vars=True)})
+    return jsonify({})
+
 
 @app.route('/api/introduction', methods=['POST'])
 def introduction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells[data.get('id')]
+        cell = cells.get(data.get('id'))
         len_before = cell.proof.get_num_item()
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.proof = tactic.introduction(cell.proof, id)
         line_diff = (cell.proof.get_num_item() - len_before) / 2
-    return jsonify({"line-diff": line_diff, "result": cell.proof.print(print_vars=True)})
+        return jsonify({"line-diff": line_diff, "result": cell.proof.print(print_vars=True)})
+    return jsonify({})
+
+
+@app.route('/api/apply-backward-step', methods=['POST'])
+def apply_backward_step():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells.get(data.get('id'))
+        theorem = data.get('theorem')
+        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
+        cell.proof = tactic.apply_backward_step(cell.proof, id, thy, theorem)
+        return jsonify({"result": cell.proof.print(print_vars=True)})
+    return jsonify({})
+
 
 @app.route('/api/check-type', methods=['POST'])
 def check_type():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        thy = BasicTheory()
         line = data['line']
         if not line.startswith('var '):
             (id, rule_name, args, prevs, th) = parser.split_proof_rule(line)
