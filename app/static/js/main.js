@@ -220,14 +220,10 @@
 
         function send_input() {
             $(document).ready(function () {
-                    var input = {};
-                    var counter = 1;
-                    var reg_blank = /^\s*$/g;
                     var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-                    editor.eachLine(line => {
-                        if (!reg_blank.test(line.text))
-                            input[counter++] = line.text;
-                    });
+                    var input = {
+                        "id": document.querySelector('.code-cell.selected textarea').id
+                    };
                     var data = JSON.stringify(input);
 
                     $.ajax({
@@ -248,11 +244,7 @@
                                 }
                             }
                             else {
-                                lines = [];
-                                for (var i in result) {
-                                    lines.push(result[i]);
-                                }
-                                editor.setValue(lines.join("\n"));
+                                editor.setValue(result["proof"]);
                                 status_output.innerHTML = "success";
                             }
                         }

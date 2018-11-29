@@ -32,15 +32,22 @@ def index():
 
 
 @app.route('/api/check-proof', methods=['POST'])
-def data_process():
+def check_proof():
     data = json.loads(request.get_data().decode("utf-8"))
-    # Sort by integer value of k
-    input = [v for (k, v) in sorted(data.items(), key=lambda p: int(p[0]))]
-    server = Server(BasicTheory())
+    if not data:
+        return jsonify({})
+
+    cell = cells[data.get('id')]
     try:
-        result_string = server.check_proof(input)
+        thy.check_proof(cell.proof)
+        result = {
+            "proof": cell.print_proof()
+        }
+        return jsonify(result)
     except TheoryException:
-        result = {"failed": "TheoryException"}
+        result = {
+            "failed": "TheoryException"
+        }
         return jsonify(result)
     except CheckProofException as e:
         result = {
@@ -48,10 +55,6 @@ def data_process():
             "message": e.str
         }
         return jsonify(result)
-    else:
-        result_list = result_string.splitlines()
-        result_dict = dict(enumerate(result_list, 1))
-        return jsonify(result_dict)
 
 
 @app.route('/api/init', methods=['POST'])
@@ -91,7 +94,7 @@ def init_component():
                     origin,
                     ctxt=ctxt)
         cells[data.get('id')] = cell
-        return jsonify({"result": cell.proof.print(print_vars=True)})
+        return jsonify({"result": cell.print_proof()})
     return jsonify({})
 
 
@@ -102,7 +105,7 @@ def add_line_after():
         cell = cells[data.get('id')]
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.proof = tactic.add_line_after(cell.proof, id)
-        return jsonify({"result": cell.proof.print(print_vars=True)})
+        return jsonify({"result": cell.print_proof()})
     return jsonify({})
 
 
@@ -115,7 +118,7 @@ def introduction():
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.proof = tactic.introduction(cell.proof, id)
         line_diff = (cell.proof.get_num_item() - len_before) / 2
-        return jsonify({"line-diff": line_diff, "result": cell.proof.print(print_vars=True)})
+        return jsonify({"line-diff": line_diff, "result": cell.print_proof()})
     return jsonify({})
 
 
@@ -127,7 +130,7 @@ def apply_backward_step():
         theorem = data.get('theorem')
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.proof = tactic.apply_backward_step(cell.proof, id, thy, theorem)
-        return jsonify({"result": cell.proof.print(print_vars=True)})
+        return jsonify({"result": cell.print_proof()})
     return jsonify({})
 
 
