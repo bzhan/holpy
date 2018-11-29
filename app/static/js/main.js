@@ -229,15 +229,11 @@
                         type: "POST",
                         data: data,
                         success: function (result) {
-                            $('.code-cell.selected').append(
-                                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                                    '<pre></pre></div></div>')
-                            );
-                            let value = "";
+                            lines = [];
                             for (var i in result) {
-                                value += result[i] + '\n';
+                                lines.push(result[i]);
                             }
-                            document.querySelector('.code-cell.selected .output pre').innerHTML = value;
+                            editor.setValue(lines.join("\n"));
                         }
                     })
                 }
