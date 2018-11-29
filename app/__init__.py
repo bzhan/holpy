@@ -6,6 +6,7 @@ from flask import Flask, request, render_template
 from flask.json import jsonify
 from kernel.term import Var
 from kernel.thm import primitive_deriv
+from kernel.theory import TheoryException, CheckProofException
 from logic.basic import BasicTheory
 import server.tactic as tactic
 from server.server import Server
@@ -36,10 +37,21 @@ def data_process():
     # Sort by integer value of k
     input = [v for (k, v) in sorted(data.items(), key=lambda p: int(p[0]))]
     server = Server(BasicTheory())
-    result_string = server.check_proof(input)
-    result_list = result_string.splitlines()
-    result_dict = dict(enumerate(result_list, 1))
-    return jsonify(result_dict)
+    try:
+        result_string = server.check_proof(input)
+    except TheoryException:
+        result = {"failed": "TheoryException"}
+        return jsonify(result)
+    except CheckProofException as e:
+        result = {
+            "failed": "CheckProofException",
+            "message": e.str
+        }
+        return jsonify(result)
+    else:
+        result_list = result_string.splitlines()
+        result_dict = dict(enumerate(result_list, 1))
+        return jsonify(result_dict)
 
 
 @app.route('/api/init', methods=['POST'])

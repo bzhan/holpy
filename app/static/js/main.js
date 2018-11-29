@@ -37,11 +37,17 @@
 
         $('#add-cell').on('click', function () {
             pageNum++;
+            // Add CodeMirror textarea
+            id = 'code' + pageNum + '-pan';
             $('#codeTabContent').append(
-                $('<div class="code-cell" id="code' + pageNum + '-pan">' +
+                $('<div class="code-cell" id=' + id + '>' +
                     '<label for="code' + pageNum + '"></label> ' +
-                    '<textarea' + ' id="code' + pageNum + '""></textarea>'));
+                    '<textarea' + ' id="code' + pageNum + '""></textarea></div>'));
             init_editor("code" + pageNum);
+            // Add location for displaying results
+            $('#' + id).append(
+                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
+                    '<pre> </pre></div></div>'));
         });
 
         $('#delete-cell').on('click', function () {
@@ -229,11 +235,26 @@
                         type: "POST",
                         data: data,
                         success: function (result) {
-                            lines = [];
-                            for (var i in result) {
-                                lines.push(result[i]);
+                            status_output = document.querySelector('.code-cell.selected .output pre');
+                            if ("failed" in result) {
+                                if (result["failed"] === "TheoryException") {
+                                    status_output.innerHTML = "TheoryException";
+                                }
+                                else if (result["failed"] === "CheckProofException") {
+                                    status_output.innerHTML = "CheckProofException: " + result["message"];
+                                }
+                                else {
+                                    status_output.innerHTML = "Failed: " + result["failed"];
+                                }
                             }
-                            editor.setValue(lines.join("\n"));
+                            else {
+                                lines = [];
+                                for (var i in result) {
+                                    lines.push(result[i]);
+                                }
+                                editor.setValue(lines.join("\n"));
+                                status_output.innerHTML = "success";
+                            }
                         }
                     })
                 }
