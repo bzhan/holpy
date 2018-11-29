@@ -7,6 +7,7 @@ from flask.json import jsonify
 from kernel.term import Var
 from kernel.thm import primitive_deriv
 from logic.basic import BasicTheory
+import server.tactic as tactic
 from server.server import Server
 from syntax import parser
 from syntax.parser import term_parser
@@ -73,6 +74,26 @@ def init_component():
     return jsonify({})
 
 
+@app.route('/api/add-line-after', methods=['POST'])
+def add_line_after():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells[data.get('id')]
+        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
+        cell.proof = tactic.add_line_after(cell.proof, id)
+    return jsonify({"result": cell.proof.print(print_vars=True)})
+
+@app.route('/api/introduction', methods=['POST'])
+def introduction():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells[data.get('id')]
+        len_before = cell.proof.get_num_item()
+        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
+        cell.proof = tactic.introduction(cell.proof, id)
+        line_diff = (cell.proof.get_num_item() - len_before) / 2
+    return jsonify({"line-diff": line_diff, "result": cell.proof.print(print_vars=True)})
+
 @app.route('/api/check-type', methods=['POST'])
 def check_type():
     data = json.loads(request.get_data().decode("utf-8"))
@@ -80,7 +101,7 @@ def check_type():
         thy = BasicTheory()
         line = data['line']
         if not line.startswith('var '):
-            (id, rule_name, args, prevs) = parser.split_proof_rule(line)
+            (id, rule_name, args, prevs, th) = parser.split_proof_rule(line)
             result = {'theorem': rule_name}
             return jsonify(result)
     return jsonify({})

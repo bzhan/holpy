@@ -8,7 +8,7 @@ class Cell(object):
         self.ctxt = ctxt if ctxt is not None else dict()
         self.assums = assums
         self.concl = concl
-        self.orgin = origin
+        self.origin = origin
         self.rpt = ProofReport()
 
     def update(self, origin):

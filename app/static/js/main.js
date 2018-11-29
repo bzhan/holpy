@@ -145,6 +145,9 @@
                 scrollbarStyle: "overlay",
                 extraKeys: {
                     "Shift-Ctrl-Enter": function () {
+                    },
+                    "Ctrl-I": function (cm) {
+                        introduction(cm)
                     }
                 }
             });
@@ -159,9 +162,9 @@
                 if (event.code === 'Enter') {
                     let line_no = cm.getCursor().line;
                     let line = cm.getLine(line_no);
-                    if (line.indexOf('|-') === -1) {
-
-                    }
+                    add_line_after(cm);
+                    // if (line.indexOf('|-') === -1) {
+                    // }
                 }
             });
             editor.on("focus", function (cm, event) {
@@ -236,6 +239,51 @@
                     })
                 }
             )
+        }
+
+        function add_line_after(cm) {
+            $(document).ready(function () {
+                    var line_number = cm.getCursor().line - 1;
+                    var line = cm.getLine(line_number);
+                    var input = {
+                        "id": document.querySelector('.code-cell.selected textarea').id,
+                        "line": line,
+                    }
+                    var data = JSON.stringify(input);
+
+                    $.ajax({
+                        url: "/api/add-line-after",
+                        type: "POST",
+                        data: data,
+                        success: function (result) {
+                            cm.setValue(result['result']);
+                            cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
+                        }
+                    })
+                }
+            )
+        }
+
+        function introduction(cm) {
+            $(document).ready(function () {
+                var line_number = cm.getCursor().line;
+                var line = cm.getLine(line_number);
+                var input = {
+                    "id": document.querySelector('.code-cell.selected textarea').id,
+                    "line": line,
+                }
+                var data = JSON.stringify(input);
+
+                $.ajax({
+                    url: "/api/introduction",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+                        cm.setValue(result['result']);
+                        cm.setCursor(line_number + result['line-diff'], Number.MAX_SAFE_INTEGER);
+                    }
+                })
+            })
         }
 
         function proof_line_cov(cm) {
