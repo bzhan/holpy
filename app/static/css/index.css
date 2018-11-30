@@ -51,9 +51,6 @@ body {
     -webkit-appearance: none;
 }
 
-#file-button {
-    margin-left: 10px;
-}
 
 .pans {
     display: -webkit-box;

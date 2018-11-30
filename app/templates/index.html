@@ -45,64 +45,81 @@
 <!-- begin code -->
 <div class="home-header">
     <div class="home-header-left">
-        <button data-v-bfe775a4="" type="button" id="add-cell"
-                class="el-button el-button--default el-button--mini el-dropdown-selfdefine"
-                data-vivaldi-spatnav-clickable="1" aria-controls="dropdown-menu-5964" role="button" tabindex="0">
-            <!----><i class="el-icon-plus" data-vivaldi-spatnav-clickable="1"></i>
-            <span data-vivaldi-spatnav-clickable="1">Add Cell</span>
-        </button>
-        <button data-v-bfe775a4="" type="button" id="delete-cell"
-                class="el-button el-button--default el-button--mini el-dropdown-selfdefine"
-                data-vivaldi-spatnav-clickable="1" aria-controls="dropdown-menu-5964" role="button" tabindex="0">
-            <!----><i class="el-icon-remove-outline" data-vivaldi-spatnav-clickable="1"></i>
-            <span data-vivaldi-spatnav-clickable="1">Delete Cell</span>
-        </button>
-        <div>
-            <button data-v-bfe775a4="" type="button" onclick="$('#open-file').click()" id="file-button"
-                    class="el-button home-header-left-item el-button--default el-button--mini"
-                    data-vivaldi-spatnav-clickable="1" style="margin-right: 0;">
-                <!---->
-                <i class="el-icon-document" data-vivaldi-spatnav-clickable="1"></i>
-                <span data-vivaldi-spatnav-clickable="1">Open File</span>
-            </button>
-            <input type="file" id="open-file" style="display:none">
-
+        <div class="dropdown">
+            <button data-v-bfe775a4="" type="button" id="additional_option" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"
+                    class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle"
+                    data-vivaldi-spatnav-clickable="1" role="button" tabindex="0">
+                <!----><i class="" data-vivaldi-spatnav-clickable="1">File</i><span
+                    data-vivaldi-spatnav-clickable="1">
+                    </span></button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#" id="save-file">Save</a>
+                <a class="dropdown-item" href="#" onclick="$('#open-file').click()" id="file-button">Open file</a>
+                <input type="file" id="open-file" style="display:none">
+            </div>
         </div>
+        <div class="dropdown">
+            <button data-v-bfe775a4="" type="button" id="additional_option" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"
+                    class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle"
+                    data-vivaldi-spatnav-clickable="1" role="button" tabindex="0">
+                <!----><i class="" data-vivaldi-spatnav-clickable="1">Cells</i><span
+                    data-vivaldi-spatnav-clickable="1">
+                    </span></button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#" id="add-cell" color="black">Add cell</a>
+                <a class="dropdown-item" href="#" id="delete-cell">Delete cell</a>
+                <a class="dropdown-item" href="#" id="run-button">Run</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button data-v-bfe775a4="" type="button" id="additional_option" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"
+                    class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle"
+                    data-vivaldi-spatnav-clickable="1" role="button" tabindex="0">
+                <!----><i class="" data-vivaldi-spatnav-clickable="1">Action</i><span
+                    data-vivaldi-spatnav-clickable="1">
+                    </span></button>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#" id="addlinebelow">Add line below</a>
+                <a class="dropdown-item" href="#" id="introduction">introduction</a>
+            </div>
+        </div>
+
     </div>
     <div class="home-header-right">
-        <label data-v-bfe775a4="" role="checkbox" class="el-checkbox el-checkbox--mini is-bordered" id="auto-run">
-                <span id="check-box" aria-checked="mixed" class="el-checkbox__input">
-                    <span id="check-box-inner" class="el-checkbox__inner"></span>
-                    <input type="checkbox" class="el-checkbox__original" value=""></span>
-            <span class="el-checkbox__label">Auto-run
-                <!----></span>
-        </label>
-        <button data-v-bfe775a4="" type="button" id="run-button"
+        <!--button data-v-bfe775a4="" type="button" id="run-button"
                 class="el-button home-header-right-item el-button--primary el-button--mini is-plain">
             <!---->
-            <i class="el-icon-refresh"></i>
+            <!--i class="el-icon-refresh"></i>
             <span>Run</span>
         </button>
         <button data-v-bfe775a4="" type="button"
                 class="el-button home-header-right-item el-button--default el-button--mini is-plain"
                 data-tooltipped="" aria-describedby="tippy-tooltip-1" data-original-title="Login to save">
             <!---->
-            <i class="el-icon-upload2"></i>
+            <!--i class="el-icon-upload2"></i>
             <span>Save</span>
         </button>
-        <div class="dropdown">
+        <!--div class="dropdown">
             <button data-v-bfe775a4="" type="button" id="additional_option" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false"
                     class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle"
                     data-vivaldi-spatnav-clickable="1" role="button" tabindex="0">
-                <!----><i class="el-icon-more" data-vivaldi-spatnav-clickable="1"></i><span
+                <!----><!--i class="" data-vivaldi-spatnav-clickable="1">File</i><span
                     data-vivaldi-spatnav-clickable="1">
                     </span></button>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu dropdown-menu-right" name="F">
                 <a class="dropdown-item" href="#" id="clear">Clear Output</a>
                 <a class="dropdown-item" href="#">Link 2</a>
                 <a class="dropdown-item" href="#">Link 3</a>
             </div>
+            <!--div class="dropdown-menu">
+                <a class="dropdown-item" href="#" id="clea">Clear Output</a>
+                <a class="dropdown-item" href="#">Link 2</a>
+                <a class="dropdown-item" href="#">Link 3</a>
+            </div-->
         </div>
     </div>
 </div>
