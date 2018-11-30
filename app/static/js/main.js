@@ -159,6 +159,9 @@
                     },
                     "Ctrl-I": function (cm) {
                         introduction(cm)
+                    },
+                    "Ctrl-B": function (cm) {
+                        apply_backward_step(cm);
                     }
                 }
             });
@@ -259,7 +262,7 @@
                     var input = {
                         "id": document.querySelector('.code-cell.selected textarea').id,
                         "line": line,
-                    }
+                    };
                     var data = JSON.stringify(input);
 
                     $.ajax({
@@ -282,7 +285,7 @@
                 var input = {
                     "id": document.querySelector('.code-cell.selected textarea').id,
                     "line": line,
-                }
+                };
                 var data = JSON.stringify(input);
 
                 $.ajax({
@@ -295,6 +298,75 @@
                     }
                 })
             })
+        }
+
+        function apply_backward_step(cm) {
+            var line_number = cm.getCursor().line;
+            var line = cm.getLine(line_number);
+            swal({
+                title: 'Please enter the theorem used',
+                html:
+                    '<input id="swal-input1" class="swal2-input">' +
+                    '<select id="swal-input2" class="swal2-select"></select>',
+                onOpen: function (){
+                    init_select_abs()
+                },
+                showCancelButton: true,
+                confirmButtonText: 'confirm',
+                showLoaderOnConfirm: true,
+                preConfirm: () => {
+                    var data = {
+                        'id': document.querySelector('.code-cell.selected textarea').id,
+                        "line": line,
+                        'theorem': document.getElementById('swal-input1').value,
+                    };
+                    return fetch('/api/apply-backward-step', {
+                            method: 'POST', // or 'PUT'
+                            body: JSON.stringify(data),
+                            headers: {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json',
+                                },
+                            },
+                        }
+                    ).then(response => {
+                        if (!response.ok) {
+                            throw new Error(response.statusText)
+                        }
+                        return response.json()
+                    })
+                        .catch(error => {
+                            swal.showValidationMessage(
+                                `Request failed: ${error}`
+                            )
+                        })
+                },
+                allowOutsideClick:
+                    () => !swal.isLoading()
+            }).then((result) => {
+                if (result) {
+                    cm.setValue(result['value']['result']);
+                }
+            })
+        }
+
+        function init_select_abs() {
+            $(document).ready(function () {
+                var event = {
+                    "event": "init_theorem_abs",
+                };
+                var data = JSON.stringify(event);
+
+                $.ajax({
+                    url: "/api/init",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+                    }
+                })
+            })
+
         }
 
         function proof_line_cov(cm) {

@@ -89,7 +89,7 @@ div.CodeMirror-lines {
 }
 
 .input-box {
-    width: -webkit-fill-available;
+    width: 100%;
 }
 
 .output-area pre {
@@ -112,7 +112,7 @@ div.output-wrapper pre {
     border-radius: 0;
 }
 
-#variables{
+#variables {
     margin-left: 19px;
 }
 
