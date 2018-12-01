@@ -17,8 +17,8 @@ class Server():
         self.thy = thy
         self.ctxt = ctxt if ctxt is not None else dict()
 
-    def check_proof(self, input):
-        """Check the given proof in text format."""
+    def parse_proof(self, input):
+        """Parse the given proof in text format."""
         
         # First: read input into proof object
         prf = Proof()
@@ -29,10 +29,15 @@ class Server():
                 self.ctxt[name] = T
                 prf.vars.append(Var(name, T))
             else:
-                prf.proof.append(parser.parse_proof_rule(self.thy, self.ctxt, line))
+                try:
+                    prf.proof.append(parser.parse_proof_rule(self.thy, self.ctxt, line))
+                except ValueError as e:
+                    print(line)
+                    raise e
 
-        # Next: check the proof
+        return prf
+
+    def check_proof(self, input):
+        prf = self.parse_proof(input)
         self.thy.check_proof(prf)
-
-        # Return the checked proof
         return prf.print(term_printer = lambda t: printer.print_term(self.thy, t), print_vars=True)

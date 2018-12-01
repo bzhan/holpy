@@ -1,5 +1,6 @@
+# Author: Chaozhu Xiang, Bohua Zhan
+
 import json
-# from typing import Dict, AnyStr
 
 from app.cell import Cell
 from flask import Flask, request, render_template
@@ -18,7 +19,7 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config.from_object('config')
 
-# Dict[AnyStr, Cell]
+# Dictionary from id to cells
 cells = dict()
 
 thy = BasicTheory()
@@ -38,15 +39,18 @@ def check_proof():
         return jsonify({})
 
     cell = cells[data.get('id')]
+    proof = data.get('proof')
     try:
-        thy.check_proof(cell.proof)
+        cell.parse_proof(proof)
+        cell.check_proof()
         result = {
             "proof": cell.print_proof()
         }
         return jsonify(result)
-    except TheoryException:
+    except TheoryException as e:
         result = {
-            "failed": "TheoryException"
+            "failed": "TheoryException",
+            "message": e.str
         }
         return jsonify(result)
     except CheckProofException as e:
@@ -105,6 +109,7 @@ def add_line_after():
         cell = cells[data.get('id')]
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.proof = tactic.add_line_after(cell.proof, id)
+        cell.check_proof()
         return jsonify({"result": cell.print_proof()})
     return jsonify({})
 
@@ -118,6 +123,7 @@ def introduction():
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.proof = tactic.introduction(cell.proof, id)
         line_diff = (cell.proof.get_num_item() - len_before) / 2
+        cell.check_proof()
         return jsonify({"line-diff": line_diff, "result": cell.print_proof()})
     return jsonify({})
 
@@ -130,6 +136,7 @@ def apply_backward_step():
         theorem = data.get('theorem')
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.proof = tactic.apply_backward_step(cell.proof, id, thy, theorem)
+        cell.check_proof()
         return jsonify({"result": cell.print_proof()})
     return jsonify({})
 

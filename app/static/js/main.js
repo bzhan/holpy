@@ -222,7 +222,8 @@
             $(document).ready(function () {
                     var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
                     var input = {
-                        "id": document.querySelector('.code-cell.selected textarea').id
+                        "id": document.querySelector('.code-cell.selected textarea').id,
+                        "proof" : editor.getValue()
                     };
                     var data = JSON.stringify(input);
 
@@ -234,7 +235,7 @@
                             status_output = document.querySelector('.code-cell.selected .output pre');
                             if ("failed" in result) {
                                 if (result["failed"] === "TheoryException") {
-                                    status_output.innerHTML = "TheoryException";
+                                    status_output.innerHTML = "TheoryException: " + result["message"];
                                 }
                                 else if (result["failed"] === "CheckProofException") {
                                     status_output.innerHTML = "CheckProofException: " + result["message"];

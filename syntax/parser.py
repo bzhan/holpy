@@ -215,6 +215,9 @@ def parse_proof_rule(thy, ctxt, s):
     """
     (id, rule_name, args, prevs, th) = split_proof_rule(s)
 
+    if rule_name == "":
+        return ProofItem(id, "")
+
     if th == "":
         th = None
     else:
