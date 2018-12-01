@@ -16,14 +16,14 @@ class ProofItem():
     - th: optional theorem statement (as a sequent).
 
     """
-    def __init__(self, id, rule, *, args = None, prevs = None, th = None):
+    def __init__(self, id, rule, *, args=None, prevs=None, th=None):
         self.id = id
         self.rule = rule
         self.args = args
         self.prevs = prevs if prevs is not None else []
         self.th = th
 
-    def print(self, *, term_printer):
+    def print(self, *, term_printer, unicode=False):
         """Print the given proof item.
         
         term_printer: specify the printing function for terms.
@@ -44,7 +44,7 @@ class ProofItem():
             str_args = " " + str_val(self.args) if self.args else ""
 
         str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
-        str_th = self.th.print(term_printer = term_printer) + " by " if self.th else ""
+        str_th = self.th.print(term_printer=term_printer, unicode=unicode) + " by " if self.th else ""
 
         return self.id + ": " + str_th + self.rule + str_args + str_prevs
 
@@ -74,12 +74,12 @@ class Proof():
         self.vars = []
         self.proof = []
         for id, assum in enumerate(assums):
-            item = ProofItem("A" + str(id+1), "assume", args = assum)
+            item = ProofItem("A" + str(id+1), "assume", args=assum)
             self.proof.append(item)
 
-    def add_item(self, id, rule, *, args = None, prevs = [], th = None):
+    def add_item(self, id, rule, *, args=None, prevs=[], th=None):
         """Add the given item to the end of the proof."""
-        self.proof.append(ProofItem(id, rule, args = args, prevs = prevs, th = th))
+        self.proof.append(ProofItem(id, rule, args=args, prevs=prevs, th=th))
 
     def get_items(self):
         """Returns the list of items."""
@@ -100,7 +100,7 @@ class Proof():
         else:
             raise ProofException()
 
-    def print(self, *, term_printer = str, print_vars = False):
+    def print(self, *, term_printer=str, print_vars=False, unicode=False):
         """Print the given proof object.
 
         term_printer: specify the printing function for terms.
@@ -113,7 +113,9 @@ class Proof():
             str_vars = "\n".join(print_var(t) for t in self.vars) + "\n"
         else:
             str_vars = ""
-        return str_vars + "\n".join(item.print(term_printer = term_printer) for item in self.proof)
+
+        lines = [item.print(term_printer=term_printer, unicode=unicode) for item in self.proof]
+        return str_vars + "\n".join(lines)
 
     def __str__(self):
         return self.print()

@@ -38,17 +38,18 @@ class Thm():
         self.assums = set(assums)
         self.concl = concl
 
-    def print(self, *, term_printer = str):
+    def print(self, *, term_printer=str, unicode=False):
         """Print the given theorem.
 
         term_printer: specify the printing function for terms.
 
         """
+        turnstile = "⊢" if unicode else "|-"
         if self.assums:
             str_assums = ", ".join(sorted(term_printer(assum) for assum in self.assums))
-            return str_assums + " |- " + term_printer(self.concl)
+            return str_assums + " " + turnstile + " " + term_printer(self.concl)
         else:
-            return "|- " + term_printer(self.concl)
+            return turnstile + " " + term_printer(self.concl)
 
     def __str__(self):
         return self.print()
