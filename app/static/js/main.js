@@ -180,12 +180,14 @@
                 if (event.code === 'Enter') {
                     let line_no = cm.getCursor().line;
                     let line = cm.getLine(line_no);
+                    event.preventDefault();
                     add_line_after(cm);
                 }
                 else if (event.code === 'Backspace') {
                     let line_no = cm.getCursor().line;
                     let line = cm.getLine(line_no);
                     if (line.endsWith(": ")) {
+                        event.preventDefault();
                         remove_line(cm);
                     }
                 }
@@ -262,7 +264,7 @@
 
         function add_line_after(cm) {
             $(document).ready(function () {
-                    var line_number = cm.getCursor().line - 1;
+                    var line_number = cm.getCursor().line;
                     var line = cm.getLine(line_number);
                     var input = {
                         "id": document.querySelector('.code-cell.selected textarea').id,
@@ -286,7 +288,7 @@
         function remove_line(cm) {
             $(document).ready(function () {
                 var line_number = cm.getCursor().line;
-                var line = cm.getLine(line_number) + " ";
+                var line = cm.getLine(line_number);
                 var input = {
                     "id": document.querySelector('.code-cell.selected textarea').id,
                     "line": line,
