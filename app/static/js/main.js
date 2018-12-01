@@ -172,8 +172,13 @@
                     let line_no = cm.getCursor().line;
                     let line = cm.getLine(line_no);
                     add_line_after(cm);
-                    // if (line.indexOf('|-') === -1) {
-                    // }
+                }
+                else if (event.code === 'Backspace') {
+                    let line_no = cm.getCursor().line;
+                    let line = cm.getLine(line_no);
+                    if (line.endsWith(": ")) {
+                        remove_line(cm);
+                    }
                 }
             });
             editor.on("focus", function (cm, event) {
@@ -267,6 +272,28 @@
                     })
                 }
             )
+        }
+
+        function remove_line(cm) {
+            $(document).ready(function () {
+                var line_number = cm.getCursor().line;
+                var line = cm.getLine(line_number) + " ";
+                var input = {
+                    "id": document.querySelector('.code-cell.selected textarea').id,
+                    "line": line,
+                };
+                var data = JSON.stringify(input);
+
+                $.ajax({
+                    url: "/api/remove-line",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+                        cm.setValue(result['result']);
+                        cm.setCursor(line_number - 1, Number.MAX_SAFE_INTEGER);
+                    }
+                })
+            })
         }
 
         function introduction(cm) {

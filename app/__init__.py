@@ -108,6 +108,18 @@ def add_line_after():
     return jsonify({})
 
 
+@app.route('/api/remove-line', methods=['POST'])
+def remove_line():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells[data.get('id')]
+        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
+        cell.proof = tactic.remove_line(cell.proof, id)
+        cell.check_proof()
+        return jsonify({"result": cell.print_proof()})
+    return jsonify({})
+
+
 @app.route('/api/introduction', methods=['POST'])
 def introduction():
     data = json.loads(request.get_data().decode("utf-8"))
