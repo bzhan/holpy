@@ -19,7 +19,7 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
             op_data = get_info_for_operator(t)
             if op_data is not None:
                 return op_data.priority
-            elif t.is_all():
+            elif t.is_all() or Logic.is_exists(t):
                 return 10
             else:
                 return 95  # Function application

@@ -10,6 +10,31 @@ from kernel.proof import ProofItem
 from logic.logic import Logic
 from logic.nat import Nat
 
+
+def _abstract_over_name(t, name, n):
+    """Helper function for abstract_over_name. Here t is an open term.
+    All atomic terms with the given name should be replaced by Bound n.
+
+    """
+    if t.ty == Term.VAR or t.ty == Term.CONST:
+        if t.name == name:
+            return Bound(n)
+        else:
+            return t
+    elif t.ty == Term.COMB:
+        return Comb(_abstract_over_name(t.fun, name, n), _abstract_over_name(t.arg, name, n))
+    elif t.ty == Term.ABS:
+        return Abs(t.var_name, t.T, _abstract_over_name(t.body, name, n+1))
+    elif t.ty == Term.BOUND:
+        return t
+    else:
+        raise TypeError()
+
+def abstract_over_name(t, name, T):
+    """Abstract over all atomic terms with the given name."""
+    return Abs(name, T, _abstract_over_name(t, name, 0))
+
+
 class ParserException(Exception):
     """Exceptions during parsing."""
     def __init__(self, str):
@@ -109,19 +134,19 @@ class HOLTransformer(Transformer):
     def abs(self, var_name, T, body):
         # Bound variables should be represented by Var(var_name, None).
         # Abstract over it, and remember to change the type to T.
-        t = Term.mk_abs(Var(var_name, None), body, T = T)
+        t = abstract_over_name(body, var_name, T)
         return Abs(var_name, T, t.body)
 
     def all(self, var_name, T, body):
         # Similar parsing mechanism as for abs.
         all_t = Const("all", TFun(TFun(T, hol_bool), hol_bool))
-        t = Term.mk_abs(Var(var_name, None), body, T = T)
+        t = abstract_over_name(body, var_name, T)
         return all_t(t)
 
     def exists(self, var_name, T, body):
         # Similar parsing mechanism as for abs.
         exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
-        t = Term.mk_abs(Var(var_name, None), body, T = T)
+        t = abstract_over_name(body, var_name, T)
         return exists_t(t)
 
     def times(self, lhs, rhs):

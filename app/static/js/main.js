@@ -348,6 +348,10 @@
                     "id": document.querySelector('.code-cell.selected textarea').id,
                     "line": line,
                 };
+
+                if (line.indexOf("⊢ ∀") !== -1) {
+                    input["var_name"] = prompt('Enter variable name').split(",")
+                }
                 var data = JSON.stringify(input);
 
                 $.ajax({

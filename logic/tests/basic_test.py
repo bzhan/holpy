@@ -305,6 +305,7 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), th)
 
     def testExistsConjMacro(self):
+        """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x), using macros."""
         thy = basic.BasicTheory()
         Ta = TVar("a")
         A = Var("A", TFun(Ta, hol_bool))

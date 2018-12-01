@@ -127,7 +127,7 @@ def introduction():
         cell = cells.get(data.get('id'))
         len_before = cell.proof.get_num_item()
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        cell.proof = tactic.introduction(cell.proof, id)
+        cell.proof = tactic.introduction(cell.proof, id, data.get('var_name'))
         line_diff = (cell.proof.get_num_item() - len_before) / 2
         cell.check_proof()
         return jsonify({"line-diff": line_diff, "result": cell.print_proof()})

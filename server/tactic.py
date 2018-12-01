@@ -1,7 +1,9 @@
 # Author: Bohua Zhan
 
+from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof
+from logic.logic import Logic
 from logic.matcher import Matcher
 
 class TacticException(Exception):
@@ -179,8 +181,7 @@ def apply_backward_step(prf, id, thy, th_name, *, prevs = None):
         Matcher.first_order_match_incr(pat, item.th.concl, inst)
     Matcher.first_order_match_incr(C, cur_item.th.concl, inst)
 
-    th2 = Thm.substitution(inst, th)
-    As, _ = th2.concl.strip_implies()
+    As, _ = Logic.subst_norm(th.concl, inst).strip_implies()
 
     num_goal = len(As) - len(prevs)
     prf = add_line_before(prf, id, num_goal)
@@ -202,25 +203,77 @@ def apply_backward_step(prf, id, thy, th_name, *, prevs = None):
 
     return prf
 
-def introduction(prf, id):
-    """Introduce assumptions for a goal of the form A1 --> ... --> An --> C."""
+def strip_all_implies(t, names):
+    """Given a term of the form
+
+    !x_1 ... x_k. A_1 --> ... --> A_n --> C.
+
+    Return the triple ([v_1, ..., v_k], [A_1, ... A_n], C), where
+    v_1, ..., v_k are new variables with the given names, and
+    A_1, ..., A_n, C are the body of the input term, with bound variables
+    substituted for v_1, ..., v_k.
+
+    """
+    if Term.is_all(t):
+        assert len(names) > 0, "strip_all_implies: not enough names input."
+        v = Var(names[0], t.arg.T)
+        vars, As, C = strip_all_implies(t.arg.subst_bound(v), names[1:])
+        return ([v] + vars, As, C)
+    else:
+        assert len(names) == 0, "strip_all_implies: too many names input."
+        As, C = t.strip_implies()
+        return ([], As, C)
+
+def introduction(prf, id, names=None):
+    """Introduce assumptions for a goal of the form
+
+    !x_1 ... x_k. A_1 --> ... --> A_n --> C.
+
+    Argument names specifies list of variable names.
+    
+    """
     cur_item = get_proof_item(prf, id)
     assert cur_item.rule == "sorry", "introduction: id is not a gap"
 
-    As, C = cur_item.th.concl.strip_implies()
-    prf = add_line_before(prf, id, 2 * len(As))
+    if names is None:
+        names = []
+
+    vars, As, C = strip_all_implies(cur_item.th.concl, names)
+
+    # Add necessary variables
+    for var in vars:
+        if var not in prf.vars:
+            prf.vars.append(var)
+
+    # len(As) lines for the assumptions, one line for the sorry,
+    # len(vars) lines for forall_intr, len(As) lines for implies_intr,
+    # one line already available.
+    prf = add_line_before(prf, id, len(vars) + 2 * len(As))
+
+    # Starting id number
     start = int(id[1:])
+
+    # Assumptions
     for i, A in enumerate(As):
         new_id = "S" + str(start + i)
         prf = set_line(prf, new_id, "assume", args = A, th = Thm([A], A))
 
+    # Goal
     goal_id = "S" + str(start + len(As))
     goal = Thm(list(cur_item.th.assums) + As, C)
     prf = set_line(prf, goal_id, "sorry", th = goal)
+
+    # implies_intr invocations
     for i, A in enumerate(reversed(As)):
         prev_id = "S" + str(start + len(As) + i)
         new_id = "S" + str(start + len(As) + i + 1)
         prf = set_line(prf, new_id, "implies_intr", args = A, prevs = [prev_id])
+
+    # forall_intr invocations
+    for i, var in enumerate(reversed(vars)):
+        prev_id = "S" + str(start + 2 * len(As) + i)
+        new_id = "S" + str(start + 2 * len(As) + i + 1)
+        prf = set_line(prf, new_id, "forall_intr", args = var, prevs = [prev_id])
 
     # Test if the goal is already proved
     new_id = find_goal(prf, goal, goal_id)

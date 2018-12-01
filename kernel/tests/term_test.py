@@ -143,16 +143,13 @@ class TermTest(unittest.TestCase):
             (Abs("x", Ta, "y", Tb, B0), c, Abs("y", Tb, B0)),
             (Abs("x", Ta, "y", Tb, B1), c, Abs("y", Tb, c)),
             (Abs("x", Ta, "y", Tb, f2(B1,B0)), c, Abs("y", Tb, f2(c,B0))),
+            (Abs("x", Ta, B0), B0, B0),
         ]
 
         for t, s, res in test_data:
             self.assertEqual(t.subst_bound(s), res)
 
     def testSubstBoundFail(self):
-        t = Abs("x", Ta, B0)
-        self.assertRaises(TermSubstitutionException, t.subst_bound, b)
-
-    def testSubstBoundFail2(self):
         self.assertRaises(TermSubstitutionException, a.subst_bound, b)
 
     def testStripComb(self):

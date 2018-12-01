@@ -28,7 +28,7 @@ class Cell(object):
 
     def print_proof(self):
         def term_printer(t):
-            return printer.print_term(self.thy, t, unicode=True)
+            return printer.print_term(self.thy, t, unicode=True, print_abs_type=True)
         return self.proof.print(term_printer=term_printer, print_vars=True, unicode=True)
 
     def check_proof(self):

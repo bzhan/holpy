@@ -101,7 +101,7 @@ class apply_theorem_macro(ProofMacro):
             Matcher.first_order_match_incr(As[idx], prev_th.concl, inst)
         if self.with_concl:
             Matcher.first_order_match_incr(C, concl, inst)
-        return Thm(th.assums, C.subst_norm(inst))
+        return Thm(th.assums, Logic.subst_norm(t,inst))
 
     def expand(self, depth, thy, args, *prevs):
         if self.with_concl:

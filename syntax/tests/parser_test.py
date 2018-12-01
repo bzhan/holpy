@@ -146,6 +146,7 @@ class ParserTest(unittest.TestCase):
             ("?x::'a. P x", "bool"),
             ("?x::'a. !y::'a. R x y", "bool"),
             ("!x::'a. ?y::'a. R x y", "bool"),
+            ("!a::'a. P a", "bool"),
 
             # Arithmetic
             ("m + n", "nat"),

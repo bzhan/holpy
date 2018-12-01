@@ -1,0 +1,10 @@
+{
+    "variables": [
+        "var A :: 'a => bool",
+        "var B :: 'a => bool"
+    ],
+    "assumes" : [
+        "?x::'a. A x & B x"
+    ],
+    "conclusion" : "(?x::'a. A x) & (?x::'a. B x)"
+}
