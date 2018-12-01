@@ -146,6 +146,39 @@
                 reader.readAsText(f);
             }
         });
+        document.getElementById('open-problem').addEventListener('change', function (e) {
+            e = e || window.event;
+
+            let files = this.files;
+            let i = 0, f;
+            for (; f = files[i]; i++) {
+                let reader = new FileReader();
+                reader.onload = (function () {
+                    var json_data = JSON.parse(this.result);
+                    var event = {
+                        'event': 'init_cell',
+                        'id': document.querySelector('.code-cell.selected textarea').id,
+                        'variables': json_data['variables'],
+                        'assumes': json_data['assumes'],
+                        'conclusion': json_data['conclusion']
+                    };
+                    var data = JSON.stringify(event);
+
+                    $.ajax({
+                        url: "/api/init",
+                        type: "POST",
+                        data: data,
+                        success: function (result) {
+                            if (JSON.stringify(result) !== '{}') {
+                                var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+                                editor.setValue(result['result'])
+                            }        
+                        }
+                    });
+                });
+                reader.readAsText(f);
+            }
+        });
         document.getElementById("run-button").addEventListener('click', send_input);
 
         function init_editor(editor_id = "code1") {

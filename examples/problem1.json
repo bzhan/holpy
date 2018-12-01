@@ -1,0 +1,10 @@
+{
+    "variables": [
+        "var A :: bool",
+        "var B :: bool"
+    ],
+    "assumes": [
+        "A & B"
+    ],
+    "conclusion": "B & A"
+}
