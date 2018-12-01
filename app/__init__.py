@@ -138,10 +138,11 @@ def introduction():
 def apply_backward_step():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))
-        theorem = data.get('theorem')
+        cell = cells.get(data.get('id'))        
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        cell.proof = tactic.apply_backward_step(cell.proof, id, thy, theorem)
+        theorem = data.get('theorem').split(",")
+        theorem, prevs = theorem[0], theorem[1:]
+        cell.proof = tactic.apply_backward_step(cell.proof, id, thy, theorem, prevs=prevs)
         cell.check_proof()
         return jsonify({"result": cell.print_proof()})
     return jsonify({})

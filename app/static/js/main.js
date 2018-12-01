@@ -398,11 +398,11 @@
                         }
                         return response.json()
                     })
-                        .catch(error => {
-                            swal.showValidationMessage(
-                                `Request failed: ${error}`
-                            )
-                        })
+                    .catch(error => {
+                        swal.showValidationMessage(
+                            `Request failed: ${error}`
+                        )
+                    })
                 },
                 allowOutsideClick:
                     () => !swal.isLoading()
