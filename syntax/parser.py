@@ -48,8 +48,8 @@ grammar = r"""
 
     ?term: imp
 
-    thm: "|-" term
-        | term ("," term)* "|-" term
+    thm: ("|-"|"⊢") term
+        | term ("," term)* ("|-"|"⊢") term
 
     term_pair: CNAME ":" term
 
