@@ -229,6 +229,20 @@ class TheoryTest(unittest.TestCase):
 
         self.assertRaisesRegex(CheckProofException, "proof method not found", thy.check_proof, prf)
 
+    def testAssumsSubset(self):
+        """res_th is OK if assumptions is a subset of that of seq.th."""
+        prf = Proof()
+        prf.add_item("A1", "assume", args=A, th=Thm([A, B], A))
+
+        self.assertEqual(thy.check_proof(prf), Thm([A, B], A))
+
+    def testAssumsSubsetFail(self):
+        """res_th is not OK if assumptions is not a subset of that of seq.th."""
+        prf = Proof()
+        prf.add_item("A1", "assume", args=A, th=Thm([], A))
+
+        self.assertRaisesRegex(CheckProofException, "output does not match", thy.check_proof, prf)
+
     def testCheckProofMacro(self):
         """Proof checking with simple macro."""
         thy = Theory.EmptyTheory()

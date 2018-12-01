@@ -161,7 +161,9 @@ def apply_backward_step(prf, id, thy, th_name, *, prevs = None):
     for new_id, A in zip(all_ids, As[len(prevs):]):
         prf = set_line(prf, new_id, "sorry", th = Thm(cur_item.th.assums, A))
 
-    prf = set_line(prf, "S" + str(start + num_goal), "apply_theorem", args = th_name, prevs = prevs + all_ids)
+    prf = set_line(
+        prf, "S" + str(start + num_goal), "apply_theorem_for",
+        args = (th_name, cur_item.th.concl), prevs = prevs + all_ids)
     return prf
 
 def introduction(prf, id):

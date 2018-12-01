@@ -250,6 +250,10 @@ def parse_proof_rule(thy, ctxt, s):
         elif sig == MacroSig.TYINST:
             tyinst = tyinst_parser(thy, ctxt).parse(args)
             return ProofItem(id, rule_name, args = tyinst, prevs = prevs, th = th)
+        elif sig == MacroSig.STRING_TERM:
+            s1, s2 = args.split(",", 2)
+            t = term_parser(thy, ctxt).parse(s2)
+            return ProofItem(id, rule_name, args = (s1, t), prevs = prevs, th = th)
         else:
             raise TypeError()
     except exceptions.UnexpectedToken as e:

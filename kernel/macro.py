@@ -2,7 +2,7 @@
 
 class MacroSig():
     """Signature for the arguments of proof macro."""
-    NONE, TERM, TYINST, INST, STRING = range(5)
+    NONE, TERM, TYINST, INST, STRING, STRING_TERM = range(6)
 
 
 class ProofMacro():

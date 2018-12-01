@@ -75,28 +75,47 @@ class apply_theorem_macro(ProofMacro):
     """Apply existing theorem in the theory to a list of current
     results in the proof.
 
+    If with_concl is set, the signature is (th_name, concl), where
+    th_name is the name of the theorem, concl is the expected conclusion.
+
+    If with_concl is not set, the signature is th_name, where th_name
+    is the name of the theorem.
+
     """
-    def __init__(self):
+    def __init__(self, *, with_concl=False):
         self.level = 1
-        self.sig = MacroSig.STRING
+        self.with_concl = with_concl
+        self.sig = MacroSig.STRING_TERM if with_concl else MacroSig.STRING
         self.has_theory = True
 
-    def __call__(self, thy, name, *prevs):
+    def __call__(self, thy, args, *prevs):
+        if self.with_concl:
+            name, concl = args
+        else:
+            name = args
         th = thy.get_theorem(name)
         inst = dict()
 
         As, C = th.concl.strip_implies()
-        for idx, arg in enumerate(prevs):
-            Matcher.first_order_match_incr(As[idx], arg.concl, inst)
+        for idx, prev_th in enumerate(prevs):
+            Matcher.first_order_match_incr(As[idx], prev_th.concl, inst)
+        if self.with_concl:
+            Matcher.first_order_match_incr(C, concl, inst)
         return Thm(th.assums, C.subst_norm(inst))
 
-    def expand(self, depth, thy, name, *prevs):
+    def expand(self, depth, thy, args, *prevs):
+        if self.with_concl:
+            name, concl = args
+        else:
+            name = args
         th = thy.get_theorem(name)
         inst = dict()
 
         As, C = th.concl.strip_implies()
         for idx, (_, arg) in enumerate(prevs):
             Matcher.first_order_match_incr(As[idx], arg.concl, inst)
+        if self.with_concl:
+            Matcher.first_order_match_incr(C, concl, inst)
 
         pt = ProofTerm.substitution(inst, ProofTerm.theorem(thy, name))
         cv = top_conv(beta_conv())

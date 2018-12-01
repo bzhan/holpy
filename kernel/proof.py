@@ -40,6 +40,8 @@ class ProofItem():
         elif isinstance(self.args, dict):
             items = sorted(self.args.items(), key = lambda pair: pair[0])
             str_args = " {" + ", ".join(key + ": " + str_val(val) for key, val in items) + "}"
+        elif isinstance(self.args, tuple):
+            str_args = " " + ", ".join(str_val(val) for val in self.args)
         else:
             str_args = " " + str_val(self.args) if self.args else ""
 

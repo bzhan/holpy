@@ -127,6 +127,26 @@ class BasicTest(unittest.TestCase):
         th = Thm.mk_implies(disjAB, disjBA)
         self.assertEqual(thy.check_proof(prf), th)
 
+    def testDisjCommWithMacro(self):
+        """Proof of commutativity of disjunction, with macros."""
+        thy = basic.BasicTheory()
+        A = Var("A", hol_bool)
+        B = Var("B", hol_bool)
+        disjAB = Logic.mk_disj(A, B)
+        disjBA = Logic.mk_disj(B, A)
+
+        prf = Proof(disjAB)
+        prf.add_item("S1", "assume", args = A)
+        prf.add_item("S2", "apply_theorem_for", args = ("disjI2", disjBA), prevs = ["S1"])
+        prf.add_item("S3", "implies_intr", args = A, prevs = ["S2"])
+        prf.add_item("S4", "assume", args = B)
+        prf.add_item("S5", "apply_theorem_for", args = ("disjI1", disjBA), prevs = ["S4"])
+        prf.add_item("S6", "implies_intr", args = B, prevs = ["S5"])
+        prf.add_item("S7", "apply_theorem", args = "disjE", prevs = ["A1", "S3", "S6"])
+        prf.add_item("S8", "implies_intr", args = disjAB, prevs = ["S7"])
+        th = Thm.mk_implies(disjAB, disjBA)
+        self.assertEqual(thy.check_proof(prf), th)
+
     def testAllConj(self):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
         thy = basic.BasicTheory()
