@@ -8,7 +8,9 @@ from kernel.extension import Extension
 from kernel.report import ExtensionReport
 
 class TheoryException(Exception):
-    pass
+    """General exception for theory operations."""
+    def __init__(self, str):
+        self.str = str
 
 class CheckProofException(Exception):
     """Exception when checking proof. Provides error message."""
@@ -58,7 +60,7 @@ class Theory():
         
         """
         if name in self.data:
-            raise TheoryException()
+            raise TheoryException("Add data type")
         
         if init is None:
             init = dict()
@@ -70,7 +72,7 @@ class Theory():
         
         """
         if name not in self.data:
-            raise TheoryException()
+            raise TheoryException("Add data")
 
         assert isinstance(self.data[name], dict), "add_data: data must be a dictionary"
 
@@ -85,7 +87,7 @@ class Theory():
         
         """
         if name not in self.data:
-            raise TheoryException()
+            raise TheoryException("Update data")
 
         self.data[name] = f(self.data[name])
 
@@ -107,7 +109,7 @@ class Theory():
         """Returns the arity of the type."""
         data = self.get_data("type_sig")
         if name not in data:
-            raise TheoryException()
+            raise TheoryException("Type " + name + " not found")
 
         return data[name]
 
@@ -125,14 +127,14 @@ class Theory():
         """Returns the most general type of the term."""
         data = self.get_data("term_sig")
         if name not in data:
-            raise TheoryException()
+            raise TheoryException("Const " + name + " not found")
 
         return data[name]
 
     def add_theorem(self, name, th):
         """Add the given theorem under the given name."""
         if not isinstance(th, Thm):
-            raise TheoryException()
+            raise TypeError()
 
         self.add_data("theorems", name, th)
     
@@ -140,14 +142,14 @@ class Theory():
         """Returns the theorem under that name."""
         data = self.get_data("theorems")
         if name not in data:
-            raise TheoryException()
+            raise TheoryException("Theorem " + name + " not found")
 
         return data[name]
 
     def add_proof_macro(self, name, macro):
         """Add the given proof macro."""
         if not isinstance(macro, ProofMacro):
-            raise TheoryException()
+            raise TypeError()
 
         self.add_data("proof_macro", name, macro)
 
@@ -160,7 +162,7 @@ class Theory():
         """Returns the proof macro with that name."""
         data = self.get_data("proof_macro")
         if name not in data:
-            raise TheoryException()
+            raise TheoryException("Macro " + name + " not found")
         
         return data[name]
 
@@ -196,7 +198,7 @@ class Theory():
             return None
         elif T.ty == HOLType.TYPE:
             if self.get_type_sig(T.name) != len(T.args):
-                raise TheoryException()
+                raise TheoryException("Check type: " + repr(T))
             else:
                 for arg in T.args:
                     self.check_type(arg)
@@ -215,7 +217,7 @@ class Theory():
             try:
                 self.get_term_sig(t.name).match(t.T)
             except TypeMatchException:
-                raise TheoryException()
+                raise TheoryException("Check term: " + repr(t))
         elif t.ty == Term.COMB:
             self.check_term(t.fun)
             self.check_term(t.arg)

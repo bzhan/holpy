@@ -37,11 +37,17 @@
 
         $('#add-cell').on('click', function () {
             pageNum++;
+            // Add CodeMirror textarea
+            id = 'code' + pageNum + '-pan';
             $('#codeTabContent').append(
-                $('<div class="code-cell" id="code' + pageNum + '-pan">' +
+                $('<div class="code-cell" id=' + id + '>' +
                     '<label for="code' + pageNum + '"></label> ' +
-                    '<textarea' + ' id="code' + pageNum + '""></textarea>'));
+                    '<textarea' + ' id="code' + pageNum + '""></textarea></div>'));
             init_editor("code" + pageNum);
+            // Add location for displaying results
+            $('#' + id).append(
+                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
+                    '<pre> </pre></div></div>'));
         });
 
         $('#delete-cell').on('click', function () {
@@ -175,8 +181,13 @@
                     let line_no = cm.getCursor().line;
                     let line = cm.getLine(line_no);
                     add_line_after(cm);
-                    // if (line.indexOf('|-') === -1) {
-                    // }
+                }
+                else if (event.code === 'Backspace') {
+                    let line_no = cm.getCursor().line;
+                    let line = cm.getLine(line_no);
+                    if (line.endsWith(": ")) {
+                        remove_line(cm);
+                    }
                 }
             });
             editor.on("focus", function (cm, event) {
@@ -223,14 +234,11 @@
 
         function send_input() {
             $(document).ready(function () {
-                    var input = {};
-                    var counter = 1;
-                    var reg_blank = /^\s*$/g;
                     var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-                    editor.eachLine(line => {
-                        if (!reg_blank.test(line.text))
-                            input[counter++] = line.text;
-                    });
+                    var input = {
+                        "id": document.querySelector('.code-cell.selected textarea').id,
+                        "proof" : editor.getValue()
+                    };
                     var data = JSON.stringify(input);
 
                     $.ajax({
@@ -238,15 +246,14 @@
                         type: "POST",
                         data: data,
                         success: function (result) {
-                            $('.code-cell.selected').append(
-                                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                                    '<pre></pre></div></div>')
-                            );
-                            let value = "";
-                            for (var i in result) {
-                                value += result[i] + '\n';
+                            status_output = document.querySelector('.code-cell.selected .output pre');
+                            if ("failed" in result) {
+                                status_output.innerHTML = result["failed"] + ": " + result["message"]
                             }
-                            document.querySelector('.code-cell.selected .output pre').innerHTML = value;
+                            else {
+                                editor.setValue(result["proof"]);
+                                status_output.innerHTML = "success";
+                            }
                         }
                     })
                 }
@@ -274,6 +281,28 @@
                     })
                 }
             )
+        }
+
+        function remove_line(cm) {
+            $(document).ready(function () {
+                var line_number = cm.getCursor().line;
+                var line = cm.getLine(line_number) + " ";
+                var input = {
+                    "id": document.querySelector('.code-cell.selected textarea').id,
+                    "line": line,
+                };
+                var data = JSON.stringify(input);
+
+                $.ajax({
+                    url: "/api/remove-line",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+                        cm.setValue(result['result']);
+                        cm.setCursor(line_number - 1, Number.MAX_SAFE_INTEGER);
+                    }
+                })
+            })
         }
 
         function introduction(cm) {
