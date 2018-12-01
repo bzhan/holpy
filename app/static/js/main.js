@@ -63,13 +63,11 @@
 
         $('#introduction').on("click",function () {
             let cm=document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-            introduction(cm);
-        });
+            introduction(cm);});
 
         $('#addlinebelow').on("click",function () {
             let cm=document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-            add_line_after(cm);
-        });
+            add_line_after(cm);});
 
         $('#init-button').on("click", function () {
             let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
