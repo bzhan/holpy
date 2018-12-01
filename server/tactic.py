@@ -130,6 +130,34 @@ def get_proof_item(prf, id):
     
     raise TacticException()
 
+def replace_id(prf, old_id, new_id):
+    """Replace old_id with new_id in prevs."""
+    def replace_line(item):
+        return ProofItem(item.id, item.rule, args = item.args,
+            prevs = [new_id if id == old_id else id for id in item.prevs], th = item.th)
+
+    new_prf = Proof()
+    new_prf.vars = prf.vars
+    for item in prf.proof:
+        new_prf.proof.append(replace_line(item))
+    new_prf = remove_line(new_prf, old_id)
+
+    return new_prf
+
+def find_goal(prf, concl, upto_id):
+    """Determine if the given conclusion is already proved. Search up to
+    the given id.
+
+    """
+    for item in prf.get_items():
+        if item.id == upto_id:
+            return None
+        if item.th is not None and item.th.can_prove(concl):
+            return item.id
+
+    # upto_id not found
+    raise TacticException()
+
 def apply_backward_step(prf, id, thy, th_name, *, prevs = None):
     """Apply backward step using the given theorem."""
     if prevs is None:
@@ -158,12 +186,20 @@ def apply_backward_step(prf, id, thy, th_name, *, prevs = None):
     prf = add_line_before(prf, id, num_goal)
     start = int(id[1:])
     all_ids = ["S" + str(start + i - len(prevs)) for i in range(len(prevs), len(As))]
-    for new_id, A in zip(all_ids, As[len(prevs):]):
-        prf = set_line(prf, new_id, "sorry", th = Thm(cur_item.th.assums, A))
+    for goal_id, A in zip(all_ids, As[len(prevs):]):
+        prf = set_line(prf, goal_id, "sorry", th = Thm(cur_item.th.assums, A))
 
     prf = set_line(
         prf, "S" + str(start + num_goal), "apply_theorem_for",
         args = (th_name, cur_item.th.concl), prevs = prevs + all_ids)
+
+    # Test if the goals are already proved:
+    for goal_id, A in reversed(list(zip(all_ids, As[len(prevs):]))):
+        goal = Thm(cur_item.th.assums, A)
+        new_id = find_goal(prf, goal, goal_id)
+        if new_id is not None:
+            prf = replace_id(prf, goal_id, new_id)
+
     return prf
 
 def introduction(prf, id):
@@ -176,11 +212,19 @@ def introduction(prf, id):
     start = int(id[1:])
     for i, A in enumerate(As):
         new_id = "S" + str(start + i)
-        prf = set_line(prf, new_id, "assume", args = A)
-    prf = set_line(prf, "S" + str(start + len(As)), "sorry", th = Thm(list(cur_item.th.assums) + As, C))
+        prf = set_line(prf, new_id, "assume", args = A, th = Thm([A], A))
+
+    goal_id = "S" + str(start + len(As))
+    goal = Thm(list(cur_item.th.assums) + As, C)
+    prf = set_line(prf, goal_id, "sorry", th = goal)
     for i, A in enumerate(reversed(As)):
         prev_id = "S" + str(start + len(As) + i)
         new_id = "S" + str(start + len(As) + i + 1)
         prf = set_line(prf, new_id, "implies_intr", args = A, prevs = [prev_id])
+
+    # Test if the goal is already proved
+    new_id = find_goal(prf, goal, goal_id)
+    if new_id is not None:
+        prf = replace_id(prf, goal_id, new_id)
 
     return prf

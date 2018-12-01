@@ -34,6 +34,17 @@ class ThmTest(unittest.TestCase):
     def testCheckThmTypeFail(self):
         self.assertRaises(TypeCheckException, Thm([x], x).check_thm_type)
 
+    def testCheckCanProve(self):
+        test_data = [
+            (Thm([A], A), Thm([A], A), True),
+            (Thm([A], A), Thm([A, B], A), True),
+            (Thm([A], A), Thm([], A), False),
+            (Thm([A], A), Thm([A], B), False),
+        ]
+
+        for th, target, res in test_data:
+            self.assertEqual(th.can_prove(target), res)
+
     def testAssume(self):
         self.assertEqual(Thm.assume(A), Thm([A], A))
 

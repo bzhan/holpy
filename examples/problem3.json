@@ -1,0 +1,9 @@
+{
+    "variables": [
+        "var A :: bool"
+    ],
+    "assumes" : [
+        "~~A"
+    ],
+    "conclusion" : "A"
+}

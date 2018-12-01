@@ -306,7 +306,7 @@ class Theory():
         if seq.th is None:
             # No expected theorem is provided
             seq.th = res_th
-        elif not (seq.th.concl == res_th.concl and res_th.assums.issubset(seq.th.assums)):
+        elif not res_th.can_prove(seq.th):
             # Resulting res_th is OK as long as the conclusion is the same,
             # and the assumptions is a subset of that of seq.th.
             raise CheckProofException("output does not match\n" + str(seq.th) + "\n vs.\n" + str(res_th))

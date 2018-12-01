@@ -90,6 +90,10 @@ class Thm():
         """Check whether the conclusion of the theorem is of the form x = y."""
         return self.concl.is_equals() and self.concl.arg1 == self.concl.arg
 
+    def can_prove(self, target):
+        """Determine whether self is sufficient to prove target."""
+        return self.concl == target.concl and self.assums.issubset(target.assums)
+
     @staticmethod
     def assume(A):
         """Derivation rule ASSUME:

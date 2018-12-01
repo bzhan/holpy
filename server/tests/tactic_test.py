@@ -17,6 +17,7 @@ A = Var("A", hol_bool)
 B = Var("B", hol_bool)
 conj = Logic.mk_conj
 disj = Logic.mk_disj
+neg = Logic.neg
 
 class TacticTest(unittest.TestCase):
     def testInitProof(self):
@@ -108,9 +109,23 @@ class TacticTest(unittest.TestCase):
         prf = tactic.introduction(prf, "S4")
         thy.check_proof(prf)
         prf = tactic.apply_backward_step(prf, "S5", thy, "disjI1", prevs = ["S4"])
-        thy.check_proof(prf)
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(disj(A, B), disj(B, A)))
+        self.assertEqual(len(rpt.gaps), 0)
+
+    def testDoubleNegInv(self):
+        """Proof of ~~A --> A."""
+        prf = tactic.init_proof([A], [neg(neg(A))], A)
+        prf = tactic.add_line_after(prf, "A1")
+        prf = tactic.set_line(prf, "S1", "theorem", args = "classical")
+        thy.check_proof(prf)
+        prf = tactic.apply_backward_step(prf, "S2", thy, "disjE", prevs = ["S1"])
+        prf = tactic.introduction(prf, "S2")        
+        prf = tactic.introduction(prf, "S4")
+        prf = tactic.apply_backward_step(prf, "S5", thy, "falseE")
+        prf = tactic.apply_backward_step(prf, "S5", thy, "negE", prevs = ["A1"])
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(neg(neg(A)), A))
         self.assertEqual(len(rpt.gaps), 0)
 
 if __name__ == "__main__":
