@@ -225,5 +225,14 @@ class ParserTest(unittest.TestCase):
         for s, res in test_data:
             self.assertEqual(parser.parse_proof_rule(thy, ctxt, s), res)
 
+    def testParseProofFail(self):
+        test_data = [
+            ("", "id not found"),
+            ("S1: assume A &", "When parsing A &, unexpected token"),
+        ]
+
+        for s, err in test_data:
+            self.assertRaisesRegex(parser.ParserException, err, parser.parse_proof_rule, thy, ctxt, s)
+
 if __name__ == "__main__":
     unittest.main()

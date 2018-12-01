@@ -234,15 +234,7 @@
                         success: function (result) {
                             status_output = document.querySelector('.code-cell.selected .output pre');
                             if ("failed" in result) {
-                                if (result["failed"] === "TheoryException") {
-                                    status_output.innerHTML = "TheoryException: " + result["message"];
-                                }
-                                else if (result["failed"] === "CheckProofException") {
-                                    status_output.innerHTML = "CheckProofException: " + result["message"];
-                                }
-                                else {
-                                    status_output.innerHTML = "Failed: " + result["failed"];
-                                }
+                                status_output.innerHTML = result["failed"] + ": " + result["message"]
                             }
                             else {
                                 editor.setValue(result["proof"]);

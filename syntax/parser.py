@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from lark import Lark, Transformer, v_args
+from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
@@ -9,6 +9,12 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic.logic import Logic
 from logic.nat import Nat
+
+class ParserException(Exception):
+    """Exceptions during parsing."""
+    def __init__(self, str):
+        self.str = str
+
 
 grammar = r"""
     ?type: "'" CNAME -> tvar              // Type variable
@@ -188,12 +194,17 @@ def split_proof_rule(s):
     [id]: [rule_name] [args] by [prevs]
 
     """
-    id, rest = s.split(": ", 1)  # split off id
+    if s.count(": ") > 0:
+        id, rest = s.split(": ", 1)  # split off id
+    else:
+        raise ParserException("id not found: " + s)
+
     id = id.strip()
     if rest.count(" by ") > 0:
         th, rest = rest.split(" by ", 1)
     else:
         th, rest = "", rest
+
     if rest.count(" ") > 0:
         rule_name, rest = rest.split(" ", 1)  # split off name of rule
     else:
@@ -223,20 +234,24 @@ def parse_proof_rule(thy, ctxt, s):
     else:
         th = thm_parser(thy, ctxt).parse(th)
 
-    sig = thy.get_proof_rule_sig(rule_name)
-    if sig == MacroSig.NONE:
-        assert args == "", "rule expects no argument."
-        return ProofItem(id, rule_name, prevs = prevs, th = th)
-    elif sig == MacroSig.STRING:
-        return ProofItem(id, rule_name, args = args, prevs = prevs, th = th)
-    elif sig == MacroSig.TERM:
-        t = term_parser(thy, ctxt).parse(args)
-        return ProofItem(id, rule_name, args = t, prevs = prevs, th = th)
-    elif sig == MacroSig.INST:
-        inst = inst_parser(thy, ctxt).parse(args)
-        return ProofItem(id, rule_name, args = inst, prevs = prevs, th = th)
-    elif sig == MacroSig.TYINST:
-        tyinst = tyinst_parser(thy, ctxt).parse(args)
-        return ProofItem(id, rule_name, args = tyinst, prevs = prevs, th = th)
-    else:
-        raise TypeError()
+    try:
+        sig = thy.get_proof_rule_sig(rule_name)
+        if sig == MacroSig.NONE:
+            assert args == "", "rule expects no argument."
+            return ProofItem(id, rule_name, prevs = prevs, th = th)
+        elif sig == MacroSig.STRING:
+            return ProofItem(id, rule_name, args = args, prevs = prevs, th = th)
+        elif sig == MacroSig.TERM:
+            t = term_parser(thy, ctxt).parse(args)
+            return ProofItem(id, rule_name, args = t, prevs = prevs, th = th)
+        elif sig == MacroSig.INST:
+            inst = inst_parser(thy, ctxt).parse(args)
+            return ProofItem(id, rule_name, args = inst, prevs = prevs, th = th)
+        elif sig == MacroSig.TYINST:
+            tyinst = tyinst_parser(thy, ctxt).parse(args)
+            return ProofItem(id, rule_name, args = tyinst, prevs = prevs, th = th)
+        else:
+            raise TypeError()
+    except exceptions.UnexpectedToken as e:
+        raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
+                              % (args, e.token, e.column))

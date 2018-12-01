@@ -29,11 +29,7 @@ class Server():
                 self.ctxt[name] = T
                 prf.vars.append(Var(name, T))
             else:
-                try:
-                    prf.proof.append(parser.parse_proof_rule(self.thy, self.ctxt, line))
-                except ValueError as e:
-                    print(line)
-                    raise e
+                prf.proof.append(parser.parse_proof_rule(self.thy, self.ctxt, line))
 
         return prf
 

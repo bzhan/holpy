@@ -12,7 +12,7 @@ from logic.basic import BasicTheory
 import server.tactic as tactic
 from server.server import Server
 from syntax import parser
-from syntax.parser import term_parser
+from syntax.parser import term_parser, ParserException
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -47,15 +47,9 @@ def check_proof():
             "proof": cell.print_proof()
         }
         return jsonify(result)
-    except TheoryException as e:
+    except (ParserException, TheoryException, CheckProofException) as e:
         result = {
-            "failed": "TheoryException",
-            "message": e.str
-        }
-        return jsonify(result)
-    except CheckProofException as e:
-        result = {
-            "failed": "CheckProofException",
+            "failed": e.__class__.__name__,
             "message": e.str
         }
         return jsonify(result)
