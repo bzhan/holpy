@@ -115,18 +115,6 @@ def apply_backward_step():
     return jsonify({})
 
 
-@app.route('/api/check-type', methods=['POST'])
-def check_type():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        line = data['line']
-        if not line.startswith('var '):
-            (id, rule_name, args, prevs, th) = parser.split_proof_rule(line)
-            result = {'theorem': rule_name}
-            return jsonify(result)
-    return jsonify({})
-
-
 @app.route('/api/get-cell-state', methods=['POST'])
 def get_cell_state():
     data = json.loads(request.get_data().decode("utf-8"))

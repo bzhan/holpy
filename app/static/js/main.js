@@ -50,13 +50,6 @@
             });
         });
 
-        // $('#theorem-select').on('change', function (e) {
-        //     if (undefined !== theorem[this.value])
-        //         document.getElementById('type-label').innerHTML = theorem[this.value] + ': ';
-        //     else
-        //         document.getElementById('type-label').innerHTML = 'Var: ';
-        // });
-
         $('#add-cell').on('click', function () {
             pageNum++;
             // Add CodeMirror textarea
@@ -224,15 +217,13 @@
                 }
             });
             editor.on("keydown", function (cm, event) {
+                let line_no = cm.getCursor().line;
+                let line = cm.getLine(line_no);
                 if (event.code === 'Enter') {
-                    let line_no = cm.getCursor().line;
-                    let line = cm.getLine(line_no);
                     event.preventDefault();
                     add_line_after(cm);
                 }
                 else if (event.code === 'Backspace') {
-                    let line_no = cm.getCursor().line;
-                    let line = cm.getLine(line_no);
                     if (line.endsWith(": ")) {
                         event.preventDefault();
                         remove_line(cm);
@@ -249,10 +240,6 @@
                 document.querySelector('#conclusions .CodeMirror').CodeMirror.setOption('readOnly', false);
                 set_theorem_select(cm);
                 get_cell_state();
-                // var line_number = cm.getCursor().line;
-                // var line = cm.getLine(line_number);
-                // if (line !== '' && line.indexOf('by') !== -1)
-                //     proof_line_cov(cm);
             });
             editor.on("change", function (cm, changed) {
                 $(document).ready(function () {
@@ -441,23 +428,6 @@
                     }
                 })
             })
-
-        }
-
-        function proof_line_cov(cm) {
-            let line_no = cm.getCursor().line;
-            let old_string = cm.getLine(line_no);
-            let new_string = old_string.split('by ')[0].split(': ')[0] + ': ' + old_string.split('by ')[1];
-            replace_line(cm, new_string)
-        }
-
-        function replace_line(cm, new_string) {
-            let line_no = cm.getCursor().line;
-            cm.setCursor(line_no, 0);
-            let pre = cm.getCursor();
-            cm.setCursor(line_no, Number.MAX_SAFE_INTEGER);
-            let post = cm.getCursor();
-            cm.replaceRange(new_string, pre, post);
         }
 
         function get_cell_state() {
@@ -486,27 +456,6 @@
                     }
                 });
             });
-        }
-
-        function check_type(line) {
-            $(document).ready(function () {
-                    var input = {'line': line};
-                    var data = JSON.stringify(input);
-
-                    $.ajax({
-                        url: "/api/check-type",
-                        type: "POST",
-                        data: data,
-                        success: function (result) {
-                            $('#theorem-select').selectpicker('val', result['theorem']);
-                            if (undefined !== theorem[result['theorem']])
-                                document.getElementById('type-label').innerHTML = theorem[result['theorem']] + ': ';
-                            else
-                                document.getElementById('type-label').innerHTML = 'Var: ';
-                        }
-                    })
-                }
-            )
         }
 
         function init_input_box(id) {
