@@ -275,13 +275,14 @@
                         "proof" : editor.getValue()
                     };
                     var data = JSON.stringify(input);
+                    var status_output = document.querySelector('.code-cell.selected .output pre');
+                    status_output.innerHTML = "Running"
 
                     $.ajax({
                         url: "/api/check-proof",
                         type: "POST",
                         data: data,
                         success: function (result) {
-                            var status_output = document.querySelector('.code-cell.selected .output pre');
                             if ("failed" in result) {
                                 status_output.innerHTML = result["failed"] + ": " + result["message"]
                             }
