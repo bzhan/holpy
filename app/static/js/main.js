@@ -479,7 +479,7 @@
                         if (JSON.stringify(result) !== '{}') {
                             variables_area.setValue(result['variables'].join('\n'));
                             assumes_area.setValue(result['assumes'].join('\n'));
-                            conclusions_area.setValue(result['conclunsion']);
+                            conclusions_area.setValue(result['conclusion']);
                         }
                     }
                 });

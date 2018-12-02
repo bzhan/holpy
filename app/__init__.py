@@ -84,13 +84,9 @@ def init_component():
             if term:
                 assumes_parser.append(term)
         conclusion_parser = term_parser(thy, ctxt).parse(conclusion)
-        origin = {'variables': variables,
-                  'assumes': assumes,
-                  'conclunsion': conclusion}
         cell = Cell(variables_parser,
                     assumes_parser,
                     conclusion_parser,
-                    origin,
                     ctxt=ctxt)
         cells[data.get('id')] = cell
         return jsonify({"result": cell.print_proof()})
@@ -168,5 +164,5 @@ def get_cell_state():
         id = data.get('id')
         if cells.get(id):
             cell = cells.get(id)
-            return jsonify(cell.origin)
+            return jsonify(cell.obtain_init_data())
     return jsonify({})
