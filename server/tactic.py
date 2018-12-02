@@ -9,14 +9,27 @@ from kernel.report import ProofReport
 from logic.basic import BasicTheory
 from logic.logic import Logic
 from logic.matcher import Matcher
-from syntax import printer
-from server import server
+from syntax import parser, printer
 
 
 class TacticException(Exception):
     pass
 
 # Helper functions
+
+def parse_proof(thy, input):
+    """Parse the given proof in string form."""
+    prf = Proof()
+    ctxt = {}
+    for line in input:
+        if line.startswith("var "):
+            name, T = parser.var_decl_parser(thy).parse(line)
+            assert name not in ctxt, "variable already declared"
+            ctxt[name] = T
+            prf.vars.append(Var(name, T))
+        else:
+            prf.proof.append(parser.parse_proof_rule(thy, ctxt, line))
+    return prf
 
 def incr_id(id, start, n):
     """Increment the given id by n, with the starting integer index given
@@ -88,9 +101,9 @@ class ProofState():
             self.prf.add_item("S" + str(n), "implies_intr", args = assum, prevs = ["S" + str(n-1)])
         self.check_proof()
 
-    def parse_proof(self, proof_text):
+    def parse_proof(self, input):
         """Parse the given proof in string form."""
-        self.prf = server.Server(self.thy).parse_proof(io.StringIO(proof_text))
+        self.prf = parse_proof(self.thy, io.StringIO(input))
 
     def print_proof(self):
         """Print proof for user-interface."""
