@@ -281,13 +281,19 @@
                         type: "POST",
                         data: data,
                         success: function (result) {
-                            status_output = document.querySelector('.code-cell.selected .output pre');
+                            var status_output = document.querySelector('.code-cell.selected .output pre');
                             if ("failed" in result) {
                                 status_output.innerHTML = result["failed"] + ": " + result["message"]
                             }
                             else {
                                 editor.setValue(result["proof"]);
-                                status_output.innerHTML = "success";
+                                var num_gaps = result["report"]["num_gaps"];
+                                if (num_gaps > 0) {
+                                    status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
+                                }
+                                else {
+                                    status_output.innerHTML = "OK. Proof complete!"
+                                }
                             }
                         }
                     })

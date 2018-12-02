@@ -18,7 +18,7 @@ class Cell(object):
         self.assums = assums
         self.concl = concl
         self.origin = origin
-        self.rpt = ProofReport()
+        self.rpt = None
 
     def update(self, origin):
         self.origin = origin
@@ -32,4 +32,5 @@ class Cell(object):
         return self.proof.print(term_printer=term_printer, print_vars=True, unicode=True)
 
     def check_proof(self):
-        self.thy.check_proof(self.proof)
+        self.rpt = ProofReport()
+        self.thy.check_proof(self.proof, rpt=self.rpt)

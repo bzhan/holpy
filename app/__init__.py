@@ -44,13 +44,14 @@ def check_proof():
         cell.parse_proof(proof)
         cell.check_proof()
         result = {
-            "proof": cell.print_proof()
+            "proof": cell.print_proof(),
+            "report": cell.rpt.json_data()
         }
         return jsonify(result)
-    except (ParserException, TheoryException, CheckProofException) as e:
+    except Exception as e:
         result = {
             "failed": e.__class__.__name__,
-            "message": e.str
+            "message": str(e)
         }
         return jsonify(result)
 
