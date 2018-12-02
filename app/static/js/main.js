@@ -1,9 +1,31 @@
 (function ($) {
     var pageNum = 0;
     var theorem = {};
-    var variables = [];
-    var assumes = [];
-    var conclusion = undefined;
+
+    function display_running() {
+        var status_output = document.querySelector('.code-cell.selected .output pre');
+        status_output.innerHTML = "Running"
+    }
+
+    function display_checked_proof(result) {
+        var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+        var status_output = document.querySelector('.code-cell.selected .output pre');
+
+        if ("failed" in result) {
+            status_output.innerHTML = result["failed"] + ": " + result["message"]
+        }
+        else {
+            editor.setValue(result["proof"]);
+            var num_gaps = result["report"]["num_gaps"];
+            if (num_gaps > 0) {
+                status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
+            }
+            else {
+                status_output.innerHTML = "OK. Proof complete!"
+            }
+        }
+    }
+
     $(document).ready(function () {
         document.querySelector('.pans').style.height = '665px';
         $('#theorem-select').ready(function () {
@@ -79,6 +101,9 @@
             let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
             let assumes_area = document.querySelector('#assumes .CodeMirror').CodeMirror;
             let conclusions_area = document.querySelector('#conclusions .CodeMirror').CodeMirror;
+            var variables = [];
+            var assumes = [];
+            var conclusion = undefined;
             var reg_blank = /^\s*$/g;
             variables_area.eachLine(line => {
                 if (!reg_blank.test(line.text)) {
@@ -109,16 +134,8 @@
                     url: "/api/init",
                     type: "POST",
                     data: data,
-                    success: function (result) {
-                        if (JSON.stringify(result) !== '{}') {
-                            var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-                            editor.setValue(result['proof'])
-                        }
-                    }
+                    success: display_checked_proof
                 });
-                variables = [];
-                assumes = [];
-                conclusion = undefined;
             });
         });
 
@@ -146,30 +163,6 @@
                 reader.readAsText(f);
             }
         });
-
-        function display_running() {
-            var status_output = document.querySelector('.code-cell.selected .output pre');
-            status_output.innerHTML = "Running"
-        }
-
-        function display_checked_proof(result) {
-            var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-            var status_output = document.querySelector('.code-cell.selected .output pre');
-
-            if ("failed" in result) {
-                status_output.innerHTML = result["failed"] + ": " + result["message"]
-            }
-            else {
-                editor.setValue(result["proof"]);
-                var num_gaps = result["report"]["num_gaps"];
-                if (num_gaps > 0) {
-                    status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
-                }
-                else {
-                    status_output.innerHTML = "OK. Proof complete!"
-                }
-            }
-        }
 
         document.getElementById('open-problem').addEventListener('change', function (e) {
             e = e || window.event;
@@ -492,9 +485,6 @@
                         }
                     }
                 });
-                variables = [];
-                assumes = [];
-                conclusion = undefined;
             });
         }
 

@@ -4,13 +4,9 @@ import json
 
 from flask import Flask, request, render_template
 from flask.json import jsonify
-from kernel.term import Var
 from kernel.thm import primitive_deriv
-from kernel.theory import TheoryException, CheckProofException
-from logic.basic import BasicTheory
-from server.tactic import ProofState
 from syntax import parser
-from syntax.parser import term_parser, ParserException
+from server.tactic import ProofState
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -19,11 +15,6 @@ app.config.from_object('config')
 
 # Dictionary from id to ProofState
 cells = dict()
-
-thy = BasicTheory()
-ctxt = dict()
-parse = parser.term_parser(thy, ctxt).parse
-
 
 def get_result_from_cell(cell):
     return {
@@ -68,20 +59,7 @@ def init_component():
     elif data.get('event') == 'init_theorem_abs':
         pass
     elif data.get('event') == 'init_cell':
-        ctxt = {}
-        vars = []
-        assums = []
-        for var in data.get('variables'):
-            name, t = parser.var_decl_parser(thy).parse(var)
-            if name and t:
-                vars.append(Var(name, t))
-                ctxt[name] = t
-        for assum in data.get('assumes'):
-            t = term_parser(thy, ctxt).parse(assum)
-            if t:
-                assums.append(t)
-        concl = term_parser(thy, ctxt).parse(data.get('conclusion'))
-        cell = ProofState(vars, assums, concl)
+        cell = ProofState.parse_init_state(data)
         cells[data.get('id')] = cell
         return jsonify(get_result_from_cell(cell))
     return jsonify({})

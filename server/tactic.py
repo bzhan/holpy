@@ -101,6 +101,25 @@ class ProofState():
             self.prf.add_item("S" + str(n), "implies_intr", args = assum, prevs = ["S" + str(n-1)])
         self.check_proof()
 
+    @staticmethod
+    def parse_init_state(data):
+        """Obtain proof state from a data dictionary."""
+        thy = BasicTheory()
+        ctxt = {}
+        vars = []
+        assums = []
+        for var in data.get('variables'):
+            name, t = parser.var_decl_parser(thy).parse(var)
+            if name and t:
+                vars.append(Var(name, t))
+                ctxt[name] = t
+        for assum in data.get('assumes'):
+            t = parser.term_parser(thy, ctxt).parse(assum)
+            if t:
+                assums.append(t)
+        concl = parser.term_parser(thy, ctxt).parse(data.get('conclusion'))
+        return ProofState(vars, assums, concl)
+
     def parse_proof(self, input):
         """Parse the given proof in string form."""
         self.prf = parse_proof(self.thy, io.StringIO(input))
