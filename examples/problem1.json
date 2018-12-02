@@ -6,5 +6,10 @@
     "assumes": [
         "A & B"
     ],
-    "conclusion": "B & A"
+    "conclusion": "B & A",
+    "instructions": [
+        "With focus on line 4, enter Ctrl+B, then enter 'conjI'.",
+        "With focus on line 4, enter Ctrl+B, then enter 'conjD2,A1'.",
+        "With focus on line 5, enter Ctrl+B, then enter 'conjD1,A1'."
+    ]
 }

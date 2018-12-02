@@ -3,8 +3,16 @@
         "var A :: 'a => bool",
         "var B :: 'a => bool"
     ],
-    "assumes" : [
+    "assumes": [
         "!x::'a. A x & B x"
     ],
-    "conclusion" : "(!x::'a. A x) & (!x::'a. B x)"
+    "conclusion": "(!x::'a. A x) & (!x::'a. B x)",
+    "instructions": [
+        "With focus on line 4, enter Ctrl+B, then enter 'conjI'.",
+        "With focus on line 4, enter Ctrl+I, enter 'x' as variable name.",
+        "Add line after A1, enter 'forall_elim x from A1'. Use Cells->Run to check proof.",
+        "With focus on line 6, enter Ctrl+B, then enter 'conjD1,S1'.",
+        "With focus on line 8, enter Ctrl+I, enter 'x' as variable name.",
+        "With focus on line 8, enter Ctrl+B, then enter 'conjD2,S1'."
+    ]
 }

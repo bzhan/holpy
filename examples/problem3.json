@@ -2,8 +2,16 @@
     "variables": [
         "var A :: bool"
     ],
-    "assumes" : [
+    "assumes": [
         "~~A"
     ],
-    "conclusion" : "A"
+    "conclusion" : "A",
+    "instructions": [
+        "Add line after A1, enter 'theorem classical'. Use Cells->Run to check proof.",
+        "With focus on line 4, enter Ctrl+B, then enter 'disjE,S1'.",
+        "With focus on line 4, enter Ctrl+I.",
+        "With focus on line 6, enter Ctrl+I.",
+        "With focus on line 7, enter Ctrl+B, then enter 'falseE'.",
+        "With focus on line 7, enter Ctrl+B, then enter 'negE,A1'."
+    ]
 }
