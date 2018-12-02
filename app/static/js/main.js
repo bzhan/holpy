@@ -112,7 +112,7 @@
                     success: function (result) {
                         if (JSON.stringify(result) !== '{}') {
                             var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-                            editor.setValue(result['result'])
+                            editor.setValue(result['proof'])
                         }
                     }
                 });
@@ -146,6 +146,31 @@
                 reader.readAsText(f);
             }
         });
+
+        function display_running() {
+            var status_output = document.querySelector('.code-cell.selected .output pre');
+            status_output.innerHTML = "Running"
+        }
+
+        function display_checked_proof(result) {
+            var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+            var status_output = document.querySelector('.code-cell.selected .output pre');
+
+            if ("failed" in result) {
+                status_output.innerHTML = result["failed"] + ": " + result["message"]
+            }
+            else {
+                editor.setValue(result["proof"]);
+                var num_gaps = result["report"]["num_gaps"];
+                if (num_gaps > 0) {
+                    status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
+                }
+                else {
+                    status_output.innerHTML = "OK. Proof complete!"
+                }
+            }
+        }
+
         document.getElementById('open-problem').addEventListener('change', function (e) {
             e = e || window.event;
 
@@ -163,17 +188,13 @@
                         'conclusion': json_data['conclusion']
                     };
                     var data = JSON.stringify(event);
+                    display_running();
 
                     $.ajax({
                         url: "/api/init",
                         type: "POST",
                         data: data,
-                        success: function (result) {
-                            if (JSON.stringify(result) !== '{}') {
-                                var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-                                editor.setValue(result['result'])
-                            }        
-                        }
+                        success: display_checked_proof
                     });
                 });
                 reader.readAsText(f);
@@ -275,28 +296,13 @@
                         "proof" : editor.getValue()
                     };
                     var data = JSON.stringify(input);
-                    var status_output = document.querySelector('.code-cell.selected .output pre');
-                    status_output.innerHTML = "Running"
+                    display_running();
 
                     $.ajax({
                         url: "/api/check-proof",
                         type: "POST",
                         data: data,
-                        success: function (result) {
-                            if ("failed" in result) {
-                                status_output.innerHTML = result["failed"] + ": " + result["message"]
-                            }
-                            else {
-                                editor.setValue(result["proof"]);
-                                var num_gaps = result["report"]["num_gaps"];
-                                if (num_gaps > 0) {
-                                    status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
-                                }
-                                else {
-                                    status_output.innerHTML = "OK. Proof complete!"
-                                }
-                            }
-                        }
+                        success: display_checked_proof
                     })
                 }
             )
@@ -311,13 +317,14 @@
                         "line": line,
                     };
                     var data = JSON.stringify(input);
+                    display_running();
 
                     $.ajax({
                         url: "/api/add-line-after",
                         type: "POST",
                         data: data,
                         success: function (result) {
-                            cm.setValue(result['result']);
+                            display_checked_proof(result);
                             cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
                         }
                     })
@@ -334,13 +341,14 @@
                     "line": line,
                 };
                 var data = JSON.stringify(input);
+                display_running();
 
                 $.ajax({
                     url: "/api/remove-line",
                     type: "POST",
                     data: data,
                     success: function (result) {
-                        cm.setValue(result['result']);
+                        display_checked_proof(result);
                         cm.setCursor(line_number - 1, Number.MAX_SAFE_INTEGER);
                     }
                 })
@@ -360,13 +368,14 @@
                     input["var_name"] = prompt('Enter variable name').split(",")
                 }
                 var data = JSON.stringify(input);
+                display_running();
 
                 $.ajax({
                     url: "/api/introduction",
                     type: "POST",
                     data: data,
                     success: function (result) {
-                        cm.setValue(result['result']);
+                        display_checked_proof(result);
                         cm.setCursor(line_number + result['line-diff'], Number.MAX_SAFE_INTEGER);
                     }
                 })
@@ -419,7 +428,7 @@
                     () => !swal.isLoading()
             }).then((result) => {
                 if (result) {
-                    cm.setValue(result['value']['result']);
+                    display_checked_proof(result['value']);
                 }
             })
         }

@@ -25,6 +25,12 @@ ctxt = dict()
 parse = parser.term_parser(thy, ctxt).parse
 
 
+def get_result_from_cell(cell):
+    return {
+        "proof": cell.print_proof(),
+        "report": cell.rpt.json_data()
+    }
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -41,17 +47,13 @@ def check_proof():
     try:
         cell.parse_proof(proof)
         cell.check_proof()
-        result = {
-            "proof": cell.print_proof(),
-            "report": cell.rpt.json_data()
-        }
-        return jsonify(result)
+        return jsonify(get_result_from_cell(cell))
     except Exception as e:
-        result = {
+        error = {
             "failed": e.__class__.__name__,
             "message": str(e)
         }
-        return jsonify(result)
+        return jsonify(error)
 
 
 @app.route('/api/init', methods=['POST'])
@@ -81,7 +83,7 @@ def init_component():
         concl = term_parser(thy, ctxt).parse(data.get('conclusion'))
         cell = ProofState(vars, assums, concl)
         cells[data.get('id')] = cell
-        return jsonify({"result": cell.print_proof()})
+        return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
 
@@ -92,7 +94,7 @@ def add_line_after():
         cell = cells[data.get('id')]
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.add_line_after(id)
-        return jsonify({"result": cell.print_proof()})
+        return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
 
@@ -103,7 +105,7 @@ def remove_line():
         cell = cells[data.get('id')]
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.remove_line(id)
-        return jsonify({"result": cell.print_proof()})
+        return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
 
@@ -116,7 +118,9 @@ def introduction():
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.introduction(id, data.get('var_name'))
         line_diff = (cell.prf.get_num_item() - len_before) / 2
-        return jsonify({"line-diff": line_diff, "result": cell.print_proof()})
+        result = get_result_from_cell(cell)
+        result["line-diff"] = line_diff
+        return jsonify(result)
     return jsonify({})
 
 
@@ -129,7 +133,7 @@ def apply_backward_step():
         theorem = data.get('theorem').split(",")
         theorem, prevs = theorem[0], theorem[1:]
         cell.apply_backward_step(id, theorem, prevs=prevs)
-        return jsonify({"result": cell.print_proof()})
+        return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
 
