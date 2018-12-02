@@ -108,8 +108,7 @@ class TacticTest(unittest.TestCase):
         prf = tactic.set_line(prf, "S1", "apply_theorem", args = "conjD2", prevs = ["A1"])
         prf = tactic.set_line(prf, "S2", "apply_theorem", args = "conjD1", prevs = ["A1"])
         rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(conj(A, B), conj(B, A)))
-        self.assertEqual(len(rpt.gaps), 0)
+        self.assertEqual(thy.check_proof(prf, rpt, no_gaps=True), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testDisjComm(self):
         """Proof of A | B --> B | A."""
@@ -123,8 +122,7 @@ class TacticTest(unittest.TestCase):
         thy.check_proof(prf)
         prf = tactic.apply_backward_step(prf, "S5", thy, "disjI1", prevs = ["S4"])
         rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(disj(A, B), disj(B, A)))
-        self.assertEqual(len(rpt.gaps), 0)
+        self.assertEqual(thy.check_proof(prf, rpt, no_gaps=True), Thm.mk_implies(disj(A, B), disj(B, A)))
 
     def testDoubleNegInv(self):
         """Proof of ~~A --> A."""
@@ -138,8 +136,7 @@ class TacticTest(unittest.TestCase):
         prf = tactic.apply_backward_step(prf, "S5", thy, "falseE")
         prf = tactic.apply_backward_step(prf, "S5", thy, "negE", prevs = ["A1"])
         rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(neg(neg(A)), A))
-        self.assertEqual(len(rpt.gaps), 0)
+        self.assertEqual(thy.check_proof(prf, rpt, no_gaps=True), Thm.mk_implies(neg(neg(A)), A))
 
     def testExistsConj(self):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
@@ -170,8 +167,7 @@ class TacticTest(unittest.TestCase):
         thy.check_proof(prf)
         prf = tactic.apply_backward_step(prf, "S9", thy, "exI", prevs = ["S8"])
         rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), Thm.mk_implies(ex_conj, conj_ex))
-        self.assertEqual(len(rpt.gaps), 0)
+        self.assertEqual(thy.check_proof(prf, rpt, no_gaps=True), Thm.mk_implies(ex_conj, conj_ex))
 
 if __name__ == "__main__":
     unittest.main()

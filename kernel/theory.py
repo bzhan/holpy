@@ -228,13 +228,14 @@ class Theory():
         else:
             raise TypeError()
 
-    def _check_proof_item(self, depth, seq_dict, seq, rpt):
+    def _check_proof_item(self, depth, seq_dict, seq, rpt, no_gaps):
         """Check a single proof item.
         
         depth -- depth in macro expansion.
         seq_dict -- dictionary of existing sequents.
         seq -- proof item to be checked.
         rpt -- report for proof-checking. Modified by the function.
+        no_gaps -- disable gaps.
         
         """
         if seq.rule == "":
@@ -243,6 +244,8 @@ class Theory():
         if seq.rule == "sorry":
             # Gap in the proof
             assert seq.th is not None, "sorry must have explicit statement."
+            if no_gaps:
+                raise CheckProofException("gaps are not allowed")
             res_th = seq.th
             if rpt is not None:
                 rpt.add_gap(seq.th)
@@ -299,7 +302,7 @@ class Theory():
                     prf = macro.expand(depth+1, *(args + list(zip(seq.prevs, prev_ths))))
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
-                    res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt)
+                    res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt, no_gaps=no_gaps)
             else:
                 raise CheckProofException("proof method not found: " + seq.rule)
 
@@ -320,7 +323,7 @@ class Theory():
         seq_dict[seq.id] = seq.th
         return None
 
-    def check_proof_incr(self, depth, seq_dict, prf, rpt = None):
+    def check_proof_incr(self, depth, seq_dict, prf, rpt=None, *, no_gaps=False):
         """Incremental version of check_proof.
         
         depth -- depth in macro expansion.
@@ -330,10 +333,10 @@ class Theory():
         
         """
         for seq in prf.get_items():
-            self._check_proof_item(depth, seq_dict, seq, rpt)
+            self._check_proof_item(depth, seq_dict, seq, rpt, no_gaps)
         return prf.get_thm()
 
-    def check_proof(self, prf, rpt = None):
+    def check_proof(self, prf, rpt=None, *, no_gaps=False):
         """Verify the given proof object. Returns the final theorem if check
         passes. Otherwise throws CheckProofException.
 
@@ -341,7 +344,7 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
-        return self.check_proof_incr(0, dict(), prf, rpt)
+        return self.check_proof_incr(0, dict(), prf, rpt, no_gaps=no_gaps)
 
     def get_proof_rule_sig(self, name):
         """Obtain the argument signature of the proof rule."""
