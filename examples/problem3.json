@@ -7,7 +7,7 @@
     ],
     "conclusion" : "A",
     "instructions": [
-        "Add line after A1, enter 'theorem classical'. Use Cells->Run to check proof.",
+        "Add line after A1, enter 'theorem classical'. Use Ctrl+Enter to check proof.",
         "With focus on line 4, enter Ctrl+B, then enter 'disjE,S1'.",
         "With focus on line 4, enter Ctrl+I.",
         "With focus on line 6, enter Ctrl+I.",

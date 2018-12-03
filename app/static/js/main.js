@@ -199,27 +199,20 @@
                 matchBrackets: true,
                 scrollbarStyle: "overlay",
                 extraKeys: {
-                    "Shift-Ctrl-Enter": function () {
-                    },
-                    "Ctrl-I": function (cm) {
-                        introduction(cm)
-                    },
-                    "Ctrl-B": function (cm) {
-                        apply_backward_step(cm);
-                    }
+                    "Ctrl-I": introduction,
+                    "Ctrl-B": apply_backward_step
                 }
             });
             editor.setSize("auto", "auto");
             editor.setValue("");
-            editor.on("keyHandled", function (cm, name, event) {
-                if (name === "Shift-Ctrl-Enter") {
-                    send_input()
-                }
-            });
             editor.on("keydown", function (cm, event) {
                 let line_no = cm.getCursor().line;
                 let line = cm.getLine(line_no);
-                if (event.code === 'Enter') {
+                if (event.ctrlKey && event.code === 'Enter') {
+                    event.preventDefault();
+                    send_input();
+                }
+                else if (event.code === 'Enter') {
                     event.preventDefault();
                     add_line_after(cm);
                 }
@@ -271,6 +264,7 @@
         function send_input() {
             $(document).ready(function () {
                     var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+                    var line_number = editor.getCursor().line;
                     var input = {
                         "id": document.querySelector('.code-cell.selected textarea').id,
                         "proof" : editor.getValue()
@@ -282,7 +276,10 @@
                         url: "/api/check-proof",
                         type: "POST",
                         data: data,
-                        success: display_checked_proof
+                        success: function (result) {
+                            display_checked_proof(result);
+                            editor.setCursor(line_number, Number.MAX_SAFE_INTEGER);
+                        }
                     })
                 }
             )
