@@ -2,14 +2,26 @@
     var pageNum = 0;
     var theorem = {};
 
+    function get_selected_id() {
+        return document.querySelector('.code-cell.selected textarea').id;
+    }
+
+    function get_selected_editor() {
+        return document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+    }
+
+    function get_selected_output() {
+        return document.querySelector('.code-cell.selected .output pre');
+    }
+
     function display_running() {
-        var status_output = document.querySelector('.code-cell.selected .output pre');
-        status_output.innerHTML = "Running"
+        var status_output = get_selected_output();
+        status_output.innerHTML = "Running";
     }
 
     function display_checked_proof(result) {
-        var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-        var status_output = document.querySelector('.code-cell.selected .output pre');
+        var editor = get_selected_editor();
+        var status_output = get_selected_output();
 
         if ("failed" in result) {
             status_output.innerHTML = result["failed"] + ": " + result["message"]
@@ -82,13 +94,13 @@
             switch_check_box();
         });
 
-        $('#introduction').on("click",function () {
-            let cm=document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-            introduction(cm);});
+        $('#introduction').on("click", function () {
+            introduction(get_selected_editor());
+        });
 
-        $('#addlinebelow').on("click",function () {
-            let cm=document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-            add_line_after(cm);});
+        $('#addlinebelow').on("click", function () {
+            add_line_after(get_selected_editor());
+        });
 
         $('#init-button').on("click", function () {
             let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
@@ -116,7 +128,7 @@
             $(document).ready(function () {
                 var event = {
                     'event': 'init_cell',
-                    'id': document.querySelector('.code-cell.selected textarea').id,
+                    'id': get_selected_id(),
                     'variables': variables,
                     'assumes': assumes,
                     'conclusion': conclusion
@@ -138,13 +150,13 @@
         init_input_box('variables');
         init_input_box('assumes');
         init_input_box('conclusions');
-        document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror.focus();
+        get_selected_editor().focus();
 
         document.getElementById('open-file').addEventListener('change', function (e) {
             e = e || window.event;
 
             let files = this.files;
-            let editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+            let editor = get_selected_editor();
             editor.setValue("");
             let i = 0, f;
             for (; f = files[i]; i++) {
@@ -169,7 +181,7 @@
                     var json_data = JSON.parse(this.result);
                     var event = {
                         'event': 'init_cell',
-                        'id': document.querySelector('.code-cell.selected textarea').id,
+                        'id': get_selected_id(),
                         'variables': json_data['variables'],
                         'assumes': json_data['assumes'],
                         'conclusion': json_data['conclusion']
@@ -183,7 +195,7 @@
                         data: data,
                         success: function (result) {
                             display_checked_proof(result);
-                            document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror.focus();
+                            get_selected_editor().focus();
                         }
                     });
                 });
@@ -267,10 +279,10 @@
 
         function send_input() {
             $(document).ready(function () {
-                    var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+                    var editor = get_selected_editor();
                     var line_number = editor.getCursor().line;
                     var input = {
-                        "id": document.querySelector('.code-cell.selected textarea').id,
+                        "id": get_selected_id(),
                         "proof" : editor.getValue()
                     };
                     var data = JSON.stringify(input);
@@ -294,7 +306,7 @@
                     var line_number = cm.getCursor().line;
                     var line = cm.getLine(line_number);
                     var input = {
-                        "id": document.querySelector('.code-cell.selected textarea').id,
+                        "id": get_selected_id(),
                         "line": line,
                     };
                     var data = JSON.stringify(input);
@@ -318,7 +330,7 @@
                 var line_number = cm.getCursor().line;
                 var line = cm.getLine(line_number);
                 var input = {
-                    "id": document.querySelector('.code-cell.selected textarea').id,
+                    "id": get_selected_id(),
                     "line": line,
                 };
                 var data = JSON.stringify(input);
@@ -341,7 +353,7 @@
                 var line_number = cm.getCursor().line;
                 var line = cm.getLine(line_number);
                 var input = {
-                    "id": document.querySelector('.code-cell.selected textarea').id,
+                    "id": get_selected_id(),
                     "line": line,
                 };
 
@@ -379,7 +391,7 @@
                 showLoaderOnConfirm: true,
                 preConfirm: () => {
                     var data = {
-                        'id': document.querySelector('.code-cell.selected textarea').id,
+                        'id': get_selected_id(),
                         "line": line,
                         'theorem': document.getElementById('swal-input1').value,
                     };
@@ -440,7 +452,7 @@
                 assumes_area.setValue('');
                 conclusions_area.setValue('');
                 var event = {
-                    'id': document.querySelector('.code-cell.selected textarea').id,
+                    'id': get_selected_id(),
                 };
                 var data = JSON.stringify(event);
 
