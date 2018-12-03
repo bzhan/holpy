@@ -133,12 +133,13 @@
         });
 
         $('#add-cell').click();
+        $('.code-cell').addClass('selected');
 
-        $(function () {
-            init_input_box('variables');
-            init_input_box('assumes');
-            init_input_box('conclusions');
-        });
+        init_input_box('variables');
+        init_input_box('assumes');
+        init_input_box('conclusions');
+        document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror.focus();
+
         document.getElementById('open-file').addEventListener('change', function (e) {
             e = e || window.event;
 
@@ -180,7 +181,10 @@
                         url: "/api/init",
                         type: "POST",
                         data: data,
-                        success: display_checked_proof
+                        success: function (result) {
+                            display_checked_proof(result);
+                            document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror.focus();
+                        }
                     });
                 });
                 reader.readAsText(f);
