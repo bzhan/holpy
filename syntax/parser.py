@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from lark import Lark, Transformer, v_args
+from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
@@ -9,6 +9,37 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic.logic import Logic
 from logic.nat import Nat
+
+
+def _abstract_over_name(t, name, n):
+    """Helper function for abstract_over_name. Here t is an open term.
+    All atomic terms with the given name should be replaced by Bound n.
+
+    """
+    if t.ty == Term.VAR or t.ty == Term.CONST:
+        if t.name == name:
+            return Bound(n)
+        else:
+            return t
+    elif t.ty == Term.COMB:
+        return Comb(_abstract_over_name(t.fun, name, n), _abstract_over_name(t.arg, name, n))
+    elif t.ty == Term.ABS:
+        return Abs(t.var_name, t.T, _abstract_over_name(t.body, name, n+1))
+    elif t.ty == Term.BOUND:
+        return t
+    else:
+        raise TypeError()
+
+def abstract_over_name(t, name, T):
+    """Abstract over all atomic terms with the given name."""
+    return Abs(name, T, _abstract_over_name(t, name, 0))
+
+
+class ParserException(Exception):
+    """Exceptions during parsing."""
+    def __init__(self, str):
+        self.str = str
+
 
 grammar = r"""
     ?type: "'" CNAME -> tvar              // Type variable
@@ -42,8 +73,8 @@ grammar = r"""
 
     ?term: imp
 
-    thm: "|-" term
-        | term ("," term)* "|-" term
+    thm: ("|-"|"⊢") term
+        | term ("," term)* ("|-"|"⊢") term
 
     term_pair: CNAME ":" term
 
@@ -103,19 +134,19 @@ class HOLTransformer(Transformer):
     def abs(self, var_name, T, body):
         # Bound variables should be represented by Var(var_name, None).
         # Abstract over it, and remember to change the type to T.
-        t = Term.mk_abs(Var(var_name, None), body, T = T)
+        t = abstract_over_name(body, var_name, T)
         return Abs(var_name, T, t.body)
 
     def all(self, var_name, T, body):
         # Similar parsing mechanism as for abs.
         all_t = Const("all", TFun(TFun(T, hol_bool), hol_bool))
-        t = Term.mk_abs(Var(var_name, None), body, T = T)
+        t = abstract_over_name(body, var_name, T)
         return all_t(t)
 
     def exists(self, var_name, T, body):
         # Similar parsing mechanism as for abs.
         exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
-        t = Term.mk_abs(Var(var_name, None), body, T = T)
+        t = abstract_over_name(body, var_name, T)
         return exists_t(t)
 
     def times(self, lhs, rhs):
@@ -188,12 +219,17 @@ def split_proof_rule(s):
     [id]: [rule_name] [args] by [prevs]
 
     """
-    id, rest = s.split(": ", 1)  # split off id
+    if s.count(": ") > 0:
+        id, rest = s.split(": ", 1)  # split off id
+    else:
+        raise ParserException("id not found: " + s)
+
     id = id.strip()
     if rest.count(" by ") > 0:
         th, rest = rest.split(" by ", 1)
     else:
         th, rest = "", rest
+
     if rest.count(" ") > 0:
         rule_name, rest = rest.split(" ", 1)  # split off name of rule
     else:
@@ -215,25 +251,36 @@ def parse_proof_rule(thy, ctxt, s):
     """
     (id, rule_name, args, prevs, th) = split_proof_rule(s)
 
+    if rule_name == "":
+        return ProofItem(id, "")
+
     if th == "":
         th = None
     else:
         th = thm_parser(thy, ctxt).parse(th)
 
-    sig = thy.get_proof_rule_sig(rule_name)
-    if sig == MacroSig.NONE:
-        assert args == "", "rule expects no argument."
-        return ProofItem(id, rule_name, prevs = prevs, th = th)
-    elif sig == MacroSig.STRING:
-        return ProofItem(id, rule_name, args = args, prevs = prevs, th = th)
-    elif sig == MacroSig.TERM:
-        t = term_parser(thy, ctxt).parse(args)
-        return ProofItem(id, rule_name, args = t, prevs = prevs, th = th)
-    elif sig == MacroSig.INST:
-        inst = inst_parser(thy, ctxt).parse(args)
-        return ProofItem(id, rule_name, args = inst, prevs = prevs, th = th)
-    elif sig == MacroSig.TYINST:
-        tyinst = tyinst_parser(thy, ctxt).parse(args)
-        return ProofItem(id, rule_name, args = tyinst, prevs = prevs, th = th)
-    else:
-        raise TypeError()
+    try:
+        sig = thy.get_proof_rule_sig(rule_name)
+        if sig == MacroSig.NONE:
+            assert args == "", "rule expects no argument."
+            return ProofItem(id, rule_name, prevs = prevs, th = th)
+        elif sig == MacroSig.STRING:
+            return ProofItem(id, rule_name, args = args, prevs = prevs, th = th)
+        elif sig == MacroSig.TERM:
+            t = term_parser(thy, ctxt).parse(args)
+            return ProofItem(id, rule_name, args = t, prevs = prevs, th = th)
+        elif sig == MacroSig.INST:
+            inst = inst_parser(thy, ctxt).parse(args)
+            return ProofItem(id, rule_name, args = inst, prevs = prevs, th = th)
+        elif sig == MacroSig.TYINST:
+            tyinst = tyinst_parser(thy, ctxt).parse(args)
+            return ProofItem(id, rule_name, args = tyinst, prevs = prevs, th = th)
+        elif sig == MacroSig.STRING_TERM:
+            s1, s2 = args.split(",", 2)
+            t = term_parser(thy, ctxt).parse(s2)
+            return ProofItem(id, rule_name, args = (s1, t), prevs = prevs, th = th)
+        else:
+            raise TypeError()
+    except exceptions.UnexpectedToken as e:
+        raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
+                              % (args, e.token, e.column))

@@ -358,10 +358,8 @@ class Term():
 
         """
         if self.ty == Term.ABS:
-            if self.T == t.get_type():
-                return self.body._subst_bound(t, 0)
-            else:
-                raise TermSubstitutionException()
+            # Perform the substitution. Note t may be a bound variable itself.
+            return self.body._subst_bound(t, 0)
         else:
             raise TermSubstitutionException()
 

@@ -47,6 +47,19 @@ class ProofReport():
     def __repr__(self):
         return str(self)
 
+    def json_data(self):
+        """Export report to json format."""
+        return {
+            "steps": self.steps,
+            "thm_steps": self.thm_steps,
+            "prim_steps": self.prim_steps,
+            "macro_steps": self.macro_steps,
+            "th_names": sorted(list(self.th_names)),
+            "macros_eval": sorted(list(self.macros_eval)),
+            "macros_expand": sorted(list(self.macros_expand)),
+            "num_gaps": len(self.gaps)
+        }
+
     def apply_theorem(self, th_name):
         self.steps += 1
         self.thm_steps += 1

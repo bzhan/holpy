@@ -8,7 +8,9 @@ from kernel.extension import Extension
 from kernel.report import ExtensionReport
 
 class TheoryException(Exception):
-    pass
+    """General exception for theory operations."""
+    def __init__(self, str):
+        self.str = str
 
 class CheckProofException(Exception):
     """Exception when checking proof. Provides error message."""
@@ -58,7 +60,7 @@ class Theory():
         
         """
         if name in self.data:
-            raise TheoryException()
+            raise TheoryException("Add data type")
         
         if init is None:
             init = dict()
@@ -70,7 +72,7 @@ class Theory():
         
         """
         if name not in self.data:
-            raise TheoryException()
+            raise TheoryException("Add data")
 
         assert isinstance(self.data[name], dict), "add_data: data must be a dictionary"
 
@@ -85,7 +87,7 @@ class Theory():
         
         """
         if name not in self.data:
-            raise TheoryException()
+            raise TheoryException("Update data")
 
         self.data[name] = f(self.data[name])
 
@@ -107,7 +109,7 @@ class Theory():
         """Returns the arity of the type."""
         data = self.get_data("type_sig")
         if name not in data:
-            raise TheoryException()
+            raise TheoryException("Type " + name + " not found")
 
         return data[name]
 
@@ -125,14 +127,14 @@ class Theory():
         """Returns the most general type of the term."""
         data = self.get_data("term_sig")
         if name not in data:
-            raise TheoryException()
+            raise TheoryException("Const " + name + " not found")
 
         return data[name]
 
     def add_theorem(self, name, th):
         """Add the given theorem under the given name."""
         if not isinstance(th, Thm):
-            raise TheoryException()
+            raise TypeError()
 
         self.add_data("theorems", name, th)
     
@@ -140,14 +142,14 @@ class Theory():
         """Returns the theorem under that name."""
         data = self.get_data("theorems")
         if name not in data:
-            raise TheoryException()
+            raise TheoryException("Theorem " + name + " not found")
 
         return data[name]
 
     def add_proof_macro(self, name, macro):
         """Add the given proof macro."""
         if not isinstance(macro, ProofMacro):
-            raise TheoryException()
+            raise TypeError()
 
         self.add_data("proof_macro", name, macro)
 
@@ -160,7 +162,7 @@ class Theory():
         """Returns the proof macro with that name."""
         data = self.get_data("proof_macro")
         if name not in data:
-            raise TheoryException()
+            raise TheoryException("Macro " + name + " not found")
         
         return data[name]
 
@@ -196,7 +198,7 @@ class Theory():
             return None
         elif T.ty == HOLType.TYPE:
             if self.get_type_sig(T.name) != len(T.args):
-                raise TheoryException()
+                raise TheoryException("Check type: " + repr(T))
             else:
                 for arg in T.args:
                     self.check_type(arg)
@@ -215,7 +217,7 @@ class Theory():
             try:
                 self.get_term_sig(t.name).match(t.T)
             except TypeMatchException:
-                raise TheoryException()
+                raise TheoryException("Check term: " + repr(t))
         elif t.ty == Term.COMB:
             self.check_term(t.fun)
             self.check_term(t.arg)
@@ -226,13 +228,14 @@ class Theory():
         else:
             raise TypeError()
 
-    def _check_proof_item(self, depth, seq_dict, seq, rpt):
+    def _check_proof_item(self, depth, seq_dict, seq, rpt, no_gaps):
         """Check a single proof item.
         
         depth -- depth in macro expansion.
         seq_dict -- dictionary of existing sequents.
         seq -- proof item to be checked.
         rpt -- report for proof-checking. Modified by the function.
+        no_gaps -- disable gaps.
         
         """
         if seq.rule == "":
@@ -241,6 +244,8 @@ class Theory():
         if seq.rule == "sorry":
             # Gap in the proof
             assert seq.th is not None, "sorry must have explicit statement."
+            if no_gaps:
+                raise CheckProofException("gaps are not allowed")
             res_th = seq.th
             if rpt is not None:
                 rpt.add_gap(seq.th)
@@ -297,14 +302,16 @@ class Theory():
                     prf = macro.expand(depth+1, *(args + list(zip(seq.prevs, prev_ths))))
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
-                    res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt)
+                    res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt, no_gaps=no_gaps)
             else:
                 raise CheckProofException("proof method not found: " + seq.rule)
 
         if seq.th is None:
             # No expected theorem is provided
             seq.th = res_th
-        elif seq.th != res_th:
+        elif not res_th.can_prove(seq.th):
+            # Resulting res_th is OK as long as the conclusion is the same,
+            # and the assumptions is a subset of that of seq.th.
             raise CheckProofException("output does not match\n" + str(seq.th) + "\n vs.\n" + str(res_th))
 
         # Check the current statement is correctly typed.
@@ -316,7 +323,7 @@ class Theory():
         seq_dict[seq.id] = seq.th
         return None
 
-    def check_proof_incr(self, depth, seq_dict, prf, rpt = None):
+    def check_proof_incr(self, depth, seq_dict, prf, rpt=None, *, no_gaps=False):
         """Incremental version of check_proof.
         
         depth -- depth in macro expansion.
@@ -326,10 +333,10 @@ class Theory():
         
         """
         for seq in prf.get_items():
-            self._check_proof_item(depth, seq_dict, seq, rpt)
+            self._check_proof_item(depth, seq_dict, seq, rpt, no_gaps)
         return prf.get_thm()
 
-    def check_proof(self, prf, rpt = None):
+    def check_proof(self, prf, rpt=None, *, no_gaps=False):
         """Verify the given proof object. Returns the final theorem if check
         passes. Otherwise throws CheckProofException.
 
@@ -337,7 +344,7 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
-        return self.check_proof_incr(0, dict(), prf, rpt)
+        return self.check_proof_incr(0, dict(), prf, rpt, no_gaps=no_gaps)
 
     def get_proof_rule_sig(self, name):
         """Obtain the argument signature of the proof rule."""

@@ -91,4 +91,5 @@ def BasicTheory():
     thy.add_proof_macro("fun_combination", fun_combination_macro())
     thy.add_proof_macro("beta_norm", beta_norm_macro())
     thy.add_proof_macro("apply_theorem", apply_theorem_macro())
+    thy.add_proof_macro("apply_theorem_for", apply_theorem_macro(with_concl=True))
     return thy

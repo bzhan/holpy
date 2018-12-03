@@ -1,0 +1,17 @@
+{
+    "variables": [
+        "var A :: bool",
+        "var B :: bool"
+    ],
+    "assumes": [
+        "A | B"
+    ],
+    "conclusion": "B | A",
+    "instructions": [
+        "With focus on line 4, enter Ctrl+B, then enter 'disjE,A1'.",
+        "With focus on line 4, enter Ctrl+I.",
+        "With focus on line 5, enter Ctrl+B, then enter 'disjI2,S1'.",
+        "With focus on line 7, enter Ctrl+I.",
+        "With focus on line 8, enter Ctrl+B, then enter 'disjI1,S4'."
+    ]
+}

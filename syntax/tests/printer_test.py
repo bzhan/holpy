@@ -89,6 +89,8 @@ class PrinterTest(unittest.TestCase):
             (conj(all(a, P(a)), Q(a)), "(!a. P a) & Q a"),
             (all(a, imp(P(a), Q(a))), "!a. P a --> Q a"),
             (imp(all(a, P(a)), Q(a)), "(!a. P a) --> Q a"),
+            (imp(all(a, P(a)), all(a, Q(a))), "(!a. P a) --> (!a. Q a)"),
+            (imp(exists(a, P(a)), exists(a, Q(a))), "(?a. P a) --> (?a. Q a)"),
             (eq(A, all(a, P(a))), "A = (!a. P a)"),
             (exists(a, P(a)), "?a. P a"),
             (exists(a, all(b, R(a, b))), "?a. !b. R a b"),

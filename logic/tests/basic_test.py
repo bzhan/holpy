@@ -10,6 +10,7 @@ from kernel.report import ProofReport
 from kernel.theory import Theory
 import logic.basic as basic
 from logic.basic import Logic, Nat
+from syntax import printer
 
 Ta = TVar("a")
 x = Var("x", Ta)
@@ -127,6 +128,26 @@ class BasicTest(unittest.TestCase):
         th = Thm.mk_implies(disjAB, disjBA)
         self.assertEqual(thy.check_proof(prf), th)
 
+    def testDisjCommWithMacro(self):
+        """Proof of commutativity of disjunction, with macros."""
+        thy = basic.BasicTheory()
+        A = Var("A", hol_bool)
+        B = Var("B", hol_bool)
+        disjAB = Logic.mk_disj(A, B)
+        disjBA = Logic.mk_disj(B, A)
+
+        prf = Proof(disjAB)
+        prf.add_item("S1", "assume", args = A)
+        prf.add_item("S2", "apply_theorem_for", args = ("disjI2", disjBA), prevs = ["S1"])
+        prf.add_item("S3", "implies_intr", args = A, prevs = ["S2"])
+        prf.add_item("S4", "assume", args = B)
+        prf.add_item("S5", "apply_theorem_for", args = ("disjI1", disjBA), prevs = ["S4"])
+        prf.add_item("S6", "implies_intr", args = B, prevs = ["S5"])
+        prf.add_item("S7", "apply_theorem", args = "disjE", prevs = ["A1", "S3", "S6"])
+        prf.add_item("S8", "implies_intr", args = disjAB, prevs = ["S7"])
+        th = Thm.mk_implies(disjAB, disjBA)
+        self.assertEqual(thy.check_proof(prf), th)
+
     def testAllConj(self):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
         thy = basic.BasicTheory()
@@ -154,6 +175,29 @@ class BasicTest(unittest.TestCase):
         prf.add_item("S12", "implies_elim", prevs = ["S11", "S5"])
         prf.add_item("S13", "implies_elim", prevs = ["S12", "S9"])
         prf.add_item("S14", "implies_intr", args = all_conj, prevs = ["S13"])
+        th = Thm.mk_implies(all_conj, conj_all)
+        self.assertEqual(thy.check_proof(prf), th)
+
+    def testAllConjWithMacro(self):
+        """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x), using macros."""
+        thy = basic.BasicTheory()
+        Ta = TVar("a")
+        A = Var("A", TFun(Ta, hol_bool))
+        B = Var("B", TFun(Ta, hol_bool))
+        x = Var("x", Ta)
+        all_conj = Term.mk_all(x, Logic.mk_conj(A(x), B(x)))
+        all_A = Term.mk_all(x, A(x))
+        all_B = Term.mk_all(x, B(x))
+        conj_all = Logic.mk_conj(all_A, all_B)
+
+        prf = Proof(all_conj)
+        prf.add_item("S1", "forall_elim", args = x, prevs = ["A1"])
+        prf.add_item("S2", "apply_theorem", args = "conjD1", prevs = ["S1"])
+        prf.add_item("S3", "forall_intr", args = x, prevs = ["S2"])
+        prf.add_item("S4", "apply_theorem", args = "conjD2", prevs = ["S1"])
+        prf.add_item("S5", "forall_intr", args = x, prevs = ["S4"])
+        prf.add_item("S6", "apply_theorem", args = "conjI", prevs = ["S3", "S5"])
+        prf.add_item("S7", "implies_intr", args = all_conj, prevs = ["S6"])
         th = Thm.mk_implies(all_conj, conj_all)
         self.assertEqual(thy.check_proof(prf), th)
 
@@ -284,7 +328,8 @@ class BasicTest(unittest.TestCase):
         th = Thm.mk_implies(exists_conj, conj_exists)
         self.assertEqual(thy.check_proof(prf), th)
 
-    def testExistsConjMacro(self):
+    def testExistsConjWithMacro(self):
+        """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x), using macros."""
         thy = basic.BasicTheory()
         Ta = TVar("a")
         A = Var("A", TFun(Ta, hol_bool))

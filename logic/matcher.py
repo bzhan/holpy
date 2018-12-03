@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.term import Term, Abs, Bound
+from kernel.term import Term, Comb, Abs, Bound
 
 class MatchException(Exception):
     pass
@@ -38,7 +38,10 @@ class Matcher():
                 if pat.fun.name not in inst:
                     inst[pat.fun.name] = Abs("x", pat.fun.T.domain_type(), t)
                 else:
-                    if inst[pat.fun.name].body == t:
+                    inst_name = inst[pat.fun.name]
+                    if inst_name.ty == Term.ABS and inst_name.body == t:
+                        pass
+                    elif inst_name.ty == Term.VAR and t == Comb(inst_name, Bound(0)):
                         pass
                     else:
                         raise MatchException()

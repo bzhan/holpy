@@ -1,9 +1,43 @@
 (function ($) {
     var pageNum = 0;
     var theorem = {};
-    var variables = [];
-    var assumes = [];
-    var conclusion = undefined;
+
+    function get_selected_id() {
+        return document.querySelector('.code-cell.selected textarea').id;
+    }
+
+    function get_selected_editor() {
+        return document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+    }
+
+    function get_selected_output() {
+        return document.querySelector('.code-cell.selected .output pre');
+    }
+
+    function display_running() {
+        var status_output = get_selected_output();
+        status_output.innerHTML = "Running";
+    }
+
+    function display_checked_proof(result) {
+        var editor = get_selected_editor();
+        var status_output = get_selected_output();
+
+        if ("failed" in result) {
+            status_output.innerHTML = result["failed"] + ": " + result["message"]
+        }
+        else {
+            editor.setValue(result["proof"]);
+            var num_gaps = result["report"]["num_gaps"];
+            if (num_gaps > 0) {
+                status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
+            }
+            else {
+                status_output.innerHTML = "OK. Proof complete!"
+            }
+        }
+    }
+
     $(document).ready(function () {
         document.querySelector('.pans').style.height = '665px';
         $('#theorem-select').ready(function () {
@@ -28,20 +62,19 @@
             });
         });
 
-        // $('#theorem-select').on('change', function (e) {
-        //     if (undefined !== theorem[this.value])
-        //         document.getElementById('type-label').innerHTML = theorem[this.value] + ': ';
-        //     else
-        //         document.getElementById('type-label').innerHTML = 'Var: ';
-        // });
-
         $('#add-cell').on('click', function () {
             pageNum++;
+            // Add CodeMirror textarea
+            id = 'code' + pageNum + '-pan';
             $('#codeTabContent').append(
-                $('<div class="code-cell" id="code' + pageNum + '-pan">' +
+                $('<div class="code-cell" id=' + id + '>' +
                     '<label for="code' + pageNum + '"></label> ' +
-                    '<textarea' + ' id="code' + pageNum + '""></textarea>'));
+                    '<textarea' + ' id="code' + pageNum + '""></textarea></div>'));
             init_editor("code" + pageNum);
+            // Add location for displaying results
+            $('#' + id).append(
+                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
+                    '<pre> </pre></div></div>'));
         });
 
         $('#delete-cell').on('click', function () {
@@ -61,18 +94,21 @@
             switch_check_box();
         });
 
-        $('#introduction').on("click",function () {
-            let cm=document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-            introduction(cm);});
+        $('#introduction').on("click", function () {
+            introduction(get_selected_editor());
+        });
 
-        $('#addlinebelow').on("click",function () {
-            let cm=document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-            add_line_after(cm);});
+        $('#addlinebelow').on("click", function () {
+            add_line_after(get_selected_editor());
+        });
 
         $('#init-button').on("click", function () {
             let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
             let assumes_area = document.querySelector('#assumes .CodeMirror').CodeMirror;
             let conclusions_area = document.querySelector('#conclusions .CodeMirror').CodeMirror;
+            var variables = [];
+            var assumes = [];
+            var conclusion = undefined;
             var reg_blank = /^\s*$/g;
             variables_area.eachLine(line => {
                 if (!reg_blank.test(line.text)) {
@@ -92,7 +128,7 @@
             $(document).ready(function () {
                 var event = {
                     'event': 'init_cell',
-                    'id': document.querySelector('.code-cell.selected textarea').id,
+                    'id': get_selected_id(),
                     'variables': variables,
                     'assumes': assumes,
                     'conclusion': conclusion
@@ -103,31 +139,24 @@
                     url: "/api/init",
                     type: "POST",
                     data: data,
-                    success: function (result) {
-                        if (JSON.stringify(result) !== '{}') {
-                            var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-                            editor.setValue(result['result'])
-                        }
-                    }
+                    success: display_checked_proof
                 });
-                variables = [];
-                assumes = [];
-                conclusion = undefined;
             });
         });
 
         $('#add-cell').click();
+        $('.code-cell').addClass('selected');
 
-        $(function () {
-            init_input_box('variables');
-            init_input_box('assumes');
-            init_input_box('conclusions');
-        });
+        init_input_box('variables');
+        init_input_box('assumes');
+        init_input_box('conclusions');
+        get_selected_editor().focus();
+
         document.getElementById('open-file').addEventListener('change', function (e) {
             e = e || window.event;
 
             let files = this.files;
-            let editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+            let editor = get_selected_editor();
             editor.setValue("");
             let i = 0, f;
             for (; f = files[i]; i++) {
@@ -137,6 +166,39 @@
                         editor.setValue(editor.getValue() + this.result);
                     };
                 })(f);
+                reader.readAsText(f);
+            }
+        });
+
+        document.getElementById('open-problem').addEventListener('change', function (e) {
+            e = e || window.event;
+
+            let files = this.files;
+            let i = 0, f;
+            for (; f = files[i]; i++) {
+                let reader = new FileReader();
+                reader.onload = (function () {
+                    var json_data = JSON.parse(this.result);
+                    var event = {
+                        'event': 'init_cell',
+                        'id': get_selected_id(),
+                        'variables': json_data['variables'],
+                        'assumes': json_data['assumes'],
+                        'conclusion': json_data['conclusion']
+                    };
+                    var data = JSON.stringify(event);
+                    display_running();
+
+                    $.ajax({
+                        url: "/api/init",
+                        type: "POST",
+                        data: data,
+                        success: function (result) {
+                            display_checked_proof(result);
+                            get_selected_editor().focus();
+                        }
+                    });
+                });
                 reader.readAsText(f);
             }
         });
@@ -153,30 +215,28 @@
                 matchBrackets: true,
                 scrollbarStyle: "overlay",
                 extraKeys: {
-                    "Shift-Ctrl-Enter": function () {
-                    },
-                    "Ctrl-I": function (cm) {
-                        introduction(cm)
-                    },
-                    "Ctrl-B": function (cm) {
-                        apply_backward_step(cm);
-                    }
+                    "Ctrl-I": introduction,
+                    "Ctrl-B": apply_backward_step
                 }
             });
             editor.setSize("auto", "auto");
             editor.setValue("");
-            editor.on("keyHandled", function (cm, name, event) {
-                if (name === "Shift-Ctrl-Enter") {
-                    send_input()
-                }
-            });
             editor.on("keydown", function (cm, event) {
-                if (event.code === 'Enter') {
-                    let line_no = cm.getCursor().line;
-                    let line = cm.getLine(line_no);
+                let line_no = cm.getCursor().line;
+                let line = cm.getLine(line_no);
+                if (event.ctrlKey && event.code === 'Enter') {
+                    event.preventDefault();
+                    send_input();
+                }
+                else if (event.code === 'Enter') {
+                    event.preventDefault();
                     add_line_after(cm);
-                    // if (line.indexOf('|-') === -1) {
-                    // }
+                }
+                else if (event.code === 'Backspace') {
+                    if (line.endsWith(": ")) {
+                        event.preventDefault();
+                        remove_line(cm);
+                    }
                 }
             });
             editor.on("focus", function (cm, event) {
@@ -189,10 +249,6 @@
                 document.querySelector('#conclusions .CodeMirror').CodeMirror.setOption('readOnly', false);
                 set_theorem_select(cm);
                 get_cell_state();
-                // var line_number = cm.getCursor().line;
-                // var line = cm.getLine(line_number);
-                // if (line !== '' && line.indexOf('by') !== -1)
-                //     proof_line_cov(cm);
             });
             editor.on("change", function (cm, changed) {
                 $(document).ready(function () {
@@ -223,30 +279,22 @@
 
         function send_input() {
             $(document).ready(function () {
-                    var input = {};
-                    var counter = 1;
-                    var reg_blank = /^\s*$/g;
-                    var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-                    editor.eachLine(line => {
-                        if (!reg_blank.test(line.text))
-                            input[counter++] = line.text;
-                    });
+                    var editor = get_selected_editor();
+                    var line_number = editor.getCursor().line;
+                    var input = {
+                        "id": get_selected_id(),
+                        "proof" : editor.getValue()
+                    };
                     var data = JSON.stringify(input);
+                    display_running();
 
                     $.ajax({
                         url: "/api/check-proof",
                         type: "POST",
                         data: data,
                         success: function (result) {
-                            $('.code-cell.selected').append(
-                                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                                    '<pre></pre></div></div>')
-                            );
-                            let value = "";
-                            for (var i in result) {
-                                value += result[i] + '\n';
-                            }
-                            document.querySelector('.code-cell.selected .output pre').innerHTML = value;
+                            display_checked_proof(result);
+                            editor.setCursor(line_number, Number.MAX_SAFE_INTEGER);
                         }
                     })
                 }
@@ -255,20 +303,21 @@
 
         function add_line_after(cm) {
             $(document).ready(function () {
-                    var line_number = cm.getCursor().line - 1;
+                    var line_number = cm.getCursor().line;
                     var line = cm.getLine(line_number);
                     var input = {
-                        "id": document.querySelector('.code-cell.selected textarea').id,
+                        "id": get_selected_id(),
                         "line": line,
                     };
                     var data = JSON.stringify(input);
+                    display_running();
 
                     $.ajax({
                         url: "/api/add-line-after",
                         type: "POST",
                         data: data,
                         success: function (result) {
-                            cm.setValue(result['result']);
+                            display_checked_proof(result);
                             cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
                         }
                     })
@@ -276,22 +325,50 @@
             )
         }
 
+        function remove_line(cm) {
+            $(document).ready(function () {
+                var line_number = cm.getCursor().line;
+                var line = cm.getLine(line_number);
+                var input = {
+                    "id": get_selected_id(),
+                    "line": line,
+                };
+                var data = JSON.stringify(input);
+                display_running();
+
+                $.ajax({
+                    url: "/api/remove-line",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+                        display_checked_proof(result);
+                        cm.setCursor(line_number - 1, Number.MAX_SAFE_INTEGER);
+                    }
+                })
+            })
+        }
+
         function introduction(cm) {
             $(document).ready(function () {
                 var line_number = cm.getCursor().line;
                 var line = cm.getLine(line_number);
                 var input = {
-                    "id": document.querySelector('.code-cell.selected textarea').id,
+                    "id": get_selected_id(),
                     "line": line,
                 };
+
+                if (line.indexOf("⊢ ∀") !== -1) {
+                    input["var_name"] = prompt('Enter variable name').split(",")
+                }
                 var data = JSON.stringify(input);
+                display_running();
 
                 $.ajax({
                     url: "/api/introduction",
                     type: "POST",
                     data: data,
                     success: function (result) {
-                        cm.setValue(result['result']);
+                        display_checked_proof(result);
                         cm.setCursor(line_number + result['line-diff'], Number.MAX_SAFE_INTEGER);
                     }
                 })
@@ -314,7 +391,7 @@
                 showLoaderOnConfirm: true,
                 preConfirm: () => {
                     var data = {
-                        'id': document.querySelector('.code-cell.selected textarea').id,
+                        'id': get_selected_id(),
                         "line": line,
                         'theorem': document.getElementById('swal-input1').value,
                     };
@@ -334,17 +411,17 @@
                         }
                         return response.json()
                     })
-                        .catch(error => {
-                            swal.showValidationMessage(
-                                `Request failed: ${error}`
-                            )
-                        })
+                    .catch(error => {
+                        swal.showValidationMessage(
+                            `Request failed: ${error}`
+                        )
+                    })
                 },
                 allowOutsideClick:
                     () => !swal.isLoading()
             }).then((result) => {
                 if (result) {
-                    cm.setValue(result['value']['result']);
+                    display_checked_proof(result['value']);
                 }
             })
         }
@@ -364,23 +441,6 @@
                     }
                 })
             })
-
-        }
-
-        function proof_line_cov(cm) {
-            let line_no = cm.getCursor().line;
-            let old_string = cm.getLine(line_no);
-            let new_string = old_string.split('by ')[0].split(': ')[0] + ': ' + old_string.split('by ')[1];
-            replace_line(cm, new_string)
-        }
-
-        function replace_line(cm, new_string) {
-            let line_no = cm.getCursor().line;
-            cm.setCursor(line_no, 0);
-            let pre = cm.getCursor();
-            cm.setCursor(line_no, Number.MAX_SAFE_INTEGER);
-            let post = cm.getCursor();
-            cm.replaceRange(new_string, pre, post);
         }
 
         function get_cell_state() {
@@ -392,7 +452,7 @@
                 assumes_area.setValue('');
                 conclusions_area.setValue('');
                 var event = {
-                    'id': document.querySelector('.code-cell.selected textarea').id,
+                    'id': get_selected_id(),
                 };
                 var data = JSON.stringify(event);
 
@@ -404,35 +464,11 @@
                         if (JSON.stringify(result) !== '{}') {
                             variables_area.setValue(result['variables'].join('\n'));
                             assumes_area.setValue(result['assumes'].join('\n'));
-                            conclusions_area.setValue(result['conclunsion']);
+                            conclusions_area.setValue(result['conclusion']);
                         }
                     }
                 });
-                variables = [];
-                assumes = [];
-                conclusion = undefined;
             });
-        }
-
-        function check_type(line) {
-            $(document).ready(function () {
-                    var input = {'line': line};
-                    var data = JSON.stringify(input);
-
-                    $.ajax({
-                        url: "/api/check-type",
-                        type: "POST",
-                        data: data,
-                        success: function (result) {
-                            $('#theorem-select').selectpicker('val', result['theorem']);
-                            if (undefined !== theorem[result['theorem']])
-                                document.getElementById('type-label').innerHTML = theorem[result['theorem']] + ': ';
-                            else
-                                document.getElementById('type-label').innerHTML = 'Var: ';
-                        }
-                    })
-                }
-            )
         }
 
         function init_input_box(id) {
