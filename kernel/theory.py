@@ -332,7 +332,7 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
-        for seq in prf.get_items():
+        for seq in prf.items:
             self._check_proof_item(depth, seq_dict, seq, rpt, no_gaps)
         return prf.get_thm()
 

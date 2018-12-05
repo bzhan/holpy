@@ -161,7 +161,7 @@ class TacticTest(unittest.TestCase):
         state.add_line_after("A1")
         self.assertEqual(state.prf.get_num_item(), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
-        self.assertEqual(state.prf.proof[1].rule, "")
+        self.assertEqual(state.prf.items[1].rule, "")
 
     def testAddLineAfter2(self):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
@@ -169,7 +169,7 @@ class TacticTest(unittest.TestCase):
         state.add_line_after("S1")
         self.assertEqual(state.prf.get_num_item(), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
-        self.assertEqual(state.prf.proof[2].rule, "")
+        self.assertEqual(state.prf.items[2].rule, "")
 
     def testAddLineBefore(self):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))

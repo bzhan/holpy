@@ -76,31 +76,23 @@ class Proof():
 
         """
         self.vars = []
-        self.proof = []
+        self.items = []
         for id, assum in enumerate(assums):
             item = ProofItem("A" + str(id+1), "assume", args=assum)
-            self.proof.append(item)
+            self.items.append(item)
 
     def add_item(self, id, rule, *, args=None, prevs=[], th=None):
         """Add the given item to the end of the proof."""
-        self.proof.append(ProofItem(id, rule, args=args, prevs=prevs, th=th))
-
-    def get_items(self):
-        """Returns the list of items."""
-        return self.proof
-
-    def get_last_item(self):
-        """Returns the last item."""
-        return self.proof[-1]
+        self.items.append(ProofItem(id, rule, args=args, prevs=prevs, th=th))
 
     def get_num_item(self):
         """Returns the number of items."""
-        return len(self.proof)
+        return len(self.items)
 
     def get_thm(self):
         """Returns the theorem obtained by the proof."""
-        if self.proof and self.proof[-1].th is not None:
-            return self.proof[-1].th
+        if self.items and self.items[-1].th is not None:
+            return self.items[-1].th
         else:
             raise ProofException()
 
@@ -118,7 +110,7 @@ class Proof():
         else:
             str_vars = ""
 
-        lines = [item.print(term_printer=term_printer, unicode=unicode) for item in self.proof]
+        lines = [item.print(term_printer=term_printer, unicode=unicode) for item in self.items]
         return str_vars + "\n".join(lines)
 
     def __str__(self):
@@ -128,4 +120,4 @@ class Proof():
         return str(self)
 
     def __eq__(self, other):
-        return self.proof == other.proof
+        return self.items == other.items

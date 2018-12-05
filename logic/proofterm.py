@@ -99,7 +99,7 @@ class ProofTerm():
                     ids.append(seq_to_id[prev.th])
                 else:
                     prev._export(depth, seq_to_id, prf)
-                    ids.append(prf.get_last_item().id)
+                    ids.append(prf.items[-1].id)
             else:
                 raise TypeError()
         

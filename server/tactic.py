@@ -30,7 +30,7 @@ def parse_proof(thy, input):
             ctxt[name] = T
             prf.vars.append(Var(name, T))
         else:
-            prf.proof.append(parser.parse_proof_rule(thy, ctxt, line))
+            prf.items.append(parser.parse_proof_rule(thy, ctxt, line))
     return prf
 
 def incr_id(id, start, n):
@@ -164,8 +164,8 @@ class ProofState():
 
         new_prf = Proof()
         new_prf.vars = self.prf.vars
-        for item in self.prf.proof:
-            new_prf.proof.append(incr_proof_item(item, id_new, 1))
+        for item in self.prf.items:
+            new_prf.items.append(incr_proof_item(item, id_new, 1))
             if item.id == id:
                 new_prf.add_item("S" + str(id_new), "")
 
@@ -180,11 +180,11 @@ class ProofState():
         id_new = int(id[1:])
         new_prf = Proof()
         new_prf.vars = self.prf.vars
-        for item in self.prf.proof:
+        for item in self.prf.items:
             if item.id == id:
                 for i in range(n):
                     new_prf.add_item("S" + str(id_new + i), "")
-            new_prf.proof.append(incr_proof_item(item, id_new, n))
+            new_prf.items.append(incr_proof_item(item, id_new, n))
 
         self.prf = new_prf
         self.check_proof()
@@ -213,9 +213,9 @@ class ProofState():
         # i > id_remove.
         new_prf = Proof()
         new_prf.vars = self.prf.vars
-        for item in self.prf.proof:
+        for item in self.prf.items:
             if not item.id == id:
-                new_prf.proof.append(decr_proof_item(item))
+                new_prf.items.append(decr_proof_item(item))
             
         self.prf = new_prf
         self.check_proof()
@@ -224,18 +224,18 @@ class ProofState():
         """Set the item with the given id to the following data."""
         new_prf = Proof()
         new_prf.vars = self.prf.vars
-        for item in self.prf.proof:
+        for item in self.prf.items:
             if item.id == id:
-                new_prf.proof.append(ProofItem(id, rule, args = args, prevs = prevs, th = th))
+                new_prf.items.append(ProofItem(id, rule, args = args, prevs = prevs, th = th))
             else:
-                new_prf.proof.append(item)
+                new_prf.items.append(item)
 
         self.prf = new_prf
         self.check_proof()
 
     def get_proof_item(self, id):
         """Obtain the proof item with the given id."""
-        for item in self.prf.proof:
+        for item in self.prf.items:
             if item.id == id:
                 return item
         
@@ -249,8 +249,8 @@ class ProofState():
 
         new_prf = Proof()
         new_prf.vars = self.prf.vars
-        for item in self.prf.proof:
-            new_prf.proof.append(replace_line(item))
+        for item in self.prf.items:
+            new_prf.items.append(replace_line(item))
 
         self.prf = new_prf
         self.remove_line(old_id)
@@ -260,7 +260,7 @@ class ProofState():
         the given id.
 
         """
-        for item in self.prf.get_items():
+        for item in self.prf.items:
             if item.id == upto_id:
                 return None
             if item.th is not None and item.th.can_prove(concl):
@@ -280,7 +280,7 @@ class ProofState():
             prevs = []
 
         # Obtain the statement to be proved.
-        for i, item in enumerate(self.prf.proof):
+        for i, item in enumerate(self.prf.items):
             if item.id == id:
                 cur_item = item
 
