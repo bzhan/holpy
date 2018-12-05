@@ -98,9 +98,13 @@
             introduction(get_selected_editor());
         });
 
-        $('#addlinebelow').on("click", function () {
+        $('#add-line-after').on("click", function () {
             add_line_after(get_selected_editor());
         });
+
+        $('#apply-backward-step').on("click", function () {
+            apply_backward_step(get_selected_editor());
+        })
 
         $('#init-button').on("click", function () {
             let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
