@@ -7,6 +7,7 @@ from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.macro import MacroSig
 from kernel.thm import Thm
 from kernel.proof import ProofItem
+from kernel.extension import AxType, AxConstant, Theorem, TheoryExtension
 from logic.logic import Logic
 from logic.nat import Nat
 
@@ -292,3 +293,26 @@ def parse_proof_rule(thy, ctxt, s):
     except exceptions.UnexpectedToken as e:
         raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
                               % (args, e.token, e.column))
+
+def parse_vars(thy, vars_data):
+    ctxt = dict()
+    for k, v in vars_data.items():
+        ctxt[k] = type_parser(thy).parse(v)
+    return ctxt
+
+def parse_extension(thy, data):
+    if data['ty'] == 'def.ax':
+        thy.extend_axiom_constant(
+            AxConstant(data['name'], type_parser(thy).parse(data['T'])))
+    elif data['ty'] == 'thm':
+        ctxt = parse_vars(thy, data['vars'])
+        prop = term_parser(thy, ctxt).parse(data['prop'])
+        thy.add_theorem(data['name'], Thm([], prop))
+    elif data['ty'] == 'type.ind':
+        return []
+    elif data['ty'] == 'def.ind':
+        return []
+
+def parse_extensions(thy, data):
+    for ext_data in data:
+        parse_extension(thy, ext_data)

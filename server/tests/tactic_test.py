@@ -15,7 +15,7 @@ from syntax import printer
 from server import tactic
 from server.tactic import ProofState
 
-thy = BasicTheory()
+thy = BasicTheory
 
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)

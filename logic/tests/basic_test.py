@@ -44,7 +44,7 @@ class BasicTest(unittest.TestCase):
 
     def testCombination(self):
         """Test arg and fun combination together using proofs."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
 
         prf = Proof(Term.mk_equals(f,g), Term.mk_equals(x,y))
         prf.add_item("S1", "arg_combination", args=f, prevs=["A2"])
@@ -56,7 +56,7 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), th)
 
     def testBetaNorm(self):
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
 
         t = Term.mk_abs(x, f(x))
         prf = Proof(Term.mk_equals(t(x), y))
@@ -73,9 +73,10 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf, rpt2), th)
         self.assertEqual(rpt2.prim_steps, 2)
         self.assertEqual(rpt2.macro_steps, 1)
+        thy.check_level = 0
 
     def testRewriteGoal(self):
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
 
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
@@ -95,10 +96,11 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf, rpt2), th)
         self.assertEqual(rpt2.prim_steps, 1)
         self.assertEqual(rpt2.macro_steps, 1)
+        thy.check_level = 0
 
     def testConjComm(self):
         """Proof of commutativity of conjunction."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         A = Var("A", hol_bool)
         B = Var("B", hol_bool)
 
@@ -117,7 +119,7 @@ class BasicTest(unittest.TestCase):
 
     def testConjCommWithMacro(self):
         """Proof of commutativity of conjunction, with macros."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         A = Var("A", hol_bool)
         B = Var("B", hol_bool)
 
@@ -131,7 +133,7 @@ class BasicTest(unittest.TestCase):
 
     def testDisjComm(self):
         """Proof of commutativity of disjunction."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         A = Var("A", hol_bool)
         B = Var("B", hol_bool)
         disjAB = Logic.mk_disj(A, B)
@@ -153,7 +155,7 @@ class BasicTest(unittest.TestCase):
 
     def testDisjCommWithMacro(self):
         """Proof of commutativity of disjunction, with macros."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         A = Var("A", hol_bool)
         B = Var("B", hol_bool)
         disjAB = Logic.mk_disj(A, B)
@@ -173,7 +175,7 @@ class BasicTest(unittest.TestCase):
 
     def testAllConj(self):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         Ta = TVar("a")
         A = Var("A", TFun(Ta, hol_bool))
         B = Var("B", TFun(Ta, hol_bool))
@@ -203,7 +205,7 @@ class BasicTest(unittest.TestCase):
 
     def testAllConjWithMacro(self):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x), using macros."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         Ta = TVar("a")
         A = Var("A", TFun(Ta, hol_bool))
         B = Var("B", TFun(Ta, hol_bool))
@@ -226,7 +228,7 @@ class BasicTest(unittest.TestCase):
 
     def testDoubleNeg(self):
         """Proof of A --> ~~A."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         A = Var("A", hol_bool)
         neg = Logic.neg
 
@@ -245,7 +247,7 @@ class BasicTest(unittest.TestCase):
 
     def testDoubleNegInv(self):
         """Proof of ~~A --> A, requires classical axiom."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         A = Var("A", hol_bool)
         neg = Logic.neg
 
@@ -272,7 +274,7 @@ class BasicTest(unittest.TestCase):
 
     def testDoubleNegInvWithMacro(self):
         """Proof of ~~A --> A, using macros."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         A = Var("A", hol_bool)
         neg = Logic.neg
 
@@ -291,7 +293,7 @@ class BasicTest(unittest.TestCase):
 
     def testTrueAbsorb(self):
         """Proof of A --> true & A."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         A = Var("A", hol_bool)
 
         prf = Proof(A)
@@ -306,7 +308,7 @@ class BasicTest(unittest.TestCase):
         
     def testExistsConj(self):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         Ta = TVar("a")
         A = Var("A", TFun(Ta, hol_bool))
         B = Var("B", TFun(Ta, hol_bool))
@@ -353,7 +355,7 @@ class BasicTest(unittest.TestCase):
 
     def testExistsConjWithMacro(self):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x), using macros."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         Ta = TVar("a")
         A = Var("A", TFun(Ta, hol_bool))
         B = Var("B", TFun(Ta, hol_bool))
@@ -380,7 +382,7 @@ class BasicTest(unittest.TestCase):
 
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         prf = Proof()
@@ -403,7 +405,7 @@ class BasicTest(unittest.TestCase):
 
     def testAddZeroRightWithMacro(self):
         """Proof of n + 0 = n by induction, using macros."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         plus = Nat.plus
@@ -423,7 +425,7 @@ class BasicTest(unittest.TestCase):
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         prf = Proof()
@@ -448,7 +450,7 @@ class BasicTest(unittest.TestCase):
 
     def testMultZeroRightWithMacro(self):
         """Proof of n * 0 = 0 by induction, using macros."""
-        thy = basic.BasicTheory()
+        thy = basic.BasicTheory
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         zero = Nat.zero

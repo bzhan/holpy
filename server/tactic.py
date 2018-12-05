@@ -105,7 +105,7 @@ class ProofState():
         S{n+1}: A1 --> ... --> An --> C by implies_intr A1 from Sn.
         
         """
-        self.thy = BasicTheory()
+        self.thy = BasicTheory
 
         self.vars = vars
         self.assums = assums
@@ -121,7 +121,7 @@ class ProofState():
     @staticmethod
     def parse_init_state(data):
         """Obtain proof state from a data dictionary."""
-        thy = BasicTheory()
+        thy = BasicTheory
         ctxt = {}
         vars = []
         assums = []

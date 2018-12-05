@@ -1,5 +1,9 @@
 # Author: Bohua Zhan
 
+import io
+import json
+
+
 from kernel.type import TVar, TFun, Type, hol_bool
 from kernel.term import Term, Var
 from kernel.thm import Thm
@@ -8,57 +12,18 @@ from logic.operator import OperatorTable
 from logic.logic import Logic
 from logic.nat import Nat
 from logic import logic_macro, induct
+from syntax import parser
 
-def BasicTheory():
+def getBasicTheory():
     thy = Theory.EmptyTheory()
 
     # Operators
     thy.add_data_type("operator", OperatorTable())
 
-    # Logical terms
-    thy.add_term_sig("conj", TFun(hol_bool, hol_bool, hol_bool))
-    thy.add_term_sig("disj", TFun(hol_bool, hol_bool, hol_bool))
-    thy.add_term_sig("neg", TFun(hol_bool, hol_bool))
-    thy.add_term_sig("true", hol_bool)
-    thy.add_term_sig("false", hol_bool)
-    thy.add_term_sig("exists", TFun(TFun(TVar("a"), hol_bool), hol_bool))
+    with io.open('logic/basic.json') as a:
+        data = json.load(a)
 
-    A = Var("A", hol_bool)
-    B = Var("B", hol_bool)
-    C = Var("C", hol_bool)
-    imp = Term.mk_implies
-    eq = Term.mk_equals
-
-    # Axioms for conjugation
-    conjAB = Logic.mk_conj(A, B)
-    thy.add_theorem("conjI", Thm([], imp(A, B, conjAB)))
-    thy.add_theorem("conjD1", Thm([], imp(conjAB, A)))
-    thy.add_theorem("conjD2", Thm([], imp(conjAB, B)))
-
-    # Axioms for disjunction
-    disjAB = Logic.mk_disj(A, B)
-    thy.add_theorem("disjI1", Thm([], imp(A, disjAB)))
-    thy.add_theorem("disjI2", Thm([], imp(B, disjAB)))
-    thy.add_theorem("disjE", Thm([], imp(disjAB, imp(A, C), imp(B, C), C)))
-
-    # Axioms for negation
-    thy.add_theorem("negI", Thm([], imp(imp(A, Logic.false), Logic.neg(A))))
-    thy.add_theorem("negE", Thm([], imp(Logic.neg(A), A, Logic.false)))
-
-    # Axioms for true
-    thy.add_theorem("trueI", Thm([], Logic.true))
-
-    # Axioms for false
-    thy.add_theorem("falseE", Thm([], imp(Logic.false, A)))
-
-    # Axioms for exists
-    P = Var("P", TFun(TVar("a"), hol_bool))
-    a = Var("a", TVar("a"))
-    thy.add_theorem("exI", Thm([], imp(P(a), Logic.mk_exists(a, P(a)))))
-    thy.add_theorem("exE", Thm([], imp(Logic.mk_exists(a, P(a)), Term.mk_all(a, imp(P(a), C)), C)))
-
-    # Classical axiom
-    thy.add_theorem("classical", Thm([], Logic.disj(A, Logic.neg(A))))
+    parser.parse_extensions(thy, data)
 
     # Natural numbers
     nat = Type("nat")
@@ -69,6 +34,7 @@ def BasicTheory():
     m = Var("m", nat)
     n = Var("n", nat)
     P = Var("P", TFun(nat, hol_bool))
+    eq = Term.mk_equals
     S = Nat.Suc
     plus = Nat.plus
     times = Nat.times
@@ -92,3 +58,5 @@ def BasicTheory():
     thy.add_proof_macro("rewrite_goal", logic_macro.rewrite_goal_macro())
     thy.add_proof_macro("rewrite_back_goal", logic_macro.rewrite_goal_macro(backward=True))
     return thy
+
+BasicTheory = getBasicTheory()

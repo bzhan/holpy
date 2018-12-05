@@ -102,7 +102,7 @@ class apply_theorem_macro(ProofMacro):
             As, _ = Logic.subst_norm(th.concl, inst).strip_implies()
             for idx, prev_th in enumerate(prevs):
                 Matcher.first_order_match_incr(As[idx], prev_th.concl, inst)
-        return Thm(th.assums, Logic.subst_norm(t,inst))
+        return Thm(th.assums, Logic.subst_norm(t, inst))
 
     def expand(self, depth, thy, args, *prevs):
         inst = dict()

@@ -8,7 +8,7 @@ from kernel.thm import Thm
 from logic.basic import BasicTheory
 from logic.proofterm import ProofTerm
 
-thy = BasicTheory()
+thy = BasicTheory
 
 Ta = TVar("a")
 x = Var("x", Ta)

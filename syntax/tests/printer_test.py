@@ -9,7 +9,7 @@ from logic.nat import Nat
 from logic.basic import BasicTheory
 from syntax.printer import print_term
 
-thy = BasicTheory()
+thy = BasicTheory
 
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)

@@ -10,7 +10,7 @@ from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, rewr_conv, ConvException
 from logic.nat import Nat
 
-thy = BasicTheory()
+thy = BasicTheory
 abs = Term.mk_abs
 eq = Thm.mk_equals
 
@@ -146,8 +146,6 @@ class ConvTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), eq(t, res))
 
     def testLargeSum(self):
-        thy.check_level = 1
-
         f = Const("f", TFun(nat, nat))
         g = Const("g", TFun(nat, nat))
         x = Var("x", nat)
@@ -163,7 +161,10 @@ class ConvTest(unittest.TestCase):
         res = plus(*([g0] * 10))
         prf = cv.get_proof_term(t).export()
         self.assertEqual(cv(t), eq(t, res))
+        thy.check_level = 1
         self.assertEqual(thy.check_proof_incr(0, seq_dict, prf), eq(t, res))
+        thy.check_level = 0
+
 
 if __name__ == "__main__":
     unittest.main()
