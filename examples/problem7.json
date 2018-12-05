@@ -6,10 +6,10 @@
     "conclusion": "n * zero = zero",
     "instructions": [
         "With focus on line 2, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
-        "With focus on line 2, choose 'rewrite goal' from menu, then enter 'times_def_1'.",
+        "With focus on line 2, enter Ctrl+R, then enter 'times_def_1'.",
         "Replace 'sorry' on line 2 with 'reflexive zero'. Use Ctrl+Enter to check proof.",
         "With focus on line 4, enter Ctrl+I, enter 'n' as variable name.",
-        "With focus on line 5, choose 'rewrite goal' from menu, then enter 'times_def_2'.",
-        "With focus on line 5, choose 'rewrite goal' from menu, then enter 'plus_def_1'."
+        "With focus on line 5, enter Ctrl+R, then enter 'times_def_2'.",
+        "With focus on line 5, enter Ctrl+R, then enter 'plus_def_1'."
     ]
 }

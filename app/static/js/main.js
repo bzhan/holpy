@@ -228,7 +228,8 @@
                 scrollbarStyle: "overlay",
                 extraKeys: {
                     "Ctrl-I": introduction,
-                    "Ctrl-B": apply_backward_step
+                    "Ctrl-B": apply_backward_step,
+                    "Ctrl-R": rewrite_goal,
                 }
             });
             editor.setSize("auto", "auto");
