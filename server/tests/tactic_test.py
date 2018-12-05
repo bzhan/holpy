@@ -8,7 +8,7 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
-from logic.logic import Logic
+from logic import logic
 from logic.basic import BasicTheory
 from logic.nat import Nat
 from syntax import printer
@@ -19,11 +19,11 @@ thy = BasicTheory
 
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)
-conj = Logic.mk_conj
-disj = Logic.mk_disj
+conj = logic.mk_conj
+disj = logic.mk_disj
 imp = Term.mk_implies
-neg = Logic.neg
-exists = Logic.mk_exists
+neg = logic.neg
+exists = logic.mk_exists
 
 def print_proof(prf):
     def term_printer(t):

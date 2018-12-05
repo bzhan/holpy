@@ -8,7 +8,7 @@ from kernel.macro import MacroSig
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from kernel.extension import AxType, AxConstant, Theorem, TheoryExtension
-from logic.logic import Logic
+from logic import logic
 from logic.nat import Nat
 
 
@@ -164,13 +164,13 @@ class HOLTransformer(Transformer):
         return Term.mk_equals(lhs, rhs)
 
     def neg(self, t):
-        return Logic.neg(t)
+        return logic.neg(t)
 
     def conj(self, s, t):
-        return Logic.mk_conj(s, t)
+        return logic.mk_conj(s, t)
 
     def disj(self, s, t):
-        return Logic.mk_disj(s, t)
+        return logic.mk_disj(s, t)
 
     def imp(self, s, t):
         return Term.mk_implies(s, t)

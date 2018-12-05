@@ -4,7 +4,7 @@ import unittest
 
 from kernel.type import TVar
 from kernel.term import Term, Var, Abs, Bound
-from logic.logic import Logic
+from logic import logic
 
 Ta = TVar("a")
 x = Var("x", Ta)
@@ -20,7 +20,7 @@ class LogicTest(unittest.TestCase):
         ]
 
         for t, res in test_data:
-            self.assertEqual(Logic.beta_norm(t), res)
+            self.assertEqual(logic.beta_norm(t), res)
 
 if __name__ == "__main__":
     unittest.main()

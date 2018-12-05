@@ -2,7 +2,7 @@
 
 from kernel.term import Term
 from logic.operator import OperatorData
-from logic.logic import Logic
+from logic import logic
 
 def print_term(thy, t, *, print_abs_type = False, unicode = False):
     """More sophisticated printing function for terms. Handles printing
@@ -19,7 +19,7 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
             op_data = get_info_for_operator(t)
             if op_data is not None:
                 return op_data.priority
-            elif t.is_all() or Logic.is_exists(t):
+            elif t.is_all() or logic.is_exists(t):
                 return 10
             else:
                 return 95  # Function application
@@ -96,7 +96,7 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
                 return all_str + var_str + ". " + body_repr
 
-            elif Logic.is_exists(t):
+            elif logic.is_exists(t):
                 exists_str = "?" if not unicode else "∃"
                 var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)

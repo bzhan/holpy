@@ -4,7 +4,7 @@ import unittest
 
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
-from logic.logic import Logic
+from logic import logic
 from logic.nat import Nat
 from logic.basic import BasicTheory
 from syntax.printer import print_term
@@ -27,11 +27,11 @@ n = Var("n", Nat.nat)
 p = Var("p", Nat.nat)
 eq = Term.mk_equals
 imp = Term.mk_implies
-conj = Logic.mk_conj
-disj = Logic.mk_disj
+conj = logic.mk_conj
+disj = logic.mk_disj
 all = Term.mk_all
-neg = Logic.neg
-exists = Logic.mk_exists
+neg = logic.neg
+exists = logic.mk_exists
 
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
@@ -65,8 +65,8 @@ class PrinterTest(unittest.TestCase):
             (neg(neg(A)), "~~A"),
 
             # Constants
-            (Logic.true, "true"),
-            (Logic.false, "false"),
+            (logic.true, "true"),
+            (logic.false, "false"),
 
             # Mixed
             (imp(conj(A, B), C), "A & B --> C"),

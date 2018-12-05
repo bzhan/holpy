@@ -7,7 +7,7 @@ from kernel.thm import Thm
 from logic.conv import beta_conv, top_conv, rewr_conv
 from logic.matcher import Matcher
 from logic.proofterm import ProofTerm
-from logic.logic import Logic
+from logic import logic
 
 """Standard macros in logic."""
 
@@ -103,7 +103,7 @@ class apply_theorem_macro(ProofMacro):
             for idx, prev_th in enumerate(prevs):
                 Matcher.first_order_match_incr(As[idx], prev_th.concl, inst)
 
-        As, C = Logic.subst_norm(th.concl, inst).strip_implies()
+        As, C = logic.subst_norm(th.concl, inst).strip_implies()
         new_concl = Term.mk_implies(*(As[len(prevs):] + [C]))
 
         return Thm(th.assums, new_concl)

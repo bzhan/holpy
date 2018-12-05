@@ -5,7 +5,7 @@ import unittest
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Var, Const, Abs, Bound
 from logic.matcher import Matcher, MatchException
-from logic.logic import Logic
+from logic import logic
 
 Ta = TVar("a")
 a = Const("a", Ta)
@@ -15,8 +15,8 @@ f = Const("f", TFun(Ta, Ta, Ta))
 x = Var("x", Ta)
 y = Var("y", Ta)
 abs = Term.mk_abs
-conj = Logic.mk_conj
-exists = Logic.mk_exists
+conj = logic.mk_conj
+exists = logic.mk_exists
 
 class MatcherTest(unittest.TestCase):
     def testFirstOrderMatch(self):

@@ -6,7 +6,7 @@ from kernel.type import TVar, TFun, hol_bool, Type
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 from kernel.extension import AxType, AxConstant, Theorem, TheoryExtension
-from logic.logic import Logic
+from logic import logic
 
 """Inductive definitions.
 
@@ -64,7 +64,7 @@ def add_induct_type(name, targs, constrs):
         B = Const(cname2, cT2)
         lhs = A(*lhs_vars)
         rhs = B(*rhs_vars)
-        neq = Logic.neg(Term.mk_equals(lhs, rhs))
+        neq = logic.neg(Term.mk_equals(lhs, rhs))
         th_name = name + "_" + cname1 + "_" + cname2 + "_neq"
         exts.add_extension(Theorem(th_name, Thm([], neq)))
 
@@ -79,7 +79,7 @@ def add_induct_type(name, targs, constrs):
             A = Const(cname, cT)
             assum = Term.mk_equals(A(*lhs_vars), B(*rhs_vars))
             concls = [Term.mk_equals(var1, var2) for var1, var2 in zip(lhs_vars, rhs_vars)]
-            concl = Logic.mk_conj(*concls) if len(concls) > 1 else concls[0]
+            concl = logic.mk_conj(*concls) if len(concls) > 1 else concls[0]
             th_name = name + "_" + cname + "_inject"
             exts.add_extension(Theorem(th_name, Thm.mk_implies(assum, concl)))
 

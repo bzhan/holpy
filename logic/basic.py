@@ -9,9 +9,8 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.theory import Theory
 from logic.operator import OperatorTable
-from logic.logic import Logic
 from logic.nat import Nat
-from logic import logic_macro, induct
+from logic import logic, logic_macro, induct
 from syntax import parser
 
 def getBasicTheory():

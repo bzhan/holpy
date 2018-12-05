@@ -7,7 +7,7 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof
 from kernel.report import ProofReport
 from logic.basic import BasicTheory
-from logic.logic import Logic
+from logic import logic
 from logic.matcher import Matcher
 from logic.proofterm import ProofTerm
 from logic.conv import top_conv, rewr_conv
@@ -294,13 +294,13 @@ class ProofState():
 
         if inst is None:
             inst = dict()
-            As, C = Logic.subst_norm(th.concl, inst).strip_implies()
+            As, C = logic.subst_norm(th.concl, inst).strip_implies()
             for pat, prev in zip(As, prevs):
                 item = self.get_proof_item(prev)
                 Matcher.first_order_match_incr(pat, item.th.concl, inst)
             Matcher.first_order_match_incr(C, cur_item.th.concl, inst)
 
-        As, _ = Logic.subst_norm(th.concl, inst).strip_implies()
+        As, _ = logic.subst_norm(th.concl, inst).strip_implies()
 
         num_goal = len(As) - len(prevs)
         self.add_line_before(id, num_goal)

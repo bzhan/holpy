@@ -6,7 +6,7 @@ from kernel.type import TVar, TFun, HOLType, hol_bool
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
-from logic.logic import Logic
+from logic import logic
 from logic.nat import Nat
 from logic.basic import BasicTheory
 from syntax.printer import print_term
@@ -192,7 +192,7 @@ class ParserTest(unittest.TestCase):
 
         test_data = [
             ("|- A", Thm([], A)),
-            ("|- A & B", Thm([], Logic.mk_conj(A, B))),
+            ("|- A & B", Thm([], logic.mk_conj(A, B))),
             ("A |- B", Thm([A], B)),
             ("A, B |- C", Thm([A, B], C)),
         ]
@@ -220,9 +220,9 @@ class ParserTest(unittest.TestCase):
             ("S6: substitution {A: B, B: A} from S5", ProofItem(
                 "S6", "substitution", args={'A': B, 'B': A}, prevs=["S5"])),
             ("S9: implies_intr conj A B from S8", ProofItem(
-                "S9", "implies_intr", args=Logic.mk_conj(A, B), prevs=["S8"])),
+                "S9", "implies_intr", args=logic.mk_conj(A, B), prevs=["S8"])),
             ("S1: conj A B |- conj B A by sorry", ProofItem(
-                "S1", "sorry", th = Thm([Logic.mk_conj(A, B)], Logic.mk_conj(B, A)))),
+                "S1", "sorry", th = Thm([logic.mk_conj(A, B)], logic.mk_conj(B, A)))),
             ("S2: ", ProofItem("S2", "")),
             ("S1: apply_theorem_for conjI, {A: B, B: A} from S1, S2", ProofItem(
                 "S1", "apply_theorem_for", args=("conjI", {'A': B, 'B': A}), prevs=["S1", "S2"])),
