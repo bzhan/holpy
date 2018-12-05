@@ -37,6 +37,25 @@ class InductTest(unittest.TestCase):
         ]
         self.assertEqual(nat_ext.data, res)
 
+    def testInductAdd(self):
+        nat = Type("nat")
+        plus = Const("plus", TFun(nat, nat, nat))
+        zero = Const("0", nat)
+        S = Const("Suc", TFun(nat, nat))
+        m = Var("m", nat)
+        n = Var("n", nat)
+
+        ext = induct.add_induct_def(plus, [
+            Thm([], eq(plus(zero, n), n)),
+            Thm([], eq(plus(S(m), n), S(plus(m, n))))])
+        
+        res = [
+            AxConstant("plus", TFun(nat, nat, nat)),
+            Theorem("plus_def_1", Thm([], eq(plus(zero, n), n))),
+            Theorem("plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n)))))
+        ]
+        self.assertEqual(ext.data, res)
+
     def testInductList(self):
         Ta = TVar("a")
         Tlista = Type("list", Ta)

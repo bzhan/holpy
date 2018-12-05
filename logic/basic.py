@@ -71,18 +71,18 @@ def BasicTheory():
     n = Var("n", nat)
     P = Var("P", TFun(nat, hol_bool))
     S = Nat.Suc
+    plus = Nat.plus
+    times = Nat.times
 
     # Addition on natural numbers
-    plus = Nat.plus
-    thy.add_term_sig("plus", TFun(nat, nat, nat))
-    thy.add_theorem("nat.add_0", Thm([], eq(plus(Nat.zero, n), n)))
-    thy.add_theorem("nat.add_Suc", Thm([], eq(plus(S(m), n), S(plus(m, n)))))
+    thy.unchecked_extend(induct.add_induct_def(plus, [
+        Thm([], eq(plus(Nat.zero, n), n)),
+        Thm([], eq(plus(S(m), n), S(plus(m, n))))]))
 
     # Multiplication on natural numbers
-    times = Nat.times
-    thy.add_term_sig("times", TFun(nat, nat, nat))
-    thy.add_theorem("nat.mult_0", Thm([], eq(times(Nat.zero, n), Nat.zero)))
-    thy.add_theorem("nat.mult_Suc", Thm([], eq(times(S(m), n), plus(n, times(m, n)))))
+    thy.unchecked_extend(induct.add_induct_def(times, [
+        Thm([], eq(times(Nat.zero, n), Nat.zero)),
+        Thm([], eq(times(S(m), n), plus(n, times(m, n))))]))
 
     # Basic macros
     thy.add_proof_macro("arg_combination", arg_combination_macro())
