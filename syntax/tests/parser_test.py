@@ -212,17 +212,17 @@ class ParserTest(unittest.TestCase):
 
     def testParseProofRule(self):
         test_data = [
-            ("S1: theorem conjD1", ProofItem("S1", "theorem", args = "conjD1", prevs = [])),
-            ("S2: implies_elim from S1, A1", ProofItem("S2", "implies_elim", prevs = ["S1", "A1"])),
+            ("S1: theorem conjD1", ProofItem("S1", "theorem", args="conjD1", prevs=[])),
+            ("S2: implies_elim from S1, A1", ProofItem("S2", "implies_elim", prevs=["S1", "A1"])),
             ("S6: substitution {A: B, B: A} from S5", ProofItem(
-                "S6", "substitution", args = {'A': B, 'B': A}, prevs = ["S5"])),
+                "S6", "substitution", args={'A': B, 'B': A}, prevs=["S5"])),
             ("S9: implies_intr conj A B from S8", ProofItem(
-                "S9", "implies_intr", args = Logic.mk_conj(A, B), prevs = ["S8"])),
+                "S9", "implies_intr", args=Logic.mk_conj(A, B), prevs=["S8"])),
             ("S1: conj A B |- conj B A by sorry", ProofItem(
                 "S1", "sorry", th = Thm([Logic.mk_conj(A, B)], Logic.mk_conj(B, A)))),
             ("S2: ", ProofItem("S2", "")),
             ("S1: apply_theorem_for conjI, {A: B, B: A} from S1, S2", ProofItem(
-                "S1", "apply_theorem_for", args = ("conjI", {'A': B, 'B': A}), prevs = ["S1", "S2"])),
+                "S1", "apply_theorem_for", args=("conjI", {'A': B, 'B': A}), prevs=["S1", "S2"])),
         ]
 
         for s, res in test_data:

@@ -28,8 +28,8 @@ class arg_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "arg_combination"
 
         prf = Proof()
-        prf.add_item((depth, "S1"), "reflexive", args = f)
-        prf.add_item("C", "combination", prevs = [(depth, "S1"), id])
+        prf.add_item((depth, "S1"), "reflexive", args=f)
+        prf.add_item("C", "combination", prevs=[(depth, "S1"), id])
         return prf
 
 class fun_combination_macro(ProofMacro):
@@ -49,8 +49,8 @@ class fun_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "fun_combination"
 
         prf = Proof()
-        prf.add_item((depth, "S1"), "reflexive", args = x)
-        prf.add_item("C", "combination", prevs = [id, (depth, "S1")])
+        prf.add_item((depth, "S1"), "reflexive", args=x)
+        prf.add_item("C", "combination", prevs=[id, (depth, "S1")])
         return prf
 
 class beta_norm_macro(ProofMacro):

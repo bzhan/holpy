@@ -192,7 +192,7 @@ class TacticTest(unittest.TestCase):
     def testSetLine(self):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
         state.add_line_after("A1")
-        state.set_line("S1", "theorem", args = "conjD1")
+        state.set_line("S1", "theorem", args="conjD1")
         self.assertEqual(state.prf.get_num_item(), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
@@ -205,7 +205,7 @@ class TacticTest(unittest.TestCase):
     def testApplyBackwardStep2(self):
         """Case where one or more assumption also needs to be matched."""
         state = ProofState([A, B], [disj(A, B)], disj(B, A))
-        state.apply_backward_step("S1", "disjE", prevs = ["A1"])
+        state.apply_backward_step("S1", "disjE", prevs=["A1"])
         self.assertEqual(state.check_proof(), Thm.mk_implies(disj(A, B), disj(B, A)))
         self.assertEqual(len(state.rpt.gaps), 2)
 
@@ -240,30 +240,30 @@ class TacticTest(unittest.TestCase):
         """Proof of A & B --> B & A."""
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
         state.apply_backward_step("S1", "conjI")
-        state.set_line("S1", "apply_theorem", args = "conjD2", prevs = ["A1"])
-        state.set_line("S2", "apply_theorem", args = "conjD1", prevs = ["A1"])
+        state.set_line("S1", "apply_theorem", args="conjD2", prevs=["A1"])
+        state.set_line("S2", "apply_theorem", args="conjD1", prevs=["A1"])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testDisjComm(self):
         """Proof of A | B --> B | A."""
         state = ProofState([A, B], [disj(A, B)], disj(B, A))
-        state.apply_backward_step("S1", "disjE", prevs = ["A1"])
+        state.apply_backward_step("S1", "disjE", prevs=["A1"])
         state.introduction("S1")
-        state.apply_backward_step("S2", "disjI2", prevs = ["S1"])
+        state.apply_backward_step("S2", "disjI2", prevs=["S1"])
         state.introduction("S4")
-        state.apply_backward_step("S5", "disjI1", prevs = ["S4"])
+        state.apply_backward_step("S5", "disjI1", prevs=["S4"])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(disj(A, B), disj(B, A)))
 
     def testDoubleNegInv(self):
         """Proof of ~~A --> A."""
         state = ProofState([A], [neg(neg(A))], A)
         state.add_line_after("A1")
-        state.set_line("S1", "theorem", args = "classical")
-        state.apply_backward_step("S2", "disjE", prevs = ["S1"])
+        state.set_line("S1", "theorem", args="classical")
+        state.apply_backward_step("S2", "disjE", prevs=["S1"])
         state.introduction("S2")        
         state.introduction("S4")
         state.apply_backward_step("S5", "falseE")
-        state.apply_backward_step("S5", "negE", prevs = ["A1"])
+        state.apply_backward_step("S5", "negE", prevs=["A1"])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(neg(neg(A)), A))
 
     def testExistsConj(self):
@@ -276,16 +276,16 @@ class TacticTest(unittest.TestCase):
         conj_ex = conj(exists(x,A(x)),exists(x,B(x)))
         state = ProofState([A, B], [ex_conj], conj_ex)
         state.apply_backward_step("S1", "conjI")
-        state.apply_backward_step("S1", "exE", prevs = ["A1"])
+        state.apply_backward_step("S1", "exE", prevs=["A1"])
         state.introduction("S1", "x")
         state.add_line_after("S1")
-        state.set_line("S2", "apply_theorem", args = "conjD1", prevs = ["S1"])
-        state.apply_backward_step("S3", "exI", prevs = ["S2"])
-        state.apply_backward_step("S7", "exE", prevs = ["A1"])
+        state.set_line("S2", "apply_theorem", args="conjD1", prevs=["S1"])
+        state.apply_backward_step("S3", "exI", prevs=["S2"])
+        state.apply_backward_step("S7", "exE", prevs=["A1"])
         state.introduction("S7", "x")
         state.add_line_after("S7")
-        state.set_line("S8", "apply_theorem", args = "conjD2", prevs = ["S7"])
-        state.apply_backward_step("S9", "exI", prevs = ["S8"])
+        state.set_line("S8", "apply_theorem", args="conjD2", prevs=["S7"])
+        state.apply_backward_step("S9", "exI", prevs=["S8"])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(ex_conj, conj_ex))
 
     def testAddZeroRight(self):
@@ -294,10 +294,10 @@ class TacticTest(unittest.TestCase):
         state = ProofState([n], [], Term.mk_equals(Nat.plus(n, Nat.zero), n))
         state.apply_induction("S1", "nat_induct", "n")
         state.rewrite_goal("S1", "plus_def_1")
-        state.set_line("S1", "reflexive", args = Nat.zero)
+        state.set_line("S1", "reflexive", args=Nat.zero)
         state.introduction("S3", names=["n"])
         state.rewrite_goal("S4", "plus_def_2")
-        state.set_line("S4", "arg_combination", args = Nat.Suc, prevs = ["S3"])
+        state.set_line("S4", "arg_combination", args=Nat.Suc, prevs=["S3"])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(Nat.plus(n,Nat.zero),n))
 
     def testMultZeroRight(self):
@@ -306,7 +306,7 @@ class TacticTest(unittest.TestCase):
         state = ProofState([n], [], Term.mk_equals(Nat.times(n, Nat.zero), Nat.zero))
         state.apply_induction("S1", "nat_induct", "n")
         state.rewrite_goal("S1", "times_def_1")
-        state.set_line("S1", "reflexive", args = Nat.zero)
+        state.set_line("S1", "reflexive", args=Nat.zero)
         state.introduction("S3", names=["n"])
         state.rewrite_goal("S4", "times_def_2")
         state.rewrite_goal("S4", "plus_def_1")

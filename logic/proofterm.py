@@ -105,7 +105,7 @@ class ProofTerm():
         
         id = (depth, "S" + str(prf.get_num_item()+1))
         seq_to_id[self.th] = id
-        prf.add_item(id, self.rule, args = self.args, prevs = ids)
+        prf.add_item(id, self.rule, args=self.args, prevs=ids)
         return prf
 
     def export(self, depth = 0):

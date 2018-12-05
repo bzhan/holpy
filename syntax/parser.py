@@ -263,26 +263,26 @@ def parse_proof_rule(thy, ctxt, s):
         sig = thy.get_proof_rule_sig(rule_name)
         if sig == MacroSig.NONE:
             assert args == "", "rule expects no argument."
-            return ProofItem(id, rule_name, prevs = prevs, th = th)
+            return ProofItem(id, rule_name, prevs=prevs, th=th)
         elif sig == MacroSig.STRING:
-            return ProofItem(id, rule_name, args = args, prevs = prevs, th = th)
+            return ProofItem(id, rule_name, args=args, prevs=prevs, th=th)
         elif sig == MacroSig.TERM:
             t = term_parser(thy, ctxt).parse(args)
-            return ProofItem(id, rule_name, args = t, prevs = prevs, th = th)
+            return ProofItem(id, rule_name, args=t, prevs=prevs, th=th)
         elif sig == MacroSig.INST:
             inst = inst_parser(thy, ctxt).parse(args)
-            return ProofItem(id, rule_name, args = inst, prevs = prevs, th = th)
+            return ProofItem(id, rule_name, args=inst, prevs=prevs, th=th)
         elif sig == MacroSig.TYINST:
             tyinst = tyinst_parser(thy, ctxt).parse(args)
-            return ProofItem(id, rule_name, args = tyinst, prevs = prevs, th = th)
+            return ProofItem(id, rule_name, args=tyinst, prevs=prevs, th=th)
         elif sig == MacroSig.STRING_TERM:
             s1, s2 = args.split(",", 1)
             t = term_parser(thy, ctxt).parse(s2)
-            return ProofItem(id, rule_name, args = (s1, t), prevs = prevs, th = th)
+            return ProofItem(id, rule_name, args=(s1, t), prevs=prevs, th=th)
         elif sig == MacroSig.STRING_INST:
             s1, s2 = args.split(",", 1)
             inst = inst_parser(thy, ctxt).parse(s2)
-            return ProofItem(id, rule_name, args = (s1, inst), prevs = prevs, th = th)
+            return ProofItem(id, rule_name, args=(s1, inst), prevs=prevs, th=th)
         else:
             raise TypeError()
     except exceptions.UnexpectedToken as e:

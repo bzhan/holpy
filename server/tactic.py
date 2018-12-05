@@ -45,8 +45,8 @@ def incr_id(id, start, n):
 
 def incr_proof_item(item, start, n):
     """Increment all ids in the given proof item."""
-    return ProofItem(incr_id(item.id, start, n), item.rule, args = item.args,
-        prevs = [incr_id(id, start, n) for id in item.prevs], th = item.th)
+    return ProofItem(incr_id(item.id, start, n), item.rule, args=item.args,
+        prevs=[incr_id(id, start, n) for id in item.prevs], th=item.th)
 
 def strip_all_implies(t, names):
     """Given a term of the form
@@ -97,10 +97,10 @@ class ProofState():
         self.concl = concl
 
         self.prf = Proof(*assums)
-        self.prf.add_item("S1", "sorry", th = Thm(assums, concl))
+        self.prf.add_item("S1", "sorry", th=Thm(assums, concl))
         self.prf.vars = vars
         for n, assum in enumerate(reversed(assums), 2):
-            self.prf.add_item("S" + str(n), "implies_intr", args = assum, prevs = ["S" + str(n-1)])
+            self.prf.add_item("S" + str(n), "implies_intr", args=assum, prevs=["S" + str(n-1)])
         self.check_proof()
 
     @staticmethod
@@ -206,8 +206,8 @@ class ProofState():
 
         # Decrement a proof item.
         def decr_proof_item(item):
-            return ProofItem(decr_id(item.id), item.rule, args = item.args,
-                prevs = [decr_id(id) for id in item.prevs], th = item.th)
+            return ProofItem(decr_id(item.id), item.rule, args=item.args,
+                prevs=[decr_id(id) for id in item.prevs], th=item.th)
 
         # Remove the given line. Replace all S{i} with S{i-1} whenever
         # i > id_remove.
@@ -220,13 +220,13 @@ class ProofState():
         self.prf = new_prf
         self.check_proof()
 
-    def set_line(self, id, rule, *, args = None, prevs = None, th = None):
+    def set_line(self, id, rule, *, args=None, prevs=None, th=None):
         """Set the item with the given id to the following data."""
         new_prf = Proof()
         new_prf.vars = self.prf.vars
         for item in self.prf.items:
             if item.id == id:
-                new_prf.items.append(ProofItem(id, rule, args = args, prevs = prevs, th = th))
+                new_prf.items.append(ProofItem(id, rule, args=args, prevs=prevs, th=th))
             else:
                 new_prf.items.append(item)
 
@@ -244,8 +244,8 @@ class ProofState():
     def replace_id(self, old_id, new_id):
         """Replace old_id with new_id in prevs."""
         def replace_line(item):
-            return ProofItem(item.id, item.rule, args = item.args,
-                prevs = [new_id if id == old_id else id for id in item.prevs], th = item.th)
+            return ProofItem(item.id, item.rule, args=item.args,
+                prevs=[new_id if id == old_id else id for id in item.prevs], th=item.th)
 
         new_prf = Proof()
         new_prf.vars = self.prf.vars
@@ -304,10 +304,10 @@ class ProofState():
         start = int(id[1:])
         all_ids = ["S" + str(start + i - len(prevs)) for i in range(len(prevs), len(As))]
         for goal_id, A in zip(all_ids, As[len(prevs):]):
-            self.set_line(goal_id, "sorry", th = Thm(cur_item.th.assums, A))
+            self.set_line(goal_id, "sorry", th=Thm(cur_item.th.assums, A))
 
         self.set_line("S" + str(start + num_goal), "apply_theorem_for",
-                      args = (th_name, inst), prevs = prevs + all_ids)
+                      args=(th_name, inst), prevs=prevs + all_ids)
 
         # Test if the goals are already proved:
         for goal_id, A in reversed(list(zip(all_ids, As[len(prevs):]))):
@@ -348,24 +348,24 @@ class ProofState():
         # Assumptions
         for i, A in enumerate(As):
             new_id = "S" + str(start + i)
-            self.set_line(new_id, "assume", args = A, th = Thm([A], A))
+            self.set_line(new_id, "assume", args=A, th=Thm([A], A))
 
         # Goal
         goal_id = "S" + str(start + len(As))
         goal = Thm(list(cur_item.th.assums) + As, C)
-        self.set_line(goal_id, "sorry", th = goal)
+        self.set_line(goal_id, "sorry", th=goal)
 
         # implies_intr invocations
         for i, A in enumerate(reversed(As)):
             prev_id = "S" + str(start + len(As) + i)
             new_id = "S" + str(start + len(As) + i + 1)
-            self.set_line(new_id, "implies_intr", args = A, prevs = [prev_id])
+            self.set_line(new_id, "implies_intr", args=A, prevs=[prev_id])
 
         # forall_intr invocations
         for i, var in enumerate(reversed(vars)):
             prev_id = "S" + str(start + 2 * len(As) + i)
             new_id = "S" + str(start + 2 * len(As) + i + 1)
-            self.set_line(new_id, "forall_intr", args = var, prevs = [prev_id])
+            self.set_line(new_id, "forall_intr", args=var, prevs=[prev_id])
 
         # Test if the goal is already proved
         new_id = self.find_goal(goal, goal_id)
@@ -408,8 +408,8 @@ class ProofState():
 
         self.add_line_before(id, 1)
         start = int(id[1:])
-        self.set_line(id, "sorry", th = Thm(cur_item.th.assums, new_goal))
-        self.set_line("S" + str(start + 1), "rewrite_goal", args = (th_name, goal), prevs = [id])
+        self.set_line(id, "sorry", th=Thm(cur_item.th.assums, new_goal))
+        self.set_line("S" + str(start + 1), "rewrite_goal", args=(th_name, goal), prevs=[id])
 
         # Test if the goal is already proved
         new_id = self.find_goal(Thm(cur_item.th.assums, new_goal), id)

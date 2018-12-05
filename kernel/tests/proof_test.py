@@ -14,13 +14,13 @@ A_to_B = Term.mk_implies(A,B)
 class ProofTest(unittest.TestCase):
     def testProofItem(self):
         test_data = [
-            (ProofItem("S1", "theorem", args = "conjD1"), "S1: theorem conjD1"),
-            (ProofItem("S2", "assume", args = A_to_B), "S2: assume implies A B"),
-            (ProofItem("S6", "substitution", args = {"A": B, "B": A}, prevs = ["S5"]),
+            (ProofItem("S1", "theorem", args="conjD1"), "S1: theorem conjD1"),
+            (ProofItem("S2", "assume", args=A_to_B), "S2: assume implies A B"),
+            (ProofItem("S6", "substitution", args={"A": B, "B": A}, prevs=["S5"]),
                 "S6: substitution {A: B, B: A} from S5"),
-            (ProofItem("S7", "implies_elim", prevs = ["S6", "S4"]),
+            (ProofItem("S7", "implies_elim", prevs=["S6", "S4"]),
                 "S7: implies_elim from S6, S4"),
-            (ProofItem("S1", "apply_theorem_for", args = ("conjD2", {"A": B, "B": A}), prevs = ["A1"]),
+            (ProofItem("S1", "apply_theorem_for", args=("conjD2", {"A": B, "B": A}), prevs=["A1"]),
                 "S1: apply_theorem_for conjD2, {A: B, B: A} from A1")
         ]
 
@@ -30,7 +30,7 @@ class ProofTest(unittest.TestCase):
     def testProof(self):
         prf = Proof(A_to_B, A)
         th = Thm([A, A_to_B], B)
-        prf.add_item("C", "implies_elim", prevs = ["A1", "A2"], th = th)
+        prf.add_item("C", "implies_elim", prevs=["A1", "A2"], th=th)
 
         self.assertEqual(prf.get_num_item(), 3)
         self.assertEqual(prf.get_thm(), th)
