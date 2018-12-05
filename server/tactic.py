@@ -48,6 +48,21 @@ def incr_proof_item(item, start, n):
     return ProofItem(incr_id(item.id, start, n), item.rule, args=item.args,
         prevs=[incr_id(id, start, n) for id in item.prevs], th=item.th)
 
+def decr_id(id, id_remove=0):
+    """Decrement a single id, with the aim of closing the gap at id_remove.
+    id_remove defaults to 0 (decrement all ids > 0).
+    
+    """
+    if id.startswith("S") and int(id[1:]) > id_remove:
+        return "S" + str(int(id[1:]) - 1)
+    else:
+        return id
+
+def decr_proof_item(item, id_remove):
+    """Decrement all ids in the given proof item."""
+    return ProofItem(decr_id(item.id, id_remove), item.rule, args=item.args,
+        prevs=[decr_id(id, id_remove) for id in item.prevs], th=item.th)
+
 def strip_all_implies(t, names):
     """Given a term of the form
 
@@ -197,25 +212,13 @@ class ProofState():
         else:
             raise TacticException()
 
-        # Decrement a single id.
-        def decr_id(id):
-            if id.startswith("S") and int(id[1:]) > id_remove:
-                return "S" + str(int(id[1:]) - 1)
-            else:
-                return id
-
-        # Decrement a proof item.
-        def decr_proof_item(item):
-            return ProofItem(decr_id(item.id), item.rule, args=item.args,
-                prevs=[decr_id(id) for id in item.prevs], th=item.th)
-
         # Remove the given line. Replace all S{i} with S{i-1} whenever
         # i > id_remove.
         new_prf = Proof()
         new_prf.vars = self.prf.vars
         for item in self.prf.items:
             if not item.id == id:
-                new_prf.items.append(decr_proof_item(item))
+                new_prf.items.append(decr_proof_item(item, id_remove))
             
         self.prf = new_prf
         self.check_proof()
