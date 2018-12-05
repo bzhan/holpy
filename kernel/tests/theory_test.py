@@ -8,8 +8,8 @@ from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.macro import MacroSig, ProofMacro
 from kernel.theory import Theory, TheoryException, CheckProofException
-from kernel.extension import AxConstant, Constant, Theorem, TheoryExtension
-from kernel.report import ProofReport
+from kernel.extension import AxType, AxConstant, Constant, Theorem, TheoryExtension
+from kernel.report import ProofReport, ExtensionReport
 
 thy = Theory.EmptyTheory()
 
@@ -340,10 +340,12 @@ class TheoryTest(unittest.TestCase):
         thy = Theory.EmptyTheory()
         thy_ext = TheoryExtension()
 
+        thy_ext.add_extension(AxType("nat", 0))
         thy_ext.add_extension(AxConstant("id", TFun(Ta,Ta)))
         ext_report = thy.checked_extend(thy_ext)
+        self.assertEqual(thy.get_type_sig("nat"), 0)
         self.assertEqual(thy.get_term_sig("id"), TFun(Ta,Ta))
-        self.assertEqual(ext_report.get_axioms(), [("id", TFun(Ta,Ta))])
+        self.assertEqual(ext_report.get_axioms(), [("nat", 0), ("id", TFun(Ta,Ta))])
 
 if __name__ == "__main__":
     unittest.main()

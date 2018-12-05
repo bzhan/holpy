@@ -359,6 +359,12 @@ class Theory():
             macro = self.get_proof_macro(name)
             return macro.sig
 
+    def extend_axiom_type(self, ext):
+        """Extend the theory by adding an axiomatic type."""
+        assert ext.ty == Extension.AX_TYPE, "extend_axiom_type"
+
+        self.add_type_sig(ext.name, ext.arity)
+
     def extend_axiom_constant(self, ext):
         """Extend the theory by adding an axiomatic constant."""
         assert ext.ty == Extension.AX_CONSTANT, "extend_axiom_constant"
@@ -379,7 +385,9 @@ class Theory():
     def unchecked_extend(self, thy_ext):
         """Perform the given theory extension without proof checking."""
         for ext in thy_ext.get_extensions():
-            if ext.ty == Extension.AX_CONSTANT:
+            if ext.ty == Extension.AX_TYPE:
+                self.extend_axiom_type(ext)
+            elif ext.ty == Extension.AX_CONSTANT:
                 self.extend_axiom_constant(ext)
             elif ext.ty == Extension.CONSTANT:
                 self.extend_constant(ext)
@@ -393,7 +401,10 @@ class Theory():
         ext_report = ExtensionReport()
 
         for ext in thy_ext.get_extensions():
-            if ext.ty == Extension.AX_CONSTANT:
+            if ext.ty == Extension.AX_TYPE:
+                self.extend_axiom_type(ext)
+                ext_report.add_axiom(ext.name, ext.arity)
+            elif ext.ty == Extension.AX_CONSTANT:
                 self.extend_axiom_constant(ext)
                 ext_report.add_axiom(ext.name, ext.T)
             elif ext.ty == Extension.CONSTANT:

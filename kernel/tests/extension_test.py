@@ -5,7 +5,7 @@ import unittest
 from kernel.type import TVar, TFun
 from kernel.term import Term, Var, Const, Abs, Bound
 from kernel.thm import Thm
-from kernel.extension import AxConstant, Constant, Theorem, TheoryExtension
+from kernel.extension import AxType, AxConstant, Constant, Theorem, TheoryExtension
 
 Ta = TVar("a")
 x = Var("x", Ta)
@@ -36,9 +36,14 @@ class ExtensionTest(unittest.TestCase):
 
     def testPrintTheoryExtension2(self):
         thy_ext = TheoryExtension()
+        thy_ext.add_extension(AxType("nat", 0))
         thy_ext.add_extension(AxConstant("id", TFun(Ta,Ta)))
-        
-        self.assertEqual(str(thy_ext), "AxConstant id :: 'a => 'a")
+
+        str_thy_ext = "\n".join([
+            "AxType nat 0",
+            "AxConstant id :: 'a => 'a"])
+
+        self.assertEqual(str(thy_ext), str_thy_ext)
 
 if __name__ == "__main__":
     unittest.main()

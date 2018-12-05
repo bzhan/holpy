@@ -6,7 +6,10 @@ from kernel.thm import Thm
 class Extension():
     """Represents a single extension to the theory.
 
-    There are currently three kinds of extensions:
+    There are currently four kinds of extensions:
+
+    AxType(name, arity): extend the theory by axiomatically defining
+    a type with the given name and arity.
 
     AxConstant(name, T): extend the theory by axiomatically defining
     a constant with the given name and type.
@@ -20,10 +23,12 @@ class Extension():
     be accepted as an axiom. Otherwise prf is a proof of the theorem.
 
     """
-    (AX_CONSTANT, CONSTANT, THEOREM) = range(3)
+    (AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM) = range(4)
 
     def __str__(self):
-        if self.ty == Extension.AX_CONSTANT:
+        if self.ty == Extension.AX_TYPE:
+            return "AxType " + self.name + " " + str(self.arity)
+        elif self.ty == Extension.AX_CONSTANT:
             return "AxConstant " + self.name + " :: " + str(self.T)
         elif self.ty == Extension.CONSTANT:
             return "Constant " + self.name + " = " + str(self.expr)
@@ -35,6 +40,18 @@ class Extension():
     def __repr__(self):
         return str(self)
 
+    def __eq__(self, other):
+        if self.ty == Extension.AX_TYPE:
+            return self.name == other.name and self.arity == other.arity
+        elif self.ty == Extension.AX_CONSTANT:
+            return self.name == other.name and self.T == other.T
+        elif self.ty == Extension.CONSTANT:
+            return self.name == other.name and self.expr == other.expr
+        elif self.ty == Extension.THEOREM:
+            return self.name == other.name and self.th == other.th and self.prf == other.prf
+        else:
+            raise TypeError()
+
     def get_const_term(self):
         """Return the term to be added in the Constant extension."""
         assert self.ty == Extension.CONSTANT, "get_const_term"
@@ -44,7 +61,19 @@ class Extension():
         """Return the equality theorem to be added in the Constant extension."""
         assert self.ty == Extension.CONSTANT, "get_eq_thm"
         return Thm.mk_equals(self.get_const_term(), self.expr)
-    
+
+class AxType(Extension):
+    def __init__(self, name, arity):
+        """Extending the theory by adding an axiomatized type.
+
+        name -- name of the type.
+        arity -- arity of the type.
+
+        """
+        self.ty = Extension.AX_TYPE
+        self.name = name
+        self.arity = arity
+
 class AxConstant(Extension):
     def __init__(self, name, T):
         """Extending the theory by adding an axiomatized constant.

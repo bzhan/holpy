@@ -42,10 +42,12 @@ class ExtensionReportTest(unittest.TestCase):
 
     def testPrintExtensionReport2(self):
         ext_report = ExtensionReport()
+        ext_report.add_axiom("nat", 0)
         ext_report.add_axiom("id", TFun(Ta,Ta))
 
         str_ext_report = "\n".join([
-            "Axiom added: 1",
+            "Axiom added: 2",
+            "Type nat with arity 0",
             "id :: 'a => 'a"])
 
         self.assertEqual(str(ext_report), str_ext_report)

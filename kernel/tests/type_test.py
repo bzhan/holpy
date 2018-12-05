@@ -43,6 +43,16 @@ class TypeTest(unittest.TestCase):
         for T, str_T in test_data:
             self.assertEqual(str(T), str_T)
 
+    def testStripType(self):
+        test_data = [
+            (Ta, ([], Ta)),
+            (TFun(Ta, Tb), ([Ta], Tb)),
+            (TFun(Ta, Ta, Tb), ([Ta, Ta], Tb)),
+        ]
+
+        for T, res in test_data:
+            self.assertEqual(T.strip_type(), res)
+
     def testSubst(self):
         test_data = [
             (Ta, {"a" : Tb}, Tb),

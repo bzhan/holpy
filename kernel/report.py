@@ -105,7 +105,9 @@ class ExtensionReport():
     @staticmethod
     def _str_axiom(axiom):
         (name, info) = axiom
-        if isinstance(info, HOLType):
+        if isinstance(info, int):
+            return "Type " + name + " with arity " + str(info)
+        elif isinstance(info, HOLType):
             return name + " :: " + str(info)
         elif isinstance(info, Thm):
             return name + ": " + str(info)

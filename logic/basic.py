@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import TVar, TFun, hol_bool
+from kernel.type import TVar, TFun, Type, hol_bool
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.theory import Theory
@@ -8,6 +8,7 @@ from logic.operator import OperatorTable
 from logic.logic import Logic
 from logic.nat import Nat
 from logic.logic_macro import *
+from logic import induct
 
 def BasicTheory():
     thy = Theory.EmptyTheory()
@@ -61,18 +62,15 @@ def BasicTheory():
     thy.add_theorem("classical", Thm([], Logic.disj(A, Logic.neg(A))))
 
     # Natural numbers
-    nat = Nat.nat
-    thy.add_type_sig("nat", 0)
-    thy.add_term_sig("0", nat)
-    thy.add_term_sig("Suc", TFun(nat, nat))
+    nat = Type("nat")
+    nat_ext = induct.add_induct_type(
+        "nat", [], [("0", nat, []), ("Suc", TFun(nat, nat), ["n"])])
+    thy.unchecked_extend(nat_ext)
 
     m = Var("m", nat)
     n = Var("n", nat)
     P = Var("P", TFun(nat, hol_bool))
     S = Nat.Suc
-    thy.add_theorem("nat.Suc_inject", Thm([], imp(eq(S(m), S(n)), eq(m, n))))
-    thy.add_theorem("nat.Suc_not_zero", Thm([], Logic.neg(eq(S(m), Nat.zero))))
-    thy.add_theorem("nat.induct", Thm([], imp(P(Nat.zero), Term.mk_all(n, imp(P(n), P(S(n)))), P(n))))
 
     # Addition on natural numbers
     plus = Nat.plus

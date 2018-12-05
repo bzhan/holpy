@@ -61,6 +61,17 @@ class HOLType():
         """Given a type of form a => b, return b."""
         assert(self.is_fun())
         return self.args[1]
+
+    def strip_type(self):
+        """Given a type of form a_1 => ... => a_n, b, return the pair
+        [a_1, ... a_n], b.
+        
+        """
+        if self.is_fun():
+            domains, range = self.range_type().strip_type()
+            return ([self.domain_type()] + domains, range)
+        else:
+            return ([], self)
         
     def __str__(self):
         if self.ty == HOLType.TVAR:

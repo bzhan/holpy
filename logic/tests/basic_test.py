@@ -361,8 +361,8 @@ class BasicTest(unittest.TestCase):
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         prf = Proof()
-        prf.add_item("S1", "theorem", args = "nat.induct")
-        prf.add_item("S2", "substitution", args = {"P": Term.mk_abs(n, eq(Nat.plus(n,Nat.zero),n))}, prevs = ["S1"])
+        prf.add_item("S1", "theorem", args = "nat_induct")
+        prf.add_item("S2", "substitution", args = {"P": Term.mk_abs(n, eq(Nat.plus(n,Nat.zero),n)), "x": n}, prevs = ["S1"])
         prf.add_item("S3", "beta_norm", prevs = ["S2"])
         prf.add_item("S4", "theorem", args = "nat.add_0")
         prf.add_item("S5", "substitution", args = {"n": Nat.zero}, prevs = ["S4"])
@@ -384,8 +384,8 @@ class BasicTest(unittest.TestCase):
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         prf = Proof()
-        prf.add_item("S1", "theorem", args = "nat.induct")
-        prf.add_item("S2", "substitution", args = {"P": Term.mk_abs(n, eq(Nat.times(n,Nat.zero),Nat.zero))}, prevs = ["S1"])
+        prf.add_item("S1", "theorem", args = "nat_induct")
+        prf.add_item("S2", "substitution", args = {"P": Term.mk_abs(n, eq(Nat.times(n,Nat.zero),Nat.zero)), "x": n}, prevs = ["S1"])
         prf.add_item("S3", "beta_norm", prevs = ["S2"])
         prf.add_item("S4", "theorem", args = "nat.mult_0")
         prf.add_item("S5", "substitution", args = {"n": Nat.zero}, prevs = ["S4"])
