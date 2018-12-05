@@ -1,0 +1,7 @@
+{
+    "variables": [
+        "var n :: nat"
+    ],
+    "assumes": [],
+    "conclusion": "n + zero = n"
+}

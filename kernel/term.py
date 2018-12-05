@@ -33,9 +33,9 @@ class Term():
 
     Var("a", nat) is a variable of type nat.
 
-    Const("0", nat) is constant zero.
+    Const("zero", nat) is constant zero.
 
-    Comb(Const("Suc", nat => nat), Const("0", nat)) is the successor function
+    Comb(Const("Suc", nat => nat), Const("zero", nat)) is the successor function
     applied to zero, or the constant 1.
 
     Comb(Comb(Const("plus", nat => nat => nat), Var("a", nat)), Var("b", nat))

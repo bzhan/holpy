@@ -7,7 +7,7 @@ class Nat():
     """Utility functions for natural number arithmetic."""
 
     nat = Type("nat")
-    zero = Const("0", nat)
+    zero = Const("zero", nat)
     Suc = Const("Suc", TFun(nat, nat))
     one = Suc(zero)
     plus = Const("plus", TFun(nat, nat, nat))

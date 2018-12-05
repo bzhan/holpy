@@ -18,9 +18,9 @@ class InductTest(unittest.TestCase):
     def testInductNat(self):
         nat = Type("nat")
         nat_ext = induct.add_induct_type(
-            "nat", [], [("0", nat, []), ("Suc", TFun(nat, nat), ["n"])])
+            "nat", [], [("zero", nat, []), ("Suc", TFun(nat, nat), ["n"])])
         
-        zero = Const("0", nat)
+        zero = Const("zero", nat)
         S = Const("Suc", TFun(nat, nat))
         n = Var("n", nat)
         n2 = Var("n'", nat)
@@ -29,9 +29,9 @@ class InductTest(unittest.TestCase):
 
         res = [
             AxType("nat", 0),
-            AxConstant("0", nat),
+            AxConstant("zero", nat),
             AxConstant("Suc", TFun(nat, nat)),
-            Theorem("nat_0_Suc_neq", Thm([], Logic.neg(eq(zero, S(n))))),
+            Theorem("nat_zero_Suc_neq", Thm([], Logic.neg(eq(zero, S(n))))),
             Theorem("nat_Suc_inject", Thm([], imp(eq(S(n), S(n2)), eq(n, n2)))),
             Theorem("nat_induct", Thm([], imp(P(zero), all(n, imp(P(n), P(S(n)))), P(x))))
         ]
@@ -40,7 +40,7 @@ class InductTest(unittest.TestCase):
     def testInductAdd(self):
         nat = Type("nat")
         plus = Const("plus", TFun(nat, nat, nat))
-        zero = Const("0", nat)
+        zero = Const("zero", nat)
         S = Const("Suc", TFun(nat, nat))
         m = Var("m", nat)
         n = Var("n", nat)

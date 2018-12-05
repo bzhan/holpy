@@ -10,6 +10,7 @@ from kernel.proof import Proof
 from kernel.report import ProofReport
 from logic.logic import Logic
 from logic.basic import BasicTheory
+from logic.nat import Nat
 from syntax import printer
 from server import tactic
 from server.tactic import ProofState
@@ -227,6 +228,13 @@ class TacticTest(unittest.TestCase):
         state.introduction("S1", ["x"])
         self.assertEqual(state.check_proof(), Thm([], Term.mk_all(x, imp(A(x), B(x)))))
         self.assertEqual(state.prf.get_num_item(), 4)
+
+    def testApplyInduction(self):
+        n = Var("n", Nat.nat)
+        state = ProofState([n], [], Term.mk_equals(Nat.plus(n, Nat.zero), n))
+        state.apply_induction("S1", "nat_induct", "n")
+        self.assertEqual(state.check_proof(), Thm([], Term.mk_equals(Nat.plus(n, Nat.zero), n)))
+        self.assertEqual(state.prf.get_num_item(), 3)
 
     def testConjComm(self):
         """Proof of A & B --> B & A."""

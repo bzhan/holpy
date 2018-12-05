@@ -115,6 +115,17 @@ def apply_backward_step():
     return jsonify({})
 
 
+@app.route('/api/apply-induction', methods=['POST'])
+def apply_induction():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells.get(data.get('id'))        
+        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
+        theorem, var = data.get('theorem').split(",")
+        cell.apply_induction(id, theorem, var)
+        return jsonify(get_result_from_cell(cell))
+    return jsonify({})
+
 @app.route('/api/get-cell-state', methods=['POST'])
 def get_cell_state():
     data = json.loads(request.get_data().decode("utf-8"))

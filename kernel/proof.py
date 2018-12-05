@@ -32,14 +32,16 @@ class ProofItem():
         def str_val(val):
             if isinstance(val, Term):
                 return term_printer(val)
+            elif isinstance(val, dict):
+                items = sorted(val.items(), key = lambda pair: pair[0])
+                return "{" + ", ".join(key + ": " + str_val(val) for key, val in items) + "}"
             else:
                 return str(val)
 
         if isinstance(self.args, str):
             str_args = " " + self.args
         elif isinstance(self.args, dict):
-            items = sorted(self.args.items(), key = lambda pair: pair[0])
-            str_args = " {" + ", ".join(key + ": " + str_val(val) for key, val in items) + "}"
+            str_args = " " + str_val(self.args)
         elif isinstance(self.args, tuple):
             str_args = " " + ", ".join(str_val(val) for val in self.args)
         else:

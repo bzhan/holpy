@@ -20,6 +20,8 @@ class ProofTest(unittest.TestCase):
                 "S6: substitution {A: B, B: A} from S5"),
             (ProofItem("S7", "implies_elim", prevs = ["S6", "S4"]),
                 "S7: implies_elim from S6, S4"),
+            (ProofItem("S1", "apply_theorem_for", args = ("conjD2", {"A": B, "B": A}), prevs = ["A1"]),
+                "S1: apply_theorem_for conjD2, {A: B, B: A} from A1")
         ]
 
         for item, s in test_data:

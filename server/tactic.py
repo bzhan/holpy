@@ -267,8 +267,13 @@ class ProofState():
         # upto_id not found
         raise TacticException()
 
-    def apply_backward_step(self, id, th_name, *, prevs = None):
-        """Apply backward step using the given theorem."""
+    def apply_backward_step(self, id, th_name, *, prevs=None, inst=None):
+        """Apply backward step using the given theorem.
+        
+        prevs - list of previous proved facts to use.
+        inst - existing instantiation.
+
+        """
         if prevs is None:
             prevs = []
 
@@ -281,12 +286,14 @@ class ProofState():
 
         # Instantiate the given theorem.
         th = self.thy.get_theorem(th_name)
-        As, C = th.concl.strip_implies()
-        inst = dict()
-        for pat, prev in zip(As, prevs):
-            item = self.get_proof_item(prev)
-            Matcher.first_order_match_incr(pat, item.th.concl, inst)
-        Matcher.first_order_match_incr(C, cur_item.th.concl, inst)
+
+        if inst is None:
+            inst = dict()
+            As, C = Logic.subst_norm(th.concl, inst).strip_implies()
+            for pat, prev in zip(As, prevs):
+                item = self.get_proof_item(prev)
+                Matcher.first_order_match_incr(pat, item.th.concl, inst)
+            Matcher.first_order_match_incr(C, cur_item.th.concl, inst)
 
         As, _ = Logic.subst_norm(th.concl, inst).strip_implies()
 
@@ -298,7 +305,7 @@ class ProofState():
             self.set_line(goal_id, "sorry", th = Thm(cur_item.th.assums, A))
 
         self.set_line("S" + str(start + num_goal), "apply_theorem_for",
-                      args = (th_name, cur_item.th.concl), prevs = prevs + all_ids)
+                      args = (th_name, inst), prevs = prevs + all_ids)
 
         # Test if the goals are already proved:
         for goal_id, A in reversed(list(zip(all_ids, As[len(prevs):]))):
@@ -362,3 +369,27 @@ class ProofState():
         new_id = self.find_goal(goal, goal_id)
         if new_id is not None:
             self.replace_id(goal_id, new_id)
+
+    def apply_induction(self, id, th_name, var):
+        """Apply induction using the given theorem and on the given
+        variable.
+        
+        """
+        cur_item = self.get_proof_item(id)
+        assert cur_item.rule == "sorry", "apply_induction: id is not a gap"
+
+        # Find variable
+        assert isinstance(var, str), "apply_induction: input must be a string"
+        for v in self.prf.vars:
+            if v.name == var:
+                var = v
+
+        assert not isinstance(var, str), "apply_induction: variable not found"
+
+        # Current goal
+        concl = cur_item.th.concl
+
+        # Instantiation for P
+        P = concl.abstract_over(var)
+        inst = {"P": P, "x": var}
+        self.apply_backward_step(id, th_name, inst=inst)

@@ -138,10 +138,10 @@ class BasicTest(unittest.TestCase):
 
         prf = Proof(disjAB)
         prf.add_item("S1", "assume", args = A)
-        prf.add_item("S2", "apply_theorem_for", args = ("disjI2", disjBA), prevs = ["S1"])
+        prf.add_item("S2", "apply_theorem_for", args = ("disjI2", {"A": B, "B": A}), prevs = ["S1"])
         prf.add_item("S3", "implies_intr", args = A, prevs = ["S2"])
         prf.add_item("S4", "assume", args = B)
-        prf.add_item("S5", "apply_theorem_for", args = ("disjI1", disjBA), prevs = ["S4"])
+        prf.add_item("S5", "apply_theorem_for", args = ("disjI1", {"A": B, "B": A}), prevs = ["S4"])
         prf.add_item("S6", "implies_intr", args = B, prevs = ["S5"])
         prf.add_item("S7", "apply_theorem", args = "disjE", prevs = ["A1", "S3", "S6"])
         prf.add_item("S8", "implies_intr", args = disjAB, prevs = ["S7"])

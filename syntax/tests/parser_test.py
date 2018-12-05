@@ -221,6 +221,8 @@ class ParserTest(unittest.TestCase):
             ("S1: conj A B |- conj B A by sorry", ProofItem(
                 "S1", "sorry", th = Thm([Logic.mk_conj(A, B)], Logic.mk_conj(B, A)))),
             ("S2: ", ProofItem("S2", "")),
+            ("S1: apply_theorem_for conjI, {A: B, B: A} from S1, S2", ProofItem(
+                "S1", "apply_theorem_for", args = ("conjI", {'A': B, 'B': A}), prevs = ["S1", "S2"])),
         ]
 
         for s, res in test_data:

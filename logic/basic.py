@@ -64,7 +64,7 @@ def BasicTheory():
     # Natural numbers
     nat = Type("nat")
     nat_ext = induct.add_induct_type(
-        "nat", [], [("0", nat, []), ("Suc", TFun(nat, nat), ["n"])])
+        "nat", [], [("zero", nat, []), ("Suc", TFun(nat, nat), ["n"])])
     thy.unchecked_extend(nat_ext)
 
     m = Var("m", nat)
@@ -89,5 +89,5 @@ def BasicTheory():
     thy.add_proof_macro("fun_combination", fun_combination_macro())
     thy.add_proof_macro("beta_norm", beta_norm_macro())
     thy.add_proof_macro("apply_theorem", apply_theorem_macro())
-    thy.add_proof_macro("apply_theorem_for", apply_theorem_macro(with_concl=True))
+    thy.add_proof_macro("apply_theorem_for", apply_theorem_macro(with_inst=True))
     return thy

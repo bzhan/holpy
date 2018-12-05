@@ -72,8 +72,8 @@ class ConvTest(unittest.TestCase):
         self.assertRaises(ConvException, cv1.get_proof_term, zero)
 
     def testAbsConv(self):
-        nat0 = Const("0", nat)
-        nat1 = Const("1", nat)
+        nat0 = Const("zero", nat)
+        nat1 = Const("one", nat)
         f = Const("f", TFun(nat, nat))
         g = Const("g", TFun(nat, nat))
         x = Var("x", nat)

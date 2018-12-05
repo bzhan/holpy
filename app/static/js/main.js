@@ -104,6 +104,10 @@
 
         $('#apply-backward-step').on("click", function () {
             apply_backward_step(get_selected_editor());
+        });
+
+        $('#apply-induction').on("click", function () {
+            apply_induction(get_selected_editor());
         })
 
         $('#init-button').on("click", function () {
@@ -396,7 +400,7 @@
                 preConfirm: () => {
                     var data = {
                         'id': get_selected_id(),
-                        "line": line,
+                        'line': line,
                         'theorem': document.getElementById('swal-input1').value,
                     };
                     return fetch('/api/apply-backward-step', {
@@ -427,6 +431,30 @@
                 if (result) {
                     display_checked_proof(result['value']);
                 }
+            })
+        }
+
+        function apply_induction(cm) {
+            $(document).ready(function () {
+                var line_number = cm.getCursor().line;
+                var line = cm.getLine(line_number);
+                var input = {
+                    'id': get_selected_id(),
+                    'line': line
+                };
+
+                input['theorem'] = prompt('Enter induction theorem and variable name')
+                var data = JSON.stringify(input);
+                display_running();
+
+                $.ajax({
+                    url: "/api/apply-induction",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+                        display_checked_proof(result);
+                    }
+                })
             })
         }
 
