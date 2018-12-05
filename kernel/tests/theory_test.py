@@ -39,8 +39,8 @@ class beta_conv_rhs_macro(ProofMacro):
 
         return Thm.transitive(th, Thm.beta_conv(rhs))
 
-    def expand(self, depth, *prevs):
-        id, th = prevs[0]
+    def expand(self, depth, prev):
+        id, th = prev
         assert Term.is_equals(th.concl), "beta_conv_rhs"
         (_, rhs) = th.concl.dest_binop()
 

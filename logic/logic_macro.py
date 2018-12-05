@@ -23,8 +23,8 @@ class arg_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "arg_combination"
         return Thm.combination(Thm.reflexive(f), th)
 
-    def expand(self, depth, f, *prevs):
-        id, th = prevs[0]
+    def expand(self, depth, f, prev):
+        id, th = prev
         assert th.concl.is_equals(), "arg_combination"
 
         prf = Proof()
@@ -44,8 +44,8 @@ class fun_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "fun_combination"
         return Thm.combination(th, Thm.reflexive(x))
 
-    def expand(self, depth, x, *prevs):
-        id, th = prevs[0]
+    def expand(self, depth, x, prev):
+        id, th = prev
         assert th.concl.is_equals(), "fun_combination"
 
         prf = Proof()
@@ -66,8 +66,8 @@ class beta_norm_macro(ProofMacro):
         eq_th = cv(th.concl)
         return Thm(th.assums, eq_th.concl.arg)
 
-    def expand(self, depth, *prevs):
-        id, th = prevs[0]
+    def expand(self, depth, prev):
+        id, th = prev
         cv = top_conv(beta_conv())
         pt = cv.get_proof_term(th.concl)
         pt2 = ProofTerm.equal_elim(pt, ProofTerm.atom(id, th))
@@ -153,12 +153,12 @@ class rewrite_goal_macro(ProofMacro):
         _, goal = args
         return Thm(th.assums, goal)
 
-    def expand(self, depth, thy, args, *prevs):
+    def expand(self, depth, thy, args, prev):
         assert isinstance(args, tuple) and len(args) == 2 and \
                isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
 
         name, goal = args
-        id, th = prevs[0]
+        id, th = prev
         eq_pt = ProofTerm.theorem(thy, name)
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
