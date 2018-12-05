@@ -75,6 +75,26 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(rpt2.macro_steps, 1)
         thy.check_level = 0
 
+    def testApplyTheorem(self):
+        thy = basic.BasicTheory
+        A = Var("A", hol_bool)
+        B = Var("B", hol_bool)
+
+        prf = Proof(Logic.mk_conj(A, B))
+        prf.add_item("S1", "apply_theorem", args="conjD1", prevs=["A1"])
+
+        th = Thm([Logic.mk_conj(A, B)], A)
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.prim_steps, 7)
+
+        thy.check_level = 1
+        rpt2 = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt2), th)
+        self.assertEqual(rpt2.prim_steps, 1)
+        self.assertEqual(rpt2.macro_steps, 1)
+        thy.check_level = 0
+
     def testRewriteGoal(self):
         thy = basic.BasicTheory
 

@@ -99,10 +99,14 @@ class apply_theorem_macro(ProofMacro):
         th = thy.get_theorem(name)
 
         if not self.with_inst:
-            As, _ = Logic.subst_norm(th.concl, inst).strip_implies()
+            As, _ = th.concl.strip_implies()
             for idx, prev_th in enumerate(prevs):
                 Matcher.first_order_match_incr(As[idx], prev_th.concl, inst)
-        return Thm(th.assums, Logic.subst_norm(t, inst))
+
+        As, C = Logic.subst_norm(th.concl, inst).strip_implies()
+        new_concl = Term.mk_implies(*(As[len(prevs):] + [C]))
+
+        return Thm(th.assums, new_concl)
 
     def expand(self, depth, thy, args, *prevs):
         inst = dict()
