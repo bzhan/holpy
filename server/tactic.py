@@ -9,6 +9,8 @@ from kernel.report import ProofReport
 from logic.basic import BasicTheory
 from logic.logic import Logic
 from logic.matcher import Matcher
+from logic.proofterm import ProofTerm
+from logic.conv import top_conv, rewr_conv
 from syntax import parser, printer
 
 
@@ -393,3 +395,23 @@ class ProofState():
         P = concl.abstract_over(var)
         inst = {"P": P, "x": var}
         self.apply_backward_step(id, th_name, inst=inst)
+
+    def rewrite_goal(self, id, th_name, *, backward=False):
+        """Apply an existing equality theorem to the given goal."""
+
+        cur_item = self.get_proof_item(id)
+        assert cur_item.rule == "sorry", "apply_induction: id is not a gap"
+
+        goal = cur_item.th.concl
+        cv = top_conv(rewr_conv(ProofTerm.theorem(self.thy, th_name)))
+        _, new_goal = cv(goal).concl.dest_binop()
+
+        self.add_line_before(id, 1)
+        start = int(id[1:])
+        self.set_line(id, "sorry", th = Thm(cur_item.th.assums, new_goal))
+        self.set_line("S" + str(start + 1), "rewrite_goal", args = (th_name, goal), prevs = [id])
+
+        # Test if the goal is already proved
+        new_id = self.find_goal(Thm(cur_item.th.assums, new_goal), id)
+        if new_id is not None:
+            self.replace_id(id, new_id)

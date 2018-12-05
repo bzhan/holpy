@@ -126,6 +126,18 @@ def apply_induction():
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
+
+@app.route('/api/rewrite-goal', methods=['POST'])
+def rewrite_goal():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells.get(data.get('id'))        
+        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
+        theorem = data.get('theorem')
+        cell.rewrite_goal(id, theorem)
+        return jsonify(get_result_from_cell(cell))
+    return jsonify({})
+
 @app.route('/api/get-cell-state', methods=['POST'])
 def get_cell_state():
     data = json.loads(request.get_data().decode("utf-8"))

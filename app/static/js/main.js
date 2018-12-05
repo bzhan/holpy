@@ -110,6 +110,10 @@
             apply_induction(get_selected_editor());
         })
 
+        $('#rewrite-goal').on("click", function () {
+            rewrite_goal(get_selected_editor());
+        })
+
         $('#init-button').on("click", function () {
             let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
             let assumes_area = document.querySelector('#assumes .CodeMirror').CodeMirror;
@@ -288,7 +292,7 @@
         function send_input() {
             $(document).ready(function () {
                     var editor = get_selected_editor();
-                    var line_number = editor.getCursor().line;
+                    var line_no = editor.getCursor().line;
                     var input = {
                         "id": get_selected_id(),
                         "proof" : editor.getValue()
@@ -302,7 +306,7 @@
                         data: data,
                         success: function (result) {
                             display_checked_proof(result);
-                            editor.setCursor(line_number, Number.MAX_SAFE_INTEGER);
+                            editor.setCursor(line_no, Number.MAX_SAFE_INTEGER);
                         }
                     })
                 }
@@ -436,8 +440,8 @@
 
         function apply_induction(cm) {
             $(document).ready(function () {
-                var line_number = cm.getCursor().line;
-                var line = cm.getLine(line_number);
+                var line_no = cm.getCursor().line;
+                var line = cm.getLine(line_no);
                 var input = {
                     'id': get_selected_id(),
                     'line': line
@@ -449,6 +453,30 @@
 
                 $.ajax({
                     url: "/api/apply-induction",
+                    type: "POST",
+                    data: data,
+                    success: function (result) {
+                        display_checked_proof(result);
+                    }
+                })
+            })
+        }
+
+        function rewrite_goal(cm) {
+            $(document).ready(function () {
+                var line_no = cm.getCursor().line;
+                var line = cm.getLine(line_no);
+                var input = {
+                    'id': get_selected_id(),
+                    'line': line
+                };
+
+                input['theorem'] = prompt('Enter rewrite theorem')
+                var data = JSON.stringify(input);
+                display_running();
+
+                $.ajax({
+                    url: "/api/rewrite-goal",
                     type: "POST",
                     data: data,
                     success: function (result) {
