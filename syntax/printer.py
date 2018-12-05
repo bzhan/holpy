@@ -31,14 +31,24 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
     def helper(t, bd_vars):
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
 
-        if t.ty == Term.VAR or t.ty == Term.CONST:
+        if t.ty == Term.VAR:
             return t.name
+            
+        elif t.ty == Term.CONST:
+            op_data = get_info_for_operator(t)
+            if op_data:
+                if unicode and op_data.unicode_op:
+                    return op_data.unicode_op
+                else:
+                    return op_data.ascii_op
+            else:
+                return t.name
 
         elif t.ty == Term.COMB:
             op_data = get_info_for_operator(t)
 
             # First, we take care of the case of operators
-            if op_data is not None and op_data.arity == OperatorData.BINARY:
+            if op_data and op_data.arity == OperatorData.BINARY:
                 # Partial application of operators, to implement later
                 if not t.is_binop():
                     raise NotImplementedError()
@@ -59,7 +69,7 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
                     op_data.assoc == RIGHT and get_priority(arg2) < op_data.priority):
                     str_arg2 = "(" + str_arg2 + ")"
 
-                if unicode and op_data.unicode_op is not None:
+                if unicode and op_data.unicode_op:
                     str_op = op_data.unicode_op
                 else:
                     str_op = op_data.ascii_op
@@ -67,12 +77,12 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
                 return str_arg1 + " " + str_op + " " + str_arg2
 
             # Unary case
-            elif op_data is not None and op_data.arity == OperatorData.UNARY:
+            elif op_data and op_data.arity == OperatorData.UNARY:
                 str_arg = helper(t.arg, bd_vars)
                 if get_priority(t.arg) < op_data.priority:
                     str_arg = "(" + str_arg + ")"
 
-                if unicode and op_data.unicode_op is not None:
+                if unicode and op_data.unicode_op:
                     str_op = op_data.unicode_op
                 else:
                     str_op = op_data.ascii_op

@@ -122,6 +122,9 @@ class PrinterTest(unittest.TestCase):
             (Nat.times(m, Nat.times(n, p)), "m * (n * p)"),
             (Nat.plus(m, Nat.times(n, p)), "m + n * p"),
             (Nat.times(m, Nat.plus(n, p)), "m * (n + p)"),
+            (Nat.zero, "0"),
+            (Nat.plus(Nat.zero, Nat.zero), "0 + 0"),
+            (Nat.times(m, Nat.zero), "m * 0"),
         ]
         
         for t, s in test_data:

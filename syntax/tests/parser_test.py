@@ -155,6 +155,9 @@ class ParserTest(unittest.TestCase):
             ("m + (n + p)", "nat"),
             ("m + n * p", "nat"),
             ("m * (n + p)", "nat"),
+            ("0", "nat"),
+            ("0 + 0", "nat"),
+            ("m * 0", "nat"),
         ]
 
         for s, Ts in test_data:

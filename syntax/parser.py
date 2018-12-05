@@ -50,6 +50,7 @@ grammar = r"""
         | "(" type ")"                    // Parenthesis
 
     ?atom: CNAME -> vname                 // Constant, variable, or bound variable
+        | "0" -> zero                     // Zero (to be extended to numbers)
         | ("%"|"λ") CNAME "::" type ". " term -> abs     // Abstraction
         | ("!"|"∀") CNAME "::" type ". " term -> all     // Forall quantification
         | ("?"|"∃") CNAME "::" type ". " term -> exists   // Exists quantification
@@ -127,6 +128,9 @@ class HOLTransformer(Transformer):
         else:
             # s not found, presumably a bound variable
             return Var(s, None)
+
+    def zero(self):
+        return Const("zero", Nat.nat)
 
     def comb(self, fun, arg):
         return Comb(fun, arg)
