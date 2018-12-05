@@ -10,6 +10,7 @@ from kernel.report import ProofReport
 from kernel.theory import Theory
 import logic.basic as basic
 from logic.basic import Logic, Nat
+from logic import logic_macro
 from syntax import printer
 
 Ta = TVar("a")
@@ -22,7 +23,7 @@ class BasicTest(unittest.TestCase):
     def testArgCombination(self):
         th = Thm.mk_equals(x,y)
         res = Thm.mk_equals(f(x),f(y))
-        macro = basic.arg_combination_macro()
+        macro = logic_macro.arg_combination_macro()
         self.assertEqual(macro(f, th), res)
         prf = macro.expand(1, f, ((0, "S1"), th))
         
@@ -33,7 +34,7 @@ class BasicTest(unittest.TestCase):
     def testFunCombination(self):
         th = Thm.mk_equals(f,g)
         res = Thm.mk_equals(f(x),g(x))
-        macro = basic.fun_combination_macro()
+        macro = logic_macro.fun_combination_macro()
         self.assertEqual(macro(x, th), res)
         prf = macro.expand(1, x, ((0, "S1"), th))
 
@@ -71,6 +72,28 @@ class BasicTest(unittest.TestCase):
         rpt2 = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt2), th)
         self.assertEqual(rpt2.prim_steps, 2)
+        self.assertEqual(rpt2.macro_steps, 1)
+
+    def testRewriteGoal(self):
+        thy = basic.BasicTheory()
+
+        n = Var("n", Nat.nat)
+        eq = Term.mk_equals
+        zero = Nat.zero
+        plus = Nat.mk_plus
+        prf = Proof()
+        prf.add_item("S1", "reflexive", args = zero)
+        prf.add_item("S2", "rewrite_goal", args = ("plus_def_1", eq(plus(zero,zero),zero)), prevs = ["S1"])
+
+        th = Thm([], eq(plus(zero,zero),zero))
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(rpt.prim_steps, 8)
+
+        thy.check_level = 1
+        rpt2 = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt2), th)
+        self.assertEqual(rpt2.prim_steps, 1)
         self.assertEqual(rpt2.macro_steps, 1)
 
     def testConjComm(self):
@@ -378,6 +401,26 @@ class BasicTest(unittest.TestCase):
         th = Thm.mk_equals(Nat.plus(n, Nat.zero), n)
         self.assertEqual(thy.check_proof(prf), th)
 
+    def testAddZeroRightWithMacro(self):
+        """Proof of n + 0 = n by induction, using macros."""
+        thy = basic.BasicTheory()
+        n = Var("n", Nat.nat)
+        eq = Term.mk_equals
+        plus = Nat.plus
+        zero = Nat.zero
+        S = Nat.Suc
+        prf = Proof()
+        prf.add_item("S1", "reflexive", args = zero)
+        prf.add_item("S2", "rewrite_goal", args = ("plus_def_1", eq(plus(zero,zero),zero)), prevs = ["S1"])
+        prf.add_item("S3", "assume", args = eq(plus(n,zero),n))
+        prf.add_item("S4", "arg_combination", args = S, prevs = ["S3"])
+        prf.add_item("S5", "rewrite_goal", args = ("plus_def_2", eq(plus(S(n),zero),S(n))), prevs = ["S4"])
+        prf.add_item("S6", "implies_intr", args = eq(plus(n,zero),n), prevs = ["S5"])
+        prf.add_item("S7", "forall_intr", args = n, prevs = ["S6"])
+        prf.add_item("S8", "apply_theorem_for", args = ("nat_induct", {"P": Term.mk_abs(n, eq(plus(n,zero),n)), "x": n}), prevs = ["S2", "S7"])
+        th = Thm.mk_equals(plus(n, zero), n)
+        self.assertEqual(thy.check_proof(prf), th)
+
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
         thy = basic.BasicTheory()
@@ -402,6 +445,30 @@ class BasicTest(unittest.TestCase):
         prf.add_item("S16", "implies_elim", prevs = ["S6", "S15"])
         th = Thm.mk_equals(Nat.times(n, Nat.zero), Nat.zero)
         self.assertEqual(thy.check_proof(prf), th)
+
+    def testMultZeroRightWithMacro(self):
+        """Proof of n * 0 = 0 by induction, using macros."""
+        thy = basic.BasicTheory()
+        n = Var("n", Nat.nat)
+        eq = Term.mk_equals
+        zero = Nat.zero
+        plus = Nat.mk_plus
+        times = Nat.mk_times
+        S = Nat.Suc
+        prf = Proof()
+        prf.add_item("S1", "reflexive", args = zero)
+        prf.add_item("S2", "rewrite_goal", args = ("times_def_1", eq(times(zero,zero),zero)), prevs = ["S1"])
+        prf.add_item("S3", "assume", args = eq(times(n,zero),zero))
+        prf.add_item("S4", "reflexive", args = times(n,zero))
+        prf.add_item("S5", "rewrite_goal", args = ("plus_def_1", eq(plus(zero,times(n,zero)),times(n,zero))), prevs = ["S4"])
+        prf.add_item("S6", "transitive", prevs = ["S5", "S3"])
+        prf.add_item("S7", "rewrite_goal", args = ("times_def_2", eq(times(S(n),zero),zero)), prevs = ["S6"])
+        prf.add_item("S8", "implies_intr", args = eq(times(n,zero),zero), prevs = ["S7"])
+        prf.add_item("S9", "forall_intr", args = n, prevs = ["S8"])
+        prf.add_item("S10", "apply_theorem_for", args = ("nat_induct", {"P": Term.mk_abs(n, eq(times(n,zero),zero)), "x": n}), prevs = ["S2", "S9"])
+        th = Thm.mk_equals(times(n, zero), zero)
+        self.assertEqual(thy.check_proof(prf), th)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -42,7 +42,7 @@ class ProofReport():
             "Theorems applied: " + ", ".join(self.th_names),
             "Macros evaluated: " + ", ".join(self.macros_eval),
             "Macros expanded: " + ", ".join(self.macros_expand),
-            "Gaps: " + len(self.gaps)])
+            "Gaps: " + str(self.gaps)])
 
     def __repr__(self):
         return str(self)

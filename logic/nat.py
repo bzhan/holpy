@@ -21,3 +21,12 @@ class Nat():
             return args[0]
         else:
             return Nat.plus(Nat.mk_plus(*args[:-1]), args[-1])
+
+    @staticmethod
+    def mk_times(*args):
+        if not args:
+            return Nat.one
+        elif len(args) == 1:
+            return args[0]
+        else:
+            return Nat.times(Nat.mk_times(*args[:-1]), args[-1])

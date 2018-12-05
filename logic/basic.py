@@ -7,8 +7,7 @@ from kernel.theory import Theory
 from logic.operator import OperatorTable
 from logic.logic import Logic
 from logic.nat import Nat
-from logic.logic_macro import *
-from logic import induct
+from logic import logic_macro, induct
 
 def BasicTheory():
     thy = Theory.EmptyTheory()
@@ -85,9 +84,11 @@ def BasicTheory():
         Thm([], eq(times(S(m), n), plus(n, times(m, n))))]))
 
     # Basic macros
-    thy.add_proof_macro("arg_combination", arg_combination_macro())
-    thy.add_proof_macro("fun_combination", fun_combination_macro())
-    thy.add_proof_macro("beta_norm", beta_norm_macro())
-    thy.add_proof_macro("apply_theorem", apply_theorem_macro())
-    thy.add_proof_macro("apply_theorem_for", apply_theorem_macro(with_inst=True))
+    thy.add_proof_macro("arg_combination", logic_macro.arg_combination_macro())
+    thy.add_proof_macro("fun_combination", logic_macro.fun_combination_macro())
+    thy.add_proof_macro("beta_norm", logic_macro.beta_norm_macro())
+    thy.add_proof_macro("apply_theorem", logic_macro.apply_theorem_macro())
+    thy.add_proof_macro("apply_theorem_for", logic_macro.apply_theorem_macro(with_inst=True))
+    thy.add_proof_macro("rewrite_goal", logic_macro.rewrite_goal_macro())
+    thy.add_proof_macro("rewrite_back_goal", logic_macro.rewrite_goal_macro(backward=True))
     return thy

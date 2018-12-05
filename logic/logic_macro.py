@@ -1,9 +1,10 @@
 # Author: Bohua Zhan
 
+from kernel.term import Term
 from kernel.macro import MacroSig, ProofMacro
 from kernel.proof import Proof
 from kernel.thm import Thm
-from logic.conv import beta_conv, top_conv
+from logic.conv import beta_conv, top_conv, rewr_conv
 from logic.matcher import Matcher
 from logic.proofterm import ProofTerm
 from logic.logic import Logic
@@ -123,4 +124,46 @@ class apply_theorem_macro(ProofMacro):
         for idx, (id, prev) in enumerate(prevs):
             pt3 = ProofTerm.implies_elim(pt3, ProofTerm.atom(id, prev))
 
+        return pt3.export(depth)
+
+class rewrite_goal_macro(ProofMacro):
+    """Apply an existing equality theorem to rewrite a goal.
+
+    The signature is (name, goal), where name is the name of the
+    equality theorem. Goal is the statement of the goal.
+
+    Rewrite the goal using the equality theorem. The result must
+    be equal to prev.
+    
+    backward - whether to apply the given equality in the backward
+    direction.
+
+    """
+    def __init__(self, *, backward=False):
+        self.level = 1
+        self.backward = backward
+        self.sig = MacroSig.STRING_TERM
+        self.has_theory = True
+
+    def __call__(self, thy, args, th):
+        assert isinstance(args, tuple) and len(args) == 2 and \
+               isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
+
+        # Simply produce the goal
+        _, goal = args
+        return Thm(th.assums, goal)
+
+    def expand(self, depth, thy, args, *prevs):
+        assert isinstance(args, tuple) and len(args) == 2 and \
+               isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
+
+        name, goal = args
+        id, th = prevs[0]
+        eq_pt = ProofTerm.theorem(thy, name)
+        if self.backward:
+            eq_pt = ProofTerm.symmetric(eq_pt)
+        cv = top_conv(rewr_conv(eq_pt))
+        pt = cv.get_proof_term(goal)  # goal = th.concl
+        pt2 = ProofTerm.symmetric(pt)  # th.concl = goal
+        pt3 = ProofTerm.equal_elim(pt2, ProofTerm.atom(id, th))
         return pt3.export(depth)
