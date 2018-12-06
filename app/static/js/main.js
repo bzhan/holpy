@@ -224,6 +224,8 @@
             editor.on("keydown", function (cm, event) {
                 let line_no = cm.getCursor().line;
                 let line = cm.getLine(line_no);
+
+                console.log(event.code);
                 if (event.ctrlKey && event.code === 'Enter') {
                     event.preventDefault();
                     send_input();
@@ -232,12 +234,21 @@
                     event.preventDefault();
                     add_line_after(cm);
                 }
+                else if (event.code === 'Tab') {
+                    event.preventDefault();
+                    unicode_replace(cm);
+
+                }
+
                 else if (event.code === 'Backspace') {
-                    if (line.endsWith(": ")) {
+//                    event.preventDefault();
+//                    unicode_replace(get_selected_editor());
+                }
+                    /*if (line.endsWith(": ")) {
                         event.preventDefault();
                         remove_line(cm);
                     }
-                }
+                }*/
             });
             editor.on("focus", function (cm, event) {
                 $('#codeTabContent .code-cell').each(function () {
@@ -324,6 +335,8 @@
                 }
             )
         }
+
+
 
         function remove_line(cm) {
             $(document).ready(function () {
@@ -424,6 +437,47 @@
                     display_checked_proof(result['value']);
                 }
             })
+        }
+
+         function unicode_replace(cm) {
+            $(document).ready(function () {
+                    var line_number = cm.getCursor().line
+                    var line = cm.getLine(line_number)
+                    var aft_position = cm.getCursor()
+                    var position = cm.getCursor().ch
+                    try {
+                        //cm.setCursor(line_number,0)；
+                        //pre_position=cm.getCursor();
+                        var stri = cm.getRange({line:line_number,ch:0},{line:line_number,ch:position});
+
+                    }
+                    catch (e){
+                        console.log(e);
+                    }
+                    if (position > 0){
+                        if (stri.slice(-7) === '\\lambda'){
+                            cm.setCursor(line_number,position-7);
+                            pre_position = cm.getCursor();
+                            cm.replaceRange('λ',pre_position,aft_position);
+                        }
+                        else if (stri.slice(-1) === '%'){
+                            cm.setCursor(line_number,position-1);
+                            pre_position = cm.getCursor(line_number,position-1);
+                            cm.replaceRange('λ',pre_position,aft_position);
+                        }
+                        else if (stri.slice(-7) === '\\forall'){
+                            cm.setCursor(line_number,position-7);
+                            pre_position = cm.getCursor(line_number,position-7);
+                            cm.replaceRange('∀',pre_position,aft_position);
+                        }
+                        else if (stri.slice(-7) === '\\exists'){
+                            cm.setCursor(line_number,position-7);
+                            pre_position = cm.getCursor(line_number,position-7);
+                            cm.replaceRange('∃',pre_position,aft_position);
+                        }
+
+                    }
+                })
         }
 
         function init_select_abs() {
