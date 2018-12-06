@@ -34,7 +34,6 @@ Directory structure:
   * [`parser`](syntax/parser.py): parsing functions, built using Lark parser.
 
 * [`server`](server/): toplevel functions.
-  * [`input`](server/input.py): conversion table for unicode input.
   * [`tactic`](server/tactic.py): definition of proof state and standard operations on proof states.
 
 * [`app`](app/): web application.
