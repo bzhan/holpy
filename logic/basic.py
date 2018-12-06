@@ -19,7 +19,7 @@ def getBasicTheory():
     # Operators
     thy.add_data_type("operator", OperatorTable())
 
-    with io.open('logic/basic.json') as a:
+    with io.open('logic/basic.json', encoding="utf-8") as a:
         data = json.load(a)
 
     parser.parse_extensions(thy, data)
