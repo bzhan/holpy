@@ -42,7 +42,6 @@
     <meta charset="utf-8"/>
     <title>holpy</title>
 </head>
-
 <body>
 <!-- begin code -->
 <div class="home-header">
@@ -59,6 +58,8 @@
                 <a class="dropdown-item" href="#" id="save-file">Save</a>
                 <a class="dropdown-item" href="#" onclick="$('#open-file').click()" id="file-button">Open file</a>
                 <input type="file" id="open-file" style="display:none">
+                <a class="dropdown-item" href="#" onclick="$('#open-problem').click()" id="problem-button">Open problem</a>
+                <input type="file" id="open-problem" style="display:none">
             </div>
         </div>
         <div class="dropdown">
@@ -84,8 +85,11 @@
                     data-vivaldi-spatnav-clickable="1">
                     </span></button>
             <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#" id="addlinebelow">Add line below</a>
-                <a class="dropdown-item" href="#" id="introduction">introduction</a>
+                <a class="dropdown-item" href="#" id="add-line-after">Add line after</a>
+                <a class="dropdown-item" href="#" id="introduction">Introduction</a>
+                <a class="dropdown-item" href="#" id="apply-backward-step">Apply backward step</a>
+                <a class="dropdown-item" href="#" id="apply-induction">Apply induction</a>
+                <a class="dropdown-item" href="#" id="rewrite-goal">Rewrite goal</a>
             </div>
         </div>
 
