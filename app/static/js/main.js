@@ -95,19 +95,6 @@
             $('.code-cell.selected').remove();
         });
 
-        $('#clear').on("click", function () {
-            clear_output();
-        });
-
-        $('#check-box').on("click", function () {
-            switch_check_box();
-        });
-
-
-        $('#check-box-inner').on("click", function () {
-            switch_check_box();
-        });
-
         $('#introduction').on("click", function () {
             introduction(get_selected_editor());
         });
@@ -577,23 +564,5 @@
         });
         input_box.setSize("auto", "auto");
         input_box.setValue("");
-    }
-
-    function clear_output() {
-        let output = document.querySelector("#output-iframe + .CodeMirror").CodeMirror;
-        output.setValue("");
-    }
-
-    function switch_check_box() {
-        if ($('#check-box').hasClass("is-checked")) {
-            $('#check-box').removeClass("is-checked");
-            $('#auto-run').removeClass("is-checked");
-            $('#auto-run').removeAttr("aria-checked", "true");
-        }
-        else {
-            $('#check-box').addClass("is-checked");
-            $('#auto-run').addClass("is-checked");
-            $('#auto-run').attr("aria-checked", "true");
-        }
     }
 })(jQuery);
