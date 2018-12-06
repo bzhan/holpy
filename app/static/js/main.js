@@ -1,6 +1,20 @@
 (function ($) {
     var pageNum = 0;
     var theorem = {};
+    var replace_obj = {
+        "\\lambda" : "λ",
+        "%" : "λ",
+        "\\forall" : "∀",
+        "\\exists" : "∃",
+        "\\and" : "∧",
+        "&" : "∧",
+        "\\or" : "∨",
+        "|" : "∨",
+        "-->" : "⟶",
+        "~" : "¬",
+        "\\not": "¬",
+        "=>": "⇒"
+    }
 
     function get_selected_id() {
         return document.querySelector('.code-cell.selected textarea').id;
@@ -217,7 +231,7 @@
         document.getElementById("run-button").addEventListener('click', send_input);
 
         function init_editor(editor_id = "code1") {
-            let editor = CodeMirror.fromTextArea(document.getElementById(editor_id), {
+            var editor = CodeMirror.fromTextArea(document.getElementById(editor_id), {
                 mode: "text/x-python",
                 lineNumbers: true,
                 theme: "",
@@ -237,6 +251,8 @@
             editor.on("keydown", function (cm, event) {
                 let line_no = cm.getCursor().line;
                 let line = cm.getLine(line_no);
+
+                console.log(event.code);
                 if (event.ctrlKey && event.code === 'Enter') {
                     event.preventDefault();
                     send_input();
@@ -245,13 +261,18 @@
                     event.preventDefault();
                     add_line_after(cm);
                 }
+                else if (event.code === 'Tab') {
+                    event.preventDefault();
+                    unicode_replace(cm);
+                }
                 else if (event.code === 'Backspace') {
                     if (line.endsWith(": ")) {
                         event.preventDefault();
                         remove_line(cm);
                     }
                 }
-            });
+                })
+            };
             editor.on("focus", function (cm, event) {
                 $('#codeTabContent .code-cell').each(function () {
                     $(this).removeClass('selected');
@@ -263,12 +284,12 @@
                 set_theorem_select(cm);
                 get_cell_state();
             });
-            editor.on("change", function (cm, changed) {
-                $(document).ready(function () {
-                    }
-                )
-            })
-        }
+//            editor.on("change", function (cm, changed) {
+//                $(document).ready(function () {
+//                    }
+//                )
+//            })
+        })
 
         function set_theorem_select(doc) {
             $('#theorem-select').empty();
@@ -487,6 +508,26 @@
             })
         }
 
+        function unicode_replace(cm) {
+            $(document).ready(function () {
+                var cur_position = cm.getCursor()
+                var line_number = cur_position.line
+                var line = cm.getLine(line_number)
+                var position = cm.getCursor().ch
+                var stri = cm.getRange({line:line_number,ch:0},cm.getCursor());
+                if (position > 0){
+                    for (var key in replace_obj){
+                        for (var i=1; i<=stri.length; i++){
+                            if (stri.slice(-i) === key){
+                                start_position = {line:line_number,ch:position-i};
+                                cm.replaceRange(replace_obj[key],start_position,cur_position);
+                            }
+                        }
+                    }
+                }
+            })
+        }
+
         function init_select_abs() {
             $(document).ready(function () {
                 var event = {
@@ -565,5 +606,4 @@
                 $('#auto-run').attr("aria-checked", "true");
             }
         }
-    })
-})(jQuery);
+    })(jQuery);

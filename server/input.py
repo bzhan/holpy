@@ -12,7 +12,7 @@ unicode_table = {
     "-->" : "⟶",
     "~" : "¬",
     "\\not": "¬",
-    "=>": "⇒",
+    "=>": "⇒"
 }
 
 def get_unicode_table_suffix(s):
