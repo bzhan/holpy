@@ -506,17 +506,13 @@
         $(document).ready(function () {
             var cur_position = cm.getCursor()
             var line_number = cur_position.line
-            var line = cm.getLine(line_number)
-            var position = cm.getCursor().ch
+            var position = cur_position.ch
             var stri = cm.getRange({line:line_number,ch:0},cm.getCursor());
-            if (position > 0){
-                for (var key in replace_obj){
-                    for (var i=1; i<=stri.length; i++){
-                        if (stri.slice(-i) === key){
-                            start_position = {line:line_number,ch:position-i};
-                            cm.replaceRange(replace_obj[key],start_position,cur_position);
-                        }
-                    }
+            for (var key in replace_obj){
+                l = key.length;
+                if (stri.slice(-l) === key){
+                    start_position = {line:line_number,ch:position-l};
+                    cm.replaceRange(replace_obj[key],start_position,cur_position);
                 }
             }
         })
