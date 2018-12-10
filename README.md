@@ -37,7 +37,7 @@ Directory structure:
   * [`tactic`](server/tactic.py): definition of proof state and standard operations on proof states.
 
 * [`app`](app/): web application.
-  * [`static/main.js`](app/static/main.js): main javascript file.
+  * [`static/js/main.js`](app/static/js/main.js): main javascript file.
   * [`templates/index.html`](app/templates/index.html): main HTML page.
   * [`__init__.py`](app/__init__.py): main server program.
 
