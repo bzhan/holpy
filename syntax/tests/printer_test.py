@@ -99,7 +99,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(print_term(thy, t)[0], s)
+            self.assertEqual(print_term(thy, t), s)
 
     def testPrintFunction(self):
         test_data = [
@@ -111,7 +111,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(print_term(thy, t)[0], s)
+            self.assertEqual(print_term(thy, t), s)
 
     def testPrintArithmetic(self):
         test_data = [
@@ -129,7 +129,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(print_term(thy, t)[0], s)
+            self.assertEqual(print_term(thy, t), s)
 
     def testPrintAbsType(self):
         test_data = [
@@ -140,7 +140,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, repr_t in test_data:
-            self.assertEqual(print_term(thy, t, print_abs_type = True)[0], repr_t)
+            self.assertEqual(print_term(thy, t, print_abs_type = True), repr_t)
 
     def testPrintUnicode(self):
         test_data = [
@@ -156,46 +156,46 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(print_term(thy, t, unicode = True)[0], s)
+            self.assertEqual(print_term(thy, t, unicode = True), s)
 
     #print_abs_type = False
     def testPrintHigh_light(self):
         test_data = [
-            (Abs("x", Ta, b), [('b', VAR), ('%', NORMAL), ('x', BOUND), ('. ', NORMAL)]),
-            (Abs("x", Ta, "y", Ta, b), [('%',NORMAL),('x',BOUND), ('. ',NORMAL),('b',VAR),('y',BOUND)]),
-            (all(a, P(a)), [('!', NORMAL),('a', VAR),('. ', NORMAL),('P', VAR),(' ', NORMAL)]),
-            (all(a, all(b, conj(P(a),P(b)))), [('!', NORMAL),('a',VAR),('. ',NORMAL),('b',VAR),('P',VAR),(' ',NORMAL),('&',NORMAL)]),
-            (exists(a, all(b, R(a, b))), [('?', NORMAL),('a', VAR),('. ',NORMAL),('!',NORMAL),('b',VAR),('R',VAR),(' ',NORMAL)]),
-            (exists(a, P(a)), [('?',NORMAL),('. ',NORMAL),('a',VAR),('P',VAR),(' ',NORMAL)]),
-            (disj(disj(A, B), C), [('A', VAR),(' ', NORMAL),('|', NORMAL),('B', VAR),('C', VAR),('(', NORMAL),(')', NORMAL)]),
-            (imp(imp(A, B), C), [('(', NORMAL),('A', VAR),('-->', NORMAL),(' ',NORMAL),('C',VAR),('B',VAR),(')',NORMAL)])
+            (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('. ', NORMAL), ('b', VAR)]),
+            (Abs("x", Ta, "y", Ta, b), [('%', NORMAL),('x', BOUND),('. ',NORMAL),('%',NORMAL),('y',BOUND),('. ',NORMAL),('b',VAR)]),
+            (all(a, P(a)), [('!', NORMAL), ('a', VAR), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", VAR)]),
+            (all(a, all(b, conj(P(a),P(b)))), [('!', NORMAL), ('a', VAR), ('. ', NORMAL), ('!',NORMAL), ('b', VAR), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('&', NORMAL), (' ',NORMAL), ('P', VAR), (' ',NORMAL), ('b',VAR)]),
+            (exists(a, all(b, R(a, b))), [('?', NORMAL), ("a", VAR), ('. ', NORMAL), ('!', NORMAL), ('b', VAR), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('b',VAR)]),
+            (exists(a, P(a)), [('?', NORMAL), ('a', VAR), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR)]),
+            (disj(disj(A, B), C), [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('C', VAR)]),
+            (imp(imp(A, B), C), [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('-->', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('-->', NORMAL), (' ',NORMAL), ('C', VAR)])
         ]
 
         for t, s in test_data:
-            #print(print_term(thy, t, high_light=True)[0])
+            #print(print_term(thy, t, high_light=True)[1])
             self.assertEqual(set(print_term(thy,t,high_light=True)[1]), set(s))
 
     #print_abs_type = True
     def testPrintHigh_light_abs(self):
         test_data = [
-            (Abs("x", Ta, b), [('b', VAR), ('%', NORMAL), ('x', BOUND), ('::', NORMAL), ('. ', NORMAL),("'a", NORMAL)]),
+            (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('b', VAR)]),
             (Abs("x", Ta, "y", Ta, b),
-            [('%', NORMAL), ('x', BOUND), ('::', NORMAL), ('. ', NORMAL), ('b', VAR), ('y', BOUND),("'a", NORMAL)]),
-            (all(a, P(a)), [('!', NORMAL), ('a', VAR), ('. ', NORMAL), ('P', VAR), (' ', NORMAL),('::', NORMAL),("'a", NORMAL)]),
+            [('%', NORMAL),('x', BOUND),('::',NORMAL),("'a",NORMAL),('. ',NORMAL),('%',NORMAL),('y',BOUND),('::',NORMAL),("'a",NORMAL),('. ',NORMAL),('b',VAR)]),
+            (all(a, P(a)), [('!', NORMAL), ('a', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", VAR)]),
             (all(a, all(b, conj(P(a), P(b)))),
-            [('!', NORMAL), ('a', VAR), ("'a", NORMAL) ,('::', NORMAL), ('. ', NORMAL), ('b', VAR), ('P', VAR), (' ', NORMAL), ('&', NORMAL)]),
+            [('!', NORMAL), ('a', VAR), ('::', NORMAL) ,("'a", NORMAL), ('. ', NORMAL), ('!',NORMAL), ('b', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('&', NORMAL), (' ',NORMAL), ('P', VAR), (' ',NORMAL), ('b',VAR)]),
             (exists(a, all(b, R(a, b))),
-            [('?', NORMAL), ("'a", NORMAL), ('::', NORMAL), ('a', VAR), ('. ', NORMAL), ('!', NORMAL), ('b', VAR), ('R', VAR), (' ', NORMAL)]),
-            (exists(a, P(a)), [('?', NORMAL), ('::', NORMAL), ("'a", NORMAL),('. ', NORMAL), ('a', VAR), ('P', VAR), (' ', NORMAL)]),
+            [('?', NORMAL), ("a", VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('!', NORMAL), ('b', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('b',VAR)]),
+            (exists(a, P(a)), [('?', NORMAL), ('a', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR)]),
             (disj(disj(A, B), C),
-            [('A', VAR), (' ', NORMAL), ('|', NORMAL), ('B', VAR), ('C', VAR), ('(', NORMAL), (')', NORMAL)]),
+            [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('C', VAR)]),
             (imp(imp(A, B), C),
-            [('(', NORMAL), ('A', VAR), ('-->', NORMAL), (' ', NORMAL), ('C', VAR), ('B', VAR), (')', NORMAL)])
+            [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('-->', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('-->', NORMAL), (' ',NORMAL), ('C', VAR)])
         ]
 
         for t, s in test_data:
-            #print(print_term(thy, t, print_abs_type=True,high_light=True)[0])
-            self.assertEqual(set(print_term(thy,t,print_abs_type=True,high_light=True)[1]), set(s))
+            #print(print_term(thy, t, print_abs_type=True,high_light=True)[1])
+            self.assertEqual(print_term(thy,t,print_abs_type=True,high_light=True)[1], s)
 
 if __name__ == "__main__":
     unittest.main()
