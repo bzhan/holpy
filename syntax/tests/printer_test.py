@@ -32,6 +32,7 @@ disj = logic.mk_disj
 all = Term.mk_all
 neg = logic.neg
 exists = logic.mk_exists
+NORMAL,BOUND,VAR = range(3)
 
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
@@ -126,7 +127,7 @@ class PrinterTest(unittest.TestCase):
             (Nat.plus(Nat.zero, Nat.zero), "0 + 0"),
             (Nat.times(m, Nat.zero), "m * 0"),
         ]
-        
+
         for t, s in test_data:
             self.assertEqual(print_term(thy, t), s)
 
@@ -156,6 +157,45 @@ class PrinterTest(unittest.TestCase):
 
         for t, s in test_data:
             self.assertEqual(print_term(thy, t, unicode = True), s)
+
+    #print_abs_type = False
+    def testPrintHigh_light(self):
+        test_data = [
+            (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('. ', NORMAL), ('b', VAR)]),
+            (Abs("x", Ta, "y", Ta, b), [('%', NORMAL),('x', BOUND),('. ',NORMAL),('%',NORMAL),('y',BOUND),('. ',NORMAL),('b',VAR)]),
+            (all(a, P(a)), [('!', NORMAL), ('a', VAR), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", VAR)]),
+            (all(a, all(b, conj(P(a),P(b)))), [('!', NORMAL), ('a', VAR), ('. ', NORMAL), ('!',NORMAL), ('b', VAR), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('&', NORMAL), (' ',NORMAL), ('P', VAR), (' ',NORMAL), ('b',VAR)]),
+            (exists(a, all(b, R(a, b))), [('?', NORMAL), ("a", VAR), ('. ', NORMAL), ('!', NORMAL), ('b', VAR), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('b',VAR)]),
+            (exists(a, P(a)), [('?', NORMAL), ('a', VAR), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR)]),
+            (disj(disj(A, B), C), [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('C', VAR)]),
+            (imp(imp(A, B), C), [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('-->', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('-->', NORMAL), (' ',NORMAL), ('C', VAR)])
+        ]
+
+        for t, s in test_data:
+            #print(print_term(thy, t, high_light=True)[1])
+            self.assertEqual(set(print_term(thy,t,high_light=True)[1]), set(s))
+
+    #print_abs_type = True
+    def testPrintHigh_light_abs(self):
+        test_data = [
+            (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('b', VAR)]),
+            (Abs("x", Ta, "y", Ta, b),
+            [('%', NORMAL), ('x', BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('%',NORMAL), ('y',BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('b',VAR)]),
+            (all(a, P(a)), [('!', NORMAL), ('a', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", VAR)]),
+            (all(a, all(b, conj(P(a), P(b)))),
+            [('!', NORMAL), ('a', VAR), ('::', NORMAL) ,("'a", NORMAL), ('. ', NORMAL), ('!',NORMAL), ('b', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('&', NORMAL), (' ',NORMAL), ('P', VAR), (' ',NORMAL), ('b',VAR)]),
+            (exists(a, all(b, R(a, b))),
+            [('?', NORMAL), ("a", VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('!', NORMAL), ('b', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('b',VAR)]),
+            (exists(a, P(a)), [('?', NORMAL), ('a', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR)]),
+            (disj(disj(A, B), C),
+            [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('C', VAR)]),
+            (imp(imp(A, B), C),
+            [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('-->', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('-->', NORMAL), (' ',NORMAL), ('C', VAR)])
+        ]
+
+        for t, s in test_data:
+            #print(print_term(thy, t, print_abs_type=True,high_light=True)[1])
+            self.assertEqual(print_term(thy, t, print_abs_type=True, high_light=True)[1], s)
 
 if __name__ == "__main__":
     unittest.main()
