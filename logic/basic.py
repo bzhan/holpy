@@ -12,14 +12,15 @@ from logic.operator import OperatorTable
 from logic.nat import Nat
 from logic import logic, logic_macro, induct
 from syntax import parser
+import os
 
 def getBasicTheory():
     thy = Theory.EmptyTheory()
 
     # Operators
     thy.add_data_type("operator", OperatorTable())
-
-    with io.open('logic/basic.json', encoding="utf-8") as a:
+    script_dir = os.path.dirname(__file__)
+    with io.open(os.path.join(script_dir, 'basic.json'), encoding="utf-8") as a:
         data = json.load(a)
 
     parser.parse_extensions(thy, data)

@@ -1,10 +1,12 @@
 # Author: Bohua Zhan
 
-from kernel.term import Term
+from kernel.term import Term, OpenTermException
 from logic.operator import OperatorData
 from logic import logic
 
-def print_term(thy, t, *, print_abs_type = False, unicode = False):
+NORMAL, BOUND, VAR = range(3)
+
+def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
     """More sophisticated printing function for terms. Handles printing
     of operators.
     
@@ -31,22 +33,31 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
     def helper(t, bd_vars):
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
 
+        def N(s):
+            return [(s, NORMAL)] if highlight else s
+
+        def B(s):
+            return [(s, BOUND)] if highlight else s
+
+        def V(s):
+            return [(s, VAR)] if highlight else s
+
         if t.ty == Term.VAR:
-            return t.name
-            
+            return V(t.name)
+
         elif t.ty == Term.CONST:
             op_data = get_info_for_operator(t)
             if op_data:
                 if unicode and op_data.unicode_op:
-                    return op_data.unicode_op
+                    return N(op_data.unicode_op)
                 else:
-                    return op_data.ascii_op
+                    return N(op_data.ascii_op)
+
             else:
-                return t.name
+                return N(t.name)
 
         elif t.ty == Term.COMB:
             op_data = get_info_for_operator(t)
-
             # First, we take care of the case of operators
             if op_data and op_data.arity == OperatorData.BINARY:
                 # Partial application of operators, to implement later
@@ -57,73 +68,79 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False):
 
                 # Obtain output for first argument, enclose in parenthesis
                 # if necessary.
-                str_arg1 = helper(arg1, bd_vars)
                 if (op_data.assoc == LEFT and get_priority(arg1) < op_data.priority or
                     op_data.assoc == RIGHT and get_priority(arg1) <= op_data.priority):
-                    str_arg1 = "(" + str_arg1 + ")"
+                    str_arg1 = N("(") + helper(arg1, bd_vars) + N(")")
+                else:
+                    str_arg1 = helper(arg1, bd_vars)
+
+                if unicode and op_data.unicode_op:
+                    str_op = N(op_data.unicode_op)
+                else:
+                    str_op = N(op_data.ascii_op)
 
                 # Obtain output for second argument, enclose in parenthesis
                 # if necessary.
-                str_arg2 = helper(arg2, bd_vars)
                 if (op_data.assoc == LEFT and get_priority(arg2) <= op_data.priority or
                     op_data.assoc == RIGHT and get_priority(arg2) < op_data.priority):
-                    str_arg2 = "(" + str_arg2 + ")"
-
-                if unicode and op_data.unicode_op:
-                    str_op = op_data.unicode_op
+                    str_arg2 = N("(") + helper(arg2, bd_vars) + N(")")
                 else:
-                    str_op = op_data.ascii_op
+                    str_arg2 = helper(arg2, bd_vars)
 
-                return str_arg1 + " " + str_op + " " + str_arg2
+                return str_arg1 + N(" ") + str_op + N(" ") + str_arg2
 
             # Unary case
             elif op_data and op_data.arity == OperatorData.UNARY:
-                str_arg = helper(t.arg, bd_vars)
-                if get_priority(t.arg) < op_data.priority:
-                    str_arg = "(" + str_arg + ")"
-
                 if unicode and op_data.unicode_op:
-                    str_op = op_data.unicode_op
+                    str_op = N(op_data.unicode_op)
                 else:
-                    str_op = op_data.ascii_op
+                    str_op = N(op_data.ascii_op)
+
+                if get_priority(t.arg) < op_data.priority:
+                    str_arg = N("(") + helper(t.arg, bd_vars) + N(")")
+                else:
+                    str_arg = helper(t.arg, bd_vars)
 
                 return str_op + str_arg
 
             # Next, the case of binders
             elif t.is_all():
                 all_str = "!" if not unicode else "∀"
-                var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
+                var_str = V(t.arg.var_name) + N("::") + N(str(t.arg.T)) if print_abs_type else V(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
-                return all_str + var_str + ". " + body_repr
+
+                return N(all_str) + var_str + N(". ") + body_repr
 
             elif logic.is_exists(t):
                 exists_str = "?" if not unicode else "∃"
-                var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
+                var_str = V(t.arg.var_name) + N("::") + N(str(t.arg.T)) if print_abs_type else V(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
-                return exists_str + var_str + ". " + body_repr
+
+                return N(exists_str) + var_str + N(". ") + body_repr
 
             # Finally, usual function application
             else:
-                str_fun = helper(t.fun, bd_vars)
                 if get_priority(t.fun) < 95:
-                    str_fun = "(" + helper(t.fun, bd_vars) + ")"
-
-                str_arg = helper(t.arg, bd_vars)
+                    str_fun = N("(") + helper(t.fun, bd_vars) + N(")")
+                else:
+                    str_fun = helper(t.fun, bd_vars)
                 if get_priority(t.arg) <= 95:
-                    str_arg = "(" + helper(t.arg, bd_vars) + ")"
-                return str_fun + " " + str_arg
+                    str_arg = N("(") + helper(t.arg, bd_vars) + N(")")
+                else:
+                    str_arg = helper(t.arg, bd_vars)
+                return str_fun + N(" ") + str_arg
 
         elif t.ty == Term.ABS:
-            var_str = t.var_name + "::" + str(t.T) if print_abs_type else t.var_name
-            body_repr = helper(t.body, [t.var_name] + bd_vars)
             lambda_str = "%" if not unicode else "λ"
-            return lambda_str + var_str + ". " + body_repr
+            var_str = B(t.var_name) + N("::") + N(str(t.T)) if print_abs_type else B(t.var_name)
+            body_repr = helper(t.body, [t.var_name] + bd_vars)
+            return N(lambda_str) + var_str + N(". ") + body_repr
 
         elif t.ty == Term.BOUND:
             if t.n >= len(bd_vars):
                 raise OpenTermException
             else:
-                return bd_vars[t.n]
+                return V(bd_vars[t.n])
         else:
             raise TypeError()
 
