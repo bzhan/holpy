@@ -4,7 +4,9 @@ from kernel.term import Term,OpenTermException
 from logic.operator import OperatorData
 from logic import logic
 
-def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=False):
+NORMAL, BOUND, VAR = range(3)
+
+def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
     """More sophisticated printing function for terms. Handles printing
     of operators.
     
@@ -31,7 +33,6 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
 
     def helper(t, bd_vars):
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
-        NORMAL, BOUND, VAR = range(3)
 
         if t.ty == Term.VAR:
             result.append((t.name, VAR))
@@ -166,8 +167,8 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
         else:
             raise TypeError()
 
-    if high_light:
-        return helper(t, []), result
-
+    if highlight:
+        helper(t, [])
+        return result
     else:
-        return helper(t,[])
+        return helper(t, [])

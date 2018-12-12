@@ -7,7 +7,7 @@ from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from logic import logic
 from logic.nat import Nat
 from logic.basic import BasicTheory
-from syntax.printer import print_term
+from syntax import printer
 
 thy = BasicTheory
 
@@ -32,7 +32,6 @@ disj = logic.mk_disj
 all = Term.mk_all
 neg = logic.neg
 exists = logic.mk_exists
-NORMAL,BOUND,VAR = range(3)
 
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
@@ -99,7 +98,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(print_term(thy, t), s)
+            self.assertEqual(printer.print_term(thy, t), s)
 
     def testPrintFunction(self):
         test_data = [
@@ -111,7 +110,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(print_term(thy, t), s)
+            self.assertEqual(printer.print_term(thy, t), s)
 
     def testPrintArithmetic(self):
         test_data = [
@@ -129,7 +128,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(print_term(thy, t), s)
+            self.assertEqual(printer.print_term(thy, t), s)
 
     def testPrintAbsType(self):
         test_data = [
@@ -140,7 +139,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, repr_t in test_data:
-            self.assertEqual(print_term(thy, t, print_abs_type = True), repr_t)
+            self.assertEqual(printer.print_term(thy, t, print_abs_type=True), repr_t)
 
     def testPrintUnicode(self):
         test_data = [
@@ -156,10 +155,11 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            self.assertEqual(print_term(thy, t, unicode = True), s)
+            self.assertEqual(printer.print_term(thy, t, unicode=True), s)
 
-    #print_abs_type = False
-    def testPrintHigh_light(self):
+    def testPrintHighlight(self):
+        """Test highlight, with print_abs_type=False."""
+        NORMAL, BOUND, VAR = printer.NORMAL, printer.BOUND, printer.VAR
         test_data = [
             (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('. ', NORMAL), ('b', VAR)]),
             (Abs("x", Ta, "y", Ta, b), [('%', NORMAL),('x', BOUND),('. ',NORMAL),('%',NORMAL),('y',BOUND),('. ',NORMAL),('b',VAR)]),
@@ -172,11 +172,11 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            #print(print_term(thy, t, high_light=True)[1])
-            self.assertEqual(set(print_term(thy,t,high_light=True)[1]), set(s))
+            self.assertEqual(printer.print_term(thy, t, highlight=True), s)
 
-    #print_abs_type = True
-    def testPrintHigh_light_abs(self):
+    def testPrintHighlightAbs(self):
+        """Test highlight, with print_abs_type=False."""
+        NORMAL, BOUND, VAR = printer.NORMAL, printer.BOUND, printer.VAR        
         test_data = [
             (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('b', VAR)]),
             (Abs("x", Ta, "y", Ta, b),
@@ -194,8 +194,7 @@ class PrinterTest(unittest.TestCase):
         ]
 
         for t, s in test_data:
-            #print(print_term(thy, t, print_abs_type=True,high_light=True)[1])
-            self.assertEqual(print_term(thy, t, print_abs_type=True, high_light=True)[1], s)
+            self.assertEqual(printer.print_term(thy, t, print_abs_type=True, highlight=True), s)
 
 if __name__ == "__main__":
     unittest.main()
