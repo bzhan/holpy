@@ -13,7 +13,6 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
     Note we do not yet handle name collisions in lambda terms.
 
     """
-    result = []
     def get_info_for_operator(t):
         return thy.get_data("operator").get_info_for_fun(t.get_head())
 
@@ -35,22 +34,30 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
 
         if t.ty == Term.VAR:
-            result.append((t.name, VAR))
-            return t.name
+            if highlight:                
+                return [(t.name, VAR)]
+            else:
+                return t.name
 
         elif t.ty == Term.CONST:
             op_data = get_info_for_operator(t)
             if op_data:
                 if unicode and op_data.unicode_op:
-                    result.append((op_data.unicode_op, NORMAL))
-                    return op_data.unicode_op
+                    if highlight:
+                        return [(op_data.unicode_op, NORMAL)]
+                    else:
+                        return op_data.unicode_op
                 else:
-                    result.append((op_data.ascii_op, NORMAL))
-                    return op_data.ascii_op
+                    if highlight:
+                        return [(op_data.ascii_op, NORMAL)]
+                    else:
+                        return op_data.ascii_op
 
             else:
-                result.append((t.name, NORMAL))
-                return t.name
+                if highlight:
+                    return [(t.name, NORMAL)]
+                else:
+                    return t.name
 
         elif t.ty == Term.COMB:
             op_data = get_info_for_operator(t)
@@ -66,9 +73,10 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
                 # if necessary.
                 if (op_data.assoc == LEFT and get_priority(arg1) < op_data.priority or
                     op_data.assoc == RIGHT and get_priority(arg1) <= op_data.priority):
-                    result.append(('(', NORMAL))
-                    str_arg1 = "(" + helper(arg1, bd_vars) + ")"
-                    result.append((')', NORMAL))
+                    if highlight:
+                        str_arg1 = [("(", NORMAL)] + helper(arg1, bd_vars) + [(")", NORMAL)]
+                    else:
+                        str_arg1 = "(" + helper(arg1, bd_vars) + ")"
                 else:
                     str_arg1 = helper(arg1, bd_vars)
 
@@ -76,19 +84,24 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
                     str_op = op_data.unicode_op
                 else:
                     str_op = op_data.ascii_op
-                result.extend([(' ', NORMAL), (str_op, NORMAL), (' ', NORMAL)])
+                if highlight:
+                    str_op = [(str_op, NORMAL)]
 
                 # Obtain output for second argument, enclose in parenthesis
                 # if necessary.
                 if (op_data.assoc == LEFT and get_priority(arg2) <= op_data.priority or
                     op_data.assoc == RIGHT and get_priority(arg2) < op_data.priority):
-                    result.append(('(', NORMAL))
-                    str_arg2 = "(" + helper(arg2, bd_vars) + ")"
-                    result.append((')', NORMAL))
+                    if highlight:
+                        str_arg2 = [("(", NORMAL)] + helper(arg2, bd_vars) + [(")", NORMAL)]
+                    else:
+                        str_arg2 = "(" + helper(arg2, bd_vars) + ")"
                 else:
                     str_arg2 = helper(arg2, bd_vars)
 
-                return str_arg1 + " " + str_op + " " + str_arg2
+                if highlight:
+                    return str_arg1 + [(" ", NORMAL)] + str_op + [(" ", NORMAL)] + str_arg2
+                else:
+                    return str_arg1 + " " + str_op + " " + str_arg2
 
             # Unary case
             elif op_data and op_data.arity == OperatorData.UNARY:
@@ -96,13 +109,14 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
                     str_op = op_data.unicode_op
                 else:
                     str_op = op_data.ascii_op
-
-                result.append((str_op, NORMAL))
+                if highlight:
+                    str_op = [(str_op, NORMAL)]
 
                 if get_priority(t.arg) < op_data.priority:
-                    result.append(('(', NORMAL))
-                    str_arg = "(" + helper(t.arg, bd_vars) + ")"
-                    result.append((')', NORMAL))
+                    if highlight:
+                        str_arg = [("(", NORMAL)] + helper(t.arg, bd_vars) + [(")", NORMAL)]
+                    else:
+                        str_arg = "(" + helper(t.arg, bd_vars) + ")"
                 else:
                     str_arg = helper(t.arg, bd_vars)
 
@@ -111,64 +125,72 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
             # Next, the case of binders
             elif t.is_all():
                 all_str = "!" if not unicode else "∀"
-                var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
-                if print_abs_type:
-                    result.extend([(all_str, NORMAL), (t.arg.var_name, VAR), ('::', NORMAL), (str(t.arg.T), NORMAL), ('. ', NORMAL)])
+                if highlight:
+                    var_str = [(t.arg.var_name, VAR)] + [("::", NORMAL)] + [(str(t.arg.T), NORMAL)] if print_abs_type else [(t.arg.var_name, VAR)]
                 else:
-                    result.extend([(all_str, NORMAL), (t.arg.var_name, VAR), ('. ', NORMAL)])
+                    var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
-                return all_str + var_str + ". " + body_repr
+                if highlight:
+                    return [(all_str, NORMAL)] + var_str + [(". ", NORMAL)] + body_repr
+                else:
+                    return all_str + var_str + ". " + body_repr
 
             elif logic.is_exists(t):
                 exists_str = "?" if not unicode else "∃"
-                var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
-                if print_abs_type:
-                    result.extend([(exists_str, NORMAL),(t.arg.var_name, VAR), ('::', NORMAL), (str(t.arg.T), NORMAL), ('. ', NORMAL)])
+                if highlight:
+                    var_str = [(t.arg.var_name, VAR)] + [("::", NORMAL)] + [(str(t.arg.T), NORMAL)] if print_abs_type else [(t.arg.var_name, VAR)]
                 else:
-                    result.extend([(exists_str, NORMAL), (t.arg.var_name, VAR), ('. ', NORMAL)])
+                    var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
-                return exists_str + var_str + ". " + body_repr
+                if highlight:
+                    return [(exists_str, NORMAL)] + var_str + [(". ", NORMAL)] + body_repr
+                else:
+                    return exists_str + var_str + ". " + body_repr
 
             # Finally, usual function application
             else:
                 if get_priority(t.fun) < 95:
-                    result.append(('(', NORMAL))
-                    str_fun = "(" + helper(t.fun, bd_vars) + ")"
-                    result.append((')', NORMAL))
+                    if highlight:
+                        str_fun = [("(", NORMAL)] + helper(t.fun, bd_vars) + [(")", NORMAL)]
+                    else:
+                        str_fun = "(" + helper(t.fun, bd_vars) + ")"
                 else:
                     str_fun = helper(t.fun, bd_vars)
-                result.append((' ', NORMAL))
                 if get_priority(t.arg) <= 95:
-                    result.append(('(', NORMAL))
-                    str_arg = "(" + helper(t.arg, bd_vars) + ")"
-                    result.append((')', NORMAL))
+                    if highlight:
+                        str_arg = [("(", NORMAL)] + helper(t.arg, bd_vars) + [(")", NORMAL)]
+                    else:
+                        str_arg = "(" + helper(t.arg, bd_vars) + ")"
                 else:
                     str_arg = helper(t.arg, bd_vars)
-                return str_fun + " " + str_arg
+                if highlight:
+                    return str_fun + [(" ", NORMAL)] + str_arg
+                else:
+                    return str_fun + " " + str_arg
 
         elif t.ty == Term.ABS:
-            var_str = t.var_name + "::" + str(t.T) if print_abs_type else t.var_name
             lambda_str = "%" if not unicode else "λ"
-            if print_abs_type:
-                result.extend([(lambda_str, NORMAL), (t.var_name, BOUND), ('::', NORMAL), (str(t.T), NORMAL), ('. ', NORMAL)])
+            if highlight:
+                var_str = [(t.var_name, BOUND)] + [("::", NORMAL)] + [(str(t.T), NORMAL)] if print_abs_type else [(t.var_name, BOUND)]
             else:
-                result.extend([(lambda_str, NORMAL), (t.var_name, BOUND), ('. ', NORMAL)])
+                var_str = t.var_name + "::" + str(t.T) if print_abs_type else t.var_name
             body_repr = helper(t.body, [t.var_name] + bd_vars)
-            return lambda_str + var_str + ". " + body_repr
+            if highlight:
+                return [(lambda_str, NORMAL)] + var_str + [(". ", NORMAL)] + body_repr
+            else:
+                return lambda_str + var_str + ". " + body_repr
 
         elif t.ty == Term.BOUND:
             if t.n >= len(bd_vars):
                 raise OpenTermException
             else:
-                result.append((bd_vars[t.n], VAR))
-                return bd_vars[t.n]
+                if highlight:
+                    return [(bd_vars[t.n], VAR)]
+                else:
+                    return bd_vars[t.n]
         else:
             raise TypeError()
 
-    if highlight:
-        helper(t, [])
-        return result
-    else:
-        return helper(t, [])
+    return helper(t, [])
