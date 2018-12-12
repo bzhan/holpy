@@ -31,28 +31,24 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
 
     def helper(t, bd_vars):
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
-        NORMAL,BOUND,VAR = range(3)
+        NORMAL, BOUND, VAR = range(3)
 
         if t.ty == Term.VAR:
-            res_tuple = (t.name, VAR)
-            result.append(res_tuple)
+            result.append((t.name, VAR))
             return t.name
 
         elif t.ty == Term.CONST:
             op_data = get_info_for_operator(t)
             if op_data:
                 if unicode and op_data.unicode_op:
-                    res_tuple = (op_data.unicode_op, NORMAL)
-                    result.append(res_tuple)
+                    result.append((op_data.unicode_op, NORMAL))
                     return op_data.unicode_op
                 else:
-                    res_tuple = (op_data.ascii_op, NORMAL)
-                    result.append(res_tuple)
+                    result.append((op_data.ascii_op, NORMAL))
                     return op_data.ascii_op
 
             else:
-                res_tuple = (t.name, NORMAL)
-                result.append(res_tuple)
+                result.append((t.name, NORMAL))
                 return t.name
 
         elif t.ty == Term.COMB:
@@ -69,11 +65,9 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
                 # if necessary.
                 if (op_data.assoc == LEFT and get_priority(arg1) < op_data.priority or
                     op_data.assoc == RIGHT and get_priority(arg1) <= op_data.priority):
-                    res_tuple1 = ('(', NORMAL)
-                    res_tuple2 = (')', NORMAL)
-                    result.append(res_tuple1)
+                    result.append(('(', NORMAL))
                     str_arg1 = "(" + helper(arg1, bd_vars) + ")"
-                    result.append(res_tuple2)
+                    result.append((')', NORMAL))
                 else:
                     str_arg1 = helper(arg1, bd_vars)
 
@@ -81,20 +75,15 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
                     str_op = op_data.unicode_op
                 else:
                     str_op = op_data.ascii_op
-                res_tuple3 = (' ', NORMAL)
-                res_tuple4 = (str_op, NORMAL)
-                res_tuple5 = (' ', NORMAL)
-                result.extend([res_tuple3, res_tuple4, res_tuple5])
+                result.extend([(' ', NORMAL), (str_op, NORMAL), (' ', NORMAL)])
 
                 # Obtain output for second argument, enclose in parenthesis
                 # if necessary.
                 if (op_data.assoc == LEFT and get_priority(arg2) <= op_data.priority or
                     op_data.assoc == RIGHT and get_priority(arg2) < op_data.priority):
-                    res_tuple1 = ('(', NORMAL)
-                    res_tuple2 = (')', NORMAL)
-                    result.append(res_tuple1)
+                    result.append(('(', NORMAL))
                     str_arg2 = "(" + helper(arg2, bd_vars) + ")"
-                    result.append(res_tuple2)
+                    result.append((')', NORMAL))
                 else:
                     str_arg2 = helper(arg2, bd_vars)
 
@@ -106,16 +95,13 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
                     str_op = op_data.unicode_op
                 else:
                     str_op = op_data.ascii_op
-                if high_light:
-                    res_tuple = (str_op, NORMAL)
-                    result.append(res_tuple)
+
+                result.append((str_op, NORMAL))
 
                 if get_priority(t.arg) < op_data.priority:
-                    res_tuple1 = ('(', NORMAL)
-                    res_tuple2 = (')', NORMAL)
-                    result.append(res_tuple1)
+                    result.append(('(', NORMAL))
                     str_arg = "(" + helper(t.arg, bd_vars) + ")"
-                    result.append(res_tuple2)
+                    result.append((')', NORMAL))
                 else:
                     str_arg = helper(t.arg, bd_vars)
 
@@ -125,15 +111,10 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
             elif t.is_all():
                 all_str = "!" if not unicode else "∀"
                 var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
-                res_tuple1 = (all_str, NORMAL)
-                res_tuple2 = ('::', NORMAL)
-                res_tuple3 = (t.arg.var_name, VAR)
-                res_tuple4 = ('. ', NORMAL)
-                res_tuple5 = (str(t.arg.T), NORMAL)
                 if print_abs_type:
-                    result.extend([res_tuple1, res_tuple3, res_tuple2, res_tuple5, res_tuple4])
+                    result.extend([(all_str, NORMAL), (t.arg.var_name, VAR), ('::', NORMAL), (str(t.arg.T), NORMAL), ('. ', NORMAL)])
                 else:
-                    result.extend([res_tuple1, res_tuple3, res_tuple4])
+                    result.extend([(all_str, NORMAL), (t.arg.var_name, VAR), ('. ', NORMAL)])
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return all_str + var_str + ". " + body_repr
@@ -141,35 +122,27 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
             elif logic.is_exists(t):
                 exists_str = "?" if not unicode else "∃"
                 var_str = t.arg.var_name + "::" + str(t.arg.T) if print_abs_type else t.arg.var_name
-                res_tuple1 = (exists_str, NORMAL)
-                res_tuple2 = (t.arg.var_name, VAR)
-                res_tuple3 = ('::', NORMAL)
-                res_tuple4 = ('. ', NORMAL)
-                res_tuple5 = (str(t.arg.T), NORMAL)
                 if print_abs_type:
-                    result.extend([res_tuple1,res_tuple2, res_tuple3, res_tuple5, res_tuple4])
+                    result.extend([(exists_str, NORMAL),(t.arg.var_name, VAR), ('::', NORMAL), (str(t.arg.T), NORMAL), ('. ', NORMAL)])
                 else:
-                    result.extend([res_tuple1, res_tuple2, res_tuple4])
+                    result.extend([(exists_str, NORMAL), (t.arg.var_name, VAR), ('. ', NORMAL)])
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return exists_str + var_str + ". " + body_repr
 
             # Finally, usual function application
             else:
-                res_tuple1 = ('(', NORMAL)
-                res_tuple2 = (')', NORMAL)
-                res_tuple3 = (' ', NORMAL)
                 if get_priority(t.fun) < 95:
-                    result.append(res_tuple1)
+                    result.append(('(', NORMAL))
                     str_fun = "(" + helper(t.fun, bd_vars) + ")"
-                    result.append(res_tuple2)
+                    result.append((')', NORMAL))
                 else:
                     str_fun = helper(t.fun, bd_vars)
-                result.extend([res_tuple3])
+                result.append((' ', NORMAL))
                 if get_priority(t.arg) <= 95:
-                    result.append(res_tuple1)
+                    result.append(('(', NORMAL))
                     str_arg = "(" + helper(t.arg, bd_vars) + ")"
-                    result.append(res_tuple2)
+                    result.append((')', NORMAL))
                 else:
                     str_arg = helper(t.arg, bd_vars)
                 return str_fun + " " + str_arg
@@ -177,15 +150,10 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
         elif t.ty == Term.ABS:
             var_str = t.var_name + "::" + str(t.T) if print_abs_type else t.var_name
             lambda_str = "%" if not unicode else "λ"
-            res_tuple1 = (lambda_str, NORMAL)
-            res_tuple2 = (t.var_name, BOUND)
-            res_tuple3 = ('::', NORMAL)
-            res_tuple4 = ('. ', NORMAL)
-            res_tuple5 = (str(t.T), NORMAL)
             if print_abs_type:
-                result.extend([res_tuple1, res_tuple2, res_tuple3, res_tuple5, res_tuple4])
+                result.extend([(lambda_str, NORMAL), (t.var_name, BOUND), ('::', NORMAL), (str(t.T), NORMAL), ('. ', NORMAL)])
             else:
-                result.extend([res_tuple1, res_tuple2, res_tuple4])
+                result.extend([(lambda_str, NORMAL), (t.var_name, BOUND), ('. ', NORMAL)])
             body_repr = helper(t.body, [t.var_name] + bd_vars)
             return lambda_str + var_str + ". " + body_repr
 
@@ -193,8 +161,7 @@ def print_term(thy, t, *, print_abs_type = False, unicode = False, high_light=Fa
             if t.n >= len(bd_vars):
                 raise OpenTermException
             else:
-                res_tuple = (bd_vars[t.n], VAR)
-                result.append(res_tuple)
+                result.append((bd_vars[t.n], VAR))
                 return bd_vars[t.n]
         else:
             raise TypeError()

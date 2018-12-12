@@ -158,7 +158,7 @@ class PrinterTest(unittest.TestCase):
         for t, s in test_data:
             self.assertEqual(print_term(thy, t, unicode = True), s)
 
-    #print_abs_type = False
+    print_abs_type = False
     def testPrintHigh_light(self):
         test_data = [
             (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('. ', NORMAL), ('b', VAR)]),
@@ -180,7 +180,7 @@ class PrinterTest(unittest.TestCase):
         test_data = [
             (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('b', VAR)]),
             (Abs("x", Ta, "y", Ta, b),
-            [('%', NORMAL),('x', BOUND),('::',NORMAL),("'a",NORMAL),('. ',NORMAL),('%',NORMAL),('y',BOUND),('::',NORMAL),("'a",NORMAL),('. ',NORMAL),('b',VAR)]),
+            [('%', NORMAL), ('x', BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('%',NORMAL), ('y',BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('b',VAR)]),
             (all(a, P(a)), [('!', NORMAL), ('a', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", VAR)]),
             (all(a, all(b, conj(P(a), P(b)))),
             [('!', NORMAL), ('a', VAR), ('::', NORMAL) ,("'a", NORMAL), ('. ', NORMAL), ('!',NORMAL), ('b', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('&', NORMAL), (' ',NORMAL), ('P', VAR), (' ',NORMAL), ('b',VAR)]),
@@ -195,7 +195,7 @@ class PrinterTest(unittest.TestCase):
 
         for t, s in test_data:
             #print(print_term(thy, t, print_abs_type=True,high_light=True)[1])
-            self.assertEqual(print_term(thy,t,print_abs_type=True,high_light=True)[1], s)
+            self.assertEqual(print_term(thy, t, print_abs_type=True, high_light=True)[1], s)
 
 if __name__ == "__main__":
     unittest.main()
