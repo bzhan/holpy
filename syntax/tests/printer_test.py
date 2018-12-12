@@ -158,7 +158,7 @@ class PrinterTest(unittest.TestCase):
         for t, s in test_data:
             self.assertEqual(print_term(thy, t, unicode = True), s)
 
-    print_abs_type = False
+    #print_abs_type = False
     def testPrintHigh_light(self):
         test_data = [
             (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('. ', NORMAL), ('b', VAR)]),
