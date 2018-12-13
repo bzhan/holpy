@@ -170,3 +170,12 @@ class rewrite_goal_macro(ProofMacro):
         pt2 = ProofTerm.symmetric(pt)  # th.concl = goal
         pt3 = ProofTerm.equal_elim(pt2, ProofTerm.atom(id, th))
         return pt3.export(depth)
+
+def add_logic_macros(thy):
+    thy.add_proof_macro("arg_combination", arg_combination_macro())
+    thy.add_proof_macro("fun_combination", fun_combination_macro())
+    thy.add_proof_macro("beta_norm", beta_norm_macro())
+    thy.add_proof_macro("apply_theorem", apply_theorem_macro())
+    thy.add_proof_macro("apply_theorem_for", apply_theorem_macro(with_inst=True))
+    thy.add_proof_macro("rewrite_goal", rewrite_goal_macro())
+    thy.add_proof_macro("rewrite_back_goal", rewrite_goal_macro(backward=True))
