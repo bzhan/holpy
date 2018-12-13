@@ -25,30 +25,6 @@ def getBasicTheory():
 
     parser.parse_extensions(thy, data)
 
-    # Natural numbers
-    nat = Type("nat")
-    nat_ext = induct.add_induct_type(
-        "nat", [], [("zero", nat, []), ("Suc", TFun(nat, nat), ["n"])])
-    thy.unchecked_extend(nat_ext)
-
-    m = Var("m", nat)
-    n = Var("n", nat)
-    P = Var("P", TFun(nat, hol_bool))
-    eq = Term.mk_equals
-    S = Nat.Suc
-    plus = Nat.plus
-    times = Nat.times
-
-    # Addition on natural numbers
-    thy.unchecked_extend(induct.add_induct_def(plus, [
-        Thm([], eq(plus(Nat.zero, n), n)),
-        Thm([], eq(plus(S(m), n), S(plus(m, n))))]))
-
-    # Multiplication on natural numbers
-    thy.unchecked_extend(induct.add_induct_def(times, [
-        Thm([], eq(times(Nat.zero, n), Nat.zero)),
-        Thm([], eq(times(S(m), n), plus(n, times(m, n))))]))
-
     # Basic macros
     thy.add_proof_macro("arg_combination", logic_macro.arg_combination_macro())
     thy.add_proof_macro("fun_combination", logic_macro.fun_combination_macro())

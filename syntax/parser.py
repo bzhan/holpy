@@ -8,7 +8,7 @@ from kernel.macro import MacroSig
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from kernel.extension import AxType, AxConstant, Theorem, TheoryExtension
-from logic import logic
+from logic import induct, logic
 from logic.nat import Nat
 
 
@@ -309,9 +309,21 @@ def parse_extension(thy, data):
         prop = term_parser(thy, ctxt).parse(data['prop'])
         thy.add_theorem(data['name'], Thm([], prop))
     elif data['ty'] == 'type.ind':
-        return []
+        constrs = []
+        for constr in data['constrs']:
+            T = type_parser(thy).parse(constr['type'])
+            constrs.append((constr['name'], T, constr['args']))
+        ext = induct.add_induct_type(data['name'], data['args'], constrs)
+        thy.unchecked_extend(ext)
     elif data['ty'] == 'def.ind':
-        return []
+        T = type_parser(thy).parse(data['type'])
+        rules = []
+        for rule in data['rules']:
+            ctxt = parse_vars(thy, rule['vars'])
+            prop = term_parser(thy, ctxt).parse(rule['prop'])
+            rules.append(prop)
+        ext = induct.add_induct_def(data['name'], T, rules)
+        thy.unchecked_extend(ext)
 
 def parse_extensions(thy, data):
     for ext_data in data:

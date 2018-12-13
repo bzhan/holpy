@@ -78,15 +78,17 @@
             {"name": "zero", "type": "nat", "args": []},
             {"name": "Suc", "type": "nat => nat", "args": ["n"]}]},
     {
-        "ty": "def.ind", "name": "plus", "ascii_op": "+",
+        "ty": "def.ind", "name": "plus", "type": "nat => nat => nat",
+        "ascii_op": "+",
         "rules": [
-            {"vars": {"n": "bool"}, "eq": "0 + n = 0"},
-            {"vars": {"m": "bool", "n": "bool"}, "eq": "Suc m + n = Suc (m + n)"}]},
+            {"vars": {"n": "nat"}, "prop": "0 + n = n"},
+            {"vars": {"m": "nat", "n": "nat"}, "prop": "Suc m + n = Suc (m + n)"}]},
     {
-        "ty": "def.ind", "name": "times", "ascii_op": "*",
+        "ty": "def.ind", "name": "times", "type": "nat => nat => nat",
+        "ascii_op": "*",
         "rules": [
-            {"vars": {"n": "bool"}, "eq": "0 * n = 0"},
-            {"vars": {"m": "bool", "n": "bool"}, "eq": "Suc m * n = n + m * n"}
+            {"vars": {"n": "nat"}, "prop": "0 * n = 0"},
+            {"vars": {"m": "nat", "n": "nat"}, "prop": "Suc m * n = n + m * n"}
         ]
     }
 ]

@@ -104,26 +104,26 @@ def add_induct_type(name, targs, constrs):
 
     return exts
 
-def add_induct_def(c, eqs):
+def add_induct_def(name, T, eqs):
     """Add the given inductive definition.
 
-    The inductive definition is specified by the constant and a list
-    of equations.
+    The inductive definition is specified by the name and type of
+    the constant, and a list of equations.
 
     For example, addition on natural numbers is specified by:
-    (plus, [(plus(0,n) = n, plus(Suc(m), n) = Suc(plus(m, n)))]).
+    ('plus', nat => nat => nat,
+     [(plus(0,n) = n, plus(Suc(m), n) = Suc(plus(m, n)))]).
 
     Multiplication on natural numbers is specified by:
-    (times, [(times(0,n) = 0, times(Suc(m), n) = plus(n, times(m,n)))]).
+    ('times', nat => nat => nat,
+    [(times(0,n) = 0, times(Suc(m), n) = plus(n, times(m,n)))]).
 
     """
-    assert c.ty == Term.CONST, "add_induct_def: c must be a constant."
-
     exts = TheoryExtension()
-    exts.add_extension(AxConstant(c.name, c.T))
+    exts.add_extension(AxConstant(name, T))
 
-    for i, eq_th in enumerate(eqs):
-        th_name = c.name + "_def_" + str(i + 1)
-        exts.add_extension(Theorem(th_name, eq_th))
+    for i, prop in enumerate(eqs):
+        th_name = name + "_def_" + str(i + 1)
+        exts.add_extension(Theorem(th_name, Thm([], prop)))
 
     return exts
