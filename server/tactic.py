@@ -387,6 +387,7 @@ class ProofState():
         for v in self.prf.vars:
             if v.name == var:
                 var = v
+                break
 
         assert not isinstance(var, str), "apply_induction: variable not found"
 
