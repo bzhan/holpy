@@ -2,7 +2,7 @@
 
 import io
 import json
-
+import os
 
 from kernel.type import TVar, TFun, Type, hol_bool
 from kernel.term import Term, Var
@@ -12,7 +12,7 @@ from logic.operator import OperatorTable
 from logic.nat import Nat
 from logic import logic, logic_macro, induct
 from syntax import parser
-import os
+
 
 def getBasicTheory():
     thy = Theory.EmptyTheory()

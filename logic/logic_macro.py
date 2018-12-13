@@ -4,10 +4,9 @@ from kernel.term import Term
 from kernel.macro import MacroSig, ProofMacro
 from kernel.proof import Proof
 from kernel.thm import Thm
+from logic import logic, matcher
 from logic.conv import beta_conv, top_conv, rewr_conv
-from logic.matcher import Matcher
 from logic.proofterm import ProofTerm
-from logic import logic
 
 """Standard macros in logic."""
 
@@ -101,7 +100,7 @@ class apply_theorem_macro(ProofMacro):
         if not self.with_inst:
             As, _ = th.concl.strip_implies()
             for idx, prev_th in enumerate(prevs):
-                Matcher.first_order_match_incr(As[idx], prev_th.concl, inst)
+                matcher.first_order_match_incr(As[idx], prev_th.concl, inst)
 
         As, C = logic.subst_norm(th.concl, inst).strip_implies()
         new_concl = Term.mk_implies(*(As[len(prevs):] + [C]))
@@ -119,7 +118,7 @@ class apply_theorem_macro(ProofMacro):
         if not self.with_inst:
             As, _ = th.concl.strip_implies()
             for idx, (_, arg) in enumerate(prevs):
-                Matcher.first_order_match_incr(As[idx], arg.concl, inst)
+                matcher.first_order_match_incr(As[idx], arg.concl, inst)
 
         pt = ProofTerm.substitution(inst, ProofTerm.theorem(thy, name))
         cv = top_conv(beta_conv())

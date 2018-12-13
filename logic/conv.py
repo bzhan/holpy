@@ -4,7 +4,7 @@ from kernel.type import Type
 from kernel.term import Var, Term
 from kernel.thm import Thm, InvalidDerivationException
 from logic.proofterm import ProofTerm
-from logic.matcher import Matcher, MatchException
+from logic import matcher
 
 class ConvException(Exception):
     pass
@@ -215,8 +215,8 @@ class rewr_conv(Conv):
         inst = dict()
 
         try:
-            inst = Matcher.first_order_match(pat, t)
-        except MatchException:
+            inst = matcher.first_order_match(pat, t)
+        except matcher.MatchException:
             raise ConvException()
 
         return Thm.substitution(inst, self.th)
@@ -226,8 +226,8 @@ class rewr_conv(Conv):
         inst = dict()
 
         try:
-            inst = Matcher.first_order_match(pat, t)
-        except MatchException:
+            inst = matcher.first_order_match(pat, t)
+        except matcher.MatchException:
             raise ConvException()
 
         return ProofTerm.substitution(inst, self.pt)
