@@ -35,6 +35,7 @@ class OperatorTable():
             OperatorData("plus", 65, assoc=LEFT, ascii_op="+"),
             OperatorData("times", 70, assoc=LEFT, ascii_op="*"),
             OperatorData("zero", 0, arity=OperatorData.CONST, ascii_op="0"),
+            OperatorData("append", 65, assoc=RIGHT, ascii_op="@"),
         ]
 
     def get_info_for_fun(self, t):

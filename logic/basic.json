@@ -90,5 +90,29 @@
             {"vars": {"n": "nat"}, "prop": "0 * n = 0"},
             {"vars": {"m": "nat", "n": "nat"}, "prop": "Suc m * n = n + m * n"}
         ]
+    },
+    {
+        "ty": "type.ind", "name": "list", "args": ["a"],
+        "constrs": [
+            {"name": "nil", "type": "'a list", "args": []},
+            {"name": "cons", "type": "'a => 'a list => 'a list", "args": ["x", "xs"]}
+        ]
+    },
+    {
+        "ty": "def.ind", "name": "append", "type": "'a list => 'a list => 'a list",
+        "ascii_op": "@",
+        "rules": [
+            {"vars": {"xs": "'a list"}, "prop": "nil @ xs = xs"},
+            {"vars": {"x": "'a", "xs": "'a list", "ys": "'a list"},
+             "prop": "cons x xs @ ys = cons x (xs @ ys)"}
+        ]
+    },
+    {
+        "ty": "def.ind", "name": "rev", "type": "'a list => 'a list",
+        "rules": [
+            {"vars": {}, "prop": "rev nil = nil"},
+            {"vars": {"x": "'a", "xs": "'a list"},
+             "prop": "rev (cons x xs) = rev xs @ cons x nil"}
+        ]
     }
 ]

@@ -10,7 +10,7 @@ from kernel.proof import ProofItem
 from kernel.extension import AxType, AxConstant, Theorem, TheoryExtension
 from logic import induct, logic
 from logic.nat import Nat
-
+from logic.list import List
 
 def _abstract_over_name(t, name, n):
     """Helper function for abstract_over_name. Here t is an open term.
@@ -63,7 +63,9 @@ grammar = r"""
 
     ?plus: plus "+" times | times       // Addition: priority 65
 
-    ?eq: eq "=" plus | plus             // Equality: priority 50
+    ?append: plus "@" append | plus     // Append: priority 65
+
+    ?eq: eq "=" append | append         // Equality: priority 50
 
     ?neg: ("~"|"¬") neg -> neg | eq     // Negation: priority 40 
 
@@ -159,6 +161,9 @@ class HOLTransformer(Transformer):
 
     def plus(self, lhs, rhs):
         return Nat.plus(lhs, rhs)
+
+    def append(self, lhs, rhs):
+        return List.append(lhs, rhs)
 
     def eq(self, lhs, rhs):
         return Term.mk_equals(lhs, rhs)
@@ -317,6 +322,7 @@ def parse_extension(thy, data):
         thy.unchecked_extend(ext)
     elif data['ty'] == 'def.ind':
         T = type_parser(thy).parse(data['type'])
+        thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         rules = []
         for rule in data['rules']:
             ctxt = parse_vars(thy, rule['vars'])
