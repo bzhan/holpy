@@ -2,16 +2,16 @@
     var pageNum = 0;
     var theorem = {};
     var replace_obj = {
-        "\\lambda" : "λ",
-        "%" : "λ",
-        "\\forall" : "∀",
-        "\\exists" : "∃",
-        "\\and" : "∧",
-        "&" : "∧",
-        "\\or" : "∨",
-        "|" : "∨",
-        "-->" : "⟶",
-        "~" : "¬",
+        "\\lambda": "λ",
+        "%": "λ",
+        "\\forall": "∀",
+        "\\exists": "∃",
+        "\\and": "∧",
+        "&": "∧",
+        "\\or": "∨",
+        "|": "∨",
+        "-->": "⟶",
+        "~": "¬",
         "\\not": "¬",
         "=>": "⇒"
     }
@@ -39,14 +39,12 @@
 
         if ("failed" in result) {
             status_output.innerHTML = result["failed"] + ": " + result["message"]
-        }
-        else {
+        } else {
             editor.setValue(result["proof"]);
             var num_gaps = result["report"]["num_gaps"];
             if (num_gaps > 0) {
                 status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
-            }
-            else {
+            } else {
                 status_output.innerHTML = "OK. Proof complete!"
             }
         }
@@ -188,32 +186,35 @@
 
             let files = this.files;
             let i = 0, f;
-            for (; f = files[i]; i++) {
-                let reader = new FileReader();
-                reader.onload = (function () {
-                    var json_data = JSON.parse(this.result);
-                    var event = {
-                        'event': 'init_cell',
-                        'id': get_selected_id(),
-                        'variables': json_data['variables'],
-                        'assumes': json_data['assumes'],
-                        'conclusion': json_data['conclusion']
-                    };
-                    var data = JSON.stringify(event);
-                    display_running();
+            if (files !== '') {
+                for (; f = files[i]; i++) {
+                    let reader = new FileReader();
+                    reader.onload = (function () {
+                        var json_data = JSON.parse(this.result);
+                        var event = {
+                            'event': 'init_cell',
+                            'id': get_selected_id(),
+                            'variables': json_data['variables'],
+                            'assumes': json_data['assumes'],
+                            'conclusion': json_data['conclusion']
+                        };
+                        var data = JSON.stringify(event);
+                        display_running();
 
-                    $.ajax({
-                        url: "/api/init",
-                        type: "POST",
-                        data: data,
-                        success: function (result) {
-                            display_checked_proof(result);
-                            get_selected_editor().focus();
-                        }
+                        $.ajax({
+                            url: "/api/init",
+                            type: "POST",
+                            data: data,
+                            success: function (result) {
+                                display_checked_proof(result);
+                                get_selected_editor().focus();
+                            }
+                        });
                     });
-                });
-                reader.readAsText(f);
+                    reader.readAsText(f);
+                }
             }
+            $('#open-problem')[0].value = '';
         });
         document.getElementById("run-button").addEventListener('click', send_input);
     });
@@ -243,16 +244,13 @@
             if (event.ctrlKey && event.code === 'Enter') {
                 event.preventDefault();
                 send_input();
-            }
-            else if (event.code === 'Enter') {
+            } else if (event.code === 'Enter') {
                 event.preventDefault();
                 add_line_after(cm);
-            }
-            else if (event.code === 'Tab') {
+            } else if (event.code === 'Tab') {
                 event.preventDefault();
                 unicode_replace(cm);
-            }
-            else if (event.code === 'Backspace') {
+            } else if (event.code === 'Backspace') {
                 if (line.endsWith(": ")) {
                     event.preventDefault();
                     remove_line(cm);
@@ -298,7 +296,7 @@
                 var line_no = editor.getCursor().line;
                 var input = {
                     "id": get_selected_id(),
-                    "proof" : editor.getValue()
+                    "proof": editor.getValue()
                 };
                 var data = JSON.stringify(input);
                 display_running();
@@ -398,7 +396,7 @@
             html:
                 '<input id="swal-input1" class="swal2-input">' +
                 '<select id="swal-input2" class="swal2-select"></select>',
-            onOpen: function (){
+            onOpen: function () {
                 init_select_abs()
             },
             showCancelButton: true,
@@ -426,11 +424,11 @@
                     }
                     return response.json()
                 })
-                .catch(error => {
-                    swal.showValidationMessage(
-                        `Request failed: ${error}`
-                    )
-                })
+                    .catch(error => {
+                        swal.showValidationMessage(
+                            `Request failed: ${error}`
+                        )
+                    })
             },
             allowOutsideClick:
                 () => !swal.isLoading()
@@ -494,12 +492,12 @@
             var cur_position = cm.getCursor()
             var line_number = cur_position.line
             var position = cur_position.ch
-            var stri = cm.getRange({line:line_number,ch:0},cm.getCursor());
-            for (var key in replace_obj){
+            var stri = cm.getRange({line: line_number, ch: 0}, cm.getCursor());
+            for (var key in replace_obj) {
                 l = key.length;
-                if (stri.slice(-l) === key){
-                    start_position = {line:line_number,ch:position-l};
-                    cm.replaceRange(replace_obj[key],start_position,cur_position);
+                if (stri.slice(-l) === key) {
+                    start_position = {line: line_number, ch: position - l};
+                    cm.replaceRange(replace_obj[key], start_position, cur_position);
                 }
             }
         })
