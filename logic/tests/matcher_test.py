@@ -4,8 +4,7 @@ import unittest
 
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Var, Const, Abs, Bound
-from logic.matcher import Matcher, MatchException
-from logic import logic
+from logic import logic, matcher
 
 Ta = TVar("a")
 a = Const("a", Ta)
@@ -40,9 +39,9 @@ class MatcherTest(unittest.TestCase):
 
         for pat, t, inst in test_data:
             if inst is not None:
-                self.assertEqual(Matcher.first_order_match(pat, t), inst)
+                self.assertEqual(matcher.first_order_match(pat, t), inst)
             else:
-                self.assertRaises(MatchException, Matcher.first_order_match, pat, t)
+                self.assertRaises(matcher.MatchException, matcher.first_order_match, pat, t)
 
     def testFirstOrderMatchFun(self):
         """First-order matching of variables in function position."""
@@ -59,9 +58,9 @@ class MatcherTest(unittest.TestCase):
 
         for pat, t, inst in test_data:
             if inst is not None:
-                self.assertEqual(Matcher.first_order_match(pat, t), inst)
+                self.assertEqual(matcher.first_order_match(pat, t), inst)
             else:
-                self.assertRaises(MatchException, Matcher.first_order_match, pat, t)
+                self.assertRaises(matcher.MatchException, matcher.first_order_match, pat, t)
 
 
 if __name__ == "__main__":

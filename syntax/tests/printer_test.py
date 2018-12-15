@@ -2,10 +2,11 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, hol_bool
+from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from logic import logic
 from logic.nat import Nat
+from logic.list import List
 from logic.basic import BasicTheory
 from syntax import printer
 
@@ -25,6 +26,9 @@ nn = Var("n", TFun(hol_bool, hol_bool))
 m = Var("m", Nat.nat)
 n = Var("n", Nat.nat)
 p = Var("p", Nat.nat)
+xs = Var("xs", Type("list", Ta))
+ys = Var("ys", Type("list", Ta))
+zs = Var("zs", Type("list", Ta))
 eq = Term.mk_equals
 imp = Term.mk_implies
 conj = logic.mk_conj
@@ -129,6 +133,13 @@ class PrinterTest(unittest.TestCase):
 
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
+
+    def testPrintList(self):
+        test_data = [
+            (List.append(xs, ys), "xs @ ys"),
+            (List.append(List.append(xs, ys), zs), "(xs @ ys) @ zs"),
+            (List.append(xs, List.append(ys, zs)), "xs @ ys @ zs"),
+        ]
 
     def testPrintAbsType(self):
         test_data = [

@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, HOLType, hol_bool
+from kernel.type import TVar, Type, TFun, HOLType, hol_bool
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
@@ -30,6 +30,9 @@ ctxt = {
     "m" : Nat.nat,
     "n" : Nat.nat,
     "p" : Nat.nat,
+    "xs" : Type("list", Ta),
+    "ys" : Type("list", Ta),
+    "zs" : Type("list", Ta),
 }
 
 A = Var("A", hol_bool)
@@ -158,6 +161,11 @@ class ParserTest(unittest.TestCase):
             ("0", "nat"),
             ("0 + 0", "nat"),
             ("m * 0", "nat"),
+
+            # Lists
+            ("xs @ ys", "'a list"),
+            ("(xs @ ys) @ zs", "'a list"),
+            ("xs @ ys @ zs", "'a list"),
         ]
 
         for s, Ts in test_data:

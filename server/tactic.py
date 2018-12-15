@@ -7,8 +7,7 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof
 from kernel.report import ProofReport
 from logic.basic import BasicTheory
-from logic import logic
-from logic.matcher import Matcher
+from logic import logic, matcher
 from logic.proofterm import ProofTerm
 from logic.conv import top_conv, rewr_conv
 from syntax import parser, printer
@@ -297,8 +296,8 @@ class ProofState():
             As, C = logic.subst_norm(th.concl, inst).strip_implies()
             for pat, prev in zip(As, prevs):
                 item = self.get_proof_item(prev)
-                Matcher.first_order_match_incr(pat, item.th.concl, inst)
-            Matcher.first_order_match_incr(C, cur_item.th.concl, inst)
+                matcher.first_order_match_incr(pat, item.th.concl, inst)
+            matcher.first_order_match_incr(C, cur_item.th.concl, inst)
 
         As, _ = logic.subst_norm(th.concl, inst).strip_implies()
 
@@ -388,6 +387,7 @@ class ProofState():
         for v in self.prf.vars:
             if v.name == var:
                 var = v
+                break
 
         assert not isinstance(var, str), "apply_induction: variable not found"
 

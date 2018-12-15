@@ -1,0 +1,18 @@
+{
+    "variables": [
+        "var xs :: 'a list",
+        "var ys :: 'a list",
+        "var zs :: 'a list"
+    ],
+    "assumes": [],
+    "conclusion": "(xs @ ys) @ zs = xs @ ys @ zs",
+    "instructions": [
+        "With focus on line 4, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
+        "With focus on line 4, enter Ctrl+R, then enter 'append_def_1'.",
+        "Replace 'sorry' on line 4 with 'reflexive ys @ zs'. Use Ctrl+Enter to check proof.",
+        "With focus on line 6, enter Ctrl+I, enter 'x,xs' as variable name.",
+        "With focus on line 8, enter Ctrl+R, then enter 'append_def_2'.",
+        "With focus on line 8, enter Ctrl+R, then enter 'append_def_2'.",
+        "Replace 'sorry' on line 8 with 'arg_combination cons x from S3'. Use Ctrl+Enter to check proof."
+    ]
+}

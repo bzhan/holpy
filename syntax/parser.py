@@ -8,9 +8,9 @@ from kernel.macro import MacroSig
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from kernel.extension import AxType, AxConstant, Theorem, TheoryExtension
-from logic import logic
+from logic import induct, logic
 from logic.nat import Nat
-
+from logic.list import List
 
 def _abstract_over_name(t, name, n):
     """Helper function for abstract_over_name. Here t is an open term.
@@ -63,7 +63,9 @@ grammar = r"""
 
     ?plus: plus "+" times | times       // Addition: priority 65
 
-    ?eq: eq "=" plus | plus             // Equality: priority 50
+    ?append: plus "@" append | plus     // Append: priority 65
+
+    ?eq: eq "=" append | append         // Equality: priority 50
 
     ?neg: ("~"|"¬") neg -> neg | eq     // Negation: priority 40 
 
@@ -159,6 +161,9 @@ class HOLTransformer(Transformer):
 
     def plus(self, lhs, rhs):
         return Nat.plus(lhs, rhs)
+
+    def append(self, lhs, rhs):
+        return List.append(lhs, rhs)
 
     def eq(self, lhs, rhs):
         return Term.mk_equals(lhs, rhs)
@@ -309,9 +314,22 @@ def parse_extension(thy, data):
         prop = term_parser(thy, ctxt).parse(data['prop'])
         thy.add_theorem(data['name'], Thm([], prop))
     elif data['ty'] == 'type.ind':
-        return []
+        constrs = []
+        for constr in data['constrs']:
+            T = type_parser(thy).parse(constr['type'])
+            constrs.append((constr['name'], T, constr['args']))
+        ext = induct.add_induct_type(data['name'], data['args'], constrs)
+        thy.unchecked_extend(ext)
     elif data['ty'] == 'def.ind':
-        return []
+        T = type_parser(thy).parse(data['type'])
+        thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
+        rules = []
+        for rule in data['rules']:
+            ctxt = parse_vars(thy, rule['vars'])
+            prop = term_parser(thy, ctxt).parse(rule['prop'])
+            rules.append(prop)
+        ext = induct.add_induct_def(data['name'], T, rules)
+        thy.unchecked_extend(ext)
 
 def parse_extensions(thy, data):
     for ext_data in data:

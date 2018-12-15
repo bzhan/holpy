@@ -44,9 +44,10 @@ class InductTest(unittest.TestCase):
         m = Var("m", nat)
         n = Var("n", nat)
 
-        ext = induct.add_induct_def(plus, [
-            Thm([], eq(plus(zero, n), n)),
-            Thm([], eq(plus(S(m), n), S(plus(m, n))))])
+        ext = induct.add_induct_def(
+            'plus', TFun(nat, nat, nat), [
+                eq(plus(zero, n), n),
+                eq(plus(S(m), n), S(plus(m, n)))])
         
         res = [
             AxConstant("plus", TFun(nat, nat, nat)),
