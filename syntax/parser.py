@@ -300,7 +300,7 @@ def parse_proof_rule(thy, ctxt, s):
                               % (args, e.token, e.column))
 
 def parse_vars(thy, vars_data):
-    ctxt = dict()
+    ctxt = {}
     for k, v in vars_data.items():
         ctxt[k] = type_parser(thy).parse(v)
     return ctxt
@@ -313,6 +313,7 @@ def parse_extension(thy, data):
         ctxt = parse_vars(thy, data['vars'])
         prop = term_parser(thy, ctxt).parse(data['prop'])
         thy.add_theorem(data['name'], Thm([], prop))
+        return prop
     elif data['ty'] == 'type.ind':
         constrs = []
         for constr in data['constrs']:
@@ -320,6 +321,7 @@ def parse_extension(thy, data):
             constrs.append((constr['name'], T, constr['args']))
         ext = induct.add_induct_type(data['name'], data['args'], constrs)
         thy.unchecked_extend(ext)
+        return None
     elif data['ty'] == 'def.ind':
         T = type_parser(thy).parse(data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
@@ -330,6 +332,7 @@ def parse_extension(thy, data):
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
         thy.unchecked_extend(ext)
+        return None
 
 def parse_extensions(thy, data):
     for ext_data in data:

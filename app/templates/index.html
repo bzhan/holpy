@@ -60,6 +60,8 @@
                 <input type="file" id="open-file" style="display:none">
                 <a class="dropdown-item" href="#" onclick="$('#open-problem').click()" id="problem-button">Open problem</a>
                 <input type="file" id="open-problem" style="display:none">
+                <a class="dropdown-item" href="#" onclick="$('#open-json').click()" id="json-button">Open json file</a>
+                <input type="file" id="open-json" style="display:none">
             </div>
         </div>
         <div class="dropdown">
@@ -94,35 +96,45 @@
         </div>
     </div>
 </div>
-<div class="pans">
-    <div class="code-pan" style="left: 0; right: 0; top: 0; bottom: 45%;">
+
+<div class="left" id="left">
+    <p>p</p>
+
+</div>
+
+<div class="right">
+    <div class="rtop">
+    <div class="pans">
+        <div class="code-pan" style="left: 0; right: 0; top: 0; bottom: 45%;">
         <ul class="nav nav-tabs" id="codeTab"></ul>
         <div class="tab-content" id="codeTabContent"></div>
-    </div>
+        </div>
     <div class="input-area" style="left: 0; right: 0; top: 55%; bottom: 0;">
         <div class="input-card">
-            <div class="card-header bg-secondary text-white">State</div>
+
             <div class="card-body">
-                <select class="selectpicker" data-live-search="true" id="theorem-select" title=" ">
-                </select>
-                <button type="button" class="btn btn-light float-right" id="init-button">Init</button>
                 <div class="input">
-                    <label class="text-primary" style="float: left">variables:</label>
-                    <div class="input-box" id="variables">
+
+                    <div class="input-box">
                     </div>
                 </div>
                 <div class="input">
-                    <label class="text-primary" style="float: left">assumes:</label>
-                    <div class="input-box" id="assumes">
+
+                    <div class="input-box">
                     </div>
                 </div>
                 <div class="input">
-                    <label class="text-primary" style="float: left">conclusions:</label>
-                    <div class="input-box" id="conclusions">
+
+                    <div class="input-box">
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
+    </div>
+    <div class="rbottom">
+    <p> p</p>
     </div>
 </div>
 </body>
