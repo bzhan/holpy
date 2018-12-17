@@ -216,6 +216,45 @@
             }
             $('#open-problem')[0].value = '';
         });
+
+        document.getElementById('open-json').addEventListener('change', function (e) {
+            e = e || window.event;
+
+            let files = this.files;
+            let i = 0, f;
+            for (; f = files[i]; i++) {
+                let reader = new FileReader();
+                reader.onload = (function () {
+                    var json_data = JSON.parse(this.result);
+                    /*var event = {
+                        'event': 'init_cell',
+                        'id': get_selected_id(),
+                        'variables': json_data['variables'],
+                        'assumes': json_data['assumes'],
+                        'conclusion': json_data['conclusion']
+                    };*/
+                    var data = JSON.stringify(json_data);
+                    display_running();
+
+                    $.ajax({
+                        url: "/api/json",
+                        type: "POST",
+                        datatype: "json",
+                        data: data,
+                        success: function (result) {
+                        console.log(result);
+                            if (result){
+                            //$.each(result, function(i,val){
+                                $('#left').append('<p>'+String(result)+'</p>');
+                               // });
+                            }
+                        }
+                    });
+                });
+                reader.readAsText(f);
+            }
+        });
+
         document.getElementById("run-button").addEventListener('click', send_input);
     });
 
@@ -262,9 +301,6 @@
                 $(this).removeClass('selected');
             });
             $(cm.getTextArea().parentNode).addClass('selected');
-            document.querySelector('#variables .CodeMirror').CodeMirror.setOption('readOnly', false);
-            document.querySelector('#assumes .CodeMirror').CodeMirror.setOption('readOnly', false);
-            document.querySelector('#conclusions .CodeMirror').CodeMirror.setOption('readOnly', false);
             set_theorem_select(cm);
             get_cell_state();
         });

@@ -97,6 +97,36 @@ div.CodeMirror-lines {
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+div.left {
+    border: 0px solid;
+    width: 50%;
+    height : 100%;
+    float: left;
+    padding: 30px;
+}
+
+div.right {
+    border: 0px solid;
+    width: 50%;
+    height :100%;
+    float : left;
+}
+
+div.rtop{
+    border: 0px solid;
+    width: 100%;
+    height: 50%;
+
+}
+
+div.rbottom{
+    border: 0px solid;
+    width: 100%;
+    height: 50%;
+    padding: 20px;
+
+}
+
 div.output-wrapper pre {
     margin: 0;
     padding: 10px 0px 1px 39px;
