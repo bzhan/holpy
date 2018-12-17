@@ -1,5 +1,7 @@
 (function ($) {
+    var instructions = [];
     var pageNum = 0;
+    var index = 0;
     var theorem = {};
     var replace_obj = {
         "\\lambda": "λ",
@@ -48,6 +50,11 @@
                 status_output.innerHTML = "OK. Proof complete!"
             }
         }
+    }
+
+    function display_instuctions(instructions) {
+        var status_output = get_selected_output();
+        status_output.innerHTML = instructions[0];
     }
 
     $(document).ready(function () {
@@ -111,6 +118,28 @@
 
         $('#rewrite-goal').on("click", function () {
             rewrite_goal(get_selected_editor());
+        })
+
+        $('#show_intr').on("click", function() {
+            if (index < instructions.length-1){
+            index++;
+            var status_output = get_selected_output();
+            status_output.innerHTML = instructions[index];
+            /*
+            $.ajax({
+                type: "POST",
+                success:function(){
+                flag=index;
+                }
+                    })*/
+            }
+        })
+         $('#show_intrt').on("click", function() {
+            if (index >0){
+            index--;
+            var status_output = get_selected_output();
+            status_output.innerHTML = instructions[index];
+            }
         })
 
         $('#init-button').on("click", function () {
@@ -191,6 +220,7 @@
                     let reader = new FileReader();
                     reader.onload = (function () {
                         var json_data = JSON.parse(this.result);
+                        instructions = json_data['instructions'];
                         var event = {
                             'event': 'init_cell',
                             'id': get_selected_id(),
@@ -208,6 +238,7 @@
                             success: function (result) {
                                 display_checked_proof(result);
                                 get_selected_editor().focus();
+                                display_instuctions(instructions);
                             }
                         });
                     });
