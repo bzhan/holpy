@@ -238,18 +238,15 @@
                     $.ajax({
                         url: "/api/json",
                         type: "POST",
+                        datatype: "json",
                         data: data,
                         success: function (result) {
-                        try{
+                        console.log(result);
                             if (result){
-                                for (var r in result){
-                                    console.log(r);
-                                }
+                            //$.each(result, function(i,val){
+                                $('#left').append('<p>'+String(result)+'</p>');
+                               // });
                             }
-                        }
-                        }
-                        except(e){
-                        console.log(e)
                         }
                     });
                 });
