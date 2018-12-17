@@ -53,20 +53,18 @@ body {
 
 
 .pans {
-    display: -webkit-box;
     display: -ms-flexbox;
-    display: flex;
     position: relative;
+    flex-direction: row;
 }
 
 .code-pan {
-    position: absolute;
+    min-height: 100px;
     width: 100%;
     overflow: auto;
 }
 
 .input-area {
-    position: absolute;
 }
 
 .input {
@@ -97,10 +95,40 @@ div.CodeMirror-lines {
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+.split {
+    border: 1px solid red;
+    padding: 0px;
+    margins: 0px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.gutter {
+    background-color: #7f7f7f;
+    background-repeat: no-repeat;
+}
+
+.gutter.gutter-horizontal {
+    cursor: col-resize;
+}
+
+.gutter.gutter-vertical {
+    cursor: row-resize;
+}
+
+.split.split-horizontal,
+.gutter.gutter-horizontal {
+    height: 100%;
+    float: left;
+}
+
 div.left {
     border: 0px solid;
     width: 50%;
-    height : 100%;
+    height: 100%;
     float: left;
     padding: 30px;
 }
@@ -108,23 +136,20 @@ div.left {
 div.right {
     border: 0px solid;
     width: 50%;
-    height :100%;
-    float : left;
+    height: 100%;
+    float: left;
 }
 
-div.rtop{
+div.rtop {
     border: 0px solid;
     width: 100%;
     height: 50%;
-
 }
 
-div.rbottom{
+div.rbottom {
     border: 0px solid;
     width: 100%;
     height: 50%;
-    padding: 20px;
-
 }
 
 div.output-wrapper pre {

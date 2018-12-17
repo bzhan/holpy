@@ -51,7 +51,6 @@
     }
 
     $(document).ready(function () {
-        document.querySelector('.pans').style.height = '665px';
         $('#theorem-select').ready(function () {
             $(document).ready(function () {
                 var event = {'event': 'init_theorem'};
@@ -75,19 +74,84 @@
         });
 
         $('#add-cell').on('click', function () {
+            // pageNum++;
+            // // Add CodeMirror textarea
+            // id = 'code' + pageNum + '-pan';
+            // $('#codeTabContent').append(
+            //     $('<div class="code-cell" id=' + id + '>' +
+            //         '<label for="code' + pageNum + '"></label> ' +
+            //         '<textarea' + ' id="code' + pageNum + '""></textarea></div>'));
+            // init_editor("code" + pageNum);
+            // // Add location for displaying results
+            // $('#' + id).append(
+            //     $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
+            //         '<pre> </pre></div></div>'));
             pageNum++;
             // Add CodeMirror textarea
             id = 'code' + pageNum + '-pan';
+            $('#codeTab').append(
+                $('<li class="nav-item"><a  class="nav-link" ' +
+                    'data-toggle="tab"' +
+                    'href="#code' + pageNum + '-pan">' +
+                    'Page ' + pageNum +
+                    '<button id="close_tab" type="button" ' +
+                    'title="Remove this page">×</button>' +
+                    '</a></li>'));
+            let class_name = 'tab-pane fade active newCodeMirror code-cell';
+            if (pageNum === 1)
+                class_name = 'tab-pane fade in active code-cell';
             $('#codeTabContent').append(
-                $('<div class="code-cell" id=' + id + '>' +
+                $('<div class="' + class_name + '" id="code' + pageNum + '-pan">' +
                     '<label for="code' + pageNum + '"></label> ' +
-                    '<textarea' + ' id="code' + pageNum + '""></textarea></div>'));
+                    '<textarea' + ' id="code' + pageNum + '""></textarea>'));
             init_editor("code" + pageNum);
             // Add location for displaying results
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<pre> </pre></div></div>'));
+            $('#codeTab a[href="#code' + pageNum + '-pan"]').tab('show');
+            $('.newCodeMirror').each(function () {
+                $(this).removeClass('active')
+            });
         });
+
+        $('#codeTab').on("click", "a", function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        $('#codeTab').on('click', ' li a #close_tab', function () {
+            if ($('#codeTab').children().length === 1)
+                return true;
+            else {
+                var tabId = $(this).parents('li').children('a').attr('href');
+                var pageNum = $(this).parents('li').children('a').childNodes[0].nodeValue;
+                var first = false;
+                $(this).parents('li').remove('li');
+                $(tabId).remove();
+                if (pageNum === "Page 1")
+                    first = true;
+                remove_page(first);
+                $('#codeTab a:first').tab('show');
+            }
+        });
+
+        function remove_page(first) {
+            if (first)
+                pageNum = 0;
+            else
+                pageNum = 1;
+            $('#codeTab > li').each(function () {
+                var pageId = $(this).children('a').attr('href');
+                if (pageId === "#code1-pan") {
+                    return true;
+                }
+                pageNum++;
+                $(this).children('a').html('Page ' + pageNum +
+                    '<button id="close_tab" type="button" ' +
+                    'title="Remove this page">×</button>');
+            });
+        }
 
         $('#delete-cell').on('click', function () {
             $('.code-cell.selected').remove();
@@ -107,11 +171,11 @@
 
         $('#apply-induction').on("click", function () {
             apply_induction(get_selected_editor());
-        })
+        });
 
         $('#rewrite-goal').on("click", function () {
             rewrite_goal(get_selected_editor());
-        })
+        });
 
         $('#init-button').on("click", function () {
             let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
@@ -242,11 +306,11 @@
                         datatype: "json",
                         data: data,
                         success: function (result) {
-                        console.log(result);
-                            if (result){
-                            //$.each(result, function(i,val){
-                                $('#left').append('<p>'+String(result)+'</p>');
-                               // });
+                            console.log(result);
+                            if (result) {
+                                //$.each(result, function(i,val){
+                                $('#left').append('<p>' + String(result) + '</p>');
+                                // });
                             }
                         }
                     });
@@ -302,7 +366,7 @@
             });
             $(cm.getTextArea().parentNode).addClass('selected');
             set_theorem_select(cm);
-            get_cell_state();
+            // get_cell_state();
         });
     }
 

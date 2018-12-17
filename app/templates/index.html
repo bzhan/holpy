@@ -36,7 +36,6 @@
 <!--括号匹配-->
 <script src="../static/codemirror-5.41.0/addon/edit/matchbrackets.js"></script>
 <!--end Code Mirror -->
-<script src="../static/js/main.js"></script>
 
 <head>
     <meta charset="utf-8"/>
@@ -58,7 +57,8 @@
                 <a class="dropdown-item" href="#" id="save-file">Save</a>
                 <a class="dropdown-item" href="#" onclick="$('#open-file').click()" id="file-button">Open file</a>
                 <input type="file" id="open-file" style="display:none">
-                <a class="dropdown-item" href="#" onclick="$('#open-problem').click()" id="problem-button">Open problem</a>
+                <a class="dropdown-item" href="#" onclick="$('#open-problem').click()" id="problem-button">Open
+                    problem</a>
                 <input type="file" id="open-problem" style="display:none">
                 <a class="dropdown-item" href="#" onclick="$('#open-json').click()" id="json-button">Open json file</a>
                 <input type="file" id="open-json" style="display:none">
@@ -103,40 +103,52 @@
 </div>
 
 <div class="right">
-    <div class="rtop">
-    <div class="pans">
-        <div class="code-pan" style="left: 0; right: 0; top: 0; bottom: 45%;">
-        <ul class="nav nav-tabs" id="codeTab"></ul>
-        <div class="tab-content" id="codeTabContent"></div>
+    <div class="rtop" style="left: 0; right: 0; top: 0; bottom: 45%;">
+        <div class="code-pan" style=>
+            <ul class="nav nav-tabs" id="codeTab"></ul>
+            <div class="tab-content" id="codeTabContent"></div>
         </div>
-    <div class="input-area" style="left: 0; right: 0; top: 55%; bottom: 0;">
-        <div class="input-card">
-
-            <div class="card-body">
-                <div class="input">
-
-                    <div class="input-box">
+    </div>
+    <div class="rbottom" style="left: 0; right: 0; top: 55%; bottom: 0;">
+        <div class="input-area" id="input-area">
+            <div class="input-card">
+                <div class="card-header bg-secondary text-white">State</div>
+                <div class="card-body">
+                    <select class="selectpicker" data-live-search="true" id="theorem-select" title=" ">
+                    </select>
+                    <button type="button" class="btn btn-light float-right" id="init-button">Init</button>
+                    <div class="input">
+                        <label class="text-primary" style="float: left">variables:</label>
+                        <div class="input-box" id="variables">
+                        </div>
                     </div>
-                </div>
-                <div class="input">
-
-                    <div class="input-box">
+                    <div class="input">
+                        <label class="text-primary" style="float: left">assumes:</label>
+                        <div class="input-box" id="assumes">
+                        </div>
                     </div>
-                </div>
-                <div class="input">
-
-                    <div class="input-box">
+                    <div class="input">
+                        <label class="text-primary" style="float: left">conclusions:</label>
+                        <div class="input-box" id="conclusions">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    </div>
-    <div class="rbottom">
-    <p> p</p>
-    </div>
 </div>
 </body>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.9/split.min.js"></script>
+<script src="../static/js/main.js"></script>
+<script>
+    Split(['.rtop', '.rbottom'], {
+        sizes: [40, 60],
+        direction: 'vertical',
+        gutterSize: 2,
+    });
+    Split(['.left', '.right'], {
+        size: [50, 50],
+        gutterSize: 2,
+    })
+</script>
 </html>
