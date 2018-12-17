@@ -303,9 +303,6 @@
                 $(this).removeClass('selected');
             });
             $(cm.getTextArea().parentNode).addClass('selected');
-            document.querySelector('#variables .CodeMirror').CodeMirror.setOption('readOnly', false);
-            document.querySelector('#assumes .CodeMirror').CodeMirror.setOption('readOnly', false);
-            document.querySelector('#conclusions .CodeMirror').CodeMirror.setOption('readOnly', false);
             set_theorem_select(cm);
             get_cell_state();
         });

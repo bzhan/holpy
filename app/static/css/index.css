@@ -113,14 +113,14 @@ div.right {
 }
 
 div.rtop{
-    border: 1px solid red;
+    border: 0px solid;
     width: 100%;
     height: 50%;
 
 }
 
 div.rbottom{
-    border: 1px solid red;
+    border: 0px solid;
     width: 100%;
     height: 50%;
     padding: 20px;
