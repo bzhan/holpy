@@ -163,9 +163,9 @@ def json_parse():
         for d in data:
             term = parse_extension(thy, d)
             if term:
-                term_dic['name'] = d.get('name')
-                term_dic['prop'] = print_term(thy, term, highlight=True)
+                term_dic['name'] = d['name']
+                term_dic['prop'] = print_term(thy, term, highlight = True)
                 term_list.append(term_dic)
-    return jsonify(term_list)
+    return jsonify(term_dic)
 
 
