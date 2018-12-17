@@ -30,6 +30,10 @@
         return document.querySelector('.code-cell.selected .output pre');
     }
 
+    function get_output() {
+        return document.querySelector()
+    }
+
     function display_running() {
         var status_output = get_selected_output();
         status_output.innerHTML = "Running";
@@ -54,7 +58,7 @@
 
     function display_instuctions(instructions) {
         var status_output = get_selected_output();
-        status_output.innerHTML = instructions[0];
+        status_output.innerHTML += '\n'+instructions[0];
     }
 
     $(document).ready(function () {
@@ -124,21 +128,19 @@
             if (index < instructions.length-1){
             index++;
             var status_output = get_selected_output();
-            status_output.innerHTML = instructions[index];
-            /*
-            $.ajax({
-                type: "POST",
-                success:function(){
-                flag=index;
-                }
-                    })*/
+            var str_list = String(status_output.innerText).split('\n');
+            str_list[1] = instructions[index];
+            status_output.innerHTML = str_list.join('\n');
             }
         })
+
          $('#show_intrt').on("click", function() {
             if (index >0){
             index--;
             var status_output = get_selected_output();
-            status_output.innerHTML = instructions[index];
+            var str_list = String(status_output.innerText).split('\n');
+            str_list[1] = instructions[index];
+            status_output.innerHTML = str_list.join('\n')
             }
         })
 
