@@ -215,6 +215,48 @@
                 reader.readAsText(f);
             }
         });
+
+        document.getElementById('open-json').addEventListener('change', function (e) {
+            e = e || window.event;
+
+            let files = this.files;
+            let i = 0, f;
+            for (; f = files[i]; i++) {
+                let reader = new FileReader();
+                reader.onload = (function () {
+                    var json_data = JSON.parse(this.result);
+                    /*var event = {
+                        'event': 'init_cell',
+                        'id': get_selected_id(),
+                        'variables': json_data['variables'],
+                        'assumes': json_data['assumes'],
+                        'conclusion': json_data['conclusion']
+                    };*/
+                    var data = JSON.stringify(json_data);
+                    display_running();
+
+                    $.ajax({
+                        url: "/api/json",
+                        type: "POST",
+                        data: data,
+                        success: function (result) {
+                        try{
+                            if (result){
+                                for (var r in result){
+                                    console.log(r);
+                                }
+                            }
+                        }
+                        }
+                        except(e){
+                        console.log(e)
+                        }
+                    });
+                });
+                reader.readAsText(f);
+            }
+        });
+
         document.getElementById("run-button").addEventListener('click', send_input);
     });
 

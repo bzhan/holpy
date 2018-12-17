@@ -295,7 +295,7 @@ def parse_proof_rule(thy, ctxt, s):
                               % (args, e.token, e.column))
 
 def parse_vars(thy, vars_data):
-    ctxt = dict()
+    ctxt = {}
     for k, v in vars_data.items():
         ctxt[k] = type_parser(thy).parse(v)
     return ctxt
@@ -308,10 +308,11 @@ def parse_extension(thy, data):
         ctxt = parse_vars(thy, data['vars'])
         prop = term_parser(thy, ctxt).parse(data['prop'])
         thy.add_theorem(data['name'], Thm([], prop))
+        return prop
     elif data['ty'] == 'type.ind':
-        return []
+        return None
     elif data['ty'] == 'def.ind':
-        return []
+        return None
 
 def parse_extensions(thy, data):
     for ext_data in data:
