@@ -166,6 +166,4 @@ def json_parse():
                 term_dict['name'] = d['name']
                 term_dict['prop'] = print_term(thy,term,highlight=True)
                 term_list.append(term_dict)
-    return jsonify(term_list)
-
-
+    return jsonify({'data': term_list})

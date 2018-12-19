@@ -307,9 +307,9 @@
                             type: "POST",
                             data: data,
                             success: function (result) {
-                               for (var d in result){
-                                   var name = result[d]['name'];
-                                   var obj_list = result[d]['prop'];
+                               for (var d in result['data']){
+                                   var name = result['data'][d]['name'];
+                                   var obj_list = result['data'][d]['prop'];
                                    var str = ''
                                    $.each(obj_list, function(i, val){
                                         str = str+'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
