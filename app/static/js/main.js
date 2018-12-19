@@ -281,42 +281,50 @@
             $('#open-problem')[0].value = '';
         });
 
+        function rp(x) {
+            if (x===0)
+                return  'normal';
+            if (x===1)
+                return  'bound';
+            if (x===2)
+                return  'var';
+        }
+
         document.getElementById('open-json').addEventListener('change', function (e) {
             e = e || window.event;
 
             let files = this.files;
             let i = 0, f;
-            for (; f = files[i]; i++) {
-                let reader = new FileReader();
-                reader.onload = (function () {
-                    var json_data = JSON.parse(this.result);
-                    /*var event = {
-                        'event': 'init_cell',
-                        'id': get_selected_id(),
-                        'variables': json_data['variables'],
-                        'assumes': json_data['assumes'],
-                        'conclusion': json_data['conclusion']
-                    };*/
-                    var data = JSON.stringify(json_data);
-                    display_running();
+            if (files !== '') {
+                for (; f = files[i]; i++) {
+                    let reader = new FileReader();
+                    reader.onload = (function () {
+                        var json_data = JSON.parse(this.result);
+                        var data = JSON.stringify(json_data);
 
-                    $.ajax({
-                        url: "/api/json",
-                        type: "POST",
-                        datatype: "json",
-                        data: data,
-                        success: function (result) {
-                            console.log(result);
-                            if (result) {
-                                //$.each(result, function(i,val){
-                                $('#left').append('<p>' + String(result) + '</p>');
-                                // });
+                        $.ajax({
+                            url: "/api/json",
+                            type: "POST",
+                            data: data,
+                            success: function (result) {
+                               for (var d in result){
+                                   var name = result[d]['name'];
+                                   var obj_list = result[d]['prop'];
+                                   var str = ''
+                                   $.each(obj_list, function(i, val){
+                                        str = str+'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                                        })
+                                    $('#left').append($('<p>'+'<font color="#006000"><b>'+'theorem'+'</b></font>'+' '+name+'</br>'+str+'</p>'));
+                                    //$('#left').append($('<p>'+JSON.stringify(obj_list)+'</p>'))
+                                }
+
                             }
-                        }
+                        });
                     });
-                });
-                reader.readAsText(f);
+                    reader.readAsText(f);
+                }
             }
+            $('#open-json')[0].value = '';
         });
 
         document.getElementById("run-button").addEventListener('click', send_input);

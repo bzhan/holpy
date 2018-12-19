@@ -130,7 +130,7 @@ div.left {
     width: 50%;
     height: 100%;
     float: left;
-    padding: 30px;
+    padding: 15px;
 }
 
 div.right {
@@ -165,6 +165,14 @@ div.output-wrapper pre {
     color: black;
     background-color: transparent;
     border-radius: 0;
+}
+
+tt.var {
+    color: blue;
+}
+
+tt.bound {
+    color: #006000;
 }
 
 #variables {

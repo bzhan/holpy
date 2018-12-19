@@ -158,14 +158,14 @@ def json_parse():
     thy = BasicTheory
     data = json.loads(request.get_data().decode("utf-8"))
     term_list = []
-    term_dic = dict()
     if data:
         for d in data:
-            term = parse_extension(thy, d)
-            if term:
-                term_dic['name'] = d['name']
-                term_dic['prop'] = print_term(thy, term, highlight = True)
-                term_list.append(term_dic)
-    return jsonify(term_dic)
+            term_dict = {}
+            if d['ty'] == 'thm':
+                term = parse_extension(thy, d)
+                term_dict['name'] = d['name']
+                term_dict['prop'] = print_term(thy,term,highlight=True)
+                term_list.append(term_dict)
+    return jsonify(term_list)
 
 
