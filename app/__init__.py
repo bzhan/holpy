@@ -157,13 +157,15 @@ def get_cell_state():
 def json_parse():
     thy = BasicTheory
     data = json.loads(request.get_data().decode("utf-8"))
-    output_data = []
+    term_list = []
     if data:
         for d in data:
-            output = {}
+            term_dict = {}
             if d['ty'] == 'thm':
-                prop = parse_extension(thy, d)
-                output['name'] = d['name']
-                output['prop'] = print_term(thy, prop, unicode=True, highlight=True)
-                output_data.append(output)
-    return jsonify({'data': output_data})
+                term = parse_extension(thy, d)
+                term_dict['name'] = d['name']
+                term_dict['prop'] = print_term(thy,term,highlight=True)
+                term_list.append(term_dict)
+    return jsonify(term_list)
+
+

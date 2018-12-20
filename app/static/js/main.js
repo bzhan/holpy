@@ -307,15 +307,15 @@
                             type: "POST",
                             data: data,
                             success: function (result) {
-                                $('#left').empty();
-                                for (var d in result['data']) {
-                                    var name = result['data'][d]['name'];
-                                    var obj_list = result['data'][d]['prop'];
-                                    var str = ''
-                                    $.each(obj_list, function(i, val) {
+                               for (var d in result){
+                                   var name = result[d]['name'];
+                                   var obj_list = result[d]['prop'];
+                                   var str = ''
+                                   $.each(obj_list, function(i, val){
                                         str = str+'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-                                    })
-                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> '+name+':</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                        })
+                                    $('#left').append($('<p>'+'<font color="#006000"><b>'+'theorem'+'</b></font>'+' '+name+'</br>'+str+'</p>'));
+                                    //$('#left').append($('<p>'+JSON.stringify(obj_list)+'</p>'))
                                 }
                             }
                         });
