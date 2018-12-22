@@ -19,6 +19,8 @@ body {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
+    position: fixed;
+    width: 100%;
 }
 
 .home-header-left {
@@ -59,7 +61,6 @@ body {
 }
 
 .code-pan {
-    min-height: 100px;
     width: 100%;
     overflow: auto;
 }
@@ -78,13 +79,13 @@ body {
     bottom: 0;
 }
 
-div.CodeMirror-lines {
-    border: 1px solid #cfcfcf;
-    border-radius: 2px;
-    background: #f7f7f7;
-    line-height: 1.21429em;
+/*div.CodeMirror-lines {*/
+    /*border: 1px solid #cfcfcf;*/
+    /*border-radius: 2px;*/
+    /*background: #f7f7f7;*/
+    /*line-height: 1.21429em;*/
 
-}
+/*}*/
 
 .input-box {
     width: 100%;
@@ -93,6 +94,14 @@ div.CodeMirror-lines {
 .output-area pre {
     --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.CodeMirror {
+    margin-top: -21px;
+    border-radius: 2px;
+    background: #f8f8f8;
+    border: 1px solid #eee;
+    height: auto;
 }
 
 .split {
@@ -131,6 +140,7 @@ div.left {
     height: 100%;
     float: left;
     padding: 15px;
+    margin-top: 40px;
 }
 
 div.right {
@@ -138,6 +148,7 @@ div.right {
     width: 50%;
     height: 100%;
     float: left;
+    margin-top: 40px;
 }
 
 div.rtop {

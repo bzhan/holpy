@@ -2,7 +2,6 @@
 <html lang="en">
 
 <!--begin code mirror -->
-<link rel="stylesheet" href="../static/css/index.css">
 <link rel="stylesheet" href="../static/css/client.css">
 <link rel="stylesheet" href="../static/css/vendor.css">
 <link rel="stylesheet" href="../static/codemirror-5.41.0/lib/codemirror.css">
@@ -37,6 +36,7 @@
 <script src="../static/codemirror-5.41.0/addon/edit/matchbrackets.js"></script>
 <!--end Code Mirror -->
 
+<link rel="stylesheet" href="../static/css/index.css">
 <head>
     <meta charset="utf-8"/>
     <title>holpy</title>
@@ -110,40 +110,24 @@
         </div>
     </div>
     <div class="rbottom" style="left: 0; right: 0; top: 55%; bottom: 0;">
-        <div class="input-area" id="input-area">
-            <div class="input-card">
-                <div class="card-header bg-secondary text-white">State</div>
-                <div class="card-body">
-                    <select class="selectpicker" data-live-search="true" id="theorem-select" title=" ">
-                    </select>
-                    <button type="button" class="btn btn-light float-right" id="init-button">Init</button>
-                    <div class="input">
-                        <label class="text-primary" style="float: left">variables:</label>
-                        <div class="input-box" id="variables">
-                        </div>
-                    </div>
-                    <div class="input">
-                        <label class="text-primary" style="float: left">assumes:</label>
-                        <div class="input-box" id="assumes">
-                        </div>
-                    </div>
-                    <div class="input">
-                        <label class="text-primary" style="float: left">conclusions:</label>
-                        <div class="input-box" id="conclusions">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.9/split.min.js"></script>
 <script src="../static/js/main.js"></script>
 <script>
+    function f() {
+        var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+        var rtop = document.querySelector('.rtop');
+        editor.setSize("auto", rtop.clientHeight- 40);
+        editor.refresh();
+    }
+
     Split(['.rtop', '.rbottom'], {
         sizes: [40, 60],
         direction: 'vertical',
+        minSize: 39,
+        onDrag: f,
         gutterSize: 2,
     });
     Split(['.left', '.right'], {

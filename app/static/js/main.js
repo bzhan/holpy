@@ -338,6 +338,7 @@
             foldGutter: true,
             smartIndent: false,
             matchBrackets: true,
+            viewportMargin: Infinity,
             scrollbarStyle: "overlay",
             extraKeys: {
                 "Ctrl-I": introduction,
@@ -345,7 +346,7 @@
                 "Ctrl-R": rewrite_goal,
             }
         });
-        editor.setSize("auto", "auto");
+        editor.setSize("auto", 200);
         editor.setValue("");
         editor.on("keydown", function (cm, event) {
             let line_no = cm.getCursor().line;
