@@ -119,7 +119,7 @@
     function f() {
         var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
         var rtop = document.querySelector('.rtop');
-        editor.setSize("auto", rtop.clientHeight- 40);
+        editor.setSize("auto", rtop.clientHeight - 40);
         editor.refresh();
     }
 
@@ -130,9 +130,9 @@
         onDrag: f,
         gutterSize: 2,
     });
-    Split(['.left', '.right'], {
-        size: [50, 50],
+    var instance = Split(['.left', '.right'], {
+        sizes: [20, 80],
         gutterSize: 2,
-    })
+    });
 </script>
 </html>

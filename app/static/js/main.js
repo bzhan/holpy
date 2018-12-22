@@ -282,12 +282,12 @@
         });
 
         function rp(x) {
-            if (x===0)
-                return  'normal';
-            if (x===1)
-                return  'bound';
-            if (x===2)
-                return  'var';
+            if (x === 0)
+                return 'normal';
+            if (x === 1)
+                return 'bound';
+            if (x === 2)
+                return 'var';
         }
 
         document.getElementById('open-json').addEventListener('change', function (e) {
@@ -312,10 +312,10 @@
                                     var name = result['data'][d]['name'];
                                     var obj_list = result['data'][d]['prop'];
                                     var str = ''
-                                    $.each(obj_list, function(i, val) {
-                                        str = str+'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                                    $.each(obj_list, function (i, val) {
+                                        str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                                     })
-                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> '+name+':</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':</br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
                                 }
                             }
                         });
@@ -346,7 +346,8 @@
                 "Ctrl-R": rewrite_goal,
             }
         });
-        editor.setSize("auto", 200);
+        var rtop = document.querySelector('.rtop');
+        editor.setSize("auto", rtop.clientHeight - 40);
         editor.setValue("");
         editor.on("keydown", function (cm, event) {
             let line_no = cm.getCursor().line;
@@ -376,6 +377,10 @@
             set_theorem_select(cm);
             // get_cell_state();
         });
+
+        editor.on("cursorActivity", function (doc) {
+            console.log(doc);
+        })
     }
 
     function set_theorem_select(doc) {
@@ -671,4 +676,9 @@
         input_box.setSize("auto", "auto");
         input_box.setValue("");
     }
+
+    function set_read_only(doc){
+        // cm.get
+    }
+
 })(jQuery);

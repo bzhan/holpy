@@ -136,7 +136,6 @@ body {
 
 div.left {
     border: 0px solid;
-    width: 50%;
     height: 100%;
     float: left;
     padding: 15px;
@@ -145,9 +144,8 @@ div.left {
 
 div.right {
     border: 0px solid;
-    width: 50%;
     height: 100%;
-    float: left;
+    float: right;
     margin-top: 40px;
 }
 
