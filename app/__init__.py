@@ -7,6 +7,10 @@ from flask.json import jsonify
 from kernel.thm import primitive_deriv
 from syntax import parser
 from server.tactic import ProofState
+from logic.basic import BasicTheory
+from syntax.parser import *
+from syntax.printer import *
+
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -21,6 +25,7 @@ def get_result_from_cell(cell):
         "proof": cell.print_proof(),
         "report": cell.rpt.json_data()
     }
+
 
 @app.route('/')
 def index():
@@ -147,3 +152,18 @@ def get_cell_state():
             cell = cells.get(id)
             return jsonify(cell.obtain_init_data())
     return jsonify({})
+
+@app.route('/api/json', methods = ['POST'])
+def json_parse():
+    thy = BasicTheory
+    data = json.loads(request.get_data().decode("utf-8"))
+    output_data = []
+    if data:
+        for d in data:
+            output = {}
+            if d['ty'] == 'thm':
+                prop = parse_extension(thy, d)
+                output['name'] = d['name']
+                output['prop'] = print_term(thy, prop, unicode=True, highlight=True)
+                output_data.append(output)
+    return jsonify({'data': output_data})

@@ -34,13 +34,13 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
 
         def N(s):
-            return [(s, NORMAL)] if highlight else s
+            return [(str(s), NORMAL)] if highlight else str(s)
 
         def B(s):
-            return [(s, BOUND)] if highlight else s
+            return [(str(s), BOUND)] if highlight else str(s)
 
         def V(s):
-            return [(s, VAR)] if highlight else s
+            return [(str(s), VAR)] if highlight else str(s)
 
         if t.ty == Term.VAR:
             return V(t.name)

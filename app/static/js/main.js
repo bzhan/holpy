@@ -62,7 +62,6 @@
     }
 
     $(document).ready(function () {
-        document.querySelector('.pans').style.height = '665px';
         $('#theorem-select').ready(function () {
             $(document).ready(function () {
                 var event = {'event': 'init_theorem'};
@@ -86,19 +85,88 @@
         });
 
         $('#add-cell').on('click', function () {
+            // pageNum++;
+            // // Add CodeMirror textarea
+            // id = 'code' + pageNum + '-pan';
+            // $('#codeTabContent').append(
+            //     $('<div class="code-cell" id=' + id + '>' +
+            //         '<label for="code' + pageNum + '"></label> ' +
+            //         '<textarea' + ' id="code' + pageNum + '""></textarea></div>'));
+            // init_editor("code" + pageNum);
+            // // Add location for displaying results
+            // $('#' + id).append(
+            //     $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
+            //         '<pre> </pre></div></div>'));
             pageNum++;
             // Add CodeMirror textarea
             id = 'code' + pageNum + '-pan';
+            $('#codeTab').append(
+                $('<li class="nav-item"><a  class="nav-link" ' +
+                    'data-toggle="tab"' +
+                    'href="#code' + pageNum + '-pan">' +
+                    'Page ' + pageNum +
+                    '<button id="close_tab" type="button" ' +
+                    'title="Remove this page">×</button>' +
+                    '</a></li>'));
+            let class_name = 'tab-pane fade active newCodeMirror code-cell';
+            if (pageNum === 1)
+                class_name = 'tab-pane fade in active code-cell';
             $('#codeTabContent').append(
-                $('<div class="code-cell" id=' + id + '>' +
+                $('<div class="' + class_name + '" id="code' + pageNum + '-pan">' +
                     '<label for="code' + pageNum + '"></label> ' +
-                    '<textarea' + ' id="code' + pageNum + '""></textarea></div>'));
+                    '<textarea' + ' id="code' + pageNum + '""></textarea>'));
             init_editor("code" + pageNum);
             // Add location for displaying results
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<pre> </pre></div></div>'));
+                    '<pre>5678 </pre></div></div>'));
+            $('#' + id).append(
+                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
+                    '<pre>12345 </pre></div></div>'));
+
+            $('#codeTab a[href="#code' + pageNum + '-pan"]').tab('show');
+            $('.newCodeMirror').each(function () {
+                $(this).removeClass('active')
+            });
         });
+
+        $('#codeTab').on("click", "a", function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        $('#codeTab').on('click', ' li a #close_tab', function () {
+            if ($('#codeTab').children().length === 1)
+                return true;
+            else {
+                var tabId = $(this).parents('li').children('a').attr('href');
+                var pageNum = $(this).parents('li').children('a').childNodes[0].nodeValue;
+                var first = false;
+                $(this).parents('li').remove('li');
+                $(tabId).remove();
+                if (pageNum === "Page 1")
+                    first = true;
+                remove_page(first);
+                $('#codeTab a:first').tab('show');
+            }
+        });
+
+        function remove_page(first) {
+            if (first)
+                pageNum = 0;
+            else
+                pageNum = 1;
+            $('#codeTab > li').each(function () {
+                var pageId = $(this).children('a').attr('href');
+                if (pageId === "#code1-pan") {
+                    return true;
+                }
+                pageNum++;
+                $(this).children('a').html('Page ' + pageNum +
+                    '<button id="close_tab" type="button" ' +
+                    'title="Remove this page">×</button>');
+            });
+        }
 
         $('#delete-cell').on('click', function () {
             $('.code-cell.selected').remove();
@@ -118,11 +186,11 @@
 
         $('#apply-induction').on("click", function () {
             apply_induction(get_selected_editor());
-        })
+        });
 
         $('#rewrite-goal').on("click", function () {
             rewrite_goal(get_selected_editor());
-        })
+        });
 
         $('#show_intr').on("click", function() {
             if (index < instructions.length-1){
@@ -249,6 +317,52 @@
             }
             $('#open-problem')[0].value = '';
         });
+
+        function rp(x) {
+            if (x===0)
+                return  'normal';
+            if (x===1)
+                return  'bound';
+            if (x===2)
+                return  'var';
+        }
+
+        document.getElementById('open-json').addEventListener('change', function (e) {
+            e = e || window.event;
+
+            let files = this.files;
+            let i = 0, f;
+            if (files !== '') {
+                for (; f = files[i]; i++) {
+                    let reader = new FileReader();
+                    reader.onload = (function () {
+                        var json_data = JSON.parse(this.result);
+                        var data = JSON.stringify(json_data);
+
+                        $.ajax({
+                            url: "/api/json",
+                            type: "POST",
+                            data: data,
+                            success: function (result) {
+                                $('#left').empty();
+                                for (var d in result['data']) {
+                                    var name = result['data'][d]['name'];
+                                    var obj_list = result['data'][d]['prop'];
+                                    var str = ''
+                                    $.each(obj_list, function(i, val) {
+                                        str = str+'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                                    })
+                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> '+name+':</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                }
+                            }
+                        });
+                    });
+                    reader.readAsText(f);
+                }
+            }
+            $('#open-json')[0].value = '';
+        });
+
         document.getElementById("run-button").addEventListener('click', send_input);
     });
 
@@ -295,11 +409,8 @@
                 $(this).removeClass('selected');
             });
             $(cm.getTextArea().parentNode).addClass('selected');
-            document.querySelector('#variables .CodeMirror').CodeMirror.setOption('readOnly', false);
-            document.querySelector('#assumes .CodeMirror').CodeMirror.setOption('readOnly', false);
-            document.querySelector('#conclusions .CodeMirror').CodeMirror.setOption('readOnly', false);
             set_theorem_select(cm);
-            get_cell_state();
+            // get_cell_state();
         });
     }
 
