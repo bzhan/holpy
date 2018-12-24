@@ -30,12 +30,8 @@
         return document.querySelector('.code-cell.selected .output pre');
     }
 
-    function get_display_ouput() {
-        return document.querySelector('#instruction');
-    }
-
-    function get_output() {
-        return document.querySelector()
+    function get_selected_instruction() {
+        return document.querySelector('.code-cell.selected .output #instruction');
     }
 
     function display_running() {
@@ -61,8 +57,8 @@
     }
 
     function display_instuctions(instructions) {
-        var status_output = get_display_ouput();
-        status_output.innerHTML = instructions[0];
+        var instr_output = get_selected_instruction();
+        instr_output.innerHTML = instructions[0];
     }
 
     $(document).ready(function () {
@@ -197,18 +193,18 @@
         });
 
         $('#show_intr_forward').on("click", function() {
-            if (index < instructions.length-1){
-            index++;
-            var status_output = get_display_ouput();
-            status_output.innerHTML = instructions[index];
+            if (index < instructions.length - 1) {
+                index++;
+                var instr_output = get_selected_instruction();
+                instr_output.innerHTML = instructions[index];
             }
         })
 
          $('#show_intr_back').on("click", function() {
-            if (index >0){
-            index--;
-            var status_output = get_display_ouput();
-            status_output.innerHTML = instructions[index];
+            if (index > 0) {
+                index--;
+                var instr_output = get_selected_instruction();
+                instr_output.innerHTML = instructions[index];
             }
         })
 
