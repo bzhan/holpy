@@ -161,9 +161,10 @@ def json_parse():
     if data:
         for d in data:
             output = {}
-            if d['ty'] == 'thm':
-                prop = parse_extension(thy, d)
+            prop = parse_extension(thy, d)
+            if prop:
                 output['name'] = d['name']
                 output['prop'] = print_term(thy, prop, unicode=True, highlight=True)
                 output_data.append(output)
+
     return jsonify({'data': output_data})
