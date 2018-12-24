@@ -30,6 +30,10 @@
         return document.querySelector('.code-cell.selected .output pre');
     }
 
+    function get_display_ouput() {
+        return document.querySelector('#instruction');
+    }
+
     function get_output() {
         return document.querySelector()
     }
@@ -57,8 +61,8 @@
     }
 
     function display_instuctions(instructions) {
-        var status_output = get_selected_output();
-        status_output.innerHTML += '\n'+instructions[0];
+        var status_output = get_display_ouput();
+        status_output.innerHTML = instructions[0];
     }
 
     $(document).ready(function () {
@@ -119,10 +123,10 @@
             // Add location for displaying results
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<pre>5678 </pre></div></div>'));
+                    '<pre> </pre></div></div>'));
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<pre>12345 </pre></div></div>'));
+                    '<pre id="instruction"> </pre></div></div>'));
 
             $('#codeTab a[href="#code' + pageNum + '-pan"]').tab('show');
             $('.newCodeMirror').each(function () {
@@ -192,23 +196,19 @@
             rewrite_goal(get_selected_editor());
         });
 
-        $('#show_intr').on("click", function() {
+        $('#show_intr_forward').on("click", function() {
             if (index < instructions.length-1){
             index++;
-            var status_output = get_selected_output();
-            var str_list = String(status_output.innerText).split('\n');
-            str_list[1] = instructions[index];
-            status_output.innerHTML = str_list.join('\n');
+            var status_output = get_display_ouput();
+            status_output.innerHTML = instructions[index];
             }
         })
 
-         $('#show_intrt').on("click", function() {
+         $('#show_intr_back').on("click", function() {
             if (index >0){
             index--;
-            var status_output = get_selected_output();
-            var str_list = String(status_output.innerText).split('\n');
-            str_list[1] = instructions[index];
-            status_output.innerHTML = str_list.join('\n')
+            var status_output = get_display_ouput();
+            status_output.innerHTML = instructions[index];
             }
         })
 
