@@ -126,7 +126,8 @@
                     '<pre> </pre></div></div>'));
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<pre id="instruction"> </pre></div></div>'));
+                    '<a href="#" onclick="show_forward()" style="float:left;"><</a><pre id="instruction" style="float:left;"> </pre>'
+                    +'<a href="#" onclick="show_back()" style="float:left;">></a></div></div>'));
 
             $('#codeTab a[href="#code' + pageNum + '-pan"]').tab('show');
             $('.newCodeMirror').each(function () {
