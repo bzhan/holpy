@@ -113,10 +113,10 @@
     </div>
 </div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.9/split.min.js"></script>
+<script src="../static/js/split.min.js"></script>
 <script src="../static/js/main.js"></script>
 <script>
-    function f() {
+    function resize_editor() {
         var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
         var rtop = document.querySelector('.rtop');
         editor.setSize("auto", rtop.clientHeight - 40);
@@ -127,7 +127,7 @@
         sizes: [40, 60],
         direction: 'vertical',
         minSize: 39,
-        onDrag: f,
+        onDrag: resize_editor,
         gutterSize: 2,
     });
     var instance = Split(['.left', '.right'], {
