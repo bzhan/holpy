@@ -34,10 +34,6 @@
         return document.querySelector('#instruction');
     }
 
-    function get_output() {
-        return document.querySelector()
-    }
-
     function display_running() {
         var status_output = get_selected_output();
         status_output.innerHTML = "Running";
@@ -126,8 +122,8 @@
                     '<pre> </pre></div></div>'));
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<a href="#" onclick="show_forward()" style="float:left;"><</a><pre id="instruction" style="float:left;"> </pre>'
-                    +'<a href="#" onclick="show_back()" style="float:left;">></a></div></div>'));
+                    '<a href="#" id="link-left" style="float:left;"><</a><pre id="instruction" style="float:left;"> </pre>'
+                    +'<a href="#" id="link-right" style="float:left;">></a></div></div>'));
 
             $('#codeTab a[href="#code' + pageNum + '-pan"]').tab('show');
             $('.newCodeMirror').each(function () {
@@ -135,6 +131,22 @@
             });
         });
 
+        $('#right').on('click', '#link-left', function () {
+            if (index < instructions.length-1) {
+                index++;
+                var status_output = get_display_ouput();
+                status_output.innerHTML = instructions[index];
+            }
+        })
+
+        $('#right').on('click', '#link-right', function () {
+            if (index > 0) {
+                index--;
+                var status_output = get_display_ouput();
+                status_output.innerHTML = instructions[index];
+            }
+        })
+ 
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
             $(this).tab('show');
@@ -196,22 +208,6 @@
         $('#rewrite-goal').on("click", function () {
             rewrite_goal(get_selected_editor());
         });
-
-        $('#show_intr_forward').on("click", function() {
-            if (index < instructions.length-1){
-            index++;
-            var status_output = get_display_ouput();
-            status_output.innerHTML = instructions[index];
-            }
-        })
-
-         $('#show_intr_back').on("click", function() {
-            if (index >0){
-            index--;
-            var status_output = get_display_ouput();
-            status_output.innerHTML = instructions[index];
-            }
-        })
 
         $('#init-button').on("click", function () {
             let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;

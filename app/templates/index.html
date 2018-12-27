@@ -102,7 +102,7 @@
 
 </div>
 
-<div class="right">
+<div class="right" id="right">
     <div class="rtop" style="left: 0; right: 0; top: 0; bottom: 45%;">
         <div class="code-pan" style=>
             <ul class="nav nav-tabs" id="codeTab"></ul>
@@ -112,11 +112,6 @@
     <div class="rbottom" style="left: 0; right: 0; top: 55%; bottom: 0;">
         <div class="input-area" id="input-area">
             <div class="input-card">
-                <a href="#" id="show_intr_forward"></a>
-                <a href="#" id="show_intr_back"></a>
-                <!--<a class="input-card" href="#" onclick="$('#show_intr_forward').click()" id="show_intr_forward">on</a>-->
-               <!--<button type="button" id="show_intr_forward">forward</button>-->
-               <!--<button type="button" id="show_intr_back">back</button>-->
                 <div class="card-header bg-secondary text-white">State</div>
                 <div class="card-body">
                     <select class="selectpicker" data-live-search="true" id="theorem-select" title=" ">
@@ -156,12 +151,6 @@
         size: [50, 50],
         gutterSize: 2,
     })
-    function show_forward() {
-           document.querySelector('#show_intr_forward').click();
-        }
-    function show_back() {
-            document.querySelector('#show_intr_back').click();
-        }
 
 </script>
 </html>
