@@ -144,16 +144,6 @@ def rewrite_goal():
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
-@app.route('/api/get-cell-state', methods=['POST'])
-def get_cell_state():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        id = data.get('id')
-        if cells.get(id):
-            cell = cells.get(id)
-            return jsonify(cell.obtain_init_data())
-    return jsonify({})
-
 @app.route('/api/json', methods = ['POST'])
 def json_parse():
     thy = BasicTheory
@@ -161,12 +151,10 @@ def json_parse():
     output_data = []
     if data:
         for d in data:
-            names, list, constrs = [], [], []
             output = {}
             prop = parse_extension(thy, d)
             if d['ty'] == 'def.ax':
                 output['name'] = d['name']
-                #prop是type类型
                 output['prop'] = str(prop)
                 output['ty'] = d['ty']
                 output_data.append(output)
@@ -181,20 +169,14 @@ def json_parse():
                 output['name'] = d['name']
                 constrs = d['constrs']
                 temp = HOLType.strip_type(prop[1])
-                #对应参数的类型list
-                for tl in temp[0]:
-                    list.append(str(tl))
                 output['constrs'] = constrs
-                output['prop'] = list
+                output['prop'] = [str(tl) for tl in temp[0]]
                 output['ty'] = d['ty']
                 output_data.append(output)
 
             if d['ty'] == 'def.ind':
                 output['name'] = d['name']
-                for term in prop:
-                    list.append(print_term(thy, term, highlight=True, unicode=True))
-                #二维列表list
-                output['prop'] = list
+                output['prop'] = [print_term(thy, t, highlight=True, unicode=True) for t in prop]
                 output['type'] = d['type']
                 output['ty'] = d['ty']
                 output_data.append(output)
