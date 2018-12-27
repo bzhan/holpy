@@ -681,4 +681,22 @@
 
     }
 
+    function resize_editor() {
+        var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+        var rtop = document.querySelector('.rtop');
+        editor.setSize("auto", rtop.clientHeight - 40);
+        editor.refresh();
+    }
+
+    Split(['.rtop', '.rbottom'], {
+        sizes: [40, 60],
+        direction: 'vertical',
+        minSize: 39,
+        onDrag: resize_editor,
+        gutterSize: 2,
+    });
+    Split(['.left', '.right'], {
+        sizes: [20, 80],
+        gutterSize: 2,
+    });
 })(jQuery);
