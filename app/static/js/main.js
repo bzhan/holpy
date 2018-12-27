@@ -344,12 +344,43 @@
                                 $('#left').empty();
                                 for (var d in result['data']) {
                                     var name = result['data'][d]['name'];
-                                    var obj_list = result['data'][d]['prop'];
+                                    var obj = result['data'][d]['prop'];
+                                    var ty = result['data'][d]['ty'];
                                     var str = ''
-                                    $.each(obj_list, function(i, val) {
-                                        str = str+'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+
+                                    if (ty === 'def.ax'){
+                                        $('#left').append($('<p><font color="#006000"><b>constant</b></font> ' + name+' <a href="#" onclick="add()">link</a>' + ' :: ' + obj +'</p>'))
+                                    }
+
+                                    if (ty === 'thm'){
+                                    $.each(obj, function(i, val) {
+                                        str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                                     })
-                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> '+name+':</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> '+name+ ' <a href="#" onclick="add()">link</a>' +' :</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                    }
+
+                                    if (ty === 'type.ind'){
+                                        var constrs = result['data'][d]['constrs'];
+                                        str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name']
+                                        for (var i in constrs[1]['args']){
+                                            str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
+                                        }
+                                    $('#left').append($('<p><font color="#006000"><b>datatype</b></font> '+ constrs[0]['type'] + ' <a href="#" onclick="add()">link</a> ' + '  ' + ' =' + str + '</p>'));
+                                    }
+
+                                    if (ty === 'def.ind'){
+                                    $('#left').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' <a href="#" onclick="add()">link</a> ' + ' :: ' + result['data'][d]['type']
+                                            + ' where'+'</p>'))
+                                        for (var j in obj){
+                                            str = ''
+                                            $.each(obj[j], function(i, val){
+                                                str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
+                                            })
+                                            $('#left p').last().append($('<p>'+ str+'</p>'));
+                                         }
+
+                                    }
+
                                 }
                             }
                         });

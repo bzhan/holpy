@@ -307,8 +307,10 @@ def parse_vars(thy, vars_data):
 
 def parse_extension(thy, data):
     if data['ty'] == 'def.ax':
+        prop = type_parser(thy).parse(data['T'])
         thy.extend_axiom_constant(
-            AxConstant(data['name'], type_parser(thy).parse(data['T'])))
+            AxConstant(data['name'], prop))
+        return prop
     elif data['ty'] == 'thm':
         ctxt = parse_vars(thy, data['vars'])
         prop = term_parser(thy, ctxt).parse(data['prop'])
@@ -316,12 +318,14 @@ def parse_extension(thy, data):
         return prop
     elif data['ty'] == 'type.ind':
         constrs = []
+        list = []
         for constr in data['constrs']:
             T = type_parser(thy).parse(constr['type'])
             constrs.append((constr['name'], T, constr['args']))
+            list.append(T)
         ext = induct.add_induct_type(data['name'], data['args'], constrs)
         thy.unchecked_extend(ext)
-        return None
+        return list
     elif data['ty'] == 'def.ind':
         T = type_parser(thy).parse(data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
@@ -332,7 +336,7 @@ def parse_extension(thy, data):
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
         thy.unchecked_extend(ext)
-        return None
+        return rules
 
 def parse_extensions(thy, data):
     for ext_data in data:
