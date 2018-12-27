@@ -16,7 +16,8 @@
         "~": "¬",
         "\\not": "¬",
         "=>": "⇒"
-    }
+    };
+    var cells = {};
 
     function get_selected_id() {
         return document.querySelector('.code-cell.selected textarea').id;
@@ -85,18 +86,6 @@
         });
 
         $('#add-cell').on('click', function () {
-            // pageNum++;
-            // // Add CodeMirror textarea
-            // id = 'code' + pageNum + '-pan';
-            // $('#codeTabContent').append(
-            //     $('<div class="code-cell" id=' + id + '>' +
-            //         '<label for="code' + pageNum + '"></label> ' +
-            //         '<textarea' + ' id="code' + pageNum + '""></textarea></div>'));
-            // init_editor("code" + pageNum);
-            // // Add location for displaying results
-            // $('#' + id).append(
-            //     $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-            //         '<pre> </pre></div></div>'));
             pageNum++;
             // Add CodeMirror textarea
             id = 'code' + pageNum + '-pan';
@@ -150,6 +139,16 @@
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
             $(this).tab('show');
+
+        });
+
+        $('#codeTab').on('shown.bs.tab', 'a', function (event) {
+            var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
+            var rtop = document.querySelector('.rtop');
+            editor.focus();
+            editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
+            editor.setSize("auto", rtop.clientHeight - 40);
+            editor.refresh();
         });
 
         $('#codeTab').on('click', ' li a #close_tab', function () {
@@ -157,7 +156,7 @@
                 return true;
             else {
                 var tabId = $(this).parents('li').children('a').attr('href');
-                var pageNum = $(this).parents('li').children('a').childNodes[0].nodeValue;
+                var pageNum = $(this).parents('li').children('a')[0].childNodes[0].nodeValue;
                 var first = false;
                 $(this).parents('li').remove('li');
                 $(tabId).remove();
@@ -316,12 +315,12 @@
         });
 
         function rp(x) {
-            if (x===0)
-                return  'normal';
-            if (x===1)
-                return  'bound';
-            if (x===2)
-                return  'var';
+            if (x === 0)
+                return 'normal';
+            if (x === 1)
+                return 'bound';
+            if (x === 2)
+                return 'var';
         }
 
         document.getElementById('open-json').addEventListener('change', function (e) {
@@ -408,6 +407,7 @@
             foldGutter: true,
             smartIndent: false,
             matchBrackets: true,
+            viewportMargin: Infinity,
             scrollbarStyle: "overlay",
             extraKeys: {
                 "Ctrl-I": introduction,
@@ -415,7 +415,8 @@
                 "Ctrl-R": rewrite_goal,
             }
         });
-        editor.setSize("auto", "auto");
+        var rtop = document.querySelector('.rtop');
+        editor.setSize("auto", rtop.clientHeight - 40);
         editor.setValue("");
         editor.on("keydown", function (cm, event) {
             let line_no = cm.getCursor().line;
@@ -445,6 +446,11 @@
             set_theorem_select(cm);
             // get_cell_state();
         });
+
+        editor.on("cursorActivity", function (doc) {
+            console.log(doc);
+            set_read_only(doc);
+        })
     }
 
     function set_theorem_select(doc) {
@@ -740,4 +746,27 @@
         input_box.setSize("auto", "auto");
         input_box.setValue("");
     }
+
+    function set_read_only(doc) {
+
+    }
+
+    function resize_editor() {
+        var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+        var rtop = document.querySelector('.rtop');
+        editor.setSize("auto", rtop.clientHeight - 40);
+        editor.refresh();
+    }
+
+    Split(['.rtop', '.rbottom'], {
+        sizes: [40, 60],
+        direction: 'vertical',
+        minSize: 39,
+        onDrag: resize_editor,
+        gutterSize: 2,
+    });
+    Split(['.left', '.right'], {
+        sizes: [20, 80],
+        gutterSize: 2,
+    });
 })(jQuery);
