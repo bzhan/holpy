@@ -151,48 +151,6 @@
             rewrite_goal(get_selected_editor());
         });
 
-        $('#init-button').on("click", function () {
-            let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
-            let assumes_area = document.querySelector('#assumes .CodeMirror').CodeMirror;
-            let conclusions_area = document.querySelector('#conclusions .CodeMirror').CodeMirror;
-            var variables = [];
-            var assumes = [];
-            var conclusion = undefined;
-            var reg_blank = /^\s*$/g;
-            variables_area.eachLine(line => {
-                if (!reg_blank.test(line.text)) {
-                    variables.push(line.text)
-                }
-            });
-            assumes_area.eachLine(line => {
-                if (!reg_blank.test(line.text)) {
-                    assumes.push(line.text)
-                }
-            });
-            conclusions_area.eachLine(line => {
-                if (!reg_blank.test(line.text)) {
-                    conclusion = line.text
-                }
-            });
-            $(document).ready(function () {
-                var event = {
-                    'event': 'init_cell',
-                    'id': get_selected_id(),
-                    'variables': variables,
-                    'assumes': assumes,
-                    'conclusion': conclusion
-                };
-                var data = JSON.stringify(event);
-
-                $.ajax({
-                    url: "/api/init",
-                    type: "POST",
-                    data: data,
-                    success: display_checked_proof
-                });
-            });
-        });
-
         $('#add-cell').click();
         $('.code-cell').addClass('selected');
 
@@ -332,7 +290,6 @@
 
         $('#left').on('click', 'a', function(){
             $('#add-cell').click();
-            $('#init-button').click();
         })
 
         document.getElementById("run-button").addEventListener('click', send_input);
