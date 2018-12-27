@@ -349,14 +349,14 @@
                                     var str = ''
 
                                     if (ty === 'def.ax'){
-                                        $('#left').append($('<p><font color="#006000"><b>constant</b></font> ' + name+' <a href="#" onclick="add()">link</a>' + ' :: ' + obj +'</p>'))
+                                        $('#left').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'))
                                     }
 
                                     if (ty === 'thm'){
                                     $.each(obj, function(i, val) {
                                         str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                                     })
-                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> '+name+ ' <a href="#" onclick="add()">link</a>' +' :</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#">proof</a></br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
                                     }
 
                                     if (ty === 'type.ind'){
@@ -365,11 +365,11 @@
                                         for (var i in constrs[1]['args']){
                                             str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
                                         }
-                                    $('#left').append($('<p><font color="#006000"><b>datatype</b></font> '+ constrs[0]['type'] + ' <a href="#" onclick="add()">link</a> ' + '  ' + ' =' + str + '</p>'));
+                                    $('#left').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
                                     }
 
                                     if (ty === 'def.ind'){
-                                    $('#left').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' <a href="#" onclick="add()">link</a> ' + ' :: ' + result['data'][d]['type']
+                                    $('#left').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
                                             + ' where'+'</p>'))
                                         for (var j in obj){
                                             str = ''
@@ -390,6 +390,11 @@
             }
             $('#open-json')[0].value = '';
         });
+
+        $('#left').on('click', 'a', function(){
+            $('#add-cell').click();
+            $('#init-button').click();
+        })
 
         document.getElementById("run-button").addEventListener('click', send_input);
     });
