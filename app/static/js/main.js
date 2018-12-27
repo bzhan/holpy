@@ -3,6 +3,7 @@
     var pageNum = 0;
     var index = 0;
     var theorem = {};
+    var data_dic = {};
     var replace_obj = {
         "\\lambda": "λ",
         "%": "λ",
@@ -341,6 +342,7 @@
                             data: data,
                             success: function (result) {
                                 $('#left').empty();
+                                data_dic = re
                                 for (var d in result['data']) {
                                     var name = result['data'][d]['name'];
                                     var obj = result['data'][d]['prop'];
