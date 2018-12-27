@@ -10,6 +10,7 @@ from server.tactic import ProofState
 from logic.basic import BasicTheory
 from syntax.parser import *
 from syntax.printer import *
+from kernel.type import HOLType
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -160,11 +161,42 @@ def json_parse():
     output_data = []
     if data:
         for d in data:
+            names, list, constrs = [], [], []
             output = {}
             prop = parse_extension(thy, d)
-            if prop:
+            if d['ty'] == 'def.ax':
+                output['name'] = d['name']
+                #prop是type类型
+                output['prop'] = str(prop)
+                output['ty'] = d['ty']
+                output_data.append(output)
+
+            if d['ty'] == 'thm':
                 output['name'] = d['name']
                 output['prop'] = print_term(thy, prop, unicode=True, highlight=True)
+                output['ty'] = d['ty']
+                output_data.append(output)
+
+            if d['ty'] == 'type.ind':
+                output['name'] = d['name']
+                constrs = d['constrs']
+                temp = HOLType.strip_type(prop[1])
+                #对应参数的类型list
+                for tl in temp[0]:
+                    list.append(str(tl))
+                output['constrs'] = constrs
+                output['prop'] = list
+                output['ty'] = d['ty']
+                output_data.append(output)
+
+            if d['ty'] == 'def.ind':
+                output['name'] = d['name']
+                for term in prop:
+                    list.append(print_term(thy, term, highlight=True, unicode=True))
+                #二维列表list
+                output['prop'] = list
+                output['type'] = d['type']
+                output['ty'] = d['ty']
                 output_data.append(output)
 
     return jsonify({'data': output_data})
