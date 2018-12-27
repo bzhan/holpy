@@ -151,12 +151,10 @@ def json_parse():
     output_data = []
     if data:
         for d in data:
-            names, list, constrs = [], [], []
             output = {}
             prop = parse_extension(thy, d)
             if d['ty'] == 'def.ax':
                 output['name'] = d['name']
-                #prop��type����
                 output['prop'] = str(prop)
                 output['ty'] = d['ty']
                 output_data.append(output)
@@ -171,20 +169,14 @@ def json_parse():
                 output['name'] = d['name']
                 constrs = d['constrs']
                 temp = HOLType.strip_type(prop[1])
-                #��Ӧ����������list
-                for tl in temp[0]:
-                    list.append(str(tl))
                 output['constrs'] = constrs
-                output['prop'] = list
+                output['prop'] = [str(tl) for tl in temp[0]]
                 output['ty'] = d['ty']
                 output_data.append(output)
 
             if d['ty'] == 'def.ind':
                 output['name'] = d['name']
-                for term in prop:
-                    list.append(print_term(thy, term, highlight=True, unicode=True))
-                #��ά�б�list
-                output['prop'] = list
+                output['prop'] = [print_term(thy, t, highlight=True, unicode=True) for t in prop]
                 output['type'] = d['type']
                 output['ty'] = d['ty']
                 output_data.append(output)
