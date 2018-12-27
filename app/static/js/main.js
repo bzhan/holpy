@@ -112,8 +112,11 @@
 
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
             var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
+            var rtop = document.querySelector('.rtop');
             editor.focus();
             editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
+            editor.setSize("auto", rtop.clientHeight - 40);
+            editor.refresh();
         });
 
         $('#codeTab').on('click', ' li a #close_tab', function () {
