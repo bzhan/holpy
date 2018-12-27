@@ -144,16 +144,6 @@ def rewrite_goal():
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
-@app.route('/api/get-cell-state', methods=['POST'])
-def get_cell_state():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        id = data.get('id')
-        if cells.get(id):
-            cell = cells.get(id)
-            return jsonify(cell.obtain_init_data())
-    return jsonify({})
-
 @app.route('/api/json', methods = ['POST'])
 def json_parse():
     thy = BasicTheory
@@ -166,7 +156,7 @@ def json_parse():
             prop = parse_extension(thy, d)
             if d['ty'] == 'def.ax':
                 output['name'] = d['name']
-                #propÊÇtypeÀàÐÍ
+                #propï¿½ï¿½typeï¿½ï¿½ï¿½ï¿½
                 output['prop'] = str(prop)
                 output['ty'] = d['ty']
                 output_data.append(output)
@@ -181,7 +171,7 @@ def json_parse():
                 output['name'] = d['name']
                 constrs = d['constrs']
                 temp = HOLType.strip_type(prop[1])
-                #¶ÔÓ¦²ÎÊýµÄÀàÐÍlist
+                #ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½list
                 for tl in temp[0]:
                     list.append(str(tl))
                 output['constrs'] = constrs
@@ -193,7 +183,7 @@ def json_parse():
                 output['name'] = d['name']
                 for term in prop:
                     list.append(print_term(thy, term, highlight=True, unicode=True))
-                #¶þÎ¬ÁÐ±ílist
+                #ï¿½ï¿½Î¬ï¿½Ð±ï¿½list
                 output['prop'] = list
                 output['type'] = d['type']
                 output['ty'] = d['ty']

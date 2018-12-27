@@ -444,7 +444,6 @@
             });
             $(cm.getTextArea().parentNode).addClass('selected');
             set_theorem_select(cm);
-            // get_cell_state();
         });
 
         editor.on("cursorActivity", function (doc) {
@@ -701,34 +700,6 @@
                 }
             })
         })
-    }
-
-    function get_cell_state() {
-        $(document).ready(function () {
-            let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
-            let assumes_area = document.querySelector('#assumes .CodeMirror').CodeMirror;
-            let conclusions_area = document.querySelector('#conclusions .CodeMirror').CodeMirror;
-            variables_area.setValue('');
-            assumes_area.setValue('');
-            conclusions_area.setValue('');
-            var event = {
-                'id': get_selected_id(),
-            };
-            var data = JSON.stringify(event);
-
-            $.ajax({
-                url: "/api/get-cell-state",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    if (JSON.stringify(result) !== '{}') {
-                        variables_area.setValue(result['variables'].join('\n'));
-                        assumes_area.setValue(result['assumes'].join('\n'));
-                        conclusions_area.setValue(result['conclusion']);
-                    }
-                }
-            });
-        });
     }
 
     function init_input_box(id) {
