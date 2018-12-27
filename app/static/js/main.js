@@ -253,9 +253,6 @@
         $('#add-cell').click();
         $('.code-cell').addClass('selected');
 
-        init_input_box('variables');
-        init_input_box('assumes');
-        init_input_box('conclusions');
         get_selected_editor().focus();
 
         document.getElementById('open-file').addEventListener('change', function (e) {
@@ -700,22 +697,6 @@
                 }
             })
         })
-    }
-
-    function init_input_box(id) {
-        let input_box = CodeMirror(document.getElementById(id), {
-            mode: "text/x-python",
-            lineNumbers: true,
-            theme: "",
-            lineWrapping: true,
-            foldGutter: true,
-            smartIndent: false,
-            matchBrackets: true,
-            scrollbarStyle: "overlay",
-            readOnly: "nocursor",
-        });
-        input_box.setSize("auto", "auto");
-        input_box.setValue("");
     }
 
     function set_read_only(doc) {
