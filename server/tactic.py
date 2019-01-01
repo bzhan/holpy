@@ -24,7 +24,7 @@ def parse_proof(thy, input):
     ctxt = {}
     for line in input:
         if line.startswith("var "):
-            name, T = parser.var_decl_parser(thy).parse(line)
+            name, T = parser.parse_var_decl(thy, line)
             assert name not in ctxt, "variable already declared"
             ctxt[name] = T
             prf.vars.append(Var(name, T))
