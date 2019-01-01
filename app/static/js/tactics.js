@@ -1,3 +1,9 @@
+var edit_flag = false;
+var readonly_lines = [0];
+var click_line_number = -1;
+var ctrl_click_line_number = -1;
+var cells = {};
+
 function get_selected_id() {
     return document.querySelector('.code-cell.selected textarea').id;
 }
@@ -26,7 +32,12 @@ function display_checked_proof(result) {
     if ("failed" in result) {
         status_output.innerHTML = result["failed"] + ": " + result["message"]
     } else {
+        edit_flag = true;
+        display(get_selected_id(), result);
         editor.setValue(result["proof"]);
+        readonly_lines.length = 0;
+        for (var i = 0; i < editor.lineCount(); i++)
+            readonly_lines.push(i);
         var num_gaps = result["report"]["num_gaps"];
         if (num_gaps > 0) {
             status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
@@ -159,22 +170,41 @@ function init_select_abs() {
 function apply_backward_step(cm) {
     var line_number = cm.getCursor().line;
     var line = cm.getLine(line_number);
+    var title = '';
+    if (click_line_number !== -1 && ctrl_click_line_number !== -1) {
+        title = 'Target: ' + (click_line_number + 1) + '\nConclusion: ' + (ctrl_click_line_number + 1);
+        line = cm.getLine(click_line_number);
+    } else if (click_line_number !== -1 && ctrl_click_line_number === -1) {
+        title = 'Target: ' + (click_line_number + 1);
+    } else {
+        title = 'Please enter the theorem userd';
+    }
     swal({
-        title: 'Please enter the theorem used',
+        title: title,
         html:
-            '<input id="swal-input1" class="swal2-input">' +
-            '<select id="swal-input2" class="swal2-select"></select>',
+            '<input id="swal-input1" class="swal2-input">',
+        // '<select id="swal-input2" class="swal2-select"></select>',
         onOpen: function () {
             init_select_abs()
         },
         showCancelButton: true,
         confirmButtonText: 'confirm',
         showLoaderOnConfirm: true,
+        focusConfirm: false,
         preConfirm: () => {
+            document.querySelector('#swal-input1').focus();
+            var id = '';
+            var theorem = '';
+            if (click_line_number !== -1 && ctrl_click_line_number !== -1) {
+                id = cells[get_selected_id()][ctrl_click_line_number]['id'];
+                theorem = document.getElementById('swal-input1').value + ', ' + id;
+            } else if (click_line_number !== -1 && ctrl_click_line_number === -1) {
+                theorem = document.getElementById('swal-input1').value;
+            }
             var data = {
                 'id': get_selected_id(),
                 'line': line,
-                'theorem': document.getElementById('swal-input1').value,
+                'theorem': theorem,
             };
             return fetch('/api/apply-backward-step', {
                     method: 'POST', // or 'PUT'
@@ -202,6 +232,8 @@ function apply_backward_step(cm) {
             () => !swal.isLoading()
     }).then((result) => {
         if (result) {
+            click_line_number = -1;
+            ctrl_click_line_number = -1;
             display_checked_proof(result['value']);
         }
     })
@@ -216,7 +248,7 @@ function apply_induction(cm) {
             'line': line
         };
 
-        input['theorem'] = prompt('Enter induction theorem and variable name')
+        input['theorem'] = prompt('Enter induction theorem and variable name');
         var data = JSON.stringify(input);
         display_running();
 
@@ -240,7 +272,7 @@ function rewrite_goal(cm) {
             'line': line
         };
 
-        input['theorem'] = prompt('Enter rewrite theorem')
+        input['theorem'] = prompt('Enter rewrite theorem');
         var data = JSON.stringify(input);
         display_running();
 
@@ -253,4 +285,61 @@ function rewrite_goal(cm) {
             }
         })
     })
+}
+
+function split_proof_rule(line) {
+    if (line.indexOf(': ') !== -1) {
+        var list = line.split(': ');
+        var id = list[0];
+        var rest = list[1];
+        id = id.trim();
+        if (rest.indexOf(' by ') !== -1) {
+            list = rest.split(' by ');
+            var th = list[0];
+            rest = list[1];
+        } else {
+            var th = '';
+        }
+
+        if (rest.indexOf(' ') !== -1) {
+            list = rest.split(' ');
+            var rule_name = list[0];
+            list.splice(0, 1);
+            rest = list.join(' ');
+        } else {
+            var rule_name = rest;
+            rest = '';
+        }
+        rule_name = rule_name.trim();
+
+        if (rest.indexOf('from') !== -1) {
+            list = rest.split('from');
+            var args = list[0];
+            rest = list[1];
+            list = rest.split(',');
+            var prev = [];
+            for (var i = 0; i < list.length; i++) {
+                prev.push(list[i].trim())
+            }
+            return [id, rule_name, args.trim(), prev, th];
+        } else {
+            return [id, rule_name, rest.trim(), [], th];
+        }
+    }
+}
+
+function display(id, result) {
+    var cell = [];
+    var result_list = result["proof"].split('\n');
+    for (var i = 0; i < result_list.length; i++) {
+        var list = split_proof_rule(result_list[i]);
+        cell.push({
+            'id': list[0],
+            'rule_name': list[1],
+            'args': list[2],
+            'prev': list[3],
+            'th': list[4]
+        });
+    }
+    cells[id] = cell;
 }

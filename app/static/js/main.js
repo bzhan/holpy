@@ -1,9 +1,10 @@
 (function ($) {
     var instructions = [];
-    var pageNum = 0;
+    var page_num = 0;
     var index = 0;
     var theorem = {};
-    var cells = {};
+    var is_mousedown = false;
+    var is_crlt_click = false;
 
     $(document).ready(function () {
         $('#theorem-select').ready(function () {
@@ -29,25 +30,25 @@
         });
 
         $('#add-cell').on('click', function () {
-            pageNum++;
+            page_num++;
             // Add CodeMirror textarea
-            id = 'code' + pageNum + '-pan';
+            var id = 'code' + page_num + '-pan';
             $('#codeTab').append(
                 $('<li class="nav-item"><a  class="nav-link" ' +
                     'data-toggle="tab"' +
-                    'href="#code' + pageNum + '-pan">' +
-                    'Page ' + pageNum +
+                    'href="#code' + page_num + '-pan">' +
+                    'Page ' + page_num +
                     '<button id="close_tab" type="button" ' +
                     'title="Remove this page">×</button>' +
                     '</a></li>'));
             let class_name = 'tab-pane fade active newCodeMirror code-cell';
-            if (pageNum === 1)
+            if (page_num === 1)
                 class_name = 'tab-pane fade in active code-cell';
             $('#codeTabContent').append(
-                $('<div class="' + class_name + '" id="code' + pageNum + '-pan">' +
-                    '<label for="code' + pageNum + '"></label> ' +
-                    '<textarea' + ' id="code' + pageNum + '""></textarea>'));
-            init_editor("code" + pageNum);
+                $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
+                    '<label for="code' + page_num + '"></label> ' +
+                    '<textarea' + ' id="code' + page_num + '""></textarea>'));
+            init_editor("code" + page_num);
             // Add location for displaying results
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
@@ -55,21 +56,21 @@
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<a href="#" id="link-left" style="float:left;"><</a><pre id="instruction" style="float:left;"> </pre>'
-                    +'<a href="#" id="link-right" style="float:left;">></a></div></div>'));
+                    + '<a href="#" id="link-right" style="float:left;">></a></div></div>'));
 
-            $('#codeTab a[href="#code' + pageNum + '-pan"]').tab('show');
+            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('.newCodeMirror').each(function () {
                 $(this).removeClass('active')
             });
         });
 
         $('#right').on('click', '#link-left', function () {
-            if (index < instructions.length-1) {
+            if (index < instructions.length - 1) {
                 index++;
                 var status_output = get_selected_instruction();
                 status_output.innerHTML = instructions[index];
             }
-        })
+        });
 
         $('#right').on('click', '#link-right', function () {
             if (index > 0) {
@@ -77,8 +78,8 @@
                 var status_output = get_selected_instruction();
                 status_output.innerHTML = instructions[index];
             }
-        })
- 
+        });
+
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
             $(this).tab('show');
@@ -106,22 +107,24 @@
                 if (pageNum === "Page 1")
                     first = true;
                 remove_page(first);
+                var id = get_selected_id();
                 $('#codeTab a:first').tab('show');
+                delete cells.id;
             }
         });
 
         function remove_page(first) {
             if (first)
-                pageNum = 0;
+                page_num = 0;
             else
-                pageNum = 1;
+                page_num = 1;
             $('#codeTab > li').each(function () {
                 var pageId = $(this).children('a').attr('href');
                 if (pageId === "#code1-pan") {
                     return true;
                 }
-                pageNum++;
-                $(this).children('a').html('Page ' + pageNum +
+                page_num++;
+                $(this).children('a').html('Page ' + page_num +
                     '<button id="close_tab" type="button" ' +
                     'title="Remove this page">×</button>');
             });
@@ -245,36 +248,36 @@
                                     var ty = result['data'][d]['ty'];
                                     var str = ''
 
-                                    if (ty === 'def.ax'){
-                                        $('#left').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'))
+                                    if (ty === 'def.ax') {
+                                        $('#left').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'))
                                     }
 
-                                    if (ty === 'thm'){
-                                    $.each(obj, function(i, val) {
-                                        str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-                                    })
-                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#">proof</a></br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                    if (ty === 'thm') {
+                                        $.each(obj, function (i, val) {
+                                            str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                                        })
+                                        $('#left').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
                                     }
 
-                                    if (ty === 'type.ind'){
+                                    if (ty === 'type.ind') {
                                         var constrs = result['data'][d]['constrs'];
                                         str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name']
-                                        for (var i in constrs[1]['args']){
-                                            str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
+                                        for (var i in constrs[1]['args']) {
+                                            str += ' (' + constrs[1]['args'][i] + ' :: ' + obj[i] + ')';
                                         }
-                                    $('#left').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
+                                        $('#left').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
                                     }
 
-                                    if (ty === 'def.ind'){
-                                    $('#left').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
-                                            + ' where'+'</p>'))
-                                        for (var j in obj){
+                                    if (ty === 'def.ind') {
+                                        $('#left').append($('<p id="fun' + j + '"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
+                                            + ' where' + '</p>'))
+                                        for (var j in obj) {
                                             str = ''
-                                            $.each(obj[j], function(i, val){
-                                                str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
+                                            $.each(obj[j], function (i, val) {
+                                                str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                                             })
-                                            $('#left p').last().append($('<p>'+ str+'</p>'));
-                                         }
+                                            $('#left p').last().append($('<p>' + str + '</p>'));
+                                        }
 
                                     }
 
@@ -288,9 +291,9 @@
             $('#open-json')[0].value = '';
         });
 
-        $('#left').on('click', 'a', function(){
+        $('#left').on('click', 'a', function () {
             $('#add-cell').click();
-        })
+        });
 
         document.getElementById("run-button").addEventListener('click', send_input);
     });
@@ -343,10 +346,35 @@
             set_theorem_select(cm);
         });
 
-        editor.on("cursorActivity", function (doc) {
-            console.log(doc);
-            set_read_only(doc);
-        })
+        editor.on("cursorActivity", function (cm) {
+            if (is_mousedown) {
+                mark_text(cm);
+                is_mousedown = false;
+                is_crlt_click = false;
+            }
+        });
+
+        editor.on('beforeChange', function (cm, change) {
+            console.log(change);
+            if (edit_flag) {
+                edit_flag = false;
+                return;
+            } else if (readonly_lines.indexOf(change.from.line) !== -1) {
+                change.cancel();
+            }
+        });
+
+        editor.on('mousedown', function (cm, event) {
+            is_mousedown = true;
+            if (event.ctrlKey)
+                is_crlt_click = true;
+        });
+
+        editor.on('dblclick', function (cm, event) {
+            console.log(cm);
+            console.log(event);
+            set_read_only(cm);
+        });
     }
 
     function set_theorem_select(doc) {
@@ -369,8 +397,48 @@
         $('#theorem-select').selectpicker('refresh');
     }
 
-    function set_read_only(doc) {
+    function set_read_only(cm) {
+        cm.setCursor(cm.getCursor().line, Number.MAX_SAFE_INTEGER);
+        var line_num = cm.getCursor().line;
+        var ch = cm.getCursor().ch;
+        readonly_lines.splice(line_num, 1);
+        cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch - 5}, {readOnly: true});
+    }
 
+    function mark_text(cm) {
+        var line_num = cm.getCursor().line;
+        var ch = cm.getCursor().ch;
+        var line = cm.getLineHandle(line_num).text;
+        if (is_crlt_click) {
+            var flag = false;
+            if(click_line_number !== -1 && line_num < click_line_number)
+                flag = true;
+            cm.getAllMarks().forEach(e => {
+                if (e.css.indexOf('background') !== -1)
+                    e.clear();
+            });
+            if (flag)
+                cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
+            ctrl_click_line_number = line_num;
+            is_crlt_click = false;
+        }
+        else if (line.indexOf('sorry') !== -1) {
+            cm.getAllMarks().forEach(e => {
+                if (e.css.indexOf('color') !== -1)
+                    e.clear();
+            });
+            cm.markText({line: line_num, ch: ch - 5}, {line: line_num, ch: ch}, {
+                css: "color: red"
+            });
+            click_line_number = line_num;
+        }else {
+            cm.getAllMarks().forEach(e => {
+                if(e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                    e.clear();
+            });
+            click_line_number = -1;
+            ctrl_click_line_number = -1;
+        }
     }
 
     function resize_editor() {

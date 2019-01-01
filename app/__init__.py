@@ -12,7 +12,6 @@ from syntax.parser import *
 from syntax.printer import *
 from kernel.type import HOLType
 
-
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
@@ -20,6 +19,7 @@ app.config.from_object('config')
 
 # Dictionary from id to ProofState
 cells = dict()
+
 
 def get_result_from_cell(cell):
     return {
@@ -112,10 +112,12 @@ def introduction():
 def apply_backward_step():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))        
+        cell = cells.get(data.get('id'))
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem = data.get('theorem').split(",")
         theorem, prevs = theorem[0], theorem[1:]
+        if prevs:
+            prevs = [prev.strip() for prev in prevs]
         cell.apply_backward_step(id, theorem, prevs=prevs)
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
@@ -125,7 +127,7 @@ def apply_backward_step():
 def apply_induction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))        
+        cell = cells.get(data.get('id'))
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem, var = data.get('theorem').split(",")
         cell.apply_induction(id, theorem, var)
@@ -137,14 +139,15 @@ def apply_induction():
 def rewrite_goal():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))        
+        cell = cells.get(data.get('id'))
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem = data.get('theorem')
         cell.rewrite_goal(id, theorem)
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
-@app.route('/api/json', methods = ['POST'])
+
+@app.route('/api/json', methods=['POST'])
 def json_parse():
     thy = BasicTheory
     data = json.loads(request.get_data().decode("utf-8"))
