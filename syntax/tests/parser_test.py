@@ -41,8 +41,6 @@ C = Var("C", hol_bool)
 
 class ParserTest(unittest.TestCase):
     def testParseType(self):
-        parse = parser.type_parser(thy).parse
-
         test_data = [
             "'b",
             "nat",
@@ -66,14 +64,11 @@ class ParserTest(unittest.TestCase):
         ]
 
         for s in test_data:
-            T = parse(s)
+            T = parser.parse_type(thy, s)
             self.assertIsInstance(T, HOLType)
             self.assertEqual(str(T), s)
 
     def testParseTerm(self):
-        parse = parser.term_parser(thy, ctxt).parse
-        parseT = parser.type_parser(thy).parse
-
         test_data = [
             # Atoms
             ("A", "bool"),
@@ -169,14 +164,13 @@ class ParserTest(unittest.TestCase):
         ]
 
         for s, Ts in test_data:
-            t = parse(s)
-            T = parseT(Ts)
+            t = parser.parse_term(thy, ctxt, s)
+            T = parser.parse_type(thy, Ts)
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
             self.assertEqual(print_term(thy, t, print_abs_type=True), s)
 
     def testParseUnicode(self):
-        parse = parser.term_parser(thy, ctxt).parse
         test_data = [
             ("A ∧ B", "A & B"),
             ("A ∨ B", "A | B"),
@@ -191,13 +185,11 @@ class ParserTest(unittest.TestCase):
         ]
 
         for s, ascii_s in test_data:
-            t = parse(s)
+            t = parser.parse_term(thy, ctxt, s)
             self.assertIsInstance(t, Term)
             self.assertEqual(print_term(thy, t), ascii_s)
 
     def testParseThm(self):
-        parse_thm = parser.thm_parser(thy, ctxt).parse
-
         test_data = [
             ("|- A", Thm([], A)),
             ("|- A & B", Thm([], logic.mk_conj(A, B))),
@@ -206,7 +198,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for s, th in test_data:
-            self.assertEqual(parse_thm(s), th)
+            self.assertEqual(parser.parse_thm(thy, ctxt, s), th)
 
     def testSplitProofRule(self):
         test_data = [

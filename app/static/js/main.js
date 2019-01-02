@@ -4,20 +4,6 @@
     var index = 0;
     var theorem = {};
     var data_dic;
-    var replace_obj = {
-        "\\lambda": "λ",
-        "%": "λ",
-        "\\forall": "∀",
-        "\\exists": "∃",
-        "\\and": "∧",
-        "&": "∧",
-        "\\or": "∨",
-        "|": "∨",
-        "-->": "⟶",
-        "~": "¬",
-        "\\not": "¬",
-        "=>": "⇒"
-    };
     var cells = {};
 
     $(document).ready(function () {
@@ -245,7 +231,7 @@
 
         function theorem_proof(r_data) {
             var json_data = r_data;
-                instructions = json_data['instructions'];
+            instructions = json_data['instructions'];
             var event = {
                 'event': 'init_cell',
                 'id': get_selected_id(),
@@ -267,6 +253,7 @@
                 }
             });
             }
+
 
         document.getElementById('open-json').addEventListener('change', function (e) {
             e = e || window.event;
@@ -331,10 +318,6 @@
             }
             $('#open-json')[0].value = '';
         });
-
-//        $('#left').on('click', 'a', function(){
-//            $('#add-cell').click();
-//        })
 
         document.getElementById("run-button").addEventListener('click', send_input);
     });
