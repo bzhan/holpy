@@ -11,6 +11,7 @@ from logic.basic import BasicTheory
 from syntax.parser import *
 from syntax.printer import *
 from kernel.type import HOLType
+from kernel.term import *
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -150,8 +151,10 @@ def json_parse():
     data = json.loads(request.get_data().decode("utf-8"))
     output_data = []
     if data:
-        for d in data:
+         for d in data:
+            vars = []
             output = {}
+            proof = dict()
             prop = parse_extension(thy, d)
             if d['ty'] == 'def.ax':
                 output['name'] = d['name']
@@ -163,6 +166,14 @@ def json_parse():
                 output['name'] = d['name']
                 output['prop'] = print_term(thy, prop, unicode=True, highlight=True)
                 output['ty'] = d['ty']
+                for k,v in d['vars'].items():
+                    string = 'var ' + k + ' :: ' +v
+                    vars.append(string)
+                proof['variables'] = vars
+                proof['assumes'] = [print_term(thy, i) for i in Term.strip_implies(prop)[0]]
+                proof['conclusion'] = print_term(thy, Term.strip_implies(prop)[1])
+                proof['instructions'] = []
+                output['proof'] = proof
                 output_data.append(output)
 
             if d['ty'] == 'type.ind':

@@ -3,6 +3,21 @@
     var pageNum = 0;
     var index = 0;
     var theorem = {};
+    var data_dic;
+    var replace_obj = {
+        "\\lambda": "λ",
+        "%": "λ",
+        "\\forall": "∀",
+        "\\exists": "∃",
+        "\\and": "∧",
+        "&": "∧",
+        "\\or": "∨",
+        "|": "∨",
+        "-->": "⟶",
+        "~": "¬",
+        "\\not": "¬",
+        "=>": "⇒"
+    };
     var cells = {};
 
     $(document).ready(function () {
@@ -212,6 +227,13 @@
             $('#open-problem')[0].value = '';
         });
 
+        $('#left').on('click', 'a', function() {
+            $('#add-cell').click();
+            var d = $(this).attr('id');
+            data = data_dic['data'][d]['proof'];
+            theorem_proof(data);
+        });
+
         function rp(x) {
             if (x === 0)
                 return 'normal';
@@ -221,9 +243,33 @@
                 return 'var';
         }
 
+        function theorem_proof(r_data) {
+        var json_data = r_data;
+            instructions = json_data['instructions'];
+        var event = {
+            'event': 'init_cell',
+            'id': get_selected_id(),
+            'variables': json_data['variables'],
+            'assumes': json_data['assumes'],
+            'conclusion': json_data['conclusion']
+        };
+        var data = JSON.stringify(event);
+        display_running();
+
+        $.ajax({
+            url: "/api/init",
+            type: "POST",
+            data: data,
+            success: function (result) {
+                display_checked_proof(result);
+                get_selected_editor().focus();
+                display_instuctions(instructions);
+            }
+        });
+        }
+
         document.getElementById('open-json').addEventListener('change', function (e) {
             e = e || window.event;
-
             let files = this.files;
             let i = 0, f;
             if (files !== '') {
@@ -239,21 +285,21 @@
                             data: data,
                             success: function (result) {
                                 $('#left').empty();
+                                data_dic = result;
                                 for (var d in result['data']) {
                                     var name = result['data'][d]['name'];
                                     var obj = result['data'][d]['prop'];
                                     var ty = result['data'][d]['ty'];
                                     var str = ''
-
                                     if (ty === 'def.ax'){
                                         $('#left').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'))
                                     }
 
                                     if (ty === 'thm'){
-                                    $.each(obj, function(i, val) {
-                                        str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-                                    })
-                                    $('#left').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#">proof</a></br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                        $.each(obj, function(i, val) {
+                                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                                        });
+                                        $('#left').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="'+ d+ '">proof</a></br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
                                     }
 
                                     if (ty === 'type.ind'){
@@ -275,9 +321,7 @@
                                             })
                                             $('#left p').last().append($('<p>'+ str+'</p>'));
                                          }
-
                                     }
-
                                 }
                             }
                         });
@@ -288,9 +332,9 @@
             $('#open-json')[0].value = '';
         });
 
-        $('#left').on('click', 'a', function(){
-            $('#add-cell').click();
-        })
+//        $('#left').on('click', 'a', function(){
+//            $('#add-cell').click();
+//        })
 
         document.getElementById("run-button").addEventListener('click', send_input);
     });
