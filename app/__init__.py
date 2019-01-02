@@ -27,7 +27,6 @@ def get_result_from_cell(cell):
         "report": cell.rpt.json_data()
     }
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -147,7 +146,10 @@ def rewrite_goal():
 @app.route('/api/json', methods = ['POST'])
 def json_parse():
     thy = BasicTheory
-    data = json.loads(request.get_data().decode("utf-8"))
+    name = json.loads(request.get_data().decode("utf-8"))
+    with open('library/'+name+'.json', 'r',encoding='utf-8') as f:
+        data = json.load(f)
+    # data = json.load(request.get_data().decode("utf-8"))
     output_data = []
     if data:
         for d in data:
