@@ -244,29 +244,29 @@
         }
 
         function theorem_proof(r_data) {
-        var json_data = r_data;
-            instructions = json_data['instructions'];
-        var event = {
-            'event': 'init_cell',
-            'id': get_selected_id(),
-            'variables': json_data['variables'],
-            'assumes': json_data['assumes'],
-            'conclusion': json_data['conclusion']
-        };
-        var data = JSON.stringify(event);
-        display_running();
+            var json_data = r_data;
+                instructions = json_data['instructions'];
+            var event = {
+                'event': 'init_cell',
+                'id': get_selected_id(),
+                'variables': json_data['variables'],
+                'assumes': json_data['assumes'],
+                'conclusion': json_data['conclusion']
+            };
+            var data = JSON.stringify(event);
+            display_running();
 
-        $.ajax({
-            url: "/api/init",
-            type: "POST",
-            data: data,
-            success: function (result) {
-                display_checked_proof(result);
-                get_selected_editor().focus();
-                display_instuctions(instructions);
+            $.ajax({
+                url: "/api/init",
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    display_checked_proof(result);
+                    get_selected_editor().focus();
+                    display_instuctions(instructions);
+                }
+            });
             }
-        });
-        }
 
         document.getElementById('open-json').addEventListener('change', function (e) {
             e = e || window.event;

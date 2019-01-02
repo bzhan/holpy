@@ -193,3 +193,4 @@ def json_parse():
                 output_data.append(output)
 
     return jsonify({'data': output_data})
+
