@@ -143,6 +143,7 @@ def rewrite_goal():
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
+
 @app.route('/api/json', methods = ['POST'])
 def json_parse():
     thy = BasicTheory

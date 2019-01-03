@@ -6,9 +6,9 @@
     var data_dic;
     var cells = {};
 
-    $(document).ready(function () {
+    $(function () {
         $('#theorem-select').ready(function () {
-            $(document).ready(function () {
+            $(function () {
                 var event = {'event': 'init_theorem'};
                 var data = JSON.stringify(event);
 
@@ -28,6 +28,7 @@
                 })
             });
         });
+
 
         $('#add-cell').on('click', function () {
             pageNum++;
@@ -152,6 +153,11 @@
             rewrite_goal(get_selected_editor());
         });
 
+        $('#add-info').on('click', function() {
+
+
+        });
+
         $('#add-cell').click();
         $('.code-cell').addClass('selected');
 
@@ -253,7 +259,6 @@
                 }
             });
             }
-
 
         document.getElementById('open-json').addEventListener('change', function (e) {
             e = e || window.event;
