@@ -2,6 +2,7 @@ var edit_flag = false;
 var readonly_lines = [0];
 var click_line_number = -1;
 var ctrl_click_line_number = -1;
+var edit_line_number = -1;
 var cells = {};
 
 function get_selected_id() {
@@ -26,18 +27,14 @@ function display_running() {
 }
 
 function display_checked_proof(result) {
-    var editor = get_selected_editor();
     var status_output = get_selected_output();
 
     if ("failed" in result) {
         status_output.innerHTML = result["failed"] + ": " + result["message"]
     } else {
         edit_flag = true;
-        display(get_selected_id(), result);
-        editor.setValue(result["proof"]);
-        readonly_lines.length = 0;
-        for (var i = 0; i < editor.lineCount(); i++)
-            readonly_lines.push(i);
+        add_cell_data(get_selected_id(), result['proof']);
+        display(get_selected_id(), result['proof']);
         var num_gaps = result["report"]["num_gaps"];
         if (num_gaps > 0) {
             status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
@@ -328,11 +325,32 @@ function split_proof_rule(line) {
     }
 }
 
-function display(id, result) {
+function display(id, content, mod = 0) {
+    var editor = get_selected_editor();
+    var cell = cells[id];
+    if (mod === 0) {
+        editor.setValue(content);
+    } else if (mod === 1) {
+        var content_list = [];
+        cell.forEach(e => {
+            if (e.id.startsWith('var'))
+                content_list.push(e.id + ': ' + e.rule_name);
+            else
+                content_list.push(e.id + ': ' + e.th)
+        });
+        var _content = content_list.join('\n');
+        editor.setValue(_content);
+    }
+    readonly_lines.length = 0;
+    for (var i = 0; i < editor.lineCount(); i++)
+        readonly_lines.push(i);
+}
+
+function add_cell_data(id, content) {
     var cell = [];
-    var result_list = result["proof"].split('\n');
-    for (var i = 0; i < result_list.length; i++) {
-        var list = split_proof_rule(result_list[i]);
+    var result_list = content.split('\n');
+    result_list.forEach(e => {
+        var list = split_proof_rule(e);
         cell.push({
             'id': list[0],
             'rule_name': list[1],
@@ -340,6 +358,7 @@ function display(id, result) {
             'prev': list[3],
             'th': list[4]
         });
-    }
+    });
+
     cells[id] = cell;
 }

@@ -5,6 +5,8 @@
     var theorem = {};
     var is_mousedown = false;
     var is_crlt_click = false;
+    var click_count = 0;
+    var timer;
 
     $(document).ready(function () {
         $('#theorem-select').ready(function () {
@@ -347,12 +349,13 @@
         });
 
         editor.on("cursorActivity", function (cm) {
-            if (is_mousedown) {
-                mark_text(cm);
-                is_mousedown = false;
-                is_crlt_click = false;
+                if (is_mousedown) {
+                    mark_text(cm);
+                    is_mousedown = false;
+                    is_crlt_click = false;
+                }
             }
-        });
+        );
 
         editor.on('beforeChange', function (cm, change) {
             console.log(change);
@@ -368,12 +371,18 @@
             is_mousedown = true;
             if (event.ctrlKey)
                 is_crlt_click = true;
-        });
-
-        editor.on('dblclick', function (cm, event) {
-            console.log(cm);
-            console.log(event);
-            set_read_only(cm);
+            click_count++;
+            if (click_count === 1) {
+                timer = setTimeout(function () {
+                    if (click_count > 1) {
+                        clearTimeout(timer);
+                        console.log(cm);
+                        console.log(event);
+                        set_read_only(cm);
+                    }
+                    click_count = 0;
+                }, 300)
+            }
         });
     }
 
@@ -401,44 +410,67 @@
         cm.setCursor(cm.getCursor().line, Number.MAX_SAFE_INTEGER);
         var line_num = cm.getCursor().line;
         var ch = cm.getCursor().ch;
-        readonly_lines.splice(line_num, 1);
-        cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch - 5}, {readOnly: true});
+        var line = cm.getLineHandle(line_num).text;
+        if (line.indexOf('sorry')) {
+            cm.getAllMarks().forEach(e => {
+                if (e.readOnly !== undefined)
+                    if (e.readOnly)
+                        e.clear();
+            });
+            readonly_lines.splice(line_num, 1);
+            cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch - 5}, {readOnly: true});
+            edit_line_number = line_num;
+        } else if (line.split(': ')[1].trim() === '') {
+            cm.getAllMarks().forEach(e => {
+                if (e.readOnly !== undefined)
+                    if (e.readOnly)
+                        e.clear();
+            });
+            readonly_lines.splice(line_num, 1);
+            cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {readOnly: true});
+            edit_line_number = line_num;
+        }
     }
 
     function mark_text(cm) {
+        var origin_pos = cm.getCursor();
+        cm.setCursor(cm.getCursor().line, Number.MAX_SAFE_INTEGER);
         var line_num = cm.getCursor().line;
         var ch = cm.getCursor().ch;
         var line = cm.getLineHandle(line_num).text;
         if (is_crlt_click) {
             var flag = false;
-            if(click_line_number !== -1 && line_num < click_line_number)
+            if (click_line_number !== -1 && line_num < click_line_number)
                 flag = true;
             cm.getAllMarks().forEach(e => {
-                if (e.css.indexOf('background') !== -1)
-                    e.clear();
+                if (e.css !== undefined)
+                    if (e.css.indexOf('background') !== -1)
+                        e.clear();
             });
             if (flag)
                 cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
             ctrl_click_line_number = line_num;
             is_crlt_click = false;
-        }
-        else if (line.indexOf('sorry') !== -1) {
+        } else if (line.indexOf('sorry') !== -1) {
             cm.getAllMarks().forEach(e => {
-                if (e.css.indexOf('color') !== -1)
-                    e.clear();
+                if (e.css !== undefined)
+                    if (e.css.indexOf('color') !== -1)
+                        e.clear();
             });
             cm.markText({line: line_num, ch: ch - 5}, {line: line_num, ch: ch}, {
                 css: "color: red"
             });
             click_line_number = line_num;
-        }else {
+        } else {
             cm.getAllMarks().forEach(e => {
-                if(e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
-                    e.clear();
+                if (e.css !== undefined)
+                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                        e.clear();
             });
             click_line_number = -1;
             ctrl_click_line_number = -1;
         }
+        cm.setCursor(origin_pos);
     }
 
     function resize_editor() {
@@ -459,4 +491,5 @@
         sizes: [20, 80],
         gutterSize: 2,
     });
-})(jQuery);
+})
+(jQuery);
