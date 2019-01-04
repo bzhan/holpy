@@ -4,6 +4,7 @@ var click_line_number = -1;
 var ctrl_click_line_number = -1;
 var edit_line_number = -1;
 var cells = {};
+var mod = 0;
 
 function get_selected_id() {
     return document.querySelector('.code-cell.selected textarea').id;
@@ -284,6 +285,28 @@ function rewrite_goal(cm) {
     })
 }
 
+function set_line(cm) {
+    $(document).ready(function () {
+        var line = cm.getLine(edit_line_number);
+        var input = {
+            'id': get_selected_id(),
+            'line': line
+        };
+        var data = JSON.stringify(input);
+        display_running();
+
+        $.ajax({
+            url: "/api/set-line",
+            type: "POST",
+            data: data,
+            success: function (result) {
+                display_checked_proof(result);
+                edit_line_number = -1;
+            }
+        })
+    })
+}
+
 function split_proof_rule(line) {
     if (line.indexOf(': ') !== -1) {
         var list = line.split(': ');
@@ -325,7 +348,7 @@ function split_proof_rule(line) {
     }
 }
 
-function display(id, content, mod = 0) {
+function display(id, content) {
     var editor = get_selected_editor();
     var cell = cells[id];
     if (mod === 0) {

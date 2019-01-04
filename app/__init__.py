@@ -147,6 +147,23 @@ def rewrite_goal():
     return jsonify({})
 
 
+@app.route('/api/set-line', methods=['POST'])
+def set_line():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells.get(data.get('id'))
+        try:
+            (id, rule_name, args, prevs, th) = parser.split_proof_rule(data.get('line'))
+            cell.set_line(id, rule_name, args=args, prevs=prevs, th=th)
+            return jsonify(get_result_from_cell(cell))
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+        return jsonify(error)
+
+
 @app.route('/api/json', methods=['POST'])
 def json_parse():
     thy = BasicTheory

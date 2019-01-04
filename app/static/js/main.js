@@ -329,7 +329,11 @@
                 send_input();
             } else if (event.code === 'Enter') {
                 event.preventDefault();
-                add_line_after(cm);
+                if (edit_line_number !== -1) {
+                    set_line(cm);
+                } else {
+                    add_line_after(cm);
+                }
             } else if (event.code === 'Tab') {
                 event.preventDefault();
                 unicode_replace(cm);
@@ -338,8 +342,42 @@
                     event.preventDefault();
                     remove_line(cm);
                 }
+            } else if (event.code === 'Escape') {
+                event.preventDefault();
+                if (edit_line_number !== -1) {
+                    cm.getAllMarks().forEach(e => {
+                        if (e.readOnly !== undefined) {
+                            if (e.readOnly) {
+                                e.clear();
+                            }
+                        }
+                    });
+                    var id = get_selected_id();
+                    var cell = cells[id];
+                    if (mod === 0) {
+                        let origin_line = cell[edit_line_number].id + ': ';
+                        if(cell[edit_line_number].th !== '')
+                            origin_line += cell[edit_line_number].th + ' by '
+                                        + cell[edit_line_number].rule_name;
+                        cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
+                            line: edit_line_number,
+                            ch: Number.MAX_SAFE_INTEGER
+                        });
+                    } else if (mod === 1) {
+                        let origin_line = cell[edit_line_number].id + ': '
+                            + cell[edit_line_number].th;
+                        cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
+                            line: edit_line_number,
+                            ch: Number.MAX_SAFE_INTEGER
+                        });
+                    }
+                    readonly_lines.push(edit_line_number);
+                    readonly_lines.sort();
+                    edit_line_number = -1;
+                }
             }
         });
+
         editor.on("focus", function (cm, event) {
             $('#codeTabContent .code-cell').each(function () {
                 $(this).removeClass('selected');
@@ -416,14 +454,21 @@
                 if (e.readOnly !== undefined)
                     if (e.readOnly)
                         e.clear();
+                if (e.css !== undefined)
+                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                        e.clear();
             });
             readonly_lines.splice(line_num, 1);
             cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch - 5}, {readOnly: true});
+            cm.addSelection({line: line_num, ch: ch - 5}, {line: line_num, ch: ch});
             edit_line_number = line_num;
         } else if (line.split(': ')[1].trim() === '') {
             cm.getAllMarks().forEach(e => {
                 if (e.readOnly !== undefined)
                     if (e.readOnly)
+                        e.clear();
+                if (e.css !== undefined)
+                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
                         e.clear();
             });
             readonly_lines.splice(line_num, 1);
