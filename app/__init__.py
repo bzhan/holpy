@@ -191,7 +191,7 @@ def json_parse():
                 output['ty'] = d['ty']
                 output_data.append(output)
     file_path = 'library/logic_base.json'
-    with open(file_path, 'r+', encoding='utf-8') as f:
+    with open(file_path, 'r') as f:
         if json.load(f) != data:
             data_f = json.load(f)
             data = data_f + data

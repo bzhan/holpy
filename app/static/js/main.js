@@ -316,7 +316,7 @@
                             });
                        }
 
-        $('#add-info').click(add_info);
+//        $('#add-info').click(add_info);
 
         document.getElementById('open-json').addEventListener('change', function (e) {
             e = e || window.event;

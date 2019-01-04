@@ -55,4 +55,3 @@
         "prop": "(xs @ ys) @ zs = xs @ ys @ zs"
     }
 ]
-{'a':'as'}
