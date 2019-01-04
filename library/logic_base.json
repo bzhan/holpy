@@ -1,15 +1,15 @@
 [
     {
         "ty": "def.ax", "name": "conj", "T": "bool => bool => bool",
-        "ascii_op": "&", "unicode_op": "¡Ä"
+        "ascii_op": "&", "unicode_op": "âˆ§"
     },
     {
         "ty": "def.ax", "name": "disj", "T": "bool => bool => bool",
-        "ascii_op": "|", "unicode_op": "¡Å"
+        "ascii_op": "|", "unicode_op": "âˆ¨"
     },
     {
         "ty": "def.ax", "name": "neg", "T": "bool => bool",
-        "ascii_op": "~", "unicode_op": "?"
+        "ascii_op": "~", "unicode_op": "Â¬"
     },
     {
         "ty": "def.ax", "name": "true", "T": "bool"
@@ -74,7 +74,7 @@
     },
     {
         "ty": "type.ind", "name": "nat", "args": [],
-        "constrs": [
+        "constrs": [            
             {"name": "zero", "type": "nat", "args": []},
             {"name": "Suc", "type": "nat => nat", "args": ["n"]}]},
     {
