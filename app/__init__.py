@@ -143,6 +143,7 @@ def rewrite_goal():
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
+
 @app.route('/api/json', methods = ['POST'])
 def json_parse():
     thy = BasicTheory
@@ -189,5 +190,27 @@ def json_parse():
                 output['type'] = d['type']
                 output['ty'] = d['ty']
                 output_data.append(output)
+    file_path = 'library/logic_base.json'
+    with open(file_path, 'r') as f:
+        if json.load(f) != data:
+            data_f = json.load(f)
+            data = data_f + data
+            json_data = json.dumps(data)
+            f.write(json_data)
+        f.close()
 
+<<<<<<< HEAD
     return jsonify({'data': output_data})
+=======
+    return jsonify({'data': output_data})
+
+# @app.route('api/save', methods = ['POST'])
+# def save_file():
+#     data = json.loads(request.get_data().decode("utf-8"))
+#     file_path = 'library/logic_json'
+#     with open(file_path, 'r+', encoding='utf-8') as f:
+#         f.write(data)
+
+
+
+>>>>>>> e361db487b32b793557471b21dc7032f69f71539
