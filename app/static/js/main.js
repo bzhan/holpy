@@ -1,54 +1,10 @@
 (function ($) {
+    var instructions = [];
     var pageNum = 0;
+    var index = 0;
     var theorem = {};
-    var replace_obj = {
-        "\\lambda": "λ",
-        "%": "λ",
-        "\\forall": "∀",
-        "\\exists": "∃",
-        "\\and": "∧",
-        "&": "∧",
-        "\\or": "∨",
-        "|": "∨",
-        "-->": "⟶",
-        "~": "¬",
-        "\\not": "¬",
-        "=>": "⇒"
-    }
-
-    function get_selected_id() {
-        return document.querySelector('.code-cell.selected textarea').id;
-    }
-
-    function get_selected_editor() {
-        return document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
-    }
-
-    function get_selected_output() {
-        return document.querySelector('.code-cell.selected .output pre');
-    }
-
-    function display_running() {
-        var status_output = get_selected_output();
-        status_output.innerHTML = "Running";
-    }
-
-    function display_checked_proof(result) {
-        var editor = get_selected_editor();
-        var status_output = get_selected_output();
-
-        if ("failed" in result) {
-            status_output.innerHTML = result["failed"] + ": " + result["message"]
-        } else {
-            editor.setValue(result["proof"]);
-            var num_gaps = result["report"]["num_gaps"];
-            if (num_gaps > 0) {
-                status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
-            } else {
-                status_output.innerHTML = "OK. Proof complete!"
-            }
-        }
-    }
+    var data_dic;
+    var cells = {};
 
     $(document).ready(function () {
         $('#theorem-select').ready(function () {
@@ -74,18 +30,6 @@
         });
 
         $('#add-cell').on('click', function () {
-            // pageNum++;
-            // // Add CodeMirror textarea
-            // id = 'code' + pageNum + '-pan';
-            // $('#codeTabContent').append(
-            //     $('<div class="code-cell" id=' + id + '>' +
-            //         '<label for="code' + pageNum + '"></label> ' +
-            //         '<textarea' + ' id="code' + pageNum + '""></textarea></div>'));
-            // init_editor("code" + pageNum);
-            // // Add location for displaying results
-            // $('#' + id).append(
-            //     $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-            //         '<pre> </pre></div></div>'));
             pageNum++;
             // Add CodeMirror textarea
             id = 'code' + pageNum + '-pan';
@@ -109,15 +53,46 @@
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<pre> </pre></div></div>'));
+            $('#' + id).append(
+                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
+                    '<a href="#" id="link-left" style="float:left;"><</a><pre id="instruction" style="float:left;"> </pre>'
+                    +'<a href="#" id="link-right" style="float:left;">></a></div></div>'));
+
             $('#codeTab a[href="#code' + pageNum + '-pan"]').tab('show');
             $('.newCodeMirror').each(function () {
                 $(this).removeClass('active')
             });
         });
 
+        $('#right').on('click', '#link-left', function () {
+            if (index < instructions.length-1) {
+                index++;
+                var status_output = get_selected_instruction();
+                status_output.innerHTML = instructions[index];
+            }
+        })
+
+        $('#right').on('click', '#link-right', function () {
+            if (index > 0) {
+                index--;
+                var status_output = get_selected_instruction();
+                status_output.innerHTML = instructions[index];
+            }
+        })
+ 
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
             $(this).tab('show');
+
+        });
+
+        $('#codeTab').on('shown.bs.tab', 'a', function (event) {
+            var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
+            var rtop = document.querySelector('.rtop');
+            editor.focus();
+            editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
+            editor.setSize("auto", rtop.clientHeight - 40);
+            editor.refresh();
         });
 
         $('#codeTab').on('click', ' li a #close_tab', function () {
@@ -125,7 +100,7 @@
                 return true;
             else {
                 var tabId = $(this).parents('li').children('a').attr('href');
-                var pageNum = $(this).parents('li').children('a').childNodes[0].nodeValue;
+                var pageNum = $(this).parents('li').children('a')[0].childNodes[0].nodeValue;
                 var first = false;
                 $(this).parents('li').remove('li');
                 $(tabId).remove();
@@ -177,54 +152,9 @@
             rewrite_goal(get_selected_editor());
         });
 
-        $('#init-button').on("click", function () {
-            let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
-            let assumes_area = document.querySelector('#assumes .CodeMirror').CodeMirror;
-            let conclusions_area = document.querySelector('#conclusions .CodeMirror').CodeMirror;
-            var variables = [];
-            var assumes = [];
-            var conclusion = undefined;
-            var reg_blank = /^\s*$/g;
-            variables_area.eachLine(line => {
-                if (!reg_blank.test(line.text)) {
-                    variables.push(line.text)
-                }
-            });
-            assumes_area.eachLine(line => {
-                if (!reg_blank.test(line.text)) {
-                    assumes.push(line.text)
-                }
-            });
-            conclusions_area.eachLine(line => {
-                if (!reg_blank.test(line.text)) {
-                    conclusion = line.text
-                }
-            });
-            $(document).ready(function () {
-                var event = {
-                    'event': 'init_cell',
-                    'id': get_selected_id(),
-                    'variables': variables,
-                    'assumes': assumes,
-                    'conclusion': conclusion
-                };
-                var data = JSON.stringify(event);
-
-                $.ajax({
-                    url: "/api/init",
-                    type: "POST",
-                    data: data,
-                    success: display_checked_proof
-                });
-            });
-        });
-
         $('#add-cell').click();
         $('.code-cell').addClass('selected');
 
-        init_input_box('variables');
-        init_input_box('assumes');
-        init_input_box('conclusions');
         get_selected_editor().focus();
 
         document.getElementById('open-file').addEventListener('change', function (e) {
@@ -255,6 +185,7 @@
                     let reader = new FileReader();
                     reader.onload = (function () {
                         var json_data = JSON.parse(this.result);
+                        instructions = json_data['instructions'];
                         var event = {
                             'event': 'init_cell',
                             'id': get_selected_id(),
@@ -272,6 +203,7 @@
                             success: function (result) {
                                 display_checked_proof(result);
                                 get_selected_editor().focus();
+                                display_instuctions(instructions);
                             }
                         });
                     });
@@ -281,18 +213,49 @@
             $('#open-problem')[0].value = '';
         });
 
+        $('#left').on('click', 'a', function() {
+            $('#add-cell').click();
+            var d = $(this).attr('id');
+            data = data_dic['data'][d]['proof'];
+            theorem_proof(data);
+        });
+
         function rp(x) {
-            if (x===0)
-                return  'normal';
-            if (x===1)
-                return  'bound';
-            if (x===2)
-                return  'var';
+            if (x === 0)
+                return 'normal';
+            if (x === 1)
+                return 'bound';
+            if (x === 2)
+                return 'var';
+        }
+
+        function theorem_proof(r_data) {
+            var json_data = r_data;
+            var instructions = json_data['instructions'];
+            var event = {
+                'event': 'init_cell',
+                'id': get_selected_id(),
+                'variables': json_data['variables'],
+                'assumes': json_data['assumes'],
+                'conclusion': json_data['conclusion']
+            };
+            var data = JSON.stringify(event);
+            display_running();
+
+            $.ajax({
+                url: "/api/init",
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    display_checked_proof(result);
+                    get_selected_editor().focus();
+                    display_instuctions(instructions);
+                }
+            });
         }
 
         document.getElementById('open-json').addEventListener('change', function (e) {
             e = e || window.event;
-
             let files = this.files;
             let i = 0, f;
             if (files !== '') {
@@ -307,15 +270,44 @@
                             type: "POST",
                             data: data,
                             success: function (result) {
-                               for (var d in result){
-                                   var name = result[d]['name'];
-                                   var obj_list = result[d]['prop'];
-                                   var str = ''
-                                   $.each(obj_list, function(i, val){
-                                        str = str+'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-                                        })
-                                    $('#left').append($('<p>'+'<font color="#006000"><b>'+'theorem'+'</b></font>'+' '+name+'</br>'+str+'</p>'));
-                                    //$('#left').append($('<p>'+JSON.stringify(obj_list)+'</p>'))
+                                $('#left').empty();
+                                data_dic = result;
+                                for (var d in result['data']) {
+                                    var name = result['data'][d]['name'];
+                                    var obj = result['data'][d]['prop'];
+                                    var ty = result['data'][d]['ty'];
+                                    var str = ''
+                                    if (ty === 'def.ax'){
+                                        $('#left').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'))
+                                    }
+
+                                    if (ty === 'thm'){
+                                        $.each(obj, function(i, val) {
+                                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                                        });
+                                        $('#left').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="'+ d+ '">proof</a></br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                    }
+
+                                    if (ty === 'type.ind'){
+                                        var constrs = result['data'][d]['constrs'];
+                                        str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name']
+                                        for (var i in constrs[1]['args']){
+                                            str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
+                                        }
+                                    $('#left').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
+                                    }
+
+                                    if (ty === 'def.ind'){
+                                    $('#left').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
+                                            + ' where'+'</p>'))
+                                        for (var j in obj){
+                                            str = ''
+                                            $.each(obj[j], function(i, val){
+                                                str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
+                                            })
+                                            $('#left p').last().append($('<p>'+ str+'</p>'));
+                                         }
+                                    }
                                 }
                             }
                         });
@@ -338,6 +330,7 @@
             foldGutter: true,
             smartIndent: false,
             matchBrackets: true,
+            viewportMargin: Infinity,
             scrollbarStyle: "overlay",
             extraKeys: {
                 "Ctrl-I": introduction,
@@ -345,7 +338,8 @@
                 "Ctrl-R": rewrite_goal,
             }
         });
-        editor.setSize("auto", "auto");
+        var rtop = document.querySelector('.rtop');
+        editor.setSize("auto", rtop.clientHeight - 40);
         editor.setValue("");
         editor.on("keydown", function (cm, event) {
             let line_no = cm.getCursor().line;
@@ -373,8 +367,12 @@
             });
             $(cm.getTextArea().parentNode).addClass('selected');
             set_theorem_select(cm);
-            // get_cell_state();
         });
+
+        editor.on("cursorActivity", function (doc) {
+            console.log(doc);
+            set_read_only(doc);
+        })
     }
 
     function set_theorem_select(doc) {
@@ -397,277 +395,26 @@
         $('#theorem-select').selectpicker('refresh');
     }
 
-    function send_input() {
-        $(document).ready(function () {
-                var editor = get_selected_editor();
-                var line_no = editor.getCursor().line;
-                var input = {
-                    "id": get_selected_id(),
-                    "proof": editor.getValue()
-                };
-                var data = JSON.stringify(input);
-                display_running();
+    function set_read_only(doc) {
 
-                $.ajax({
-                    url: "/api/check-proof",
-                    type: "POST",
-                    data: data,
-                    success: function (result) {
-                        display_checked_proof(result);
-                        editor.setCursor(line_no, Number.MAX_SAFE_INTEGER);
-                    }
-                })
-            }
-        )
     }
 
-    function add_line_after(cm) {
-        $(document).ready(function () {
-                var line_number = cm.getCursor().line;
-                var line = cm.getLine(line_number);
-                var input = {
-                    "id": get_selected_id(),
-                    "line": line,
-                };
-                var data = JSON.stringify(input);
-                display_running();
-
-                $.ajax({
-                    url: "/api/add-line-after",
-                    type: "POST",
-                    data: data,
-                    success: function (result) {
-                        display_checked_proof(result);
-                        cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
-                    }
-                })
-            }
-        )
+    function resize_editor() {
+        var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+        var rtop = document.querySelector('.rtop');
+        editor.setSize("auto", rtop.clientHeight - 40);
+        editor.refresh();
     }
 
-    function remove_line(cm) {
-        $(document).ready(function () {
-            var line_number = cm.getCursor().line;
-            var line = cm.getLine(line_number);
-            var input = {
-                "id": get_selected_id(),
-                "line": line,
-            };
-            var data = JSON.stringify(input);
-            display_running();
-
-            $.ajax({
-                url: "/api/remove-line",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    display_checked_proof(result);
-                    cm.setCursor(line_number - 1, Number.MAX_SAFE_INTEGER);
-                }
-            })
-        })
-    }
-
-    function introduction(cm) {
-        $(document).ready(function () {
-            var line_number = cm.getCursor().line;
-            var line = cm.getLine(line_number);
-            var input = {
-                "id": get_selected_id(),
-                "line": line,
-            };
-
-            if (line.indexOf("⊢ ∀") !== -1) {
-                input["var_name"] = prompt('Enter variable name').split(",")
-            }
-            var data = JSON.stringify(input);
-            display_running();
-
-            $.ajax({
-                url: "/api/introduction",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    display_checked_proof(result);
-                    cm.setCursor(line_number + result['line-diff'], Number.MAX_SAFE_INTEGER);
-                }
-            })
-        })
-    }
-
-    function apply_backward_step(cm) {
-        var line_number = cm.getCursor().line;
-        var line = cm.getLine(line_number);
-        swal({
-            title: 'Please enter the theorem used',
-            html:
-                '<input id="swal-input1" class="swal2-input">' +
-                '<select id="swal-input2" class="swal2-select"></select>',
-            onOpen: function () {
-                init_select_abs()
-            },
-            showCancelButton: true,
-            confirmButtonText: 'confirm',
-            showLoaderOnConfirm: true,
-            preConfirm: () => {
-                var data = {
-                    'id': get_selected_id(),
-                    'line': line,
-                    'theorem': document.getElementById('swal-input1').value,
-                };
-                return fetch('/api/apply-backward-step', {
-                        method: 'POST', // or 'PUT'
-                        body: JSON.stringify(data),
-                        headers: {
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                            },
-                        },
-                    }
-                ).then(response => {
-                    if (!response.ok) {
-                        throw new Error(response.statusText)
-                    }
-                    return response.json()
-                })
-                    .catch(error => {
-                        swal.showValidationMessage(
-                            `Request failed: ${error}`
-                        )
-                    })
-            },
-            allowOutsideClick:
-                () => !swal.isLoading()
-        }).then((result) => {
-            if (result) {
-                display_checked_proof(result['value']);
-            }
-        })
-    }
-
-    function apply_induction(cm) {
-        $(document).ready(function () {
-            var line_no = cm.getCursor().line;
-            var line = cm.getLine(line_no);
-            var input = {
-                'id': get_selected_id(),
-                'line': line
-            };
-
-            input['theorem'] = prompt('Enter induction theorem and variable name')
-            var data = JSON.stringify(input);
-            display_running();
-
-            $.ajax({
-                url: "/api/apply-induction",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    display_checked_proof(result);
-                }
-            })
-        })
-    }
-
-    function rewrite_goal(cm) {
-        $(document).ready(function () {
-            var line_no = cm.getCursor().line;
-            var line = cm.getLine(line_no);
-            var input = {
-                'id': get_selected_id(),
-                'line': line
-            };
-
-            input['theorem'] = prompt('Enter rewrite theorem')
-            var data = JSON.stringify(input);
-            display_running();
-
-            $.ajax({
-                url: "/api/rewrite-goal",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    display_checked_proof(result);
-                }
-            })
-        })
-    }
-
-    function unicode_replace(cm) {
-        $(document).ready(function () {
-            var cur_position = cm.getCursor()
-            var line_number = cur_position.line
-            var position = cur_position.ch
-            var stri = cm.getRange({line: line_number, ch: 0}, cm.getCursor());
-            for (var key in replace_obj) {
-                l = key.length;
-                if (stri.slice(-l) === key) {
-                    start_position = {line: line_number, ch: position - l};
-                    cm.replaceRange(replace_obj[key], start_position, cur_position);
-                }
-            }
-        })
-    }
-
-    function init_select_abs() {
-        $(document).ready(function () {
-            var event = {
-                "event": "init_theorem_abs",
-            };
-            var data = JSON.stringify(event);
-
-            $.ajax({
-                url: "/api/init",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                }
-            })
-        })
-    }
-
-    function get_cell_state() {
-        $(document).ready(function () {
-            let variables_area = document.querySelector('#variables .CodeMirror').CodeMirror;
-            let assumes_area = document.querySelector('#assumes .CodeMirror').CodeMirror;
-            let conclusions_area = document.querySelector('#conclusions .CodeMirror').CodeMirror;
-            variables_area.setValue('');
-            assumes_area.setValue('');
-            conclusions_area.setValue('');
-            var event = {
-                'id': get_selected_id(),
-            };
-            var data = JSON.stringify(event);
-
-            $.ajax({
-                url: "/api/get-cell-state",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    if (JSON.stringify(result) !== '{}') {
-                        variables_area.setValue(result['variables'].join('\n'));
-                        assumes_area.setValue(result['assumes'].join('\n'));
-                        conclusions_area.setValue(result['conclusion']);
-                    }
-                }
-            });
-        });
-    }
-
-    function init_input_box(id) {
-        let input_box = CodeMirror(document.getElementById(id), {
-            mode: "text/x-python",
-            lineNumbers: true,
-            theme: "",
-            lineWrapping: true,
-            foldGutter: true,
-            smartIndent: false,
-            matchBrackets: true,
-            scrollbarStyle: "overlay",
-            readOnly: "nocursor",
-        });
-        input_box.setSize("auto", "auto");
-        input_box.setValue("");
-    }
+    Split(['.rtop', '.rbottom'], {
+        sizes: [40, 60],
+        direction: 'vertical',
+        minSize: 39,
+        onDrag: resize_editor,
+        gutterSize: 2,
+    });
+    Split(['.left', '.right'], {
+        sizes: [20, 80],
+        gutterSize: 2,
+    });
 })(jQuery);

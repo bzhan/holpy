@@ -98,19 +98,14 @@ grammar = r"""
     %ignore WS
 """
 
+# Modifiable settings in the transformation part of the parser.
+# This includes thy and ctxt.
+parser_setting = dict()
+
 @v_args(inline=True)
 class HOLTransformer(Transformer):
-    def __init__(self, thy, ctxt = None):
-        """thy is the current Theory object.
-        
-        ctxt is a dictionary from names of free variables to their types.
-        Default to the empty dictionary.
-
-        """
-        self.thy = thy
-        if ctxt is None:
-            ctxt = dict()
-        self.ctxt = ctxt
+    def __init__(self):
+        pass
 
     def tvar(self, s):
         return TVar(s)
@@ -122,12 +117,14 @@ class HOLTransformer(Transformer):
         return TFun(t1, t2)
 
     def vname(self, s):
-        if self.thy.has_term_sig(s):
+        thy = parser_setting['thy']
+        ctxt = parser_setting['ctxt']
+        if thy.has_term_sig(s):
             # s is the name of a constant in the theory
-            return Const(s, self.thy.get_term_sig(s))
-        elif s in self.ctxt:
+            return Const(s, thy.get_term_sig(s))
+        elif s in ctxt:
             # s is the name of a variable in the theory
-            return Var(s, self.ctxt[s])
+            return Var(s, ctxt[s])
         else:
             # s not found, presumably a bound variable
             return Var(s, None)
@@ -198,29 +195,48 @@ class HOLTransformer(Transformer):
     def var_decl(self, name, T):
         return (name, T)
 
-def type_parser(thy):
+def get_parser_for(start):
+    return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
+
+type_parser = get_parser_for("type")
+term_parser = get_parser_for("term")
+thm_parser = get_parser_for("thm")
+inst_parser = get_parser_for("inst")
+tyinst_parser = get_parser_for("tyinst")
+var_decl_parser = get_parser_for("var_decl")
+
+def parse_type(thy, s):
     """Parse a type."""
-    return Lark(grammar, start="type", parser="lalr", transformer=HOLTransformer(thy))
+    parser_setting['thy'] = thy
+    return type_parser.parse(s)
 
-def term_parser(thy, ctxt):
+def parse_term(thy, ctxt, s):
     """Parse a term."""
-    return Lark(grammar, start="term", parser="lalr", transformer=HOLTransformer(thy, ctxt))
+    parser_setting['thy'] = thy
+    parser_setting['ctxt'] = ctxt
+    return term_parser.parse(s)
 
-def thm_parser(thy, ctxt):
+def parse_thm(thy, ctxt, s):
     """Parse a theorem (sequent)."""
-    return Lark(grammar, start="thm", parser="lalr", transformer=HOLTransformer(thy, ctxt))
+    parser_setting['thy'] = thy
+    parser_setting['ctxt'] = ctxt
+    return thm_parser.parse(s)
 
-def inst_parser(thy, ctxt):
+def parse_inst(thy, ctxt, s):
     """Parse a term instantiation."""
-    return Lark(grammar, start="inst", parser="lalr", transformer=HOLTransformer(thy, ctxt))
+    parser_setting['thy'] = thy
+    parser_setting['ctxt'] = ctxt
+    return inst_parser.parse(s)
 
-def tyinst_parser(thy):
+def parse_tyinst(thy, s):
     """Parse a type instantiation."""
-    return Lark(grammar, start="tyinst", parser="lalr", transformer=HOLTransformer(thy))
+    parser_setting['thy'] = thy
+    return tyinst_parser.parse(s)
 
-def var_decl_parser(thy):
+def parse_var_decl(thy, s):
     """Parse a variable declaration."""
-    return Lark(grammar, start="var_decl", parser="lalr", transformer=HOLTransformer(thy))
+    parser_setting['thy'] = thy
+    return var_decl_parser.parse(s)
 
 def split_proof_rule(s):
     """Split proof rule into parseable parts.
@@ -267,7 +283,7 @@ def parse_proof_rule(thy, ctxt, s):
     if th == "":
         th = None
     else:
-        th = thm_parser(thy, ctxt).parse(th)
+        th = parse_thm(thy, ctxt, th)
 
     try:
         sig = thy.get_proof_rule_sig(rule_name)
@@ -277,21 +293,21 @@ def parse_proof_rule(thy, ctxt, s):
         elif sig == MacroSig.STRING:
             return ProofItem(id, rule_name, args=args, prevs=prevs, th=th)
         elif sig == MacroSig.TERM:
-            t = term_parser(thy, ctxt).parse(args)
+            t = parse_term(thy, ctxt, args)
             return ProofItem(id, rule_name, args=t, prevs=prevs, th=th)
         elif sig == MacroSig.INST:
-            inst = inst_parser(thy, ctxt).parse(args)
+            inst = parse_inst(thy, ctxt, args)
             return ProofItem(id, rule_name, args=inst, prevs=prevs, th=th)
         elif sig == MacroSig.TYINST:
             tyinst = tyinst_parser(thy, ctxt).parse(args)
             return ProofItem(id, rule_name, args=tyinst, prevs=prevs, th=th)
         elif sig == MacroSig.STRING_TERM:
             s1, s2 = args.split(",", 1)
-            t = term_parser(thy, ctxt).parse(s2)
+            t = parse_term(thy, ctxt, s2)
             return ProofItem(id, rule_name, args=(s1, t), prevs=prevs, th=th)
         elif sig == MacroSig.STRING_INST:
             s1, s2 = args.split(",", 1)
-            inst = inst_parser(thy, ctxt).parse(s2)
+            inst = parse_inst(thy, ctxt, s2)
             return ProofItem(id, rule_name, args=(s1, inst), prevs=prevs, th=th)
         else:
             raise TypeError()
@@ -302,37 +318,41 @@ def parse_proof_rule(thy, ctxt, s):
 def parse_vars(thy, vars_data):
     ctxt = {}
     for k, v in vars_data.items():
-        ctxt[k] = type_parser(thy).parse(v)
+        ctxt[k] = parse_type(thy, v)
     return ctxt
 
 def parse_extension(thy, data):
     if data['ty'] == 'def.ax':
+        prop = parse_type(thy, data['T'])
         thy.extend_axiom_constant(
-            AxConstant(data['name'], type_parser(thy).parse(data['T'])))
+            AxConstant(data['name'], prop))
+        return prop
     elif data['ty'] == 'thm':
         ctxt = parse_vars(thy, data['vars'])
-        prop = term_parser(thy, ctxt).parse(data['prop'])
+        prop = parse_term(thy, ctxt, data['prop'])
         thy.add_theorem(data['name'], Thm([], prop))
         return prop
     elif data['ty'] == 'type.ind':
         constrs = []
+        list = []
         for constr in data['constrs']:
-            T = type_parser(thy).parse(constr['type'])
+            T = parse_type(thy, constr['type'])
             constrs.append((constr['name'], T, constr['args']))
+            list.append(T)
         ext = induct.add_induct_type(data['name'], data['args'], constrs)
         thy.unchecked_extend(ext)
-        return None
+        return list
     elif data['ty'] == 'def.ind':
-        T = type_parser(thy).parse(data['type'])
+        T = parse_type(thy, data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         rules = []
         for rule in data['rules']:
             ctxt = parse_vars(thy, rule['vars'])
-            prop = term_parser(thy, ctxt).parse(rule['prop'])
+            prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
         thy.unchecked_extend(ext)
-        return None
+        return rules
 
 def parse_extensions(thy, data):
     for ext_data in data:

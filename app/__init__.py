@@ -4,12 +4,12 @@ import json
 
 from flask import Flask, request, render_template
 from flask.json import jsonify
+from kernel.term import Term
 from kernel.thm import primitive_deriv
-from syntax import parser
+from syntax import parser, printer
 from server.tactic import ProofState
 from logic.basic import BasicTheory
-from syntax.parser import *
-from syntax.printer import *
+from kernel.type import HOLType
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -143,29 +143,51 @@ def rewrite_goal():
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
-@app.route('/api/get-cell-state', methods=['POST'])
-def get_cell_state():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        id = data.get('id')
-        if cells.get(id):
-            cell = cells.get(id)
-            return jsonify(cell.obtain_init_data())
-    return jsonify({})
-
 @app.route('/api/json', methods = ['POST'])
 def json_parse():
     thy = BasicTheory
     data = json.loads(request.get_data().decode("utf-8"))
-    term_list = []
+    output_data = []
     if data:
-        for d in data:
-            term_dict = {}
+         for d in data:
+            vars = []
+            output = {}
+            proof = dict()
+            prop = parser.parse_extension(thy, d)
+            if d['ty'] == 'def.ax':
+                output['name'] = d['name']
+                output['prop'] = str(prop)
+                output['ty'] = d['ty']
+                output_data.append(output)
+
             if d['ty'] == 'thm':
-                term = parse_extension(thy, d)
-                term_dict['name'] = d['name']
-                term_dict['prop'] = print_term(thy,term,highlight=True)
-                term_list.append(term_dict)
-    return jsonify(term_list)
+                output['name'] = d['name']
+                output['prop'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+                output['ty'] = d['ty']
+                for k, v in d['vars'].items():
+                    string = 'var ' + k + ' :: ' + v
+                    vars.append(string)
+                proof['variables'] = vars
+                proof['assumes'] = [printer.print_term(thy, i) for i in Term.strip_implies(prop)[0]]
+                proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1])
+                proof['instructions'] = []
+                output['proof'] = proof
+                output_data.append(output)
 
+            if d['ty'] == 'type.ind':
+                output['name'] = d['name']
+                constrs = d['constrs']
+                temp = HOLType.strip_type(prop[1])
+                output['constrs'] = constrs
+                output['prop'] = [str(tl) for tl in temp[0]]
+                output['ty'] = d['ty']
+                output_data.append(output)
 
+            if d['ty'] == 'def.ind':
+                output['name'] = d['name']
+                output['prop'] = [printer.print_term(thy, t, highlight=True, unicode=True) for t in prop]
+                output['type'] = d['type']
+                output['ty'] = d['ty']
+                output_data.append(output)
+
+    return jsonify({'data': output_data})
