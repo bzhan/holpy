@@ -6,7 +6,6 @@
     var is_mousedown = false;
     var is_crlt_click = false;
     var click_count = 0;
-    var timer;
 
     $(document).ready(function () {
         $('#theorem-select').ready(function () {
@@ -91,6 +90,7 @@
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
             var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
             var rtop = document.querySelector('.rtop');
+            revert_status(editor);
             editor.focus();
             editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
             editor.setSize("auto", rtop.clientHeight - 40);
@@ -516,6 +516,19 @@
             ctrl_click_line_number = -1;
         }
         cm.setCursor(origin_pos);
+    }
+    
+    function revert_status(cm) {
+        is_mousedown = false;
+        is_crlt_click = false;
+        click_count = 0;
+        edit_flag = false;
+        readonly_lines.length = 0;
+        click_line_number = -1;
+        ctrl_click_line_number = -1;
+        edit_line_number = -1;
+        for(var i = 0; i < cm.lineCount(); i++)
+            readonly_lines.push(i);
     }
 
     function resize_editor() {

@@ -31,12 +31,14 @@ function display_checked_proof(result) {
     var status_output = get_selected_output();
 
     if ("failed" in result) {
-        status_output.innerHTML = result["failed"] + ": " + result["message"]
+        status_output.innerHTML = result["failed"] + ": " + result["message"];
+        status_output.style.color = 'red';
     } else {
         edit_flag = true;
         add_cell_data(get_selected_id(), result['proof']);
         display(get_selected_id(), result['proof']);
         var num_gaps = result["report"]["num_gaps"];
+        status_output.style.color = '';
         if (num_gaps > 0) {
             status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
         } else {
