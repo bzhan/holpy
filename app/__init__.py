@@ -147,11 +147,12 @@ def rewrite_goal():
 @app.route('/api/json', methods = ['POST'])
 def json_parse():
     thy = BasicTheory
-    name = json.loads(request.get_data().decode("utf-8"))
-    with open('library/'+name+'.json', 'r',encoding='utf-8') as f:
-        data = json.load(f)
-    # data = json.load(request.get_data().decode("utf-8"))
     output_data = []
+    data = json.loads(request.get_data().decode("utf-8"))
+    if type(data) == str:
+        with open('library/'+ data +'.json', 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            f.close()
     if data:
          for d in data:
             vars = []
@@ -193,8 +194,10 @@ def json_parse():
                 output['type'] = d['type']
                 output['ty'] = d['ty']
                 output_data.append(output)
-    save_file(data)
+         save_file(data)
 
     return jsonify({'data': output_data})
+
+
 
 
