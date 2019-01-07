@@ -9,7 +9,7 @@ def save_file(data):
         if file_data !=data:
             data = file_data + data
             j = open(file_path, 'w+', encoding='utf-8')
-            json.dump(data, j)
+            json.dump(data, j, indent=4, ensure_ascii=False)
             j.close()
         f.close()
 
