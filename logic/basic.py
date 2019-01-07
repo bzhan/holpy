@@ -18,8 +18,7 @@ def getBasicTheory():
 
     # Basic definitions and theorems
     script_dir = os.path.dirname(__file__)
-    with open('holpy/library/logic_base.json', 'r+', encoding='utf-8') as a:
-    # with io.open(os.path.join(script_dir, '..', 'library', 'logic_base.json'), encoding="utf-8") as a:
+    with io.open(os.path.join(script_dir, '..', 'library', 'logic_base.json'), encoding="utf-8") as a:
         data = json.load(a)
 
     parser.parse_extensions(thy, data)
