@@ -270,7 +270,7 @@
                 $('#constant,#type').val('');
             }
 
-            if ($('#theorem, #term, #vars').val() !=='' ) {
+            if ($('#thm, #term, #vars').val() !=='' ) {
                 var theorem = {};
                 var vars = {};
                 var theo = $('#thm').val();
@@ -286,7 +286,7 @@
                 theorem['vars'] = vars
                 theorem['prop'] = term;
                 data.push(theorem);
-                $('#constant').val('');
+                $('#thm,#term,#vars').val('');
             }
 
             data = JSON.stringify(data);
@@ -316,8 +316,6 @@
                             });
                        }
 
-//        $('#add-info').click(add_info);
-
         document.getElementById('open-json').addEventListener('change', function (e) {
             e = e || window.event;
             let files = this.files;
@@ -325,6 +323,7 @@
             if (files !== '') {
                 for (; f = files[i]; i++) {
                     let reader = new FileReader();
+                    $('#add-info').click(add_info);
                     reader.onload = (function () {
                         var json_data = JSON.parse(this.result);
                         var data_dic = JSON.stringify(json_data);

@@ -10,6 +10,7 @@ from syntax import parser, printer
 from server.tactic import ProofState
 from logic.basic import BasicTheory
 from kernel.type import HOLType
+from file_function import save_file
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -190,27 +191,8 @@ def json_parse():
                 output['type'] = d['type']
                 output['ty'] = d['ty']
                 output_data.append(output)
-    file_path = 'library/logic_base.json'
-    with open(file_path, 'r') as f:
-        if json.load(f) != data:
-            data_f = json.load(f)
-            data = data_f + data
-            json_data = json.dumps(data)
-            f.write(json_data)
-        f.close()
+    save_file(data)
 
-<<<<<<< HEAD
-    return jsonify({'data': output_data})
-=======
     return jsonify({'data': output_data})
 
-# @app.route('api/save', methods = ['POST'])
-# def save_file():
-#     data = json.loads(request.get_data().decode("utf-8"))
-#     file_path = 'library/logic_json'
-#     with open(file_path, 'r+', encoding='utf-8') as f:
-#         f.write(data)
 
-
-
->>>>>>> e361db487b32b793557471b21dc7032f69f71539
