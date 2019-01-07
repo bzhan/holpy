@@ -258,8 +258,8 @@
 
         function add_info() {
             var data = [];
-            if ($('#constant, #type').val() !=='') {
-                var constant={};
+            if ($('#constant, #type').val() !== '') {
+                var constant = {};
                 var cons = $('#constant').val();
                 var type = $('#type').val();
                 constant['ty'] = 'def.ax';
@@ -269,20 +269,20 @@
                 $('#constant,#type').val('');
             }
 
-            if ($('#thm, #term, #vars').val() !=='' ) {
+            if ($('#thm, #term, #vars').val() !== '') {
                 var theorem = {};
                 var vars = {};
                 var theo = $('#thm').val();
                 var term = $('#term').val();
                 var vars_str = $('#vars').val();
                 var vars_list = vars_str.split(' ');
-                for (var i in vars_list){
+                for (var i in vars_list) {
                     var v_list = vars_list[i].split(':');
-                    vars[v_list[0]]=v_list[1];
+                    vars[v_list[0]] = v_list[1];
                 }
                 theorem['ty'] = 'thm';
                 theorem['name'] = theo;
-                theorem['vars'] = vars
+                theorem['vars'] = vars;
                 theorem['prop'] = term;
 
                 data.push(theorem);
@@ -291,33 +291,32 @@
 
             data = JSON.stringify(data);
             $.ajax({
-                            url: "/api/json",
-                            type: "POST",
-                            data: data,
-                            success: function (result) {
+                url: "/api/json",
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    result_list = result_list.concat(result['data']);
+                    console.log(result_list);
+                    for (var d in result['data']) {
+                        num++;
+                        var name = result['data'][d]['name'];
+                        var obj = result['data'][d]['prop'];
+                        var ty = result['data'][d]['ty'];
+                        var str = '';
+                        if (ty === 'def.ax') {
+                            $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'))
+                        }
 
-                                result_list = result_list.concat(result['data']);
-                                console.log(result_list);
-                                for (var d in result['data']) {
-                                    num ++;
-                                    var name = result['data'][d]['name'];
-                                    var obj = result['data'][d]['prop'];
-                                    var ty = result['data'][d]['ty'];
-                                    var str = ''
-                                    if (ty === 'def.ax'){
-                                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'))
-                                    }
-
-                                    if (ty === 'thm'){
-                                        $.each(obj, function(i, val) {
-                                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-                                        });
-                                        $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a></br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
-                                    }
-                                  }
-                                }
+                        if (ty === 'thm'){
+                            $.each(obj, function(i, val) {
+                                str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                             });
-                       }
+                            $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
+                        }
+                    }
+                }
+            });
+        }
 
         document.getElementById('open-json').addEventListener('change', function (e) {
             e = e || window.event;
