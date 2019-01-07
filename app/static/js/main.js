@@ -188,6 +188,8 @@
             rewrite_goal(get_selected_editor());
         });
 
+
+
         $('#add-cell').click();
         $('.code-cell').addClass('selected');
 
@@ -318,21 +320,24 @@
             });
         }
 
-        document.getElementById('open-json').addEventListener('change', function (e) {
-            e = e || window.event;
-            let files = this.files;
-            let i = 0, f;
-            if (files !== '') {
-                for (; f = files[i]; i++) {
-                    let reader = new FileReader();
-                    $('#add-info').click(add_info);
-                    reader.onload = (function () {
-                        var json_data = JSON.parse(this.result);
-                        var data_dic = JSON.stringify(json_data);
+        $('#json-button').on('click', function() {
+            var name = prompt('please enter the file name');
+//        document.getElementById('open-json').addEventListener('change', function (e) {
+//            e = e || window.event;
+//
+//            let files = this.files;
+//            let i = 0, f;
+//            if (files !== '') {
+//                for (; f = files[i]; i++) {
+//                    let reader = new FileReader();
+//                    reader.onload = (function () {
+//                        var json_data = JSON.parse(this.result);
+//                        var data = JSON.stringify(json_data);
+                        var data = JSON.stringify(name);
                         $.ajax({
                             url: "/api/json",
                             type: "POST",
-                            data: data_dic,
+                            data: data,
                             success: function (result) {
                                 result_list = result['data'];
                                 $('#left_json').empty();
@@ -376,12 +381,13 @@
                                 }
                             }
                         });
-                    });
-                    reader.readAsText(f);
-                }
-            }
-            $('#open-json')[0].value = '';
-        });
+//                    });
+//                    reader.readAsText(f);
+//                }
+//            }
+            });
+//            $('#open-json')[0].value = '';
+//        });
 
         document.getElementById("run-button").addEventListener('click', send_input);
     });
