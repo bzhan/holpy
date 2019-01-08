@@ -146,10 +146,10 @@ def rewrite_goal():
 @app.route('/api/json', methods = ['POST'])
 def json_parse():
     thy = BasicTheory
-    name = json.loads(request.get_data().decode("utf-8"))
+    name = json.loads(request.get_data().decode("utf-8"))#loads是解码文件，load是加载文件
     with open('library/'+name+'.json', 'r',encoding='utf-8') as f:
         data = json.load(f)
-    # data = json.load(request.get_data().decode("utf-8"))
+
     output_data = []
     if data:
         for d in data:

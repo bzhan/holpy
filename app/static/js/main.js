@@ -292,6 +292,8 @@
 //            $('#open-json')[0].value = '';
 //        });
 
+
+
         $('#left').on('click', 'a', function(){
             $('#add-cell').click();
         })
