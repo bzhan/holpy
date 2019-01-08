@@ -286,16 +286,17 @@
                 theorem['name'] = theo;
                 theorem['vars'] = vars;
                 theorem['prop'] = term;
-
                 data.push(theorem);
                 $('#thm,#term,#vars').val('');
             }
+            var event = {"data":data,
+                         "name":name};
 
-            data = JSON.stringify(data);
+            data_ajax = JSON.stringify(event);
             $.ajax({
                 url: "/api/json",
                 type: "POST",
-                data: data,
+                data: data_ajax,
                 cache: false,
                 success: function (result) {
                     result_list = result_list.concat(result['data']);
@@ -321,7 +322,7 @@
         }
 
         $('#json-button').on('click', function() {
-            var name = prompt('please enter the file name');
+            name = prompt('please enter the file name');
             num = 0;
             var data = JSON.stringify(name);
                 $.ajax({

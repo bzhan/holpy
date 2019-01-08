@@ -148,11 +148,16 @@ def rewrite_goal():
 def json_parse():
     thy = BasicTheory
     output_data = []
-    data = json.loads(request.get_data().decode("utf-8"))
-    if type(data) == str:
-        with open('library/'+ data +'.json', 'r', encoding='utf-8') as f:
+    f_data = json.loads(request.get_data().decode("utf-8"))
+    data = []
+    if type(f_data) == str:
+        with open('library/'+ f_data +'.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
             f.close()
+    else:
+        data = f_data['data']
+        name = f_data['name']
+        save_file(name, data)
     if data:
          for d in data:
             vars = []
@@ -194,7 +199,6 @@ def json_parse():
                 output['type'] = d['type']
                 output['ty'] = d['ty']
                 output_data.append(output)
-         save_file(data)
 
     return jsonify({'data': output_data})
 
