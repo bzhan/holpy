@@ -257,9 +257,6 @@
             setTimeout(function() {theorem_proof(data)}, 500);
         });
 
-        $('#add-info').on('click', function() {
-            add_info();
-        });
 
         function add_info() {
             var data = [];
@@ -299,6 +296,7 @@
                 url: "/api/json",
                 type: "POST",
                 data: data,
+                cache: false,
                 success: function (result) {
                     result_list = result_list.concat(result['data']);
                     for (var d in result['data']) {

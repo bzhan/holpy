@@ -274,5 +274,10 @@
         "ty": "def.ax",
         "name": "conj",
         "T": "bool => bool => bool"
+    },
+    {
+        "ty": "def.ax",
+        "name": "conjj",
+        "T": "bool => bool => bool"
     }
 ]
