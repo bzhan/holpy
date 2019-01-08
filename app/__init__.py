@@ -4,13 +4,13 @@ import json
 
 from flask import Flask, request, render_template
 from flask.json import jsonify
+from kernel.term import Term
 from kernel.thm import primitive_deriv
-from syntax import parser
+from syntax import parser, printer
 from server.tactic import ProofState
 from logic.basic import BasicTheory
-from syntax.parser import *
-from syntax.printer import *
 from kernel.type import HOLType
+from file_function import save_file
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -143,6 +143,7 @@ def rewrite_goal():
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
 
+
 @app.route('/api/json', methods = ['POST'])
 def json_parse():
     thy = BasicTheory
@@ -152,9 +153,11 @@ def json_parse():
 
     output_data = []
     if data:
-        for d in data:
+         for d in data:
+            vars = []
             output = {}
-            prop = parse_extension(thy, d)
+            proof = dict()
+            prop = parser.parse_extension(thy, d)
             if d['ty'] == 'def.ax':
                 output['name'] = d['name']
                 output['prop'] = str(prop)
@@ -163,8 +166,16 @@ def json_parse():
 
             if d['ty'] == 'thm':
                 output['name'] = d['name']
-                output['prop'] = print_term(thy, prop, unicode=True, highlight=True)
+                output['prop'] = printer.print_term(thy, prop, unicode=True, highlight=True)
                 output['ty'] = d['ty']
+                for k, v in d['vars'].items():
+                    string = 'var ' + k + ' :: ' + v
+                    vars.append(string)
+                proof['variables'] = vars
+                proof['assumes'] = [printer.print_term(thy, i) for i in Term.strip_implies(prop)[0]]
+                proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1])
+                proof['instructions'] = []
+                output['proof'] = proof
                 output_data.append(output)
 
             if d['ty'] == 'type.ind':
@@ -178,9 +189,12 @@ def json_parse():
 
             if d['ty'] == 'def.ind':
                 output['name'] = d['name']
-                output['prop'] = [print_term(thy, t, highlight=True, unicode=True) for t in prop]
+                output['prop'] = [printer.print_term(thy, t, highlight=True, unicode=True) for t in prop]
                 output['type'] = d['type']
                 output['ty'] = d['ty']
                 output_data.append(output)
+    save_file(data)
 
     return jsonify({'data': output_data})
+
+

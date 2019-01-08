@@ -125,15 +125,15 @@ class ProofState():
         vars = []
         assums = []
         for var in data.get('variables'):
-            name, t = parser.var_decl_parser(thy).parse(var)
+            name, t = parser.parse_var_decl(thy, var)
             if name and t:
                 vars.append(Var(name, t))
                 ctxt[name] = t
         for assum in data.get('assumes'):
-            t = parser.term_parser(thy, ctxt).parse(assum)
+            t = parser.parse_term(thy, ctxt, assum)
             if t:
                 assums.append(t)
-        concl = parser.term_parser(thy, ctxt).parse(data.get('conclusion'))
+        concl = parser.parse_term(thy, ctxt, data.get('conclusion'))
         return ProofState(vars, assums, concl)
 
     def parse_proof(self, input):
