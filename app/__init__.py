@@ -178,8 +178,8 @@ def json_parse():
                     string = 'var ' + k + ' :: ' + v
                     vars.append(string)
                 proof['variables'] = vars
-                proof['assumes'] = [printer.print_term(thy, i) for i in Term.strip_implies(prop)[0]]
-                proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1])
+                proof['assumes'] = [printer.print_term(thy, i, print_abs_type=True) for i in Term.strip_implies(prop)[0]]
+                proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1], print_abs_type=True)
                 proof['instructions'] = []
                 output['proof'] = proof
                 output_data.append(output)
