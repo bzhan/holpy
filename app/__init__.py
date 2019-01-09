@@ -202,6 +202,17 @@ def json_parse():
 
     return jsonify({'data': output_data})
 
+@app.route('/api/root_file', methods=['GET'])
+def get_root():
+    json_data = {}
+    with open('library/root.json', 'r+', encoding='utf-8') as f:
+        json_data = json.load(f)
+        f.close()
+
+    return jsonify(json_data)
+
+
+
 
 
 

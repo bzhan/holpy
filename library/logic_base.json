@@ -269,15 +269,5 @@
                 "prop": "rev (cons x xs) = rev xs @ cons x nil"
             }
         ]
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool => bool => bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conjj",
-        "T": "bool => bool => bool"
     }
 ]
