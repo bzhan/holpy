@@ -279,24 +279,31 @@
 
         $('#file-path').on('click', '#root-a', function() {
             $('#left_json').empty();
-            $('#file-path a:last').remove();
-        })
+            if ($('#file-path a:last').text() !== 'root/') {
+                $('#file-path a:last').remove();
+            };
+        });
 
         $('#root-file').on('click','a',function() {
              $('#add-info').click(add_info);
              name = $(this).text();
              name = $.trim(name);
-//             console.log($('#file-path').text().indexOf(name));
              if ($('#file-path').html() === '') {
                 $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> '+name+'</b></font></a>'));
              }
 
-             else if ($('#file-path').text().indexOf(name) === -1) {
+             else if ($('#file-path a:last').text() === 'root/') {
                 $('#root-a').after($('<a href="#"><font color="red"><b> '+name+'</b></font></a>'));
+             }
+
+             else if ($('#file-path a:last').text() !== name) {
+                $('#file-path a:last').remove();
+                $('#root-a').after($('<a href="#"><font color="red"><b> '+ name + '</b></font></a>'));
              };
+
              data = JSON.stringify(name);
              ajax_res(data);
-        })
+        });
 
         function add_info() {
             var data = [];
@@ -412,8 +419,6 @@
                     });
 
         }
-
-
 
         $('#json-button').on('click', function() {
             name = prompt('please enter the file name');
