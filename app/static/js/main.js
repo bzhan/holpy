@@ -3,7 +3,6 @@
     var page_num = 0;
     var index = 0;
     var theorem = {};
-    var cells = {};
     var result_list = [];
     var is_mousedown = false;
     var is_crlt_click = false;
@@ -589,7 +588,7 @@
         var line_num = cm.getCursor().line;
         var ch = cm.getCursor().ch;
         var line = cm.getLineHandle(line_num).text;
-        if (line.indexOf('sorry')) {
+        if (line.indexOf('sorry') !== -1) {
             cm.getAllMarks().forEach(e => {
                 if (e.readOnly !== undefined)
                     if (e.readOnly)
