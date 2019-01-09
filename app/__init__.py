@@ -152,8 +152,8 @@ def set_line():
     if data:
         cell = cells.get(data.get('id'))
         try:
-            (id, rule_name, args, prevs, th) = parser.split_proof_rule(data.get('line'))
-            cell.set_line(id, rule_name, args=args, prevs=prevs, th=th)
+            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(), data.get('line'))
+            cell.set_line(item.id, item.rule, args=item.args, prevs=item.prevs, th=item.th)
             return jsonify(get_result_from_cell(cell))
         except Exception as e:
             error = {

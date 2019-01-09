@@ -117,6 +117,12 @@ class ProofState():
             self.prf.add_item("S" + str(n), "implies_intr", args=assum, prevs=["S" + str(n-1)])
         self.check_proof()
 
+    def get_ctxt(self):
+        ctxt = {}
+        for v in self.vars:
+            ctxt[v.name] = v.T
+        return ctxt
+
     @staticmethod
     def parse_init_state(data):
         """Obtain proof state from a data dictionary."""
