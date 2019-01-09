@@ -1,0 +1,6 @@
+{
+  "theories":[
+      "logic_base",
+      "logic"
+  ]
+}

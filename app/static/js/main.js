@@ -1,11 +1,13 @@
 (function ($) {
     var instructions = [];
-    var pageNum = 0;
+    var page_num = 0;
     var index = 0;
     var theorem = {};
-    var data_dic;
     var cells = {};
     var result_list = [];
+    var is_mousedown = false;
+    var is_crlt_click = false;
+    var click_count = 0;
 
     $(function () {
         $('#theorem-select').ready(function () {
@@ -81,25 +83,25 @@
     }
 
         $('#add-cell').on('click', function () {
-            pageNum++;
+            page_num++;
             // Add CodeMirror textarea
-            id = 'code' + pageNum + '-pan';
+            var id = 'code' + page_num + '-pan';
             $('#codeTab').append(
                 $('<li class="nav-item"><a  class="nav-link" ' +
                     'data-toggle="tab"' +
-                    'href="#code' + pageNum + '-pan">' +
-                    'Page ' + pageNum +
+                    'href="#code' + page_num + '-pan">' +
+                    'Page ' + page_num +
                     '<button id="close_tab" type="button" ' +
                     'title="Remove this page">×</button>' +
                     '</a></li>'));
             let class_name = 'tab-pane fade active newCodeMirror code-cell';
-            if (pageNum === 1)
+            if (page_num === 1)
                 class_name = 'tab-pane fade in active code-cell';
             $('#codeTabContent').append(
-                $('<div class="' + class_name + '" id="code' + pageNum + '-pan">' +
-                    '<label for="code' + pageNum + '"></label> ' +
-                    '<textarea' + ' id="code' + pageNum + '""></textarea>'));
-            init_editor("code" + pageNum);
+                $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
+                    '<label for="code' + page_num + '"></label> ' +
+                    '<textarea' + ' id="code' + page_num + '""></textarea>'));
+            init_editor("code" + page_num);
             // Add location for displaying results
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
@@ -107,21 +109,21 @@
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<a href="#" id="link-left" style="float:left;"><</a><pre id="instruction" style="float:left;"> </pre>'
-                    +'<a href="#" id="link-right" style="float:left;">></a></div></div>'));
+                    + '<a href="#" id="link-right" style="float:left;">></a></div></div>'));
 
-            $('#codeTab a[href="#code' + pageNum + '-pan"]').tab('show');
+            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('.newCodeMirror').each(function () {
                 $(this).removeClass('active')
             });
         });
 
         $('#right').on('click', '#link-left', function () {
-            if (index < instructions.length-1) {
+            if (index < instructions.length - 1) {
                 index++;
                 var status_output = get_selected_instruction();
                 status_output.innerHTML = instructions[index];
             }
-        })
+        });
 
         $('#right').on('click', '#link-right', function () {
             if (index > 0) {
@@ -129,8 +131,8 @@
                 var status_output = get_selected_instruction();
                 status_output.innerHTML = instructions[index];
             }
-        })
- 
+        });
+
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
             $(this).tab('show');
@@ -140,6 +142,7 @@
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
             var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
             var rtop = document.querySelector('.rtop');
+            revert_status(editor);
             editor.focus();
             editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
             editor.setSize("auto", rtop.clientHeight - 40);
@@ -158,10 +161,28 @@
                 if (pageNum === "Page 1")
                     first = true;
                 remove_page(first);
+                var id = get_selected_id();
                 $('#codeTab a:first').tab('show');
+                delete cells.id;
             }
         });
 
+        function remove_page(first) {
+            if (first)
+                page_num = 0;
+            else
+                page_num = 1;
+            $('#codeTab > li').each(function () {
+                var pageId = $(this).children('a').attr('href');
+                if (pageId === "#code1-pan") {
+                    return true;
+                }
+                page_num++;
+                $(this).children('a').html('Page ' + page_num +
+                    '<button id="close_tab" type="button" ' +
+                    'title="Remove this page">×</button>');
+            });
+        }
 
         $('#delete-cell').on('click', function () {
             $('.code-cell.selected').remove();
@@ -250,13 +271,32 @@
             $('#open-problem')[0].value = '';
         });
 
-        $('#left').on('click', 'a', function() {
+        $('#left_json').on('click', 'a', function() {
             $('#add-cell').click();
             var d = $(this).attr('id');
             var data = result_list[d-1]['proof'];
             setTimeout(function() {theorem_proof(data)}, 500);
         });
 
+        $('#file-path').on('click', '#root-a', function() {
+            $('#left_json').empty();
+            $('#file-path a:last').remove();
+        })
+
+        $('#root-file').on('click','a',function() {
+             var name = $(this).text();
+             name = $.trim(name);
+//             console.log($('#file-path').text().indexOf(name));
+             if ($('#file-path').html() === '') {
+                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> '+name+'</b></font></a>'));
+             }
+
+             else if ($('#file-path').text().indexOf(name) === -1) {
+                $('#root-a').after($('<a href="#"><font color="red"><b> '+name+'</b></font></a>'));
+             };
+             data = JSON.stringify(name);
+             ajax_res(data);
+        })
 
         function add_info() {
             var data = [];
@@ -321,6 +361,58 @@
             });
         }
 
+        function ajax_res(data) {
+            $.ajax({
+                        url: "/api/json",
+                        type: "POST",
+                        data: data,
+                        success: function (result) {
+                            var num = 0;
+                            result_list = result['data'];
+                            $('#left_json').empty();
+                            for (var d in result['data']) {
+                                num++;
+                                var name = result['data'][d]['name'];
+                                var obj = result['data'][d]['prop'];
+                                var ty = result['data'][d]['ty'];
+                                var str = ''
+                                if (ty === 'def.ax'){
+                                    $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'))
+                                }
+
+                                if (ty === 'thm'){
+                                    $.each(obj, function(i, val) {
+                                        str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                                    });
+                                    $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a></br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                                }
+
+                                if (ty === 'type.ind'){
+                                    var constrs = result['data'][d]['constrs'];
+                                    str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name']
+                                    for (var i in constrs[1]['args']){
+                                        str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
+                                    }
+                                $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
+                                }
+
+                                if (ty === 'def.ind'){
+                                $('#left_json').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
+                                        + ' where'+'</p>'))
+                                    for (var j in obj){
+                                        str = ''
+                                        $.each(obj[j], function(i, val){
+                                            str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
+                                        })
+                                        $('#left_json p:last').append($('<p>'+ str+'</p>'));
+                                     }
+                                }
+                            }
+                        }
+                    });
+
+        }
+
         $('#json-button').on('click', function() {
             name = prompt('please enter the file name');
             num = 0;
@@ -376,6 +468,20 @@
 
             });
 
+        $(function(){
+            num_root = 0;
+            $.ajax({
+                url: "/api/root_file",
+                success: function(r) {
+                    $.each(r['theories'], function(i,val) {
+                        num_root++;
+                        $('#root-file').append($('<a href="#"  ' + 'id="'+ num_root + '"><font color="#006000"><b>'+ val +'</b></font></a></br>'));
+                    });
+                }
+
+            });
+        })
+
         document.getElementById("run-button").addEventListener('click', send_input);
     });
 
@@ -408,7 +514,11 @@
                 send_input();
             } else if (event.code === 'Enter') {
                 event.preventDefault();
-                add_line_after(cm);
+                if (edit_line_number !== -1) {
+                    set_line(cm);
+                } else {
+                    add_line_after(cm);
+                }
             } else if (event.code === 'Tab') {
                 event.preventDefault();
                 unicode_replace(cm);
@@ -417,8 +527,42 @@
                     event.preventDefault();
                     remove_line(cm);
                 }
+            } else if (event.code === 'Escape') {
+                event.preventDefault();
+                if (edit_line_number !== -1) {
+                    cm.getAllMarks().forEach(e => {
+                        if (e.readOnly !== undefined) {
+                            if (e.readOnly) {
+                                e.clear();
+                            }
+                        }
+                    });
+                    var id = get_selected_id();
+                    var cell = cells[id];
+                    if (mod === 0) {
+                        let origin_line = cell[edit_line_number].id + ': ';
+                        if(cell[edit_line_number].th !== '')
+                            origin_line += cell[edit_line_number].th + ' by '
+                                        + cell[edit_line_number].rule_name;
+                        cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
+                            line: edit_line_number,
+                            ch: Number.MAX_SAFE_INTEGER
+                        });
+                    } else if (mod === 1) {
+                        let origin_line = cell[edit_line_number].id + ': '
+                            + cell[edit_line_number].th;
+                        cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
+                            line: edit_line_number,
+                            ch: Number.MAX_SAFE_INTEGER
+                        });
+                    }
+                    readonly_lines.push(edit_line_number);
+                    readonly_lines.sort();
+                    edit_line_number = -1;
+                }
             }
         });
+
         editor.on("focus", function (cm, event) {
             $('#codeTabContent .code-cell').each(function () {
                 $(this).removeClass('selected');
@@ -427,9 +571,42 @@
             set_theorem_select(cm);
         });
 
-        editor.on("cursorActivity", function (doc) {
-            set_read_only(doc);
-        })
+        editor.on("cursorActivity", function (cm) {
+                if (is_mousedown) {
+                    mark_text(cm);
+                    is_mousedown = false;
+                    is_crlt_click = false;
+                }
+            }
+        );
+
+        editor.on('beforeChange', function (cm, change) {
+            console.log(change);
+            if (edit_flag) {
+                edit_flag = false;
+                return;
+            } else if (readonly_lines.indexOf(change.from.line) !== -1) {
+                change.cancel();
+            }
+        });
+
+        editor.on('mousedown', function (cm, event) {
+            is_mousedown = true;
+            if (event.ctrlKey)
+                is_crlt_click = true;
+            click_count++;
+            if (click_count === 1) {
+                timer = setTimeout(function () {
+                    if (click_count > 1) {
+                        clearTimeout(timer);
+                        console.log(cm);
+                        console.log(event);
+                        set_read_only(cm);
+                    }
+                    click_count = 0;
+                }, 300)
+            }
+        });
     }
 
     function set_theorem_select(doc) {
@@ -452,8 +629,91 @@
         $('#theorem-select').selectpicker('refresh');
     }
 
-    function set_read_only(doc) {
+    function set_read_only(cm) {
+        cm.setCursor(cm.getCursor().line, Number.MAX_SAFE_INTEGER);
+        var line_num = cm.getCursor().line;
+        var ch = cm.getCursor().ch;
+        var line = cm.getLineHandle(line_num).text;
+        if (line.indexOf('sorry')) {
+            cm.getAllMarks().forEach(e => {
+                if (e.readOnly !== undefined)
+                    if (e.readOnly)
+                        e.clear();
+                if (e.css !== undefined)
+                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                        e.clear();
+            });
+            readonly_lines.splice(line_num, 1);
+            cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch - 5}, {readOnly: true});
+            cm.addSelection({line: line_num, ch: ch - 5}, {line: line_num, ch: ch});
+            edit_line_number = line_num;
+        } else if (line.split(': ')[1].trim() === '') {
+            cm.getAllMarks().forEach(e => {
+                if (e.readOnly !== undefined)
+                    if (e.readOnly)
+                        e.clear();
+                if (e.css !== undefined)
+                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                        e.clear();
+            });
+            readonly_lines.splice(line_num, 1);
+            cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {readOnly: true});
+            edit_line_number = line_num;
+        }
+    }
 
+    function mark_text(cm) {
+        var origin_pos = cm.getCursor();
+        cm.setCursor(cm.getCursor().line, Number.MAX_SAFE_INTEGER);
+        var line_num = cm.getCursor().line;
+        var ch = cm.getCursor().ch;
+        var line = cm.getLineHandle(line_num).text;
+        if (is_crlt_click) {
+            var flag = false;
+            if (click_line_number !== -1 && line_num < click_line_number)
+                flag = true;
+            cm.getAllMarks().forEach(e => {
+                if (e.css !== undefined)
+                    if (e.css.indexOf('background') !== -1)
+                        e.clear();
+            });
+            if (flag)
+                cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
+            ctrl_click_line_number = line_num;
+            is_crlt_click = false;
+        } else if (line.indexOf('sorry') !== -1) {
+            cm.getAllMarks().forEach(e => {
+                if (e.css !== undefined)
+                    if (e.css.indexOf('color') !== -1)
+                        e.clear();
+            });
+            cm.markText({line: line_num, ch: ch - 5}, {line: line_num, ch: ch}, {
+                css: "color: red"
+            });
+            click_line_number = line_num;
+        } else {
+            cm.getAllMarks().forEach(e => {
+                if (e.css !== undefined)
+                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                        e.clear();
+            });
+            click_line_number = -1;
+            ctrl_click_line_number = -1;
+        }
+        cm.setCursor(origin_pos);
+    }
+    
+    function revert_status(cm) {
+        is_mousedown = false;
+        is_crlt_click = false;
+        click_count = 0;
+        edit_flag = false;
+        readonly_lines.length = 0;
+        click_line_number = -1;
+        ctrl_click_line_number = -1;
+        edit_line_number = -1;
+        for(var i = 0; i < cm.lineCount(); i++)
+            readonly_lines.push(i);
     }
 
     function resize_editor() {
@@ -474,4 +734,5 @@
         sizes: [20, 80],
         gutterSize: 2,
     });
-})(jQuery);
+})
+(jQuery);

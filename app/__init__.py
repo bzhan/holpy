@@ -12,7 +12,6 @@ from logic.basic import BasicTheory
 from kernel.type import HOLType
 from file_function import save_file
 
-
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
@@ -20,6 +19,7 @@ app.config.from_object('config')
 
 # Dictionary from id to ProofState
 cells = dict()
+
 
 def get_result_from_cell(cell):
     return {
@@ -111,10 +111,12 @@ def introduction():
 def apply_backward_step():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))        
+        cell = cells.get(data.get('id'))
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem = data.get('theorem').split(",")
         theorem, prevs = theorem[0], theorem[1:]
+        if prevs:
+            prevs = [prev.strip() for prev in prevs]
         cell.apply_backward_step(id, theorem, prevs=prevs)
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
@@ -124,7 +126,7 @@ def apply_backward_step():
 def apply_induction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))        
+        cell = cells.get(data.get('id'))
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem, var = data.get('theorem').split(",")
         cell.apply_induction(id, theorem, var)
@@ -136,7 +138,7 @@ def apply_induction():
 def rewrite_goal():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))        
+        cell = cells.get(data.get('id'))
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem = data.get('theorem')
         cell.rewrite_goal(id, theorem)
@@ -144,7 +146,24 @@ def rewrite_goal():
     return jsonify({})
 
 
-@app.route('/api/json', methods = ['POST'])
+@app.route('/api/set-line', methods=['POST'])
+def set_line():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells.get(data.get('id'))
+        try:
+            (id, rule_name, args, prevs, th) = parser.split_proof_rule(data.get('line'))
+            cell.set_line(id, rule_name, args=args, prevs=prevs, th=th)
+            return jsonify(get_result_from_cell(cell))
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+        return jsonify(error)
+
+
+@app.route('/api/json', methods=['POST'])
 def json_parse():
     thy = BasicTheory
     output_data = []
@@ -178,8 +197,8 @@ def json_parse():
                     string = 'var ' + k + ' :: ' + v
                     vars.append(string)
                 proof['variables'] = vars
-                proof['assumes'] = [printer.print_term(thy, i) for i in Term.strip_implies(prop)[0]]
-                proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1])
+                proof['assumes'] = [printer.print_term(thy, i, print_abs_type=True) for i in Term.strip_implies(prop)[0]]
+                proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1], print_abs_type=True)
                 proof['instructions'] = []
                 output['proof'] = proof
                 output_data.append(output)
@@ -201,6 +220,17 @@ def json_parse():
                 output_data.append(output)
 
     return jsonify({'data': output_data})
+
+@app.route('/api/root_file', methods=['GET'])
+def get_root():
+    json_data = {}
+    with open('library/root.json', 'r+', encoding='utf-8') as f:
+        json_data = json.load(f)
+        f.close()
+
+    return jsonify(json_data)
+
+
 
 
 
