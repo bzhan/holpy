@@ -35,6 +35,7 @@ function display_checked_proof(result) {
         status_output.style.color = 'red';
     } else {
         edit_flag = true;
+        edit_line_number = -1;
         add_cell_data(get_selected_id(), result['proof']);
         display(get_selected_id(), result['proof']);
         var num_gaps = result["report"]["num_gaps"];
@@ -303,7 +304,6 @@ function set_line(cm) {
             data: data,
             success: function (result) {
                 display_checked_proof(result);
-                edit_line_number = -1;
             }
         })
     })
