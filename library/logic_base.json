@@ -269,5 +269,103 @@
                 "prop": "rev (cons x xs) = rev xs @ cons x nil"
             }
         ]
+    },
+    {
+        "ty": "thm",
+        "name": "conj_comm",
+        "vars": {
+            "A": "bool",
+            "B": "bool"
+        },
+        "prop": "A & B --> B & A"
+    },
+    {
+        "ty": "thm",
+        "name": "disj_comm",
+        "vars": {
+            "A": "bool",
+            "B": "bool"
+        },
+        "prop": "A | B --> B | A"
+    },
+    {
+        "ty": "thm",
+        "name": "double_neg",
+        "vars": {
+            "A": "bool"
+        },
+        "prop": "~~A --> A"
+    },
+    {
+        "ty": "thm",
+        "name": "ex_conj_distrib",
+        "vars": {
+            "A": "'a => bool",
+            "B": "'b => bool"
+        },
+        "prop": "(?x::'a. A x & B x) --> (?x::'a. A x) & (?x::'a. B x)"
+    },
+    {
+        "ty": "thm",
+        "name": "all_conj_distrib",
+        "vars": {
+            "A": "'a => bool",
+            "B": "'b => bool"
+        },
+        "prop": "(!x::'a. A x & B x) --> (!x::'a. A x) & (!x::'a. B x)"
+    },
+    {
+        "ty": "thm",
+        "name": "nat.add_0_right",
+        "vars": {
+            "n": "nat"
+        },
+        "prop": "n + 0 = n"
+    },
+    {
+        "ty": "thm",
+        "name": "nat.mult_0_right",
+        "vars": {
+            "n": "nat"
+        },
+        "prop": "n * 0 = 0"
+    },
+    {
+        "ty": "thm",
+        "name": "conj_disj_distribL1",
+        "vars": {
+            "A": "bool",
+            "B": "bool",
+            "C": "bool"
+        },
+        "prop": "A & (B | C) --> (A & B) | (A & C)"
+    },
+    {
+        "ty": "thm",
+        "name": "conj_disj_distribL1",
+        "vars": {
+            "A": "bool",
+            "B": "bool",
+            "C": "bool"
+        },
+        "prop": "(A & B) | (A & C) --> A & (B | C)"
+    },
+    {
+        "ty": "thm",
+        "name": "list.append_right_neutral",
+        "vars": {
+            "xs": "'a list"
+        },
+        "prop": "xs @ nil = xs"
+    },
+    {
+        "ty": "thm",
+        "name": "list.append_assoc",
+        "vars": {
+            "xs": "'a list",
+            "ys": "'a list",
+            "zs": "'a list"
+        },
+        "prop": "(xs @ ys) @ zs = xs @ ys @ zs"
     }
 ]

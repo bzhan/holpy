@@ -148,9 +148,11 @@ def rewrite_goal():
 def json_parse():
     thy = BasicTheory
     name = json.loads(request.get_data().decode("utf-8"))#loads是解码文件，load是加载文件
-    with open('library/'+name+'.json', 'r',encoding='utf-8') as f:
-        data = json.load(f)
-
+    if type(name) == str:
+        with open('library/'+name+'.json', 'r',encoding='utf-8') as f:
+            data = json.load(f)
+    else:
+        data = name
     output_data = []
     if data:
          for d in data:
@@ -196,5 +198,16 @@ def json_parse():
     save_file(data)
 
     return jsonify({'data': output_data})
+
+@app.route('/api/root_file', methods=['GET'])
+def get_root():
+    json_data = {}
+    with open('library/root.json', 'r+', encoding='utf-8') as f:
+        json_data = json.load(f)
+        f.close()
+
+    return jsonify(json_data)
+
+
 
 
