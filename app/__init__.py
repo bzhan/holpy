@@ -34,6 +34,7 @@ def index():
 
 @app.route('/api/init', methods=['POST'])
 def init_component():
+    x = request
     data = json.loads(request.get_data().decode("utf-8"))
     if data.get('event') == 'init_theorem':
         macro_dict = {0: 'NONE', 1: 'TERM', 2: 'TYINST', 3: 'INST', 4: 'STRING'}

@@ -8,6 +8,10 @@
     var is_crlt_click = false;
     var click_count = 0;
 
+    $(document).ready(function () {
+        document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
+    });
+
     $(function () {
         $('#theorem-select').ready(function () {
             $(function () {
@@ -148,11 +152,13 @@
         $('#left_json').on('click', 'a', function() {
             $('#add-cell').click();
             var d = $(this).attr('id');
-            var data = result_list[d-1]['proof'];
-            setTimeout(function() {theorem_proof(data)}, 500);
+            var data = result_list[d - 1]['proof'];
+            setTimeout(function () {
+                theorem_proof(data)
+            }, 500);
         });
 
-        $('#file-path').on('click', '#root-a', function() {
+        $('#file-path').on('click', '#root-a', function () {
             $('#left_json').empty();
             if ($('#file-path a:last').text() !== 'root/') {
                 $('#file-path a:last').remove();
@@ -160,24 +166,19 @@
         });
 
         $('#root-file').on('click', 'a', function() {
-             $('#add-info').click(add_info);
-             name = $(this).text();
-             name = $.trim(name);
-             if ($('#file-path').html() === '') {
+            $('#add-info').click(add_info);
+            name = $(this).text();
+            name = $.trim(name);
+            if ($('#file-path').html() === '') {
                 $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> '+name+'</b></font></a>'));
-             }
-
-             else if ($('#file-path a:last').text() === 'root/') {
+            } else if ($('#file-path a:last').text() === 'root/') {
                 $('#root-a').after($('<a href="#"><font color="red"><b> '+name+'</b></font></a>'));
-             }
-
-             else if ($('#file-path a:last').text() !== name) {
+            } else if ($('#file-path a:last').text() !== name) {
                 $('#file-path a:last').remove();
                 $('#root-a').after($('<a href="#"><font color="red"><b> '+ name + '</b></font></a>'));
-             };
-
-             data = JSON.stringify(name);
-             ajax_res(data);
+            };
+            data = JSON.stringify(name);
+            ajax_res(data);
         });
 
         $('#json-button').on('click', function() {
@@ -417,9 +418,9 @@
                     var cell = cells[id];
                     if (mod === 0) {
                         let origin_line = cell[edit_line_number].id + ': ';
-                        if(cell[edit_line_number].th !== '')
+                        if (cell[edit_line_number].th !== '')
                             origin_line += cell[edit_line_number].th + ' by '
-                                        + cell[edit_line_number].rule_name;
+                                + cell[edit_line_number].rule_name;
                         cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
                             line: edit_line_number,
                             ch: Number.MAX_SAFE_INTEGER
@@ -577,7 +578,7 @@
         }
         cm.setCursor(origin_pos);
     }
-    
+
     function revert_status(cm) {
         is_mousedown = false;
         is_crlt_click = false;
@@ -587,7 +588,7 @@
         click_line_number = -1;
         ctrl_click_line_number = -1;
         edit_line_number = -1;
-        for(var i = 0; i < cm.lineCount(); i++)
+        for (var i = 0; i < cm.lineCount(); i++)
             readonly_lines.push(i);
     }
 
