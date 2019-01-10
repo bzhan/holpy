@@ -166,23 +166,6 @@
             }
         });
 
-        function remove_page(first) {
-            if (first)
-                page_num = 0;
-            else
-                page_num = 1;
-            $('#codeTab > li').each(function () {
-                var pageId = $(this).children('a').attr('href');
-                if (pageId === "#code1-pan") {
-                    return true;
-                }
-                page_num++;
-                $(this).children('a').html('Page ' + page_num +
-                    '<button id="close_tab" type="button" ' +
-                    'title="Remove this page">×</button>');
-            });
-        }
-
         $('#delete-cell').on('click', function () {
             $('.code-cell.selected').remove();
         });
