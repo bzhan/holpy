@@ -214,24 +214,6 @@
 
         get_selected_editor().focus();
 
-        document.getElementById('open-file').addEventListener('change', function (e) {
-            e = e || window.event;
-
-            let files = this.files;
-            let editor = get_selected_editor();
-            editor.setValue("");
-            let i = 0, f;
-            for (; f = files[i]; i++) {
-                let reader = new FileReader();
-                reader.onload = (function (file) {
-                    return function (e) {
-                        editor.setValue(editor.getValue() + this.result);
-                    };
-                })(f);
-                reader.readAsText(f);
-            }
-        });
-
         $('#left_json').on('click', 'a', function() {
             $('#add-cell').click();
             var d = $(this).attr('id');
