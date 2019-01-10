@@ -8,6 +8,10 @@
     var is_crlt_click = false;
     var click_count = 0;
 
+    $(document).ready(function () {
+        document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
+    });
+
     $(function () {
         $('#theorem-select').ready(function () {
             $(function () {
@@ -31,55 +35,55 @@
             });
         });
 
-    function rp(x) {
-        if (x === 0)
-            return 'normal';
-        if (x === 1)
-            return 'bound';
-        if (x === 2)
-            return 'var';
-    }
+        function rp(x) {
+            if (x === 0)
+                return 'normal';
+            if (x === 1)
+                return 'bound';
+            if (x === 2)
+                return 'var';
+        }
 
-    function remove_page(first) {
-        if (first)
-            pageNum = 0;
-        else
-            pageNum = 1;
-        $('#codeTab > li').each(function () {
-            var pageId = $(this).children('a').attr('href');
-            if (pageId === "#code1-pan") {
-                return true;
-            }
-            pageNum++;
-            $(this).children('a').html('Page ' + pageNum +
-                '<button id="close_tab" type="button" ' +
-                'title="Remove this page">×</button>');
+        function remove_page(first) {
+            if (first)
+                pageNum = 0;
+            else
+                pageNum = 1;
+            $('#codeTab > li').each(function () {
+                var pageId = $(this).children('a').attr('href');
+                if (pageId === "#code1-pan") {
+                    return true;
+                }
+                pageNum++;
+                $(this).children('a').html('Page ' + pageNum +
+                    '<button id="close_tab" type="button" ' +
+                    'title="Remove this page">×</button>');
             });
-    }
+        }
 
-    function theorem_proof(r_data) {
-        var json_data = r_data;
-        instructions = json_data['instructions'];
-        var event = {
-            'event': 'init_cell',
-            'id': get_selected_id(),
-            'variables': json_data['variables'],
-            'assumes': json_data['assumes'],
-            'conclusion': json_data['conclusion']
-        };
-        var data = JSON.stringify(event);
-        display_running();
-        $.ajax({
-            url: "/api/init",
-            type: "POST",
-            data: data,
-            success: function (result) {
-                display_checked_proof(result);
-                get_selected_editor().focus();
-                display_instuctions(instructions);
-            }
-        });
-    }
+        function theorem_proof(r_data) {
+            var json_data = r_data;
+            instructions = json_data['instructions'];
+            var event = {
+                'event': 'init_cell',
+                'id': get_selected_id(),
+                'variables': json_data['variables'],
+                'assumes': json_data['assumes'],
+                'conclusion': json_data['conclusion']
+            };
+            var data = JSON.stringify(event);
+            display_running();
+            $.ajax({
+                url: "/api/init",
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    display_checked_proof(result);
+                    get_selected_editor().focus();
+                    display_instuctions(instructions);
+                }
+            });
+        }
 
         $('#add-cell').on('click', function () {
             page_num++;
@@ -208,7 +212,6 @@
         });
 
 
-
         $('#add-cell').click();
         $('.code-cell').addClass('selected');
 
@@ -270,32 +273,33 @@
             $('#open-problem')[0].value = '';
         });
 
-        $('#left_json').on('click', 'a', function() {
+        $('#left_json').on('click', 'a', function () {
             $('#add-cell').click();
             var d = $(this).attr('id');
-            var data = result_list[d-1]['proof'];
-            setTimeout(function() {theorem_proof(data)}, 500);
+            var data = result_list[d - 1]['proof'];
+            setTimeout(function () {
+                theorem_proof(data)
+            }, 500);
         });
 
-        $('#file-path').on('click', '#root-a', function() {
+        $('#file-path').on('click', '#root-a', function () {
             $('#left_json').empty();
             $('#file-path a:last').remove();
         })
 
-        $('#root-file').on('click','a',function() {
-             $('#add-info').click(add_info);
-             name = $(this).text();
-             name = $.trim(name);
+        $('#root-file').on('click', 'a', function () {
+            $('#add-info').click(add_info);
+            name = $(this).text();
+            name = $.trim(name);
 //             console.log($('#file-path').text().indexOf(name));
-             if ($('#file-path').html() === '') {
-                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> '+name+'</b></font></a>'));
-             }
-
-             else if ($('#file-path').text().indexOf(name) === -1) {
-                $('#root-a').after($('<a href="#"><font color="red"><b> '+name+'</b></font></a>'));
-             };
-             data = JSON.stringify(name);
-             ajax_res(data);
+            if ($('#file-path').html() === '') {
+                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> ' + name + '</b></font></a>'));
+            } else if ($('#file-path').text().indexOf(name) === -1) {
+                $('#root-a').after($('<a href="#"><font color="red"><b> ' + name + '</b></font></a>'));
+            }
+            ;
+            data = JSON.stringify(name);
+            ajax_res(data);
         })
 
         function add_info() {
@@ -329,8 +333,10 @@
                 data.push(theorem);
                 $('#thm,#term,#vars').val('');
             }
-            var event = {"data":data,
-                         "name":name};
+            var event = {
+                "data": data,
+                "name": name
+            };
 
             data_ajax = JSON.stringify(event);
             $.ajax({
@@ -350,9 +356,9 @@
                             $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'))
                         }
 
-                        if (ty === 'thm'){
-                            $.each(obj, function(i, val) {
-                                str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                        if (ty === 'thm') {
+                            $.each(obj, function (i, val) {
+                                str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                             });
                             $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
                         }
@@ -364,72 +370,71 @@
         function ajax_res(data) {
             num = 0;
             $.ajax({
-                        url: "/api/json",
-                        type: "POST",
-                        data: data,
-                        success: function (result) {
-                            result_list = result['data'];
-                            $('#left_json').empty();
-                            for (var d in result['data']) {
-                                num++;
-                                var name = result['data'][d]['name'];
-                                var obj = result['data'][d]['prop'];
-                                var ty = result['data'][d]['ty'];
-                                var str = ''
-                                if (ty === 'def.ax'){
-                                    $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'))
-                                }
+                url: "/api/json",
+                type: "POST",
+                data: data,
+                success: function (result) {
+                    result_list = result['data'];
+                    $('#left_json').empty();
+                    for (var d in result['data']) {
+                        num++;
+                        var name = result['data'][d]['name'];
+                        var obj = result['data'][d]['prop'];
+                        var ty = result['data'][d]['ty'];
+                        var str = ''
+                        if (ty === 'def.ax') {
+                            $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'))
+                        }
 
-                                if (ty === 'thm'){
-                                    $.each(obj, function(i, val) {
-                                        str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-                                    });
-                                    $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a></br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
-                                }
+                        if (ty === 'thm') {
+                            $.each(obj, function (i, val) {
+                                str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                            });
+                            $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
+                        }
 
-                                if (ty === 'type.ind'){
-                                    var constrs = result['data'][d]['constrs'];
-                                    str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name']
-                                    for (var i in constrs[1]['args']){
-                                        str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
-                                    }
-                                $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
-                                }
+                        if (ty === 'type.ind') {
+                            var constrs = result['data'][d]['constrs'];
+                            str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name']
+                            for (var i in constrs[1]['args']) {
+                                str += ' (' + constrs[1]['args'][i] + ' :: ' + obj[i] + ')';
+                            }
+                            $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
+                        }
 
-                                if (ty === 'def.ind'){
-                                $('#left_json').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
-                                        + ' where'+'</p>'))
-                                    for (var j in obj){
-                                        str = ''
-                                        $.each(obj[j], function(i, val){
-                                            str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
-                                        })
-                                        $('#left_json p:last').append($('<p>'+ str+'</p>'));
-                                     }
-                                }
+                        if (ty === 'def.ind') {
+                            $('#left_json').append($('<p id="fun' + j + '"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
+                                + ' where' + '</p>'))
+                            for (var j in obj) {
+                                str = ''
+                                $.each(obj[j], function (i, val) {
+                                    str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                                })
+                                $('#left_json p:last').append($('<p>' + str + '</p>'));
                             }
                         }
-                    });
+                    }
+                }
+            });
 
         }
 
 
-
-        $('#json-button').on('click', function() {
+        $('#json-button').on('click', function () {
             name = prompt('please enter the file name');
             var data = JSON.stringify(name);
             $('#add-info').click(add_info);
             ajax_res(data);
-            });
+        });
 
-        $(function(){
+        $(function () {
             num_root = 0;
             $.ajax({
                 url: "/api/root_file",
-                success: function(r) {
-                    $.each(r['theories'], function(i,val) {
+                success: function (r) {
+                    $.each(r['theories'], function (i, val) {
                         num_root++;
-                        $('#root-file').append($('<a href="#"  ' + 'id="'+ num_root + '"><font color="#006000"><b>'+ val +'</b></font></a></br>'));
+                        $('#root-file').append($('<a href="#"  ' + 'id="' + num_root + '"><font color="#006000"><b>' + val + '</b></font></a></br>'));
                     });
                 }
 
@@ -495,9 +500,9 @@
                     var cell = cells[id];
                     if (mod === 0) {
                         let origin_line = cell[edit_line_number].id + ': ';
-                        if(cell[edit_line_number].th !== '')
+                        if (cell[edit_line_number].th !== '')
                             origin_line += cell[edit_line_number].th + ' by '
-                                        + cell[edit_line_number].rule_name;
+                                + cell[edit_line_number].rule_name;
                         cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
                             line: edit_line_number,
                             ch: Number.MAX_SAFE_INTEGER
@@ -656,7 +661,7 @@
         }
         cm.setCursor(origin_pos);
     }
-    
+
     function revert_status(cm) {
         is_mousedown = false;
         is_crlt_click = false;
@@ -666,7 +671,7 @@
         click_line_number = -1;
         ctrl_click_line_number = -1;
         edit_line_number = -1;
-        for(var i = 0; i < cm.lineCount(); i++)
+        for (var i = 0; i < cm.lineCount(); i++)
             readonly_lines.push(i);
     }
 
