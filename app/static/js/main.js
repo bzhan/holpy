@@ -232,44 +232,6 @@
             }
         });
 
-        document.getElementById('open-problem').addEventListener('change', function (e) {
-            e = e || window.event;
-
-            let files = this.files;
-            let i = 0, f;
-            if (files !== '') {
-                for (; f = files[i]; i++) {
-                    let reader = new FileReader();
-                    reader.onload = (function () {
-                        var json_data = JSON.parse(this.result);
-                        instructions = json_data['instructions'];
-                        var event = {
-                            'event': 'init_cell',
-                            'id': get_selected_id(),
-                            'variables': json_data['variables'],
-                            'assumes': json_data['assumes'],
-                            'conclusion': json_data['conclusion']
-                        };
-                        var data = JSON.stringify(event);
-                        display_running();
-
-                        $.ajax({
-                            url: "/api/init",
-                            type: "POST",
-                            data: data,
-                            success: function (result) {
-                                display_checked_proof(result);
-                                get_selected_editor().focus();
-                                display_instuctions(instructions);
-                            }
-                        });
-                    });
-                    reader.readAsText(f);
-                }
-            }
-            $('#open-problem')[0].value = '';
-        });
-
         $('#left_json').on('click', 'a', function() {
             $('#add-cell').click();
             var d = $(this).attr('id');
