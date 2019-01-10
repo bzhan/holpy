@@ -55,26 +55,25 @@ function display_instuctions(instructions) {
 
 function add_line_after(cm) {
     $(document).ready(function () {
-            var line_number = cm.getCursor().line;
-            var line = cm.getLine(line_number);
-            var input = {
-                "id": get_selected_id(),
-                "line": line,
-            };
-            var data = JSON.stringify(input);
-            display_running();
+        var line_number = cm.getCursor().line;
+        var line = cm.getLine(line_number);
+        var input = {
+            "id": get_selected_id(),
+            "line": line,
+        };
+        var data = JSON.stringify(input);
+        display_running();
 
-            $.ajax({
-                url: "/api/add-line-after",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    display_checked_proof(result);
-                    cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
-                }
-            })
-        }
-    )
+        $.ajax({
+            url: "/api/add-line-after",
+            type: "POST",
+            data: data,
+            success: function (result) {
+                display_checked_proof(result);
+                cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
+            }
+        })
+    })
 }
 
 function remove_line(cm) {
