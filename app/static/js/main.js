@@ -440,8 +440,6 @@
 
             });
         })
-
-        document.getElementById("run-button").addEventListener('click', send_input);
     });
 
     function init_editor(editor_id = "code1") {
@@ -468,10 +466,7 @@
             let line_no = cm.getCursor().line;
             let line = cm.getLine(line_no);
 
-            if (event.ctrlKey && event.code === 'Enter') {
-                event.preventDefault();
-                send_input();
-            } else if (event.code === 'Enter') {
+            if (event.code === 'Enter') {
                 event.preventDefault();
                 if (edit_line_number !== -1) {
                     set_line(cm);

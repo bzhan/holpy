@@ -32,26 +32,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/api/check-proof', methods=['POST'])
-def check_proof():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if not data:
-        return jsonify({})
-
-    cell = cells[data.get('id')]
-    proof = data.get('proof')
-    try:
-        cell.parse_proof(proof)
-        cell.check_proof()
-        return jsonify(get_result_from_cell(cell))
-    except Exception as e:
-        error = {
-            "failed": e.__class__.__name__,
-            "message": str(e)
-        }
-        return jsonify(error)
-
-
 @app.route('/api/init', methods=['POST'])
 def init_component():
     data = json.loads(request.get_data().decode("utf-8"))

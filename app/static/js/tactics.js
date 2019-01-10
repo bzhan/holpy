@@ -53,30 +53,6 @@ function display_instuctions(instructions) {
     instr_output.innerHTML = instructions[0];
 }
 
-function send_input() {
-    $(document).ready(function () {
-            var editor = get_selected_editor();
-            var line_no = editor.getCursor().line;
-            var input = {
-                "id": get_selected_id(),
-                "proof": editor.getValue()
-            };
-            var data = JSON.stringify(input);
-            display_running();
-
-            $.ajax({
-                url: "/api/check-proof",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    display_checked_proof(result);
-                    editor.setCursor(line_no, Number.MAX_SAFE_INTEGER);
-                }
-            })
-        }
-    )
-}
-
 function add_line_after(cm) {
     $(document).ready(function () {
             var line_number = cm.getCursor().line;
