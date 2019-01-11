@@ -11,7 +11,8 @@
         ],
         "prop": "A & B --> B & A",
         "ty": "thm",
-        "name": "conj_comm"
+        "name": "conj_comm",
+        "save-proof": "var A :: bool\nvar B :: bool\nA1: A ∧ B ⊢ A ∧ B by assume A ∧ B\nS1: A ∧ B ⊢ B by sorry\nS2: A ∧ B ⊢ A by sorry\nS3: A ∧ B ⊢ B ∧ A by apply_theorem_for conjI, {A: B, B: A} from S1, S2\nS4: ⊢ A ∧ B ⟶ B ∧ A by implies_intr A ∧ B from S3"
     },
     {
         "vars": {

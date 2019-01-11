@@ -140,10 +140,14 @@
         //proof被点击时，传送proof给init:
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
-            var editor = get_selected_editor();
+//            var editor = get_selected_editor();
             if (result_list[proof_id-1]['save-proof']) {
                 $('#add-cell').click();
-                editor.setValue(result_list[proof_id-1]['save-proof']);
+                setTimeout(function() {
+                    edit_flag=true;
+                    var editor = get_selected_editor();
+                    editor.setValue(result_list[proof_id-1]['save-proof']);
+                },500);
             }
             else {
                 $('#add-cell').click();
@@ -481,8 +485,8 @@
                 timer = setTimeout(function () {
                     if (click_count > 1) {
                         clearTimeout(timer);
-                        console.log(cm);
-                        console.log(event);
+//                        console.log(cm);
+//                        console.log(event);
                         set_read_only(cm);
                     }
                     click_count = 0;
