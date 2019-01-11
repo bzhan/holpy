@@ -285,10 +285,14 @@
         //proof 被点击时，传送proof给init；
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
-            var editor = get_selected_editor();
+//            var editor = get_selected_editor();
             if (result_list[proof_id-1]['save-proof']) {
                 $('#add-cell').click();
+//                setTimeout(function() {
+                var editor = get_selected_editor();
+                alert(result_list[proof_id-1]['save-proof']);
                 editor.setValue(result_list[proof_id-1]['save-proof']);
+//                },500);
             }
             else {
             $('#add-cell').click();
@@ -453,8 +457,6 @@
 
         }
 
-
-
         $('#json-button').on('click', function() {
             name = prompt('please enter the file name');
             var data = JSON.stringify(name);
@@ -593,8 +595,8 @@
                 timer = setTimeout(function () {
                     if (click_count > 1) {
                         clearTimeout(timer);
-                        console.log(cm);
-                        console.log(event);
+//                        console.log(cm);
+//                        console.log(event);
                         set_read_only(cm);
                     }
                     click_count = 0;
