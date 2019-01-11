@@ -288,11 +288,11 @@
 //            var editor = get_selected_editor();
             if (result_list[proof_id-1]['save-proof']) {
                 $('#add-cell').click();
-//                setTimeout(function() {
-                var editor = get_selected_editor();
-                alert(result_list[proof_id-1]['save-proof']);
-                editor.setValue(result_list[proof_id-1]['save-proof']);
-//                },500);
+                setTimeout(function() {
+                    edit_flag=true;
+                    var editor = get_selected_editor();
+                    editor.setValue(result_list[proof_id-1]['save-proof']);
+                },500);
             }
             else {
             $('#add-cell').click();
