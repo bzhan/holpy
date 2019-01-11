@@ -6,6 +6,7 @@
     var is_mousedown = false;
     var is_crlt_click = false;
     var click_count = 0;
+    var proof_id = 0;
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -30,7 +31,7 @@
             $('#codeTabContent').append(
                 $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
                     '<label for="code' + page_num + '"></label> ' +
-                    '<textarea' + ' id="code' + page_num + '""></textarea>'));
+                    '<textarea id="code' + page_num + '"></textarea>' + '<button name="' + proof_id +'" class="el-button el-button--default el-button--mini" style="margin-top:3px;width:100px;" id="'+ page_num +'">SAVE</button>'));
             init_editor("code" + page_num);
             // Add location for displaying results
             $('#' + id).append(
@@ -63,10 +64,20 @@
             }
         });
 
+        //点击位于右侧button，监听执行
+        $('div.rtop').on('click', 'button', function() {
+            var editor = get_selected_editor();
+            var proof = editor.getValue();
+            var id = Number($(this).attr('name'))-1;
+            var data_save = JSON.stringify({'name':name, 'proof':proof, 'id':id});
+            if (proof !== '' && id !== -1 ) {
+                save_info(data_save);
+            }
+        });
+
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
             $(this).tab('show');
-
         });
 
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
@@ -126,13 +137,21 @@
 
         get_selected_editor().focus();
 
+        //proof被点击时，传送proof给init:
         $('#left_json').on('click', 'a', function() {
-            $('#add-cell').click();
-            var d = $(this).attr('id');
-            var data = result_list[d - 1]['proof'];
-            setTimeout(function () {
-                theorem_proof(data)
-            }, 500);
+            proof_id = $(this).attr('id');
+            var editor = get_selected_editor();
+            if (result_list[proof_id-1]['save-proof']) {
+                $('#add-cell').click();
+                editor.setValue(result_list[proof_id-1]['save-proof']);
+            }
+            else {
+                $('#add-cell').click();
+                var data = result_list[proof_id-1]['proof'];
+                setTimeout(function() {
+                    theorem_proof(data)
+                }, 500);
+            }
         });
 
         $('#file-path').on('click', '#root-a', function () {
@@ -228,6 +247,18 @@
         });
     }
 
+    function save_info(data_save) {
+        $.ajax({
+            url: "/api/save_proof",
+            type: "put",
+            data: data_save,
+            cache: false,
+            success: function(r) {
+                alert('save success');
+            }
+        })
+    }
+
     function add_info() {
         var data = [];
         if ($('#constant, #type').val() !== '') {
@@ -314,7 +345,7 @@
                         $.each(obj, function(i, val) {
                             str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                         });
-                        $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a></br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                        $('#left_json').append($('<p>'+'<div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
                     }
 
                     if (ty === 'type.ind'){
@@ -434,7 +465,7 @@
         });
 
         editor.on('beforeChange', function (cm, change) {
-            console.log(change);
+//            console.log(change);
             if (edit_flag) {
                 edit_flag = false;
                 return;
