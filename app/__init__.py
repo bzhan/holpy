@@ -32,38 +32,10 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/api/check-proof', methods=['POST'])
-def check_proof():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if not data:
-        return jsonify({})
-
-    cell = cells[data.get('id')]
-    proof = data.get('proof')
-    try:
-        cell.parse_proof(proof)
-        cell.check_proof()
-        return jsonify(get_result_from_cell(cell))
-    except Exception as e:
-        error = {
-            "failed": e.__class__.__name__,
-            "message": str(e)
-        }
-        return jsonify(error)
-
-
 @app.route('/api/init', methods=['POST'])
 def init_component():
     data = json.loads(request.get_data().decode("utf-8"))
-    if data.get('event') == 'init_theorem':
-        macro_dict = {0: 'NONE', 1: 'TERM', 2: 'TYINST', 3: 'INST', 4: 'STRING'}
-        result = {}
-        for key, value in primitive_deriv.items():
-            result[key] = macro_dict[value[1]]
-        return jsonify(result)
-    elif data.get('event') == 'init_theorem_abs':
-        pass
-    elif data.get('event') == 'init_cell':
+    if data.get('event') == 'init_cell':
         cell = ProofState.parse_init_state(data)
         cells[data.get('id')] = cell
         return jsonify(get_result_from_cell(cell))
@@ -200,7 +172,8 @@ def json_parse():
                 proof['variables'] = vars
                 proof['assumes'] = [printer.print_term(thy, i, print_abs_type=True) for i in Term.strip_implies(prop)[0]]
                 proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1], print_abs_type=True)
-                proof['instructions'] = []
+                if 'instructions' in d:
+                    proof['instructions'] = d['instructions']
                 output['proof'] = proof
                 if 'save-proof' in d.keys():
                     output['save-proof'] = d['save-proof']

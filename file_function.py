@@ -22,11 +22,3 @@ def save_proof(n, i, d):
         json.dump(file_data, j, indent=4, ensure_ascii=False)
         j.close()
         f.close()
-
-
-
-
-
-
-
-

@@ -1,9 +1,27 @@
 var edit_flag = false;
+
+// Index of lines that are read-only.
 var readonly_lines = [0];
+
+// Line number for the currently selected goal.
+// -1 for no goal selected.
 var click_line_number = -1;
+
+// Line number for the currently selected conclusion.
+// -1 for no conclusion selected.
 var ctrl_click_line_number = -1;
+
+// Currently edited line. -1 for not currently editing.
 var edit_line_number = -1;
+
+// Current proof content in all of the tabs.
+// Maintained as a dictionary. Keys are ids for the textarea.
+// Values are the corresponding proof content.
 var cells = {};
+
+// Mode for displaying proof
+// 显示证明的模式
+// 0 - 显示所有内容。 1 - 只显示id和thm。
 var mod = 0;
 
 function get_selected_id() {
@@ -27,6 +45,7 @@ function display_running() {
     status_output.innerHTML = "Running";
 }
 
+// Display result returned from the server.
 function display_checked_proof(result) {
     var status_output = get_selected_output();
 
@@ -35,6 +54,7 @@ function display_checked_proof(result) {
         status_output.style.color = 'red';
     } else {
         edit_flag = true;
+        edit_line_number = -1;
         add_cell_data(get_selected_id(), result['proof']);
         display(get_selected_id(), result['proof']);
         var num_gaps = result["report"]["num_gaps"];
@@ -52,52 +72,27 @@ function display_instuctions(instructions) {
     instr_output.innerHTML = instructions[0];
 }
 
-function send_input() {
-    $(document).ready(function () {
-            var editor = get_selected_editor();
-            var line_no = editor.getCursor().line;
-            var input = {
-                "id": get_selected_id(),
-                "proof": editor.getValue()
-            };
-            var data = JSON.stringify(input);
-            display_running();
-
-            $.ajax({
-                url: "/api/check-proof",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    display_checked_proof(result);
-                    editor.setCursor(line_no, Number.MAX_SAFE_INTEGER);
-                }
-            })
-        }
-    )
-}
-
 function add_line_after(cm) {
     $(document).ready(function () {
-            var line_number = cm.getCursor().line;
-            var line = cm.getLine(line_number);
-            var input = {
-                "id": get_selected_id(),
-                "line": line,
-            };
-            var data = JSON.stringify(input);
-            display_running();
+        var line_number = cm.getCursor().line;
+        var line = cm.getLine(line_number);
+        var input = {
+            "id": get_selected_id(),
+            "line": line,
+        };
+        var data = JSON.stringify(input);
+        display_running();
 
-            $.ajax({
-                url: "/api/add-line-after",
-                type: "POST",
-                data: data,
-                success: function (result) {
-                    display_checked_proof(result);
-                    cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
-                }
-            })
-        }
-    )
+        $.ajax({
+            url: "/api/add-line-after",
+            type: "POST",
+            data: data,
+            success: function (result) {
+                display_checked_proof(result);
+                cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
+            }
+        })
+    })
 }
 
 function remove_line(cm) {
@@ -145,23 +140,6 @@ function introduction(cm) {
             success: function (result) {
                 display_checked_proof(result);
                 cm.setCursor(line_number + result['line-diff'], Number.MAX_SAFE_INTEGER);
-            }
-        })
-    })
-}
-
-function init_select_abs() {
-    $(document).ready(function () {
-        var event = {
-            "event": "init_theorem_abs",
-        };
-        var data = JSON.stringify(event);
-
-        $.ajax({
-            url: "/api/init",
-            type: "POST",
-            data: data,
-            success: function (result) {
             }
         })
     })
@@ -303,12 +281,21 @@ function set_line(cm) {
             data: data,
             success: function (result) {
                 display_checked_proof(result);
-                edit_line_number = -1;
             }
         })
     })
 }
 
+// Split a line of proof into its component parts.
+// Returns the list [id, rule_name, args, prevs, th]
+// Example:
+// S2: |- A & B --> B & A by implies_intr A | B from S1
+// gives
+// [‘S2’, ‘implies_intr’, ‘A | B’, ‘S1’, ‘|- A & B --> B & A’]
+// Example:
+// var A :: bool
+// gives
+// [‘var’, ‘A :: bool’, '', '', '']
 function split_proof_rule(line) {
     if (line.indexOf(': ') !== -1) {
         var list = line.split(': ');
@@ -350,6 +337,7 @@ function split_proof_rule(line) {
     }
 }
 
+// Display the given content in the textarea with the given id.
 function display(id, content) {
     var editor = get_selected_editor();
     var cell = cells[id];
@@ -371,6 +359,9 @@ function display(id, content) {
         readonly_lines.push(i);
 }
 
+// Add the given content to cells.
+// id is the id of the textarea.
+// content is the proof text.
 function add_cell_data(id, content) {
     var cell = [];
     var result_list = content.split('\n');
