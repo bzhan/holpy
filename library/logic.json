@@ -16,12 +16,12 @@
     },
     {
         "ty": "thm", "name": "ex_conj_distrib",
-        "vars": {"A": "'a => bool", "B": "'a => bool"},
+        "vars": {"A": "'a => bool", "B": "'b => bool"},
         "prop": "(?x::'a. A x & B x) --> (?x::'a. A x) & (?x::'a. B x)"
     },
     {
         "ty": "thm", "name": "all_conj_distrib",
-        "vars": {"A": "'a => bool", "B": "'a => bool"},
+        "vars": {"A": "'a => bool", "B": "'b => bool"},
         "prop": "(!x::'a. A x & B x) --> (!x::'a. A x) & (!x::'a. B x)"
     },
     {

@@ -203,6 +203,7 @@ def json_parse():
                 proof['instructions'] = []
                 output['proof'] = proof
                 if 'save-proof' in d.keys():
+                    output['save-proof'] = d['save-proof']
                     output['status']='green'
                     if 'sorry' in d['save-proof']:
                         output['status'] = 'yellow'
