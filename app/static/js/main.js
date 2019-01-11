@@ -2,7 +2,6 @@
     var instructions = [];
     var page_num = 0;
     var index = 0;
-    var theorem = {};
     var result_list = [];
     var is_mousedown = false;
     var is_crlt_click = false;
@@ -13,28 +12,6 @@
     });
 
     $(function () {
-        $('#theorem-select').ready(function () {
-            $(function () {
-                var event = {'event': 'init_theorem'};
-                var data = JSON.stringify(event);
-
-                $.ajax({
-                    url: "/api/init",
-                    type: "POST",
-                    data: data,
-                    success: function (result) {
-                        theorem = result;
-                        for (var i in result) {
-                            $('#theorem-select').append(
-                                $('<option>' + i + '</option>')
-                            )
-                        }
-                        $('#theorem-select').selectpicker('refresh');
-                    }
-                })
-            });
-        });
-
         $('#add-cell').on('click', function () {
             page_num++;
             // Add CodeMirror textarea
@@ -483,26 +460,6 @@
                 }, 300)
             }
         });
-    }
-
-    function set_theorem_select(doc) {
-        $('#theorem-select').empty();
-        for (var i in theorem) {
-            $('#theorem-select').append(
-                $('<option>' + i + '</option>')
-            )
-        }
-        let lines = [];
-        doc.eachLine(function (line) {
-            if (line.text.startsWith("var"))
-                lines.push(line.text);
-        });
-        for (var i = lines.length - 1; i >= 0; i--) {
-            $('#theorem-select option:first-child').before(
-                $('<option>' + lines[i] + '</option>')
-            )
-        }
-        $('#theorem-select').selectpicker('refresh');
     }
 
     function set_read_only(cm) {

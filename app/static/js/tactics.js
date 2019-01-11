@@ -145,23 +145,6 @@ function introduction(cm) {
     })
 }
 
-function init_select_abs() {
-    $(document).ready(function () {
-        var event = {
-            "event": "init_theorem_abs",
-        };
-        var data = JSON.stringify(event);
-
-        $.ajax({
-            url: "/api/init",
-            type: "POST",
-            data: data,
-            success: function (result) {
-            }
-        })
-    })
-}
-
 function apply_backward_step(cm) {
     var line_number = cm.getCursor().line;
     var line = cm.getLine(line_number);

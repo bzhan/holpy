@@ -34,17 +34,8 @@ def index():
 
 @app.route('/api/init', methods=['POST'])
 def init_component():
-    x = request
     data = json.loads(request.get_data().decode("utf-8"))
-    if data.get('event') == 'init_theorem':
-        macro_dict = {0: 'NONE', 1: 'TERM', 2: 'TYINST', 3: 'INST', 4: 'STRING'}
-        result = {}
-        for key, value in primitive_deriv.items():
-            result[key] = macro_dict[value[1]]
-        return jsonify(result)
-    elif data.get('event') == 'init_theorem_abs':
-        pass
-    elif data.get('event') == 'init_cell':
+    if data.get('event') == 'init_cell':
         cell = ProofState.parse_init_state(data)
         cells[data.get('id')] = cell
         return jsonify(get_result_from_cell(cell))
