@@ -4,7 +4,7 @@
     var index = 0;
     var result_list = [];
     var is_mousedown = false;
-    var is_crlt_click = false;
+    var is_ctrl_click = false;
     var click_count = 0;
     var proof_id = 0;
 
@@ -453,19 +453,17 @@
                 $(this).removeClass('selected');
             });
             $(cm.getTextArea().parentNode).addClass('selected');
-            set_theorem_select(cm);
         });
 
         editor.on("cursorActivity", function (cm) {
             if (is_mousedown) {
                 mark_text(cm);
                 is_mousedown = false;
-                is_crlt_click = false;
+                is_ctrl_click = false;
             }
         });
 
         editor.on('beforeChange', function (cm, change) {
-//            console.log(change);
             if (edit_flag) {
                 edit_flag = false;
                 return;
@@ -477,7 +475,7 @@
         editor.on('mousedown', function (cm, event) {
             is_mousedown = true;
             if (event.ctrlKey)
-                is_crlt_click = true;
+                is_ctrl_click = true;
             click_count++;
             if (click_count === 1) {
                 timer = setTimeout(function () {
@@ -532,7 +530,7 @@
         var line_num = cm.getCursor().line;
         var ch = cm.getCursor().ch;
         var line = cm.getLineHandle(line_num).text;
-        if (is_crlt_click) {
+        if (is_ctrl_click) {
             var flag = false;
             if (click_line_number !== -1 && line_num < click_line_number)
                 flag = true;
@@ -544,7 +542,7 @@
             if (flag)
                 cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
             ctrl_click_line_number = line_num;
-            is_crlt_click = false;
+            is_ctrl_click = false;
         } else if (line.indexOf('sorry') !== -1) {
             cm.getAllMarks().forEach(e => {
                 if (e.css !== undefined)
@@ -569,7 +567,7 @@
 
     function revert_status(cm) {
         is_mousedown = false;
-        is_crlt_click = false;
+        is_ctrl_click = false;
         click_count = 0;
         edit_flag = false;
         readonly_lines.length = 0;
