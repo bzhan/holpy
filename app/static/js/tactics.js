@@ -161,10 +161,6 @@ function apply_backward_step(cm) {
         title: title,
         html:
             '<input id="swal-input1" class="swal2-input">',
-        // '<select id="swal-input2" class="swal2-select"></select>',
-        onOpen: function () {
-            init_select_abs()
-        },
         showCancelButton: true,
         confirmButtonText: 'confirm',
         showLoaderOnConfirm: true,
