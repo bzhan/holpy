@@ -36,6 +36,8 @@
 <script src="../static/codemirror-5.41.0/addon/edit/matchbrackets.js"></script>
 <!--end Code Mirror -->
 
+<link rel="shortcut icon" href="../static/images/favicon.ico" type="image/x-icon">
+
 <link rel="stylesheet" href="../static/css/index.css">
 <head>
     <meta charset="utf-8"/>
@@ -55,6 +57,11 @@
                     </span></button>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="#" id="save-file">Save</a>
+                <a class="dropdown-item" href="#" onclick="$('#open-file').click()" id="file-button">Open file</a>
+                <input type="file" id="open-file" style="display:none">
+                <a class="dropdown-item" href="#" onclick="$('#open-problem').click()" id="problem-button">Open
+                    problem</a>
+                <input type="file" id="open-problem" style="display:none">
                 <a class="dropdown-item" href="#" onclick="$('#open-json').click()" id="json-button">Open json file</a>
                 <input type="text" id="open-json" style="display:none">
             </div>
@@ -70,6 +77,7 @@
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="#" id="add-cell" color="black">Add cell</a>
                 <a class="dropdown-item" href="#" id="delete-cell">Delete cell</a>
+                <a class="dropdown-item" href="#" id="run-button">Run</a>
             </div>
         </div>
         <div class="dropdown">
