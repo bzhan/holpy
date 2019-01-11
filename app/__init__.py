@@ -10,7 +10,7 @@ from syntax import parser, printer
 from server.tactic import ProofState
 from logic.basic import BasicTheory
 from kernel.type import HOLType
-from file_function import save_file
+from file_function import save_file,save_proof
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -177,6 +177,7 @@ def json_parse():
         data = f_data['data']
         name = f_data['name']
         save_file(name, data)
+
     if data:
          for d in data:
             vars = []
@@ -201,6 +202,13 @@ def json_parse():
                 proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1], print_abs_type=True)
                 proof['instructions'] = []
                 output['proof'] = proof
+                if 'save-proof' in d.keys():
+                    output['status']='green'
+                    if 'sorry' in d['save-proof']:
+                        output['status'] = 'yellow'
+                else:
+                    output['status'] = 'red'
+
                 output_data.append(output)
 
             if d['ty'] == 'type.ind':
@@ -227,8 +235,15 @@ def get_root():
     with open('library/root.json', 'r+', encoding='utf-8') as f:
         json_data = json.load(f)
         f.close()
-
     return jsonify(json_data)
+
+@app.route('/api/save_proof', methods=['PUT'])
+def save_proof_file():
+    data = json.loads(request.get_data().decode("utf-8"))
+    save_proof(data['name'], data['id'], data['proof'])
+
+    return ''
+
 
 
 
