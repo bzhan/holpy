@@ -77,9 +77,9 @@ def print_term(thy, t):
                     str_arg1 = helper(arg1, bd_vars)
 
                 if settings.unicode() and op_data.unicode_op:
-                    str_op = N(op_data.unicode_op)
+                    str_op = N(' ' + op_data.unicode_op + ' ')
                 else:
-                    str_op = N(op_data.ascii_op)
+                    str_op = N(' ' + op_data.ascii_op + ' ')
 
                 # Obtain output for second argument, enclose in parenthesis
                 # if necessary.
@@ -89,7 +89,7 @@ def print_term(thy, t):
                 else:
                     str_arg2 = helper(arg2, bd_vars)
 
-                return str_arg1 + N(" ") + str_op + N(" ") + str_arg2
+                return str_arg1 + str_op + str_arg2
 
             # Unary case
             elif op_data and op_data.arity == OperatorData.UNARY:
@@ -108,14 +108,14 @@ def print_term(thy, t):
             # Next, the case of binders
             elif t.is_all():
                 all_str = "!" if not settings.unicode() else "∀"
-                var_str = V(t.arg.var_name) + N("::") + N(str(t.arg.T)) if settings.print_abs_type() else V(t.arg.var_name)
+                var_str = B(t.arg.var_name) + N("::") + N(str(t.arg.T)) if settings.print_abs_type() else B(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return N(all_str) + var_str + N(". ") + body_repr
 
             elif logic.is_exists(t):
                 exists_str = "?" if not settings.unicode() else "∃"
-                var_str = V(t.arg.var_name) + N("::") + N(str(t.arg.T)) if settings.print_abs_type() else V(t.arg.var_name)
+                var_str = B(t.arg.var_name) + N("::") + N(str(t.arg.T)) if settings.print_abs_type() else B(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return N(exists_str) + var_str + N(". ") + body_repr
@@ -142,7 +142,7 @@ def print_term(thy, t):
             if t.n >= len(bd_vars):
                 raise OpenTermException
             else:
-                return V(bd_vars[t.n])
+                return B(bd_vars[t.n])
         else:
             raise TypeError()
 
