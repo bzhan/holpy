@@ -428,23 +428,11 @@
                     });
                     var id = get_selected_id();
                     var cell = cells[id];
-                    if (mod === 0) {
-                        let origin_line = cell[edit_line_number].id + ': ';
-                        if (cell[edit_line_number].th !== '')
-                            origin_line += cell[edit_line_number].th + ' by '
-                                + cell[edit_line_number].rule_name;
-                        cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
-                            line: edit_line_number,
-                            ch: Number.MAX_SAFE_INTEGER
-                        });
-                    } else if (mod === 1) {
-                        let origin_line = cell[edit_line_number].id + ': '
-                            + cell[edit_line_number].th;
-                        cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
-                            line: edit_line_number,
-                            ch: Number.MAX_SAFE_INTEGER
-                        });
-                    }
+                    var origin_line = display_line(cell[edit_line_number])
+                    cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
+                        line: edit_line_number,
+                        ch: Number.MAX_SAFE_INTEGER
+                    });
                     readonly_lines.push(edit_line_number);
                     readonly_lines.sort();
                     edit_line_number = -1;

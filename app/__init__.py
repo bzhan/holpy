@@ -23,7 +23,7 @@ cells = dict()
 
 def get_result_from_cell(cell):
     return {
-        "proof": cell.print_proof(),
+        "proof": cell.export_proof(),
         "report": cell.rpt.json_data()
     }
 

@@ -23,12 +23,7 @@ class ProofItem():
         self.prevs = prevs if prevs is not None else []
         self.th = th
 
-    def print(self, *, term_printer, unicode=False):
-        """Print the given proof item.
-        
-        term_printer: specify the printing function for terms.
-
-        """
+    def _print_str_args(self, *, term_printer):
         def str_val(val):
             if isinstance(val, Term):
                 return term_printer(val)
@@ -39,18 +34,31 @@ class ProofItem():
                 return str(val)
 
         if isinstance(self.args, str):
-            str_args = " " + self.args
+            return self.args
         elif isinstance(self.args, dict):
-            str_args = " " + str_val(self.args)
+            return str_val(self.args)
         elif isinstance(self.args, tuple):
-            str_args = " " + ", ".join(str_val(val) for val in self.args)
+            return ", ".join(str_val(val) for val in self.args)
         else:
-            str_args = " " + str_val(self.args) if self.args else ""
+            return str_val(self.args) if self.args else ""
 
+    def print(self, *, term_printer, unicode=False):
+        """Print the given proof item.
+        
+        term_printer: specify the printing function for terms.
+
+        """
+        str_args = " " + self._print_str_args(term_printer=term_printer) if self.args else ""
         str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
         str_th = self.th.print(term_printer=term_printer, unicode=unicode) + " by " if self.th else ""
 
         return self.id + ": " + str_th + self.rule + str_args + str_prevs
+
+    def export(self, *, term_printer, unicode=False):
+        """Export the given proof item as a dictionary."""
+        str_args = self._print_str_args(term_printer=term_printer)
+        str_th = self.th.print(term_printer=term_printer, unicode=unicode) if self.th else ""
+        return {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
 
     def __str__(self):
         return self.print(term_printer = str)
@@ -112,6 +120,15 @@ class Proof():
 
         lines = [item.print(term_printer=term_printer, unicode=unicode) for item in self.items]
         return str_vars + "\n".join(lines)
+
+    def export(self, *, term_printer=str, unicode=False):
+        """Export the given proof object."""
+        def export_var(t):
+            return {'id': 'var', 'rule': t.name + ' :: ' + str(t.T)}
+
+        vars = [export_var(t) for t in self.vars]
+        lines = [item.export(term_printer=term_printer, unicode=unicode) for item in self.items]
+        return vars + lines
 
     def __str__(self):
         return self.print()

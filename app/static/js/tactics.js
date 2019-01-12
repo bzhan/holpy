@@ -56,7 +56,7 @@ function display_checked_proof(result) {
         edit_flag = true;
         edit_line_number = -1;
         add_cell_data(get_selected_id(), result['proof']);
-        display(get_selected_id(), result['proof']);
+        display(get_selected_id());
         var num_gaps = result["report"]["num_gaps"];
         status_output.style.color = '';
         if (num_gaps > 0) {
@@ -283,7 +283,7 @@ function set_line(cm) {
 }
 
 // Split a line of proof into its component parts.
-// Returns the list [id, rule_name, args, prevs, th]
+// Returns the list [id, rule, args, prevs, th]
 // Example:
 // S2: |- A & B --> B & A by implies_intr A | B from S1
 // gives
@@ -308,14 +308,14 @@ function split_proof_rule(line) {
 
         if (rest.indexOf(' ') !== -1) {
             list = rest.split(' ');
-            var rule_name = list[0];
+            var rule = list[0];
             list.splice(0, 1);
             rest = list.join(' ');
         } else {
-            var rule_name = rest;
+            var rule = rest;
             rest = '';
         }
-        rule_name = rule_name.trim();
+        rule = rule.trim();
 
         if (rest.indexOf('from') !== -1) {
             list = rest.split('from');
@@ -326,51 +326,60 @@ function split_proof_rule(line) {
             for (var i = 0; i < list.length; i++) {
                 prev.push(list[i].trim())
             }
-            return [id, rule_name, args.trim(), prev, th];
+            return [id, rule, args.trim(), prev, th];
         } else {
-            return [id, rule_name, rest.trim(), [], th];
+            return [id, rule, rest.trim(), [], th];
         }
     }
 }
 
+function display_line(e) {
+    if (mod === 0) {
+        if (e.id.startsWith('var')) {
+            return e.id + " " + e.rule;
+        }
+        else {
+            var res = e.id + ': ';
+            if (e.th !== '')
+                res += e.th + ' by ';
+            res += e.rule;
+            if (e.args !== '')
+                res += ' ' + e.args;
+            if (e.prevs.length > 0)
+                res += ' from ' + e.prevs.join(', ');
+            return res
+        }
+    } else if (mod === 1) {
+        if (e.id.startsWith('var'))
+            return e.id + ': ' + e.rule;
+        else
+            return e.id + ': ' + e.th;
+    }
+}
+
 // Display the given content in the textarea with the given id.
-function display(id, content) {
+function display(id) {
     var editor = get_selected_editor();
     var cell = cells[id];
     if (mod === 0) {
-        editor.setValue(content);
+        var content_list = [];
+        cell.forEach(e => {
+            content_list.push(display_line(e));
+        })
+        editor.setValue(content_list.join('\n'))
     } else if (mod === 1) {
         var content_list = [];
         cell.forEach(e => {
-            if (e.id.startsWith('var'))
-                content_list.push(e.id + ': ' + e.rule_name);
-            else
-                content_list.push(e.id + ': ' + e.th)
+            content_list.push(display_line(e));
         });
-        var _content = content_list.join('\n');
-        editor.setValue(_content);
+        editor.setValue(content_list.join('\n'));
     }
     readonly_lines.length = 0;
     for (var i = 0; i < editor.lineCount(); i++)
         readonly_lines.push(i);
 }
 
-// Add the given content to cells.
-// id is the id of the textarea.
-// content is the proof text.
-function add_cell_data(id, content) {
-    var cell = [];
-    var result_list = content.split('\n');
-    result_list.forEach(e => {
-        var list = split_proof_rule(e);
-        cell.push({
-            'id': list[0],
-            'rule_name': list[1],
-            'args': list[2],
-            'prev': list[3],
-            'th': list[4]
-        });
-    });
-
+// Add the given proof to cells.
+function add_cell_data(id, cell) {
     cells[id] = cell;
 }

@@ -242,7 +242,7 @@ def split_proof_rule(s):
     """Split proof rule into parseable parts.
 
     Currently able to handle string of the form:
-    [id]: [rule_name] [args] by [prevs]
+    [id]: [rule] [args] by [prevs]
 
     """
     if s.count(": ") > 0:
@@ -257,16 +257,16 @@ def split_proof_rule(s):
         th, rest = "", rest
 
     if rest.count(" ") > 0:
-        rule_name, rest = rest.split(" ", 1)  # split off name of rule
+        rule, rest = rest.split(" ", 1)  # split off name of rule
     else:
-        rule_name, rest = rest, ""
-    rule_name = rule_name.strip()
+        rule, rest = rest, ""
+    rule = rule.strip()
 
     if rest.count("from") > 0:
         args, rest = rest.split("from", 1)
-        return (id, rule_name, args.strip(), [prev.strip() for prev in rest.split(",")], th)
+        return (id, rule, args.strip(), [prev.strip() for prev in rest.split(",")], th)
     else:
-        return (id, rule_name, rest.strip(), [], th)
+        return (id, rule, rest.strip(), [], th)
 
 def parse_proof_rule(thy, ctxt, s):
     """Parse a proof rule.
@@ -275,9 +275,9 @@ def parse_proof_rule(thy, ctxt, s):
     require different parsing of the arguments.
 
     """
-    (id, rule_name, args, prevs, th) = split_proof_rule(s)
+    (id, rule, args, prevs, th) = split_proof_rule(s)
 
-    if rule_name == "":
+    if rule == "":
         return ProofItem(id, "")
 
     if th == "":
@@ -286,29 +286,29 @@ def parse_proof_rule(thy, ctxt, s):
         th = parse_thm(thy, ctxt, th)
 
     try:
-        sig = thy.get_proof_rule_sig(rule_name)
+        sig = thy.get_proof_rule_sig(rule)
         if sig == MacroSig.NONE:
             assert args == "", "rule expects no argument."
-            return ProofItem(id, rule_name, prevs=prevs, th=th)
+            return ProofItem(id, rule, prevs=prevs, th=th)
         elif sig == MacroSig.STRING:
-            return ProofItem(id, rule_name, args=args, prevs=prevs, th=th)
+            return ProofItem(id, rule, args=args, prevs=prevs, th=th)
         elif sig == MacroSig.TERM:
             t = parse_term(thy, ctxt, args)
-            return ProofItem(id, rule_name, args=t, prevs=prevs, th=th)
+            return ProofItem(id, rule, args=t, prevs=prevs, th=th)
         elif sig == MacroSig.INST:
             inst = parse_inst(thy, ctxt, args)
-            return ProofItem(id, rule_name, args=inst, prevs=prevs, th=th)
+            return ProofItem(id, rule, args=inst, prevs=prevs, th=th)
         elif sig == MacroSig.TYINST:
             tyinst = tyinst_parser(thy, ctxt).parse(args)
-            return ProofItem(id, rule_name, args=tyinst, prevs=prevs, th=th)
+            return ProofItem(id, rule, args=tyinst, prevs=prevs, th=th)
         elif sig == MacroSig.STRING_TERM:
             s1, s2 = args.split(",", 1)
             t = parse_term(thy, ctxt, s2)
-            return ProofItem(id, rule_name, args=(s1, t), prevs=prevs, th=th)
+            return ProofItem(id, rule, args=(s1, t), prevs=prevs, th=th)
         elif sig == MacroSig.STRING_INST:
             s1, s2 = args.split(",", 1)
             inst = parse_inst(thy, ctxt, s2)
-            return ProofItem(id, rule_name, args=(s1, inst), prevs=prevs, th=th)
+            return ProofItem(id, rule, args=(s1, inst), prevs=prevs, th=th)
         else:
             raise TypeError()
     except exceptions.UnexpectedToken as e:
