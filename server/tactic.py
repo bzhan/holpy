@@ -94,9 +94,6 @@ class ProofState():
         self.thy = BasicTheory
 
         self.vars = vars
-        self.assums = assums
-        self.concl = concl
-
         self.prf = Proof(*assums)
         self.prf.add_item("S1", "sorry", th=Thm(assums, concl))
         self.prf.vars = vars
@@ -130,7 +127,11 @@ class ProofState():
         convertible to json format.
 
         """
-        return self.prf.export(term_printer=lambda t: printer.print_term(self.thy, t))
+        def export_var(t):
+            return {'id': 'var', 'rule': t.name + ' :: ' + str(t.T)}
+        vars = [export_var(t) for t in self.vars]
+        lines = [item.export(term_printer=lambda t: printer.print_term(self.thy, t)) for item in self.prf.items]
+        return vars + lines
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
         """Check the given proof. Report is stored in rpt."""

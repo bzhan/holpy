@@ -339,7 +339,7 @@ class Theory():
         """
         for seq in prf.items:
             self._check_proof_item(depth, seq_dict, seq, rpt, no_gaps, compute_only)
-        return prf.get_thm()
+        return prf.items[-1].th
 
     def check_proof(self, prf, rpt=None, *, no_gaps=False, compute_only=False):
         """Verify the given proof object. Returns the final theorem if check

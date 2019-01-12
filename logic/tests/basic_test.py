@@ -29,7 +29,7 @@ class BasicTest(unittest.TestCase):
         prf = macro.expand(1, f, ((0, "S1"), th))
         
         thy = Theory.EmptyTheory()
-        self.assertEqual(prf.get_num_item(), 2)
+        self.assertEqual(len(prf.items), 2)
         self.assertEqual(thy.check_proof_incr(1, {(0, "S1"): th}, prf), res)
 
     def testFunCombination(self):
@@ -40,7 +40,7 @@ class BasicTest(unittest.TestCase):
         prf = macro.expand(1, x, ((0, "S1"), th))
 
         thy = Theory.EmptyTheory()
-        self.assertEqual(prf.get_num_item(), 2)
+        self.assertEqual(len(prf.items), 2)
         self.assertEqual(thy.check_proof_incr(1, {(0, "S1"): th}, prf), res)
 
     def testCombination(self):

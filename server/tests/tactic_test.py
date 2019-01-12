@@ -29,12 +29,12 @@ term_printer = lambda t: printer.print_term(thy, t)
 class TacticTest(unittest.TestCase):
     def testInitProof(self):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
-        self.assertEqual(state.prf.get_num_item(), 3)
+        self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testParseInitState(self):
         state = ProofState.parse_init_state({'A': 'bool', 'B': 'bool'}, "A & B --> B & A")
-        self.assertEqual(state.prf.get_num_item(), 3)
+        self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testGetCtxt(self):
@@ -45,7 +45,7 @@ class TacticTest(unittest.TestCase):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
         
         state.add_line_after("A1")
-        self.assertEqual(state.prf.get_num_item(), 4)
+        self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
         self.assertEqual(state.prf.items[1].rule, "")
 
@@ -53,7 +53,7 @@ class TacticTest(unittest.TestCase):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
 
         state.add_line_after("S1")
-        self.assertEqual(state.prf.get_num_item(), 4)
+        self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
         self.assertEqual(state.prf.items[2].rule, "")
 
@@ -61,25 +61,25 @@ class TacticTest(unittest.TestCase):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
 
         state.add_line_before("S1", 1)
-        self.assertEqual(state.prf.get_num_item(), 4)
+        self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
         state.add_line_before("S1", 3)
-        self.assertEqual(state.prf.get_num_item(), 7)
+        self.assertEqual(len(state.prf.items), 7)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testRemoveLine(self):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
         state.add_line_after("A1")
         state.remove_line("S1")
-        self.assertEqual(state.prf.get_num_item(), 3)
+        self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testSetLine(self):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
         state.add_line_after("A1")
         state.set_line("S1", "theorem", args="conjD1")
-        self.assertEqual(state.prf.get_num_item(), 4)
+        self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testApplyBackwardStepThms(self):
@@ -123,14 +123,14 @@ class TacticTest(unittest.TestCase):
         state = ProofState([A, B], [], Term.mk_all(x, imp(A(x), B(x))))
         state.introduction("S1", ["x"])
         self.assertEqual(state.check_proof(), Thm([], Term.mk_all(x, imp(A(x), B(x)))))
-        self.assertEqual(state.prf.get_num_item(), 4)
+        self.assertEqual(len(state.prf.items), 4)
 
     def testApplyInduction(self):
         n = Var("n", Nat.nat)
         state = ProofState([n], [], Term.mk_equals(Nat.plus(n, Nat.zero), n))
         state.apply_induction("S1", "nat_induct", "n")
         self.assertEqual(state.check_proof(), Thm([], Term.mk_equals(Nat.plus(n, Nat.zero), n)))
-        self.assertEqual(state.prf.get_num_item(), 3)
+        self.assertEqual(len(state.prf.items), 3)
 
     def testConjComm(self):
         """Proof of A & B --> B & A."""

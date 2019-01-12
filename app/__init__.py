@@ -71,10 +71,10 @@ def introduction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells.get(data.get('id'))
-        len_before = cell.prf.get_num_item()
+        len_before = len(cell.prf.items)
         (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         cell.introduction(id, data.get('var_name'))
-        line_diff = (cell.prf.get_num_item() - len_before) / 2
+        line_diff = (len(cell.prf.items) - len_before) / 2
         result = get_result_from_cell(cell)
         result["line-diff"] = line_diff
         return jsonify(result)

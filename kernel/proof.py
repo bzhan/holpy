@@ -4,8 +4,6 @@ from kernel import settings
 from kernel.term import Term
 from kernel.thm import Thm
 
-class ProofException(Exception):
-    pass
 
 class ProofItem():
     """An item in a proof, consisting of the following data:
@@ -89,36 +87,10 @@ class Proof():
         """Add the given item to the end of the proof."""
         self.items.append(ProofItem(id, rule, args=args, prevs=prevs, th=th))
 
-    def get_num_item(self):
-        """Returns the number of items."""
-        return len(self.items)
-
-    def get_thm(self):
-        """Returns the theorem obtained by the proof."""
-        if self.items and self.items[-1].th is not None:
-            return self.items[-1].th
-        else:
-            raise ProofException()
-
     @settings.with_settings
     def print(self):
         """Print the given proof object."""
-        def print_var(t):
-            return "var " + t.name + " :: " + str(t.T)
-
-        str_vars = "\n".join(print_var(t) for t in self.vars) + "\n"
-        lines = [str(item) for item in self.items]
-        return str_vars + "\n".join(lines)
-
-    @settings.with_settings
-    def export(self):
-        """Export the given proof object."""
-        def export_var(t):
-            return {'id': 'var', 'rule': t.name + ' :: ' + str(t.T)}
-
-        vars = [export_var(t) for t in self.vars]
-        lines = [item.export() for item in self.items]
-        return vars + lines
+        return '\n'.join(str(item) for item in self.items)
 
     def __str__(self):
         return self.print()

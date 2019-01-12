@@ -103,7 +103,7 @@ class ProofTerm():
             else:
                 raise TypeError()
         
-        id = (depth, "S" + str(prf.get_num_item()+1))
+        id = (depth, "S" + str(len(prf.items)+1))
         seq_to_id[self.th] = id
         prf.add_item(id, self.rule, args=self.args, prevs=ids)
         return prf

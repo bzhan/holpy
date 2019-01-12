@@ -24,7 +24,7 @@ class ProofTermTest(unittest.TestCase):
         pt3 = ProofTerm.transitive(pt1, pt2)
 
         prf = pt3.export()
-        self.assertEqual(prf.get_num_item(), 3)
+        self.assertEqual(len(prf.items), 3)
         self.assertEqual(thy.check_proof(prf), pt3.th)
 
     def testExport2(self):
@@ -35,7 +35,7 @@ class ProofTermTest(unittest.TestCase):
         pt4 = ProofTerm.combination(pt3, pt1)  # f x x = f y y
 
         prf = pt4.export()
-        self.assertEqual(prf.get_num_item(), 4)
+        self.assertEqual(len(prf.items), 4)
         self.assertEqual(thy.check_proof(prf), pt4.th)
 
     def testExport3(self):
@@ -46,7 +46,7 @@ class ProofTermTest(unittest.TestCase):
 
         prf = pt3.export(1)
         seq_dict = {(0, "A1"): Thm.mk_equals(x,y), (0, "A2"): Thm.mk_equals(y,z)}
-        self.assertEqual(prf.get_num_item(), 1)
+        self.assertEqual(len(prf.items), 1)
         self.assertEqual(thy.check_proof_incr(1, seq_dict, prf), Thm.mk_equals(x,z))
 
 if __name__ == "__main__":

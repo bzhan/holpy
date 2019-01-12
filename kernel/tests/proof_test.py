@@ -41,26 +41,15 @@ class ProofTest(unittest.TestCase):
         th = Thm([A, A_to_B], B)
         prf.add_item("C", "implies_elim", prevs=["A1", "A2"], th=th)
 
-        self.assertEqual(prf.get_num_item(), 3)
-        self.assertEqual(prf.get_thm(), th)
+        self.assertEqual(len(prf.items), 3)
+        self.assertEqual(prf.items[-1].th, th)
 
         str_prf = "\n".join([
-            "var A :: bool",
-            "var B :: bool",
             "A1: assume implies A B",
             "A2: assume A",
             "C: A, implies A B |- B by implies_elim from A1, A2"])
         
         self.assertEqual(str(prf), str_prf)
-
-        export_res = [
-            {'id': 'var', 'rule': 'A :: bool'},
-            {'id': 'var', 'rule': 'B :: bool'},
-            {'id': 'A1', 'th': '', 'rule': 'assume', 'args': 'implies A B', 'prevs': []},
-            {'id': 'A2', 'th': '', 'rule': 'assume', 'args': 'A', 'prevs': []},
-            {'id': 'C', 'th': 'A, implies A B |- B', 'rule': 'implies_elim', 'args': '', 'prevs': ['A1', 'A2']}
-        ]
-        self.assertEqual(prf.export(), export_res)
 
 
 if __name__ == "__main__":
