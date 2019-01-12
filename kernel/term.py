@@ -386,7 +386,7 @@ class Term():
         elif self.ty == Term.BOUND:
             return False
         else:
-            raise TypeError()
+            raise TypeError()    
 
     def _abstract_over(self, t, n):
         """Helper function for abstract_over. Here self is an open term.
@@ -505,3 +505,35 @@ class Bound(Term):
     def __init__(self, n):
         self.ty = Term.BOUND
         self.n = n
+
+def get_vars(t):
+    """Returns set of variables in a term or a list of terms."""
+    if isinstance(t, Term):
+        if t.ty == Term.VAR:
+            return {t}
+        elif t.ty == Term.COMB:
+            return get_vars(t.fun).union(get_vars(t.arg))
+        elif t.ty == Term.ABS:
+            return get_vars(t.body)
+        else:
+            return set()
+    elif isinstance(t, list):
+        return set.union(*(get_vars(s) for s in t))
+    else:
+        raise TypeError()
+
+def get_consts(t):
+    """Returns set of constants in a term or a list of terms."""
+    if isinstance(t, Term):
+        if t.ty == Term.CONST:
+            return {t}
+        elif t.ty == Term.COMB:
+            return get_consts(t.fun).union(get_consts(t.arg))
+        elif t.ty == Term.ABS:
+            return get_consts(t.body)
+        else:
+            return set()
+    elif isinstance(t, list):
+        return set.union(*(get_consts(s) for s in t))
+    else:
+        raise TypeError()

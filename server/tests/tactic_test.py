@@ -200,6 +200,16 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(state.prf.get_num_item(), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
+    def testApplyBackwardStepThms(self):
+        state = ProofState([A, B], [conj(A, B)], conj(B, A))
+        ths = state.apply_backward_step_thms("S1")
+        self.assertEqual([name for name, _ in ths], ["conjI"])
+
+    def testApplyBackwardStepThms2(self):
+        state = ProofState([A, B], [disj(A, B)], disj(B, A))
+        ths = state.apply_backward_step_thms("S1", prevs=["A1"])
+        self.assertEqual([name for name, _ in ths], ["disjE"])
+
     def testApplyBackwardStep(self):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))
         state.apply_backward_step("S1", "conjI")

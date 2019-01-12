@@ -2,6 +2,7 @@
 
 import io
 
+from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof
@@ -277,6 +278,50 @@ class ProofState():
         # upto_id not found
         raise TacticException()
 
+    def apply_backward_step_thms(self, id, prevs=None):
+        """Return the list of theorems that can be used for applying
+        backward step.
+
+        This is done by first matching each of the prevs against the
+        assumptions in order, then match the conclusion.
+
+        """
+        if prevs is None:
+            prevs = []
+        else:
+            prevs = [self.get_proof_item(id) for id in prevs]
+
+        # Obtain the statement to be proved.
+        cur_item = self.get_proof_item(id)
+        if cur_item.rule != "sorry":
+            return []
+
+        results = []
+        for name, th in self.thy.get_data("theorems").items():
+            inst = dict()
+            As, C = th.concl.strip_implies()
+            # Only process those theorems where C and the matched As
+            # contain all of the variables.
+            if term.get_vars(As[:len(prevs)] + [C]) != term.get_vars(As + [C]):
+                continue
+
+            # When there is no assumptions to match, only process those
+            # theorems where C contains at least a constant (skip falseE,
+            # induction theorems, etc).
+            if not prevs and term.get_consts(C) == set():
+                continue
+
+            try:
+                for pat, prev in zip(As, prevs):
+                    matcher.first_order_match_incr(pat, prev.th.concl, inst)
+                matcher.first_order_match_incr(C, cur_item.th.concl, inst)
+            except matcher.MatchException:
+                continue
+
+            # All matches succeed
+            results.append((name, th))
+        return results
+
     def apply_backward_step(self, id, th_name, *, prevs=None, inst=None):
         """Apply backward step using the given theorem.
         
@@ -288,10 +333,7 @@ class ProofState():
             prevs = []
 
         # Obtain the statement to be proved.
-        for i, item in enumerate(self.prf.items):
-            if item.id == id:
-                cur_item = item
-
+        cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "apply_backward_step: id is not a gap"
 
         # Instantiate the given theorem.

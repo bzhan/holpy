@@ -3,7 +3,9 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun
-from kernel.term import Var, Const, Comb, Abs, Bound, TermSubstitutionException, TypeCheckException
+from kernel import term
+from kernel.term import Var, Const, Comb, Abs, Bound
+from kernel.term import TermSubstitutionException, TypeCheckException
 
 Ta = TVar("a")
 Tb = TVar("b")
@@ -222,6 +224,27 @@ class TermTest(unittest.TestCase):
 
         for t in test_data:
             self.assertRaises(TypeCheckException, t.checked_get_type)
+
+    def testGetVars(self):
+        test_data = [
+            (a, {a}),
+            (f(a), {f, a}),
+            (f(c), {f}),
+            ([a, f(c)], {a, f}),
+        ]
+
+        for t, res in test_data:
+            self.assertEqual(term.get_vars(t), res)
+
+    def testGetConsts(self):
+        test_data = [
+            (a, set()),
+            (f(c), {c}),
+            ([a, f(c)], {c}),
+        ]
+
+        for t, res in test_data:
+            self.assertEqual(term.get_consts(t), res)
 
 if __name__ == "__main__":
     unittest.main()
