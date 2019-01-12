@@ -1,173 +1,175 @@
 [
     {
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "instructions": [
-            "With focus on line 4, enter Ctrl+B, then enter 'conjI'.",
-            "With focus on line 4, enter Ctrl+B, then enter 'conjD2,A1'.",
-            "With focus on line 5, enter Ctrl+B, then enter 'conjD1,A1'."
-        ],
         "prop": "A & B --> B & A",
+        "instructions": [
+            "Select S1 as goal, use Ctrl+B with conjI",
+            "Select S1 as goal and A1 as fact, use Ctrl+B with conjD2.",
+            "Select S2 as goal and A1 as fact, use Ctrl+B with conjD1."
+        ],
         "ty": "thm",
+        "vars": {
+            "B": "bool",
+            "A": "bool"
+        },
         "name": "conj_comm"
     },
     {
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "instructions": [
-            "With focus on line 4, enter Ctrl+B, then enter 'disjE,A1'.",
-            "With focus on line 4, enter Ctrl+I.",
-            "With focus on line 5, enter Ctrl+B, then enter 'disjI2,S1'.",
-            "With focus on line 7, enter Ctrl+I.",
-            "With focus on line 8, enter Ctrl+B, then enter 'disjI1,S4'."
-        ],
         "prop": "A | B --> B | A",
+        "name": "disj_comm",
         "ty": "thm",
-        "name": "disj_comm"
-    },
-    {
         "vars": {
+            "B": "bool",
             "A": "bool"
         },
         "instructions": [
-            "Add line after A1, enter 'theorem classical'. Use Ctrl+Enter to check proof.",
-            "With focus on line 4, enter Ctrl+B, then enter 'disjE,S1'.",
-            "With focus on line 4, enter Ctrl+I.",
-            "With focus on line 6, enter Ctrl+I.",
-            "With focus on line 7, enter Ctrl+B, then enter 'falseE'.",
-            "With focus on line 7, enter Ctrl+B, then enter 'negE,A1'."
-        ],
+            "Select S1 as goal and A1 as fact, use Ctrl+B with disjE.",
+            "Select S1 as goal, use Ctrl+I.",
+            "Select S2 as goal and S1 as fact, use Ctrl+B with disjI2.",
+            "Select S4 as goal, use Ctrl+I.",
+            "Select S5 as goal and S4 as fact, use Ctrl+B with disjI1."
+        ]
+    },
+    {
         "prop": "~~A --> A",
+        "instructions": [
+            "Add line 'theorem classical' after A1.",
+            "Select S2 as goal and S1 as fact, use Ctrl+B with disjE.",
+            "Select S2 as goal, use Ctrl+I.",
+            "Select S4 as goal, use Ctrl+I.",
+            "Select S5 as goal, use Ctrl+B with falseE.",
+            "Select S5 as goal and A1 as fact, use Ctrl+B with negE."
+        ],
         "ty": "thm",
+        "vars": {
+            "A": "bool"
+        },
         "name": "double_neg"
     },
     {
+        "prop": "(?x::'a. A x & B x) --> (?x::'a. A x) & (?x::'a. B x)",
+        "name": "ex_conj_distrib",
+        "ty": "thm",
         "vars": {
+            "B": "'a => bool",
             "A": "'a => bool",
-            "B": "'a => bool"
+            "x": "'a"
         },
         "instructions": [
-            "With focus on line 4, enter Ctrl+B, then enter 'conjI'.",
-            "With focus on line 4, enter Ctrl+B, then enter 'exE,A1'.",
-            "With focus on line 4, enter Ctrl+I, enter 'x' as variable name.",
-            "Add line after S1, enter 'apply_theorem conjD1 from S1'. Use Ctrl+Enter to check proof.",
-            "With focus on line 7, enter Ctrl+B, then enter 'exI,S2'.",
-            "With focus on line 11, enter Ctrl+B, then enter 'exE,A1'.",
-            "With focus on line 11, enter Ctrl+I, enter 'x' as variable name.",
-            "Add line after S7, enter 'apply_theorem conjD2 from S7'. Use Ctrl+Enter to check proof.",
-            "With focus on line 13, enter Ctrl+B, then enter 'exI,S8'."
-        ],
-        "prop": "(?x::'a. A x & B x) --> (?x::'a. A x) & (?x::'a. B x)",
-        "ty": "thm",
-        "name": "ex_conj_distrib"
+            "Select S1 as goal and A1 as fact, use Ctrl+B with exE.",
+            "Select S1 as goal, use Ctrl+I with x as variable name.",
+            "Select S2 as goal, use Ctrl+B with conjI.",
+            "Add line 'apply_theorem conjD1 from S1' after S1.",
+            "Select S3 as goal and S2 as fact, use Ctrl+B with exI.",
+            "Add line 'apply_theorem conjD2 from S1' after S3.",
+            "Select S5 as goal and S4 as fact, use Ctrl+B with exI."
+        ]
     },
     {
-        "vars": {
-            "A": "'a => bool",
-            "B": "'a => bool"
-        },
-        "instructions": [
-            "With focus on line 4, enter Ctrl+B, then enter 'conjI'.",
-            "With focus on line 4, enter Ctrl+I, enter 'x' as variable name.",
-            "Add line after A1, enter 'forall_elim x from A1'. Use Ctrl+Enter to check proof.",
-            "With focus on line 6, enter Ctrl+B, then enter 'conjD1,S1'.",
-            "With focus on line 8, enter Ctrl+I, enter 'x' as variable name.",
-            "With focus on line 8, enter Ctrl+B, then enter 'conjD2,S1'."
-        ],
         "prop": "(!x::'a. A x & B x) --> (!x::'a. A x) & (!x::'a. B x)",
+        "instructions": [
+            "Select S1 as goal, use Ctrl+B with conjI.",
+            "Select S1 as goal, use Ctrl+I with x as variable name.",
+            "Add line 'forall_elim x from A1' after A1.",
+            "Select S2 as goal and S1 as fact, use Ctrl+B with conjD1.",
+            "Select S4 as goal, use Ctrl+I with x as variable name.",
+            "Select S4 as goal and S1 as fact, use Ctrl+B with conjD2."
+        ],
         "ty": "thm",
+        "vars": {
+            "B": "'a => bool",
+            "A": "'a => bool",
+            "x": "'a"
+        },
         "name": "all_conj_distrib"
 >>>>>>> 2a86b576aae9e92c95ca8b4065c1634803e84c11
     },
     {
+        "prop": "n + 0 = n",
+        "name": "nat.add_0_right",
+        "ty": "thm",
         "vars": {
             "n": "nat"
         },
         "instructions": [
-            "With focus on line 2, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
-            "With focus on line 2, enter Ctrl+R, then enter 'plus_def_1'.",
-            "Replace 'sorry' on line 2 with 'reflexive 0'. Use Ctrl+Enter to check proof.",
-            "With focus on line 4, enter Ctrl+I, enter 'n' as variable name.",
-            "With focus on line 5, enter Ctrl+R, then enter 'plus_def_2'.",
-            "Replace 'sorry' on line 5 with 'arg_combination Suc from S3'. Use Ctrl+Enter to check proof."
-        ],
-        "prop": "n + 0 = n",
-        "ty": "thm",
-        "name": "nat.add_0_right"
+            "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
+            "Select S1 as goal, use Ctrl+R with plus_def_1.",
+            "Set sorry on S1 to reflexive 0.",
+            "Select S3 as goal, use Ctrl+I with n as variable name.",
+            "Select S4 as goal, use Ctrl+R with plus_def_2.",
+            "Set sorry on S4 to arg_combination Suc from S3."
+        ]
     },
     {
+        "prop": "n * 0 = 0",
+        "instructions": [
+            "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
+            "Select S1 as goal, use Ctrl+R with times_def_1.",
+            "Set sorry on S1 to reflexive 0.",
+            "Select S3 as goal, use Ctrl+I with n as variable name.",
+            "Select S4 as goal, use Ctrl+R with times_def_2.",
+            "Select S4 as goal, use Ctrl+R with plus_def_1"
+        ],
+        "ty": "thm",
         "vars": {
             "n": "nat"
         },
-        "instructions": [
-            "With focus on line 2, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
-            "With focus on line 2, enter Ctrl+R, then enter 'times_def_1'.",
-            "Replace 'sorry' on line 2 with 'reflexive 0'. Use Ctrl+Enter to check proof.",
-            "With focus on line 4, enter Ctrl+I, enter 'n' as variable name.",
-            "With focus on line 5, enter Ctrl+R, then enter 'times_def_2'.",
-            "With focus on line 5, enter Ctrl+R, then enter 'plus_def_1'."
-        ],
-        "prop": "n * 0 = 0",
-        "ty": "thm",
         "name": "nat.mult_0_right"
     },
     {
-        "vars": {
-            "A": "bool",
-            "B": "bool",
-            "C": "bool"
-        },
-        "prop": "A & (B | C) --> (A & B) | (A & C)",
+        "name": "conj_disj_distribL1",
         "ty": "thm",
-        "name": "conj_disj_distribL1"
+        "vars": {
+            "C": "bool",
+            "B": "bool",
+            "A": "bool"
+        },
+        "prop": "A & (B | C) --> (A & B) | (A & C)"
     },
     {
-        "vars": {
-            "A": "bool",
-            "B": "bool",
-            "C": "bool"
-        },
-        "prop": "(A & B) | (A & C) --> A & (B | C)",
+        "name": "conj_disj_distribL1",
         "ty": "thm",
-        "name": "conj_disj_distribL1"
+        "vars": {
+            "C": "bool",
+            "B": "bool",
+            "A": "bool"
+        },
+        "prop": "(A & B) | (A & C) --> A & (B | C)"
     },
     {
-        "vars": {
-            "xs": "'a list"
-        },
-        "instructions": [
-            "With focus on line 2, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-            "With focus on line 2, enter Ctrl+R, then enter 'append_def_1'.",
-            "Replace 'sorry' on line 2 with 'reflexive nil'. Use Ctrl+Enter to check proof.",
-            "With focus on line 4, enter Ctrl+I, enter 'x,xs' as variable name.",
-            "With focus on line 6, enter Ctrl+R, then enter 'append_def_2'.",
-            "Replace 'sorry' on line 6 with 'arg_combination cons x from S3'. Use Ctrl+Enter to check proof."
-        ],
         "prop": "xs @ nil = xs",
+        "name": "list.append_right_neutral",
         "ty": "thm",
-        "name": "list.append_right_neutral"
-    },
-    {
         "vars": {
-            "ys": "'a list",
-            "zs": "'a list",
-            "xs": "'a list"
+            "xs": "'a list",
+            "x": "'a"
         },
         "instructions": [
-            "With focus on line 4, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-            "With focus on line 4, enter Ctrl+R, then enter 'append_def_1'.",
-            "Replace 'sorry' on line 4 with 'reflexive ys @ zs'. Use Ctrl+Enter to check proof.",
-            "With focus on line 6, enter Ctrl+I, enter 'x,xs' as variable name.",
-            "With focus on line 8, enter Ctrl+R, then enter 'append_def_2'.",
-            "With focus on line 8, enter Ctrl+R, then enter 'append_def_2'.",
-            "Replace 'sorry' on line 8 with 'arg_combination cons x from S3'. Use Ctrl+Enter to check proof."
-        ],
+            "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
+            "Select S1 as goal, use Ctrl+R with append_def_1.",
+            "Set sorry on S1 to reflexive nil.",
+            "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
+            "Select S4 as goal, use Ctrl+R with append_def_2.",
+            "Set sorry on S4 to arg_combination cons x from S3."
+        ]
+    },
+    {
         "prop": "(xs @ ys) @ zs = xs @ ys @ zs",
+        "instructions": [
+            "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
+            "Select S1 as goal, use Ctrl+R with append_def_1.",
+            "Set sorry on S1 to reflexive ys @ zs.",
+            "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
+            "Select S4 as goal, use Ctrl+R with append_def_2.",
+            "Select S4 as goal, use Ctrl+R with append_def_2.",
+            "Set sorry on S4 to arg_combination cons x from S3."
+        ],
         "ty": "thm",
+        "vars": {
+            "zs": "'a list",
+            "xs": "'a list",
+            "ys": "'a list",
+            "x": "'a"
+        },
         "name": "list.append_assoc"
     }
 ]

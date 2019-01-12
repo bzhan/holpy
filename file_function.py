@@ -13,11 +13,12 @@ def save_file(name, d):
             j.close()
         f.close()
 
-def save_proof(n, i, d):
+def save_proof(n, i, d, num_gaps):
     file_path = 'library/' + n + '.json'
     with open(file_path, 'r+', encoding='utf-8') as f:
         file_data = json.load(f)
         file_data[i]['proof'] = d
+        file_data[i]['num_gaps'] = num_gaps
         j = open(file_path, 'w+', encoding='utf-8')
         json.dump(file_data, j, indent=4, ensure_ascii=False)
         j.close()

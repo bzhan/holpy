@@ -40,9 +40,16 @@ def init_component():
 def init_saved_proof():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = ProofState.parse_proof(data)
-        cells[data['id']] = cell
-        return jsonify(cell.json_data())
+        try:
+            cell = ProofState.parse_proof(data)
+            cells[data['id']] = cell
+            return jsonify(cell.json_data())
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+        return jsonify(error)
     return jsonify({})
 
 
@@ -170,9 +177,7 @@ def json_parse():
                     output['instructions'] = d['instructions']
                 if 'proof' in d:
                     output['proof'] = d['proof']
-                    output['status']='green'
-                    if 'sorry' in d['proof']:
-                        output['status'] = 'yellow'
+                    output['status'] = 'yellow' if d['num_gaps'] > 0 else 'green'
                 else:
                     output['status'] = 'red'
 
@@ -207,6 +212,6 @@ def get_root():
 @app.route('/api/save_proof', methods=['PUT'])
 def save_proof_file():
     data = json.loads(request.get_data().decode("utf-8"))
-    save_proof(data['name'], data['id'], data['proof'])
+    save_proof(data['name'], data['id'], data['proof'], data['num_gaps'])
 
     return ''
