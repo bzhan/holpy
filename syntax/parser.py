@@ -90,8 +90,6 @@ grammar = r"""
     tyinst: "{}"
         | "{" type_pair ("," type_pair)* "}"
 
-    var_decl: "var" CNAME "::" type
-
     %import common.CNAME
     %import common.WS
 
@@ -111,7 +109,7 @@ class HOLTransformer(Transformer):
         return TVar(s)
 
     def type(self, *args):
-        return Type(args[-1], *args[:-1])
+        return Type(str(args[-1]), *args[:-1])
 
     def funtype(self, t1, t2):
         return TFun(t1, t2)
@@ -119,6 +117,7 @@ class HOLTransformer(Transformer):
     def vname(self, s):
         thy = parser_setting['thy']
         ctxt = parser_setting['ctxt']
+        s = str(s)
         if thy.has_term_sig(s):
             # s is the name of a constant in the theory
             return Const(s, thy.get_term_sig(s))
@@ -192,9 +191,6 @@ class HOLTransformer(Transformer):
     def tyinst(self, *args):
         return dict(args)
 
-    def var_decl(self, name, T):
-        return (name, T)
-
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
 
@@ -203,7 +199,6 @@ term_parser = get_parser_for("term")
 thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
-var_decl_parser = get_parser_for("var_decl")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -233,16 +228,11 @@ def parse_tyinst(thy, s):
     parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
 
-def parse_var_decl(thy, s):
-    """Parse a variable declaration."""
-    parser_setting['thy'] = thy
-    return var_decl_parser.parse(s)
-
 def split_proof_rule(s):
     """Split proof rule into parseable parts.
 
     Currently able to handle string of the form:
-    [id]: [rule_name] [args] by [prevs]
+    [id]: [rule] [args] by [prevs]
 
     """
     if s.count(": ") > 0:
@@ -257,27 +247,33 @@ def split_proof_rule(s):
         th, rest = "", rest
 
     if rest.count(" ") > 0:
-        rule_name, rest = rest.split(" ", 1)  # split off name of rule
+        rule, rest = rest.split(" ", 1)  # split off name of rule
     else:
-        rule_name, rest = rest, ""
-    rule_name = rule_name.strip()
+        rule, rest = rest, ""
+    rule = rule.strip()
 
     if rest.count("from") > 0:
         args, rest = rest.split("from", 1)
-        return (id, rule_name, args.strip(), [prev.strip() for prev in rest.split(",")], th)
+        return {'id': id, 'rule': rule, 'args': args.strip(),
+                'prevs': [prev.strip() for prev in rest.split(",")],
+                'th': th}
     else:
-        return (id, rule_name, rest.strip(), [], th)
+        return {'id': id, 'rule': rule, 'args': rest.strip(),
+                'prevs': [], 'th': th}
 
-def parse_proof_rule(thy, ctxt, s):
+def parse_proof_rule_from_data(thy, ctxt, data):
     """Parse a proof rule.
+
+    data is a dictionary as provided by split_proof_rule. The result
+    is a ProofItem object.
 
     This need to be written by hand because different proof rules
     require different parsing of the arguments.
 
     """
-    (id, rule_name, args, prevs, th) = split_proof_rule(s)
+    id, rule, args, prevs, th = data['id'], data['rule'], data['args'], data['prevs'], data['th']
 
-    if rule_name == "":
+    if rule == "":
         return ProofItem(id, "")
 
     if th == "":
@@ -286,34 +282,38 @@ def parse_proof_rule(thy, ctxt, s):
         th = parse_thm(thy, ctxt, th)
 
     try:
-        sig = thy.get_proof_rule_sig(rule_name)
+        sig = thy.get_proof_rule_sig(rule)
         if sig == MacroSig.NONE:
             assert args == "", "rule expects no argument."
-            return ProofItem(id, rule_name, prevs=prevs, th=th)
+            return ProofItem(id, rule, prevs=prevs, th=th)
         elif sig == MacroSig.STRING:
-            return ProofItem(id, rule_name, args=args, prevs=prevs, th=th)
+            return ProofItem(id, rule, args=args, prevs=prevs, th=th)
         elif sig == MacroSig.TERM:
             t = parse_term(thy, ctxt, args)
-            return ProofItem(id, rule_name, args=t, prevs=prevs, th=th)
+            return ProofItem(id, rule, args=t, prevs=prevs, th=th)
         elif sig == MacroSig.INST:
             inst = parse_inst(thy, ctxt, args)
-            return ProofItem(id, rule_name, args=inst, prevs=prevs, th=th)
+            return ProofItem(id, rule, args=inst, prevs=prevs, th=th)
         elif sig == MacroSig.TYINST:
             tyinst = tyinst_parser(thy, ctxt).parse(args)
-            return ProofItem(id, rule_name, args=tyinst, prevs=prevs, th=th)
+            return ProofItem(id, rule, args=tyinst, prevs=prevs, th=th)
         elif sig == MacroSig.STRING_TERM:
             s1, s2 = args.split(",", 1)
             t = parse_term(thy, ctxt, s2)
-            return ProofItem(id, rule_name, args=(s1, t), prevs=prevs, th=th)
+            return ProofItem(id, rule, args=(s1, t), prevs=prevs, th=th)
         elif sig == MacroSig.STRING_INST:
             s1, s2 = args.split(",", 1)
             inst = parse_inst(thy, ctxt, s2)
-            return ProofItem(id, rule_name, args=(s1, inst), prevs=prevs, th=th)
+            return ProofItem(id, rule, args=(s1, inst), prevs=prevs, th=th)
         else:
             raise TypeError()
     except exceptions.UnexpectedToken as e:
         raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
                               % (args, e.token, e.column))
+
+def parse_proof_rule(thy, ctxt, s):
+    data = split_proof_rule(s)
+    return parse_proof_rule_from_data(thy, ctxt, data)
 
 def parse_vars(thy, vars_data):
     ctxt = {}

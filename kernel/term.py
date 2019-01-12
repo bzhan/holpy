@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel import settings
 from kernel.type import TFun, hol_bool
 
 class OpenTermException(Exception):
@@ -54,11 +55,10 @@ class Term():
     """
     (VAR, CONST, COMB, ABS, BOUND) = range(5)
 
-    def print(self, *, print_abs_type = False):
+    @settings.with_settings
+    def print(self):
         """Printing function for terms. Note we do not yet handle collision
         in lambda terms.
-
-        print_abs_type: print type information for bound variables.
 
         """
         def helper(t, bd_vars):
@@ -78,7 +78,7 @@ class Term():
                     str_arg = helper(t.arg, bd_vars)
                 return str_fun + " " + str_arg
             elif t.ty == Term.ABS:
-                var_str = t.var_name + "::" + str(t.T) if print_abs_type else t.var_name
+                var_str = t.var_name + "::" + str(t.T) if settings.print_abs_type() else t.var_name
                 body_repr = helper(t.body, [t.var_name] + bd_vars)
                 return "%" + var_str + ". " + body_repr
             elif t.ty == Term.BOUND:
@@ -92,7 +92,7 @@ class Term():
         return helper(self, [])
 
     def __str__(self):
-        return self.print()
+        return settings.term_printer()(self)
 
     def __repr__(self):
         if self.ty == Term.VAR:
@@ -386,7 +386,7 @@ class Term():
         elif self.ty == Term.BOUND:
             return False
         else:
-            raise TypeError()
+            raise TypeError()    
 
     def _abstract_over(self, t, n):
         """Helper function for abstract_over. Here self is an open term.
@@ -462,6 +462,8 @@ class Term():
         """Perform type-checking and return the type of self."""
         return self._checked_get_type([])
 
+settings.update_settings(term_printer=Term.print)
+
 class Var(Term):
     """Variable, specified by name and type."""
     def __init__(self, name, T):
@@ -505,3 +507,35 @@ class Bound(Term):
     def __init__(self, n):
         self.ty = Term.BOUND
         self.n = n
+
+def get_vars(t):
+    """Returns set of variables in a term or a list of terms."""
+    if isinstance(t, Term):
+        if t.ty == Term.VAR:
+            return {t}
+        elif t.ty == Term.COMB:
+            return get_vars(t.fun).union(get_vars(t.arg))
+        elif t.ty == Term.ABS:
+            return get_vars(t.body)
+        else:
+            return set()
+    elif isinstance(t, list):
+        return set.union(*(get_vars(s) for s in t))
+    else:
+        raise TypeError()
+
+def get_consts(t):
+    """Returns set of constants in a term or a list of terms."""
+    if isinstance(t, Term):
+        if t.ty == Term.CONST:
+            return {t}
+        elif t.ty == Term.COMB:
+            return get_consts(t.fun).union(get_consts(t.arg))
+        elif t.ty == Term.ABS:
+            return get_consts(t.body)
+        else:
+            return set()
+    elif isinstance(t, list):
+        return set.union(*(get_consts(s) for s in t))
+    else:
+        raise TypeError()

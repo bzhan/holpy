@@ -66,9 +66,9 @@
 
         //点击位于右侧button，监听执行
         $('div.rtop').on('click', 'button', function() {
-            var editor = get_selected_editor();
-            var proof = editor.getValue();
+            var editor_id = get_selected_id();
             var id = Number($(this).attr('name'))-1;
+            var proof = cells[editor_id]
             var data_save = JSON.stringify({'name':name, 'proof':proof, 'id':id});
             if (proof !== '' && id !== -1 ) {
                 save_info(data_save);
@@ -140,20 +140,16 @@
         //proof被点击时，传送proof给init:
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
-//            var editor = get_selected_editor();
-            if (result_list[proof_id-1]['save-proof']) {
+            if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
-                    edit_flag=true;
-                    var editor = get_selected_editor();
-                    editor.setValue(result_list[proof_id-1]['save-proof']);
-                },500);
+                    init_saved_proof(result_list[proof_id-1])
+                }, 500);
             }
             else {
                 $('#add-cell').click();
-                var data = result_list[proof_id-1]['proof'];
                 setTimeout(function() {
-                    theorem_proof(data)
+                    theorem_proof(result_list[proof_id-1])
                 }, 500);
             }
         });
@@ -228,14 +224,11 @@
     }
 
     function theorem_proof(r_data) {
-        var json_data = r_data;
-        instructions = json_data['instructions'];
+        var instructions = r_data['instructions'];
         var event = {
-            'event': 'init_cell',
             'id': get_selected_id(),
-            'variables': json_data['variables'],
-            'assumes': json_data['assumes'],
-            'conclusion': json_data['conclusion']
+            'vars': r_data['vars'],
+            'prop': r_data['prop_raw'],
         };
         var data = JSON.stringify(event);
         display_running();
@@ -249,6 +242,27 @@
                 display_instuctions(instructions);
             }
         });
+    }
+
+    function init_saved_proof(r_data) {
+        var instructions = r_data['instructions'];
+        var event = {
+            'id': get_selected_id(),
+            'vars': r_data['vars'],
+            'proof': r_data['proof'],
+        };
+        var data = JSON.stringify(event);
+        display_running();
+        $.ajax({
+            url: "/api/init-saved-proof",
+            type: 'POST',
+            data: data,
+            success: function (result) {
+                display_checked_proof(result);
+                get_selected_editor().focus();
+                display_instuctions(instructions);
+            }
+        })
     }
 
     function save_info(data_save) {
@@ -428,23 +442,11 @@
                     });
                     var id = get_selected_id();
                     var cell = cells[id];
-                    if (mod === 0) {
-                        let origin_line = cell[edit_line_number].id + ': ';
-                        if (cell[edit_line_number].th !== '')
-                            origin_line += cell[edit_line_number].th + ' by '
-                                + cell[edit_line_number].rule_name;
-                        cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
-                            line: edit_line_number,
-                            ch: Number.MAX_SAFE_INTEGER
-                        });
-                    } else if (mod === 1) {
-                        let origin_line = cell[edit_line_number].id + ': '
-                            + cell[edit_line_number].th;
-                        cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
-                            line: edit_line_number,
-                            ch: Number.MAX_SAFE_INTEGER
-                        });
-                    }
+                    var origin_line = display_line(cell[edit_line_number])
+                    cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
+                        line: edit_line_number,
+                        ch: Number.MAX_SAFE_INTEGER
+                    });
                     readonly_lines.push(edit_line_number);
                     readonly_lines.sort();
                     edit_line_number = -1;
