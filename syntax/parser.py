@@ -254,18 +254,24 @@ def split_proof_rule(s):
 
     if rest.count("from") > 0:
         args, rest = rest.split("from", 1)
-        return (id, rule, args.strip(), [prev.strip() for prev in rest.split(",")], th)
+        return {'id': id, 'rule': rule, 'args': args.strip(),
+                'prevs': [prev.strip() for prev in rest.split(",")],
+                'th': th}
     else:
-        return (id, rule, rest.strip(), [], th)
+        return {'id': id, 'rule': rule, 'args': rest.strip(),
+                'prevs': [], 'th': th}
 
-def parse_proof_rule(thy, ctxt, s):
+def parse_proof_rule_from_data(thy, ctxt, data):
     """Parse a proof rule.
+
+    data is a dictionary as provided by split_proof_rule. The result
+    is a ProofItem object.
 
     This need to be written by hand because different proof rules
     require different parsing of the arguments.
 
     """
-    (id, rule, args, prevs, th) = split_proof_rule(s)
+    id, rule, args, prevs, th = data['id'], data['rule'], data['args'], data['prevs'], data['th']
 
     if rule == "":
         return ProofItem(id, "")
@@ -304,6 +310,10 @@ def parse_proof_rule(thy, ctxt, s):
     except exceptions.UnexpectedToken as e:
         raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
                               % (args, e.token, e.column))
+
+def parse_proof_rule(thy, ctxt, s):
+    data = split_proof_rule(s)
+    return parse_proof_rule_from_data(thy, ctxt, data)
 
 def parse_vars(thy, vars_data):
     ctxt = {}

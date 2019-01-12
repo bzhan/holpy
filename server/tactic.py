@@ -74,11 +74,30 @@ def strip_all_implies(t, names):
 class ProofState():
     """Represents proof state on the server side."""
 
-    def __init__(self, vars, assums, concl):
-        """Given a theorem statement, construct the initial partial proof.
-        
-        assums - assumptions of the theorem A1, ... An.
-        concl - conclusion of the theorem C.
+    def __init__(self):
+        """Empty proof state."""
+        self.thy = BasicTheory
+        self.vars = []
+        self.prf = Proof()
+
+    def get_ctxt(self):
+        ctxt = {}
+        for v in self.vars:
+            ctxt[v.name] = v.T
+        return ctxt
+
+    def __str__(self):
+        vars = sorted(self.vars, key = lambda v: v.name)
+        lines = "\n".join('var ' + v.name + ' :: ' + str(v.T) for v in vars)
+        return lines + "\n" + str(self.prf)
+
+    @staticmethod
+    def init_state(vars, assums, concl):
+        """ Construct initial partial proof for the given assumptions and
+        conclusion.
+
+        assums - assumptions A1, ... An.
+        concl - conclusion C.
         
         Constructs:
 
@@ -89,36 +108,37 @@ class ProofState():
         S2: An --> C by implies_intr An from S1
         ...
         S{n+1}: A1 --> ... --> An --> C by implies_intr A1 from Sn.
-        
+
         """
-        self.thy = BasicTheory
+        state = ProofState()
 
-        self.vars = vars
-        self.prf = Proof(*assums)
-        self.prf.add_item("S1", "sorry", th=Thm(assums, concl))
+        state.vars = vars
+        state.prf = Proof(*assums)
+        state.prf.add_item("S1", "sorry", th=Thm(assums, concl))
         for n, assum in enumerate(reversed(assums), 2):
-            self.prf.add_item("S" + str(n), "implies_intr", args=assum, prevs=["S" + str(n-1)])
-        self.check_proof(compute_only=True)
-
-    def get_ctxt(self):
-        ctxt = {}
-        for v in self.vars:
-            ctxt[v.name] = v.T
-        return ctxt
+            state.prf.add_item("S" + str(n), "implies_intr", args=assum, prevs=["S" + str(n-1)])
+        state.check_proof(compute_only=True)
+        return state
 
     @staticmethod
-    def parse_init_state(str_vars, str_prop):
-        """Obtain proof state from a data dictionary."""
+    def parse_init_state(data):
+        """Given data for a theorem statement, construct the initial partial proof.
+        
+        data['vars']: list of variables.
+        data['prop']: proposition to be proved. In the form A1 --> ... --> An --> C.
+
+        """
         thy = BasicTheory
         ctxt = {}
         vars = []
-        for name, str_T in str_vars.items():
+        for name, str_T in data['vars'].items():
             T = parser.parse_type(thy, str_T)
             vars.append(Var(name, T))
             ctxt[name] = T
-        prop = parser.parse_term(thy, ctxt, str_prop)
-        As, C = prop.strip_implies()
-        return ProofState(vars, As, C)
+        prop = parser.parse_term(thy, ctxt, data['prop'])
+        assums, concl = prop.strip_implies()
+
+        return ProofState.init_state(vars, assums, concl)
 
     @settings.with_settings
     def json_data(self):
@@ -130,6 +150,23 @@ class ProofState():
             "proof": [item.export(term_printer=term_printer, unicode=True) for item in self.prf.items],
             "report": self.rpt.json_data()
         }
+
+    @staticmethod
+    def parse_proof(data):
+        """Obtain proof from json format."""
+        thy = BasicTheory
+        ctxt = {}
+        state = ProofState()
+        for name, str_T in data['vars'].items():
+            T = parser.parse_type(thy, str_T)
+            state.vars.append(Var(name, T))
+            ctxt[name] = T
+        state.prf = Proof()
+        for line in data['proof']:
+            state.prf.items.append(parser.parse_proof_rule_from_data(thy, ctxt, line))
+
+        state.check_proof(compute_only=True)
+        return state
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
         """Check the given proof. Report is stored in rpt."""

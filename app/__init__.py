@@ -30,7 +30,7 @@ def index():
 def init_component():
     data = json.loads(request.get_data().decode("utf-8"))
     if data.get('event') == 'init_cell':
-        cell = ProofState.parse_init_state(data['vars'], data['prop'])
+        cell = ProofState.parse_init_state(data)
         cells[data.get('id')] = cell
         return jsonify(cell.json_data())
     return jsonify({})
@@ -40,9 +40,8 @@ def init_component():
 def add_line_after():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells[data.get('id')]
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        cell.add_line_after(id)
+        cell = cells[data['id']]
+        cell.add_line_after(data['line_id'])
         return jsonify(cell.json_data())
     return jsonify({})
 
@@ -51,9 +50,8 @@ def add_line_after():
 def remove_line():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells[data.get('id')]
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        cell.remove_line(id)
+        cell = cells[data['id']]
+        cell.remove_line(data['line_id'])
         return jsonify(cell.json_data())
     return jsonify({})
 
@@ -64,8 +62,7 @@ def introduction():
     if data:
         cell = cells.get(data.get('id'))
         len_before = len(cell.prf.items)
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        cell.introduction(id, data.get('var_name'))
+        cell.introduction(data['line_id'], data.get('var_name'))
         line_diff = (len(cell.prf.items) - len_before) / 2
         result = cell.json_data()
         result["line-diff"] = line_diff
@@ -77,13 +74,12 @@ def introduction():
 def apply_backward_step():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        theorem = data.get('theorem').split(",")
+        cell = cells.get(data['id'])
+        theorem = data['theorem'].split(",")
         theorem, prevs = theorem[0], theorem[1:]
         if prevs:
             prevs = [prev.strip() for prev in prevs]
-        cell.apply_backward_step(id, theorem, prevs=prevs)
+        cell.apply_backward_step(data['line_id'], theorem, prevs=prevs)
         return jsonify(cell.json_data())
     return jsonify({})
 
@@ -93,9 +89,8 @@ def apply_induction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells.get(data.get('id'))
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem, var = data.get('theorem').split(",")
-        cell.apply_induction(id, theorem, var)
+        cell.apply_induction(data['line_id'], theorem, var)
         return jsonify(cell.json_data())
     return jsonify({})
 
@@ -105,9 +100,8 @@ def rewrite_goal():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells.get(data.get('id'))
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem = data.get('theorem')
-        cell.rewrite_goal(id, theorem)
+        cell.rewrite_goal(data['line_id'], theorem)
         return jsonify(cell.json_data())
     return jsonify({})
 
@@ -118,7 +112,7 @@ def set_line():
     if data:
         cell = cells.get(data.get('id'))
         try:
-            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(), data.get('line'))
+            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(), data['line'])
             cell.set_line(item.id, item.rule, args=item.args, prevs=item.prevs, th=item.th)
             return jsonify(cell.json_data())
         except Exception as e:

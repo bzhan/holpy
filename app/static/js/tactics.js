@@ -74,11 +74,11 @@ function display_instuctions(instructions) {
 
 function add_line_after(cm) {
     $(document).ready(function () {
+        var id = get_selected_id();
         var line_number = cm.getCursor().line;
-        var line = cm.getLine(line_number);
         var input = {
-            "id": get_selected_id(),
-            "line": line,
+            "id": id,
+            "line_id": cells[id][line_number]['id'],
         };
         var data = JSON.stringify(input);
         display_running();
@@ -97,11 +97,11 @@ function add_line_after(cm) {
 
 function remove_line(cm) {
     $(document).ready(function () {
+        var id = get_selected_id();
         var line_number = cm.getCursor().line;
-        var line = cm.getLine(line_number);
         var input = {
-            "id": get_selected_id(),
-            "line": line,
+            "id": id,
+            "line_id": cells[id][line_number]['id'],
         };
         var data = JSON.stringify(input);
         display_running();
@@ -120,11 +120,12 @@ function remove_line(cm) {
 
 function introduction(cm) {
     $(document).ready(function () {
+        var id = get_selected_id();
         var line_number = cm.getCursor().line;
         var line = cm.getLine(line_number);
         var input = {
-            "id": get_selected_id(),
-            "line": line,
+            "id": id,
+            "line_id": cells[id][line_number]['id'],
         };
 
         if (line.indexOf("⊢ ∀") !== -1) {
@@ -146,8 +147,6 @@ function introduction(cm) {
 }
 
 function apply_backward_step(cm) {
-    var line_number = cm.getCursor().line;
-    var line = cm.getLine(line_number);
     var title = '';
     if (click_line_number !== -1 && ctrl_click_line_number !== -1) {
         title = 'Target: ' + (click_line_number + 1) + '\nConclusion: ' + (ctrl_click_line_number + 1);
@@ -177,7 +176,7 @@ function apply_backward_step(cm) {
             }
             var data = {
                 'id': get_selected_id(),
-                'line': line,
+                'line_id': cells[get_selected_id()][click_line_number]['id'],
                 'theorem': theorem,
             };
             return fetch('/api/apply-backward-step', {
@@ -216,10 +215,10 @@ function apply_backward_step(cm) {
 function apply_induction(cm) {
     $(document).ready(function () {
         var line_no = cm.getCursor().line;
-        var line = cm.getLine(line_no);
+        var id = get_selected_id();
         var input = {
-            'id': get_selected_id(),
-            'line': line
+            'id': id,
+            'line_id': cells[id][line_no]['id']
         };
 
         input['theorem'] = prompt('Enter induction theorem and variable name');
@@ -240,10 +239,10 @@ function apply_induction(cm) {
 function rewrite_goal(cm) {
     $(document).ready(function () {
         var line_no = cm.getCursor().line;
-        var line = cm.getLine(line_no);
+        var id = get_selected_id();
         var input = {
-            'id': get_selected_id(),
-            'line': line
+            'id': id,
+            'line_id': cells[id][line_no]['id']
         };
 
         input['theorem'] = prompt('Enter rewrite theorem');
