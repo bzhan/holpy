@@ -7,6 +7,7 @@
     var is_mousedown = false;
     var is_crlt_click = false;
     var click_count = 0;
+    var cons,type,therom;
 
     $(function () {
         $('#theorem-select').ready(function () {
@@ -166,6 +167,12 @@
             }
         });
 
+
+        $('#constant').on('click', function() {
+                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'))
+                collect_info();
+        });
+
         function remove_page(first) {
             if (first)
                 page_num = 0;
@@ -305,36 +312,57 @@
              ajax_res(data);
         });
 
+        function collect_info() {
+        //动态加载的元素必须采用托管的方法，即on（）函数绑定事件；
+            $('#add-information').on('change','#constant',function() {
+                cons = $(this).val();
+            });
+            $('#add-information').on('change','#type',function() {
+                type = $(this).val();
+            });
+            $('#add-information').on('change','#thm',function() {
+                therom = $(this).val();
+            });
+
+        }
+
         function add_info() {
+        //使用delegate函数可以选择动态加载的元素；
             var data = [];
-            if ($('#constant, #type').val() !== '') {
+            $('#add-information').delegate('#constant', '',function() {
+                    $(this).val()='12345';
+            })
+
+            if (cons !== '' && type !=='') {
                 var constant = {};
-                var cons = $('#constant').val();
-                var type = $('#type').val();
                 constant['ty'] = 'def.ax';
                 constant['name'] = cons;
                 constant['T'] = type;
                 data.push(constant);
-                $('#constant,#type').val('');
+                $('#constant').val('');
             }
+//
+//            if ($('#thm, #term, #vars').val() !== '') {
+//                var theorem = {};
+//                var vars = {};
+//                var theo = $('#thm').val();
+//                var term = $('#term').val();
+//                var vars_str = $('#vars').val();
+//                var vars_list = vars_str.split(' ');
+//                for (var i in vars_list) {
+//                    var v_list = vars_list[i].split(':');
+//                    vars[v_list[0]] = v_list[1];
+//                }
+//                theorem['ty'] = 'thm';
+//                theorem['name'] = theo;
+//                theorem['vars'] = vars;
+//                theorem['prop'] = term;
+//                data.push(theorem);
+//                $('#thm,#term,#vars').val('');
+//            }
 
-            if ($('#thm, #term, #vars').val() !== '') {
-                var theorem = {};
-                var vars = {};
-                var theo = $('#thm').val();
-                var term = $('#term').val();
-                var vars_str = $('#vars').val();
-                var vars_list = vars_str.split(' ');
-                for (var i in vars_list) {
-                    var v_list = vars_list[i].split(':');
-                    vars[v_list[0]] = v_list[1];
-                }
-                theorem['ty'] = 'thm';
-                theorem['name'] = theo;
-                theorem['vars'] = vars;
-                theorem['prop'] = term;
-                data.push(theorem);
-                $('#thm,#term,#vars').val('');
+            if ($('div .datatype').val() !== '') {
+
             }
             var event = {"data":data,
                          "name":name};
@@ -363,6 +391,27 @@
                             });
                             $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
                         }
+
+//                        if (ty === 'type.ind'){
+//                               var constrs = result['data'][d]['constrs'];
+//                               str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name']
+//                                    for (var i in constrs[1]['args']){
+//                                        str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
+//                                    }
+//                                $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
+//                                }
+//
+//                        if (ty === 'def.ind'){
+//                                $('#left_json').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
+//                                        + ' where'+'</p>'))
+//                                    for (var j in obj){
+//                                        str = ''
+//                                        $.each(obj[j], function(i, val){
+//                                            str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
+//                                        })
+//                                        $('#left_json p:last').append($('<p>'+ str+'</p>'));
+//                                     }
+//                                }
                     }
                 }
             });
@@ -426,7 +475,7 @@
             $('#add-info').click(add_info);
             ajax_res(data);
             });
-
+//$(document).ready(function() {}
         $(function(){
             num_root = 0;
             $.ajax({
