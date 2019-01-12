@@ -147,26 +147,13 @@ class ProofState():
         """Parse the given proof in string form."""
         self.prf = parse_proof(self.thy, io.StringIO(input))
 
-    def print_proof(self, **kargs):
-        """Print proof for user-interface."""
-        try:
-            kargs.update({'term_printer': lambda t: printer.print_term(self.thy, t)})
-            settings.update_settings(**kargs)
-            return print(self.prf)
-        finally:
-            settings.recover_settings()
-
-    def export_proof(self, **kargs):
+    @settings.with_settings
+    def export_proof(self):
         """Export proof in the form of a list of dictionaries. Easily
         convertible to json format.
 
         """
-        try:
-            kargs.update({'term_printer': lambda t: printer.print_term(self.thy, t)})
-            settings.update_settings(**kargs)
-            return self.prf.export()
-        finally:
-            settings.recover_settings()
+        return self.prf.export(term_printer=lambda t: printer.print_term(self.thy, t))
 
     def check_proof(self, *, no_gaps=False):
         """Check the given proof. Report is stored in rpt."""

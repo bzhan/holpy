@@ -7,7 +7,8 @@ from logic import logic
 
 NORMAL, BOUND, VAR = range(3)
 
-def print_term(thy, t, **kargs):
+@settings.with_settings
+def print_term(thy, t):
     """More sophisticated printing function for terms. Handles printing
     of operators.
     
@@ -145,8 +146,4 @@ def print_term(thy, t, **kargs):
         else:
             raise TypeError()
 
-    try:
-        settings.update_settings(**kargs)
-        return helper(t, [])
-    finally:
-        settings.recover_settings()
+    return helper(t, [])

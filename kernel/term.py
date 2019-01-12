@@ -55,7 +55,8 @@ class Term():
     """
     (VAR, CONST, COMB, ABS, BOUND) = range(5)
 
-    def print(self, **kargs):
+    @settings.with_settings
+    def print(self):
         """Printing function for terms. Note we do not yet handle collision
         in lambda terms.
 
@@ -88,11 +89,7 @@ class Term():
             else:
                 raise TypeError()
 
-        try:
-            settings.update_settings(**kargs)
-            return helper(self, [])
-        finally:
-            settings.recover_settings()
+        return helper(self, [])
 
     def __str__(self):
         return settings.term_printer()(self)

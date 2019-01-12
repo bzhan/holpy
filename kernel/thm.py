@@ -39,18 +39,15 @@ class Thm():
         self.assums = set(assums)
         self.concl = concl
 
-    def print(self, **kargs):
+    @settings.with_settings
+    def print(self):
         """Print the given theorem."""
-        try:
-            settings.update_settings(**kargs)
-            turnstile = "⊢" if settings.unicode() else "|-"
-            if self.assums:
-                str_assums = ", ".join(sorted(str(assum) for assum in self.assums))
-                return str_assums + " " + turnstile + " " + str(self.concl)
-            else:
-                return turnstile + " " + str(self.concl)
-        finally:
-            settings.recover_settings()
+        turnstile = "⊢" if settings.unicode() else "|-"
+        if self.assums:
+            str_assums = ", ".join(sorted(str(assum) for assum in self.assums))
+            return str_assums + " " + turnstile + " " + str(self.concl)
+        else:
+            return turnstile + " " + str(self.concl)
 
     def __str__(self):
         return self.print()

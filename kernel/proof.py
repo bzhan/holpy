@@ -41,26 +41,20 @@ class ProofItem():
         else:
             return str_val(self.args) if self.args else ""
 
-    def print(self, **kargs):
+    @settings.with_settings
+    def print(self):
         """Print the given proof item."""
-        try:
-            settings.update_settings(**kargs)
-            str_args = " " + self._print_str_args() if self.args else ""
-            str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
-            str_th = str(self.th) + " by " if self.th else ""
-            return self.id + ": " + str_th + self.rule + str_args + str_prevs
-        finally:
-            settings.recover_settings()
+        str_args = " " + self._print_str_args() if self.args else ""
+        str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
+        str_th = str(self.th) + " by " if self.th else ""
+        return self.id + ": " + str_th + self.rule + str_args + str_prevs
 
-    def export(self, **kargs):
+    @settings.with_settings
+    def export(self):
         """Export the given proof item as a dictionary."""
-        try:
-            settings.update_settings(**kargs)
-            str_args = self._print_str_args()
-            str_th = str(self.th) if self.th else ""
-            return {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
-        finally:
-            settings.recover_settings()
+        str_args = self._print_str_args()
+        str_th = str(self.th) if self.th else ""
+        return {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
 
     def __str__(self):
         return self.print()
@@ -106,34 +100,28 @@ class Proof():
         else:
             raise ProofException()
 
-    def print(self, **kargs):
+    @settings.with_settings
+    def print(self):
         """Print the given proof object."""
         def print_var(t):
             return "var " + t.name + " :: " + str(t.T)
 
-        try:
-            settings.update_settings(**kargs)
-            str_vars = "\n".join(print_var(t) for t in self.vars) + "\n"
-            lines = [str(item) for item in self.items]
-            return str_vars + "\n".join(lines)
-        finally:
-            settings.recover_settings()
+        str_vars = "\n".join(print_var(t) for t in self.vars) + "\n"
+        lines = [str(item) for item in self.items]
+        return str_vars + "\n".join(lines)
 
-    def export(self, **kargs):
+    @settings.with_settings
+    def export(self):
         """Export the given proof object."""
         def export_var(t):
             return {'id': 'var', 'rule': t.name + ' :: ' + str(t.T)}
 
-        try:
-            settings.update_settings(**kargs)
-            vars = [export_var(t) for t in self.vars]
-            lines = [item.export() for item in self.items]
-            return vars + lines
-        finally:
-            settings.recover_settings()
+        vars = [export_var(t) for t in self.vars]
+        lines = [item.export() for item in self.items]
+        return vars + lines
 
     def __str__(self):
-        return self.print(print_vars=False)
+        return self.print()
 
     def __repr__(self):
         return str(self)
