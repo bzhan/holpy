@@ -68,10 +68,15 @@
         $('div.rtop').on('click', 'button', function() {
             var editor_id = get_selected_id();
             var id = Number($(this).attr('name'))-1;
-            var proof = cells[editor_id]
-            var data_save = JSON.stringify({'name':name, 'proof':proof, 'id':id});
-            if (proof !== '' && id !== -1 ) {
-                save_info(data_save);
+            var proof = cells[editor_id]['proof'];
+            var data = {
+                'name': name,
+                'proof': proof,
+                'id': id,
+                'num_gaps': cells[editor_id]['num_gaps']
+            }
+            if (proof !== '' && id !== -1) {
+                save_info(JSON.stringify(data));
             }
         });
 
@@ -268,10 +273,10 @@
     function save_info(data_save) {
         $.ajax({
             url: "/api/save_proof",
-            type: "put",
+            type: "PUT",
             data: data_save,
             cache: false,
-            success: function(r) {
+            success: function() {
                 alert('save success');
             }
         })
@@ -441,8 +446,7 @@
                         }
                     });
                     var id = get_selected_id();
-                    var cell = cells[id];
-                    var origin_line = display_line(cell[edit_line_number])
+                    var origin_line = display_line(cells[id]['proof'][edit_line_number])
                     cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
                         line: edit_line_number,
                         ch: Number.MAX_SAFE_INTEGER

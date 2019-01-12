@@ -55,9 +55,12 @@ function display_checked_proof(result) {
     } else {
         edit_flag = true;
         edit_line_number = -1;
-        cells[get_selected_id()] = result['proof'];
-        display(get_selected_id());
+        id = get_selected_id();
+        cells[id] = {};
+        cells[id]['proof'] = result['proof'];
+        display(id);
         var num_gaps = result["report"]["num_gaps"];
+        cells[id]['num_gaps'] = num_gaps;
         status_output.style.color = '';
         if (num_gaps > 0) {
             status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
@@ -78,7 +81,7 @@ function add_line_after(cm) {
         var line_number = cm.getCursor().line;
         var input = {
             "id": id,
-            "line_id": cells[id][line_number]['id'],
+            "line_id": cells[id]['proof'][line_number]['id'],
         };
         var data = JSON.stringify(input);
         display_running();
@@ -101,7 +104,7 @@ function remove_line(cm) {
         var line_number = cm.getCursor().line;
         var input = {
             "id": id,
-            "line_id": cells[id][line_number]['id'],
+            "line_id": cells[id]['proof'][line_number]['id'],
         };
         var data = JSON.stringify(input);
         display_running();
@@ -125,7 +128,7 @@ function introduction(cm) {
         var line = cm.getLine(line_number);
         var input = {
             "id": id,
-            "line_id": cells[id][line_number]['id'],
+            "line_id": cells[id]['proof'][line_number]['id'],
         };
 
         if (line.indexOf("⊢ ∀") !== -1) {
@@ -169,14 +172,14 @@ function apply_backward_step(cm) {
             var id = '';
             var theorem = '';
             if (click_line_number !== -1 && ctrl_click_line_number !== -1) {
-                id = cells[get_selected_id()][ctrl_click_line_number]['id'];
+                id = cells[get_selected_id()]['proof'][ctrl_click_line_number]['id'];
                 theorem = document.getElementById('swal-input1').value + ', ' + id;
             } else if (click_line_number !== -1 && ctrl_click_line_number === -1) {
                 theorem = document.getElementById('swal-input1').value;
             }
             var data = {
                 'id': get_selected_id(),
-                'line_id': cells[get_selected_id()][click_line_number]['id'],
+                'line_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
                 'theorem': theorem,
             };
             return fetch('/api/apply-backward-step', {
@@ -218,7 +221,7 @@ function apply_induction(cm) {
         var id = get_selected_id();
         var input = {
             'id': id,
-            'line_id': cells[id][line_no]['id']
+            'line_id': cells[id]['proof'][line_no]['id']
         };
 
         input['theorem'] = prompt('Enter induction theorem and variable name');
@@ -242,7 +245,7 @@ function rewrite_goal(cm) {
         var id = get_selected_id();
         var input = {
             'id': id,
-            'line_id': cells[id][line_no]['id']
+            'line_id': cells[id]['proof'][line_no]['id']
         };
 
         input['theorem'] = prompt('Enter rewrite theorem');
@@ -301,7 +304,7 @@ function display_line(e) {
 // Display the given content in the textarea with the given id.
 function display(id) {
     var editor = get_selected_editor();
-    var cell = cells[id];
+    var cell = cells[id]['proof'];
     if (mod === 0) {
         var content_list = [];
         cell.forEach(e => {

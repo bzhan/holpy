@@ -170,9 +170,7 @@ def json_parse():
                     output['instructions'] = d['instructions']
                 if 'proof' in d:
                     output['proof'] = d['proof']
-                    output['status']='green'
-                    if 'sorry' in d['proof']:
-                        output['status'] = 'yellow'
+                    output['status'] = 'yellow' if d['num_gaps'] > 0 else 'green'
                 else:
                     output['status'] = 'red'
 
@@ -207,6 +205,6 @@ def get_root():
 @app.route('/api/save_proof', methods=['PUT'])
 def save_proof_file():
     data = json.loads(request.get_data().decode("utf-8"))
-    save_proof(data['name'], data['id'], data['proof'])
+    save_proof(data['name'], data['id'], data['proof'], data['num_gaps'])
 
     return ''
