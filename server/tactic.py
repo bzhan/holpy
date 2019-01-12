@@ -102,7 +102,7 @@ class ProofState():
         self.prf.vars = vars
         for n, assum in enumerate(reversed(assums), 2):
             self.prf.add_item("S" + str(n), "implies_intr", args=assum, prevs=["S" + str(n-1)])
-        self.check_proof()
+        self.check_proof(compute_only=True)
 
     def get_ctxt(self):
         ctxt = {}
@@ -132,10 +132,10 @@ class ProofState():
         """
         return self.prf.export(term_printer=lambda t: printer.print_term(self.thy, t))
 
-    def check_proof(self, *, no_gaps=False):
+    def check_proof(self, *, no_gaps=False, compute_only=False):
         """Check the given proof. Report is stored in rpt."""
         self.rpt = ProofReport()
-        return self.thy.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps)
+        return self.thy.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
 
     def add_line_after(self, id):
         """Add given line after the given id."""
@@ -153,7 +153,7 @@ class ProofState():
                 new_prf.add_item("S" + str(id_new), "")
 
         self.prf = new_prf
-        self.check_proof()
+        self.check_proof(compute_only=True)
 
     def add_line_before(self, id, n):
         """Add given line before the given id."""
@@ -170,7 +170,7 @@ class ProofState():
             new_prf.items.append(incr_proof_item(item, id_new, n))
 
         self.prf = new_prf
-        self.check_proof()
+        self.check_proof(compute_only=True)
 
     def remove_line(self, id):
         """Remove line with the given id."""
@@ -189,7 +189,7 @@ class ProofState():
                 new_prf.items.append(decr_proof_item(item, id_remove))
             
         self.prf = new_prf
-        self.check_proof()
+        self.check_proof(compute_only=True)
 
     def set_line(self, id, rule, *, args=None, prevs=None, th=None):
         """Set the item with the given id to the following data."""
@@ -202,7 +202,7 @@ class ProofState():
                 new_prf.items.append(item)
 
         self.prf = new_prf
-        self.check_proof()
+        self.check_proof(compute_only=True)
 
     def get_proof_item(self, id):
         """Obtain the proof item with the given id."""

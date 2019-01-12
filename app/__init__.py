@@ -22,6 +22,8 @@ cells = dict()
 
 
 def get_result_from_cell(cell):
+    # Check proof at the end of each operation
+    cell.check_proof()
     return {
         "proof": cell.export_proof(unicode=True),
         "report": cell.rpt.json_data()

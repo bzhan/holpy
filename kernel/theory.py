@@ -228,7 +228,7 @@ class Theory():
         else:
             raise TypeError()
 
-    def _check_proof_item(self, depth, seq_dict, seq, rpt, no_gaps):
+    def _check_proof_item(self, depth, seq_dict, seq, rpt, no_gaps, compute_only):
         """Check a single proof item.
         
         depth -- depth in macro expansion.
@@ -236,10 +236,15 @@ class Theory():
         seq -- proof item to be checked.
         rpt -- report for proof-checking. Modified by the function.
         no_gaps -- disable gaps.
+        compute_only -- only executes rule if theorem is not present.
         
         """
         if seq.rule == "":
             # Empty line in the proof
+            return None
+        if compute_only and seq.th is not None:
+            # In compute_only mode, skip when a theorem exists.
+            seq_dict[seq.id] = seq.th
             return None
         if seq.rule == "sorry":
             # Gap in the proof
@@ -323,7 +328,7 @@ class Theory():
         seq_dict[seq.id] = seq.th
         return None
 
-    def check_proof_incr(self, depth, seq_dict, prf, rpt=None, *, no_gaps=False):
+    def check_proof_incr(self, depth, seq_dict, prf, rpt=None, *, no_gaps=False, compute_only=False):
         """Incremental version of check_proof.
         
         depth -- depth in macro expansion.
@@ -333,10 +338,10 @@ class Theory():
         
         """
         for seq in prf.items:
-            self._check_proof_item(depth, seq_dict, seq, rpt, no_gaps)
+            self._check_proof_item(depth, seq_dict, seq, rpt, no_gaps, compute_only)
         return prf.get_thm()
 
-    def check_proof(self, prf, rpt=None, *, no_gaps=False):
+    def check_proof(self, prf, rpt=None, *, no_gaps=False, compute_only=False):
         """Verify the given proof object. Returns the final theorem if check
         passes. Otherwise throws CheckProofException.
 
@@ -344,7 +349,7 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
-        return self.check_proof_incr(0, dict(), prf, rpt, no_gaps=no_gaps)
+        return self.check_proof_incr(0, dict(), prf, rpt, no_gaps=no_gaps, compute_only=compute_only)
 
     def get_proof_rule_sig(self, name):
         """Obtain the argument signature of the proof rule."""
