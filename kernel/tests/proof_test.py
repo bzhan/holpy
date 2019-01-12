@@ -33,7 +33,7 @@ class ProofTest(unittest.TestCase):
 
         for item, s, d in test_data:
             self.assertEqual(str(item), s)
-            self.assertEqual(item.export(term_printer=str), d)
+            self.assertEqual(item.export(), d)
 
     def testProof(self):
         prf = Proof(A_to_B, A)
@@ -45,6 +45,8 @@ class ProofTest(unittest.TestCase):
         self.assertEqual(prf.get_thm(), th)
 
         str_prf = "\n".join([
+            "var A :: bool",
+            "var B :: bool",
             "A1: assume implies A B",
             "A2: assume A",
             "C: A, implies A B |- B by implies_elim from A1, A2"])

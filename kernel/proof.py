@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel import settings
 from kernel.term import Term
 from kernel.thm import Thm
 
@@ -23,11 +24,9 @@ class ProofItem():
         self.prevs = prevs if prevs is not None else []
         self.th = th
 
-    def _print_str_args(self, *, term_printer):
+    def _print_str_args(self):
         def str_val(val):
-            if isinstance(val, Term):
-                return term_printer(val)
-            elif isinstance(val, dict):
+            if isinstance(val, dict):
                 items = sorted(val.items(), key = lambda pair: pair[0])
                 return "{" + ", ".join(key + ": " + str_val(val) for key, val in items) + "}"
             else:
@@ -42,26 +41,29 @@ class ProofItem():
         else:
             return str_val(self.args) if self.args else ""
 
-    def print(self, *, term_printer, unicode=False):
-        """Print the given proof item.
-        
-        term_printer: specify the printing function for terms.
+    def print(self, **kargs):
+        """Print the given proof item."""
+        try:
+            settings.update_settings(**kargs)
+            str_args = " " + self._print_str_args() if self.args else ""
+            str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
+            str_th = str(self.th) + " by " if self.th else ""
+            return self.id + ": " + str_th + self.rule + str_args + str_prevs
+        finally:
+            settings.recover_settings()
 
-        """
-        str_args = " " + self._print_str_args(term_printer=term_printer) if self.args else ""
-        str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
-        str_th = self.th.print(term_printer=term_printer, unicode=unicode) + " by " if self.th else ""
-
-        return self.id + ": " + str_th + self.rule + str_args + str_prevs
-
-    def export(self, *, term_printer, unicode=False):
+    def export(self, **kargs):
         """Export the given proof item as a dictionary."""
-        str_args = self._print_str_args(term_printer=term_printer)
-        str_th = self.th.print(term_printer=term_printer, unicode=unicode) if self.th else ""
-        return {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
+        try:
+            settings.update_settings(**kargs)
+            str_args = self._print_str_args()
+            str_th = str(self.th) if self.th else ""
+            return {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
+        finally:
+            settings.recover_settings()
 
     def __str__(self):
-        return self.print(term_printer = str)
+        return self.print()
 
     def __repr__(self):
         return str(self)
@@ -104,34 +106,34 @@ class Proof():
         else:
             raise ProofException()
 
-    def print(self, *, term_printer=str, print_vars=False, unicode=False):
-        """Print the given proof object.
-
-        term_printer: specify the printing function for terms.
-
-        """
+    def print(self, **kargs):
+        """Print the given proof object."""
         def print_var(t):
             return "var " + t.name + " :: " + str(t.T)
 
-        if print_vars:
+        try:
+            settings.update_settings(**kargs)
             str_vars = "\n".join(print_var(t) for t in self.vars) + "\n"
-        else:
-            str_vars = ""
+            lines = [str(item) for item in self.items]
+            return str_vars + "\n".join(lines)
+        finally:
+            settings.recover_settings()
 
-        lines = [item.print(term_printer=term_printer, unicode=unicode) for item in self.items]
-        return str_vars + "\n".join(lines)
-
-    def export(self, *, term_printer=str, unicode=False):
+    def export(self, **kargs):
         """Export the given proof object."""
         def export_var(t):
             return {'id': 'var', 'rule': t.name + ' :: ' + str(t.T)}
 
-        vars = [export_var(t) for t in self.vars]
-        lines = [item.export(term_printer=term_printer, unicode=unicode) for item in self.items]
-        return vars + lines
+        try:
+            settings.update_settings(**kargs)
+            vars = [export_var(t) for t in self.vars]
+            lines = [item.export() for item in self.items]
+            return vars + lines
+        finally:
+            settings.recover_settings()
 
     def __str__(self):
-        return self.print()
+        return self.print(print_vars=False)
 
     def __repr__(self):
         return str(self)

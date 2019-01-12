@@ -2,7 +2,7 @@
 
 import io
 
-from kernel import term
+from kernel import settings, term
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof
@@ -147,20 +147,26 @@ class ProofState():
         """Parse the given proof in string form."""
         self.prf = parse_proof(self.thy, io.StringIO(input))
 
-    def print_proof(self):
+    def print_proof(self, **kargs):
         """Print proof for user-interface."""
-        def term_printer(t):
-            return printer.print_term(self.thy, t, unicode=True, print_abs_type=True)
-        return self.prf.print(term_printer=term_printer, print_vars=True, unicode=True)
+        try:
+            kargs.update({'term_printer': lambda t: printer.print_term(self.thy, t)})
+            settings.update_settings(**kargs)
+            return print(self.prf)
+        finally:
+            settings.recover_settings()
 
-    def export_proof(self):
+    def export_proof(self, **kargs):
         """Export proof in the form of a list of dictionaries. Easily
         convertible to json format.
 
         """
-        def term_printer(t):
-            return printer.print_term(self.thy, t, unicode=True, print_abs_type=True)
-        return self.prf.export(term_printer=term_printer, unicode=True)
+        try:
+            kargs.update({'term_printer': lambda t: printer.print_term(self.thy, t)})
+            settings.update_settings(**kargs)
+            return self.prf.export()
+        finally:
+            settings.recover_settings()
 
     def check_proof(self, *, no_gaps=False):
         """Check the given proof. Report is stored in rpt."""

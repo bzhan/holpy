@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel import settings
 from kernel.type import TFun, hol_bool
 
 class OpenTermException(Exception):
@@ -54,11 +55,9 @@ class Term():
     """
     (VAR, CONST, COMB, ABS, BOUND) = range(5)
 
-    def print(self, *, print_abs_type = False):
+    def print(self, **kargs):
         """Printing function for terms. Note we do not yet handle collision
         in lambda terms.
-
-        print_abs_type: print type information for bound variables.
 
         """
         def helper(t, bd_vars):
@@ -78,7 +77,7 @@ class Term():
                     str_arg = helper(t.arg, bd_vars)
                 return str_fun + " " + str_arg
             elif t.ty == Term.ABS:
-                var_str = t.var_name + "::" + str(t.T) if print_abs_type else t.var_name
+                var_str = t.var_name + "::" + str(t.T) if settings.print_abs_type() else t.var_name
                 body_repr = helper(t.body, [t.var_name] + bd_vars)
                 return "%" + var_str + ". " + body_repr
             elif t.ty == Term.BOUND:
@@ -89,10 +88,14 @@ class Term():
             else:
                 raise TypeError()
 
-        return helper(self, [])
+        try:
+            settings.update_settings(**kargs)
+            return helper(self, [])
+        finally:
+            settings.recover_settings()
 
     def __str__(self):
-        return self.print()
+        return settings.term_printer()(self)
 
     def __repr__(self):
         if self.ty == Term.VAR:
@@ -461,6 +464,8 @@ class Term():
     def checked_get_type(self):
         """Perform type-checking and return the type of self."""
         return self._checked_get_type([])
+
+settings.update_settings(term_printer=Term.print)
 
 class Var(Term):
     """Variable, specified by name and type."""

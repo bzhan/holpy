@@ -24,11 +24,7 @@ disj = logic.mk_disj
 imp = Term.mk_implies
 neg = logic.neg
 exists = logic.mk_exists
-
-def print_proof(prf):
-    def term_printer(t):
-        return printer.print_term(thy, t)
-    return prf.print(term_printer=term_printer, print_vars=True)
+term_printer = lambda t: printer.print_term(thy, t)
 
 class TacticTest(unittest.TestCase):
 
@@ -64,7 +60,7 @@ class TacticTest(unittest.TestCase):
 
         prf = tactic.parse_proof(thy, io.StringIO(input))
         thy.check_proof(prf)
-        self.assertEqual(print_proof(prf), output)
+        self.assertEqual(prf.print(term_printer=term_printer), output)
 
     def testCheckProof2(self):
         """Proof of A & B --> B & A, partial."""
@@ -84,7 +80,7 @@ class TacticTest(unittest.TestCase):
 
         prf = tactic.parse_proof(thy, io.StringIO(input))
         thy.check_proof(prf)
-        self.assertEqual(print_proof(prf), output)
+        self.assertEqual(prf.print(term_printer=term_printer), output)
 
     def testCheckProofMacro(self):
         """Proof of f = g --> x = y --> f x = g y."""
@@ -116,7 +112,7 @@ class TacticTest(unittest.TestCase):
 
         prf = tactic.parse_proof(thy, io.StringIO(input))
         thy.check_proof(prf)
-        self.assertEqual(print_proof(prf), output)
+        self.assertEqual(prf.print(term_printer=term_printer), output)
 
     def testCheckProofDoubleNegInv(self):
         """Proof of ~~A --> A."""
@@ -148,7 +144,7 @@ class TacticTest(unittest.TestCase):
 
         prf = tactic.parse_proof(thy, io.StringIO(input))
         thy.check_proof(prf)
-        self.assertEqual(print_proof(prf), output)
+        self.assertEqual(prf.print(term_printer=term_printer), output)
 
     def testInitProof(self):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))

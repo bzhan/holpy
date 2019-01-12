@@ -1,12 +1,13 @@
 # Author: Bohua Zhan
 
+from kernel import settings
 from kernel.term import Term, OpenTermException
 from logic.operator import OperatorData
 from logic import logic
 
 NORMAL, BOUND, VAR = range(3)
 
-def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
+def print_term(thy, t, **kargs):
     """More sophisticated printing function for terms. Handles printing
     of operators.
     
@@ -34,13 +35,13 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
 
         def N(s):
-            return [(str(s), NORMAL)] if highlight else str(s)
+            return [(str(s), NORMAL)] if settings.highlight() else str(s)
 
         def B(s):
-            return [(str(s), BOUND)] if highlight else str(s)
+            return [(str(s), BOUND)] if settings.highlight() else str(s)
 
         def V(s):
-            return [(str(s), VAR)] if highlight else str(s)
+            return [(str(s), VAR)] if settings.highlight() else str(s)
 
         if t.ty == Term.VAR:
             return V(t.name)
@@ -48,7 +49,7 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
         elif t.ty == Term.CONST:
             op_data = get_info_for_operator(t)
             if op_data:
-                if unicode and op_data.unicode_op:
+                if settings.unicode() and op_data.unicode_op:
                     return N(op_data.unicode_op)
                 else:
                     return N(op_data.ascii_op)
@@ -74,7 +75,7 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
                 else:
                     str_arg1 = helper(arg1, bd_vars)
 
-                if unicode and op_data.unicode_op:
+                if settings.unicode() and op_data.unicode_op:
                     str_op = N(op_data.unicode_op)
                 else:
                     str_op = N(op_data.ascii_op)
@@ -91,7 +92,7 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
 
             # Unary case
             elif op_data and op_data.arity == OperatorData.UNARY:
-                if unicode and op_data.unicode_op:
+                if settings.unicode() and op_data.unicode_op:
                     str_op = N(op_data.unicode_op)
                 else:
                     str_op = N(op_data.ascii_op)
@@ -105,15 +106,15 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
 
             # Next, the case of binders
             elif t.is_all():
-                all_str = "!" if not unicode else "∀"
-                var_str = V(t.arg.var_name) + N("::") + N(str(t.arg.T)) if print_abs_type else V(t.arg.var_name)
+                all_str = "!" if not settings.unicode() else "∀"
+                var_str = V(t.arg.var_name) + N("::") + N(str(t.arg.T)) if settings.print_abs_type() else V(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return N(all_str) + var_str + N(". ") + body_repr
 
             elif logic.is_exists(t):
-                exists_str = "?" if not unicode else "∃"
-                var_str = V(t.arg.var_name) + N("::") + N(str(t.arg.T)) if print_abs_type else V(t.arg.var_name)
+                exists_str = "?" if not settings.unicode() else "∃"
+                var_str = V(t.arg.var_name) + N("::") + N(str(t.arg.T)) if settings.print_abs_type() else V(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return N(exists_str) + var_str + N(". ") + body_repr
@@ -131,8 +132,8 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
                 return str_fun + N(" ") + str_arg
 
         elif t.ty == Term.ABS:
-            lambda_str = "%" if not unicode else "λ"
-            var_str = B(t.var_name) + N("::") + N(str(t.T)) if print_abs_type else B(t.var_name)
+            lambda_str = "%" if not settings.unicode() else "λ"
+            var_str = B(t.var_name) + N("::") + N(str(t.T)) if settings.print_abs_type() else B(t.var_name)
             body_repr = helper(t.body, [t.var_name] + bd_vars)
             return N(lambda_str) + var_str + N(". ") + body_repr
 
@@ -144,4 +145,8 @@ def print_term(thy, t, *, print_abs_type=False, unicode=False, highlight=False):
         else:
             raise TypeError()
 
-    return helper(t, [])
+    try:
+        settings.update_settings(**kargs)
+        return helper(t, [])
+    finally:
+        settings.recover_settings()
