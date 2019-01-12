@@ -77,7 +77,6 @@ class Proof():
         first n steps A1, ..., An using Thm.assume on the assumptions.
 
         """
-        self.vars = []
         self.items = []
         for id, assum in enumerate(assums):
             item = ProofItem("A" + str(id+1), "assume", args=assum)
@@ -97,6 +96,3 @@ class Proof():
 
     def __repr__(self):
         return str(self)
-
-    def __eq__(self, other):
-        return self.items == other.items

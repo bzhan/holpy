@@ -96,7 +96,6 @@ class ProofState():
         self.vars = vars
         self.prf = Proof(*assums)
         self.prf.add_item("S1", "sorry", th=Thm(assums, concl))
-        self.prf.vars = vars
         for n, assum in enumerate(reversed(assums), 2):
             self.prf.add_item("S" + str(n), "implies_intr", args=assum, prevs=["S" + str(n-1)])
         self.check_proof(compute_only=True)
@@ -147,7 +146,6 @@ class ProofState():
             id_new = 1
 
         new_prf = Proof()
-        new_prf.vars = self.prf.vars
         for item in self.prf.items:
             new_prf.items.append(incr_proof_item(item, id_new, 1))
             if item.id == id:
@@ -163,7 +161,6 @@ class ProofState():
 
         id_new = int(id[1:])
         new_prf = Proof()
-        new_prf.vars = self.prf.vars
         for item in self.prf.items:
             if item.id == id:
                 for i in range(n):
@@ -184,7 +181,6 @@ class ProofState():
         # Remove the given line. Replace all S{i} with S{i-1} whenever
         # i > id_remove.
         new_prf = Proof()
-        new_prf.vars = self.prf.vars
         for item in self.prf.items:
             if not item.id == id:
                 new_prf.items.append(decr_proof_item(item, id_remove))
@@ -195,7 +191,6 @@ class ProofState():
     def set_line(self, id, rule, *, args=None, prevs=None, th=None):
         """Set the item with the given id to the following data."""
         new_prf = Proof()
-        new_prf.vars = self.prf.vars
         for item in self.prf.items:
             if item.id == id:
                 new_prf.items.append(ProofItem(id, rule, args=args, prevs=prevs, th=th))
@@ -220,7 +215,6 @@ class ProofState():
                 prevs=[new_id if id == old_id else id for id in item.prevs], th=item.th)
 
         new_prf = Proof()
-        new_prf.vars = self.prf.vars
         for item in self.prf.items:
             new_prf.items.append(replace_line(item))
 
@@ -347,8 +341,8 @@ class ProofState():
 
         # Add necessary variables
         for var in vars:
-            if var not in self.prf.vars:
-                self.prf.vars.append(var)
+            if var not in self.vars:
+                self.vars.append(var)
 
         # len(As) lines for the assumptions, one line for the sorry,
         # len(vars) lines for forall_intr, len(As) lines for implies_intr,
@@ -395,7 +389,7 @@ class ProofState():
 
         # Find variable
         assert isinstance(var, str), "apply_induction: input must be a string"
-        for v in self.prf.vars:
+        for v in self.vars:
             if v.name == var:
                 var = v
                 break
