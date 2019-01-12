@@ -40,9 +40,16 @@ def init_component():
 def init_saved_proof():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = ProofState.parse_proof(data)
-        cells[data['id']] = cell
-        return jsonify(cell.json_data())
+        try:
+            cell = ProofState.parse_proof(data)
+            cells[data['id']] = cell
+            return jsonify(cell.json_data())
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+        return jsonify(error)
     return jsonify({})
 
 

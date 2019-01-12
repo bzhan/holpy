@@ -40,6 +40,10 @@ function get_selected_instruction() {
     return document.querySelector('.code-cell.selected .output #instruction');
 }
 
+function get_selected_instruction_number() {
+    return document.querySelector('.code-cell.selected .output #instruction-number');
+}
+
 function display_running() {
     var status_output = get_selected_output();
     status_output.innerHTML = "Running";
@@ -73,6 +77,8 @@ function display_checked_proof(result) {
 function display_instuctions(instructions) {
     var instr_output = get_selected_instruction();
     instr_output.innerHTML = instructions[0];
+    var instr_no_output = get_selected_instruction_number();
+    instr_no_output.innerHTML = '1/' + instructions.length;
 }
 
 function add_line_after(cm) {

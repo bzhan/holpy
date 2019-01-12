@@ -39,8 +39,10 @@
                     '<pre> </pre></div></div>'));
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<a href="#" id="link-left" style="float:left;"><</a><pre id="instruction" style="float:left;"> </pre>'
-                    + '<a href="#" id="link-right" style="float:left;">></a></div></div>'));
+                    '<a href="#" id="link-backward" style="float:left;"><</a>' +
+                    '<pre id="instruction-number", style="float:left;"> </pre>' +
+                    '<a href="#" id="link-forward" style="float:left;">></a>' +
+                    '<pre id="instruction" style="float:left;"> </pre></div></div>'));
 
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('.newCodeMirror').each(function () {
@@ -48,19 +50,23 @@
             });
         });
 
-        $('#right').on('click', '#link-left', function () {
-            if (index < instructions.length - 1) {
-                index++;
-                var status_output = get_selected_instruction();
-                status_output.innerHTML = instructions[index];
+        $('#right').on('click', '#link-backward', function () {
+            if (index > 0) {
+                index--;
+                var instr_output = get_selected_instruction();
+                instr_output.innerHTML = instructions[index];
+                var instr_no_output = get_selected_instruction_number();
+                instr_no_output.innerHTML = (index+1) + '/' + instructions.length;
             }
         });
 
-        $('#right').on('click', '#link-right', function () {
-            if (index > 0) {
-                index--;
-                var status_output = get_selected_instruction();
-                status_output.innerHTML = instructions[index];
+        $('#right').on('click', '#link-forward', function () {
+            if (index < instructions.length - 1) {
+                index++;
+                var instr_output = get_selected_instruction();
+                instr_output.innerHTML = instructions[index];
+                var instr_no_output = get_selected_instruction_number();
+                instr_no_output.innerHTML = (index+1) + '/' + instructions.length;
             }
         });
 
@@ -229,7 +235,7 @@
     }
 
     function theorem_proof(r_data) {
-        var instructions = r_data['instructions'];
+        instructions = r_data['instructions'];
         var event = {
             'id': get_selected_id(),
             'vars': r_data['vars'],
@@ -250,7 +256,7 @@
     }
 
     function init_saved_proof(r_data) {
-        var instructions = r_data['instructions'];
+        instructions = r_data['instructions'];
         var event = {
             'id': get_selected_id(),
             'vars': r_data['vars'],
