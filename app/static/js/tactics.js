@@ -55,7 +55,7 @@ function display_checked_proof(result) {
     } else {
         edit_flag = true;
         edit_line_number = -1;
-        add_cell_data(get_selected_id(), result['proof']);
+        cells[get_selected_id()] = result['proof'];
         display(get_selected_id());
         var num_gaps = result["report"]["num_gaps"];
         status_output.style.color = '';
@@ -282,57 +282,7 @@ function set_line(cm) {
     })
 }
 
-// Split a line of proof into its component parts.
-// Returns the list [id, rule, args, prevs, th]
-// Example:
-// S2: |- A & B --> B & A by implies_intr A | B from S1
-// gives
-// [‘S2’, ‘implies_intr’, ‘A | B’, ‘S1’, ‘|- A & B --> B & A’]
-// Example:
-// var A :: bool
-// gives
-// [‘var’, ‘A :: bool’, '', '', '']
-function split_proof_rule(line) {
-    if (line.indexOf(': ') !== -1) {
-        var list = line.split(': ');
-        var id = list[0];
-        var rest = list[1];
-        id = id.trim();
-        if (rest.indexOf(' by ') !== -1) {
-            list = rest.split(' by ');
-            var th = list[0];
-            rest = list[1];
-        } else {
-            var th = '';
-        }
-
-        if (rest.indexOf(' ') !== -1) {
-            list = rest.split(' ');
-            var rule = list[0];
-            list.splice(0, 1);
-            rest = list.join(' ');
-        } else {
-            var rule = rest;
-            rest = '';
-        }
-        rule = rule.trim();
-
-        if (rest.indexOf('from') !== -1) {
-            list = rest.split('from');
-            var args = list[0];
-            rest = list[1];
-            list = rest.split(',');
-            var prev = [];
-            for (var i = 0; i < list.length; i++) {
-                prev.push(list[i].trim())
-            }
-            return [id, rule, args.trim(), prev, th];
-        } else {
-            return [id, rule, rest.trim(), [], th];
-        }
-    }
-}
-
+// Print a single line.
 function display_line(e) {
     if (mod === 0) {
         if (e.id.startsWith('var')) {
@@ -377,9 +327,4 @@ function display(id) {
     readonly_lines.length = 0;
     for (var i = 0; i < editor.lineCount(); i++)
         readonly_lines.push(i);
-}
-
-// Add the given proof to cells.
-function add_cell_data(id, cell) {
-    cells[id] = cell;
 }
