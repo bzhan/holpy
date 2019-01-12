@@ -10,7 +10,7 @@ from syntax import parser, printer
 from server.tactic import ProofState
 from logic.basic import BasicTheory
 from kernel.type import HOLType
-from file_function import save_file,save_proof
+from file_function import save_file, save_proof
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -29,9 +29,19 @@ def index():
 @app.route('/api/init', methods=['POST'])
 def init_component():
     data = json.loads(request.get_data().decode("utf-8"))
-    if data.get('event') == 'init_cell':
+    if data:
         cell = ProofState.parse_init_state(data)
-        cells[data.get('id')] = cell
+        cells[data['id']] = cell
+        return jsonify(cell.json_data())
+    return jsonify({})
+
+
+@app.route('/api/init-saved-proof', methods=['POST'])
+def init_saved_proof():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = ProofState.parse_proof(data)
+        cells[data['id']] = cell
         return jsonify(cell.json_data())
     return jsonify({})
 
@@ -158,10 +168,10 @@ def json_parse():
                 output['ty'] = d['ty']
                 if 'instructions' in d:
                     output['instructions'] = d['instructions']
-                if 'save-proof' in d:
-                    output['save-proof'] = d['save-proof']
+                if 'proof' in d:
+                    output['proof'] = d['proof']
                     output['status']='green'
-                    if 'sorry' in d['save-proof']:
+                    if 'sorry' in d['proof']:
                         output['status'] = 'yellow'
                 else:
                     output['status'] = 'red'
@@ -200,10 +210,3 @@ def save_proof_file():
     save_proof(data['name'], data['id'], data['proof'])
 
     return ''
-
-
-
-
-
-
-

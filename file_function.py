@@ -17,7 +17,7 @@ def save_proof(n, i, d):
     file_path = 'library/' + n + '.json'
     with open(file_path, 'r+', encoding='utf-8') as f:
         file_data = json.load(f)
-        file_data[i]['save-proof'] = d
+        file_data[i]['proof'] = d
         j = open(file_path, 'w+', encoding='utf-8')
         json.dump(file_data, j, indent=4, ensure_ascii=False)
         j.close()

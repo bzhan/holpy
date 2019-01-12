@@ -66,9 +66,9 @@
 
         //点击位于右侧button，监听执行
         $('div.rtop').on('click', 'button', function() {
-            var editor = get_selected_editor();
-            var proof = editor.getValue();
+            var editor_id = get_selected_id();
             var id = Number($(this).attr('name'))-1;
+            var proof = cells[editor_id]
             var data_save = JSON.stringify({'name':name, 'proof':proof, 'id':id});
             if (proof !== '' && id !== -1 ) {
                 save_info(data_save);
@@ -140,14 +140,11 @@
         //proof被点击时，传送proof给init:
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
-//            var editor = get_selected_editor();
-            if (result_list[proof_id-1]['save-proof']) {
+            if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
-                    edit_flag=true;
-                    var editor = get_selected_editor();
-                    editor.setValue(result_list[proof_id-1]['save-proof']);
-                },500);
+                    init_saved_proof(result_list[proof_id-1])
+                }, 500);
             }
             else {
                 $('#add-cell').click();
@@ -229,7 +226,6 @@
     function theorem_proof(r_data) {
         var instructions = r_data['instructions'];
         var event = {
-            'event': 'init_cell',
             'id': get_selected_id(),
             'vars': r_data['vars'],
             'prop': r_data['prop_raw'],
@@ -246,6 +242,27 @@
                 display_instuctions(instructions);
             }
         });
+    }
+
+    function init_saved_proof(r_data) {
+        var instructions = r_data['instructions'];
+        var event = {
+            'id': get_selected_id(),
+            'vars': r_data['vars'],
+            'proof': r_data['proof'],
+        };
+        var data = JSON.stringify(event);
+        display_running();
+        $.ajax({
+            url: "/api/init-saved-proof",
+            type: 'POST',
+            data: data,
+            success: function (result) {
+                display_checked_proof(result);
+                get_selected_editor().focus();
+                display_instuctions(instructions);
+            }
+        })
     }
 
     function save_info(data_save) {
