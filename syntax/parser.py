@@ -90,8 +90,6 @@ grammar = r"""
     tyinst: "{}"
         | "{" type_pair ("," type_pair)* "}"
 
-    var_decl: "var" CNAME "::" type
-
     %import common.CNAME
     %import common.WS
 
@@ -111,7 +109,7 @@ class HOLTransformer(Transformer):
         return TVar(s)
 
     def type(self, *args):
-        return Type(args[-1], *args[:-1])
+        return Type(str(args[-1]), *args[:-1])
 
     def funtype(self, t1, t2):
         return TFun(t1, t2)
@@ -119,6 +117,7 @@ class HOLTransformer(Transformer):
     def vname(self, s):
         thy = parser_setting['thy']
         ctxt = parser_setting['ctxt']
+        s = str(s)
         if thy.has_term_sig(s):
             # s is the name of a constant in the theory
             return Const(s, thy.get_term_sig(s))
@@ -192,9 +191,6 @@ class HOLTransformer(Transformer):
     def tyinst(self, *args):
         return dict(args)
 
-    def var_decl(self, name, T):
-        return (name, T)
-
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
 
@@ -203,7 +199,6 @@ term_parser = get_parser_for("term")
 thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
-var_decl_parser = get_parser_for("var_decl")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -232,11 +227,6 @@ def parse_tyinst(thy, s):
     """Parse a type instantiation."""
     parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
-
-def parse_var_decl(thy, s):
-    """Parse a variable declaration."""
-    parser_setting['thy'] = thy
-    return var_decl_parser.parse(s)
 
 def split_proof_rule(s):
     """Split proof rule into parseable parts.

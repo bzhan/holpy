@@ -285,25 +285,17 @@ function set_line(cm) {
 // Print a single line.
 function display_line(e) {
     if (mod === 0) {
-        if (e.id.startsWith('var')) {
-            return e.id + " " + e.rule;
-        }
-        else {
-            var res = e.id + ': ';
-            if (e.th !== '')
-                res += e.th + ' by ';
-            res += e.rule;
-            if (e.args !== '')
-                res += ' ' + e.args;
-            if (e.prevs.length > 0)
-                res += ' from ' + e.prevs.join(', ');
-            return res
-        }
+        var res = e.id + ': ';
+        if (e.th !== '')
+            res += e.th + ' by ';
+        res += e.rule;
+        if (e.args !== '')
+            res += ' ' + e.args;
+        if (e.prevs.length > 0)
+            res += ' from ' + e.prevs.join(', ');
+        return res
     } else if (mod === 1) {
-        if (e.id.startsWith('var'))
-            return e.id + ': ' + e.rule;
-        else
-            return e.id + ': ' + e.th;
+        return e.id + ': ' + e.th;
     }
 }
 

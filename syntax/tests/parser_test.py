@@ -68,6 +68,10 @@ class ParserTest(unittest.TestCase):
             self.assertIsInstance(T, HOLType)
             self.assertEqual(str(T), s)
 
+    def testParseTypeIsString(self):
+        a = parser.parse_type(thy, 'bool')
+        self.assertEqual(type(a.name), str)
+
     def testParseTerm(self):
         test_data = [
             # Atoms
@@ -169,6 +173,10 @@ class ParserTest(unittest.TestCase):
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
             self.assertEqual(print_term(thy, t, print_abs_type=True), s)
+
+    def testParseTermIsString(self):
+        a = parser.parse_term(thy, ctxt, 'a')
+        self.assertEqual(type(a.name), str)
 
     def testParseUnicode(self):
         test_data = [

@@ -24,7 +24,6 @@ disj = logic.mk_disj
 imp = Term.mk_implies
 neg = logic.neg
 exists = logic.mk_exists
-term_printer = lambda t: printer.print_term(thy, t)
 
 class TacticTest(unittest.TestCase):
     def testInitProof(self):
@@ -36,6 +35,13 @@ class TacticTest(unittest.TestCase):
         state = ProofState.parse_init_state({'A': 'bool', 'B': 'bool'}, "A & B --> B & A")
         self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
+
+    def testJsonData(self):
+        state = ProofState.parse_init_state({'A': 'bool', 'B': 'bool'}, "A & B --> B & A")
+        json_data = state.json_data()
+        self.assertEqual(len(json_data['vars']), 2)
+        self.assertEqual(len(json_data['proof']), 3)
+        self.assertIn('report', json_data)
 
     def testGetCtxt(self):
         state = ProofState([A, B], [conj(A, B)], conj(B, A))

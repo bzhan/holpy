@@ -121,16 +121,15 @@ class ProofState():
         return ProofState(vars, As, C)
 
     @settings.with_settings
-    def export_proof(self):
-        """Export proof in the form of a list of dictionaries. Easily
-        convertible to json format.
-
-        """
-        def export_var(t):
-            return {'id': 'var', 'rule': t.name + ' :: ' + str(t.T)}
-        vars = [export_var(t) for t in self.vars]
-        lines = [item.export(term_printer=lambda t: printer.print_term(self.thy, t)) for item in self.prf.items]
-        return vars + lines
+    def json_data(self):
+        """Export proof in json format."""
+        self.check_proof()
+        term_printer = lambda t: printer.print_term(self.thy, t)
+        return {
+            "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
+            "proof": [item.export(term_printer=term_printer, unicode=True) for item in self.prf.items],
+            "report": self.rpt.json_data()
+        }
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
         """Check the given proof. Report is stored in rpt."""

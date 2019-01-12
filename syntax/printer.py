@@ -36,13 +36,13 @@ def print_term(thy, t):
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
 
         def N(s):
-            return [(str(s), NORMAL)] if settings.highlight() else str(s)
+            return [(s, NORMAL)] if settings.highlight() else s
 
         def B(s):
-            return [(str(s), BOUND)] if settings.highlight() else str(s)
+            return [(s, BOUND)] if settings.highlight() else s
 
         def V(s):
-            return [(str(s), VAR)] if settings.highlight() else str(s)
+            return [(s, VAR)] if settings.highlight() else s
 
         if t.ty == Term.VAR:
             return V(t.name)
