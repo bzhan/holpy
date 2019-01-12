@@ -36,7 +36,7 @@ def index():
 def init_component():
     data = json.loads(request.get_data().decode("utf-8"))
     if data.get('event') == 'init_cell':
-        cell = ProofState.parse_init_state(data)
+        cell = ProofState.parse_init_state(data['vars'], data['prop'])
         cells[data.get('id')] = cell
         return jsonify(get_result_from_cell(cell))
     return jsonify({})
@@ -164,18 +164,13 @@ def json_parse():
 
             if d['ty'] == 'thm':
                 output['name'] = d['name']
+                output['vars'] = d['vars']
+                output['prop_raw'] = printer.print_term(thy, prop, print_abs_type=True)
                 output['prop'] = printer.print_term(thy, prop, unicode=True, highlight=True)
                 output['ty'] = d['ty']
-                for k, v in d['vars'].items():
-                    string = 'var ' + k + ' :: ' + v
-                    vars.append(string)
-                proof['variables'] = vars
-                proof['assumes'] = [printer.print_term(thy, i, print_abs_type=True) for i in Term.strip_implies(prop)[0]]
-                proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1], print_abs_type=True)
                 if 'instructions' in d:
-                    proof['instructions'] = d['instructions']
-                output['proof'] = proof
-                if 'save-proof' in d.keys():
+                    output['instructions'] = d['instructions']
+                if 'save-proof' in d:
                     output['save-proof'] = d['save-proof']
                     output['status']='green'
                     if 'sorry' in d['save-proof']:

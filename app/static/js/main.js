@@ -151,9 +151,8 @@
             }
             else {
                 $('#add-cell').click();
-                var data = result_list[proof_id-1]['proof'];
                 setTimeout(function() {
-                    theorem_proof(data)
+                    theorem_proof(result_list[proof_id-1])
                 }, 500);
             }
         });
@@ -228,14 +227,12 @@
     }
 
     function theorem_proof(r_data) {
-        var json_data = r_data;
-        instructions = json_data['instructions'];
+        var instructions = r_data['instructions'];
         var event = {
             'event': 'init_cell',
             'id': get_selected_id(),
-            'variables': json_data['variables'],
-            'assumes': json_data['assumes'],
-            'conclusion': json_data['conclusion']
+            'vars': r_data['vars'],
+            'prop': r_data['prop_raw'],
         };
         var data = JSON.stringify(event);
         display_running();

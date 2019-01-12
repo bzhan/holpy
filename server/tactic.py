@@ -111,23 +111,18 @@ class ProofState():
         return ctxt
 
     @staticmethod
-    def parse_init_state(data):
+    def parse_init_state(str_vars, str_prop):
         """Obtain proof state from a data dictionary."""
         thy = BasicTheory
         ctxt = {}
         vars = []
-        assums = []
-        for var in data.get('variables'):
-            name, t = parser.parse_var_decl(thy, var)
-            if name and t:
-                vars.append(Var(name, t))
-                ctxt[name] = t
-        for assum in data.get('assumes'):
-            t = parser.parse_term(thy, ctxt, assum)
-            if t:
-                assums.append(t)
-        concl = parser.parse_term(thy, ctxt, data.get('conclusion'))
-        return ProofState(vars, assums, concl)
+        for name, str_T in str_vars.items():
+            T = parser.parse_type(thy, str_T)
+            vars.append(Var(name, T))
+            ctxt[name] = T
+        prop = parser.parse_term(thy, ctxt, str_prop)
+        As, C = prop.strip_implies()
+        return ProofState(vars, As, C)
 
     @settings.with_settings
     def export_proof(self):
