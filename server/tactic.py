@@ -19,20 +19,6 @@ class TacticException(Exception):
 
 # Helper functions
 
-def parse_proof(thy, input):
-    """Parse the given proof in string form."""
-    prf = Proof()
-    ctxt = {}
-    for line in input:
-        if line.startswith("var "):
-            name, T = parser.parse_var_decl(thy, line)
-            assert name not in ctxt, "variable already declared"
-            ctxt[name] = T
-            prf.vars.append(Var(name, T))
-        else:
-            prf.items.append(parser.parse_proof_rule(thy, ctxt, line))
-    return prf
-
 def incr_id(id, start, n):
     """Increment the given id by n, with the starting integer index given
     by start.
@@ -143,10 +129,6 @@ class ProofState():
         concl = parser.parse_term(thy, ctxt, data.get('conclusion'))
         return ProofState(vars, assums, concl)
 
-    def parse_proof(self, input):
-        """Parse the given proof in string form."""
-        self.prf = parse_proof(self.thy, io.StringIO(input))
-
     @settings.with_settings
     def export_proof(self):
         """Export proof in the form of a list of dictionaries. Easily
@@ -159,23 +141,6 @@ class ProofState():
         """Check the given proof. Report is stored in rpt."""
         self.rpt = ProofReport()
         return self.thy.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps)
-
-    def obtain_init_data(self):
-        """Returns the initial string values for variables, assumptions,
-        and conclusion.
-
-        """
-        def print_variable(v):
-            return "var " + v.name + " :: " + str(v.T)
-
-        def print_term(t):
-            return printer.print_term(self.thy, t, unicode=True, print_abs_type=True)
-
-        return {
-            "variables": [print_variable(v) for v in self.vars],
-            "assumes": [print_term(t) for t in self.assums],
-            "conclusion": print_term(self.concl)
-        }
 
     def add_line_after(self, id):
         """Add given line after the given id."""
