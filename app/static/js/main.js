@@ -75,6 +75,7 @@
             var editor_id = get_selected_id();
             var id = Number($(this).attr('name'))-1;
             var proof = cells[editor_id]['proof'];
+            alert(proof);
             var data = {
                 'name': name,
                 'proof': proof,
@@ -488,6 +489,11 @@
             }
         });
 
+        editor.on('change', function (cm) {
+            mark_proof(cm);
+
+        })
+
         editor.on('mousedown', function (cm, event) {
             is_mousedown = true;
             if (event.ctrlKey)
@@ -546,39 +552,52 @@
         var line_num = cm.getCursor().line;
         var ch = cm.getCursor().ch;
         var line = cm.getLineHandle(line_num).text;
+
         if (is_ctrl_click) {
             var flag = false;
             if (click_line_number !== -1 && line_num < click_line_number)
                 flag = true;
-            cm.getAllMarks().forEach(e => {
-                if (e.css !== undefined)
-                    if (e.css.indexOf('background') !== -1)
-                        e.clear();
-            });
+//            cm.getAllMarks().forEach(e => {
+//                if (e.css !== undefined)
+//                    if (e.css.indexOf('background') !== -1)
+//                        e.clear();
+//            });
             if (flag)
                 cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
+
             ctrl_click_line_number = line_num;
             is_ctrl_click = false;
         } else if (line.indexOf('sorry') !== -1) {
-            cm.getAllMarks().forEach(e => {
-                if (e.css !== undefined)
-                    if (e.css.indexOf('color') !== -1)
-                        e.clear();
-            });
+//            cm.getAllMarks().forEach(e => {
+//                if (e.css !== undefined)
+//                    if (e.css.indexOf('color') !== -1)
+//                        e.clear();
+//            });
             cm.markText({line: line_num, ch: ch - 5}, {line: line_num, ch: ch}, {
                 css: "color: red"
             });
             click_line_number = line_num;
         } else {
-            cm.getAllMarks().forEach(e => {
-                if (e.css !== undefined)
-                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
-                        e.clear();
-            });
+//            cm.getAllMarks().forEach(e => {
+//                if (e.css !== undefined)
+//                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+//                        e.clear();
+//            });
             click_line_number = -1;
             ctrl_click_line_number = -1;
         }
         cm.setCursor(origin_pos);
+    }
+
+//make a function that mark the proof text with highlight
+    function mark_proof(cm) {
+//        var line_num =
+        var editor_id = get_selected_id();
+        var proof = cells[editor_id]['proof'];
+        cm.markText({line: 0,ch:4}, {line:0, ch:5}, {css:'color:blue'});
+        cm.markText({line: 0,ch:7}, {line:0, ch:8}, {css:'clolor:blue'});
+        cm.markText({line:1, ch:4}, {line:1, ch:5})
+
     }
 
     function revert_status(cm) {
