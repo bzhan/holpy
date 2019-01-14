@@ -68,6 +68,10 @@ class ParserTest(unittest.TestCase):
             self.assertIsInstance(T, HOLType)
             self.assertEqual(str(T), s)
 
+    def testParseTypeIsString(self):
+        a = parser.parse_type(thy, 'bool')
+        self.assertEqual(type(a.name), str)
+
     def testParseTerm(self):
         test_data = [
             # Atoms
@@ -170,6 +174,10 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(t.checked_get_type(), T)
             self.assertEqual(print_term(thy, t, print_abs_type=True), s)
 
+    def testParseTermIsString(self):
+        a = parser.parse_term(thy, ctxt, 'a')
+        self.assertEqual(type(a.name), str)
+
     def testParseUnicode(self):
         test_data = [
             ("A ∧ B", "A & B"),
@@ -202,12 +210,18 @@ class ParserTest(unittest.TestCase):
 
     def testSplitProofRule(self):
         test_data = [
-            ("S1: theorem conjD1", ("S1", "theorem", "conjD1", [], "")),
-            ("S2: implies_elim from S1, A1", ("S2", "implies_elim", "", ["S1", "A1"], "")),
-            ("S6: substitution {'A': B, 'B': A} from S5", ("S6", "substitution", "{'A': B, 'B': A}", ["S5"], "")),
-            ("S9: implies_intr conj A B from S8", ("S9", "implies_intr", "conj A B", ["S8"], "")),
-            ("S1: conj A B |- conj B A by sorry", ("S1", "sorry", "", [], "conj A B |- conj B A")),
-            ("S2: ", ("S2", "", "", [], "")),
+            ("S1: theorem conjD1",
+             {'id': "S1", 'rule': "theorem", 'args': "conjD1", 'prevs': [], 'th': ""}),
+            ("S2: implies_elim from S1, A1",
+             {'id': "S2", 'rule': "implies_elim", 'args': "", 'prevs': ["S1", "A1"], 'th': ""}),
+            ("S6: substitution {'A': B, 'B': A} from S5",
+             {'id': "S6", 'rule': "substitution", 'args': "{'A': B, 'B': A}", 'prevs': ["S5"], 'th': ""}),
+            ("S9: implies_intr conj A B from S8",
+             {'id': "S9", 'rule': "implies_intr", 'args': "conj A B", 'prevs': ["S8"], 'th': ""}),
+            ("S1: conj A B |- conj B A by sorry",
+             {'id': "S1", 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"}),
+            ("S2: ",
+             {'id': "S2", 'rule': "", 'args': "", 'prevs': [], 'th': ""}),
         ]
 
         for s, res in test_data:

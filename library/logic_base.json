@@ -1,176 +1,176 @@
 [
     {
+        "unicode_op": "∧",
+        "T": "bool => bool => bool",
         "ty": "def.ax",
         "name": "conj",
-        "T": "bool => bool => bool",
-        "ascii_op": "&",
-        "unicode_op": "∧"
+        "ascii_op": "&"
     },
     {
+        "unicode_op": "∨",
+        "T": "bool => bool => bool",
         "ty": "def.ax",
         "name": "disj",
-        "T": "bool => bool => bool",
-        "ascii_op": "|",
-        "unicode_op": "∨"
+        "ascii_op": "|"
     },
     {
+        "unicode_op": "¬",
+        "T": "bool => bool",
         "ty": "def.ax",
         "name": "neg",
-        "T": "bool => bool",
-        "ascii_op": "~",
-        "unicode_op": "¬"
+        "ascii_op": "~"
     },
     {
+        "T": "bool",
         "ty": "def.ax",
-        "name": "true",
-        "T": "bool"
+        "name": "true"
     },
     {
+        "T": "bool",
         "ty": "def.ax",
-        "name": "false",
-        "T": "bool"
+        "name": "false"
     },
     {
+        "T": "('a => bool) => bool",
         "ty": "def.ax",
-        "name": "exists",
-        "T": "('a => bool) => bool"
+        "name": "exists"
     },
     {
+        "prop": "A --> B --> A & B",
         "ty": "thm",
-        "name": "conjI",
         "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "A --> B --> A & B"
-    },
-    {
-        "ty": "thm",
-        "name": "conjD1",
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "A & B --> A"
-    },
-    {
-        "ty": "thm",
-        "name": "conjD2",
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "A & B --> B"
-    },
-    {
-        "ty": "thm",
-        "name": "disjI1",
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "A --> A | B"
-    },
-    {
-        "ty": "thm",
-        "name": "disjI2",
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "B --> A | B"
-    },
-    {
-        "ty": "thm",
-        "name": "disjE",
-        "vars": {
-            "A": "bool",
             "B": "bool",
-            "C": "bool"
+            "A": "bool"
         },
-        "prop": "A | B --> (A --> C) --> (B --> C) --> C"
+        "name": "conjI"
     },
     {
+        "prop": "A & B --> A",
         "ty": "thm",
-        "name": "negI",
+        "vars": {
+            "B": "bool",
+            "A": "bool"
+        },
+        "name": "conjD1"
+    },
+    {
+        "prop": "A & B --> B",
+        "ty": "thm",
+        "vars": {
+            "B": "bool",
+            "A": "bool"
+        },
+        "name": "conjD2"
+    },
+    {
+        "prop": "A --> A | B",
+        "ty": "thm",
+        "vars": {
+            "B": "bool",
+            "A": "bool"
+        },
+        "name": "disjI1"
+    },
+    {
+        "prop": "B --> A | B",
+        "ty": "thm",
+        "vars": {
+            "B": "bool",
+            "A": "bool"
+        },
+        "name": "disjI2"
+    },
+    {
+        "prop": "A | B --> (A --> C) --> (B --> C) --> C",
+        "ty": "thm",
+        "vars": {
+            "C": "bool",
+            "B": "bool",
+            "A": "bool"
+        },
+        "name": "disjE"
+    },
+    {
+        "prop": "(A --> false) --> ~A",
+        "ty": "thm",
         "vars": {
             "A": "bool"
         },
-        "prop": "(A --> false) --> ~A"
+        "name": "negI"
     },
     {
+        "prop": "~A --> A --> false",
         "ty": "thm",
-        "name": "negE",
         "vars": {
             "A": "bool"
         },
-        "prop": "~A --> A --> false"
+        "name": "negE"
     },
     {
+        "prop": "true",
         "ty": "thm",
-        "name": "trueI",
         "vars": {},
-        "prop": "true"
+        "name": "trueI"
     },
     {
+        "prop": "false --> A",
         "ty": "thm",
-        "name": "falseE",
         "vars": {
             "A": "bool"
         },
-        "prop": "false --> A"
+        "name": "falseE"
     },
     {
+        "prop": "P a --> ?a::'a. P a",
         "ty": "thm",
-        "name": "exI",
         "vars": {
-            "P": "'a => bool",
-            "a": "'a"
-        },
-        "prop": "P a --> ?a::'a. P a"
-    },
-    {
-        "ty": "thm",
-        "name": "exE",
-        "vars": {
-            "P": "'a => bool",
             "a": "'a",
+            "P": "'a => bool"
+        },
+        "name": "exI"
+    },
+    {
+        "prop": "(?a::'a. P a) --> (!a::'a. P a --> C) --> C",
+        "ty": "thm",
+        "vars": {
+            "a": "'a",
+            "P": "'a => bool",
             "C": "bool"
         },
-        "prop": "(?a::'a. P a) --> (!a::'a. P a --> C) --> C"
+        "name": "exE"
     },
     {
+        "prop": "A | ~A",
         "ty": "thm",
-        "name": "classical",
         "vars": {
             "A": "bool"
         },
-        "prop": "A | ~A"
+        "name": "classical"
     },
     {
+        "args": [],
         "ty": "type.ind",
         "name": "nat",
-        "args": [],
         "constrs": [
             {
-                "name": "zero",
+                "args": [],
                 "type": "nat",
-                "args": []
+                "name": "zero"
             },
             {
-                "name": "Suc",
-                "type": "nat => nat",
                 "args": [
                     "n"
-                ]
+                ],
+                "type": "nat => nat",
+                "name": "Suc"
             }
         ]
     },
     {
+        "ascii_op": "+",
         "ty": "def.ind",
         "name": "plus",
         "type": "nat => nat => nat",
-        "ascii_op": "+",
         "rules": [
             {
                 "vars": {
@@ -188,10 +188,10 @@
         ]
     },
     {
+        "ascii_op": "*",
         "ty": "def.ind",
         "name": "times",
         "type": "nat => nat => nat",
-        "ascii_op": "*",
         "rules": [
             {
                 "vars": {
@@ -209,32 +209,32 @@
         ]
     },
     {
-        "ty": "type.ind",
-        "name": "list",
         "args": [
             "a"
         ],
+        "ty": "type.ind",
+        "name": "list",
         "constrs": [
             {
-                "name": "nil",
+                "args": [],
                 "type": "'a list",
-                "args": []
+                "name": "nil"
             },
             {
-                "name": "cons",
-                "type": "'a => 'a list => 'a list",
                 "args": [
                     "x",
                     "xs"
-                ]
+                ],
+                "type": "'a => 'a list => 'a list",
+                "name": "cons"
             }
         ]
     },
     {
+        "ascii_op": "@",
         "ty": "def.ind",
         "name": "append",
         "type": "'a list => 'a list => 'a list",
-        "ascii_op": "@",
         "rules": [
             {
                 "vars": {
@@ -244,8 +244,8 @@
             },
             {
                 "vars": {
-                    "x": "'a",
                     "xs": "'a list",
+                    "x": "'a",
                     "ys": "'a list"
                 },
                 "prop": "cons x xs @ ys = cons x (xs @ ys)"
@@ -253,9 +253,6 @@
         ]
     },
     {
-        "ty": "def.ind",
-        "name": "rev",
-        "type": "'a list => 'a list",
         "rules": [
             {
                 "vars": {},
@@ -263,61 +260,14 @@
             },
             {
                 "vars": {
-                    "x": "'a",
-                    "xs": "'a list"
+                    "xs": "'a list",
+                    "x": "'a"
                 },
                 "prop": "rev (cons x xs) = rev xs @ cons x nil"
             }
-        ]
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
+        ],
+        "ty": "def.ind",
+        "name": "rev",
+        "type": "'a list => 'a list"
     }
 ]

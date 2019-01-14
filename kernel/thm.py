@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel import settings
 from kernel.type import Type, hol_bool
 from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
 from kernel.macro import MacroSig
@@ -38,18 +39,15 @@ class Thm():
         self.assums = set(assums)
         self.concl = concl
 
-    def print(self, *, term_printer=str, unicode=False):
-        """Print the given theorem.
-
-        term_printer: specify the printing function for terms.
-
-        """
-        turnstile = "⊢" if unicode else "|-"
+    @settings.with_settings
+    def print(self):
+        """Print the given theorem."""
+        turnstile = "⊢" if settings.unicode() else "|-"
         if self.assums:
-            str_assums = ", ".join(sorted(term_printer(assum) for assum in self.assums))
-            return str_assums + " " + turnstile + " " + term_printer(self.concl)
+            str_assums = ", ".join(sorted(str(assum) for assum in self.assums))
+            return str_assums + " " + turnstile + " " + str(self.concl)
         else:
-            return turnstile + " " + term_printer(self.concl)
+            return turnstile + " " + str(self.concl)
 
     def __str__(self):
         return self.print()

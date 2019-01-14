@@ -6,6 +6,7 @@
     var is_mousedown = false;
     var is_ctrl_click = false;
     var click_count = 0;
+    var cons,type,therom;
     var proof_id = 0;
 
     $(document).ready(function () {
@@ -119,6 +120,11 @@
             }
         });
 
+        $('#constant').on('click', function() {
+                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'))
+                collect_info();
+        });
+
         $('#delete-cell').on('click', function () {
             $('.code-cell.selected').remove();
         });
@@ -195,6 +201,21 @@
             ajax_res(data);
         });
 
+        function collect_info() {
+        //动态加载的元素必须采用托管的方法，即on（）函数绑定事件；
+            $('#add-information').on('change','#constant',function() {
+                cons = $(this).val();
+            });
+            $('#add-information').on('change','#type',function() {
+                type = $(this).val();
+            });
+            $('#add-information').on('change','#thm',function() {
+                therom = $(this).val();
+            });
+
+        }
+
+
         // On loading page, retrieve list of theories from root file.
         num_root = 0;
         $.ajax({
@@ -207,19 +228,6 @@
             }
         });
     });
-
-     function collect_info() {
-        //动态加载的元素必须采用托管的方法，即on（）函数绑定事件；
-            $('#add-information').on('change','#constant',function() {
-                cons = $(this).val();
-            });
-            $('#add-information').on('change','#type',function() {
-                type = $(this).val();
-            });
-            $('#add-information').on('change','#thm',function() {
-                therom = $(this).val();
-            });
-        }
 
     function rp(x) {
         if (x === 0)
@@ -314,6 +322,24 @@
             $('#constant,#type').val('');
         }
 
+<<<<<<< HEAD
+        $('#json-button').on('click', function() {
+            name = prompt('please enter the file name');
+            var data = JSON.stringify(name);
+            $('#add-info').click(add_info);
+            ajax_res(data);
+            });
+//$(document).ready(function() {}
+        $(function(){
+            num_root = 0;
+            $.ajax({
+                url: "/api/root_file",
+                success: function(r) {
+                    $.each(r['theories'], function(i,val) {
+                        num_root++;
+                        $('#root-file').append($('<a href="#"  ' + 'id="'+ num_root + '"><font color="#006000"><b>'+ val +'</b></font></a></br>'));
+                    });
+=======
         if ($('#thm, #term, #vars').val() !== '') {
             var theorem = {};
             var vars = {};
@@ -359,6 +385,7 @@
                         });
                         $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
                     }
+>>>>>>> df950e2065025961ffa4855d0f9441b326d373cc
                 }
             }
         });

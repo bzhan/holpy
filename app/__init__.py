@@ -10,7 +10,7 @@ from syntax import parser, printer
 from server.tactic import ProofState
 from logic.basic import BasicTheory
 from kernel.type import HOLType
-from file_function import save_file
+from file_function import save_file, save_proof
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -21,52 +21,35 @@ app.config.from_object('config')
 cells = dict()
 
 
-def get_result_from_cell(cell):
-    return {
-        "proof": cell.print_proof(),
-        "report": cell.rpt.json_data()
-    }
-
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-@app.route('/api/check-proof', methods=['POST'])
-def check_proof():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if not data:
-        return jsonify({})
-
-    cell = cells[data.get('id')]
-    proof = data.get('proof')
-    try:
-        cell.parse_proof(proof)
-        cell.check_proof()
-        return jsonify(get_result_from_cell(cell))
-    except Exception as e:
-        error = {
-            "failed": e.__class__.__name__,
-            "message": str(e)
-        }
-        return jsonify(error)
-
-
 @app.route('/api/init', methods=['POST'])
 def init_component():
     data = json.loads(request.get_data().decode("utf-8"))
-    if data.get('event') == 'init_theorem':
-        macro_dict = {0: 'NONE', 1: 'TERM', 2: 'TYINST', 3: 'INST', 4: 'STRING'}
-        result = {}
-        for key, value in primitive_deriv.items():
-            result[key] = macro_dict[value[1]]
-        return jsonify(result)
-    elif data.get('event') == 'init_theorem_abs':
-        pass
-    elif data.get('event') == 'init_cell':
+    if data:
         cell = ProofState.parse_init_state(data)
-        cells[data.get('id')] = cell
-        return jsonify(get_result_from_cell(cell))
+        cells[data['id']] = cell
+        return jsonify(cell.json_data())
+    return jsonify({})
+
+
+@app.route('/api/init-saved-proof', methods=['POST'])
+def init_saved_proof():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        try:
+            cell = ProofState.parse_proof(data)
+            cells[data['id']] = cell
+            return jsonify(cell.json_data())
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+        return jsonify(error)
     return jsonify({})
 
 
@@ -74,10 +57,9 @@ def init_component():
 def add_line_after():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells[data.get('id')]
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        cell.add_line_after(id)
-        return jsonify(get_result_from_cell(cell))
+        cell = cells[data['id']]
+        cell.add_line_after(data['line_id'])
+        return jsonify(cell.json_data())
     return jsonify({})
 
 
@@ -85,10 +67,9 @@ def add_line_after():
 def remove_line():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells[data.get('id')]
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        cell.remove_line(id)
-        return jsonify(get_result_from_cell(cell))
+        cell = cells[data['id']]
+        cell.remove_line(data['line_id'])
+        return jsonify(cell.json_data())
     return jsonify({})
 
 
@@ -97,11 +78,10 @@ def introduction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells.get(data.get('id'))
-        len_before = cell.prf.get_num_item()
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        cell.introduction(id, data.get('var_name'))
-        line_diff = (cell.prf.get_num_item() - len_before) / 2
-        result = get_result_from_cell(cell)
+        len_before = len(cell.prf.items)
+        cell.introduction(data['line_id'], data.get('var_name'))
+        line_diff = (len(cell.prf.items) - len_before) / 2
+        result = cell.json_data()
         result["line-diff"] = line_diff
         return jsonify(result)
     return jsonify({})
@@ -111,14 +91,13 @@ def introduction():
 def apply_backward_step():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
-        theorem = data.get('theorem').split(",")
+        cell = cells.get(data['id'])
+        theorem = data['theorem'].split(",")
         theorem, prevs = theorem[0], theorem[1:]
         if prevs:
             prevs = [prev.strip() for prev in prevs]
-        cell.apply_backward_step(id, theorem, prevs=prevs)
-        return jsonify(get_result_from_cell(cell))
+        cell.apply_backward_step(data['line_id'], theorem, prevs=prevs)
+        return jsonify(cell.json_data())
     return jsonify({})
 
 
@@ -127,10 +106,9 @@ def apply_induction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells.get(data.get('id'))
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem, var = data.get('theorem').split(",")
-        cell.apply_induction(id, theorem, var)
-        return jsonify(get_result_from_cell(cell))
+        cell.apply_induction(data['line_id'], theorem, var)
+        return jsonify(cell.json_data())
     return jsonify({})
 
 
@@ -139,10 +117,9 @@ def rewrite_goal():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells.get(data.get('id'))
-        (id, _, _, _, _) = parser.split_proof_rule(data.get('line'))
         theorem = data.get('theorem')
-        cell.rewrite_goal(id, theorem)
-        return jsonify(get_result_from_cell(cell))
+        cell.rewrite_goal(data['line_id'], theorem)
+        return jsonify(cell.json_data())
     return jsonify({})
 
 
@@ -152,9 +129,9 @@ def set_line():
     if data:
         cell = cells.get(data.get('id'))
         try:
-            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(), data.get('line'))
+            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(), data['line'])
             cell.set_line(item.id, item.rule, args=item.args, prevs=item.prevs, th=item.th)
-            return jsonify(get_result_from_cell(cell))
+            return jsonify(cell.json_data())
         except Exception as e:
             error = {
                 "failed": e.__class__.__name__,
@@ -177,6 +154,7 @@ def json_parse():
         data = f_data['data']
         name = f_data['name']
         save_file(name, data)
+
     if data:
          for d in data:
             vars = []
@@ -191,16 +169,18 @@ def json_parse():
 
             if d['ty'] == 'thm':
                 output['name'] = d['name']
+                output['vars'] = d['vars']
+                output['prop_raw'] = printer.print_term(thy, prop, print_abs_type=True)
                 output['prop'] = printer.print_term(thy, prop, unicode=True, highlight=True)
                 output['ty'] = d['ty']
-                for k, v in d['vars'].items():
-                    string = 'var ' + k + ' :: ' + v
-                    vars.append(string)
-                proof['variables'] = vars
-                proof['assumes'] = [printer.print_term(thy, i, print_abs_type=True) for i in Term.strip_implies(prop)[0]]
-                proof['conclusion'] = printer.print_term(thy, Term.strip_implies(prop)[1], print_abs_type=True)
-                proof['instructions'] = []
-                output['proof'] = proof
+                if 'instructions' in d:
+                    output['instructions'] = d['instructions']
+                if 'proof' in d:
+                    output['proof'] = d['proof']
+                    output['status'] = 'yellow' if d['num_gaps'] > 0 else 'green'
+                else:
+                    output['status'] = 'red'
+
                 output_data.append(output)
 
             if d['ty'] == 'type.ind':
@@ -227,11 +207,11 @@ def get_root():
     with open('library/root.json', 'r+', encoding='utf-8') as f:
         json_data = json.load(f)
         f.close()
-
     return jsonify(json_data)
 
+@app.route('/api/save_proof', methods=['PUT'])
+def save_proof_file():
+    data = json.loads(request.get_data().decode("utf-8"))
+    save_proof(data['name'], data['id'], data['proof'], data['num_gaps'])
 
-
-
-
-
+    return ''

@@ -173,35 +173,37 @@ class PrinterTest(unittest.TestCase):
         NORMAL, BOUND, VAR = printer.NORMAL, printer.BOUND, printer.VAR
         test_data = [
             (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('. ', NORMAL), ('b', VAR)]),
-            (Abs("x", Ta, "y", Ta, b), [('%', NORMAL),('x', BOUND),('. ',NORMAL),('%',NORMAL),('y',BOUND),('. ',NORMAL),('b',VAR)]),
-            (all(a, P(a)), [('!', NORMAL), ('a', VAR), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", VAR)]),
-            (all(a, all(b, conj(P(a),P(b)))), [('!', NORMAL), ('a', VAR), ('. ', NORMAL), ('!',NORMAL), ('b', VAR), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('&', NORMAL), (' ',NORMAL), ('P', VAR), (' ',NORMAL), ('b',VAR)]),
-            (exists(a, all(b, R(a, b))), [('?', NORMAL), ("a", VAR), ('. ', NORMAL), ('!', NORMAL), ('b', VAR), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('b',VAR)]),
-            (exists(a, P(a)), [('?', NORMAL), ('a', VAR), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR)]),
-            (disj(disj(A, B), C), [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('C', VAR)]),
-            (imp(imp(A, B), C), [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('-->', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('-->', NORMAL), (' ',NORMAL), ('C', VAR)])
+            (Abs("x", Ta, Bound(0)), [('%', NORMAL), ('x', BOUND), ('. ', NORMAL), ('x', BOUND)]),
+            (Abs("x", Ta, "y", Ta, Bound(1)), [('%', NORMAL),('x', BOUND),('. ',NORMAL),('%',NORMAL),('y',BOUND),('. ',NORMAL),('x',BOUND)]),
+            (all(a, P(a)), [('!', NORMAL), ('a', BOUND), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", BOUND)]),
+            (all(a, all(b, conj(P(a),P(b)))), [('!', NORMAL), ('a', BOUND), ('. ', NORMAL), ('!',NORMAL), ('b', BOUND), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND), (' & ', NORMAL), ('P', VAR), (' ',NORMAL), ('b',BOUND)]),
+            (exists(a, all(b, R(a, b))), [('?', NORMAL), ("a", BOUND), ('. ', NORMAL), ('!', NORMAL), ('b', BOUND), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', BOUND), (' ', NORMAL), ('b',BOUND)]),
+            (exists(a, P(a)), [('?', NORMAL), ('a', BOUND), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND)]),
+            (disj(disj(A, B), C), [('(', NORMAL), ('A', VAR), (' | ', NORMAL), ('B', VAR), (')', NORMAL), (' | ', NORMAL), ('C', VAR)]),
+            (imp(imp(A, B), C), [('(', NORMAL), ('A', VAR), (' --> ', NORMAL), ('B', VAR), (')', NORMAL), (' --> ', NORMAL), ('C', VAR)])
         ]
 
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t, highlight=True), s)
 
     def testPrintHighlightAbs(self):
-        """Test highlight, with print_abs_type=False."""
+        """Test highlight, with print_abs_type=True."""
         NORMAL, BOUND, VAR = printer.NORMAL, printer.BOUND, printer.VAR        
         test_data = [
             (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('b', VAR)]),
-            (Abs("x", Ta, "y", Ta, b),
-            [('%', NORMAL), ('x', BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('%',NORMAL), ('y',BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('b',VAR)]),
-            (all(a, P(a)), [('!', NORMAL), ('a', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", VAR)]),
+            (Abs("x", Ta, Bound(0)), [('%', NORMAL), ('x', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('x', BOUND)]),
+            (Abs("x", Ta, "y", Ta, Bound(1)),
+            [('%', NORMAL), ('x', BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('%',NORMAL), ('y',BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('x',BOUND)]),
+            (all(a, P(a)), [('!', NORMAL), ('a', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", BOUND)]),
             (all(a, all(b, conj(P(a), P(b)))),
-            [('!', NORMAL), ('a', VAR), ('::', NORMAL) ,("'a", NORMAL), ('. ', NORMAL), ('!',NORMAL), ('b', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('&', NORMAL), (' ',NORMAL), ('P', VAR), (' ',NORMAL), ('b',VAR)]),
+            [('!', NORMAL), ('a', BOUND), ('::', NORMAL) ,("'a", NORMAL), ('. ', NORMAL), ('!',NORMAL), ('b', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND), (' & ', NORMAL), ('P', VAR), (' ',NORMAL), ('b',BOUND)]),
             (exists(a, all(b, R(a, b))),
-            [('?', NORMAL), ("a", VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('!', NORMAL), ('b', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', VAR), (' ', NORMAL), ('b',VAR)]),
-            (exists(a, P(a)), [('?', NORMAL), ('a', VAR), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', VAR)]),
+            [('?', NORMAL), ("a", BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('!', NORMAL), ('b', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', BOUND), (' ', NORMAL), ('b',BOUND)]),
+            (exists(a, P(a)), [('?', NORMAL), ('a', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND)]),
             (disj(disj(A, B), C),
-            [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('|', NORMAL), (' ', NORMAL), ('C', VAR)]),
+            [('(', NORMAL), ('A', VAR), (' | ', NORMAL), ('B', VAR), (')', NORMAL), (' | ', NORMAL), ('C', VAR)]),
             (imp(imp(A, B), C),
-            [('(', NORMAL), ('A', VAR), (' ', NORMAL), ('-->', NORMAL), (' ', NORMAL), ('B', VAR), (')', NORMAL), (' ', NORMAL), ('-->', NORMAL), (' ',NORMAL), ('C', VAR)])
+            [('(', NORMAL), ('A', VAR), (' --> ', NORMAL), ('B', VAR), (')', NORMAL), (' --> ', NORMAL), ('C', VAR)])
         ]
 
         for t, s in test_data:
