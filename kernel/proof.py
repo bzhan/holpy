@@ -11,7 +11,6 @@ def print_thm_highlight(th):
     if th.assums:
         strs = [settings.term_printer()(assum) for assum in th.assums]
         res = strs[0]
-        print(res)
         for s in strs[1:]:
             res.append((', ', 0))
             res = res + s
@@ -70,7 +69,10 @@ class ProofItem():
             str_th = str(self.th) if self.th else ""
         else:
             str_th = print_thm_highlight(self.th) if self.th else ""
-        return {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
+        res = {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
+        if settings.highlight():
+            res['th_raw'] = self.th.print(highlight=False) if self.th else ""
+        return res
 
     def __str__(self):
         return self.print()

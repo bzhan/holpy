@@ -57,7 +57,6 @@ function display_checked_proof(result) {
         status_output.innerHTML = result["failed"] + ": " + result["message"];
         status_output.style.color = 'red';
     } else {
-        edit_flag = true;
         edit_line_number = -1;
         id = get_selected_id();
         cells[id] = {};
@@ -291,87 +290,74 @@ function set_line(cm) {
 }
 
 // Print a single line.
-function display_line(e) {
-    if (mod === 0) {
-        var res = e.id + ': ';
-        if (e.th !== '')
-            res += e.th + ' by ';
-        res += e.rule;
-        if (e.args !== '')
-            res += ' ' + e.args;
-        if (e.prevs.length > 0)
-            res += ' from ' + e.prevs.join(', ');
-        return res
-    } else if (mod === 1) {
-        return e.id + ': ' + e.th;
+function display_line(id, line_no) {
+    var editor = get_selected_editor();
+    var cell = cells[id]['proof'];
+    var line = cell[line_no];
+    var ch = 0;
+
+    edit_flag = true;
+    var len = line['id'].length + 2;
+    editor.replaceRange(line['id'] + ': ', {line: line_no, ch: ch}, {line: line_no, ch: Number.MAX_SAFE_INTEGER});
+    editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
+        {css: 'font-weight: bold'});
+    ch = ch + len;
+    var th = line['th'];
+    if (th !== '') {
+        $.each(th, function(i, p) {
+            len = p[0].length;
+            editor.replaceRange(p[0], {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+            var color;
+            if (p[1] === 0)
+                color = "color: black";
+            else if (p[1] === 1)
+                color = "color: green";
+            else if (p[1] === 2)
+                color = "color: blue";
+            editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
+                            {css: color})
+            ch = ch + len;
+        })
+        editor.replaceRange(' by ', {line: line_no, ch: ch}, {line: line_no, ch: ch + 4});
+        editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + 4},
+                        {css: 'font-weight: bold'});
+        ch = ch + 4;
     }
+    len = line.rule.length;
+    editor.replaceRange(line.rule, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+    ch = ch + len;
+    if (line.args !== '') {
+        len = 1 + line.args.length;
+        editor.replaceRange(' ' + line.args, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+        ch = ch + len;
+    }
+    if (line.prevs.length > 0) {
+        str = ' from ' + line.prevs.join(', ');
+        len = str.length;
+        editor.replaceRange(str, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+        editor.markText({line: line_no, ch: ch + 1}, {line: line_no, ch: ch + 5},
+                        {css: 'font-weight: bold'});
+        ch = ch + len;
+    }
+    edit_flag = false;
 }
 
 // Display the given content in the textarea with the given id.
 function display(id) {
     var editor = get_selected_editor();
+    edit_flag = true;
+    editor.setValue('');
+    edit_flag = false;
     var cell = cells[id]['proof'];
-    $.each(cell, function(line_no, line) {
-        var ch = 0;
-        var len = line['id'].length + 2;
-        editor.replaceRange(line['id'] + ': ', {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-        editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
-            {css: 'font-weight: bold'});
-        ch = ch + len;
-        var th = line['th'];
-        if (th !== '') {
-            $.each(th, function(i, p) {
-                len = p[0].length;
-                editor.replaceRange(p[0], {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-                var color;
-                if (p[1] === 0)
-                    color = "color: black";
-                else if (p[1] === 1)
-                    color = "color: green";
-                else if (p[1] === 2)
-                    color = "color: blue";
-                editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
-                                {css: color})
-                ch = ch + len;
-            })
-            editor.replaceRange(' by ', {line: line_no, ch: ch}, {line: line_no, ch: ch + 4});
-            editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + 4},
-                            {css: 'font-weight: bold'});
-            ch = ch + 4;
-        }
-        len = line.rule.length;
-        editor.replaceRange(line.rule, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-        ch = ch + len;
-        if (line.args !== '') {
-            len = 1 + line.args.length;
-            editor.replaceRange(' ' + line.args, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-            ch = ch + len;
-        }
-        if (line.prevs.length > 0) {
-            str = ' from ' + line.prevs.join(', ');
-            len = str.length;
-            editor.replaceRange(str, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-            editor.markText({line: line_no, ch: ch + 1}, {line: line_no, ch: ch + 5},
-                            {css: 'font-weight: bold'});
-            ch = ch + len;
-        }
-        editor.replaceRange('\n', {line: line_no, ch: ch}, {line: line_no, ch: ch + 1});
+    $.each(cell, function(line_no) {
+        display_line(id, line_no);
+        edit_flag = true;
+        var len = editor.getLineHandle(line_no).text.length;
+        editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
+        edit_flag = false;
     })
 
-    // if (mod === 0) {
-    //     var content_list = [];
-    //     cell.forEach(e => {
-    //         content_list.push(display_line(e));
-    //     })
-    //     editor.setValue(content_list.join('\n'))
-    // } else if (mod === 1) {
-    //     var content_list = [];
-    //     cell.forEach(e => {
-    //         content_list.push(display_line(e));
-    //     });
-    //     editor.setValue(content_list.join('\n'));
-    // }
-    // readonly_lines.length = 0;
-    // for (var i = 0; i < editor.lineCount(); i++)
-    //     readonly_lines.push(i);
+    readonly_lines.length = 0;
+    for (var i = 0; i < editor.lineCount(); i++)
+        readonly_lines.push(i);
 }
