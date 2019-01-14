@@ -311,20 +311,67 @@ function display_line(e) {
 function display(id) {
     var editor = get_selected_editor();
     var cell = cells[id]['proof'];
-    if (mod === 0) {
-        var content_list = [];
-        cell.forEach(e => {
-            content_list.push(display_line(e));
-        })
-        editor.setValue(content_list.join('\n'))
-    } else if (mod === 1) {
-        var content_list = [];
-        cell.forEach(e => {
-            content_list.push(display_line(e));
-        });
-        editor.setValue(content_list.join('\n'));
-    }
-    readonly_lines.length = 0;
-    for (var i = 0; i < editor.lineCount(); i++)
-        readonly_lines.push(i);
+    $.each(cell, function(line_no, line) {
+        var ch = 0;
+        var len = line['id'].length + 2;
+        editor.replaceRange(line['id'] + ': ', {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+        editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
+            {css: 'font-weight: bold'});
+        ch = ch + len;
+        var th = line['th'];
+        if (th !== '') {
+            $.each(th, function(i, p) {
+                len = p[0].length;
+                editor.replaceRange(p[0], {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+                var color;
+                if (p[1] === 0)
+                    color = "color: black";
+                else if (p[1] === 1)
+                    color = "color: green";
+                else if (p[1] === 2)
+                    color = "color: blue";
+                editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
+                                {css: color})
+                ch = ch + len;
+            })
+            editor.replaceRange(' by ', {line: line_no, ch: ch}, {line: line_no, ch: ch + 4});
+            editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + 4},
+                            {css: 'font-weight: bold'});
+            ch = ch + 4;
+        }
+        len = line.rule.length;
+        editor.replaceRange(line.rule, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+        ch = ch + len;
+        if (line.args !== '') {
+            len = 1 + line.args.length;
+            editor.replaceRange(' ' + line.args, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+            ch = ch + len;
+        }
+        if (line.prevs.length > 0) {
+            str = ' from ' + line.prevs.join(', ');
+            len = str.length;
+            editor.replaceRange(str, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+            editor.markText({line: line_no, ch: ch + 1}, {line: line_no, ch: ch + 5},
+                            {css: 'font-weight: bold'});
+            ch = ch + len;
+        }
+        editor.replaceRange('\n', {line: line_no, ch: ch}, {line: line_no, ch: ch + 1});
+    })
+
+    // if (mod === 0) {
+    //     var content_list = [];
+    //     cell.forEach(e => {
+    //         content_list.push(display_line(e));
+    //     })
+    //     editor.setValue(content_list.join('\n'))
+    // } else if (mod === 1) {
+    //     var content_list = [];
+    //     cell.forEach(e => {
+    //         content_list.push(display_line(e));
+    //     });
+    //     editor.setValue(content_list.join('\n'));
+    // }
+    // readonly_lines.length = 0;
+    // for (var i = 0; i < editor.lineCount(); i++)
+    //     readonly_lines.push(i);
 }

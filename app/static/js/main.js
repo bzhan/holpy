@@ -75,7 +75,7 @@
             var editor_id = get_selected_id();
             var id = Number($(this).attr('name'))-1;
             var proof = cells[editor_id]['proof'];
-            alert(proof);
+            console.log(proof);
             var data = {
                 'name': name,
                 'proof': proof,
@@ -480,19 +480,19 @@
             }
         });
 
-        editor.on('beforeChange', function (cm, change) {
-            if (edit_flag) {
-                edit_flag = false;
-                return;
-            } else if (readonly_lines.indexOf(change.from.line) !== -1) {
-                change.cancel();
-            }
-        });
+        // editor.on('beforeChange', function (cm, change) {
+        //     if (edit_flag) {
+        //         edit_flag = false;
+        //         return;
+        //     } else if (readonly_lines.indexOf(change.from.line) !== -1) {
+        //         change.cancel();
+        //     }
+        // });
 
-        editor.on('change', function (cm) {
-            mark_proof(cm);
+        // editor.on('change', function (cm) {
+        //     //mark_proof(cm);
 
-        })
+        // })
 
         editor.on('mousedown', function (cm, event) {
             is_mousedown = true;
@@ -589,16 +589,16 @@
         cm.setCursor(origin_pos);
     }
 
-//make a function that mark the proof text with highlight
-    function mark_proof(cm) {
-//        var line_num =
-        var editor_id = get_selected_id();
-        var proof = cells[editor_id]['proof'];
-        cm.markText({line: 0,ch:4}, {line:0, ch:5}, {css:'color:blue'});
-        cm.markText({line: 0,ch:7}, {line:0, ch:8}, {css:'clolor:blue'});
-        cm.markText({line:1, ch:4}, {line:1, ch:5})
+// //make a function that mark the proof text with highlight
+//     function mark_proof(cm) {
+// //        var line_num =
+//         var editor_id = get_selected_id();
+//         var proof = cells[editor_id]['proof'];
+//         cm.markText({line: 0,ch:4}, {line:0, ch:5}, {css:'color:blue'});
+//         cm.markText({line: 0,ch:7}, {line:0, ch:8}, {css:'clolor:blue'});
+//         cm.markText({line:1, ch:4}, {line:1, ch:5})
 
-    }
+//     }
 
     function revert_status(cm) {
         is_mousedown = false;
