@@ -489,6 +489,7 @@
         });
 
         editor.on('mousedown', function (cm, event) {
+            var timer = 0;
             is_mousedown = true;
             if (event.ctrlKey)
                 is_ctrl_click = true;
@@ -550,21 +551,11 @@
             var flag = false;
             if (click_line_number !== -1 && line_num < click_line_number)
                 flag = true;
-            cm.getAllMarks().forEach(e => {
-                if (e.css !== undefined)
-                    if (e.css.indexOf('background') !== -1)
-                        e.clear();
-            });
             if (flag)
                 cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
-            ctrl_click_line_number = line_num;
+            ctrl_click_line_numbers.add(line_num);
             is_ctrl_click = false;
         } else if (line.indexOf('sorry') !== -1) {
-            cm.getAllMarks().forEach(e => {
-                if (e.css !== undefined)
-                    if (e.css.indexOf('color') !== -1)
-                        e.clear();
-            });
             cm.markText({line: line_num, ch: ch - 5}, {line: line_num, ch: ch}, {
                 css: "color: red"
             });
@@ -576,7 +567,7 @@
                         e.clear();
             });
             click_line_number = -1;
-            ctrl_click_line_number = -1;
+            ctrl_click_line_numbers.clear();
         }
         cm.setCursor(origin_pos);
     }
@@ -588,7 +579,7 @@
         edit_flag = false;
         readonly_lines.length = 0;
         click_line_number = -1;
-        ctrl_click_line_number = -1;
+        ctrl_click_line_numbers.clear();
         edit_line_number = -1;
         for (var i = 0; i < cm.lineCount(); i++)
             readonly_lines.push(i);

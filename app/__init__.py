@@ -147,7 +147,7 @@ def json_parse():
     f_data = json.loads(request.get_data().decode("utf-8"))
     data = []
     if type(f_data) == str:
-        with open('library/'+ f_data +'.json', 'r', encoding='utf-8') as f:
+        with open('library/' + f_data + '.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
             f.close()
     else:
@@ -156,7 +156,7 @@ def json_parse():
         save_file(name, data)
 
     if data:
-         for d in data:
+        for d in data:
             vars = []
             output = {}
             proof = dict()
@@ -201,6 +201,7 @@ def json_parse():
 
     return jsonify({'data': output_data})
 
+
 @app.route('/api/root_file', methods=['GET'])
 def get_root():
     json_data = {}
@@ -209,9 +210,21 @@ def get_root():
         f.close()
     return jsonify(json_data)
 
+
 @app.route('/api/save_proof', methods=['PUT'])
 def save_proof_file():
     data = json.loads(request.get_data().decode("utf-8"))
     save_proof(data['name'], data['id'], data['proof'], data['num_gaps'])
 
     return ''
+
+
+@app.route('/api/match_thm', methods=['POST'])
+def match_thm():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells.get(data.get('id'))
+        target_id = data.get('target_id')
+        conclusion_id = data.get('target_id')
+        if conclusion_id != -1:
+            ths = cell.apply_backward_step_thms(target_id, prevs = conclusion_id)

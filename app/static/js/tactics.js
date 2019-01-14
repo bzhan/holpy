@@ -9,7 +9,7 @@ var click_line_number = -1;
 
 // Line number for the currently selected conclusion.
 // -1 for no conclusion selected.
-var ctrl_click_line_number = -1;
+var ctrl_click_line_numbers = new Set();
 
 // Currently edited line. -1 for not currently editing.
 var edit_line_number = -1;
@@ -157,13 +157,19 @@ function introduction(cm) {
 
 function apply_backward_step(cm) {
     var title = '';
-    if (click_line_number !== -1 && ctrl_click_line_number !== -1) {
-        title = 'Target: ' + (click_line_number + 1) + '\nConclusion: ' + (ctrl_click_line_number + 1);
-        line = cm.getLine(click_line_number);
-    } else if (click_line_number !== -1 && ctrl_click_line_number === -1) {
+    if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
+        let conclusion = '';
+        ctrl_click_line_numbers.forEach((val, idx, arr) => {
+            if(idx !== arr.size - 1)
+                conclusion += '' + (val + 1) + ', ';
+            else
+                conclusion += '' + (val + 1);
+        });
+        title = 'Target: ' + (click_line_number + 1) + '\nConclusion: ' + conclusion;
+    } else if (click_line_number !== -1 && ctrl_click_line_numbers.size === 0) {
         title = 'Target: ' + (click_line_number + 1);
     } else {
-        title = 'Please enter the theorem userd';
+        title = 'Please enter the theorem used';
     }
     swal({
         title: title,
@@ -177,10 +183,15 @@ function apply_backward_step(cm) {
             document.querySelector('#swal-input1').focus();
             var id = '';
             var theorem = '';
-            if (click_line_number !== -1 && ctrl_click_line_number !== -1) {
-                id = cells[get_selected_id()]['proof'][ctrl_click_line_number]['id'];
+            if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
+                ctrl_click_line_numbers.forEach((val, idx, arr) =>{
+                   if(idx !== arr.size -1)
+                       id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
+                   else
+                       id += '' + cells[get_selected_id()]['proof'][val]['id'];
+                });
                 theorem = document.getElementById('swal-input1').value + ', ' + id;
-            } else if (click_line_number !== -1 && ctrl_click_line_number === -1) {
+            } else if (click_line_number !== -1 && ctrl_click_line_numbers.size === 0) {
                 theorem = document.getElementById('swal-input1').value;
             }
             var data = {
@@ -215,7 +226,7 @@ function apply_backward_step(cm) {
     }).then((result) => {
         if (result) {
             click_line_number = -1;
-            ctrl_click_line_number = -1;
+            ctrl_click_line_numbers.clear();
             display_checked_proof(result['value']);
         }
     })
@@ -290,6 +301,35 @@ function set_line(cm) {
     })
 }
 
+function apply_backward_step_thm(cm) {
+    var target_id = '';
+    var conclusion_id = '';
+    if (click_line_number === -1) {
+        return;
+    } else if (click_line_number !== -1 && ctrl_click_line_numbers.size === 0) {
+
+    }
+}
+
+function match_thm(cm) {
+    $(document).ready(function () {
+        var data = {
+            'id': get_selected_id(),
+            'target_id': click_line_number,
+            'conclusion_id': ctrl_click_line_numbers
+        };
+
+        $.ajax({
+            url: "/api/match_thm",
+            type: "POST",
+            data: JSON.stringify(data),
+            success: function (result) {
+                display_checked_proof(result);
+            }
+        })
+    })
+}
+
 // Print a single line.
 function display_line(e) {
     if (mod === 0) {
@@ -315,7 +355,7 @@ function display(id) {
         var content_list = [];
         cell.forEach(e => {
             content_list.push(display_line(e));
-        })
+        });
         editor.setValue(content_list.join('\n'))
     } else if (mod === 1) {
         var content_list = [];
