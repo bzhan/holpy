@@ -131,7 +131,35 @@
             "A": "bool",
             "B": "bool"
         },
-        "prop": "A & B --> B"
+        "prop": "A & B --> B",
+        "proof": [
+            {
+                "args": "A ∧ B",
+                "id": "A1",
+                "prevs": [],
+                "rule": "assume",
+                "th": "A ∧ B ⊢ A ∧ B"
+            },
+            {
+                "args": "conjD2, {B: B}",
+                "id": "S1",
+                "prevs": [
+                    "A1"
+                ],
+                "rule": "apply_theorem_for",
+                "th": "A ∧ B ⊢ B"
+            },
+            {
+                "args": "A ∧ B",
+                "id": "S2",
+                "prevs": [
+                    "S1"
+                ],
+                "rule": "implies_intr",
+                "th": "⊢ A ∧ B ⟶ B"
+            }
+        ],
+        "num_gaps": 0
     },
     {
         "ty": "thm",
@@ -340,5 +368,50 @@
                 "prop": "rev (cons x xs) = rev xs @ cons x nil"
             }
         ]
+    },
+    {
+        "ty": "def.ax",
+        "name": "consj",
+        "T": "bool"
+    },
+    {
+        "ty": "def.ax",
+        "name": "conj",
+        "T": "bool"
+    },
+    {
+        "ty": "thm",
+        "name": "negl",
+        "vars": {
+            "A": "bool",
+            "B": "bool"
+        },
+        "prop": "(A ⟶ false) ⟶ ¬A"
+    },
+    {
+        "ty": "thm",
+        "name": "negl",
+        "vars": {
+            "A": "bool",
+            "B": "bool"
+        },
+        "prop": "(A ⟶ false) ⟶ ¬A"
+    },
+    {
+        "ty": "thm",
+        "name": "negl",
+        "vars": {
+            "A": "bool",
+            "B": "bool"
+        },
+        "prop": "(A ⟶ false) ⟶ ¬A"
+    },
+    {
+        "ty": "thm",
+        "name": "classical",
+        "vars": {
+            "A": "bool"
+        },
+        "prop": "A ∨ ¬A"
     }
 ]
