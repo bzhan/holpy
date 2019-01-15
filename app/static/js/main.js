@@ -186,6 +186,23 @@
             };
             data = JSON.stringify(name);
             ajax_res(data);
+            $('#cons').on('click', function() {
+                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'));
+            });
+            $('#them').on('click', function() {
+                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">'
+        +'<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">'
+        +'<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">'));
+            });
+            $('#datat').on('click', function() {
+                $('#add-information').append($('<input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:20px;width:50%;float:left;">'));
+            });
+            $('#fun').on('click',function() {
+                $('#add-information').append($(''))
+            } )
         });
 
         $('#json-button').on('click', function() {
@@ -216,6 +233,7 @@
             $('#add-information').on('change','#type',function() {
                 type = $(this).val();
             });
+
             $('#add-information').on('change','#thm',function() {
                 therom = $(this).val();
             });
@@ -303,35 +321,35 @@
 
     function add_info() {
         var data = [];
-        if ($('#constant, #type').val() !== '') {
+//        if ($('#constant, #type').val() !== '') {
             var constant = {};
-            var cons = $('#constant').val();
-            var type = $('#type').val();
+//            var cons = $('#constant').val();
+//            var type = $('#type').val();
             constant['ty'] = 'def.ax';
             constant['name'] = cons;
             constant['T'] = type;
             data.push(constant);
-            $('#constant,#type').val('');
-        }
+//            $('#constant,#type').val('');
+//        }
 
-        if ($('#thm, #term, #vars').val() !== '') {
-            var theorem = {};
-            var vars = {};
-            var theo = $('#thm').val();
-            var term = $('#term').val();
-            var vars_str = $('#vars').val();
-            var vars_list = vars_str.split(' ');
-            for (var i in vars_list) {
-                var v_list = vars_list[i].split(':');
-                vars[v_list[0]] = v_list[1];
-            }
-            theorem['ty'] = 'thm';
-            theorem['name'] = theo;
-            theorem['vars'] = vars;
-            theorem['prop'] = term;
-            data.push(theorem);
-            $('#thm,#term,#vars').val('');
-        }
+//        if ($('#thm, #term, #vars').val() !== '') {
+//            var theorem = {};
+//            var vars = {};
+//            var theo = $('#thm').val();
+//            var term = $('#term').val();
+//            var vars_str = $('#vars').val();
+//            var vars_list = vars_str.split(' ');
+//            for (var i in vars_list) {
+//                var v_list = vars_list[i].split(':');
+//                vars[v_list[0]] = v_list[1];
+//            }
+//            theorem['ty'] = 'thm';
+//            theorem['name'] = theo;
+//            theorem['vars'] = vars;
+//            theorem['prop'] = term;
+//            data.push(theorem);
+//            $('#thm,#term,#vars').val('');
+//        }
         var event = {"data": data,
                      "name": name};
 
