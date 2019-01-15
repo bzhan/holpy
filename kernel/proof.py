@@ -4,6 +4,19 @@ from kernel import settings
 from kernel.term import Term
 from kernel.thm import Thm
 
+@settings.with_settings
+def print_thm_highlight(th):
+    """Print the given theorem with highlight."""
+    turnstile = [("⊢", 0)] if settings.unicode() else [("|-", 0)]
+    if th.assums:
+        strs = [settings.term_printer()(assum) for assum in th.assums]
+        res = strs[0]
+        for s in strs[1:]:
+            res.append((', ', 0))
+            res = res + s
+        return res + [(" ", 0)] + turnstile + [(" ", 0)] + settings.term_printer()(th.concl)
+    else:
+        return turnstile + [(" ", 0)] + settings.term_printer()(th.concl)
 
 class ProofItem():
     """An item in a proof, consisting of the following data:
@@ -22,6 +35,7 @@ class ProofItem():
         self.prevs = prevs if prevs is not None else []
         self.th = th
 
+    @settings.with_settings
     def _print_str_args(self):
         def str_val(val):
             if isinstance(val, dict):
@@ -42,7 +56,7 @@ class ProofItem():
     @settings.with_settings
     def print(self):
         """Print the given proof item."""
-        str_args = " " + self._print_str_args() if self.args else ""
+        str_args = " " + self._print_str_args(highlight=False) if self.args else ""
         str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
         str_th = str(self.th) + " by " if self.th else ""
         return self.id + ": " + str_th + self.rule + str_args + str_prevs
@@ -50,9 +64,15 @@ class ProofItem():
     @settings.with_settings
     def export(self):
         """Export the given proof item as a dictionary."""
-        str_args = self._print_str_args()
-        str_th = str(self.th) if self.th else ""
-        return {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
+        str_args = self._print_str_args(highlight=False)
+        if not settings.highlight():
+            str_th = str(self.th) if self.th else ""
+        else:
+            str_th = print_thm_highlight(self.th) if self.th else ""
+        res = {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
+        if settings.highlight():
+            res['th_raw'] = self.th.print(highlight=False) if self.th else ""
+        return res
 
     def __str__(self):
         return self.print()
