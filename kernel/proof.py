@@ -9,7 +9,7 @@ def print_thm_highlight(th):
     """Print the given theorem with highlight."""
     turnstile = [("⊢", 0)] if settings.unicode() else [("|-", 0)]
     if th.assums:
-        strs = [settings.term_printer()(assum) for assum in th.assums]
+        strs = sorted(settings.term_printer()(assum) for assum in th.assums)
         res = strs[0]
         for s in strs[1:]:
             res.append((', ', 0))

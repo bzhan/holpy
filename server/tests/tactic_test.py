@@ -113,6 +113,12 @@ class TacticTest(unittest.TestCase):
         ths = state.apply_backward_step_thms("S1", prevs=["A1"])
         self.assertEqual([name for name, _ in ths], ["disjE"])
 
+    def testApplyBackwardStepThms3(self):
+        """Example of two results."""
+        state = ProofState.init_state([A, B], [disj(A, B)], disj(B, A))
+        ths = state.apply_backward_step_thms("S1")
+        self.assertEqual([name for name, _ in ths], ["disjI1", "disjI2"])
+
     def testApplyBackwardStep(self):
         state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
         state.apply_backward_step("S1", "conjI")
@@ -236,7 +242,7 @@ class TacticTest(unittest.TestCase):
         th = Thm([A, A_to_B], B)
         p = lambda t: printer.print_term(thy, t)
         res = print_thm_highlight(th, term_printer=p, highlight=True)
-        print(res)
+        self.assertEqual(res, [('A',2),(', ',0),('A',2),(' --> ',0),('B',2),(' ',0),('|-',0),(' ',0),('B',2)])
 
 
 if __name__ == "__main__":
