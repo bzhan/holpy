@@ -269,5 +269,70 @@
         "ty": "def.ind",
         "name": "rev",
         "type": "'a list => 'a list"
+    },
+    {
+        "ty": "thm",
+        "name": "conjI",
+        "vars": {
+            "A": "bool",
+            "B": "bool"
+        },
+        "prop": " A ⟶ B ⟶ A ∧ B",
+        "proof": [
+            {
+                "args": "A",
+                "id": "A1",
+                "prevs": [],
+                "rule": "assume",
+                "th": "A ⊢ A"
+            },
+            {
+                "args": "B",
+                "id": "A2",
+                "prevs": [],
+                "rule": "assume",
+                "th": "B ⊢ B"
+            },
+            {
+                "args": "",
+                "id": "S1",
+                "prevs": [],
+                "rule": "sorry",
+                "th": "A, B ⊢ A ∧ B"
+            },
+            {
+                "args": "B",
+                "id": "S2",
+                "prevs": [
+                    "S1"
+                ],
+                "rule": "implies_intr",
+                "th": "A ⊢ B ⟶ A ∧ B"
+            },
+            {
+                "args": "A",
+                "id": "S3",
+                "prevs": [
+                    "S2"
+                ],
+                "rule": "implies_intr",
+                "th": "⊢ A ⟶ B ⟶ A ∧ B"
+            }
+        ],
+        "num_gaps": 1
+    },
+    {
+        "ty": "def.ax",
+        "name": "conjI",
+        "T": "bool"
+    },
+    {
+        "ty": "thm",
+        "name": "falseE",
+        "vars": {
+            "A": "bool",
+            "B": "bool"
+        },
+        "prop": "false ⟶ A"
     }
 ]
