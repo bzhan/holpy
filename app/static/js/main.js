@@ -88,6 +88,14 @@
                         });
             $('div#left_json p:eq(' + id + ')').parent().replaceWith($('<div><div style="float:left;width: 12px; height: 12px; background: '
             + result_list[id]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ result_list[id]['name'] + ':&nbsp;<a href="#" ' + 'id="'+(id+1)+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'))
+
+        });
+
+        //click save-file button to save the info into the json-file;
+        function save_json_file() {
+            var editor_id = get_selected_id();
+            var proof = cells[editor_id]['proof'];
+            var id = $('div#'+editor_id+'-pan button[name="save"]').attr('id')-1;
             var data = {
                 'name': name,
                 'proof': proof,
@@ -97,17 +105,6 @@
             if (proof !== '' && id !== -1) {
                 save_info(JSON.stringify(data));
             }
-        });
-
-        $('a#save-file').on('click', function() {
-            var id = Number($(this).attr('id'))-1;
-            json_save(id);
-        });
-
-        function json_save(id) {
-            var editor_id = get_selected_id();
-            var proof = cells[editor_id]['proof'];
-
         }
 
         //click reset button to reset the thm to the origin status;
@@ -178,9 +175,10 @@
 
         get_selected_editor().focus();
 
-        //proof被点击时，传送proof给init:
+        //click proof then send it to the init;including the save-json-file;
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
+             $('a#save-file').click(save_json_file);
             if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
@@ -204,11 +202,13 @@
         });
 
         $('#root-file').on('click', 'a', function() {
+            num = 0;
+            $('#left_json').empty();
             $('#add-info').click(add_info);
             name = $(this).text();
             name = $.trim(name);
             if ($('#file-path').html() === '') {
-                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> '+name+'</b></font></a><input id="test"></input>'));
+                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> '+name+'</b></font></a>'));
             } else if ($('#file-path a:last').text() === 'root/') {
                 $('#root-a').after($('<a href="#"><font color="red"><b> '+name+'</b></font></a>'));
             } else if ($('#file-path a:last').text() !== name) {
@@ -220,6 +220,8 @@
         });
 
         $('#json-button').on('click', function() {
+            num = 0;
+            $('#left_json').empty();
             name = prompt('please enter the file name');
             var data = JSON.stringify(name);
             $('#add-info').click(add_info);
@@ -375,7 +377,7 @@
                         $.each(obj, function(i, val) {
                             str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                         });
-                        $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
+                        $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'));
                     }
                 }
             }
@@ -383,14 +385,14 @@
     }
 
     function ajax_res(data) {
-        num = 0;
+//        num = 0;
         $.ajax({
             url: "/api/json",
             type: "POST",
             data: data,
             success: function (result) {
-                result_list = result['data'];
-                $('#left_json').empty();
+                result_list = result_list.concat(result['data']);
+//                $('#left_json').empty();
                 for (var d in result['data']) {
                     num++;
                     var name = result['data'][d]['name'];

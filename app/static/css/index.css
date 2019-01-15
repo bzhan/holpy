@@ -90,6 +90,10 @@ body {
 
 /*}*/
 
+a.fontcolor {
+    color: black;
+}
+
 .input-box {
     width: 100%;
 }
