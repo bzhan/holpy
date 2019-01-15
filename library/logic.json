@@ -1,175 +1,126 @@
 [
     {
+        "ty": "thm",
+        "name": "conj_comm",
+        "vars": {
+            "A": "bool",
+            "B": "bool"
+        },
         "prop": "A & B --> B & A",
-        "instructions": [
-            "Select S1 as goal, use Ctrl+B with conjI",
-            "Select S1 as goal and A1 as fact, use Ctrl+B with conjD2.",
-            "Select S2 as goal and A1 as fact, use Ctrl+B with conjD1."
+        "proof": [
+            {
+                "args": "A ∧ B",
+                "id": "A1",
+                "prevs": [],
+                "rule": "assume",
+                "th": "A ∧ B ⊢ A ∧ B"
+            },
+            {
+                "args": "",
+                "id": "S1",
+                "prevs": [],
+                "rule": "sorry",
+                "th": "A ∧ B ⊢ B ∧ A"
+            },
+            {
+                "args": "A ∧ B",
+                "id": "S2",
+                "prevs": [
+                    "S1"
+                ],
+                "rule": "implies_intr",
+                "th": "⊢ A ∧ B ⟶ B ∧ A"
+            }
         ],
-        "ty": "thm",
-        "vars": {
-            "B": "bool",
-            "A": "bool"
-        },
-        "name": "conj_comm"
+        "num_gaps": 1
     },
     {
-        "prop": "A | B --> B | A",
+        "ty": "thm",
         "name": "disj_comm",
-        "ty": "thm",
         "vars": {
-            "B": "bool",
-            "A": "bool"
+            "A": "bool",
+            "B": "bool"
         },
-        "instructions": [
-            "Select S1 as goal and A1 as fact, use Ctrl+B with disjE.",
-            "Select S1 as goal, use Ctrl+I.",
-            "Select S2 as goal and S1 as fact, use Ctrl+B with disjI2.",
-            "Select S4 as goal, use Ctrl+I.",
-            "Select S5 as goal and S4 as fact, use Ctrl+B with disjI1."
-        ]
+        "prop": "A | B --> B | A"
     },
     {
-        "prop": "~~A --> A",
-        "instructions": [
-            "Add line 'theorem classical' after A1.",
-            "Select S2 as goal and S1 as fact, use Ctrl+B with disjE.",
-            "Select S2 as goal, use Ctrl+I.",
-            "Select S4 as goal, use Ctrl+I.",
-            "Select S5 as goal, use Ctrl+B with falseE.",
-            "Select S5 as goal and A1 as fact, use Ctrl+B with negE."
-        ],
         "ty": "thm",
+        "name": "double_neg",
         "vars": {
             "A": "bool"
         },
-        "name": "double_neg"
+        "prop": "~~A --> A"
     },
     {
-        "prop": "(?x::'a. A x & B x) --> (?x::'a. A x) & (?x::'a. B x)",
+        "ty": "thm",
         "name": "ex_conj_distrib",
-        "ty": "thm",
         "vars": {
-            "B": "'a => bool",
             "A": "'a => bool",
-            "x": "'a"
+            "B": "'b => bool"
         },
-        "instructions": [
-            "Select S1 as goal and A1 as fact, use Ctrl+B with exE.",
-            "Select S1 as goal, use Ctrl+I with x as variable name.",
-            "Select S2 as goal, use Ctrl+B with conjI.",
-            "Add line 'apply_theorem conjD1 from S1' after S1.",
-            "Select S3 as goal and S2 as fact, use Ctrl+B with exI.",
-            "Add line 'apply_theorem conjD2 from S1' after S3.",
-            "Select S5 as goal and S4 as fact, use Ctrl+B with exI."
-        ]
+        "prop": "(?x::'a. A x & B x) --> (?x::'a. A x) & (?x::'a. B x)"
     },
     {
-        "prop": "(!x::'a. A x & B x) --> (!x::'a. A x) & (!x::'a. B x)",
-        "instructions": [
-            "Select S1 as goal, use Ctrl+B with conjI.",
-            "Select S1 as goal, use Ctrl+I with x as variable name.",
-            "Add line 'forall_elim x from A1' after A1.",
-            "Select S2 as goal and S1 as fact, use Ctrl+B with conjD1.",
-            "Select S4 as goal, use Ctrl+I with x as variable name.",
-            "Select S4 as goal and S1 as fact, use Ctrl+B with conjD2."
-        ],
         "ty": "thm",
+        "name": "all_conj_distrib",
         "vars": {
-            "B": "'a => bool",
             "A": "'a => bool",
-            "x": "'a"
+            "B": "'b => bool"
         },
-        "name": "all_conj_distrib"
->>>>>>> 2a86b576aae9e92c95ca8b4065c1634803e84c11
+        "prop": "(!x::'a. A x & B x) --> (!x::'a. A x) & (!x::'a. B x)"
     },
     {
-        "prop": "n + 0 = n",
+        "ty": "thm",
         "name": "nat.add_0_right",
-        "ty": "thm",
         "vars": {
             "n": "nat"
         },
-        "instructions": [
-            "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
-            "Select S1 as goal, use Ctrl+R with plus_def_1.",
-            "Set sorry on S1 to reflexive 0.",
-            "Select S3 as goal, use Ctrl+I with n as variable name.",
-            "Select S4 as goal, use Ctrl+R with plus_def_2.",
-            "Set sorry on S4 to arg_combination Suc from S3."
-        ]
+        "prop": "n + 0 = n"
     },
     {
-        "prop": "n * 0 = 0",
-        "instructions": [
-            "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
-            "Select S1 as goal, use Ctrl+R with times_def_1.",
-            "Set sorry on S1 to reflexive 0.",
-            "Select S3 as goal, use Ctrl+I with n as variable name.",
-            "Select S4 as goal, use Ctrl+R with times_def_2.",
-            "Select S4 as goal, use Ctrl+R with plus_def_1"
-        ],
         "ty": "thm",
+        "name": "nat.mult_0_right",
         "vars": {
             "n": "nat"
         },
-        "name": "nat.mult_0_right"
+        "prop": "n * 0 = 0"
     },
     {
+        "ty": "thm",
         "name": "conj_disj_distribL1",
-        "ty": "thm",
         "vars": {
-            "C": "bool",
+            "A": "bool",
             "B": "bool",
-            "A": "bool"
+            "C": "bool"
         },
         "prop": "A & (B | C) --> (A & B) | (A & C)"
     },
     {
-        "name": "conj_disj_distribL1",
         "ty": "thm",
+        "name": "conj_disj_distribL1",
         "vars": {
-            "C": "bool",
+            "A": "bool",
             "B": "bool",
-            "A": "bool"
+            "C": "bool"
         },
         "prop": "(A & B) | (A & C) --> A & (B | C)"
     },
     {
-        "prop": "xs @ nil = xs",
-        "name": "list.append_right_neutral",
         "ty": "thm",
+        "name": "list.append_right_neutral",
         "vars": {
-            "xs": "'a list",
-            "x": "'a"
+            "xs": "'a list"
         },
-        "instructions": [
-            "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-            "Select S1 as goal, use Ctrl+R with append_def_1.",
-            "Set sorry on S1 to reflexive nil.",
-            "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
-            "Select S4 as goal, use Ctrl+R with append_def_2.",
-            "Set sorry on S4 to arg_combination cons x from S3."
-        ]
+        "prop": "xs @ nil = xs"
     },
     {
-        "prop": "(xs @ ys) @ zs = xs @ ys @ zs",
-        "instructions": [
-            "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-            "Select S1 as goal, use Ctrl+R with append_def_1.",
-            "Set sorry on S1 to reflexive ys @ zs.",
-            "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
-            "Select S4 as goal, use Ctrl+R with append_def_2.",
-            "Select S4 as goal, use Ctrl+R with append_def_2.",
-            "Set sorry on S4 to arg_combination cons x from S3."
-        ],
         "ty": "thm",
+        "name": "list.append_assoc",
         "vars": {
-            "zs": "'a list",
             "xs": "'a list",
             "ys": "'a list",
-            "x": "'a"
+            "zs": "'a list"
         },
-        "name": "list.append_assoc"
+        "prop": "(xs @ ys) @ zs = xs @ ys @ zs"
     }
 ]

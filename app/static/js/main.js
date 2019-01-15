@@ -7,6 +7,7 @@
     var is_ctrl_click = false;
     var click_count = 0;
     var proof_id = 0;
+    var origin_result = [];
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -31,7 +32,8 @@
             $('#codeTabContent').append(
                 $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
                     '<label for="code' + page_num + '"></label> ' +
-                    '<textarea id="code' + page_num + '"></textarea>' + '<button name="' + proof_id +'" class="el-button el-button--default el-button--mini" style="margin-top:3px;width:100px;" id="'+ page_num +'">SAVE</button>'));
+                    '<textarea id="code' + page_num + '"></textarea>' + '<button id="' + proof_id +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>'
+                    +'<button id="' + proof_id +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button>'));
             init_editor("code" + page_num);
             // Add location for displaying results
             $('#' + id).append(
@@ -70,12 +72,22 @@
             }
         });
 
-        //点击位于右侧button，监听执行
-        $('div.rtop').on('click', 'button', function() {
+        //click save button to save file and update the thm status;
+        $('div.rtop').on('click', 'button[name="save"]', function() {
             var editor_id = get_selected_id();
-            var id = Number($(this).attr('name'))-1;
+            var id = Number($(this).attr('id'))-1;
             var proof = cells[editor_id]['proof'];
-            alert(proof);
+            result_list[id]['proof'] = proof;
+            result_list[id]['status'] = 'yellow';
+            var str = '';
+            if (cells[editor_id]['num_gaps'] === 0) {
+                 result_list[id]['status'] = 'green';
+            }
+            $.each(result_list[id]['prop'], function(i, val) {
+                 str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                        });
+            $('div#left_json p:eq(' + id + ')').parent().replaceWith($('<div><div style="float:left;width: 12px; height: 12px; background: '
+            + result_list[id]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ result_list[id]['name'] + ':&nbsp;<a href="#" ' + 'id="'+(id+1)+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'))
             var data = {
                 'name': name,
                 'proof': proof,
@@ -86,6 +98,23 @@
                 save_info(JSON.stringify(data));
             }
         });
+
+        $('a#save-file').on('click', function() {
+            var id = Number($(this).attr('id'))-1;
+            json_save(id);
+        });
+
+        function json_save(id) {
+            var editor_id = get_selected_id();
+            var proof = cells[editor_id]['proof'];
+
+        }
+
+        //click reset button to reset the thm to the origin status;
+        $('div.rtop').on('click', 'button[name=reset]', function() {
+            var id = Number($(this).attr('id'))-1;
+                theorem_proof(result_list[id]);
+        })
 
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
@@ -155,15 +184,16 @@
             if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
-                    init_saved_proof(result_list[proof_id-1])
+                    init_saved_proof(result_list[proof_id-1]);
                 }, 500);
             }
             else {
                 $('#add-cell').click();
                 setTimeout(function() {
-                    theorem_proof(result_list[proof_id-1])
+                    theorem_proof(result_list[proof_id-1]);
                 }, 500);
             }
+
         });
 
         $('#file-path').on('click', '#root-a', function () {
@@ -178,7 +208,7 @@
             name = $(this).text();
             name = $.trim(name);
             if ($('#file-path').html() === '') {
-                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> '+name+'</b></font></a>'));
+                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> '+name+'</b></font></a><input id="test"></input>'));
             } else if ($('#file-path a:last').text() === 'root/') {
                 $('#root-a').after($('<a href="#"><font color="red"><b> '+name+'</b></font></a>'));
             } else if ($('#file-path a:last').text() !== name) {
@@ -375,7 +405,7 @@
                         $.each(obj, function(i, val) {
                             str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                         });
-                        $('#left_json').append($('<p>'+'<div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                        $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'));
                     }
 
                     if (ty === 'type.ind'){
@@ -400,7 +430,9 @@
                     }
                 }
             }
+
         });
+
     }
 
     function init_editor(editor_id = "code1") {
@@ -488,11 +520,6 @@
                 change.cancel();
             }
         });
-
-        editor.on('change', function (cm) {
-            mark_proof(cm);
-
-        })
 
         editor.on('mousedown', function (cm, event) {
             is_mousedown = true;
@@ -587,17 +614,6 @@
             ctrl_click_line_number = -1;
         }
         cm.setCursor(origin_pos);
-    }
-
-//make a function that mark the proof text with highlight
-    function mark_proof(cm) {
-//        var line_num =
-        var editor_id = get_selected_id();
-        var proof = cells[editor_id]['proof'];
-        cm.markText({line: 0,ch:4}, {line:0, ch:5}, {css:'color:blue'});
-        cm.markText({line: 0,ch:7}, {line:0, ch:8}, {css:'clolor:blue'});
-        cm.markText({line:1, ch:4}, {line:1, ch:5})
-
     }
 
     function revert_status(cm) {
