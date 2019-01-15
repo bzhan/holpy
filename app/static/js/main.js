@@ -87,8 +87,8 @@
                  str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                         });
             $('div#left_json p:eq(' + id + ')').parent().replaceWith($('<div><div style="float:left;width: 12px; height: 12px; background: '
-            + result_list[id]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ result_list[id]['name'] + ':&nbsp;<a href="#" ' + 'id="'+(id+1)+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'))
-
+            + result_list[id]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ result_list[id]['name'] + ':&nbsp;<a href="#" ' + 'id="'
+            +(id+1)+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'))
         });
 
         //click save-file button to save the info into the json-file;
@@ -175,13 +175,14 @@
 
         get_selected_editor().focus();
 
-        //click proof then send it to the init;including the save-json-file;
+        //click proof then send it to the init; including the save-json-file;
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
              $('a#save-file').click(save_json_file);
             if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
+//                    alert(result_list[proof_id-1]['instructions']);
                     init_saved_proof(result_list[proof_id-1]);
                 }, 500);
             }

@@ -175,12 +175,12 @@ def json_parse():
                 output['ty'] = d['ty']
                 if 'instructions' in d:
                     output['instructions'] = d['instructions']
-                elif 'proof' in d:
+                else:
                     output['instructions'] = []
+                if 'proof' in d:
                     output['proof'] = d['proof']
                     output['status'] = 'yellow' if d['num_gaps'] > 0 else 'green'
                 else:
-                    output['instructions'] = []
                     output['status'] = 'red'
 
                 output_data.append(output)
