@@ -6,7 +6,7 @@ import io
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import Proof
+from kernel.proof import Proof, print_thm_highlight
 from kernel.report import ProofReport
 from logic import logic
 from logic.basic import BasicTheory
@@ -112,6 +112,12 @@ class TacticTest(unittest.TestCase):
         state = ProofState.init_state([A, B], [disj(A, B)], disj(B, A))
         ths = state.apply_backward_step_thms("S1", prevs=["A1"])
         self.assertEqual([name for name, _ in ths], ["disjE"])
+
+    def testApplyBackwardStepThms3(self):
+        """Example of two results."""
+        state = ProofState.init_state([A, B], [disj(A, B)], disj(B, A))
+        ths = state.apply_backward_step_thms("S1")
+        self.assertEqual([name for name, _ in ths], ["disjI1", "disjI2"])
 
     def testApplyBackwardStep(self):
         state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
@@ -228,6 +234,15 @@ class TacticTest(unittest.TestCase):
         state.rewrite_goal("S4", "times_def_2")
         state.rewrite_goal("S4", "plus_def_1")
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(Nat.times(n,Nat.zero),Nat.zero))
+
+    def testPrintThmHighlight(self):
+        A = Var('A', hol_bool)
+        B = Var('B', hol_bool)
+        A_to_B = Term.mk_implies(A, B)
+        th = Thm([A, A_to_B], B)
+        p = lambda t: printer.print_term(thy, t)
+        res = print_thm_highlight(th, term_printer=p, highlight=True)
+        self.assertEqual(res, [('A',2),(', ',0),('A',2),(' --> ',0),('B',2),(' ',0),('|-',0),(' ',0),('B',2)])
 
 
 if __name__ == "__main__":

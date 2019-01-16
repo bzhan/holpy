@@ -96,9 +96,16 @@
             var editor_id = get_selected_id();
             var proof = cells[editor_id]['proof'];
             var id = $('div#'+editor_id+'-pan button[name="save"]').attr('id')-1;
+            var output_proof = [];
+            $.each(proof, function (i) {
+                output_proof.push({});
+                $.extend(output_proof[i], proof[i]);  // perform copy
+                output_proof[i]['th'] = output_proof[i]['th_raw'];
+                output_proof[i]['th_raw'] = undefined;
+            })
             var data = {
                 'name': name,
-                'proof': proof,
+                'proof': output_proof,
                 'id': id,
                 'num_gaps': cells[editor_id]['num_gaps']
             }
@@ -488,11 +495,7 @@
                         }
                     });
                     var id = get_selected_id();
-                    var origin_line = display_line(cells[id]['proof'][edit_line_number])
-                    cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
-                        line: edit_line_number,
-                        ch: Number.MAX_SAFE_INTEGER
-                    });
+                    display_line(id, edit_line_number);
                     readonly_lines.push(edit_line_number);
                     readonly_lines.sort();
                     edit_line_number = -1;
@@ -516,10 +519,7 @@
         });
 
         editor.on('beforeChange', function (cm, change) {
-            if (edit_flag) {
-                edit_flag = false;
-                return;
-            } else if (readonly_lines.indexOf(change.from.line) !== -1) {
+            if (!edit_flag && readonly_lines.indexOf(change.from.line) !== -1) {
                 change.cancel();
             }
         });
@@ -533,8 +533,6 @@
                 timer = setTimeout(function () {
                     if (click_count > 1) {
                         clearTimeout(timer);
-//                        console.log(cm);
-//                        console.log(event);
                         set_read_only(cm);
                     }
                     click_count = 0;
@@ -554,7 +552,7 @@
                     if (e.readOnly)
                         e.clear();
                 if (e.css !== undefined)
-                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                    if (e.css.indexOf('background') !== -1)
                         e.clear();
             });
             readonly_lines.splice(line_num, 1);
@@ -567,7 +565,7 @@
                     if (e.readOnly)
                         e.clear();
                 if (e.css !== undefined)
-                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                    if (e.css.indexOf('background') !== -1)
                         e.clear();
             });
             readonly_lines.splice(line_num, 1);
@@ -587,32 +585,45 @@
             var flag = false;
             if (click_line_number !== -1 && line_num < click_line_number)
                 flag = true;
-//            cm.getAllMarks().forEach(e => {
-//                if (e.css !== undefined)
-//                    if (e.css.indexOf('background') !== -1)
-//                        e.clear();
-//            });
+            cm.getAllMarks().forEach(e => {
+                if (e.css !== undefined)
+                    if (e.css.indexOf('background') !== -1)
+                        e.clear();
+            });
             if (flag)
-                cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
-
+                cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'});
+            if (click_line_number !== -1) {
+                var click_line = cm.getLineHandle(click_line_number).text;
+                var len = click_line.length;
+                cm.markText({line: click_line_number, ch: len - 5}, {line: click_line_number, ch: len}, {
+                    css: 'background: red'
+                })
+            }
             ctrl_click_line_number = line_num;
             is_ctrl_click = false;
         } else if (line.indexOf('sorry') !== -1) {
-//            cm.getAllMarks().forEach(e => {
-//                if (e.css !== undefined)
-//                    if (e.css.indexOf('color') !== -1)
-//                        e.clear();
-//            });
+            cm.getAllMarks().forEach(e => {
+                if (e.css !== undefined)
+                    if (e.css.indexOf('background') !== -1)
+                        e.clear();
+            });
+            if (ctrl_click_line_number !== -1) {
+                var ctrl_click_line = cm.getLineHandle(ctrl_click_line_number).text;
+                var len = ctrl_click_line.length;
+                cm.markText({line: ctrl_click_line_number, ch: 0}, {line: ctrl_click_line_number, ch: len}, {
+                    css: 'background: yellow'
+                });
+            }
             cm.markText({line: line_num, ch: ch - 5}, {line: line_num, ch: ch}, {
-                css: "color: red"
+                css: "background: red"
             });
             click_line_number = line_num;
         } else {
-//            cm.getAllMarks().forEach(e => {
-//                if (e.css !== undefined)
-//                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
-//                        e.clear();
-//            });
+            cm.getAllMarks().forEach(e => {
+                if (e.css !== undefined)
+                    if (e.css.indexOf('background') !== -1)
+                        e.clear();
+            });
             click_line_number = -1;
             ctrl_click_line_number = -1;
         }
