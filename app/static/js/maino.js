@@ -7,7 +7,6 @@
     var is_ctrl_click = false;
     var click_count = 0;
     var proof_id = 0;
-    var origin_result = [];
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -32,8 +31,7 @@
             $('#codeTabContent').append(
                 $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
                     '<label for="code' + page_num + '"></label> ' +
-                    '<textarea id="code' + page_num + '"></textarea>' + '<button id="' + proof_id +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>'
-                    +'<button id="' + proof_id +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button>'));
+                    '<textarea id="code' + page_num + '"></textarea>' + '<button name="' + proof_id +'" class="el-button el-button--default el-button--mini" style="margin-top:3px;width:100px;" id="'+ page_num +'">SAVE</button>'));
             init_editor("code" + page_num);
             // Add location for displaying results
             $('#' + id).append(
@@ -72,53 +70,21 @@
             }
         });
 
-        //click save button to save file and update the thm status;
-        $('div.rtop').on('click', 'button[name="save"]', function() {
+        //点击位于右侧button，监听执行
+        $('div.rtop').on('click', 'button', function() {
             var editor_id = get_selected_id();
-            var id = Number($(this).attr('id'))-1;
+            var id = Number($(this).attr('name'))-1;
             var proof = cells[editor_id]['proof'];
-            result_list[id]['proof'] = proof;
-            result_list[id]['status'] = 'yellow';
-            var str = '';
-            if (cells[editor_id]['num_gaps'] === 0) {
-                 result_list[id]['status'] = 'green';
-            }
-            $.each(result_list[id]['prop'], function(i, val) {
-                 str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-                        });
-            $('div#left_json p:eq(' + id + ')').parent().replaceWith($('<div><div style="float:left;width: 12px; height: 12px; background: '
-            + result_list[id]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ result_list[id]['name'] + ':&nbsp;<a href="#" ' + 'id="'
-            +(id+1)+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'))
-        });
-
-        //click save-file button to save the info into the json-file;
-        function save_json_file() {
-            var editor_id = get_selected_id();
-            var proof = cells[editor_id]['proof'];
-            var id = $('div#'+editor_id+'-pan button[name="save"]').attr('id')-1;
-            var output_proof = [];
-            $.each(proof, function (i) {
-                output_proof.push({});
-                $.extend(output_proof[i], proof[i]);  // perform copy
-                output_proof[i]['th'] = output_proof[i]['th_raw'];
-                output_proof[i]['th_raw'] = undefined;
-            })
             var data = {
                 'name': name,
-                'proof': output_proof,
+                'proof': proof,
                 'id': id,
                 'num_gaps': cells[editor_id]['num_gaps']
             }
             if (proof !== '' && id !== -1) {
                 save_info(JSON.stringify(data));
             }
-        }
-
-        //click reset button to reset the thm to the origin status;
-        $('div.rtop').on('click', 'button[name=reset]', function() {
-            var id = Number($(this).attr('id'))-1;
-                theorem_proof(result_list[id]);
-        })
+        });
 
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
@@ -182,24 +148,21 @@
 
         get_selected_editor().focus();
 
-        //click proof then send it to the init; including the save-json-file;
+        //proof被点击时，传送proof给init:
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
-             $('a#save-file').click(save_json_file);
             if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
-//                    alert(result_list[proof_id-1]['instructions']);
-                    init_saved_proof(result_list[proof_id-1]);
+                    init_saved_proof(result_list[proof_id-1])
                 }, 500);
             }
             else {
                 $('#add-cell').click();
                 setTimeout(function() {
-                    theorem_proof(result_list[proof_id-1]);
+                    theorem_proof(result_list[proof_id-1])
                 }, 500);
             }
-
         });
 
         $('#file-path').on('click', '#root-a', function () {
@@ -210,8 +173,6 @@
         });
 
         $('#root-file').on('click', 'a', function() {
-            num = 0;
-            $('#left_json').empty();
             $('#add-info').click(add_info);
             name = $(this).text();
             name = $.trim(name);
@@ -225,33 +186,14 @@
             };
             data = JSON.stringify(name);
             ajax_res(data);
-            $('#cons').on('click', function() {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'));
-            });
-            $('#them').on('click', function() {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">'
-        +'<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">'
-        +'<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">'));
-            });
-            $('#datat').on('click', function() {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">'
-        +'<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">'
-        +'<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">'
-        +'<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:20px;width:50%;float:left;">'));
-            });
-            $('#fun').on('click',function() {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">'
-        +'<input type="text" id="function-type" placeholder="type" style="margin-bottom:5px;width:100%;">'
-        +'<input type="text" id="function-vars1" placeholder="vars1" style="float:left;margin-bottom:5px;width:50%;">'
-        +'<input type="text" id="function-vars2" placeholder="vars2" style="float:left;margin-bottom:5px;width:50%;">'
-        +'<input type="text" id="function-prop1" placeholder="prop1" style="float:left;margin-bottom:5px;width:50%;">'
-        +'<input type="text" id="function-prop2" placeholder="prop2" style=":float:left;margin-bottom:5px;width:50%;">'))
-            } )
+            $('#constant').on('click', function(){
+                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'))
         });
+//            $('thm').on('click', function(){
+//                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;"><input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;"><input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">'));
+//        });
 
         $('#json-button').on('click', function() {
-            num = 0;
-            $('#left_json').empty();
             name = prompt('please enter the file name');
             var data = JSON.stringify(name);
             $('#add-info').click(add_info);
@@ -270,6 +212,21 @@
             }
         });
     });
+
+     function collect_info() {
+        //动态加载的元素必须采用托管的方法，即on（）函数绑定事件；
+            $('#add-information').on('change','#constant',function() {
+                cons = $(this).val();
+            });
+            $('#add-information').on('change','#type',function() {
+                type = $(this).val();
+            });
+
+            $('#add-information').on('change','#thm',function() {
+                therom = $(this).val();
+            });
+
+        }
 
     function rp(x) {
         if (x === 0)
@@ -353,24 +310,24 @@
 
     function add_info() {
         var data = [];
-        if ($('#constant, #type').val()) {
+//        if ($('#constant, #type').val() !== '') {
             var constant = {};
-            var cons = $('#constant').val();
-            var type = $('#type').val();
+//            var cons = $('#constant').val();
+//            var type = $('#type').val();
             constant['ty'] = 'def.ax';
             constant['name'] = cons;
             constant['T'] = type;
             data.push(constant);
             $('#constant,#type').val('');
-        }
+//        }
 
-        if ($('#thm, #term, #vars').val()) {
+        if ($('#thm, #term, #vars').val() !== '') {
             var theorem = {};
             var vars = {};
             var theo = $('#thm').val();
             var term = $('#term').val();
             var vars_str = $('#vars').val();
-            var vars_list = vars_str.split(' ');  //  A:bool B:bool C:bool =>  ["A:bool","B:bool","C:bool"]
+            var vars_list = vars_str.split(' ');
             for (var i in vars_list) {
                 var v_list = vars_list[i].split(':');
                 vars[v_list[0]] = v_list[1];
@@ -382,117 +339,17 @@
             data.push(theorem);
             $('#thm,#term,#vars').val('');
         }
-
         var event = {"data": data,
                      "name": name};
 
         data_ajax = JSON.stringify(event);
-
-//        $.ajax({
-//            url: "/api/json",
-//            type: "POST",
-//            data: data_ajax,
-//            cache: false,
-//            success: function (result) {
-//                result_list = result_list.concat(result['data']);
-//                for (var d in result['data']) {
-//                    num++;
-//                    var name = result['data'][d]['name'];
-//                    var obj = result['data'][d]['prop'];
-//                    var ty = result['data'][d]['ty'];
-//                    var str = '';
-//                    if (ty === 'def.ax') {
-//                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'));
-//                    }
-//
-//                    if (ty === 'thm'){
-//                        $.each(obj, function(i, val) {
-//                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-//                        });
-//                        $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
-//                    }
-//
-//                    if (ty === 'type.ind') {
-//                        var constrs = result['data'][d]['constrs'];
-//                        str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name'];
-//                        for (var i in constrs[1]['args']) {
-//                            str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
-//                        }
-//                        $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
-//                    }
-//
-//                    if (ty === 'def.ind') {
-//                        $('#left_json').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
-//                            + ' where'+'</p>'));
-//                        for (var j in obj) {
-//                            str = '';
-//                            $.each(obj[j], function(i, val) {
-//                                str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
-//                            });
-//                            $('#left_json p:last').append($('<p>'+ str+'</p>'));
-//                        }
-//                    }
-//                }
-//            }
-//        });
-          ajax_res(data_ajax);
-    }
-
-    $('#left_json').on('click', 'button[name="edit"]', function(){
-        var ele_span = $(this).prev().find('span');
-        var json_value = ele_span.html();
-        ele_span.replaceWith('<textarea rows="2" name="edit" style="border:solid 0px;">'+json_value+'</textarea>')
-    })
-
-    $('#left_json').on('click', 'button[name="delete"]', function(){
-        $(this).parent().remove();
-        var id = Number($(this).attr('id'))-1;
-        var event = {
-             'name': name,
-             'id': id,
-        }
-        event = JSON.stringify(event);
-        $.ajax({
-           url: '/api/delete',
-           data: event,
-           type: 'PUT',
-           success: function(r){
-                alert('delete success');
-           }
-        });
-    })
-
-    $('#left_json').on('blur','textarea[name="edit"]', function(){
-        var value = $(this).val();
-        var ty = $(this).prev().text();
-        var id = $(this).parent().attr('id')-1;
-        $(this).replaceWith('<span name="constant" style="border:solid 0px;"> '+value+'</span>');
-        event = {
-            "name": name,//文件名 logicbase
-            "data": value,//bool
-            "ty": ty,//constant
-            "n": id//
-        }
-        var data = JSON.stringify(event);
-        $.ajax({
-            url: '/api/save_edit',
-            type: 'PUT',//Only send info ;
-            data: data,
-            success: function(){
-                alert('save success!');
-            }
-
-        })
-    })
-
-    function ajax_res(data) {
         $.ajax({
             url: "/api/json",
             type: "POST",
-            data: data,
+            data: data_ajax,
+            cache: false,
             success: function (result) {
                 result_list = result_list.concat(result['data']);
-//                $('#left_json').empty();
                 for (var d in result['data']) {
                     num++;
                     var name = result['data'][d]['name'];
@@ -500,17 +357,47 @@
                     var ty = result['data'][d]['ty'];
                     var str = '';
                     if (ty === 'def.ax') {
-                        $('#left_json').append($('<div name="constant"><div><p id="' + num + '"><font color="#006000"><b>constant</b></font><span name="constant" style="border:solid 0px;"> ' + name + ' :: ' + obj +'</span></p></div><button name="edit" id="' + num + '">Edit</button><button name="delete" id="' + num + '">Delete</button></div>'));
+                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'));
+                    }
+
+                    if (ty === 'thm'){
+                        $.each(obj, function(i, val) {
+                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                        });
+                        $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
+                    }
+                }
+            }
+        });
+    }
+
+    function ajax_res(data) {
+        num = 0;
+        $.ajax({
+            url: "/api/json",
+            type: "POST",
+            data: data,
+            success: function (result) {
+                result_list = result['data'];
+                $('#left_json').empty();
+                for (var d in result['data']) {
+                    num++;
+                    var name = result['data'][d]['name'];
+                    var obj = result['data'][d]['prop'];
+                    var ty = result['data'][d]['ty'];
+                    var str = '';
+                    if (ty === 'def.ax') {
+                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'));
                     }
 
                     if (ty === 'thm') {
                         $.each(obj, function(i, val) {
                             str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                         });
-                        $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'));
+                        $('#left_json').append($('<p>'+'<div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
                     }
 
-                    if (ty === 'type.ind') {
+                    if (ty === 'type.ind'){
                         var constrs = result['data'][d]['constrs'];
                         str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name'];
                         for (var i in constrs[1]['args']) {
@@ -532,9 +419,7 @@
                     }
                 }
             }
-
         });
-
     }
 
     function init_editor(editor_id = "code1") {
@@ -587,7 +472,11 @@
                         }
                     });
                     var id = get_selected_id();
-                    display_line(id, edit_line_number);
+                    var origin_line = display_line(cells[id]['proof'][edit_line_number])
+                    cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
+                        line: edit_line_number,
+                        ch: Number.MAX_SAFE_INTEGER
+                    });
                     readonly_lines.push(edit_line_number);
                     readonly_lines.sort();
                     edit_line_number = -1;
@@ -611,7 +500,10 @@
         });
 
         editor.on('beforeChange', function (cm, change) {
-            if (!edit_flag && readonly_lines.indexOf(change.from.line) !== -1) {
+            if (edit_flag) {
+                edit_flag = false;
+                return;
+            } else if (readonly_lines.indexOf(change.from.line) !== -1) {
                 change.cancel();
             }
         });
@@ -625,6 +517,8 @@
                 timer = setTimeout(function () {
                     if (click_count > 1) {
                         clearTimeout(timer);
+//                        console.log(cm);
+//                        console.log(event);
                         set_read_only(cm);
                     }
                     click_count = 0;
@@ -644,7 +538,7 @@
                     if (e.readOnly)
                         e.clear();
                 if (e.css !== undefined)
-                    if (e.css.indexOf('background') !== -1)
+                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
                         e.clear();
             });
             readonly_lines.splice(line_num, 1);
@@ -657,7 +551,7 @@
                     if (e.readOnly)
                         e.clear();
                 if (e.css !== undefined)
-                    if (e.css.indexOf('background') !== -1)
+                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
                         e.clear();
             });
             readonly_lines.splice(line_num, 1);
@@ -672,7 +566,6 @@
         var line_num = cm.getCursor().line;
         var ch = cm.getCursor().ch;
         var line = cm.getLineHandle(line_num).text;
-
         if (is_ctrl_click) {
             var flag = false;
             if (click_line_number !== -1 && line_num < click_line_number)
@@ -683,37 +576,23 @@
                         e.clear();
             });
             if (flag)
-                cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'});
-            if (click_line_number !== -1) {
-                var click_line = cm.getLineHandle(click_line_number).text;
-                var len = click_line.length;
-                cm.markText({line: click_line_number, ch: len - 5}, {line: click_line_number, ch: len}, {
-                    css: 'background: red'
-                })
-            }
+                cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
             ctrl_click_line_number = line_num;
             is_ctrl_click = false;
         } else if (line.indexOf('sorry') !== -1) {
             cm.getAllMarks().forEach(e => {
                 if (e.css !== undefined)
-                    if (e.css.indexOf('background') !== -1)
+                    if (e.css.indexOf('color') !== -1)
                         e.clear();
             });
-            if (ctrl_click_line_number !== -1) {
-                var ctrl_click_line = cm.getLineHandle(ctrl_click_line_number).text;
-                var len = ctrl_click_line.length;
-                cm.markText({line: ctrl_click_line_number, ch: 0}, {line: ctrl_click_line_number, ch: len}, {
-                    css: 'background: yellow'
-                });
-            }
             cm.markText({line: line_num, ch: ch - 5}, {line: line_num, ch: ch}, {
-                css: "background: red"
+                css: "color: red"
             });
             click_line_number = line_num;
         } else {
             cm.getAllMarks().forEach(e => {
                 if (e.css !== undefined)
-                    if (e.css.indexOf('background') !== -1)
+                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
                         e.clear();
             });
             click_line_number = -1;

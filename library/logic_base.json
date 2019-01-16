@@ -353,51 +353,74 @@
                 },
                 "prop": "rev (cons x xs) = rev xs @ cons x nil"
             }
-        ]
+        ],
+        "ty": "def.ind",
+        "name": "rev",
+        "type": "'a list => 'a list"
+    },
+    {
+        "ty": "thm",
+        "name": "conjI",
+        "vars": {
+            "A": "bool",
+            "B": "bool"
+        },
+        "prop": " A ⟶ B ⟶ A ∧ B",
+        "proof": [
+            {
+                "args": "A",
+                "id": "A1",
+                "prevs": [],
+                "rule": "assume",
+                "th": "A ⊢ A"
+            },
+            {
+                "args": "B",
+                "id": "A2",
+                "prevs": [],
+                "rule": "assume",
+                "th": "B ⊢ B"
+            },
+            {
+                "args": "",
+                "id": "S1",
+                "prevs": [],
+                "rule": "sorry",
+                "th": "A, B ⊢ A ∧ B"
+            },
+            {
+                "args": "B",
+                "id": "S2",
+                "prevs": [
+                    "S1"
+                ],
+                "rule": "implies_intr",
+                "th": "A ⊢ B ⟶ A ∧ B"
+            },
+            {
+                "args": "A",
+                "id": "S3",
+                "prevs": [
+                    "S2"
+                ],
+                "rule": "implies_intr",
+                "th": "⊢ A ⟶ B ⟶ A ∧ B"
+            }
+        ],
+        "num_gaps": 1
     },
     {
         "ty": "def.ax",
-        "name": "consj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
+        "name": "conjI",
         "T": "bool"
     },
     {
         "ty": "thm",
-        "name": "negl",
+        "name": "falseE",
         "vars": {
             "A": "bool",
             "B": "bool"
         },
-        "prop": "(A ⟶ false) ⟶ ¬A"
-    },
-    {
-        "ty": "thm",
-        "name": "negl",
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "(A ⟶ false) ⟶ ¬A"
-    },
-    {
-        "ty": "thm",
-        "name": "negl",
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "(A ⟶ false) ⟶ ¬A"
-    },
-    {
-        "ty": "thm",
-        "name": "classical",
-        "vars": {
-            "A": "bool"
-        },
-        "prop": "A ∨ ¬A"
+        "prop": "false ⟶ A"
     }
 ]
