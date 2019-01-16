@@ -21,23 +21,44 @@
                 "th": "A ∧ B ⊢ A ∧ B"
             },
             {
-                "args": "",
+                "args": "conjD2, {A: A, B: B}",
                 "id": "S1",
-                "prevs": [],
-                "rule": "sorry",
+                "prevs": [
+                    "A1"
+                ],
+                "rule": "apply_theorem_for",
+                "th": "A ∧ B ⊢ B"
+            },
+            {
+                "args": "conjD1, {A: A, B: B}",
+                "id": "S2",
+                "prevs": [
+                    "A1"
+                ],
+                "rule": "apply_theorem_for",
+                "th": "A ∧ B ⊢ A"
+            },
+            {
+                "args": "conjI, {A: B, B: A}",
+                "id": "S3",
+                "prevs": [
+                    "S1",
+                    "S2"
+                ],
+                "rule": "apply_theorem_for",
                 "th": "A ∧ B ⊢ B ∧ A"
             },
             {
                 "args": "A ∧ B",
-                "id": "S2",
+                "id": "S4",
                 "prevs": [
-                    "S1"
+                    "S3"
                 ],
                 "rule": "implies_intr",
                 "th": "⊢ A ∧ B ⟶ B ∧ A"
             }
         ],
-        "num_gaps": 1
+        "num_gaps": 0
     },
     {
         "prop": "A | B --> B | A",
