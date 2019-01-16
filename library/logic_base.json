@@ -1,20 +1,6 @@
 [
     {
         "ty": "def.ax",
-        "name": "conj",
-        "T": "bool => bool => bool",
-        "ascii_op": "&",
-        "unicode_op": "∧"
-    },
-    {
-        "ty": "def.ax",
-        "name": "disj",
-        "T": "bool => bool => bool",
-        "ascii_op": "|",
-        "unicode_op": "∨"
-    },
-    {
-        "ty": "def.ax",
         "name": "neg",
         "T": "bool => bool",
         "ascii_op": "~",
@@ -23,7 +9,7 @@
     {
         "ty": "def.ax",
         "name": "true",
-        "T": "bool"
+        "T": " neg :: bool "
     },
     {
         "ty": "def.ax",

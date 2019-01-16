@@ -392,8 +392,54 @@
         });
     }
 
+    $('#left_json').on('click', 'button[name="edit"]', function(){
+        var ele_span = $(this).prev().find('span');
+        var json_value = ele_span.html();
+        ele_span.replaceWith('<textarea rows="2" name="edit" style="border:solid 0px;">'+json_value+'</textarea>')
+    })
+
+    $('#left_json').on('click', 'button[name="delete"]', function(){
+        $(this).parent().remove();
+        var id = Number($(this).attr('id'))-1;
+        var event = {
+             'name': name,
+             'id': id,
+        }
+        event = JSON.stringify(event);
+        $.ajax({
+           url: '/api/delete',
+           data: event,
+           type: 'PUT',
+           success: function(r){
+                alert('delete success');
+           }
+        });
+    })
+
+    $('#left_json').on('blur','textarea[name="edit"]', function(){
+        var value = $(this).val();
+        var ty = $(this).prev().text();
+        var id = $(this).parent().attr('id')-1;
+        $(this).replaceWith('<span name="constant" style="border:solid 0px;"> '+value+'</span>');
+        event = {
+            "name": name,//文件名 logicbase
+            "data": value,//bool
+            "ty": ty,//constant
+            "n": id//
+        }
+        var data = JSON.stringify(event);
+        $.ajax({
+            url: '/api/save_edit',
+            type: 'PUT',//Only send info ;
+            data: data,
+            success: function(){
+                alert('save success!');
+            }
+
+        })
+    })
+
     function ajax_res(data) {
-//        num = 0;
         $.ajax({
             url: "/api/json",
             type: "POST",
@@ -408,7 +454,7 @@
                     var ty = result['data'][d]['ty'];
                     var str = '';
                     if (ty === 'def.ax') {
-                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'));
+                        $('#left_json').append($('<div name="constant"><div><p id="' + num + '"><font color="#006000"><b>constant</b></font><span name="constant" style="border:solid 0px;"> ' + name + ' :: ' + obj +'</span></p></div><button name="edit" id="' + num + '">Edit</button><button name="delete" id="' + num + '">Delete</button></div>'));
                     }
 
                     if (ty === 'thm') {

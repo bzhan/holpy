@@ -10,7 +10,7 @@ from syntax import parser, printer
 from server.tactic import ProofState
 from logic.basic import BasicTheory
 from kernel.type import HOLType
-from file_function import save_file, save_proof
+from file_function import save_file, save_proof, save_edit, delete
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -215,5 +215,19 @@ def get_root():
 def save_proof_file():
     data = json.loads(request.get_data().decode("utf-8"))
     save_proof(data['name'], data['id'], data['proof'], data['num_gaps'])
+
+    return ''
+
+@app.route('/api/save_edit', methods=['PUT'])
+def save_edit_file():
+    data = json.loads(request.get_data().decode("utf-8"))
+    save_edit(data['name'], data['data'], data['n'], data['ty'])
+
+    return ''
+
+@app.route('/api/delete', methods=['PUT'])
+def delete_file():
+    data = json.loads(request.get_data().decode("utf-8"))
+    delete(data['name'], data['id'])
 
     return ''
