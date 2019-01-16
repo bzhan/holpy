@@ -1,18 +1,6 @@
 [
     {
         "ty": "def.ax",
-        "name": "neg",
-        "T": "bool => bool",
-        "ascii_op": "~",
-        "unicode_op": "¬"
-    },
-    {
-        "ty": "def.ax",
-        "name": "true",
-        "T": " neg :: bool "
-    },
-    {
-        "ty": "def.ax",
         "name": "false",
         "T": "bool"
     },
@@ -353,10 +341,7 @@
                 },
                 "prop": "rev (cons x xs) = rev xs @ cons x nil"
             }
-        ],
-        "ty": "def.ind",
-        "name": "rev",
-        "type": "'a list => 'a list"
+        ]
     },
     {
         "ty": "thm",
