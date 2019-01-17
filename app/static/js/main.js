@@ -237,7 +237,9 @@
                 $('#add-information').append($('<p>Enter the info:</p><input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">'
         +'<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">'
         +'<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">'
-        +'<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:20px;width:50%;float:left;">'));
+        +'<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="args1" placeholder="args1" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="args2" placeholder="args2" style="margin-bottom:20px;width:50%;float:left;">'));
             });
             $('#fun').on('click',function() {
                 $('#add-information').append($('<p>Enter the info:</p><input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">'
@@ -383,58 +385,36 @@
             $('#thm,#term,#vars').val('');
         }
 
+        if($('#datatype, #args, #name1, #type1, #name2, #type2').val()){
+            var datatype = {};
+            var constrs_t = [];
+            var arg = $('#args').val();
+            var vars_list = arg.split(' ');
+            for (let i=1; i<3; i++) {
+            //js中不能够动态的在列表内部创建对象 键值对。
+            //constrs_t[i]['name']=@@@@@;   不能识别；
+                let arg = {};
+                arg['name'] = $('#name'+i).val();
+                arg['type'] = $('#type'+i).val();
+                if ($('#args'+i).val() !==''){
+                    arg['args'] = $('#args'+i).val().split(' ');
+                }
+                else {
+                    arg['args'] = [];
+                };
+                constrs_t.push(arg);
+            };
+            datatype['ty'] = 'type.ind';
+            datatype['name'] = $('#datatype').val();
+            datatype['args'] = vars_list;
+            datatype['constrs'] = constrs_t;
+            data.push(datatype);
+            $('#datatype, #args, #name1, #type1, #name2, #type2, #args1, #args2').val('');
+        }
         var event = {"data": data,
                      "name": name};
 
         data_ajax = JSON.stringify(event);
-
-//        $.ajax({
-//            url: "/api/json",
-//            type: "POST",
-//            data: data_ajax,
-//            cache: false,
-//            success: function (result) {
-//                result_list = result_list.concat(result['data']);
-//                for (var d in result['data']) {
-//                    num++;
-//                    var name = result['data'][d]['name'];
-//                    var obj = result['data'][d]['prop'];
-//                    var ty = result['data'][d]['ty'];
-//                    var str = '';
-//                    if (ty === 'def.ax') {
-//                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'));
-//                    }
-//
-//                    if (ty === 'thm'){
-//                        $.each(obj, function(i, val) {
-//                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-//                        });
-//                        $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
-//                    }
-//
-//                    if (ty === 'type.ind') {
-//                        var constrs = result['data'][d]['constrs'];
-//                        str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name'];
-//                        for (var i in constrs[1]['args']) {
-//                            str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
-//                        }
-//                        $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
-//                    }
-//
-//                    if (ty === 'def.ind') {
-//                        $('#left_json').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
-//                            + ' where'+'</p>'));
-//                        for (var j in obj) {
-//                            str = '';
-//                            $.each(obj[j], function(i, val) {
-//                                str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
-//                            });
-//                            $('#left_json p:last').append($('<p>'+ str+'</p>'));
-//                        }
-//                    }
-//                }
-//            }
-//        });
           ajax_res(data_ajax);
     }
 

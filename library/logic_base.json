@@ -407,5 +407,29 @@
             "B": "bool"
         },
         "prop": "false ⟶ A"
+    },
+    {
+        "ty": "def.ax",
+        "name": "conj",
+        "T": "bool"
+    },
+    {
+        "ty": "type.ind",
+        "name": "list",
+        "args": [
+            "a"
+        ],
+        "constrs": [
+            {
+                "name": "nil",
+                "type": "'a list",
+                "args": []
+            },
+            {
+                "name": "cons",
+                "type": "'a => 'a list => 'a list",
+                "args": []
+            }
+        ]
     }
 ]
