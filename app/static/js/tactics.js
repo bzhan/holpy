@@ -289,55 +289,62 @@ function set_line(cm) {
     })
 }
 
+// Print string without highlight at given line_no and ch. Return the new value of ch.
+function display_str(editor, str, line_no, ch, mark) {
+    len = str.length;
+    editor.replaceRange(str, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+    if (typeof mark !== 'undefined') {
+        editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len}, mark);
+    } 
+    return ch + len;
+}
+
+// Print string with highlight at given line_no and ch.
+// p[0] is the printed string, p[1] is the color.
+// Return the new value of ch.
+function display_highlight_str(editor, p, line_no, ch) {
+    var color;
+    if (p[1] === 0)
+        color = "color: black";
+    else if (p[1] === 1)
+        color = "color: green";
+    else if (p[1] === 2)
+        color = "color: blue";
+    return display_str(editor, p[0], line_no, ch, {css: color});
+}
+
+// Display a list of pairs with highlight
+function display_highlight_strs(editor, ps, line_no, ch) {
+    $.each(ps, function(i, p) {
+        ch = display_highlight_str(editor, p, line_no, ch);
+    })
+    return ch;
+}
+
 // Print a single line.
 function display_line(id, line_no) {
     var editor = get_selected_editor();
-    var cell = cells[id]['proof'];
-    var line = cell[line_no];
+    var line = cells[id]['proof'][line_no];
     var ch = 0;
 
     edit_flag = true;
-    var len = line['id'].length + 2;
-    editor.replaceRange(line['id'] + ': ', {line: line_no, ch: ch}, {line: line_no, ch: Number.MAX_SAFE_INTEGER});
-    editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
-        {css: 'font-weight: bold'});
-    ch = ch + len;
-    var th = line['th'];
-    if (th !== '') {
-        $.each(th, function(i, p) {
-            len = p[0].length;
-            editor.replaceRange(p[0], {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-            var color;
-            if (p[1] === 0)
-                color = "color: black";
-            else if (p[1] === 1)
-                color = "color: green";
-            else if (p[1] === 2)
-                color = "color: blue";
-            editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
-                            {css: color})
-            ch = ch + len;
-        })
-        editor.replaceRange(' by ', {line: line_no, ch: ch}, {line: line_no, ch: ch + 4});
-        editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + 4},
-                        {css: 'font-weight: bold'});
-        ch = ch + 4;
+    // Display id in bold
+    ch = display_str(editor, line.id + ': ', line_no, ch, {css: 'font-weight: bold'});
+    // Display theorem with highlight
+    if (line.th.length > 0) {
+        ch = display_highlight_strs(editor, line.th, line_no, ch);
+        ch = display_str(editor, ' by ', line_no, ch, {css: 'font-weight: bold'});
     }
-    len = line.rule.length;
-    editor.replaceRange(line.rule, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-    ch = ch + len;
-    if (line.args !== '') {
-        len = 1 + line.args.length;
-        editor.replaceRange(' ' + line.args, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-        ch = ch + len;
+    // Display rule name
+    ch = display_str(editor, line.rule, line_no, ch);
+    // Display args with highlight
+    if (line.args.length > 0) {
+        ch = display_str(editor, ' ', line_no, ch);
+        ch = display_highlight_strs(editor, line.args, line_no, ch);
     }
     if (line.prevs.length > 0) {
-        str = ' from ' + line.prevs.join(', ');
-        len = str.length;
-        editor.replaceRange(str, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-        editor.markText({line: line_no, ch: ch + 1}, {line: line_no, ch: ch + 5},
-                        {css: 'font-weight: bold'});
-        ch = ch + len;
+        ch = display_str(editor, ' from ', line_no, ch, {css: 'font-weight: bold'});
+        ch = display_str(editor, line.prevs.join(', '), line_no, ch);
     }
     edit_flag = false;
 }
