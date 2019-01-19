@@ -92,6 +92,7 @@ class ProofItem():
         res = {'id': self.id, 'th': str_th, 'rule': self.rule, 'args': str_args, 'prevs': self.prevs}
         if settings.highlight():
             res['th_raw'] = self.th.print(highlight=False) if self.th else ""
+            res['args_raw'] = self._print_str_args(highlight=False)
         return res
 
     def __str__(self):

@@ -77,7 +77,16 @@
             var editor_id = get_selected_id();
             var id = Number($(this).attr('id'))-1;
             var proof = cells[editor_id]['proof'];
-            result_list[id]['proof'] = proof;
+            var output_proof = [];
+            $.each(proof, function (i) {
+                output_proof.push({});
+                $.extend(output_proof[i], proof[i]);  // perform copy
+                output_proof[i]['th'] = output_proof[i]['th_raw'];
+                output_proof[i]['th_raw'] = undefined;
+                output_proof[i]['args'] = output_proof[i]['args_raw'];
+                output_proof[i]['args_raw'] = undefined;
+            })
+            result_list[id]['proof'] = output_proof;
             result_list[id]['status'] = 'yellow';
             var str = '';
             if (cells[editor_id]['num_gaps'] === 0) {
@@ -102,6 +111,8 @@
                 $.extend(output_proof[i], proof[i]);  // perform copy
                 output_proof[i]['th'] = output_proof[i]['th_raw'];
                 output_proof[i]['th_raw'] = undefined;
+                output_proof[i]['args'] = output_proof[i]['args_raw'];
+                output_proof[i]['args_raw'] = undefined;
             })
             var data = {
                 'name': name,
@@ -117,7 +128,7 @@
         //click reset button to reset the thm to the origin status;
         $('div.rtop').on('click', 'button[name=reset]', function() {
             var id = Number($(this).attr('id'))-1;
-                theorem_proof(result_list[id]);
+            theorem_proof(result_list[id]);
         })
 
         $('#codeTab').on("click", "a", function (e) {
@@ -189,7 +200,6 @@
             if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
-//                    alert(result_list[proof_id-1]['instructions']);
                     init_saved_proof(result_list[proof_id-1]);
                 }, 500);
             }
