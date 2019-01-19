@@ -9,14 +9,14 @@ def print_thm_highlight(th):
     """Print the given theorem with highlight."""
     turnstile = [("⊢", 0)] if settings.unicode() else [("|-", 0)]
     if th.assums:
-        strs = sorted(settings.term_printer()(assum) for assum in th.assums)
+        strs = sorted(assum.print() for assum in th.assums)
         res = strs[0]
         for s in strs[1:]:
             res.append((', ', 0))
             res = res + s
-        return res + [(" ", 0)] + turnstile + [(" ", 0)] + settings.term_printer()(th.concl)
+        return res + [(" ", 0)] + turnstile + [(" ", 0)] + th.concl.print()
     else:
-        return turnstile + [(" ", 0)] + settings.term_printer()(th.concl)
+        return turnstile + [(" ", 0)] + th.concl.print()
 
 class ProofItem():
     """An item in a proof, consisting of the following data:
