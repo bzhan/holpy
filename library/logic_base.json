@@ -368,50 +368,5 @@
                 "prop": "rev (cons x xs) = rev xs @ cons x nil"
             }
         ]
-    },
-    {
-        "ty": "def.ax",
-        "name": "consj",
-        "T": "bool"
-    },
-    {
-        "ty": "def.ax",
-        "name": "conj",
-        "T": "bool"
-    },
-    {
-        "ty": "thm",
-        "name": "negl",
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "(A ⟶ false) ⟶ ¬A"
-    },
-    {
-        "ty": "thm",
-        "name": "negl",
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "(A ⟶ false) ⟶ ¬A"
-    },
-    {
-        "ty": "thm",
-        "name": "negl",
-        "vars": {
-            "A": "bool",
-            "B": "bool"
-        },
-        "prop": "(A ⟶ false) ⟶ ¬A"
-    },
-    {
-        "ty": "thm",
-        "name": "classical",
-        "vars": {
-            "A": "bool"
-        },
-        "prop": "A ∨ ¬A"
     }
 ]

@@ -315,7 +315,7 @@ class ProofState():
 
             # All matches succeed
             results.append((name, th))
-        return results
+        return sorted(results)
 
     def apply_backward_step(self, id, th_name, *, prevs=None, inst=None):
         """Apply backward step using the given theorem.
