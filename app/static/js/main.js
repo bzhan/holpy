@@ -104,12 +104,14 @@
                     output_proof[i]['th'] = output_proof[i]['th_raw'];
                     output_proof[i]['th_raw'] = undefined;
                 })
+
             var data = {
                 'name': name,
                 'proof': output_proof,
                 'id': id,
                 'num_gaps': cells[editor_id]['num_gaps']
             }
+
             if (proof !== '' && id !== -1) {
                 save_info(JSON.stringify(data));
             }
