@@ -225,6 +225,11 @@ def match_thm():
     if data:
         cell = cells.get(data.get('id'))
         target_id = data.get('target_id')
-        conclusion_id = data.get('target_id')
-        if conclusion_id != -1:
-            ths = cell.apply_backward_step_thms(target_id, prevs = conclusion_id)
+        conclusion_id = data.get('conclusion_id')
+        if not conclusion_id:
+            conclusion_id = None
+        ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
+        if ths:
+            return jsonify({'ths': [item[0] for item in ths]})
+        else:
+            return jsonify({})

@@ -80,10 +80,10 @@ body {
 }
 
 /*div.CodeMirror-lines {*/
-    /*border: 1px solid #cfcfcf;*/
-    /*border-radius: 2px;*/
-    /*background: #f7f7f7;*/
-    /*line-height: 1.21429em;*/
+/*border: 1px solid #cfcfcf;*/
+/*border-radius: 2px;*/
+/*background: #f7f7f7;*/
+/*line-height: 1.21429em;*/
 
 /*}*/
 
@@ -94,6 +94,15 @@ body {
 .output-area pre {
     --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.match-thm pre {
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.match-thm pre :empty {
+    display: none;
 }
 
 .CodeMirror {
@@ -175,6 +184,29 @@ div.output-wrapper pre {
     color: black;
     background-color: transparent;
     border-radius: 0;
+    cursor: default;
+}
+
+.match-thm pre {
+    cursor: pointer;
+}
+
+.match-thm > pre:nth-child(1) {
+    font-weight: bold;
+    font-size: 15px;
+    color: blue;
+    padding: 10px 0px 1px 39px;
+    cursor: default;
+}
+
+.match-thm a {
+    font-size: 11px;
+    padding: 10px 0px 1px 39px;
+    line-height: 36px;
+}
+
+.thm-content pre:empty {
+    display: none;
 }
 
 tt.var {

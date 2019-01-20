@@ -31,23 +31,30 @@
             $('#codeTabContent').append(
                 $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
                     '<label for="code' + page_num + '"></label> ' +
-                    '<textarea id="code' + page_num + '"></textarea>' + '<button name="' + proof_id +'" class="el-button el-button--default el-button--mini" style="margin-top:3px;width:100px;" id="'+ page_num +'">SAVE</button>'));
+                    '<textarea id="code' + page_num + '"></textarea>' + '<button name="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:3px;width:100px;" id="' + page_num + '">SAVE</button>'));
             init_editor("code" + page_num);
             // Add location for displaying results
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<pre> </pre></div></div>'));
+                    '<pre> </pre></div><div class="match-thm""></div></div>'));
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<a href="#" id="link-backward" style="float:left;"><</a>' +
                     '<pre id="instruction-number", style="float:left;"> </pre>' +
                     '<a href="#" id="link-forward" style="float:left;">></a>' +
                     '<pre id="instruction" style="float:left;"> </pre></div></div>'));
-
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('.newCodeMirror').each(function () {
                 $(this).removeClass('active')
             });
+        });
+
+        $('#right').on('click', '.backward-step', function () {
+            apply_backward_step(get_selected_editor(), is_others = true);
+        });
+
+        $('#right').on('click', '.thm-content pre', function () {
+            apply_backward_step(get_selected_editor(), is_others = false, select_thm = $(this).index());
         });
 
         $('#right').on('click', '#link-backward', function () {
@@ -56,7 +63,7 @@
                 var instr_output = get_selected_instruction();
                 instr_output.innerHTML = instructions[index];
                 var instr_no_output = get_selected_instruction_number();
-                instr_no_output.innerHTML = (index+1) + '/' + instructions.length;
+                instr_no_output.innerHTML = (index + 1) + '/' + instructions.length;
             }
         });
 
@@ -66,14 +73,14 @@
                 var instr_output = get_selected_instruction();
                 instr_output.innerHTML = instructions[index];
                 var instr_no_output = get_selected_instruction_number();
-                instr_no_output.innerHTML = (index+1) + '/' + instructions.length;
+                instr_no_output.innerHTML = (index + 1) + '/' + instructions.length;
             }
         });
 
         //点击位于右侧button，监听执行
-        $('div.rtop').on('click', 'button', function() {
+        $('div.rtop').on('click', 'button', function () {
             var editor_id = get_selected_id();
-            var id = Number($(this).attr('name'))-1;
+            var id = Number($(this).attr('name')) - 1;
             var proof = cells[editor_id]['proof'];
             var data = {
                 'name': name,
@@ -94,7 +101,7 @@
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
             var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
             var rtop = document.querySelector('.rtop');
-            revert_status(editor);
+            // revert_status(editor);
             editor.focus();
             editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
             editor.setSize("auto", rtop.clientHeight - 40);
@@ -105,17 +112,17 @@
             if ($('#codeTab').children().length === 1)
                 return true;
             else {
+                var id = get_selected_id();
                 var tabId = $(this).parents('li').children('a').attr('href');
                 var pageNum = $(this).parents('li').children('a')[0].childNodes[0].nodeValue;
                 var first = false;
+                delete cells[id];
                 $(this).parents('li').remove('li');
                 $(tabId).remove();
                 if (pageNum === "Page 1")
                     first = true;
                 remove_page(first);
-                var id = get_selected_id();
                 $('#codeTab a:first').tab('show');
-                delete cells.id;
             }
         });
 
@@ -143,24 +150,23 @@
             rewrite_goal(get_selected_editor());
         });
 
-        $('#add-cell').click();
-        $('.code-cell').addClass('selected');
-
-        get_selected_editor().focus();
+        // $('#add-cell').click();
+        // $('.code-cell').addClass('selected');
+        //
+        // get_selected_editor().focus();
 
         //proof被点击时，传送proof给init:
-        $('#left_json').on('click', 'a', function() {
+        $('#left_json').on('click', 'a', function () {
             proof_id = $(this).attr('id');
-            if (result_list[proof_id-1]['proof']) {
+            if (result_list[proof_id - 1]['proof']) {
                 $('#add-cell').click();
-                setTimeout(function() {
-                    init_saved_proof(result_list[proof_id-1])
+                setTimeout(function () {
+                    init_saved_proof(result_list[proof_id - 1])
                 }, 500);
-            }
-            else {
+            } else {
                 $('#add-cell').click();
-                setTimeout(function() {
-                    theorem_proof(result_list[proof_id-1])
+                setTimeout(function () {
+                    theorem_proof(result_list[proof_id - 1])
                 }, 500);
             }
         });
@@ -169,26 +175,28 @@
             $('#left_json').empty();
             if ($('#file-path a:last').text() !== 'root/') {
                 $('#file-path a:last').remove();
-            };
+            }
+            ;
         });
 
-        $('#root-file').on('click', 'a', function() {
+        $('#root-file').on('click', 'a', function () {
             $('#add-info').click(add_info);
             name = $(this).text();
             name = $.trim(name);
             if ($('#file-path').html() === '') {
-                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> '+name+'</b></font></a>'));
+                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> ' + name + '</b></font></a>'));
             } else if ($('#file-path a:last').text() === 'root/') {
-                $('#root-a').after($('<a href="#"><font color="red"><b> '+name+'</b></font></a>'));
+                $('#root-a').after($('<a href="#"><font color="red"><b> ' + name + '</b></font></a>'));
             } else if ($('#file-path a:last').text() !== name) {
                 $('#file-path a:last').remove();
-                $('#root-a').after($('<a href="#"><font color="red"><b> '+ name + '</b></font></a>'));
-            };
+                $('#root-a').after($('<a href="#"><font color="red"><b> ' + name + '</b></font></a>'));
+            }
+            ;
             data = JSON.stringify(name);
             ajax_res(data);
         });
 
-        $('#json-button').on('click', function() {
+        $('#json-button').on('click', function () {
             name = prompt('please enter the file name');
             var data = JSON.stringify(name);
             $('#add-info').click(add_info);
@@ -199,10 +207,10 @@
         num_root = 0;
         $.ajax({
             url: "/api/root_file",
-            success: function(r) {
-                $.each(r['theories'], function(i, val) {
+            success: function (r) {
+                $.each(r['theories'], function (i, val) {
                     num_root++;
-                    $('#root-file').append($('<a href="#"  ' + 'id="'+ num_root + '"><font color="#006000"><b>'+ val +'</b></font></a></br>'));
+                    $('#root-file').append($('<a href="#"  ' + 'id="' + num_root + '"><font color="#006000"><b>' + val + '</b></font></a></br>'));
                 });
             }
         });
@@ -219,19 +227,19 @@
 
     function remove_page(first) {
         if (first)
-            pageNum = 0;
+            page_num = 0;
         else
-            pageNum = 1;
+            page_num = 1;
         $('#codeTab > li').each(function () {
             var pageId = $(this).children('a').attr('href');
             if (pageId === "#code1-pan") {
                 return true;
             }
-            pageNum++;
-            $(this).children('a').html('Page ' + pageNum +
+            page_num++;
+            $(this).children('a').html('Page ' + page_num +
                 '<button id="close_tab" type="button" ' +
                 'title="Remove this page">×</button>');
-            });
+        });
     }
 
     function theorem_proof(r_data) {
@@ -282,7 +290,7 @@
             type: "PUT",
             data: data_save,
             cache: false,
-            success: function() {
+            success: function () {
                 alert('save success');
             }
         })
@@ -319,8 +327,10 @@
             data.push(theorem);
             $('#thm,#term,#vars').val('');
         }
-        var event = {"data": data,
-                     "name": name};
+        var event = {
+            "data": data,
+            "name": name
+        };
 
         data_ajax = JSON.stringify(event);
         $.ajax({
@@ -340,9 +350,9 @@
                         $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'));
                     }
 
-                    if (ty === 'thm'){
-                        $.each(obj, function(i, val) {
-                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                    if (ty === 'thm') {
+                        $.each(obj, function (i, val) {
+                            str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                         });
                         $('#left_json').append($('<p><font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a></br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
                     }
@@ -367,40 +377,43 @@
                     var ty = result['data'][d]['ty'];
                     var str = '';
                     if (ty === 'def.ax') {
-                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'));
+                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'));
                     }
 
                     if (ty === 'thm') {
-                        $.each(obj, function(i, val) {
-                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                        $.each(obj, function (i, val) {
+                            str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                         });
-                        $('#left_json').append($('<p>'+'<div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p>'));
+                        $('#left_json').append($('<p xmlns="http://www.w3.org/1999/html">' + '<div style="float:left;width: 12px; height: 12px;' +
+                            ' background: ' + result['data'][d]['status'] + ';">&nbsp;</div>' + '<font' +
+                            ' color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;&nbsp;' + str + '</p>'));
                     }
 
-                    if (ty === 'type.ind'){
+                    if (ty === 'type.ind') {
                         var constrs = result['data'][d]['constrs'];
                         str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name'];
                         for (var i in constrs[1]['args']) {
-                            str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
+                            str += ' (' + constrs[1]['args'][i] + ' :: ' + obj[i] + ')';
                         }
                         $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
                     }
 
                     if (ty === 'def.ind') {
-                        $('#left_json').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
-                            + ' where'+'</p>'));
+                        $('#left_json').append($('<p id="fun' + j + '"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
+                            + ' where' + '</p>'));
                         for (var j in obj) {
                             str = '';
-                            $.each(obj[j], function(i, val) {
-                                str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
+                            $.each(obj[j], function (i, val) {
+                                str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                             });
-                            $('#left_json p:last').append($('<p>'+ str+'</p>'));
+                            $('#left_json p:last').append($('<p>' + str + '</p>'));
                         }
                     }
                 }
             }
         });
     }
+
 
     function init_editor(editor_id = "code1") {
         var editor = CodeMirror.fromTextArea(document.getElementById(editor_id), {
@@ -422,13 +435,18 @@
         var rtop = document.querySelector('.rtop');
         editor.setSize("auto", rtop.clientHeight - 40);
         editor.setValue("");
+        cells[editor_id] = {};
+        cells[editor_id].click_line_number = -1;
+        cells[editor_id].ctrl_click_line_numbers = new Set();
+        cells[editor_id].edit_line_number = -1;
+        cells[editor_id].readonly_lines = [0];
         editor.on("keydown", function (cm, event) {
             let line_no = cm.getCursor().line;
             let line = cm.getLine(line_no);
-
+            var id = get_selected_id();
             if (event.code === 'Enter') {
                 event.preventDefault();
-                if (edit_line_number !== -1) {
+                if (cells[id].edit_line_numbe !== undefined && cells[id].edit_line_number !== -1) {
                     set_line(cm);
                 } else {
                     add_line_after(cm);
@@ -443,7 +461,7 @@
                 }
             } else if (event.code === 'Escape') {
                 event.preventDefault();
-                if (edit_line_number !== -1) {
+                if (cells[id].edit_line_numbe !== undefined && cells[id].edit_line_number !== -1) {
                     cm.getAllMarks().forEach(e => {
                         if (e.readOnly !== undefined) {
                             if (e.readOnly) {
@@ -451,15 +469,14 @@
                             }
                         }
                     });
-                    var id = get_selected_id();
-                    var origin_line = display_line(cells[id]['proof'][edit_line_number])
-                    cm.replaceRange(origin_line, {line: edit_line_number, ch: 0}, {
-                        line: edit_line_number,
+                    var origin_line = display_line(cells[id]['proof'][cells[id].edit_line_number]);
+                    cm.replaceRange(origin_line, {line: cells[id].edit_line_number, ch: 0}, {
+                        line: cells[id].edit_line_number,
                         ch: Number.MAX_SAFE_INTEGER
                     });
-                    readonly_lines.push(edit_line_number);
-                    readonly_lines.sort();
-                    edit_line_number = -1;
+                    cells[id].readonly_lines.push(cells[id].edit_line_number);
+                    cells[id].readonly_lines.sort();
+                    cells[id].edit_line_number = -1;
                 }
             }
         });
@@ -474,6 +491,7 @@
         editor.on("cursorActivity", function (cm) {
             if (is_mousedown) {
                 mark_text(cm);
+                apply_backward_step_thm(cm);
                 is_mousedown = false;
                 is_ctrl_click = false;
             }
@@ -483,7 +501,7 @@
             if (edit_flag) {
                 edit_flag = false;
                 return;
-            } else if (readonly_lines.indexOf(change.from.line) !== -1) {
+            } else if (cells[get_selected_id()].readonly_lines.indexOf(change.from.line) !== -1) {
                 change.cancel();
             }
         });
@@ -498,8 +516,6 @@
                 timer = setTimeout(function () {
                     if (click_count > 1) {
                         clearTimeout(timer);
-//                        console.log(cm);
-//                        console.log(event);
                         set_read_only(cm);
                     }
                     click_count = 0;
@@ -513,31 +529,32 @@
         var line_num = cm.getCursor().line;
         var ch = cm.getCursor().ch;
         var line = cm.getLineHandle(line_num).text;
+        var id = get_selected_id();
         if (line.indexOf('sorry') !== -1) {
             cm.getAllMarks().forEach(e => {
                 if (e.readOnly !== undefined)
                     if (e.readOnly)
                         e.clear();
                 if (e.css !== undefined)
-                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                    if (e.css.indexOf('background') !== -1)
                         e.clear();
             });
-            readonly_lines.splice(line_num, 1);
+            cells[id].readonly_lines.splice(line_num, 1);
             cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch - 5}, {readOnly: true});
             cm.addSelection({line: line_num, ch: ch - 5}, {line: line_num, ch: ch});
-            edit_line_number = line_num;
+            cells[id].edit_line_number = line_num;
         } else if (line.split(': ')[1].trim() === '') {
             cm.getAllMarks().forEach(e => {
                 if (e.readOnly !== undefined)
                     if (e.readOnly)
                         e.clear();
                 if (e.css !== undefined)
-                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                    if (e.css.indexOf('background') !== -1)
                         e.clear();
             });
-            readonly_lines.splice(line_num, 1);
+            cells[id].readonly_lines.splice(line_num, 1);
             cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {readOnly: true});
-            edit_line_number = line_num;
+            cells[id].edit_line_number = line_num;
         }
     }
 
@@ -547,28 +564,28 @@
         var line_num = cm.getCursor().line;
         var ch = cm.getCursor().ch;
         var line = cm.getLineHandle(line_num).text;
-        if (is_ctrl_click) {
-            var flag = false;
-            if (click_line_number !== -1 && line_num < click_line_number)
-                flag = true;
-            if (flag)
-                cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
-            ctrl_click_line_numbers.add(line_num);
+        var id = get_selected_id();
+        var cell = cells[id] ? cells[id] : undefined;
+        if (is_ctrl_click && cell.click_line_number !== undefined
+            && cell.click_line_number !== -1 && line_num < cell.click_line_number) {
+            cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'})
+            cells[id].ctrl_click_line_numbers.add(line_num);
             is_ctrl_click = false;
         } else if (line.indexOf('sorry') !== -1) {
             cm.markText({line: line_num, ch: ch - 5}, {line: line_num, ch: ch}, {
-                css: "color: red"
+                css: "background: red"
             });
-            click_line_number = line_num;
+            cells[id].click_line_number = line_num;
         } else {
             cm.getAllMarks().forEach(e => {
                 if (e.css !== undefined)
-                    if (e.css.indexOf('color') !== -1 || e.css.indexOf('background') !== -1)
+                    if (e.css.indexOf('background') !== -1)
                         e.clear();
             });
-            click_line_number = -1;
-            ctrl_click_line_numbers.clear();
+            cells[id].click_line_number = -1;
+            cells[id].ctrl_click_line_numbers.clear();
         }
+        clear_match_thm();
         cm.setCursor(origin_pos);
     }
 
@@ -577,13 +594,8 @@
         is_ctrl_click = false;
         click_count = 0;
         edit_flag = false;
-        readonly_lines.length = 0;
-        click_line_number = -1;
-        ctrl_click_line_numbers.clear();
-        edit_line_number = -1;
-        for (var i = 0; i < cm.lineCount(); i++)
-            readonly_lines.push(i);
     }
+
 
     function resize_editor() {
         var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
