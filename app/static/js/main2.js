@@ -72,7 +72,7 @@
             }
         });
 
-        //click save button to save file-data and update the thm status;
+        //click save button to save file and update the thm status;
         $('div.rtop').on('click', 'button[name="save"]', function() {
             var editor_id = get_selected_id();
             var id = Number($(this).attr('id'))-1;
@@ -86,9 +86,9 @@
             $.each(result_list[id]['prop'], function(i, val) {
                  str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                         });
-            $('div#left_json p:eq(' + id + ')').parent().replaceWith('<div><div style="float:left;width: 12px; height: 12px; background: '
+            $('div#left_json p:eq(' + id + ')').parent().replaceWith($('<div><div style="float:left;width: 12px; height: 12px; background: '
             + result_list[id]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ result_list[id]['name'] + ':&nbsp;<a href="#" ' + 'id="'
-            + $(this).attr('id') + '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>')
+            +(id+1)+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'))
         });
 
         //click save-file button to save the info into the json-file;
@@ -97,13 +97,12 @@
             var proof = cells[editor_id]['proof'];
             var id = $('div#'+editor_id+'-pan button[name="save"]').attr('id')-1;
             var output_proof = [];
-            if (id >= 0) {
-                $.each(proof, function (i) {
-                    output_proof.push({});
-                    $.extend(output_proof[i], proof[i]);  // perform copy
-                    output_proof[i]['th'] = output_proof[i]['th_raw'];
-                    output_proof[i]['th_raw'] = undefined;
-                })
+            $.each(proof, function (i) {
+                output_proof.push({});
+                $.extend(output_proof[i], proof[i]);  // perform copy
+                output_proof[i]['th'] = output_proof[i]['th_raw'];
+                output_proof[i]['th_raw'] = undefined;
+            })
             var data = {
                 'name': name,
                 'proof': output_proof,
@@ -114,7 +113,6 @@
                 save_info(JSON.stringify(data));
             }
         }
-    }
 
         //click reset button to reset the thm to the origin status;
         $('div.rtop').on('click', 'button[name=reset]', function() {
@@ -187,7 +185,7 @@
         //click proof then send it to the init; including the save-json-file;
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
-
+             $('a#save-file').click(save_json_file);
             if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
@@ -211,12 +209,9 @@
             };
         });
 
-        $('a#save-file').click(save_json_file);
-
         $('#root-file').on('click', 'a', function() {
             num = 0;
             $('#left_json').empty();
-
             $('#add-info').click(add_info);
             name = $(this).text();
             name = $.trim(name);
@@ -230,6 +225,30 @@
             };
             data = JSON.stringify(name);
             ajax_res(data);
+            $('#cons').on('click', function() {
+                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'));
+            });
+            $('#them').on('click', function() {
+                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">'
+        +'<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">'
+        +'<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">'));
+            });
+            $('#datat').on('click', function() {
+                $('#add-information').append($('<p>Enter the info:</p><input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="args1" placeholder="args1" style="margin-bottom:5px;width:50%;float:left;">'
+        +'<input type="text" class="datatype" id="args2" placeholder="args2" style="margin-bottom:20px;width:50%;float:left;">'));
+            });
+            $('#fun').on('click',function() {
+                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">'
+        +'<input type="text" id="fun-type" placeholder="type" style="margin-bottom:5px;width:100%;">'
+        +'<input type="text" id="fun-vars1" placeholder="vars1" style="float:left;margin-bottom:5px;width:50%;">'
+        +'<input type="text" id="fun-vars2" placeholder="vars2" style="float:left;margin-bottom:5px;width:50%;">'
+        +'<input type="text" id="fun-prop1" placeholder="prop1" style="float:left;margin-bottom:5px;width:50%;">'
+        +'<input type="text" id="fun-prop2" placeholder="prop2" style=":float:left;margin-bottom:5px;width:50%;">'))
+            } )
         });
 
         $('#json-button').on('click', function() {
@@ -329,14 +348,14 @@
             data: data_save,
             cache: false,
             success: function() {
-                alert('save ok');
+                alert('save success');
             }
         })
     }
 
     function add_info() {
         var data = [];
-        if ($('#constant, #type').val() !== '') {
+        if ($('#constant, #type').val()) {
             var constant = {};
             var cons = $('#constant').val();
             var type = $('#type').val();
@@ -347,13 +366,13 @@
             $('#constant,#type').val('');
         }
 
-        if ($('#thm, #term, #vars').val() !== '') {
+        if ($('#thm, #term, #vars').val()) {
             var theorem = {};
             var vars = {};
             var theo = $('#thm').val();
             var term = $('#term').val();
             var vars_str = $('#vars').val();
-            var vars_list = vars_str.split(' ');
+            var vars_list = vars_str.split(' ');  //  A:bool B:bool C:bool =>  ["A:bool","B:bool","C:bool"]
             for (var i in vars_list) {
                 var v_list = vars_list[i].split(':');
                 vars[v_list[0]] = v_list[1];
@@ -365,37 +384,115 @@
             data.push(theorem);
             $('#thm,#term,#vars').val('');
         }
-        var event = {"data": data,
-                     "name": name};
+
+        if($('#datatype, #args, #name1, #type1, #name2, #type2').val()){
+            var datatype = {};
+            var constrs_t = [];
+            var arg = $('#args').val();
+            var vars_list = arg.split(' ');
+            for (let i=1; i<3; i++) {
+            //js中不能够动态的在列表内部创建对象 键值对。
+            //constrs_t[i]['name']=@@@@@;   不能识别；
+                let arg = {};
+                arg['name'] = $('#name'+i).val();
+                arg['type'] = $('#type'+i).val();
+                if ($('#args'+i).val() !==''){
+                    arg['args'] = $('#args'+i).val().split(' ');
+                }
+                else {
+                    arg['args'] = [];
+                };
+                constrs_t.push(arg);
+            };
+            datatype['ty'] = 'type.ind';
+            datatype['name'] = $('#datatype').val();
+            datatype['args'] = vars_list;
+            datatype['constrs'] = constrs_t;
+            data.push(datatype);
+            $('#datatype, #args, #name1, #type1, #name2, #type2, #args1, #args2').val('');
+        }
+
+        if($('#function, #fun-type, #fun-prop1, #fun-prop2').val()){
+            var func = {};
+            var rules = [];
+            for (let i=1; i<3; i++) {
+                var temp = {};
+                var temp1 = {};
+                temp['prop'] = $('#fun-prop'+i).val();
+                if ($('#fun-vars' + i).val() !== ''){
+                    var var_list1 = $('#fun-vars'+ i).val().split('  ');
+                    $.each(var_list1, function(j, val) {
+                       var var_list2 = val.split(':');
+                       temp1[var_list2[0]] = var_list2[1];
+                    });
+                    temp['vars'] = temp1;
+                }
+                else {
+                    temp['vars'] = {};
+                };
+                rules.push(temp);
+            };
+            func['ty'] = 'def.ind';
+            func['name'] = $('#function').val();
+            func['type'] = $('#fun-type').val();
+            func['rules'] = rules;
+            data.push(func);
+            $('#function, #fun-type, #fun-vars1, #fun-vars2, #fun-prop1, #fun-prop2').val('');//清空数据
+        }
+        var event = {"data": data,//
+                     "name": name};//数据和文件名
 
         data_ajax = JSON.stringify(event);
-        $.ajax({
-            url: "/api/json",
-            type: "POST",
-            data: data_ajax,
-            cache: false,
-            success: function (result) {
-                result_list = result_list.concat(result['data']);
-                for (var d in result['data']) {
-                    num++;
-                    var name = result['data'][d]['name'];
-                    var obj = result['data'][d]['prop'];
-                    var ty = result['data'][d]['ty'];
-                    var str = '';
-                    if (ty === 'def.ax') {
-                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'));
-                    }
+        ajax_res(data_ajax);
+    }
 
-                    if (ty === 'thm'){
-                        $.each(obj, function(i, val) {
-                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
-                        });
-                        $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'));
-                    }
-                }
+    $('#left_json').on('click', 'button[name="edit"]', function(){
+        var ele_span = $(this).prev().find('span');
+        var json_value = ele_span.text();
+        ele_span.replaceWith('<textarea rows="2" name="edit" style="border:solid 0px;">'+json_value+'</textarea>')
+    })
+
+    $('#left_json').on('click', 'button[name="delete"]', function(){
+        var id = Number($(this).attr('id'))-1;
+        $(this).prev().prev().remove();
+        $(this).prev().remove();
+        $(this).remove();
+        var event = {
+             'name': name,
+             'id': id,
+        };
+        event = JSON.stringify(event);
+        $.ajax({
+           url: '/api/delete',
+           data: event,
+           type: 'PUT',
+           success: function(r){
+                alert('delete success');
+           }
+        });
+    })
+
+    $('#left_json').on('blur','textarea[name="edit"]', function(){
+        var value = $(this).val();
+        var ty = $(this).parent().find('font').text();
+        var id = $(this).parent().attr('name')-1;
+        $(this).replaceWith('<span style="border:solid 0px;"> '+ value +'</span>');
+        var event = {
+            "name": name,//文件名 logicbase
+            "data": value,//bool
+            "ty": ty,//constant
+            "n": id//
+            }
+            event = JSON.stringify(event);
+            $.ajax({
+            url: '/api/save_edit',
+            type: 'PUT',//Only send info ;
+            data: event,
+            success: function(){
+                alert('save success!');
             }
         });
-    }
+       })
 
     function ajax_res(data) {
         $.ajax({
@@ -404,6 +501,7 @@
             data: data,
             success: function (result) {
                 result_list = result_list.concat(result['data']);
+//                $('#left_json').empty();
                 for (var d in result['data']) {
                     num++;
                     var name = result['data'][d]['name'];
@@ -411,41 +509,41 @@
                     var ty = result['data'][d]['ty'];
                     var str = '';
                     if (ty === 'def.ax') {
-                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj +'</p>'));
+                        $('#left_json').append($('<div name="constant"><div><p name="' + num + '"><font color="#006000"><b>constant</b></font><span style="border:solid 0px;"> ' + name + ' :: ' + obj +'</span></p></div><button name="edit" id="' + num + '">Edit</button><button name="delete" id="' + num + '">Delete</button></div>'));
                     }
 
                     if (ty === 'thm') {
                         $.each(obj, function(i, val) {
-                            str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
+                        str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                         });
-                        $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href="#" ' + 'id="'+ num+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'));
-                    }
+                        $('#left_json').append($('<div id="'+ num +'"><div style="float:left;width: 12px; height: 12px; background: '+ result['data'][d]['status'] + ';">&nbsp;</div>'+'<p name="'+ num +'">'+'<font color="#006000"><b>theorem</b></font> '+ name + ':&nbsp;<a href=" " ' + 'id="'+ num + '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;<span>'+ str +'</span></p></div><button name="edit" id="'+ num + '">Edit</button><button name="delete" id="' + num +'">Delete</button>'));
+                     }
 
-                    if (ty === 'type.ind'){
+                    if (ty === 'type.ind') {
                         var constrs = result['data'][d]['constrs'];
                         str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name'];
                         for (var i in constrs[1]['args']) {
                             str += ' (' + constrs[1]['args'][i] + ' :: '+ obj[i] + ')';
                         }
-                        $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
-                    }
+                        $('#left_json').append($('<div name="datatype"><p name="' + num + '"><font color="#006000"><b>datatype</b></font><span style="border:solid 0px;"> ' + name + ' :: ' + obj + constrs[0]['type'] + ' =' + str + '</span></p></div><button name="edit" id="' + num + '">Edit</button><button name="delete" id="' + num + '">Delete</button>'));
+                        }
 
                     if (ty === 'def.ind') {
-                        $('#left_json').append($('<p id="fun'+j+'"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
+                        $('#left_json').append($('<p name="'+ num +'"><font color="#006000"><b>fun</b></font><span style="border:solid 0px;"> ' + name + ' :: ' + result['data'][d]['type']
                             + ' where'+'</p>'));
                         for (var j in obj) {
                             str = '';
                             $.each(obj[j], function(i, val) {
                                 str = str + '<tt class="'+ rp(val[1]) + '">' +val[0] +'</tt>';
                             });
-                            $('#left_json p:last').append($('<p>'+ str+'</p>'));
+                           // $('#left_json p:last').append($('<div id="'+ num +'"><p>'+ str+'</p></div><button name="edit" id="' + num + '">Edit</button><button name="delete" id="' + num + '">Delete</button>'));
+                            $('#left_json p:last').append($('<div><p>'+ str +'</span></p></div>'));
                         }
+                        $('#left_json p[name="'+ num + '"]').after($('<button name="edit" id="' + num + '">Edit</button><button name="delete" id="' + num + '">Delete</button>'))
                     }
                 }
             }
-
         });
-
     }
 
     function init_editor(editor_id = "code1") {
@@ -664,5 +762,4 @@
         sizes: [20, 80],
         gutterSize: 2,
     });
-})
-(jQuery);
+})(jQuery);
