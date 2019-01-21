@@ -72,8 +72,9 @@
             }
         });
 
-        //click save button to save file and update the thm status;
+        //click save button to save file-data and update the thm status;
         $('div.rtop').on('click', 'button[name="save"]', function() {
+            editor_id_list = [];
             var editor_id = get_selected_id();
             var id = Number($(this).attr('id'))-1;
             var proof = cells[editor_id]['proof'];
@@ -95,35 +96,40 @@
             $.each(result_list[id]['prop'], function(i, val) {
                  str = str +'<tt class="'+rp(val[1])+'">'+val[0]+'</tt>';
                         });
-            $('div#left_json p:eq(' + id + ')').parent().replaceWith($('<div><div style="float:left;width: 12px; height: 12px; background: '
+            $('div#left_json p:eq(' + id + ')').parent().replaceWith('<div><div style="float:left;width: 12px; height: 12px; background: '
             + result_list[id]['status'] + ';">&nbsp;</div>'+'<p>'+'<font color="#006000"><b>theorem</b></font> '+ result_list[id]['name'] + ':&nbsp;<a href="#" ' + 'id="'
-            +(id+1)+ '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>'))
+            + $(this).attr('id') + '">proof</a>'+'</br>&nbsp;&nbsp;&nbsp;'+str+'</p></div>')
         });
 
         //click save-file button to save the info into the json-file;
         function save_json_file() {
-            var editor_id = get_selected_id();
-            var proof = cells[editor_id]['proof'];
-            var id = $('div#'+editor_id+'-pan button[name="save"]').attr('id')-1;
-            var output_proof = [];
-            $.each(proof, function (i) {
-                output_proof.push({});
-                $.extend(output_proof[i], proof[i]);  // perform copy
-                output_proof[i]['th'] = output_proof[i]['th_raw'];
-                output_proof[i]['th_raw'] = undefined;
-                output_proof[i]['args'] = output_proof[i]['args_raw'];
-                output_proof[i]['args_raw'] = undefined;
-            })
-            var data = {
-                'name': name,
-                'proof': output_proof,
-                'id': id,
-                'num_gaps': cells[editor_id]['num_gaps']
-            }
-            if (proof !== '' && id !== -1) {
-                save_info(JSON.stringify(data));
-            }
+            var code_cells = $('#codeTabContent>div');
+            for (var i=1; i<code_cells.length; i++) {
+                var output_proof = [];
+                var cell_id = $('#codeTabContent>div:eq('+ i +')').attr('id').slice(0, 5);
+                var id = $('div#'+ cell_id +'-pan button[name="save"]').attr('id')-1;
+                var proof = cells[cell_id]['proof'];
+
+                $.each(proof, function (i) {
+                    output_proof.push({});
+                    $.extend(output_proof[i], proof[i]);  // perform copy;
+                    output_proof[i]['th'] = output_proof[i]['th_raw'];
+                    output_proof[i]['th_raw'] = undefined;
+                    output_proof[i]['args'] = output_proof[i]['args_raw'];
+                    output_proof[i]['args_raw'] = undefined;
+                })
+                var data = {
+                    'name': name,
+                    'proof': output_proof,
+                    'id': id,
+                    'num_gaps': cells[cell_id]['num_gaps']
+                }
+                if (proof !== '' && id !== -1) {
+                    save_info(JSON.stringify(data));
+                }
         }
+        alert('save success');
+    }
 
         //click reset button to reset the thm to the origin status;
         $('div.rtop').on('click', 'button[name=reset]', function() {
@@ -196,7 +202,6 @@
         //click proof then send it to the init; including the save-json-file;
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
-             $('a#save-file').click(save_json_file);
             if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
@@ -209,7 +214,6 @@
                     theorem_proof(result_list[proof_id-1]);
                 }, 500);
             }
-
         });
 
         $('#file-path').on('click', '#root-a', function () {
@@ -218,6 +222,8 @@
                 $('#file-path a:last').remove();
             };
         });
+
+        $('a#save-file').click(save_json_file);
 
         $('#root-file').on('click', 'a', function() {
             num = 0;
@@ -334,7 +340,7 @@
             data: data_save,
             cache: false,
             success: function() {
-                alert('save success');
+
             }
         })
     }
@@ -403,14 +409,12 @@
     }
 
     function ajax_res(data) {
-//        num = 0;
         $.ajax({
             url: "/api/json",
             type: "POST",
             data: data,
             success: function (result) {
                 result_list = result_list.concat(result['data']);
-//                $('#left_json').empty();
                 for (var d in result['data']) {
                     num++;
                     var name = result['data'][d]['name'];
