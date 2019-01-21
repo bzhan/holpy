@@ -74,6 +74,7 @@
 
         //click save button to save file-data and update the thm status;
         $('div.rtop').on('click', 'button[name="save"]', function() {
+            editor_id_list = [];
             var editor_id = get_selected_id();
             var id = Number($(this).attr('id'))-1;
             var proof = cells[editor_id]['proof'];
@@ -93,29 +94,30 @@
 
         //click save-file button to save the info into the json-file;
         function save_json_file() {
-            var editor_id = get_selected_id();
-            var proof = cells[editor_id]['proof'];
-            var id = $('div#'+editor_id+'-pan button[name="save"]').attr('id')-1;
-            var output_proof = [];
-            if (id >= 0) {
+            var code_cells = $('#codeTabContent>div');
+            for (var i=1; i<code_cells.length; i++) {
+                var output_proof = [];
+                var cell_id = $('#codeTabContent>div:eq('+ i +')').attr('id').slice(0, 5);
+                var id = $('div#'+ cell_id +'-pan button[name="save"]').attr('id')-1;
+                var proof = cells[cell_id]['proof'];
+
                 $.each(proof, function (i) {
                     output_proof.push({});
-                    $.extend(output_proof[i], proof[i]);  // perform copy
+                    $.extend(output_proof[i], proof[i]);  // perform copy;
                     output_proof[i]['th'] = output_proof[i]['th_raw'];
                     output_proof[i]['th_raw'] = undefined;
                 })
-
-            var data = {
-                'name': name,
-                'proof': output_proof,
-                'id': id,
-                'num_gaps': cells[editor_id]['num_gaps']
-            }
-
-            if (proof !== '' && id !== -1) {
-                save_info(JSON.stringify(data));
-            }
+                var data = {
+                    'name': name,
+                    'proof': output_proof,
+                    'id': id,
+                    'num_gaps': cells[cell_id]['num_gaps']
+                }
+                if (proof !== '' && id !== -1) {
+                    save_info(JSON.stringify(data));
+                }
         }
+        alert('save success');
     }
 
         //click reset button to reset the thm to the origin status;
@@ -189,7 +191,6 @@
         //click proof then send it to the init; including the save-json-file;
         $('#left_json').on('click', 'a', function() {
             proof_id = $(this).attr('id');
-
             if (result_list[proof_id-1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function() {
@@ -203,7 +204,6 @@
                     theorem_proof(result_list[proof_id-1]);
                 }, 500);
             }
-
         });
 
         $('#file-path').on('click', '#root-a', function () {
@@ -218,7 +218,6 @@
         $('#root-file').on('click', 'a', function() {
             num = 0;
             $('#left_json').empty();
-
             $('#add-info').click(add_info);
             name = $(this).text();
             name = $.trim(name);
@@ -331,7 +330,7 @@
             data: data_save,
             cache: false,
             success: function() {
-                alert('save ok');
+
             }
         })
     }
