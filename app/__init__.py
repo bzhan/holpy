@@ -16,10 +16,12 @@ app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config.from_object('config')
+#global var file_data for json file;
+# global file_data
+# file_data = dict()
 
 # Dictionary from id to ProofState
 cells = dict()
-
 
 @app.route('/')
 def index():
@@ -142,21 +144,28 @@ def set_line():
 
 @app.route('/api/json', methods=['POST'])
 def json_parse():
+    global file_data
     thy = BasicTheory
     output_data = []
     f_data = json.loads(request.get_data().decode("utf-8"))
     data = []
     if type(f_data) == str:
-        with open('library/' + f_data + '.json', 'r', encoding='utf-8') as f:
+        file_data = dict()
+        with open('library/'+ f_data +'.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
+            for i in range(len(data)):
+                file_data[i] = data[i]
             f.close()
     else:
         data = f_data['data']
         name = f_data['name']
+        k = file_data.keys()[-1]
+        for i in range(1, len(data) + 1):
+            file_data[k + i] = data[i - 1]
         save_file(name, data)
 
     if data:
-        for d in data:
+         for d in data:
             vars = []
             output = {}
             proof = dict()
@@ -175,6 +184,8 @@ def json_parse():
                 output['ty'] = d['ty']
                 if 'instructions' in d:
                     output['instructions'] = d['instructions']
+                else:
+                    output['instructions'] = []
                 if 'proof' in d:
                     output['proof'] = d['proof']
                     output['status'] = 'yellow' if d['num_gaps'] > 0 else 'green'
@@ -214,7 +225,7 @@ def get_root():
 @app.route('/api/save_proof', methods=['PUT'])
 def save_proof_file():
     data = json.loads(request.get_data().decode("utf-8"))
-    save_proof(data['name'], data['id'], data['proof'], data['num_gaps'])
+    save_proof(data['name'], [p for p in file_data.values()], data['id'], data['proof'], data['num_gaps'])
 
     return ''
 

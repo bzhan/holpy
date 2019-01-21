@@ -3,6 +3,9 @@ body {
     font-size: 14px;
     overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    height : 96%;
+    overflow: hidden;
+
 }
 
 .home-header {
@@ -87,6 +90,10 @@ body {
 
 /*}*/
 
+a.fontcolor {
+    color: black;
+}
+
 .input-box {
     width: 100%;
 }
@@ -146,7 +153,7 @@ body {
 
 div.left {
     border: 0px solid;
-    height: 100%;
+    height: 80%;
     float: left;
     padding: 15px;
     margin-top: 40px;
@@ -154,7 +161,7 @@ div.left {
 
 div.right {
     border: 0px solid;
-    height: 100%;
+    height: 80%;
     float: right;
     margin-top: 40px;
 }

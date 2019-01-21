@@ -327,11 +327,13 @@ def parse_extension(thy, data):
         thy.extend_axiom_constant(
             AxConstant(data['name'], prop))
         return prop
+
     elif data['ty'] == 'thm':
         ctxt = parse_vars(thy, data['vars'])
         prop = parse_term(thy, ctxt, data['prop'])
         thy.add_theorem(data['name'], Thm([], prop))
         return prop
+
     elif data['ty'] == 'type.ind':
         constrs = []
         list = []
@@ -342,6 +344,7 @@ def parse_extension(thy, data):
         ext = induct.add_induct_type(data['name'], data['args'], constrs)
         thy.unchecked_extend(ext)
         return list
+
     elif data['ty'] == 'def.ind':
         T = parse_type(thy, data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
