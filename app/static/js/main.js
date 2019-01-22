@@ -500,7 +500,7 @@
             var id = get_selected_id();
             if (event.code === 'Enter') {
                 event.preventDefault();
-                if (cells[id].edit_line_numbe !== undefined && cells[id].edit_line_number !== -1) {
+                if (cells[id].edit_line_number !== undefined && cells[id].edit_line_number !== -1) {
                     set_line(cm);
                 } else {
                     add_line_after(cm);
@@ -515,7 +515,7 @@
                 }
             } else if (event.code === 'Escape') {
                 event.preventDefault();
-                if (cells[id].edit_line_numbe !== undefined && cells[id].edit_line_number !== -1) {
+                if (cells[id].edit_line_number !== undefined && cells[id].edit_line_number !== -1) {
                     cm.getAllMarks().forEach(e => {
                         if (e.readOnly !== undefined) {
                             if (e.readOnly) {
