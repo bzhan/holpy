@@ -295,7 +295,7 @@ function rewrite_goal(cm) {
 
 function set_line(cm) {
     $(document).ready(function () {
-        var line = cm.getLine(cells[get_selected_id()].edit_line_numberl);
+        var line = cm.getLine(cells[get_selected_id()].edit_line_number);
         var input = {
             'id': get_selected_id(),
             'line': line
