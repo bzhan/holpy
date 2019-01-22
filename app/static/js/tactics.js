@@ -150,11 +150,20 @@ function apply_backward_step(cm, is_others = false, select_thm = -1) {
     if (is_others)
         match_thm_list.length = 0;
     if (match_thm_list.length !== 0) {
-        var idx = select_thm !== -1 ? select_thm : 0;
+        let idx = select_thm !== -1 ? select_thm : 0;
+        let fact_id = '';
+        let theorem = '';
+        if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
+            ctrl_click_line_numbers.forEach((val) => {
+                    fact_id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
+            });
+        }
+        fact_id = fact_id.slice(0, fact_id.length - 2);
+        theorem = match_thm_list[idx] + ', ' + fact_id;
         var data = {
             'id': get_selected_id(),
             'line_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
-            'theorem': match_thm_list[idx],
+            'theorem': theorem,
         };
         $.ajax({
             url: "/api/apply-backward-step",
@@ -170,12 +179,10 @@ function apply_backward_step(cm, is_others = false, select_thm = -1) {
     } else {
         if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
             let conclusion = '';
-            ctrl_click_line_numbers.forEach((val, idx, arr) => {
-                if (idx !== arr.size - 1)
+            ctrl_click_line_numbers.forEach((val) => {
                     conclusion += '' + (val + 1) + ', ';
-                else
-                    conclusion += '' + (val + 1);
             });
+            conclusion = conclusion.slice(0, conclusion.length - 2);
             title = 'Target: ' + (click_line_number + 1) + '\nConclusion: ' + conclusion;
         } else if (click_line_number !== -1 && ctrl_click_line_numbers.size === 0) {
             title = 'Target: ' + (click_line_number + 1);
@@ -192,15 +199,13 @@ function apply_backward_step(cm, is_others = false, select_thm = -1) {
             focusConfirm: false,
             preConfirm: () => {
                 document.querySelector('#swal-input1').focus();
-                var id = '';
-                var theorem = '';
+                let fact_id = '';
+                let theorem = '';
                 if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
-                    ctrl_click_line_numbers.forEach((val, idx, arr) => {
-                        if (idx !== arr.size - 1)
-                            id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
-                        else
-                            id += '' + cells[get_selected_id()]['proof'][val]['id'];
+                    ctrl_click_line_numbers.forEach((val) => {
+                        fact_id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
                     });
+                    fact_id = fact_id.slice(0, fact_id.length - 2);
                     theorem = document.getElementById('swal-input1').value + ', ' + id;
                 } else if (click_line_number !== -1 && ctrl_click_line_numbers.size === 0) {
                     theorem = document.getElementById('swal-input1').value;
@@ -377,7 +382,7 @@ function display_highlight_str(editor, p, line_no, ch) {
 
 // Display a list of pairs with highlight
 function display_highlight_strs(editor, ps, line_no, ch) {
-    $.each(ps, function(i, p) {
+    $.each(ps, function (i, p) {
         ch = display_highlight_str(editor, p, line_no, ch);
     })
     return ch;
@@ -418,7 +423,7 @@ function display(id) {
     editor.setValue('');
     edit_flag = false;
     var cell = cells[id]['proof'];
-    $.each(cell, function(line_no) {
+    $.each(cell, function (line_no) {
         display_line(id, line_no);
         edit_flag = true;
         var len = editor.getLineHandle(line_no).text.length;
