@@ -1,5 +1,6 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
+from copy import copy
 import json
 
 from flask import Flask, request, render_template
@@ -145,7 +146,7 @@ def set_line():
 @app.route('/api/json', methods=['POST'])
 def json_parse():
     global file_data
-    thy = BasicTheory
+    thy = copy(BasicTheory)
     output_data = []
     f_data = json.loads(request.get_data().decode("utf-8"))
     data = []

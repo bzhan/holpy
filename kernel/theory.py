@@ -1,5 +1,7 @@
 # Author: Bohua Zhan
 
+from copy import copy
+
 from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
 from kernel.term import Term, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
@@ -52,6 +54,18 @@ class Theory():
     def __init__(self):
         self.data = dict()
         self.check_level = 0
+
+    def __copy__(self):
+        """Creates a shallow copy of the current theory. This is defined
+        as performing a shallow copy on all values on self.data.
+
+        """
+        res = Theory()
+        res.data = dict()
+        for name, val in self.data.items():
+            res.data[name] = copy(val)
+        res.check_level = self.check_level
+        return res
 
     def add_data_type(self, name, init = None):
         """Add a new data type.
