@@ -112,7 +112,7 @@
         //click save-file button to save the info into the json-file;
         function save_json_file() {
             var code_cells = $('#codeTabContent>div');
-            for (var i = 1; i < code_cells.length; i++) {
+            for (var i = 0; i < code_cells.length; i++) {
                 var output_proof = [];
                 var cell_id = $('#codeTabContent>div:eq(' + i + ')').attr('id').slice(0, 5);
                 var id = $('div#' + cell_id + '-pan button[name="save"]').attr('id') - 1;
