@@ -153,7 +153,6 @@
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
             var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
             var rtop = document.querySelector('.rtop');
-            // revert_status(editor);
             editor.focus();
             editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
             editor.setSize("auto", rtop.clientHeight - 40);
@@ -201,11 +200,6 @@
         $('#rewrite-goal').on("click", function () {
             rewrite_goal(get_selected_editor());
         });
-
-        // $('#add-cell').click();
-        // $('.code-cell').addClass('selected');
-        //
-        // get_selected_editor().focus();
 
         //click proof then send it to the init; including the save-json-file;
         $('#left_json').on('click', 'a', function () {
@@ -640,14 +634,6 @@
         clear_match_thm();
         cm.setCursor(origin_pos);
     }
-
-    function revert_status(cm) {
-        is_mousedown = false;
-        is_ctrl_click = false;
-        click_count = 0;
-        edit_flag = false;
-    }
-
 
     function resize_editor() {
         var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;

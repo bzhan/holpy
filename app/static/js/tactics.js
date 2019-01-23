@@ -322,15 +322,14 @@ function set_line(cm) {
 function apply_backward_step_thm(cm) {
     var id = get_selected_id();
     var click_line_number = cells[id].click_line_number;
-    var ctrl_click_line_numbers = cells[id].ctrl_click_line_numbers;
     if (click_line_number === -1) {
         return;
     } else {
-        match_thm(cm);
+        match_thm();
     }
 }
 
-function match_thm(cm) {
+function match_thm() {
     var id = get_selected_id();
     var click_line_number = cells[id].click_line_number;
     var ctrl_click_line_numbers = cells[id].ctrl_click_line_numbers;
@@ -460,4 +459,3 @@ function get_match_thm() {
     );
     return match_thm_list;
 }
-
