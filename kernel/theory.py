@@ -5,7 +5,7 @@ from copy import copy
 from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
 from kernel.term import Term, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
-from kernel.macro import MacroSig, ProofMacro
+from kernel.macro import MacroSig, ProofMacro, global_macros
 from kernel.extension import Extension
 from kernel.report import ExtensionReport
 
@@ -166,6 +166,13 @@ class Theory():
             raise TypeError()
 
         self.add_data("proof_macro", name, macro)
+
+    def add_global_proof_macro(self, name):
+        """Add a macro from global_macros."""
+        if name not in global_macros:
+            raise TheoryException("Macro " + name + " not found")
+
+        self.add_proof_macro(name, global_macros[name])
 
     def has_proof_macro(self, name):
         """Whether the given name corresponds to a proof macro."""

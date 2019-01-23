@@ -357,6 +357,10 @@ def parse_extension(thy, data):
         thy.unchecked_extend(ext)
         return rules
 
+    elif data['ty'] == 'macro':
+        thy.add_global_proof_macro(data['name'])
+        return None
+
 def parse_extensions(thy, data):
     for ext_data in data:
         parse_extension(thy, ext_data)

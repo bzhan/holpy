@@ -247,6 +247,34 @@
         "prop": "A | ~A"
     },
     {
+        "ty": "macro",
+        "name": "arg_combination"
+    },
+    {
+        "ty": "macro",
+        "name": "fun_combination"
+    },
+    {
+        "ty": "macro",
+        "name": "beta_norm"
+    },
+    {
+        "ty": "macro",
+        "name": "apply_theorem"
+    },
+    {
+        "ty": "macro",
+        "name": "apply_theorem_for"
+    },
+    {
+        "ty": "macro",
+        "name": "rewrite_goal"
+    },
+    {
+        "ty": "macro",
+        "name": "rewrite_back_goal"
+    },
+    {
         "ty": "type.ind",
         "name": "nat",
         "args": [],
