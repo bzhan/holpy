@@ -419,6 +419,8 @@ class Theory():
                 self.extend_constant(ext)
             elif ext.ty == Extension.THEOREM:
                 self.add_theorem(ext.name, ext.th)
+            elif ext.ty == Extension.MACRO:
+                self.add_global_proof_macro(ext.name)
             else:
                 raise TypeError()
 
@@ -442,6 +444,8 @@ class Theory():
                     ext_report.add_axiom(ext.name, ext.th)
 
                 self.add_theorem(ext.name, ext.th)
+            elif ext.ty == Extension.MACRO:
+                self.add_global_proof_macro(ext.name)
             else:
                 raise TypeError()
 

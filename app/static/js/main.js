@@ -421,16 +421,16 @@
                 result_list = result_list.concat(result['data']);
                 for (var d in result['data']) {
                     num++;
-                    var name = result['data'][d]['name'];
-                    var obj = result['data'][d]['prop'];
-                    var ty = result['data'][d]['ty'];
+                    var ext = result['data'][d];
+                    var ty = ext.ty;
+                    var name = ext.name;
                     var str = '';
                     if (ty === 'def.ax') {
-                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'));
+                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + ext.T + '</p>'));
                     }
 
                     if (ty === 'thm') {
-                        $.each(obj, function (i, val) {
+                        $.each(ext.prop, function (i, val) {
                             str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                         });
                         $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: ' + result['data'][d]['status'] + ';">&nbsp;</div>' + '<p>' + '<font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;&nbsp;' + str + '</p></div>'));
@@ -440,7 +440,7 @@
                         var constrs = result['data'][d]['constrs'];
                         str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name'];
                         for (var i in constrs[1]['args']) {
-                            str += ' (' + constrs[1]['args'][i] + ' :: ' + obj[i] + ')';
+                            str += ' (' + constrs[1]['args'][i] + ' :: ' + ext.argsT[i] + ')';
                         }
                         $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
                     }
@@ -448,9 +448,9 @@
                     if (ty === 'def.ind') {
                         $('#left_json').append($('<p id="fun' + j + '"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
                             + ' where' + '</p>'));
-                        for (var j in obj) {
+                        for (var j in ext.rules) {
                             str = '';
-                            $.each(obj[j], function (i, val) {
+                            $.each(ext.rules[j], function (i, val) {
                                 str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                             });
                             $('#left_json p:last').append($('<p>' + str + '</p>'));

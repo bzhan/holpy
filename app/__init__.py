@@ -5,12 +5,13 @@ import json
 
 from flask import Flask, request, render_template
 from flask.json import jsonify
+from kernel.type import HOLType
 from kernel.term import Term
 from kernel.thm import primitive_deriv
+from kernel import extension
 from syntax import parser, printer
 from server.tactic import ProofState
 from logic.basic import BasicTheory
-from kernel.type import HOLType
 from file_function import save_file, save_proof
 
 app = Flask(__name__, static_url_path='/static')
@@ -170,19 +171,17 @@ def json_parse():
             vars = []
             output = {}
             proof = dict()
-            prop = parser.parse_extension(thy, d)
+            exts = parser.parse_extension(thy, d)
             if d['ty'] == 'def.ax':
-                output['name'] = d['name']
-                output['prop'] = str(prop)
-                output['ty'] = d['ty']
-                output_data.append(output)
+                output_data.append(d)
 
             if d['ty'] == 'thm':
+                output['ty'] = d['ty']
                 output['name'] = d['name']
                 output['vars'] = d['vars']
-                output['prop_raw'] = printer.print_term(thy, prop, print_abs_type=True)
+                output['prop_raw'] = d['prop']
+                prop = exts.data[0].th.concl
                 output['prop'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-                output['ty'] = d['ty']
                 if 'instructions' in d:
                     output['instructions'] = d['instructions']
                 else:
@@ -196,19 +195,23 @@ def json_parse():
                 output_data.append(output)
 
             if d['ty'] == 'type.ind':
-                output['name'] = d['name']
-                constrs = d['constrs']
-                temp = HOLType.strip_type(prop[1])
-                output['constrs'] = constrs
-                output['prop'] = [str(tl) for tl in temp[0]]
                 output['ty'] = d['ty']
+                output['name'] = d['name']
+                output['constrs'] = d['constrs']
+                T = parser.parse_type(thy, d['constrs'][1]['type'])
+                argsT, _ = HOLType.strip_type(T)
+                output['argsT'] = [str(tl) for tl in argsT]
                 output_data.append(output)
 
             if d['ty'] == 'def.ind':
-                output['name'] = d['name']
-                output['prop'] = [printer.print_term(thy, t, highlight=True, unicode=True) for t in prop]
-                output['type'] = d['type']
                 output['ty'] = d['ty']
+                output['name'] = d['name']
+                output['type'] = d['type']
+                output['rules'] = []
+                for ext in exts.data:
+                    if ext.ty == extension.Extension.THEOREM:
+                        s = printer.print_term(thy, ext.th.concl, highlight=True, unicode=True)
+                        output['rules'].append(s)
                 output_data.append(output)
 
     return jsonify({'data': output_data})

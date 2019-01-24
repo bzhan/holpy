@@ -22,8 +22,11 @@ class Extension():
     the given name and statement. If prf = None, then the theorem should
     be accepted as an axiom. Otherwise prf is a proof of the theorem.
 
+    Macro(name): extend the theory by adding the given macro from
+    global_macros.
+
     """
-    (AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM) = range(4)
+    (AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM, MACRO) = range(5)
 
     def __str__(self):
         if self.ty == Extension.AX_TYPE:
@@ -34,6 +37,8 @@ class Extension():
             return "Constant " + self.name + " = " + str(self.expr)
         elif self.ty == Extension.THEOREM:
             return "Theorem " + self.name + ": " + str(self.th)
+        elif self.ty == Extension.MACRO:
+            return "Macro " + self.name
         else:
             raise TypeError()
 
@@ -41,7 +46,9 @@ class Extension():
         return str(self)
 
     def __eq__(self, other):
-        if self.ty == Extension.AX_TYPE:
+        if self.ty != other.ty:
+            return False
+        elif self.ty == Extension.AX_TYPE:
             return self.name == other.name and self.arity == other.arity
         elif self.ty == Extension.AX_CONSTANT:
             return self.name == other.name and self.T == other.T
@@ -49,6 +56,8 @@ class Extension():
             return self.name == other.name and self.expr == other.expr
         elif self.ty == Extension.THEOREM:
             return self.name == other.name and self.th == other.th and self.prf == other.prf
+        elif self.ty == Extension.MACRO:
+            return self.name == other.name
         else:
             raise TypeError()
 
@@ -99,7 +108,7 @@ class Constant(Extension):
         self.expr = expr
 
 class Theorem(Extension):
-    def __init__(self, name, th, prf = None):
+    def __init__(self, name, th, prf=None):
         """Extending the theory by adding an axiom/theorem.
 
         name -- name of the theorem.
@@ -111,6 +120,16 @@ class Theorem(Extension):
         self.name = name
         self.th = th
         self.prf = prf
+
+class Macro(Extension):
+    def __init__(self, name):
+        """Extending the theory by adding a macro.
+
+        name -- name of the macro.
+
+        """
+        self.ty = Extension.MACRO
+        self.name = name
 
 class TheoryExtension():
     """A theory extension contains a list of extensions to a theory. These
