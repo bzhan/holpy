@@ -16,9 +16,8 @@ class SATSolverException(Exception):
 
 
 def display_cnf(cnf):
-	print('hello,world')
     """Display the given CNF."""
-    pass
+    print('hello,world')
 
 def is_solution(cnf, inst):
     """Determines whether the given instantiation is a solution to
