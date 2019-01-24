@@ -16,6 +16,7 @@ class SATSolverException(Exception):
 
 
 def display_cnf(cnf):
+	print('hello,world')
     """Display the given CNF."""
     pass
 
