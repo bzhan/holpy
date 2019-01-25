@@ -80,7 +80,7 @@
             }
         });
 
-        //click save button to save file-data and update the thm status;
+        // Save a single proof to the webpage (not to the json file).
         $('div.rtop').on('click', 'button[name="save"]', function () {
             editor_id_list = [];
             var editor_id = get_selected_id();
@@ -96,47 +96,44 @@
                 output_proof[i]['args_raw'] = undefined;
             })
             result_list[id]['proof'] = output_proof;
-            result_list[id]['status'] = 'yellow';
-            var str = '';
-            if (cells[editor_id]['num_gaps'] === 0) {
-                result_list[id]['status'] = 'green';
-            }
-            $.each(result_list[id]['prop'], function (i, val) {
-                str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-            });
-            $('div#left_json p:eq(' + id + ')').parent().replaceWith('<div><div style="float:left;width: 12px; height: 12px; background: '
-                + result_list[id]['status'] + ';">&nbsp;</div>' + '<p>' + '<font color="#006000"><b>theorem</b></font> ' + result_list[id]['name'] + ':&nbsp;<a href="#" ' + 'id="'
-                + $(this).attr('id') + '">proof</a>' + '</br>&nbsp;&nbsp;&nbsp;' + str + '</p></div>')
+            result_list[id]['num_gaps'] = cells[editor_id]['num_gaps'];
+            display_result_list();
         });
 
-        //click save-file button to save the info into the json-file;
-        function save_json_file() {
-            var code_cells = $('#codeTabContent>div');
-            for (var i = 0; i < code_cells.length; i++) {
-                var output_proof = [];
-                var cell_id = $('#codeTabContent>div:eq(' + i + ')').attr('id').slice(0, 5);
-                var id = $('div#' + cell_id + '-pan button[name="save"]').attr('id') - 1;
-                var proof = cells[cell_id]['proof'];
-
-                $.each(proof, function (i) {
-                    output_proof.push({});
-                    $.extend(output_proof[i], proof[i]);  // perform copy;
-                    output_proof[i]['th'] = output_proof[i]['th_raw'];
-                    output_proof[i]['th_raw'] = undefined;
-                    output_proof[i]['args'] = output_proof[i]['args_raw'];
-                    output_proof[i]['args_raw'] = undefined;
-                })
-                var data = {
-                    'name': name,
-                    'proof': output_proof,
-                    'id': id,
-                    'num_gaps': cells[cell_id]['num_gaps']
-                }
-                if (proof !== '' && id !== -1) {
-                    save_info(JSON.stringify(data));
+        function result_to_output(data) {
+            if (data.ty === 'thm') {
+                data.prop_hl = undefined;
+            }
+            else if (data.ty === 'type.ind') {
+                data.argsT = undefined;
+            }
+            else if (data.ty === 'def.ind') {
+                for (var i in data.rules) {
+                    data.rules[i].prop_hl = undefined;
                 }
             }
-            alert('save success');
+        }
+
+        // Save all changes on the webpage to the json-file;
+        function save_json_file() {
+            var output_list = [];
+            for (var d in result_list) {
+                output_list[d] = {};
+                $.extend(output_list[d], result_list[d])  // perform copy
+                result_to_output(output_list[d]);
+            }
+            var data = {
+                'name': name,
+                'data': output_list
+            }
+            $.ajax({
+                url: "/api/save_file",
+                type: "POST",
+                data: JSON.stringify(data),
+                success: function () {
+                    alert('save success');
+                }
+            });
         }
 
         //click reset button to reset the thm to the origin status;
@@ -294,11 +291,16 @@
     }
 
     function theorem_proof(r_data) {
-        instructions = r_data['instructions'];
+        if (r_data['instructions'] !== undefined) {
+            instructions = r_data['instructions'];
+        }
+        else {
+            instructions = []
+        }
         var event = {
             'id': get_selected_id(),
             'vars': r_data['vars'],
-            'prop': r_data['prop_raw'],
+            'prop': r_data['prop'],
         };
         var data = JSON.stringify(event);
         display_running();
@@ -335,33 +337,73 @@
         })
     }
 
-    function save_info(data_save) {
-        $.ajax({
-            url: "/api/save_proof",
-            type: "PUT",
-            data: data_save,
-            cache: false,
-            success: function () {
-
+    // Display result_list on the left side of the page.
+    function display_result_list() {
+        $('#left_json').empty();
+        var num = 0;
+        for (var d in result_list) {
+            num++;
+            var ext = result_list[d];
+            var ty = ext.ty;
+            var name = ext.name;
+            var str = '';
+            if (ty === 'def.ax') {
+                $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + ext.T + '</p>'));
             }
-        })
+
+            if (ty === 'thm') {
+                $.each(ext.prop_hl, function (i, val) {
+                    str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                });
+                var status_color;
+                if (ext.proof === undefined) {
+                    status_color = 'red'
+                }
+                else if (ext.num_gaps > 0) {
+                    status_color = 'yellow'
+                }
+                else {
+                    status_color = 'green'
+                }
+                $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: ' + status_color + ';">&nbsp;</div>' + '<p>' + '<font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;&nbsp;' + str + '</p></div>'));
+            }
+
+            if (ty === 'type.ind') {
+                var constrs = ext.constrs;
+                str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name'];
+                for (var i in constrs[1]['args']) {
+                    str += ' (' + constrs[1]['args'][i] + ' :: ' + ext.argsT[i] + ')';
+                }
+                $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
+            }
+
+            if (ty === 'def.ind') {
+                $('#left_json').append($('<p id="fun' + j + '"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + ext.type
+                    + ' where' + '</p>'));
+                for (var j in ext.rules) {
+                    str = '';
+                    $.each(ext.rules[j].prop_hl, function (i, val) {
+                        str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                    });
+                    $('#left_json p:last').append($('<p>' + str + '</p>'));
+                }
+            }
+        }
     }
 
+    // Add new entry to the file.
     function add_info() {
-        var data = [];
+        var item = {};
         if ($('#constant, #type').val() !== '') {
-            var constant = {};
             var cons = $('#constant').val();
             var type = $('#type').val();
-            constant['ty'] = 'def.ax';
-            constant['name'] = cons;
-            constant['T'] = type;
-            data.push(constant);
+            item['ty'] = 'def.ax';
+            item['name'] = cons;
+            item['T'] = type;
             $('#constant,#type').val('');
         }
 
         if ($('#thm, #term, #vars').val() !== '') {
-            var theorem = {};
             var vars = {};
             var theo = $('#thm').val();
             var term = $('#term').val();
@@ -371,43 +413,24 @@
                 var v_list = vars_list[i].split(':');
                 vars[v_list[0]] = v_list[1];
             }
-            theorem['ty'] = 'thm';
-            theorem['name'] = theo;
-            theorem['vars'] = vars;
-            theorem['prop'] = term;
-            data.push(theorem);
+            item['ty'] = 'thm';
+            item['name'] = theo;
+            item['vars'] = vars;
+            item['prop'] = term;
             $('#thm,#term,#vars').val('');
         }
         var event = {
-            "data": data,
-            "name": name
+            "item": item
         };
 
         data_ajax = JSON.stringify(event);
         $.ajax({
-            url: "/api/json",
+            url: "/api/add-info",
             type: "POST",
             data: data_ajax,
-            cache: false,
             success: function (result) {
                 result_list = result_list.concat(result['data']);
-                for (var d in result['data']) {
-                    num++;
-                    var name = result['data'][d]['name'];
-                    var obj = result['data'][d]['prop'];
-                    var ty = result['data'][d]['ty'];
-                    var str = '';
-                    if (ty === 'def.ax') {
-                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + obj + '</p>'));
-                    }
-
-                    if (ty === 'thm') {
-                        $.each(obj, function (i, val) {
-                            str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                        });
-                        $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: ' + result['data'][d]['status'] + ';">&nbsp;</div>' + '<p>' + '<font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;&nbsp;' + str + '</p></div>'));
-                    }
-                }
+                display_result_list();
             }
         });
     }
@@ -418,49 +441,10 @@
             type: "POST",
             data: data,
             success: function (result) {
-                result_list = result_list.concat(result['data']);
-                for (var d in result['data']) {
-                    num++;
-                    var ext = result['data'][d];
-                    var ty = ext.ty;
-                    var name = ext.name;
-                    var str = '';
-                    if (ty === 'def.ax') {
-                        $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + ext.T + '</p>'));
-                    }
-
-                    if (ty === 'thm') {
-                        $.each(ext.prop, function (i, val) {
-                            str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                        });
-                        $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: ' + result['data'][d]['status'] + ';">&nbsp;</div>' + '<p>' + '<font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;&nbsp;' + str + '</p></div>'));
-                    }
-
-                    if (ty === 'type.ind') {
-                        var constrs = result['data'][d]['constrs'];
-                        str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name'];
-                        for (var i in constrs[1]['args']) {
-                            str += ' (' + constrs[1]['args'][i] + ' :: ' + ext.argsT[i] + ')';
-                        }
-                        $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
-                    }
-
-                    if (ty === 'def.ind') {
-                        $('#left_json').append($('<p id="fun' + j + '"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + result['data'][d]['type']
-                            + ' where' + '</p>'));
-                        for (var j in ext.rules) {
-                            str = '';
-                            $.each(ext.rules[j], function (i, val) {
-                                str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                            });
-                            $('#left_json p:last').append($('<p>' + str + '</p>'));
-                        }
-                    }
-                }
+                result_list = result['data'];
+                display_result_list();
             }
-
         });
-
     }
 
     function init_editor(editor_id = "code1") {

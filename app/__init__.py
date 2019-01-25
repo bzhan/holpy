@@ -12,15 +12,11 @@ from kernel import extension
 from syntax import parser, printer
 from server.tactic import ProofState
 from logic.basic import BasicTheory
-from file_function import save_file, save_proof
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config.from_object('config')
-#global var file_data for json file;
-# global file_data
-# file_data = dict()
 
 # Dictionary from id to ProofState
 cells = dict()
@@ -144,77 +140,76 @@ def set_line():
         return jsonify(error)
 
 
+def file_data_to_output(thy, data):
+    """Convert an item in the theory in json format in the file to
+    json format sent to the web client. Modifies data in-place.
+    Also modifies thy in parsing the item.
+
+    """
+    exts = parser.parse_extension(thy, data)
+    if data['ty'] == 'def.ax':
+        pass
+
+    elif data['ty'] == 'thm':
+        ctxt = parser.parse_vars(thy, data['vars'])
+        prop = parser.parse_term(thy, ctxt, data['prop'])
+        data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+
+    elif data['ty'] == 'type.ind':
+        T = parser.parse_type(thy, data['constrs'][1]['type'])
+        argsT, _ = HOLType.strip_type(T)
+        data['argsT'] = [str(tl) for tl in argsT]
+
+    elif data['ty'] == 'def.ind':
+        for rule in data['rules']:
+            ctxt = parser.parse_vars(thy, rule['vars'])
+            prop = parser.parse_term(thy, ctxt, rule['prop'])
+            rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+
+    elif data['ty'] == 'macro':
+        pass
+
+    else:
+        raise TypeError()
+
+
 @app.route('/api/json', methods=['POST'])
 def json_parse():
-    global file_data
+    # Since thy will be modified when reading extensions below,
+    # make a copy to avoid changing BasicTheory.
     thy = copy(BasicTheory)
-    output_data = []
-    f_data = json.loads(request.get_data().decode("utf-8"))
-    data = []
-    if type(f_data) == str:
-        file_data = dict()
-        with open('library/'+ f_data +'.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            for i in range(len(data)):
-                file_data[i] = data[i]
-            f.close()
-    else:
-        data = f_data['data']
-        name = f_data['name']
-        k = file_data.keys()[-1]
-        for i in range(1, len(data) + 1):
-            file_data[k + i] = data[i - 1]
-        save_file(name, data)
+    file_name = json.loads(request.get_data().decode("utf-8"))
+    with open('library/'+ file_name +'.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
 
-    if data:
-         for d in data:
-            vars = []
-            output = {}
-            proof = dict()
-            exts = parser.parse_extension(thy, d)
-            if d['ty'] == 'def.ax':
-                output_data.append(d)
+    for data in f_data:
+        file_data_to_output(thy, data)
+    return jsonify({'data': f_data})
 
-            if d['ty'] == 'thm':
-                output['ty'] = d['ty']
-                output['name'] = d['name']
-                output['vars'] = d['vars']
-                output['prop_raw'] = d['prop']
-                prop = exts.data[0].th.concl
-                output['prop'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-                if 'instructions' in d:
-                    output['instructions'] = d['instructions']
-                else:
-                    output['instructions'] = []
-                if 'proof' in d:
-                    output['proof'] = d['proof']
-                    output['status'] = 'yellow' if d['num_gaps'] > 0 else 'green'
-                else:
-                    output['status'] = 'red'
 
-                output_data.append(output)
+@app.route('/api/add-info', methods=['POST'])
+def json_add_info():
+    # Make a copy of BasicTheory as in json_parse.
+    data = json.loads(request.get_data().decode("utf-8"))
 
-            if d['ty'] == 'type.ind':
-                output['ty'] = d['ty']
-                output['name'] = d['name']
-                output['constrs'] = d['constrs']
-                T = parser.parse_type(thy, d['constrs'][1]['type'])
-                argsT, _ = HOLType.strip_type(T)
-                output['argsT'] = [str(tl) for tl in argsT]
-                output_data.append(output)
+    thy = copy(BasicTheory)
+    item = data['item']
+    file_data_to_output(thy, item)
+    return jsonify({'data': item})
 
-            if d['ty'] == 'def.ind':
-                output['ty'] = d['ty']
-                output['name'] = d['name']
-                output['type'] = d['type']
-                output['rules'] = []
-                for ext in exts.data:
-                    if ext.ty == extension.Extension.THEOREM:
-                        s = printer.print_term(thy, ext.th.concl, highlight=True, unicode=True)
-                        output['rules'].append(s)
-                output_data.append(output)
 
-    return jsonify({'data': output_data})
+@app.route('/api/save_file', methods=['POST'])
+def save_file():
+    json_data = json.loads(request.get_data().decode("utf-8"))
+
+    data = json_data['data']
+    name = json_data['name']
+
+    file_path = 'library/' + name + '.json'
+    with open(file_path, 'w+', encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+    return jsonify({})
 
 
 @app.route('/api/root_file', methods=['GET'])
@@ -224,14 +219,6 @@ def get_root():
         json_data = json.load(f)
         f.close()
     return jsonify(json_data)
-
-
-@app.route('/api/save_proof', methods=['PUT'])
-def save_proof_file():
-    data = json.loads(request.get_data().decode("utf-8"))
-    save_proof(data['name'], [p for p in file_data.values()], data['id'], data['proof'], data['num_gaps'])
-
-    return ''
 
 
 @app.route('/api/match_thm', methods=['POST'])
