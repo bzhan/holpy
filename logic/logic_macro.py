@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.term import Term
-from kernel.macro import MacroSig, ProofMacro
+from kernel.macro import MacroSig, ProofMacro, global_macros
 from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
@@ -171,11 +171,12 @@ class rewrite_goal_macro(ProofMacro):
         pt3 = ProofTerm.equal_elim(pt2, ProofTerm.atom(id, th))
         return pt3.export(depth)
 
-def add_logic_macros(thy):
-    thy.add_proof_macro("arg_combination", arg_combination_macro())
-    thy.add_proof_macro("fun_combination", fun_combination_macro())
-    thy.add_proof_macro("beta_norm", beta_norm_macro())
-    thy.add_proof_macro("apply_theorem", apply_theorem_macro())
-    thy.add_proof_macro("apply_theorem_for", apply_theorem_macro(with_inst=True))
-    thy.add_proof_macro("rewrite_goal", rewrite_goal_macro())
-    thy.add_proof_macro("rewrite_back_goal", rewrite_goal_macro(backward=True))
+global_macros.update({
+    "arg_combination": arg_combination_macro(),
+    "fun_combination": fun_combination_macro(),
+    "beta_norm": beta_norm_macro(),
+    "apply_theorem": apply_theorem_macro(),
+    "apply_theorem_for": apply_theorem_macro(with_inst=True),
+    "rewrite_goal": rewrite_goal_macro(),
+    "rewrite_back_goal": rewrite_goal_macro(backward=True)
+})

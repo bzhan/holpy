@@ -1,9 +1,11 @@
 # Author: Bohua Zhan
 
+from copy import copy
+
 from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
 from kernel.term import Term, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
-from kernel.macro import MacroSig, ProofMacro
+from kernel.macro import MacroSig, ProofMacro, global_macros
 from kernel.extension import Extension
 from kernel.report import ExtensionReport
 
@@ -52,6 +54,18 @@ class Theory():
     def __init__(self):
         self.data = dict()
         self.check_level = 0
+
+    def __copy__(self):
+        """Creates a shallow copy of the current theory. This is defined
+        as performing a shallow copy on all values on self.data.
+
+        """
+        res = Theory()
+        res.data = dict()
+        for name, val in self.data.items():
+            res.data[name] = copy(val)
+        res.check_level = self.check_level
+        return res
 
     def add_data_type(self, name, init = None):
         """Add a new data type.
@@ -152,6 +166,13 @@ class Theory():
             raise TypeError()
 
         self.add_data("proof_macro", name, macro)
+
+    def add_global_proof_macro(self, name):
+        """Add a macro from global_macros."""
+        if name not in global_macros:
+            raise TheoryException("Macro " + name + " not found")
+
+        self.add_proof_macro(name, global_macros[name])
 
     def has_proof_macro(self, name):
         """Whether the given name corresponds to a proof macro."""
@@ -398,6 +419,8 @@ class Theory():
                 self.extend_constant(ext)
             elif ext.ty == Extension.THEOREM:
                 self.add_theorem(ext.name, ext.th)
+            elif ext.ty == Extension.MACRO:
+                self.add_global_proof_macro(ext.name)
             else:
                 raise TypeError()
 
@@ -421,6 +444,8 @@ class Theory():
                     ext_report.add_axiom(ext.name, ext.th)
 
                 self.add_theorem(ext.name, ext.th)
+            elif ext.ty == Extension.MACRO:
+                self.add_global_proof_macro(ext.name)
             else:
                 raise TypeError()
 

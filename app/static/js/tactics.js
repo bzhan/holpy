@@ -1,22 +1,5 @@
 var edit_flag = false;
 
-// Index of lines that are read-only.
-var readonly_lines = [0];
-
-// Line number for the currently selected goal.
-// -1 for no goal selected.
-var click_line_number = -1;
-
-// Line number for the currently selected conclusion.
-// -1 for no conclusion selected.
-var ctrl_click_line_number = -1;
-
-// Currently edited line. -1 for not currently editing.
-var edit_line_number = -1;
-
-// Current proof content in all of the tabs.
-// Maintained as a dictionary. Keys are ids for the textarea.
-// Values are the corresponding proof content.
 var cells = {};
 
 // Mode for displaying proof
@@ -44,6 +27,10 @@ function get_selected_instruction_number() {
     return document.querySelector('.code-cell.selected .output #instruction-number');
 }
 
+function clear_match_thm() {
+    $('.match-thm').empty();
+}
+
 function display_running() {
     var status_output = get_selected_output();
     status_output.innerHTML = "Running";
@@ -57,9 +44,9 @@ function display_checked_proof(result) {
         status_output.innerHTML = result["failed"] + ": " + result["message"];
         status_output.style.color = 'red';
     } else {
-        edit_line_number = -1;
-        id = get_selected_id();
-        cells[id] = {};
+        edit_flag = true;
+        let id = get_selected_id();
+        cells[id].edit_line_number = -1;
         cells[id]['proof'] = result['proof'];
         display(id);
         var num_gaps = result["report"]["num_gaps"];
@@ -154,70 +141,113 @@ function introduction(cm) {
     })
 }
 
-function apply_backward_step(cm) {
+function apply_backward_step(cm, is_others = false, select_thm = -1) {
+    var match_thm_list = get_match_thm();
     var title = '';
-    if (click_line_number !== -1 && ctrl_click_line_number !== -1) {
-        title = 'Target: ' + (click_line_number + 1) + '\nConclusion: ' + (ctrl_click_line_number + 1);
-        line = cm.getLine(click_line_number);
-    } else if (click_line_number !== -1 && ctrl_click_line_number === -1) {
-        title = 'Target: ' + (click_line_number + 1);
-    } else {
-        title = 'Please enter the theorem userd';
-    }
-    swal({
-        title: title,
-        html:
-            '<input id="swal-input1" class="swal2-input">',
-        showCancelButton: true,
-        confirmButtonText: 'confirm',
-        showLoaderOnConfirm: true,
-        focusConfirm: false,
-        preConfirm: () => {
-            document.querySelector('#swal-input1').focus();
-            var id = '';
-            var theorem = '';
-            if (click_line_number !== -1 && ctrl_click_line_number !== -1) {
-                id = cells[get_selected_id()]['proof'][ctrl_click_line_number]['id'];
-                theorem = document.getElementById('swal-input1').value + ', ' + id;
-            } else if (click_line_number !== -1 && ctrl_click_line_number === -1) {
-                theorem = document.getElementById('swal-input1').value;
-            }
-            var data = {
-                'id': get_selected_id(),
-                'line_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
-                'theorem': theorem,
-            };
-            return fetch('/api/apply-backward-step', {
-                    method: 'POST', // or 'PUT'
-                    body: JSON.stringify(data),
-                    headers: {
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                    },
-                }
-            ).then(response => {
-                if (!response.ok) {
-                    throw new Error(response.statusText)
-                }
-                return response.json()
-            })
-                .catch(error => {
-                    swal.showValidationMessage(
-                        `Request failed: ${error}`
-                    )
-                })
-        },
-        allowOutsideClick:
-            () => !swal.isLoading()
-    }).then((result) => {
-        if (result) {
-            click_line_number = -1;
-            ctrl_click_line_number = -1;
-            display_checked_proof(result['value']);
+    var id = get_selected_id();
+    var click_line_number = cells[id].click_line_number;
+    var ctrl_click_line_numbers = cells[id].ctrl_click_line_numbers;
+    if (is_others)
+        match_thm_list.length = 0;
+    if (match_thm_list.length !== 0) {
+        let idx = select_thm !== -1 ? select_thm : 0;
+        let fact_id = '';
+        let theorem = '';
+        if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
+            ctrl_click_line_numbers.forEach((val) => {
+                    fact_id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
+            });
         }
-    })
+        fact_id = fact_id.slice(0, fact_id.length - 2);
+        theorem = match_thm_list[idx] + ', ' + fact_id;
+        var data = {
+            'id': get_selected_id(),
+            'line_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
+            'theorem': theorem,
+        };
+        $.ajax({
+            url: "/api/apply-backward-step",
+            type: "POST",
+            data: JSON.stringify(data),
+            success: function (result) {
+                cells[id].click_line_number = -1;
+                cells[id].ctrl_click_line_numbers.clear();
+                clear_match_thm();
+                display_checked_proof(result);
+            }
+        });
+    } else {
+        if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
+            let conclusion = '';
+            ctrl_click_line_numbers.forEach((val) => {
+                    conclusion += '' + (val + 1) + ', ';
+            });
+            conclusion = conclusion.slice(0, conclusion.length - 2);
+            title = 'Target: ' + (click_line_number + 1) + '\nConclusion: ' + conclusion;
+        } else if (click_line_number !== -1 && ctrl_click_line_numbers.size === 0) {
+            title = 'Target: ' + (click_line_number + 1);
+        } else {
+            title = 'Please enter the theorem used';
+        }
+        swal({
+            title: title,
+            html:
+                '<input id="swal-input1" class="swal2-input">',
+            showCancelButton: true,
+            confirmButtonText: 'confirm',
+            showLoaderOnConfirm: true,
+            focusConfirm: false,
+            preConfirm: () => {
+                document.querySelector('#swal-input1').focus();
+                let fact_id = '';
+                let theorem = '';
+                if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
+                    ctrl_click_line_numbers.forEach((val) => {
+                        fact_id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
+                    });
+                    fact_id = fact_id.slice(0, fact_id.length - 2);
+                    theorem = document.getElementById('swal-input1').value + ', ' + id;
+                } else if (click_line_number !== -1 && ctrl_click_line_numbers.size === 0) {
+                    theorem = document.getElementById('swal-input1').value;
+                }
+                var data = {
+                    'id': get_selected_id(),
+                    'line_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
+                    'theorem': theorem,
+                };
+                return fetch('/api/apply-backward-step', {
+                        method: 'POST', // or 'PUT'
+                        body: JSON.stringify(data),
+                        headers: {
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                        },
+                    }
+                ).then(response => {
+                    if (!response.ok) {
+                        throw new Error(response.statusText)
+                    }
+                    return response.json()
+                })
+                    .catch(error => {
+                        swal.showValidationMessage(
+                            `Request failed: ${error}`
+                        )
+                    })
+            },
+            allowOutsideClick:
+                () => !swal.isLoading()
+        }).then((result) => {
+            if (result) {
+                cells[id].click_line_number = -1;
+                cells[id].ctrl_click_line_numbers.clear();
+                clear_match_thm();
+                display_checked_proof(result['value']);
+            }
+        })
+    }
 }
 
 function apply_induction(cm) {
@@ -270,7 +300,7 @@ function rewrite_goal(cm) {
 
 function set_line(cm) {
     $(document).ready(function () {
-        var line = cm.getLine(edit_line_number);
+        var line = cm.getLine(cells[get_selected_id()].edit_line_number);
         var input = {
             'id': get_selected_id(),
             'line': line
@@ -289,55 +319,98 @@ function set_line(cm) {
     })
 }
 
+function apply_backward_step_thm(cm) {
+    var id = get_selected_id();
+    var click_line_number = cells[id].click_line_number;
+    if (click_line_number === -1) {
+        return;
+    } else {
+        match_thm();
+    }
+}
+
+function match_thm() {
+    var id = get_selected_id();
+    var click_line_number = cells[id].click_line_number;
+    var ctrl_click_line_numbers = cells[id].ctrl_click_line_numbers;
+    $(document).ready(function () {
+        var conclusion_id = [];
+        ctrl_click_line_numbers.forEach(val => {
+            conclusion_id.push(cells[get_selected_id()]['proof'][val]['id']);
+        });
+        var data = {
+            'id': get_selected_id(),
+            'target_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
+            'conclusion_id': conclusion_id
+        };
+
+        $.ajax({
+            url: "/api/match_thm",
+            type: "POST",
+            data: JSON.stringify(data),
+            success: function (result) {
+                display_match_thm(result);
+            }
+        })
+    });
+}
+
+// Print string without highlight at given line_no and ch. Return the new value of ch.
+function display_str(editor, str, line_no, ch, mark) {
+    len = str.length;
+    editor.replaceRange(str, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
+    if (typeof mark !== 'undefined') {
+        editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len}, mark);
+    }
+    return ch + len;
+}
+
+// Print string with highlight at given line_no and ch.
+// p[0] is the printed string, p[1] is the color.
+// Return the new value of ch.
+function display_highlight_str(editor, p, line_no, ch) {
+    var color;
+    if (p[1] === 0)
+        color = "color: black";
+    else if (p[1] === 1)
+        color = "color: green";
+    else if (p[1] === 2)
+        color = "color: blue";
+    return display_str(editor, p[0], line_no, ch, {css: color});
+}
+
+// Display a list of pairs with highlight
+function display_highlight_strs(editor, ps, line_no, ch) {
+    $.each(ps, function (i, p) {
+        ch = display_highlight_str(editor, p, line_no, ch);
+    })
+    return ch;
+}
+
 // Print a single line.
 function display_line(id, line_no) {
     var editor = get_selected_editor();
-    var cell = cells[id]['proof'];
-    var line = cell[line_no];
+    var line = cells[id]['proof'][line_no];
     var ch = 0;
 
     edit_flag = true;
-    var len = line['id'].length + 2;
-    editor.replaceRange(line['id'] + ': ', {line: line_no, ch: ch}, {line: line_no, ch: Number.MAX_SAFE_INTEGER});
-    editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
-        {css: 'font-weight: bold'});
-    ch = ch + len;
-    var th = line['th'];
-    if (th !== '') {
-        $.each(th, function(i, p) {
-            len = p[0].length;
-            editor.replaceRange(p[0], {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-            var color;
-            if (p[1] === 0)
-                color = "color: black";
-            else if (p[1] === 1)
-                color = "color: green";
-            else if (p[1] === 2)
-                color = "color: blue";
-            editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + len},
-                            {css: color})
-            ch = ch + len;
-        })
-        editor.replaceRange(' by ', {line: line_no, ch: ch}, {line: line_no, ch: ch + 4});
-        editor.markText({line: line_no, ch: ch}, {line: line_no, ch: ch + 4},
-                        {css: 'font-weight: bold'});
-        ch = ch + 4;
+    // Display id in bold
+    ch = display_str(editor, line.id + ': ', line_no, ch, {css: 'font-weight: bold'});
+    // Display theorem with highlight
+    if (line.th.length > 0) {
+        ch = display_highlight_strs(editor, line.th, line_no, ch);
+        ch = display_str(editor, ' by ', line_no, ch, {css: 'font-weight: bold'});
     }
-    len = line.rule.length;
-    editor.replaceRange(line.rule, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-    ch = ch + len;
-    if (line.args !== '') {
-        len = 1 + line.args.length;
-        editor.replaceRange(' ' + line.args, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-        ch = ch + len;
+    // Display rule name
+    ch = display_str(editor, line.rule, line_no, ch);
+    // Display args with highlight
+    if (line.args.length > 0) {
+        ch = display_str(editor, ' ', line_no, ch);
+        ch = display_highlight_strs(editor, line.args, line_no, ch);
     }
     if (line.prevs.length > 0) {
-        str = ' from ' + line.prevs.join(', ');
-        len = str.length;
-        editor.replaceRange(str, {line: line_no, ch: ch}, {line: line_no, ch: ch + len});
-        editor.markText({line: line_no, ch: ch + 1}, {line: line_no, ch: ch + 5},
-                        {css: 'font-weight: bold'});
-        ch = ch + len;
+        ch = display_str(editor, ' from ', line_no, ch, {css: 'font-weight: bold'});
+        ch = display_str(editor, line.prevs.join(', '), line_no, ch);
     }
     edit_flag = false;
 }
@@ -349,15 +422,40 @@ function display(id) {
     editor.setValue('');
     edit_flag = false;
     var cell = cells[id]['proof'];
-    $.each(cell, function(line_no) {
+    $.each(cell, function (line_no) {
         display_line(id, line_no);
         edit_flag = true;
         var len = editor.getLineHandle(line_no).text.length;
         editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
         edit_flag = false;
-    })
+    });
 
-    readonly_lines.length = 0;
+    cells[get_selected_id()].readonly_lines.length = 0;
     for (var i = 0; i < editor.lineCount(); i++)
-        readonly_lines.push(i);
+        cells[get_selected_id()].readonly_lines.push(i);
+}
+
+function display_match_thm(result) {
+    if ('ths' in result) {
+        $('.code-cell.selected .match-thm').append(
+            $(`<pre>Theorems: (Ctrl-B)</pre><div class="thm-content"></div>`)
+        );
+        for (var i in result['ths']) {
+            $('.code-cell.selected .thm-content').append(
+                $(`<pre>${result['ths'][i]}</pre>`)
+            );
+        }
+        $('.code-cell.selected .thm-content').append(
+            $(`<a href="#" class="backward-step">Other backward step</a>`)
+        )
+    }
+}
+
+function get_match_thm() {
+    var match_thm_list = [];
+    $('.code-cell.selected .thm-content pre').each(function () {
+            match_thm_list.push($(this).text())
+        }
+    );
+    return match_thm_list;
 }

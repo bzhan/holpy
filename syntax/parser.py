@@ -7,7 +7,7 @@ from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.macro import MacroSig
 from kernel.thm import Thm
 from kernel.proof import ProofItem
-from kernel.extension import AxType, AxConstant, Theorem, TheoryExtension
+from kernel import extension
 from logic import induct, logic
 from logic.nat import Nat
 from logic.list import List
@@ -322,28 +322,27 @@ def parse_vars(thy, vars_data):
     return ctxt
 
 def parse_extension(thy, data):
+    """Parse an extension in json format. Returns the resulting
+    extension as well as applying it to thy.
+
+    """
     if data['ty'] == 'def.ax':
         prop = parse_type(thy, data['T'])
-        thy.extend_axiom_constant(
-            AxConstant(data['name'], prop))
-        return prop
+        ext = extension.TheoryExtension()
+        ext.add_extension(extension.AxConstant(data['name'], prop))
 
     elif data['ty'] == 'thm':
         ctxt = parse_vars(thy, data['vars'])
         prop = parse_term(thy, ctxt, data['prop'])
-        thy.add_theorem(data['name'], Thm([], prop))
-        return prop
+        ext = extension.TheoryExtension()
+        ext.add_extension(extension.Theorem(data['name'], Thm([], prop)))
 
     elif data['ty'] == 'type.ind':
         constrs = []
-        list = []
         for constr in data['constrs']:
             T = parse_type(thy, constr['type'])
             constrs.append((constr['name'], T, constr['args']))
-            list.append(T)
         ext = induct.add_induct_type(data['name'], data['args'], constrs)
-        thy.unchecked_extend(ext)
-        return list
 
     elif data['ty'] == 'def.ind':
         T = parse_type(thy, data['type'])
@@ -354,9 +353,21 @@ def parse_extension(thy, data):
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
-        thy.unchecked_extend(ext)
-        return rules
+
+    elif data['ty'] == 'macro':
+        ext = extension.TheoryExtension()
+        ext.add_extension(extension.Macro(data['name']))
+
+    thy.unchecked_extend(ext)
+    return ext
 
 def parse_extensions(thy, data):
+    """Parse a list of extensions to thy in sequence. Returns the
+    resulting list of extensions.
+
+    """
+    exts = []
     for ext_data in data:
-        parse_extension(thy, ext_data)
+        exts.append(parse_extension(thy, ext_data))
+    return exts
+

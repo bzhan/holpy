@@ -23,9 +23,6 @@ def getBasicTheory():
 
     parser.parse_extensions(thy, data)
 
-    # Basic macros
-    logic_macro.add_logic_macros(thy)
-
     return thy
 
 BasicTheory = getBasicTheory()
