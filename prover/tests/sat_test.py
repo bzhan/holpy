@@ -10,11 +10,11 @@ class SATTest(unittest.TestCase):
 
         cnf2 = [[('x', False)], [('y', True)]]
         res2 = "~x & y"
-        self.assertEqual(sat.display_cnf(cnf2, res2))
+        self.assertEqual(sat.display_cnf(cnf2), res2)
 
-        cnf2 = [[('x', False), ('y', True)]]
+        cnf3 = [[('x', False), ('y', True)]]
         res3 = "~x | y"
-        self.assertEqual(sat.display_cnf(cnf3, res3))
+        self.assertEqual(sat.display_cnf(cnf3), res3)
 
     def testIsSolution(self):
         cnf = [[('x', False), ('y', True)], [('y', False), ('z', True)]]
@@ -44,3 +44,13 @@ class SATTest(unittest.TestCase):
         cnf = [[('x', True), ('y', True)], [('x', True), ('y', False)],
                [('x', False), ('y', True)], [('x', False), ('y', False)]]
         self.assertIsNone(sat.solve_cnf(cnf))
+
+    def testSolveCNF4(self):
+        cnf = [[]]
+        self.assertIsNone(sat.solve_cnf(cnf))
+        
+    def testSolveCNF5(self):
+        cnf = []
+        res = sat.solve_cnf(cnf)
+        self.assertTrue(sat.is_solution(cnf, res))
+    
