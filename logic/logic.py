@@ -15,17 +15,51 @@ def is_conj(t):
     """Whether t is of the form A & B."""
     return t.is_binop() and t.get_head() == conj
 
-def mk_conj(s, t):
-    """Construct the term s & t."""
-    return conj(s, t)
+def mk_conj(*args):
+    """Construct the term s1 & ... & sn."""
+    if args:
+        assert isinstance(args[0], Term), "mk_conj: each argument must be a term"
+        if len(args) > 1:
+            return conj(args[0], mk_conj(*args[1:]))
+        else:
+            return args[0]
+    else:
+        return true
+
+def strip_conj(t):
+    """Given term of the form s1 & ... & sn, return the list
+    [s1, ..., sn].
+
+    """
+    if is_conj(t):
+        return [t.arg1] + strip_conj(t.arg)
+    else:
+        return [t]
 
 def is_disj(t):
     """Whether t is of the form A | B."""
     return t.is_binop() and t.get_head() == disj
 
-def mk_disj(s, t):
-    """Construct the term s | t."""
-    return disj(s, t)
+def mk_disj(*args):
+    """Construct the term s1 | ... | sn."""
+    if args:
+        assert isinstance(args[0], Term), "mk_disj: each argument must be a term"
+        if len(args) > 1:
+            return disj(args[0], mk_disj(*args[1:]))
+        else:
+            return args[0]
+    else:
+        return false
+
+def strip_disj(t):
+    """Given term of the form s1 | ... | sn, return the list
+    [s1, ..., sn].
+
+    """
+    if is_disj(t):
+        return [t.arg1] + strip_disj(t.arg)
+    else:
+        return [t]
 
 def is_neg(t):
     """Whether t is of the form ~ A."""
