@@ -1,0 +1,12 @@
+[
+    {
+        "name": "p1",
+        "vars": {"p": "bool", "q": "bool"},
+        "prop": "(p --> q) = (~q --> ~p)"
+    },
+    {
+        "name": "p10",
+        "vars": {"p": "bool", "q": "bool", "r": "bool"},
+        "prop": "(q --> r) --> (r --> p & q) --> (p --> q | r) --> p = q"
+    }
+]

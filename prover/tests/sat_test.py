@@ -1,6 +1,11 @@
 import unittest
+import json
 
-from prover import sat
+from logic.basic import BasicTheory
+from syntax import parser
+from prover import encode, sat
+
+thy = BasicTheory
 
 class SATTest(unittest.TestCase):
     def testDisplayCNF(self):
@@ -44,3 +49,13 @@ class SATTest(unittest.TestCase):
         cnf = [[('x', True), ('y', True)], [('x', True), ('y', False)],
                [('x', False), ('y', True)], [('x', False), ('y', False)]]
         self.assertIsNone(sat.solve_cnf(cnf))
+
+    def testPelletier(self):
+        with open('prover/tests/pelletier.json', 'r', encoding='utf-8') as f:
+            f_data = json.load(f)
+
+        for problem in f_data:
+            ctxt = parser.parse_vars(thy, problem['vars'])
+            prop = parser.parse_term(thy ,ctxt, problem['prop'])
+            cnf, _ = encode.encode(prop)
+            self.assertIsNone(sat.solve_cnf(cnf))
