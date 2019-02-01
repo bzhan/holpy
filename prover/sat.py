@@ -20,41 +20,28 @@ def display_cnf(cnf):
     
     if len(cnf)==0:
         return('empty set')                            
-    for clause in cnf:
+    for num_c,clause in enumerate(cnf):
         L=len(clause)
         #cnf contains the empty set    
         if L==0:                                        
             return('inconsistentCNF')                            
         
         #change [('x',False)]to ~x ,change [('x',True)]to x   
-        for literal in clause:
-            if literal[1]==False:                       
-                literal_new='~'+literal[0]                      
-            elif literal[1]==True:                      
-                literal_new=literal[0]                          
-            clause[clause.index(literal)]=literal_new           
-        if L==1:
-            cnf[cnf.index(clause)]=clause[0]    
-        #turn literals to clause by adding (,|,)                     
-        elif L>=2:                                      
-            c="("+clause[0]
-            for i in range(1,L):
-                c=c+" | "+clause[i]
-            cnf[cnf.index(clause)]=c+")"                        
-        
-    if len(cnf)==1:
-        #when the cnf has only one clause,remove the brackets
-        if cnf[0][0]=='(':
-            new_cnf=cnf[0][1:len(cnf[0][0])-2]
-            return(new_cnf)                             
-        else:
-            return(cnf[0])
-        
-    elif len(cnf)>=2:
-        new_cnf=cnf[0]
-        for j in range(1,len(cnf)):
-            new_cnf=new_cnf+" & "+cnf[j]
-        return(new_cnf)
+        for num_l,(a,b) in enumerate(clause):
+            if not b:                       
+                literal='~'+a                    
+            elif b:                      
+                literal=a                         
+            clause[num_l]=literal           
+          
+        #turn literals to clause by adding (,|,)
+        cnf[num_c]=' | '.join(clause)
+        if len(cnf)==1:
+            return(cnf[num_c])
+        if L>=2:
+            cnf[num_c]='('+cnf[num_c]+')'
+
+    return(' & '.join(cnf))
 
 
 
@@ -69,23 +56,27 @@ def is_solution(cnf, inst):
     for some variable.
     
     """
-    if len(cnf)==0:
+    if len(cnf)==0:    
         return(True)
-    for clause in cnf:            
+    
+    for clause in cnf: 
+        if clause==None:
+            continue
+        
         if len(clause)==0:                               
             return(False)
             
-        for literal in clause:
+        for (a,b) in clause:
             #inst doesn't contain assignment for all variables
-            if not literal[0] in inst:                                 
+            if not a in inst:                                 
                 raise SATSolverException
-            s=0
+            val_cnf=0
             #the literal is assigned True,so the clause is satisfiable
-            if inst[literal[0]]-literal[1]==0:           
-                s=1
+            if  inst[a]-b==0:           
+                val_cnf=1
                 break
         #all literals in the clause is assigned False
-        if s==0:
+        if val_cnf==0:
             return(False)                                
     #all clause in the cnf is satisfiable
     return(True)     
@@ -95,36 +86,40 @@ def is_solution(cnf, inst):
 def bucket(cnf):
     '''create a bucket Bx for each variable x'''
     Buckets={}
-    for clause in cnf:
+    for num_c, clause in enumerate(cnf):
         for (a,b) in clause:
             if not a in Buckets:
-                Buckets[a]=[cnf.index(clause)]
+                Buckets[a]=[num_c]
             else:
-                Buckets[a].append(cnf.index(clause))
+                Buckets[a].append(num_c)
     return(Buckets)
     
 
 
-def replace(cnf,x,y):
+def replace(cnf,x,y,buc):
     """
     Replacing evering occurrence of variable x
-    x is a variable, y is True or False
+    x is a variable, y is a boolean variable
     """
-    cnf_new=[]
-    for clause in cnf:
-        if_add_clause=1
-        for (a,b) in clause:
+    for num_c in buc[x]:
+        clause_new=[]
+        if cnf[num_c]==None:
+            continue
+        
+        for num_l, (a,b) in enumerate(cnf[num_c]):
             
             #delete the cnf
-            if a==x and ((b==True and y==True)or(b==False and y==False)):
-                if_add_clause=0
+            if a==x and b==y:
+                clause_new=None
                 break
-            #delete the literal
-            elif a==x and ((b==True and y==False)or(b==False and y==True)):
-                del clause[clause.index((a,b))]
-        if if_add_clause==1:    
-            cnf_new.append(clause)
-    return(cnf_new)
+            #delete the literal assigned False
+            elif a!=x:
+                clause_new.append((a,b))
+            else:
+                break
+        cnf[num_c]=clause_new
+    
+    return(cnf)
 
 
 
@@ -139,13 +134,33 @@ def solve_cnf(cnf):
     """
     res={}
     buc=bucket(cnf)
-    
+    res_new=solve_cnf_rec(cnf,buc,res)
+    #assign the unassigned variables
+    if res_new!=None:
+        for x in buc:
+            if not x in res_new:
+                res_new[x]=True
+    return(res_new)
+ 
+def solve_cnf_rec(cnf,buc,res):    
     #empty set
     if len(cnf)==0:
         return(res)
     
+    #empty set(only has None clause)
+    is_empty_set=1
+    for clause in cnf:
+        if clause!=None:
+            is_empty_set=0
+            break
+    if is_empty_set==1:
+        return(res)
+    
+    
     #cnf contains the empty set
     for clause in cnf:
+        if clause==None:
+            continue    
         if len(clause)==0:
             return None
     
@@ -157,32 +172,37 @@ def solve_cnf(cnf):
                 if a==x:
                     res[x]=b
                     break
-            cnf_new=replace(cnf,x,res[x])            
-            if solve_cnf(cnf_new)!=None:
-                return dict(res,**solve_cnf(cnf_new))
+            cnf_new=replace(cnf,x,res[x],buc)
+            del buc[x]
+            if solve_cnf_rec(cnf_new,buc,res)!=None:
+                return dict(res,**solve_cnf_rec(cnf_new,buc,res))
             else:
                 return None
                 
     #unit resolution
     for clause in cnf:
+        if clause==None:
+            continue
         if len(clause)==1:
             #when the clause is [('x',True)],assigned x True;when the clause is [('x',False)],assigned x False;   
             res[clause[0][0]]=clause[0][1]
-            cnf_new=replace(cnf,clause[0][0],clause[0][1])
-            if solve_cnf(cnf_new)!=None:
-                return dict(res,**solve_cnf(cnf_new))
+            cnf_new=replace(cnf,clause[0][0],clause[0][1],buc)
+            del buc[clause[0][0]]
+            if solve_cnf_rec(cnf_new,buc,res)!=None:
+                return dict(res,**solve_cnf_rec(cnf_new,buc,rec))
             else:
                 return None
     
     #assume a variable's value,here we choose the first variable appears in the cnf
     m=cnf[0][0][0]
-    cnf_new1=replace(cnf,m,True)
-    cnf_new2=replace(cnf,m,False)
-    if solve_cnf(cnf_new1)!=None:
+    cnf_new1=replace(cnf,m,True,buc)
+    cnf_new2=replace(cnf,m,False,buc)
+    del buc[x]
+    if solve_cnf_rec(cnf_new1,buc,res)!=None:
         res[m]=True
-        return dict(res,**solve_cnf(cnf_new1))
-    elif solve_cnf(cnf_new2)!=None:
+        return dict(res,**solve_cnf_rec(cnf_new1,buc,res))
+    elif solve_cnf_rec(cnf_new2,buc,res)!=None:
         res[m]=False
-        return dict(res,**solve_cnf(cnf_new2))
+        return dict(res,**solve_cnf(cnf_new2,buc,res))
     else:
         return None
