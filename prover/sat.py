@@ -56,15 +56,12 @@ def is_solution(cnf, inst):
     for some variable.
     
     """
-    if len(cnf)==0:    
-        return(True)
+    if len(cnf)==0:
+        return True
     
     for clause in cnf: 
-        if clause==None:
-            continue
-        
-        if len(clause)==0:                               
-            return(False)
+        if len(clause)==0:
+            return False
             
         for (a,b) in clause:
             #inst doesn't contain assignment for all variables
@@ -72,14 +69,14 @@ def is_solution(cnf, inst):
                 raise SATSolverException
             val_cnf=0
             #the literal is assigned True,so the clause is satisfiable
-            if  inst[a]-b==0:           
-                val_cnf=1
+            if inst[a] - b == 0:           
+                val_cnf = 1
                 break
         #all literals in the clause is assigned False
-        if val_cnf==0:
-            return(False)                                
+        if val_cnf == 0:
+            return False
     #all clause in the cnf is satisfiable
-    return(True)     
+    return True
 
 
 
@@ -134,7 +131,8 @@ def solve_cnf(cnf):
     """
     res={}
     buc=bucket(cnf)
-    res_new=solve_cnf_rec(cnf,buc,res)
+    cnf2 = cnf.copy()
+    res_new=solve_cnf_rec(cnf2,buc,res)
     #assign the unassigned variables
     if res_new!=None:
         for x in buc:
