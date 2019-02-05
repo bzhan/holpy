@@ -21,7 +21,7 @@ def getBasicTheory():
     with io.open(os.path.join(script_dir, '..', 'library', 'logic_base.json'), encoding="utf-8") as a:
         data = json.load(a)
 
-    parser.parse_extensions(thy, data)
+    parser.parse_extensions(thy, data['content'])
 
     return thy
 

@@ -2,7 +2,9 @@
     var instructions = [];
     var page_num = 0;
     var index = 0;
-    var result_list = [];
+    var theory_name = "";  // Name of the current theory file
+    var theory_imports = [];  // List of imports of the current theory file
+    var result_list = [];  // Content of the current theory file
     var is_mousedown = false;
     var is_ctrl_click = false;
     var click_count = 0;
@@ -124,7 +126,11 @@
             }
             var data = {
                 'name': name,
-                'data': output_list
+                'data': {
+                    'name': theory_name,
+                    'imports': theory_imports,
+                    'content': output_list
+                }
             }
             $.ajax({
                 url: "/api/save_file",
@@ -441,7 +447,9 @@
             type: "POST",
             data: data,
             success: function (result) {
-                result_list = result['data'];
+                theory_name = result['data']['name'];
+                theory_imports = result['data']['imports'];
+                result_list = result['data']['content'];
                 display_result_list();
             }
         });

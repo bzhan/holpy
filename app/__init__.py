@@ -182,7 +182,7 @@ def json_parse():
     with open('library/'+ file_name +'.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
 
-    for data in f_data:
+    for data in f_data['content']:
         file_data_to_output(thy, data)
     return jsonify({'data': f_data})
 
