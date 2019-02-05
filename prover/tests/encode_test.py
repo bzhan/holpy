@@ -16,7 +16,7 @@ b = Var('b', hol_bool)
 c = Var('c', hol_bool)
 d = Var('d', hol_bool)
 e = Var('e', hol_bool)
-p = lambda t: printer.print_term(thy, t)
+
 
 class EncodeTest(unittest.TestCase):
     def testLogicSubterms(self):
