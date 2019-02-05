@@ -74,9 +74,9 @@ def strip_all_implies(t, names):
 class ProofState():
     """Represents proof state on the server side."""
 
-    def __init__(self):
+    def __init__(self, thy):
         """Empty proof state."""
-        self.thy = BasicTheory
+        self.thy = thy
         self.vars = []
         self.prf = Proof()
 
@@ -92,7 +92,7 @@ class ProofState():
         return lines + "\n" + str(self.prf)
 
     @staticmethod
-    def init_state(vars, assums, concl):
+    def init_state(thy, vars, assums, concl):
         """ Construct initial partial proof for the given assumptions and
         conclusion.
 
@@ -110,7 +110,7 @@ class ProofState():
         S{n+1}: A1 --> ... --> An --> C by implies_intr A1 from Sn.
 
         """
-        state = ProofState()
+        state = ProofState(thy)
 
         state.vars = vars
         state.prf = Proof(*assums)
@@ -121,14 +121,13 @@ class ProofState():
         return state
 
     @staticmethod
-    def parse_init_state(data):
+    def parse_init_state(thy, data):
         """Given data for a theorem statement, construct the initial partial proof.
         
         data['vars']: list of variables.
         data['prop']: proposition to be proved. In the form A1 --> ... --> An --> C.
 
         """
-        thy = BasicTheory
         ctxt = {}
         vars = []
         for name, str_T in data['vars'].items():
@@ -138,7 +137,7 @@ class ProofState():
         prop = parser.parse_term(thy, ctxt, data['prop'])
         assums, concl = prop.strip_implies()
 
-        return ProofState.init_state(vars, assums, concl)
+        return ProofState.init_state(thy, vars, assums, concl)
 
     @settings.with_settings
     def json_data(self):
@@ -154,11 +153,11 @@ class ProofState():
         }
 
     @staticmethod
-    def parse_proof(data):
+    def parse_proof(thy, data):
         """Obtain proof from json format."""
         thy = BasicTheory
         ctxt = {}
-        state = ProofState()
+        state = ProofState(thy)
         for name, str_T in data['vars'].items():
             T = parser.parse_type(thy, str_T)
             state.vars.append(Var(name, T))

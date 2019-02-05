@@ -307,6 +307,8 @@
             'id': get_selected_id(),
             'vars': r_data['vars'],
             'prop': r_data['prop'],
+            'theory_name': theory_name,
+            'thm_name': r_data['name']
         };
         var data = JSON.stringify(event);
         display_running();
@@ -328,6 +330,8 @@
             'id': get_selected_id(),
             'vars': r_data['vars'],
             'proof': r_data['proof'],
+            'theory_name': theory_name,
+            'thm_name': r_data['name']
         };
         var data = JSON.stringify(event);
         display_running();
@@ -426,6 +430,7 @@
             $('#thm,#term,#vars').val('');
         }
         var event = {
+            "theory_name": theory_name,
             "item": item
         };
 

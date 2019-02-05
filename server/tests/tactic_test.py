@@ -27,19 +27,19 @@ exists = logic.mk_exists
 
 class TacticTest(unittest.TestCase):
     def testInitProof(self):
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testParseInitState(self):
         state = ProofState.parse_init_state(
-            {'vars': {'A': 'bool', 'B': 'bool'}, 'prop': "A & B --> B & A"})
+            thy, {'vars': {'A': 'bool', 'B': 'bool'}, 'prop': "A & B --> B & A"})
         self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testJsonData(self):
         state = ProofState.parse_init_state(
-            {'vars': {'A': 'bool', 'B': 'bool'}, 'prop': "A & B --> B & A"})
+            thy, {'vars': {'A': 'bool', 'B': 'bool'}, 'prop': "A & B --> B & A"})
         json_data = state.json_data()
         self.assertEqual(len(json_data['vars']), 2)
         self.assertEqual(len(json_data['proof']), 3)
@@ -54,16 +54,16 @@ class TacticTest(unittest.TestCase):
                 {'id': 'S2', 'rule': 'implies_intr', 'args': 'A & B', 'prevs': ['S1'], 'th': ''}
             ]
         }
-        state = ProofState.parse_proof(data)
+        state = ProofState.parse_proof(thy, data)
         self.assertEqual(len(state.vars), 2)
         self.assertEqual(len(state.prf.items), 3)
 
     def testGetCtxt(self):
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         self.assertEqual(state.get_ctxt(), {'A':hol_bool, 'B':hol_bool})
 
     def testAddLineAfter(self):
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         
         state.add_line_after("A1")
         self.assertEqual(len(state.prf.items), 4)
@@ -71,7 +71,7 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(state.prf.items[1].rule, "")
 
     def testAddLineAfter2(self):
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
 
         state.add_line_after("S1")
         self.assertEqual(len(state.prf.items), 4)
@@ -79,7 +79,7 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(state.prf.items[2].rule, "")
 
     def testAddLineBefore(self):
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
 
         state.add_line_before("S1", 1)
         self.assertEqual(len(state.prf.items), 4)
@@ -90,55 +90,55 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testRemoveLine(self):
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         state.add_line_after("A1")
         state.remove_line("S1")
         self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testSetLine(self):
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         state.add_line_after("A1")
         state.set_line("S1", "theorem", args="conjD1")
         self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testApplyBackwardStepThms(self):
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         ths = state.apply_backward_step_thms("S1")
         self.assertEqual([name for name, _ in ths], ["conjI"])
 
     def testApplyBackwardStepThms2(self):
-        state = ProofState.init_state([A, B], [disj(A, B)], disj(B, A))
+        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
         ths = state.apply_backward_step_thms("S1", prevs=["A1"])
         self.assertEqual([name for name, _ in ths], ["disjE"])
 
     def testApplyBackwardStepThms3(self):
         """Example of two results."""
-        state = ProofState.init_state([A, B], [disj(A, B)], disj(B, A))
+        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
         ths = state.apply_backward_step_thms("S1")
         self.assertEqual([name for name, _ in ths], ["disjI1", "disjI2"])
 
     def testApplyBackwardStep(self):
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         state.apply_backward_step("S1", "conjI")
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
         self.assertEqual(len(state.rpt.gaps), 2)
 
     def testApplyBackwardStep2(self):
         """Case where one or more assumption also needs to be matched."""
-        state = ProofState.init_state([A, B], [disj(A, B)], disj(B, A))
+        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
         state.apply_backward_step("S1", "disjE", prevs=["A1"])
         self.assertEqual(state.check_proof(), Thm.mk_implies(disj(A, B), disj(B, A)))
         self.assertEqual(len(state.rpt.gaps), 2)
 
     def testIntroduction(self):
-        state = ProofState.init_state([A, B], [], imp(disj(A, B), disj(B, A)))
+        state = ProofState.init_state(thy, [A, B], [], imp(disj(A, B), disj(B, A)))
         state.introduction("S1")
         self.assertEqual(state.check_proof(), Thm.mk_implies(disj(A, B), disj(B, A)))
 
     def testIntroduction2(self):
-        state = ProofState.init_state([A, B], [], imp(A, B, conj(A, B)))
+        state = ProofState.init_state(thy, [A, B], [], imp(A, B, conj(A, B)))
         state.introduction("S1")
         self.assertEqual(state.check_proof(), Thm.mk_implies(A, B, conj(A, B)))
 
@@ -147,21 +147,21 @@ class TacticTest(unittest.TestCase):
         A = Var("A", TFun(Ta, hol_bool))
         B = Var("B", TFun(Ta, hol_bool))
         x = Var("x", Ta)
-        state = ProofState.init_state([A, B], [], Term.mk_all(x, imp(A(x), B(x))))
+        state = ProofState.init_state(thy, [A, B], [], Term.mk_all(x, imp(A(x), B(x))))
         state.introduction("S1", ["x"])
         self.assertEqual(state.check_proof(), Thm([], Term.mk_all(x, imp(A(x), B(x)))))
         self.assertEqual(len(state.prf.items), 4)
 
     def testApplyInduction(self):
         n = Var("n", Nat.nat)
-        state = ProofState.init_state([n], [], Term.mk_equals(Nat.plus(n, Nat.zero), n))
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(Nat.plus(n, Nat.zero), n))
         state.apply_induction("S1", "nat_induct", "n")
         self.assertEqual(state.check_proof(), Thm([], Term.mk_equals(Nat.plus(n, Nat.zero), n)))
         self.assertEqual(len(state.prf.items), 3)
 
     def testConjComm(self):
         """Proof of A & B --> B & A."""
-        state = ProofState.init_state([A, B], [conj(A, B)], conj(B, A))
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         state.apply_backward_step("S1", "conjI")
         state.set_line("S1", "apply_theorem", args="conjD2", prevs=["A1"])
         state.set_line("S2", "apply_theorem", args="conjD1", prevs=["A1"])
@@ -169,7 +169,7 @@ class TacticTest(unittest.TestCase):
 
     def testDisjComm(self):
         """Proof of A | B --> B | A."""
-        state = ProofState.init_state([A, B], [disj(A, B)], disj(B, A))
+        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
         state.apply_backward_step("S1", "disjE", prevs=["A1"])
         state.introduction("S1")
         state.apply_backward_step("S2", "disjI2", prevs=["S1"])
@@ -179,7 +179,7 @@ class TacticTest(unittest.TestCase):
 
     def testDoubleNegInv(self):
         """Proof of ~~A --> A."""
-        state = ProofState.init_state([A], [neg(neg(A))], A)
+        state = ProofState.init_state(thy, [A], [neg(neg(A))], A)
         state.add_line_after("A1")
         state.set_line("S1", "theorem", args="classical")
         state.apply_backward_step("S2", "disjE", prevs=["S1"])
@@ -197,7 +197,7 @@ class TacticTest(unittest.TestCase):
         x = Var("x", Ta)
         ex_conj = exists(x,conj(A(x),B(x)))
         conj_ex = conj(exists(x,A(x)),exists(x,B(x)))
-        state = ProofState.init_state([A, B], [ex_conj], conj_ex)
+        state = ProofState.init_state(thy, [A, B], [ex_conj], conj_ex)
         state.apply_backward_step("S1", "conjI")
         state.apply_backward_step("S1", "exE", prevs=["A1"])
         state.introduction("S1", "x")
@@ -214,7 +214,7 @@ class TacticTest(unittest.TestCase):
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
         n = Var("n", Nat.nat)
-        state = ProofState.init_state([n], [], Term.mk_equals(Nat.plus(n, Nat.zero), n))
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(Nat.plus(n, Nat.zero), n))
         state.apply_induction("S1", "nat_induct", "n")
         state.rewrite_goal("S1", "plus_def_1")
         state.set_line("S1", "reflexive", args=Nat.zero)
@@ -226,7 +226,7 @@ class TacticTest(unittest.TestCase):
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
         n = Var("n", Nat.nat)
-        state = ProofState.init_state([n], [], Term.mk_equals(Nat.times(n, Nat.zero), Nat.zero))
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(Nat.times(n, Nat.zero), Nat.zero))
         state.apply_induction("S1", "nat_induct", "n")
         state.rewrite_goal("S1", "times_def_1")
         state.set_line("S1", "reflexive", args=Nat.zero)

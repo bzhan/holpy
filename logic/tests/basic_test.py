@@ -29,6 +29,13 @@ class BasicTest(unittest.TestCase):
         self.assertRaises(TheoryException, thy1.get_theorem, 'conj_comm')
         self.assertIsInstance(thy2.get_theorem('conj_comm'), Thm)
 
+    def testLoadTheoryWithLimit(self):
+        thy = basic.loadTheory('logic_base')
+        thy1 = basic.loadTheory('logic_base', limit=('thm', 'conjD1'))
+        self.assertEqual(thy.get_theorem('conjI'), thy1.get_theorem('conjI'))
+        self.assertRaises(TheoryException, thy1.get_theorem, 'conjD1')
+        self.assertRaises(AssertionError, basic.loadTheory, 'logic_base', limit=('thm', 'conj'))
+
     def testArgCombination(self):
         th = Thm.mk_equals(x,y)
         res = Thm.mk_equals(f(x),f(y))
