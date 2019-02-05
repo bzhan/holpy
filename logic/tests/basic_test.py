@@ -7,7 +7,7 @@ from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
-from kernel.theory import Theory
+from kernel.theory import Theory, TheoryException
 import logic.basic as basic
 from logic import logic
 from logic.nat import Nat
@@ -21,6 +21,14 @@ f = Var("f", TFun(Ta,Ta))
 g = Var("g", TFun(Ta,Ta))
 
 class BasicTest(unittest.TestCase):
+    def testLoadTheory(self):
+        thy1 = basic.loadTheory('logic_base')
+        thy2 = basic.loadTheory('logic')
+
+        self.assertEqual(thy1.get_theorem('conjI'), thy2.get_theorem('conjI'))
+        self.assertRaises(TheoryException, thy1.get_theorem, 'conj_comm')
+        self.assertIsInstance(thy2.get_theorem('conj_comm'), Thm)
+
     def testArgCombination(self):
         th = Thm.mk_equals(x,y)
         res = Thm.mk_equals(f(x),f(y))
