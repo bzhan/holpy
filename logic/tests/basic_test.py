@@ -112,7 +112,7 @@ class BasicTest(unittest.TestCase):
         thy.check_level = 0
 
     def testRewriteGoal(self):
-        thy = basic.BasicTheory
+        thy = basic.NatTheory
 
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
@@ -418,7 +418,7 @@ class BasicTest(unittest.TestCase):
 
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
-        thy = basic.BasicTheory
+        thy = basic.NatTheory
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         prf = Proof()
@@ -441,7 +441,7 @@ class BasicTest(unittest.TestCase):
 
     def testAddZeroRightWithMacro(self):
         """Proof of n + 0 = n by induction, using macros."""
-        thy = basic.BasicTheory
+        thy = basic.NatTheory
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         plus = Nat.plus
@@ -461,7 +461,7 @@ class BasicTest(unittest.TestCase):
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
-        thy = basic.BasicTheory
+        thy = basic.NatTheory
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         prf = Proof()
@@ -486,7 +486,7 @@ class BasicTest(unittest.TestCase):
 
     def testMultZeroRightWithMacro(self):
         """Proof of n * 0 = 0 by induction, using macros."""
-        thy = basic.BasicTheory
+        thy = basic.NatTheory
         n = Var("n", Nat.nat)
         eq = Term.mk_equals
         zero = Nat.zero
