@@ -38,51 +38,6 @@
         },
         {
             "name": "conjI",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "A",
-                    "id": "A1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "A ⊢ A"
-                },
-                {
-                    "args": "B",
-                    "id": "A2",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "B ⊢ B"
-                },
-                {
-                    "args": "conjI, {A: A, B: B}",
-                    "id": "S1",
-                    "prevs": [
-                        "A1",
-                        "A2"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A, B ⊢ A ∧ B"
-                },
-                {
-                    "args": "B",
-                    "id": "S2",
-                    "prevs": [
-                        "S1"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "A ⊢ B ⟶ A ∧ B"
-                },
-                {
-                    "args": "A",
-                    "id": "S3",
-                    "prevs": [
-                        "S2"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "⊢ A ⟶ B ⟶ A ∧ B"
-                }
-            ],
             "prop": "A --> B --> A & B",
             "ty": "thm",
             "vars": {
@@ -92,32 +47,6 @@
         },
         {
             "name": "conjD1",
-            "num_gaps": 1,
-            "proof": [
-                {
-                    "args": "A ∧ B",
-                    "id": "A1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "A ∧ B ⊢ A ∧ B"
-                },
-                {
-                    "args": "",
-                    "id": "S1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "A ∧ B ⊢ A"
-                },
-                {
-                    "args": "A ∧ B",
-                    "id": "S2",
-                    "prevs": [
-                        "S1"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "⊢ A ∧ B ⟶ A"
-                }
-            ],
             "prop": "A & B --> A",
             "ty": "thm",
             "vars": {
@@ -127,34 +56,6 @@
         },
         {
             "name": "conjD2",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "A ∧ B",
-                    "id": "A1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "A ∧ B ⊢ A ∧ B"
-                },
-                {
-                    "args": "conjD2, {B: B}",
-                    "id": "S1",
-                    "prevs": [
-                        "A1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∧ B ⊢ B"
-                },
-                {
-                    "args": "A ∧ B",
-                    "id": "S2",
-                    "prevs": [
-                        "S1"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "⊢ A ∧ B ⟶ B"
-                }
-            ],
             "prop": "A & B --> B",
             "ty": "thm",
             "vars": {
@@ -274,129 +175,6 @@
         {
             "name": "rewrite_back_goal",
             "ty": "macro"
-        },
-        {
-            "args": [],
-            "constrs": [
-                {
-                    "args": [],
-                    "name": "zero",
-                    "type": "nat"
-                },
-                {
-                    "args": [
-                        "n"
-                    ],
-                    "name": "Suc",
-                    "type": "nat => nat"
-                }
-            ],
-            "name": "nat",
-            "ty": "type.ind"
-        },
-        {
-            "ascii_op": "+",
-            "name": "plus",
-            "rules": [
-                {
-                    "prop": "0 + n = n",
-                    "vars": {
-                        "n": "nat"
-                    }
-                },
-                {
-                    "prop": "Suc m + n = Suc (m + n)",
-                    "vars": {
-                        "m": "nat",
-                        "n": "nat"
-                    }
-                }
-            ],
-            "ty": "def.ind",
-            "type": "nat => nat => nat"
-        },
-        {
-            "ascii_op": "*",
-            "name": "times",
-            "rules": [
-                {
-                    "prop": "0 * n = 0",
-                    "vars": {
-                        "n": "nat"
-                    }
-                },
-                {
-                    "prop": "Suc m * n = n + m * n",
-                    "vars": {
-                        "m": "nat",
-                        "n": "nat"
-                    }
-                }
-            ],
-            "ty": "def.ind",
-            "type": "nat => nat => nat"
-        },
-        {
-            "args": [
-                "a"
-            ],
-            "constrs": [
-                {
-                    "args": [],
-                    "name": "nil",
-                    "type": "'a list"
-                },
-                {
-                    "args": [
-                        "x",
-                        "xs"
-                    ],
-                    "name": "cons",
-                    "type": "'a => 'a list => 'a list"
-                }
-            ],
-            "name": "list",
-            "ty": "type.ind"
-        },
-        {
-            "ascii_op": "@",
-            "name": "append",
-            "rules": [
-                {
-                    "prop": "nil @ xs = xs",
-                    "vars": {
-                        "xs": "'a list"
-                    }
-                },
-                {
-                    "prop": "cons x xs @ ys = cons x (xs @ ys)",
-                    "vars": {
-                        "x": "'a",
-                        "xs": "'a list",
-                        "ys": "'a list"
-                    }
-                }
-            ],
-            "ty": "def.ind",
-            "type": "'a list => 'a list => 'a list"
-        },
-        {
-            "name": "rev",
-            "rules": [
-                {
-                    "prop": "rev nil = nil",
-                    "vars": {}
-                },
-                {
-                    "prop": "rev (cons x xs) = rev xs @ cons x nil",
-                    "vars": {
-                        "x": "'a",
-                        "xs": "'a list"
-                    }
-                }
-            ],
-            "ty": "def.ind",
-            "type": "'a list => 'a list"
         }
     ],
     "imports": [],

@@ -1,0 +1,188 @@
+{
+    "content": [
+        {
+            "args": [
+                "a"
+            ],
+            "constrs": [
+                {
+                    "args": [],
+                    "name": "nil",
+                    "type": "'a list"
+                },
+                {
+                    "args": [
+                        "x",
+                        "xs"
+                    ],
+                    "name": "cons",
+                    "type": "'a => 'a list => 'a list"
+                }
+            ],
+            "name": "list",
+            "ty": "type.ind"
+        },
+        {
+            "ascii_op": "@",
+            "name": "append",
+            "rules": [
+                {
+                    "prop": "nil @ xs = xs",
+                    "vars": {
+                        "xs": "'a list"
+                    }
+                },
+                {
+                    "prop": "cons x xs @ ys = cons x (xs @ ys)",
+                    "vars": {
+                        "x": "'a",
+                        "xs": "'a list",
+                        "ys": "'a list"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a list => 'a list => 'a list"
+        },
+        {
+            "name": "rev",
+            "rules": [
+                {
+                    "prop": "rev nil = nil",
+                    "vars": {}
+                },
+                {
+                    "prop": "rev (cons x xs) = rev xs @ cons x nil",
+                    "vars": {
+                        "x": "'a",
+                        "xs": "'a list"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a list => 'a list"
+        },
+        {
+            "instructions": [
+                "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
+                "Select S1 as goal, use Ctrl+R with append_def_1.",
+                "Set sorry on S1 to reflexive nil.",
+                "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
+                "Select S4 as goal, use Ctrl+R with append_def_2.",
+                "Set sorry on S4 to arg_combination cons x from S3."
+            ],
+            "name": "list.append_right_neutral",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nil",
+                    "id": "S1",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ nil = nil"
+                },
+                {
+                    "args": "append_def_1, nil @ nil = nil",
+                    "id": "S2",
+                    "prevs": [
+                        "S1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ nil @ nil = nil"
+                },
+                {
+                    "args": "xs @ nil = xs",
+                    "id": "S3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "xs @ nil = xs ⊢ xs @ nil = xs"
+                },
+                {
+                    "args": "cons x",
+                    "id": "S4",
+                    "prevs": [
+                        "S3"
+                    ],
+                    "rule": "arg_combination",
+                    "th": "xs @ nil = xs ⊢ cons x (xs @ nil) = cons x xs"
+                },
+                {
+                    "args": "append_def_2, cons x xs @ nil = cons x xs",
+                    "id": "S5",
+                    "prevs": [
+                        "S4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "xs @ nil = xs ⊢ cons x xs @ nil = cons x xs"
+                },
+                {
+                    "args": "xs @ nil = xs",
+                    "id": "S6",
+                    "prevs": [
+                        "S5"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ xs @ nil = xs ⟶ cons x xs @ nil = cons x xs"
+                },
+                {
+                    "args": "xs",
+                    "id": "S7",
+                    "prevs": [
+                        "S6"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "⊢ ∀xs::'a list. xs @ nil = xs ⟶ cons x xs @ nil = cons x xs"
+                },
+                {
+                    "args": "x",
+                    "id": "S8",
+                    "prevs": [
+                        "S7"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "⊢ ∀x::'a. ∀xs::'a list. xs @ nil = xs ⟶ cons x xs @ nil = cons x xs"
+                },
+                {
+                    "args": "list_induct, {P: λxs::'a list. xs @ nil = xs, x: xs}",
+                    "id": "S9",
+                    "prevs": [
+                        "S2",
+                        "S8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ xs @ nil = xs"
+                }
+            ],
+            "prop": "xs @ nil = xs",
+            "ty": "thm",
+            "vars": {
+                "x": "'a",
+                "xs": "'a list"
+            }
+        },
+        {
+            "instructions": [
+                "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
+                "Select S1 as goal, use Ctrl+R with append_def_1.",
+                "Set sorry on S1 to reflexive ys @ zs.",
+                "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
+                "Select S4 as goal, use Ctrl+R with append_def_2.",
+                "Select S4 as goal, use Ctrl+R with append_def_2.",
+                "Set sorry on S4 to arg_combination cons x from S3."
+            ],
+            "name": "list.append_assoc",
+            "prop": "(xs @ ys) @ zs = xs @ ys @ zs",
+            "ty": "thm",
+            "vars": {
+                "x": "'a",
+                "xs": "'a list",
+                "ys": "'a list",
+                "zs": "'a list"
+            }
+        }
+    ],
+    "imports": [
+        "nat"
+    ],
+    "name": "list"
+}
