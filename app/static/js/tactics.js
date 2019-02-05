@@ -159,7 +159,10 @@ function apply_backward_step(cm, is_others = false, select_thm = -1) {
             });
         }
         fact_id = fact_id.slice(0, fact_id.length - 2);
-        theorem = match_thm_list[idx] + ', ' + fact_id;
+        theorem = match_thm_list[idx];
+        if (fact_id !== "") {
+            theorem += ', ' + fact_id;
+        }
         var data = {
             'id': get_selected_id(),
             'line_id': cells[get_selected_id()]['proof'][click_line_number]['id'],

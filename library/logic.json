@@ -7,7 +7,7 @@
                 "Select S2 as goal and A1 as fact, use Ctrl+B with conjD1."
             ],
             "name": "conj_comm",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "A ∧ B",
@@ -17,17 +17,38 @@
                     "th": "A ∧ B ⊢ A ∧ B"
                 },
                 {
-                    "args": "",
+                    "args": "conjD2, {A: A, B: B}",
                     "id": "S1",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "A1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ∧ B ⊢ B"
+                },
+                {
+                    "args": "conjD1, {A: A, B: B}",
+                    "id": "S2",
+                    "prevs": [
+                        "A1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ∧ B ⊢ A"
+                },
+                {
+                    "args": "conjI, {A: B, B: A}",
+                    "id": "S3",
+                    "prevs": [
+                        "S1",
+                        "S2"
+                    ],
+                    "rule": "apply_theorem_for",
                     "th": "A ∧ B ⊢ B ∧ A"
                 },
                 {
                     "args": "A ∧ B",
-                    "id": "S2",
+                    "id": "S4",
                     "prevs": [
-                        "S1"
+                        "S3"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ A ∧ B ⟶ B ∧ A"
@@ -49,7 +70,7 @@
                 "Select S5 as goal and S4 as fact, use Ctrl+B with disjI1."
             ],
             "name": "disj_comm",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "A ∨ B",
@@ -59,35 +80,71 @@
                     "th": "A ∨ B ⊢ A ∨ B"
                 },
                 {
-                    "args": "",
+                    "args": "A",
                     "id": "S1",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "disjI2, {A: B, B: A}",
+                    "id": "S2",
+                    "prevs": [
+                        "S1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ⊢ B ∨ A"
+                },
+                {
+                    "args": "A",
+                    "id": "S3",
+                    "prevs": [
+                        "S2"
+                    ],
+                    "rule": "implies_intr",
                     "th": "A ∨ B ⊢ A ⟶ B ∨ A"
                 },
                 {
-                    "args": "",
-                    "id": "S2",
+                    "args": "B",
+                    "id": "S4",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "assume",
+                    "th": "B ⊢ B"
+                },
+                {
+                    "args": "disjI1, {A: B, B: A}",
+                    "id": "S5",
+                    "prevs": [
+                        "S4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "B ⊢ B ∨ A"
+                },
+                {
+                    "args": "B",
+                    "id": "S6",
+                    "prevs": [
+                        "S5"
+                    ],
+                    "rule": "implies_intr",
                     "th": "A ∨ B ⊢ B ⟶ B ∨ A"
                 },
                 {
                     "args": "disjE, {A: A, B: B, C: B ∨ A}",
-                    "id": "S3",
+                    "id": "S7",
                     "prevs": [
                         "A1",
-                        "S1",
-                        "S2"
+                        "S3",
+                        "S6"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "A ∨ B ⊢ B ∨ A"
                 },
                 {
                     "args": "A ∨ B",
-                    "id": "S4",
+                    "id": "S8",
                     "prevs": [
-                        "S3"
+                        "S7"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ A ∨ B ⟶ B ∨ A"
