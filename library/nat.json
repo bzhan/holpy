@@ -70,83 +70,38 @@
                 "Select S4 as goal, use Ctrl+R with plus_def_2.",
                 "Set sorry on S4 to arg_combination Suc from S3."
             ],
-            "name": "nat.add_0_right",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "0",
-                    "id": "S1",
-                    "prevs": [],
-                    "rule": "reflexive",
-                    "th": "⊢ 0 = 0"
-                },
-                {
-                    "args": "plus_def_1, 0 + 0 = 0",
-                    "id": "S2",
-                    "prevs": [
-                        "S1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 0 + 0 = 0"
-                },
-                {
-                    "args": "n + 0 = n",
-                    "id": "S3",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "n + 0 = n ⊢ n + 0 = n"
-                },
-                {
-                    "args": "Suc",
-                    "id": "S4",
-                    "prevs": [
-                        "S3"
-                    ],
-                    "rule": "arg_combination",
-                    "th": "n + 0 = n ⊢ Suc (n + 0) = Suc n"
-                },
-                {
-                    "args": "plus_def_2, Suc n + 0 = Suc n",
-                    "id": "S5",
-                    "prevs": [
-                        "S4"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "n + 0 = n ⊢ Suc n + 0 = Suc n"
-                },
-                {
-                    "args": "n + 0 = n",
-                    "id": "S6",
-                    "prevs": [
-                        "S5"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "⊢ n + 0 = n ⟶ Suc n + 0 = Suc n"
-                },
-                {
-                    "args": "n",
-                    "id": "S7",
-                    "prevs": [
-                        "S6"
-                    ],
-                    "rule": "forall_intr",
-                    "th": "⊢ ∀n::nat. n + 0 = n ⟶ Suc n + 0 = Suc n"
-                },
-                {
-                    "args": "nat_induct, {P: λn::nat. n + 0 = n, x: n}",
-                    "id": "S8",
-                    "prevs": [
-                        "S2",
-                        "S7"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ n + 0 = n"
-                }
-            ],
-            "prop": "n + 0 = n",
+            "name": "add_0_right",
+            "prop": "x + 0 = x",
             "ty": "thm",
             "vars": {
-                "n": "nat"
+                "x": "nat"
+            }
+        },
+        {
+            "name": "add_1_right",
+            "prop": "Suc x = x + Suc 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "add_comm",
+            "prop": "x + y = y + x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_assoc",
+            "prop": "x + y + z = x + (y + z)",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
             }
         },
         {
@@ -158,21 +113,123 @@
                 "Select S4 as goal, use Ctrl+R with times_def_2.",
                 "Select S4 as goal, use Ctrl+R with plus_def_1"
             ],
-            "name": "nat.mult_0_right",
-            "num_gaps": 1,
-            "proof": [
-                {
-                    "args": "",
-                    "id": "S1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "⊢ n * 0 = 0"
-                }
-            ],
-            "prop": "n * 0 = 0",
+            "name": "mult_0_right",
+            "prop": "x * 0 = 0",
             "ty": "thm",
             "vars": {
-                "n": "nat"
+                "x": "nat"
+            }
+        },
+        {
+            "name": "mult_1_right",
+            "prop": "x * Suc 0 = x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "distrib_l",
+            "prop": "x * (y + z) = x * z + y * z",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "distrib_r",
+            "prop": "(x + y) * z = x * z + y * z",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "mult_assoc",
+            "prop": "x * y * z = x * (y * z)",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "mult_Suc_right",
+            "prop": "x * Suc y = x + x * y",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "mult_comm",
+            "prop": "x * y = y * x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_cancel_left",
+            "prop": "x + y = x + z --> y = z",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "add_cancel_right",
+            "prop": "x + z = y + z --> x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "add_right_eq_zero",
+            "prop": "x + y = x --> y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_left_eq_zero",
+            "prop": "x + y = y --> x = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_is_zero",
+            "prop": "x + y = 0 --> x = 0 & y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "mult_nonzero",
+            "prop": "x * y = 0 --> x = 0 | y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
             }
         }
     ],

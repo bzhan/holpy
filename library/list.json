@@ -23,6 +23,24 @@
             "ty": "type.ind"
         },
         {
+            "name": "length",
+            "rules": [
+                {
+                    "prop": "length nil = 0",
+                    "vars": {}
+                },
+                {
+                    "prop": "length (cons x xs) = Suc (length xs)",
+                    "vars": {
+                        "x": "'a",
+                        "xs": "'a list"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a list => nat"
+        },
+        {
             "ascii_op": "@",
             "name": "append",
             "rules": [
@@ -71,7 +89,7 @@
                 "Select S4 as goal, use Ctrl+R with append_def_2.",
                 "Set sorry on S4 to arg_combination cons x from S3."
             ],
-            "name": "list.append_right_neutral",
+            "name": "append_right_neutral",
             "num_gaps": 0,
             "proof": [
                 {
@@ -170,7 +188,7 @@
                 "Select S4 as goal, use Ctrl+R with append_def_2.",
                 "Set sorry on S4 to arg_combination cons x from S3."
             ],
-            "name": "list.append_assoc",
+            "name": "append_assoc",
             "prop": "(xs @ ys) @ zs = xs @ ys @ zs",
             "ty": "thm",
             "vars": {
@@ -178,6 +196,40 @@
                 "xs": "'a list",
                 "ys": "'a list",
                 "zs": "'a list"
+            }
+        },
+        {
+            "name": "length_append",
+            "prop": "length (xs @ ys) = length xs + length ys",
+            "ty": "thm",
+            "vars": {
+                "xs": "'a list",
+                "ys": "'a list"
+            }
+        },
+        {
+            "name": "rev_append",
+            "prop": "rev (xs @ ys) = rev ys @ rev xs",
+            "ty": "thm",
+            "vars": {
+                "xs": "'a list",
+                "ys": "'a list"
+            }
+        },
+        {
+            "name": "rev_rev",
+            "prop": "rev (rev xs) = xs",
+            "ty": "thm",
+            "vars": {
+                "xs": "'a list"
+            }
+        },
+        {
+            "name": "rev_length",
+            "prop": "length (rev xs) = length xs",
+            "ty": "thm",
+            "vars": {
+                "xs": "'a list"
             }
         }
     ],
