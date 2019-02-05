@@ -1,51 +1,44 @@
 {
-    "name": "logic_base",
-    "imports": [],
     "content": [
         {
-            "ty": "def.ax",
-            "name": "conj",
             "T": "bool => bool => bool",
             "ascii_op": "&",
+            "name": "conj",
+            "ty": "def.ax",
             "unicode_op": "∧"
         },
         {
-            "ty": "def.ax",
-            "name": "disj",
             "T": "bool => bool => bool",
             "ascii_op": "|",
+            "name": "disj",
+            "ty": "def.ax",
             "unicode_op": "∨"
         },
         {
-            "ty": "def.ax",
-            "name": "neg",
             "T": "bool => bool",
             "ascii_op": "~",
+            "name": "neg",
+            "ty": "def.ax",
             "unicode_op": "¬"
         },
         {
-            "ty": "def.ax",
+            "T": "bool",
             "name": "true",
-            "T": "bool"
+            "ty": "def.ax"
         },
         {
-            "ty": "def.ax",
+            "T": "bool",
             "name": "false",
-            "T": "bool"
+            "ty": "def.ax"
         },
         {
-            "ty": "def.ax",
+            "T": "('a => bool) => bool",
             "name": "exists",
-            "T": "('a => bool) => bool"
+            "ty": "def.ax"
         },
         {
-            "ty": "thm",
             "name": "conjI",
-            "vars": {
-                "A": "bool",
-                "B": "bool"
-            },
-            "prop": "A --> B --> A & B",
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "A",
@@ -90,16 +83,16 @@
                     "th": "⊢ A ⟶ B ⟶ A ∧ B"
                 }
             ],
-            "num_gaps": 0
-        },
-        {
+            "prop": "A --> B --> A & B",
             "ty": "thm",
-            "name": "conjD1",
             "vars": {
                 "A": "bool",
                 "B": "bool"
-            },
-            "prop": "A & B --> A",
+            }
+        },
+        {
+            "name": "conjD1",
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "A ∧ B",
@@ -125,16 +118,16 @@
                     "th": "⊢ A ∧ B ⟶ A"
                 }
             ],
-            "num_gaps": 1
-        },
-        {
+            "prop": "A & B --> A",
             "ty": "thm",
-            "name": "conjD2",
             "vars": {
                 "A": "bool",
                 "B": "bool"
-            },
-            "prop": "A & B --> B",
+            }
+        },
+        {
+            "name": "conjD2",
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "A ∧ B",
@@ -162,243 +155,250 @@
                     "th": "⊢ A ∧ B ⟶ B"
                 }
             ],
-            "num_gaps": 0
+            "prop": "A & B --> B",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
         },
         {
-            "ty": "thm",
             "name": "disjI1",
+            "prop": "A --> A | B",
+            "ty": "thm",
             "vars": {
                 "A": "bool",
                 "B": "bool"
-            },
-            "prop": "A --> A | B"
+            }
         },
         {
-            "ty": "thm",
             "name": "disjI2",
+            "prop": "B --> A | B",
+            "ty": "thm",
             "vars": {
                 "A": "bool",
                 "B": "bool"
-            },
-            "prop": "B --> A | B"
+            }
         },
         {
-            "ty": "thm",
             "name": "disjE",
+            "prop": "A | B --> (A --> C) --> (B --> C) --> C",
+            "ty": "thm",
             "vars": {
                 "A": "bool",
                 "B": "bool",
                 "C": "bool"
-            },
-            "prop": "A | B --> (A --> C) --> (B --> C) --> C"
+            }
         },
         {
-            "ty": "thm",
             "name": "negI",
+            "prop": "(A --> false) --> ~A",
+            "ty": "thm",
             "vars": {
                 "A": "bool"
-            },
-            "prop": "(A --> false) --> ~A"
+            }
         },
         {
-            "ty": "thm",
             "name": "negE",
+            "prop": "~A --> A --> false",
+            "ty": "thm",
             "vars": {
                 "A": "bool"
-            },
-            "prop": "~A --> A --> false"
+            }
         },
         {
-            "ty": "thm",
             "name": "trueI",
-            "vars": {},
-            "prop": "true"
+            "prop": "true",
+            "ty": "thm",
+            "vars": {}
         },
         {
-            "ty": "thm",
             "name": "falseE",
+            "prop": "false --> A",
+            "ty": "thm",
             "vars": {
                 "A": "bool"
-            },
-            "prop": "false --> A"
+            }
         },
         {
-            "ty": "thm",
             "name": "exI",
+            "prop": "P a --> ?a::'a. P a",
+            "ty": "thm",
             "vars": {
                 "P": "'a => bool",
                 "a": "'a"
-            },
-            "prop": "P a --> ?a::'a. P a"
+            }
         },
         {
-            "ty": "thm",
             "name": "exE",
+            "prop": "(?a::'a. P a) --> (!a::'a. P a --> C) --> C",
+            "ty": "thm",
             "vars": {
+                "C": "bool",
                 "P": "'a => bool",
-                "a": "'a",
-                "C": "bool"
-            },
-            "prop": "(?a::'a. P a) --> (!a::'a. P a --> C) --> C"
+                "a": "'a"
+            }
         },
         {
-            "ty": "thm",
             "name": "classical",
+            "prop": "A | ~A",
+            "ty": "thm",
             "vars": {
                 "A": "bool"
-            },
-            "prop": "A | ~A"
+            }
         },
         {
-            "ty": "macro",
-            "name": "arg_combination"
+            "name": "arg_combination",
+            "ty": "macro"
         },
         {
-            "ty": "macro",
-            "name": "fun_combination"
+            "name": "fun_combination",
+            "ty": "macro"
         },
         {
-            "ty": "macro",
-            "name": "beta_norm"
+            "name": "beta_norm",
+            "ty": "macro"
         },
         {
-            "ty": "macro",
-            "name": "apply_theorem"
+            "name": "apply_theorem",
+            "ty": "macro"
         },
         {
-            "ty": "macro",
-            "name": "apply_theorem_for"
+            "name": "apply_theorem_for",
+            "ty": "macro"
         },
         {
-            "ty": "macro",
-            "name": "rewrite_goal"
+            "name": "rewrite_goal",
+            "ty": "macro"
         },
         {
-            "ty": "macro",
-            "name": "rewrite_back_goal"
+            "name": "rewrite_back_goal",
+            "ty": "macro"
         },
         {
-            "ty": "type.ind",
-            "name": "nat",
             "args": [],
             "constrs": [
                 {
+                    "args": [],
                     "name": "zero",
-                    "type": "nat",
-                    "args": []
+                    "type": "nat"
                 },
                 {
-                    "name": "Suc",
-                    "type": "nat => nat",
                     "args": [
                         "n"
-                    ]
+                    ],
+                    "name": "Suc",
+                    "type": "nat => nat"
                 }
-            ]
+            ],
+            "name": "nat",
+            "ty": "type.ind"
         },
         {
-            "ty": "def.ind",
-            "name": "plus",
-            "type": "nat => nat => nat",
             "ascii_op": "+",
+            "name": "plus",
             "rules": [
                 {
+                    "prop": "0 + n = n",
                     "vars": {
                         "n": "nat"
-                    },
-                    "prop": "0 + n = n"
+                    }
                 },
                 {
+                    "prop": "Suc m + n = Suc (m + n)",
                     "vars": {
                         "m": "nat",
                         "n": "nat"
-                    },
-                    "prop": "Suc m + n = Suc (m + n)"
+                    }
                 }
-            ]
-        },
-        {
+            ],
             "ty": "def.ind",
-            "name": "times",
-            "type": "nat => nat => nat",
+            "type": "nat => nat => nat"
+        },
+        {
             "ascii_op": "*",
+            "name": "times",
             "rules": [
                 {
+                    "prop": "0 * n = 0",
                     "vars": {
                         "n": "nat"
-                    },
-                    "prop": "0 * n = 0"
+                    }
                 },
                 {
+                    "prop": "Suc m * n = n + m * n",
                     "vars": {
                         "m": "nat",
                         "n": "nat"
-                    },
-                    "prop": "Suc m * n = n + m * n"
+                    }
                 }
-            ]
+            ],
+            "ty": "def.ind",
+            "type": "nat => nat => nat"
         },
         {
-            "ty": "type.ind",
-            "name": "list",
             "args": [
                 "a"
             ],
             "constrs": [
                 {
+                    "args": [],
                     "name": "nil",
-                    "type": "'a list",
-                    "args": []
+                    "type": "'a list"
                 },
                 {
-                    "name": "cons",
-                    "type": "'a => 'a list => 'a list",
                     "args": [
                         "x",
                         "xs"
-                    ]
+                    ],
+                    "name": "cons",
+                    "type": "'a => 'a list => 'a list"
                 }
-            ]
+            ],
+            "name": "list",
+            "ty": "type.ind"
         },
         {
-            "ty": "def.ind",
-            "name": "append",
-            "type": "'a list => 'a list => 'a list",
             "ascii_op": "@",
+            "name": "append",
             "rules": [
                 {
+                    "prop": "nil @ xs = xs",
                     "vars": {
                         "xs": "'a list"
-                    },
-                    "prop": "nil @ xs = xs"
+                    }
                 },
                 {
+                    "prop": "cons x xs @ ys = cons x (xs @ ys)",
                     "vars": {
                         "x": "'a",
                         "xs": "'a list",
                         "ys": "'a list"
-                    },
-                    "prop": "cons x xs @ ys = cons x (xs @ ys)"
+                    }
                 }
-            ]
+            ],
+            "ty": "def.ind",
+            "type": "'a list => 'a list => 'a list"
         },
         {
-            "ty": "def.ind",
             "name": "rev",
-            "type": "'a list => 'a list",
             "rules": [
                 {
-                    "vars": {},
-                    "prop": "rev nil = nil"
+                    "prop": "rev nil = nil",
+                    "vars": {}
                 },
                 {
+                    "prop": "rev (cons x xs) = rev xs @ cons x nil",
                     "vars": {
                         "x": "'a",
                         "xs": "'a list"
-                    },
-                    "prop": "rev (cons x xs) = rev xs @ cons x nil"
+                    }
                 }
-            ]
+            ],
+            "ty": "def.ind",
+            "type": "'a list => 'a list"
         }
-    ]
+    ],
+    "imports": [],
+    "name": "logic_base"
 }

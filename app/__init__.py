@@ -206,7 +206,7 @@ def save_file():
     name = json_data['name']
 
     with open('library/' + name + '.json', 'w+', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+        json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
 
     return jsonify({})
 
