@@ -7,7 +7,6 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof
 from kernel.report import ProofReport
-from logic.basic import BasicTheory
 from logic import logic, matcher
 from logic.proofterm import ProofTerm
 from logic.conv import top_conv, rewr_conv
@@ -155,7 +154,6 @@ class ProofState():
     @staticmethod
     def parse_proof(thy, data):
         """Obtain proof from json format."""
-        thy = BasicTheory
         ctxt = {}
         state = ProofState(thy)
         for name, str_T in data['vars'].items():
