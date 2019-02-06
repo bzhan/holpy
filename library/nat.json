@@ -129,6 +129,14 @@
             }
         },
         {
+            "name": "mult_1_left",
+            "prop": "1 * x = x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
             "name": "mult_1_right",
             "prop": "x * 1 = x",
             "ty": "thm",
@@ -318,6 +326,42 @@
         {
             "name": "bit1_bit1_add",
             "prop": "bit1 m + bit1 n = bit0 (Suc (m + n))",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_bit0_mult",
+            "prop": "bit0 m * bit0 n = bit0 (bit0 (m * n))",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_bit1_mult",
+            "prop": "bit0 m * bit1 n = bit0 (m * bit1 n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_bit0_mult",
+            "prop": "bit1 m * bit0 n = bit0 (bit1 m * n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_bit1_mult",
+            "prop": "bit1 m * bit1 n = bit1 (m + n + bit0 (m * n))",
             "ty": "thm",
             "vars": {
                 "m": "nat",

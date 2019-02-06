@@ -3,7 +3,7 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
-from logic.conv import Conv, all_conv, rewr_conv_thm, then_conv, arg_conv, every_conv
+from logic.conv import Conv, all_conv, rewr_conv_thm, then_conv, arg_conv, arg1_conv, every_conv
 from logic.proofterm import ProofTerm
 
 """Utility functions for natural number arithmetic."""
@@ -85,10 +85,7 @@ class Suc_conv(Conv):
         elif n.get_head() == bit0:
             return rewr_conv_thm(thy, "bit0_Suc").get_proof_term(t)
         else:
-            return then_conv(
-                rewr_conv_thm(thy, "bit1_Suc"),
-                arg_conv(Suc_conv())
-            ).get_proof_term(t)
+            return then_conv(rewr_conv_thm(thy, "bit1_Suc"), arg_conv(Suc_conv())).get_proof_term(t)
 
 class add_conv(Conv):
     """Computes the sum of two binary numbers."""
@@ -101,37 +98,54 @@ class add_conv(Conv):
 
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            return rewr_conv_thm(thy, "plus_def_1").get_proof_term(t)
+            cv = rewr_conv_thm(thy, "plus_def_1")
         elif n2 == zero:
-            return rewr_conv_thm(thy, "add_0_right").get_proof_term(t)
+            cv = rewr_conv_thm(thy, "add_0_right")
         elif n1 == one:
-            return then_conv(
-                rewr_conv_thm(thy, "add_1_left"),
-                Suc_conv()
-            ).get_proof_term(t)
+            cv = then_conv(rewr_conv_thm(thy, "add_1_left"), Suc_conv())
         elif n2 == one:
-            return then_conv(
-                rewr_conv_thm(thy, "add_1_right"),
-                Suc_conv()
-            ).get_proof_term(t)
+            cv = then_conv(rewr_conv_thm(thy, "add_1_right"), Suc_conv())
         elif n1.get_head() == bit0 and n2.get_head() == bit0:
-            return then_conv(
-                rewr_conv_thm(thy, "bit0_bit0_add"),
-                arg_conv(add_conv())
-            ).get_proof_term(t)
+            cv = then_conv(rewr_conv_thm(thy, "bit0_bit0_add"), arg_conv(add_conv()))
         elif n1.get_head() == bit0 and n2.get_head() == bit1:
-            return then_conv(
-                rewr_conv_thm(thy, "bit0_bit1_add"),
-                arg_conv(add_conv())
-            ).get_proof_term(t)
+            cv = then_conv(rewr_conv_thm(thy, "bit0_bit1_add"), arg_conv(add_conv()))
         elif n1.get_head() == bit1 and n2.get_head() == bit0:
-            return then_conv(
-                rewr_conv_thm(thy, "bit1_bit0_add"),
-                arg_conv(add_conv())
-            ).get_proof_term(t)
+            cv = then_conv(rewr_conv_thm(thy, "bit1_bit0_add"), arg_conv(add_conv()))
         else:
-            return every_conv(
-                rewr_conv_thm(thy, "bit1_bit1_add"),
+            cv = every_conv(rewr_conv_thm(thy, "bit1_bit1_add"),
                 arg_conv(arg_conv(add_conv())),
-                arg_conv(Suc_conv())
-            ).get_proof_term(t)
+                arg_conv(Suc_conv()))
+
+        return cv.get_proof_term(t)
+
+class mult_conv(Conv):
+    """Computes the product of two binary numbers."""
+    def __call__(self, t):
+        return Thm.mk_equals(t, to_binary(from_binary(t.arg1) * from_binary(t.arg)))
+
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        n1, n2 = t.arg1, t.arg  # two summands
+        if n1 == zero:
+            cv = rewr_conv_thm(thy, "times_def_1")
+        elif n2 == zero:
+            cv = rewr_conv_thm(thy, "mult_0_right")
+        elif n1 == one:
+            cv = rewr_conv_thm(thy, "mult_1_left")
+        elif n2 == one:
+            cv = rewr_conv_thm(thy, "mult_1_right")
+        elif n1.get_head() == bit0 and n2.get_head() == bit0:
+            cv = then_conv(rewr_conv_thm(thy, "bit0_bit0_mult"), arg_conv(arg_conv(mult_conv())))
+        elif n1.get_head() == bit0 and n2.get_head() == bit1:
+            cv = then_conv(rewr_conv_thm(thy, "bit0_bit1_mult"), arg_conv(mult_conv()))
+        elif n1.get_head() == bit1 and n2.get_head() == bit0:
+            cv = then_conv(rewr_conv_thm(thy, "bit1_bit0_mult"), arg_conv(mult_conv()))
+        else:
+            cv = every_conv(rewr_conv_thm(thy, "bit1_bit1_mult"),
+                arg_conv(arg1_conv(add_conv())),
+                arg_conv(arg_conv(arg_conv(mult_conv()))),
+                arg_conv(add_conv()))
+
+        return cv.get_proof_term(t)

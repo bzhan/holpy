@@ -93,6 +93,29 @@ class NatTest(unittest.TestCase):
             prf = cv.get_proof_term(t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
+    def testMultConv(self):
+        test_data = [
+            (0, 2),
+            (2, 0),
+            (1, 2),
+            (2, 1),
+            (2, 2),
+            (2, 3),
+            (3, 2),
+            (3, 3),
+            (5, 5),
+            (10, 5),
+            (123,987),
+        ]
+
+        cv = nat.mult_conv()
+        for m, n in test_data:
+            t = nat.mk_times(nat.to_binary(m), nat.to_binary(n))
+            res_th = Thm.mk_equals(t, nat.to_binary(m * n))
+            self.assertEqual(cv(t), res_th)
+            prf = cv.get_proof_term(t).export()
+            self.assertEqual(thy.check_proof(prf), res_th)
+
 
 if __name__ == "__main__":
     unittest.main()
