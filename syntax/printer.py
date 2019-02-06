@@ -20,7 +20,9 @@ def print_term(thy, t):
         return thy.get_data("operator").get_info_for_fun(t.get_head())
 
     def get_priority(t):
-        if t.ty == Term.COMB:
+        if nat.is_binary(t):
+            return 100  # Nat atom case
+        elif t.ty == Term.COMB:
             op_data = get_info_for_operator(t)
             if op_data is not None:
                 return op_data.priority

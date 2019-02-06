@@ -79,7 +79,7 @@ class ProofItem():
         str_args = " " + self._print_str_args(highlight=False) if self.args else ""
         str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
         str_th = str(self.th) + " by " if self.th else ""
-        return self.id + ": " + str_th + self.rule + str_args + str_prevs
+        return str(self.id) + ": " + str_th + self.rule + str_args + str_prevs
 
     @settings.with_settings
     def export(self):

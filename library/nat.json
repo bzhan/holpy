@@ -78,8 +78,16 @@
             }
         },
         {
+            "name": "add_1_left",
+            "prop": "1 + x = Suc x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
             "name": "add_1_right",
-            "prop": "Suc x = x + Suc 0",
+            "prop": "x + 1 = Suc x",
             "ty": "thm",
             "vars": {
                 "x": "nat"
@@ -122,7 +130,7 @@
         },
         {
             "name": "mult_1_right",
-            "prop": "x * Suc 0 = x",
+            "prop": "x * 1 = x",
             "ty": "thm",
             "vars": {
                 "x": "nat"
@@ -252,9 +260,67 @@
         },
         {
             "name": "bit1_def",
-            "prop": "bit1 n = n + n + Suc 0",
+            "prop": "bit1 n = n + n + 1",
             "ty": "thm",
             "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "one_Suc",
+            "prop": "Suc 1 = bit0 1",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "bit0_Suc",
+            "prop": "Suc (bit0 n) = bit1 n",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_Suc",
+            "prop": "Suc (bit1 n) = bit0 (Suc n)",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_bit0_add",
+            "prop": "bit0 m + bit0 n = bit0 (m + n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_bit1_add",
+            "prop": "bit0 m + bit1 n = bit1 (m + n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_bit0_add",
+            "prop": "bit1 m + bit0 n = bit1 (m + n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_bit1_add",
+            "prop": "bit1 m + bit1 n = bit0 (Suc (m + n))",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
                 "n": "nat"
             }
         }

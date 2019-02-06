@@ -139,6 +139,7 @@ class PrinterTest(unittest.TestCase):
             (nat.one, "1"),
             (nat.bit0(nat.one), "2"),
             (nat.bit1(nat.one), "3"),
+            (nat.Suc(nat.one), "Suc 1"),
         ]
 
         for t, s in test_data:

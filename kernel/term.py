@@ -136,7 +136,9 @@ class Term():
         suggested names in lambda terms.
 
         """
-        if self.ty != other.ty:
+        if not isinstance(other, Term):
+            raise TypeError()
+        elif self.ty != other.ty:
             return False
         elif self.ty == Term.VAR or self.ty == Term.CONST:
             return self.name == other.name and self.T == other.T
