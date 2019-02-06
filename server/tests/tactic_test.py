@@ -238,6 +238,13 @@ class TacticTest(unittest.TestCase):
         state.rewrite_goal("S4", "plus_def_1")
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(Nat.times(n,Nat.zero),Nat.zero))
 
+    def testRewriteGoal(self):
+        thy = basic.NatTheory
+        n = Var("n", Nat.nat)
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(Nat.plus(Nat.zero, n), n))
+        ths = state.rewrite_goal_thms("S1")
+        self.assertEqual([name for name, _ in ths], ["add_comm", "plus_def_1"])
+
     def testPrintThmHighlight(self):
         A = Var('A', hol_bool)
         B = Var('B', hol_bool)

@@ -439,11 +439,29 @@ class ProofState():
         inst = {"P": P, "x": var}
         self.apply_backward_step(id, th_name, inst=inst)
 
+    def rewrite_goal_thms(self, id):
+        """Find list of theorems on which rewrite_goal can be applied."""
+
+        cur_item = self.get_proof_item(id)
+        if cur_item.rule != "sorry":
+            return []
+
+        results = []
+        goal = cur_item.th.concl
+        for th_name, th in self.thy.get_data("theorems").items():
+            if th.concl.is_equals():
+                cv = top_conv(rewr_conv(ProofTerm.theorem(self.thy, th_name)))
+                _, new_goal = cv(goal).concl.dest_binop()
+                if goal != new_goal:
+                    results.append((th_name, new_goal))
+
+        return sorted(results)
+
     def rewrite_goal(self, id, th_name, *, backward=False):
         """Apply an existing equality theorem to the given goal."""
 
         cur_item = self.get_proof_item(id)
-        assert cur_item.rule == "sorry", "apply_induction: id is not a gap"
+        assert cur_item.rule == "sorry", "rewrite_goal: id is not a gap"
 
         goal = cur_item.th.concl
         cv = top_conv(rewr_conv(ProofTerm.theorem(self.thy, th_name)))
