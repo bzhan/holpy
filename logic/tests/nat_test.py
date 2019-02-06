@@ -3,18 +3,16 @@
 import unittest
 
 from logic import nat
-from logic.nat import Nat, bit0, bit1
+from logic.nat import zero, one, bit0, bit1
 
-zero = Nat.zero
-one = Nat.one
 
 class NatTest(unittest.TestCase):
     def testPlus(self):
-        self.assertEqual(Nat.mk_plus(), zero)
-        self.assertEqual(Nat.mk_plus(zero), zero)
-        self.assertEqual(Nat.mk_plus(one), one)
-        self.assertEqual(Nat.mk_plus(zero, one), Nat.plus(zero, one))
-        self.assertEqual(Nat.mk_plus(*([zero]*3)), Nat.plus(Nat.plus(zero, zero), zero))
+        self.assertEqual(nat.mk_plus(), zero)
+        self.assertEqual(nat.mk_plus(zero), zero)
+        self.assertEqual(nat.mk_plus(one), one)
+        self.assertEqual(nat.mk_plus(zero, one), nat.plus(zero, one))
+        self.assertEqual(nat.mk_plus(*([zero]*3)), nat.plus(nat.plus(zero, zero), zero))
 
     def testBinary(self):
         test_data = [
@@ -45,10 +43,10 @@ class NatTest(unittest.TestCase):
     def testIsBinary(self):
         test_data = [
             (zero, True),
-            (Nat.Suc(zero), True),
-            (Nat.Suc(one), False),
+            (nat.Suc(zero), True),
+            (nat.Suc(one), False),
             (bit0(one), True),
-            (bit0(Nat.Suc(bit0(one))), False),
+            (bit0(nat.Suc(bit0(one))), False),
             (bit0, False),
             (bit1, False),
         ]

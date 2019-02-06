@@ -6,7 +6,6 @@ from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from logic import logic
 from logic import nat
-from logic.nat import Nat
 from logic.list import List
 from logic.basic import BasicTheory
 from syntax import printer
@@ -24,9 +23,9 @@ Q = Var("Q", TFun(Ta, hol_bool))
 R = Var("R", TFun(Ta, Ta, hol_bool))
 f = Var("f", TFun(Ta, Ta))
 nn = Var("n", TFun(hol_bool, hol_bool))
-m = Var("m", Nat.nat)
-n = Var("n", Nat.nat)
-p = Var("p", Nat.nat)
+m = Var("m", nat.natT)
+n = Var("n", nat.natT)
+p = Var("p", nat.natT)
 xs = Var("xs", Type("list", Ta))
 ys = Var("ys", Type("list", Ta))
 zs = Var("zs", Type("list", Ta))
@@ -119,17 +118,17 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintArithmetic(self):
         test_data = [
-            (Nat.plus(m, n), "m + n"),
-            (Nat.plus(Nat.plus(m, n), p), "m + n + p"),
-            (Nat.plus(m, Nat.plus(n, p)), "m + (n + p)"),
-            (Nat.times(m, n), "m * n"),
-            (Nat.times(Nat.times(m, n), p), "m * n * p"),
-            (Nat.times(m, Nat.times(n, p)), "m * (n * p)"),
-            (Nat.plus(m, Nat.times(n, p)), "m + n * p"),
-            (Nat.times(m, Nat.plus(n, p)), "m * (n + p)"),
-            (Nat.zero, "0"),
-            (Nat.plus(Nat.zero, Nat.zero), "0 + 0"),
-            (Nat.times(m, Nat.zero), "m * 0"),
+            (nat.plus(m, n), "m + n"),
+            (nat.plus(nat.plus(m, n), p), "m + n + p"),
+            (nat.plus(m, nat.plus(n, p)), "m + (n + p)"),
+            (nat.times(m, n), "m * n"),
+            (nat.times(nat.times(m, n), p), "m * n * p"),
+            (nat.times(m, nat.times(n, p)), "m * (n * p)"),
+            (nat.plus(m, nat.times(n, p)), "m + n * p"),
+            (nat.times(m, nat.plus(n, p)), "m * (n + p)"),
+            (nat.zero, "0"),
+            (nat.plus(nat.zero, nat.zero), "0 + 0"),
+            (nat.times(m, nat.zero), "m * 0"),
         ]
 
         for t, s in test_data:
@@ -137,9 +136,9 @@ class PrinterTest(unittest.TestCase):
 
     def testBinary(self):
         test_data = [
-            (Nat.one, "1"),
-            (nat.bit0(Nat.one), "2"),
-            (nat.bit1(Nat.one), "3"),
+            (nat.one, "1"),
+            (nat.bit0(nat.one), "2"),
+            (nat.bit1(nat.one), "3"),
         ]
 
         for t, s in test_data:
@@ -172,8 +171,8 @@ class PrinterTest(unittest.TestCase):
             (all(a, P(a)), "∀a. P a"),
             (exists(a, P(a)), "∃a. P a"),
             (neg(A), "¬A"),
-            (Nat.plus(m, n), "m + n"),
-            (Nat.times(m, n), "m * n"),
+            (nat.plus(m, n), "m + n"),
+            (nat.times(m, n), "m * n"),
         ]
 
         for t, s in test_data:

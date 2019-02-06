@@ -10,7 +10,7 @@ from kernel.report import ProofReport
 from kernel.theory import Theory, TheoryException
 import logic.basic as basic
 from logic import logic
-from logic.nat import Nat
+from logic import nat
 from logic import logic_macro
 from syntax import printer
 
@@ -114,10 +114,10 @@ class BasicTest(unittest.TestCase):
     def testRewriteGoal(self):
         thy = basic.NatTheory
 
-        n = Var("n", Nat.nat)
+        n = Var("n", nat.natT)
         eq = Term.mk_equals
-        zero = Nat.zero
-        plus = Nat.mk_plus
+        zero = nat.zero
+        plus = nat.mk_plus
         prf = Proof()
         prf.add_item("S1", "reflexive", args=zero)
         prf.add_item("S2", "rewrite_goal", args=("plus_def_1", eq(plus(zero,zero),zero)), prevs=["S1"])
@@ -419,34 +419,34 @@ class BasicTest(unittest.TestCase):
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
         thy = basic.NatTheory
-        n = Var("n", Nat.nat)
+        n = Var("n", nat.natT)
         eq = Term.mk_equals
         prf = Proof()
         prf.add_item("S1", "theorem", args="nat_induct")
-        prf.add_item("S2", "substitution", args={"P": Term.mk_abs(n, eq(Nat.plus(n,Nat.zero),n)), "x": n}, prevs=["S1"])
+        prf.add_item("S2", "substitution", args={"P": Term.mk_abs(n, eq(nat.plus(n,nat.zero),n)), "x": n}, prevs=["S1"])
         prf.add_item("S3", "beta_norm", prevs=["S2"])
         prf.add_item("S4", "theorem", args="plus_def_1")
-        prf.add_item("S5", "substitution", args={"n": Nat.zero}, prevs=["S4"])
+        prf.add_item("S5", "substitution", args={"n": nat.zero}, prevs=["S4"])
         prf.add_item("S6", "implies_elim", prevs=["S3", "S5"])
-        prf.add_item("S7", "assume", args=eq(Nat.plus(n,Nat.zero), n))
+        prf.add_item("S7", "assume", args=eq(nat.plus(n,nat.zero), n))
         prf.add_item("S8", "theorem", args="plus_def_2")
-        prf.add_item("S9", "substitution", args={"m": n, "n": Nat.zero}, prevs=["S8"])
-        prf.add_item("S10", "arg_combination", args=Nat.Suc, prevs=["S7"])
+        prf.add_item("S9", "substitution", args={"m": n, "n": nat.zero}, prevs=["S8"])
+        prf.add_item("S10", "arg_combination", args=nat.Suc, prevs=["S7"])
         prf.add_item("S11", "transitive", prevs=["S9", "S10"])
-        prf.add_item("S12", "implies_intr", args=eq(Nat.plus(n,Nat.zero), n), prevs=["S11"])
+        prf.add_item("S12", "implies_intr", args=eq(nat.plus(n,nat.zero), n), prevs=["S11"])
         prf.add_item("S13", "forall_intr", args=n, prevs=["S12"])
         prf.add_item("S14", "implies_elim", prevs=["S6", "S13"])
-        th = Thm.mk_equals(Nat.plus(n, Nat.zero), n)
+        th = Thm.mk_equals(nat.plus(n, nat.zero), n)
         self.assertEqual(thy.check_proof(prf), th)
 
     def testAddZeroRightWithMacro(self):
         """Proof of n + 0 = n by induction, using macros."""
         thy = basic.NatTheory
-        n = Var("n", Nat.nat)
+        n = Var("n", nat.natT)
         eq = Term.mk_equals
-        plus = Nat.plus
-        zero = Nat.zero
-        S = Nat.Suc
+        plus = nat.plus
+        zero = nat.zero
+        S = nat.Suc
         prf = Proof()
         prf.add_item("S1", "reflexive", args=zero)
         prf.add_item("S2", "rewrite_goal", args=("plus_def_1", eq(plus(zero,zero),zero)), prevs=["S1"])
@@ -462,37 +462,37 @@ class BasicTest(unittest.TestCase):
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
         thy = basic.NatTheory
-        n = Var("n", Nat.nat)
+        n = Var("n", nat.natT)
         eq = Term.mk_equals
         prf = Proof()
         prf.add_item("S1", "theorem", args="nat_induct")
-        prf.add_item("S2", "substitution", args={"P": Term.mk_abs(n, eq(Nat.times(n,Nat.zero),Nat.zero)), "x": n}, prevs=["S1"])
+        prf.add_item("S2", "substitution", args={"P": Term.mk_abs(n, eq(nat.times(n,nat.zero),nat.zero)), "x": n}, prevs=["S1"])
         prf.add_item("S3", "beta_norm", prevs=["S2"])
         prf.add_item("S4", "theorem", args="times_def_1")
-        prf.add_item("S5", "substitution", args={"n": Nat.zero}, prevs=["S4"])
+        prf.add_item("S5", "substitution", args={"n": nat.zero}, prevs=["S4"])
         prf.add_item("S6", "implies_elim", prevs=["S3", "S5"])
-        prf.add_item("S7", "assume", args=eq(Nat.times(n,Nat.zero), Nat.zero))
+        prf.add_item("S7", "assume", args=eq(nat.times(n,nat.zero), nat.zero))
         prf.add_item("S8", "theorem", args="times_def_2")
-        prf.add_item("S9", "substitution", args={"m": n, "n": Nat.zero}, prevs=["S8"])
+        prf.add_item("S9", "substitution", args={"m": n, "n": nat.zero}, prevs=["S8"])
         prf.add_item("S10", "theorem", args="plus_def_1")
-        prf.add_item("S11", "substitution", args={"n": Nat.times(n,Nat.zero)}, prevs=["S10"])
+        prf.add_item("S11", "substitution", args={"n": nat.times(n,nat.zero)}, prevs=["S10"])
         prf.add_item("S12", "transitive", prevs=["S9", "S11"])
         prf.add_item("S13", "transitive", prevs=["S12", "S7"])
-        prf.add_item("S14", "implies_intr", args=eq(Nat.times(n,Nat.zero), Nat.zero), prevs=["S13"])
+        prf.add_item("S14", "implies_intr", args=eq(nat.times(n,nat.zero), nat.zero), prevs=["S13"])
         prf.add_item("S15", "forall_intr", args=n, prevs=["S14"])
         prf.add_item("S16", "implies_elim", prevs=["S6", "S15"])
-        th = Thm.mk_equals(Nat.times(n, Nat.zero), Nat.zero)
+        th = Thm.mk_equals(nat.times(n, nat.zero), nat.zero)
         self.assertEqual(thy.check_proof(prf), th)
 
     def testMultZeroRightWithMacro(self):
         """Proof of n * 0 = 0 by induction, using macros."""
         thy = basic.NatTheory
-        n = Var("n", Nat.nat)
+        n = Var("n", nat.natT)
         eq = Term.mk_equals
-        zero = Nat.zero
-        plus = Nat.mk_plus
-        times = Nat.mk_times
-        S = Nat.Suc
+        zero = nat.zero
+        plus = nat.mk_plus
+        times = nat.mk_times
+        S = nat.Suc
         prf = Proof()
         prf.add_item("S1", "reflexive", args=zero)
         prf.add_item("S2", "rewrite_goal", args=("times_def_1", eq(times(zero,zero),zero)), prevs=["S1"])

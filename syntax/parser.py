@@ -11,7 +11,6 @@ from kernel import extension
 from logic import induct
 from logic import logic
 from logic import nat
-from logic.nat import Nat
 from logic.list import List
 
 def _abstract_over_name(t, name, n):
@@ -156,10 +155,10 @@ class HOLTransformer(Transformer):
         return exists_t(t)
 
     def times(self, lhs, rhs):
-        return Nat.times(lhs, rhs)
+        return nat.times(lhs, rhs)
 
     def plus(self, lhs, rhs):
-        return Nat.plus(lhs, rhs)
+        return nat.plus(lhs, rhs)
 
     def append(self, lhs, rhs):
         return List.append(lhs, rhs)

@@ -10,7 +10,7 @@ from kernel.proof import Proof, print_thm_highlight
 from kernel.report import ProofReport
 from logic import logic
 from logic import basic
-from logic.nat import Nat
+from logic import nat
 from syntax import printer
 from server import tactic
 from server.tactic import ProofState
@@ -154,10 +154,10 @@ class TacticTest(unittest.TestCase):
 
     def testApplyInduction(self):
         thy = basic.NatTheory
-        n = Var("n", Nat.nat)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(Nat.plus(n, Nat.zero), n))
+        n = Var("n", nat.natT)
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
         state.apply_induction("S1", "nat_induct", "n")
-        self.assertEqual(state.check_proof(), Thm([], Term.mk_equals(Nat.plus(n, Nat.zero), n)))
+        self.assertEqual(state.check_proof(), Thm([], Term.mk_equals(nat.plus(n, nat.zero), n)))
         self.assertEqual(len(state.prf.items), 3)
 
     def testConjComm(self):
@@ -215,33 +215,33 @@ class TacticTest(unittest.TestCase):
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
         thy = basic.NatTheory
-        n = Var("n", Nat.nat)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(Nat.plus(n, Nat.zero), n))
+        n = Var("n", nat.natT)
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
         state.apply_induction("S1", "nat_induct", "n")
         state.rewrite_goal("S1", "plus_def_1")
-        state.set_line("S1", "reflexive", args=Nat.zero)
+        state.set_line("S1", "reflexive", args=nat.zero)
         state.introduction("S3", names=["n"])
         state.rewrite_goal("S4", "plus_def_2")
-        state.set_line("S4", "arg_combination", args=Nat.Suc, prevs=["S3"])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(Nat.plus(n,Nat.zero),n))
+        state.set_line("S4", "arg_combination", args=nat.Suc, prevs=["S3"])
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.plus(n,nat.zero),n))
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
         thy = basic.NatTheory
-        n = Var("n", Nat.nat)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(Nat.times(n, Nat.zero), Nat.zero))
+        n = Var("n", nat.natT)
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.times(n, nat.zero), nat.zero))
         state.apply_induction("S1", "nat_induct", "n")
         state.rewrite_goal("S1", "times_def_1")
-        state.set_line("S1", "reflexive", args=Nat.zero)
+        state.set_line("S1", "reflexive", args=nat.zero)
         state.introduction("S3", names=["n"])
         state.rewrite_goal("S4", "times_def_2")
         state.rewrite_goal("S4", "plus_def_1")
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(Nat.times(n,Nat.zero),Nat.zero))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.times(n,nat.zero),nat.zero))
 
     def testRewriteGoal(self):
         thy = basic.NatTheory
-        n = Var("n", Nat.nat)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(Nat.plus(Nat.zero, n), n))
+        n = Var("n", nat.natT)
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
         ths = state.rewrite_goal_thms("S1")
         self.assertEqual([name for name, _ in ths], ["add_comm", "plus_def_1"])
 

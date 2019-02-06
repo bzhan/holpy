@@ -8,7 +8,7 @@ from kernel.thm import Thm
 from logic.basic import BasicTheory
 from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, rewr_conv, ConvException
-from logic.nat import Nat
+from logic import nat
 
 thy = BasicTheory
 abs = Term.mk_abs
@@ -19,10 +19,10 @@ x = Var("x", Ta)
 f = Var("f", TFun(Ta, Ta, Ta))
 lf = abs(x, f(x,x))
 
-nat = Nat.nat
-zero = Nat.zero
-one = Nat.one
-plus = Nat.mk_plus
+natT = nat.natT
+zero = nat.zero
+one = nat.one
+plus = nat.mk_plus
 
 class ConvTest(unittest.TestCase):
     def testBetaConv(self):
@@ -43,9 +43,9 @@ class ConvTest(unittest.TestCase):
         self.assertEqual(cv(x), Thm.reflexive(x))
 
     def testRewrConv(self):
-        f = Const("f", TFun(nat, nat))
-        g = Const("g", TFun(nat, nat))
-        x = Var("x", nat)
+        f = Const("f", TFun(natT, natT))
+        g = Const("g", TFun(natT, natT))
+        x = Var("x", natT)
 
         seq_dict = {"A1": eq(one, zero), "A2": eq(f(x), g(x))}
 
@@ -72,11 +72,11 @@ class ConvTest(unittest.TestCase):
         self.assertRaises(ConvException, cv1.get_proof_term, zero)
 
     def testAbsConv(self):
-        nat0 = Const("zero", nat)
-        nat1 = Const("one", nat)
-        f = Const("f", TFun(nat, nat))
-        g = Const("g", TFun(nat, nat))
-        x = Var("x", nat)
+        nat0 = Const("zero", natT)
+        nat1 = Const("one", natT)
+        f = Const("f", TFun(natT, natT))
+        g = Const("g", TFun(natT, natT))
+        x = Var("x", natT)
 
         thy.add_theorem("f_eq_g", eq(f(x), g(x)))
         t = Term.mk_abs(x, f(x))
@@ -146,9 +146,9 @@ class ConvTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), eq(t, res))
 
     def testLargeSum(self):
-        f = Const("f", TFun(nat, nat))
-        g = Const("g", TFun(nat, nat))
-        x = Var("x", nat)
+        f = Const("f", TFun(natT, natT))
+        g = Const("g", TFun(natT, natT))
+        x = Var("x", natT)
 
         seq_dict = {"A1": eq(one, zero), "A2": eq(f(x), g(x))}
         cv = top_conv(else_conv(

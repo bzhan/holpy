@@ -7,7 +7,7 @@ from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
-from logic.nat import Nat
+from logic import nat
 from logic import basic
 from syntax.printer import print_term
 import syntax.parser as parser
@@ -27,9 +27,9 @@ ctxt = {
     "c" : Ta,
     "f" : TFun(Ta, Ta),
     "nn" : TFun(hol_bool, hol_bool),
-    "m" : Nat.nat,
-    "n" : Nat.nat,
-    "p" : Nat.nat,
+    "m" : nat.natT,
+    "n" : nat.natT,
+    "p" : nat.natT,
     "xs" : Type("list", Ta),
     "ys" : Type("list", Ta),
     "zs" : Type("list", Ta),
