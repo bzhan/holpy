@@ -8,11 +8,11 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
 from logic.nat import Nat
-from logic.basic import BasicTheory
+from logic import basic
 from syntax.printer import print_term
 import syntax.parser as parser
 
-thy = BasicTheory
+thy = basic.ListTheory
 
 Ta = TVar("a")
 ctxt = {
@@ -160,6 +160,17 @@ class ParserTest(unittest.TestCase):
             ("0", "nat"),
             ("0 + 0", "nat"),
             ("m * 0", "nat"),
+
+            # Binary numbers
+            ("1", "nat"),
+            ("2", "nat"),
+            ("3", "nat"),
+            ("4", "nat"),
+            ("5", "nat"),
+            ("101", "nat"),
+            ("101 + 102", "nat"),
+            ("bit0", "nat => nat"),
+            ("bit1", "nat => nat"),
 
             # Lists
             ("xs @ ys", "'a list"),

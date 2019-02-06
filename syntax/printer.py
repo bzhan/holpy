@@ -4,6 +4,7 @@ from kernel import settings
 from kernel.term import Term, OpenTermException
 from logic.operator import OperatorData
 from logic import logic
+from logic import nat
 
 NORMAL, BOUND, VAR = range(3)
 
@@ -43,6 +44,11 @@ def print_term(thy, t):
 
         def V(s):
             return [(s, VAR)] if settings.highlight() else s
+
+        # Some special cases:
+        # Natural numbers:
+        if nat.is_binary(t):
+            return N(str(nat.from_binary(t)))
 
         if t.ty == Term.VAR:
             return V(t.name)

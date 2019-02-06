@@ -8,7 +8,9 @@ from kernel.macro import MacroSig
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from kernel import extension
-from logic import induct, logic
+from logic import induct
+from logic import logic
+from logic import nat
 from logic.nat import Nat
 from logic.list import List
 
@@ -51,7 +53,7 @@ grammar = r"""
         | "(" type ")"                    // Parenthesis
 
     ?atom: CNAME -> vname                 // Constant, variable, or bound variable
-        | "0" -> zero                     // Zero (to be extended to numbers)
+        | INT -> number                   // Numbers
         | ("%"|"λ") CNAME "::" type ". " term -> abs     // Abstraction
         | ("!"|"∀") CNAME "::" type ". " term -> all     // Forall quantification
         | ("?"|"∃") CNAME "::" type ". " term -> exists   // Exists quantification
@@ -92,6 +94,7 @@ grammar = r"""
 
     %import common.CNAME
     %import common.WS
+    %import common.INT
 
     %ignore WS
 """
@@ -128,8 +131,8 @@ class HOLTransformer(Transformer):
             # s not found, presumably a bound variable
             return Var(s, None)
 
-    def zero(self):
-        return Const("zero", Nat.nat)
+    def number(self, n):
+        return nat.to_binary(int(n))
 
     def comb(self, fun, arg):
         return Comb(fun, arg)

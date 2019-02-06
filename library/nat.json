@@ -231,6 +231,32 @@
                 "x": "nat",
                 "y": "nat"
             }
+        },
+        {
+            "T": "nat => nat",
+            "name": "bit0",
+            "ty": "def.ax"
+        },
+        {
+            "T": "nat => nat",
+            "name": "bit1",
+            "ty": "def.ax"
+        },
+        {
+            "name": "bit0_def",
+            "prop": "bit0 n = n + n",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_def",
+            "prop": "bit1 n = n + n + Suc 0",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
         }
     ],
     "imports": [

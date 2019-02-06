@@ -68,3 +68,4 @@ def loadTheory(theory_name, *, limit=None):
 
 BasicTheory = loadTheory('logic_base')
 NatTheory = loadTheory('nat')
+ListTheory = loadTheory('list')

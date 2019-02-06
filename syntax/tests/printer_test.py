@@ -5,6 +5,7 @@ import unittest
 from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from logic import logic
+from logic import nat
 from logic.nat import Nat
 from logic.list import List
 from logic.basic import BasicTheory
@@ -129,6 +130,16 @@ class PrinterTest(unittest.TestCase):
             (Nat.zero, "0"),
             (Nat.plus(Nat.zero, Nat.zero), "0 + 0"),
             (Nat.times(m, Nat.zero), "m * 0"),
+        ]
+
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
+
+    def testBinary(self):
+        test_data = [
+            (Nat.one, "1"),
+            (nat.bit0(Nat.one), "2"),
+            (nat.bit1(Nat.one), "3"),
         ]
 
         for t, s in test_data:
