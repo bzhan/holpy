@@ -3,7 +3,7 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
-from logic.conv import Conv, all_conv, rewr_conv, then_conv, arg_conv
+from logic.conv import Conv, all_conv, rewr_conv_thm, then_conv, arg_conv, every_conv
 from logic.proofterm import ProofTerm
 
 """Utility functions for natural number arithmetic."""
@@ -81,12 +81,12 @@ class Suc_conv(Conv):
         if n == zero:
             return all_conv().get_proof_term(t)
         elif n == one:
-            return rewr_conv(ProofTerm.theorem(thy, "one_Suc")).get_proof_term(t)
+            return rewr_conv_thm(thy, "one_Suc").get_proof_term(t)
         elif n.get_head() == bit0:
-            return rewr_conv(ProofTerm.theorem(thy, "bit0_Suc")).get_proof_term(t)
+            return rewr_conv_thm(thy, "bit0_Suc").get_proof_term(t)
         else:
             return then_conv(
-                rewr_conv(ProofTerm.theorem(thy, "bit1_Suc")),
+                rewr_conv_thm(thy, "bit1_Suc"),
                 arg_conv(Suc_conv())
             ).get_proof_term(t)
 
@@ -101,39 +101,37 @@ class add_conv(Conv):
 
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            return rewr_conv(ProofTerm.theorem(thy, "plus_def_1")).get_proof_term(t)
+            return rewr_conv_thm(thy, "plus_def_1").get_proof_term(t)
         elif n2 == zero:
-            return rewr_conv(ProofTerm.theorem(thy, "add_0_right")).get_proof_term(t)
+            return rewr_conv_thm(thy, "add_0_right").get_proof_term(t)
         elif n1 == one:
             return then_conv(
-                rewr_conv(ProofTerm.theorem(thy, "add_1_left")),
+                rewr_conv_thm(thy, "add_1_left"),
                 Suc_conv()
             ).get_proof_term(t)
         elif n2 == one:
             return then_conv(
-                rewr_conv(ProofTerm.theorem(thy, "add_1_right")),
+                rewr_conv_thm(thy, "add_1_right"),
                 Suc_conv()
             ).get_proof_term(t)
         elif n1.get_head() == bit0 and n2.get_head() == bit0:
             return then_conv(
-                rewr_conv(ProofTerm.theorem(thy, "bit0_bit0_add")),
+                rewr_conv_thm(thy, "bit0_bit0_add"),
                 arg_conv(add_conv())
             ).get_proof_term(t)
         elif n1.get_head() == bit0 and n2.get_head() == bit1:
             return then_conv(
-                rewr_conv(ProofTerm.theorem(thy, "bit0_bit1_add")),
+                rewr_conv_thm(thy, "bit0_bit1_add"),
                 arg_conv(add_conv())
             ).get_proof_term(t)
         elif n1.get_head() == bit1 and n2.get_head() == bit0:
             return then_conv(
-                rewr_conv(ProofTerm.theorem(thy, "bit1_bit0_add")),
+                rewr_conv_thm(thy, "bit1_bit0_add"),
                 arg_conv(add_conv())
             ).get_proof_term(t)
         else:
-            return then_conv(
-                rewr_conv(ProofTerm.theorem(thy, "bit1_bit1_add")),
-                then_conv(                        
-                    arg_conv(arg_conv(add_conv())),
-                    arg_conv(Suc_conv())
-                )
+            return every_conv(
+                rewr_conv_thm(thy, "bit1_bit1_add"),
+                arg_conv(arg_conv(add_conv())),
+                arg_conv(Suc_conv())
             ).get_proof_term(t)

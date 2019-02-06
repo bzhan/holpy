@@ -7,7 +7,8 @@ from kernel.term import Term, Var, Const, Abs, Bound, Term
 from kernel.thm import Thm
 from logic.basic import BasicTheory
 from logic.proofterm import ProofTerm
-from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, rewr_conv, ConvException
+from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
+    rewr_conv, rewr_conv_thm, ConvException
 from logic import nat
 
 thy = BasicTheory
@@ -80,7 +81,7 @@ class ConvTest(unittest.TestCase):
 
         thy.add_theorem("f_eq_g", eq(f(x), g(x)))
         t = Term.mk_abs(x, f(x))
-        cv = abs_conv(rewr_conv(ProofTerm.theorem(thy, "f_eq_g")))
+        cv = abs_conv(rewr_conv_thm(thy, "f_eq_g"))
         res_th = eq(t, Term.mk_abs(x, g(x)))
         self.assertEqual(cv(t), res_th)
         prf = cv.get_proof_term(t).export()

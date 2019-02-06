@@ -9,7 +9,7 @@ from kernel.proof import ProofItem, Proof
 from kernel.report import ProofReport
 from logic import logic, matcher
 from logic.proofterm import ProofTerm
-from logic.conv import top_conv, rewr_conv
+from logic.conv import top_conv, rewr_conv_thm
 from syntax import parser, printer
 
 
@@ -450,7 +450,7 @@ class ProofState():
         goal = cur_item.th.concl
         for th_name, th in self.thy.get_data("theorems").items():
             if th.concl.is_equals():
-                cv = top_conv(rewr_conv(ProofTerm.theorem(self.thy, th_name)))
+                cv = top_conv(rewr_conv_thm(self.thy, th_name))
                 _, new_goal = cv(goal).concl.dest_binop()
                 if goal != new_goal:
                     results.append((th_name, new_goal))
@@ -464,7 +464,7 @@ class ProofState():
         assert cur_item.rule == "sorry", "rewrite_goal: id is not a gap"
 
         goal = cur_item.th.concl
-        cv = top_conv(rewr_conv(ProofTerm.theorem(self.thy, th_name)))
+        cv = top_conv(rewr_conv_thm(self.thy, th_name))
         _, new_goal = cv(goal).concl.dest_binop()
 
         self.add_line_before(id, 1)
