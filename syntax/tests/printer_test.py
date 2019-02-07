@@ -150,7 +150,17 @@ class PrinterTest(unittest.TestCase):
             (list.append(xs, ys), "xs @ ys"),
             (list.append(list.append(xs, ys), zs), "(xs @ ys) @ zs"),
             (list.append(xs, list.append(ys, zs)), "xs @ ys @ zs"),
+            (list.nil, "[]"),
+            (list.cons(a, list.nil), "[a]"),
+            (list.cons(a, list.cons(b, list.nil)), "[a, b]"),
+            (list.cons(a, xs), "a # xs"),
+            (list.append(list.cons(a, list.nil), list.cons(b, list.nil)), "[a] @ [b]"),
+            (list.cons(a, list.append(xs, ys)), "a # xs @ ys"),
+            (list.append(list.cons(a, xs), ys), "(a # xs) @ ys"),
         ]
+
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
 
     def testPrintAbsType(self):
         test_data = [

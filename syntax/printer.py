@@ -2,9 +2,11 @@
 
 from kernel import settings
 from kernel.term import Term, OpenTermException
+from kernel.proof import commas_join
 from logic.operator import OperatorData
 from logic import logic
 from logic import nat
+from logic import list
 
 NORMAL, BOUND, VAR = range(3)
 
@@ -20,7 +22,7 @@ def print_term(thy, t):
         return thy.get_data("operator").get_info_for_fun(t.get_head())
 
     def get_priority(t):
-        if nat.is_binary(t):
+        if nat.is_binary(t) or list.is_literal_list(t):
             return 100  # Nat atom case
         elif t.ty == Term.COMB:
             op_data = get_info_for_operator(t)
@@ -51,6 +53,10 @@ def print_term(thy, t):
         # Natural numbers:
         if nat.is_binary(t):
             return N(str(nat.from_binary(t)))
+
+        if list.is_literal_list(t):
+            items = list.dest_literal_list(t)
+            return N('[') + commas_join(helper(item, vars) for item in items) + N(']')
 
         if t.ty == Term.VAR:
             return V(t.name)

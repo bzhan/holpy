@@ -55,7 +55,9 @@ grammar = r"""
         | INT -> number                   // Numbers
         | ("%"|"λ") CNAME "::" type ". " term -> abs     // Abstraction
         | ("!"|"∀") CNAME "::" type ". " term -> all     // Forall quantification
-        | ("?"|"∃") CNAME "::" type ". " term -> exists   // Exists quantification
+        | ("?"|"∃") CNAME "::" type ". " term -> exists  // Exists quantification
+        | "[]"                     -> literal_list
+        | "[" term ("," term)* "]" -> literal_list  // List
         | "(" term ")"                    // Parenthesis
 
     ?comb: comb atom | atom
@@ -66,7 +68,9 @@ grammar = r"""
 
     ?append: plus "@" append | plus     // Append: priority 65
 
-    ?eq: eq "=" append | append         // Equality: priority 50
+    ?cons: append "#" cons | append     // Cons: priority 65
+
+    ?eq: eq "=" cons | cons             // Equality: priority 50
 
     ?neg: ("~"|"¬") neg -> neg | eq     // Negation: priority 40 
 
@@ -133,6 +137,9 @@ class HOLTransformer(Transformer):
     def number(self, n):
         return nat.to_binary(int(n))
 
+    def literal_list(self, *args):
+        return list.mk_literal_list(args)
+
     def comb(self, fun, arg):
         return Comb(fun, arg)
 
@@ -162,6 +169,9 @@ class HOLTransformer(Transformer):
 
     def append(self, lhs, rhs):
         return list.append(lhs, rhs)
+
+    def cons(self, lhs, rhs):
+        return list.cons(lhs, rhs)
 
     def eq(self, lhs, rhs):
         return Term.mk_equals(lhs, rhs)

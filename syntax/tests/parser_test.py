@@ -176,6 +176,13 @@ class ParserTest(unittest.TestCase):
             ("xs @ ys", "'a list"),
             ("(xs @ ys) @ zs", "'a list"),
             ("xs @ ys @ zs", "'a list"),
+            ("[]", "'a list"),
+            ("[a]", "'a list"),
+            ("[a, b]", "'a list"),
+            ("[a] @ [b]", "'a list"),
+            ("a # xs", "'a list"),
+            ("a # xs @ ys", "'a list"),
+            ("(a # xs) @ ys", "'a list"),
         ]
 
         for s, Ts in test_data:

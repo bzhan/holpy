@@ -12,11 +12,14 @@ def commas_join(strs):
     """
     strs = list(strs)  # convert possible generator to concrete list
     if settings.highlight():
-        res = strs[0]
-        for s in strs[1:]:
-            res.append((', ', 0))
-            res = res + s
-        return res
+        if strs:
+            res = strs[0]
+            for s in strs[1:]:
+                res.append((', ', 0))
+                res = res + s
+            return res
+        else:
+            return []
     else:
         return ', '.join(strs)
 
