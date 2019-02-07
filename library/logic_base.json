@@ -37,6 +37,11 @@
             "ty": "def.ax"
         },
         {
+            "T": "bool => 'a => 'a => 'a",
+            "name": "IF",
+            "ty": "def.ax"
+        },
+        {
             "name": "conjI",
             "prop": "A --> B --> A & B",
             "ty": "thm",
@@ -146,6 +151,26 @@
             "ty": "thm",
             "vars": {
                 "A": "bool"
+            }
+        },
+        {
+            "name": "if_P",
+            "prop": "P --> (if P then x else y) = x",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "if_not_P",
+            "prop": "~P --> (if P then x else y) = y",
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "x": "'a",
+                "y": "'a"
             }
         },
         {

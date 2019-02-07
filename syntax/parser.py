@@ -56,8 +56,9 @@ grammar = r"""
         | ("%"|"λ") CNAME "::" type ". " term -> abs     // Abstraction
         | ("!"|"∀") CNAME "::" type ". " term -> all     // Forall quantification
         | ("?"|"∃") CNAME "::" type ". " term -> exists  // Exists quantification
-        | "[]"                     -> literal_list
+        | "[]"                     -> literal_list  // Empty list
         | "[" term ("," term)* "]" -> literal_list  // List
+        | "if" term "then" term "else" term  -> if_expr // if expression
         | "(" term ")"                    // Parenthesis
 
     ?comb: comb atom | atom
@@ -139,6 +140,9 @@ class HOLTransformer(Transformer):
 
     def literal_list(self, *args):
         return list.mk_literal_list(args)
+
+    def if_expr(self, P, x, y):
+        return logic.mk_if(P, x, y)
 
     def comb(self, fun, arg):
         return Comb(fun, arg)

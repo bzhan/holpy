@@ -28,7 +28,7 @@ def print_term(thy, t):
             op_data = get_info_for_operator(t)
             if op_data is not None:
                 return op_data.priority
-            elif t.is_all() or logic.is_exists(t):
+            elif t.is_all() or logic.is_exists(t) or logic.is_if(t):
                 return 10
             else:
                 return 95  # Function application
@@ -56,7 +56,12 @@ def print_term(thy, t):
 
         if list.is_literal_list(t):
             items = list.dest_literal_list(t)
-            return N('[') + commas_join(helper(item, vars) for item in items) + N(']')
+            return N('[') + commas_join(helper(item, bd_vars) for item in items) + N(']')
+
+        if logic.is_if(t):
+            P, x, y = logic.dest_if(t)
+            return N("if ") + helper(P, bd_vars) + N(" then ") + helper(x, bd_vars) + \
+                N(" else ") + helper(y, bd_vars)
 
         if t.ty == Term.VAR:
             return V(t.name)

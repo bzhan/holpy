@@ -150,6 +150,10 @@ class ParserTest(unittest.TestCase):
             ("!x::'a. ?y::'a. R x y", "bool"),
             ("!a::'a. P a", "bool"),
 
+            # If expression
+            ("if A then a else b", "'a"),
+            ("(if A then a else b) = a", "bool"),
+
             # Arithmetic
             ("m + n", "nat"),
             ("m * n", "nat"),

@@ -36,6 +36,7 @@ disj = logic.mk_disj
 all = Term.mk_all
 neg = logic.neg
 exists = logic.mk_exists
+mk_if = logic.mk_if
 
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
@@ -99,6 +100,10 @@ class PrinterTest(unittest.TestCase):
             (exists(a, P(a)), "?a. P a"),
             (exists(a, all(b, R(a, b))), "?a. !b. R a b"),
             (all(a, exists(b, R(a, b))), "!a. ?b. R a b"),
+
+            # If
+            (mk_if(A, a, b), "if A then a else b"),
+            (eq(mk_if(A, a, b), a), "(if A then a else b) = a"),
         ]
 
         for t, s in test_data:
