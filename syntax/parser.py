@@ -11,7 +11,7 @@ from kernel import extension
 from logic import induct
 from logic import logic
 from logic import nat
-from logic.list import List
+from logic import list
 
 def _abstract_over_name(t, name, n):
     """Helper function for abstract_over_name. Here t is an open term.
@@ -161,7 +161,7 @@ class HOLTransformer(Transformer):
         return nat.plus(lhs, rhs)
 
     def append(self, lhs, rhs):
-        return List.append(lhs, rhs)
+        return list.append(lhs, rhs)
 
     def eq(self, lhs, rhs):
         return Term.mk_equals(lhs, rhs)

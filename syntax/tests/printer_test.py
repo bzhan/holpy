@@ -6,7 +6,7 @@ from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from logic import logic
 from logic import nat
-from logic.list import List
+from logic import list
 from logic import basic
 from syntax import printer
 
@@ -147,9 +147,9 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintList(self):
         test_data = [
-            (List.append(xs, ys), "xs @ ys"),
-            (List.append(List.append(xs, ys), zs), "(xs @ ys) @ zs"),
-            (List.append(xs, List.append(ys, zs)), "xs @ ys @ zs"),
+            (list.append(xs, ys), "xs @ ys"),
+            (list.append(list.append(xs, ys), zs), "(xs @ ys) @ zs"),
+            (list.append(xs, list.append(ys, zs)), "xs @ ys @ zs"),
         ]
 
     def testPrintAbsType(self):
