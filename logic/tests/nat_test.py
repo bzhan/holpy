@@ -6,6 +6,7 @@ from kernel.thm import Thm
 from logic import nat
 from logic import basic
 from logic.nat import zero, one, bit0, bit1
+from syntax import parser
 
 thy = basic.NatTheory
 
@@ -112,6 +113,24 @@ class NatTest(unittest.TestCase):
         for m, n in test_data:
             t = nat.mk_times(nat.to_binary(m), nat.to_binary(n))
             res_th = Thm.mk_equals(t, nat.to_binary(m * n))
+            self.assertEqual(cv(t), res_th)
+            prf = cv.get_proof_term(t).export()
+            self.assertEqual(thy.check_proof(prf), res_th)
+
+    def testNatConv(self):
+        test_data = [
+            ("2 + 3", 5),
+            ("Suc (2 + 3)", 6),
+            ("Suc (Suc (Suc 0))", 3),
+            ("5 + 2 * 3", 11),
+            ("(5 + 2) * 3", 21),
+            ("5 * Suc (2 + 5)", 40),
+        ]
+
+        cv = nat.nat_conv()
+        for expr, n in test_data:
+            t = parser.parse_term(thy, {}, expr)
+            res_th = Thm.mk_equals(t, nat.to_binary(n))
             self.assertEqual(cv(t), res_th)
             prf = cv.get_proof_term(t).export()
             self.assertEqual(thy.check_proof(prf), res_th)

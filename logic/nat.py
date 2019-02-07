@@ -3,7 +3,8 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
-from logic.conv import Conv, all_conv, rewr_conv_thm, then_conv, arg_conv, arg1_conv, every_conv
+from logic.conv import Conv, ConvException, all_conv, rewr_conv_thm, \
+    then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm
 
 """Utility functions for natural number arithmetic."""
@@ -148,4 +149,40 @@ class mult_conv(Conv):
                 arg_conv(arg_conv(arg_conv(mult_conv()))),
                 arg_conv(add_conv()))
 
+        return cv.get_proof_term(t)
+
+class nat_conv(Conv):
+    """Simplify all arithmetic operations."""
+    def __call__(self, t):
+        def val(t):
+            """Evaluate the given term."""
+            if is_binary(t):
+                return from_binary(t)
+            else:
+                f = t.get_head()
+                if f == Suc:
+                    return val(t.arg) + 1
+                elif f == plus:
+                    return val(t.arg1) + val(t.arg)
+                elif f == times:
+                    return val(t.arg1) * val(t.arg)
+                else:
+                    raise ConvException()
+
+        return Thm.mk_equals(t, to_binary(val(t)))
+
+    def get_proof_term(self, t):
+        if is_binary(t):
+            cv = all_conv()
+        else:
+            f = t.get_head()
+            if f == Suc:
+                cv = then_conv(arg_conv(nat_conv()), Suc_conv())
+            elif f == plus:
+                cv = then_conv(binop_conv(nat_conv()), add_conv())
+            elif f == times:
+                cv = then_conv(binop_conv(nat_conv()), mult_conv())
+            else:
+                raise ConvException()
+        
         return cv.get_proof_term(t)
