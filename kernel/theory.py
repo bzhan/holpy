@@ -320,6 +320,8 @@ class Theory():
                 # match. Otherwise, expand the macro and check all of the steps.
                 macro = self.get_proof_macro(seq.rule)
                 args = [self] + args if macro.has_theory else args
+                assert isinstance(macro.level, int) and macro.level >= 0, \
+                    ("check_proof: invalid macro level " + str(macro.level))
                 if macro.level <= self.check_level:
                     res_th = macro(*(args + prev_ths))
                     if rpt is not None:

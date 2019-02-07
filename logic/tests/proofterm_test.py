@@ -5,10 +5,10 @@ import unittest
 from kernel.type import TVar, TFun
 from kernel.term import Var, Term
 from kernel.thm import Thm
-from logic.basic import BasicTheory
+from logic import basic
 from logic.proofterm import ProofTerm
 
-thy = BasicTheory
+thy = basic.loadTheory('logic_base')
 
 Ta = TVar("a")
 x = Var("x", Ta)

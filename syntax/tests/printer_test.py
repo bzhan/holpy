@@ -7,10 +7,10 @@ from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from logic import logic
 from logic import nat
 from logic.list import List
-from logic.basic import BasicTheory
+from logic import basic
 from syntax import printer
 
-thy = BasicTheory
+thy = basic.loadTheory('logic_base')
 
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)

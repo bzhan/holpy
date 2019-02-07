@@ -2,11 +2,11 @@ import unittest
 import json
 
 from logic import logic
-from logic.basic import BasicTheory
+from logic import basic
 from syntax import parser
 from prover import encode, sat
 
-thy = BasicTheory
+thy = basic.loadTheory('logic_base')
 
 class SATTest(unittest.TestCase):
     def testDisplayCNF(self):

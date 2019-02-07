@@ -12,7 +12,7 @@ from logic import basic
 from syntax.printer import print_term
 import syntax.parser as parser
 
-thy = basic.ListTheory
+thy = basic.loadTheory('list')
 
 Ta = TVar("a")
 ctxt = {

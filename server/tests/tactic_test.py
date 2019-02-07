@@ -15,7 +15,7 @@ from syntax import printer
 from server import tactic
 from server.tactic import ProofState
 
-thy = basic.BasicTheory
+thy = basic.loadTheory('logic_base')
 
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)
@@ -153,7 +153,7 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(len(state.prf.items), 4)
 
     def testApplyInduction(self):
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
         state.apply_induction("S1", "nat_induct", "n")
@@ -214,7 +214,7 @@ class TacticTest(unittest.TestCase):
 
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
         state.apply_induction("S1", "nat_induct", "n")
@@ -227,7 +227,7 @@ class TacticTest(unittest.TestCase):
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.times(n, nat.zero), nat.zero))
         state.apply_induction("S1", "nat_induct", "n")
@@ -239,7 +239,7 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.times(n,nat.zero),nat.zero))
 
     def testRewriteGoal(self):
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
         ths = state.rewrite_goal_thms("S1")

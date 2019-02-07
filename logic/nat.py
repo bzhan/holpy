@@ -3,6 +3,7 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
+from kernel.macro import ProofMacro, MacroSig, global_macros
 from logic.conv import Conv, ConvException, all_conv, rewr_conv_thm, rewr_conv_thm_sym, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm
@@ -86,7 +87,7 @@ class Suc_conv(Conv):
 
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         n = t.arg  # remove Suc
         if n == zero:
@@ -105,7 +106,7 @@ class add_conv(Conv):
 
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
@@ -136,7 +137,7 @@ class mult_conv(Conv):
 
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
@@ -204,7 +205,7 @@ class swap_times_r(Conv):
     """
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if is_times(t.arg1):
             return every_conv(
@@ -230,7 +231,7 @@ class norm_mult_atom(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * a."""
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if t.arg1 == zero:
             cv = rewr_conv_thm(thy, "times_def_1")
@@ -275,7 +276,7 @@ class norm_mult_monomial(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * (b_1 * ... * b_n)."""
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if is_times(t.arg):
             return every_conv(
@@ -293,7 +294,7 @@ class swap_add_r(Conv):
     """
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if is_plus(t.arg1):
             return every_conv(
@@ -321,7 +322,7 @@ class to_coeff_form(Conv):
     """Convert a to a * 1, n to 1 * n, and leave a * n unchanged."""
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if is_times(t) and is_binary(t.arg):
             return all_conv().get_proof_term(t)
@@ -334,7 +335,7 @@ class from_coeff_form(Conv):
     """Convert a * 1 to a, 1 * n to n, and leave a * n unchanged."""
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if t.arg == one:
             return rewr_conv_thm(thy, "mult_1_right").get_proof_term(t)
@@ -346,7 +347,7 @@ class from_coeff_form(Conv):
 def combine_monomial():
     """Combine two monomials with the same body."""
     from logic import basic
-    thy = basic.NatTheory
+    thy = basic.loadTheory('nat')
 
     return every_conv(
         binop_conv(to_coeff_form()),
@@ -359,7 +360,7 @@ class norm_add_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if t.arg1 == zero:
             cv = rewr_conv_thm(thy, "plus_def_1")
@@ -391,7 +392,7 @@ class norm_add_polynomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + (b_1 + ... + b_n)."""
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if is_plus(t.arg):
             return every_conv(
@@ -406,7 +407,7 @@ class norm_mult_poly_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) * b."""
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if is_plus(t.arg1):
             return every_conv(
@@ -422,7 +423,7 @@ class norm_mult_polynomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) * (b_1 + ... + b_n)."""
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if is_plus(t.arg):
             return every_conv(
@@ -438,7 +439,7 @@ class norm_full(Conv):
     """Normalize expressions on natural numbers involving plus and times."""
     def get_proof_term(self, t):
         from logic import basic
-        thy = basic.NatTheory
+        thy = basic.loadTheory('nat')
 
         if is_binary(t):
             cv = all_conv()
@@ -452,3 +453,32 @@ class norm_full(Conv):
             cv = all_conv()
 
         return cv.get_proof_term(t)
+
+
+class nat_norm_macro(ProofMacro):
+    """Attempt to prove goal by normalization."""
+
+    def __init__(self):
+        self.level = 10
+        self.sig = MacroSig.TERM
+        self.has_theory = False
+
+    def __call__(self, args):
+        # Simply produce the goal.
+        return Thm([], args)
+
+    def expand(self, depth, args):
+        assert args.is_equals(), "nat_norm_macro: goal is not an equality."
+
+        t1, t2 = args.arg1, args.arg
+        pt1 = norm_full().get_proof_term(t1)
+        pt2 = norm_full().get_proof_term(t2)
+        assert pt1.th.concl.arg == pt2.th.concl.arg, "nat_norm_macro: normalization is not equal."
+
+        pt3 = ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
+        return pt3.export(depth)
+
+
+global_macros.update({
+    "nat_norm": nat_norm_macro()
+})

@@ -8,7 +8,7 @@ from logic import basic
 from logic.nat import zero, one, bit0, bit1
 from syntax import parser
 
-thy = basic.NatTheory
+thy = basic.loadTheory('nat')
 
 class NatTest(unittest.TestCase):
     def testPlus(self):
@@ -160,6 +160,20 @@ class NatTest(unittest.TestCase):
             res_th = Thm.mk_equals(t, t2)
             prf = cv.get_proof_term(t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
+
+    def testNatNormMacro(self):
+        test_data = [
+            ("x * (y * z) = y * (z * x)"),
+            ("Suc (Suc (Suc x)) + y = x + Suc (Suc (Suc y))"),
+            ("x + y + (y + z) = y * 2 + (x + z)"),
+        ]
+
+        macro = nat.nat_norm_macro()
+        ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
+        for expr in test_data:
+            goal = parser.parse_term(thy, ctxt, expr)
+            prf = macro.expand(0, goal)
+            self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
 
 if __name__ == "__main__":

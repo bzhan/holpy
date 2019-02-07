@@ -5,13 +5,13 @@ import unittest
 from kernel.type import TVar, Type, TFun
 from kernel.term import Term, Var, Const, Abs, Bound, Term
 from kernel.thm import Thm
-from logic.basic import BasicTheory
+from logic import basic
 from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
     rewr_conv, rewr_conv_thm, ConvException
 from logic import nat
 
-thy = BasicTheory
+thy = basic.loadTheory('logic_base')
 abs = Term.mk_abs
 eq = Thm.mk_equals
 

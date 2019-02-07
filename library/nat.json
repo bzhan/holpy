@@ -469,6 +469,30 @@
                 "m": "nat",
                 "n": "nat"
             }
+        },
+        {
+            "name": "nat_norm",
+            "ty": "macro"
+        },
+        {
+            "name": "nat_norm_test1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x + y + (y + z) = y * 2 + (x + z)",
+                    "id": "S1",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ x + y + (y + z) = y * 2 + (x + z)"
+                }
+            ],
+            "prop": "(x + y) + (y + z) = y * 2 + (x + z)",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
         }
     ],
     "imports": [

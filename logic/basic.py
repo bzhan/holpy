@@ -63,9 +63,8 @@ def loadTheory(theory_name, *, limit=None):
 
     thy = loadImportedTheory(data)
     parser.parse_extensions(thy, content)
+
+    if limit is None:
+        loaded_theories[theory_name] = thy
+
     return thy
-
-
-BasicTheory = loadTheory('logic_base')
-NatTheory = loadTheory('nat')
-ListTheory = loadTheory('list')
