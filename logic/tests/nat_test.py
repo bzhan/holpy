@@ -135,6 +135,23 @@ class NatTest(unittest.TestCase):
             prf = cv.get_proof_term(t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
+    def testNormFull(self):
+        test_data = [
+            ("(x * y) * (z * y)", "x * y * y * z"),
+            ("(x + y) + (z + y)", "x + y + y + z"),
+            ("(x + y) * (y + z)", "x * y + x * z + y * y + y * z"),
+        ]
+
+        cv = nat.norm_full()
+        ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
+        for expr, res in test_data:
+            t = parser.parse_term(thy, ctxt, expr)
+            t2 = parser.parse_term(thy, ctxt, res)
+            res_th = Thm.mk_equals(t, t2)
+            prf = cv.get_proof_term(t).export()
+            from syntax import printer
+            self.assertEqual(thy.check_proof(prf), res_th)
+
 
 if __name__ == "__main__":
     unittest.main()

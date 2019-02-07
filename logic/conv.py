@@ -18,10 +18,10 @@ class Conv():
 
     """
     def __call__(self, t):
-        pass
+        raise NotImplementedError
 
     def get_proof_term(self, t):
-        pass
+        raise NotImplementedError
 
 class all_conv(Conv):
     """Returns the trivial equality t = t."""
@@ -242,3 +242,6 @@ class rewr_conv(Conv):
 
 def rewr_conv_thm(thy, th_name):
     return rewr_conv(ProofTerm.theorem(thy, th_name))
+
+def rewr_conv_thm_sym(thy, th_name):
+    return rewr_conv(ProofTerm.symmetric(ProofTerm.theorem(thy, th_name)))

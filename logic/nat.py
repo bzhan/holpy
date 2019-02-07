@@ -3,9 +3,10 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
-from logic.conv import Conv, ConvException, all_conv, rewr_conv_thm, \
+from logic.conv import Conv, ConvException, all_conv, rewr_conv_thm, rewr_conv_thm_sym, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm
+from logic import term_ord
 
 """Utility functions for natural number arithmetic."""
 
@@ -31,6 +32,12 @@ def mk_times(*args):
         return args[0]
     else:
         return times(mk_times(*args[:-1]), args[-1])
+
+def is_plus(t):
+    return t.is_binop() and t.get_head() == plus
+
+def is_times(t):
+    return t.is_binop() and t.get_head() == times
 
 bit0 = Const("bit0", TFun(natT, natT))
 bit1 = Const("bit1", TFun(natT, natT))
@@ -185,4 +192,170 @@ class nat_conv(Conv):
             else:
                 raise ConvException()
         
+        return cv.get_proof_term(t)
+
+class swap_times_r(Conv):
+    """Rewrite (a * b) * c to (a * c) * b, or if the left argument
+    is an atom, rewrite a * b to b * a.
+
+    """
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if is_times(t.arg1):
+            return every_conv(
+                rewr_conv_thm(thy, "mult_assoc"),
+                arg_conv(rewr_conv_thm(thy, "mult_comm")),
+                rewr_conv_thm_sym(thy, "mult_assoc")
+            ).get_proof_term(t)
+        else:
+            return rewr_conv_thm(thy, "mult_comm").get_proof_term(t)
+
+class norm_mult_atom(Conv):
+    """Normalize expression of the form (a_1 * ... * a_n) * a."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if t.arg1 == zero:
+            cv = rewr_conv_thm(thy, "times_def_1")
+        elif t.arg == zero:
+            cv = rewr_conv_thm(thy, "mult_0_right")
+        elif t.arg1 == one:
+            cv = rewr_conv_thm(thy, "mult_1_left")
+        elif t.arg == one:
+            cv = rewr_conv_thm(thy, "mult_1_right")
+        elif is_times(t.arg1):
+            if term_ord.fast_compare(t.arg1.arg, t.arg) == term_ord.GREATER:
+                cv = then_conv(
+                    swap_times_r(),
+                    arg1_conv(norm_mult_atom())
+                )
+            else:
+                cv = all_conv()
+        else:
+            if term_ord.fast_compare(t.arg1, t.arg) == term_ord.GREATER:
+                cv = rewr_conv_thm(thy, "mult_comm")
+            else:
+                cv = all_conv()
+
+        return cv.get_proof_term(t)
+
+class norm_mult_monomial(Conv):
+    """Normalize expression of the form (a_1 * ... * a_n) * (b_1 * ... * b_n)."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if is_times(t.arg):
+            return every_conv(
+                rewr_conv_thm_sym(thy, "mult_assoc"),
+                arg1_conv(norm_mult_monomial()),
+                norm_mult_atom()
+            ).get_proof_term(t)
+        else:
+            return norm_mult_atom().get_proof_term(t)
+
+class swap_add_r(Conv):
+    """Rewrite (a + b) + c to (a + c) + b, or if the left argument
+    is an atom, rewrite a + b to b + a.
+
+    """
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if is_plus(t.arg1):
+            return every_conv(
+                rewr_conv_thm(thy, "add_assoc"),
+                arg_conv(rewr_conv_thm(thy, "add_comm")),
+                rewr_conv_thm_sym(thy, "add_assoc")
+            ).get_proof_term(t)
+        else:
+            return rewr_conv_thm(thy, "add_comm").get_proof_term(t)
+
+class norm_add_monomial(Conv):
+    """Normalize expression of the form (a_1 + ... + a_n) + a."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if t.arg1 == zero:
+            cv = rewr_conv_thm(thy, "plus_def_1")
+        elif t.arg == zero:
+            cv = rewr_conv_thm(thy, "add_0_right")
+        elif is_plus(t.arg1):
+            if term_ord.fast_compare(t.arg1.arg, t.arg) == term_ord.GREATER:
+                cv = then_conv(swap_add_r(), arg1_conv(norm_add_monomial()))
+            else:
+                cv = all_conv()
+        else:
+            if term_ord.fast_compare(t.arg1, t.arg) == term_ord.GREATER:
+                cv = rewr_conv_thm(thy, "add_comm")
+            else:
+                cv = all_conv()
+
+        return cv.get_proof_term(t)
+
+class norm_add_polynomial(Conv):
+    """Normalize expression of the form (a_1 + ... + a_n) + (b_1 + ... + b_n)."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if is_plus(t.arg):
+            return every_conv(
+                rewr_conv_thm_sym(thy, "add_assoc"),
+                arg1_conv(norm_add_polynomial()),
+                norm_add_monomial()
+            ).get_proof_term(t)
+        else:
+            return norm_add_monomial().get_proof_term(t)
+
+class norm_mult_poly_monomial(Conv):
+    """Normalize expression of the form (a_1 + ... + a_n) * b."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if is_plus(t.arg1):
+            return every_conv(
+                rewr_conv_thm(thy, "distrib_r"),
+                arg1_conv(norm_mult_poly_monomial()),
+                arg_conv(norm_mult_monomial()),
+                norm_add_polynomial()
+            ).get_proof_term(t)
+        else:
+            return norm_mult_monomial().get_proof_term(t)
+
+class norm_mult_polynomial(Conv):
+    """Normalize expression of the form (a_1 + ... + a_n) * (b_1 + ... + b_n)."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if is_plus(t.arg):
+            return every_conv(
+                rewr_conv_thm(thy, "distrib_l"),
+                arg1_conv(norm_mult_polynomial()),
+                arg_conv(norm_mult_poly_monomial()),
+                norm_add_polynomial()
+            ).get_proof_term(t)
+        else:
+            return norm_mult_poly_monomial().get_proof_term(t)
+
+class norm_full(Conv):
+    """Normalize expressions on natural numbers involving plus and times."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if is_plus(t):
+            cv = then_conv(binop_conv(norm_full()), norm_add_polynomial())
+        elif is_times(t):
+            cv = then_conv(binop_conv(norm_full()), norm_mult_polynomial())
+        else:
+            cv = all_conv()
+
         return cv.get_proof_term(t)

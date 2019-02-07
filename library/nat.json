@@ -174,7 +174,7 @@
         },
         {
             "name": "distrib_l",
-            "prop": "x * (y + z) = x * z + y * z",
+            "prop": "x * (y + z) = x * y + x * z",
             "ty": "thm",
             "vars": {
                 "x": "nat",
