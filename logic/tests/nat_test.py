@@ -142,7 +142,14 @@ class NatTest(unittest.TestCase):
             ("(x + y) * (y + z)", "x * y + x * z + y * y + y * z"),
             ("(x + y) * (x + y)", "x * x + x * y * 2 + y * y"),
             ("0 + 1 * x + 0 * y", "x"),
-            ("x + 2 + y + 3", "x + y + 5")
+            ("x + 2 + y + 3", "x + y + 5"),
+            ("3 * x * 5 * x", "x * x * 15"),
+            ("(x + 2 * y) * (y + 2 * x)", "x * x * 2 + x * y * 5 + y * y * 2"),
+            ("3 + 5 * 2", "13"),
+            ("x + Suc y", "x + y + 1"),
+            ("Suc (x + Suc y)", "x + y + 2"),
+            ("x * Suc y", "x + x * y"),
+            ("x * 1 * 1 * 1", "x"),
         ]
 
         cv = nat.norm_full()

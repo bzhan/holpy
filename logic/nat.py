@@ -17,6 +17,9 @@ one = Suc(zero)
 plus = Const("plus", TFun(natT, natT, natT))
 times = Const("times", TFun(natT, natT, natT))
 
+def is_Suc(t):
+    return t.ty == Term.COMB and t.fun == Suc
+
 def mk_plus(*args):
     if not args:
         return zero
@@ -212,6 +215,17 @@ class swap_times_r(Conv):
         else:
             return rewr_conv_thm(thy, "mult_comm").get_proof_term(t)
 
+def compare_atom(t1, t2):
+    """Compare two atoms, placing numbers last."""
+    if is_binary(t1) and is_binary(t2):
+        return term_ord.EQUAL
+    elif is_binary(t1):
+        return term_ord.GREATER
+    elif is_binary(t2):
+        return term_ord.LESS
+    else:
+        return term_ord.fast_compare(t1, t2)
+
 class norm_mult_atom(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * a."""
     def get_proof_term(self, t):
@@ -227,16 +241,31 @@ class norm_mult_atom(Conv):
         elif t.arg == one:
             cv = rewr_conv_thm(thy, "mult_1_right")
         elif is_times(t.arg1):
-            if term_ord.fast_compare(t.arg1.arg, t.arg) == term_ord.GREATER:
+            cmp = compare_atom(t.arg1.arg, t.arg)
+            if cmp == term_ord.GREATER:
                 cv = then_conv(
                     swap_times_r(),
                     arg1_conv(norm_mult_atom())
                 )
+            elif cmp == term_ord.EQUAL:
+                if is_binary(t.arg):
+                    cv = then_conv(
+                        rewr_conv_thm(thy, "mult_assoc"),
+                        arg_conv(nat_conv())
+                    )
+                else:
+                    cv = all_conv()
             else:
                 cv = all_conv()
         else:
-            if term_ord.fast_compare(t.arg1, t.arg) == term_ord.GREATER:
+            cmp = compare_atom(t.arg1, t.arg)
+            if cmp == term_ord.GREATER:
                 cv = rewr_conv_thm(thy, "mult_comm")
+            elif cmp == term_ord.EQUAL:
+                if is_binary(t.arg):
+                    cv = nat_conv()
+                else:
+                    cv = all_conv()
             else:
                 cv = all_conv()
 
@@ -285,6 +314,7 @@ def dest_monomial(t):
         return t
 
 def compare_monomial(t1, t2):
+    """Compare two monomials by their body."""
     return term_ord.fast_compare(dest_monomial(t1), dest_monomial(t2))
 
 class to_coeff_form(Conv):
@@ -410,7 +440,11 @@ class norm_full(Conv):
         from logic import basic
         thy = basic.NatTheory
 
-        if is_plus(t):
+        if is_binary(t):
+            cv = all_conv()
+        elif is_Suc(t):
+            cv = then_conv(rewr_conv_thm_sym(thy, "add_1_right"), norm_full())
+        elif is_plus(t):
             cv = then_conv(binop_conv(norm_full()), norm_add_polynomial())
         elif is_times(t):
             cv = then_conv(binop_conv(norm_full()), norm_mult_polynomial())
