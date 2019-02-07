@@ -79,6 +79,34 @@
         },
         {
             "name": "add_1_left",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Suc x",
+                    "id": "S1",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ Suc x = Suc x"
+                },
+                {
+                    "args": "plus_def_1, Suc (0 + x) = Suc x",
+                    "id": "S2",
+                    "prevs": [
+                        "S1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (0 + x) = Suc x"
+                },
+                {
+                    "args": "plus_def_2, 1 + x = Suc x",
+                    "id": "S3",
+                    "prevs": [
+                        "S2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 + x = Suc x"
+                }
+            ],
             "prop": "1 + x = Suc x",
             "ty": "thm",
             "vars": {
@@ -276,12 +304,86 @@
         },
         {
             "name": "one_Suc",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Suc 1",
+                    "id": "S1",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ Suc 1 = Suc 1"
+                },
+                {
+                    "args": "plus_def_1, Suc 1 = Suc (0 + 1)",
+                    "id": "S2",
+                    "prevs": [
+                        "S1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc 1 = Suc (0 + 1)"
+                },
+                {
+                    "args": "plus_def_2, Suc 1 = 1 + 1",
+                    "id": "S3",
+                    "prevs": [
+                        "S2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc 1 = 1 + 1"
+                },
+                {
+                    "args": "bit0_def, Suc 1 = 2",
+                    "id": "S4",
+                    "prevs": [
+                        "S3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc 1 = 2"
+                }
+            ],
             "prop": "Suc 1 = bit0 1",
             "ty": "thm",
             "vars": {}
         },
         {
             "name": "bit0_Suc",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Suc (n + n)",
+                    "id": "S1",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ Suc (n + n) = Suc (n + n)"
+                },
+                {
+                    "args": "add_1_right, Suc (n + n) = n + n + 1",
+                    "id": "S2",
+                    "prevs": [
+                        "S1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (n + n) = n + n + 1"
+                },
+                {
+                    "args": "bit1_def, Suc (n + n) = bit1 n",
+                    "id": "S3",
+                    "prevs": [
+                        "S2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (n + n) = bit1 n"
+                },
+                {
+                    "args": "bit0_def, Suc (bit0 n) = bit1 n",
+                    "id": "S4",
+                    "prevs": [
+                        "S3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (bit0 n) = bit1 n"
+                }
+            ],
             "prop": "Suc (bit0 n) = bit1 n",
             "ty": "thm",
             "vars": {
