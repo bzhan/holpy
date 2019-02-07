@@ -275,6 +275,56 @@ class swap_add_r(Conv):
         else:
             return rewr_conv_thm(thy, "add_comm").get_proof_term(t)
 
+def dest_monomial(t):
+    """Remove coefficient part of a monomial t."""
+    if is_times(t) and is_binary(t.arg):
+        return t.arg1
+    elif is_binary(t):
+        return one
+    else:
+        return t
+
+def compare_monomial(t1, t2):
+    return term_ord.fast_compare(dest_monomial(t1), dest_monomial(t2))
+
+class to_coeff_form(Conv):
+    """Convert a to a * 1, n to 1 * n, and leave a * n unchanged."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if is_times(t) and is_binary(t.arg):
+            return all_conv().get_proof_term(t)
+        elif is_binary(t):
+            return rewr_conv_thm_sym(thy, "mult_1_left").get_proof_term(t)
+        else:
+            return rewr_conv_thm_sym(thy, "mult_1_right").get_proof_term(t)
+
+class from_coeff_form(Conv):
+    """Convert a * 1 to a, 1 * n to n, and leave a * n unchanged."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.NatTheory
+
+        if t.arg == one:
+            return rewr_conv_thm(thy, "mult_1_right").get_proof_term(t)
+        elif t.arg1 == one:
+            return rewr_conv_thm(thy, "mult_1_left").get_proof_term(t)
+        else:
+            return all_conv().get_proof_term(t)
+
+def combine_monomial():
+    """Combine two monomials with the same body."""
+    from logic import basic
+    thy = basic.NatTheory
+
+    return every_conv(
+        binop_conv(to_coeff_form()),
+        rewr_conv_thm_sym(thy, "distrib_l"),
+        arg_conv(nat_conv()),
+        from_coeff_form()
+    )
+
 class norm_add_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
     def get_proof_term(self, t):
@@ -286,13 +336,22 @@ class norm_add_monomial(Conv):
         elif t.arg == zero:
             cv = rewr_conv_thm(thy, "add_0_right")
         elif is_plus(t.arg1):
-            if term_ord.fast_compare(t.arg1.arg, t.arg) == term_ord.GREATER:
+            cmp = compare_monomial(t.arg1.arg, t.arg)
+            if cmp == term_ord.GREATER:
                 cv = then_conv(swap_add_r(), arg1_conv(norm_add_monomial()))
+            elif cmp == term_ord.EQUAL:
+                cv = then_conv(
+                    rewr_conv_thm(thy, "add_assoc"),
+                    arg_conv(combine_monomial())
+                )
             else:
                 cv = all_conv()
         else:
-            if term_ord.fast_compare(t.arg1, t.arg) == term_ord.GREATER:
+            cmp = compare_monomial(t.arg1, t.arg)
+            if cmp == term_ord.GREATER:
                 cv = rewr_conv_thm(thy, "add_comm")
+            elif cmp == term_ord.EQUAL:
+                cv = combine_monomial()
             else:
                 cv = all_conv()
 
