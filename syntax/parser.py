@@ -130,26 +130,26 @@ class HOLTransformer(Transformer):
         return Comb(fun, arg)
 
     def abs(self, var_name, T, body):
-        return Abs(var_name, T, body)
+        return Abs(var_name, T, body.abstract_over(Var(var_name, None)))
 
     def abs_notype(self, var_name, body):
-        return Abs(var_name, None, body)
+        return Abs(var_name, None, body.abstract_over(Var(var_name, None)))
 
     def all(self, var_name, T, body):
         all_t = Const("all", None)
-        return all_t(Abs(var_name, T, body))
+        return all_t(Abs(var_name, T, body.abstract_over(Var(var_name, None))))
 
     def all_notype(self, var_name, body):
         all_t = Const("all", None)
-        return all_t(Abs(var_name, None, body))
+        return all_t(Abs(var_name, None, body.abstract_over(Var(var_name, None))))
 
     def exists(self, var_name, T, body):
         exists_t = Const("exists", None)
-        return exists_t(Abs(var_name, T, body))
+        return exists_t(Abs(var_name, T, body.abstract_over(Var(var_name, None))))
 
     def exists_notype(self, var_name, body):
         exists_t = Const("exists", None)
-        return exists_t(Abs(var_name, None, body))
+        return exists_t(Abs(var_name, None, body.abstract_over(Var(var_name, None))))
 
     def times(self, lhs, rhs):
         return nat.times(lhs, rhs)

@@ -44,7 +44,6 @@ def type_infer(thy, ctxt, t):
     explicitly given.
     
     """
-    ctxt = ctxt.copy()  # Do not modify the input ctxt
     uf = unionfind.UnionFind()
 
     # Number of internal type variables created.
@@ -64,7 +63,7 @@ def type_infer(thy, ctxt, t):
                 uf.insert(Ts)
 
     # Infer the type of T.
-    def infer(t):
+    def infer(t, bd_vars):
         # Var case: if type is not known, try to obtain it from context,
         # otherwise, make a new type.
         if t.ty == Term.VAR:
@@ -92,8 +91,8 @@ def type_infer(thy, ctxt, t):
         # Comb case: recursively infer type of fun and arg, then
         # unify funT with argT => resT, where resT is a new type.
         elif t.ty == Term.COMB:
-            funT = infer(t.fun)
-            argT = infer(t.arg)
+            funT = infer(t.fun, bd_vars)
+            argT = infer(t.arg, bd_vars)
             resT = new_type()
             add_type(TFun(argT, resT))
             unify(uf, funT, TFun(argT, resT))
@@ -106,21 +105,19 @@ def type_infer(thy, ctxt, t):
             if t.var_T is None:
                 t.var_T = new_type()
                 add_type(t.var_T)
-            ctxt[t.var_name] = t.var_T
-            bodyT = infer(t.body)
-            del ctxt[t.var_name]
+            bodyT = infer(t.body, [t.var_T] + bd_vars)
             resT = TFun(t.var_T, bodyT)
             add_type(resT)
             return resT
 
         # Bound variables should not appear during inference.
         elif t.ty == Term.BOUND:
-            raise TypeInferenceException("Unexpected bound variable")
+            return bd_vars[t.n]
 
         else:
             raise TypeError()
 
-    infer(t)
+    infer(t, [])
 
     # Replace vars and constants with the appropriate type.
     tyinst = dict()
@@ -129,17 +126,6 @@ def type_infer(thy, ctxt, t):
         if is_internal_type(rep):
             raise TypeInferenceException("Unspecified type\n" + repr(t))
         tyinst["_t" + str(i)] = rep
-
-    # Perform the necessary abstractions
-    def abstract(t):
-        if t.ty == Term.COMB:
-            abstract(t.fun)
-            abstract(t.arg)
-        elif t.ty == Term.ABS:
-            abstract(t.body)
-            t.body = t.body.abstract_over(Var(t.var_name, t.var_T))
-
-    abstract(t)
 
     # Substitute using inst until no internal variable remains
     def has_internalT(T):

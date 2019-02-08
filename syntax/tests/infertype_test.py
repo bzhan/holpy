@@ -48,10 +48,10 @@ class InferTypeTest(unittest.TestCase):
             (Const("equals", None)(Var("a", None), Var("b", None)),
              Const("equals", TFun(Ta, Ta, hol_bool))(Var("a", Ta), Var("b", Ta))),
             # %x. P x
-            (Abs("x", None, Var("P", None)(Var("x", None))),
+            (Abs("x", None, Var("P", None)(Bound(0))),
              Abs("x", Ta, Var("P", TFun(Ta, hol_bool))(Bound(0)))),
             # %x y. x = y
-            (Abs("x", Ta, Abs("y", None, Const("equals", None)(Var("x", None), Var("y", None)))),
+            (Abs("x", Ta, Abs("y", None, Const("equals", None)(Bound(1), Bound(0)))),
              Abs("x", Ta, Abs("y", Ta, Const("equals", TFun(Ta, Ta, hol_bool))(Bound(1), Bound(0))))),
             # [a]
             (Const("cons", None)(Var("a", None), Const("nil", None)),
