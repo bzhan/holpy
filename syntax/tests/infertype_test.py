@@ -38,18 +38,24 @@ ctxt = {
 class InferTypeTest(unittest.TestCase):
     def testInferType(self):
         test_data = [
+            # A1 --> A2
             (Const("implies", None)(Var("A1", None), Var("A2", None)),
              Term.mk_implies(Var("A1", hol_bool), Var("A2", hol_bool))),
+            # A1 = A2
             (Const("equals", None)(Var("A1", hol_bool), Var("A2", None)),
              Term.mk_equals(Var("A1", hol_bool), Var("A2", hol_bool))),
+            # a = b
             (Const("equals", None)(Var("a", None), Var("b", None)),
-             Term.mk_equals(Var("a", Ta), Var("b", Ta))),
+             Const("equals", TFun(Ta, Ta, hol_bool))(Var("a", Ta), Var("b", Ta))),
+            # %x. P x
             (Abs("x", None, Var("P", None)(Var("x", None))),
              Abs("x", Ta, Var("P", TFun(Ta, hol_bool))(Bound(0)))),
+            # %x y. x = y
             (Abs("x", Ta, Abs("y", None, Const("equals", None)(Var("x", None), Var("y", None)))),
              Abs("x", Ta, Abs("y", Ta, Const("equals", TFun(Ta, Ta, hol_bool))(Bound(1), Bound(0))))),
+            # [a]
             (Const("cons", None)(Var("a", None), Const("nil", None)),
-             Const("cons", TFun(Ta, listT(Ta), listT(Ta)))(Var("a", Ta), Const("nil", listT(Ta)))),
+             list.cons(Ta)(Var("a", Ta), Const("nil", listT(Ta)))),
         ]
 
         for t, res in test_data:

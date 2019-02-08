@@ -1,29 +1,47 @@
 # Author: Bohua Zhan
 
 from kernel.type import TVar, Type, TFun
-from kernel.term import Const
+from kernel.term import Term, Const
 
 """Utility functions for lists."""
-
-_Ta = TVar("a")
-_Talist = Type("list", _Ta)
 
 def listT(T):
     return Type("list", T)
 
-nil = Const("nil", _Talist)
-cons = Const("cons", TFun(_Ta, _Talist, _Talist))
-append = Const("append", TFun(_Talist, _Talist, _Talist))
+def nil(T):
+    if T is None:
+        return Const("nil", None)
+    return Const("nil", listT(T))
+
+def cons(T):
+    if T is None:
+        return Const("cons", None)
+    return Const("cons", TFun(T, listT(T), listT(T)))
+
+def append(T):
+    if T is None:
+        return Const("append", None)
+    return Const("append", TFun(listT(T), listT(T), listT(T)))
+
+def is_nil(t):
+    return t.is_const_with_name("nil")
 
 def is_cons(t):
-    return t.is_binop() and t.get_head() == cons
+    return t.is_binop() and t.get_head().is_const_with_name("cons")
 
 def is_append(t):
-    return t.is_binop() and t.get_head() == append
+    return t.is_binop() and t.get_head().is_const_with_name("append")
+
+def mk_cons(x, xs):
+    return cons(x.get_type())(x, xs)
+
+def mk_append(xs, ys):
+    T = xs.get_type().args[0]
+    return append(T)(xs, ys)
 
 def is_literal_list(t):
     """Whether t is of the form [x_1, ..., x_n]."""
-    if t == nil:
+    if is_nil(t):
         return True
     elif is_cons(t):
         return is_literal_list(t.arg)
@@ -35,14 +53,14 @@ def dest_literal_list(t):
     of terms x_1, ..., x_n.
 
     """
-    if t == nil:
+    if is_nil(t):
         return []
     elif is_cons(t):
         return [t.arg1] + dest_literal_list(t.arg)
 
-def mk_literal_list(ts):
+def mk_literal_list(ts, T):
     """Given terms x_1, ..., x_n, return the term [x_1, ..., x_n]."""
     if ts:
-        return cons(ts[0], mk_literal_list(ts[1:]))
+        return cons(T)(ts[0], mk_literal_list(ts[1:], T))
     else:
-        return nil
+        return nil(T)

@@ -37,6 +37,9 @@ all = Term.mk_all
 neg = logic.neg
 exists = logic.mk_exists
 mk_if = logic.mk_if
+nil = list.nil
+cons = list.mk_cons
+append = list.mk_append
 
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
@@ -152,16 +155,16 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintList(self):
         test_data = [
-            (list.append(xs, ys), "xs @ ys"),
-            (list.append(list.append(xs, ys), zs), "(xs @ ys) @ zs"),
-            (list.append(xs, list.append(ys, zs)), "xs @ ys @ zs"),
-            (list.nil, "[]"),
-            (list.cons(a, list.nil), "[a]"),
-            (list.cons(a, list.cons(b, list.nil)), "[a, b]"),
-            (list.cons(a, xs), "a # xs"),
-            (list.append(list.cons(a, list.nil), list.cons(b, list.nil)), "[a] @ [b]"),
-            (list.cons(a, list.append(xs, ys)), "a # xs @ ys"),
-            (list.append(list.cons(a, xs), ys), "(a # xs) @ ys"),
+            (append(xs, ys), "xs @ ys"),
+            (append(append(xs, ys), zs), "(xs @ ys) @ zs"),
+            (append(xs, append(ys, zs)), "xs @ ys @ zs"),
+            (nil(Ta), "[]"),
+            (cons(a, nil(Ta)), "[a]"),
+            (cons(a, cons(b, nil(Ta))), "[a, b]"),
+            (cons(a, xs), "a # xs"),
+            (append(cons(a, nil(Ta)), cons(b, nil(Ta))), "[a] @ [b]"),
+            (cons(a, append(xs, ys)), "a # xs @ ys"),
+            (append(cons(a, xs), ys), "(a # xs) @ ys"),
         ]
 
         for t, s in test_data:

@@ -44,6 +44,7 @@ def type_infer(thy, ctxt, t):
     explicitly given.
     
     """
+    ctxt = ctxt.copy()  # Do not modify the input ctxt
     uf = unionfind.UnionFind()
 
     # Number of internal type variables created.
@@ -140,4 +141,21 @@ def type_infer(thy, ctxt, t):
 
     abstract(t)
 
-    return t.subst_type(tyinst)
+    # Substitute using inst until no internal variable remains
+    def has_internalT(T):
+        return any(is_internal_type(subT) for subT in T.get_tsubs())
+
+    def has_internal(t):
+        if t.ty == Term.VAR or t.ty == Term.CONST:
+            return has_internalT(t.T)
+        elif t.ty == Term.COMB:
+            return has_internal(t.fun) or has_internal(t.arg)
+        elif t.ty == Term.ABS:
+            return has_internalT(t.var_T) or has_internal(t.body)
+        else:
+            return False
+
+    while has_internal(t):
+        t = t.subst_type(tyinst)
+
+    return t

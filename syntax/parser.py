@@ -12,29 +12,7 @@ from logic import induct
 from logic import logic
 from logic import nat
 from logic import list
-
-def _abstract_over_name(t, name, n):
-    """Helper function for abstract_over_name. Here t is an open term.
-    All atomic terms with the given name should be replaced by Bound n.
-
-    """
-    if t.ty == Term.VAR or t.ty == Term.CONST:
-        if t.name == name:
-            return Bound(n)
-        else:
-            return t
-    elif t.ty == Term.COMB:
-        return Comb(_abstract_over_name(t.fun, name, n), _abstract_over_name(t.arg, name, n))
-    elif t.ty == Term.ABS:
-        return Abs(t.var_name, t.var_T, _abstract_over_name(t.body, name, n+1))
-    elif t.ty == Term.BOUND:
-        return t
-    else:
-        raise TypeError()
-
-def abstract_over_name(t, name, T):
-    """Abstract over all atomic terms with the given name."""
-    return Abs(name, T, _abstract_over_name(t, name, 0))
+from syntax import infertype
 
 
 class ParserException(Exception):
@@ -123,47 +101,36 @@ class HOLTransformer(Transformer):
 
     def vname(self, s):
         thy = parser_setting['thy']
-        ctxt = parser_setting['ctxt']
         s = str(s)
         if thy.has_term_sig(s):
             # s is the name of a constant in the theory
             return Const(s, thy.get_term_sig(s))
-        elif s in ctxt:
-            # s is the name of a variable in the theory
-            return Var(s, ctxt[s])
         else:
-            # s not found, presumably a bound variable
+            # s not found, either bound or free variable
             return Var(s, None)
 
     def number(self, n):
         return nat.to_binary(int(n))
 
     def literal_list(self, *args):
-        return list.mk_literal_list(args)
+        return list.mk_literal_list(args, None)
 
     def if_expr(self, P, x, y):
-        return logic.mk_if(P, x, y)
+        return Const("IF", None)(P, x, y)
 
     def comb(self, fun, arg):
         return Comb(fun, arg)
 
     def abs(self, var_name, T, body):
-        # Bound variables should be represented by Var(var_name, None).
-        # Abstract over it, and remember to change the type to T.
-        t = abstract_over_name(body, var_name, T)
-        return Abs(var_name, T, t.body)
+        return Abs(var_name, T, body)
 
     def all(self, var_name, T, body):
-        # Similar parsing mechanism as for abs.
-        all_t = Const("all", TFun(TFun(T, hol_bool), hol_bool))
-        t = abstract_over_name(body, var_name, T)
-        return all_t(t)
+        all_t = Const("all", None)
+        return all_t(Abs(var_name, T, body))
 
     def exists(self, var_name, T, body):
-        # Similar parsing mechanism as for abs.
-        exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
-        t = abstract_over_name(body, var_name, T)
-        return exists_t(t)
+        exists_t = Const("exists", None)
+        return exists_t(Abs(var_name, T, body))
 
     def times(self, lhs, rhs):
         return nat.times(lhs, rhs)
@@ -172,13 +139,13 @@ class HOLTransformer(Transformer):
         return nat.plus(lhs, rhs)
 
     def append(self, lhs, rhs):
-        return list.append(lhs, rhs)
+        return Const("append", None)(lhs, rhs)
 
     def cons(self, lhs, rhs):
-        return list.cons(lhs, rhs)
+        return Const("cons", None)(lhs, rhs)
 
     def eq(self, lhs, rhs):
-        return Term.mk_equals(lhs, rhs)
+        return Const("equals", None)(lhs, rhs)
 
     def neg(self, t):
         return logic.neg(t)
@@ -224,20 +191,24 @@ def parse_type(thy, s):
 def parse_term(thy, ctxt, s):
     """Parse a term."""
     parser_setting['thy'] = thy
-    parser_setting['ctxt'] = ctxt
-    return term_parser.parse(s)
+    t = term_parser.parse(s)
+    return infertype.type_infer(thy, ctxt, t)
 
 def parse_thm(thy, ctxt, s):
     """Parse a theorem (sequent)."""
     parser_setting['thy'] = thy
-    parser_setting['ctxt'] = ctxt
-    return thm_parser.parse(s)
+    th = thm_parser.parse(s)
+    th.assums = set(infertype.type_infer(thy, ctxt, assum) for assum in th.assums)
+    th.concl = infertype.type_infer(thy, ctxt, th.concl)
+    return th
 
 def parse_inst(thy, ctxt, s):
     """Parse a term instantiation."""
     parser_setting['thy'] = thy
-    parser_setting['ctxt'] = ctxt
-    return inst_parser.parse(s)
+    inst = inst_parser.parse(s)
+    for k in inst:
+        inst[k] = infertype.type_infer(thy, ctxt, inst[k])
+    return inst
 
 def parse_tyinst(thy, s):
     """Parse a type instantiation."""
