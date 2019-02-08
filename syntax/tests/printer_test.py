@@ -210,42 +210,21 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintHighlight(self):
         """Test highlight, with print_abs_type=False."""
-        NORMAL, BOUND, VAR = printer.NORMAL, printer.BOUND, printer.VAR
+        # 0, 1, 2 = NORMAL, BOUND, VAR
         test_data = [
-            (abs(a, P(a)), [('%', NORMAL), ('a', BOUND), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND)]),
-            (all(a, P(a)), [('!', NORMAL), ('a', BOUND), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", BOUND)]),
-            (all(a, all(b, conj(P(a),P(b)))), [('!', NORMAL), ('a', BOUND), ('. ', NORMAL), ('!',NORMAL), ('b', BOUND), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND), (' & ', NORMAL), ('P', VAR), (' ',NORMAL), ('b',BOUND)]),
-            (exists(a, all(b, R(a, b))), [('?', NORMAL), ("a", BOUND), ('. ', NORMAL), ('!', NORMAL), ('b', BOUND), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', BOUND), (' ', NORMAL), ('b',BOUND)]),
-            (exists(a, P(a)), [('?', NORMAL), ('a', BOUND), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND)]),
-            (disj(disj(A, B), C), [('(', NORMAL), ('A', VAR), (' | ', NORMAL), ('B', VAR), (')', NORMAL), (' | ', NORMAL), ('C', VAR)]),
-            (imp(imp(A, B), C), [('(', NORMAL), ('A', VAR), (' --> ', NORMAL), ('B', VAR), (')', NORMAL), (' --> ', NORMAL), ('C', VAR)])
+            (abs(a,P(a)), [('%',0),('a',1),('. ',0),('P',2),(' ',0),('a',1)]),
+            (all(a,P(a)), [('!',0),('a',1),('. ',0),('P',2),(' ',0),("a",1)]),
+            (all(a,all(b,conj(P(a),P(b)))), [('!',0),('a',1),('. ',0),('!',0),('b',1),('. ',0),('P',2),(' ',0),('a',1),(' & ',0),('P',2),(' ',0),('b',1)]),
+            (exists(a,all(b,R(a,b))), [('?',0),("a",1),('. ',0),('!',0),('b',1),('. ',0),('R',2),(' ',0),('a',1),(' ',0),('b',1)]),
+            (exists(a,P(a)), [('?',0),('a',1),('. ',0),('P',2),(' ',0),('a',1)]),
+            (disj(disj(A,B),C), [('(',0),('A',2),(' | ',0),('B',2),(')',0),(' | ',0),('C',2)]),
+            (imp(imp(A,B),C), [('(',0),('A',2),(' --> ',0),('B',2),(')',0),(' --> ',0),('C',2)]),
+            (abs(a,a), [('%',0),('a',1),('::',0),("'a",0),('. ',0),('a',1)]),
         ]
 
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t, highlight=True), s)
 
-    def testPrintHighlightAbs(self):
-        """Test highlight, with print_abs_type=True."""
-        NORMAL, BOUND, VAR = printer.NORMAL, printer.BOUND, printer.VAR        
-        test_data = [
-            (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('b', VAR)]),
-            (Abs("x", Ta, Bound(0)), [('%', NORMAL), ('x', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('x', BOUND)]),
-            (Abs("x", Ta, "y", Ta, Bound(1)),
-            [('%', NORMAL), ('x', BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('%',NORMAL), ('y',BOUND), ('::',NORMAL), ("'a",NORMAL), ('. ',NORMAL), ('x',BOUND)]),
-            (all(a, P(a)), [('!', NORMAL), ('a', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", BOUND)]),
-            (all(a, all(b, conj(P(a), P(b)))),
-            [('!', NORMAL), ('a', BOUND), ('::', NORMAL) ,("'a", NORMAL), ('. ', NORMAL), ('!',NORMAL), ('b', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND), (' & ', NORMAL), ('P', VAR), (' ',NORMAL), ('b',BOUND)]),
-            (exists(a, all(b, R(a, b))),
-            [('?', NORMAL), ("a", BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('!', NORMAL), ('b', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', BOUND), (' ', NORMAL), ('b',BOUND)]),
-            (exists(a, P(a)), [('?', NORMAL), ('a', BOUND), ('::', NORMAL), ("'a", NORMAL), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND)]),
-            (disj(disj(A, B), C),
-            [('(', NORMAL), ('A', VAR), (' | ', NORMAL), ('B', VAR), (')', NORMAL), (' | ', NORMAL), ('C', VAR)]),
-            (imp(imp(A, B), C),
-            [('(', NORMAL), ('A', VAR), (' --> ', NORMAL), ('B', VAR), (')', NORMAL), (' --> ', NORMAL), ('C', VAR)])
-        ]
-
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t, print_abs_type=True, highlight=True), s)
 
 if __name__ == "__main__":
     unittest.main()
