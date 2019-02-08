@@ -91,8 +91,8 @@ class ParserTest(unittest.TestCase):
 
             # Abstraction
             ("%x::'a. x", "'a => 'a"),
-            ("%x::'a. P x", "'a => bool"),
-            ("%x::'a. %y::'a. R x y", "'a => 'a => bool"),
+            ("%x. P x", "'a => bool"),
+            ("%x. %y. R x y", "'a => 'a => bool"),
 
             # Equality and implies
             ("a = b", "bool"),
@@ -138,17 +138,17 @@ class ParserTest(unittest.TestCase):
             ("nn A & B", "bool"),
 
             # Quantifiers
-            ("!x::'a. P x", "bool"),
-            ("!x::'a. !y::'a. R x y", "bool"),
-            ("!x::'a. P x & Q x", "bool"),
-            ("(!x::'a. P x) & Q a", "bool"),
-            ("!x::'a. P x --> Q x", "bool"),
-            ("(!x::'a. P x) --> Q a", "bool"),
-            ("A = (!x::'a. P x)", "bool"),
-            ("?x::'a. P x", "bool"),
-            ("?x::'a. !y::'a. R x y", "bool"),
-            ("!x::'a. ?y::'a. R x y", "bool"),
-            ("!a::'a. P a", "bool"),
+            ("!x. P x", "bool"),
+            ("!x. !y. R x y", "bool"),
+            ("!x. P x & Q x", "bool"),
+            ("(!x. P x) & Q a", "bool"),
+            ("!x. P x --> Q x", "bool"),
+            ("(!x. P x) --> Q a", "bool"),
+            ("A = (!x. P x)", "bool"),
+            ("?x. P x", "bool"),
+            ("?x. !y. R x y", "bool"),
+            ("!x. ?y. R x y", "bool"),
+            ("!a. P a", "bool"),
 
             # If expression
             ("if A then a else b", "'a"),
@@ -194,7 +194,7 @@ class ParserTest(unittest.TestCase):
             T = parser.parse_type(thy, Ts)
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t, print_abs_type=True), s)
+            self.assertEqual(print_term(thy, t), s)
 
     def testParseTermNoAbs(self):
         test_data = [

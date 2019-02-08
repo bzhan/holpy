@@ -181,17 +181,6 @@ class PrinterTest(unittest.TestCase):
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
 
-    def testPrintAbsType(self):
-        test_data = [
-            (Abs("x", Ta, b), "%x::'a. b"),
-            (Abs("x", Ta, "y", Ta, b), "%x::'a. %y::'a. b"),
-            (all(a, P(a)), "!a::'a. P a"),
-            (all(a, all(b, conj(P(a),P(b)))), "!a::'a. !b::'a. P a & P b"),
-        ]
-
-        for t, repr_t in test_data:
-            self.assertEqual(printer.print_term(thy, t, print_abs_type=True), repr_t)
-
     def testPrintUnicode(self):
         test_data = [
             (conj(A, B), "A ∧ B"),
@@ -209,7 +198,7 @@ class PrinterTest(unittest.TestCase):
             self.assertEqual(printer.print_term(thy, t, unicode=True), s)
 
     def testPrintHighlight(self):
-        """Test highlight, with print_abs_type=False."""
+        """Test highlight"""
         # 0, 1, 2 = NORMAL, BOUND, VAR
         test_data = [
             (abs(a,P(a)), [('%',0),('a',1),('. ',0),('P',2),(' ',0),('a',1)]),

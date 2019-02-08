@@ -58,15 +58,6 @@ class TermTest(unittest.TestCase):
         for t, str_t in test_data:
             self.assertEqual(str(t), str_t)
 
-    def testPrintTermWithAbsType(self):
-        test_data = [
-            (Abs("x", Ta, b), "%x::'a. b"),
-            (Abs("x", Ta, "y", Ta, b), "%x::'a. %y::'a. b"),
-        ]
-
-        for t, str_t in test_data:
-            self.assertEqual(t.print(print_abs_type=True), str_t)
-
     def testEquals(self):
         test_data = [
             (Abs("x", Ta, b), Abs("y", Ta, b)),

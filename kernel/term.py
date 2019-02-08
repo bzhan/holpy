@@ -81,9 +81,8 @@ class Term():
                     str_arg = helper(t.arg, bd_vars)
                 return str_fun + " " + str_arg
             elif t.ty == Term.ABS:
-                var_str = t.var_name + "::" + str(t.var_T) if settings.print_abs_type() else t.var_name
                 body_repr = helper(t.body, [t.var_name] + bd_vars)
-                return "%" + var_str + ". " + body_repr
+                return "%" + t.var_name + ". " + body_repr
             elif t.ty == Term.BOUND:
                 if t.n >= len(bd_vars):
                     raise OpenTermException

@@ -7,9 +7,6 @@ settings_stack = [{
     # Function for printing terms.
     'term_printer': None,
 
-    # Whether to print type for bound variables.
-    'print_abs_type': False,
-
     # Whether to print unicode.
     'unicode': False,
 
@@ -30,9 +27,6 @@ def recover_settings():
 def term_printer():
     return settings_stack[-1]['term_printer']
 
-def print_abs_type():
-    return settings_stack[-1]['print_abs_type']
-
 def unicode():
     return settings_stack[-1]['unicode']
 
@@ -43,7 +37,7 @@ def with_settings(func):
     """Decorator for functions that accept printer settings.
 
     This decorator enables the wrapped function to accept keyword
-    arguments term_printer, print_abs_type, unicode, and highlight.
+    arguments term_printer, unicode, and highlight.
     These keyword arguments are removed before calling the
     actual function.
 
