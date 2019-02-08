@@ -60,7 +60,7 @@ def fast_compare(t1, t2):
     elif t1.ty == Term.COMB:
         return compare_pair((t1.fun, t1.arg), (t2.fun, t2.arg), fast_compare, fast_compare)
     elif t1.ty == Term.ABS:
-        return compare_pair((t1.T, t1.body), (t2.T, t2.body), fast_compare_typ, fast_compare)
+        return compare_pair((t1.var_T, t1.body), (t2.var_T, t2.body), fast_compare_typ, fast_compare)
     elif t1.ty == Term.BOUND:
         return compare(t1.n, t2.n)
     else:

@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+
 class TypeMatchException(Exception):
     pass
 
@@ -112,6 +113,8 @@ class HOLType():
             return hash(("COMB", self.name, tuple(hash(arg) for arg in self.args)))
     
     def __eq__(self, other):
+        if not isinstance(other, HOLType):
+            return False
         if self.ty != other.ty:
             return False
         elif self.ty == HOLType.TVAR:
@@ -120,6 +123,19 @@ class HOLType():
             return self.name == other.name and self.args == other.args
         else:
             raise TypeError()
+
+    def __le__(self, other):
+        if self.ty != other.ty:
+            return self.ty <= other.ty
+        elif self.ty == HOLType.TVAR:
+            return self.name <= other.name
+        elif self.ty == HOLType.TYPE:
+            return (self.name, self.args) <= (other.name, other.args)
+        else:
+            raise TypeError()
+
+    def __lt__(self, other):
+        return self <= other and self != other
 
     def subst(self, tyinst):
         """Given a dictionary tyinst mapping from names to types,
@@ -166,6 +182,26 @@ class HOLType():
         tyinst = dict()
         self.match_incr(T, tyinst)
         return tyinst
+
+    def get_tvars(self):
+        """Return the list of type variables."""
+        def collect(T):
+            if T.ty == HOLType.TVAR:
+                return [T]
+            else:
+                return sum([collect(arg) for arg in T.args], [])
+
+        return sorted(list(set(collect(self))))
+
+    def get_tsubs(self):
+        """Return the list of types appearing in self."""
+        def collect(T):
+            if T.ty == HOLType.TVAR:
+                return [T]
+            else:
+                return sum([collect(arg) for arg in T.args], [T])
+
+        return sorted(list(set(collect(self))))
 
 class TVar(HOLType):
     """Type variable."""

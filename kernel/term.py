@@ -78,7 +78,7 @@ class Term():
                     str_arg = helper(t.arg, bd_vars)
                 return str_fun + " " + str_arg
             elif t.ty == Term.ABS:
-                var_str = t.var_name + "::" + str(t.T) if settings.print_abs_type() else t.var_name
+                var_str = t.var_name + "::" + str(t.var_T) if settings.print_abs_type() else t.var_name
                 body_repr = helper(t.body, [t.var_name] + bd_vars)
                 return "%" + var_str + ". " + body_repr
             elif t.ty == Term.BOUND:
@@ -111,7 +111,7 @@ class Term():
             else:
                 return repr(self.fun) + " $ " + repr(self.arg)
         elif self.ty == Term.ABS:
-            return "Abs(" + self.var_name + "," + str(self.T) + "," + repr(self.body) + ")"
+            return "Abs(" + self.var_name + "," + str(self.var_T) + "," + repr(self.body) + ")"
         elif self.ty == Term.BOUND:
             return "Bound " + str(self.n)
         else:
@@ -125,7 +125,7 @@ class Term():
         elif self.ty == Term.COMB:
             return hash(("COMB", hash(self.fun), hash(self.arg)))
         elif self.ty == Term.ABS:
-            return hash(("ABS", hash(self.T), hash(self.body)))
+            return hash(("ABS", hash(self.var_T), hash(self.body)))
         elif self.ty == Term.BOUND:
             return hash(("BOUND", self.n))
         else:
@@ -137,7 +137,7 @@ class Term():
 
         """
         if not isinstance(other, Term):
-            raise TypeError()
+            return False
         elif self.ty != other.ty:
             return False
         elif self.ty == Term.VAR or self.ty == Term.CONST:
@@ -146,7 +146,7 @@ class Term():
             return self.fun == other.fun and self.arg == other.arg
         elif self.ty == Term.ABS:
             # Note the suggested variable name is not important
-            return self.T == other.T and self.body == other.body
+            return self.var_T == other.var_T and self.body == other.body
         elif self.ty == Term.BOUND:
             return self.n == other.n
         else:
@@ -173,7 +173,7 @@ class Term():
             else:
                 raise TypeCheckException()
         elif self.ty == Term.ABS:
-            return TFun(self.T, self.body._get_type([self.T] + bd_vars))
+            return TFun(self.var_T, self.body._get_type([self.var_T] + bd_vars))
         elif self.ty == Term.BOUND:
             if self.n >= len(bd_vars):
                 raise OpenTermException()
@@ -212,7 +212,7 @@ class Term():
         elif self.ty == Term.COMB:
             return Comb(self.fun.subst_type(tyinst), self.arg.subst_type(tyinst))
         elif self.ty == Term.ABS:
-            return Abs(self.var_name, self.T.subst(tyinst), self.body.subst_type(tyinst))
+            return Abs(self.var_name, self.var_T.subst(tyinst), self.body.subst_type(tyinst))
         elif self.ty == Term.BOUND:
             return self
         else:
@@ -242,7 +242,7 @@ class Term():
         elif self.ty == Term.COMB:
             return Comb(self.fun.subst(inst), self.arg.subst(inst))
         elif self.ty == Term.ABS:
-            return Abs(self.var_name, self.T, self.body.subst(inst))
+            return Abs(self.var_name, self.var_T, self.body.subst(inst))
         elif self.ty == Term.BOUND:
             return self
         else:
@@ -308,17 +308,14 @@ class Term():
         return self.ty == Term.COMB and self.fun.ty == Term.CONST and \
             self.fun.name == "all" and self.arg.ty == Term.ABS
 
-    def mk_all(x, body, *, var_name = None, T = None):
+    def mk_all(x, body):
         """Given a variable x and a term t possibly depending on x, return
         the term !x. t. Optional arguments var_name and T specify the
         suggested name and type of the bound variable.
 
         """
-        if T is None:
-            T = x.T
-
-        all_t = Const("all", TFun(TFun(T, hol_bool), hol_bool))
-        return all_t(Term.mk_abs(x, body, var_name = var_name, T = T))
+        all_t = Const("all", TFun(TFun(x.T, hol_bool), hol_bool))
+        return all_t(Term.mk_abs(x, body))
 
     @staticmethod
     def equals(T):
@@ -349,7 +346,7 @@ class Term():
         elif self.ty == Term.COMB:
             return Comb(self.fun._subst_bound(t,n), self.arg._subst_bound(t,n))
         elif self.ty == Term.ABS:
-            return Abs(self.var_name, self.T, self.body._subst_bound(t, n+1))
+            return Abs(self.var_name, self.var_T, self.body._subst_bound(t, n+1))
         elif self.ty == Term.BOUND:
             if self.n == n:
                 return t
@@ -412,31 +409,32 @@ class Term():
         elif self.ty == Term.COMB:
             return Comb(self.fun._abstract_over(t,n), self.arg._abstract_over(t,n))
         elif self.ty == Term.ABS:
-            return Abs(self.var_name, self.T, self.body._abstract_over(t, n+1))
+            return Abs(self.var_name, self.var_T, self.body._abstract_over(t, n+1))
         elif self.ty == Term.BOUND:
             return self
         else:
             raise TypeError()
 
     def abstract_over(self, t):
-        """Abstract over the variable t."""
+        """Abstract over the variable t. The result is ready to become
+        the body of an Abs term.
+        
+        """
         if t.ty == Term.VAR:
-            return Abs(t.name, t.T, self._abstract_over(t,0))
+            return self._abstract_over(t,0)
         else:
             raise TermSubstitutionException()
 
     @staticmethod
-    def mk_abs(t, body, *, var_name = None, T = None):
+    def mk_abs(t, body):
         """Given body in terms of t, return the term %t. body. Optional
         arguments var_name and T specify the suggested variable name and
         type of the abstraction (default to those of t).
 
         """
-        res = body.abstract_over(t)
-        if var_name is not None:
-            res.var_name = var_name
-        if T is not None:
-            res.T = T
+        if t.ty != Term.VAR:
+            raise TermSubstitutionException()
+        res = Abs(t.name, t.T, body.abstract_over(t))
         return res
 
     def _checked_get_type(self, bd_vars):
@@ -454,8 +452,8 @@ class Term():
             else:
                 raise TypeCheckException()
         elif self.ty == Term.ABS:
-            bodyT = self.body._checked_get_type([self.T] + bd_vars)
-            return TFun(self.T, bodyT)
+            bodyT = self.body._checked_get_type([self.var_T] + bd_vars)
+            return TFun(self.var_T, bodyT)
         elif self.ty == Term.BOUND:
             if self.n >= len(bd_vars):
                 raise OpenTermException()
@@ -502,7 +500,7 @@ class Abs(Term):
         else:
             self.ty = Term.ABS
             self.var_name = args[0]
-            self.T = args[1]
+            self.var_T = args[1]
             if len(args) == 3:
                 self.body = args[2]
             else:

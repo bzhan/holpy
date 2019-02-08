@@ -316,7 +316,7 @@ class Thm():
         |- t[s/x]
         """
         if th.concl.is_all():
-            if th.concl.arg.T != s.get_type():
+            if th.concl.arg.var_T != s.get_type():
                 raise InvalidDerivationException("forall_elim")
             else:
                 return Thm(th.assums, th.concl.arg.subst_bound(s))

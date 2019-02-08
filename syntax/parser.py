@@ -26,7 +26,7 @@ def _abstract_over_name(t, name, n):
     elif t.ty == Term.COMB:
         return Comb(_abstract_over_name(t.fun, name, n), _abstract_over_name(t.arg, name, n))
     elif t.ty == Term.ABS:
-        return Abs(t.var_name, t.T, _abstract_over_name(t.body, name, n+1))
+        return Abs(t.var_name, t.var_T, _abstract_over_name(t.body, name, n+1))
     elif t.ty == Term.BOUND:
         return t
     else:

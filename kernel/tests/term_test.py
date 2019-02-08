@@ -184,11 +184,11 @@ class TermTest(unittest.TestCase):
 
     def testAbstractOver(self):
         test_data = [
-            (a, a, Abs("a", Ta, B0)),
-            (Abs("b", Ta, a), a, Abs("a", Ta, Abs("b", Ta, B1))),
-            (Abs("a", Ta, a), a, Abs("a", Ta, Abs("a", Ta, B1))),
-            (f(a), a, Abs("a", Ta, f(B0))),
-            (c, a, Abs("a", Ta, c)),
+            (a, a, B0),
+            (Abs("b", Ta, a), a, Abs("b", Ta, B1)),
+            (Abs("a", Ta, a), a, Abs("a", Ta, B1)),
+            (f(a), a, f(B0)),
+            (c, a, c),
         ]
 
         for s, t, res in test_data:

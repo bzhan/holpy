@@ -73,16 +73,13 @@ def is_exists(t):
     return t.ty == Term.COMB and t.fun.ty == Term.CONST and \
         t.fun.name == "exists" and t.arg.ty == Term.ABS
 
-def mk_exists(x, body, *, var_name = None, T = None):
+def mk_exists(x, body):
     """Given a variable x and a term t possibly depending on x, return
     the term ?x. t.
 
     """
-    if T is None:
-        T = x.T
-
-    exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
-    return exists_t(Term.mk_abs(x, body, var_name = var_name, T = T))
+    exists_t = Const("exists", TFun(TFun(x.T, hol_bool), hol_bool))
+    return exists_t(Term.mk_abs(x, body))
 
 def beta_norm(t):
     """Normalize t using beta-conversion."""
@@ -96,7 +93,7 @@ def beta_norm(t):
         else:
             return f(x)
     elif t.ty == Term.ABS:
-        return Abs(t.var_name, t.T, beta_norm(t.body))
+        return Abs(t.var_name, t.var_T, beta_norm(t.body))
     elif t.ty == Term.BOUND:
         return t
     else:

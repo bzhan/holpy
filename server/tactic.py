@@ -61,7 +61,7 @@ def strip_all_implies(t, names):
     """
     if Term.is_all(t):
         assert len(names) > 0, "strip_all_implies: not enough names input."
-        v = Var(names[0], t.arg.T)
+        v = Var(names[0], t.arg.var_T)
         vars, As, C = strip_all_implies(t.arg.subst_bound(v), names[1:])
         return ([v] + vars, As, C)
     else:
@@ -435,7 +435,7 @@ class ProofState():
         concl = cur_item.th.concl
 
         # Instantiation for P
-        P = concl.abstract_over(var)
+        P = Term.mk_abs(var, concl)
         inst = {"P": P, "x": var}
         self.apply_backward_step(id, th_name, inst=inst)
 

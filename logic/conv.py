@@ -135,7 +135,7 @@ class abs_conv(Conv):
             raise ConvException()
         
         # Find a new variable x and substitute for body
-        v = Var(t.var_name, t.T)
+        v = Var(t.var_name, t.var_T)
         t2 = t.subst_bound(v)
         return Thm.abstraction(v, self.cv(t2))
 
@@ -144,7 +144,7 @@ class abs_conv(Conv):
             raise ConvException()
 
         # Find a new variable x and substitute for body
-        v = Var(t.var_name, t.T)
+        v = Var(t.var_name, t.var_T)
         t2 = t.subst_bound(v)
         return ProofTerm.abstraction(self.cv.get_proof_term(t2), v)
 
