@@ -4,6 +4,7 @@ import unittest
 
 from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
+from kernel.thm import Thm
 from logic import logic
 from logic import nat
 from logic import list
@@ -213,6 +214,17 @@ class PrinterTest(unittest.TestCase):
 
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t, highlight=True), s)
+
+    def testPrintThmHighlight(self):
+        """Test printing of theorems with highlight."""
+        # 0, 1, 2 = NORMAL, BOUND, VAR
+        A = Var('A', hol_bool)
+        B = Var('B', hol_bool)
+        A_to_B = Term.mk_implies(A, B)
+        th = Thm([A, A_to_B], B)
+        p = lambda t: printer.print_term(thy, t)
+        res = printer.print_thm(th, term_printer=p, highlight=True)
+        self.assertEqual(res, [('A',2),(', ',0),('A',2),(' --> ',0),('B',2),(' ',0),('|-',0),(' ',0),('B',2)])
 
 
 if __name__ == "__main__":

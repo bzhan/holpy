@@ -6,7 +6,7 @@ import io
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import Proof, print_thm_highlight
+from kernel.proof import Proof
 from kernel.report import ProofReport
 from logic import logic
 from logic import basic
@@ -244,15 +244,6 @@ class TacticTest(unittest.TestCase):
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
         ths = state.rewrite_goal_thms("S1")
         self.assertEqual([name for name, _ in ths], ["add_comm", "plus_def_1"])
-
-    def testPrintThmHighlight(self):
-        A = Var('A', hol_bool)
-        B = Var('B', hol_bool)
-        A_to_B = Term.mk_implies(A, B)
-        th = Thm([A, A_to_B], B)
-        p = lambda t: printer.print_term(thy, t)
-        res = print_thm_highlight(th, term_printer=p, highlight=True)
-        self.assertEqual(res, [('A',2),(', ',0),('A',2),(' --> ',0),('B',2),(' ',0),('|-',0),(' ',0),('B',2)])
 
 
 if __name__ == "__main__":

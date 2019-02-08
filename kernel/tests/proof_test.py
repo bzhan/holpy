@@ -5,7 +5,7 @@ import unittest
 from kernel.type import hol_bool
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import ProofItem, Proof, print_thm_highlight
+from kernel.proof import ProofItem, Proof
 
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)
@@ -33,7 +33,6 @@ class ProofTest(unittest.TestCase):
 
         for item, s, d in test_data:
             self.assertEqual(str(item), s)
-            self.assertEqual(item.export(), d)
 
     def testProof(self):
         prf = Proof(A_to_B, A)

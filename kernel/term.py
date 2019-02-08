@@ -58,7 +58,6 @@ class Term():
     """
     (VAR, CONST, COMB, ABS, BOUND) = range(5)
 
-    @settings.with_settings
     def default_print(self):
         """Printing function for terms. Note we do not yet handle collision
         in lambda terms.
@@ -93,12 +92,11 @@ class Term():
 
         return helper(self, [])
 
-    @settings.with_settings
     def print(self):
         return settings.term_printer()(self)
 
     def __str__(self):
-        return self.print(highlight=False)
+        return self.print()
 
     def __repr__(self):
         if self.ty == Term.VAR:

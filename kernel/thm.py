@@ -41,15 +41,13 @@ class Thm():
         self.assums = tuple(assums)
         self.concl = concl
 
-    @settings.with_settings
     def print(self):
         """Print the given theorem."""
-        turnstile = "⊢" if settings.unicode() else "|-"
         if self.assums:
             str_assums = ", ".join(str(assum) for assum in self.assums)
-            return str_assums + " " + turnstile + " " + str(self.concl)
+            return str_assums + " |- " + str(self.concl)
         else:
-            return turnstile + " " + str(self.concl)
+            return "|- " + str(self.concl)
 
     def __str__(self):
         return self.print()

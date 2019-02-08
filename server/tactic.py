@@ -138,14 +138,13 @@ class ProofState():
 
         return ProofState.init_state(thy, vars, assums, concl)
 
-    @settings.with_settings
     def json_data(self):
         """Export proof in json format."""
         self.check_proof()
-        term_printer = lambda t: printer.print_term(self.thy, t)
+        p = lambda t: printer.print_term(self.thy, t)
         return {
             "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
-            "proof": [item.export(term_printer=term_printer, unicode=True, highlight=True)
+            "proof": [printer.export_proof_item(item, term_printer=p, unicode=True, highlight=True)
                       for item in self.prf.items],
             "report": self.rpt.json_data()
         }
