@@ -128,7 +128,7 @@
         },
         {
             "name": "exI",
-            "prop": "P a --> ?a::'a. P a",
+            "prop": "P a --> ?a. P a",
             "ty": "thm",
             "vars": {
                 "P": "'a => bool",
@@ -137,7 +137,7 @@
         },
         {
             "name": "exE",
-            "prop": "(?a::'a. P a) --> (!a::'a. P a --> C) --> C",
+            "prop": "(?a. P a) --> (!a. P a --> C) --> C",
             "ty": "thm",
             "vars": {
                 "C": "bool",

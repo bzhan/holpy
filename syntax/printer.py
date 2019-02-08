@@ -67,24 +67,15 @@ def print_term(thy, t):
             return V(t.name)
 
         elif t.ty == Term.CONST:
-            op_data = get_info_for_operator(t)
-            if op_data:
-                if settings.unicode() and op_data.unicode_op:
-                    return N(op_data.unicode_op)
-                else:
-                    return N(op_data.ascii_op)
-
+            if hasattr(t, "print_type") and t.print_type:
+                return N("(" + t.name + "::" + str(t.T) + ")")
             else:
                 return N(t.name)
 
         elif t.ty == Term.COMB:
             op_data = get_info_for_operator(t)
             # First, we take care of the case of operators
-            if op_data and op_data.arity == OperatorData.BINARY:
-                # Partial application of operators, to implement later
-                if not t.is_binop():
-                    raise NotImplementedError()
-
+            if op_data and op_data.arity == OperatorData.BINARY and t.is_binop():
                 arg1, arg2 = t.dest_binop()
 
                 # Obtain output for first argument, enclose in parenthesis

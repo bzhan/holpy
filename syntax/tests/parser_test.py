@@ -180,7 +180,6 @@ class ParserTest(unittest.TestCase):
             ("xs @ ys", "'a list"),
             ("(xs @ ys) @ zs", "'a list"),
             ("xs @ ys @ zs", "'a list"),
-            # ("[]", "'a list"),
             ("[a]", "'a list"),
             ("[a, b]", "'a list"),
             ("[a] @ [b]", "'a list"),
@@ -196,6 +195,40 @@ class ParserTest(unittest.TestCase):
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
             self.assertEqual(print_term(thy, t, print_abs_type=True), s)
+
+    def testParseTermNoAbs(self):
+        test_data = [
+            ("!x. P x", "bool"),
+            ("!x. !y. R x y", "bool"),
+            ("!x. P x & Q x", "bool"),
+            ("(!x. P x) & Q a", "bool"),
+            ("!x. P x --> Q x", "bool"),
+            ("(!x. P x) --> Q a", "bool"),
+            ("A = (!x. P x)", "bool"),
+            ("?x. P x", "bool"),
+            ("?x. !y. R x y", "bool"),
+            ("!x. ?y. R x y", "bool"),
+            ("!a. P a", "bool"),
+        ]
+
+        for s, Ts in test_data:
+            t = parser.parse_term(thy, ctxt, s)
+            T = parser.parse_type(thy, Ts)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(t.checked_get_type(), T)
+            self.assertEqual(print_term(thy, t), s)
+
+    def testParseTypedTerm(self):
+        test_data = [
+            ("([]::'a list)", "'a list"),
+            ("([]::nat list)", "nat list"),
+        ]
+
+        for s, Ts in test_data:
+            t = parser.parse_term(thy, ctxt, s)
+            T = parser.parse_type(thy, Ts)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(t.checked_get_type(), T)
 
     def testParseTermIsString(self):
         a = parser.parse_term(thy, ctxt, 'a')

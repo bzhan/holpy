@@ -184,12 +184,147 @@
                 "Select S5 as goal and S4 as fact, use Ctrl+B with exI."
             ],
             "name": "ex_conj_distrib",
-            "prop": "(?x::'a. A x & B x) --> (?x::'a. A x) & (?x::'a. B x)",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∃x. A x ∧ B x",
+                    "id": "A1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. A x ∧ B x ⊢ ∃x. A x ∧ B x"
+                },
+                {
+                    "args": "A y ∧ B y",
+                    "id": "S1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A y ∧ B y ⊢ A y ∧ B y"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "S2",
+                    "prevs": [
+                        "S1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A y ∧ B y ⊢ A y"
+                },
+                {
+                    "args": "exI, {P: A, a: y}",
+                    "id": "S3",
+                    "prevs": [
+                        "S2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A y ∧ B y ⊢ ∃a. A a"
+                },
+                {
+                    "args": "A y ∧ B y",
+                    "id": "S4",
+                    "prevs": [
+                        "S3"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "∃x. A x ∧ B x ⊢ A y ∧ B y ⟶ (∃x. A x)"
+                },
+                {
+                    "args": "y",
+                    "id": "S5",
+                    "prevs": [
+                        "S4"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "∃x. A x ∧ B x ⊢ ∀y. A y ∧ B y ⟶ (∃x. A x)"
+                },
+                {
+                    "args": "exE, {C: ∃x. A x, P: λx. A x ∧ B x}",
+                    "id": "S6",
+                    "prevs": [
+                        "A1",
+                        "S5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x. A x ∧ B x ⊢ ∃x. A x"
+                },
+                {
+                    "args": "A y ∧ B y",
+                    "id": "S7",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A y ∧ B y ⊢ A y ∧ B y"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "S8",
+                    "prevs": [
+                        "S1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A y ∧ B y ⊢ B y"
+                },
+                {
+                    "args": "exI, {P: B, a: y}",
+                    "id": "S9",
+                    "prevs": [
+                        "S8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A y ∧ B y ⊢ ∃a. B a"
+                },
+                {
+                    "args": "A y ∧ B y",
+                    "id": "S10",
+                    "prevs": [
+                        "S9"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "∃x. A x ∧ B x ⊢ A y ∧ B y ⟶ (∃x. B x)"
+                },
+                {
+                    "args": "y",
+                    "id": "S11",
+                    "prevs": [
+                        "S10"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "∃x. A x ∧ B x ⊢ ∀y. A y ∧ B y ⟶ (∃x. B x)"
+                },
+                {
+                    "args": "exE, {C: ∃x. B x, P: λx. A x ∧ B x}",
+                    "id": "S12",
+                    "prevs": [
+                        "A1",
+                        "S11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x. A x ∧ B x ⊢ ∃x. B x"
+                },
+                {
+                    "args": "conjI, {A: ∃x. A x, B: ∃x. B x}",
+                    "id": "S13",
+                    "prevs": [
+                        "S6",
+                        "S12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x. A x ∧ B x ⊢ (∃x. A x) ∧ (∃x. B x)"
+                },
+                {
+                    "args": "∃x. A x ∧ B x",
+                    "id": "S14",
+                    "prevs": [
+                        "S13"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ (∃x. A x ∧ B x) ⟶ (∃x. A x) ∧ (∃x. B x)"
+                }
+            ],
+            "prop": "(?x. A x & B x) --> (?x. A x) & (?x. B x)",
             "ty": "thm",
             "vars": {
                 "A": "'a => bool",
                 "B": "'a => bool",
-                "x": "'a"
+                "y": "'a"
             }
         },
         {
@@ -202,7 +337,7 @@
                 "Select S4 as goal and S1 as fact, use Ctrl+B with conjD2."
             ],
             "name": "all_conj_distrib",
-            "prop": "(!x::'a. A x & B x) --> (!x::'a. A x) & (!x::'a. B x)",
+            "prop": "(!x. A x & B x) --> (!x. A x) & (!x. B x)",
             "ty": "thm",
             "vars": {
                 "A": "'a => bool",

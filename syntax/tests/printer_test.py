@@ -165,6 +165,7 @@ class PrinterTest(unittest.TestCase):
             (append(cons(a, nil(Ta)), cons(b, nil(Ta))), "[a] @ [b]"),
             (cons(a, append(xs, ys)), "a # xs @ ys"),
             (append(cons(a, xs), ys), "(a # xs) @ ys"),
+            (list.cons(Ta)(a), "cons a"),
         ]
 
         for t, s in test_data:

@@ -93,82 +93,73 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nil",
+                    "args": "append_def_1, {xs: ([]::'a list)}",
                     "id": "S1",
                     "prevs": [],
-                    "rule": "reflexive",
-                    "th": "⊢ nil = nil"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ([]::'a list) @ [] = []"
                 },
                 {
-                    "args": "append_def_1, nil @ nil = nil",
+                    "args": "xs @ [] = xs",
                     "id": "S2",
-                    "prevs": [
-                        "S1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ nil @ nil = nil"
-                },
-                {
-                    "args": "xs @ nil = xs",
-                    "id": "S3",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "xs @ nil = xs ⊢ xs @ nil = xs"
+                    "th": "xs @ [] = xs ⊢ xs @ [] = xs"
                 },
                 {
                     "args": "cons x",
+                    "id": "S3",
+                    "prevs": [
+                        "S2"
+                    ],
+                    "rule": "arg_combination",
+                    "th": "xs @ [] = xs ⊢ x # xs @ [] = x # xs"
+                },
+                {
+                    "args": "append_def_2, (x # xs) @ [] = x # xs",
                     "id": "S4",
                     "prevs": [
                         "S3"
                     ],
-                    "rule": "arg_combination",
-                    "th": "xs @ nil = xs ⊢ cons x (xs @ nil) = cons x xs"
+                    "rule": "rewrite_goal",
+                    "th": "xs @ [] = xs ⊢ (x # xs) @ [] = x # xs"
                 },
                 {
-                    "args": "append_def_2, cons x xs @ nil = cons x xs",
+                    "args": "xs @ [] = xs",
                     "id": "S5",
                     "prevs": [
                         "S4"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "xs @ nil = xs ⊢ cons x xs @ nil = cons x xs"
+                    "rule": "implies_intr",
+                    "th": "⊢ xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
                 },
                 {
-                    "args": "xs @ nil = xs",
+                    "args": "xs",
                     "id": "S6",
                     "prevs": [
                         "S5"
                     ],
-                    "rule": "implies_intr",
-                    "th": "⊢ xs @ nil = xs ⟶ cons x xs @ nil = cons x xs"
+                    "rule": "forall_intr",
+                    "th": "⊢ ∀xs. xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
                 },
                 {
-                    "args": "xs",
+                    "args": "x",
                     "id": "S7",
                     "prevs": [
                         "S6"
                     ],
                     "rule": "forall_intr",
-                    "th": "⊢ ∀xs::'a list. xs @ nil = xs ⟶ cons x xs @ nil = cons x xs"
+                    "th": "⊢ ∀x. ∀xs. xs @ ([]::'a list) = xs ⟶ (x # xs) @ [] = x # xs"
                 },
                 {
-                    "args": "x",
+                    "args": "list_induct, {P: λxs. xs @ ([]::'a list) = xs, x: xs}",
                     "id": "S8",
                     "prevs": [
+                        "S1",
                         "S7"
                     ],
-                    "rule": "forall_intr",
-                    "th": "⊢ ∀x::'a. ∀xs::'a list. xs @ nil = xs ⟶ cons x xs @ nil = cons x xs"
-                },
-                {
-                    "args": "list_induct, {P: λxs::'a list. xs @ nil = xs, x: xs}",
-                    "id": "S9",
-                    "prevs": [
-                        "S2",
-                        "S8"
-                    ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ xs @ nil = xs"
+                    "th": "⊢ xs @ [] = xs"
                 }
             ],
             "prop": "xs @ nil = xs",

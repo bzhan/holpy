@@ -145,8 +145,7 @@ class ProofState():
         term_printer = lambda t: printer.print_term(self.thy, t)
         return {
             "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
-            "proof": [item.export(term_printer=term_printer, print_abs_type=True,
-                                  unicode=True, highlight=True)
+            "proof": [item.export(term_printer=term_printer, unicode=True, highlight=True)
                       for item in self.prf.items],
             "report": self.rpt.json_data()
         }

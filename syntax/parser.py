@@ -32,12 +32,16 @@ grammar = r"""
     ?atom: CNAME -> vname                 // Constant, variable, or bound variable
         | INT -> number                   // Numbers
         | ("%"|"λ") CNAME "::" type ". " term -> abs     // Abstraction
+        | ("%"|"λ") CNAME ". " term           -> abs_notype
         | ("!"|"∀") CNAME "::" type ". " term -> all     // Forall quantification
+        | ("!"|"∀") CNAME ". " term           -> all_notype
         | ("?"|"∃") CNAME "::" type ". " term -> exists  // Exists quantification
+        | ("?"|"∃") CNAME ". " term           -> exists_notype
         | "[]"                     -> literal_list  // Empty list
         | "[" term ("," term)* "]" -> literal_list  // List
         | "if" term "then" term "else" term  -> if_expr // if expression
         | "(" term ")"                    // Parenthesis
+        | "(" term "::" type ")"   -> typed_term    // Term with specified type
 
     ?comb: comb atom | atom
 
@@ -109,6 +113,10 @@ class HOLTransformer(Transformer):
             # s not found, either bound or free variable
             return Var(s, None)
 
+    def typed_term(self, t, T):
+        t.T = T
+        return t
+
     def number(self, n):
         return nat.to_binary(int(n))
 
@@ -124,13 +132,24 @@ class HOLTransformer(Transformer):
     def abs(self, var_name, T, body):
         return Abs(var_name, T, body)
 
+    def abs_notype(self, var_name, body):
+        return Abs(var_name, None, body)
+
     def all(self, var_name, T, body):
         all_t = Const("all", None)
         return all_t(Abs(var_name, T, body))
 
+    def all_notype(self, var_name, body):
+        all_t = Const("all", None)
+        return all_t(Abs(var_name, None, body))
+
     def exists(self, var_name, T, body):
         exists_t = Const("exists", None)
         return exists_t(Abs(var_name, T, body))
+
+    def exists_notype(self, var_name, body):
+        exists_t = Const("exists", None)
+        return exists_t(Abs(var_name, None, body))
 
     def times(self, lhs, rhs):
         return nat.times(lhs, rhs)

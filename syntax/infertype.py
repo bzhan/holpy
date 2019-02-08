@@ -127,7 +127,7 @@ def type_infer(thy, ctxt, t):
     for i in range(num_internal):
         rep = uf.find(TVar("_t" + str(i)))
         if is_internal_type(rep):
-            raise TypeInferenceException("Unspecified type")
+            raise TypeInferenceException("Unspecified type\n" + repr(t))
         tyinst["_t" + str(i)] = rep
 
     # Perform the necessary abstractions
