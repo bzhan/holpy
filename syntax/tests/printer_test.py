@@ -33,6 +33,7 @@ eq = Term.mk_equals
 imp = Term.mk_implies
 conj = logic.mk_conj
 disj = logic.mk_disj
+abs = Term.mk_abs
 all = Term.mk_all
 neg = logic.neg
 exists = logic.mk_exists
@@ -88,7 +89,7 @@ class PrinterTest(unittest.TestCase):
             (eq(neg(A), neg(B)), "(~A) = (~B)"),
 
             # Abstraction
-            (Abs("x", Ta, conj(P(a), Q(a))), "%x. P a & Q a"),
+            (abs(a, conj(P(a),Q(a))), "%a. P a & Q a"),
 
             # Quantifiers
             (all(a, P(a)), "!a. P a"),
@@ -170,10 +171,11 @@ class PrinterTest(unittest.TestCase):
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
 
-    def testPrintListWithType(self):
+    def testPrintWithType(self):
         test_data = [
             (nil(Ta), "([]::'a list)"),
             (eq(nil(Ta),nil(Ta)), "([]::'a list) = []"),
+            (all(a, eq(a, a)), "!a::'a. a = a"),
         ]
 
         for t, s in test_data:
@@ -195,7 +197,7 @@ class PrinterTest(unittest.TestCase):
             (conj(A, B), "A ∧ B"),
             (disj(A, B), "A ∨ B"),
             (imp(A, B), "A ⟶ B"),
-            (Abs("x", Ta, b), "λx. b"),
+            (abs(a, P(a)), "λa. P a"),
             (all(a, P(a)), "∀a. P a"),
             (exists(a, P(a)), "∃a. P a"),
             (neg(A), "¬A"),
@@ -210,9 +212,7 @@ class PrinterTest(unittest.TestCase):
         """Test highlight, with print_abs_type=False."""
         NORMAL, BOUND, VAR = printer.NORMAL, printer.BOUND, printer.VAR
         test_data = [
-            (Abs("x", Ta, b), [('%', NORMAL), ('x', BOUND), ('. ', NORMAL), ('b', VAR)]),
-            (Abs("x", Ta, Bound(0)), [('%', NORMAL), ('x', BOUND), ('. ', NORMAL), ('x', BOUND)]),
-            (Abs("x", Ta, "y", Ta, Bound(1)), [('%', NORMAL),('x', BOUND),('. ',NORMAL),('%',NORMAL),('y',BOUND),('. ',NORMAL),('x',BOUND)]),
+            (abs(a, P(a)), [('%', NORMAL), ('a', BOUND), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND)]),
             (all(a, P(a)), [('!', NORMAL), ('a', BOUND), ('. ', NORMAL),('P', VAR),(' ',NORMAL),("a", BOUND)]),
             (all(a, all(b, conj(P(a),P(b)))), [('!', NORMAL), ('a', BOUND), ('. ', NORMAL), ('!',NORMAL), ('b', BOUND), ('. ', NORMAL), ('P', VAR), (' ', NORMAL), ('a', BOUND), (' & ', NORMAL), ('P', VAR), (' ',NORMAL), ('b',BOUND)]),
             (exists(a, all(b, R(a, b))), [('?', NORMAL), ("a", BOUND), ('. ', NORMAL), ('!', NORMAL), ('b', BOUND), ('. ', NORMAL), ('R', VAR), (' ', NORMAL), ('a', BOUND), (' ', NORMAL), ('b',BOUND)]),

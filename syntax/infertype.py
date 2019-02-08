@@ -156,7 +156,7 @@ def infer_printed_type(thy, t):
         elif t.ty == Term.COMB:
             clear_const_type(t.fun)
             clear_const_type(t.arg)
-        elif t.ty == Term.ABS:
+        elif t.ty == Term.ABS and not hasattr(t, "print_type"):
             t.backup_var_T = t.var_T
             t.var_T = None
             clear_const_type(t.body)
@@ -174,15 +174,27 @@ def infer_printed_type(thy, t):
     for i in range(100):
         clear_const_type(t)
         type_infer(thy, dict(), t, forbid_internal=False)
+
         def has_internalT(T):
             return any(is_internal_type(subT) for subT in T.get_tsubs())
 
-        consts = term.get_consts(t)
-        to_replace = None
-        for const in consts:
-            if has_internalT(const.T):
-                if to_replace is None or len(str(const.T)) < len(str(to_replace.T)):
-                    to_replace = const
+        to_replace, to_replaceT = None, None
+        def find_to_replace(t):
+            nonlocal to_replace, to_replaceT
+            if t.ty == Term.CONST and has_internalT(t.T):
+                if to_replace is None or len(str(t.T)) < len(str(to_replaceT)):
+                    to_replace = t
+                    to_replaceT = t.T
+            elif t.ty == Term.ABS and has_internalT(t.var_T):
+                if to_replace is None or len(str(t.var_T)) < len(str(to_replaceT)):
+                    to_replace = t
+                    to_replaceT = t.var_T
+                find_to_replace(t.body)
+            elif t.ty == Term.COMB:
+                find_to_replace(t.fun)
+                find_to_replace(t.arg)
+
+        find_to_replace(t)
         recover_const_type(t)
 
         if to_replace is None:

@@ -126,7 +126,7 @@ def print_term(thy, t):
             elif t.is_all():
                 all_str = "!" if not settings.unicode() else "∀"
                 var_str = B(t.arg.var_name) + N("::") + \
-                    N(str(t.arg.var_T)) if settings.print_abs_type() else B(t.arg.var_name)
+                    N(str(t.arg.var_T)) if settings.print_abs_type() or hasattr(t.arg, "print_type") else B(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return N(all_str) + var_str + N(". ") + body_repr
@@ -134,7 +134,7 @@ def print_term(thy, t):
             elif logic.is_exists(t):
                 exists_str = "?" if not settings.unicode() else "∃"
                 var_str = B(t.arg.var_name) + N("::") + \
-                    N(str(t.arg.var_T)) if settings.print_abs_type() else B(t.arg.var_name)
+                    N(str(t.arg.var_T)) if settings.print_abs_type() or hasattr(t.arg, "print_type") else B(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return N(exists_str) + var_str + N(". ") + body_repr
@@ -153,7 +153,7 @@ def print_term(thy, t):
 
         elif t.ty == Term.ABS:
             lambda_str = "%" if not settings.unicode() else "λ"
-            var_str = B(t.var_name) + N("::") + N(str(t.var_T)) if settings.print_abs_type() else B(t.var_name)
+            var_str = B(t.var_name) + N("::") + N(str(t.var_T)) if settings.print_abs_type() or hasattr(t, "print_type") else B(t.var_name)
             body_repr = helper(t.body, [t.var_name] + bd_vars)
             return N(lambda_str) + var_str + N(". ") + body_repr
 

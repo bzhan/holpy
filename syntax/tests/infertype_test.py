@@ -100,6 +100,9 @@ class InferTypeTest(unittest.TestCase):
         self.assertFalse(hasattr(t.arg1.arg, "print_type"))
         self.assertFalse(hasattr(t.arg, "print_type"))
 
+        t = Term.mk_abs(Var("x", Ta), Term.mk_equals(Var("x", Ta), Var("x", Ta)))
+        infer_printed_type(thy, t)
+
 
 if __name__ == "__main__":
     unittest.main()

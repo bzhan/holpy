@@ -223,6 +223,7 @@ class ParserTest(unittest.TestCase):
             ("([]::'a list)", "'a list"),
             ("([]::nat list)", "nat list"),
             ("([]::'a list) = []", "bool"),
+            ("!a::'a. a = a", "bool"),
         ]
 
         for s, Ts in test_data:
@@ -243,7 +244,7 @@ class ParserTest(unittest.TestCase):
             ("A ⟶ B ⟶ C", "A --> B --> C"),
             ("A ∧ B | C", "A & B | C"),
             ("¬A", "~A"),
-            ("λx::'a. x", "%x. x"),
+            ("λx::'a. x", "%x::'a. x"),
             ("∀x::'a. P x", "!x. P x"),
             ("∃x::'a. P x", "?x. P x"),
             ("∀x::'a. P x ∧ Q x", "!x. P x & Q x"),
