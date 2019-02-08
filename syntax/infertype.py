@@ -3,7 +3,8 @@
 """Hindley-Milner type inference algorithm."""
 
 from kernel.type import HOLType, TVar, TFun
-from kernel.term import Term, Var
+from kernel.term import Term
+from kernel import term
 from util import unionfind
 
 
@@ -11,7 +12,7 @@ class TypeInferenceException(Exception):
     def __init__(self, err):
         self.str = str
 
-    
+
 def is_internal_type(T):
     """Whether T is an internal type used for type inference
     (and hence can be unified).
@@ -38,7 +39,7 @@ def unify(uf, T1, T2):
     else:
         raise TypeInferenceException("Unable to unify " + str(T1) + " with " + str(T2))
 
-def type_infer(thy, ctxt, t):
+def type_infer(thy, ctxt, t, *, forbid_internal=True):
     """Perform type inference on the given term. The input term
     has all types marked None, except those subterms whose type is
     explicitly given.
@@ -123,25 +124,72 @@ def type_infer(thy, ctxt, t):
     tyinst = dict()
     for i in range(num_internal):
         rep = uf.find(TVar("_t" + str(i)))
-        if is_internal_type(rep):
+        if forbid_internal and is_internal_type(rep):
             raise TypeInferenceException("Unspecified type\n" + repr(t))
-        tyinst["_t" + str(i)] = rep
+        if not is_internal_type(rep):
+            tyinst["_t" + str(i)] = rep
 
-    # Substitute using inst until no internal variable remains
-    def has_internalT(T):
-        return any(is_internal_type(subT) for subT in T.get_tsubs())
-
-    def has_internal(t):
-        if t.ty == Term.VAR or t.ty == Term.CONST:
-            return has_internalT(t.T)
-        elif t.ty == Term.COMB:
-            return has_internal(t.fun) or has_internal(t.arg)
-        elif t.ty == Term.ABS:
-            return has_internalT(t.var_T) or has_internal(t.body)
-        else:
-            return False
-
-    while has_internal(t):
-        t = t.subst_type(tyinst)
+    for i in range(100):
+        repr_t = repr(t)
+        t.subst_type_inplace(tyinst)
+        if repr_t == repr(t):
+            break
+    assert i != 99, "type_infer: infinite loop at substitution."
 
     return t
+
+def infer_printed_type(thy, t):
+    """Infer the types that should be printed.
+    
+    The algorithm is as follows:
+    1. Replace all constant types with None.
+    2. Apply type-inference on the resulting type.
+    3. For the first internal type variable that appears, find a constant
+       whose type contains that variable, set that constant to print_type.
+    4. Repeat until no internal type variables appear.
+    
+    """
+    def clear_const_type(t):
+        if t.ty == Term.CONST and not hasattr(t, "print_type"):
+            t.backupT = t.T
+            t.T = None
+        elif t.ty == Term.COMB:
+            clear_const_type(t.fun)
+            clear_const_type(t.arg)
+        elif t.ty == Term.ABS:
+            t.backup_var_T = t.var_T
+            t.var_T = None
+            clear_const_type(t.body)
+
+    def recover_const_type(t):
+        if t.ty == Term.CONST:
+            t.T = t.backupT
+        elif t.ty == Term.COMB:
+            recover_const_type(t.fun)
+            recover_const_type(t.arg)
+        elif t.ty == Term.ABS:
+            t.var_T = t.backup_var_T
+            recover_const_type(t.body)
+
+    for i in range(100):
+        clear_const_type(t)
+        type_infer(thy, dict(), t, forbid_internal=False)
+        def has_internalT(T):
+            return any(is_internal_type(subT) for subT in T.get_tsubs())
+
+        consts = term.get_consts(t)
+        to_replace = None
+        for const in consts:
+            if has_internalT(const.T):
+                if to_replace is None or len(str(const.T)) < len(str(to_replace.T)):
+                    to_replace = const
+        recover_const_type(t)
+
+        if to_replace is None:
+            break
+
+        to_replace.print_type = True
+
+    assert i != 99, "infer_printed_type: infinite loop."
+
+    return None

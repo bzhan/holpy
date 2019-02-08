@@ -8,7 +8,7 @@ from logic import basic
 from logic import logic
 from logic import nat
 from logic import list
-from syntax.infertype import type_infer, TypeInferenceException
+from syntax.infertype import type_infer, infer_printed_type, TypeInferenceException
 
 thy = basic.loadTheory('list')
 
@@ -78,6 +78,27 @@ class InferTypeTest(unittest.TestCase):
 
         for t in test_data:
             self.assertRaisesRegex(TypeInferenceException, "Unspecified type", type_infer, thy, ctxt, t)
+
+    def testInferPrintedType(self):
+        t = Const("nil", listT(Ta))
+        infer_printed_type(thy, t)
+        self.assertTrue(hasattr(t, "print_type"))
+
+        t = list.cons(Ta)(Var("a", Ta))
+        infer_printed_type(thy, t)
+        self.assertFalse(hasattr(t.fun, "print_type"))
+
+        t = Term.mk_equals(Const("nil", listT(Ta)), Const("nil", listT(Ta)))
+        infer_printed_type(thy, t)
+        self.assertFalse(hasattr(t.fun.fun, "print_type"))
+        self.assertTrue(hasattr(t.arg1, "print_type"))
+        self.assertFalse(hasattr(t.arg, "print_type"))
+
+        t = Term.mk_equals(list.mk_append(list.nil(Ta),list.nil(Ta)), list.nil(Ta))
+        infer_printed_type(thy, t)
+        self.assertTrue(hasattr(t.arg1.arg1, "print_type"))
+        self.assertFalse(hasattr(t.arg1.arg, "print_type"))
+        self.assertFalse(hasattr(t.arg, "print_type"))
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 # Author: Bohua Zhan
 
+from copy import copy
+
 from kernel import settings
 from kernel.term import Term, OpenTermException
 from kernel.proof import commas_join
@@ -7,6 +9,7 @@ from logic.operator import OperatorData
 from logic import logic
 from logic import nat
 from logic import list
+from syntax import infertype
 
 NORMAL, BOUND, VAR = range(3)
 
@@ -56,7 +59,11 @@ def print_term(thy, t):
 
         if list.is_literal_list(t):
             items = list.dest_literal_list(t)
-            return N('[') + commas_join(helper(item, bd_vars) for item in items) + N(']')
+            res = N('[') + commas_join(helper(item, bd_vars) for item in items) + N(']')
+            if hasattr(t, "print_type"):
+                return N("(") + res + N("::" + str(t.T) + ")")
+            else:
+                return res
 
         if logic.is_if(t):
             P, x, y = logic.dest_if(t)
@@ -158,4 +165,6 @@ def print_term(thy, t):
         else:
             raise TypeError()
 
+    t = copy(t)  # make copy here, because infer_printed_type may change t.
+    infertype.infer_printed_type(thy, t)
     return helper(t, [])

@@ -10,7 +10,7 @@ from logic import list
 from logic import basic
 from syntax import printer
 
-thy = basic.loadTheory('logic_base')
+thy = basic.loadTheory('list')
 
 A = Var("A", hol_bool)
 B = Var("B", hol_bool)
@@ -158,7 +158,6 @@ class PrinterTest(unittest.TestCase):
             (append(xs, ys), "xs @ ys"),
             (append(append(xs, ys), zs), "(xs @ ys) @ zs"),
             (append(xs, append(ys, zs)), "xs @ ys @ zs"),
-            (nil(Ta), "[]"),
             (cons(a, nil(Ta)), "[a]"),
             (cons(a, cons(b, nil(Ta))), "[a, b]"),
             (cons(a, xs), "a # xs"),
@@ -166,6 +165,15 @@ class PrinterTest(unittest.TestCase):
             (cons(a, append(xs, ys)), "a # xs @ ys"),
             (append(cons(a, xs), ys), "(a # xs) @ ys"),
             (list.cons(Ta)(a), "cons a"),
+        ]
+
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
+
+    def testPrintListWithType(self):
+        test_data = [
+            (nil(Ta), "([]::'a list)"),
+            (eq(nil(Ta),nil(Ta)), "([]::'a list) = []"),
         ]
 
         for t, s in test_data:

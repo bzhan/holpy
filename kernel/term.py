@@ -1,5 +1,8 @@
 # Author: Bohua Zhan
 
+from collections import OrderedDict
+from copy import copy
+
 from kernel import settings
 from kernel.type import TFun, hol_bool
 
@@ -152,6 +155,24 @@ class Term():
         else:
             raise TypeError()
 
+    def __copy__(self):
+        """Returns a copy of self. Types are shared, the rest of
+        the information are copied.
+
+        """
+        if self.ty == Term.VAR:
+            return Var(self.name, self.T)
+        elif self.ty == Term.CONST:
+            return Const(self.name, self.T)
+        elif self.ty == Term.COMB:
+            return Comb(copy(self.fun), copy(self.arg))
+        elif self.ty == Term.ABS:
+            return Abs(self.var_name, self.var_T, copy(self.body))
+        elif self.ty == Term.BOUND:
+            return Bound(self.n)
+        else:
+            raise TypeError()
+
     def __call__(self, *args):
         """Apply self (as a function) to a list of arguments."""
         res = self
@@ -215,6 +236,23 @@ class Term():
             return Abs(self.var_name, self.var_T.subst(tyinst), self.body.subst_type(tyinst))
         elif self.ty == Term.BOUND:
             return self
+        else:
+            raise TypeError()
+
+    def subst_type_inplace(self, tyinst):
+        """Perform substitution on type variables."""
+        if self.ty == Term.VAR:
+            self.T = self.T.subst(tyinst)
+        elif self.ty == Term.CONST:
+            self.T = self.T.subst(tyinst)
+        elif self.ty == Term.COMB:
+            self.fun.subst_type_inplace(tyinst)
+            self.arg.subst_type_inplace(tyinst)
+        elif self.ty == Term.ABS:
+            self.var_T = self.var_T.subst(tyinst)
+            self.body.subst_type_inplace(tyinst)
+        elif self.ty == Term.BOUND:
+            pass
         else:
             raise TypeError()
 
@@ -517,32 +555,38 @@ class Bound(Term):
 
 def get_vars(t):
     """Returns set of variables in a term or a list of terms."""
-    if isinstance(t, Term):
+    def helper(t):
         if t.ty == Term.VAR:
-            return {t}
+            return [t]
         elif t.ty == Term.COMB:
-            return get_vars(t.fun).union(get_vars(t.arg))
+            return helper(t.fun) + helper(t.arg)
         elif t.ty == Term.ABS:
-            return get_vars(t.body)
+            return helper(t.body)
         else:
-            return set()
+            return []
+
+    if isinstance(t, Term):
+        return list(OrderedDict.fromkeys(helper(t)))
     elif isinstance(t, list):
-        return set.union(*(get_vars(s) for s in t))
+        return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
     else:
         raise TypeError()
 
 def get_consts(t):
     """Returns set of constants in a term or a list of terms."""
-    if isinstance(t, Term):
+    def helper(t):
         if t.ty == Term.CONST:
-            return {t}
+            return [t]
         elif t.ty == Term.COMB:
-            return get_consts(t.fun).union(get_consts(t.arg))
+            return helper(t.fun) + helper(t.arg)
         elif t.ty == Term.ABS:
-            return get_consts(t.body)
+            return helper(t.body)
         else:
-            return set()
+            return []
+
+    if isinstance(t, Term):
+        return list(OrderedDict.fromkeys(helper(t)))
     elif isinstance(t, list):
-        return set.union(*(get_consts(s) for s in t))
+        return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
     else:
         raise TypeError()

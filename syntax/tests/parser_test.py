@@ -222,6 +222,7 @@ class ParserTest(unittest.TestCase):
         test_data = [
             ("([]::'a list)", "'a list"),
             ("([]::nat list)", "nat list"),
+            ("([]::'a list) = []", "bool"),
         ]
 
         for s, Ts in test_data:
@@ -229,6 +230,7 @@ class ParserTest(unittest.TestCase):
             T = parser.parse_type(thy, Ts)
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
+            self.assertEqual(print_term(thy, t), s)
 
     def testParseTermIsString(self):
         a = parser.parse_term(thy, ctxt, 'a')

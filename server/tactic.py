@@ -293,13 +293,13 @@ class ProofState():
             As, C = th.concl.strip_implies()
             # Only process those theorems where C and the matched As
             # contain all of the variables.
-            if term.get_vars(As[:len(prevs)] + [C]) != term.get_vars(As + [C]):
+            if set(term.get_vars(As[:len(prevs)] + [C])) != set(term.get_vars(As + [C])):
                 continue
 
             # When there is no assumptions to match, only process those
             # theorems where C contains at least a constant (skip falseE,
             # induction theorems, etc).
-            if not prevs and term.get_consts(C) == set():
+            if not prevs and term.get_consts(C) == []:
                 continue
 
             try:

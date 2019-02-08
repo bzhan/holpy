@@ -227,10 +227,10 @@ class TermTest(unittest.TestCase):
 
     def testGetVars(self):
         test_data = [
-            (a, {a}),
-            (f(a), {f, a}),
-            (f(c), {f}),
-            ([a, f(c)], {a, f}),
+            (a, [a]),
+            (f(a), [f, a]),
+            (f(c), [f]),
+            ([a, f(c)], [a, f]),
         ]
 
         for t, res in test_data:
@@ -238,9 +238,9 @@ class TermTest(unittest.TestCase):
 
     def testGetConsts(self):
         test_data = [
-            (a, set()),
-            (f(c), {c}),
-            ([a, f(c)], {c}),
+            (a, []),
+            (f(c), [c]),
+            ([a, f(c)], [c]),
         ]
 
         for t, res in test_data:
