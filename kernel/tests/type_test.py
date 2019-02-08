@@ -98,8 +98,8 @@ class TypeTest(unittest.TestCase):
     def testGetTSubs(self):
         test_data = [
             (hol_bool, [hol_bool]),
-            (TFun(Ta,Ta), [Ta, TFun(Ta,Ta)]),
-            (TFun(Ta,Tb), [Ta, Tb, TFun(Ta,Tb)]),
+            (TFun(Ta,Ta), [TFun(Ta,Ta), Ta]),
+            (TFun(Ta,Tb), [TFun(Ta,Tb), Ta, Tb]),
         ]
 
         for T, res in test_data:

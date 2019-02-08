@@ -217,7 +217,7 @@ def parse_thm(thy, ctxt, s):
     """Parse a theorem (sequent)."""
     parser_setting['thy'] = thy
     th = thm_parser.parse(s)
-    th.assums = set(infertype.type_infer(thy, ctxt, assum) for assum in th.assums)
+    th.assums = tuple(infertype.type_infer(thy, ctxt, assum) for assum in th.assums)
     th.concl = infertype.type_infer(thy, ctxt, th.concl)
     return th
 

@@ -553,7 +553,7 @@ class Bound(Term):
         self.n = n
 
 def get_vars(t):
-    """Returns set of variables in a term or a list of terms."""
+    """Returns list of variables in a term or a list of terms."""
     def helper(t):
         if t.ty == Term.VAR:
             return [t]
@@ -572,7 +572,7 @@ def get_vars(t):
         raise TypeError()
 
 def get_consts(t):
-    """Returns set of constants in a term or a list of terms."""
+    """Returns list of constants in a term or a list of terms."""
     def helper(t):
         if t.ty == Term.CONST:
             return [t]

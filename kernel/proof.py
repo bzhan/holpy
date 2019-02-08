@@ -28,7 +28,7 @@ def print_thm_highlight(th):
     """Print the given theorem with highlight."""
     turnstile = [("⊢", 0)] if settings.unicode() else [("|-", 0)]
     if th.assums:
-        str_assums = commas_join(sorted(assum.print() for assum in th.assums))
+        str_assums = commas_join(assum.print() for assum in th.assums)
         return str_assums + [(" ", 0)] + turnstile + [(" ", 0)] + th.concl.print()
     else:
         return turnstile + [(" ", 0)] + th.concl.print()

@@ -117,7 +117,7 @@ class TheoryTest(unittest.TestCase):
         prf.add_item("C", "implies_elim", prevs=["A1", "A2"])
 
         rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), Thm([A, A_to_B], B))
+        self.assertEqual(thy.check_proof(prf, rpt), Thm([A_to_B, A], B))
         self.assertEqual(rpt.steps, 3)
 
     def testCheckProof2(self):

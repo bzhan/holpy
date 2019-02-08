@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from collections import OrderedDict
 
 class TypeMatchException(Exception):
     pass
@@ -191,7 +192,7 @@ class HOLType():
             else:
                 return sum([collect(arg) for arg in T.args], [])
 
-        return sorted(list(set(collect(self))))
+        return list(OrderedDict.fromkeys(collect(self)))
 
     def get_tsubs(self):
         """Return the list of types appearing in self."""
@@ -201,7 +202,7 @@ class HOLType():
             else:
                 return sum([collect(arg) for arg in T.args], [T])
 
-        return sorted(list(set(collect(self))))
+        return list(OrderedDict.fromkeys(collect(self)))
 
 class TVar(HOLType):
     """Type variable."""
