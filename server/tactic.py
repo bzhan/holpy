@@ -6,7 +6,7 @@ from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, id_force_tuple
-from kernel.report import ProofReport
+from kernel import report
 from logic import logic, matcher
 from logic.proofterm import ProofTerm
 from logic.conv import top_conv, rewr_conv_thm
@@ -30,8 +30,8 @@ def incr_id(id, start, n):
 
 def incr_proof_item(item, start, n):
     """Increment all ids in the given proof item."""
-    return ProofItem(incr_id(item.id, start, n), item.rule, args=item.args,
-        prevs=[incr_id(id, start, n) for id in item.prevs], th=item.th)
+    item.id = incr_id(item.id, start, n)
+    item.prevs = [incr_id(id, start, n) for id in item.prevs]
 
 def decr_id(id, id_remove):
     """Decrement a single id, with the aim of closing the gap at id_remove."""
@@ -42,8 +42,8 @@ def decr_id(id, id_remove):
 
 def decr_proof_item(item, id_remove):
     """Decrement all ids in the given proof item."""
-    return ProofItem(decr_id(item.id, id_remove), item.rule, args=item.args,
-        prevs=[decr_id(id, id_remove) for id in item.prevs], th=item.th)
+    item.id = decr_id(item.id, id_remove)
+    item.prevs = [decr_id(id, id_remove) for id in item.prevs]
 
 def strip_all_implies(t, names):
     """Given a term of the form
@@ -164,82 +164,56 @@ class ProofState():
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
         """Check the given proof. Report is stored in rpt."""
-        self.rpt = ProofReport()
+        self.rpt = report.ProofReport()
         return self.thy.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
 
     def add_line_after(self, id):
         """Add given line after the given id."""
         id = id_force_tuple(id)
-        new_prf = Proof()
         start = id[0] + 1
         new_id = (id[0] + 1,) + id[1:]
-        for item in self.prf.items:
-            new_prf.items.append(incr_proof_item(item, start, 1))
-            if item.id == id:
-                new_prf.add_item(new_id, "")
+        self.prf.items = self.prf.items[:id[0]+1] + [ProofItem(new_id, "")] + self.prf.items[id[0]+1:]
+        for item in self.prf.items[id[0]+2:]:
+            incr_proof_item(item, start, 1)
 
-        self.prf = new_prf
         self.check_proof(compute_only=True)
 
     def add_line_before(self, id, n):
         """Add n lines before the given id."""
         id = id_force_tuple(id)
-        new_prf = Proof()
         start = id[0]
-        for item in self.prf.items:
-            if item.id == id:
-                for i in range(n):
-                    new_id = (id[0] + i,) + id[1:]
-                    new_prf.add_item(new_id, "")
-            new_prf.items.append(incr_proof_item(item, start, n))
+        new_items = [ProofItem((id[0] + i,) + id[1:], "") for i in range(n)]
+        self.prf.items = self.prf.items[:id[0]] + new_items + self.prf.items[id[0]:]
+        for item in self.prf.items[id[0]+n:]:
+            incr_proof_item(item, start, n)
 
-        self.prf = new_prf
         self.check_proof(compute_only=True)
 
     def remove_line(self, id):
         """Remove line with the given id."""
         id = id_force_tuple(id)
-        new_prf = Proof()
         to_remove = id[0]
-        for item in self.prf.items:
-            if not item.id == id:
-                new_prf.items.append(decr_proof_item(item, to_remove))
+        self.prf.items = self.prf.items[:id[0]] + self.prf.items[id[0]+1:]
+        for item in self.prf.items[id[0]:]:
+            decr_proof_item(item, to_remove)
 
-        self.prf = new_prf
         self.check_proof(compute_only=True)
 
     def set_line(self, id, rule, *, args=None, prevs=None, th=None):
         """Set the item with the given id to the following data."""
         id = id_force_tuple(id)
-        new_prf = Proof()
-        for item in self.prf.items:
-            if item.id == id:
-                new_prf.items.append(ProofItem(id, rule, args=args, prevs=prevs, th=th))
-            else:
-                new_prf.items.append(item)
-
-        self.prf = new_prf
+        self.prf.items[id[0]] = ProofItem(id, rule, args=args, prevs=prevs, th=th)
         self.check_proof(compute_only=True)
 
     def get_proof_item(self, id):
         """Obtain the proof item with the given id."""
-        for item in self.prf.items:
-            if item.id == id:
-                return item
-        
-        raise TacticException()
+        return self.prf.items[id[0]]
 
     def replace_id(self, old_id, new_id):
         """Replace old_id with new_id in prevs."""
-        def replace_line(item):
-            return ProofItem(item.id, item.rule, args=item.args,
-                prevs=[new_id if id == old_id else id for id in item.prevs], th=item.th)
-
-        new_prf = Proof()
         for item in self.prf.items:
-            new_prf.items.append(replace_line(item))
+            item.prevs = [new_id if id == old_id else id for id in item.prevs]
 
-        self.prf = new_prf
         self.remove_line(old_id)
 
     def find_goal(self, concl, upto_id):
