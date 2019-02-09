@@ -38,11 +38,11 @@ class EncodeTest(unittest.TestCase):
         self.assertEqual(len(logic.strip_conj(prop.concl)), 16)
 
         pt = encode.get_encode_proof(prop)
-        self.assertTrue(pt.th.can_prove(prop))
+        self.assertEqual(pt.th, prop)
         
         thy = basic.loadTheory('sat')
         rpt = report.ProofReport()
-        self.assertEqual(thy.check_proof(pt.export(), rpt), pt.th)
+        self.assertEqual(thy.check_proof(pt.export(), rpt, check_level=1), pt.th)
         self.assertEqual(len(rpt.gaps), 0)
 
 if __name__ == "__main__":

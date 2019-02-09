@@ -9,7 +9,7 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
-from logic.proofterm import ProofTerm
+from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic import logic_macro
 from logic.conv import rewr_conv, rewr_conv_thm, every_conv, top_conv
 
@@ -108,7 +108,8 @@ def get_encode_proof(th):
     macro = logic_macro.apply_theorem_macro()
     pt = pts[0]
     for pt2 in pts[1:]:
-        pt = macro.get_proof_term(thy, 'conjI', [pt, pt2])
+        pt = ProofTermDeriv(macro(thy, 'conjI', pt.th, pt2.th),
+            "apply_theorem", "conjI", [pt, pt2])
 
     cv = logic.norm_conj_assoc()
     pt = ProofTerm.equal_elim(cv.get_proof_term(pt.th.concl), pt)

@@ -106,18 +106,21 @@ class BasicTest(unittest.TestCase):
         A = Var("A", hol_bool)
         B = Var("B", hol_bool)
 
+        th = Thm([logic.mk_conj(A, B)], A)
+
         prf = Proof(logic.mk_conj(A, B))
         prf.add_item(1, "apply_theorem", args="conjD1", prevs=[0])
-
-        th = Thm([logic.mk_conj(A, B)], A)
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.prim_steps, 7)
 
-        rpt2 = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt2, check_level=1), th)
-        self.assertEqual(rpt2.prim_steps, 1)
-        self.assertEqual(rpt2.macro_steps, 1)
+        # Reset data for the next check
+        prf = Proof(logic.mk_conj(A, B))
+        prf.add_item(1, "apply_theorem", args="conjD1", prevs=[0])
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt, check_level=1), th)
+        self.assertEqual(rpt.prim_steps, 1)
+        self.assertEqual(rpt.macro_steps, 1)
 
     def testRewriteGoal(self):
         thy = basic.loadTheory('nat')

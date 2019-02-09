@@ -59,7 +59,7 @@ class Thm():
         equality.
 
         """
-        return self.assums == other.assums and self.concl == other.concl
+        return set(self.assums) == set(other.assums) and self.concl == other.concl
 
     def check_thm_type(self):
         """Make sure the all assums and concl type-check and have type

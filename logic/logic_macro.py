@@ -103,7 +103,8 @@ class apply_theorem_macro(ProofMacro):
         As, C = logic.subst_norm(th.concl, inst).strip_implies()
         new_concl = Term.mk_implies(*(As[len(prevs):] + [C]))
 
-        return Thm(th.assums, new_concl)
+        prev_assums = sum([prev.assums for prev in prevs], ())
+        return Thm(th.assums + prev_assums, new_concl)
 
     def get_proof_term(self, thy, args, pts):
         inst = dict()
