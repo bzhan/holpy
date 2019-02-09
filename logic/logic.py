@@ -5,12 +5,10 @@ from kernel.term import Term, Const, Abs
 
 """Utility functions for logic."""
 
-_Ta = TVar("a")
 
 conj = Const("conj", TFun(hol_bool, hol_bool, hol_bool))
 disj = Const("disj", TFun(hol_bool, hol_bool, hol_bool))
 neg = Const("neg", TFun(hol_bool, hol_bool))
-if_t = Const("IF", TFun(hol_bool, _Ta, _Ta, _Ta))
 true = Const("true", hol_bool)
 false = Const("false", hol_bool)
     
@@ -106,14 +104,17 @@ def subst_norm(t, inst):
     """
     return beta_norm(t.subst(inst))
 
+def if_t(T):
+    return Const("IF", TFun(hol_bool, T, T, T))
+
 def is_if(t):
     """Whether t is of the form if P then x else y."""
     f, args = t.strip_comb()
-    return f == if_t and len(args) == 3
+    return f.is_const_with_name("IF") and len(args) == 3
 
 def mk_if(P, x, y):
     """Obtain the term if P then x else y."""
-    return if_t(P, x, y)
+    return if_t(x.get_type())(P, x, y)
 
 def dest_if(t):
     """Given a term if P then x else y, return (P, x, y)."""

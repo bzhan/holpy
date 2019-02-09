@@ -196,6 +196,19 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(t.checked_get_type(), T)
             self.assertEqual(print_term(thy, t), s)
 
+    def testInferType2(self):
+        thy = basic.loadTheory('function')
+        test_data = [
+            ("fun_upd (%x. 0) 1 7", "nat => nat")
+        ]
+
+        for s, Ts in test_data:
+            t = parser.parse_term(thy, ctxt, s)
+            T = parser.parse_type(thy, Ts)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(t.checked_get_type(), T)
+            self.assertEqual(print_term(thy, t), s)
+
     def testParseTermNoAbs(self):
         test_data = [
             ("!x. P x", "bool"),

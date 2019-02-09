@@ -109,6 +109,7 @@ class PrinterTest(unittest.TestCase):
             # If
             (mk_if(A, a, b), "if A then a else b"),
             (eq(mk_if(A, a, b), a), "(if A then a else b) = a"),
+            (mk_if(A, P, Q), "if A then P else Q"),
         ]
 
         for t, s in test_data:

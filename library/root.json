@@ -3,6 +3,8 @@
       "logic_base",
       "logic",
       "nat",
-      "list"
+      "list",
+      "function",
+      "expr"
   ]
 }

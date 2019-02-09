@@ -108,7 +108,7 @@ class HOLTransformer(Transformer):
         s = str(s)
         if thy.has_term_sig(s):
             # s is the name of a constant in the theory
-            return Const(s, thy.get_term_sig(s))
+            return Const(s, None)
         else:
             # s not found, either bound or free variable
             return Var(s, None)
