@@ -1,5 +1,11 @@
 {
+    "description": "Natural numbers",
     "content": [
+        {
+            "name": "Basic definitions",
+            "depth": 0,
+            "ty": "header"
+        },
         {
             "args": [],
             "constrs": [
@@ -60,6 +66,11 @@
             ],
             "ty": "def.ind",
             "type": "nat => nat => nat"
+        },
+        {
+            "name": "Binary representation",
+            "depth": 0,
+            "ty": "header"
         },
         {
             "instructions": [
@@ -434,6 +445,11 @@
         {
             "name": "nat_norm",
             "ty": "macro"
+        },
+        {
+            "name": "Normalization of expressions",
+            "depth": 0,
+            "ty": "header"
         },
         {
             "name": "nat_norm_test1",

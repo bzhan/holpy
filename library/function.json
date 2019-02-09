@@ -1,5 +1,11 @@
 {
+    "description": "Functions",
     "content": [
+        {
+            "name": "Function update",
+            "depth": 0,
+            "ty": "header"
+        },
         {
             "name": "fun_upd",
             "ty": "def.ax",

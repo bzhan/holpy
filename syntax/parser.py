@@ -332,6 +332,8 @@ def parse_extension(thy, data):
     extension as well as applying it to thy.
 
     """
+    ext = None
+
     if data['ty'] == 'def.ax':
         prop = parse_type(thy, data['type'])
         ext = extension.TheoryExtension()
@@ -364,16 +366,12 @@ def parse_extension(thy, data):
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Macro(data['name']))
 
-    thy.unchecked_extend(ext)
-    return ext
+    if ext:
+        thy.unchecked_extend(ext)
+
+    return None
 
 def parse_extensions(thy, data):
-    """Parse a list of extensions to thy in sequence. Returns the
-    resulting list of extensions.
-
-    """
-    exts = []
+    """Parse a list of extensions to thy in sequence."""
     for ext_data in data:
-        exts.append(parse_extension(thy, ext_data))
-    return exts
-
+        parse_extension(thy, ext_data)

@@ -148,7 +148,7 @@ def file_data_to_output(thy, data):
     Also modifies thy in parsing the item.
 
     """
-    exts = parser.parse_extension(thy, data)
+    parser.parse_extension(thy, data)
     if data['ty'] == 'def.ax':
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
@@ -170,12 +170,9 @@ def file_data_to_output(thy, data):
             ctxt = parser.parse_vars(thy, rule['vars'])
             prop = parser.parse_term(thy, ctxt, rule['prop'])
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-
-    elif data['ty'] == 'macro':
-        pass
-
+    # Ignore other types of information.
     else:
-        raise TypeError()
+        pass
 
 
 @app.route('/api/json', methods=['POST'])

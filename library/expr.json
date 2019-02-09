@@ -1,5 +1,11 @@
 {
+    "description": "Expressions",
     "content": [
+        {
+            "name": "Arithmetic expressions",
+            "depth": 0,
+            "ty": "header"
+        },
         {
             "args": [],
             "constrs": [

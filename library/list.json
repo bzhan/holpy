@@ -1,5 +1,11 @@
 {
+    "description": "Lists",
     "content": [
+        {
+            "name": "Basic definitions",
+            "depth": 0,
+            "ty": "header"
+        },
         {
             "args": [
                 "a"
