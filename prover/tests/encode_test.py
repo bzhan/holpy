@@ -2,7 +2,9 @@ import unittest
 
 from kernel.type import hol_bool
 from kernel.term import Term, Var
+from kernel import report
 from logic import logic
+from logic import basic
 from syntax import printer
 from prover import encode
 
@@ -37,6 +39,11 @@ class EncodeTest(unittest.TestCase):
 
         pt = encode.get_encode_proof(prop)
         self.assertTrue(pt.th.can_prove(prop))
+        
+        thy = basic.loadTheory('sat')
+        rpt = report.ProofReport()
+        self.assertEqual(thy.check_proof(pt.export(), rpt), pt.th)
+        self.assertEqual(len(rpt.gaps), 0)
 
 if __name__ == "__main__":
     unittest.main()
