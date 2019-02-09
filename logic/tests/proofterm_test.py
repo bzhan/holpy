@@ -5,6 +5,7 @@ import unittest
 from kernel.type import TVar, TFun
 from kernel.term import Var, Term
 from kernel.thm import Thm
+from kernel.proof import Proof
 from logic import basic
 from logic.proofterm import ProofTerm
 
@@ -44,10 +45,12 @@ class ProofTermTest(unittest.TestCase):
         pt2 = ProofTerm.atom(1, Thm.mk_equals(y,z))
         pt3 = ProofTerm.transitive(pt1, pt2)
 
-        prf = pt3.export((2,))
-        seq_dict = {(0,): Thm.mk_equals(x,y), (1,): Thm.mk_equals(y,z)}
-        self.assertEqual(len(prf.items), 1)
-        self.assertEqual(thy.check_proof_incr(seq_dict, prf), Thm.mk_equals(x,z))
+        prf = Proof()
+        prf.add_item(0, rule="sorry", th=Thm.mk_equals(x,y))
+        prf.add_item(1, rule="sorry", th=Thm.mk_equals(y,z))
+        pt3.export(prf=prf)
+
+        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(x,z))
 
 if __name__ == "__main__":
     unittest.main()

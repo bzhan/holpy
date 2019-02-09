@@ -18,6 +18,9 @@ def print_id(id):
     """Print id in n1.n2.n3 form."""
     return ".".join(str(i) for i in id)
 
+class ProofException(Exception):
+    pass
+
 class ProofItem():
     """An item in a proof, consisting of the following data:
 
@@ -26,6 +29,7 @@ class ProofItem():
     - args: arguments to the rule.
     - prevs: previous sequents used. Default to [].
     - th: optional theorem statement (as a sequent).
+    - subproof: optional expanded proof of the statement.
 
     """
     def __init__(self, id, rule, *, args=None, prevs=None, th=None):
@@ -34,6 +38,7 @@ class ProofItem():
         self.args = args
         self.prevs = [id_force_tuple(prev) for prev in prevs] if prevs is not None else []
         self.th = th
+        self.subproof = None
 
     def print_str_args(self):
         def str_val(val):
@@ -90,3 +95,13 @@ class Proof():
 
     def __repr__(self):
         return str(self)
+
+    def find_item(self, id):
+        """Find item at the given id."""
+        try:
+            item = self.items[id[0]]
+            for i in id[1:]:
+                item = item.subproof.items[i]
+            return item.th
+        except (AttributeError, IndexError):
+            raise ProofException()

@@ -37,26 +37,38 @@ class BasicTest(unittest.TestCase):
         self.assertRaises(AssertionError, basic.loadTheory, 'logic_base', limit=('thm', 'conj'))
 
     def testArgCombination(self):
-        th = Thm.mk_equals(x,y)
-        res = Thm.mk_equals(f(x),f(y))
+        thy = basic.loadTheory('logic_base')
         macro = logic_macro.arg_combination_macro()
+
+        x_eq_y = Term.mk_equals(x, y)
+        fx_eq_fy = Term.mk_equals(f(x), f(y))
+        th = Thm.assume(x_eq_y)
+        res = Thm([x_eq_y], fx_eq_fy)
         self.assertEqual(macro(f, th), res)
-        prf = macro.expand((1,), f, ((0,), th))
-        
-        thy = Theory.EmptyTheory()
-        self.assertEqual(len(prf.items), 2)
-        self.assertEqual(thy.check_proof_incr({(0,): th}, prf), res)
+
+        prf = Proof(x_eq_y)
+        prf.add_item(1, "arg_combination", args=f, prevs=[0])
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), res)
+        self.assertEqual(rpt.macros_expand, {"arg_combination"})
+        self.assertEqual(rpt.prim_steps, 3)
 
     def testFunCombination(self):
-        th = Thm.mk_equals(f,g)
-        res = Thm.mk_equals(f(x),g(x))
+        thy = basic.loadTheory('logic_base')
         macro = logic_macro.fun_combination_macro()
-        self.assertEqual(macro(x, th), res)
-        prf = macro.expand((1,), x, ((0,), th))
 
-        thy = Theory.EmptyTheory()
-        self.assertEqual(len(prf.items), 2)
-        self.assertEqual(thy.check_proof_incr({(0,): th}, prf), res)
+        f_eq_g = Term.mk_equals(f, g)
+        fx_eq_gx = Term.mk_equals(f(x), g(x))
+        th = Thm.assume(f_eq_g)
+        res = Thm([f_eq_g], fx_eq_gx)
+        self.assertEqual(macro(x, th), res)
+
+        prf = Proof(f_eq_g)
+        prf.add_item(1, "fun_combination", args=x, prevs=[0])
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), res)
+        self.assertEqual(rpt.macros_expand, {"fun_combination"})
+        self.assertEqual(rpt.prim_steps, 3)
 
     def testCombination(self):
         """Test arg and fun combination together using proofs."""

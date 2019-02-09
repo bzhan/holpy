@@ -5,6 +5,7 @@ import unittest
 from kernel.type import TVar, Type, TFun
 from kernel.term import Term, Var, Const, Abs, Bound, Term
 from kernel.thm import Thm
+from kernel.proof import Proof
 from logic import basic
 from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
@@ -48,28 +49,37 @@ class ConvTest(unittest.TestCase):
         g = Const("g", TFun(natT, natT))
         x = Var("x", natT)
 
-        seq_dict = {(0,): eq(one, zero), (1,): eq(f(x), g(x))}
+        assum0 = eq(one, zero)
+        assum1 = eq(f(x), g(x))
 
         # Test conversion using 1 = 0
-        cv1 = rewr_conv(ProofTerm.atom(0, seq_dict[(0,)]))
+        cv1 = rewr_conv(ProofTerm.atom(0, assum0))
+        prf = Proof()
+        prf.add_item(0, "sorry", th=assum0)
         eq_th = eq(one, zero)
-        prf = cv1.get_proof_term(one).export((2,))
+        cv1.get_proof_term(one).export(prf=prf)
         self.assertEqual(cv1(one), eq_th)
-        self.assertEqual(thy.check_proof_incr(seq_dict, prf), eq_th)
+        self.assertEqual(thy.check_proof(prf), eq_th)
         self.assertRaises(ConvException, cv1, zero)
         self.assertRaises(ConvException, cv1.get_proof_term, zero)
 
         # Test conversion using f x = g x
-        cv2 = rewr_conv(ProofTerm.atom(1, seq_dict[(1,)]))
+        cv2 = rewr_conv(ProofTerm.atom(0, assum1))
         eq0 = eq(f(zero), g(zero))
         eq1 = eq(f(one), g(one))
         self.assertEqual(cv2(f(zero)), eq0)
         self.assertEqual(cv2(f(one)), eq1)
-        prf0 = cv2.get_proof_term(f(zero)).export((2,))
-        prf1 = cv2.get_proof_term(f(one)).export((2,))
-        self.assertEqual(thy.check_proof_incr(seq_dict, prf0), eq0)
-        self.assertEqual(thy.check_proof_incr(seq_dict, prf1), eq1)
+
+        prf0 = Proof()
+        prf0.add_item(0, "sorry", th=assum1)
+        cv2.get_proof_term(f(zero)).export(prf=prf0)
+        self.assertEqual(thy.check_proof(prf0), eq0)
         self.assertRaises(ConvException, cv1, zero)
+
+        prf1 = Proof()
+        prf1.add_item(0, "sorry", th=assum1)
+        cv2.get_proof_term(f(one)).export(prf=prf1)
+        self.assertEqual(thy.check_proof(prf1), eq1)
         self.assertRaises(ConvException, cv1.get_proof_term, zero)
 
     def testAbsConv(self):
@@ -151,18 +161,22 @@ class ConvTest(unittest.TestCase):
         g = Const("g", TFun(natT, natT))
         x = Var("x", natT)
 
-        seq_dict = {(0,): eq(one, zero), (1,): eq(f(x), g(x))}
-        cv = top_conv(else_conv(rewr_conv(ProofTerm.atom(0, seq_dict[(0,)])),
-                                rewr_conv(ProofTerm.atom(1, seq_dict[(1,)]))))
+        th0, th1 = eq(one,zero), eq(f(x),g(x))
+        cv = top_conv(else_conv(rewr_conv(ProofTerm.atom(0, th0)),
+                                rewr_conv(ProofTerm.atom(1, th1))))
 
         f1 = f(one)
         g0 = g(zero)
         t = plus(*([f1] * 10))
         res = plus(*([g0] * 10))
-        prf = cv.get_proof_term(t).export((2,))
         self.assertEqual(cv(t), eq(t, res))
+
+        prf = Proof()
+        prf.add_item(0, "sorry", th=th0)
+        prf.add_item(1, "sorry", th=th1)
+        cv.get_proof_term(t).export(prf=prf)
         thy.check_level = 1
-        self.assertEqual(thy.check_proof_incr(seq_dict, prf), eq(t, res))
+        self.assertEqual(thy.check_proof(prf), eq(t, res))
         thy.check_level = 0
 
 

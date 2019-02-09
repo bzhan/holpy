@@ -26,10 +26,9 @@ class arg_combination_macro(ProofMacro):
         id, th = prev
         assert th.concl.is_equals(), "arg_combination"
 
-        prf = Proof()
-        prf.add_item(prefix + (0,), "reflexive", args=f)
-        prf.add_item(prefix + (1,), "combination", prevs=[prefix + (0,), id])
-        return prf
+        pt = ProofTerm.reflexive(f)
+        pt2 = ProofTerm.combination(pt, ProofTerm.atom(id, th))
+        return pt2.export(prefix=prefix)
 
 class fun_combination_macro(ProofMacro):
     """Given theorem f = g and term x, return f x = g x."""
@@ -47,10 +46,9 @@ class fun_combination_macro(ProofMacro):
         id, th = prev
         assert th.concl.is_equals(), "fun_combination"
 
-        prf = Proof()
-        prf.add_item(prefix + (0,), "reflexive", args=x)
-        prf.add_item(prefix + (1,), "combination", prevs=[id, prefix + (0,)])
-        return prf
+        pt = ProofTerm.reflexive(x)
+        pt2 = ProofTerm.combination(ProofTerm.atom(id, th), pt)
+        return pt2.export(prefix=prefix)
 
 class beta_norm_macro(ProofMacro):
     """Given theorem th, return the normalization of th."""

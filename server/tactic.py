@@ -308,7 +308,7 @@ class ProofState():
             self.set_line(goal_id, "sorry", th=Thm(cur_item.th.assums, A))
 
         self.set_line(incr_id(start, 0, num_goal), "apply_theorem_for",
-                      args=(th_name, inst), prevs=prevs + all_ids)
+                      args=(th_name, inst), prevs=prevs + all_ids, th=cur_item.th)
 
         # Test if the goals are already proved:
         for goal_id, A in reversed(list(zip(all_ids, As[len(prevs):]))):

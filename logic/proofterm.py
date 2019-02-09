@@ -108,11 +108,13 @@ class ProofTerm():
         prf.add_item(id, self.rule, args=self.args, prevs=ids)
         return prf
 
-    def export(self, prefix=None):
+    def export(self, prefix=None, prf=None):
         """Convert to proof object."""
         if prefix is None:
             prefix = tuple()
-        return self._export(prefix, dict(), Proof())
+        if prf is None:
+            prf = Proof()
+        return self._export(prefix, dict(), prf)
 
 class ProofTermAtom(ProofTerm):
     """Atom proof terms."""
