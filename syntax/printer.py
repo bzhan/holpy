@@ -2,6 +2,7 @@
 
 from copy import copy
 
+from kernel.type import HOLType
 from kernel.term import Term, OpenTermException
 from logic.operator import OperatorData
 from logic import logic
@@ -10,7 +11,7 @@ from logic import list as hol_list
 from syntax import settings
 from syntax import infertype
 
-# 0, 1, 2 = NORMAL, BOUND, VAR
+# 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
 def N(s):
     return [(s, 0)] if settings.highlight() else s
 
@@ -19,6 +20,9 @@ def B(s):
 
 def V(s):
     return [(s, 2)] if settings.highlight() else s
+
+def TV(s):
+    return [(s, 3)] if settings.highlight() else s
 
 @settings.with_settings
 def commas_join(strs):
@@ -38,6 +42,35 @@ def commas_join(strs):
             return []
     else:
         return ', '.join(strs)
+
+@settings.with_settings
+def print_type(thy, T):
+    def helper(T):
+        if T.ty == HOLType.TVAR:
+            return TV("'" + T.name)
+        elif T.ty == HOLType.TYPE:
+            if len(T.args) == 0:
+                return N(T.name)
+            elif len(T.args) == 1:
+                # Insert parenthesis if the single argument is a function.
+                if HOLType.is_fun(T.args[0]):
+                    return N("(") + helper(T.args[0]) + N(") " + T.name)
+                else:
+                    return helper(T.args[0]) + N(" " + T.name)
+            elif HOLType.is_fun(T):
+                # 'a => 'b => 'c associates to the right. So parenthesis is
+                # needed to express ('a => 'b) => 'c.
+                fun_str = N(" ⇒ ") if settings.unicode() else N(" => ")
+                if HOLType.is_fun(T.args[0]):
+                    return N("(") + helper(T.args[0]) + N(")") + fun_str + helper(T.args[1])
+                else:
+                    return helper(T.args[0]) + fun_str + helper(T.args[1])
+            else:
+                return N("(") + commas_join(helper(t) for t in T.args) + N(") " + T.name)
+        else:
+            raise TypeError()
+
+    return helper(T)
 
 @settings.with_settings
 def print_term(thy, t):
@@ -78,7 +111,7 @@ def print_term(thy, t):
             items = hol_list.dest_literal_list(t)
             res = N('[') + commas_join(helper(item, bd_vars) for item in items) + N(']')
             if hasattr(t, "print_type"):
-                return N("(") + res + N("::" + str(t.T) + ")")
+                return N("(") + res + N("::") + print_type(thy, t.T) + N(")")
             else:
                 return res
 
@@ -92,7 +125,7 @@ def print_term(thy, t):
 
         elif t.ty == Term.CONST:
             if hasattr(t, "print_type") and t.print_type:
-                return N("(" + t.name + "::" + str(t.T) + ")")
+                return N("(" + t.name + "::") + print_type(thy, t.T) + N(")")
             else:
                 return N(t.name)
 
@@ -142,16 +175,20 @@ def print_term(thy, t):
             # Next, the case of binders
             elif t.is_all():
                 all_str = "!" if not settings.unicode() else "∀"
-                var_str = B(t.arg.var_name) + N("::") + \
-                    N(str(t.arg.var_T)) if hasattr(t.arg, "print_type") else B(t.arg.var_name)
+                if hasattr(t.arg, "print_type"):
+                    var_str = B(t.arg.var_name) + N("::") + print_type(thy, t.arg.var_T)
+                else:
+                    var_str = B(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return N(all_str) + var_str + N(". ") + body_repr
 
             elif logic.is_exists(t):
                 exists_str = "?" if not settings.unicode() else "∃"
-                var_str = B(t.arg.var_name) + N("::") + \
-                    N(str(t.arg.var_T)) if hasattr(t.arg, "print_type") else B(t.arg.var_name)
+                if hasattr(t.arg, "print_type"):
+                    var_str = B(t.arg.var_name) + N("::") + print_type(thy, t.arg.var_T)
+                else:
+                    var_str = B(t.arg.var_name)
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return N(exists_str) + var_str + N(". ") + body_repr
@@ -170,7 +207,10 @@ def print_term(thy, t):
 
         elif t.ty == Term.ABS:
             lambda_str = "%" if not settings.unicode() else "λ"
-            var_str = B(t.var_name) + N("::") + N(str(t.var_T)) if hasattr(t, "print_type") else B(t.var_name)
+            if hasattr(t, "print_type"):
+                var_str = B(t.var_name) + N("::") + print_type(thy, t.var_T)
+            else:
+                var_str = B(t.var_name)
             body_repr = helper(t.body, [t.var_name] + bd_vars)
             return N(lambda_str) + var_str + N(". ") + body_repr
 
@@ -204,6 +244,8 @@ def print_str_args(thy, item):
             return N('{') + commas_join(N(key + ': ') + str_val(val) for key, val in items) + N('}')
         elif isinstance(val, Term):
             return print_term(thy, val)
+        elif isinstance(val, HOLType):
+            return print_type(thy, val)
         else:
             return N(str(val))
 
@@ -217,11 +259,8 @@ def print_str_args(thy, item):
 @settings.with_settings
 def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
+    str_th = print_thm(thy, item.th) if item.th else ""
     str_args = print_str_args(thy, item)
-    if not settings.highlight():
-        str_th = str(item.th) if self.th else ""
-    else:
-        str_th = print_thm(thy, item.th) if item.th else ""
     res = {'id': item.id, 'th': str_th, 'rule': item.rule, 'args': str_args, 'prevs': item.prevs}
     if settings.highlight():
         res['th_raw'] = print_thm(thy, item.th, highlight=False) if item.th else ""

@@ -333,7 +333,7 @@ def parse_extension(thy, data):
 
     """
     if data['ty'] == 'def.ax':
-        prop = parse_type(thy, data['T'])
+        prop = parse_type(thy, data['type'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], prop))
 

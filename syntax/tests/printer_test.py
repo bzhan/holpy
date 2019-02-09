@@ -200,7 +200,7 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintHighlight(self):
         """Test highlight"""
-        # 0, 1, 2 = NORMAL, BOUND, VAR
+        # 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
         test_data = [
             (abs(a,P(a)), [('%',0),('a',1),('. ',0),('P',2),(' ',0),('a',1)]),
             (all(a,P(a)), [('!',0),('a',1),('. ',0),('P',2),(' ',0),("a",1)]),
@@ -209,7 +209,7 @@ class PrinterTest(unittest.TestCase):
             (exists(a,P(a)), [('?',0),('a',1),('. ',0),('P',2),(' ',0),('a',1)]),
             (disj(disj(A,B),C), [('(',0),('A',2),(' | ',0),('B',2),(')',0),(' | ',0),('C',2)]),
             (imp(imp(A,B),C), [('(',0),('A',2),(' --> ',0),('B',2),(')',0),(' --> ',0),('C',2)]),
-            (abs(a,a), [('%',0),('a',1),('::',0),("'a",0),('. ',0),('a',1)]),
+            (abs(a,a), [('%',0),('a',1),('::',0),("'a",3),('. ',0),('a',1)]),
         ]
 
         for t, s in test_data:
@@ -217,7 +217,7 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintThmHighlight(self):
         """Test printing of theorems with highlight."""
-        # 0, 1, 2 = NORMAL, BOUND, VAR
+        # 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
         A = Var('A', hol_bool)
         B = Var('B', hol_bool)
         A_to_B = Term.mk_implies(A, B)

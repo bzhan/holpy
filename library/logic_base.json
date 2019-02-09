@@ -1,45 +1,45 @@
 {
     "content": [
         {
-            "T": "bool => bool => bool",
             "ascii_op": "&",
             "name": "conj",
             "ty": "def.ax",
+            "type": "bool => bool => bool",
             "unicode_op": "∧"
         },
         {
-            "T": "bool => bool => bool",
             "ascii_op": "|",
             "name": "disj",
             "ty": "def.ax",
+            "type": "bool => bool => bool",
             "unicode_op": "∨"
         },
         {
-            "T": "bool => bool",
             "ascii_op": "~",
             "name": "neg",
             "ty": "def.ax",
+            "type": "bool => bool",
             "unicode_op": "¬"
         },
         {
-            "T": "bool",
             "name": "true",
-            "ty": "def.ax"
+            "ty": "def.ax",
+            "type": "bool"
         },
         {
-            "T": "bool",
             "name": "false",
-            "ty": "def.ax"
+            "ty": "def.ax",
+            "type": "bool"
         },
         {
-            "T": "('a => bool) => bool",
             "name": "exists",
-            "ty": "def.ax"
+            "ty": "def.ax",
+            "type": "('a => bool) => bool"
         },
         {
-            "T": "bool => 'a => 'a => 'a",
             "name": "IF",
-            "ty": "def.ax"
+            "ty": "def.ax",
+            "type": "bool => 'a => 'a => 'a"
         },
         {
             "name": "conjI",

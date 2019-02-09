@@ -277,14 +277,14 @@
             }
         },
         {
-            "T": "nat => nat",
             "name": "bit0",
-            "ty": "def.ax"
+            "ty": "def.ax",
+            "type": "nat => nat"
         },
         {
-            "T": "nat => nat",
             "name": "bit1",
-            "ty": "def.ax"
+            "ty": "def.ax",
+            "type": "nat => nat"
         },
         {
             "name": "bit0_def",

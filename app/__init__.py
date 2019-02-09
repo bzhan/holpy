@@ -150,7 +150,8 @@ def file_data_to_output(thy, data):
     """
     exts = parser.parse_extension(thy, data)
     if data['ty'] == 'def.ax':
-        pass
+        T = parser.parse_type(thy, data['type'])
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
     elif data['ty'] == 'thm':
         ctxt = parser.parse_vars(thy, data['vars'])
@@ -163,6 +164,8 @@ def file_data_to_output(thy, data):
         data['argsT'] = [str(tl) for tl in argsT]
 
     elif data['ty'] == 'def.ind':
+        T = parser.parse_type(thy, data['type'])
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         for rule in data['rules']:
             ctxt = parser.parse_vars(thy, rule['vars'])
             prop = parser.parse_term(thy, ctxt, rule['prop'])
