@@ -212,19 +212,27 @@ class top_conv(Conv):
         return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(t)
 
 class rewr_conv(Conv):
-    """Rewrite using the given equality theorem."""
-    def __init__(self, pt):
+    """Rewrite using the given equality theorem.
+    
+    match_vars -- whether variables in pat should be matched.
+    
+    """
+    def __init__(self, pt, match_vars=True):
         assert isinstance(pt, ProofTerm), "rewr_conv: argument"
         self.pt = pt
         self.th = pt.th
+        self.match_vars = match_vars
 
     def __call__(self, t):
         pat = self.th.concl.arg1
         inst = dict()
 
-        try:
-            inst = matcher.first_order_match(pat, t)
-        except matcher.MatchException:
+        if self.match_vars:
+            try:
+                inst = matcher.first_order_match(pat, t)
+            except matcher.MatchException:
+                raise ConvException()
+        elif pat != t:
             raise ConvException()
 
         return Thm.substitution(inst, self.th)
@@ -233,9 +241,12 @@ class rewr_conv(Conv):
         pat = self.th.concl.arg1
         inst = dict()
 
-        try:
-            inst = matcher.first_order_match(pat, t)
-        except matcher.MatchException:
+        if self.match_vars:
+            try:
+                inst = matcher.first_order_match(pat, t)
+            except matcher.MatchException:
+                raise ConvException()
+        elif pat != t:
             raise ConvException()
 
         return ProofTerm.substitution(inst, self.pt)

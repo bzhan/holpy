@@ -5,6 +5,7 @@
       "nat",
       "list",
       "function",
-      "expr"
+      "expr",
+      "sat"
   ]
 }

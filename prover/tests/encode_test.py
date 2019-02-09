@@ -35,5 +35,8 @@ class EncodeTest(unittest.TestCase):
         self.assertEqual(len(prop.assums), 11)
         self.assertEqual(len(logic.strip_conj(prop.concl)), 16)
 
+        pt = encode.get_encode_proof(prop)
+        self.assertTrue(pt.th.can_prove(prop))
+
 if __name__ == "__main__":
     unittest.main()

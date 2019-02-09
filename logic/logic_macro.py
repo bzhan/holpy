@@ -105,7 +105,7 @@ class apply_theorem_macro(ProofMacro):
 
         return Thm(th.assums, new_concl)
 
-    def expand(self, prefix, thy, args, *prevs):
+    def get_proof_term(self, thy, args, pts):
         inst = dict()
         if self.with_inst:
             name, inst = args
@@ -115,17 +115,21 @@ class apply_theorem_macro(ProofMacro):
 
         if not self.with_inst:
             As, _ = th.concl.strip_implies()
-            for idx, (_, arg) in enumerate(prevs):
-                matcher.first_order_match_incr(As[idx], arg.concl, inst)
+            for idx, pt in enumerate(pts):
+                matcher.first_order_match_incr(As[idx], pt.th.concl, inst)
 
         pt = ProofTerm.substitution(inst, ProofTerm.theorem(thy, name))
         cv = top_conv(beta_conv())
         pt2 = cv.get_proof_term(pt.th.concl)
         pt3 = ProofTerm.equal_elim(pt2, pt)
-        for idx, (id, prev) in enumerate(prevs):
-            pt3 = ProofTerm.implies_elim(pt3, ProofTerm.atom(id, prev))
+        for pt in pts:
+            pt3 = ProofTerm.implies_elim(pt3, pt)
 
-        return pt3.export(prefix)
+        return pt3
+
+    def expand(self, prefix, thy, args, *prevs):
+        pts = [ProofTerm.atom(id, prev) for id, prev in prevs]
+        return self.get_proof_term(thy, args, pts).export(prefix)
 
 class rewrite_goal_macro(ProofMacro):
     """Apply an existing equality theorem to rewrite a goal.

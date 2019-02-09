@@ -1,0 +1,58 @@
+{
+    "description": "SAT solver",
+    "content": [
+        {
+            "name": "encode_conj",
+            "prop": "(l = (r1 & r2)) = ((~l | r1) & (~l | r2) & (~r1 | ~r2 | l))",
+            "ty": "thm",
+            "vars": {
+                "l": "bool",
+                "r1": "bool",
+                "r2": "bool"
+            }
+        },
+        {
+            "name": "encode_disj",
+            "prop": "(l = (r1 | r2)) = ((~l | r1 | r2) & (~r1 | l) & (~r2 | l))",
+            "ty": "thm",
+            "vars": {
+                "l": "bool",
+                "r1": "bool",
+                "r2": "bool"
+            }
+        },
+        {
+            "name": "encode_imp",
+            "prop": "(l = (r1 --> r2)) = ((~l | ~r1 | r2) & (r1 | l) & (~r2 | l))",
+            "ty": "thm",
+            "vars": {
+                "l": "bool",
+                "r1": "bool",
+                "r2": "bool"
+            }
+        },
+        {
+            "name": "encode_eq",
+            "prop": "(l = (r1 = r2)) = ((~l | ~r1 | r2) & (~l | r1 | ~r2) & (l | ~r1 | ~r2) & (l | r1 | r2))",
+            "ty": "thm",
+            "vars": {
+                "l": "bool",
+                "r1": "bool",
+                "r2": "bool"
+            }
+        },
+        {
+            "name": "encode_not",
+            "prop": "(l = (~r)) = ((l | r) & (~l | ~r))",
+            "ty": "thm",
+            "vars": {
+                "l": "bool",
+                "r": "bool"
+            }
+        }
+    ],
+    "imports": [
+        "logic"
+    ],
+    "name": "sat"
+}

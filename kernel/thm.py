@@ -162,9 +162,9 @@ class Thm():
             if y1 == y2:
                 return Thm(list(OrderedDict.fromkeys(th1.assums + th2.assums)), Term.mk_equals(x,z))
             else:
-                raise InvalidDerivationException("transitive")
+                raise InvalidDerivationException("transitive: middle term")
         else:
-            raise InvalidDerivationException("transitive")
+            raise InvalidDerivationException("transitive: not equalities")
 
     @staticmethod
     def combination(th1, th2):
