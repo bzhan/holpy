@@ -5,10 +5,11 @@ import unittest
 from kernel.type import TVar, TFun
 from kernel.term import Var, Term
 from kernel.thm import Thm
-from logic.basic import BasicTheory
+from kernel.proof import Proof
+from logic import basic
 from logic.proofterm import ProofTerm
 
-thy = BasicTheory
+thy = basic.loadTheory('logic_base')
 
 Ta = TVar("a")
 x = Var("x", Ta)
@@ -40,14 +41,16 @@ class ProofTermTest(unittest.TestCase):
 
     def testExport3(self):
         """Case with atoms."""
-        pt1 = ProofTerm.atom((0, "A1"), Thm.mk_equals(x,y))
-        pt2 = ProofTerm.atom((0, "A2"), Thm.mk_equals(y,z))
+        pt1 = ProofTerm.atom(0, Thm.mk_equals(x,y))
+        pt2 = ProofTerm.atom(1, Thm.mk_equals(y,z))
         pt3 = ProofTerm.transitive(pt1, pt2)
 
-        prf = pt3.export(1)
-        seq_dict = {(0, "A1"): Thm.mk_equals(x,y), (0, "A2"): Thm.mk_equals(y,z)}
-        self.assertEqual(len(prf.items), 1)
-        self.assertEqual(thy.check_proof_incr(1, seq_dict, prf), Thm.mk_equals(x,z))
+        prf = Proof()
+        prf.add_item(0, rule="sorry", th=Thm.mk_equals(x,y))
+        prf.add_item(1, rule="sorry", th=Thm.mk_equals(y,z))
+        pt3.export(prf=prf)
+
+        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(x,z))
 
 if __name__ == "__main__":
     unittest.main()

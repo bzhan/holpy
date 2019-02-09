@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.thm import Thm
-from kernel.proof import Proof
+from kernel.proof import Proof, id_force_tuple
 
 class ProofTerm():
     """A proof term contains the derivation tree of a theorem.
@@ -73,10 +73,10 @@ class ProofTerm():
     def theorem(thy, th_name):
         return ProofTermDeriv(thy.get_theorem(th_name), "theorem", th_name, [])
 
-    def _export(self, depth, seq_to_id, prf):
+    def _export(self, prefix, seq_to_id, prf):
         """Helper function for _export.
         
-        depth -- current depth of the proof. Used in generating ids.
+        prefix -- current id prefix. Used in generating ids.
 
         seq_to_id -- the dictionary from existing sequents to ids. This
         is updated by the function.
@@ -98,25 +98,29 @@ class ProofTerm():
                 if prev.th in seq_to_id:
                     ids.append(seq_to_id[prev.th])
                 else:
-                    prev._export(depth, seq_to_id, prf)
+                    prev._export(prefix, seq_to_id, prf)
                     ids.append(prf.items[-1].id)
             else:
                 raise TypeError()
         
-        id = (depth, "S" + str(len(prf.items)+1))
+        id = prefix + (len(prf.items),)
         seq_to_id[self.th] = id
         prf.add_item(id, self.rule, args=self.args, prevs=ids)
         return prf
 
-    def export(self, depth = 0):
+    def export(self, prefix=None, prf=None):
         """Convert to proof object."""
-        return self._export(depth, dict(), Proof())
+        if prefix is None:
+            prefix = tuple()
+        if prf is None:
+            prf = Proof()
+        return self._export(prefix, dict(), prf)
 
 class ProofTermAtom(ProofTerm):
     """Atom proof terms."""
     def __init__(self, id, th):
         self.ty = ProofTerm.ATOM
-        self.id = id
+        self.id = id_force_tuple(id)
         self.th = th
 
 class ProofTermDeriv(ProofTerm):

@@ -5,7 +5,7 @@ import json
 
 from kernel.theory import Theory
 from logic.operator import OperatorTable
-from logic import logic_macro
+from logic import logic_macro  # Load all defined macros
 from syntax import parser
 
 
@@ -13,33 +13,58 @@ from syntax import parser
 loaded_theories = dict()
 
 
-def loadTheory(name):
-    """Load the theory with the given name."""
-    # If the theory is already loaded, return the theory.
-    if name in loaded_theories:
-        return loaded_theories[name]
+def getInitTheory():
+    """Returns a (fresh copy of) the initial theory. This is an
+    extension of EmptyTheory, adding only the operator data field.
 
-    # Otherwise, open the corresponding file.
-    with open('library/' + name + '.json', encoding='utf-8') as a:
-        data = json.load(a)
+    """
+    # The root theory
+    thy = Theory.EmptyTheory()
 
+    # Operators
+    thy.add_data_type("operator", OperatorTable())
+    return thy
+
+def loadImportedTheory(data):
+    """Load imported theory according to the imports field in data."""
     if data['imports']:
         # Has at least one import
         if len(data['imports']) > 1:
             raise NotImplementedError
 
-        thy = copy(loadTheory(data['imports'][0]))
-        parser.parse_extensions(thy, data['content'])
-        return thy
+        return copy(loadTheory(data['imports'][0]))
     else:
-        # The root theory
-        thy = Theory.EmptyTheory()
+        return getInitTheory()
 
-        # Operators
-        thy.add_data_type("operator", OperatorTable())
+def loadTheory(theory_name, *, limit=None):
+    """Load the theory with the given theory name. Optional limit is
+    a pair (ty, name) specifying the first item that should not
+    be loaded.
+    
+    """
+    # If the theory is already loaded, return the theory.
+    if limit is None and theory_name in loaded_theories:
+        return loaded_theories[theory_name]
 
-        parser.parse_extensions(thy, data['content'])
-        return thy
+    # Otherwise, open the corresponding file.
+    with open('library/' + theory_name + '.json', encoding='utf-8') as a:
+        data = json.load(a)
 
+    content = data['content']
+    limit_i = -1
+    if limit:
+        ty, name = limit
+        for i, val in enumerate(content):
+            if val['ty'] == ty and val['name'] == name:
+                limit_i = i
+                break
+        assert limit_i != -1, "Limit not found"
+        content = content[:limit_i]
 
-BasicTheory = loadTheory('logic_base')
+    thy = loadImportedTheory(data)
+    parser.parse_extensions(thy, content)
+
+    if limit is None:
+        loaded_theories[theory_name] = thy
+
+    return thy

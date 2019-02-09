@@ -22,14 +22,13 @@ class arg_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "arg_combination"
         return Thm.combination(Thm.reflexive(f), th)
 
-    def expand(self, depth, f, prev):
+    def expand(self, prefix, f, prev):
         id, th = prev
         assert th.concl.is_equals(), "arg_combination"
 
-        prf = Proof()
-        prf.add_item((depth, "S1"), "reflexive", args=f)
-        prf.add_item("C", "combination", prevs=[(depth, "S1"), id])
-        return prf
+        pt = ProofTerm.reflexive(f)
+        pt2 = ProofTerm.combination(pt, ProofTerm.atom(id, th))
+        return pt2.export(prefix=prefix)
 
 class fun_combination_macro(ProofMacro):
     """Given theorem f = g and term x, return f x = g x."""
@@ -43,14 +42,13 @@ class fun_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "fun_combination"
         return Thm.combination(th, Thm.reflexive(x))
 
-    def expand(self, depth, x, prev):
+    def expand(self, prefix, x, prev):
         id, th = prev
         assert th.concl.is_equals(), "fun_combination"
 
-        prf = Proof()
-        prf.add_item((depth, "S1"), "reflexive", args=x)
-        prf.add_item("C", "combination", prevs=[id, (depth, "S1")])
-        return prf
+        pt = ProofTerm.reflexive(x)
+        pt2 = ProofTerm.combination(ProofTerm.atom(id, th), pt)
+        return pt2.export(prefix=prefix)
 
 class beta_norm_macro(ProofMacro):
     """Given theorem th, return the normalization of th."""
@@ -65,12 +63,12 @@ class beta_norm_macro(ProofMacro):
         eq_th = cv(th.concl)
         return Thm(th.assums, eq_th.concl.arg)
 
-    def expand(self, depth, prev):
+    def expand(self, prefix, prev):
         id, th = prev
         cv = top_conv(beta_conv())
         pt = cv.get_proof_term(th.concl)
         pt2 = ProofTerm.equal_elim(pt, ProofTerm.atom(id, th))
-        return pt2.export(depth)
+        return pt2.export(prefix)
 
 class apply_theorem_macro(ProofMacro):
     """Apply existing theorem in the theory to a list of current
@@ -107,7 +105,7 @@ class apply_theorem_macro(ProofMacro):
 
         return Thm(th.assums, new_concl)
 
-    def expand(self, depth, thy, args, *prevs):
+    def expand(self, prefix, thy, args, *prevs):
         inst = dict()
         if self.with_inst:
             name, inst = args
@@ -127,7 +125,7 @@ class apply_theorem_macro(ProofMacro):
         for idx, (id, prev) in enumerate(prevs):
             pt3 = ProofTerm.implies_elim(pt3, ProofTerm.atom(id, prev))
 
-        return pt3.export(depth)
+        return pt3.export(prefix)
 
 class rewrite_goal_macro(ProofMacro):
     """Apply an existing equality theorem to rewrite a goal.
@@ -156,7 +154,7 @@ class rewrite_goal_macro(ProofMacro):
         _, goal = args
         return Thm(th.assums, goal)
 
-    def expand(self, depth, thy, args, prev):
+    def expand(self, prefix, thy, args, prev):
         assert isinstance(args, tuple) and len(args) == 2 and \
                isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
 
@@ -169,7 +167,7 @@ class rewrite_goal_macro(ProofMacro):
         pt = cv.get_proof_term(goal)  # goal = th.concl
         pt2 = ProofTerm.symmetric(pt)  # th.concl = goal
         pt3 = ProofTerm.equal_elim(pt2, ProofTerm.atom(id, th))
-        return pt3.export(depth)
+        return pt3.export(prefix)
 
 global_macros.update({
     "arg_combination": arg_combination_macro(),

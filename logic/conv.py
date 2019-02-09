@@ -18,10 +18,10 @@ class Conv():
 
     """
     def __call__(self, t):
-        pass
+        raise NotImplementedError
 
     def get_proof_term(self, t):
-        pass
+        raise NotImplementedError
 
 class all_conv(Conv):
     """Returns the trivial equality t = t."""
@@ -135,7 +135,7 @@ class abs_conv(Conv):
             raise ConvException()
         
         # Find a new variable x and substitute for body
-        v = Var(t.var_name, t.T)
+        v = Var(t.var_name, t.var_T)
         t2 = t.subst_bound(v)
         return Thm.abstraction(v, self.cv(t2))
 
@@ -144,7 +144,7 @@ class abs_conv(Conv):
             raise ConvException()
 
         # Find a new variable x and substitute for body
-        v = Var(t.var_name, t.T)
+        v = Var(t.var_name, t.var_T)
         t2 = t.subst_bound(v)
         return ProofTerm.abstraction(self.cv.get_proof_term(t2), v)
 
@@ -168,6 +168,14 @@ def fun2_conv(cv):
 
 def binop_conv(cv):
     return combination_conv(arg_conv(cv), cv)
+
+def every_conv(*args):
+    if len(args) == 0:
+        return all_conv()
+    elif len(args) == 1:
+        return args[0]
+    else:
+        return then_conv(args[0], every_conv(*args[1:]))
 
 class sub_conv(Conv):
     def __init__(self, cv):
@@ -231,3 +239,9 @@ class rewr_conv(Conv):
             raise ConvException()
 
         return ProofTerm.substitution(inst, self.pt)
+
+def rewr_conv_thm(thy, th_name):
+    return rewr_conv(ProofTerm.theorem(thy, th_name))
+
+def rewr_conv_thm_sym(thy, th_name):
+    return rewr_conv(ProofTerm.symmetric(ProofTerm.theorem(thy, th_name)))

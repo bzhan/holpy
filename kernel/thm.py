@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
-from kernel import settings
+from collections import OrderedDict
+
 from kernel.type import Type, hol_bool
 from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
 from kernel.macro import MacroSig
@@ -13,13 +14,13 @@ class InvalidDerivationException(Exception):
 class Thm():
     """Represents a theorem in sequent calculus.
 
-    A theorem is given by a set of assumptions and the conclusion.
-    The theorem (As, C) means the set of assumptions As implies the
+    A theorem is given by a list of assumptions and the conclusion.
+    The theorem (As, C) means the list of assumptions As implies the
     conclusion C. It is usually written as:
 
     A1, ... An |- C.
 
-    For a theorem statement to be well-formed, every item in the set As
+    For a theorem statement to be well-formed, every item in the list As
     as well as C must be well-formed terms of type boolean.
 
     This module also contains the list of primitive deduction rules for
@@ -36,21 +37,16 @@ class Thm():
         conclusion.
 
         """
-        self.assums = set(assums)
+        self.assums = tuple(assums)
         self.concl = concl
 
-    @settings.with_settings
-    def print(self):
-        """Print the given theorem."""
-        turnstile = "⊢" if settings.unicode() else "|-"
-        if self.assums:
-            str_assums = ", ".join(sorted(str(assum) for assum in self.assums))
-            return str_assums + " " + turnstile + " " + str(self.concl)
-        else:
-            return turnstile + " " + str(self.concl)
-
     def __str__(self):
-        return self.print()
+        """Print the given theorem."""
+        if self.assums:
+            str_assums = ", ".join(str(assum) for assum in self.assums)
+            return str_assums + " |- " + str(self.concl)
+        else:
+            return "|- " + str(self.concl)
 
     def __repr__(self):
         return str(self)
@@ -90,7 +86,7 @@ class Thm():
 
     def can_prove(self, target):
         """Determine whether self is sufficient to prove target."""
-        return self.concl == target.concl and self.assums.issubset(target.assums)
+        return self.concl == target.concl and set(self.assums).issubset(set(target.assums))
 
     @staticmethod
     def assume(A):
@@ -109,7 +105,7 @@ class Thm():
         ------------
         |- A --> B
         """
-        return Thm(th.assums.difference({A}), Term.mk_implies(A, th.concl))
+        return Thm(tuple(t for t in th.assums if t != A), Term.mk_implies(A, th.concl))
 
     @staticmethod
     def implies_elim(th1, th2):
@@ -123,7 +119,7 @@ class Thm():
         if th1.concl.is_implies():
             (A, B) = th1.concl.dest_binop()
             if A == th2.concl:
-                return Thm(th1.assums.union(th2.assums), B)
+                return Thm(list(OrderedDict.fromkeys(th1.assums + th2.assums)), B)
             else:
                 raise InvalidDerivationException("implies_elim: " + str(A) + " ~= " + str(th2.concl))
         else:
@@ -164,7 +160,7 @@ class Thm():
             (x, y1) = th1.concl.dest_binop()
             (y2, z) = th2.concl.dest_binop()
             if y1 == y2:
-                return Thm(th1.assums.union(th2.assums), Term.mk_equals(x,z))
+                return Thm(list(OrderedDict.fromkeys(th1.assums + th2.assums)), Term.mk_equals(x,z))
             else:
                 raise InvalidDerivationException("transitive")
         else:
@@ -184,7 +180,7 @@ class Thm():
             (x, y) = th2.concl.dest_binop()
             Tf = f.get_type()
             if Tf.is_fun() and Tf.domain_type() == x.get_type():
-                return Thm(th1.assums.union(th2.assums), Term.mk_equals(f(x),g(y)))
+                return Thm(list(OrderedDict.fromkeys(th1.assums + th2.assums)), Term.mk_equals(f(x),g(y)))
             else:
                 raise InvalidDerivationException("combination")
         else:
@@ -203,7 +199,7 @@ class Thm():
             (A1, B1) = th1.concl.dest_binop()
             (B2, A2) = th2.concl.dest_binop()
             if A1 == A2 and B1 == B2:
-                return Thm(th1.assums.union(th2.assums), Term.mk_equals(A1, B1))
+                return Thm(list(OrderedDict.fromkeys(th1.assums + th2.assums)), Term.mk_equals(A1, B1))
             else:
                 raise InvalidDerivationException("equal_intr")
         else:
@@ -221,7 +217,7 @@ class Thm():
         if th1.concl.is_equals():
             (A, B) = th1.concl.dest_binop()
             if A == th2.concl:
-                return Thm(th1.assums.union(th2.assums), B)
+                return Thm(list(OrderedDict.fromkeys(th1.assums + th2.assums)), B)
             else:
                 raise InvalidDerivationException("equal_elim")
         else:
@@ -316,7 +312,7 @@ class Thm():
         |- t[s/x]
         """
         if th.concl.is_all():
-            if th.concl.arg.T != s.get_type():
+            if th.concl.arg.var_T != s.get_type():
                 raise InvalidDerivationException("forall_elim")
             else:
                 return Thm(th.assums, th.concl.arg.subst_bound(s))

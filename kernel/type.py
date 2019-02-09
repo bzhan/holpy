@@ -1,5 +1,7 @@
 # Author: Bohua Zhan
 
+from collections import OrderedDict
+
 class TypeMatchException(Exception):
     pass
 
@@ -112,6 +114,8 @@ class HOLType():
             return hash(("COMB", self.name, tuple(hash(arg) for arg in self.args)))
     
     def __eq__(self, other):
+        if not isinstance(other, HOLType):
+            return False
         if self.ty != other.ty:
             return False
         elif self.ty == HOLType.TVAR:
@@ -166,6 +170,26 @@ class HOLType():
         tyinst = dict()
         self.match_incr(T, tyinst)
         return tyinst
+
+    def get_tvars(self):
+        """Return the list of type variables."""
+        def collect(T):
+            if T.ty == HOLType.TVAR:
+                return [T]
+            else:
+                return sum([collect(arg) for arg in T.args], [])
+
+        return list(OrderedDict.fromkeys(collect(self)))
+
+    def get_tsubs(self):
+        """Return the list of types appearing in self."""
+        def collect(T):
+            if T.ty == HOLType.TVAR:
+                return [T]
+            else:
+                return sum([collect(arg) for arg in T.args], [T])
+
+        return list(OrderedDict.fromkeys(collect(self)))
 
 class TVar(HOLType):
     """Type variable."""

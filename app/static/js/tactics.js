@@ -379,6 +379,8 @@ function display_highlight_str(editor, p, line_no, ch) {
         color = "color: green";
     else if (p[1] === 2)
         color = "color: blue";
+    else if (p[1] === 3)
+        color = "color: purple";
     return display_str(editor, p[0], line_no, ch, {css: color});
 }
 

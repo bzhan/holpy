@@ -1,9 +1,10 @@
 # Author: Bohua Zhan
 
-from kernel.type import TFun, hol_bool
+from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Const, Abs
 
 """Utility functions for logic."""
+
 
 conj = Const("conj", TFun(hol_bool, hol_bool, hol_bool))
 disj = Const("disj", TFun(hol_bool, hol_bool, hol_bool))
@@ -70,16 +71,13 @@ def is_exists(t):
     return t.ty == Term.COMB and t.fun.ty == Term.CONST and \
         t.fun.name == "exists" and t.arg.ty == Term.ABS
 
-def mk_exists(x, body, *, var_name = None, T = None):
+def mk_exists(x, body):
     """Given a variable x and a term t possibly depending on x, return
     the term ?x. t.
 
     """
-    if T is None:
-        T = x.T
-
-    exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
-    return exists_t(Term.mk_abs(x, body, var_name = var_name, T = T))
+    exists_t = Const("exists", TFun(TFun(x.T, hol_bool), hol_bool))
+    return exists_t(Term.mk_abs(x, body))
 
 def beta_norm(t):
     """Normalize t using beta-conversion."""
@@ -93,7 +91,7 @@ def beta_norm(t):
         else:
             return f(x)
     elif t.ty == Term.ABS:
-        return Abs(t.var_name, t.T, beta_norm(t.body))
+        return Abs(t.var_name, t.var_T, beta_norm(t.body))
     elif t.ty == Term.BOUND:
         return t
     else:
@@ -105,3 +103,20 @@ def subst_norm(t, inst):
 
     """
     return beta_norm(t.subst(inst))
+
+def if_t(T):
+    return Const("IF", TFun(hol_bool, T, T, T))
+
+def is_if(t):
+    """Whether t is of the form if P then x else y."""
+    f, args = t.strip_comb()
+    return f.is_const_with_name("IF") and len(args) == 3
+
+def mk_if(P, x, y):
+    """Obtain the term if P then x else y."""
+    return if_t(x.get_type())(P, x, y)
+
+def dest_if(t):
+    """Given a term if P then x else y, return (P, x, y)."""
+    _, args = t.strip_comb()
+    return args

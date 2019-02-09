@@ -1,0 +1,73 @@
+{
+    "description": "Functions",
+    "content": [
+        {
+            "name": "Function update",
+            "depth": 0,
+            "ty": "header"
+        },
+        {
+            "name": "fun_upd",
+            "ty": "def.ax",
+            "type": "('a => 'b) => 'a => 'b => 'a => 'b"
+        },
+        {
+            "name": "fun_upd_def",
+            "prop": "fun_upd f a b = (%x. if x = a then b else f x)",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b",
+                "a": "'a",
+                "b": "'b"
+            }
+        },
+        {
+            "name": "fun_upd_same",
+            "prop": "fun_upd f a b a = b",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b",
+                "a": "'a",
+                "b": "'b"
+            }
+        },
+        {
+            "name": "fun_upd_other",
+            "prop": "~(c = a) --> fun_upd f a b c = f c",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b",
+                "a": "'a",
+                "b": "'b",
+                "c": "'a"
+            }
+        },
+        {
+            "name": "fun_upd_upd",
+            "prop": "fun_upd (fun_upd f x y) x z = fun_upd f x z",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b",
+                "x": "'a",
+                "y": "'b",
+                "z": "'b"
+            }
+        },
+        {
+            "name": "fun_upd_twist",
+            "prop": "~c = a --> fun_upd (fun_upd f a b) c d = fun_upd (fun_upd f c d) a b",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b",
+                "a": "'a",
+                "b": "'b",
+                "c": "'a",
+                "d": "'b"
+            }
+        }
+    ],
+    "imports": [
+        "nat"
+    ],
+    "name": "func"
+}

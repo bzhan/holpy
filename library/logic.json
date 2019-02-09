@@ -1,4 +1,5 @@
 {
+    "description": "Basic results in logic",
     "content": [
         {
             "instructions": [
@@ -11,44 +12,44 @@
             "proof": [
                 {
                     "args": "A ∧ B",
-                    "id": "A1",
+                    "id": "0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "A ∧ B ⊢ A ∧ B"
                 },
                 {
                     "args": "conjD2, {A: A, B: B}",
-                    "id": "S1",
+                    "id": "1",
                     "prevs": [
-                        "A1"
+                        "0"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "A ∧ B ⊢ B"
                 },
                 {
                     "args": "conjD1, {A: A, B: B}",
-                    "id": "S2",
+                    "id": "2",
                     "prevs": [
-                        "A1"
+                        "0"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "A ∧ B ⊢ A"
                 },
                 {
                     "args": "conjI, {A: B, B: A}",
-                    "id": "S3",
+                    "id": "3",
                     "prevs": [
-                        "S1",
-                        "S2"
+                        "1",
+                        "2"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "A ∧ B ⊢ B ∧ A"
                 },
                 {
                     "args": "A ∧ B",
-                    "id": "S4",
+                    "id": "4",
                     "prevs": [
-                        "S3"
+                        "3"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ A ∧ B ⟶ B ∧ A"
@@ -74,77 +75,77 @@
             "proof": [
                 {
                     "args": "A ∨ B",
-                    "id": "A1",
+                    "id": "0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "A ∨ B ⊢ A ∨ B"
                 },
                 {
                     "args": "A",
-                    "id": "S1",
+                    "id": "1",
                     "prevs": [],
                     "rule": "assume",
                     "th": "A ⊢ A"
                 },
                 {
                     "args": "disjI2, {A: B, B: A}",
-                    "id": "S2",
+                    "id": "2",
                     "prevs": [
-                        "S1"
+                        "1"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "A ⊢ B ∨ A"
                 },
                 {
                     "args": "A",
-                    "id": "S3",
+                    "id": "3",
                     "prevs": [
-                        "S2"
+                        "2"
                     ],
                     "rule": "implies_intr",
                     "th": "A ∨ B ⊢ A ⟶ B ∨ A"
                 },
                 {
                     "args": "B",
-                    "id": "S4",
+                    "id": "4",
                     "prevs": [],
                     "rule": "assume",
                     "th": "B ⊢ B"
                 },
                 {
                     "args": "disjI1, {A: B, B: A}",
-                    "id": "S5",
+                    "id": "5",
                     "prevs": [
-                        "S4"
+                        "4"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "B ⊢ B ∨ A"
                 },
                 {
                     "args": "B",
-                    "id": "S6",
+                    "id": "6",
                     "prevs": [
-                        "S5"
+                        "5"
                     ],
                     "rule": "implies_intr",
                     "th": "A ∨ B ⊢ B ⟶ B ∨ A"
                 },
                 {
                     "args": "disjE, {A: A, B: B, C: B ∨ A}",
-                    "id": "S7",
+                    "id": "7",
                     "prevs": [
-                        "A1",
-                        "S3",
-                        "S6"
+                        "0",
+                        "3",
+                        "6"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "A ∨ B ⊢ B ∨ A"
                 },
                 {
                     "args": "A ∨ B",
-                    "id": "S8",
+                    "id": "8",
                     "prevs": [
-                        "S7"
+                        "7"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ A ∨ B ⟶ B ∨ A"
@@ -184,7 +185,107 @@
                 "Select S5 as goal and S4 as fact, use Ctrl+B with exI."
             ],
             "name": "ex_conj_distrib",
-            "prop": "(?x::'a. A x & B x) --> (?x::'a. A x) & (?x::'a. B x)",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∃x. A x ∧ B x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃x. A x ∧ B x ⊢ ∃x. A x ∧ B x"
+                },
+                {
+                    "args": "A x ∧ B x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A x ∧ B x ⊢ A x ∧ B x"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A x ∧ B x ⊢ A x"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A x ∧ B x ⊢ B x"
+                },
+                {
+                    "args": "exI, {P: A, a: x}",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A x ∧ B x ⊢ ∃a. A a"
+                },
+                {
+                    "args": "exI, {P: B, a: x}",
+                    "id": "5",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A x ∧ B x ⊢ ∃a. B a"
+                },
+                {
+                    "args": "conjI, {A: ∃x. A x, B: ∃x. B x}",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x. A x ∧ B x, A x ∧ B x ⊢ (∃x. A x) ∧ (∃x. B x)"
+                },
+                {
+                    "args": "A x ∧ B x",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "∃x. A x ∧ B x ⊢ A x ∧ B x ⟶ (∃x. A x) ∧ (∃x. B x)"
+                },
+                {
+                    "args": "x",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "∃x. A x ∧ B x ⊢ ∀x. A x ∧ B x ⟶ (∃x. A x) ∧ (∃x. B x)"
+                },
+                {
+                    "args": "exE, {C: (∃x. A x) ∧ (∃x. B x), P: λx. A x ∧ B x}",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x. A x ∧ B x ⊢ (∃x. A x) ∧ (∃x. B x)"
+                },
+                {
+                    "args": "∃x. A x ∧ B x",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ (∃x. A x ∧ B x) ⟶ (∃x. A x) ∧ (∃x. B x)"
+                }
+            ],
+            "prop": "(?x. A x & B x) --> (?x. A x) & (?x. B x)",
             "ty": "thm",
             "vars": {
                 "A": "'a => bool",
@@ -202,54 +303,12 @@
                 "Select S4 as goal and S1 as fact, use Ctrl+B with conjD2."
             ],
             "name": "all_conj_distrib",
-            "prop": "(!x::'a. A x & B x) --> (!x::'a. A x) & (!x::'a. B x)",
+            "prop": "(!x. A x & B x) --> (!x. A x) & (!x. B x)",
             "ty": "thm",
             "vars": {
                 "A": "'a => bool",
                 "B": "'a => bool",
                 "x": "'a"
-            }
-        },
-        {
-            "instructions": [
-                "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
-                "Select S1 as goal, use Ctrl+R with plus_def_1.",
-                "Set sorry on S1 to reflexive 0.",
-                "Select S3 as goal, use Ctrl+I with n as variable name.",
-                "Select S4 as goal, use Ctrl+R with plus_def_2.",
-                "Set sorry on S4 to arg_combination Suc from S3."
-            ],
-            "name": "nat.add_0_right",
-            "prop": "n + 0 = n",
-            "ty": "thm",
-            "vars": {
-                "n": "nat"
-            }
-        },
-        {
-            "instructions": [
-                "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
-                "Select S1 as goal, use Ctrl+R with times_def_1.",
-                "Set sorry on S1 to reflexive 0.",
-                "Select S3 as goal, use Ctrl+I with n as variable name.",
-                "Select S4 as goal, use Ctrl+R with times_def_2.",
-                "Select S4 as goal, use Ctrl+R with plus_def_1"
-            ],
-            "name": "nat.mult_0_right",
-            "num_gaps": 1,
-            "proof": [
-                {
-                    "args": "",
-                    "id": "S1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "⊢ n * 0 = 0"
-                }
-            ],
-            "prop": "n * 0 = 0",
-            "ty": "thm",
-            "vars": {
-                "n": "nat"
             }
         },
         {
@@ -270,43 +329,6 @@
                 "A": "bool",
                 "B": "bool",
                 "C": "bool"
-            }
-        },
-        {
-            "instructions": [
-                "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-                "Select S1 as goal, use Ctrl+R with append_def_1.",
-                "Set sorry on S1 to reflexive nil.",
-                "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
-                "Select S4 as goal, use Ctrl+R with append_def_2.",
-                "Set sorry on S4 to arg_combination cons x from S3."
-            ],
-            "name": "list.append_right_neutral",
-            "prop": "xs @ nil = xs",
-            "ty": "thm",
-            "vars": {
-                "x": "'a",
-                "xs": "'a list"
-            }
-        },
-        {
-            "instructions": [
-                "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-                "Select S1 as goal, use Ctrl+R with append_def_1.",
-                "Set sorry on S1 to reflexive ys @ zs.",
-                "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
-                "Select S4 as goal, use Ctrl+R with append_def_2.",
-                "Select S4 as goal, use Ctrl+R with append_def_2.",
-                "Set sorry on S4 to arg_combination cons x from S3."
-            ],
-            "name": "list.append_assoc",
-            "prop": "(xs @ ys) @ zs = xs @ ys @ zs",
-            "ty": "thm",
-            "vars": {
-                "x": "'a",
-                "xs": "'a list",
-                "ys": "'a list",
-                "zs": "'a list"
             }
         }
     ],

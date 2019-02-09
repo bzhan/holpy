@@ -5,6 +5,7 @@ from copy import copy
 from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
 from kernel.term import Term, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
+from kernel.proof import ProofException
 from kernel.macro import MacroSig, ProofMacro, global_macros
 from kernel.extension import Extension
 from kernel.report import ExtensionReport
@@ -249,11 +250,10 @@ class Theory():
         else:
             raise TypeError()
 
-    def _check_proof_item(self, depth, seq_dict, seq, rpt, no_gaps, compute_only):
+    def _check_proof_item(self, prf, seq, rpt, no_gaps, compute_only):
         """Check a single proof item.
-        
-        depth -- depth in macro expansion.
-        seq_dict -- dictionary of existing sequents.
+
+        prf -- proof to be checked.
         seq -- proof item to be checked.
         rpt -- report for proof-checking. Modified by the function.
         no_gaps -- disable gaps.
@@ -265,16 +265,15 @@ class Theory():
             return None
         if compute_only and seq.th is not None:
             # In compute_only mode, skip when a theorem exists.
-            seq_dict[seq.id] = seq.th
             return None
         if seq.rule == "sorry":
             # Gap in the proof
             assert seq.th is not None, "sorry must have explicit statement."
             if no_gaps:
                 raise CheckProofException("gaps are not allowed")
-            res_th = seq.th
             if rpt is not None:
                 rpt.add_gap(seq.th)
+            return None
         elif seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
@@ -289,10 +288,10 @@ class Theory():
             prev_ths = []
             assert isinstance(seq.prevs, list), "prevs should be a list"
             for prev in seq.prevs:
-                if prev not in seq_dict:
-                    raise CheckProofException("previous item not found: " + str(prev))
-                else:
-                    prev_ths.append(seq_dict[prev])
+                try:
+                    prev_ths.append(prf.find_item(prev))
+                except ProofException:
+                    raise CheckProofException("previous item not found")
 
             # Next, obtain list of arguments to pass in:
             if seq.args is not None:
@@ -320,15 +319,20 @@ class Theory():
                 # match. Otherwise, expand the macro and check all of the steps.
                 macro = self.get_proof_macro(seq.rule)
                 args = [self] + args if macro.has_theory else args
+                assert isinstance(macro.level, int) and macro.level >= 0, \
+                    ("check_proof: invalid macro level " + str(macro.level))
                 if macro.level <= self.check_level:
                     res_th = macro(*(args + prev_ths))
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
                 else:
-                    prf = macro.expand(depth+1, *(args + list(zip(seq.prevs, prev_ths))))
+                    seq.subproof = macro.expand(seq.id, *(args + list(zip(seq.prevs, prev_ths))))
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
-                    res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt, no_gaps=no_gaps)
+                    for s in seq.subproof.items:
+                        self._check_proof_item(prf, s, rpt, no_gaps=no_gaps, compute_only=False)
+                    res_th = seq.subproof.items[-1].th
+                    seq.subproof = None
             else:
                 raise CheckProofException("proof method not found: " + seq.rule)
 
@@ -346,21 +350,7 @@ class Theory():
         except TypeCheckException:
             raise CheckProofException("typing error")
 
-        seq_dict[seq.id] = seq.th
         return None
-
-    def check_proof_incr(self, depth, seq_dict, prf, rpt=None, *, no_gaps=False, compute_only=False):
-        """Incremental version of check_proof.
-        
-        depth -- depth in macro expansion.
-        seq_dict -- dictionary of existing sequents.
-        prf -- proof to be checked.
-        rpt -- report for proof-checking. Modified by the function.
-        
-        """
-        for seq in prf.items:
-            self._check_proof_item(depth, seq_dict, seq, rpt, no_gaps, compute_only)
-        return prf.items[-1].th
 
     def check_proof(self, prf, rpt=None, *, no_gaps=False, compute_only=False):
         """Verify the given proof object. Returns the final theorem if check
@@ -370,7 +360,10 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
-        return self.check_proof_incr(0, dict(), prf, rpt, no_gaps=no_gaps, compute_only=compute_only)
+        for seq in prf.items:
+            self._check_proof_item(prf, seq, rpt, no_gaps=no_gaps, compute_only=compute_only)
+
+        return prf.items[-1].th
 
     def get_proof_rule_sig(self, name):
         """Obtain the argument signature of the proof rule."""
