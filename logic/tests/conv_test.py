@@ -175,9 +175,7 @@ class ConvTest(unittest.TestCase):
         prf.add_item(0, "sorry", th=th0)
         prf.add_item(1, "sorry", th=th1)
         cv.get_proof_term(t).export(prf=prf)
-        thy.check_level = 1
-        self.assertEqual(thy.check_proof(prf), eq(t, res))
-        thy.check_level = 0
+        self.assertEqual(thy.check_proof(prf, check_level=1), eq(t, res))
 
 
 if __name__ == "__main__":

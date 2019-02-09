@@ -43,9 +43,6 @@ class Theory():
     Theory object is also responsible for proof checking. Parameters for
     proof checking include:
 
-    check_level -- trust level for proof checking. Trust all macros
-    with macro.level <= self.check_level.
-
     Theory object can be extended by a theory extension, which contains
     a list of new types, constants, and theorems to add to a theory.
     Theory object is responsible for checking all proofs in a theory
@@ -54,7 +51,6 @@ class Theory():
     """
     def __init__(self):
         self.data = dict()
-        self.check_level = 0
 
     def __copy__(self):
         """Creates a shallow copy of the current theory. This is defined
@@ -65,7 +61,6 @@ class Theory():
         res.data = dict()
         for name, val in self.data.items():
             res.data[name] = copy(val)
-        res.check_level = self.check_level
         return res
 
     def add_data_type(self, name, init = None):
@@ -250,7 +245,7 @@ class Theory():
         else:
             raise TypeError()
 
-    def _check_proof_item(self, prf, seq, rpt, no_gaps, compute_only):
+    def _check_proof_item(self, prf, seq, rpt, no_gaps, compute_only, check_level):
         """Check a single proof item.
 
         prf -- proof to be checked.
@@ -258,6 +253,8 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         no_gaps -- disable gaps.
         compute_only -- only executes rule if theorem is not present.
+        check_level -- trust level for proof checking. Trust all macros
+            with macro.level <= self.check_level.
         
         """
         if seq.rule == "":
@@ -321,7 +318,7 @@ class Theory():
                 args = [self] + args if macro.has_theory else args
                 assert isinstance(macro.level, int) and macro.level >= 0, \
                     ("check_proof: invalid macro level " + str(macro.level))
-                if macro.level <= self.check_level:
+                if macro.level <= check_level:
                     res_th = macro(*(args + prev_ths))
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
@@ -330,7 +327,7 @@ class Theory():
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
                     for s in seq.subproof.items:
-                        self._check_proof_item(prf, s, rpt, no_gaps=no_gaps, compute_only=False)
+                        self._check_proof_item(prf, s, rpt, no_gaps, compute_only, check_level)
                     res_th = seq.subproof.items[-1].th
                     seq.subproof = None
             else:
@@ -352,7 +349,7 @@ class Theory():
 
         return None
 
-    def check_proof(self, prf, rpt=None, *, no_gaps=False, compute_only=False):
+    def check_proof(self, prf, rpt=None, *, no_gaps=False, compute_only=False, check_level=0):
         """Verify the given proof object. Returns the final theorem if check
         passes. Otherwise throws CheckProofException.
 
@@ -361,7 +358,7 @@ class Theory():
         
         """
         for seq in prf.items:
-            self._check_proof_item(prf, seq, rpt, no_gaps=no_gaps, compute_only=compute_only)
+            self._check_proof_item(prf, seq, rpt, no_gaps, compute_only, check_level)
 
         return prf.items[-1].th
 

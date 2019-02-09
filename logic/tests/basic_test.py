@@ -96,12 +96,10 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.prim_steps, 8)
 
-        thy.check_level = 1
         rpt2 = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt2), th)
+        self.assertEqual(thy.check_proof(prf, rpt2, check_level=1), th)
         self.assertEqual(rpt2.prim_steps, 2)
         self.assertEqual(rpt2.macro_steps, 1)
-        thy.check_level = 0
 
     def testApplyTheorem(self):
         thy = basic.loadTheory('logic_base')
@@ -116,12 +114,10 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.prim_steps, 7)
 
-        thy.check_level = 1
         rpt2 = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt2), th)
+        self.assertEqual(thy.check_proof(prf, rpt2, check_level=1), th)
         self.assertEqual(rpt2.prim_steps, 1)
         self.assertEqual(rpt2.macro_steps, 1)
-        thy.check_level = 0
 
     def testRewriteGoal(self):
         thy = basic.loadTheory('nat')
@@ -139,12 +135,10 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf, rpt), th)
         self.assertEqual(rpt.prim_steps, 8)
 
-        thy.check_level = 1
         rpt2 = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt2), th)
+        self.assertEqual(thy.check_proof(prf, rpt2, check_level=1), th)
         self.assertEqual(rpt2.prim_steps, 1)
         self.assertEqual(rpt2.macro_steps, 1)
-        thy.check_level = 0
 
     def testConjComm(self):
         """Proof of commutativity of conjunction."""

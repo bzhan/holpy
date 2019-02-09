@@ -266,11 +266,9 @@ class TheoryTest(unittest.TestCase):
 
         # Check proof while trusting beta_conv_rhs
         rpt = ProofReport()
-        thy.check_level = 1
-        self.assertEqual(thy.check_proof(prf, rpt), th)
+        self.assertEqual(thy.check_proof(prf, rpt, check_level=1), th)
         self.assertEqual(rpt.steps_stat(), (0, 1, 1))
         self.assertEqual(rpt.macros_eval, {"beta_conv_rhs"})
-        thy.check_level = 0
 
     def testCheckProofGap(self):
         """Check proof with gap."""
