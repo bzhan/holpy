@@ -159,6 +159,26 @@
             }
         },
         {
+            "name": "conj_assoc",
+            "prop": "(A & B & C) = ((A & B) & C)",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool",
+                "C": "bool"
+            }
+        },
+        {
+            "name": "disj_assoc",
+            "prop": "(A | B | C) = ((A | B) | C)",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool",
+                "C": "bool"
+            }
+        },
+        {
             "instructions": [
                 "Add line 'theorem classical' after A1.",
                 "Select S2 as goal and S1 as fact, use Ctrl+B with disjE.",

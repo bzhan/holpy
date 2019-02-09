@@ -2,6 +2,7 @@
 
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Const, Abs
+from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv_thm_sym
 
 """Utility functions for logic."""
 
@@ -120,3 +121,30 @@ def dest_if(t):
     """Given a term if P then x else y, return (P, x, y)."""
     _, args = t.strip_comb()
     return args
+
+"""Normalization rules for logic."""
+
+class norm_conj_assoc_clauses(Conv):
+    """Normalize (A_1 & ... & A_n) & (B_1 & ... & B_n)."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.loadTheory('logic')
+
+        if is_conj(t.arg1):
+            return then_conv(
+                rewr_conv_thm_sym(thy, "conj_assoc"),
+                arg_conv(norm_conj_assoc_clauses())
+            ).get_proof_term(t)
+        else:
+            return all_conv().get_proof_term(t)
+
+class norm_conj_assoc(Conv):
+    """Normalize conjunction with respect to associativity."""
+    def get_proof_term(self, t):
+        if is_conj(t):
+            return then_conv(
+                binop_conv(norm_conj_assoc()),
+                norm_conj_assoc_clauses()
+            ).get_proof_term(t)
+        else:
+            return all_conv().get_proof_term(t)

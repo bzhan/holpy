@@ -4,11 +4,15 @@ import unittest
 
 from kernel.type import TVar, hol_bool
 from kernel.term import Term, Var, Abs, Bound
+from kernel.thm import Thm
 from logic import logic
+from logic import basic
 
 Ta = TVar("a")
 a = Var("a", hol_bool)
 b = Var("b", hol_bool)
+c = Var("c", hol_bool)
+d = Var("d", hol_bool)
 x = Var("x", Ta)
 y = Var("y", Ta)
 abs = Term.mk_abs
@@ -69,6 +73,22 @@ class LogicTest(unittest.TestCase):
 
         for t, res in test_data:
             self.assertEqual(logic.beta_norm(t), res)
+
+    def testNormConjAssoc(self):
+        conj = logic.mk_conj
+        test_data = [
+            (a, a),
+            (conj(a, b), conj(a, b)),
+            (conj(conj(a, b), conj(c, d)), conj(a, b, c, d)),
+            (conj(conj(conj(a, b), c), d), conj(a, b, c, d)),
+        ]
+
+        thy = basic.loadTheory('logic')
+        for t, res in test_data:
+            cv = logic.norm_conj_assoc()
+            prf = cv.get_proof_term(t).export()
+            self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
+
 
 if __name__ == "__main__":
     unittest.main()
