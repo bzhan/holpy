@@ -2,7 +2,6 @@
 
 from collections import OrderedDict
 
-from kernel import settings
 from kernel.type import Type, hol_bool
 from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
 from kernel.macro import MacroSig
@@ -41,16 +40,13 @@ class Thm():
         self.assums = tuple(assums)
         self.concl = concl
 
-    def print(self):
+    def __str__(self):
         """Print the given theorem."""
         if self.assums:
             str_assums = ", ".join(str(assum) for assum in self.assums)
             return str_assums + " |- " + str(self.concl)
         else:
             return "|- " + str(self.concl)
-
-    def __str__(self):
-        return self.print()
 
     def __repr__(self):
         return str(self)

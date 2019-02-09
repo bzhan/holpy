@@ -1,6 +1,5 @@
 # Author: Bohua Zhan
 
-from kernel import settings
 from kernel.term import Term
 from kernel.thm import Thm
 
@@ -36,15 +35,12 @@ class ProofItem():
         else:
             return ""
 
-    def print(self):
+    def __str__(self):
         """Print the given proof item."""
         str_args = " " + self.print_str_args() if self.args else ""
         str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
         str_th = str(self.th) + " by " if self.th else ""
         return str(self.id) + ": " + str_th + self.rule + str_args + str_prevs
-
-    def __str__(self):
-        return self.print()
 
     def __repr__(self):
         return str(self)
@@ -75,12 +71,9 @@ class Proof():
         """Add the given item to the end of the proof."""
         self.items.append(ProofItem(id, rule, args=args, prevs=prevs, th=th))
 
-    def print(self):
+    def __str__(self):
         """Print the given proof object."""
         return '\n'.join(str(item) for item in self.items)
-
-    def __str__(self):
-        return self.print()
 
     def __repr__(self):
         return str(self)

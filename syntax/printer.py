@@ -2,12 +2,12 @@
 
 from copy import copy
 
-from kernel import settings
 from kernel.term import Term, OpenTermException
 from logic.operator import OperatorData
 from logic import logic
 from logic import nat
 from logic import list as hol_list
+from syntax import settings
 from syntax import infertype
 
 # 0, 1, 2 = NORMAL, BOUND, VAR
@@ -187,23 +187,23 @@ def print_term(thy, t):
     return helper(t, [])
 
 @settings.with_settings
-def print_thm(th):
+def print_thm(thy, th):
     """Print the given theorem with highlight."""
     turnstile = N("⊢") if settings.unicode() else N("|-")
     if th.assums:
-        str_assums = commas_join(assum.print() for assum in th.assums)
-        return str_assums + N(" ") + turnstile + N(" ") + th.concl.print()
+        str_assums = commas_join(print_term(thy, assum) for assum in th.assums)
+        return str_assums + N(" ") + turnstile + N(" ") + print_term(thy, th.concl)
     else:
-        return turnstile + N(" ") + th.concl.print()
+        return turnstile + N(" ") + print_term(thy, th.concl)
 
 @settings.with_settings
-def print_str_args(item):
+def print_str_args(thy, item):
     def str_val(val):
         if isinstance(val, dict):
             items = sorted(val.items(), key = lambda pair: pair[0])
             return N('{') + commas_join(N(key + ': ') + str_val(val) for key, val in items) + N('}')
         elif isinstance(val, Term):
-            return val.print()
+            return print_term(thy, val)
         else:
             return N(str(val))
 
@@ -215,15 +215,15 @@ def print_str_args(item):
         return [] if settings.highlight() else ""
 
 @settings.with_settings
-def export_proof_item(item):
+def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
-    str_args = print_str_args(item)
+    str_args = print_str_args(thy, item)
     if not settings.highlight():
         str_th = str(item.th) if self.th else ""
     else:
-        str_th = print_thm(item.th) if item.th else ""
+        str_th = print_thm(thy, item.th) if item.th else ""
     res = {'id': item.id, 'th': str_th, 'rule': item.rule, 'args': str_args, 'prevs': item.prevs}
     if settings.highlight():
-        res['th_raw'] = print_thm(item.th, highlight=False) if item.th else ""
-        res['args_raw'] = print_str_args(item, highlight=False)
+        res['th_raw'] = print_thm(thy, item.th, highlight=False) if item.th else ""
+        res['args_raw'] = print_str_args(thy, item, highlight=False)
     return res

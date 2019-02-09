@@ -222,8 +222,7 @@ class PrinterTest(unittest.TestCase):
         B = Var('B', hol_bool)
         A_to_B = Term.mk_implies(A, B)
         th = Thm([A, A_to_B], B)
-        p = lambda t: printer.print_term(thy, t)
-        res = printer.print_thm(th, term_printer=p, highlight=True)
+        res = printer.print_thm(thy, th, highlight=True)
         self.assertEqual(res, [('A',2),(', ',0),('A',2),(' --> ',0),('B',2),(' ',0),('|-',0),(' ',0),('B',2)])
 
 

@@ -3,7 +3,6 @@
 from collections import OrderedDict
 from copy import copy
 
-from kernel import settings
 from kernel.type import TFun, hol_bool
 
 class OpenTermException(Exception):
@@ -58,7 +57,7 @@ class Term():
     """
     (VAR, CONST, COMB, ABS, BOUND) = range(5)
 
-    def default_print(self):
+    def __str__(self):
         """Printing function for terms. Note we do not yet handle collision
         in lambda terms.
 
@@ -91,12 +90,6 @@ class Term():
                 raise TypeError()
 
         return helper(self, [])
-
-    def print(self):
-        return settings.term_printer()(self)
-
-    def __str__(self):
-        return self.print()
 
     def __repr__(self):
         if self.ty == Term.VAR:
@@ -504,7 +497,6 @@ class Term():
         """Perform type-checking and return the type of self."""
         return self._checked_get_type([])
 
-settings.update_settings(term_printer=Term.default_print)
 
 class Var(Term):
     """Variable, specified by name and type."""

@@ -2,7 +2,7 @@
 
 import io
 
-from kernel import settings, term
+from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof
@@ -141,10 +141,9 @@ class ProofState():
     def json_data(self):
         """Export proof in json format."""
         self.check_proof()
-        p = lambda t: printer.print_term(self.thy, t)
         return {
             "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
-            "proof": [printer.export_proof_item(item, term_printer=p, unicode=True, highlight=True)
+            "proof": [printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
                       for item in self.prf.items],
             "report": self.rpt.json_data()
         }
