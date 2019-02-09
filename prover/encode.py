@@ -43,7 +43,7 @@ def encode_eq_imp(l, r1, r2):
 
 def encode_eq_eq(l, r1, r2):
     """Encoding for the term l = (r1 = r2)."""
-    return encode_eq_imp(l, r1, r2) + encode_eq_imp(l, r2, r1)
+    return [disj(neg(l), neg(r1), r2), disj(neg(l), r1, neg(r2)), disj(l, neg(r1), neg(r2)), disj(l, r1, r2)]
 
 def encode_eq_neg(l, r):
     """Encoding for the term l = ~r."""
