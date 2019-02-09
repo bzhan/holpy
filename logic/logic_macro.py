@@ -6,11 +6,11 @@ from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
 from logic.conv import beta_conv, top_conv, rewr_conv
-from logic.proofterm import ProofTerm
+from logic.proofterm import ProofTerm, ProofTermMacro
 
 """Standard macros in logic."""
 
-class arg_combination_macro(ProofMacro):
+class arg_combination_macro(ProofTermMacro):
     """Given theorem x = y and term f, return f x = f y."""
 
     def __init__(self):
@@ -22,15 +22,11 @@ class arg_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "arg_combination"
         return Thm.combination(Thm.reflexive(f), th)
 
-    def expand(self, prefix, f, prev):
-        id, th = prev
-        assert th.concl.is_equals(), "arg_combination"
+    def get_proof_term(self, f, pt):
+        assert pt.th.concl.is_equals(), "arg_combination"
+        return ProofTerm.combination(ProofTerm.reflexive(f), pt)
 
-        pt = ProofTerm.reflexive(f)
-        pt2 = ProofTerm.combination(pt, ProofTerm.atom(id, th))
-        return pt2.export(prefix=prefix)
-
-class fun_combination_macro(ProofMacro):
+class fun_combination_macro(ProofTermMacro):
     """Given theorem f = g and term x, return f x = g x."""
 
     def __init__(self):
@@ -42,15 +38,11 @@ class fun_combination_macro(ProofMacro):
         assert th.concl.is_equals(), "fun_combination"
         return Thm.combination(th, Thm.reflexive(x))
 
-    def expand(self, prefix, x, prev):
-        id, th = prev
-        assert th.concl.is_equals(), "fun_combination"
+    def get_proof_term(self, x, pt):
+        assert pt.th.concl.is_equals(), "fun_combination"
+        return ProofTerm.combination(pt, ProofTerm.reflexive(x))
 
-        pt = ProofTerm.reflexive(x)
-        pt2 = ProofTerm.combination(ProofTerm.atom(id, th), pt)
-        return pt2.export(prefix=prefix)
-
-class beta_norm_macro(ProofMacro):
+class beta_norm_macro(ProofTermMacro):
     """Given theorem th, return the normalization of th."""
 
     def __init__(self):
@@ -63,14 +55,11 @@ class beta_norm_macro(ProofMacro):
         eq_th = cv(th.concl)
         return Thm(th.assums, eq_th.concl.arg)
 
-    def expand(self, prefix, prev):
-        id, th = prev
+    def get_proof_term(self, pt):
         cv = top_conv(beta_conv())
-        pt = cv.get_proof_term(th.concl)
-        pt2 = ProofTerm.equal_elim(pt, ProofTerm.atom(id, th))
-        return pt2.export(prefix)
+        return ProofTerm.equal_elim(cv.get_proof_term(pt.th.concl), pt)
 
-class apply_theorem_macro(ProofMacro):
+class apply_theorem_macro(ProofTermMacro):
     """Apply existing theorem in the theory to a list of current
     results in the proof.
 
@@ -106,7 +95,7 @@ class apply_theorem_macro(ProofMacro):
         prev_assums = sum([prev.assums for prev in prevs], ())
         return Thm(th.assums + prev_assums, new_concl)
 
-    def get_proof_term(self, thy, args, pts):
+    def get_proof_term(self, thy, args, *pts):
         inst = dict()
         if self.with_inst:
             name, inst = args
@@ -128,11 +117,7 @@ class apply_theorem_macro(ProofMacro):
 
         return pt3
 
-    def expand(self, prefix, thy, args, *prevs):
-        pts = [ProofTerm.atom(id, prev) for id, prev in prevs]
-        return self.get_proof_term(thy, args, pts).export(prefix)
-
-class rewrite_goal_macro(ProofMacro):
+class rewrite_goal_macro(ProofTermMacro):
     """Apply an existing equality theorem to rewrite a goal.
 
     The signature is (name, goal), where name is the name of the
@@ -159,20 +144,18 @@ class rewrite_goal_macro(ProofMacro):
         _, goal = args
         return Thm(th.assums, goal)
 
-    def expand(self, prefix, thy, args, prev):
+    def get_proof_term(self, thy, args, pt):
         assert isinstance(args, tuple) and len(args) == 2 and \
                isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
 
         name, goal = args
-        id, th = prev
         eq_pt = ProofTerm.theorem(thy, name)
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
         cv = top_conv(rewr_conv(eq_pt))
-        pt = cv.get_proof_term(goal)  # goal = th.concl
-        pt2 = ProofTerm.symmetric(pt)  # th.concl = goal
-        pt3 = ProofTerm.equal_elim(pt2, ProofTerm.atom(id, th))
-        return pt3.export(prefix)
+        pt2 = cv.get_proof_term(goal)  # goal = th.concl
+        pt3 = ProofTerm.symmetric(pt2)  # th.concl = goal
+        return ProofTerm.equal_elim(pt3, pt)
 
 global_macros.update({
     "arg_combination": arg_combination_macro(),

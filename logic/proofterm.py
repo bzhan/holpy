@@ -2,6 +2,7 @@
 
 from kernel.thm import Thm
 from kernel.proof import Proof, id_force_tuple
+from kernel.macro import ProofMacro, MacroSig
 
 class ProofTerm():
     """A proof term contains the derivation tree of a theorem.
@@ -138,3 +139,23 @@ class ProofTermDeriv(ProofTerm):
         self.rule = rule
         self.args = args
         self.prevs = prevs
+
+class ProofTermMacro(ProofMacro):
+    """Encapsulates a standard way for writing macros: by first
+    constructing a proof term, then export the proof term.
+
+    """
+    def get_proof_term(self):
+        raise NotImplementedError()
+
+    def expand(self, prefix, *args):
+        args_count = 0
+        if self.has_theory:
+            args_count += 1
+        if self.sig != MacroSig.NONE:
+            args_count += 1
+
+        args, prevs = args[:args_count], args[args_count:]
+
+        pts = tuple([ProofTerm.atom(id, prev) for id, prev in prevs])
+        return self.get_proof_term(*(args + pts)).export(prefix)

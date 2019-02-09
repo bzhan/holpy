@@ -6,7 +6,7 @@ from kernel.thm import Thm
 from kernel.macro import ProofMacro, MacroSig, global_macros
 from logic.conv import Conv, ConvException, all_conv, rewr_conv_thm, rewr_conv_thm_sym, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from logic.proofterm import ProofTerm
+from logic.proofterm import ProofTerm, ProofTermMacro
 from logic import term_ord
 
 """Utility functions for natural number arithmetic."""
@@ -455,7 +455,7 @@ class norm_full(Conv):
         return cv.get_proof_term(t)
 
 
-class nat_norm_macro(ProofMacro):
+class nat_norm_macro(ProofTermMacro):
     """Attempt to prove goal by normalization."""
 
     def __init__(self):
@@ -467,7 +467,7 @@ class nat_norm_macro(ProofMacro):
         # Simply produce the goal.
         return Thm([], args)
 
-    def expand(self, prefix, args):
+    def get_proof_term(self, args):
         assert args.is_equals(), "nat_norm_macro: goal is not an equality."
 
         t1, t2 = args.arg1, args.arg
@@ -475,8 +475,7 @@ class nat_norm_macro(ProofMacro):
         pt2 = norm_full().get_proof_term(t2)
         assert pt1.th.concl.arg == pt2.th.concl.arg, "nat_norm_macro: normalization is not equal."
 
-        pt3 = ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
-        return pt3.export(prefix)
+        return ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
 
 
 global_macros.update({
