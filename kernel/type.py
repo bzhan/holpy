@@ -125,19 +125,6 @@ class HOLType():
         else:
             raise TypeError()
 
-    def __le__(self, other):
-        if self.ty != other.ty:
-            return self.ty <= other.ty
-        elif self.ty == HOLType.TVAR:
-            return self.name <= other.name
-        elif self.ty == HOLType.TYPE:
-            return (self.name, self.args) <= (other.name, other.args)
-        else:
-            raise TypeError()
-
-    def __lt__(self, other):
-        return self <= other and self != other
-
     def subst(self, tyinst):
         """Given a dictionary tyinst mapping from names to types,
         simultaneously substitute for the type variables using the
