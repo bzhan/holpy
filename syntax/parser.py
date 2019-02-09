@@ -6,7 +6,7 @@ from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.macro import MacroSig
 from kernel.thm import Thm
-from kernel.proof import ProofItem
+from kernel.proof import ProofItem, id_force_tuple
 from kernel import extension
 from logic import induct
 from logic import logic
@@ -246,7 +246,7 @@ def split_proof_rule(s):
     else:
         raise ParserException("id not found: " + s)
 
-    id = id.strip()
+    id = id_force_tuple(id)
     if rest.count(" by ") > 0:
         th, rest = rest.split(" by ", 1)
     else:
@@ -261,7 +261,7 @@ def split_proof_rule(s):
     if rest.count("from") > 0:
         args, rest = rest.split("from", 1)
         return {'id': id, 'rule': rule, 'args': args.strip(),
-                'prevs': [prev.strip() for prev in rest.split(",")],
+                'prevs': [id_force_tuple(prev) for prev in rest.split(",")],
                 'th': th}
     else:
         return {'id': id, 'rule': rule, 'args': rest.strip(),

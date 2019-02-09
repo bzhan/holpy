@@ -269,18 +269,18 @@ class ParserTest(unittest.TestCase):
 
     def testSplitProofRule(self):
         test_data = [
-            ("S1: theorem conjD1",
-             {'id': "S1", 'rule': "theorem", 'args': "conjD1", 'prevs': [], 'th': ""}),
-            ("S2: implies_elim from S1, A1",
-             {'id': "S2", 'rule': "implies_elim", 'args': "", 'prevs': ["S1", "A1"], 'th': ""}),
-            ("S6: substitution {'A': B, 'B': A} from S5",
-             {'id': "S6", 'rule': "substitution", 'args': "{'A': B, 'B': A}", 'prevs': ["S5"], 'th': ""}),
-            ("S9: implies_intr conj A B from S8",
-             {'id': "S9", 'rule': "implies_intr", 'args': "conj A B", 'prevs': ["S8"], 'th': ""}),
-            ("S1: conj A B |- conj B A by sorry",
-             {'id': "S1", 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"}),
-            ("S2: ",
-             {'id': "S2", 'rule': "", 'args': "", 'prevs': [], 'th': ""}),
+            ("0: theorem conjD1",
+             {'id': (0,), 'rule': "theorem", 'args': "conjD1", 'prevs': [], 'th': ""}),
+            ("2: implies_elim from 1, 0",
+             {'id': (2,), 'rule': "implies_elim", 'args': "", 'prevs': [(1,), (0,)], 'th': ""}),
+            ("5: substitution {'A': B, 'B': A} from 4",
+             {'id': (5,), 'rule': "substitution", 'args': "{'A': B, 'B': A}", 'prevs': [(4,)], 'th': ""}),
+            ("8: implies_intr conj A B from 7",
+             {'id': (8,), 'rule': "implies_intr", 'args': "conj A B", 'prevs': [(7,)], 'th': ""}),
+            ("0: conj A B |- conj B A by sorry",
+             {'id': (0,), 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"}),
+            ("1: ",
+             {'id': (1,), 'rule': "", 'args': "", 'prevs': [], 'th': ""}),
         ]
 
         for s, res in test_data:
@@ -288,17 +288,20 @@ class ParserTest(unittest.TestCase):
 
     def testParseProofRule(self):
         test_data = [
-            ("S1: theorem conjD1", ProofItem("S1", "theorem", args="conjD1", prevs=[])),
-            ("S2: implies_elim from S1, A1", ProofItem("S2", "implies_elim", prevs=["S1", "A1"])),
-            ("S6: substitution {A: B, B: A} from S5", ProofItem(
-                "S6", "substitution", args={'A': B, 'B': A}, prevs=["S5"])),
-            ("S9: implies_intr conj A B from S8", ProofItem(
-                "S9", "implies_intr", args=logic.mk_conj(A, B), prevs=["S8"])),
-            ("S1: conj A B |- conj B A by sorry", ProofItem(
-                "S1", "sorry", th = Thm([logic.mk_conj(A, B)], logic.mk_conj(B, A)))),
-            ("S2: ", ProofItem("S2", "")),
-            ("S1: apply_theorem_for conjI, {A: B, B: A} from S1, S2", ProofItem(
-                "S1", "apply_theorem_for", args=("conjI", {'A': B, 'B': A}), prevs=["S1", "S2"])),
+            ("0: theorem conjD1",
+             ProofItem(0, "theorem", args="conjD1", prevs=[])),
+            ("2: implies_elim from 1, 0",
+             ProofItem(2, "implies_elim", prevs=[1, 0])),
+            ("5: substitution {A: B, B: A} from 4",
+             ProofItem(5, "substitution", args={'A': B, 'B': A}, prevs=[4])),
+            ("8: implies_intr conj A B from 7",
+             ProofItem(8, "implies_intr", args=logic.mk_conj(A, B), prevs=[7])),
+            ("0: conj A B |- conj B A by sorry",
+             ProofItem(0, "sorry", th = Thm([logic.mk_conj(A, B)], logic.mk_conj(B, A)))),
+            ("1: ",
+             ProofItem(1, "")),
+            ("2: apply_theorem_for conjI, {A: B, B: A} from 0, 1",
+             ProofItem(2, "apply_theorem_for", args=("conjI", {'A': B, 'B': A}), prevs=[0, 1])),
         ]
 
         for s, res in test_data:
@@ -307,7 +310,7 @@ class ParserTest(unittest.TestCase):
     def testParseProofFail(self):
         test_data = [
             ("", "id not found"),
-            ("S1: assume A &", "When parsing A &, unexpected token"),
+            ("1: assume A &", "When parsing A &, unexpected token"),
         ]
 
         for s, err in test_data:

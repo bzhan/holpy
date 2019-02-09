@@ -94,69 +94,69 @@
             "proof": [
                 {
                     "args": "append_def_1, {xs: ([]::'a list)}",
-                    "id": "S1",
+                    "id": "0",
                     "prevs": [],
                     "rule": "apply_theorem_for",
                     "th": "⊢ ([]::'a list) @ [] = []"
                 },
                 {
                     "args": "xs @ [] = xs",
-                    "id": "S2",
+                    "id": "1",
                     "prevs": [],
                     "rule": "assume",
                     "th": "xs @ [] = xs ⊢ xs @ [] = xs"
                 },
                 {
                     "args": "cons x",
-                    "id": "S3",
+                    "id": "2",
                     "prevs": [
-                        "S2"
+                        "1"
                     ],
                     "rule": "arg_combination",
                     "th": "xs @ [] = xs ⊢ x # xs @ [] = x # xs"
                 },
                 {
                     "args": "append_def_2, (x # xs) @ [] = x # xs",
-                    "id": "S4",
+                    "id": "3",
                     "prevs": [
-                        "S3"
+                        "2"
                     ],
                     "rule": "rewrite_goal",
                     "th": "xs @ [] = xs ⊢ (x # xs) @ [] = x # xs"
                 },
                 {
                     "args": "xs @ [] = xs",
-                    "id": "S5",
+                    "id": "4",
                     "prevs": [
-                        "S4"
+                        "3"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
                 },
                 {
                     "args": "xs",
-                    "id": "S6",
+                    "id": "5",
                     "prevs": [
-                        "S5"
+                        "4"
                     ],
                     "rule": "forall_intr",
                     "th": "⊢ ∀xs. xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
                 },
                 {
                     "args": "x",
-                    "id": "S7",
+                    "id": "6",
                     "prevs": [
-                        "S6"
+                        "5"
                     ],
                     "rule": "forall_intr",
-                    "th": "⊢ ∀x. ∀xs. xs @ ([]::'a list) = xs ⟶ (x # xs) @ [] = x # xs"
+                    "th": "⊢ ∀x::'a. ∀xs. xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
                 },
                 {
-                    "args": "list_induct, {P: λxs. xs @ ([]::'a list) = xs, x: xs}",
-                    "id": "S8",
+                    "args": "list_induct, {P: λxs::'a list. xs @ [] = xs, x: xs}",
+                    "id": "7",
                     "prevs": [
-                        "S1",
-                        "S7"
+                        "0",
+                        "6"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "⊢ xs @ [] = xs"

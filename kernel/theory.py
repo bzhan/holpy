@@ -249,10 +249,9 @@ class Theory():
         else:
             raise TypeError()
 
-    def _check_proof_item(self, depth, seq_dict, seq, rpt, no_gaps, compute_only):
+    def _check_proof_item(self, seq_dict, seq, rpt, no_gaps, compute_only):
         """Check a single proof item.
-        
-        depth -- depth in macro expansion.
+
         seq_dict -- dictionary of existing sequents.
         seq -- proof item to be checked.
         rpt -- report for proof-checking. Modified by the function.
@@ -327,10 +326,10 @@ class Theory():
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
                 else:
-                    prf = macro.expand(depth+1, *(args + list(zip(seq.prevs, prev_ths))))
+                    prf = macro.expand(seq.id, *(args + list(zip(seq.prevs, prev_ths))))
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
-                    res_th = self.check_proof_incr(depth+1, seq_dict.copy(), prf, rpt, no_gaps=no_gaps)
+                    res_th = self.check_proof_incr(seq_dict.copy(), prf, rpt, no_gaps=no_gaps)
             else:
                 raise CheckProofException("proof method not found: " + seq.rule)
 
@@ -351,17 +350,16 @@ class Theory():
         seq_dict[seq.id] = seq.th
         return None
 
-    def check_proof_incr(self, depth, seq_dict, prf, rpt=None, *, no_gaps=False, compute_only=False):
+    def check_proof_incr(self, seq_dict, prf, rpt=None, *, no_gaps=False, compute_only=False):
         """Incremental version of check_proof.
         
-        depth -- depth in macro expansion.
         seq_dict -- dictionary of existing sequents.
         prf -- proof to be checked.
         rpt -- report for proof-checking. Modified by the function.
         
         """
         for seq in prf.items:
-            self._check_proof_item(depth, seq_dict, seq, rpt, no_gaps, compute_only)
+            self._check_proof_item(seq_dict, seq, rpt, no_gaps, compute_only)
         return prf.items[-1].th
 
     def check_proof(self, prf, rpt=None, *, no_gaps=False, compute_only=False):
@@ -372,7 +370,7 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
-        return self.check_proof_incr(0, dict(), prf, rpt, no_gaps=no_gaps, compute_only=compute_only)
+        return self.check_proof_incr(dict(), prf, rpt, no_gaps=no_gaps, compute_only=compute_only)
 
     def get_proof_rule_sig(self, name):
         """Obtain the argument signature of the proof rule."""

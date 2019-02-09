@@ -4,6 +4,7 @@ from copy import copy
 
 from kernel.type import HOLType
 from kernel.term import Term, OpenTermException
+from kernel import proof
 from logic.operator import OperatorData
 from logic import logic
 from logic import nat
@@ -261,7 +262,8 @@ def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
     str_th = print_thm(thy, item.th) if item.th else ""
     str_args = print_str_args(thy, item)
-    res = {'id': item.id, 'th': str_th, 'rule': item.rule, 'args': str_args, 'prevs': item.prevs}
+    res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
+           'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}
     if settings.highlight():
         res['th_raw'] = print_thm(thy, item.th, highlight=False) if item.th else ""
         res['args_raw'] = print_str_args(thy, item, highlight=False)

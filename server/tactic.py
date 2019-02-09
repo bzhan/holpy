@@ -5,7 +5,7 @@ import io
 from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import ProofItem, Proof
+from kernel.proof import ProofItem, Proof, id_force_tuple
 from kernel.report import ProofReport
 from logic import logic, matcher
 from logic.proofterm import ProofTerm
@@ -23,8 +23,8 @@ def incr_id(id, start, n):
     by start.
 
     """
-    if id.startswith("S") and int(id[1:]) >= start:
-        return "S" + str(int(id[1:]) + n)
+    if id[0] >= start:
+        return (id[0] + n,) + id[1:]
     else:
         return id
 
@@ -33,13 +33,10 @@ def incr_proof_item(item, start, n):
     return ProofItem(incr_id(item.id, start, n), item.rule, args=item.args,
         prevs=[incr_id(id, start, n) for id in item.prevs], th=item.th)
 
-def decr_id(id, id_remove=0):
-    """Decrement a single id, with the aim of closing the gap at id_remove.
-    id_remove defaults to 0 (decrement all ids > 0).
-    
-    """
-    if id.startswith("S") and int(id[1:]) > id_remove:
-        return "S" + str(int(id[1:]) - 1)
+def decr_id(id, id_remove):
+    """Decrement a single id, with the aim of closing the gap at id_remove."""
+    if id[0] > id_remove:
+        return (id[0] - 1,) + id[1:]
     else:
         return id
 
@@ -92,7 +89,7 @@ class ProofState():
 
     @staticmethod
     def init_state(thy, vars, assums, concl):
-        """ Construct initial partial proof for the given assumptions and
+        """Construct initial partial proof for the given assumptions and
         conclusion.
 
         assums - assumptions A1, ... An.
@@ -100,22 +97,23 @@ class ProofState():
         
         Constructs:
 
-        A1: assume A1
+        0: assume A1
         ...
-        An: assume An
-        S1: C by sorry
-        S2: An --> C by implies_intr An from S1
+        n-1: assume An
+        n: C by sorry
+        n+1: An --> C by implies_intr n-1 from n
         ...
-        S{n+1}: A1 --> ... --> An --> C by implies_intr A1 from Sn.
+        2n: A1 --> ... --> An --> C by implies_intr 0 from 2n-1.
 
         """
         state = ProofState(thy)
 
         state.vars = vars
         state.prf = Proof(*assums)
-        state.prf.add_item("S1", "sorry", th=Thm(assums, concl))
-        for n, assum in enumerate(reversed(assums), 2):
-            state.prf.add_item("S" + str(n), "implies_intr", args=assum, prevs=["S" + str(n-1)])
+        n = len(assums)
+        state.prf.add_item(n, "sorry", th=Thm(assums, concl))
+        for i, assum in enumerate(reversed(assums), 0):
+            state.prf.add_item(n + i + 1, "implies_intr", args=assum, prevs=[n - i])
         state.check_proof(compute_only=True)
         return state
 
@@ -171,57 +169,48 @@ class ProofState():
 
     def add_line_after(self, id):
         """Add given line after the given id."""
-        # Determine the index of the new line.
-        if id.startswith("S"):
-            id_new = int(id[1:]) + 1
-        else:
-            id_new = 1
-
+        id = id_force_tuple(id)
         new_prf = Proof()
+        start = id[0] + 1
+        new_id = (id[0] + 1,) + id[1:]
         for item in self.prf.items:
-            new_prf.items.append(incr_proof_item(item, id_new, 1))
+            new_prf.items.append(incr_proof_item(item, start, 1))
             if item.id == id:
-                new_prf.add_item("S" + str(id_new), "")
+                new_prf.add_item(new_id, "")
 
         self.prf = new_prf
         self.check_proof(compute_only=True)
 
     def add_line_before(self, id, n):
-        """Add given line before the given id."""
-        # Determine the index of the new line.
-        assert id.startswith("S"), "add_line_before"
-
-        id_new = int(id[1:])
+        """Add n lines before the given id."""
+        id = id_force_tuple(id)
         new_prf = Proof()
+        start = id[0]
         for item in self.prf.items:
             if item.id == id:
                 for i in range(n):
-                    new_prf.add_item("S" + str(id_new + i), "")
-            new_prf.items.append(incr_proof_item(item, id_new, n))
+                    new_id = (id[0] + i,) + id[1:]
+                    new_prf.add_item(new_id, "")
+            new_prf.items.append(incr_proof_item(item, start, n))
 
         self.prf = new_prf
         self.check_proof(compute_only=True)
 
     def remove_line(self, id):
         """Remove line with the given id."""
-        # Determine the index of the line to be removed.
-        if id.startswith("S"):
-            id_remove = int(id[1:])
-        else:
-            raise TacticException()
-
-        # Remove the given line. Replace all S{i} with S{i-1} whenever
-        # i > id_remove.
+        id = id_force_tuple(id)
         new_prf = Proof()
+        to_remove = id[0]
         for item in self.prf.items:
             if not item.id == id:
-                new_prf.items.append(decr_proof_item(item, id_remove))
-            
+                new_prf.items.append(decr_proof_item(item, to_remove))
+
         self.prf = new_prf
         self.check_proof(compute_only=True)
 
     def set_line(self, id, rule, *, args=None, prevs=None, th=None):
         """Set the item with the given id to the following data."""
+        id = id_force_tuple(id)
         new_prf = Proof()
         for item in self.prf.items:
             if item.id == id:
@@ -275,10 +264,9 @@ class ProofState():
         assumptions in order, then match the conclusion.
 
         """
-        if prevs is None:
-            prevs = []
-        else:
-            prevs = [self.get_proof_item(id) for id in prevs]
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+        prevs = [self.get_proof_item(id) for id in prevs]
 
         # Obtain the statement to be proved.
         cur_item = self.get_proof_item(id)
@@ -318,8 +306,8 @@ class ProofState():
         inst - existing instantiation.
 
         """
-        if prevs is None:
-            prevs = []
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
 
         # Obtain the statement to be proved.
         cur_item = self.get_proof_item(id)
@@ -340,12 +328,12 @@ class ProofState():
 
         num_goal = len(As) - len(prevs)
         self.add_line_before(id, num_goal)
-        start = int(id[1:])
-        all_ids = ["S" + str(start + i - len(prevs)) for i in range(len(prevs), len(As))]
+        start = id
+        all_ids = [incr_id(start, 0, i - len(prevs)) for i in range(len(prevs), len(As))]
         for goal_id, A in zip(all_ids, As[len(prevs):]):
             self.set_line(goal_id, "sorry", th=Thm(cur_item.th.assums, A))
 
-        self.set_line("S" + str(start + num_goal), "apply_theorem_for",
+        self.set_line(incr_id(start, 0, num_goal), "apply_theorem_for",
                       args=(th_name, inst), prevs=prevs + all_ids)
 
         # Test if the goals are already proved:
@@ -363,6 +351,7 @@ class ProofState():
         Argument names specifies list of variable names.
         
         """
+        id = id_force_tuple(id)
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "introduction: id is not a gap"
 
@@ -382,28 +371,28 @@ class ProofState():
         self.add_line_before(id, len(vars) + 2 * len(As))
 
         # Starting id number
-        start = int(id[1:])
+        start = id
 
         # Assumptions
         for i, A in enumerate(As):
-            new_id = "S" + str(start + i)
+            new_id = incr_id(start, 0, i)
             self.set_line(new_id, "assume", args=A, th=Thm([A], A))
 
         # Goal
-        goal_id = "S" + str(start + len(As))
+        goal_id = incr_id(start, 0, len(As))
         goal = Thm(list(cur_item.th.assums) + As, C)
         self.set_line(goal_id, "sorry", th=goal)
 
         # implies_intr invocations
         for i, A in enumerate(reversed(As)):
-            prev_id = "S" + str(start + len(As) + i)
-            new_id = "S" + str(start + len(As) + i + 1)
+            prev_id = incr_id(start, 0, len(As) + i)
+            new_id = incr_id(start, 0, len(As) + i + 1)
             self.set_line(new_id, "implies_intr", args=A, prevs=[prev_id])
 
         # forall_intr invocations
         for i, var in enumerate(reversed(vars)):
-            prev_id = "S" + str(start + 2 * len(As) + i)
-            new_id = "S" + str(start + 2 * len(As) + i + 1)
+            prev_id = incr_id(start, 0, 2 * len(As) + i)
+            new_id = incr_id(start, 0, 2 * len(As) + i + 1)
             self.set_line(new_id, "forall_intr", args=var, prevs=[prev_id])
 
         # Test if the goal is already proved
@@ -416,6 +405,7 @@ class ProofState():
         variable.
         
         """
+        id = id_force_tuple(id)
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "apply_induction: id is not a gap"
 
@@ -439,6 +429,7 @@ class ProofState():
     def rewrite_goal_thms(self, id):
         """Find list of theorems on which rewrite_goal can be applied."""
 
+        id = id_force_tuple(id)
         cur_item = self.get_proof_item(id)
         if cur_item.rule != "sorry":
             return []
@@ -457,6 +448,7 @@ class ProofState():
     def rewrite_goal(self, id, th_name, *, backward=False):
         """Apply an existing equality theorem to the given goal."""
 
+        id = id_force_tuple(id)
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "rewrite_goal: id is not a gap"
 
@@ -465,9 +457,8 @@ class ProofState():
         _, new_goal = cv(goal).concl.dest_binop()
 
         self.add_line_before(id, 1)
-        start = int(id[1:])
         self.set_line(id, "sorry", th=Thm(cur_item.th.assums, new_goal))
-        self.set_line("S" + str(start + 1), "rewrite_goal", args=(th_name, goal), prevs=[id])
+        self.set_line(incr_id(id, 0, 1), "rewrite_goal", args=(th_name, goal), prevs=[id])
 
         # Test if the goal is already proved
         new_id = self.find_goal(Thm(cur_item.th.assums, new_goal), id)

@@ -467,7 +467,7 @@ class nat_norm_macro(ProofMacro):
         # Simply produce the goal.
         return Thm([], args)
 
-    def expand(self, depth, args):
+    def expand(self, prefix, args):
         assert args.is_equals(), "nat_norm_macro: goal is not an equality."
 
         t1, t2 = args.arg1, args.arg
@@ -476,7 +476,7 @@ class nat_norm_macro(ProofMacro):
         assert pt1.th.concl.arg == pt2.th.concl.arg, "nat_norm_macro: normalization is not equal."
 
         pt3 = ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
-        return pt3.export(depth)
+        return pt3.export(prefix)
 
 
 global_macros.update({

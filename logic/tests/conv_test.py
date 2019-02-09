@@ -48,27 +48,27 @@ class ConvTest(unittest.TestCase):
         g = Const("g", TFun(natT, natT))
         x = Var("x", natT)
 
-        seq_dict = {"A1": eq(one, zero), "A2": eq(f(x), g(x))}
+        seq_dict = {(0,): eq(one, zero), (1,): eq(f(x), g(x))}
 
         # Test conversion using 1 = 0
-        cv1 = rewr_conv(ProofTerm.atom("A1", seq_dict["A1"]))
+        cv1 = rewr_conv(ProofTerm.atom(0, seq_dict[(0,)]))
         eq_th = eq(one, zero)
-        prf = cv1.get_proof_term(one).export()
+        prf = cv1.get_proof_term(one).export((2,))
         self.assertEqual(cv1(one), eq_th)
-        self.assertEqual(thy.check_proof_incr(0, seq_dict, prf), eq_th)
+        self.assertEqual(thy.check_proof_incr(seq_dict, prf), eq_th)
         self.assertRaises(ConvException, cv1, zero)
         self.assertRaises(ConvException, cv1.get_proof_term, zero)
 
         # Test conversion using f x = g x
-        cv2 = rewr_conv(ProofTerm.atom("A2", seq_dict["A2"]))
+        cv2 = rewr_conv(ProofTerm.atom(1, seq_dict[(1,)]))
         eq0 = eq(f(zero), g(zero))
         eq1 = eq(f(one), g(one))
         self.assertEqual(cv2(f(zero)), eq0)
         self.assertEqual(cv2(f(one)), eq1)
-        prf0 = cv2.get_proof_term(f(zero)).export()
-        prf1 = cv2.get_proof_term(f(one)).export()
-        self.assertEqual(thy.check_proof_incr(0, seq_dict, prf0), eq0)
-        self.assertEqual(thy.check_proof_incr(0, seq_dict, prf1), eq1)
+        prf0 = cv2.get_proof_term(f(zero)).export((2,))
+        prf1 = cv2.get_proof_term(f(one)).export((2,))
+        self.assertEqual(thy.check_proof_incr(seq_dict, prf0), eq0)
+        self.assertEqual(thy.check_proof_incr(seq_dict, prf1), eq1)
         self.assertRaises(ConvException, cv1, zero)
         self.assertRaises(ConvException, cv1.get_proof_term, zero)
 
@@ -151,19 +151,18 @@ class ConvTest(unittest.TestCase):
         g = Const("g", TFun(natT, natT))
         x = Var("x", natT)
 
-        seq_dict = {"A1": eq(one, zero), "A2": eq(f(x), g(x))}
-        cv = top_conv(else_conv(
-            rewr_conv(ProofTerm.atom("A1", seq_dict["A1"])),
-            rewr_conv(ProofTerm.atom("A2", seq_dict["A2"]))))
+        seq_dict = {(0,): eq(one, zero), (1,): eq(f(x), g(x))}
+        cv = top_conv(else_conv(rewr_conv(ProofTerm.atom(0, seq_dict[(0,)])),
+                                rewr_conv(ProofTerm.atom(1, seq_dict[(1,)]))))
 
         f1 = f(one)
         g0 = g(zero)
         t = plus(*([f1] * 10))
         res = plus(*([g0] * 10))
-        prf = cv.get_proof_term(t).export()
+        prf = cv.get_proof_term(t).export((2,))
         self.assertEqual(cv(t), eq(t, res))
         thy.check_level = 1
-        self.assertEqual(thy.check_proof_incr(0, seq_dict, prf), eq(t, res))
+        self.assertEqual(thy.check_proof_incr(seq_dict, prf), eq(t, res))
         thy.check_level = 0
 
 

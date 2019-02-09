@@ -172,7 +172,7 @@ class NatTest(unittest.TestCase):
         ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
         for expr in test_data:
             goal = parser.parse_term(thy, ctxt, expr)
-            prf = macro.expand(0, goal)
+            prf = macro.expand((), goal)
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
 

@@ -3,6 +3,21 @@
 from kernel.term import Term
 from kernel.thm import Thm
 
+def id_force_tuple(id):
+    """Convert id into tuple form."""
+    if isinstance(id, tuple) and all(isinstance(i, int) for i in id):
+        return id
+    elif isinstance(id, int):
+        return (id,)
+    elif isinstance(id, str):
+        return tuple(int(s) for s in id.split("."))
+    else:
+        raise TypeError()
+
+def print_id(id):
+    """Print id in n1.n2.n3 form."""
+    return ".".join(str(i) for i in id)
+
 class ProofItem():
     """An item in a proof, consisting of the following data:
 
@@ -14,10 +29,10 @@ class ProofItem():
 
     """
     def __init__(self, id, rule, *, args=None, prevs=None, th=None):
-        self.id = id
+        self.id = id_force_tuple(id)
         self.rule = rule
         self.args = args
-        self.prevs = prevs if prevs is not None else []
+        self.prevs = [id_force_tuple(prev) for prev in prevs] if prevs is not None else []
         self.th = th
 
     def print_str_args(self):
@@ -37,10 +52,11 @@ class ProofItem():
 
     def __str__(self):
         """Print the given proof item."""
+        str_id = print_id(self.id)
         str_args = " " + self.print_str_args() if self.args else ""
-        str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
+        str_prevs = " from " + ", ".join(print_id(prev) for prev in self.prevs) if self.prevs else ""
         str_th = str(self.th) + " by " if self.th else ""
-        return str(self.id) + ": " + str_th + self.rule + str_args + str_prevs
+        return str_id + ": " + str_th + self.rule + str_args + str_prevs
 
     def __repr__(self):
         return str(self)
@@ -59,13 +75,10 @@ class Proof():
     """
     def __init__(self, *assums):
         """Initialization can take a list of n assumptions, and generates
-        first n steps A1, ..., An using Thm.assume on the assumptions.
+        first n steps 0, ..., n-1 using Thm.assume on the assumptions.
 
         """
-        self.items = []
-        for id, assum in enumerate(assums):
-            item = ProofItem("A" + str(id+1), "assume", args=assum)
-            self.items.append(item)
+        self.items = [ProofItem(i, "assume", args=assum) for i, assum in enumerate(assums)]
 
     def add_item(self, id, rule, *, args=None, prevs=[], th=None):
         """Add the given item to the end of the proof."""

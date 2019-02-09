@@ -71,6 +71,69 @@
                 "Set sorry on S4 to arg_combination Suc from S3."
             ],
             "name": "add_0_right",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "plus_def_1, {n: 0}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 + 0 = 0"
+                },
+                {
+                    "args": "x + 0 = x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x + 0 = x ⊢ x + 0 = x"
+                },
+                {
+                    "args": "Suc",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "arg_combination",
+                    "th": "x + 0 = x ⊢ Suc (x + 0) = Suc x"
+                },
+                {
+                    "args": "plus_def_2, Suc x + 0 = Suc x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x + 0 = x ⊢ Suc x + 0 = Suc x"
+                },
+                {
+                    "args": "x + 0 = x",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ x + 0 = x ⟶ Suc x + 0 = Suc x"
+                },
+                {
+                    "args": "x",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "⊢ ∀x. x + 0 = x ⟶ Suc x + 0 = Suc x"
+                },
+                {
+                    "args": "nat_induct, {P: λx. x + 0 = x, x: x}",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x + 0 = x"
+                }
+            ],
             "prop": "x + 0 = x",
             "ty": "thm",
             "vars": {
@@ -79,34 +142,6 @@
         },
         {
             "name": "add_1_left",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "Suc x",
-                    "id": "S1",
-                    "prevs": [],
-                    "rule": "reflexive",
-                    "th": "⊢ Suc x = Suc x"
-                },
-                {
-                    "args": "plus_def_1, Suc (0 + x) = Suc x",
-                    "id": "S2",
-                    "prevs": [
-                        "S1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc (0 + x) = Suc x"
-                },
-                {
-                    "args": "plus_def_2, 1 + x = Suc x",
-                    "id": "S3",
-                    "prevs": [
-                        "S2"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 1 + x = Suc x"
-                }
-            ],
             "prop": "1 + x = Suc x",
             "ty": "thm",
             "vars": {
@@ -304,86 +339,12 @@
         },
         {
             "name": "one_Suc",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "Suc 1",
-                    "id": "S1",
-                    "prevs": [],
-                    "rule": "reflexive",
-                    "th": "⊢ Suc 1 = Suc 1"
-                },
-                {
-                    "args": "plus_def_1, Suc 1 = Suc (0 + 1)",
-                    "id": "S2",
-                    "prevs": [
-                        "S1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc 1 = Suc (0 + 1)"
-                },
-                {
-                    "args": "plus_def_2, Suc 1 = 1 + 1",
-                    "id": "S3",
-                    "prevs": [
-                        "S2"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc 1 = 1 + 1"
-                },
-                {
-                    "args": "bit0_def, Suc 1 = 2",
-                    "id": "S4",
-                    "prevs": [
-                        "S3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc 1 = 2"
-                }
-            ],
             "prop": "Suc 1 = bit0 1",
             "ty": "thm",
             "vars": {}
         },
         {
             "name": "bit0_Suc",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "Suc (n + n)",
-                    "id": "S1",
-                    "prevs": [],
-                    "rule": "reflexive",
-                    "th": "⊢ Suc (n + n) = Suc (n + n)"
-                },
-                {
-                    "args": "add_1_right, Suc (n + n) = n + n + 1",
-                    "id": "S2",
-                    "prevs": [
-                        "S1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc (n + n) = n + n + 1"
-                },
-                {
-                    "args": "bit1_def, Suc (n + n) = bit1 n",
-                    "id": "S3",
-                    "prevs": [
-                        "S2"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc (n + n) = bit1 n"
-                },
-                {
-                    "args": "bit0_def, Suc (bit0 n) = bit1 n",
-                    "id": "S4",
-                    "prevs": [
-                        "S3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc (bit0 n) = bit1 n"
-                }
-            ],
             "prop": "Suc (bit0 n) = bit1 n",
             "ty": "thm",
             "vars": {
@@ -480,7 +441,7 @@
             "proof": [
                 {
                     "args": "x + y + (y + z) = y * 2 + (x + z)",
-                    "id": "S1",
+                    "id": "0",
                     "prevs": [],
                     "rule": "nat_norm",
                     "th": "⊢ x + y + (y + z) = y * 2 + (x + z)"

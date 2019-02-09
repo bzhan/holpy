@@ -52,9 +52,9 @@ class ProofMacro():
     def expand(self):
         """Obtain the detailed proof of the derivation.
         
-        Input is the current depth (used to avoid name conflict),
-        optionally the current theory, argument of the proof method,
-        and the list of ids and statements of previous theorems.
+        Input is the current id prefix, optionally the current theory,
+        argument of the proof method, and the list of ids and statements
+        of previous theorems.
 
         """
         raise NotImplementedError()
