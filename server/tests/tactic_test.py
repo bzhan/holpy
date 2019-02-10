@@ -11,6 +11,7 @@ from kernel.report import ProofReport
 from logic import logic
 from logic import basic
 from logic import nat
+from logic import list
 from syntax import printer
 from server import tactic
 from server.tactic import ProofState
@@ -164,7 +165,8 @@ class TacticTest(unittest.TestCase):
         state = ProofState.init_state(thy, [A, B], [], Term.mk_all(x, imp(A(x), B(x))))
         state.introduction(0, ["x"])
         self.assertEqual(state.check_proof(), Thm([], Term.mk_all(x, imp(A(x), B(x)))))
-        self.assertEqual(len(state.prf.items), 5)
+        self.assertEqual(len(state.prf.items), 1)
+        self.assertEqual(len(state.prf.items[0].subproof.items), 5)
 
     def testApplyInduction(self):
         thy = basic.loadTheory('nat')
@@ -187,9 +189,9 @@ class TacticTest(unittest.TestCase):
         state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
         state.apply_backward_step(1, "disjE", prevs=[0])
         state.introduction(1)
-        state.apply_backward_step(2, "disjI2", prevs=[1])
-        state.introduction(4)
-        state.apply_backward_step(5, "disjI1", prevs=[4])
+        state.apply_backward_step((1, 1), "disjI2", prevs=[(1, 0)])
+        state.introduction(2)
+        state.apply_backward_step((2, 1), "disjI1", prevs=[(2, 0)])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(disj(A, B), disj(B, A)))
 
     def testDoubleNegInv(self):
@@ -199,9 +201,9 @@ class TacticTest(unittest.TestCase):
         state.set_line(1, "theorem", args="classical")
         state.apply_backward_step(2, "disjE", prevs=[1])
         state.introduction(2)
-        state.introduction(4)
-        state.apply_backward_step(5, "falseE")
-        state.apply_backward_step(5, "negE", prevs=[0])
+        state.introduction(3)
+        state.apply_backward_step((3, 1), "falseE")
+        state.apply_backward_step((3, 1), "negE", prevs=[0])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(neg(neg(A)), A))
 
     def testExistsConj(self):
@@ -216,14 +218,14 @@ class TacticTest(unittest.TestCase):
         state.apply_backward_step(1, "conjI")
         state.apply_backward_step(1, "exE", prevs=[0])
         state.introduction(1, "x")
-        state.add_line_after(2)
-        state.set_line(3, "apply_theorem", args="conjD1", prevs=[2])
-        state.apply_backward_step(4, "exI", prevs=[3])
-        state.apply_backward_step(8, "exE", prevs=[0])
-        state.introduction(8, "x")
-        state.add_line_after(9)
-        state.set_line(10, "apply_theorem", args="conjD2", prevs=[9])
-        state.apply_backward_step(11, "exI", prevs=[10])
+        state.add_line_after((1, 1))
+        state.set_line((1, 2), "apply_theorem", args="conjD1", prevs=[(1, 1)])
+        state.apply_backward_step((1, 3), "exI", prevs=[(1, 2)])
+        state.apply_backward_step(3, "exE", prevs=[0])
+        state.introduction(3, "x")
+        state.add_line_after((3, 1))
+        state.set_line((3, 2), "apply_theorem", args="conjD2", prevs=[(3, 1)])
+        state.apply_backward_step((3, 3), "exI", prevs=[(3, 2)])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(ex_conj, conj_ex))
 
     def testAddZeroRight(self):
@@ -235,8 +237,8 @@ class TacticTest(unittest.TestCase):
         state.rewrite_goal(0, "plus_def_1")
         state.set_line(0, "reflexive", args=nat.zero)
         state.introduction(2, names=["n"])
-        state.rewrite_goal(4, "plus_def_2")
-        state.set_line(4, "arg_combination", args=nat.Suc, prevs=[3])
+        state.rewrite_goal((2, 2), "plus_def_2")
+        state.set_line((2, 2), "arg_combination", args=nat.Suc, prevs=[(2, 1)])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.plus(n,nat.zero),n))
 
     def testMultZeroRight(self):
@@ -248,9 +250,24 @@ class TacticTest(unittest.TestCase):
         state.rewrite_goal(0, "times_def_1")
         state.set_line(0, "reflexive", args=nat.zero)
         state.introduction(2, names=["n"])
-        state.rewrite_goal(4, "times_def_2")
-        state.rewrite_goal(4, "plus_def_1")
+        state.rewrite_goal((2, 2), "times_def_2")
+        state.rewrite_goal((2, 2), "plus_def_1")
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.times(n,nat.zero),nat.zero))
+
+    def testAppendNil(self):
+        """Proof of xs @ [] = xs by induction."""
+        thy = basic.loadTheory('list')
+        Ta = TVar("a")
+        xs = Var("xs", list.listT(Ta))
+        nil = list.nil(Ta)
+        state = ProofState.init_state(thy, [xs], [], Term.mk_equals(list.mk_append(xs, nil), xs))
+        state.apply_induction(0, "list_induct", "xs")
+        state.apply_backward_step(0, "append_def_1")
+        state.introduction(1, names=["x", "xs"])
+        state.rewrite_goal((1, 3), "append_def_2")
+        self.assertEqual(state.get_ctxt((1, 3)), {'x': Ta, 'xs': list.listT(Ta)})
+        state.set_line((1, 3), "arg_combination", args=list.cons(Ta)(Var("x",Ta)), prevs=[(1, 2)])
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(list.mk_append(xs, nil), xs))
 
     def testRewriteGoalThms(self):
         thy = basic.loadTheory('nat')

@@ -61,7 +61,11 @@ class ProofItem():
         str_args = " " + self.print_str_args() if self.args else ""
         str_prevs = " from " + ", ".join(print_id(prev) for prev in self.prevs) if self.prevs else ""
         str_th = str(self.th) + " by " if self.th else ""
-        return str_id + ": " + str_th + self.rule + str_args + str_prevs
+        cur_line = str_id + ": " + str_th + self.rule + str_args + str_prevs
+        if self.subproof:
+            return cur_line + "\n" + "\n".join(str(item) for item in self.subproof.items)
+        else:
+            return cur_line
 
     def __repr__(self):
         return str(self)
@@ -115,5 +119,22 @@ class Proof():
             if prf is None:
                 raise ProofException()
             return prf
-        except (AttributeError, IndexError):
+        except IndexError:
+            raise ProofException()
+
+    def insert_item(self, item):
+        """Insert the item using the id in the item. This item should
+        be placed exactly after the last position of its subproof.
+        
+        """
+        try:
+            prf = self
+            for i in item.id[:-1]:
+                if prf.items[i].subproof is None:
+                    prf.items[i].subproof = Proof()
+                prf = prf.items[i].subproof
+            if item.id[-1] != len(prf.items):
+                raise ProofException()
+            prf.items.append(item)
+        except IndexError:
             raise ProofException()

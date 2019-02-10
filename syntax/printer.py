@@ -238,7 +238,7 @@ def print_thm(thy, th):
         return turnstile + N(" ") + print_term(thy, th.concl)
 
 @settings.with_settings
-def print_str_args(thy, item):
+def print_str_args(thy, args):
     def str_val(val):
         if isinstance(val, dict):
             items = sorted(val.items(), key = lambda pair: pair[0])
@@ -250,10 +250,10 @@ def print_str_args(thy, item):
         else:
             return N(str(val))
 
-    if isinstance(item.args, tuple):
-        return commas_join(str_val(val) for val in item.args)
-    elif item.args:
-        return str_val(item.args)
+    if isinstance(args, tuple):
+        return commas_join(str_val(val) for val in args)
+    elif args:
+        return str_val(args)
     else:
         return [] if settings.highlight() else ""
 
@@ -261,10 +261,31 @@ def print_str_args(thy, item):
 def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
     str_th = print_thm(thy, item.th) if item.th else ""
-    str_args = print_str_args(thy, item)
+    str_args = print_str_args(thy, item.args)
     res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
            'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}
     if settings.highlight():
         res['th_raw'] = print_thm(thy, item.th, highlight=False) if item.th else ""
-        res['args_raw'] = print_str_args(thy, item, highlight=False)
-    return res
+        res['args_raw'] = print_str_args(thy, item.args, highlight=False)
+    if item.subproof:
+        return [res] + sum([export_proof_item(thy, i) for i in item.subproof.items], [])
+    else:
+        return [res]
+
+@settings.with_settings
+def print_proof_item(thy, item):
+    """Print the given proof item."""
+    str_id = proof.print_id(item.id)
+    str_args = " " + print_str_args(thy, item.args) if item.args else ""
+    str_prevs = " from " + ", ".join(proof.print_id(prev) for prev in item.prevs) if item.prevs else ""
+    str_th = print_thm(thy, item.th) + " by " if item.th else ""
+    cur_line = str_id + ": " + str_th + item.rule + str_args + str_prevs
+    if item.subproof:
+        return cur_line + "\n" + "\n".join(print_proof_item(thy, item) for item in item.subproof.items)
+    else:
+        return cur_line
+
+@settings.with_settings
+def print_proof(thy, prf):
+    """Print the given proof."""
+    return '\n'.join(print_proof_item(thy, item) for item in prf.items)

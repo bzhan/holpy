@@ -91,61 +91,68 @@
                     "th": "⊢ 0 + 0 = 0"
                 },
                 {
-                    "args": "x, nat",
+                    "args": "",
                     "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. n + 0 = n ⟶ Suc n + 0 = Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
                     "th": ""
                 },
                 {
-                    "args": "x + 0 = x",
-                    "id": "2",
+                    "args": "n + 0 = n",
+                    "id": "1.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "x + 0 = x ⊢ x + 0 = x"
+                    "th": "n + 0 = n ⊢ n + 0 = n"
                 },
                 {
                     "args": "Suc",
-                    "id": "3",
+                    "id": "1.2",
                     "prevs": [
-                        "2"
+                        "1.1"
                     ],
                     "rule": "arg_combination",
-                    "th": "x + 0 = x ⊢ Suc (x + 0) = Suc x"
+                    "th": "n + 0 = n ⊢ Suc (n + 0) = Suc n"
                 },
                 {
-                    "args": "plus_def_2, Suc x + 0 = Suc x",
-                    "id": "4",
+                    "args": "plus_def_2, Suc n + 0 = Suc n",
+                    "id": "1.3",
                     "prevs": [
-                        "3"
+                        "1.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "x + 0 = x ⊢ Suc x + 0 = Suc x"
+                    "th": "n + 0 = n ⊢ Suc n + 0 = Suc n"
                 },
                 {
-                    "args": "x + 0 = x",
-                    "id": "5",
+                    "args": "n + 0 = n",
+                    "id": "1.4",
                     "prevs": [
-                        "4"
+                        "1.3"
                     ],
                     "rule": "implies_intr",
-                    "th": "⊢ x + 0 = x ⟶ Suc x + 0 = Suc x"
+                    "th": "⊢ n + 0 = n ⟶ Suc n + 0 = Suc n"
                 },
                 {
-                    "args": "x",
-                    "id": "6",
+                    "args": "n",
+                    "id": "1.5",
                     "prevs": [
-                        "5"
+                        "1.4"
                     ],
                     "rule": "forall_intr",
-                    "th": "⊢ ∀x. x + 0 = x ⟶ Suc x + 0 = Suc x"
+                    "th": "⊢ ∀n. n + 0 = n ⟶ Suc n + 0 = Suc n"
                 },
                 {
                     "args": "nat_induct, {P: λx. x + 0 = x, x: x}",
-                    "id": "7",
+                    "id": "2",
                     "prevs": [
                         "0",
-                        "6"
+                        "1"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "⊢ x + 0 = x"

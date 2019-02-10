@@ -261,7 +261,11 @@ class Theory():
             # Empty line in the proof
             return None
         if compute_only and seq.th is not None:
-            # In compute_only mode, skip when a theorem exists.
+            # In compute_only mode, skip when a theorem exists. However,
+            # subproofs still need to be checked.
+            if seq.rule == "subproof":
+                for s in seq.subproof.items:
+                    self._check_proof_item(prf, s, rpt, no_gaps, compute_only, check_level)
             return None
         if seq.rule == "sorry":
             # Gap in the proof
@@ -282,6 +286,10 @@ class Theory():
         elif seq.rule == "variable":
             # Declares a variable. Skip check.
             return None
+        elif seq.rule == "subproof":
+            for s in seq.subproof.items:
+                self._check_proof_item(prf, s, rpt, no_gaps, compute_only, check_level)
+            res_th = seq.subproof.items[-1].th
         else:
             # Otherwise, apply one of the proof methods. First, we
             # obtain list of previous sequents used by the proof method:
@@ -371,7 +379,7 @@ class Theory():
             return MacroSig.STRING
         elif name == "variable":
             return MacroSig.STRING_TYPE
-        elif name == "sorry":
+        elif name == "sorry" or name == "subproof":
             return MacroSig.NONE
         elif name in primitive_deriv:
             _, sig = primitive_deriv[name]

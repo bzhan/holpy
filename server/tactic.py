@@ -99,17 +99,24 @@ class ProofState():
         self.vars = []
         self.prf = Proof()
 
-    def get_ctxt(self, line_id):
+    def get_ctxt(self, id):
+        """Obtain the context at the given id."""
+        id = id_force_tuple(id)
         ctxt = {}
         for v in self.vars:
             ctxt[v.name] = v.T
-        for item in self.prf.items:
-            if item.id == line_id:
-                break
-            if item.rule == "variable":
-                nm, T = item.args
-                ctxt[nm] = T
-        return ctxt
+
+        prf = self.prf
+        try:
+            for n in id:
+                for item in prf.items[:n]:
+                    if item.rule == "variable":
+                        nm, T = item.args
+                        ctxt[nm] = T
+                prf = prf.items[n].subproof
+            return ctxt
+        except (AttributeError, IndexError):
+            raise TacticException()
 
     def __str__(self):
         vars = sorted(self.vars, key = lambda v: v.name)
@@ -170,8 +177,8 @@ class ProofState():
         self.check_proof()
         return {
             "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
-            "proof": [printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
-                      for item in self.prf.items],
+            "proof": sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
+                          for item in self.prf.items], []),
             "report": self.rpt.json_data()
         }
 
@@ -187,7 +194,7 @@ class ProofState():
         state.prf = Proof()
         for line in data['proof']:
             item = parser.parse_proof_rule_from_data(thy, ctxt, line)
-            state.prf.items.append(item)
+            state.prf.insert_item(item)
             if item.rule == "variable":
                 nm, T = item.args
                 ctxt[nm] = T
@@ -271,7 +278,7 @@ class ProofState():
         """
         prf = self.prf
         try:
-            for i, n in enumerate(goal_id):
+            for n in goal_id:
                 for item in prf.items[:n]:
                     if item.th is not None and item.th.can_prove(concl):
                         return item.id
@@ -383,44 +390,36 @@ class ProofState():
 
         vars, As, C = strip_all_implies(cur_item.th.concl, names)
 
-        # Add necessary variables
-        for var in vars:
-            if var not in self.vars:
-                self.vars.append(var)
-
-        # len(vars) lines for the variables,
-        # len(As) lines for the assumptions, one line for the sorry,
-        # len(vars) lines for forall_intr, len(As) lines for implies_intr,
-        # one line already available.
-        self.add_line_before(id, 2 * len(vars) + 2 * len(As))
-
-        # Starting id number
-        start = id
+        cur_item.rule = "subproof"
+        cur_item.subproof = Proof()
+        subprf = cur_item.subproof
 
         # Variables
         for i, var in enumerate(vars):
-            self.set_line(incr_id(start, i), "variable", args=(var.name, var.T))
+            cur_id = id + (i,)
+            subprf.add_item(cur_id, "variable", args=(var.name, var.T))
 
         # Assumptions
         for i, A in enumerate(As):
-            self.set_line(incr_id(start, len(vars)+i), "assume", args=A, th=Thm([A], A))
+            cur_id = id + (len(vars) + i,)
+            subprf.add_item(cur_id, "assume", args=A, th=Thm([A], A))
 
         # Goal
-        goal_id = incr_id(start, len(vars)+len(As))
         goal = Thm(list(cur_item.th.assums) + As, C)
-        self.set_line(goal_id, "sorry", th=goal)
+        goal_id = id + (len(vars) + len(As), )
+        subprf.add_item(goal_id, "sorry", th=goal)
 
         # implies_intr invocations
         for i, A in enumerate(reversed(As)):
-            prev_id = incr_id(start, len(vars) + len(As) + i)
-            new_id = incr_id(start, len(vars) + len(As) + i + 1)
-            self.set_line(new_id, "implies_intr", args=A, prevs=[prev_id])
+            cur_id = id + (len(vars) + len(As) + i + 1,)
+            prev_id = id + (len(vars) + len(As) + i,)
+            subprf.add_item(cur_id, "implies_intr", args=A, prevs=[prev_id])
 
         # forall_intr invocations
         for i, var in enumerate(reversed(vars)):
-            prev_id = incr_id(start, len(vars) + 2 * len(As) + i)
-            new_id = incr_id(start, len(vars) + 2 * len(As) + i + 1)
-            self.set_line(new_id, "forall_intr", args=var, prevs=[prev_id])
+            cur_id = id + (len(vars) + 2 * len(As) + i + 1,)
+            prev_id = id + (len(vars) + 2 * len(As) + i,)
+            subprf.add_item(cur_id, "forall_intr", args=var, prevs=[prev_id])
 
         # Test if the goal is already proved
         new_id = self.find_goal(goal, goal_id)
