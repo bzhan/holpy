@@ -250,9 +250,19 @@ def print_str_args(thy, rule, args):
         else:
             return N(str(val))
 
+    # Print var :: T for variables
     if rule == 'variable':
         return N(args[0] + ' :: ') + str_val(args[1])
-    elif isinstance(args, tuple):
+
+    # If macro set use_goal = True, the last argument is goal
+    # and does not need to be printed.
+    if thy.has_proof_macro(rule) and thy.get_proof_macro(rule).use_goal:
+        if isinstance(args, tuple):
+            args = args[:-1]
+        else:
+            args = None
+
+    if isinstance(args, tuple):
         return commas_join(str_val(val) for val in args)
     elif args:
         return str_val(args)

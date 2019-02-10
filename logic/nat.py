@@ -462,6 +462,7 @@ class nat_norm_macro(ProofTermMacro):
         self.level = 10
         self.sig = MacroSig.TERM
         self.has_theory = False
+        self.use_goal = True
 
     def __call__(self, args):
         # Simply produce the goal.

@@ -39,6 +39,7 @@ class ProofMacro():
         self.level = None
         self.sig = None
         self.has_theory = None
+        self.use_goal = None
 
     def __call__(self):
         """Obtain the result of applying the proof method.

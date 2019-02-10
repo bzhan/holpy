@@ -32,6 +32,7 @@ class beta_conv_rhs_macro(ProofMacro):
         self.level = 1
         self.sig = MacroSig.TERM
         self.has_theory = False
+        self.use_goal = False
 
     def __call__(self, th):
         assert Term.is_equals(th.concl), "beta_conv_rhs"
