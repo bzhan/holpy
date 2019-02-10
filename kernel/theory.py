@@ -289,7 +289,7 @@ class Theory():
             assert isinstance(seq.prevs, list), "prevs should be a list"
             for prev in seq.prevs:
                 try:
-                    prev_ths.append(prf.find_item(prev))
+                    prev_ths.append(prf.find_item(prev).th)
                 except ProofException:
                     raise CheckProofException("previous item not found")
 

@@ -102,6 +102,18 @@ class Proof():
             item = self.items[id[0]]
             for i in id[1:]:
                 item = item.subproof.items[i]
-            return item.th
+            return item
+        except (AttributeError, IndexError):
+            raise ProofException()
+
+    def get_parent_proof(self, id):
+        """Traverse the proof to the subproof containing the given id."""
+        try:
+            prf = self
+            for i in id[:-1]:
+                prf = prf.items[i].subproof
+            if prf is None:
+                raise ProofException()
+            return prf
         except (AttributeError, IndexError):
             raise ProofException()

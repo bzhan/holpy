@@ -26,6 +26,20 @@ neg = logic.neg
 exists = logic.mk_exists
 
 class TacticTest(unittest.TestCase):
+    def testIncrIdAfter(self):
+        test_data = [
+            (((0,), (0,), 1), (1,),),
+            (((0, 1), (0,), 1), (1, 1)),
+            (((1,), (2, 2), 1), (1,)),
+            (((2, 1), (2, 2), 1), (2, 1)),
+            (((2, 2), (2, 2), 1), (2, 3)),
+            (((2, 3, 2), (2, 2), 1), (2, 4, 2)),
+            (((3,), (2, 2), 1), (3,)),
+        ]
+
+        for (id, start, n), res in test_data:
+            self.assertEqual(tactic.incr_id_after(id, start, n), res)
+
     def testInitProof(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         self.assertEqual(len(state.prf.items), 3)
