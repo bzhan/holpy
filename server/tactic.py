@@ -193,7 +193,7 @@ class ProofState():
             ctxt[name] = T
         state.prf = Proof()
         for line in data['proof']:
-            item = parser.parse_proof_rule_from_data(thy, ctxt, line)
+            item = parser.parse_proof_rule(thy, ctxt, line)
             state.prf.insert_item(item)
             if item.rule == "variable":
                 nm, T = item.args

@@ -118,7 +118,7 @@ function introduction(cm) {
             "line_id": cells[id]['proof'][line_number]['id'],
         };
 
-        if (line.indexOf("⊢ ∀") !== -1) {
+        if (line.indexOf("have ∀") !== -1 || line.indexOf("show ∀") !== -1) {
             input["var_name"] = prompt('Enter variable name').split(",")
         }
         var data = JSON.stringify(input);

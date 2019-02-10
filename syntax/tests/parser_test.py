@@ -280,54 +280,25 @@ class ParserTest(unittest.TestCase):
         for s, th in test_data:
             self.assertEqual(parser.parse_thm(thy, ctxt, s), th)
 
-    def testSplitProofRule(self):
-        test_data = [
-            ("0: theorem conjD1",
-             {'id': (0,), 'rule': "theorem", 'args': "conjD1", 'prevs': [], 'th': ""}),
-            ("2: implies_elim from 1, 0",
-             {'id': (2,), 'rule': "implies_elim", 'args': "", 'prevs': [(1,), (0,)], 'th': ""}),
-            ("5: substitution {'A': B, 'B': A} from 4",
-             {'id': (5,), 'rule': "substitution", 'args': "{'A': B, 'B': A}", 'prevs': [(4,)], 'th': ""}),
-            ("8: implies_intr conj A B from 7",
-             {'id': (8,), 'rule': "implies_intr", 'args': "conj A B", 'prevs': [(7,)], 'th': ""}),
-            ("0: conj A B |- conj B A by sorry",
-             {'id': (0,), 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"}),
-            ("1: ",
-             {'id': (1,), 'rule': "", 'args': "", 'prevs': [], 'th': ""}),
-        ]
-
-        for s, res in test_data:
-            self.assertEqual(parser.split_proof_rule(s), res)
-
     def testParseProofRule(self):
         test_data = [
-            ("0: theorem conjD1",
+            ({'id': "0", 'rule': "theorem", 'args': "conjD1", 'prevs': [], 'th': ""},
              ProofItem(0, "theorem", args="conjD1", prevs=[])),
-            ("2: implies_elim from 1, 0",
+            ({'id': "2", 'rule': "implies_elim", 'args': "", 'prevs': ["1", "0"], 'th': ""},
              ProofItem(2, "implies_elim", prevs=[1, 0])),
-            ("5: substitution {A: B, B: A} from 4",
+            ({'id': "5", 'rule': "substitution", 'args': "{A: B, B: A}", 'prevs': ["4"], 'th': ""},
              ProofItem(5, "substitution", args={'A': B, 'B': A}, prevs=[4])),
-            ("8: implies_intr conj A B from 7",
+            ({'id': "8", 'rule': "implies_intr", 'args': "conj A B", 'prevs': ["7"], 'th': ""},
              ProofItem(8, "implies_intr", args=logic.mk_conj(A, B), prevs=[7])),
-            ("0: conj A B |- conj B A by sorry",
+            ({'id': "0", 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"},
              ProofItem(0, "sorry", th = Thm([logic.mk_conj(A, B)], logic.mk_conj(B, A)))),
-            ("1: ",
+            ({'id': "1", 'rule': "", 'args': "", 'prevs': [], 'th': ""},
              ProofItem(1, "")),
-            ("2: apply_theorem_for conjI, {A: B, B: A} from 0, 1",
-             ProofItem(2, "apply_theorem_for", args=("conjI", {'A': B, 'B': A}), prevs=[0, 1])),
         ]
 
         for s, res in test_data:
             self.assertEqual(parser.parse_proof_rule(thy, ctxt, s), res)
 
-    def testParseProofFail(self):
-        test_data = [
-            ("", "id not found"),
-            ("1: assume A &", "When parsing A &, unexpected token"),
-        ]
-
-        for s, err in test_data:
-            self.assertRaisesRegex(parser.ParserException, err, parser.parse_proof_rule, thy, ctxt, s)
 
 if __name__ == "__main__":
     unittest.main()

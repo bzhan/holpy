@@ -234,44 +234,11 @@ def parse_tyinst(thy, s):
     parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
 
-def split_proof_rule(s):
-    """Split proof rule into parseable parts.
-
-    Currently able to handle string of the form:
-    [id]: [rule] [args] by [prevs]
-
-    """
-    if s.count(": ") > 0:
-        id, rest = s.split(": ", 1)  # split off id
-    else:
-        raise ParserException("id not found: " + s)
-
-    id = id_force_tuple(id)
-    if rest.count(" by ") > 0:
-        th, rest = rest.split(" by ", 1)
-    else:
-        th, rest = "", rest
-
-    if rest.count(" ") > 0:
-        rule, rest = rest.split(" ", 1)  # split off name of rule
-    else:
-        rule, rest = rest, ""
-    rule = rule.strip()
-
-    if rest.count("from") > 0:
-        args, rest = rest.split("from", 1)
-        return {'id': id, 'rule': rule, 'args': args.strip(),
-                'prevs': [id_force_tuple(prev) for prev in rest.split(",")],
-                'th': th}
-    else:
-        return {'id': id, 'rule': rule, 'args': rest.strip(),
-                'prevs': [], 'th': th}
-
-def parse_proof_rule_from_data(thy, ctxt, data):
+def parse_proof_rule(thy, ctxt, data):
     """Parse a proof rule.
 
-    data is a dictionary as provided by split_proof_rule. The result
-    is a ProofItem object.
+    data is a dictionary containing id, rule, args, prevs, and th.
+    The result is a ProofItem object.
 
     This need to be written by hand because different proof rules
     require different parsing of the arguments.
@@ -320,10 +287,6 @@ def parse_proof_rule_from_data(thy, ctxt, data):
     except exceptions.UnexpectedToken as e:
         raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
                               % (args, e.token, e.column))
-
-def parse_proof_rule(thy, ctxt, s):
-    data = split_proof_rule(s)
-    return parse_proof_rule_from_data(thy, ctxt, data)
 
 def parse_vars(thy, vars_data):
     ctxt = {}
