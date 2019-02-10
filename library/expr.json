@@ -1,9 +1,8 @@
 {
-    "description": "Expressions",
     "content": [
         {
-            "name": "Arithmetic expressions",
             "depth": 0,
+            "name": "Arithmetic expressions",
             "ty": "header"
         },
         {
@@ -48,8 +47,8 @@
                 {
                     "prop": "aval (V x) s = s x",
                     "vars": {
-                        "x": "nat",
-                        "s": "nat => nat"
+                        "s": "nat => nat",
+                        "x": "nat"
                     }
                 },
                 {
@@ -71,6 +70,7 @@
             "vars": {}
         }
     ],
+    "description": "Expressions",
     "imports": [
         "function"
     ],

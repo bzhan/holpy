@@ -1,5 +1,4 @@
 {
-    "description": "SAT solver",
     "content": [
         {
             "name": "encode_conj",
@@ -51,6 +50,7 @@
             }
         }
     ],
+    "description": "SAT solver",
     "imports": [
         "logic"
     ],

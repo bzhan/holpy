@@ -1,5 +1,4 @@
 {
-    "description": "Foundation of higher-order logic",
     "content": [
         {
             "ascii_op": "&",
@@ -203,6 +202,7 @@
             "ty": "macro"
         }
     ],
+    "description": "Foundation of higher-order logic",
     "imports": [],
     "name": "logic_base"
 }

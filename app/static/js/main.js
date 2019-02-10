@@ -5,6 +5,7 @@
     var theory_name = "";  // Name of the current theory file
     var theory_imports = [];  // List of imports of the current theory file
     var result_list = [];  // Content of the current theory file
+    var theory_desc = "";  // Description of the theory
     var is_mousedown = false;
     var is_ctrl_click = false;
     var click_count = 0;
@@ -134,6 +135,7 @@
                 'data': {
                     'name': theory_name,
                     'imports': theory_imports,
+                    'description': theory_desc,
                     'content': output_list
                 }
             }
@@ -476,6 +478,7 @@
             success: function (result) {
                 theory_name = result['data']['name'];
                 theory_imports = result['data']['imports'];
+                theory_desc = result['data']['description'];
                 result_list = result['data']['content'];
                 display_result_list();
             }

@@ -485,6 +485,7 @@
             }
         }
     ],
+    "description": "Natural numbers",
     "imports": [
         "logic"
     ],

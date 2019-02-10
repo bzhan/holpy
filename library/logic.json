@@ -480,6 +480,7 @@
             }
         }
     ],
+    "description": "Basic results in logic",
     "imports": [
         "logic_base"
     ],
