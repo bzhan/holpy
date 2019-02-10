@@ -296,14 +296,45 @@ function rewrite_goal(cm) {
     })
 }
 
+function split_one(s, delimiter) {
+    arr = s.split(delimiter);
+    return [arr[0], arr.slice(1).join(delimiter)];
+}
+
+function split_line(s) {
+    var item = {};
+    var rest = '';
+    [item.id, rest] = s.split(": ", 2);
+    if (rest.indexOf(" by ") > 0) {
+        rest = split_one(rest, " by ")[1];
+    }
+    item.th = "";
+
+    if (rest.indexOf(" ") > 0)
+        [item.rule, rest] = split_one(rest, ' ');  // split off name of rule
+    else
+        [item.rule, rest] = rest, "";
+    item.rule = item.rule.trim();
+
+    if (rest.indexOf(" from ") > 0) {
+        [item.args, item.prevs] = split_one(rest, ' from ');
+        item.prevs = item.prevs.split(',');
+        return item;
+    }
+    else {
+        item.args = rest.trim();
+        item.prevs = [];
+        return item;
+    }
+}
+
 function set_line(cm) {
     $(document).ready(function () {
         var id = get_selected_id();
         var line_no = cells[id].edit_line_number;
         var input = {
             'id': get_selected_id(),
-            'line_id': cells[id]['proof'][line_no]['id'],
-            'line': cm.getLine(line_no)
+            'item': split_line(cm.getLine(line_no))
         };
         var data = JSON.stringify(input);
         display_running();

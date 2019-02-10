@@ -129,11 +129,10 @@ def rewrite_goal():
 def set_line():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))
+        cell = cells.get(data['id'])
         try:
-            line = data['line']
-            line_id = data['line_id']
-            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(line_id), data['line'])
+            line_id = data['item']['id']
+            item = parser.parse_proof_rule_from_data(cell.thy, cell.get_ctxt(line_id), data['item'])
             cell.set_line(item.id, item.rule, args=item.args, prevs=item.prevs, th=item.th)
             return jsonify(cell.json_data())
         except Exception as e:
