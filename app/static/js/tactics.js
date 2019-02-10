@@ -389,6 +389,25 @@ function display_highlight_strs(editor, ps, line_no, ch) {
     return ch;
 }
 
+// Detect whether the given line is the last of a section
+function is_last_id(id, line_no) {
+    if (cells[id]['proof'].length - 1 === line_no) {
+        return true
+    }
+    var line_id = cells[id]['proof'][line_no].id
+    var line_id2 = cells[id]['proof'][line_no+1].id
+    return line_id.split('.').length > line_id2.split('.').length
+}
+
+function display_have_prompt(editor, id, line_no, ch) {
+    if (is_last_id(id, line_no)) {
+        return display_str(editor, 'show ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
+    }
+    else {
+        return display_str(editor, 'have ', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
+    }
+}
+
 // Print a single line.
 function display_line(id, line_no) {
     var editor = get_selected_editor();
@@ -408,14 +427,14 @@ function display_line(id, line_no) {
         ch = display_highlight_strs(editor, line.args, line_no, ch);
     }
     else if (line.rule === 'subproof') {
-        ch = display_str(editor, 'have ', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
+        ch = display_have_prompt(editor, id, line_no, ch);
         ch = display_highlight_strs(editor, line.th, line_no, ch);
         ch = display_str(editor, ' with', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
     }
     else {        
         // Display theorem with highlight
         if (line.th.length > 0) {
-            ch = display_str(editor, 'have ', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
+            ch = display_have_prompt(editor, id, line_no, ch);
             ch = display_highlight_strs(editor, line.th, line_no, ch);
             ch = display_str(editor, ' by ', line_no, ch, {css: 'font-weight: bold'});
         }
