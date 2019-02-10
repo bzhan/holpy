@@ -76,10 +76,16 @@ class ProofState():
         self.vars = []
         self.prf = Proof()
 
-    def get_ctxt(self):
+    def get_ctxt(self, line_id):
         ctxt = {}
         for v in self.vars:
             ctxt[v.name] = v.T
+        for item in self.prf.items:
+            if item.id == line_id:
+                break
+            if item.rule == "variable":
+                nm, T = item.args
+                ctxt[nm] = T
         return ctxt
 
     def __str__(self):
@@ -157,7 +163,11 @@ class ProofState():
             ctxt[name] = T
         state.prf = Proof()
         for line in data['proof']:
-            state.prf.items.append(parser.parse_proof_rule_from_data(thy, ctxt, line))
+            item = parser.parse_proof_rule_from_data(thy, ctxt, line)
+            state.prf.items.append(item)
+            if item.rule == "variable":
+                nm, T = item.args
+                ctxt[nm] = T
 
         state.check_proof(compute_only=True)
         return state
@@ -339,34 +349,38 @@ class ProofState():
             if var not in self.vars:
                 self.vars.append(var)
 
+        # len(vars) lines for the variables,
         # len(As) lines for the assumptions, one line for the sorry,
         # len(vars) lines for forall_intr, len(As) lines for implies_intr,
         # one line already available.
-        self.add_line_before(id, len(vars) + 2 * len(As))
+        self.add_line_before(id, 2 * len(vars) + 2 * len(As))
 
         # Starting id number
         start = id
 
+        # Variables
+        for i, var in enumerate(vars):
+            self.set_line(incr_id(start, 0, i), "variable", args=(var.name, var.T))
+
         # Assumptions
         for i, A in enumerate(As):
-            new_id = incr_id(start, 0, i)
-            self.set_line(new_id, "assume", args=A, th=Thm([A], A))
+            self.set_line(incr_id(start, 0, len(vars)+i), "assume", args=A, th=Thm([A], A))
 
         # Goal
-        goal_id = incr_id(start, 0, len(As))
+        goal_id = incr_id(start, 0, len(vars)+len(As))
         goal = Thm(list(cur_item.th.assums) + As, C)
         self.set_line(goal_id, "sorry", th=goal)
 
         # implies_intr invocations
         for i, A in enumerate(reversed(As)):
-            prev_id = incr_id(start, 0, len(As) + i)
-            new_id = incr_id(start, 0, len(As) + i + 1)
+            prev_id = incr_id(start, 0, len(vars) + len(As) + i)
+            new_id = incr_id(start, 0, len(vars) + len(As) + i + 1)
             self.set_line(new_id, "implies_intr", args=A, prevs=[prev_id])
 
         # forall_intr invocations
         for i, var in enumerate(reversed(vars)):
-            prev_id = incr_id(start, 0, 2 * len(As) + i)
-            new_id = incr_id(start, 0, 2 * len(As) + i + 1)
+            prev_id = incr_id(start, 0, len(vars) + 2 * len(As) + i)
+            new_id = incr_id(start, 0, len(vars) + 2 * len(As) + i + 1)
             self.set_line(new_id, "forall_intr", args=var, prevs=[prev_id])
 
         # Test if the goal is already proved

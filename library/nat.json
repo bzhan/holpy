@@ -1,9 +1,8 @@
 {
-    "description": "Natural numbers",
     "content": [
         {
-            "name": "Basic definitions",
             "depth": 0,
+            "name": "Basic definitions",
             "ty": "header"
         },
         {
@@ -68,8 +67,8 @@
             "type": "nat => nat => nat"
         },
         {
-            "name": "Binary representation",
             "depth": 0,
+            "name": "Binary representation",
             "ty": "header"
         },
         {
@@ -92,54 +91,61 @@
                     "th": "⊢ 0 + 0 = 0"
                 },
                 {
-                    "args": "x + 0 = x",
+                    "args": "x, nat",
                     "id": "1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": ""
+                },
+                {
+                    "args": "x + 0 = x",
+                    "id": "2",
                     "prevs": [],
                     "rule": "assume",
                     "th": "x + 0 = x ⊢ x + 0 = x"
                 },
                 {
                     "args": "Suc",
-                    "id": "2",
+                    "id": "3",
                     "prevs": [
-                        "1"
+                        "2"
                     ],
                     "rule": "arg_combination",
                     "th": "x + 0 = x ⊢ Suc (x + 0) = Suc x"
                 },
                 {
                     "args": "plus_def_2, Suc x + 0 = Suc x",
-                    "id": "3",
+                    "id": "4",
                     "prevs": [
-                        "2"
+                        "3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "x + 0 = x ⊢ Suc x + 0 = Suc x"
                 },
                 {
                     "args": "x + 0 = x",
-                    "id": "4",
+                    "id": "5",
                     "prevs": [
-                        "3"
+                        "4"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ x + 0 = x ⟶ Suc x + 0 = Suc x"
                 },
                 {
                     "args": "x",
-                    "id": "5",
+                    "id": "6",
                     "prevs": [
-                        "4"
+                        "5"
                     ],
                     "rule": "forall_intr",
                     "th": "⊢ ∀x. x + 0 = x ⟶ Suc x + 0 = Suc x"
                 },
                 {
                     "args": "nat_induct, {P: λx. x + 0 = x, x: x}",
-                    "id": "6",
+                    "id": "7",
                     "prevs": [
                         "0",
-                        "5"
+                        "6"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "⊢ x + 0 = x"
@@ -447,8 +453,8 @@
             "ty": "macro"
         },
         {
-            "name": "Normalization of expressions",
             "depth": 0,
+            "name": "Normalization of expressions",
             "ty": "header"
         },
         {

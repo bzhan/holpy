@@ -303,6 +303,10 @@ def parse_proof_rule_from_data(thy, ctxt, data):
         elif sig == MacroSig.TYINST:
             tyinst = tyinst_parser(thy, ctxt).parse(args)
             return ProofItem(id, rule, args=tyinst, prevs=prevs, th=th)
+        elif sig == MacroSig.STRING_TYPE:
+            s1, s2 = args.split(",", 1)
+            T = parse_type(thy, s2)
+            return ProofItem(id, rule, args=(s1, T), prevs=prevs, th=th)
         elif sig == MacroSig.STRING_TERM:
             s1, s2 = args.split(",", 1)
             t = parse_term(thy, ctxt, s2)

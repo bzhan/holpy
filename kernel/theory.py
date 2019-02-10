@@ -279,6 +279,9 @@ class Theory():
                     rpt.apply_theorem(seq.args)
             except TheoryException:
                 raise CheckProofException("theorem not found")
+        elif seq.rule == "variable":
+            # Declares a variable. Skip check.
+            return None
         else:
             # Otherwise, apply one of the proof methods. First, we
             # obtain list of previous sequents used by the proof method:
@@ -366,6 +369,8 @@ class Theory():
         """Obtain the argument signature of the proof rule."""
         if name == "theorem":
             return MacroSig.STRING
+        elif name == "variable":
+            return MacroSig.STRING_TYPE
         elif name == "sorry":
             return MacroSig.NONE
         elif name in primitive_deriv:

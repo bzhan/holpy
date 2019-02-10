@@ -12,7 +12,7 @@ global_macros = dict()
 
 class MacroSig():
     """Signature for the arguments of proof macro."""
-    NONE, TERM, TYINST, INST, STRING, STRING_TERM, STRING_INST = range(7)
+    NONE, TERM, TYINST, INST, STRING, STRING_TYPE, STRING_TERM, STRING_INST = range(8)
 
 
 class ProofMacro():

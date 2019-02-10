@@ -60,7 +60,7 @@ class TacticTest(unittest.TestCase):
 
     def testGetCtxt(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        self.assertEqual(state.get_ctxt(), {'A':hol_bool, 'B':hol_bool})
+        self.assertEqual(state.get_ctxt(0), {'A':hol_bool, 'B':hol_bool})
 
     def testAddLineAfter(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
@@ -150,7 +150,7 @@ class TacticTest(unittest.TestCase):
         state = ProofState.init_state(thy, [A, B], [], Term.mk_all(x, imp(A(x), B(x))))
         state.introduction(0, ["x"])
         self.assertEqual(state.check_proof(), Thm([], Term.mk_all(x, imp(A(x), B(x)))))
-        self.assertEqual(len(state.prf.items), 4)
+        self.assertEqual(len(state.prf.items), 5)
 
     def testApplyInduction(self):
         thy = basic.loadTheory('nat')
@@ -202,14 +202,14 @@ class TacticTest(unittest.TestCase):
         state.apply_backward_step(1, "conjI")
         state.apply_backward_step(1, "exE", prevs=[0])
         state.introduction(1, "x")
-        state.add_line_after(1)
-        state.set_line(2, "apply_theorem", args="conjD1", prevs=[1])
-        state.apply_backward_step(3, "exI", prevs=[2])
-        state.apply_backward_step(7, "exE", prevs=[0])
-        state.introduction(7, "x")
-        state.add_line_after(7)
-        state.set_line(8, "apply_theorem", args="conjD2", prevs=[7])
-        state.apply_backward_step(9, "exI", prevs=[8])
+        state.add_line_after(2)
+        state.set_line(3, "apply_theorem", args="conjD1", prevs=[2])
+        state.apply_backward_step(4, "exI", prevs=[3])
+        state.apply_backward_step(8, "exE", prevs=[0])
+        state.introduction(8, "x")
+        state.add_line_after(9)
+        state.set_line(10, "apply_theorem", args="conjD2", prevs=[9])
+        state.apply_backward_step(11, "exI", prevs=[10])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(ex_conj, conj_ex))
 
     def testAddZeroRight(self):
@@ -221,8 +221,8 @@ class TacticTest(unittest.TestCase):
         state.rewrite_goal(0, "plus_def_1")
         state.set_line(0, "reflexive", args=nat.zero)
         state.introduction(2, names=["n"])
-        state.rewrite_goal(3, "plus_def_2")
-        state.set_line(3, "arg_combination", args=nat.Suc, prevs=[2])
+        state.rewrite_goal(4, "plus_def_2")
+        state.set_line(4, "arg_combination", args=nat.Suc, prevs=[3])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.plus(n,nat.zero),n))
 
     def testMultZeroRight(self):
@@ -234,8 +234,8 @@ class TacticTest(unittest.TestCase):
         state.rewrite_goal(0, "times_def_1")
         state.set_line(0, "reflexive", args=nat.zero)
         state.introduction(2, names=["n"])
-        state.rewrite_goal(3, "times_def_2")
-        state.rewrite_goal(3, "plus_def_1")
+        state.rewrite_goal(4, "times_def_2")
+        state.rewrite_goal(4, "plus_def_1")
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.times(n,nat.zero),nat.zero))
 
     def testRewriteGoalThms(self):
