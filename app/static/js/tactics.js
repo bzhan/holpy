@@ -2,11 +2,6 @@ var edit_flag = false;
 
 var cells = {};
 
-// Mode for displaying proof
-// 显示证明的模式
-// 0 - 显示所有内容。 1 - 只显示id和thm。
-var mod = 0;
-
 function get_selected_id() {
     return document.querySelector('.code-cell.selected textarea').id;
 }
@@ -403,21 +398,38 @@ function display_line(id, line_no) {
     edit_flag = true;
     // Display id in bold
     ch = display_str(editor, line.id + ': ', line_no, ch, {css: 'font-weight: bold'});
-    // Display theorem with highlight
-    if (line.th.length > 0) {
-        ch = display_highlight_strs(editor, line.th, line_no, ch);
-        ch = display_str(editor, ' by ', line_no, ch, {css: 'font-weight: bold'});
-    }
-    // Display rule name
-    ch = display_str(editor, line.rule, line_no, ch);
-    // Display args with highlight
-    if (line.args.length > 0) {
-        ch = display_str(editor, ' ', line_no, ch);
+
+    if (line.rule === 'assume') {
+        ch = display_str(editor, 'assume ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
         ch = display_highlight_strs(editor, line.args, line_no, ch);
     }
-    if (line.prevs.length > 0) {
-        ch = display_str(editor, ' from ', line_no, ch, {css: 'font-weight: bold'});
-        ch = display_str(editor, line.prevs.join(', '), line_no, ch);
+    else if (line.rule === 'variable') {
+        ch = display_str(editor, 'fix ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
+        ch = display_highlight_strs(editor, line.args, line_no, ch);
+    }
+    else if (line.rule === 'subproof') {
+        ch = display_str(editor, 'have ', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
+        ch = display_highlight_strs(editor, line.th, line_no, ch);
+        ch = display_str(editor, ' with', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
+    }
+    else {        
+        // Display theorem with highlight
+        if (line.th.length > 0) {
+            ch = display_str(editor, 'have ', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
+            ch = display_highlight_strs(editor, line.th, line_no, ch);
+            ch = display_str(editor, ' by ', line_no, ch, {css: 'font-weight: bold'});
+        }
+        // Display rule name
+        ch = display_str(editor, line.rule, line_no, ch);
+        // Display args with highlight
+        if (line.args.length > 0) {
+            ch = display_str(editor, ' ', line_no, ch);
+            ch = display_highlight_strs(editor, line.args, line_no, ch);
+        }
+        if (line.prevs.length > 0) {
+            ch = display_str(editor, ' from ', line_no, ch, {css: 'font-weight: bold'});
+            ch = display_str(editor, line.prevs.join(', '), line_no, ch);
+        }
     }
     edit_flag = false;
 }

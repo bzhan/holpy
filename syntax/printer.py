@@ -238,7 +238,7 @@ def print_thm(thy, th):
         return turnstile + N(" ") + print_term(thy, th.concl)
 
 @settings.with_settings
-def print_str_args(thy, args):
+def print_str_args(thy, rule, args):
     def str_val(val):
         if isinstance(val, dict):
             items = sorted(val.items(), key = lambda pair: pair[0])
@@ -250,7 +250,9 @@ def print_str_args(thy, args):
         else:
             return N(str(val))
 
-    if isinstance(args, tuple):
+    if rule == 'variable':
+        return N(args[0] + ' :: ') + str_val(args[1])
+    elif isinstance(args, tuple):
         return commas_join(str_val(val) for val in args)
     elif args:
         return str_val(args)
@@ -260,13 +262,13 @@ def print_str_args(thy, args):
 @settings.with_settings
 def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
-    str_th = print_thm(thy, item.th) if item.th else ""
-    str_args = print_str_args(thy, item.args)
+    str_th = print_term(thy, item.th.concl) if item.th else ""
+    str_args = print_str_args(thy, item.rule, item.args)
     res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
            'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}
     if settings.highlight():
         res['th_raw'] = print_thm(thy, item.th, highlight=False) if item.th else ""
-        res['args_raw'] = print_str_args(thy, item.args, highlight=False)
+        res['args_raw'] = print_str_args(thy, '', item.args, highlight=False)
     if item.subproof:
         return [res] + sum([export_proof_item(thy, i) for i in item.subproof.items], [])
     else:
@@ -276,7 +278,7 @@ def export_proof_item(thy, item):
 def print_proof_item(thy, item):
     """Print the given proof item."""
     str_id = proof.print_id(item.id)
-    str_args = " " + print_str_args(thy, item.args) if item.args else ""
+    str_args = " " + print_str_args(thy, item.rule, item.args) if item.args else ""
     str_prevs = " from " + ", ".join(proof.print_id(prev) for prev in item.prevs) if item.prevs else ""
     str_th = print_thm(thy, item.th) + " by " if item.th else ""
     cur_line = str_id + ": " + str_th + item.rule + str_args + str_prevs
