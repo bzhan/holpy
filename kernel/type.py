@@ -206,6 +206,8 @@ class Type(HOLType):
 
 def TFun(*args):
     """Returns the function type arg1 => arg2 => ... => argn."""
+    assert all(isinstance(arg, HOLType) for arg in args), \
+           "TFun: argument must be a list of types."
     res = args[-1]
     for arg in reversed(args[:-1]):
         res = Type("fun", arg, res)

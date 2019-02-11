@@ -154,6 +154,15 @@
             }
         },
         {
+            "name": "extension",
+            "prop": "(!x. f x = g x) --> f = g",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b",
+                "g": "'a => 'b"
+            }
+        },
+        {
             "name": "if_P",
             "prop": "P --> (if P then x else y) = x",
             "ty": "thm",

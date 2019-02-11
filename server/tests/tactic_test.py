@@ -4,7 +4,7 @@ import unittest
 import io
 
 from kernel.type import TVar, TFun, hol_bool
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from kernel.proof import Proof
 from kernel.report import ProofReport
@@ -287,6 +287,34 @@ class TacticTest(unittest.TestCase):
         state.set_line(0, "reflexive", args=b)
         state.set_line(1, "reflexive", args=a)
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
+
+    def testFunUpdTriv(self):
+        thy = basic.loadTheory('function')
+        Ta = TVar("a")
+        Tb = TVar("b")
+        f = Var("f", TFun(Ta, Tb))
+        a = Var("a", Ta)
+        x = Var("x", Ta)
+        fun_upd = Const("fun_upd", TFun(TFun(Ta, Tb), Ta, Tb, Ta, Tb))
+        prop = Term.mk_equals(fun_upd(f, a, f(a)), f)
+        state = ProofState.init_state(thy, [f, a], [], prop)
+        state.apply_backward_step(0, "extension")
+        state.introduction(0, names=["x"])
+        state.rewrite_goal((0, 1), "fun_upd_eval")
+        state.add_line_after((0, 0))
+        state.set_line((0, 1), "theorem", args="classical")
+        state.add_line_after((0, 1))
+        state.set_line((0, 2), "substitution", args={"A": Term.mk_equals(x,a)}, prevs=[(0, 1)])
+        state.apply_backward_step((0, 3), "disjE", prevs=[(0, 2)])
+        state.introduction((0, 3))
+        state.rewrite_goal((0, 3, 1), "if_P")
+        state.add_line_after((0, 3, 0))
+        state.set_line((0, 3, 1), "symmetric", prevs=[(0, 3, 0)])
+        state.set_line((0, 3, 2), "arg_combination", args=f, prevs=[(0, 3, 1)])
+        state.introduction((0, 4))
+        state.rewrite_goal((0, 4, 1), "if_not_P")
+        state.set_line((0, 4, 1), "reflexive", args=f(x))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm([], prop))
 
 
 if __name__ == "__main__":

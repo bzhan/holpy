@@ -304,20 +304,20 @@ function split_one(s, delimiter) {
 function split_line(s) {
     var item = {};
     var rest = '';
-    [item.id, rest] = s.split(": ", 2);
+    [item.id, rest] = split_one(s, ': ');
     if (rest.indexOf(" by ") > 0) {
         rest = split_one(rest, " by ")[1];
     }
     item.th = "";
 
-    if (rest.indexOf(" ") > 0)
+    if (rest.indexOf(" ") >= 0)
         [item.rule, rest] = split_one(rest, ' ');  // split off name of rule
     else
         [item.rule, rest] = rest, "";
     item.rule = item.rule.trim();
 
-    if (rest.indexOf(" from ") > 0) {
-        [item.args, item.prevs] = split_one(rest, ' from ');
+    if (rest.indexOf("from") >= 0) {
+        [item.args, item.prevs] = split_one(rest, 'from');
         item.prevs = item.prevs.split(',');
         return item;
     }
