@@ -318,6 +318,7 @@ function split_line(s) {
 
     if (rest.indexOf("from") >= 0) {
         [item.args, item.prevs] = split_one(rest, 'from');
+        item.args = item.args.trim();
         item.prevs = item.prevs.split(',');
         return item;
     }
