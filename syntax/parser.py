@@ -78,6 +78,8 @@ grammar = r"""
     tyinst: "{}"
         | "{" type_pair ("," type_pair)* "}"
 
+    instsp: tyinst "," inst
+
     %import common.CNAME
     %import common.WS
     %import common.INT
@@ -193,6 +195,9 @@ class HOLTransformer(Transformer):
     def tyinst(self, *args):
         return dict(args)
 
+    def instsp(self, *args):
+        return tuple(args)
+
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
 
@@ -201,6 +206,7 @@ term_parser = get_parser_for("term")
 thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
+instsp_parser = get_parser_for("instsp")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -233,6 +239,14 @@ def parse_tyinst(thy, s):
     """Parse a type instantiation."""
     parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
+
+def parse_instsp(thy, ctxt, s):
+    """Parse type and term instantiations."""
+    parser_setting['thy'] = thy
+    tyinst, inst = instsp_parser.parse(s)
+    for k in inst:
+        inst[k] = infertype.type_infer(thy, ctxt, inst[k])
+    return tyinst, inst
 
 def parse_proof_rule(thy, ctxt, data):
     """Parse a proof rule.
@@ -278,10 +292,10 @@ def parse_proof_rule(thy, ctxt, data):
             s1, s2 = args.split(",", 1)
             t = parse_term(thy, ctxt, s2)
             return ProofItem(id, rule, args=(s1, t), prevs=prevs, th=th)
-        elif sig == MacroSig.STRING_INST:
+        elif sig == MacroSig.STRING_INSTSP:
             s1, s2 = args.split(",", 1)
-            inst = parse_inst(thy, ctxt, s2)
-            return ProofItem(id, rule, args=(s1, inst), prevs=prevs, th=th)
+            tyinst, inst = parse_instsp(thy, ctxt, s2)
+            return ProofItem(id, rule, args=(s1, tyinst, inst), prevs=prevs, th=th)
         else:
             raise TypeError()
     except exceptions.UnexpectedToken as e:

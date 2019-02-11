@@ -76,14 +76,14 @@ class apply_theorem_macro(ProofTermMacro):
     def __init__(self, *, with_inst=False):
         self.level = 1
         self.with_inst = with_inst
-        self.sig = MacroSig.STRING_INST if with_inst else MacroSig.STRING
+        self.sig = MacroSig.STRING_INSTSP if with_inst else MacroSig.STRING
         self.has_theory = True
         self.use_goal = False
 
     def __call__(self, thy, args, *prevs):
-        inst = dict()
+        tyinst, inst = dict(), dict()
         if self.with_inst:
-            name, inst = args
+            name, tyinst, inst = args
         else:
             name = args
         th = thy.get_theorem(name)
@@ -91,18 +91,18 @@ class apply_theorem_macro(ProofTermMacro):
         if not self.with_inst:
             As, _ = th.concl.strip_implies()
             for idx, prev_th in enumerate(prevs):
-                matcher.first_order_match_incr(As[idx], prev_th.concl, inst)
+                matcher.first_order_match_incr(As[idx], prev_th.concl, (tyinst, inst))
 
-        As, C = logic.subst_norm(th.concl, inst).strip_implies()
+        As, C = logic.subst_norm(th.concl, (tyinst, inst)).strip_implies()
         new_concl = Term.mk_implies(*(As[len(prevs):] + [C]))
 
         prev_assums = sum([prev.assums for prev in prevs], ())
         return Thm(th.assums + prev_assums, new_concl)
 
     def get_proof_term(self, thy, args, *pts):
-        inst = dict()
+        tyinst, inst = dict(), dict()
         if self.with_inst:
-            name, inst = args
+            name, tyinst, inst = args
         else:
             name = args
         th = thy.get_theorem(name)
@@ -110,9 +110,10 @@ class apply_theorem_macro(ProofTermMacro):
         if not self.with_inst:
             As, _ = th.concl.strip_implies()
             for idx, pt in enumerate(pts):
-                matcher.first_order_match_incr(As[idx], pt.th.concl, inst)
+                matcher.first_order_match_incr(As[idx], pt.th.concl, (tyinst, inst))
 
-        pt = ProofTerm.substitution(inst, ProofTerm.theorem(thy, name))
+        pt = ProofTerm.substitution(inst,
+                ProofTerm.subst_type(tyinst, ProofTerm.theorem(thy, name)))
         cv = top_conv(beta_conv())
         pt2 = cv.get_proof_term(pt.th.concl)
         pt3 = ProofTerm.equal_elim(pt2, pt)

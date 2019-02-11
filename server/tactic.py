@@ -305,7 +305,7 @@ class ProofState():
 
         results = []
         for name, th in self.thy.get_data("theorems").items():
-            inst = dict()
+            instsp = (dict(), dict())
             As, C = th.concl.strip_implies()
             # Only process those theorems where C and the matched As
             # contain all of the variables.
@@ -320,8 +320,8 @@ class ProofState():
 
             try:
                 for pat, prev in zip(As, prevs):
-                    matcher.first_order_match_incr(pat, prev.th.concl, inst)
-                matcher.first_order_match_incr(C, cur_item.th.concl, inst)
+                    matcher.first_order_match_incr(pat, prev.th.concl, instsp)
+                matcher.first_order_match_incr(C, cur_item.th.concl, instsp)
             except matcher.MatchException:
                 continue
 
@@ -329,7 +329,7 @@ class ProofState():
             results.append((name, th))
         return sorted(results)
 
-    def apply_backward_step(self, id, th_name, *, prevs=None, inst=None):
+    def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):
         """Apply backward step using the given theorem.
         
         prevs - list of previous proved facts to use.
@@ -346,15 +346,15 @@ class ProofState():
         # Instantiate the given theorem.
         th = self.thy.get_theorem(th_name)
 
-        if inst is None:
-            inst = dict()
-            As, C = logic.subst_norm(th.concl, inst).strip_implies()
+        if instsp is None:
+            instsp = (dict(), dict())
+            As, C = logic.subst_norm(th.concl, instsp).strip_implies()
             for pat, prev in zip(As, prevs):
                 item = self.get_proof_item(prev)
-                matcher.first_order_match_incr(pat, item.th.concl, inst)
-            matcher.first_order_match_incr(C, cur_item.th.concl, inst)
+                matcher.first_order_match_incr(pat, item.th.concl, instsp)
+            matcher.first_order_match_incr(C, cur_item.th.concl, instsp)
 
-        As, _ = logic.subst_norm(th.concl, inst).strip_implies()
+        As, _ = logic.subst_norm(th.concl, instsp).strip_implies()
 
         num_goal = len(As) - len(prevs)
         self.add_line_before(id, num_goal)
@@ -363,8 +363,9 @@ class ProofState():
         for goal_id, A in zip(all_ids, As[len(prevs):]):
             self.set_line(goal_id, "sorry", th=Thm(cur_item.th.assums, A))
 
+        tyinst, inst = instsp
         self.set_line(incr_id(start, num_goal), "apply_theorem_for",
-                      args=(th_name, inst), prevs=prevs + all_ids, th=cur_item.th)
+                      args=(th_name, tyinst, inst), prevs=prevs + all_ids, th=cur_item.th)
 
         # Test if the goals are already proved:
         for goal_id, A in reversed(list(zip(all_ids, As[len(prevs):]))):
@@ -450,7 +451,7 @@ class ProofState():
         # Instantiation for P
         P = Term.mk_abs(var, concl)
         inst = {"P": P, "x": var}
-        self.apply_backward_step(id, th_name, inst=inst)
+        self.apply_backward_step(id, th_name, instsp=({}, inst))
 
     def rewrite_goal_thms(self, id):
         """Find list of theorems on which rewrite_goal can be applied."""

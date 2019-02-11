@@ -225,31 +225,31 @@ class rewr_conv(Conv):
 
     def __call__(self, t):
         pat = self.th.concl.arg1
-        inst = dict()
+        tyinst, inst = dict(), dict()
 
         if self.match_vars:
             try:
-                inst = matcher.first_order_match(pat, t)
+                tyinst, inst = matcher.first_order_match(pat, t)
             except matcher.MatchException:
                 raise ConvException()
         elif pat != t:
             raise ConvException()
 
-        return Thm.substitution(inst, self.th)
+        return Thm.substitution(inst, Thm.subst_type(tyinst, self.th))
 
     def get_proof_term(self, t):
         pat = self.th.concl.arg1
-        inst = dict()
+        tyinst, inst = dict(), dict()
 
         if self.match_vars:
             try:
-                inst = matcher.first_order_match(pat, t)
+                tyinst, inst = matcher.first_order_match(pat, t)
             except matcher.MatchException:
                 raise ConvException()
         elif pat != t:
             raise ConvException()
 
-        return ProofTerm.substitution(inst, self.pt)
+        return ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, self.pt))
 
 def rewr_conv_thm(thy, th_name):
     return rewr_conv(ProofTerm.theorem(thy, th_name))

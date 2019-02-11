@@ -112,7 +112,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(1, "apply_theorem", args="conjD1", prevs=[0])
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.prim_steps, 7)
+        self.assertEqual(rpt.prim_steps, 8)
 
         # Reset data for the next check
         prf = Proof(logic.mk_conj(A, B))
@@ -136,7 +136,7 @@ class BasicTest(unittest.TestCase):
         th = Thm([], eq(plus(zero,zero),zero))
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.prim_steps, 8)
+        self.assertEqual(rpt.prim_steps, 9)
 
         rpt2 = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt2, check_level=1), th)
@@ -208,10 +208,10 @@ class BasicTest(unittest.TestCase):
 
         prf = Proof(disjAB)
         prf.add_item(1, "assume", args=A)
-        prf.add_item(2, "apply_theorem_for", args=("disjI2", {"A": B, "B": A}), prevs=[1])
+        prf.add_item(2, "apply_theorem_for", args=("disjI2", {}, {"A": B, "B": A}), prevs=[1])
         prf.add_item(3, "implies_intr", args=A, prevs=[2])
         prf.add_item(4, "assume", args=B)
-        prf.add_item(5, "apply_theorem_for", args=("disjI1", {"A": B, "B": A}), prevs=[4])
+        prf.add_item(5, "apply_theorem_for", args=("disjI1", {}, {"A": B, "B": A}), prevs=[4])
         prf.add_item(6, "implies_intr", args=B, prevs=[5])
         prf.add_item(7, "apply_theorem", args="disjE", prevs=[0, 3, 6])
         prf.add_item(8, "implies_intr", args=disjAB, prevs=[7])
@@ -464,7 +464,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(4, "rewrite_goal", args=("plus_def_2", eq(plus(S(n),zero),S(n))), prevs=[3])
         prf.add_item(5, "implies_intr", args=eq(plus(n,zero),n), prevs=[4])
         prf.add_item(6, "forall_intr", args=n, prevs=[5])
-        prf.add_item(7, "apply_theorem_for", args=("nat_induct", {"P": Term.mk_abs(n, eq(plus(n,zero),n)), "x": n}), prevs=[1, 6])
+        prf.add_item(7, "apply_theorem_for", args=("nat_induct", {}, {"P": Term.mk_abs(n, eq(plus(n,zero),n)), "x": n}), prevs=[1, 6])
         th = Thm.mk_equals(plus(n, zero), n)
         self.assertEqual(thy.check_proof(prf), th)
 
@@ -512,7 +512,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(6, "rewrite_goal", args=("times_def_2", eq(times(S(n),zero),zero)), prevs=[5])
         prf.add_item(7, "implies_intr", args=eq(times(n,zero),zero), prevs=[6])
         prf.add_item(8, "forall_intr", args=n, prevs=[7])
-        prf.add_item(9, "apply_theorem_for", args=("nat_induct", {"P": Term.mk_abs(n, eq(times(n,zero),zero)), "x": n}), prevs=[1, 8])
+        prf.add_item(9, "apply_theorem_for", args=("nat_induct", {}, {"P": Term.mk_abs(n, eq(times(n,zero),zero)), "x": n}), prevs=[1, 8])
         th = Thm.mk_equals(times(n, zero), zero)
         self.assertEqual(thy.check_proof(prf), th)
 

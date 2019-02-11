@@ -26,8 +26,8 @@ class ProofTest(unittest.TestCase):
             (ProofItem(6, "implies_elim", prevs=[5, 3]),
              "6: implies_elim from 5, 3",
              {'id': 6, 'th': '', 'rule': 'implies_elim', 'args': '', 'prevs': [5, 3]}),
-            (ProofItem(1, "apply_theorem_for", args=("conjD2", {"A": B, "B": A}), prevs=[0]),
-             "1: apply_theorem_for conjD2, {A: B, B: A} from 0",
+            (ProofItem(1, "apply_theorem_for", args=("conjD2", {}, {"A": B, "B": A}), prevs=[0]),
+             "1: apply_theorem_for conjD2, {}, {A: B, B: A} from 0",
              {'id': 1, 'th': '', 'rule': 'apply_theorem_for', 'args': 'conjD2, {A: B, B: A}', 'prevs': [0]})
         ]
 

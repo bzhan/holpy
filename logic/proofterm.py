@@ -59,6 +59,10 @@ class ProofTerm():
         return ProofTermDeriv(Thm.implies_elim(pt1.th, pt2.th), "implies_elim", None, [pt1, pt2])
 
     @staticmethod
+    def subst_type(tyinst, pt):
+        return ProofTermDeriv(Thm.subst_type(tyinst, pt.th), "subst_type", tyinst, [pt])
+
+    @staticmethod
     def substitution(inst, pt):
         return ProofTermDeriv(Thm.substitution(inst, pt.th), "substitution", inst, [pt])
 

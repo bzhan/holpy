@@ -17,7 +17,7 @@
                     "th": "A ∧ B ⊢ A ∧ B"
                 },
                 {
-                    "args": "conjD2, {A: A, B: B}",
+                    "args": "conjD2, {}, {A: A, B: B}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -26,7 +26,7 @@
                     "th": "A ∧ B ⊢ B"
                 },
                 {
-                    "args": "conjD1, {A: A, B: B}",
+                    "args": "conjD1, {}, {A: A, B: B}",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -35,7 +35,7 @@
                     "th": "A ∧ B ⊢ A"
                 },
                 {
-                    "args": "conjI, {A: B, B: A}",
+                    "args": "conjI, {}, {A: B, B: A}",
                     "id": "3",
                     "prevs": [
                         "1",
@@ -94,7 +94,7 @@
                     "th": "A ⊢ A"
                 },
                 {
-                    "args": "disjI2, {A: B, B: A}",
+                    "args": "disjI2, {}, {A: B, B: A}",
                     "id": "1.1",
                     "prevs": [
                         "1.0"
@@ -126,7 +126,7 @@
                     "th": "B ⊢ B"
                 },
                 {
-                    "args": "disjI1, {A: B, B: A}",
+                    "args": "disjI1, {}, {A: B, B: A}",
                     "id": "2.1",
                     "prevs": [
                         "2.0"
@@ -144,7 +144,7 @@
                     "th": "A ∨ B ⊢ B ⟶ B ∨ A"
                 },
                 {
-                    "args": "disjE, {A: A, B: B, C: B ∨ A}",
+                    "args": "disjE, {}, {A: A, B: B, C: B ∨ A}",
                     "id": "3",
                     "prevs": [
                         "0",
@@ -255,7 +255,7 @@
                     "th": "¬A ⊢ ¬A"
                 },
                 {
-                    "args": "negE, {A: ¬A}",
+                    "args": "negE, {}, {A: ¬A}",
                     "id": "3.1",
                     "prevs": [
                         "0",
@@ -265,7 +265,7 @@
                     "th": "¬¬A, ¬A ⊢ false"
                 },
                 {
-                    "args": "falseE, {A: A}",
+                    "args": "falseE, {}, {A: A}",
                     "id": "3.2",
                     "prevs": [
                         "3.1"
@@ -283,7 +283,7 @@
                     "th": "¬¬A ⊢ ¬A ⟶ A"
                 },
                 {
-                    "args": "disjE, {A: A, B: ¬A, C: A}",
+                    "args": "disjE, {}, {A: A, B: ¬A, C: A}",
                     "id": "4",
                     "prevs": [
                         "1",
@@ -360,17 +360,8 @@
                     "th": "A a ∧ B a ⊢ A a"
                 },
                 {
-                    "args": "exI, {P: A, a: a}",
-                    "id": "1.3",
-                    "prevs": [
-                        "1.2"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ ∃x. A x"
-                },
-                {
                     "args": "conjD2",
-                    "id": "1.4",
+                    "id": "1.3",
                     "prevs": [
                         "1.1"
                     ],
@@ -378,19 +369,28 @@
                     "th": "A a ∧ B a ⊢ B a"
                 },
                 {
-                    "args": "exI, {P: B, a: a}",
+                    "args": "exI, {a: 'a}, {P: A, a: a}",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ ∃x. A x"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: B, a: a}",
                     "id": "1.5",
                     "prevs": [
-                        "1.4"
+                        "1.3"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ ∃x. B x"
                 },
                 {
-                    "args": "conjI, {A: ∃x. A x, B: ∃x. B x}",
+                    "args": "conjI, {}, {A: ∃x. A x, B: ∃x. B x}",
                     "id": "1.6",
                     "prevs": [
-                        "1.3",
+                        "1.4",
                         "1.5"
                     ],
                     "rule": "apply_theorem_for",
@@ -415,7 +415,7 @@
                     "th": "∃x. A x ∧ B x ⊢ ∀a. A a ∧ B a ⟶ (∃x. A x) ∧ (∃x. B x)"
                 },
                 {
-                    "args": "exE, {C: (∃x. A x) ∧ (∃x. B x), P: λx. A x ∧ B x}",
+                    "args": "exE, {a: 'a}, {C: (∃x. A x) ∧ (∃x. B x), P: λx. A x ∧ B x}",
                     "id": "2",
                     "prevs": [
                         "0",

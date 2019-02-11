@@ -291,9 +291,11 @@ class ParserTest(unittest.TestCase):
             ({'id': "8", 'rule': "implies_intr", 'args': "conj A B", 'prevs': ["7"], 'th': ""},
              ProofItem(8, "implies_intr", args=logic.mk_conj(A, B), prevs=[7])),
             ({'id': "0", 'rule': "sorry", 'args': "", 'prevs': [], 'th': "conj A B |- conj B A"},
-             ProofItem(0, "sorry", th = Thm([logic.mk_conj(A, B)], logic.mk_conj(B, A)))),
+             ProofItem(0, "sorry", th=Thm([logic.mk_conj(A, B)], logic.mk_conj(B, A)))),
             ({'id': "1", 'rule': "", 'args': "", 'prevs': [], 'th': ""},
              ProofItem(1, "")),
+            ({'id': "5", 'rule': "apply_theorem_for", 'args': "disjI1, {}, {A: B, B: A}", 'prevs': [4], 'th': ""},
+             ProofItem(5, "apply_theorem_for", args=("disjI1", {}, {'A': B, 'B': A}), prevs=[4])),
         ]
 
         for s, res in test_data:

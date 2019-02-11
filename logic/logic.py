@@ -98,12 +98,13 @@ def beta_norm(t):
     else:
         raise TypeError()
 
-def subst_norm(t, inst):
+def subst_norm(t, instsp):
     """Substitute using the given instantiation, then normalize with
     respect to beta-conversion.
 
     """
-    return beta_norm(t.subst(inst))
+    tyinst, inst = instsp
+    return beta_norm(t.subst_type(tyinst).subst(inst))
 
 def if_t(T):
     return Const("IF", TFun(hol_bool, T, T, T))

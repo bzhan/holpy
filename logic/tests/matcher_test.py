@@ -5,14 +5,25 @@ import unittest
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Var, Const, Abs, Bound
 from logic import logic, matcher
+from logic import nat
+from logic import list
+
+natT = nat.natT
+listT = list.listT
 
 Ta = TVar("a")
+Tb = TVar("b")
 a = Const("a", Ta)
 b = Const("b", Ta)
 c = Const("c", Ta)
 f = Const("f", TFun(Ta, Ta, Ta))
+m = Const("m", natT)
+n = Const("n", natT)
+p = Var("p", natT)
+q = Var("q", natT)
 x = Var("x", Ta)
 y = Var("y", Ta)
+z = Var("z", Tb)
 abs = Term.mk_abs
 conj = logic.mk_conj
 exists = logic.mk_exists
@@ -31,7 +42,7 @@ class MatcherTest(unittest.TestCase):
             (abs(x,a), abs(x,a), {}),
             (abs(x,a), abs(x,b), None),
             (abs(x,y), abs(x,x), None),
-            (abs(x,y), abs(x,abs(y,y)), {"y" : abs(y,y)}),
+            (abs(x,z), abs(x,abs(y,y)), {"z" : abs(y,y)}),
             (abs(x,y), abs(x,abs(y,x)), None),
             (abs(x,x), abs(x,x), {}),
             (abs(x,abs(y,y)), abs(x,abs(y,x)), None),
@@ -39,7 +50,7 @@ class MatcherTest(unittest.TestCase):
 
         for pat, t, inst in test_data:
             if inst is not None:
-                self.assertEqual(matcher.first_order_match(pat, t), inst)
+                self.assertEqual(matcher.first_order_match(pat, t)[1], inst)
             else:
                 self.assertRaises(matcher.MatchException, matcher.first_order_match, pat, t)
 
@@ -58,7 +69,19 @@ class MatcherTest(unittest.TestCase):
 
         for pat, t, inst in test_data:
             if inst is not None:
-                self.assertEqual(matcher.first_order_match(pat, t), inst)
+                self.assertEqual(matcher.first_order_match(pat, t)[1], inst)
+            else:
+                self.assertRaises(matcher.MatchException, matcher.first_order_match, pat, t)
+
+    def testFirstOrderMatchType(self):
+        test_data = [
+            (x, m, ({"a": natT}, {"x": m})),
+            (p, m, ({}, {"p": m})),
+        ]
+
+        for pat, t, instsp in test_data:
+            if instsp is not None:
+                self.assertEqual(matcher.first_order_match(pat, t), instsp)
             else:
                 self.assertRaises(matcher.MatchException, matcher.first_order_match, pat, t)
 
