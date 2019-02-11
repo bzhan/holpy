@@ -129,7 +129,10 @@ class rewrite_goal_macro(ProofTermMacro):
     equality theorem. Goal is the statement of the goal.
 
     Rewrite the goal using the equality theorem. The result must
-    be equal to prev.
+    be equal to prev[0].
+
+    The remainder of prev are theorems to be used to discharge
+    assumptions in conversion.
     
     backward - whether to apply the given equality in the backward
     direction.
@@ -142,15 +145,15 @@ class rewrite_goal_macro(ProofTermMacro):
         self.has_theory = True
         self.use_goal = True
 
-    def __call__(self, thy, args, th):
+    def __call__(self, thy, args, *ths):
         assert isinstance(args, tuple) and len(args) == 2 and \
                isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
 
         # Simply produce the goal
         _, goal = args
-        return Thm(th.assums, goal)
+        return Thm(sum([th.assums for th in ths], ()), goal)
 
-    def get_proof_term(self, thy, args, pt):
+    def get_proof_term(self, thy, args, *pts):
         assert isinstance(args, tuple) and len(args) == 2 and \
                isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
 
@@ -159,9 +162,13 @@ class rewrite_goal_macro(ProofTermMacro):
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
         cv = top_conv(rewr_conv(eq_pt))
-        pt2 = cv.get_proof_term(goal)  # goal = th.concl
-        pt3 = ProofTerm.symmetric(pt2)  # th.concl = goal
-        return ProofTerm.equal_elim(pt3, pt)
+        pt = cv.get_proof_term(goal)  # goal = th.concl
+        pt = ProofTerm.symmetric(pt)  # th.concl = goal
+        pt = ProofTerm.equal_elim(pt, pts[0])  # goal
+        for A in pts[1:]:
+            pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.th.concl, pt), A)
+        return pt
+
 
 global_macros.update({
     "arg_combination": arg_combination_macro(),

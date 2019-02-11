@@ -479,13 +479,19 @@ class ProofState():
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "rewrite_goal: id is not a gap"
 
+        init_As = cur_item.th.assums
         goal = cur_item.th.concl
         cv = top_conv(rewr_conv_thm(self.thy, th_name))
         _, new_goal = cv(goal).concl.dest_binop()
 
-        self.add_line_before(id, 1)
+        new_As = list(set(cv(goal).assums) - set(init_As))
+        self.add_line_before(id, 1+len(new_As))
         self.set_line(id, "sorry", th=Thm(cur_item.th.assums, new_goal))
-        self.set_line(incr_id(id, 1), "rewrite_goal", args=(th_name, goal), prevs=[id])
+        for i, A in enumerate(new_As):
+            self.set_line(incr_id(id, i+1), "sorry", th=Thm(cur_item.th.assums, A))
+
+        prev_ids = [incr_id(id, i) for i in range(1+len(new_As))]
+        self.set_line(incr_id(id, 1+len(new_As)), "rewrite_goal", args=(th_name, goal), prevs=prev_ids)
 
         # Test if the goal is already proved
         new_id = self.find_goal(Thm(cur_item.th.assums, new_goal), id)

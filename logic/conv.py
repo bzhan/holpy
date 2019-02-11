@@ -223,33 +223,45 @@ class rewr_conv(Conv):
         self.th = pt.th
         self.match_vars = match_vars
 
+        # Deconstruct th into assumptions and conclusion
+        self.As, self.C = self.th.concl.strip_implies()
+        assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
+        self.pat = self.C.arg1
+
     def __call__(self, t):
-        pat = self.th.concl.arg1
         tyinst, inst = dict(), dict()
 
         if self.match_vars:
             try:
-                tyinst, inst = matcher.first_order_match(pat, t)
+                matcher.first_order_match_incr(self.pat, t, (tyinst, inst))
             except matcher.MatchException:
                 raise ConvException()
-        elif pat != t:
+        elif self.pat != t:
             raise ConvException()
 
-        return Thm.substitution(inst, Thm.subst_type(tyinst, self.th))
+        th = Thm.substitution(inst, Thm.subst_type(tyinst, self.th))
+        As, _ = th.concl.strip_implies()
+        for A in As:
+            th = Thm.implies_elim(th, Thm.assume(A))
+        return th
 
     def get_proof_term(self, t):
-        pat = self.th.concl.arg1
         tyinst, inst = dict(), dict()
 
         if self.match_vars:
             try:
-                tyinst, inst = matcher.first_order_match(pat, t)
+                matcher.first_order_match_incr(self.pat, t, (tyinst, inst))
             except matcher.MatchException:
                 raise ConvException()
-        elif pat != t:
+        elif self.pat != t:
             raise ConvException()
 
-        return ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, self.pt))
+        pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, self.pt))
+        As, _ = pt.th.concl.strip_implies()
+        for A in As:
+            pt = ProofTerm.implies_elim(pt, ProofTerm.assume(A))
+        return pt
+
 
 def rewr_conv_thm(thy, th_name):
     return rewr_conv(ProofTerm.theorem(thy, th_name))

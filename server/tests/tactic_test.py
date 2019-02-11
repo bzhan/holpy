@@ -276,6 +276,18 @@ class TacticTest(unittest.TestCase):
         ths = state.rewrite_goal_thms((0,))
         self.assertEqual([name for name, _ in ths], ["add_comm", "plus_def_1"])
 
+    def testRewriteGoalWithAssum(self):
+        Ta = TVar("a")
+        a = Var("a", Ta)
+        b = Var("b", Ta)
+        eq_a = Term.mk_equals(a, a)
+        if_t = logic.mk_if(eq_a, b, a)
+        state = ProofState.init_state(thy, [a, b], [], Term.mk_equals(if_t, b))
+        state.rewrite_goal(0, "if_P")
+        state.set_line(0, "reflexive", args=b)
+        state.set_line(1, "reflexive", args=a)
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
+
 
 if __name__ == "__main__":
     unittest.main()

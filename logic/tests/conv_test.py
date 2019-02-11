@@ -9,7 +9,7 @@ from kernel.proof import Proof
 from logic import basic
 from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
-    rewr_conv, rewr_conv_thm, ConvException
+    arg_conv, rewr_conv, rewr_conv_thm, ConvException
 from logic import nat
 
 thy = basic.loadTheory('logic_base')
@@ -81,6 +81,20 @@ class ConvTest(unittest.TestCase):
         cv2.get_proof_term(f(one)).export(prf=prf1)
         self.assertEqual(thy.check_proof(prf1), eq1)
         self.assertRaises(ConvException, cv1.get_proof_term, zero)
+
+    def testRewrConvWithAssum(self):
+        x = Const("x", natT)
+        y = Const("y", natT)
+        x_eq_y = Term.mk_equals(x, y)
+        th = Thm([], Term.mk_implies(x_eq_y, x_eq_y))
+        cv = arg_conv(rewr_conv(ProofTerm.atom(0, th)))
+        f = Const("f", TFun(natT, natT))
+        res = Thm([x_eq_y], Term.mk_equals(f(x), f(y)))
+        self.assertEqual(cv(f(x)), res)
+        prf = Proof()
+        prf.add_item(0, "sorry", th=th)
+        cv.get_proof_term(f(x)).export(prf=prf)
+        self.assertEqual(thy.check_proof(prf), res)
 
     def testAbsConv(self):
         nat0 = Const("zero", natT)

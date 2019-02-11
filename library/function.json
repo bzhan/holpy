@@ -21,7 +21,54 @@
             }
         },
         {
+            "name": "fun_upd_eval",
+            "prop": "fun_upd f a b x = (if x = a then b else f x)",
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'b",
+                "f": "'a => 'b",
+                "x": "'a"
+            }
+        },
+        {
             "name": "fun_upd_same",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ b = b"
+                },
+                {
+                    "args": "a",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ a = a"
+                },
+                {
+                    "args": "if_P, (if a = a then b else f a) = b",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if a = a then b else f a) = b"
+                },
+                {
+                    "args": "fun_upd_eval, fun_upd f a b a = b",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ fun_upd f a b a = b"
+                }
+            ],
             "prop": "fun_upd f a b a = b",
             "ty": "thm",
             "vars": {
@@ -32,6 +79,50 @@
         },
         {
             "name": "fun_upd_other",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬c = a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬c = a ⊢ ¬c = a"
+                },
+                {
+                    "args": "f c",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ f c = f c"
+                },
+                {
+                    "args": "if_not_P, (if c = a then b else f c) = f c",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬c = a ⊢ (if c = a then b else f c) = f c"
+                },
+                {
+                    "args": "fun_upd_eval, fun_upd f a b c = f c",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬c = a ⊢ fun_upd f a b c = f c"
+                },
+                {
+                    "args": "¬c = a",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ ¬c = a ⟶ fun_upd f a b c = f c"
+                }
+            ],
             "prop": "~(c = a) --> fun_upd f a b c = f c",
             "ty": "thm",
             "vars": {
@@ -69,5 +160,5 @@
     "imports": [
         "nat"
     ],
-    "name": "func"
+    "name": "function"
 }
