@@ -19,11 +19,11 @@
             // Add CodeMirror textarea
             var id = 'code' + page_num + '-pan';
             $('#codeTab').append(
-                $('<li class="nav-item"><a  class="nav-link" ' +
+                $('<li class="nav-item" name="code'+ page_num +'"><a  class="nav-link" ' +
                     'data-toggle="tab"' +
                     'href="#code' + page_num + '-pan">' +
-                    'Page ' + page_num +
-                    '<button id="close_tab" type="button" ' +
+                    '<span> ' +
+                    '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page">×</button>' +
                     '</a></li>'));
             let class_name = 'tab-pane fade active newCodeMirror code-cell';
@@ -157,21 +157,12 @@
         });
 
         $('#codeTab').on('click', ' li a #close_tab', function () {
-            if ($('#codeTab').children().length === 1)
-                return true;
-            else {
-                var id = get_selected_id();
-                var tabId = $(this).parents('li').children('a').attr('href');
-                var pageNum = $(this).parents('li').children('a')[0].childNodes[0].nodeValue;
-                var first = false;
-                delete cells[id];
-                $(this).parents('li').remove('li');
-                $(tabId).remove();
-                if (pageNum === "Page 1")
-                    first = true;
-                remove_page(first);
-                $('#codeTab a:first').tab('show');
-            }
+            var id = get_selected_id();
+            var tabId = $(this).parents('li').children('a').attr('href');
+            delete cells[id];
+            $(this).parents('li').remove('li');
+            $(tabId).remove();
+            $('#codeTab a:first').tab('show');
         });
 
         $('#delete-cell').on('click', function () {
@@ -201,16 +192,20 @@
         //click proof then send it to the init; including the save-json-file;
         $('#left_json').on('click', 'a', function () {
             proof_id = $(this).attr('id');
+            var thm_name = $(this).parent().find('span#thm_name').text();
             if (result_list[proof_id - 1]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function () {
+                    $('#codeTab li[name="'+ get_selected_id() +'"] span').text(thm_name);
                     init_saved_proof(result_list[proof_id - 1]);
-                }, 500);
+                }, 200);
             } else {
                 $('#add-cell').click();
+//                $('#codeTab li[name="'+get_selected_id()+'"] span').text(thm_name);
                 setTimeout(function () {
+                    $('#codeTab li[name="'+get_selected_id()+'"] span').text(thm_name);
                     theorem_proof(result_list[proof_id - 1]);
-                }, 500);
+                }, 200);
             }
         });
 
@@ -365,7 +360,7 @@
                 else {
                     status_color = 'green'
                 }
-                $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: ' + status_color + ';">&nbsp;</div>' + '<p>' + '<font color="#006000"><b>theorem</b></font> ' + name + ':&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;&nbsp;' + str + '</p></div>'));
+                $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: ' + status_color + ';">&nbsp;</div>' + '<p>' + '<font color="#006000"><b>theorem </b></font><span id="thm_name">' + name + '</span>:&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;&nbsp;' + str + '</p></div>'));
             }
 
             if (ty === 'type.ind') {
