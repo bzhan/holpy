@@ -39,6 +39,8 @@ class Thm():
         """
         self.assums = tuple(assums)
         self.concl = concl
+        assert all(isinstance(A, Term) for A in self.assums), "Thm: assums must be terms."
+        assert isinstance(concl, Term), "Thm: conclusion must be a term."
 
     def __str__(self):
         """Print the given theorem."""

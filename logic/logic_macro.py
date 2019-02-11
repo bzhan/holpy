@@ -5,7 +5,7 @@ from kernel.macro import MacroSig, ProofMacro, global_macros
 from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
-from logic.conv import beta_conv, top_conv, rewr_conv
+from logic.conv import then_conv, beta_conv, top_conv, rewr_conv
 from logic.proofterm import ProofTerm, ProofTermMacro
 
 """Standard macros in logic."""
@@ -161,7 +161,7 @@ class rewrite_goal_macro(ProofTermMacro):
         eq_pt = ProofTerm.theorem(thy, name)
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
-        cv = top_conv(rewr_conv(eq_pt))
+        cv = then_conv(top_conv(rewr_conv(eq_pt)), top_conv(beta_conv()))
         pt = cv.get_proof_term(goal)  # goal = th.concl
         pt = ProofTerm.symmetric(pt)  # th.concl = goal
         pt = ProofTerm.equal_elim(pt, pts[0])  # goal

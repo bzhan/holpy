@@ -316,6 +316,18 @@ class TacticTest(unittest.TestCase):
         state.set_line((0, 4, 1), "reflexive", args=f(x))
         self.assertEqual(state.check_proof(no_gaps=True), Thm([], prop))
 
+    def testAVal(self):
+        thy = basic.loadTheory('expr')
+        prop = thy.get_theorem('aval_test2')
+        state = ProofState.init_state(thy, [], [], prop.concl)
+        state.rewrite_goal(0, "aval_def_3")
+        state.rewrite_goal(0, "aval_def_2")
+        state.rewrite_goal(0, "aval_def_1")
+        state.rewrite_goal(0, "fun_upd_def")
+        state.rewrite_goal(0, "if_not_P")
+        state.set_line(0, "nat_norm", args=Term.mk_equals(nat.plus(nat.zero,nat.to_binary(5)), nat.to_binary(5)))
+        state.apply_backward_step(1, "nat_zero_Suc_neq")
+        self.assertEqual(state.check_proof(no_gaps=True), prop)
 
 if __name__ == "__main__":
     unittest.main()

@@ -67,11 +67,6 @@
             "type": "nat => nat => nat"
         },
         {
-            "depth": 0,
-            "name": "Binary representation",
-            "ty": "header"
-        },
-        {
             "instructions": [
                 "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
                 "Select S1 as goal, use Ctrl+R with plus_def_1.",
@@ -334,6 +329,11 @@
                 "x": "nat",
                 "y": "nat"
             }
+        },
+        {
+            "depth": 0,
+            "name": "Binary representation",
+            "ty": "header"
         },
         {
             "name": "bit0",

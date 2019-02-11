@@ -65,7 +65,122 @@
         },
         {
             "name": "aval_test1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "7 + 5 = 12",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ 7 + 5 = 12"
+                },
+                {
+                    "args": "fun_upd_same, fun_upd (λx. 0) 1 7 1 + 5 = 12",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ fun_upd (λx. 0) 1 7 1 + 5 = 12"
+                },
+                {
+                    "args": "aval_def_1, fun_upd (λx. 0) 1 7 1 + aval (N 5) (fun_upd (λx. 0) 1 7) = 12",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ fun_upd (λx. 0) 1 7 1 + aval (N 5) (fun_upd (λx. 0) 1 7) = 12"
+                },
+                {
+                    "args": "aval_def_2, aval (V 1) (fun_upd (λx. 0) 1 7) + aval (N 5) (fun_upd (λx. 0) 1 7) = 12",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ aval (V 1) (fun_upd (λx. 0) 1 7) + aval (N 5) (fun_upd (λx. 0) 1 7) = 12"
+                },
+                {
+                    "args": "aval_def_3, aval (Plus (V 1) (N 5)) (fun_upd (λx. 0) 1 7) = 12",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ aval (Plus (V 1) (N 5)) (fun_upd (λx. 0) 1 7) = 12"
+                }
+            ],
             "prop": "aval (Plus (V 1) (N 5)) (fun_upd (%x. 0) 1 7) = 12",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "aval_test2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "plus_def_1, {}, {n: 5}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 + 5 = 5"
+                },
+                {
+                    "args": "nat_zero_Suc_neq, {}, {n: 0}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬0 = 1"
+                },
+                {
+                    "args": "if_not_P, (if 0 = 1 then 7 else 0) + 5 = 5",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if 0 = 1 then 7 else 0) + 5 = 5"
+                },
+                {
+                    "args": "fun_upd_def, fun_upd (λx. 0) 1 7 0 + 5 = 5",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ fun_upd (λx. 0) 1 7 0 + 5 = 5"
+                },
+                {
+                    "args": "aval_def_1, fun_upd (λx. 0) 1 7 0 + aval (N 5) (fun_upd (λx. 0) 1 7) = 5",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ fun_upd (λx. 0) 1 7 0 + aval (N 5) (fun_upd (λx. 0) 1 7) = 5"
+                },
+                {
+                    "args": "aval_def_2, aval (V 0) (fun_upd (λx. 0) 1 7) + aval (N 5) (fun_upd (λx. 0) 1 7) = 5",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ aval (V 0) (fun_upd (λx. 0) 1 7) + aval (N 5) (fun_upd (λx. 0) 1 7) = 5"
+                },
+                {
+                    "args": "aval_def_3, aval (Plus (V 0) (N 5)) (fun_upd (λx. 0) 1 7) = 5",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ aval (Plus (V 0) (N 5)) (fun_upd (λx. 0) 1 7) = 5"
+                }
+            ],
+            "prop": "aval (Plus (V 0) (N 5)) (fun_upd (%x. 0) 1 7) = 5",
             "ty": "thm",
             "vars": {}
         }

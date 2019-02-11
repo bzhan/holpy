@@ -9,7 +9,7 @@ from kernel.proof import ProofItem, Proof, id_force_tuple
 from kernel import report
 from logic import logic, matcher
 from logic.proofterm import ProofTerm
-from logic.conv import top_conv, rewr_conv_thm
+from logic.conv import top_conv, rewr_conv_thm, then_conv, beta_conv
 from syntax import parser, printer
 
 
@@ -142,6 +142,9 @@ class ProofState():
         2n: A1 --> ... --> An --> C by implies_intr 0 from 2n-1.
 
         """
+        assert all(isinstance(var, Term) for var in vars), "init_state: vars must be terms."
+        assert all(isinstance(a, Term) for a in assums), "init_state: assums must be terms."
+        assert isinstance(concl, Term), "init_state: conclusion must be a term."
         state = ProofState(thy)
 
         state.vars = vars
@@ -481,7 +484,8 @@ class ProofState():
 
         init_As = cur_item.th.assums
         goal = cur_item.th.concl
-        cv = top_conv(rewr_conv_thm(self.thy, th_name))
+        cv = then_conv(top_conv(rewr_conv_thm(self.thy, th_name)),
+                       top_conv(beta_conv()))
         _, new_goal = cv(goal).concl.dest_binop()
 
         new_As = list(set(cv(goal).assums) - set(init_As))
