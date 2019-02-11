@@ -12,6 +12,7 @@ from logic import logic
 from logic import basic
 from logic import nat
 from logic import list
+from logic import function
 from syntax import printer
 from server import tactic
 from server.tactic import ProofState
@@ -295,8 +296,7 @@ class TacticTest(unittest.TestCase):
         f = Var("f", TFun(Ta, Tb))
         a = Var("a", Ta)
         x = Var("x", Ta)
-        fun_upd = Const("fun_upd", TFun(TFun(Ta, Tb), Ta, Tb, Ta, Tb))
-        prop = Term.mk_equals(fun_upd(f, a, f(a)), f)
+        prop = Term.mk_equals(function.mk_fun_upd(f, a, f(a)), f)
         state = ProofState.init_state(thy, [f, a], [], prop)
         state.apply_backward_step(0, "extension")
         state.introduction(0, names=["x"])

@@ -9,6 +9,7 @@ from logic.operator import OperatorData
 from logic import logic
 from logic import nat
 from logic import list as hol_list
+from logic import function
 from syntax import settings
 from syntax import infertype
 
@@ -193,6 +194,12 @@ def print_term(thy, t):
                 body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
 
                 return N(exists_str) + var_str + N(". ") + body_repr
+
+            # Function update
+            elif function.is_fun_upd(t):
+                f, upds = function.strip_fun_upd(t)
+                upd_strs = [helper(a, bd_vars) + N(" := ") + helper(b, bd_vars) for a, b in upds]
+                return N("(") + helper(f, bd_vars) + N(")(") + commas_join(upd_strs) + N(")")
 
             # Finally, usual function application
             else:

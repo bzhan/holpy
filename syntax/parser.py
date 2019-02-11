@@ -12,6 +12,7 @@ from logic import induct
 from logic import logic
 from logic import nat
 from logic import list
+from logic import function
 from syntax import infertype
 
 
@@ -40,6 +41,7 @@ grammar = r"""
         | "[]"                     -> literal_list  // Empty list
         | "[" term ("," term)* "]" -> literal_list  // List
         | "if" term "then" term "else" term  -> if_expr // if expression
+        | "(" term ")(" term ":=" term ("," term ":=" term)* ")"   -> fun_upd // function update
         | "(" term ")"                    // Parenthesis
         | "(" term "::" type ")"   -> typed_term    // Term with specified type
 
@@ -127,6 +129,17 @@ class HOLTransformer(Transformer):
 
     def if_expr(self, P, x, y):
         return Const("IF", None)(P, x, y)
+
+    def fun_upd(self, *args):
+        def helper(*args):
+            if len(args) == 3:
+                f, a, b = args
+                return Const("fun_upd", None)(f, a, b)
+            elif len(args) > 3:
+                return helper(helper(*args[:3]), *args[3:])
+            else:
+                raise TypeError()
+        return helper(*args)
 
     def comb(self, fun, arg):
         return Comb(fun, arg)

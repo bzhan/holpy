@@ -9,6 +9,7 @@ from logic import logic
 from logic import nat
 from logic import list
 from logic import basic
+from logic import function
 from syntax import printer
 
 thy = basic.loadTheory('list')
@@ -170,6 +171,16 @@ class PrinterTest(unittest.TestCase):
             (list.cons(Ta)(a), "cons a"),
         ]
 
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
+
+    def testPrintFunction(self):
+        test_data = [
+            (function.mk_fun_upd(f, a, b), "(f)(a := b)"),
+            (function.mk_fun_upd(f, a, b, b, a), "(f)(a := b, b := a)"),
+        ]
+
+        thy = basic.loadTheory('function')
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
 
