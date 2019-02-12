@@ -6,34 +6,14 @@ from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.macro import MacroSig
 from kernel.thm import Thm
-from kernel.proof import ProofItem
+from kernel.proof import ProofItem, id_force_tuple
 from kernel import extension
-from logic import induct, logic
-from logic.nat import Nat
-from logic.list import List
-
-def _abstract_over_name(t, name, n):
-    """Helper function for abstract_over_name. Here t is an open term.
-    All atomic terms with the given name should be replaced by Bound n.
-
-    """
-    if t.ty == Term.VAR or t.ty == Term.CONST:
-        if t.name == name:
-            return Bound(n)
-        else:
-            return t
-    elif t.ty == Term.COMB:
-        return Comb(_abstract_over_name(t.fun, name, n), _abstract_over_name(t.arg, name, n))
-    elif t.ty == Term.ABS:
-        return Abs(t.var_name, t.T, _abstract_over_name(t.body, name, n+1))
-    elif t.ty == Term.BOUND:
-        return t
-    else:
-        raise TypeError()
-
-def abstract_over_name(t, name, T):
-    """Abstract over all atomic terms with the given name."""
-    return Abs(name, T, _abstract_over_name(t, name, 0))
+from logic import induct
+from logic import logic
+from logic import nat
+from logic import list
+from logic import function
+from syntax import infertype
 
 
 class ParserException(Exception):
@@ -51,11 +31,19 @@ grammar = r"""
         | "(" type ")"                    // Parenthesis
 
     ?atom: CNAME -> vname                 // Constant, variable, or bound variable
-        | "0" -> zero                     // Zero (to be extended to numbers)
+        | INT -> number                   // Numbers
         | ("%"|"λ") CNAME "::" type ". " term -> abs     // Abstraction
+        | ("%"|"λ") CNAME ". " term           -> abs_notype
         | ("!"|"∀") CNAME "::" type ". " term -> all     // Forall quantification
-        | ("?"|"∃") CNAME "::" type ". " term -> exists   // Exists quantification
+        | ("!"|"∀") CNAME ". " term           -> all_notype
+        | ("?"|"∃") CNAME "::" type ". " term -> exists  // Exists quantification
+        | ("?"|"∃") CNAME ". " term           -> exists_notype
+        | "[]"                     -> literal_list  // Empty list
+        | "[" term ("," term)* "]" -> literal_list  // List
+        | "if" term "then" term "else" term  -> if_expr // if expression
+        | "(" term ")(" term ":=" term ("," term ":=" term)* ")"   -> fun_upd // function update
         | "(" term ")"                    // Parenthesis
+        | "(" term "::" type ")"   -> typed_term    // Term with specified type
 
     ?comb: comb atom | atom
 
@@ -65,7 +53,9 @@ grammar = r"""
 
     ?append: plus "@" append | plus     // Append: priority 65
 
-    ?eq: eq "=" append | append         // Equality: priority 50
+    ?cons: append "#" cons | append     // Cons: priority 65
+
+    ?eq: eq "=" cons | cons             // Equality: priority 50
 
     ?neg: ("~"|"¬") neg -> neg | eq     // Negation: priority 40 
 
@@ -90,8 +80,11 @@ grammar = r"""
     tyinst: "{}"
         | "{" type_pair ("," type_pair)* "}"
 
+    instsp: tyinst "," inst
+
     %import common.CNAME
     %import common.WS
+    %import common.INT
 
     %ignore WS
 """
@@ -116,53 +109,77 @@ class HOLTransformer(Transformer):
 
     def vname(self, s):
         thy = parser_setting['thy']
-        ctxt = parser_setting['ctxt']
         s = str(s)
         if thy.has_term_sig(s):
             # s is the name of a constant in the theory
-            return Const(s, thy.get_term_sig(s))
-        elif s in ctxt:
-            # s is the name of a variable in the theory
-            return Var(s, ctxt[s])
+            return Const(s, None)
         else:
-            # s not found, presumably a bound variable
+            # s not found, either bound or free variable
             return Var(s, None)
 
-    def zero(self):
-        return Const("zero", Nat.nat)
+    def typed_term(self, t, T):
+        t.T = T
+        return t
+
+    def number(self, n):
+        return nat.to_binary(int(n))
+
+    def literal_list(self, *args):
+        return list.mk_literal_list(args, None)
+
+    def if_expr(self, P, x, y):
+        return Const("IF", None)(P, x, y)
+
+    def fun_upd(self, *args):
+        def helper(*args):
+            if len(args) == 3:
+                f, a, b = args
+                return Const("fun_upd", None)(f, a, b)
+            elif len(args) > 3:
+                return helper(helper(*args[:3]), *args[3:])
+            else:
+                raise TypeError()
+        return helper(*args)
 
     def comb(self, fun, arg):
         return Comb(fun, arg)
 
     def abs(self, var_name, T, body):
-        # Bound variables should be represented by Var(var_name, None).
-        # Abstract over it, and remember to change the type to T.
-        t = abstract_over_name(body, var_name, T)
-        return Abs(var_name, T, t.body)
+        return Abs(var_name, T, body.abstract_over(Var(var_name, None)))
+
+    def abs_notype(self, var_name, body):
+        return Abs(var_name, None, body.abstract_over(Var(var_name, None)))
 
     def all(self, var_name, T, body):
-        # Similar parsing mechanism as for abs.
-        all_t = Const("all", TFun(TFun(T, hol_bool), hol_bool))
-        t = abstract_over_name(body, var_name, T)
-        return all_t(t)
+        all_t = Const("all", None)
+        return all_t(Abs(var_name, T, body.abstract_over(Var(var_name, None))))
+
+    def all_notype(self, var_name, body):
+        all_t = Const("all", None)
+        return all_t(Abs(var_name, None, body.abstract_over(Var(var_name, None))))
 
     def exists(self, var_name, T, body):
-        # Similar parsing mechanism as for abs.
-        exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
-        t = abstract_over_name(body, var_name, T)
-        return exists_t(t)
+        exists_t = Const("exists", None)
+        return exists_t(Abs(var_name, T, body.abstract_over(Var(var_name, None))))
+
+    def exists_notype(self, var_name, body):
+        exists_t = Const("exists", None)
+        return exists_t(Abs(var_name, None, body.abstract_over(Var(var_name, None))))
 
     def times(self, lhs, rhs):
-        return Nat.times(lhs, rhs)
+        return nat.times(lhs, rhs)
 
     def plus(self, lhs, rhs):
-        return Nat.plus(lhs, rhs)
+        return nat.plus(lhs, rhs)
 
     def append(self, lhs, rhs):
-        return List.append(lhs, rhs)
+        return Const("append", None)(lhs, rhs)
+
+    def cons(self, lhs, rhs):
+        return Const("cons", None)(lhs, rhs)
 
     def eq(self, lhs, rhs):
-        return Term.mk_equals(lhs, rhs)
+        return Const("equals", None)(lhs, rhs)
 
     def neg(self, t):
         return logic.neg(t)
@@ -191,6 +208,9 @@ class HOLTransformer(Transformer):
     def tyinst(self, *args):
         return dict(args)
 
+    def instsp(self, *args):
+        return tuple(args)
+
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
 
@@ -199,6 +219,7 @@ term_parser = get_parser_for("term")
 thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
+instsp_parser = get_parser_for("instsp")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -208,64 +229,43 @@ def parse_type(thy, s):
 def parse_term(thy, ctxt, s):
     """Parse a term."""
     parser_setting['thy'] = thy
-    parser_setting['ctxt'] = ctxt
-    return term_parser.parse(s)
+    t = term_parser.parse(s)
+    return infertype.type_infer(thy, ctxt, t)
 
 def parse_thm(thy, ctxt, s):
     """Parse a theorem (sequent)."""
     parser_setting['thy'] = thy
-    parser_setting['ctxt'] = ctxt
-    return thm_parser.parse(s)
+    th = thm_parser.parse(s)
+    th.assums = tuple(infertype.type_infer(thy, ctxt, assum) for assum in th.assums)
+    th.concl = infertype.type_infer(thy, ctxt, th.concl)
+    return th
 
 def parse_inst(thy, ctxt, s):
     """Parse a term instantiation."""
     parser_setting['thy'] = thy
-    parser_setting['ctxt'] = ctxt
-    return inst_parser.parse(s)
+    inst = inst_parser.parse(s)
+    for k in inst:
+        inst[k] = infertype.type_infer(thy, ctxt, inst[k])
+    return inst
 
 def parse_tyinst(thy, s):
     """Parse a type instantiation."""
     parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
 
-def split_proof_rule(s):
-    """Split proof rule into parseable parts.
+def parse_instsp(thy, ctxt, s):
+    """Parse type and term instantiations."""
+    parser_setting['thy'] = thy
+    tyinst, inst = instsp_parser.parse(s)
+    for k in inst:
+        inst[k] = infertype.type_infer(thy, ctxt, inst[k])
+    return tyinst, inst
 
-    Currently able to handle string of the form:
-    [id]: [rule] [args] by [prevs]
-
-    """
-    if s.count(": ") > 0:
-        id, rest = s.split(": ", 1)  # split off id
-    else:
-        raise ParserException("id not found: " + s)
-
-    id = id.strip()
-    if rest.count(" by ") > 0:
-        th, rest = rest.split(" by ", 1)
-    else:
-        th, rest = "", rest
-
-    if rest.count(" ") > 0:
-        rule, rest = rest.split(" ", 1)  # split off name of rule
-    else:
-        rule, rest = rest, ""
-    rule = rule.strip()
-
-    if rest.count("from") > 0:
-        args, rest = rest.split("from", 1)
-        return {'id': id, 'rule': rule, 'args': args.strip(),
-                'prevs': [prev.strip() for prev in rest.split(",")],
-                'th': th}
-    else:
-        return {'id': id, 'rule': rule, 'args': rest.strip(),
-                'prevs': [], 'th': th}
-
-def parse_proof_rule_from_data(thy, ctxt, data):
+def parse_proof_rule(thy, ctxt, data):
     """Parse a proof rule.
 
-    data is a dictionary as provided by split_proof_rule. The result
-    is a ProofItem object.
+    data is a dictionary containing id, rule, args, prevs, and th.
+    The result is a ProofItem object.
 
     This need to be written by hand because different proof rules
     require different parsing of the arguments.
@@ -297,23 +297,23 @@ def parse_proof_rule_from_data(thy, ctxt, data):
         elif sig == MacroSig.TYINST:
             tyinst = tyinst_parser(thy, ctxt).parse(args)
             return ProofItem(id, rule, args=tyinst, prevs=prevs, th=th)
+        elif sig == MacroSig.STRING_TYPE:
+            s1, s2 = args.split(",", 1)
+            T = parse_type(thy, s2)
+            return ProofItem(id, rule, args=(s1, T), prevs=prevs, th=th)
         elif sig == MacroSig.STRING_TERM:
             s1, s2 = args.split(",", 1)
             t = parse_term(thy, ctxt, s2)
             return ProofItem(id, rule, args=(s1, t), prevs=prevs, th=th)
-        elif sig == MacroSig.STRING_INST:
+        elif sig == MacroSig.STRING_INSTSP:
             s1, s2 = args.split(",", 1)
-            inst = parse_inst(thy, ctxt, s2)
-            return ProofItem(id, rule, args=(s1, inst), prevs=prevs, th=th)
+            tyinst, inst = parse_instsp(thy, ctxt, s2)
+            return ProofItem(id, rule, args=(s1, tyinst, inst), prevs=prevs, th=th)
         else:
             raise TypeError()
     except exceptions.UnexpectedToken as e:
         raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
                               % (args, e.token, e.column))
-
-def parse_proof_rule(thy, ctxt, s):
-    data = split_proof_rule(s)
-    return parse_proof_rule_from_data(thy, ctxt, data)
 
 def parse_vars(thy, vars_data):
     ctxt = {}
@@ -326,8 +326,10 @@ def parse_extension(thy, data):
     extension as well as applying it to thy.
 
     """
+    ext = None
+
     if data['ty'] == 'def.ax':
-        prop = parse_type(thy, data['T'])
+        prop = parse_type(thy, data['type'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], prop))
 
@@ -358,16 +360,12 @@ def parse_extension(thy, data):
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Macro(data['name']))
 
-    thy.unchecked_extend(ext)
-    return ext
+    if ext:
+        thy.unchecked_extend(ext)
+
+    return None
 
 def parse_extensions(thy, data):
-    """Parse a list of extensions to thy in sequence. Returns the
-    resulting list of extensions.
-
-    """
-    exts = []
+    """Parse a list of extensions to thy in sequence."""
     for ext_data in data:
-        exts.append(parse_extension(thy, ext_data))
-    return exts
-
+        parse_extension(thy, ext_data)

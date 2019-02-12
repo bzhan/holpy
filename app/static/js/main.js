@@ -2,7 +2,10 @@
     var instructions = [];
     var page_num = 0;
     var index = 0;
-    var result_list = [];
+    var theory_name = "";  // Name of the current theory file
+    var theory_imports = [];  // List of imports of the current theory file
+    var result_list = [];  // Content of the current theory file
+    var theory_desc = "";  // Description of the theory
     var is_mousedown = false;
     var is_ctrl_click = false;
     var click_count = 0;
@@ -32,8 +35,9 @@
             $('#codeTabContent').append(
                 $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
                     '<label for="code' + page_num + '"></label> ' +
-                    '<textarea id="code' + page_num + '"></textarea>' + '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>'
-                    + '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button>'));
+                    '<textarea id="code' + page_num + '"></textarea>' +
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>' +
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button>'));
             init_editor("code" + page_num);
             // Add location for displaying results
             $('#' + id).append(
@@ -101,13 +105,17 @@
         });
 
         function result_to_output(data) {
-            if (data.ty === 'thm') {
+            if (data.ty === 'def.ax') {
+                data.type_hl = undefined;
+            }
+            else if (data.ty === 'thm') {
                 data.prop_hl = undefined;
             }
             else if (data.ty === 'type.ind') {
                 data.argsT = undefined;
             }
             else if (data.ty === 'def.ind') {
+                data.type_hl = undefined;
                 for (var i in data.rules) {
                     data.rules[i].prop_hl = undefined;
                 }
@@ -124,7 +132,12 @@
             }
             var data = {
                 'name': name,
-                'data': output_list
+                'data': {
+                    'name': theory_name,
+                    'imports': theory_imports,
+                    'description': theory_desc,
+                    'content': output_list
+                }
             }
             $.ajax({
                 url: "/api/save_file",
@@ -225,14 +238,13 @@
             name = $(this).text();
             name = $.trim(name);
             if ($('#file-path').html() === '') {
-                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b> ' + name + '</b></font></a>'));
+                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b>' + name + '</b></font></a>'));
             } else if ($('#file-path a:last').text() === 'root/') {
-                $('#root-a').after($('<a href="#"><font color="red"><b> ' + name + '</b></font></a>'));
+                $('#root-a').after($('<a href="#"><font color="red"><b>' + name + '</b></font></a>'));
             } else if ($('#file-path a:last').text() !== name) {
                 $('#file-path a:last').remove();
-                $('#root-a').after($('<a href="#"><font color="red"><b> ' + name + '</b></font></a>'));
-            }
-            ;
+                $('#root-a').after($('<a href="#"><font color="red"><b>' + name + '</b></font></a>'));
+            };
             data = JSON.stringify(name);
             ajax_res(data);
         });
@@ -266,6 +278,8 @@
             return 'bound';
         if (x === 2)
             return 'var';
+        if (x === 3)
+            return 'tvar';
     }
 
     function remove_page(first) {
@@ -296,6 +310,8 @@
             'id': get_selected_id(),
             'vars': r_data['vars'],
             'prop': r_data['prop'],
+            'theory_name': theory_name,
+            'thm_name': r_data['name']
         };
         var data = JSON.stringify(event);
         display_running();
@@ -317,6 +333,8 @@
             'id': get_selected_id(),
             'vars': r_data['vars'],
             'proof': r_data['proof'],
+            'theory_name': theory_name,
+            'thm_name': r_data['name']
         };
         var data = JSON.stringify(event);
         display_running();
@@ -341,14 +359,19 @@
             var ext = result_list[d];
             var ty = ext.ty;
             var name = ext.name;
-            var str = '';
             if (ty === 'def.ax') {
-                $('#left_json').append($('<p><font color="#006000"><b>constant</b></font> ' + name + ' :: ' + ext.T + '</p>'));
+                var type = '';
+                $.each(ext.type_hl, function (i, val) {
+                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                });
+                $('#left_json').append($(
+                    '<p><font color="#006000"><b>constant </b></font><tt>' + name + ' :: ' + type + '</tt></p>'));
             }
 
             if (ty === 'thm') {
+                var prop = '';
                 $.each(ext.prop_hl, function (i, val) {
-                    str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                    prop = prop + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                 });
                 var status_color;
                 if (ext.proof === undefined) {
@@ -360,27 +383,38 @@
                 else {
                     status_color = 'green'
                 }
-                $('#left_json').append($('<div><div style="float:left;width: 12px; height: 12px; background: ' + status_color + ';">&nbsp;</div>' + '<p>' + '<font color="#006000"><b>theorem </b></font><span id="thm_name">' + name + '</span>:&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;&nbsp;' + str + '</p></div>'));
+                $('#left_json').append($(
+                    '<div><div style="float:left;width: 12px; height: 12px; background: ' +
+                    status_color + ';">&nbsp;</div>' + '<p>' +
+                    '<font color="#006000"><b>theorem</b></font> <tt>' + name +
+                    '</tt>:&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;' +
+                    prop + '</p></div>'));
             }
 
             if (ty === 'type.ind') {
                 var constrs = ext.constrs;
-                str = '</br>' + constrs[0]['name'] + '</br>' + constrs[1]['name'];
+                var str = '</br>&nbsp;&nbsp;' + constrs[0]['name'] + '</br>&nbsp;&nbsp;' + constrs[1]['name'];
                 for (var i in constrs[1]['args']) {
                     str += ' (' + constrs[1]['args'][i] + ' :: ' + ext.argsT[i] + ')';
                 }
-                $('#left_json').append($('<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
+                $('#left_json').append($(
+                    '<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
             }
 
             if (ty === 'def.ind') {
-                $('#left_json').append($('<p id="fun' + j + '"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + ext.type
-                    + ' where' + '</p>'));
+                var type = '';
+                $.each(ext.type_hl, function (i, val) {
+                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                });
+                $('#left_json').append($(
+                    '<p id="fun' + j + '"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + type +
+                    '<font color="#006000"><b> where</b></font></p>'));
                 for (var j in ext.rules) {
-                    str = '';
+                    var str = '';
                     $.each(ext.rules[j].prop_hl, function (i, val) {
                         str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                     });
-                    $('#left_json p:last').append($('<p>' + str + '</p>'));
+                    $('#left_json p:last').append($('<p>&nbsp;&nbsp;' + str + '</p>'));
                 }
             }
         }
@@ -394,7 +428,7 @@
             var type = $('#type').val();
             item['ty'] = 'def.ax';
             item['name'] = cons;
-            item['T'] = type;
+            item['type'] = type;
             $('#constant,#type').val('');
         }
 
@@ -415,6 +449,7 @@
             $('#thm,#term,#vars').val('');
         }
         var event = {
+            "theory_name": theory_name,
             "item": item
         };
 
@@ -436,7 +471,10 @@
             type: "POST",
             data: data,
             success: function (result) {
-                result_list = result['data'];
+                theory_name = result['data']['name'];
+                theory_imports = result['data']['imports'];
+                theory_desc = result['data']['description'];
+                result_list = result['data']['content'];
                 display_result_list();
             }
         });

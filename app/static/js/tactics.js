@@ -2,11 +2,6 @@ var edit_flag = false;
 
 var cells = {};
 
-// Mode for displaying proof
-// 显示证明的模式
-// 0 - 显示所有内容。 1 - 只显示id和thm。
-var mod = 0;
-
 function get_selected_id() {
     return document.querySelector('.code-cell.selected textarea').id;
 }
@@ -123,7 +118,7 @@ function introduction(cm) {
             "line_id": cells[id]['proof'][line_number]['id'],
         };
 
-        if (line.indexOf("⊢ ∀") !== -1) {
+        if (line.indexOf("have ∀") !== -1 || line.indexOf("show ∀") !== -1) {
             input["var_name"] = prompt('Enter variable name').split(",")
         }
         var data = JSON.stringify(input);
@@ -159,7 +154,10 @@ function apply_backward_step(cm, is_others = false, select_thm = -1) {
             });
         }
         fact_id = fact_id.slice(0, fact_id.length - 2);
-        theorem = match_thm_list[idx] + ', ' + fact_id;
+        theorem = match_thm_list[idx];
+        if (fact_id !== "") {
+            theorem += ', ' + fact_id;
+        }
         var data = {
             'id': get_selected_id(),
             'line_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
@@ -298,12 +296,46 @@ function rewrite_goal(cm) {
     })
 }
 
+function split_one(s, delimiter) {
+    arr = s.split(delimiter);
+    return [arr[0], arr.slice(1).join(delimiter)];
+}
+
+function split_line(s) {
+    var item = {};
+    var rest = '';
+    [item.id, rest] = split_one(s, ': ');
+    if (rest.indexOf(" by ") > 0) {
+        rest = split_one(rest, " by ")[1];
+    }
+    item.th = "";
+
+    if (rest.indexOf(" ") >= 0)
+        [item.rule, rest] = split_one(rest, ' ');  // split off name of rule
+    else
+        [item.rule, rest] = rest, "";
+    item.rule = item.rule.trim();
+
+    if (rest.indexOf("from") >= 0) {
+        [item.args, item.prevs] = split_one(rest, 'from');
+        item.args = item.args.trim();
+        item.prevs = item.prevs.split(',');
+        return item;
+    }
+    else {
+        item.args = rest.trim();
+        item.prevs = [];
+        return item;
+    }
+}
+
 function set_line(cm) {
     $(document).ready(function () {
-        var line = cm.getLine(cells[get_selected_id()].edit_line_number);
+        var id = get_selected_id();
+        var line_no = cells[id].edit_line_number;
         var input = {
             'id': get_selected_id(),
-            'line': line
+            'item': split_line(cm.getLine(line_no))
         };
         var data = JSON.stringify(input);
         display_running();
@@ -376,6 +408,8 @@ function display_highlight_str(editor, p, line_no, ch) {
         color = "color: green";
     else if (p[1] === 2)
         color = "color: blue";
+    else if (p[1] === 3)
+        color = "color: purple";
     return display_str(editor, p[0], line_no, ch, {css: color});
 }
 
@@ -387,6 +421,25 @@ function display_highlight_strs(editor, ps, line_no, ch) {
     return ch;
 }
 
+// Detect whether the given line is the last of a section
+function is_last_id(id, line_no) {
+    if (cells[id]['proof'].length - 1 === line_no) {
+        return true
+    }
+    var line_id = cells[id]['proof'][line_no].id
+    var line_id2 = cells[id]['proof'][line_no+1].id
+    return line_id.split('.').length > line_id2.split('.').length
+}
+
+function display_have_prompt(editor, id, line_no, ch) {
+    if (is_last_id(id, line_no)) {
+        return display_str(editor, 'show ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
+    }
+    else {
+        return display_str(editor, 'have ', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
+    }
+}
+
 // Print a single line.
 function display_line(id, line_no) {
     var editor = get_selected_editor();
@@ -396,21 +449,38 @@ function display_line(id, line_no) {
     edit_flag = true;
     // Display id in bold
     ch = display_str(editor, line.id + ': ', line_no, ch, {css: 'font-weight: bold'});
-    // Display theorem with highlight
-    if (line.th.length > 0) {
-        ch = display_highlight_strs(editor, line.th, line_no, ch);
-        ch = display_str(editor, ' by ', line_no, ch, {css: 'font-weight: bold'});
-    }
-    // Display rule name
-    ch = display_str(editor, line.rule, line_no, ch);
-    // Display args with highlight
-    if (line.args.length > 0) {
-        ch = display_str(editor, ' ', line_no, ch);
+
+    if (line.rule === 'assume') {
+        ch = display_str(editor, 'assume ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
         ch = display_highlight_strs(editor, line.args, line_no, ch);
     }
-    if (line.prevs.length > 0) {
-        ch = display_str(editor, ' from ', line_no, ch, {css: 'font-weight: bold'});
-        ch = display_str(editor, line.prevs.join(', '), line_no, ch);
+    else if (line.rule === 'variable') {
+        ch = display_str(editor, 'fix ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
+        ch = display_highlight_strs(editor, line.args, line_no, ch);
+    }
+    else if (line.rule === 'subproof') {
+        ch = display_have_prompt(editor, id, line_no, ch);
+        ch = display_highlight_strs(editor, line.th, line_no, ch);
+        ch = display_str(editor, ' with', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
+    }
+    else {        
+        // Display theorem with highlight
+        if (line.th.length > 0) {
+            ch = display_have_prompt(editor, id, line_no, ch);
+            ch = display_highlight_strs(editor, line.th, line_no, ch);
+            ch = display_str(editor, ' by ', line_no, ch, {css: 'font-weight: bold'});
+        }
+        // Display rule name
+        ch = display_str(editor, line.rule, line_no, ch);
+        // Display args with highlight
+        if (line.args.length > 0) {
+            ch = display_str(editor, ' ', line_no, ch);
+            ch = display_highlight_strs(editor, line.args, line_no, ch);
+        }
+        if (line.prevs.length > 0) {
+            ch = display_str(editor, ' from ', line_no, ch, {css: 'font-weight: bold'});
+            ch = display_str(editor, line.prevs.join(', '), line_no, ch);
+        }
     }
     edit_flag = false;
 }

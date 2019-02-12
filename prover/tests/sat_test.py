@@ -1,6 +1,12 @@
 import unittest
+import json
 
-from prover import sat
+from logic import logic
+from logic import basic
+from syntax import parser
+from prover import encode, sat
+
+thy = basic.loadTheory('logic_base')
 
 class SATTest(unittest.TestCase):
     def testDisplayCNF(self):
@@ -10,11 +16,11 @@ class SATTest(unittest.TestCase):
 
         cnf2 = [[('x', False)], [('y', True)]]
         res2 = "~x & y"
-        self.assertEqual(sat.display_cnf(cnf2, res2))
+        self.assertEqual(sat.display_cnf(cnf2), res2)
 
-        cnf2 = [[('x', False), ('y', True)]]
+        cnf3 = [[('x', False), ('y', True)]]
         res3 = "~x | y"
-        self.assertEqual(sat.display_cnf(cnf3, res3))
+        self.assertEqual(sat.display_cnf(cnf3), res3)
 
     def testIsSolution(self):
         cnf = [[('x', False), ('y', True)], [('y', False), ('z', True)]]
@@ -44,3 +50,22 @@ class SATTest(unittest.TestCase):
         cnf = [[('x', True), ('y', True)], [('x', True), ('y', False)],
                [('x', False), ('y', True)], [('x', False), ('y', False)]]
         self.assertIsNone(sat.solve_cnf(cnf))
+
+    def testSolveCNF4(self):
+        cnf = [[]]
+        self.assertIsNone(sat.solve_cnf(cnf))
+        
+    def testSolveCNF5(self):
+        cnf = []
+        res = sat.solve_cnf(cnf)
+        self.assertTrue(sat.is_solution(cnf, res))
+    
+    def testPelletier(self):
+        with open('prover/tests/pelletier.json', 'r', encoding='utf-8') as f:
+            f_data = json.load(f)
+
+        for problem in f_data:
+            ctxt = parser.parse_vars(thy, problem['vars'])
+            prop = parser.parse_term(thy ,ctxt, problem['prop'])
+            cnf, _ = encode.encode(logic.neg(prop))
+            self.assertIsNone(sat.solve_cnf(cnf))

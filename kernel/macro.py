@@ -12,7 +12,7 @@ global_macros = dict()
 
 class MacroSig():
     """Signature for the arguments of proof macro."""
-    NONE, TERM, TYINST, INST, STRING, STRING_TERM, STRING_INST = range(7)
+    NONE, TERM, TYINST, INST, STRING, STRING_TYPE, STRING_TERM, STRING_INSTSP = range(8)
 
 
 class ProofMacro():
@@ -39,6 +39,7 @@ class ProofMacro():
         self.level = None
         self.sig = None
         self.has_theory = None
+        self.use_goal = None
 
     def __call__(self):
         """Obtain the result of applying the proof method.
@@ -52,9 +53,9 @@ class ProofMacro():
     def expand(self):
         """Obtain the detailed proof of the derivation.
         
-        Input is the current depth (used to avoid name conflict),
-        optionally the current theory, argument of the proof method,
-        and the list of ids and statements of previous theorems.
+        Input is the current id prefix, optionally the current theory,
+        argument of the proof method, and the list of ids and statements
+        of previous theorems.
 
         """
         raise NotImplementedError()

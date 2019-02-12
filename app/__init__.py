@@ -11,7 +11,7 @@ from kernel.thm import primitive_deriv
 from kernel import extension
 from syntax import parser, printer
 from server.tactic import ProofState
-from logic.basic import BasicTheory
+from logic import basic
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -30,7 +30,8 @@ def index():
 def init_component():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = ProofState.parse_init_state(data)
+        thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']))
+        cell = ProofState.parse_init_state(thy, data)
         cells[data['id']] = cell
         return jsonify(cell.json_data())
     return jsonify({})
@@ -41,7 +42,8 @@ def init_saved_proof():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         try:
-            cell = ProofState.parse_proof(data)
+            thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']))
+            cell = ProofState.parse_proof(thy, data)
             cells[data['id']] = cell
             return jsonify(cell.json_data())
         except Exception as e:
@@ -127,9 +129,10 @@ def rewrite_goal():
 def set_line():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))
+        cell = cells.get(data['id'])
         try:
-            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(), data['line'])
+            line_id = data['item']['id']
+            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(line_id), data['item'])
             cell.set_line(item.id, item.rule, args=item.args, prevs=item.prevs, th=item.th)
             return jsonify(cell.json_data())
         except Exception as e:
@@ -146,9 +149,10 @@ def file_data_to_output(thy, data):
     Also modifies thy in parsing the item.
 
     """
-    exts = parser.parse_extension(thy, data)
+    parser.parse_extension(thy, data)
     if data['ty'] == 'def.ax':
-        pass
+        T = parser.parse_type(thy, data['type'])
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
     elif data['ty'] == 'thm':
         ctxt = parser.parse_vars(thy, data['vars'])
@@ -161,38 +165,34 @@ def file_data_to_output(thy, data):
         data['argsT'] = [str(tl) for tl in argsT]
 
     elif data['ty'] == 'def.ind':
+        T = parser.parse_type(thy, data['type'])
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         for rule in data['rules']:
             ctxt = parser.parse_vars(thy, rule['vars'])
             prop = parser.parse_term(thy, ctxt, rule['prop'])
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-
-    elif data['ty'] == 'macro':
-        pass
-
+    # Ignore other types of information.
     else:
-        raise TypeError()
+        pass
 
 
 @app.route('/api/json', methods=['POST'])
 def json_parse():
-    # Since thy will be modified when reading extensions below,
-    # make a copy to avoid changing BasicTheory.
-    thy = copy(BasicTheory)
     file_name = json.loads(request.get_data().decode("utf-8"))
     with open('library/'+ file_name +'.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
 
-    for data in f_data:
+    thy = basic.loadImportedTheory(f_data)
+    for data in f_data['content']:
         file_data_to_output(thy, data)
     return jsonify({'data': f_data})
 
 
 @app.route('/api/add-info', methods=['POST'])
 def json_add_info():
-    # Make a copy of BasicTheory as in json_parse.
     data = json.loads(request.get_data().decode("utf-8"))
 
-    thy = copy(BasicTheory)
+    thy = basic.loadTheory(data['theory_name'])
     item = data['item']
     file_data_to_output(thy, item)
     return jsonify({'data': item})
@@ -205,9 +205,8 @@ def save_file():
     data = json_data['data']
     name = json_data['name']
 
-    file_path = 'library/' + name + '.json'
-    with open(file_path, 'w+', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
+    with open('library/' + name + '.json', 'w+', encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
 
     return jsonify({})
 

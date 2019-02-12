@@ -1,0 +1,493 @@
+{
+    "content": [
+        {
+            "depth": 0,
+            "name": "Basic definitions",
+            "ty": "header"
+        },
+        {
+            "args": [],
+            "constrs": [
+                {
+                    "args": [],
+                    "name": "zero",
+                    "type": "nat"
+                },
+                {
+                    "args": [
+                        "n"
+                    ],
+                    "name": "Suc",
+                    "type": "nat => nat"
+                }
+            ],
+            "name": "nat",
+            "ty": "type.ind"
+        },
+        {
+            "ascii_op": "+",
+            "name": "plus",
+            "rules": [
+                {
+                    "prop": "0 + n = n",
+                    "vars": {
+                        "n": "nat"
+                    }
+                },
+                {
+                    "prop": "Suc m + n = Suc (m + n)",
+                    "vars": {
+                        "m": "nat",
+                        "n": "nat"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "nat => nat => nat"
+        },
+        {
+            "ascii_op": "*",
+            "name": "times",
+            "rules": [
+                {
+                    "prop": "0 * n = 0",
+                    "vars": {
+                        "n": "nat"
+                    }
+                },
+                {
+                    "prop": "Suc m * n = n + m * n",
+                    "vars": {
+                        "m": "nat",
+                        "n": "nat"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "nat => nat => nat"
+        },
+        {
+            "instructions": [
+                "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
+                "Select S1 as goal, use Ctrl+R with plus_def_1.",
+                "Set sorry on S1 to reflexive 0.",
+                "Select S3 as goal, use Ctrl+I with n as variable name.",
+                "Select S4 as goal, use Ctrl+R with plus_def_2.",
+                "Set sorry on S4 to arg_combination Suc from S3."
+            ],
+            "name": "add_0_right",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "plus_def_1, {}, {n: 0}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 + 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. n + 0 = n ⟶ Suc n + 0 = Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": ""
+                },
+                {
+                    "args": "n + 0 = n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n + 0 = n ⊢ n + 0 = n"
+                },
+                {
+                    "args": "Suc",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "arg_combination",
+                    "th": "n + 0 = n ⊢ Suc (n + 0) = Suc n"
+                },
+                {
+                    "args": "plus_def_2, Suc n + 0 = Suc n",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n + 0 = n ⊢ Suc n + 0 = Suc n"
+                },
+                {
+                    "args": "n + 0 = n",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ n + 0 = n ⟶ Suc n + 0 = Suc n"
+                },
+                {
+                    "args": "n",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "⊢ ∀n. n + 0 = n ⟶ Suc n + 0 = Suc n"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λx. x + 0 = x, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x + 0 = x"
+                }
+            ],
+            "prop": "x + 0 = x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "add_1_left",
+            "prop": "1 + x = Suc x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "add_1_right",
+            "prop": "x + 1 = Suc x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "add_comm",
+            "prop": "x + y = y + x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_assoc",
+            "prop": "x + y + z = x + (y + z)",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "instructions": [
+                "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
+                "Select S1 as goal, use Ctrl+R with times_def_1.",
+                "Set sorry on S1 to reflexive 0.",
+                "Select S3 as goal, use Ctrl+I with n as variable name.",
+                "Select S4 as goal, use Ctrl+R with times_def_2.",
+                "Select S4 as goal, use Ctrl+R with plus_def_1"
+            ],
+            "name": "mult_0_right",
+            "prop": "x * 0 = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "mult_1_left",
+            "prop": "1 * x = x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "mult_1_right",
+            "prop": "x * 1 = x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "distrib_l",
+            "prop": "x * (y + z) = x * y + x * z",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "distrib_r",
+            "prop": "(x + y) * z = x * z + y * z",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "mult_assoc",
+            "prop": "x * y * z = x * (y * z)",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "mult_Suc_right",
+            "prop": "x * Suc y = x + x * y",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "mult_comm",
+            "prop": "x * y = y * x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_cancel_left",
+            "prop": "x + y = x + z --> y = z",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "add_cancel_right",
+            "prop": "x + z = y + z --> x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        },
+        {
+            "name": "add_right_eq_zero",
+            "prop": "x + y = x --> y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_left_eq_zero",
+            "prop": "x + y = y --> x = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_is_zero",
+            "prop": "x + y = 0 --> x = 0 & y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "mult_nonzero",
+            "prop": "x * y = 0 --> x = 0 | y = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "depth": 0,
+            "name": "Binary representation",
+            "ty": "header"
+        },
+        {
+            "name": "bit0",
+            "ty": "def.ax",
+            "type": "nat => nat"
+        },
+        {
+            "name": "bit1",
+            "ty": "def.ax",
+            "type": "nat => nat"
+        },
+        {
+            "name": "bit0_def",
+            "prop": "bit0 n = n + n",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_def",
+            "prop": "bit1 n = n + n + 1",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "one_Suc",
+            "prop": "Suc 1 = bit0 1",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "bit0_Suc",
+            "prop": "Suc (bit0 n) = bit1 n",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_Suc",
+            "prop": "Suc (bit1 n) = bit0 (Suc n)",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_bit0_add",
+            "prop": "bit0 m + bit0 n = bit0 (m + n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_bit1_add",
+            "prop": "bit0 m + bit1 n = bit1 (m + n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_bit0_add",
+            "prop": "bit1 m + bit0 n = bit1 (m + n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_bit1_add",
+            "prop": "bit1 m + bit1 n = bit0 (Suc (m + n))",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_bit0_mult",
+            "prop": "bit0 m * bit0 n = bit0 (bit0 (m * n))",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_bit1_mult",
+            "prop": "bit0 m * bit1 n = bit0 (m * bit1 n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_bit0_mult",
+            "prop": "bit1 m * bit0 n = bit0 (bit1 m * n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_bit1_mult",
+            "prop": "bit1 m * bit1 n = bit1 (m + n + bit0 (m * n))",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "nat_norm",
+            "ty": "macro"
+        },
+        {
+            "depth": 0,
+            "name": "Normalization of expressions",
+            "ty": "header"
+        },
+        {
+            "name": "nat_norm_test1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x + y + (y + z) = y * 2 + (x + z)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ x + y + (y + z) = y * 2 + (x + z)"
+                }
+            ],
+            "prop": "(x + y) + (y + z) = y * 2 + (x + z)",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat",
+                "z": "nat"
+            }
+        }
+    ],
+    "description": "Natural numbers",
+    "imports": [
+        "logic"
+    ],
+    "name": "nat"
+}

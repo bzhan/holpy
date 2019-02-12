@@ -224,6 +224,10 @@ tt.bound {
     color: #006000;
 }
 
+tt.tvar {
+    color: purple;
+}
+
 #variables {
     margin-left: 19px;
 }

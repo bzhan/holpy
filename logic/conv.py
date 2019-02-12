@@ -18,10 +18,10 @@ class Conv():
 
     """
     def __call__(self, t):
-        pass
+        raise NotImplementedError
 
     def get_proof_term(self, t):
-        pass
+        raise NotImplementedError
 
 class all_conv(Conv):
     """Returns the trivial equality t = t."""
@@ -135,7 +135,7 @@ class abs_conv(Conv):
             raise ConvException()
         
         # Find a new variable x and substitute for body
-        v = Var(t.var_name, t.T)
+        v = Var(t.var_name, t.var_T)
         t2 = t.subst_bound(v)
         return Thm.abstraction(v, self.cv(t2))
 
@@ -144,7 +144,7 @@ class abs_conv(Conv):
             raise ConvException()
 
         # Find a new variable x and substitute for body
-        v = Var(t.var_name, t.T)
+        v = Var(t.var_name, t.var_T)
         t2 = t.subst_bound(v)
         return ProofTerm.abstraction(self.cv.get_proof_term(t2), v)
 
@@ -168,6 +168,14 @@ def fun2_conv(cv):
 
 def binop_conv(cv):
     return combination_conv(arg_conv(cv), cv)
+
+def every_conv(*args):
+    if len(args) == 0:
+        return all_conv()
+    elif len(args) == 1:
+        return args[0]
+    else:
+        return then_conv(args[0], every_conv(*args[1:]))
 
 class sub_conv(Conv):
     def __init__(self, cv):
@@ -204,30 +212,59 @@ class top_conv(Conv):
         return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(t)
 
 class rewr_conv(Conv):
-    """Rewrite using the given equality theorem."""
-    def __init__(self, pt):
+    """Rewrite using the given equality theorem.
+    
+    match_vars -- whether variables in pat should be matched.
+    
+    """
+    def __init__(self, pt, match_vars=True):
         assert isinstance(pt, ProofTerm), "rewr_conv: argument"
         self.pt = pt
         self.th = pt.th
+        self.match_vars = match_vars
+
+        # Deconstruct th into assumptions and conclusion
+        self.As, self.C = self.th.concl.strip_implies()
+        assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
+        self.pat = self.C.arg1
 
     def __call__(self, t):
-        pat = self.th.concl.arg1
-        inst = dict()
+        tyinst, inst = dict(), dict()
 
-        try:
-            inst = matcher.first_order_match(pat, t)
-        except matcher.MatchException:
+        if self.match_vars:
+            try:
+                matcher.first_order_match_incr(self.pat, t, (tyinst, inst))
+            except matcher.MatchException:
+                raise ConvException()
+        elif self.pat != t:
             raise ConvException()
 
-        return Thm.substitution(inst, self.th)
+        th = Thm.substitution(inst, Thm.subst_type(tyinst, self.th))
+        As, _ = th.concl.strip_implies()
+        for A in As:
+            th = Thm.implies_elim(th, Thm.assume(A))
+        return th
 
     def get_proof_term(self, t):
-        pat = self.th.concl.arg1
-        inst = dict()
+        tyinst, inst = dict(), dict()
 
-        try:
-            inst = matcher.first_order_match(pat, t)
-        except matcher.MatchException:
+        if self.match_vars:
+            try:
+                matcher.first_order_match_incr(self.pat, t, (tyinst, inst))
+            except matcher.MatchException:
+                raise ConvException()
+        elif self.pat != t:
             raise ConvException()
 
-        return ProofTerm.substitution(inst, self.pt)
+        pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, self.pt))
+        As, _ = pt.th.concl.strip_implies()
+        for A in As:
+            pt = ProofTerm.implies_elim(pt, ProofTerm.assume(A))
+        return pt
+
+
+def rewr_conv_thm(thy, th_name):
+    return rewr_conv(ProofTerm.theorem(thy, th_name))
+
+def rewr_conv_thm_sym(thy, th_name):
+    return rewr_conv(ProofTerm.symmetric(ProofTerm.theorem(thy, th_name)))

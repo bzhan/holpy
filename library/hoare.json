@@ -1,0 +1,56 @@
+{
+    "description": "Hoare logic",
+    "content": [
+        {
+            "depth": 0,
+            "name": "Programs",
+            "ty": "header"
+        },
+        {
+            "args": [
+                "a"
+            ],
+            "constrs": [
+                {
+                    "args": [
+                        "f"
+                    ],
+                    "name": "Basic",
+                    "type": "('a => 'a) => 'a com"
+                },
+                {
+                    "args": [
+                        "c1",
+                        "c2"
+                    ],
+                    "name": "Seq",
+                    "type": "'a com => 'a com => 'a com"
+                },
+                {
+                    "args": [
+                        "b",
+                        "c1",
+                        "c2"
+                    ],
+                    "name": "Cond",
+                    "type": "('a => bool) => 'a com => 'a com => 'a com"
+                },
+                {
+                    "args": [
+                        "b",
+                        "I",
+                        "c"
+                    ],
+                    "name": "While",
+                    "type": "('a => bool) => ('a => bool) => 'a com => 'a com"
+                }
+            ],
+            "name": "com",
+            "ty": "type.ind"
+        }
+    ],
+    "imports": [
+        "function"
+    ],
+    "name": "hoare"
+}

@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel.type import TypeMatchException
 from kernel.term import Term, Comb, Abs, Bound
 
 class MatchException(Exception):
@@ -10,27 +11,35 @@ class MatchException(Exception):
 By default, all variables in the pattern can be instantiated.
 
 """
-def first_order_match_incr(pat, t, inst):
-    """First-order matching of pat with t, where inst is the current
-    partial instantiation. This is updated by the function.
+def first_order_match_incr(pat, t, instsp):
+    """First-order matching of pat with t, where instsp is the
+    current partial instantiation for type and term variables. The
+    instantiations are updated by the function.
     
     """
+    tyinst, inst = instsp
     if pat.ty == Term.VAR:
         if pat.name in inst:
             if t != inst[pat.name]:
                 raise MatchException()
+        elif Term.is_open(t):
+            raise MatchException()
         else:
-            if Term.is_open(t):
+            try:
+                pat.T.match_incr(t.get_type(), tyinst)
+            except TypeMatchException:
                 raise MatchException()
-            else:
-                inst[pat.name] = t
+            inst[pat.name] = t
     elif pat.ty != t.ty:
         raise MatchException()
     elif pat.ty == Term.CONST:
-        if pat == t:
-            return None
-        else:
+        if pat.name != t.name:
             raise MatchException()
+        else:
+            try:
+                pat.T.match_incr(t.T, tyinst)
+            except TypeMatchException:
+                raise MatchException()
     elif pat.ty == Term.COMB:
         if pat.fun.ty == Term.VAR and pat.arg == Bound(0):
             if pat.fun.name not in inst:
@@ -44,10 +53,14 @@ def first_order_match_incr(pat, t, inst):
                 else:
                     raise MatchException()
         else:
-            first_order_match_incr(pat.fun, t.fun, inst)
-            first_order_match_incr(pat.arg, t.arg, inst)
+            first_order_match_incr(pat.fun, t.fun, instsp)
+            first_order_match_incr(pat.arg, t.arg, instsp)
     elif pat.ty == Term.ABS:
-        first_order_match_incr(pat.body, t.body, inst)
+        try:
+            pat.var_T.match_incr(t.var_T, tyinst)
+        except TypeMatchException:
+            raise MatchException()
+        first_order_match_incr(pat.body, t.body, instsp)
     elif pat.ty == Term.BOUND:
         if pat.n == t.n:
             return None
@@ -61,6 +74,6 @@ def first_order_match(pat, t):
     or throws MatchException.
 
     """
-    inst = dict()
-    first_order_match_incr(pat, t, inst)
-    return inst
+    tyinst, inst = dict(), dict()
+    first_order_match_incr(pat, t, (tyinst, inst))
+    return tyinst, inst
