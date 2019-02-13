@@ -386,19 +386,39 @@
                 $('#left_json').append($(
                     '<div><div style="float:left;width: 12px; height: 12px; background: ' +
                     status_color + ';">&nbsp;</div>' + '<p>' +
-                    '<font color="#006000"><b>theorem</b></font> <tt>' + name +
-                    '</tt>:&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;' +
+                    '<font color="#006000"><b>theorem</b></font> <span id="thm_name"><tt>' + name +
+                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;' +
                     prop + '</p></div>'));
             }
 
             if (ty === 'type.ind') {
-                var constrs = ext.constrs;
-                var str = '</br>&nbsp;&nbsp;' + constrs[0]['name'] + '</br>&nbsp;&nbsp;' + constrs[1]['name'];
-                for (var i in constrs[1]['args']) {
-                    str += ' (' + constrs[1]['args'][i] + ' :: ' + ext.argsT[i] + ')';
+                var argsT = ext.argsT, constrs = ext.constrs;
+                var str = '', type_name = name;
+                if (ext.args.length>0) {
+                    $.each(ext.args, function(l, ve) {
+                        ext.args[l] =  "'" + ve;
+                        type_name = ext.args.join(',');
+                    })
+                    if (ext.args.length>1) {
+                        type_name = '('+ type_name + ') '+ name;
+                    }
+                    else if (ext.args.length === 1) {
+                        type_name = type_name + ' ' +name;
+                    }
                 }
+                $.each(constrs, function(i, v) {
+                    var str_temp_var = '';
+                    $.each(v.args, function(k, val) {
+                        var str_temp_term = '';
+                        $.each(argsT[i][k], function(l, vlu) {
+                            str_temp_term += '<tt class="'+ rp(vlu[1]) + '">'+ vlu[0] +'</tt>';
+                        });
+                    str_temp_var += ' (' + val + ' :: '+ str_temp_term + ')';
+                    })
+                str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
+                })
                 $('#left_json').append($(
-                    '<p><font color="#006000"><b>datatype</b></font> ' + constrs[0]['type'] + ' =' + str + '</p>'));
+                    '<p><font color="#006000"><b>datatype</b></font> ' + type_name + ' =' + str + '</p>'));
             }
 
             if (ty === 'def.ind') {

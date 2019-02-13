@@ -160,9 +160,15 @@ def file_data_to_output(thy, data):
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
 
     elif data['ty'] == 'type.ind':
-        T = parser.parse_type(thy, data['constrs'][1]['type'])
-        argsT, _ = HOLType.strip_type(T)
-        data['argsT'] = [str(tl) for tl in argsT]
+        type_dic = dict()
+        for i, constr in enumerate(data['constrs']):
+            type_list = []
+            T = parser.parse_type(thy, constr['type'])
+            argsT, _ = HOLType.strip_type(T)
+            for a in argsT:
+                type_list.append(printer.print_type(thy, a, unicode=True, highlight=True))
+            type_dic[i] = type_list
+        data['argsT'] = type_dic
 
     elif data['ty'] == 'def.ind':
         T = parser.parse_type(thy, data['type'])
