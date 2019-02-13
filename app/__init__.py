@@ -164,10 +164,11 @@ def file_data_to_output(thy, data):
         for i, constr in enumerate(data['constrs']):
             type_list = []
             T = parser.parse_type(thy, constr['type'])
-            argsT, _ = HOLType.strip_type(T)
+            argsT, res = HOLType.strip_type(T)
             for a in argsT:
                 type_list.append(printer.print_type(thy, a, unicode=True, highlight=True))
             type_dic[i] = type_list
+            type_dic['conl'] = printer.print_type(thy, res, unicode=True, highlight=True)
         data['argsT'] = type_dic
 
     elif data['ty'] == 'def.ind':
@@ -187,7 +188,6 @@ def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
     with open('library/'+ file_name +'.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
-
     thy = basic.loadImportedTheory(f_data)
     for data in f_data['content']:
         file_data_to_output(thy, data)

@@ -393,19 +393,23 @@
 
             if (ty === 'type.ind') {
                 var argsT = ext.argsT, constrs = ext.constrs;
-                var str = '', type_name = name;
-                if (ext.args.length>0) {
-                    $.each(ext.args, function(l, ve) {
-                        ext.args[l] =  "'" + ve;
-                        type_name = ext.args.join(',');
-                    })
-                    if (ext.args.length>1) {
-                        type_name = '('+ type_name + ') '+ name;
-                    }
-                    else if (ext.args.length === 1) {
-                        type_name = type_name + ' ' +name;
-                    }
-                }
+                var str = '', type_name = '';
+                $.each(argsT['conl'], function(k, vl){
+                    type_name += '<tt class="' + rp(vl[1]) +'">'+ vl[0] + '</tt>'
+                });
+//                if (ext.args.length>0) {
+//                    ext_var = ext.args;
+//                    $.each(ext_var, function(l, ve) {
+//                        ext_var[l] =  "'" + ve;
+//                        type_name = ext_var.join(',');
+//                    })
+//                    if (ext.args.length>1) {
+//                        type_name = '('+ type_name + ') '+ name;
+//                    }
+//                    else if (ext.args.length === 1) {
+//                        type_name = type_name + ' ' +name;
+//                    }
+//                }
                 $.each(constrs, function(i, v) {
                     var str_temp_var = '';
                     $.each(v.args, function(k, val) {
