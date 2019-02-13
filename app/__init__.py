@@ -168,7 +168,7 @@ def file_data_to_output(thy, data):
             for a in argsT:
                 type_list.append(printer.print_type(thy, a, unicode=True, highlight=True))
             type_dic[str(i)] = type_list
-            type_dic['conl'] = printer.print_type(thy, res, unicode=True, highlight=True)
+            type_dic['concl'] = printer.print_type(thy, res, unicode=True, highlight=True)
         data['argsT'] = type_dic
 
     elif data['ty'] == 'def.ind':
