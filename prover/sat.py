@@ -90,33 +90,11 @@ def solve_cnf(cnf):
     
     Otherwise, return None.
     
-    for each assigned variable x, res[x] is a list of three things:
-    1. the assert level
-    2. Is x an inferred variable (False) or an assumed variable (True)
-    3. x's value (True or False)
-    for example, res[x] = [1, True, True] means x is assumed at assert level 1, and x is assigned True
-
+    Turn res to the standard form
+    
     """
-    res = OrderedDict()
-    
-    #empty set
-    if len(cnf) == 0:
-        return res
-
-    #cnf contains the empty set
-    for clause in cnf:
-        if len(clause) == 0:
-            return None
-    
-    assert_level = 0
-    buc = bucket(cnf)
-    #every clauses needs to be checked the first time
-    affect_clauses = []
-    for i in range(len(cnf)):
-        affect_clauses.append(i)
-
-    #turn res to the standard form
-    res = solve_cnf_rec(cnf, buc, assert_level, res, affect_clauses)
+    print(solve_cnf1(cnf))
+    res, _1, _2 = solve_cnf1(cnf)
     if res == None:
         return None
     else:
@@ -125,10 +103,48 @@ def solve_cnf(cnf):
             res1[x] = res[x][2]
         return res1
 
-def solve_cnf_rec(cnf, buc, assert_level, res, affect_clauses):
+
+def solve_cnf1(cnf):
+    """Solve the given CNF by clause learning
+    
+    for each assigned variable x, res[x] is a list of three things:
+    1. the assert level
+    2. Is x an inferred variable (False) or an assumed variable (True)
+    3. x's value (True or False)
+    for example, res[x] = [1, True, True] means x is assumed at assert level 1, and x is assigned True
+
+    """
+    implication_graph = OrderedDict()
+    learn_CNF = []
+    res = OrderedDict()
+    assert_level = 0
+    L = len(cnf)
+
+    #empty set
+    if L == 0:
+        return res, learn_CNF, implication_graph
+
+    #cnf contains the empty set
+    for num_c, clause in enumerate(cnf):
+        if len(clause) == 0:
+            #'C' means original CNF, 'L' means learn_CNF, None means the conflict
+            implication_graph[None] = ['C', num_c, assert_level]
+            return None, learn_CNF, implication_graph
+    
+    buc = bucket(cnf)
+    affect_clauses = []
+
+    #every clauses needs to be checked the first time
+    for i in range(len(cnf)):
+        affect_clauses.append(i)
+    
+    return solve_cnf_rec(cnf, L, learn_CNF, buc, assert_level, res, implication_graph, affect_clauses)
+    
+
+def solve_cnf_rec(cnf, L, learn_CNF, buc, assert_level, res, implication_graph, affect_clauses):
     if affect_clauses == []:
         if len(res) == len(buc):
-            return res
+            return res, learn_CNF, implication_graph
         else:
             #assume a variable's value
             for x in buc:
@@ -137,40 +153,97 @@ def solve_cnf_rec(cnf, buc, assert_level, res, affect_clauses):
                     res[x] = [assert_level, True, True]
                     for num_c in buc[x]:
                         affect_clauses.append(num_c)
-                    return solve_cnf_rec(cnf, buc, assert_level, res, affect_clauses)
+                    return solve_cnf_rec(cnf, L, learn_CNF, buc, assert_level, res, implication_graph, affect_clauses)
 
     affect_clauses_new = []
 
     for num_c in affect_clauses:
-        check = check_clause(cnf[num_c], res)
+        #num_c1 shows the clause number in original CNF or learn_CNF
+        if num_c <= L - 1:    
+            clause_place = 'C'
+            num_c1 = num_c
+            clause = cnf[num_c1]
+        else:
+            clause_place = 'L'
+            num_c1 = num_c - L
+            clause = learn_CNF[num_c1]            
+        
+        check = check_clause(clause, res)
         if check == False:
-            #show the contradiction
-            print(res)
-            print(num_c)
-            #backtrace
-            if_stop = False
-            while(if_stop == False):
-                x, [a, b, c] = res.popitem(last=True)
-                if b == True and c == True:
-                    if_stop = True
-                    assert_level = a
-                    res[x] = [assert_level, True, False]
+            implication_graph[None] = [clause_place, num_c1, assert_level]
+
+            #UNSAT
+            if assert_level == 0:
+                return None, learn_CNF, implication_graph
+            
+            #clause learning and modify the buc
+            num_1 = len(learn_CNF)
+            num = num_1 + L
+            learn_clause = []
+            for x in res:
+                if res[x][1] == True:
+                    learn_clause.append((x, not res[x][2]))
+                    buc[x].append(num)
+            learn_CNF.append(learn_clause)
+
+            #find the minimum assert level(except 0) in the complict clause, and backtrack to this level
+            find_min_level = []
+            for (a, b) in clause:
+                if res[a][0] != 0:
+                    find_min_level.append(res[a][0])
+            min_level = min(find_min_level)
+
+            if len(learn_clause) == 1:
+                #when the learned clause has only one variable x, x's value can be inferred from this clause 
+                if_stop2 = False
+                while if_stop2 == False and len(implication_graph) != 0:
+                    x, [x_clause_place, x_num_c1, x_assert_level] = implication_graph.popitem()
+                    if x_assert_level < min_level:
+                        if_stop2 = True
+                        implication_graph[x] = [x_clause_place, x_num_c1, x_assert_level]
+                
+                if_stop1 = False
+                while if_stop1 == False:
+                    x, [x_assert_level, x_if_assume, x_value] = res.popitem()
+                    if x_if_assume == True:
+                        if_stop1 = True
+                        res[x] = [min_level - 1, False, not x_value]
+                        affect_clauses_new = buc[x]
+                        implication_graph[x] = ['L', num_1, min_level - 1]
+
+                return solve_cnf_rec(cnf, L, learn_CNF, buc, min_level - 1, res, implication_graph, affect_clauses_new)
+
+            #backtrack, change res and implication graph
+            if_stop1 = False
+            while if_stop1 == False:
+                x, [x_assert_level, x_if_assume, x_value] = res.popitem()
+                if x_if_assume == True and x_assert_level == min_level:
+                    if_stop1 = True
+                    res[x] = [min_level, True, not x_value]
                     affect_clauses_new = buc[x]
-                    return solve_cnf_rec(cnf, buc, assert_level, res, affect_clauses_new)
-                if len(res) == 0:
-                    return None
+
+            if_stop2 = False
+            while if_stop2 == False and len(implication_graph) != 0:
+                x, [x_clause_place, x_num_c1, x_assert_level] = implication_graph.popitem()
+                if x_assert_level < min_level:
+                    if_stop2 = True
+                    #one more element is deleted, so add it back
+                    implication_graph[x] = [x_clause_place, x_num_c1, x_assert_level]
+
+            return solve_cnf_rec(cnf, L, learn_CNF, buc, min_level, res, implication_graph, affect_clauses_new)
 
         elif check == None:
             continue
         else:
-            a, b = check
-            if not a in res:
-                res[a] = [assert_level, False, b]
-                for num in buc[a]:
+            unit_variable, unit_value = check
+            if not unit_variable in res:
+                res[unit_variable] = [assert_level, False, unit_value]
+                implication_graph[unit_variable] = [clause_place, num_c1, assert_level]
+                for num in buc[unit_variable]:
                     if num not in affect_clauses_new:
                         affect_clauses_new.append(num)
     
-    return solve_cnf_rec(cnf, buc, assert_level, res, affect_clauses_new)
+    return solve_cnf_rec(cnf, L, learn_CNF, buc, assert_level, res, implication_graph, affect_clauses_new)
 
 def check_clause(clause, res):
     """Check the clause
