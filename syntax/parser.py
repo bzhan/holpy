@@ -27,7 +27,7 @@ class ParserException(Exception):
 
 grammar = r"""
     ?type: "'" CNAME -> tvar              // Type variable
-        | type "=>" type -> funtype       // Function types
+        | type ("=>"|"⇒") type -> funtype       // Function types
         | CNAME -> type                   // Type constants
         | type CNAME                      // Type constructor with one argument
         | "(" type ("," type)* ")" CNAME  // Type constructor with multiple arguments
