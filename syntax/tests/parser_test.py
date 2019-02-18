@@ -9,7 +9,7 @@ from kernel.proof import ProofItem
 from logic import logic
 from logic import nat
 from logic import basic
-from syntax.printer import print_term
+from syntax.printer import print_term, print_type
 import syntax.parser as parser
 
 thy = basic.loadTheory('list')
@@ -67,6 +67,16 @@ class ParserTest(unittest.TestCase):
             T = parser.parse_type(thy, s)
             self.assertIsInstance(T, HOLType)
             self.assertEqual(str(T), s)
+
+    def testParseUnicodeType(self):
+        test_data = [
+            "'a ⇒ 'b"
+        ]
+
+        for s in test_data:
+            T = parser.parse_type(thy, s)
+            self.assertIsInstance(T, HOLType)
+            self.assertEqual(print_type(thy, T, unicode=True), s)
 
     def testParseTypeIsString(self):
         a = parser.parse_type(thy, 'bool')
