@@ -111,18 +111,21 @@ class Term():
             raise TypeError()
 
     def __hash__(self):
+        if hasattr(self, "_hash_val"):
+            return self._hash_val
         if self.ty == Term.VAR:
-            return hash(("VAR", self.name, hash(self.T)))
+            self._hash_val = hash(("VAR", self.name, hash(self.T)))
         elif self.ty == Term.CONST:
-            return hash(("CONST", self.name, hash(self.T)))
+            self._hash_val = hash(("CONST", self.name, hash(self.T)))
         elif self.ty == Term.COMB:
-            return hash(("COMB", hash(self.fun), hash(self.arg)))
+            self._hash_val = hash(("COMB", hash(self.fun), hash(self.arg)))
         elif self.ty == Term.ABS:
-            return hash(("ABS", hash(self.var_T), hash(self.body)))
+            self._hash_val = hash(("ABS", hash(self.var_T), hash(self.body)))
         elif self.ty == Term.BOUND:
-            return hash(("BOUND", self.n))
+            self._hash_val = hash(("BOUND", self.n))
         else:
             raise TypeError()
+        return self._hash_val
 
     def __eq__(self, other):
         """Equality on terms is defined by alpha-conversion. This ignores
@@ -231,6 +234,8 @@ class Term():
 
     def subst_type_inplace(self, tyinst):
         """Perform substitution on type variables."""
+        if hasattr(self, "_hash_val"):
+            del self._hash_val
         if self.ty == Term.VAR:
             self.T = self.T.subst(tyinst)
         elif self.ty == Term.CONST:

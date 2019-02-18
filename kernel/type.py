@@ -108,10 +108,13 @@ class HOLType():
             raise TypeError()
 
     def __hash__(self):
+        if hasattr(self, "_hash_val"):
+            return self._hash_val
         if self.ty == HOLType.TVAR:
-            return hash(("VAR", self.name))
+            self._hash_val = hash(("VAR", self.name))
         elif self.ty == HOLType.TYPE:
-            return hash(("COMB", self.name, tuple(hash(arg) for arg in self.args)))
+            self._hash_val = hash(("COMB", self.name, tuple(hash(arg) for arg in self.args)))
+        return self._hash_val
     
     def __eq__(self, other):
         if not isinstance(other, HOLType):
