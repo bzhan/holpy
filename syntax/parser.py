@@ -15,6 +15,9 @@ from logic import list
 from logic import function
 from syntax import infertype
 
+# import sys,io
+# sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+
 
 class ParserException(Exception):
     """Exceptions during parsing."""

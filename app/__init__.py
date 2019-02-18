@@ -1,7 +1,8 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
 from copy import copy
-import json
+import json,sys,io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 from flask import Flask, request, render_template
 from flask.json import jsonify
@@ -12,6 +13,7 @@ from kernel import extension
 from syntax import parser, printer
 from server.tactic import ProofState
 from logic import basic
+
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -240,3 +242,28 @@ def match_thm():
             return jsonify({'ths': [item[0] for item in ths]})
         else:
             return jsonify({})
+
+
+@app.route('/api/save_modify', methods=['POST'])
+def save_modify():
+    list = []
+    temp_dict = dict()
+    data = json.loads(request.get_data().decode("utf-8"))
+    temp_dict['imports'] = []
+    with open('library/'+ data['file-name'] +'.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+    list.append(data)
+    temp_dict['content'] = list
+    with open('library/temp.json', 'w', encoding='utf-8') as f_temp:
+        f_temp.write(json.dumps(temp_dict, ensure_ascii=False))
+    j=open('library/temp.json','r',encoding='utf-8')
+    temp_data = json.load(j)
+    # j.close()
+    thy = basic.loadImportedTheory(temp_data)
+    file_data_to_output(thy, temp_data['content'][0])
+
+    return jsonify({'data' : temp_data})
+
+
+
+

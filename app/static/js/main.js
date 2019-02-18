@@ -22,12 +22,12 @@
             // Add CodeMirror textarea
             var id = 'code' + page_num + '-pan';
             $('#codeTab').append(
-                $('<li class="nav-item" name="code'+ page_num +'"><a  class="nav-link" ' +
+                $('<li class="nav-item" name="code'+ page_num +'"><a class="nav-link" ' +
                     'data-toggle="tab"' +
                     'href="#code' + page_num + '-pan">' +
                     '<span> ' +
                     '</span><button id="close_tab" type="button" ' +
-                    'title="Remove this page">×</button>' +
+                    'title="Remove this page" name="proof-tab">×</button>' +
                     '</a></li>'));
             let class_name = 'tab-pane fade active newCodeMirror code-cell';
             if (page_num === 1)
@@ -37,7 +37,7 @@
                     '<label for="code' + page_num + '"></label> ' +
                     '<textarea id="code' + page_num + '"></textarea>' +
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button>'));
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button></div>'));
             init_editor("code" + page_num);
             // Add location for displaying results
             $('#' + id).append(
@@ -161,15 +161,17 @@
         });
 
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
-            var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
-            var rtop = document.querySelector('.rtop');
-            editor.focus();
-            editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
-            editor.setSize("auto", rtop.clientHeight - 40);
-            editor.refresh();
+            if (document.querySelector('.code-cell.active textarea + .CodeMirror')) {
+                var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
+                var rtop = document.querySelector('.rtop');
+                editor.focus();
+                editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
+                editor.setSize("auto", rtop.clientHeight - 40);
+                editor.refresh();
+            }
         });
 
-        $('#codeTab').on('click', ' li a #close_tab', function () {
+        $('#codeTab').on('click', 'li button[name="proof-tab"]', function () {
             var id = get_selected_id();
             var tabId = $(this).parents('li').children('a').attr('href');
             delete cells[id];
@@ -177,6 +179,13 @@
             $(tabId).remove();
             $('#codeTab a:first').tab('show');
         });
+
+        $('#codeTab').on('click', 'li button[name="edit"]', function() {
+            var tabId = $(this).parents('li').children('a').attr('href');
+            $(this).parents('li').remove('li');
+            $(tabId).remove();
+            $('#codeTab a:first').tab('show');
+        })
 
         $('#delete-cell').on('click', function () {
             $('.code-cell.selected').remove();
@@ -203,7 +212,7 @@
         });
 
         //click proof then send it to the init; including the save-json-file;
-        $('#left_json').on('click', 'a', function () {
+        $('#left_json').on('click', 'a[name="proof"]', function () {
             proof_id = $(this).attr('id');
             var thm_name = $(this).parent().find('span#thm_name').text();
             if (result_list[proof_id - 1]['proof']) {
@@ -221,6 +230,105 @@
                 }, 200);
             }
         });
+
+//        click edit then create a tab page for the editing;
+        $('#left_json').on('click', 'a[name="edit"]', function() {
+            page_num++;
+            var a_id = $(this).attr('id').trim();
+            var data_name = $(this).parents('p').find('span[name="name"]').text();
+            var data_type = $(this).parents('p').find('span:eq(0)').attr('name');
+            var data_content = $(this).parents('p').find('span[name="content"]').text();
+            $('#codeTab').append(
+                $('<li class="nav-item" name="code'+ page_num +'"><a class="nav-link" ' +
+                    'data-toggle="tab"' +
+                    'href="#code' + page_num + '-pan">' +
+                    '<span> ' + data_type +
+                    '</span><button id="close_tab" type="button" ' +
+                    'title="Remove this page" name="edit">×</button>' +
+                    '</a></li>'));
+            var class_name = 'tab-pane code-cell';
+            if (data_type === 'constant') {
+                $('#codeTabContent').append(
+                    $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
+                        '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
+                        '<textarea id="data-name'+ page_num +'" style="height:80px;width:30%;float:left;">' + data_name + '</textarea>' +
+                        '<textarea id="data-content'+ page_num +'" style="height:80px;width:70%;float:left;">'+ data_content +'</textarea>' +
+                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:15px;width:20%;"><b>SAVE</b></button></div>'));
+                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+            }
+            if (data_type === 'theorem') {
+                $('#codeTabContent').append(
+                    $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
+                        '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
+                        '<textarea id="data-name'+ page_num +'" style="height:80px;width:30%;float:left;">' + data_name + '</textarea>' +
+                        '<textarea id="data-content'+ page_num +'" style="height:80px;width:40%;float:left;">'+ data_content +'</textarea>' +
+                        '<textarea id="data-vars'+ page_num +'" style="height:80px;width:30%;float:left;" placeholder="vars"></textarea>' +
+                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:15px;width:20%;"><b>SAVE</b></button></div>'));
+                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+
+            }
+        })
+
+//      click save button to save content to the left-json for updating;
+        $('#codeTabContent').on('click', 'button#save-edit', function() {
+            var a_id = $(this).parent().attr('name').trim();
+            var id = $(this).prevAll('label').attr('name').trim();
+            var ty = $(this).attr('name').trim();
+            var ajax_data = make_data(ty, id);
+            ajax_data['file-name'] = name;
+            $.ajax({
+                url: '/api/save_modify',
+                type: 'POST',
+                data: JSON.stringify(ajax_data),
+                success: function(result) {
+                    var result_data = result['data'];
+                    if (result_data['ty'] === 'def.ax') {
+                        var type = '';
+                        var data_name = result_data['name'];
+                        $.each(ext.type_hl, function (i, val) {
+                            type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                        });
+                        $('p#'+a_id).replaceWith('<p id="'+ a_id +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + data_name + '</span> :: <span name="content">' + type
+                        + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="'+ a_id +'"><b>edit</b></a></p>')
+                    }
+                    if (result_data['ty'] === 'thm') {
+                        var prop = '';
+                        $.each(ext.prop_hl, function (i, val) {
+                            prop = prop + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                        });
+                        $('p#'+a_id).parent().replaceWith('<div><div style="float:left;width: 12px; height: 12px; background: ' +
+                        '' + ';">&nbsp;</div>' + '<p id="'+ a_id +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + data_name +
+                        '</tt></span>:&nbsp;<a href="#" ' + 'id="' + a_id.slice(4,) + '" name="proof">&nbsp;proof</a>' + '</br>&nbsp;&nbsp;<span name="content">' +
+                        prop + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="'+ a_id +'"><b>edit</b></a></p></div>');
+                    }
+                }
+            })
+        })
+
+//      make a strict-type data from editing;
+        function make_data(ty, id) {
+            var data_name = $('textarea#data-name'+id).val().trim();
+            var data_content = $('textarea#data-content'+id).val().trim();
+            var ajax_data = {};
+            if (ty === 'constant') {
+                ajax_data['ty'] = 'def.ax';
+                ajax_data['name'] = data_name;
+                ajax_data['type'] = data_content;
+            }
+            if (ty === 'theorem') {
+                var vars_str_list = $('textarea#data-vars'+id).val().split(' ');
+                var vars_str = {};
+                ajax_data['ty'] = 'thm';
+                ajax_data['name'] = data_name;
+                ajax_data['prop'] = data_content;
+                $.each(vars_str_list, function(i,v) {
+                    let v_list = v.split(':');
+                    vars_str[v_list[0]] = v_list[1];
+                   });
+                ajax_data['vars'] = vars_str;
+                }
+            return ajax_data;
+            }
 
         $('#file-path').on('click', '#root-a', function () {
             $('#left_json').empty();
@@ -365,7 +473,8 @@
                     type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                 });
                 $('#left_json').append($(
-                    '<p><font color="#006000"><b>constant </b></font><tt>' + name + ' :: ' + type + '</tt></p>'));
+                    '<div><p id="data-'+ num +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + name + '</span> :: <span name="content">' + type
+                    + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a></p></div>'));
             }
 
             if (ty === 'thm') {
@@ -385,10 +494,9 @@
                 }
                 $('#left_json').append($(
                     '<div><div style="float:left;width: 12px; height: 12px; background: ' +
-                    status_color + ';">&nbsp;</div>' + '<p>' +
-                    '<font color="#006000"><b>theorem</b></font> <span id="thm_name"><tt>' + name +
-                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '">proof</a>' + '</br>&nbsp;&nbsp;' +
-                    prop + '</p></div>'));
+                    status_color + ';">&nbsp;</div>' + '<p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
+                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>' + '</br>&nbsp;&nbsp;<span name="content">' +
+                    prop + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a></p></div>'));
             }
 
             if (ty === 'type.ind') {
@@ -409,7 +517,7 @@
                 str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
                 })
                 $('#left_json').append($(
-                    '<p><font color="#006000"><b>datatype</b></font> ' + type_name + ' =' + str + '</p>'));
+                    '<div><p><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a></p></div>'));
             }
 
             if (ty === 'def.ind') {
@@ -418,15 +526,17 @@
                     type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                 });
                 $('#left_json').append($(
-                    '<p id="fun' + j + '"><font color="#006000"><b>fun</b></font> ' + name + ' :: ' + type +
-                    '<font color="#006000"><b> where</b></font></p>'));
+                    '<p id="fun' + j + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b></font></p>'));
                 for (var j in ext.rules) {
                     var str = '';
                     $.each(ext.rules[j].prop_hl, function (i, val) {
                         str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                     });
-                    $('#left_json p:last').append($('<p>&nbsp;&nbsp;' + str + '</p>'));
+                    $('#left_json p:last').append($('<span id="edit-content" name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
                 }
+                $('#left_json span#edit-content:last').append($('&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a>'));
+
             }
         }
     }
