@@ -19,28 +19,30 @@ class SATSolverException(Exception):
 
 def display_cnf(cnf):
     """Display the given CNF."""
-    cnf1 = []
+    def str_of_literal(a, b):
+        # Change [('x', False)] to ~x, change [('x', True)] to x.
+        if not b:
+            return '~' + a
+        else:
+            return a
+
+    def str_of_clause(clause):
+        # Turn clause to string by adding (,|,)
+        return ' | '.join(str_of_literal(a, b) for a, b in clause)
+
     if len(cnf) == 0:
         return 'empty set'
+
+    if any(len(clause) == 0 for clause in cnf):
+        return 'the CNF contains empty clause'
+
+    if len(cnf) == 1:
+        return str_of_clause(cnf[0])
+
+    cnf1 = []
     for num_c, clause in enumerate(cnf):
-        L = len(clause)
-        if L == 0:
-            return 'the CNF contains empty clause'
-
-        cnf1.append([])
-        #change [('x', False)]to ~x ,change [('x', True)]to x
-        for (a, b) in clause:
-            if not b:
-                literal = '~' + a
-            else:
-                literal = a
-            cnf1[num_c].append(literal)
-
-        #turn literals to clause by adding (,|,)
-        cnf1[num_c]=' | '.join(cnf1[num_c])
-        if num_c == 0 and len(cnf) == 1:
-            return cnf1[0]
-        elif L >= 2:
+        cnf1.append(str_of_clause(clause))
+        if len(clause) >= 2:
             cnf1[num_c] = '(' + cnf1[num_c] + ')'
     return ' & '.join(cnf1)
 
@@ -55,15 +57,15 @@ def is_solution(cnf, inst):
     for some variable.
     
     """
-    cnf1=[]
+    cnf1 = []
     for num_c, clause in enumerate(cnf):
         cnf1.append([])
-        for (a, b) in clause:
+        for a, b in clause:
             #inst doesn't contain assignment for all variables
             if not a in inst:
                 raise SATSolverException
             #the literal is assigned True,so the clause is satisfiable
-            if inst[a] - b == 0:
+            if inst[a] == b:
                 cnf1[num_c].append(True)
             else:
                 cnf1[num_c].append(False)
@@ -93,16 +95,12 @@ def solve_cnf(cnf):
     Turn res to the standard form
     
     """
-    print(solve_cnf1(cnf))
-    res, _1, _2 = solve_cnf1(cnf)
-    if res == None:
+    # print(solve_cnf1(cnf))
+    res, _, _ = solve_cnf1(cnf)
+    if res is None:
         return None
     else:
-        res1 = {}
-        for x in res:
-            res1[x] = res[x][2]
-        return res1
-
+        return dict((x, res[x][2]) for x in res)
 
 def solve_cnf1(cnf):
     """Solve the given CNF by clause learning
@@ -186,49 +184,43 @@ def solve_cnf_rec(cnf, L, learn_CNF, buc, assert_level, res, implication_graph, 
                     buc[x].append(num)
             learn_CNF.append(learn_clause)
 
-            #find the minimum assert level(except 0) in the complict clause, and backtrack to this level
-            find_min_level = []
-            for (a, b) in clause:
-                if res[a][0] != 0:
-                    find_min_level.append(res[a][0])
-            min_level = min(find_min_level)
+            # Find the minimum assert level (except 0) in the complict clause,
+            # and backtrack to this level.
+            min_level = min(res[a][0] for a, b in clause if res[a][0] != 0)
 
             if len(learn_clause) == 1:
-                #when the learned clause has only one variable x, x's value can be inferred from this clause 
-                if_stop2 = False
-                while if_stop2 == False and len(implication_graph) != 0:
+                # When the learned clause has only one variable x, x's value can be
+                # inferred from this clause. 
+                while len(implication_graph) != 0:
                     x, [x_clause_place, x_num_c1, x_assert_level] = implication_graph.popitem()
                     if x_assert_level < min_level:
-                        if_stop2 = True
                         implication_graph[x] = [x_clause_place, x_num_c1, x_assert_level]
+                        break
                 
-                if_stop1 = False
-                while if_stop1 == False:
+                while True:
                     x, [x_assert_level, x_if_assume, x_value] = res.popitem()
-                    if x_if_assume == True:
-                        if_stop1 = True
+                    if x_if_assume:
                         res[x] = [min_level - 1, False, not x_value]
                         affect_clauses_new = buc[x]
                         implication_graph[x] = ['L', num_1, min_level - 1]
+                        break
 
                 return solve_cnf_rec(cnf, L, learn_CNF, buc, min_level - 1, res, implication_graph, affect_clauses_new)
 
             #backtrack, change res and implication graph
-            if_stop1 = False
-            while if_stop1 == False:
+            while True:
                 x, [x_assert_level, x_if_assume, x_value] = res.popitem()
                 if x_if_assume == True and x_assert_level == min_level:
-                    if_stop1 = True
                     res[x] = [min_level, True, not x_value]
                     affect_clauses_new = buc[x]
+                    break
 
-            if_stop2 = False
-            while if_stop2 == False and len(implication_graph) != 0:
+            while len(implication_graph) != 0:
                 x, [x_clause_place, x_num_c1, x_assert_level] = implication_graph.popitem()
                 if x_assert_level < min_level:
-                    if_stop2 = True
                     #one more element is deleted, so add it back
                     implication_graph[x] = [x_clause_place, x_num_c1, x_assert_level]
+                    break
 
             return solve_cnf_rec(cnf, L, learn_CNF, buc, min_level, res, implication_graph, affect_clauses_new)
 
