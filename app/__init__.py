@@ -246,23 +246,13 @@ def match_thm():
 
 @app.route('/api/save_modify', methods=['POST'])
 def save_modify():
-    list = []
-    temp_dict = dict()
     data = json.loads(request.get_data().decode("utf-8"))
-    temp_dict['imports'] = []
     with open('library/'+ data['file-name'] +'.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
-    list.append(data)
-    temp_dict['content'] = list
-    with open('library/temp.json', 'w', encoding='utf-8') as f_temp:
-        f_temp.write(json.dumps(temp_dict, ensure_ascii=False))
-    j=open('library/temp.json','r',encoding='utf-8')
-    temp_data = json.load(j)
-    # j.close()
-    thy = basic.loadImportedTheory(temp_data)
-    file_data_to_output(thy, temp_data['content'][0])
+    thy = basic.loadImportedTheory(f_data)
+    file_data_to_output(thy, data)
 
-    return jsonify({'data' : temp_data})
+    return jsonify({'data' : data})
 
 
 

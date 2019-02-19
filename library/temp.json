@@ -1,1 +1,0 @@
-{"imports": [], "content": [{"ty": "def.ax", "name": "conj", "type": "bool ⇒ bool ⇒ bool", "file-name": "logic_base"}]}

@@ -235,9 +235,9 @@
         $('#left_json').on('click', 'a[name="edit"]', function() {
             page_num++;
             var a_id = $(this).attr('id').trim();
-            var data_name = $(this).parents('p').find('span[name="name"]').text();
-            var data_type = $(this).parents('p').find('span:eq(0)').attr('name');
-            var data_content = $(this).parents('p').find('span[name="content"]').text();
+            var data_name = $(this).parents('p').find('span[name="name"]').text().trim();
+            var data_type = $(this).parents('p').find('span:eq(0)').attr('name').trim();
+            var data_content = $(this).parents('p').find('span[name="content"]').text().trim();
             $('#codeTab').append(
                 $('<li class="nav-item" name="code'+ page_num +'"><a class="nav-link" ' +
                     'data-toggle="tab"' +
@@ -251,21 +251,47 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
-                        '<textarea id="data-name'+ page_num +'" style="height:80px;width:30%;float:left;">' + data_name + '</textarea>' +
-                        '<textarea id="data-content'+ page_num +'" style="height:80px;width:70%;float:left;">'+ data_content +'</textarea>' +
-                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:15px;width:20%;"><b>SAVE</b></button></div>'));
+                        '<textarea id="data-name'+ page_num +'" style="height:60px;width:30%;float:left;">' + data_name + '</textarea>' +
+                        '<textarea id="data-content'+ page_num +'" style="height:60px;width:70%;float:left;">'+ data_content +'</textarea>' +
+                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:25px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'theorem') {
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
-                        '<textarea id="data-name'+ page_num +'" style="height:80px;width:30%;float:left;">' + data_name + '</textarea>' +
-                        '<textarea id="data-content'+ page_num +'" style="height:80px;width:40%;float:left;">'+ data_content +'</textarea>' +
-                        '<textarea id="data-vars'+ page_num +'" style="height:80px;width:30%;float:left;" placeholder="vars"></textarea>' +
-                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:15px;width:20%;"><b>SAVE</b></button></div>'));
+                        '<textarea id="data-name'+ page_num +'" style="height:60px;width:30%;float:left;">' + data_name + '</textarea>' +
+                        '<textarea id="data-content'+ page_num +'" style="height:60px;width:40%;float:left;">'+ data_content +'</textarea>' +
+                        '<textarea id="data-vars'+ page_num +'" style="height:60px;width:30%;float:left;" placeholder="vars"></textarea>' +
+                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:25px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-
+            }
+            if (data_type === 'datatype') {
+                var data_content_list = data_content.split(/\s\s/);
+                var data_new_content = data_content_list.join('\n')
+                $('#codeTabContent').append(
+                    $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
+                        '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
+                        '<textarea id="data-name'+ page_num +'" style="height:60px;width:10%;float:left;">' + data_name + '</textarea>' +
+                        '<textarea id="data-content'+ page_num +'" style="height:90px;width:30%;float:left;">'+ data_new_content +'</textarea>' +
+                        '<textarea id="data-names'+ page_num +'" style="height:90px;width:20%;float:left;" placeholder="names"></textarea>' +
+                        '<textarea id="data-args'+ page_num +'" style="height:90px;width:20%;float:left;" placeholder="args"></textarea>' +
+                        '<textarea id="data-types'+ page_num +'" style="height:90px;width:20%;float:left;" placeholder="types"></textarea>' +
+                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:25px;width:20%;"><b>SAVE</b></button></div>'));
+                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+            }
+            if (data_type === 'fun') {
+                var data_content_list = data_content.split(/\s\s/);
+                var data_new_content = data_content_list.join('\n')
+                $('#codeTabContent').append(
+                    $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
+                        '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
+                        '<textarea id="data-name'+ page_num +'" style="height:70px;width:20%;float:left;">' + data_name + '</textarea>' +
+                        '<textarea id="data-content'+ page_num +'" style="height:70px;width:40%;float:left;">'+ data_new_content +'</textarea>' +
+                        '<textarea id="data-props'+ page_num +'" style="height:70px;width:20%;float:left;" placeholder="props"></textarea>' +
+                        '<textarea id="data-vars'+ page_num +'" style="height:70px;width:20%;float:left;" placeholder="vars"></textarea>' +
+                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:25px;width:20%;"><b>SAVE</b></button></div>'));
+                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
         })
 
@@ -282,10 +308,10 @@
                 data: JSON.stringify(ajax_data),
                 success: function(result) {
                     var result_data = result['data'];
+                    var data_name = result_data['name'];
                     if (result_data['ty'] === 'def.ax') {
                         var type = '';
-                        var data_name = result_data['name'];
-                        $.each(ext.type_hl, function (i, val) {
+                        $.each(result_data.type_hl, function (i, val) {
                             type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                         });
                         $('p#'+a_id).replaceWith('<p id="'+ a_id +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + data_name + '</span> :: <span name="content">' + type
@@ -293,16 +319,54 @@
                     }
                     if (result_data['ty'] === 'thm') {
                         var prop = '';
-                        $.each(ext.prop_hl, function (i, val) {
+                        $.each(result_data.prop_hl, function (i, val) {
                             prop = prop + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                         });
                         $('p#'+a_id).parent().replaceWith('<div><div style="float:left;width: 12px; height: 12px; background: ' +
-                        '' + ';">&nbsp;</div>' + '<p id="'+ a_id +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + data_name +
+                        'red' + ';">&nbsp;</div>' + '<p id="'+ a_id +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + data_name +
                         '</tt></span>:&nbsp;<a href="#" ' + 'id="' + a_id.slice(4,) + '" name="proof">&nbsp;proof</a>' + '</br>&nbsp;&nbsp;<span name="content">' +
                         prop + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="'+ a_id +'"><b>edit</b></a></p></div>');
                     }
+                    if (result_data['ty'] === 'type.ind') {
+                        var argsT = result_data.argsT, constrs = result_data.constrs;
+                        var str = '', type_name = '';
+                        $.each(argsT['concl'], function(k, vl){
+                            type_name += '<tt class="' + rp(vl[1]) +'">'+ vl[0] + '</tt>'
+                        });
+                        $.each(constrs, function(i, v) {
+                            var str_temp_var = '';
+                            $.each(v.args, function(k, val) {
+                                var str_temp_term = '';
+                                $.each(argsT[i][k], function(l, vlu) {
+                                    str_temp_term += '<tt class="'+ rp(vlu[1]) + '">'+ vlu[0] +'</tt>';
+                                });
+                                str_temp_var += ' (' + val + ' :: '+ str_temp_term + ')';
+                            })
+                            str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
+                        })
+                        $('p#'+a_id).parent().replaceWith(
+                            '<div><p id="'+ a_id +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str +
+                            '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="'+ a_id +'"><b>edit</b></a></p></div>');
+                    }
+                    if (result_data['ty'] === 'def.ind') {
+                        var type = '';
+                        $.each(ext.type_hl, function (i, val) {
+                            type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                        });
+                        $('p#'+a_id).replaceWith(
+                            '<p id="' + a_id + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + data_name + ' :: ' + type +
+                            '</span><font color="#006000"><b> where</b></font></p>');
+                        for (var j in result_data.rules) {
+                            var str = '';
+                            $.each(result_data.rules[j].prop_hl, function (i, val) {
+                                str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                            });
+                            $('#left_json p#'+a_id).append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
+                        }
+                        $('#left_json p#'+ a_id +' span[name="content"]:last').after($('<a href="#" name="edit" id="'+ a_id +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
+                    }
                 }
-            })
+            });
         })
 
 //      make a strict-type data from editing;
@@ -326,9 +390,55 @@
                     vars_str[v_list[0]] = v_list[1];
                    });
                 ajax_data['vars'] = vars_str;
-                }
-            return ajax_data;
             }
+            if (ty === 'datatype') {
+                var temp_list = [], temp_constrs = [];
+                var temp_names = $('textarea#data-names'+id).val().trim().split(/\n/);
+                var temp_args = $('textarea#data-args'+id).val().trim().split(/\n/);
+                var temp_types = $('textarea#data-types'+id).val().trim().split(/\n/);
+                $.each(temp_names, function(i, j) {
+                    var temp_dict = {};
+                    temp_dict['name'] = j;
+                    if (!temp_args[i]) {
+                        temp_dict['args'] = [];
+                    }
+                    else {
+                        temp_dict['args'] = temp_args[i].split(',');
+                    }
+                    temp_dict['type'] = temp_types[i]
+                    temp_constrs.push(temp_dict);
+                });
+                if (data_name.split(/\s/).length>1) {
+                    temp_list.push(data_name.split(/\s/)[0].slice(1,));
+                    ajax_data['name'] = data_name.split(/\s/)[1];
+                }
+                else {
+                    ajax_data['name'] = data_name;
+                }
+                ajax_data['ty'] = 'type.ind';
+                ajax_data['args'] = temp_list;
+                ajax_data['constrs'] = temp_constrs;
+            }
+            if (ty === 'fun') {
+                var rules_list = [];
+                var props_list = $('textarea#data-props'+id).val().trim().split(/\n/);
+                var vars_list = $('textarea#data-vars'+id).val().trim().split(/\n/);
+                $.each(props_list, function(i, v) {
+                    var temp_dict = {},temp_vars={};
+                    temp_dict['prop'] = v;
+                    $.each(vars_list[i].split(','), function(j, k) {
+                        temp_vars[k.split(':')[0]] = k.split(':')[1];
+                    })
+                    temp_dict['vars'] = temp_vars;
+                    rules_list.push(temp_dict);
+                })
+                ajax_data['rules'] = rules_list;
+                ajax_data['ty'] = 'def.ind';
+                ajax_data['name'] = data_name.split(' :: ')[0];
+                ajax_data['type'] = data_name.split(' :: ')[1];
+            }
+            return ajax_data;
+        }
 
         $('#file-path').on('click', '#root-a', function () {
             $('#left_json').empty();
@@ -495,8 +605,8 @@
                 $('#left_json').append($(
                     '<div><div style="float:left;width: 12px; height: 12px; background: ' +
                     status_color + ';">&nbsp;</div>' + '<p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
-                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>' + '</br>&nbsp;&nbsp;<span name="content">' +
-                    prop + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a></p></div>'));
+                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
+                    prop + '</span></p></div>'));
             }
 
             if (ty === 'type.ind') {
@@ -517,7 +627,7 @@
                 str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
                 })
                 $('#left_json').append($(
-                    '<div><p><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a></p></div>'));
+                    '<div><p id="data-'+ num +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a></p></div>'));
             }
 
             if (ty === 'def.ind') {
@@ -526,16 +636,16 @@
                     type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                 });
                 $('#left_json').append($(
-                    '<p id="fun' + j + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
                     '</span><font color="#006000"><b> where</b></font></p>'));
                 for (var j in ext.rules) {
                     var str = '';
                     $.each(ext.rules[j].prop_hl, function (i, val) {
                         str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                     });
-                    $('#left_json p:last').append($('<span id="edit-content" name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
+                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
                 }
-                $('#left_json span#edit-content:last').append($('&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a>'));
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
 
             }
         }
