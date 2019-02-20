@@ -302,6 +302,7 @@
             var ty = $(this).attr('name').trim();
             var ajax_data = make_data(ty, id);
             ajax_data['file-name'] = name;
+            ajax_data['result-list'] = result_list;
             $.ajax({
                 url: '/api/save_modify',
                 type: 'POST',
@@ -350,7 +351,7 @@
                     }
                     if (result_data['ty'] === 'def.ind') {
                         var type = '';
-                        $.each(ext.type_hl, function (i, val) {
+                        $.each(result_data.type_hl, function (i, val) {
                             type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                         });
                         $('p#'+a_id).replaceWith(

@@ -250,6 +250,8 @@ def save_modify():
     with open('library/'+ data['file-name'] +'.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     thy = basic.loadImportedTheory(f_data)
+    for d in data['result-list']:
+        parser.parse_extension(thy, d)
     file_data_to_output(thy, data)
 
     return jsonify({'data' : data})
