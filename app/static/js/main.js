@@ -11,6 +11,7 @@
     var click_count = 0;
     var proof_id = 0;
     var origin_result = [];
+    var edit_mode = false;
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -122,6 +123,26 @@
             }
         }
 
+//      save all of the modified_data to the json-file;
+        function save_editor_data() {
+            var ajax_list = [];
+            $('#codeTabContent div.tab-pane.code-cell.edit-data').each(function() {
+                var ty = this.find('button#save-edit').name.trim();
+                var id = this.find('label').name.trim();
+                var temp_dict = make_data(ty, id);
+                temp_dict['file-name'] = name;
+                ajax_list.push(temp_dict);
+            });
+            $.ajax({
+                url: '/api/editor_file',
+                type: 'PUT',
+                data: JSON.stringify(ajax_list),
+                success: function() {
+                    alert('save success');
+                }
+            })
+        }
+
         // Save all changes on the webpage to the json-file;
         function save_json_file() {
             var output_list = [];
@@ -214,6 +235,7 @@
         //click proof then send it to the init; including the save-json-file;
         $('#left_json').on('click', 'a[name="proof"]', function () {
             proof_id = $(this).attr('id');
+            eidt_mode = false;
             var thm_name = $(this).parent().find('span#thm_name').text();
             if (result_list[proof_id - 1]['proof']) {
                 $('#add-cell').click();
@@ -234,6 +256,7 @@
 //        click edit then create a tab page for the editing;
         $('#left_json').on('click', 'a[name="edit"]', function() {
             page_num++;
+            edit_mode = true;
             var a_id = $(this).attr('id').trim();
             var data_name = $(this).parents('p').find('span[name="name"]').text().trim();
             var data_type = $(this).parents('p').find('span:eq(0)').attr('name').trim();
@@ -246,7 +269,7 @@
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="edit">×</button>' +
                     '</a></li>'));
-            var class_name = 'tab-pane code-cell';
+            var class_name = 'tab-pane code-cell edit-data';
             if (data_type === 'constant') {
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
@@ -370,7 +393,7 @@
             });
         })
 
-//      make a strict-type data from editing;
+//      make a strict-type data from editing and replace the result_list;
         function make_data(ty, id) {
             var data_name = $('textarea#data-name'+id).val().trim();
             var data_content = $('textarea#data-content'+id).val().trim();
@@ -438,6 +461,7 @@
                 ajax_data['name'] = data_name.split(' :: ')[0];
                 ajax_data['type'] = data_name.split(' :: ')[1];
             }
+
             return ajax_data;
         }
 
@@ -448,7 +472,14 @@
             }
         });
 
-        $('a#save-file').click(save_json_file);
+        $('a#save-file').click(function() {
+            if (edit_mode) {
+                save_editor_data();
+            }
+            else {
+                save_json_file();
+            }
+        });
 
         $('#root-file').on('click', 'a', function () {
             num = 0;
