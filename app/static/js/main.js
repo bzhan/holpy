@@ -336,21 +336,11 @@
                 success: function(res) {
                     var result_data = res['data'];
                     var data_name = result_data['name'];
+                    delete result_data['file-name'];
+                    delete result_data['prev-list'];
                     $.each(result_list, function(j,k) {
                         if (k['name'] === data_name) {
-                            if (result_data['ty'] === 'def.ax') {
-                                k['type_hl'] = result_data['type_h1'];
-                            }
-                            if (result_data['ty'] === 'thm') {
-                                k['prop_hl'] = result_data['prop_h1'];
-                            }
-                            if (result_data['ty'] === 'type.ind') {
-                                k['argsT'] = result_data['argsT'];
-                            }
-                            if (result_data['ty'] === 'def.ind') {
-                                k['type_hl'] = result_data['type_h1'];
-                                k['rules'] = result_data['rules'];
-                            }
+                            result_list[j] = result_data;
                         }
                     });
                     display_result_list();
