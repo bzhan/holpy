@@ -257,6 +257,7 @@
         $('#left_json').on('click', 'a[name="edit"]', function() {
             page_num++;
             edit_mode = true;
+//            var number = $(this).parents('p').id.slice(4,).trim();
             var a_id = $(this).attr('id').trim();
             var data_name = $(this).parents('p').find('span[name="name"]').text().trim();
             var data_type = $(this).parents('p').find('span:eq(0)').attr('name').trim();
@@ -324,71 +325,35 @@
             var id = $(this).prevAll('label').attr('name').trim();
             var ty = $(this).attr('name').trim();
             var ajax_data = make_data(ty, id);
+            var number = Number(a_id.slice(5,))-1;
+            var prev_list = result_list.slice(0, number);
             ajax_data['file-name'] = name;
-            ajax_data['result-list'] = result_list;
+            ajax_data['prev-list'] = prev_list;
             $.ajax({
                 url: '/api/save_modify',
                 type: 'POST',
                 data: JSON.stringify(ajax_data),
-                success: function(result) {
-                    var result_data = result['data'];
+                success: function(res) {
+                    var result_data = res['data'];
                     var data_name = result_data['name'];
-                    if (result_data['ty'] === 'def.ax') {
-                        var type = '';
-                        $.each(result_data.type_hl, function (i, val) {
-                            type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                        });
-                        $('p#'+a_id).replaceWith('<p id="'+ a_id +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + data_name + '</span> :: <span name="content">' + type
-                        + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="'+ a_id +'"><b>edit</b></a></p>')
-                    }
-                    if (result_data['ty'] === 'thm') {
-                        var prop = '';
-                        $.each(result_data.prop_hl, function (i, val) {
-                            prop = prop + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                        });
-                        $('p#'+a_id).parent().replaceWith('<div><div style="float:left;width: 12px; height: 12px; background: ' +
-                        'red' + ';">&nbsp;</div>' + '<p id="'+ a_id +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + data_name +
-                        '</tt></span>:&nbsp;<a href="#" ' + 'id="' + a_id.slice(4,) + '" name="proof">&nbsp;proof</a>' + '</br>&nbsp;&nbsp;<span name="content">' +
-                        prop + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="'+ a_id +'"><b>edit</b></a></p></div>');
-                    }
-                    if (result_data['ty'] === 'type.ind') {
-                        var argsT = result_data.argsT, constrs = result_data.constrs;
-                        var str = '', type_name = '';
-                        $.each(argsT['concl'], function(k, vl){
-                            type_name += '<tt class="' + rp(vl[1]) +'">'+ vl[0] + '</tt>'
-                        });
-                        $.each(constrs, function(i, v) {
-                            var str_temp_var = '';
-                            $.each(v.args, function(k, val) {
-                                var str_temp_term = '';
-                                $.each(argsT[i][k], function(l, vlu) {
-                                    str_temp_term += '<tt class="'+ rp(vlu[1]) + '">'+ vlu[0] +'</tt>';
-                                });
-                                str_temp_var += ' (' + val + ' :: '+ str_temp_term + ')';
-                            })
-                            str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
-                        })
-                        $('p#'+a_id).parent().replaceWith(
-                            '<div><p id="'+ a_id +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str +
-                            '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="'+ a_id +'"><b>edit</b></a></p></div>');
-                    }
-                    if (result_data['ty'] === 'def.ind') {
-                        var type = '';
-                        $.each(result_data.type_hl, function (i, val) {
-                            type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                        });
-                        $('p#'+a_id).replaceWith(
-                            '<p id="' + a_id + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + data_name + ' :: ' + type +
-                            '</span><font color="#006000"><b> where</b></font></p>');
-                        for (var j in result_data.rules) {
-                            var str = '';
-                            $.each(result_data.rules[j].prop_hl, function (i, val) {
-                                str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                            });
-                            $('#left_json p#'+a_id).append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
+                    $.each(result_list, function(j,k) {
+                        if (k['name'] === data_name) {
+                            if (result_data['ty'] === 'def.ax') {
+                                k['type_hl'] = result_data['type_h1'];
+                            }
+                            if (result_data['ty'] === 'thm') {
+                                k['prop_hl'] = result_data['prop_h1'];
+                            }
+                            if (result_data['ty'] === 'type.ind') {
+                                k['argsT'] = result_data['argsT'];
+                            }
+                            if (result_data['ty'] === 'def.ind') {
+                                k['type_hl'] = result_data['type_h1'];
+                                k['rules'] = result_data['rules'];
+                            }
                         }
-                        $('#left_json p#'+ a_id +' span[name="content"]:last').after($('<a href="#" name="edit" id="'+ a_id +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
-                    }
+                    });
+                    display_result_list();
                 }
             });
         })
