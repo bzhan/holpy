@@ -77,7 +77,7 @@ def add_induct_type(name, targs, constrs):
             lhs_vars = [Var(nm, T) for nm, T in zip(vars, argT)]
             rhs_vars = [Var(nm + "'", T) for nm, T in zip(vars, argT)]
             A = Const(cname, cT)
-            assum = Term.mk_equals(A(*lhs_vars), B(*rhs_vars))
+            assum = Term.mk_equals(A(*lhs_vars), A(*rhs_vars))
             concls = [Term.mk_equals(var1, var2) for var1, var2 in zip(lhs_vars, rhs_vars)]
             concl = logic.mk_conj(*concls) if len(concls) > 1 else concls[0]
             th_name = name + "_" + cname + "_inject"
