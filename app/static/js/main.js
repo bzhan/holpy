@@ -352,7 +352,9 @@
                     delete result_data['prev-list'];
                     $.each(result_list, function(j,k) {
                         if (k['name'] === data_name) {
-                            result_list[j] = result_data;
+                            for (var key in result_data) {
+                                result_list[j][key] = result_data[key];
+                            }
                         }
                     });
                     display_result_list();

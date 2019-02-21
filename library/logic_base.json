@@ -3,13 +3,13 @@
         {
             "name": "conj",
             "ty": "def.ax",
-            "type": "bool ⇒ bool"
+            "type": "bool => bool => bool"
         },
         {
             "ascii_op": "|",
             "name": "disj",
             "ty": "def.ax",
-            "type": "bool => bool => bool",
+            "type": "bool ⇒ bool => bool",
             "unicode_op": "∨"
         },
         {
