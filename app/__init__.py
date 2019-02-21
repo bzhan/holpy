@@ -261,15 +261,6 @@ def save_modify():
 def save_edit():
     data = json.loads(request.get_data().decode("utf-8"))
     file_name = data['name']
-    # for d in data:
-    #     file_name = d['file-name']
-    #     with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
-    #         f_data = json.load(f)
-    #     for f in f_data['content']:
-    #         if f['name'] == d['name']:
-    #             for k,v in d.items():
-    #                 if k in f.keys():
-    #                     f[k] = v
     with open('library/'+ file_name+ '.json', 'r', encoding='utf-8') as file:
         f_data = json.load(file)
     f_data['content'] = data['data']

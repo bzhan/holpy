@@ -308,12 +308,9 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '">datatype:</label> ' +
-                        '<br><textarea iid="data-name'+ page_num +'" style="height:60px;width:10%;float:left;">' + data_name + '</textarea>' +
-                        '<textarea id="data-content'+ page_num +'" style="height:90px;width:30%;float:left;">'+ data_new_content +'</textarea>' +
-                        '<textarea id="data-names'+ page_num +'" style="height:90px;width:20%;float:left;" placeholder="names"></textarea>' +
-                        '<textarea id="data-args'+ page_num +'" style="height:90px;width:20%;float:left;" placeholder="args"></textarea>' +
-                        '<textarea id="data-types'+ page_num +'" style="height:90px;width:20%;float:left;" placeholder="types"></textarea>' +
-                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:10px;width:20%;"><b>SAVE</b></button></div>'));
+                        '<br><input id="data-name'+ page_num +'" style="width:10%;" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;'+
+                        '<br><textarea id="data-content'+ page_num +'" style="height:60px;width:30%;">'+ data_new_content +'</textarea>' +
+                        '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'fun') {
@@ -322,11 +319,10 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '">fun:</label> ' +
-                        '<br><textarea id="data-name'+ page_num +'" style="height:70px;width:20%;float:left;">' + data_name + '</textarea>' +
-                        '<textarea id="data-content'+ page_num +'" style="height:70px;width:40%;float:left;">'+ data_new_content +'</textarea>' +
-                        '<textarea id="data-props'+ page_num +'" style="height:70px;width:20%;float:left;" placeholder="props"></textarea>' +
-                        '<textarea id="data-vars'+ page_num +'" style="height:70px;width:20%;float:left;" placeholder="vars"></textarea>' +
-                        '<button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:10px;width:20%;"><b>SAVE</b></button></div>'));
+                        '<input id="data-name'+ page_num +'" value="'+ data_name +'">' +
+                        '<br><textarea id="data-content'+ page_num +'" style="margin-top:5px;height:70px;width:40%;">' + data_new_content + '</textarea>' +
+                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea id="data-vars'+ page_num +'" style="margin-top:5px;height:70px;width:40%;" placeholder="vars"></textarea>' +
+                        '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
         })
@@ -362,10 +358,10 @@
             });
         })
 
-//      make a strict-type data from editing and replace the result_list;
+//      make a strict-type data from editing;
         function make_data(ty, id) {
             var data_name = $('input#data-name'+id).val().trim();
-            var data_content = $('input#data-content'+id).val().trim();
+            var data_content = $('#data-content'+id).val().trim();
             var ajax_data = {};
             if (ty === 'constant') {
                 ajax_data['ty'] = 'def.ax';
@@ -386,21 +382,7 @@
             }
             if (ty === 'datatype') {
                 var temp_list = [], temp_constrs = [];
-                var temp_names = $('textarea#data-names'+id).val().trim().split(/\n/);
-                var temp_args = $('textarea#data-args'+id).val().trim().split(/\n/);
-                var temp_types = $('textarea#data-types'+id).val().trim().split(/\n/);
-                $.each(temp_names, function(i, j) {
-                    var temp_dict = {};
-                    temp_dict['name'] = j;
-                    if (!temp_args[i]) {
-                        temp_dict['args'] = [];
-                    }
-                    else {
-                        temp_dict['args'] = temp_args[i].split(',');
-                    }
-                    temp_dict['type'] = temp_types[i]
-                    temp_constrs.push(temp_dict);
-                });
+                var temp_content_list = data_content.split(/\n/);
                 if (data_name.split(/\s/).length>1) {
                     temp_list.push(data_name.split(/\s/)[0].slice(1,));
                     ajax_data['name'] = data_name.split(/\s/)[1];
@@ -408,6 +390,40 @@
                 else {
                     ajax_data['name'] = data_name;
                 }
+                $.each(temp_content_list, function(i,v) {
+                    var temp_con_list = v.split(') (');
+                    var temp_con_dict = {};
+                    var arg_name = '', args = [], type = '';
+                    if (temp_con_list[0].indexOf('(')>0) {
+                        arg_name = temp_con_list[0].slice(0,temp_con_list[0].indexOf('(')-1);
+                        if (temp_con_list.length>1) {
+                            temp_con_list[0] = temp_con_list[0].slice(temp_con_list[0].indexOf('(')+1,)
+                            temp_con_list[temp_con_list.length-1] = temp_con_list[temp_con_list.length-1].slice(0,-1);
+                            $.each(temp_con_list, function(i,v) {
+                                args.push(v.split(' :: ')[0]);
+                                type += v.split(' :: ')[1] + '⇒';
+                                if (v.split(' :: ')[1].indexOf('⇒')>=0) {
+                                    type += '(' + v.split(' :: ')[1] + ')' + '⇒'
+                                }
+                            })
+                            type = type + data_name;
+                        }
+                        else {
+                            let vars_ = temp_con_list[0].slice(temp_con_list[0].indexOf('(')+1,-1).split(' :: ')[0];
+                            type = temp_con_list[0].slice(temp_con_list[0].indexOf('(')+1,-1).split(' :: ')[1]
+                            args.push(vars);
+                            type = type + '=>' + data_name;
+                        }
+                    }
+                    else {
+                        arg_name = temp_con_list[0];
+                        type = ajax_data['name'];
+                    }
+                    temp_con_dict['type'] = type;
+                    temp_con_dict['args'] = args;
+                    temp_con_dict['name'] = arg_name;
+                    temp_constrs.push(temp_con_dict);
+                })
                 ajax_data['ty'] = 'type.ind';
                 ajax_data['args'] = temp_list;
                 ajax_data['constrs'] = temp_constrs;
@@ -499,6 +515,12 @@
             return 'var';
         if (x === 3)
             return 'tvar';
+    }
+
+    function display_exceptions (e_list) {
+
+
+
     }
 
     function remove_page(first) {
