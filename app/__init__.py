@@ -260,18 +260,22 @@ def save_modify():
 @app.route('/api/editor_file', methods=['PUT'])
 def save_edit():
     data = json.loads(request.get_data().decode("utf-8"))
-    file_name = ''
-    for d in data:
-        file_name = d['file-name']
-        with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
-            f_data = json.load(f)
-        for f in f_data['content']:
-            if f['name'] == d['name']:
-                for k,v in d.items():
-                    if k in f.keys():
-                        f[k] = v
-    with open('library/'+ file_name+ '.json', 'w', encoding='utf-8') as file:
-        json.dump(f_data, file, ensure_ascii=False)
+    file_name = data['name']
+    # for d in data:
+    #     file_name = d['file-name']
+    #     with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
+    #         f_data = json.load(f)
+    #     for f in f_data['content']:
+    #         if f['name'] == d['name']:
+    #             for k,v in d.items():
+    #                 if k in f.keys():
+    #                     f[k] = v
+    with open('library/'+ file_name+ '.json', 'r', encoding='utf-8') as file:
+        f_data = json.load(file)
+    f_data['content'] = data['data']
+    j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
+    json.dump(f_data, j, indent=4, ensure_ascii=False, sort_keys=True)
+    j.close()
 
     return jsonify({})
 

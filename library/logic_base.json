@@ -1,11 +1,9 @@
 {
     "content": [
         {
-            "ascii_op": "&",
             "name": "conj",
             "ty": "def.ax",
-            "type": "bool => bool => bool",
-            "unicode_op": "∧"
+            "type": "bool ⇒ bool"
         },
         {
             "ascii_op": "|",
@@ -43,7 +41,7 @@
         },
         {
             "name": "conjI",
-            "prop": "A --> B --> A & B",
+            "prop": "A ⟶ B ⟶ A",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -215,4 +213,3 @@
     "imports": [],
     "name": "logic_base"
 }
-
