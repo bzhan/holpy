@@ -452,12 +452,14 @@
                 })
                 $.each(props_list, function(i, v) {
                     var temp_dict = {},temp_vars={};
-                    temp_dict['prop'] = v;
-                    console.log(vars_list);
-                    if (vars_list[i]) {
+                    if (v && vars_list[i]) {
+                        temp_dict['prop'] = v;
                         $.each(vars_list[i].split(/\s\s/), function(j, k) {
                             temp_vars[k.split(':')[0]] = k.split(':')[1];
                         })
+                    }
+                    else if (!v) {
+                        continue;
                     }
                     temp_dict['vars'] = temp_vars;
                     rules_list.push(temp_dict);
