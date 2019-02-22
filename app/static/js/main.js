@@ -278,7 +278,7 @@
                 $('<li class="nav-item" name="code'+ page_num +'"><a class="nav-link" ' +
                     'data-toggle="tab"' +
                     'href="#code' + page_num + '-pan">' +
-                    '<span> ' + data_type +
+                    '<span id="'+ page_num +'">' + data_name +
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="edit">×</button>' +
                     '</a></li>'));
@@ -304,7 +304,8 @@
             }
             if (data_type === 'datatype') {
                 var data_content_list = data_content.split(/\s\s/);
-                var data_new_content = data_content_list.join('\n')
+                var data_new_content = data_content_list.join('\n');
+                $('#codeTab').find('span#'+ page_num).text(data_name.split(/\s/)[1]);
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '">datatype:</label> ' +
@@ -315,17 +316,30 @@
             }
             if (data_type === 'fun') {
                 var data_content_list = data_content.split(/\s\s/);
-                var data_new_content = data_content_list.join('\n')
+                var data_new_content = '';
+                for (var i in data_content_list) {
+                    data_new_content += i+ ': '+ data_content_list[i]+ '\n';
+                }
+                $('#codeTab').find('span#'+ page_num).text(data_name.split(' :: ')[0]);
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '">fun:</label> ' +
-                        '<input id="data-name'+ page_num +'" value="'+ data_name +'">' +
-                        '<br><textarea id="data-content'+ page_num +'" style="margin-top:5px;height:70px;width:40%;">' + data_new_content + '</textarea>' +
+                        '<input id="data-name'+ page_num +'" style="width:30%;" value="'+ data_name +'">' +
+                        '<br><textarea id="data-content'+ page_num +'" style="margin-top:5px;height:70px;width:40%;" name="content">' + data_new_content + '</textarea>' +
                         '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea id="data-vars'+ page_num +'" style="margin-top:5px;height:70px;width:40%;" placeholder="vars"></textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+                display_lines_number(data_content_list, page_num);
             }
         })
+
+        function display_lines_number(content_list,page_num) {
+            var temp_str = '';
+            for(var i=0; i<content_list.length; i++) {
+                temp_str += i + ': \n';
+            }
+            $('textarea#data-vars'+ page_num).val(temp_str);
+        }
 
 //      click save button to save content to the left-json for updating;
         $('#codeTabContent').on('click', 'button#save-edit', function() {
@@ -430,14 +444,21 @@
             }
             if (ty === 'fun') {
                 var rules_list = [];
-                var props_list = $('textarea#data-props'+id).val().trim().split(/\n/);
+                var props_list = data_content.split(/\n/);
                 var vars_list = $('textarea#data-vars'+id).val().trim().split(/\n/);
+                $.each(props_list, function(i,v) {
+                    props_list[i] = v.slice(3,);
+                    vars_list[i] = vars_list[i].slice(3,);
+                })
                 $.each(props_list, function(i, v) {
                     var temp_dict = {},temp_vars={};
                     temp_dict['prop'] = v;
-                    $.each(vars_list[i].split(','), function(j, k) {
-                        temp_vars[k.split(':')[0]] = k.split(':')[1];
-                    })
+                    console.log(vars_list);
+                    if (vars_list[i]) {
+                        $.each(vars_list[i].split(/\s\s/), function(j, k) {
+                            temp_vars[k.split(':')[0]] = k.split(':')[1];
+                        })
+                    }
                     temp_dict['vars'] = temp_vars;
                     rules_list.push(temp_dict);
                 })
@@ -517,11 +538,11 @@
             return 'tvar';
     }
 
-    function display_exceptions (e_list) {
-
-
-
-    }
+//    function display_exceptions (e_list) {
+//
+//
+//
+//    }
 
     function remove_page(first) {
         if (first)
