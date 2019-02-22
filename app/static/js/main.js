@@ -266,7 +266,7 @@
             }
         });
 
-//        click edit then create a tab page for the editing;
+//      click edit then create a tab page for the editing;
         $('#left_json').on('click', 'a[name="edit"]', function() {
             page_num++;
             edit_mode = true;
@@ -331,8 +331,12 @@
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 display_lines_number(data_content_list, page_num);
             }
+            $('div#code' + page_num + '-pan button').after(
+                $('<div class="output-wrapper" style="margi-top:1px;"><div class="output" id="error'+ page_num +'><div class="output-area">' +
+                    '<pre> </pre></div><div class="match-thm""></div></div>'));
         })
 
+//      display lines_number in the textarea;
         function display_lines_number(content_list,page_num) {
             var temp_str = '';
             for(var i=0; i<content_list.length; i++) {
@@ -344,6 +348,7 @@
 //      click save button to save content to the left-json for updating;
         $('#codeTabContent').on('click', 'button#save-edit', function() {
             var a_id = $(this).parent().attr('name').trim();
+            var error_id = $(this).next().id.trim();
             var id = $(this).prevAll('label').attr('name').trim();
             var ty = $(this).attr('name').trim();
             var ajax_data = make_data(ty, id);
@@ -358,8 +363,13 @@
                 success: function(res) {
                     var result_data = res['data'];
                     var data_name = result_data['name'];
+                    var error = res['error']
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
+                    if (error !== {}) {
+                        var error_info = error.failed + ' : ' + error.massage
+                        $('div#'+error_id).find('pre').text(error_info);
+                    }
                     $.each(result_list, function(j,k) {
                         if (k['name'] === data_name) {
                             for (var key in result_data) {

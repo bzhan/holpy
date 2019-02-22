@@ -247,14 +247,20 @@ def match_thm():
 @app.route('/api/save_modify', methods=['POST'])
 def save_modify():
     data = json.loads(request.get_data().decode("utf-8"))
-    with open('library/'+ data['file-name'] +'.json', 'r', encoding='utf-8') as f:
+    error = {}
+    with open('library/' + data['file-name'] + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
-    thy = basic.loadImportedTheory(f_data)
-    for d in data['prev-list']:
-        parser.parse_extension(thy, d)
-    file_data_to_output(thy, data)
-
-    return jsonify({'data' : data})
+    try:
+        thy = basic.loadImportedTheory(f_data)
+        for d in data['prev-list']:
+            parser.parse_extension(thy, d)
+        file_data_to_output(thy, data)
+    except Exception as e:
+        error = {
+            "failed": e.__class__.__name__,
+            "message": str(e)
+        }
+    return jsonify({'data' : data, 'error' : error})
 
 
 @app.route('/api/editor_file', methods=['PUT'])
