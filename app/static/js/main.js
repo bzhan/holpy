@@ -53,7 +53,7 @@
 
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('.newCodeMirror').each(function () {
-                $(this).removeClass('active')
+                $(this).removeClass('active');
             });
         });
 
@@ -270,10 +270,16 @@
         $('#left_json').on('click', 'a[name="edit"]', function() {
             page_num++;
             edit_mode = true;
+            var vars_str = '';
             var a_id = $(this).attr('id').trim();
+            var number = Number(a_id.slice(5,))-1;
+            for(var key in result_list[number]['vars']) {
+                vars_str += key + ':' + result_list[number]['vars'][key] +' ';
+            };
             var data_name = $(this).parents('p').find('span[name="name"]').text().trim();
             var data_type = $(this).parents('p').find('span:eq(0)').attr('name').trim();
             var data_content = $(this).parents('p').find('span[name="content"]').text().trim();
+            result_list[number]
             $('#codeTab').append(
                 $('<li class="nav-item" name="code'+ page_num +'"><a class="nav-link" ' +
                     'data-toggle="tab"' +
@@ -297,7 +303,7 @@
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
                         'theorem:&nbsp;<input id="data-name'+ page_num +'" style="margin-top:0px;width:20%;" value="' + data_name + '">' +
-                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input id="data-vars'+ page_num +'" style="width:30%;">' +
+                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input id="data-vars'+ page_num +'" style="width:30%;" value="'+ vars_str +'">' +
                         '<br><br>term:&nbsp;&nbsp;&nbsp;<input id="data-content'+ page_num +'" style="width:30%;" value="'+ data_content +'">'+
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-left:44px;margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
@@ -331,9 +337,10 @@
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 display_lines_number(data_content_list, page_num);
             }
-            $('div#code' + page_num + '-pan button').after(
-                $('<div class="output-wrapper" style="margi-top:1px;"><div class="output" id="error'+ page_num +'><div class="output-area">' +
-                    '<pre> </pre></div><div class="match-thm""></div></div>'));
+//            $('div#code' + page_num + '-pan button').after(
+              $('#codeTabContent').append(
+                $('<div class="output-wrapper" style="margi-top:1px;" id="error'+ page_num +'"><div class="output">' +
+                    '<pre>12345 </pre></div></div>'));
         })
 
 //      display lines_number in the textarea;
@@ -348,7 +355,7 @@
 //      click save button to save content to the left-json for updating;
         $('#codeTabContent').on('click', 'button#save-edit', function() {
             var a_id = $(this).parent().attr('name').trim();
-            var error_id = $(this).next().id.trim();
+            var error_id = $(this).parent().next().attr('id').trim();
             var id = $(this).prevAll('label').attr('name').trim();
             var ty = $(this).attr('name').trim();
             var ajax_data = make_data(ty, id);
