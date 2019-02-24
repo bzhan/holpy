@@ -338,9 +338,9 @@
                 display_lines_number(data_content_list, page_num);
             }
 //            $('div#code' + page_num + '-pan button').after(
-              $('#codeTabContent').append(
-                $('<div class="output-wrapper" style="margi-top:1px;" id="error'+ page_num +'"><div class="output">' +
-                    '<pre>12345 </pre></div></div>'));
+              $('#codeTabContent div#code'+page_num+'-pan button').after(
+                $('<div class="output-wrapper" style="margi-top:1px;" id="error'+ page_num +'">' +
+                    '<pre>12345 </pre></div>'));
         })
 
 //      display lines_number in the textarea;
@@ -355,7 +355,7 @@
 //      click save button to save content to the left-json for updating;
         $('#codeTabContent').on('click', 'button#save-edit', function() {
             var a_id = $(this).parent().attr('name').trim();
-            var error_id = $(this).parent().next().attr('id').trim();
+            var error_id = $(this).next().attr('id').trim();
             var id = $(this).prevAll('label').attr('name').trim();
             var ty = $(this).attr('name').trim();
             var ajax_data = make_data(ty, id);
