@@ -476,7 +476,7 @@
                         })
                     }
                     else if (!v) {
-                        continue;
+                        return true;
                     }
                     temp_dict['vars'] = temp_vars;
                     rules_list.push(temp_dict);
