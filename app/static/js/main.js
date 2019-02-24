@@ -380,7 +380,7 @@
                     var error = res['error']
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
-                    if (error !== {}) {
+                    if (error && error !== {}) {
                         var error_info = error.failed + ' : ' + error.massage
                         $('div#'+error_id).find('pre').text(error_info);
                     }
