@@ -279,7 +279,6 @@
             var data_name = $(this).parents('p').find('span[name="name"]').text().trim();
             var data_type = $(this).parents('p').find('span:eq(0)').attr('name').trim();
             var data_content = $(this).parents('p').find('span[name="content"]').text().trim();
-            result_list[number]
             $('#codeTab').append(
                 $('<li class="nav-item" name="code'+ page_num +'"><a class="nav-link" ' +
                     'data-toggle="tab"' +
@@ -316,7 +315,7 @@
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '">datatype:</label> ' +
                         '<br><input id="data-name'+ page_num +'" style="width:10%;" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;'+
-                        '<br><textarea id="data-content'+ page_num +'" style="height:60px;width:30%;">'+ data_new_content +'</textarea>' +
+                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="height:60px;width:30%;">'+ data_new_content +'</textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -325,31 +324,39 @@
                 var data_new_content = '';
                 for (var i in data_content_list) {
                     data_new_content += i+ ': '+ data_content_list[i]+ '\n';
-                }
+                };
                 $('#codeTab').find('span#'+ page_num).text(data_name.split(' :: ')[0]);
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '">fun:</label> ' +
                         '<input id="data-name'+ page_num +'" style="width:30%;" value="'+ data_name +'">' +
-                        '<br><textarea id="data-content'+ page_num +'" style="margin-top:5px;height:70px;width:40%;" name="content">' + data_new_content + '</textarea>' +
-                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea id="data-vars'+ page_num +'" style="margin-top:5px;height:70px;width:40%;" placeholder="vars"></textarea>' +
+                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="margin-top:5px;height:70px;width:40%;" name="content">' + data_new_content + '</textarea>' +
+                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars'+ page_num +'" style="margin-top:5px;height:70px;width:40%;" placeholder="vars"></textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-                display_lines_number(data_content_list, page_num);
+                display_lines_number(data_content_list, page_num, number);
             }
-//            $('div#code' + page_num + '-pan button').after(
               $('#codeTabContent div#code'+page_num+'-pan button').after(
                 $('<div class="output-wrapper" style="margi-top:1px;" id="error'+ page_num +'">' +
                     '<pre></pre></div>'));
         })
 
 //      display lines_number in the textarea;
-        function display_lines_number(content_list,page_num) {
-            var temp_str = '';
-            for(var i=0; i<content_list.length; i++) {
-                temp_str += i + ': \n';
-            }
-            $('textarea#data-vars'+ page_num).val(temp_str);
+        function display_lines_number(content_list, page_num, number) {
+            var data_vars_list = [];
+            var data_vars_str = '';
+            $.each(result_list[number]['rules'], function(i, v) {
+                var vars_str = '';
+                for (let key in v.vars) {
+                    vars_str += key+ ':'+ v.vars[key]+ '   ';
+                }
+//                vars_str += '\n';
+                data_vars_list.push(vars_str);
+                });
+            $.each(data_vars_list, function(i, v) {
+                data_vars_str += i+ ': '+ v + '\n';
+            })
+            $('textarea#data-vars'+ page_num).val(data_vars_str);
         }
 
 //      click save button to save content to the left-json for updating;
