@@ -20,7 +20,7 @@
     $(function () {
         $('#add-cell').on('click', function () {
             page_num++;
-            // Add CodeMirror textarea
+            // Add CodeMirror textarea;
             var id = 'code' + page_num + '-pan';
             $('#codeTab').append(
                 $('<li class="nav-item" name="code'+ page_num +'"><a class="nav-link" ' +
@@ -40,7 +40,7 @@
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>' +
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button></div>'));
             init_editor("code" + page_num);
-            // Add location for displaying results
+            // Add location for displaying results;
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<pre> </pre></div><div class="match-thm""></div></div>'));
@@ -85,7 +85,7 @@
             }
         });
 
-        // Save a single proof to the webpage (not to the json file).
+        // Save a single proof to the webpage (not to the json file);
         $('div.rtop').on('click', 'button[name="save"]', function () {
             editor_id_list = [];
             var editor_id = get_selected_id();
@@ -125,7 +125,7 @@
 
 //      save all of the modified_data to the json-file;
         function save_editor_data() {
-        var copy_result_list = result_list;
+            var copy_result_list = result_list;
             $.each(copy_result_list, function (i, v) {
                 if (v.ty === 'def.ax') {
                     delete v.type_hl;
@@ -288,7 +288,7 @@
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="edit">×</button>' +
                     '</a></li>'));
-            var class_name = 'tab-pane code-cell edit-data';
+            var class_name = 'tab-pane fade in active code-cell edit-data';
             if (data_type === 'constant') {
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
