@@ -340,7 +340,7 @@
 //            $('div#code' + page_num + '-pan button').after(
               $('#codeTabContent div#code'+page_num+'-pan button').after(
                 $('<div class="output-wrapper" style="margi-top:1px;" id="error'+ page_num +'">' +
-                    '<pre>12345 </pre></div>'));
+                    '<pre></pre></div>'));
         })
 
 //      display lines_number in the textarea;
@@ -442,7 +442,7 @@
                         else {
                             let vars_ = temp_con_list[0].slice(temp_con_list[0].indexOf('(')+1,-1).split(' :: ')[0];
                             type = temp_con_list[0].slice(temp_con_list[0].indexOf('(')+1,-1).split(' :: ')[1]
-                            args.push(vars);
+                            args.push(vars_);
                             type = type + '=>' + data_name;
                         }
                     }
