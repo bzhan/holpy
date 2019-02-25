@@ -252,7 +252,7 @@ def save_modify():
         f_data = json.load(f)
     try:
         thy = basic.loadImportedTheory(f_data)
-        for d in data['prev_list']:
+        for d in data['prev-list']:
             parser.parse_extension(thy, d)
         file_data_to_output(thy, data)
     except Exception as e:
