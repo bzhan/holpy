@@ -1,0 +1,87 @@
+[
+    {
+        "name": "p1",
+        "vars": {"p": "bool", "q": "bool"},
+        "prop": "(p --> q) = (~q --> ~p)"
+    },
+    {
+        "name": "p2",
+        "vars": {"p": "bool"},
+        "prop": "~~p = p"
+    },
+    {
+        "name": "p3",
+        "vars": {"p": "bool", "q": "bool"},
+        "prop": "~(p --> q) --> (q --> p)"
+    },
+    {
+        "name": "p4",
+        "vars": {"p": "bool", "q": "bool"},
+        "prop": "(~p --> q) = (~q --> p)"
+    },
+    {
+        "name": "p5",
+        "vars": {"p": "bool", "q": "bool", "r": "bool"},
+        "prop": "((p | q) --> (p | r)) --> (p | (q --> r))"
+    },
+    {
+        "name": "p6",
+        "vars": {"p": "bool"},
+        "prop": "p | ~p"
+    },
+    {
+        "name": "p7",
+        "vars": {"p": "bool"},
+        "prop": "p | ~~~p"
+    },
+    {
+        "name": "p8",
+        "vars": {"p": "bool", "q": "bool"},
+        "prop": "((p --> q) --> p) --> p"
+    },
+    {
+        "name": "p9",
+        "vars": {"p": "bool", "q": "bool"},
+        "prop": "((p | q) & (~p | q) & (p | ~q)) --> ~(~p | ~q)"
+    },
+    {
+        "name": "p10",
+        "vars": {"p": "bool", "q": "bool", "r": "bool"},
+        "prop": "(q --> r) --> (r --> p & q) --> (p --> q | r) --> p = q"
+    },
+    {
+        "name": "p11",
+        "vars": {"p": "bool"},
+        "prop": "p = p"
+    },
+    {
+        "name": "p12",
+        "vars": {"p": "bool", "q": "bool", "r": "bool"},
+        "prop": "((p = q) = r) = (p = (q = r))"
+    },
+    {
+        "name": "p13",
+        "vars": {"p": "bool", "q": "bool", "r": "bool"},
+        "prop": "(p | (q & r)) = ((p | q) & (p | r))"
+    },
+    {
+        "name": "p14",
+        "vars": {"p": "bool", "q": "bool"},
+        "prop": "(p = q) = ((q | ~p) & (~q | p))"
+    },
+    {
+        "name": "p15",
+        "vars": {"p": "bool", "q": "bool"},
+        "prop": "(p --> q) = (~p | q)"
+    },
+    {
+        "name": "p16",
+        "vars": {"p": "bool", "q": "bool"},
+        "prop": "(p --> q) | (q --> p)"
+    },
+    {
+        "name": "p17",
+        "vars": {"p": "bool", "q": "bool", "r": "bool", "s": "bool"},
+        "prop": "((p & (q --> r)) --> s) = ((~p | q | s) & (~p | ~r | s))"
+    }
+]

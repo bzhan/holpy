@@ -1,6 +1,12 @@
 {
   "theories":[
       "logic_base",
-      "logic"
+      "logic",
+      "nat",
+      "list",
+      "function",
+      "expr",
+      "sat",
+      "hoare"
   ]
 }

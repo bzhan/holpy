@@ -1,16 +1,18 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
-import json
+from copy import copy
+import json,sys,io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 from flask import Flask, request, render_template
 from flask.json import jsonify
+from kernel.type import HOLType
 from kernel.term import Term
 from kernel.thm import primitive_deriv
+from kernel import extension
 from syntax import parser, printer
 from server.tactic import ProofState
-from logic.basic import BasicTheory
-from kernel.type import HOLType
-from file_function import save_file, save_proof, save_edit, delete
+from logic import basic
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -19,7 +21,6 @@ app.config.from_object('config')
 
 # Dictionary from id to ProofState
 cells = dict()
-
 
 @app.route('/')
 def index():
@@ -30,7 +31,8 @@ def index():
 def init_component():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = ProofState.parse_init_state(data)
+        thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']))
+        cell = ProofState.parse_init_state(thy, data)
         cells[data['id']] = cell
         return jsonify(cell.json_data())
     return jsonify({})
@@ -41,7 +43,8 @@ def init_saved_proof():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         try:
-            cell = ProofState.parse_proof(data)
+            thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']))
+            cell = ProofState.parse_proof(thy, data)
             cells[data['id']] = cell
             return jsonify(cell.json_data())
         except Exception as e:
@@ -127,9 +130,10 @@ def rewrite_goal():
 def set_line():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))
+        cell = cells.get(data['id'])
         try:
-            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(), data['line'])
+            line_id = data['item']['id']
+            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(line_id), data['item'])
             cell.set_line(item.id, item.rule, args=item.args, prevs=item.prevs, th=item.th)
             return jsonify(cell.json_data())
         except Exception as e:
@@ -139,69 +143,80 @@ def set_line():
             }
         return jsonify(error)
 
+# 显示高亮的函数；
+def file_data_to_output(thy, data):
+    """Convert an item in the theory in json format in the file to
+    json format sent to the web client. Modifies data in-place.
+    Also modifies thy in parsing the item.
+
+    """
+    parser.parse_extension(thy, data)
+    if data['ty'] == 'def.ax':
+        T = parser.parse_type(thy, data['type'])
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+
+    elif data['ty'] == 'thm':
+        ctxt = parser.parse_vars(thy, data['vars'])
+        prop = parser.parse_term(thy, ctxt, data['prop'])
+        data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+
+    elif data['ty'] == 'type.ind':
+        type_dic = dict()
+        for i, constr in enumerate(data['constrs']):
+            type_list = []
+            T = parser.parse_type(thy, constr['type'])
+            argsT, res = HOLType.strip_type(T)
+            for a in argsT:
+                type_list.append(printer.print_type(thy, a, unicode=True, highlight=True))
+            type_dic[str(i)] = type_list
+            type_dic['concl'] = printer.print_type(thy, res, unicode=True, highlight=True)
+        data['argsT'] = type_dic
+
+    elif data['ty'] == 'def.ind':
+        T = parser.parse_type(thy, data['type'])
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+        for rule in data['rules']:
+            ctxt = parser.parse_vars(thy, rule['vars'])
+            prop = parser.parse_term(thy, ctxt, rule['prop'])
+            rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+    # Ignore other types of information.
+    else:
+        pass
+
 
 @app.route('/api/json', methods=['POST'])
 def json_parse():
-    thy = BasicTheory
-    output_data = []
-    f_data = json.loads(request.get_data().decode("utf-8"))
-    data = []
-    if type(f_data) == str:
-        with open('library/'+ f_data +'.json', 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            f.close()
-    else:
-        data = f_data['data']
-        name = f_data['name']
-        save_file(name, data)
+    file_name = json.loads(request.get_data().decode("utf-8"))
+    with open('library/'+ file_name +'.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+    thy = basic.loadImportedTheory(f_data)
+    for data in f_data['content']:
+        file_data_to_output(thy, data)
+    return jsonify({'data': f_data})
 
-    if data:
-         for d in data:
-            vars = []
-            output = {}
-            proof = dict()
-            prop = parser.parse_extension(thy, d)
-            if d['ty'] == 'def.ax':
-                output['name'] = d['name']
-                output['prop'] = str(prop)
-                output['ty'] = d['ty']
-                output_data.append(output)
 
-            if d['ty'] == 'thm':
-                output['name'] = d['name']
-                output['vars'] = d['vars']
-                output['prop_raw'] = printer.print_term(thy, prop, print_abs_type=True)
-                output['prop'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-                output['ty'] = d['ty']
-                if 'instructions' in d:
-                    output['instructions'] = d['instructions']
-                else:
-                    output['instructions'] = []
-                if 'proof' in d:
-                    output['proof'] = d['proof']
-                    output['status'] = 'yellow' if d['num_gaps'] > 0 else 'green'
-                else:
-                    output['status'] = 'red'
+@app.route('/api/add-info', methods=['POST'])
+def json_add_info():
+    data = json.loads(request.get_data().decode("utf-8"))
 
-                output_data.append(output)
+    thy = basic.loadTheory(data['theory_name'])
+    item = data['item']
+    file_data_to_output(thy, item)
+    return jsonify({'data': item})
 
-            if d['ty'] == 'type.ind':
-                output['name'] = d['name']
-                constrs = d['constrs']
-                temp = HOLType.strip_type(prop[1])
-                output['constrs'] = constrs
-                output['prop'] = [str(tl) for tl in temp[0]]
-                output['ty'] = d['ty']
-                output_data.append(output)
 
-            if d['ty'] == 'def.ind':
-                output['name'] = d['name']
-                output['prop'] = [printer.print_term(thy, t, highlight=True, unicode=True) for t in prop]
-                output['type'] = d['type']
-                output['ty'] = d['ty']
-                output_data.append(output)
+@app.route('/api/save_file', methods=['POST'])
+def save_file():
+    json_data = json.loads(request.get_data().decode("utf-8"))
 
-    return jsonify({'data': output_data})
+    data = json_data['data']
+    name = json_data['name']
+
+    with open('library/' + name + '.json', 'w+', encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    return jsonify({})
+
 
 @app.route('/api/root_file', methods=['GET'])
 def get_root():
@@ -211,23 +226,52 @@ def get_root():
         f.close()
     return jsonify(json_data)
 
-@app.route('/api/save_proof', methods=['PUT'])
-def save_proof_file():
+
+@app.route('/api/match_thm', methods=['POST'])
+def match_thm():
     data = json.loads(request.get_data().decode("utf-8"))
-    save_proof(data['name'], data['id'], data['proof'], data['num_gaps'])
+    if data:
+        cell = cells.get(data.get('id'))
+        target_id = data.get('target_id')
+        conclusion_id = data.get('conclusion_id')
+        if not conclusion_id:
+            conclusion_id = None
+        ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
+        if ths:
+            return jsonify({'ths': [item[0] for item in ths]})
+        else:
+            return jsonify({})
 
-    return ''
 
-@app.route('/api/save_edit', methods=['PUT'])
-def save_edit_file():
+@app.route('/api/save_modify', methods=['POST'])
+def save_modify():
     data = json.loads(request.get_data().decode("utf-8"))
-    save_edit(data['name'], data['data'], data['n'], data['ty'])
+    error = {}
+    with open('library/' + data['file-name'] + '.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+    try:
+        thy = basic.loadImportedTheory(f_data)
+        for d in data['prev-list']:
+            parser.parse_extension(thy, d)
+        file_data_to_output(thy, data)
+    except Exception as e:
+        error = {
+            "failed": e.__class__.__name__,
+            "message": str(e)
+        }
+    return jsonify({'data' : data, 'error' : error})
 
-    return ''
 
-@app.route('/api/delete', methods=['PUT'])
-def delete_file():
+@app.route('/api/editor_file', methods=['PUT'])
+def save_edit():
     data = json.loads(request.get_data().decode("utf-8"))
-    delete(data['name'], data['id'])
+    file_name = data['name']
+    with open('library/'+ file_name+ '.json', 'r', encoding='utf-8') as file:
+        f_data = json.load(file)
+    f_data['content'] = data['data']
+    j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
+    json.dump(f_data, j, indent=4, ensure_ascii=False, sort_keys=True)
+    j.close()
 
-    return ''
+    return jsonify({})
+

@@ -1,9 +1,11 @@
 # Author: Bohua Zhan
 
-from kernel.type import TFun, hol_bool
+from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Const, Abs
+from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv_thm_sym
 
 """Utility functions for logic."""
+
 
 conj = Const("conj", TFun(hol_bool, hol_bool, hol_bool))
 disj = Const("disj", TFun(hol_bool, hol_bool, hol_bool))
@@ -15,17 +17,51 @@ def is_conj(t):
     """Whether t is of the form A & B."""
     return t.is_binop() and t.get_head() == conj
 
-def mk_conj(s, t):
-    """Construct the term s & t."""
-    return conj(s, t)
+def mk_conj(*args):
+    """Construct the term s1 & ... & sn."""
+    if args:
+        assert isinstance(args[0], Term), "mk_conj: each argument must be a term"
+        if len(args) > 1:
+            return conj(args[0], mk_conj(*args[1:]))
+        else:
+            return args[0]
+    else:
+        return true
+
+def strip_conj(t):
+    """Given term of the form s1 & ... & sn, return the list
+    [s1, ..., sn].
+
+    """
+    if is_conj(t):
+        return [t.arg1] + strip_conj(t.arg)
+    else:
+        return [t]
 
 def is_disj(t):
     """Whether t is of the form A | B."""
     return t.is_binop() and t.get_head() == disj
 
-def mk_disj(s, t):
-    """Construct the term s | t."""
-    return disj(s, t)
+def mk_disj(*args):
+    """Construct the term s1 | ... | sn."""
+    if args:
+        assert isinstance(args[0], Term), "mk_disj: each argument must be a term"
+        if len(args) > 1:
+            return disj(args[0], mk_disj(*args[1:]))
+        else:
+            return args[0]
+    else:
+        return false
+
+def strip_disj(t):
+    """Given term of the form s1 | ... | sn, return the list
+    [s1, ..., sn].
+
+    """
+    if is_disj(t):
+        return [t.arg1] + strip_disj(t.arg)
+    else:
+        return [t]
 
 def is_neg(t):
     """Whether t is of the form ~ A."""
@@ -36,16 +72,13 @@ def is_exists(t):
     return t.ty == Term.COMB and t.fun.ty == Term.CONST and \
         t.fun.name == "exists" and t.arg.ty == Term.ABS
 
-def mk_exists(x, body, *, var_name = None, T = None):
+def mk_exists(x, body):
     """Given a variable x and a term t possibly depending on x, return
     the term ?x. t.
 
     """
-    if T is None:
-        T = x.T
-
-    exists_t = Const("exists", TFun(TFun(T, hol_bool), hol_bool))
-    return exists_t(Term.mk_abs(x, body, var_name = var_name, T = T))
+    exists_t = Const("exists", TFun(TFun(x.T, hol_bool), hol_bool))
+    return exists_t(Term.mk_abs(x, body))
 
 def beta_norm(t):
     """Normalize t using beta-conversion."""
@@ -59,15 +92,60 @@ def beta_norm(t):
         else:
             return f(x)
     elif t.ty == Term.ABS:
-        return Abs(t.var_name, t.T, beta_norm(t.body))
+        return Abs(t.var_name, t.var_T, beta_norm(t.body))
     elif t.ty == Term.BOUND:
         return t
     else:
         raise TypeError()
 
-def subst_norm(t, inst):
+def subst_norm(t, instsp):
     """Substitute using the given instantiation, then normalize with
     respect to beta-conversion.
 
     """
-    return beta_norm(t.subst(inst))
+    tyinst, inst = instsp
+    return beta_norm(t.subst_type(tyinst).subst(inst))
+
+def if_t(T):
+    return Const("IF", TFun(hol_bool, T, T, T))
+
+def is_if(t):
+    """Whether t is of the form if P then x else y."""
+    f, args = t.strip_comb()
+    return f.is_const_with_name("IF") and len(args) == 3
+
+def mk_if(P, x, y):
+    """Obtain the term if P then x else y."""
+    return if_t(x.get_type())(P, x, y)
+
+def dest_if(t):
+    """Given a term if P then x else y, return (P, x, y)."""
+    _, args = t.strip_comb()
+    return args
+
+"""Normalization rules for logic."""
+
+class norm_conj_assoc_clauses(Conv):
+    """Normalize (A_1 & ... & A_n) & (B_1 & ... & B_n)."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.loadTheory('logic')
+
+        if is_conj(t.arg1):
+            return then_conv(
+                rewr_conv_thm_sym(thy, "conj_assoc"),
+                arg_conv(norm_conj_assoc_clauses())
+            ).get_proof_term(t)
+        else:
+            return all_conv().get_proof_term(t)
+
+class norm_conj_assoc(Conv):
+    """Normalize conjunction with respect to associativity."""
+    def get_proof_term(self, t):
+        if is_conj(t):
+            return then_conv(
+                binop_conv(norm_conj_assoc()),
+                norm_conj_assoc_clauses()
+            ).get_proof_term(t)
+        else:
+            return all_conv().get_proof_term(t)

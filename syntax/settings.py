@@ -1,14 +1,8 @@
 # Author: Bohua Zhan
 
-"""Global settings. Mainly for printing."""
+"""Settings for printing."""
 
 settings_stack = [{
-
-    # Function for printing terms.
-    'term_printer': None,
-
-    # Whether to print type for bound variables.
-    'print_abs_type': False,
 
     # Whether to print unicode.
     'unicode': False,
@@ -27,12 +21,6 @@ def update_settings(**kargs):
 def recover_settings():
     settings_stack.pop()
 
-def term_printer():
-    return settings_stack[-1]['term_printer']
-
-def print_abs_type():
-    return settings_stack[-1]['print_abs_type']
-
 def unicode():
     return settings_stack[-1]['unicode']
 
@@ -43,9 +31,8 @@ def with_settings(func):
     """Decorator for functions that accept printer settings.
 
     This decorator enables the wrapped function to accept keyword
-    arguments term_printer, print_abs_type, unicode, and highlight.
-    These keyword arguments are removed before calling the
-    actual function.
+    arguments unicode and highlight. These keyword arguments are
+    removed before calling the actual function.
 
     If at least one keyword argument is in contradiction with the
     current settings_stack, a new setting is pushed onto the

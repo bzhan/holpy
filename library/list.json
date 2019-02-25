@@ -1,0 +1,257 @@
+{
+    "content": [
+        {
+            "depth": 0,
+            "name": "Basic definitions",
+            "ty": "header"
+        },
+        {
+            "args": [
+                "a"
+            ],
+            "constrs": [
+                {
+                    "args": [],
+                    "name": "nil",
+                    "type": "'a list"
+                },
+                {
+                    "args": [
+                        "x",
+                        "xs"
+                    ],
+                    "name": "cons",
+                    "type": "'a => 'a list => 'a list"
+                }
+            ],
+            "name": "list",
+            "ty": "type.ind"
+        },
+        {
+            "name": "length",
+            "rules": [
+                {
+                    "prop": "length (nil::'a list) = 0",
+                    "vars": {}
+                },
+                {
+                    "prop": "length (cons x xs) = Suc (length xs)",
+                    "vars": {
+                        "x": "'a",
+                        "xs": "'a list"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a list => nat"
+        },
+        {
+            "ascii_op": "@",
+            "name": "append",
+            "rules": [
+                {
+                    "prop": "nil @ xs = xs",
+                    "vars": {
+                        "xs": "'a list"
+                    }
+                },
+                {
+                    "prop": "cons x xs @ ys = cons x (xs @ ys)",
+                    "vars": {
+                        "x": "'a",
+                        "xs": "'a list",
+                        "ys": "'a list"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a list => 'a list => 'a list"
+        },
+        {
+            "name": "rev",
+            "rules": [
+                {
+                    "prop": "rev (nil::'a list) = nil",
+                    "vars": {}
+                },
+                {
+                    "prop": "rev (cons x xs) = rev xs @ cons x nil",
+                    "vars": {
+                        "x": "'a",
+                        "xs": "'a list"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a list => 'a list"
+        },
+        {
+            "instructions": [
+                "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
+                "Select S1 as goal, use Ctrl+R with append_def_1.",
+                "Set sorry on S1 to reflexive nil.",
+                "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
+                "Select S4 as goal, use Ctrl+R with append_def_2.",
+                "Set sorry on S4 to arg_combination cons x from S3."
+            ],
+            "name": "append_right_neutral",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "append_def_1, {a: 'a}, {xs: ([]::'a list)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ([]::'a list) @ [] = []"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x::'a. ∀xs. xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": ""
+                },
+                {
+                    "args": "xs, 'a list",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": ""
+                },
+                {
+                    "args": "xs @ [] = xs",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "xs @ [] = xs ⊢ xs @ [] = xs"
+                },
+                {
+                    "args": "cons x",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "arg_combination",
+                    "th": "xs @ [] = xs ⊢ x # xs @ [] = x # xs"
+                },
+                {
+                    "args": "append_def_2, (x # xs) @ [] = x # xs",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "xs @ [] = xs ⊢ (x # xs) @ [] = x # xs"
+                },
+                {
+                    "args": "xs @ [] = xs",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
+                },
+                {
+                    "args": "xs",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "⊢ ∀xs. xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
+                },
+                {
+                    "args": "x",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.6"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "⊢ ∀x::'a. ∀xs. xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
+                },
+                {
+                    "args": "list_induct, {}, {P: λxs::'a list. xs @ [] = xs, x: xs}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ xs @ [] = xs"
+                }
+            ],
+            "prop": "xs @ nil = xs",
+            "ty": "thm",
+            "vars": {
+                "xs": "'a list"
+            }
+        },
+        {
+            "instructions": [
+                "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
+                "Select S1 as goal, use Ctrl+R with append_def_1.",
+                "Set sorry on S1 to reflexive ys @ zs.",
+                "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
+                "Select S4 as goal, use Ctrl+R with append_def_2.",
+                "Select S4 as goal, use Ctrl+R with append_def_2.",
+                "Set sorry on S4 to arg_combination cons x from S3."
+            ],
+            "name": "append_assoc",
+            "prop": "(xs @ ys) @ zs = xs @ ys @ zs",
+            "ty": "thm",
+            "vars": {
+                "x": "'a",
+                "xs": "'a list",
+                "ys": "'a list",
+                "zs": "'a list"
+            }
+        },
+        {
+            "name": "length_append",
+            "prop": "length (xs @ ys) = length xs + length ys",
+            "ty": "thm",
+            "vars": {
+                "xs": "'a list",
+                "ys": "'a list"
+            }
+        },
+        {
+            "name": "rev_append",
+            "prop": "rev (xs @ ys) = rev ys @ rev xs",
+            "ty": "thm",
+            "vars": {
+                "xs": "'a list",
+                "ys": "'a list"
+            }
+        },
+        {
+            "name": "rev_rev",
+            "prop": "rev (rev xs) = xs",
+            "ty": "thm",
+            "vars": {
+                "xs": "'a list"
+            }
+        },
+        {
+            "name": "rev_length",
+            "prop": "length (rev xs) = length xs",
+            "ty": "thm",
+            "vars": {
+                "xs": "'a list"
+            }
+        }
+    ],
+    "description": "Lists",
+    "imports": [
+        "nat"
+    ],
+    "name": "list"
+}

@@ -1,24 +1,33 @@
 # Author: Bohua Zhan
 
+"""Global store of macros. Keys are names of the macros,
+values are the corresponding macro objects.
+
+When each macro is defined, it is first put into this dictionary.
+It is added to the theory only when a theory file contains an
+extension adding it by name.
+
+"""
+global_macros = dict()
+
 class MacroSig():
     """Signature for the arguments of proof macro."""
-    NONE, TERM, TYINST, INST, STRING, STRING_TERM, STRING_INST = range(7)
+    NONE, TERM, TYINST, INST, STRING, STRING_TYPE, STRING_TERM, STRING_INSTSP = range(8)
 
 
 class ProofMacro():
-    """
-    To define the macro to simplify the proof.
-    A proof macro represents a derived proof method. It consists
-    of the following data:
+    """A proof macro represents a derived proof method.
     
-    __call__ -- obtain the result of applying the proof method. Input
-    is the argument of the proof method, followed by the list of previous
-    theorems.
+    A single macro invocation can represent multiple primitive derivation
+    steps or calls to other macros (including itself). It is used to both
+    simplify the proof process and reduce the amount of memory it takes
+    to store a proof.
+    
+    A macro consists of the following data:
+    
+    __call__ -- obtain the result of applying the proof method.
 
-    expand -- obtain the detail proof of the derivation. Input is the
-    current depth (used to avoid name conflict), optionally the current
-    theory, argument of the proof method, and the list of ids and statements
-    of previous theorems.
+    expand -- obtain the detailed proof of the derivation.
 
     sig -- signature of the macro, of type MacroSig.
 
@@ -30,16 +39,23 @@ class ProofMacro():
         self.level = None
         self.sig = None
         self.has_theory = None
+        self.use_goal = None
 
-    def __str__(self):
-        if hasattr(self, "__call__"):
-            str_no_eval = ""
-        else:
-            str_no_eval = ", no eval"
+    def __call__(self):
+        """Obtain the result of applying the proof method.
+        
+        Input is the argument of the proof method, followed by the list
+        of previous theorems.
 
-        if hasattr(self, "expand"):
-            str_no_expand = ""
-        else:
-            str_no_expand = ", no expand"
+        """
+        raise NotImplementedError()
 
-        return "level " + str(self.level) + str_no_eval + str_no_expand
+    def expand(self):
+        """Obtain the detailed proof of the derivation.
+        
+        Input is the current id prefix, optionally the current theory,
+        argument of the proof method, and the list of ids and statements
+        of previous theorems.
+
+        """
+        raise NotImplementedError()

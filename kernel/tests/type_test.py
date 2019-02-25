@@ -85,5 +85,26 @@ class TypeTest(unittest.TestCase):
         for pat, T in test_data:
             self.assertRaises(TypeMatchException, pat.match, T)
 
+    def testGetTVars(self):
+        test_data = [
+            (hol_bool, []),
+            (TFun(Ta,Ta), [Ta]),
+            (TFun(Ta,Tb), [Ta, Tb]),
+        ]
+
+        for T, res in test_data:
+            self.assertEqual(T.get_tvars(), res)
+
+    def testGetTSubs(self):
+        test_data = [
+            (hol_bool, [hol_bool]),
+            (TFun(Ta,Ta), [TFun(Ta,Ta), Ta]),
+            (TFun(Ta,Tb), [TFun(Ta,Tb), Ta, Tb]),
+        ]
+
+        for T, res in test_data:
+            self.assertEqual(T.get_tsubs(), res)
+
+
 if __name__ == "__main__":
     unittest.main()

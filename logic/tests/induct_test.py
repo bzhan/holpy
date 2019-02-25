@@ -81,5 +81,29 @@ class InductTest(unittest.TestCase):
         ]
         self.assertEqual(list_ext.data, res)
 
+    def testInductProd(self):
+        Ta = TVar("a")
+        Tb = TVar("b")
+        Tab = Type("prod", Ta, Tb)
+        prod_ext = induct.add_induct_type(
+            "prod", ["a", "b"], [("Pair", TFun(Ta, Tb, Tab), ["a", "b"])])
+
+        a = Var("a", Ta)
+        b = Var("b", Tb)
+        a2 = Var("a'", Ta)
+        b2 = Var("b'", Tb)
+        pair = Const("Pair", TFun(Ta, Tb, Tab))
+        P = Var("P", TFun(Tab, hol_bool))
+        x = Var("x", Tab)
+
+        res = [
+            AxType("prod", 2),
+            AxConstant("Pair", TFun(Ta, Tb, Tab)),
+            Theorem("prod_Pair_inject", Thm([], imp(eq(pair(a, b), pair(a2, b2)), conj(eq(a, a2), eq(b, b2))))),
+            Theorem("prod_induct", Thm([], imp(all(a, all(b, P(pair(a, b)))), P(x))))
+        ]
+        self.assertEqual(prod_ext.data, res)
+
+
 if __name__ == "__main__":
     unittest.main()
