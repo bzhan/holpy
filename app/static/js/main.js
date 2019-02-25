@@ -330,8 +330,8 @@
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"><font color="#006000"><b>fun</b></font>:</label> ' +
                         '<input id="data-name'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ data_name +'">' +
-                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="margin-top:5px;height:70px;width:40%;background:transparent;border:1px;solid #ffffff;" name="content">' + data_new_content + '</textarea>' +
-                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars'+ page_num +'" style="margin-top:5px;height:70px;width:40%;background:transparent;border:1px;solid #ffffff;" placeholder="vars"></textarea>' +
+                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="margin-top:5px;height:150px;width:40%;background:transparent;border:0px solid #ffffff;" name="content">' + data_new_content + '</textarea>' +
+                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea onpropertychange="if(this.scrollHeight>80) this.style.posHeight=this.scrollHeight+5" spellcheck="false" id="data-vars'+ page_num +'" style="margin-top:5px;height:150px;width:40%;background:transparent;border:0px solid #ffffff;" placeholder="vars"></textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 display_lines_number(data_content_list, page_num, number);
