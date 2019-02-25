@@ -660,7 +660,7 @@
     function display_result_list() {
         var import_str = theory_imports.join('、');
         $('#left_json').empty();
-        $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><b>description </b><font color="006633">'+ theory_desc + '</font></span><br>'+
+        $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
         '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
 //        result_他是后台json路由传递回来的数据也就是json文件的内容；利用他了可以扎到对应文件内部的description以及headeer、imports等信息；
 //[]是列表
@@ -743,8 +743,7 @@
 
             }
             if (ty==='header') {
-                $('#left_json').append($('<div><p id="data-'+ num +'"><span name="header"><font color="#006000"><b>header</b></font></span>&nbsp;<span id="head_name" name="name">' +name + '</span><br>&nbsp;&nbsp;<span name="content"><tt>depth: ' + depth +
-                  '</tt></span>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num +'"><b>edit</b></a></p></div>'))
+                $('#left_json').append($('<div><p id="data-'+ num +'">&nbsp;<span id="head_name" name="name">' +name + '</span><br>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num +'"><b>edit</b></a></p></div>'))
             }
         }
     }
@@ -792,7 +791,7 @@
                 display_result_list();
             }
         });
-    })
+    }
 
     $('#left_json').on('blur','textarea[name="edit"]', function(){
         var value = $(this).val();
