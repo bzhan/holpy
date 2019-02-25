@@ -292,8 +292,8 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
-                        'constant:&nbsp;<input id="data-name'+ page_num +'" style="width:10%;" value="' + data_name + '">' +
-                        '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input id="data-content'+ page_num +'" style="width:50%;" value="' + data_content + '">' +
+                        '<font color="#006000"><b>constant</b></font>:&nbsp;<input id="data-name'+ page_num +'" style="background:transparent;border:1px;solid #ffffff;width:10%;" value="' + data_name + '">' +
+                        '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input id="data-content'+ page_num +'" style="width:50%;background:transparent;border:1px;solid #ffffff;" value="' + data_content + '">' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:10px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -301,9 +301,9 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
-                        'theorem:&nbsp;<input id="data-name'+ page_num +'" style="margin-top:0px;width:20%;" value="' + data_name + '">' +
-                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input id="data-vars'+ page_num +'" style="width:30%;" value="'+ vars_str +'">' +
-                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input id="data-content'+ page_num +'" style="width:30%;" value="'+ data_content +'">'+
+                        '<font color="#006000"><b>theorem</b></font>:&nbsp;<input id="data-name'+ page_num +'" style="margin-top:0px;width:20%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' +
+                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input id="data-vars'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ vars_str +'">' +
+                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input id="data-content'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ data_content +'">'+
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-left:44px;margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -313,9 +313,9 @@
                 $('#codeTab').find('span#'+ page_num).text(data_name.split(/\s/)[1]);
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="'+ page_num +'" for="code' + page_num + '">datatype:</label> ' +
-                        '<br><input id="data-name'+ page_num +'" style="width:10%;" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;'+
-                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="height:60px;width:30%;">'+ data_new_content +'</textarea>' +
+                        '<label name="'+ page_num +'" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
+                        '<br><input id="data-name'+ page_num +'" style="width:10%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;'+
+                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="height:60px;width:30%;background:transparent;border:1px;solid #ffffff;">'+ data_new_content +'</textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -328,10 +328,10 @@
                 $('#codeTab').find('span#'+ page_num).text(data_name.split(' :: ')[0]);
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="'+ page_num +'" for="code' + page_num + '">fun:</label> ' +
-                        '<input id="data-name'+ page_num +'" style="width:30%;" value="'+ data_name +'">' +
-                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="margin-top:5px;height:70px;width:40%;" name="content">' + data_new_content + '</textarea>' +
-                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars'+ page_num +'" style="margin-top:5px;height:70px;width:40%;" placeholder="vars"></textarea>' +
+                        '<label name="'+ page_num +'" for="code' + page_num + '"><font color="#006000"><b>fun</b></font>:</label> ' +
+                        '<input id="data-name'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ data_name +'">' +
+                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="margin-top:5px;height:70px;width:40%;background:transparent;border:1px;solid #ffffff;" name="content">' + data_new_content + '</textarea>' +
+                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars'+ page_num +'" style="margin-top:5px;height:70px;width:40%;background:transparent;border:1px;solid #ffffff;" placeholder="vars"></textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 display_lines_number(data_content_list, page_num, number);
@@ -381,7 +381,7 @@
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
                     if (error && error !== {}) {
-                        var error_info = error.failed + ' : ' + error.massage
+                        var error_info = error.detail-content;
                         $('div#'+error_id).find('pre').text(error_info);
                     }
                     $.each(result_list, function(j,k) {

@@ -1,7 +1,7 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
 from copy import copy
-import json,sys,io
+import json,sys,io,traceback2
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 from flask import Flask, request, render_template
@@ -256,9 +256,15 @@ def save_modify():
             parser.parse_extension(thy, d)
         file_data_to_output(thy, data)
     except Exception as e:
+        exc_=[]
+        exc_list = traceback2.format_exc().split('\n')[1:]
+        for e in exc_list:
+            if e:
+                exc_.append(e.strip())
         error = {
             "failed": e.__class__.__name__,
-            "message": str(e)
+            "message": str(e),
+            "detail-content" : ': '.join(exc_)
         }
     return jsonify({'data' : data, 'error' : error})
 
