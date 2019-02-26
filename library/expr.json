@@ -13,14 +13,14 @@
                         "n"
                     ],
                     "name": "N",
-                    "type": "nat => aexp"
+                    "type": "nat=>aexp"
                 },
                 {
                     "args": [
                         "x"
                     ],
                     "name": "V",
-                    "type": "nat => aexp"
+                    "type": "nat=>aexp"
                 },
                 {
                     "args": [
@@ -28,7 +28,15 @@
                         "a2"
                     ],
                     "name": "Plus",
-                    "type": "aexp => aexp => aexp"
+                    "type": "aexp⇒aexp⇒aexp"
+                },
+                {
+                    "args": [
+                        "c1",
+                        "c2"
+                    ],
+                    "name": "Times",
+                    "type": "aexp⇒aexp⇒aexp"
                 }
             ],
             "name": "aexp",
@@ -41,13 +49,13 @@
                     "prop": "aval (N n) s = n",
                     "vars": {
                         "n": "nat",
-                        "s": "nat => nat"
+                        "s": "nat=>nat"
                     }
                 },
                 {
                     "prop": "aval (V x) s = s x",
                     "vars": {
-                        "s": "nat => nat",
+                        "s": "nat=>nat",
                         "x": "nat"
                     }
                 },
@@ -56,12 +64,20 @@
                     "vars": {
                         "a1": "aexp",
                         "a2": "aexp",
-                        "s": "nat => nat"
+                        "s": "nat=>nat"
+                    }
+                },
+                {
+                    "prop": "aval (Times c1 c2) s = aval c1 s * aval c2 s",
+                    "vars": {
+                        "a1": "aexp",
+                        "a2": "aexp",
+                        "s": "nat=>nat"
                     }
                 }
             ],
             "ty": "def.ind",
-            "type": "aexp => (nat => nat) => nat"
+            "type": "aexp ⇒ (nat ⇒ nat) ⇒ nat"
         },
         {
             "name": "aval_test1",
