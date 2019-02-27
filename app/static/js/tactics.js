@@ -448,7 +448,14 @@ function display_line(id, line_no) {
 
     edit_flag = true;
     // Display id in bold
-    ch = display_str(editor, '  ', line_no, ch, {css: 'font-weight: bold'});
+    var str_temp = ' '
+    for (var i=0;i<line.id.length;i++) {
+        if (line.id[i]==='.') {
+            str_temp += '  '
+        }
+    }
+    editor.getOption('lineNumberFormatter', 'function(line) {')
+    ch = display_str(editor, str_temp, line_no, ch, {css: 'font-weight: bold'});
 
     if (line.rule === 'assume') {
         ch = display_str(editor, 'assume ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
@@ -493,6 +500,16 @@ function display(id) {
     edit_flag = false;
     var cell = cells[id]['proof'];
     $.each(cell, function (line_no) {
+        var line = cells[id]['proof'][line_no];
+        editor.setOption('lineNumberFormatter', function(line_no) {
+            if (line_no<cell.length) {
+                return cells[id]['proof'][line_no]['id'];
+            }
+            else {
+                return '';
+            }
+        }
+    );
         display_line(id, line_no);
         edit_flag = true;
         var len = editor.getLineHandle(line_no).text.length;

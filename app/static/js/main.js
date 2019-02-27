@@ -40,6 +40,7 @@
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>' +
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button></div>'));
             init_editor("code" + page_num);
+            $('div.CodeMirror-gutters').css('width', '45px');
             // Add location for displaying results;
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
@@ -830,10 +831,15 @@
     }
 
     function init_editor(editor_id = "code1") {
+        var id = editor_id;
+//        var cell = cells[id]['proof'];
         var editor = CodeMirror.fromTextArea(document.getElementById(editor_id), {
             mode: "text/x-python",
             lineNumbers: true,
-            firstLineNumber: 0,
+            firstLineNumber:0,
+            lineNumberFormatter: function(line) {
+                return line;
+            },
             theme: "",
             lineWrapping: true,
             foldGutter: true,
