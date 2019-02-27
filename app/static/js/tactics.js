@@ -448,7 +448,7 @@ function display_line(id, line_no) {
 
     edit_flag = true;
     // Display id in bold
-    ch = display_str(editor, line.id + ': ', line_no, ch, {css: 'font-weight: bold'});
+    ch = display_str(editor, '  ', line_no, ch, {css: 'font-weight: bold'});
 
     if (line.rule === 'assume') {
         ch = display_str(editor, 'assume ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
