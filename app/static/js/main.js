@@ -12,6 +12,7 @@
     var proof_id = 0;
     var origin_result = [];
     var edit_mode = false;
+    var result_list_dict = {};
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -38,7 +39,7 @@
                     '<label for="code' + page_num + '"></label> ' +
                     '<textarea id="code' + page_num + '"></textarea>' +
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button></div>'));
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button></div>'));
             init_editor("code" + page_num);
             // Add location for displaying results;
             $('#' + id).append(
@@ -185,9 +186,12 @@
         }
 
         //click reset button to reset the thm to the origin status;
-        $('div.rtop').on('click', 'button[name=reset]', function () {
+        $('div.rtop').on('click', 'button.reset', function () {
             var id = Number($(this).attr('id')) - 1;
-            theorem_proof(result_list[id]);
+            var file_name = $(this).attr('name').slice(5,);
+            if (file_name) {
+                theorem_proof(result_list_dict[file_name][id]);
+            }
         })
 
         $('#codeTab').on("click", "a", function (e) {
@@ -658,6 +662,7 @@
 
     // Display result_list on the left side of the page.
     function display_result_list() {
+        result_list_dict[theory_name] = result_list;
         var import_str = theory_imports.join('、');
         $('#left_json').empty();
         $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
