@@ -40,7 +40,6 @@
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>' +
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button></div>'));
             init_editor("code" + page_num);
-            $('div.CodeMirror-gutters').css('width', '45px');
             // Add location for displaying results;
             $('#' + id).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
@@ -57,6 +56,7 @@
                 $(this).removeClass('active');
             });
         });
+
 
         $('#right').on('click', '.backward-step', function () {
             apply_backward_step(get_selected_editor(), is_others = true);
@@ -259,7 +259,6 @@
                 }, 200);
             } else {
                 $('#add-cell').click();
-//                $('#codeTab li[name="'+get_selected_id()+'"] span').text(thm_name);
                 setTimeout(function () {
                     $('#codeTab li[name="'+get_selected_id()+'"] span').text(thm_name);
                     theorem_proof(result_list[proof_id - 1]);
@@ -303,8 +302,8 @@
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
                         '<font color="#006000"><b>theorem</b></font>:&nbsp;<input spellcheck="false" id="data-name'+ page_num +'" style="margin-top:0px;width:20%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' +
-                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-vars'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ vars_str +'">' +
-                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ data_content +'">'+
+                        '<br><br>&nbsp;&nbsp;vars:&nbsp;&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-vars'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ vars_str +'">' +
+                        '<br><br>&nbsp;&nbsp;term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ data_content +'">'+
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-left:44px;margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -315,8 +314,8 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
-                        '<br><input spellcheck="false" id="data-name'+ page_num +'" style="width:10%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;'+
-                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="height:60px;width:30%;background:transparent;border:1px;solid #ffffff;">'+ data_new_content +'</textarea>' +
+                        '<br>&nbsp;&nbsp;<input spellcheck="false" id="data-name'+ page_num +'" style="width:10%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;'+
+                        '<br>&nbsp;&nbsp;<textarea spellcheck="false" id="data-content'+ page_num +'" style="height:60px;width:30%;background:transparent;border:1px;solid #ffffff;">'+ data_new_content +'</textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -331,7 +330,7 @@
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"><font color="#006000"><b>fun</b></font>:</label> ' +
                         '<input spellcheck="false" id="data-name'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ data_name +'">' +
-                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="margin-top:5px;height:150px;width:40%;background:transparent;border:0px solid #ffffff;" name="content">' + data_new_content + '</textarea>' +
+                        '<br>&nbsp;<textarea spellcheck="false" id="data-content'+ page_num +'" style="margin-top:5px;height:150px;width:40%;background:transparent;border:0px solid #ffffff;" name="content">' + data_new_content + '</textarea>' +
                         '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars'+ page_num +'" style="margin-top:5px;height:150px;width:40%;background:transparent;border:0px solid #ffffff;" placeholder="vars"></textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');

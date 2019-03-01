@@ -448,13 +448,12 @@ function display_line(id, line_no) {
 
     edit_flag = true;
     // Display id in bold
-    var str_temp = ' '
+    var str_temp = ''
     for (var i=0;i<line.id.length;i++) {
         if (line.id[i]==='.') {
             str_temp += '  '
         }
     }
-    editor.getOption('lineNumberFormatter', 'function(line) {')
     ch = display_str(editor, str_temp, line_no, ch, {css: 'font-weight: bold'});
 
     if (line.rule === 'assume') {
@@ -489,6 +488,7 @@ function display_line(id, line_no) {
             ch = display_str(editor, line.prevs.join(', '), line_no, ch);
         }
     }
+    get_selected_editor().execCommand("goDocEnd");
     edit_flag = false;
 }
 
@@ -499,10 +499,14 @@ function display(id) {
     editor.setValue('');
     edit_flag = false;
     var cell = cells[id]['proof'];
+    var large_num = 0;
     $.each(cell, function (line_no) {
         var line = cells[id]['proof'][line_no];
         editor.setOption('lineNumberFormatter', function(line_no) {
             if (line_no<cell.length) {
+                var length = cells[id]['proof'][line_no]['id'].length;
+                if (length>=large_num)
+                    large_num = length;
                 return cells[id]['proof'][line_no]['id'];
             }
             else {
@@ -516,6 +520,9 @@ function display(id) {
         editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
         edit_flag = false;
     });
+    $('div.tab-pane.selected div.CodeMirror-gutters').css('width', 32+large_num*3+'px');
+    $('div.CodeMirror-gutters').css('text-align','left');
+    $('div.tab-pane.selected div.CodeMirror-sizer').css('margin-left', 33+large_num*2+'px');
 
     cells[get_selected_id()].readonly_lines.length = 0;
     for (var i = 0; i < editor.lineCount(); i++)
