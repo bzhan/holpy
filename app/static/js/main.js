@@ -190,7 +190,7 @@
             var id = Number($(this).attr('id')) - 1;
             var file_name = $(this).attr('name').slice(5,);
             if (file_name) {
-                theorem_proof(result_list_dict[file_name][id]);
+                theorem_proof(result_list_dict[file_name][id], file_name);
             }
         })
 
@@ -609,7 +609,7 @@
         });
     }
 
-    function theorem_proof(r_data) {
+    function theorem_proof(r_data, the_name) {
         if (r_data['instructions'] !== undefined) {
             instructions = r_data['instructions'];
         }
@@ -620,7 +620,7 @@
             'id': get_selected_id(),
             'vars': r_data['vars'],
             'prop': r_data['prop'],
-            'theory_name': theory_name,
+            'theory_name': the_name,
             'thm_name': r_data['name']
         };
         var data = JSON.stringify(event);
