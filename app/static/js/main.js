@@ -265,7 +265,7 @@
                 $('#add-cell').click();
                 setTimeout(function () {
                     $('#codeTab li[name="'+get_selected_id()+'"] span').text(thm_name);
-                    theorem_proof(result_list[proof_id - 1]);
+                    theorem_proof(result_list[proof_id - 1], theory_name);
                 }, 200);
             }
         });
