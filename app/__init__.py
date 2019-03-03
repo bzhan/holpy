@@ -1,8 +1,9 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
 from copy import copy
-import json,sys,io,traceback2
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
+import json, sys, io, traceback2
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 from flask import Flask, request, render_template
 from flask.json import jsonify
@@ -21,6 +22,7 @@ app.config.from_object('config')
 
 # Dictionary from id to ProofState
 cells = dict()
+
 
 @app.route('/')
 def index():
@@ -143,6 +145,7 @@ def set_line():
             }
         return jsonify(error)
 
+
 # 显示高亮的函数；
 def file_data_to_output(thy, data):
     """Convert an item in the theory in json format in the file to
@@ -187,7 +190,7 @@ def file_data_to_output(thy, data):
 @app.route('/api/json', methods=['POST'])
 def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
-    with open('library/'+ file_name +'.json', 'r', encoding='utf-8') as f:
+    with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     thy = basic.loadImportedTheory(f_data)
     for data in f_data['content']:
@@ -236,9 +239,10 @@ def match_thm():
         conclusion_id = data.get('conclusion_id')
         if not conclusion_id:
             conclusion_id = None
+        ths_rewrite = cell.rewrite_goal_thms(target_id)
         ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
-        if ths:
-            return jsonify({'ths': [item[0] for item in ths]})
+        if ths or ths_rewrite:
+            return jsonify({'ths_abs': [item[0] for item in ths], 'ths_rewrite': [item[0] for item in ths_rewrite]})
         else:
             return jsonify({})
 
@@ -255,7 +259,7 @@ def save_modify():
             parser.parse_extension(thy, d)
         file_data_to_output(thy, data)
     except Exception as e:
-        exc_=[]
+        exc_ = []
         exc_list = traceback2.format_exc().split('\n')[1:]
         for e in exc_list:
             if e:
@@ -263,16 +267,16 @@ def save_modify():
         error = {
             "failed": e.__class__.__name__,
             "message": str(e),
-            "detail-content" : ': '.join(exc_)
+            "detail-content": ': '.join(exc_)
         }
-    return jsonify({'data' : data, 'error' : error})
+    return jsonify({'data': data, 'error': error})
 
 
 @app.route('/api/editor_file', methods=['PUT'])
 def save_edit():
     data = json.loads(request.get_data().decode("utf-8"))
     file_name = data['name']
-    with open('library/'+ file_name+ '.json', 'r', encoding='utf-8') as file:
+    with open('library/' + file_name + '.json', 'r', encoding='utf-8') as file:
         f_data = json.load(file)
     f_data['content'] = data['data']
     j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
@@ -280,4 +284,3 @@ def save_edit():
     j.close()
 
     return jsonify({})
-
