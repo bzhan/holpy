@@ -38,7 +38,7 @@
                 $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
                     '<label for="code' + page_num + '"></label> ' +
                     '<textarea id="code' + page_num + '"></textarea>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>' +
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini save" style="margin-top:5px;width:100px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button></div>'));
             init_editor("code" + page_num);
             // Add location for displaying results;
@@ -88,8 +88,9 @@
         });
 
         // Save a single proof to the webpage (not to the json file);
-        $('div.rtop').on('click', 'button[name="save"]', function () {
+        $('div.rtop').on('click', 'button.save', function () {
             editor_id_list = [];
+            var file_name = $(this).attr('name').slice(4,);
             var editor_id = get_selected_id();
             var id = Number($(this).attr('id')) - 1;
             var proof = cells[editor_id]['proof'];
@@ -104,6 +105,7 @@
             })
             result_list[id]['proof'] = output_proof;
             result_list[id]['num_gaps'] = cells[editor_id]['num_gaps'];
+            result_list_dict[file_name] = result_list;
             display_result_list();
         });
 
@@ -666,7 +668,7 @@
         var import_str = theory_imports.join('、');
         $('#left_json').empty();
         $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
-        '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
+            '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
         var num = 0;
         for (var d in result_list) {
             num++;
@@ -828,7 +830,11 @@
                 theory_name = result['data']['name'];
                 theory_imports = result['data']['imports'];
                 theory_desc = result['data']['description'];
-                result_list = result['data']['content'];
+                if (theory_name in result_list_dict) {
+                    result_list = result_list_dict[theory_name];
+                }
+                else
+                    result_list = result['data']['content'];
                 display_result_list();
             }
         });
