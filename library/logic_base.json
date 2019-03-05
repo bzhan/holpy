@@ -42,7 +42,51 @@
             "type": "bool => 'a => 'a => 'a"
         },
         {
+            "hint_backward": "false",
+            "hint_rewrite": "true",
             "name": "conjI",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "A",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "B",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ⊢ B"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "A, B ⊢ A ∧ B"
+                },
+                {
+                    "args": "B",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "A ⊢ B ⟶ A ∧ B"
+                },
+                {
+                    "args": "A",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "B ⊢ A ⟶ B"
+                }
+            ],
             "prop": "A --> B --> A & B",
             "ty": "thm",
             "vars": {
@@ -51,6 +95,8 @@
             }
         },
         {
+            "hint_backward": "True",
+            "hint_rewrite": "True",
             "name": "conjD1",
             "prop": "A & B --> A",
             "ty": "thm",
@@ -60,6 +106,8 @@
             }
         },
         {
+            "hint_backward": "True",
+            "hint_rewrite": "True",
             "name": "conjD2",
             "prop": "A & B --> B",
             "ty": "thm",
@@ -69,6 +117,8 @@
             }
         },
         {
+            "hint_backward": "True",
+            "hint_rewrite": "True",
             "name": "disjI1",
             "prop": "A --> A | B",
             "ty": "thm",
@@ -78,6 +128,8 @@
             }
         },
         {
+            "hint_backward": "True",
+            "hint_rewrite": "True",
             "name": "disjI2",
             "prop": "B --> A | B",
             "ty": "thm",
@@ -87,6 +139,8 @@
             }
         },
         {
+            "hint_backward": "True",
+            "hint_rewrite": "True",
             "name": "disjE",
             "prop": "A | B --> (A --> C) --> (B --> C) --> C",
             "ty": "thm",
@@ -97,6 +151,8 @@
             }
         },
         {
+            "hint_backward": "True",
+            "hint_rewrite": "True",
             "name": "negI",
             "prop": "(A --> false) --> ~A",
             "ty": "thm",
@@ -105,6 +161,8 @@
             }
         },
         {
+            "hint_backward": "True",
+            "hint_rewrite": "True",
             "name": "negE",
             "prop": "~A --> A --> false",
             "ty": "thm",
@@ -173,7 +231,35 @@
             }
         },
         {
+            "hint_backward": "false",
+            "hint_rewrite": "false",
             "name": "if_not_P",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "¬P",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬P ⊢ ¬P"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬P ⊢ (if P then x else y) = y"
+                },
+                {
+                    "args": "¬P",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ ¬P ⟶ (if P then x else y) = y"
+                }
+            ],
             "prop": "~P --> (if P then x else y) = y",
             "ty": "thm",
             "vars": {
@@ -215,4 +301,3 @@
     "imports": [],
     "name": "logic_base"
 }
-
