@@ -307,6 +307,7 @@ class ProofState():
             return []
 
         results = []
+        backwards = self.thy.get_data("hint_backward")
         for name, th in self.thy.get_data("theorems").items():
             instsp = (dict(), dict())
             As, C = th.concl.strip_implies()
@@ -329,7 +330,8 @@ class ProofState():
                 continue
 
             # All matches succeed
-            results.append((name, th))
+            if name in backwards:
+                results.append((name, th))
         return sorted(results)
 
     def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):
@@ -466,11 +468,12 @@ class ProofState():
 
         results = []
         goal = cur_item.th.concl
+        rewrites = self.thy.data.get_data("hint_rewrite")
         for th_name, th in self.thy.get_data("theorems").items():
             if th.concl.is_equals():
                 cv = top_conv(rewr_conv_thm(self.thy, th_name))
                 _, new_goal = cv(goal).concl.dest_binop()
-                if goal != new_goal:
+                if goal != new_goal and th_name in rewrites:
                     results.append((th_name, new_goal))
 
         return sorted(results)

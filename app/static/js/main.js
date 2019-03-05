@@ -38,8 +38,9 @@
                 $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
                     '<label for="code' + page_num + '"></label> ' +
                     '<textarea id="code' + page_num + '"></textarea>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini save" style="margin-top:5px;width:100px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button></div>'));
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini save" style="margin-top:5px;width:100px;margin-left:25px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button>'+
+                    '</br></br><input name="hint_backward" type="checkbox" style="margin-left:25px;"><b>&nbsp;backward</b><input name="hint_rewrite" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'));
             init_editor("code" + page_num);
             // Add location for displaying results;
             $('#' + id).append(
@@ -105,6 +106,8 @@
             })
             result_list[id]['proof'] = output_proof;
             result_list[id]['num_gaps'] = cells[editor_id]['num_gaps'];
+            result_list[id]['hint_backward'] = String($('input[name="hint_backward"]').prop('checked'));
+            result_list[id]['hint_rewrite'] = String($('input[name="hint_rewrite"]').prop('checked'));
             result_list_dict[file_name] = result_list;
             display_result_list();
         });
@@ -130,6 +133,7 @@
 //      save all of the modified_data to the json-file;
         function save_editor_data() {
             var copy_result_list = result_list;
+
             $.each(copy_result_list, function (i, v) {
                 if (v.ty === 'def.ax') {
                     delete v.type_hl;
@@ -160,7 +164,7 @@
             })
         }
 
-        // Save all changes on the webpage to the json-file;
+        // Save all changed proof on the webpage to the json-file;
         function save_json_file() {
             var output_list = [];
             for (var d in result_list) {
@@ -798,28 +802,28 @@
         });
     }
 
-    $('#left_json').on('blur','textarea[name="edit"]', function(){
-        var value = $(this).val();
-        var ty = $(this).prev().text();
-        var id = $(this).parent().attr('id')-1;
-        $(this).replaceWith('<span name="constant" style="border:solid 0px;"> '+value+'</span>');
-        event = {
-            "name": name,//文件名 logicbase
-            "data": value,//bool
-            "ty": ty,//constant
-            "n": id//
-        }
-        var data = JSON.stringify(event);
-        $.ajax({
-            url: '/api/save_edit',
-            type: 'PUT',//Only send info ;
-            data: data,
-            success: function(){
-                alert('save success!');
-            }
-
-        })
-    })
+//    $('#left_json').on('blur','textarea[name="edit"]', function(){
+//        var value = $(this).val();
+//        var ty = $(this).prev().text();
+//        var id = $(this).parent().attr('id')-1;
+//        $(this).replaceWith('<span name="constant" style="border:solid 0px;"> '+value+'</span>');
+//        event = {
+//            "name": name,//文件名 logicbase
+//            "data": value,//bool
+//            "ty": ty,//constant
+//            "n": id//
+//        }
+//        var data = JSON.stringify(event);
+//        $.ajax({
+//            url: '/api/save_edit',
+//            type: 'PUT',//Only send info ;
+//            data: data,
+//            success: function(){
+//                alert('save success!');
+//            }
+//
+//        })
+//    })
 
     function ajax_res(data) {
         $.ajax({
