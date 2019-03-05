@@ -468,7 +468,7 @@ class ProofState():
 
         results = []
         goal = cur_item.th.concl
-        rewrites = self.thy.data.get_data("hint_rewrite")
+        rewrites = self.thy.get_data("hint_rewrite")
         for th_name, th in self.thy.get_data("theorems").items():
             if th.concl.is_equals():
                 cv = top_conv(rewr_conv_thm(self.thy, th_name))
