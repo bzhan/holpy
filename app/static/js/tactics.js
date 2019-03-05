@@ -23,7 +23,8 @@ function get_selected_instruction_number() {
 }
 
 function clear_match_thm() {
-    $('.match-thm').empty();
+    $('.match-thm .abs-thm').empty();
+    $('.match-thm .rewrite-thm').empty();
 }
 
 function display_running() {
@@ -137,7 +138,7 @@ function introduction(cm) {
 }
 
 function apply_backward_step(cm, is_others = false, select_thm = -1) {
-    var match_thm_list = get_match_thm();
+    var match_thm_list = get_match_thm_abs();
     var title = '';
     var id = get_selected_id();
     var click_line_number = cells[id].click_line_number;
@@ -150,7 +151,7 @@ function apply_backward_step(cm, is_others = false, select_thm = -1) {
         let theorem = '';
         if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
             ctrl_click_line_numbers.forEach((val) => {
-                    fact_id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
+                fact_id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
             });
         }
         fact_id = fact_id.slice(0, fact_id.length - 2);
@@ -178,7 +179,7 @@ function apply_backward_step(cm, is_others = false, select_thm = -1) {
         if (click_line_number !== -1 && ctrl_click_line_numbers.size !== 0) {
             let conclusion = '';
             ctrl_click_line_numbers.forEach((val) => {
-                    conclusion += '' + (val + 1) + ', ';
+                conclusion += '' + (val + 1) + ', ';
             });
             conclusion = conclusion.slice(0, conclusion.length - 2);
             title = 'Target: ' + (click_line_number + 1) + '\nConclusion: ' + conclusion;
@@ -272,7 +273,13 @@ function apply_induction(cm) {
     })
 }
 
-function rewrite_goal(cm) {
+function rewrite_goal(cm, is_others = false, select_thm = -1) {
+    var match_thm_list = get_match_thm_rewrite();
+    var theorem = '';
+    if (!is_others) {
+        let idx = select_thm !== -1 ? select_thm : 0;
+        theorem = match_thm_list[idx];
+    }
     $(document).ready(function () {
         var line_no = cm.getCursor().line;
         var id = get_selected_id();
@@ -280,8 +287,10 @@ function rewrite_goal(cm) {
             'id': id,
             'line_id': cells[id]['proof'][line_no]['id']
         };
-
-        input['theorem'] = prompt('Enter rewrite theorem');
+        if (theorem !== '')
+            input['theorem'] = theorem;
+        else
+            input['theorem'] = prompt('Enter rewrite theorem');
         var data = JSON.stringify(input);
         display_running();
 
@@ -321,8 +330,7 @@ function split_line(s) {
         item.args = item.args.trim();
         item.prevs = item.prevs.split(',');
         return item;
-    }
-    else {
+    } else {
         item.args = rest.trim();
         item.prevs = [];
         return item;
@@ -351,7 +359,7 @@ function set_line(cm) {
     })
 }
 
-function apply_backward_step_thm(cm) {
+function apply_backward_step_and_rewrite_goal_thm(cm) {
     var id = get_selected_id();
     var click_line_number = cells[id].click_line_number;
     if (click_line_number === -1) {
@@ -399,7 +407,7 @@ function display_str(editor, str, line_no, ch, mark) {
 }
 
 // Print string with highlight at given line_no and ch.
-// p[0] is the printed string, p[1] is the color.
+// p[0] is the printed stpython -m pip install --upgrade pipring, p[1] is the color.
 // Return the new value of ch.
 function display_highlight_str(editor, p, line_no, ch) {
     var color;
@@ -428,15 +436,14 @@ function is_last_id(id, line_no) {
         return true
     }
     var line_id = cells[id]['proof'][line_no].id
-    var line_id2 = cells[id]['proof'][line_no+1].id
+    var line_id2 = cells[id]['proof'][line_no + 1].id
     return line_id.split('.').length > line_id2.split('.').length
 }
 
 function display_have_prompt(editor, id, line_no, ch) {
     if (is_last_id(id, line_no)) {
         return display_str(editor, 'show ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
-    }
-    else {
+    } else {
         return display_str(editor, 'have ', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
     }
 }
@@ -449,9 +456,9 @@ function display_line(id, line_no) {
 
     edit_flag = true;
     // Display id in bold
-    var str_temp = ''
-    for (var i=0;i<line.id.length;i++) {
-        if (line.id[i]==='.') {
+    var str_temp = ' '
+    for (var i = 0; i < line.id.length; i++) {
+        if (line.id[i] === '.') {
             str_temp += '  '
         }
     }
@@ -460,17 +467,14 @@ function display_line(id, line_no) {
     if (line.rule === 'assume') {
         ch = display_str(editor, 'assume ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
         ch = display_highlight_strs(editor, line.args, line_no, ch);
-    }
-    else if (line.rule === 'variable') {
+    } else if (line.rule === 'variable') {
         ch = display_str(editor, 'fix ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
         ch = display_highlight_strs(editor, line.args, line_no, ch);
-    }
-    else if (line.rule === 'subproof') {
+    } else if (line.rule === 'subproof') {
         ch = display_have_prompt(editor, id, line_no, ch);
         ch = display_highlight_strs(editor, line.th, line_no, ch);
         ch = display_str(editor, ' with', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
-    }
-    else {        
+    } else {
         // Display theorem with highlight
         if (line.th.length > 0) {
             ch = display_have_prompt(editor, id, line_no, ch);
@@ -503,18 +507,17 @@ function display(id) {
     var large_num = 0;
     $.each(cell, function (line_no) {
         var line = cells[id]['proof'][line_no];
-        editor.setOption('lineNumberFormatter', function(line_no) {
-            if (line_no<cell.length) {
-                var length = cells[id]['proof'][line_no]['id'].length;
-                if (length>=large_num)
-                    large_num = length;
-                return cells[id]['proof'][line_no]['id'];
+        editor.setOption('lineNumberFormatter', function (line_no) {
+                if (line_no < cell.length) {
+                    var length = cells[id]['proof'][line_no]['id'].length;
+                    if (length >= large_num)
+                        large_num = length;
+                    return cells[id]['proof'][line_no]['id'];
+                } else {
+                    return '';
+                }
             }
-            else {
-                return '';
-            }
-        }
-    );
+        );
         display_line(id, line_no);
         edit_flag = true;
         var len = editor.getLineHandle(line_no).text.length;
@@ -531,24 +534,46 @@ function display(id) {
 }
 
 function display_match_thm(result) {
-    if ('ths' in result) {
-        $('.code-cell.selected .match-thm').append(
+    if ('ths_abs' in result && result['ths_abs'].length !== 0) {
+        $('.code-cell.selected .match-thm .abs-thm').append(
             $(`<pre>Theorems: (Ctrl-B)</pre><div class="thm-content"></div>`)
         );
-        for (var i in result['ths']) {
-            $('.code-cell.selected .thm-content').append(
-                $(`<pre>${result['ths'][i]}</pre>`)
+        for (var i in result['ths_abs']) {
+            $('.code-cell.selected .match-thm .abs-thm .thm-content').append(
+                $(`<pre>${result['ths_abs'][i]}</pre>`)
             );
         }
-        $('.code-cell.selected .thm-content').append(
+        $('.code-cell.selected .match-thm .abs-thm .thm-content').append(
             $(`<a href="#" class="backward-step">Other backward step</a>`)
+        )
+    }
+    if ('ths_rewrite' in result && result['ths_rewrite'].length !== 0) {
+        $('.code-cell.selected .match-thm .rewrite-thm').append(
+            $(`<pre>Theorems: (Ctr-R)</pre><div class="thm-content"></div>`)
+        );
+        for (var i in result['ths_rewrite']) {
+            $('.code-cell.selected .match-thm .rewrite-thm .thm-content').append(
+                $(`<pre>${result['ths_rewrite'][i]}</pre>`)
+            );
+        }
+        $('.code-cell.selected .match-thm .rewrite-thm .thm-content').append(
+            $(`<a href="#" class="rewrite-goal">Other rewrite goal</a>`)
         )
     }
 }
 
-function get_match_thm() {
+function get_match_thm_abs() {
     var match_thm_list = [];
-    $('.code-cell.selected .thm-content pre').each(function () {
+    $('.code-cell.selected .abs-thm .thm-content pre').each(function () {
+            match_thm_list.push($(this).text())
+        }
+    );
+    return match_thm_list;
+}
+
+function get_match_thm_rewrite() {
+    var match_thm_list = [];
+    $('.code-cell.selected .rewrite-thm .thm-content pre').each(function () {
             match_thm_list.push($(this).text())
         }
     );

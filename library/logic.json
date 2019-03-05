@@ -320,7 +320,7 @@
                 "Select S5 as goal and S4 as fact, use Ctrl+B with exI."
             ],
             "name": "ex_conj_distrib",
-            "num_gaps": 0,
+            "num_gaps": 2,
             "proof": [
                 {
                     "args": "∃x. A x ∧ B x",
@@ -351,65 +351,43 @@
                     "th": "A a ∧ B a ⊢ A a ∧ B a"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "",
                     "id": "1.2",
-                    "prevs": [
-                        "1.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "A a ∧ B a ⊢ A a"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "1.3",
-                    "prevs": [
-                        "1.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "A a ∧ B a ⊢ B a"
-                },
-                {
-                    "args": "exI, {a: 'a}, {P: A, a: a}",
-                    "id": "1.4",
-                    "prevs": [
-                        "1.2"
-                    ],
-                    "rule": "apply_theorem_for",
+                    "prevs": [],
+                    "rule": "sorry",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ ∃x. A x"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: B, a: a}",
-                    "id": "1.5",
-                    "prevs": [
-                        "1.3"
-                    ],
-                    "rule": "apply_theorem_for",
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "sorry",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ ∃x. B x"
                 },
                 {
                     "args": "conjI, {}, {A: ∃x. A x, B: ∃x. B x}",
-                    "id": "1.6",
+                    "id": "1.4",
                     "prevs": [
-                        "1.4",
-                        "1.5"
+                        "1.2",
+                        "1.3"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ (∃x. A x) ∧ (∃x. B x)"
                 },
                 {
                     "args": "A a ∧ B a",
-                    "id": "1.7",
+                    "id": "1.5",
                     "prevs": [
-                        "1.6"
+                        "1.4"
                     ],
                     "rule": "implies_intr",
                     "th": "∃x. A x ∧ B x ⊢ A a ∧ B a ⟶ (∃x. A x) ∧ (∃x. B x)"
                 },
                 {
                     "args": "a",
-                    "id": "1.8",
+                    "id": "1.6",
                     "prevs": [
-                        "1.7"
+                        "1.5"
                     ],
                     "rule": "forall_intr",
                     "th": "∃x. A x ∧ B x ⊢ ∀a. A a ∧ B a ⟶ (∃x. A x) ∧ (∃x. B x)"

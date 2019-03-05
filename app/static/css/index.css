@@ -198,7 +198,15 @@ div.output-wrapper pre {
     cursor: pointer;
 }
 
-.match-thm > pre:nth-child(1) {
+.match-thm .abs-thm > pre {
+    font-weight: bold;
+    font-size: 15px;
+    color: blue;
+    padding: 10px 0px 1px 39px;
+    cursor: default;
+}
+
+.match-thm .rewrite-thm > pre {
     font-weight: bold;
     font-size: 15px;
     color: blue;
@@ -214,6 +222,18 @@ div.output-wrapper pre {
 
 .thm-content pre:empty {
     display: none;
+}
+
+.abs-thm {
+    float: left;
+}
+
+.rewrite-thm {
+    float: left;
+}
+
+.clear {
+    clear: both;
 }
 
 tt.var {
