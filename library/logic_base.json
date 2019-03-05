@@ -209,10 +209,23 @@
         {
             "name": "rewrite_back_goal",
             "ty": "macro"
+        },
+        {
+            "name": "con",
+            "ty": "def.ax",
+            "type": "bool"
+        },
+        {
+            "name": "cnn",
+            "prop": "A ⟶ B ∨ A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
         }
     ],
     "description": "Foundation of higher-order logic",
     "imports": [],
     "name": "logic_base"
 }
-

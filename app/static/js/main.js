@@ -85,7 +85,7 @@
             }
         });
 
-        // Save a single proof to the webpage (not to the json file);
+        // Save a single proof to the webpage (not to the json file);该函数是后台高亮显示到浏览器
         $('div.rtop').on('click', 'button[name="save"]', function () {
             editor_id_list = [];
             var editor_id = get_selected_id();
@@ -183,6 +183,8 @@
             });
         }
 
+
+
         //click reset button to reset the thm to the origin status;
         $('div.rtop').on('click', 'button[name=reset]', function () {
             var id = Number($(this).attr('id')) - 1;
@@ -270,20 +272,31 @@
         $('#left_json').on('click', 'a[name="edit"]', function() {
             page_num++;
             edit_mode = true;
-            var vars_str = '';
             var a_id = $(this).attr('id').trim();
             var number = Number(a_id.slice(5,))-1;
-            for(var key in result_list[number]['vars']) {
-                vars_str += key + ':' + result_list[number]['vars'][key] +' ';
-            };
+
             var data_name = $(this).parents('p').find('span[name="name"]').text().trim();
             var data_type = $(this).parents('p').find('span:eq(0)').attr('name').trim();
             var data_content = $(this).parents('p').find('span[name="content"]').text().trim();
+            init_edit_area(page_num, a_id, data_name, data_name, data_type, data_content);
+            });
+
+        function init_edit_area(page_num, a_id = '', data_label= '', data_name, data_type, data_content='', border='1px;solid #ffffff') {
+            var vars_str = '';
+            if (a_id) {
+                var number = Number(a_id.slice(5,))-1;
+                for(var key in result_list[number]['vars']) {
+                    vars_str += key + ':' + result_list[number]['vars'][key] +' ';
+                };
+            }
+            else {
+                var number = '';
+            }
             $('#codeTab').append(
                 $('<li class="nav-item" name="code'+ page_num +'"><a class="nav-link" ' +
                     'data-toggle="tab"' +
                     'href="#code' + page_num + '-pan">' +
-                    '<span id="'+ page_num +'">' + data_name +
+                    '<span id="'+ page_num +'">' + data_label +
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="edit">×</button>' +
                     '</a></li>'));
@@ -292,18 +305,18 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>constant</b></font>:&nbsp;<input id="data-name'+ page_num +'" style="background:transparent;border:1px;solid #ffffff;width:10%;" value="' + data_name + '">' +
-                        '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input id="data-content'+ page_num +'" style="width:50%;background:transparent;border:1px;solid #ffffff;" value="' + data_content + '">' +
-                        '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:10px;width:20%;"><b>SAVE</b></button></div>'));
+                        '<font color="#006000"><b>constant</b></font>:&nbsp;<input spellcheck="false" id="data-name'+ page_num +'" style="background:transparent;'+ border +'width:10%;" value="' + data_name + '">' +
+                        '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content'+ page_num +'" style="width:50%;background:transparent;'+border+'" value="' + data_content + '">' +
+                        '<br><button id="save-edit" name="'+  data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:10px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'theorem') {
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>theorem</b></font>:&nbsp;<input id="data-name'+ page_num +'" style="margin-top:0px;width:20%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' +
-                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input id="data-vars'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ vars_str +'">' +
-                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input id="data-content'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ data_content +'">'+
+                        '<font color="#006000"><b>theorem</b></font>:&nbsp;<input spellcheck="false" id="data-name'+ page_num +'" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
+                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-vars'+ page_num +'" style="width:30%;background:transparent;'+border+'" value="'+ vars_str +'">' +
+                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content'+ page_num +'" style="width:30%;background:transparent;'+border+'" value="'+ data_content +'">'+
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-left:44px;margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -314,8 +327,8 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
-                        '<br><input id="data-name'+ page_num +'" style="width:10%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;'+
-                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="height:60px;width:30%;background:transparent;border:1px;solid #ffffff;">'+ data_new_content +'</textarea>' +
+                        '<br><input spellcheck="false" id="data-name'+ page_num +'" style="width:10%;background:transparent;'+border+'" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;'+
+                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="height:60px;width:30%;background:transparent;'+border+'">'+ data_new_content +'</textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -325,13 +338,15 @@
                 for (var i in data_content_list) {
                     data_new_content += i+ ': '+ data_content_list[i]+ '\n';
                 };
-                $('#codeTab').find('span#'+ page_num).text(data_name.split(' :: ')[0]);
+                if (data_name){
+                    $('#codeTab').find('span#'+ page_num).text(data_name.split(' :: ')[0]);
+                }
                 $('#codeTabContent').append(
                     $('<div style="margin-left:5px;margin-top:20px;" name="'+ a_id +'" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="'+ page_num +'" for="code' + page_num + '"><font color="#006000"><b>fun</b></font>:</label> ' +
-                        '<input id="data-name'+ page_num +'" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="'+ data_name +'">' +
-                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="margin-top:5px;height:150px;width:40%;background:transparent;border:0px solid #ffffff;" name="content">' + data_new_content + '</textarea>' +
-                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea onpropertychange="if(this.scrollHeight>80) this.style.posHeight=this.scrollHeight+5" spellcheck="false" id="data-vars'+ page_num +'" style="margin-top:5px;height:150px;width:40%;background:transparent;border:0px solid #ffffff;" placeholder="vars"></textarea>' +
+                        '<input spellcheck="false" id="data-name'+ page_num +'" style="width:30%;background:transparent;'+border+'" value="'+ data_name +'">' +
+                        '<br><textarea spellcheck="false" id="data-content'+ page_num +'" style="margin-top:5px;height:150px;width:40%;background:transparent;'+border+'" name="content">' + data_new_content + '</textarea>' +
+                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea onpropertychange="if(this.scrollHeight>80) this.style.posHeight=this.scrollHeight+5" spellcheck="false" id="data-vars'+ page_num +'" style="margin-top:5px;height:150px;width:40%;background:transparent;'+border+'" placeholder="vars"></textarea>' +
                         '<br><button id="save-edit" name="'+  data_type +'" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 display_lines_number(data_content_list, page_num, number);
@@ -339,23 +354,27 @@
               $('#codeTabContent div#code'+page_num+'-pan button').after(
                 $('<div class="output-wrapper" style="margi-top:1px;" id="error'+ page_num +'">' +
                     '<pre></pre></div>'));
-        })
+        }
 
 //      display lines_number in the textarea;
         function display_lines_number(content_list, page_num, number) {
             var data_vars_list = [];
             var data_vars_str = '';
-            $.each(result_list[number]['rules'], function(i, v) {
-                var vars_str = '';
-                for (let key in v.vars) {
-                    vars_str += key+ ':'+ v.vars[key]+ '   ';
-                }
-//                vars_str += '\n';
-                data_vars_list.push(vars_str);
-                });
-            $.each(data_vars_list, function(i, v) {
-                data_vars_str += i+ ': '+ v + '\n';
-            })
+            if (number) {
+                $.each(result_list[number]['rules'], function(i, v) {
+                    var vars_str = '';
+                    for (let key in v.vars) {
+                        vars_str += key+ ':'+ v.vars[key]+ '   ';
+                    }
+                    data_vars_list.push(vars_str);
+                    });
+                $.each(data_vars_list, function(i, v) {
+                    data_vars_str += i+ ': '+ v + '\n';
+                })
+            }
+            else {
+                data_vars_str += '1: '+ '\n';
+            }
             $('textarea#data-vars'+ page_num).val(data_vars_str);
         }
 
@@ -377,7 +396,7 @@
                 success: function(res) {
                     var result_data = res['data'];
                     var data_name = result_data['name'];
-                    var error = res['error']
+                    var error = res['error'], flag = true;//通过flag标记该用edit还是新增
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
                     if (error && error !== {}) {
@@ -385,20 +404,25 @@
                         $('div#'+error_id).find('pre').text(error_info);
                     }
                     $.each(result_list, function(j,k) {
-                        if (k['name'] === data_name) {
+                        if (k['name'] === data_name) {//此data_name指的是比如说conjI
                             for (var key in result_data) {
                                 result_list[j][key] = result_data[key];
+                                flag = false;
                             }
                         }
                     });
+                    if (flag === true) {
+                        result_list.push(result_data);
+                    }
                     display_result_list();
                 }
             });
         })
 
-//      make a strict-type data from editing;
+
+//      make a strict-type data from editing;id=page_num
         function make_data(ty, id) {
-            var data_name = $('input#data-name'+id).val().trim();
+            var data_name = $('#data-name'+id).val().trim();
             var data_content = $('#data-content'+id).val().trim();
             var ajax_data = {};
             if (ty === 'constant') {
@@ -504,7 +528,7 @@
             }
         });
 
-        $('a#save-file').click(function() {
+        $('a#save-file').click(function() {//该函数是保存到后台
             if (edit_mode) {
                 save_editor_data();
             }
@@ -516,7 +540,9 @@
         $('#root-file').on('click', 'a', function () {
             num = 0;
             $('#left_json').empty();
-            $('#add-info').click(add_info);
+         //   $('#add-info').click(function() {
+          //      var ajax_data = make_data(ty,id);
+           // });
             name = $(this).text();
             name = $.trim(name);
             if ($('#file-path').html() === '') {
@@ -527,32 +553,19 @@
                 $('#file-path a:last').remove();
                 $('#root-a').after($('<a href="#"><font color="red"><b>' + name + '</b></font></a>'));
             };
+
+           // data = JSON.stringify(name);
+         //   ajax_res(data);
+
+            $('div.dropdown-menu.dropdown-menu-right.add-info a').on('click', function() {
+                page_num ++;
+                edit_mode = true;
+                var ty = $(this).attr('name');
+//                init_edit_area(page_num, '', 'constant', '',  'constant',border);
+                init_edit_area(page_num, '', ty, '', ty,'','');
+            })
             data = JSON.stringify(name);
             ajax_res(data);
-            $('#cons').on('click', function() {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'));
-            });
-            $('#them').on('click', function() {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">'
-        +'<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">'
-        +'<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">'));
-            });
-            $('#datat').on('click', function() {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">'
-        +'<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">'
-        +'<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">'
-        +'<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:5px;width:50%;float:left;">'
-        +'<input type="text" class="datatype" id="args1" placeholder="args1" style="margin-bottom:5px;width:50%;float:left;">'
-        +'<input type="text" class="datatype" id="args2" placeholder="args2" style="margin-bottom:20px;width:50%;float:left;">'));
-            });
-            $('#fun').on('click',function() {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">'
-        +'<input type="text" id="function-type" placeholder="type" style="margin-bottom:5px;width:100%;">'
-        +'<input type="text" id="function-vars1" placeholder="vars1" style="float:left;margin-bottom:5px;width:50%;">'
-        +'<input type="text" id="function-vars2" placeholder="vars2" style="float:left;margin-bottom:5px;width:50%;">'
-        +'<input type="text" id="function-prop1" placeholder="prop1" style="float:left;margin-bottom:5px;width:50%;">'
-        +'<input type="text" id="function-prop2" placeholder="prop2" style=":float:left;margin-bottom:5px;width:50%;">'))
-            } )
         });
 
         $('#json-button').on('click', function () {
@@ -588,22 +601,6 @@
             return 'tvar';
     }
 
-    function remove_page(first) {
-        if (first)
-            pageNum = 0;
-        else
-            pageNum = 1;
-        $('#codeTab > li').each(function () {
-            var pageId = $(this).children('a').attr('href');
-            if (pageId === "#code1-pan") {
-                return true;
-            }
-            pageNum++;
-            $(this).children('a').html('Page ' + pageNum +
-                '<button id="close_tab" type="button" ' +
-                'title="Remove this page">×</button>');
-        });
-    }
 
     function theorem_proof(r_data) {
         if (r_data['instructions'] !== undefined) {
@@ -743,79 +740,12 @@
 
             }
             if (ty==='header') {
-                $('#left_json').append($('<div><p id="data-'+ num +'">&nbsp;<span id="head_name" name="name">' +name + '</span><br>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num +'"><b>edit</b></a></p></div>'))
+                $('#left_json').append($('<div><p id="data-'+ num +'">&nbsp;<span id="head_name" name="name">' +name + '</span>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num +'"><b>edit</b></a></p></div>'))
             }
         }
     }
 
-    // Add new entry to the file.
-    function add_info() {
-        var item = {};
-        if ($('#constant, #type').val() !== '') {
-            var cons = $('#constant').val();
-            var type = $('#type').val();
-            item['ty'] = 'def.ax';
-            item['name'] = cons;
-            item['type'] = type;
-            $('#constant,#type').val('');
-        }
-
-        if ($('#thm, #term, #vars').val() !== '') {
-            var vars = {};
-            var theo = $('#thm').val();
-            var term = $('#term').val();
-            var vars_str = $('#vars').val();
-            var vars_list = vars_str.split(' ');  //  A:bool B:bool C:bool =>  ["A:bool","B:bool","C:bool"]
-            for (var i in vars_list) {
-                var v_list = vars_list[i].split(':');
-                vars[v_list[0]] = v_list[1];
-            }
-            item['ty'] = 'thm';
-            item['name'] = theo;
-            item['vars'] = vars;
-            item['prop'] = term;
-            $('#thm,#term,#vars').val('');
-        }
-        var event = {
-            "theory_name": theory_name,
-            "item": item
-        };
-
-        data_ajax = JSON.stringify(event);
-        $.ajax({
-            url: "/api/add-info",
-            type: "POST",
-            data: data_ajax,
-            success: function (result) {
-                result_list = result_list.concat(result['data']);
-                display_result_list();
-            }
-        });
-    }
-
-    $('#left_json').on('blur','textarea[name="edit"]', function(){
-        var value = $(this).val();
-        var ty = $(this).prev().text();
-        var id = $(this).parent().attr('id')-1;
-        $(this).replaceWith('<span name="constant" style="border:solid 0px;"> '+value+'</span>');
-        event = {
-            "name": name,//文件名 logicbase
-            "data": value,//bool
-            "ty": ty,//constant
-            "n": id//
-        }
-        var data = JSON.stringify(event);
-        $.ajax({
-            url: '/api/save_edit',
-            type: 'PUT',//Only send info ;
-            data: data,
-            success: function(){
-                alert('save success!');
-            }
-
-        })
-    })
-
+//  display_hilight
     function ajax_res(data) {
         $.ajax({
             url: "/api/json",
