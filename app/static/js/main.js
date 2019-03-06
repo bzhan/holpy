@@ -117,8 +117,6 @@
             })
             result_list[id]['proof'] = output_proof;
             result_list[id]['num_gaps'] = cells[editor_id]['num_gaps'];
-            result_list[id]['hint_backward'] = String($('input[name="hint_backward"]').prop('checked'));
-            result_list[id]['hint_rewrite'] = String($('input[name="hint_rewrite"]').prop('checked'));
             result_list_dict[file_name] = result_list;
             display_result_list();
         });
@@ -397,6 +395,8 @@
             var ajax_data = make_data(ty, id);
             var number = Number(a_id.slice(5,)) - 1;
             var prev_list = result_list.slice(0, number);
+            result_list[number]['hint_backward'] = String($('input[name="hint_backward"]').prop('checked'));
+            result_list[number]['hint_rewrite'] = String($('input[name="hint_rewrite"]').prop('checked'));
             ajax_data['file-name'] = name;
             ajax_data['prev-list'] = prev_list;
             $.ajax({
