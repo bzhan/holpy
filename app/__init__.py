@@ -192,9 +192,15 @@ def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
     with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
+        for d in f_data['content']:
+            d.update({"hint_backward": "true", "hint_rewrite": "true"})
     thy = basic.loadImportedTheory(f_data)
+    j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
+    json.dump(f_data, j, ensure_ascii=False, indent=4)
+    j.close()
     for data in f_data['content']:
         file_data_to_output(thy, data)
+
     return jsonify({'data': f_data})
 
 
