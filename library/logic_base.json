@@ -4,7 +4,7 @@
             "ascii_op": "&",
             "name": "conj",
             "ty": "def.ax",
-            "type": "bool => bool => bool",
+            "type": "bool ⇒ bool ⇒ bool",
             "unicode_op": "∧"
         },
         {
@@ -42,8 +42,6 @@
             "type": "bool => 'a => 'a => 'a"
         },
         {
-            "hint_backward": "false",
-            "hint_rewrite": "true",
             "name": "conjI",
             "num_gaps": 1,
             "proof": [
@@ -95,10 +93,8 @@
             }
         },
         {
-            "hint_backward": "True",
-            "hint_rewrite": "True",
             "name": "conjD1",
-            "prop": "A & B --> A",
+            "prop": "A ∧ B ⟶ A",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -106,8 +102,6 @@
             }
         },
         {
-            "hint_backward": "True",
-            "hint_rewrite": "True",
             "name": "conjD2",
             "prop": "A & B --> B",
             "ty": "thm",
@@ -117,8 +111,6 @@
             }
         },
         {
-            "hint_backward": "True",
-            "hint_rewrite": "True",
             "name": "disjI1",
             "prop": "A --> A | B",
             "ty": "thm",
@@ -128,8 +120,6 @@
             }
         },
         {
-            "hint_backward": "True",
-            "hint_rewrite": "True",
             "name": "disjI2",
             "prop": "B --> A | B",
             "ty": "thm",
@@ -139,8 +129,6 @@
             }
         },
         {
-            "hint_backward": "True",
-            "hint_rewrite": "True",
             "name": "disjE",
             "prop": "A | B --> (A --> C) --> (B --> C) --> C",
             "ty": "thm",
@@ -151,8 +139,6 @@
             }
         },
         {
-            "hint_backward": "True",
-            "hint_rewrite": "True",
             "name": "negI",
             "prop": "(A --> false) --> ~A",
             "ty": "thm",
@@ -161,8 +147,6 @@
             }
         },
         {
-            "hint_backward": "True",
-            "hint_rewrite": "True",
             "name": "negE",
             "prop": "~A --> A --> false",
             "ty": "thm",
@@ -231,8 +215,6 @@
             }
         },
         {
-            "hint_backward": "false",
-            "hint_rewrite": "false",
             "name": "if_not_P",
             "num_gaps": 1,
             "proof": [

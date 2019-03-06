@@ -288,8 +288,7 @@
             var number = Number(a_id.slice(5,)) - 1;
             for (var key in result_list[number]['vars']) {
                 vars_str += key + ':' + result_list[number]['vars'][key] + ' ';
-            }
-            ;
+            };
             var data_name = $(this).parents('p').find('span[name="name"]').text().trim();
             var data_type = $(this).parents('p').find('span:eq(0)').attr('name').trim();
             var data_content = $(this).parents('p').find('span[name="content"]').text().trim();
@@ -308,8 +307,7 @@
                         '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
                         '<font color="#006000"><b>constant</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="background:transparent;border:1px;solid #ffffff;width:10%;" value="' + data_name + '">' +
                         '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:50%;background:transparent;border:1px;solid #ffffff;" value="' + data_content + '">' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:10px;width:20%;"><b>SAVE</b></button>'+
-                        '</br><input name="hint_backward" type="checkbox" style="margin-left:25px;"><b>&nbsp;backward</b><input name="hint_rewrite" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
+                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:10px;width:20%;"><b>SAVE</b></button></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -334,8 +332,7 @@
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
                         '<br><input spellcheck="false" id="data-name' + page_num + '" style="width:10%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;' +
                         '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="height:60px;width:30%;background:transparent;border:1px;solid #ffffff;">' + data_new_content + '</textarea>' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button>'+
-                        '</br><input name="hint_backward" type="checkbox" style="margin-left:25px;"><b>&nbsp;backward</b><input name="hint_rewrite" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
+                            '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -353,15 +350,14 @@
                         '<input spellcheck="false" id="data-name' + page_num + '" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' +
                         '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;border:0px solid #ffffff;" name="content">' + data_new_content + '</textarea>' +
                         '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;border:0px solid #ffffff;" placeholder="vars"></textarea>' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button>'+
-                        '</br><input name="hint_backward" type="checkbox" style="margin-left:25px;"><b>&nbsp;backward</b><input name="hint_rewrite" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
+                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 display_lines_number(data_content_list, page_num, number);
             }
-            if (result_list[number]['hint_backward'] === 'true')
+            if ('hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
                 $('input[name="hint_backward"]').click();
-            if (result_list[number]['hint_rewrite'] === 'true')
+            if ('hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
                 $('input[name="hint_rewrite"]').click();
             $('#codeTabContent div#code' + page_num + '-pan button').after(
                 $('<div class="output-wrapper" style="margi-top:1px;" id="error' + page_num + '">' +
@@ -395,8 +391,10 @@
             var ajax_data = make_data(ty, id);
             var number = Number(a_id.slice(5,)) - 1;
             var prev_list = result_list.slice(0, number);
-            result_list[number]['hint_backward'] = String($('input[name="hint_backward"]').prop('checked'));
-            result_list[number]['hint_rewrite'] = String($('input[name="hint_rewrite"]').prop('checked'));
+            if ($('input[name="hint_backward"]').prop('checked') === true)
+                result_list[number]['hint_backward'] = true;
+            if ($('input[name="hint_rewrite"]').prop('checked') === true)
+                result_list[number]['hint_rewrite'] = true;
             ajax_data['file-name'] = name;
             ajax_data['prev-list'] = prev_list;
             $.ajax({
@@ -406,7 +404,7 @@
                 success: function (res) {
                     var result_data = res['data'];
                     var data_name = result_data['name'];
-                    var error = res['error']
+                    var error = res['error'];
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
                     if (error && error !== {}) {

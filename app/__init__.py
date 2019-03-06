@@ -186,19 +186,21 @@ def file_data_to_output(thy, data):
     else:
         pass
 
+
 # first open json_file
 @app.route('/api/json', methods=['POST'])
 def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
     with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
-        for d in f_data['content']:
-            if 'hint_backward' not in d and 'hint_rewrite' not in d:
-                d.update({"hint_backward": "true", "hint_rewrite": "true"})
+        # for d in f_data['content']:
+        #     if 'hint_backward' in d and 'hint_rewrite' in d:
+        #         del d['hint_backward']
+        #         del d['hint_rewrite']
     thy = basic.loadImportedTheory(f_data)
-    j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
-    json.dump(f_data, j, ensure_ascii=False, indent=4, sort_keys=True)
-    j.close()
+    # j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
+    # json.dump(f_data, j, ensure_ascii=False, indent=4, sort_keys=True)
+    # j.close()
     for data in f_data['content']:
         file_data_to_output(thy, data)
 
@@ -215,13 +217,13 @@ def json_add_info():
     return jsonify({'data': item})
 
 
+# save the related data to json file;
 @app.route('/api/save_file', methods=['POST'])
 def save_file():
     json_data = json.loads(request.get_data().decode("utf-8"))
 
     data = json_data['data']
     name = json_data['name']
-
     with open('library/' + name + '.json', 'w+', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
 
@@ -236,7 +238,7 @@ def get_root():
         f.close()
     return jsonify(json_data)
 
-
+#match the thms for backward or rewrite;
 @app.route('/api/match_thm', methods=['POST'])
 def match_thm():
     data = json.loads(request.get_data().decode("utf-8"))
@@ -279,6 +281,7 @@ def save_modify():
     return jsonify({'data': data, 'error': error})
 
 
+# save the edited data to the json file;
 @app.route('/api/editor_file', methods=['PUT'])
 def save_edit():
     data = json.loads(request.get_data().decode("utf-8"))
