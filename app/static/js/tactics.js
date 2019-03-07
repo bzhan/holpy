@@ -369,6 +369,7 @@ function apply_backward_step_and_rewrite_goal_thm(cm) {
     }
 }
 
+//match responding thms for backward;
 function match_thm() {
     var id = get_selected_id();
     var click_line_number = cells[id].click_line_number;

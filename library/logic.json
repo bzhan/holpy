@@ -1,13 +1,14 @@
 {
     "content": [
         {
+            "hint_rewrite": true,
             "instructions": [
                 "Select S1 as goal, use Ctrl+B with conjI",
                 "Select S1 as goal and A1 as fact, use Ctrl+B with conjD2.",
                 "Select S2 as goal and A1 as fact, use Ctrl+B with conjD1."
             ],
             "name": "conj_comm",
-            "num_gaps": 0,
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "A ∧ B",
@@ -17,44 +18,23 @@
                     "th": "A ∧ B ⊢ A ∧ B"
                 },
                 {
-                    "args": "conjD2, {}, {A: A, B: B}",
+                    "args": "",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∧ B ⊢ B"
-                },
-                {
-                    "args": "conjD1, {}, {A: A, B: B}",
-                    "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∧ B ⊢ A"
-                },
-                {
-                    "args": "conjI, {}, {A: B, B: A}",
-                    "id": "3",
-                    "prevs": [
-                        "1",
-                        "2"
-                    ],
-                    "rule": "apply_theorem_for",
+                    "prevs": [],
+                    "rule": "sorry",
                     "th": "A ∧ B ⊢ B ∧ A"
                 },
                 {
                     "args": "A ∧ B",
-                    "id": "4",
+                    "id": "2",
                     "prevs": [
-                        "3"
+                        "1"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ A ∧ B ⟶ B ∧ A"
                 }
             ],
-            "prop": "A & B --> B & A",
+            "prop": "A ∧ B ⟶ B ∧ A",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -164,7 +144,7 @@
                     "th": "⊢ A ∨ B ⟶ B ∨ A"
                 }
             ],
-            "prop": "A | B --> B | A",
+            "prop": "A ∨ B ⟶ B ∨ A",
             "ty": "thm",
             "vars": {
                 "A": "bool",

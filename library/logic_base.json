@@ -4,7 +4,7 @@
             "ascii_op": "&",
             "name": "conj",
             "ty": "def.ax",
-            "type": "bool => bool => bool",
+            "type": "bool ⇒ bool ⇒ bool",
             "unicode_op": "∧"
         },
         {
@@ -43,6 +43,48 @@
         },
         {
             "name": "conjI",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "A",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "B",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ⊢ B"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "A, B ⊢ A ∧ B"
+                },
+                {
+                    "args": "B",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "A ⊢ B ⟶ A ∧ B"
+                },
+                {
+                    "args": "A",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "B ⊢ A ⟶ B"
+                }
+            ],
             "prop": "A --> B --> A & B",
             "ty": "thm",
             "vars": {
@@ -52,7 +94,7 @@
         },
         {
             "name": "conjD1",
-            "prop": "A & B --> A",
+            "prop": "A ∧ B ⟶ A",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -174,6 +216,32 @@
         },
         {
             "name": "if_not_P",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "¬P",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬P ⊢ ¬P"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬P ⊢ (if P then x else y) = y"
+                },
+                {
+                    "args": "¬P",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ ¬P ⟶ (if P then x else y) = y"
+                }
+            ],
             "prop": "~P --> (if P then x else y) = y",
             "ty": "thm",
             "vars": {
@@ -215,4 +283,3 @@
     "imports": [],
     "name": "logic_base"
 }
-
