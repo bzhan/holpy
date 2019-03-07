@@ -136,11 +136,14 @@
             }
         }
 
-//      save all of the modified_data to the json-file;
+//      save all of the edited_tab_data to the json-file;
         function save_editor_data() {
-            var copy_result_list = result_list;
-
-            $.each(copy_result_list, function (i, v) {
+            var copy_res = $.extend(true, [], result_list);
+//            for (var i in result_list) {
+//                copy_res[i] = result_list[i];
+//            }
+            display_result_list();
+            $.each(copy_res, function (i, v) {
                 if (v.ty === 'def.ax') {
                     delete v.type_hl;
                 } else if (v.ty === 'thm') {
@@ -159,10 +162,10 @@
                 type: 'PUT',
                 data: JSON.stringify({
                     'name': name,
-                    'data': copy_result_list
+                    'data': copy_res
                 }),
                 success: function () {
-                    alert('save success');
+                    alert('save success!');
                 }
             })
         }
@@ -318,7 +321,7 @@
                         '<font color="#006000"><b>theorem</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' +
                         '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-vars' + page_num + '" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="' + vars_str + '">' +
                         '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="' + data_content + '">' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-left:44px;margin-top:5px;width:20%;"><b>SAVE</b></button>'+
+                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button>'+
                         '</br><input name="hint_backward" type="checkbox" style="margin-left:25px;"><b>&nbsp;backward</b><input name="hint_rewrite" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
@@ -382,7 +385,7 @@
             $('textarea#data-vars' + page_num).val(data_vars_str);
         }
 
-//      click save button to save content to the left-json for updating;
+//      click save button on edit tab to save content to the left-json for updating;
         $('#codeTabContent').on('click', 'button#save-edit', function () {
             var a_id = $(this).parent().attr('name').trim();
             var error_id = $(this).next().attr('id').trim();
@@ -392,9 +395,13 @@
             var number = Number(a_id.slice(5,)) - 1;
             var prev_list = result_list.slice(0, number);
             if ($('input[name="hint_backward"]').prop('checked') === true)
-                result_list[number]['hint_backward'] = true;
+                result_list[number]['hint_backward'] = 'true';
+            else if ('hint_backward' in result_list[number])
+                delete result_list[number]['hint_backward'];
             if ($('input[name="hint_rewrite"]').prop('checked') === true)
-                result_list[number]['hint_rewrite'] = true;
+                result_list[number]['hint_rewrite'] = 'true';
+            else if ('hint_rewrite' in result_list[number])
+                delete result_list[number]['hint_rewrite']
             ajax_data['file-name'] = name;
             ajax_data['prev-list'] = prev_list;
             $.ajax({
@@ -414,10 +421,12 @@
                     $.each(result_list, function (j, k) {
                         if (k['name'] === data_name) {
                             for (var key in result_data) {
-                                result_list[j][key] = result_data[key];
+                                if (key in result_list[j])
+                                    result_list[j][key] = result_data[key];
                             }
                         }
                     });
+                    result_list_dict[name] = result_list;
                     display_result_list();
                 }
             });
@@ -520,6 +529,7 @@
             return ajax_data;
         }
 
+//
         $('#file-path').on('click', '#root-a', function () {
             $('#left_json').empty();
             if ($('#file-path a:last').text() !== 'root/') {
@@ -535,6 +545,7 @@
             }
         });
 
+//      click the file name to display json file;
         $('#root-file').on('click', 'a', function () {
             num = 0;
             $('#left_json').empty();
@@ -548,34 +559,33 @@
             } else if ($('#file-path a:last').text() !== name) {
                 $('#file-path a:last').remove();
                 $('#root-a').after($('<a href="#"><font color="red"><b>' + name + '</b></font></a>'));
-            }
-            ;
+            };
             data = JSON.stringify(name);
             ajax_res(data);
-            $('#cons').on('click', function () {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'));
-            });
-            $('#them').on('click', function () {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">'
-                    + '<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">'
-                    + '<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">'));
-            });
-            $('#datat').on('click', function () {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="args1" placeholder="args1" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="args2" placeholder="args2" style="margin-bottom:20px;width:50%;float:left;">'));
-            });
-            $('#fun').on('click', function () {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">'
-                    + '<input type="text" id="function-type" placeholder="type" style="margin-bottom:5px;width:100%;">'
-                    + '<input type="text" id="function-vars1" placeholder="vars1" style="float:left;margin-bottom:5px;width:50%;">'
-                    + '<input type="text" id="function-vars2" placeholder="vars2" style="float:left;margin-bottom:5px;width:50%;">'
-                    + '<input type="text" id="function-prop1" placeholder="prop1" style="float:left;margin-bottom:5px;width:50%;">'
-                    + '<input type="text" id="function-prop2" placeholder="prop2" style=":float:left;margin-bottom:5px;width:50%;">'))
-            })
+//            $('#cons').on('click', function () {
+//                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'));
+//            });
+//            $('#them').on('click', function () {
+//                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">'
+//                    + '<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">'
+//                    + '<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">'));
+//            });
+//            $('#datat').on('click', function () {
+//                $('#add-information').append($('<p>Enter the info:</p><input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">'
+//                    + '<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">'
+//                    + '<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">'
+//                    + '<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:5px;width:50%;float:left;">'
+//                    + '<input type="text" class="datatype" id="args1" placeholder="args1" style="margin-bottom:5px;width:50%;float:left;">'
+//                    + '<input type="text" class="datatype" id="args2" placeholder="args2" style="margin-bottom:20px;width:50%;float:left;">'));
+//            });
+//            $('#fun').on('click', function () {
+//                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">'
+//                    + '<input type="text" id="function-type" placeholder="type" style="margin-bottom:5px;width:100%;">'
+//                    + '<input type="text" id="function-vars1" placeholder="vars1" style="float:left;margin-bottom:5px;width:50%;">'
+//                    + '<input type="text" id="function-vars2" placeholder="vars2" style="float:left;margin-bottom:5px;width:50%;">'
+//                    + '<input type="text" id="function-prop1" placeholder="prop1" style="float:left;margin-bottom:5px;width:50%;">'
+//                    + '<input type="text" id="function-prop2" placeholder="prop2" style=":float:left;margin-bottom:5px;width:50%;">'))
+//            })
         });
 
         $('#json-button').on('click', function () {
