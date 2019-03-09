@@ -18,6 +18,22 @@
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
     });
 
+//    $('button#additional_option').on('click', function() {
+////      t=$('div.dropdown-menu.dropdown-menu-right').css('transform');
+//        t=$('div.dropdown-menu.dropdown-menu-right').attr('style');
+//        alert(t);
+//    })
+
+//    window.onload() = function() {
+//        $('div.dropdown-menu.dropdown-menu-right').css('transform', 'translate3d(6px, 26px, 0px)');
+//        alert('success');
+//    }
+
+//    $(window).load(function() {
+//         $('div.dropdown-menu.dropdown-menu-right').css('transform', 'translate3d(6px, 26px, 0px)');
+//    })
+
+
     $(function () {
         $('#add-cell').on('click', function () {
             page_num++;
@@ -266,6 +282,7 @@
         $('#left_json').on('click', 'a[name="proof"]', function () {
             proof_id = $(this).attr('id');
             eidt_mode = false;
+            $('div.rtop').css('overflow','');
             var thm_name = $(this).parent().find('span#thm_name').text();
             if (result_list[proof_id - 1]['proof']) {
                 $('#add-cell').click();
@@ -289,6 +306,7 @@
             var vars_str = '';
             var a_id = $(this).attr('id').trim();
             var number = Number(a_id.slice(5,)) - 1;
+            $('div.rtop').css('overflow','auto');
             for (var key in result_list[number]['vars']) {
                 vars_str += key + ':' + result_list[number]['vars'][key] + ' ';
             };
@@ -1060,14 +1078,14 @@
     }
 
     Split(['.rtop', '.rbottom'], {
-        sizes: [40, 60],
+        sizes: [70, 30],
         direction: 'vertical',
         minSize: 39,
         onDrag: resize_editor,
         gutterSize: 2,
     });
     Split(['.left', '.right'], {
-        sizes: [20, 80],
+        sizes: [30, 70],
         gutterSize: 2,
     });
 })
