@@ -42,6 +42,8 @@
             "type": "bool => 'a => 'a => 'a"
         },
         {
+            "hint_backward": "true",
+            "hint_rewrite": "true",
             "name": "conjI",
             "num_gaps": 1,
             "proof": [
@@ -85,7 +87,7 @@
                     "th": "B ⊢ A ⟶ B"
                 }
             ],
-            "prop": "A --> B --> A & B",
+            "prop": "A ⟶ B ⟶ A ∧ B",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -93,6 +95,7 @@
             }
         },
         {
+            "hint_backward": "true",
             "name": "conjD1",
             "prop": "A ∧ B ⟶ A",
             "ty": "thm",

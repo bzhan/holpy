@@ -282,7 +282,6 @@
         $('#left_json').on('click', 'a[name="proof"]', function () {
             proof_id = $(this).attr('id');
             eidt_mode = false;
-            $('div.rtop').css('overflow','');
             var thm_name = $(this).parent().find('span#thm_name').text();
             if (result_list[proof_id - 1]['proof']) {
                 $('#add-cell').click();
@@ -306,7 +305,6 @@
             var vars_str = '';
             var a_id = $(this).attr('id').trim();
             var number = Number(a_id.slice(5,)) - 1;
-            $('div.rtop').css('overflow','auto');
             for (var key in result_list[number]['vars']) {
                 vars_str += key + ':' + result_list[number]['vars'][key] + ' ';
             };
