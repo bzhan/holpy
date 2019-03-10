@@ -12,6 +12,7 @@
     var proof_id = 0;
     var origin_result = [];
     var edit_mode = false;
+    var add_mode = false;
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -85,7 +86,7 @@
             }
         });
 
-        // Save a single proof to the webpage (not to the json file);该函数是后台高亮显示到浏览器
+        // Save a single proof to the webpage (not to the json file);
         $('div.rtop').on('click', 'button[name="save"]', function () {
             editor_id_list = [];
             var editor_id = get_selected_id();
@@ -281,6 +282,15 @@
             init_edit_area(page_num, a_id, data_name, data_name, data_type, data_content);
             });
 
+//      click delete then delete the content from webpage;
+        $('#left_json').on('click', 'a[name="del"]', function(){
+            var a_id = $(this).attr('id').trim();
+            var number = Number(a_id.slice(5,))-1;
+             result_list.splice(number, 1);
+             display_result_list();
+
+        });
+
         function init_edit_area(page_num, a_id = '', data_label= '', data_name, data_type, data_content='', border='1px;solid #ffffff') {
             var vars_str = '';
             if (a_id) {
@@ -396,7 +406,7 @@
                 success: function(res) {
                     var result_data = res['data'];
                     var data_name = result_data['name'];
-                    var error = res['error'], flag = true;//通过flag标记该用edit还是新增
+                    var error = res['error'], flag = true;
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
                     if (error && error !== {}) {
@@ -404,7 +414,7 @@
                         $('div#'+error_id).find('pre').text(error_info);
                     }
                     $.each(result_list, function(j,k) {
-                        if (k['name'] === data_name) {//此data_name指的是比如说conjI
+                        if (k['name'] === data_name) {
                             for (var key in result_data) {
                                 result_list[j][key] = result_data[key];
                                 flag = false;
@@ -528,7 +538,7 @@
             }
         });
 
-        $('a#save-file').click(function() {//该函数是保存到后台
+        $('a#save-file').click(function() {
             if (edit_mode) {
                 save_editor_data();
             }
@@ -537,12 +547,10 @@
             }
         });
 
+//      click to display json file
         $('#root-file').on('click', 'a', function () {
             num = 0;
             $('#left_json').empty();
-         //   $('#add-info').click(function() {
-          //      var ajax_data = make_data(ty,id);
-           // });
             name = $(this).text();
             name = $.trim(name);
             if ($('#file-path').html() === '') {
@@ -553,27 +561,26 @@
                 $('#file-path a:last').remove();
                 $('#root-a').after($('<a href="#"><font color="red"><b>' + name + '</b></font></a>'));
             };
-
-           // data = JSON.stringify(name);
-         //   ajax_res(data);
-
-            $('div.dropdown-menu.dropdown-menu-right.add-info a').on('click', function() {
-                page_num ++;
-                edit_mode = true;
-                var ty = $(this).attr('name');
-//                init_edit_area(page_num, '', 'constant', '',  'constant',border);
-                init_edit_area(page_num, '', ty, '', ty,'','');
-            })
             data = JSON.stringify(name);
             ajax_res(data);
-        });
+            add_mode = true;
+            });
+
+            $('div.dropdown-menu.dropdown-menu-right.add-info a').on('click', function() {
+                if (add_mode === true) {
+                    page_num ++;
+                    edit_mode = true;
+                    var ty = $(this).attr('name');
+//                init_edit_area(page_num, '', 'constant', '',  'constant',border);
+                    init_edit_area(page_num, '', ty, '', ty,'','');
+                }
+            })
 
         $('#json-button').on('click', function () {
             num = 0;
             $('#left_json').empty();
             name = prompt('please enter the file name');
             var data = JSON.stringify(name);
-            $('#add-info').click(add_info);
             ajax_res(data);
         });
 
@@ -659,8 +666,6 @@
         $('#left_json').empty();
         $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
         '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
-//        result_他是后台json路由传递回来的数据也就是json文件的内容；利用他了可以扎到对应文件内部的description以及headeer、imports等信息；
-//[]是列表
         var num = 0;
         for (var d in result_list) {
             num++;
@@ -675,7 +680,7 @@
                 });
                 $('#left_json').append($(
                     '<div><p id="data-'+ num +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + name + '</span> :: <span name="content">' + type
-                    + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a></p></div>'));
+                    + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
             }
 
             if (ty === 'thm') {
@@ -696,7 +701,7 @@
                 $('#left_json').append($(
                     '<div><div style="float:left;width: 12px; height: 12px; background: ' +
                     status_color + ';">&nbsp;</div>' + '<p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
-                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
+                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
                     prop + '</span></p></div>'));
             }
 
@@ -718,7 +723,7 @@
                 str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
                 })
                 $('#left_json').append($(
-                    '<div><p id="data-'+ num +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a></p></div>'));
+                    '<div><p id="data-'+ num +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
             }
 
             if (ty === 'def.ind') {
@@ -736,7 +741,7 @@
                     });
                     $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
                 }
-                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
 
             }
             if (ty==='header') {
