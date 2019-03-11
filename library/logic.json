@@ -1,8 +1,6 @@
 {
     "content": [
         {
-            "hint_backward": "true",
-            "hint_rewrite": "true",
             "instructions": [
                 "Select S1 as goal, use Ctrl+B with conjI",
                 "Select S1 as goal and A1 as fact, use Ctrl+B with conjD2.",
@@ -43,8 +41,6 @@
             }
         },
         {
-            "hint_backward": "true",
-            "hint_rewrite": "true",
             "instructions": [
                 "Select S1 as goal and A1 as fact, use Ctrl+B with disjE.",
                 "Select S1 as goal, use Ctrl+I.",
@@ -79,7 +75,7 @@
                     "th": "⊢ A ∨ B ⟶ B ∧ A"
                 }
             ],
-            "prop": "A ∨ B ⟶ B ∧ A",
+            "prop": "A ∨ B ⟶ B | A",
             "ty": "thm",
             "vars": {
                 "A": "bool",
