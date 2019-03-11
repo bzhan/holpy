@@ -30,8 +30,7 @@
 <link rel="stylesheet" href="../static/codemirror-5.41.0/addon/fold/foldgutter.css"/>
 <script src="../static/codemirror-5.41.0/addon/fold/foldcode.js"></script>
 <script src="../static/codemirror-5.41.0/addon/fold/foldgutter.js"></script>
-<script src="../static/codemirror-5.41.0/addon/fold/brace-fold.js"></script>
-<script src="../static/codemirror-5.41.0/addon/fold/comment-fold.js"></script>
+<script src="../static/codemirror-5.41.0/addon/fold/indent-fold.js"></script>
 <!--括号匹配-->
 <script src="../static/codemirror-5.41.0/addon/edit/matchbrackets.js"></script>
 <!--end Code Mirror -->
@@ -55,7 +54,7 @@
                 <!----><span
                     data-vivaldi-spatnav-clickable="1">File
                     </span></button>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu span" align="left">
                 <a class="dropdown-item fontcolor" href="#" id="save-file">Save</a>
                 <a class="dropdown-item fontcolor" href="#" onclick="$('#open-file').click()" id="file-button">Open file</a>
                 <input type="file" id="open-file" style="display:none">
@@ -74,7 +73,7 @@
                 <!----><span
                     data-vivaldi-spatnav-clickable="1">Cells
                     </span></button>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu span">
                 <a class="dropdown-item fontcolor" href="#" id="add-cell" color="black">Add cell</a>
                 <a class="dropdown-item fontcolor" href="#" id="delete-cell">Delete cell</a>
                 <a class="dropdown-item fontcolor" href="#" id="run-button">Run</a>
@@ -83,12 +82,12 @@
         <div class="dropdown">
             <button data-v-bfe775a4="" type="button" id="additional_option" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false"
-                    class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle"
+                    class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle span"
                     data-vivaldi-spatnav-clickable="1" role="button" tabindex="0">
                 <!----><span
                     data-vivaldi-spatnav-clickable="1">Action
                     </span></button>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu span">
                 <a class="dropdown-item fontcolor" href="#" id="add-line-after">Add line after</a>
                 <a class="dropdown-item fontcolor" href="#" id="introduction">Introduction</a>
                 <a class="dropdown-item fontcolor" href="#" id="apply-backward-step">Apply backward step</a>
@@ -104,11 +103,11 @@
                 <!----><span
                     data-vivaldi-spatnav-clickable="1">ADD
                     </span></button>
-            <div class="dropdown-menu dropdown-menu-right add-info">
-                <a class="dropdown-item" name="constant" href="#" id="cons">constant</a>
-                <a class="dropdown-item" name="theorem" href="#" id="them">therom</a>
-                <a class="dropdown-item" name="datatype" href="#" id="datat">datatype</a>
-                <a class="dropdown-item" name="fun" href="#" id="fun">fun</a>
+            <div class="dropdown-menu span">
+                <a class="dropdown-item fontcolor" href="#" id="cons">constant</a>
+                <a class="dropdown-item fontcolor" href="#" id="them">therom</a>
+                <a class="dropdown-item fontcolor" href="#" id="datat">datatype</a>
+                <a class="dropdown-item fontcolor" href="#" id="fun">fun</a>
             </div>
         </div>
     </div>
@@ -122,32 +121,13 @@
 
     </div>
     <div class="input_thm" id="add-information">
-        <!--<p>Enter the info:</p>-->
-        <!--<input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;">-->
-        <!--<input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">-->
-        <!--<input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">-->
-        <!--<input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="args1" placeholder="args1" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="args2" placeholder="args2" style="margin-bottom:20px;width:50%;float:left;">-->
-        <!--<input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" id="function-type" placeholder="type" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" id="function-vars1" placeholder="vars1" style="float:left;margin-bottom:5px;width:50%;">-->
-        <!--<input type="text" id="function-vars2" placeholder="vars2" style="float:left;margin-bottom:5px;width:50%;">-->
-        <!--<input type="text" id="function-prop1" placeholder="prop1" style="float:left;margin-bottom:5px;width:50%;">-->
-        <!--<input type="text" id="function-prop2" placeholder="prop2" style=":float:left;margin-bottom:5px;width:50%;">-->
+
     </div>
 </div>
 
 <div class="right" id="right">
-    <div class="rtop" style="left: 0; right: 0; top: 0; bottom: 45%;">
-        <div class="code-pan" style=>
+    <div class="rtop" style="left: 0; right: 0; top: 0; bottom: 45%">
+        <div class="code-pan">
             <ul class="nav nav-tabs" id="codeTab"></ul>
             <div class="tab-content" id="codeTabContent"></div>
         </div>

@@ -21,8 +21,12 @@ def getInitTheory():
     # The root theory
     thy = Theory.EmptyTheory()
 
+    # 有什么区别和其他添加方法或类型；
     # Operators
     thy.add_data_type("operator", OperatorTable())
+    thy.add_data_type("hint_backward", set())
+    thy.add_data_type("hint_rewrite", set())
+
     return thy
 
 def loadImportedTheory(data):

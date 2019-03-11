@@ -1,13 +1,14 @@
 {
     "content": [
         {
+            "hint_rewrite": true,
             "instructions": [
                 "Select S1 as goal, use Ctrl+B with conjI",
                 "Select S1 as goal and A1 as fact, use Ctrl+B with conjD2.",
                 "Select S2 as goal and A1 as fact, use Ctrl+B with conjD1."
             ],
             "name": "conj_comm",
-            "num_gaps": 0,
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "A ∧ B",
@@ -17,44 +18,23 @@
                     "th": "A ∧ B ⊢ A ∧ B"
                 },
                 {
-                    "args": "conjD2, {}, {A: A, B: B}",
+                    "args": "",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∧ B ⊢ B"
-                },
-                {
-                    "args": "conjD1, {}, {A: A, B: B}",
-                    "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∧ B ⊢ A"
-                },
-                {
-                    "args": "conjI, {}, {A: B, B: A}",
-                    "id": "3",
-                    "prevs": [
-                        "1",
-                        "2"
-                    ],
-                    "rule": "apply_theorem_for",
+                    "prevs": [],
+                    "rule": "sorry",
                     "th": "A ∧ B ⊢ B ∧ A"
                 },
                 {
                     "args": "A ∧ B",
-                    "id": "4",
+                    "id": "2",
                     "prevs": [
-                        "3"
+                        "1"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ A ∧ B ⟶ B ∧ A"
                 }
             ],
-            "prop": "A & B --> B & A",
+            "prop": "A ∧ B ⟶ B ∧ A",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -164,7 +144,7 @@
                     "th": "⊢ A ∨ B ⟶ B ∨ A"
                 }
             ],
-            "prop": "A | B --> B | A",
+            "prop": "A ∨ B ⟶ B ∨ A",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -320,7 +300,7 @@
                 "Select S5 as goal and S4 as fact, use Ctrl+B with exI."
             ],
             "name": "ex_conj_distrib",
-            "num_gaps": 0,
+            "num_gaps": 2,
             "proof": [
                 {
                     "args": "∃x. A x ∧ B x",
@@ -351,65 +331,43 @@
                     "th": "A a ∧ B a ⊢ A a ∧ B a"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "",
                     "id": "1.2",
-                    "prevs": [
-                        "1.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "A a ∧ B a ⊢ A a"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "1.3",
-                    "prevs": [
-                        "1.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "A a ∧ B a ⊢ B a"
-                },
-                {
-                    "args": "exI, {a: 'a}, {P: A, a: a}",
-                    "id": "1.4",
-                    "prevs": [
-                        "1.2"
-                    ],
-                    "rule": "apply_theorem_for",
+                    "prevs": [],
+                    "rule": "sorry",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ ∃x. A x"
                 },
                 {
-                    "args": "exI, {a: 'a}, {P: B, a: a}",
-                    "id": "1.5",
-                    "prevs": [
-                        "1.3"
-                    ],
-                    "rule": "apply_theorem_for",
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "sorry",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ ∃x. B x"
                 },
                 {
                     "args": "conjI, {}, {A: ∃x. A x, B: ∃x. B x}",
-                    "id": "1.6",
+                    "id": "1.4",
                     "prevs": [
-                        "1.4",
-                        "1.5"
+                        "1.2",
+                        "1.3"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ (∃x. A x) ∧ (∃x. B x)"
                 },
                 {
                     "args": "A a ∧ B a",
-                    "id": "1.7",
+                    "id": "1.5",
                     "prevs": [
-                        "1.6"
+                        "1.4"
                     ],
                     "rule": "implies_intr",
                     "th": "∃x. A x ∧ B x ⊢ A a ∧ B a ⟶ (∃x. A x) ∧ (∃x. B x)"
                 },
                 {
                     "args": "a",
-                    "id": "1.8",
+                    "id": "1.6",
                     "prevs": [
-                        "1.7"
+                        "1.5"
                     ],
                     "rule": "forall_intr",
                     "th": "∃x. A x ∧ B x ⊢ ∀a. A a ∧ B a ⟶ (∃x. A x) ∧ (∃x. B x)"
