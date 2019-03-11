@@ -18,22 +18,6 @@
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
     });
 
-//    $('button#additional_option').on('click', function() {
-////      t=$('div.dropdown-menu.dropdown-menu-right').css('transform');
-//        t=$('div.dropdown-menu.dropdown-menu-right').attr('style');
-//        alert(t);
-//    })
-
-//    window.onload() = function() {
-//        $('div.dropdown-menu.dropdown-menu-right').css('transform', 'translate3d(6px, 26px, 0px)');
-//        alert('success');
-//    }
-
-//    $(window).load(function() {
-//         $('div.dropdown-menu.dropdown-menu-right').css('transform', 'translate3d(6px, 26px, 0px)');
-//    })
-
-
     $(function () {
         $('#add-cell').on('click', function () {
             page_num++;
@@ -54,18 +38,21 @@
                 $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
                     '<label for="code' + page_num + '"></label> ' +
                     '<textarea id="code' + page_num + '"></textarea>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini save" style="margin-top:5px;width:100px;margin-left:25px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button></div>'));
+                    '</div>'));
+            $('div.rbottom').html(
+                '<div id="prf'+ page_num +'" name="addition"><button id="' + proof_id + '" class="el-button el-button--default el-button--mini save" style="margin-top:5px;width:100px;margin-left:25px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button></div>');
+
             init_editor("code" + page_num);
             // Add location for displaying results;
-            $('#' + id).append(
+            $('div#prf' + page_num).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<pre> </pre></div><div class="match-thm"">' +
                     '<div class="abs-thm"></div>' +
                     '<div class="rewrite-thm"></div>' +
                     '<div class="clear"></div>' +
                     '</div></div>'));
-            $('#' + id).append(
+            $('div#prf' + page_num).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<a href="#" id="link-backward" style="float:left;"><</a>' +
                     '<pre id="instruction-number", style="float:left;"> </pre>' +
@@ -326,7 +313,7 @@
                         '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
                         '<font color="#006000"><b>constant</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="background:transparent;border:1px;solid #ffffff;width:10%;" value="' + data_name + '">' +
                         '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:50%;background:transparent;border:1px;solid #ffffff;" value="' + data_content + '">' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:10px;width:20%;"><b>SAVE</b></button></div>'
+                        '</div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -337,8 +324,7 @@
                         '<font color="#006000"><b>theorem</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' +
                         '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-vars' + page_num + '" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="' + vars_str + '">' +
                         '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="' + data_content + '">' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button>'+
-                        '</br><input name="hint_backward" type="checkbox" style="margin-left:25px;"><b>&nbsp;backward</b><input name="hint_rewrite" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
+                        '<br><br><input name="hint_backward" type="checkbox" style="margin-left:0px;"><b>&nbsp;backward</b><input name="hint_rewrite" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -360,8 +346,7 @@
                 var data_new_content = '';
                 for (var i in data_content_list) {
                     data_new_content += i + ': ' + data_content_list[i] + '\n';
-                }
-                ;
+                };
                 $('#codeTab').find('span#' + page_num).text(data_name.split(' :: ')[0]);
                 $('#codeTabContent').append(
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
@@ -378,7 +363,8 @@
                 $('input[name="hint_backward"]').click();
             if ('hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
                 $('input[name="hint_rewrite"]').click();
-            $('#codeTabContent div#code' + page_num + '-pan button').after(
+            $('div.rbottom').html('<button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button>')
+            $('div.rbottom button').after(
                 $('<div class="output-wrapper" style="margi-top:1px;" id="error' + page_num + '">' +
                     '<pre></pre></div>'));
         })

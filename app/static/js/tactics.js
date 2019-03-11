@@ -11,15 +11,15 @@ function get_selected_editor() {
 }
 
 function get_selected_output() {
-    return document.querySelector('.code-cell.selected .output pre');
+    return document.querySelector('.rbottom .output pre');
 }
 
 function get_selected_instruction() {
-    return document.querySelector('.code-cell.selected .output #instruction');
+    return document.querySelector('.rbottom .output #instruction');
 }
 
 function get_selected_instruction_number() {
-    return document.querySelector('.code-cell.selected .output #instruction-number');
+    return document.querySelector('.rbottom .output #instruction-number');
 }
 
 function clear_match_thm() {
@@ -535,28 +535,28 @@ function display(id) {
 
 function display_match_thm(result) {
     if ('ths_abs' in result && result['ths_abs'].length !== 0) {
-        $('.code-cell.selected .match-thm .abs-thm').append(
+        $('div.rbottom .match-thm .abs-thm').append(
             $(`<pre>Theorems: (Ctrl-B)</pre><div class="thm-content"></div>`)
         );
         for (var i in result['ths_abs']) {
-            $('.code-cell.selected .match-thm .abs-thm .thm-content').append(
+            $('div.rbottom .match-thm .abs-thm .thm-content').append(
                 $(`<pre>${result['ths_abs'][i]}</pre>`)
             );
         }
-        $('.code-cell.selected .match-thm .abs-thm .thm-content').append(
+        $('div.rbottom .match-thm .abs-thm .thm-content').append(
             $(`<a href="#" class="backward-step">Other backward step</a>`)
         )
     }
     if ('ths_rewrite' in result && result['ths_rewrite'].length !== 0) {
-        $('.code-cell.selected .match-thm .rewrite-thm').append(
+        $('div.rbottom .match-thm .rewrite-thm').append(
             $(`<pre>Theorems: (Ctr-R)</pre><div class="thm-content"></div>`)
         );
         for (var i in result['ths_rewrite']) {
-            $('.code-cell.selected .match-thm .rewrite-thm .thm-content').append(
+            $('div.rbottom .match-thm .rewrite-thm .thm-content').append(
                 $(`<pre>${result['ths_rewrite'][i]}</pre>`)
             );
         }
-        $('.code-cell.selected .match-thm .rewrite-thm .thm-content').append(
+        $('div.rbottom .match-thm .rewrite-thm .thm-content').append(
             $(`<a href="#" class="rewrite-goal">Other rewrite goal</a>`)
         )
     }
@@ -564,7 +564,7 @@ function display_match_thm(result) {
 
 function get_match_thm_abs() {
     var match_thm_list = [];
-    $('.code-cell.selected .abs-thm .thm-content pre').each(function () {
+    $('div.rbottom .abs-thm .thm-content pre').each(function () {
             match_thm_list.push($(this).text())
         }
     );
@@ -573,7 +573,7 @@ function get_match_thm_abs() {
 
 function get_match_thm_rewrite() {
     var match_thm_list = [];
-    $('.code-cell.selected .rewrite-thm .thm-content pre').each(function () {
+    $('div.rbottom .rewrite-thm .thm-content pre').each(function () {
             match_thm_list.push($(this).text())
         }
     );
