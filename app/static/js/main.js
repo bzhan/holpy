@@ -19,7 +19,6 @@
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
     });
 
-
     $(function () {
         $('#add-cell').on('click', function () {
             page_num++;
@@ -372,7 +371,8 @@
                 var data_new_content = '';
                 for (var i in data_content_list) {
                     data_new_content += i + ': ' + data_content_list[i] + '\n';
-                };
+                }
+                ;
                 $('#codeTab').find('span#' + page_num).text(data_name.split(' :: ')[0]);
                 $('#codeTabContent').append(
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
@@ -398,7 +398,7 @@
         function display_lines_number(content_list, page_num, number) {
             var data_vars_list = [];
             var data_vars_str = '';
-
+<<<<<<< HEAD
             if (number) {
                 $.each(result_list[number]['rules'], function(i, v) {
                     var vars_str = '';
@@ -443,7 +443,7 @@
                 success: function (res) {
                     var result_data = res['data'];
                     var data_name = result_data['name'];
-                    var error = res['error'];
+                    var error = res['error'], flag = true;
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
                     if (error && error !== {}) {
@@ -453,12 +453,14 @@
                     $.each(result_list, function (j, k) {
                         if (k['name'] === data_name) {
                             for (var key in result_data) {
-                                if (key in result_list[j])
-                                    result_list[j][key] = result_data[key];
+                                result_list[j][key] = result_data[key];
+                                flag = false;
                             }
                         }
                     });
-                    result_list_dict[name] = result_list;
+                    if (flag === true) {
+                        result_list.push(result_data);
+                    }
                     display_result_list();
                 }
             });
@@ -467,8 +469,8 @@
 
 //      make a strict-type data from editing;id=page_num
         function make_data(ty, id) {
-            var data_name = $('input#data-name' + id).val().trim();
-            var data_content = $('#data-content' + id).val().trim();
+            var data_name = $('#data-name'+id).val().trim();
+            var data_content = $('#data-content'+id).val().trim();
             var ajax_data = {};
             if (ty === 'constant') {
                 ajax_data['ty'] = 'def.ax';
@@ -594,6 +596,18 @@
             };
             data = JSON.stringify(name);
             ajax_res(data);
+            add_mode = true;
+            });
+
+            $('div.dropdown-menu.dropdown-menu-right.add-info a').on('click', function() {
+                if (add_mode === true) {
+                    page_num ++;
+                    edit_mode = true;
+                    var ty = $(this).attr('name');
+//                init_edit_area(page_num, '', 'constant', '',  'constant',border);
+                    init_edit_area(page_num, '', ty, '', ty,'','');
+                }
+            })
         });
 
         $('#json-button').on('click', function () {
@@ -684,8 +698,8 @@
         result_list_dict[theory_name] = result_list;
         var import_str = theory_imports.join('、');
         $('#left_json').empty();
-        $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">' + theory_desc + '</font></span><br>' +
-            '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>' + import_str + '</span></font></p></div>'));
+        $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
+        '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
         var num = 0;
         for (var d in result_list) {
             num++;
@@ -697,8 +711,8 @@
                     type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                 });
                 $('#left_json').append($(
-                    '<div><p id="data-' + num + '"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + name + '</span> :: <span name="content">' + type
-                    + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a></p></div>'));
+                    '<div><p id="data-'+ num +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + name + '</span> :: <span name="content">' + type
+                    + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
             }
 
             if (ty === 'thm') {
@@ -716,8 +730,8 @@
                 }
                 $('#left_json').append($(
                     '<div><div style="float:left;width: 12px; height: 12px; background: ' +
-                    status_color + ';">&nbsp;</div>' + '<p id="data-' + num + '"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
-                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
+                    status_color + ';">&nbsp;</div>' + '<p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
+                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
                     prop + '</span></p></div>'));
             }
 
@@ -739,7 +753,7 @@
                     str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
                 })
                 $('#left_json').append($(
-                    '<div><p id="data-' + num + '"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a></p></div>'));
+                    '<div><p id="data-'+ num +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
             }
 
             if (ty === 'def.ind') {
@@ -757,37 +771,14 @@
                     });
                     $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
                 }
-                $('#left_json p#data-' + num + ' span[name="content"]:last').after($('<a href="#" name="edit" id="data-' + num + '"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
 
             }
-            if (ty === 'header') {
-                $('#left_json').append($('<div><p id="data-' + num + '">&nbsp;<span id="head_name" name="name">' + name + '</span><br>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a></p></div>'))
+            if (ty==='header') {
+                $('#left_json').append($('<div><p id="data-'+ num +'">&nbsp;<span id="head_name" name="name">' +name + '</span>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num +'"><b>edit</b></a></p></div>'))
             }
         }
     }
-
-    $('#left_json').on('blur', 'textarea[name="edit"]', function () {
-        var value = $(this).val();
-        var ty = $(this).prev().text();
-        var id = $(this).parent().attr('id') - 1;
-        $(this).replaceWith('<span name="constant" style="border:solid 0px;"> ' + value + '</span>');
-        event = {
-            "name": name,//文件名 logicbase
-            "data": value,//bool
-            "ty": ty,//constant
-            "n": id//
-        }
-        var data = JSON.stringify(event);
-        $.ajax({
-            url: '/api/save_edit',
-            type: 'PUT',//Only send info ;
-            data: data,
-            success: function () {
-                alert('save success!');
-            }
-
-        })
-    })
 
     function ajax_res(data) {
         $.ajax({
