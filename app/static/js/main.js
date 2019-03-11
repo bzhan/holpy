@@ -19,6 +19,7 @@
     });
 
     $(function () {
+//      click add_cell to add a tab page;
         $('#add-cell').on('click', function () {
             page_num++;
             // Add CodeMirror textarea;
@@ -26,7 +27,7 @@
             $('#codeTab').append(
                 $('<li class="nav-item" name="code' + page_num + '"><a class="nav-link" ' +
                     'data-toggle="tab"' +
-                    'href="#code' + page_num + '-pan">' +
+                    'href="#code' + page_num + '-pan" name="'+ page_num +'">' +
                     '<span> ' +
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="proof-tab">×</button>' +
@@ -39,15 +40,14 @@
                     '<label for="code' + page_num + '"></label> ' +
                     '<textarea id="code' + page_num + '"></textarea>' +
                     '</div>'));
-            $('div.rbottom').html(
+            $('div.rbottom').append(
                 '<div id="prf'+ page_num +'" name="addition"><button id="' + proof_id + '" class="el-button el-button--default el-button--mini save" style="margin-top:5px;width:100px;margin-left:25px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button></div>');
-
             init_editor("code" + page_num);
             // Add location for displaying results;
             $('div#prf' + page_num).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<pre> </pre></div><div class="match-thm"">' +
+                    '<pre> 666</pre></div><div class="match-thm"">' +
                     '<div class="abs-thm"></div>' +
                     '<div class="rewrite-thm"></div>' +
                     '<div class="clear"></div>' +
@@ -60,6 +60,8 @@
                     '<pre id="instruction" style="float:left;"> </pre></div></div>'));
 
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+            $('div#prf'+page_num).addClass('selected').siblings().removeClass('selected');
+            $('div#prf'+page_num).show().siblings().hide();
             $('.newCodeMirror').each(function () {
                 $(this).removeClass('active');
             });
@@ -103,7 +105,7 @@
         });
 
         // Save a single proof to the webpage (not to the json file);
-        $('div.rtop').on('click', 'button.save', function () {
+        $('div.rbottom').on('click', 'button.save', function () {
             editor_id_list = [];
             var file_name = $(this).attr('name').slice(4,);
             var editor_id = get_selected_id();
@@ -142,9 +144,6 @@
 //      save all of the edited_tab_data to the json-file;
         function save_editor_data() {
             var copy_res = $.extend(true, [], result_list);
-//            for (var i in result_list) {
-//                copy_res[i] = result_list[i];
-//            }
             display_result_list();
             $.each(copy_res, function (i, v) {
                 if (v.ty === 'def.ax') {
@@ -201,7 +200,7 @@
         }
 
         //click reset button to reset the thm to the origin status;
-        $('div.rtop').on('click', 'button.reset', function () {
+        $('div.rbottom').on('click', 'button.reset', function () {
             var id = Number($(this).attr('id')) - 1;
             var file_name = $(this).attr('name').slice(5,);
             if (file_name) {
@@ -209,9 +208,13 @@
             }
         })
 
+//      click the tab to show;
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
+            var tab_pm = $(this).attr('name');
             $(this).tab('show');
+            $('div#prf'+ tab_pm).addClass('selected').siblings().removeClass('selected');
+            $('div#prf'+ tab_pm).show().siblings().hide();
         });
 
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
@@ -225,21 +228,20 @@
             }
         });
 
-        $('#codeTab').on('click', 'li button[name="proof-tab"]', function () {
-            var id = get_selected_id();
+//      click x on the tab to close and delete the related tab page;
+        $('#codeTab').on('click', 'li button', function () {
             var tabId = $(this).parents('li').children('a').attr('href');
-            delete cells[id];
+            if ($(this).attr('name')==='code'+tab_pm)
+                var id = get_selected_id();
+                delete cells[id];
+            var tab_pm = $(this).parents('li').attr('name').slice(4,);
+            $('div#prf'+ tab_pm).remove();
             $(this).parents('li').remove('li');
             $(tabId).remove();
             $('#codeTab a:first').tab('show');
+            $('div.rbottom div:eq(0)').addClass('selected').siblings().removeClass('selected');
+            $('div.rbottom div:eq(0)').show().siblings().hide();
         });
-
-        $('#codeTab').on('click', 'li button[name="edit"]', function () {
-            var tabId = $(this).parents('li').children('a').attr('href');
-            $(this).parents('li').remove('li');
-            $(tabId).remove();
-            $('#codeTab a:first').tab('show');
-        })
 
         $('#delete-cell').on('click', function () {
             $('.code-cell.selected').remove();
@@ -301,7 +303,7 @@
             $('#codeTab').append(
                 $('<li class="nav-item" name="code' + page_num + '"><a class="nav-link" ' +
                     'data-toggle="tab"' +
-                    'href="#code' + page_num + '-pan">' +
+                    'href="#code' + page_num + '-pan" name="'+ page_num +'">' +
                     '<span id="' + page_num + '">' + data_name +
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="edit">×</button>' +
@@ -363,10 +365,12 @@
                 $('input[name="hint_backward"]').click();
             if ('hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
                 $('input[name="hint_rewrite"]').click();
-            $('div.rbottom').html('<button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button>')
-            $('div.rbottom button').after(
-                $('<div class="output-wrapper" style="margi-top:1px;" id="error' + page_num + '">' +
-                    '<pre></pre></div>'));
+            $('div.rbottom').append('<div id="prf'+ page_num +'"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>')
+            $('div#prf'+ page_num).append(
+                '<div class="output-wrapper" style="margi-top:1px;" id="error' + page_num + '">' +
+                    '<pre></pre></div>');
+            $('div#prf'+ page_num).addClass('selected').siblings().removeClass('selected');
+            $('div#prf'+ page_num).show().siblings().hide();
         })
 
 //      display vars_content in the textarea;
@@ -388,10 +392,11 @@
         }
 
 //      click save button on edit tab to save content to the left-json for updating;
-        $('#codeTabContent').on('click', 'button#save-edit', function () {
-            var a_id = $(this).parent().attr('name').trim();
+        $('div.rbottom').on('click', 'button#save-edit', function () {
+            var tab_pm = $(this).parent().attr('id').slice(3,);
+            var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
             var error_id = $(this).next().attr('id').trim();
-            var id = $(this).prevAll('label').attr('name').trim();
+            var id = tab_pm;
             var ty = $(this).attr('name').trim();
             var ajax_data = make_data(ty, id);
             var number = Number(a_id.slice(5,)) - 1;
@@ -564,30 +569,6 @@
             };
             data = JSON.stringify(name);
             ajax_res(data);
-//            $('#cons').on('click', function () {
-//                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'));
-//            });
-//            $('#them').on('click', function () {
-//                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">'
-//                    + '<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">'
-//                    + '<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">'));
-//            });
-//            $('#datat').on('click', function () {
-//                $('#add-information').append($('<p>Enter the info:</p><input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">'
-//                    + '<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">'
-//                    + '<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">'
-//                    + '<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:5px;width:50%;float:left;">'
-//                    + '<input type="text" class="datatype" id="args1" placeholder="args1" style="margin-bottom:5px;width:50%;float:left;">'
-//                    + '<input type="text" class="datatype" id="args2" placeholder="args2" style="margin-bottom:20px;width:50%;float:left;">'));
-//            });
-//            $('#fun').on('click', function () {
-//                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">'
-//                    + '<input type="text" id="function-type" placeholder="type" style="margin-bottom:5px;width:100%;">'
-//                    + '<input type="text" id="function-vars1" placeholder="vars1" style="float:left;margin-bottom:5px;width:50%;">'
-//                    + '<input type="text" id="function-vars2" placeholder="vars2" style="float:left;margin-bottom:5px;width:50%;">'
-//                    + '<input type="text" id="function-prop1" placeholder="prop1" style="float:left;margin-bottom:5px;width:50%;">'
-//                    + '<input type="text" id="function-prop2" placeholder="prop2" style=":float:left;margin-bottom:5px;width:50%;">'))
-//            })
         });
 
         $('#json-button').on('click', function () {
@@ -821,29 +802,6 @@
             }
         });
     }
-
-    $('#left_json').on('blur', 'textarea[name="edit"]', function () {
-        var value = $(this).val();
-        var ty = $(this).prev().text();
-        var id = $(this).parent().attr('id') - 1;
-        $(this).replaceWith('<span name="constant" style="border:solid 0px;"> ' + value + '</span>');
-        event = {
-            "name": name,//文件名 logicbase
-            "data": value,//bool
-            "ty": ty,//constant
-            "n": id//
-        }
-        var data = JSON.stringify(event);
-        $.ajax({
-            url: '/api/save_edit',
-            type: 'PUT',//Only send info ;
-            data: data,
-            success: function () {
-                alert('save success!');
-            }
-
-        })
-    })
 
     function ajax_res(data) {
         $.ajax({

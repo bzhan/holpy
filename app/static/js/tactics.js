@@ -11,15 +11,15 @@ function get_selected_editor() {
 }
 
 function get_selected_output() {
-    return document.querySelector('.rbottom .output pre');
+    return document.querySelector('.rbottom .selected .output pre');
 }
 
 function get_selected_instruction() {
-    return document.querySelector('.rbottom .output #instruction');
+    return document.querySelector('.rbottom .selected .output #instruction');
 }
 
 function get_selected_instruction_number() {
-    return document.querySelector('.rbottom .output #instruction-number');
+    return document.querySelector('.rbottom .selected .output #instruction-number');
 }
 
 function clear_match_thm() {
