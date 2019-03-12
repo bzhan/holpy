@@ -599,7 +599,7 @@
             add_mode = true;
             });
 
-            $('div.dropdown-menu.dropdown-menu-right.add-info a').on('click', function() {
+            $('div.dropdown-menu.add-info a').on('click', function() {
                 if (add_mode === true) {
                     page_num ++;
                     edit_mode = true;
