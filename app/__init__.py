@@ -221,7 +221,6 @@ def json_add_info():
 @app.route('/api/save_file', methods=['POST'])
 def save_file():
     json_data = json.loads(request.get_data().decode("utf-8"))
-
     data = json_data['data']
     name = json_data['name']
     with open('library/' + name + '.json', 'w+', encoding='utf-8') as f:
