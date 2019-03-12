@@ -199,6 +199,65 @@
             "prop": "aval (Plus (V 0) (N 5)) (fun_upd (%x. 0) 1 7) = 5",
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "name": "avalI",
+            "ty": "def.ax",
+            "type": "(nat => nat) => aexp => nat => bool"
+        },
+        {
+            "name": "avalI_const",
+            "ty": "thm",
+            "prop": "avalI s (N n) n",
+            "vars": {
+                "s": "nat => nat",
+                "n": "nat"    
+            }
+        },
+        {
+            "name": "avalI_var",
+            "ty": "thm",
+            "prop": "avalI s (V x) (s x)",
+            "vars": {
+                "s": "nat => nat",
+                "x": "nat"
+            }
+        },
+        {
+            "name": "avalI_plus",
+            "ty": "thm",
+            "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Plus a1 a2) (n1 + n2)",
+            "vars": {
+                "s": "nat => nat",
+                "a1": "aexp",
+                "a2": "aexp",
+                "n1": "nat",
+                "n2": "nat"
+            }
+        },
+        {
+            "name": "avalI_times",
+            "ty": "thm",
+            "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Times a1 a2) (n1 * n2)",
+            "vars": {
+                "s": "nat => nat",
+                "a1": "aexp",
+                "a2": "aexp",
+                "n1": "nat",
+                "n2": "nat"
+            }
+        },
+        {
+            "name": "avalI_test1",
+            "ty": "thm",
+            "prop": "avalI (fun_upd (%x. 0) 1 7) (Plus (V 1) (N 5)) 12",
+            "vars": {}
+        },
+        {
+            "name": "avalI_test2",
+            "ty": "thm",
+            "prop": "avalI (fun_upd (%x. 0) 1 7) (Plus (V 0) (N 5)) 5",
+            "vars": {}
         }
     ],
     "description": "Expressions",
