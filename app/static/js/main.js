@@ -129,15 +129,15 @@
 
         function result_to_output(data) {
             if (data.ty === 'def.ax') {
-                data.type_hl = undefined;
+                delete data.type_hl;
             } else if (data.ty === 'thm') {
-                data.prop_hl = undefined;
+                delete data.prop_hl;
             } else if (data.ty === 'type.ind') {
-                data.argsT = undefined;
+                delete data.argsT;
             } else if (data.ty === 'def.ind') {
-                data.type_hl = undefined;
+                delete data.type_hl;
                 for (var i in data.rules) {
-                    data.rules[i].prop_hl = undefined;
+                    delete data.rules[i].prop_hl;
                 }
             }
         }
@@ -147,18 +147,7 @@
             var copy_res = $.extend(true, [], result_list);
             display_result_list();
             $.each(copy_res, function (i, v) {
-                if (v.ty === 'def.ax') {
-                    delete v.type_hl;
-                } else if (v.ty === 'thm') {
-                    delete v.prop_hl;
-                } else if (v.ty === 'type.ind') {
-                    delete v.argsT;
-                } else if (v.ty === 'def.ind') {
-                    delete v.type_hl;
-                    for (var i in v.rules) {
-                        delete v.rules[i].prop_hl;
-                    }
-                }
+                result_to_output(v);
             })
             $.ajax({
                 url: '/api/editor_file',
