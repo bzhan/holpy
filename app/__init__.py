@@ -233,6 +233,7 @@ def get_root():
         f.close()
     return jsonify(json_data)
 
+
 #match the thms for backward or rewrite;
 @app.route('/api/match_thm', methods=['POST'])
 def match_thm():
@@ -251,6 +252,7 @@ def match_thm():
             return jsonify({})
 
 
+# save the edited data to left-json for updating;
 @app.route('/api/save_modify', methods=['POST'])
 def save_modify():
     data = json.loads(request.get_data().decode("utf-8"))

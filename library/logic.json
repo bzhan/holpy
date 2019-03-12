@@ -1,7 +1,6 @@
 {
     "content": [
         {
-            "hint_rewrite": true,
             "instructions": [
                 "Select S1 as goal, use Ctrl+B with conjI",
                 "Select S1 as goal and A1 as fact, use Ctrl+B with conjD2.",
@@ -50,7 +49,7 @@
                 "Select S5 as goal and S4 as fact, use Ctrl+B with disjI1."
             ],
             "name": "disj_comm",
-            "num_gaps": 0,
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "A ∨ B",
@@ -63,88 +62,20 @@
                     "args": "",
                     "id": "1",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "A ∨ B ⊢ A ⟶ B ∨ A"
-                },
-                {
-                    "args": "A",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "A ⊢ A"
-                },
-                {
-                    "args": "disjI2, {}, {A: B, B: A}",
-                    "id": "1.1",
-                    "prevs": [
-                        "1.0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∨ B, A ⊢ B ∨ A"
-                },
-                {
-                    "args": "A",
-                    "id": "1.2",
-                    "prevs": [
-                        "1.1"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "A ∨ B ⊢ A ⟶ B ∨ A"
-                },
-                {
-                    "args": "",
-                    "id": "2",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "A ∨ B ⊢ B ⟶ B ∨ A"
-                },
-                {
-                    "args": "B",
-                    "id": "2.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "B ⊢ B"
-                },
-                {
-                    "args": "disjI1, {}, {A: B, B: A}",
-                    "id": "2.1",
-                    "prevs": [
-                        "2.0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∨ B, B ⊢ B ∨ A"
-                },
-                {
-                    "args": "B",
-                    "id": "2.2",
-                    "prevs": [
-                        "2.1"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "A ∨ B ⊢ B ⟶ B ∨ A"
-                },
-                {
-                    "args": "disjE, {}, {A: A, B: B, C: B ∨ A}",
-                    "id": "3",
-                    "prevs": [
-                        "0",
-                        "1",
-                        "2"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∨ B ⊢ B ∨ A"
+                    "rule": "sorry",
+                    "th": "A ∨ B ⊢ B ∧ A"
                 },
                 {
                     "args": "A ∨ B",
-                    "id": "4",
+                    "id": "2",
                     "prevs": [
-                        "3"
+                        "1"
                     ],
                     "rule": "implies_intr",
-                    "th": "⊢ A ∨ B ⟶ B ∨ A"
+                    "th": "⊢ A ∨ B ⟶ B ∧ A"
                 }
             ],
-            "prop": "A ∨ B ⟶ B ∨ A",
+            "prop": "A ∨ B ⟶ B | A",
             "ty": "thm",
             "vars": {
                 "A": "bool",

@@ -87,7 +87,7 @@
                     "th": "B ⊢ A ⟶ B"
                 }
             ],
-            "prop": "A --> B --> A & B",
+            "prop": "A ⟶ B ⟶ A ∧ B",
             "ty": "thm",
             "vars": {
                 "A": "bool",
