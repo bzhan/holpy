@@ -535,28 +535,28 @@ function display(id) {
 
 function display_match_thm(result) {
     if ('ths_abs' in result && result['ths_abs'].length !== 0) {
-        $('div.rbottom .match-thm .abs-thm').append(
+        $('div.rbottom .selected .match-thm .abs-thm').append(
             $(`<pre>Theorems: (Ctrl-B)</pre><div class="thm-content"></div>`)
         );
         for (var i in result['ths_abs']) {
-            $('div.rbottom .match-thm .abs-thm .thm-content').append(
+            $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(
                 $(`<pre>${result['ths_abs'][i]}</pre>`)
             );
         }
-        $('div.rbottom .match-thm .abs-thm .thm-content').append(
+        $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(
             $(`<a href="#" class="backward-step">Other backward step</a>`)
         )
     }
     if ('ths_rewrite' in result && result['ths_rewrite'].length !== 0) {
-        $('div.rbottom .match-thm .rewrite-thm').append(
+        $('div.rbottom .selected .match-thm .rewrite-thm').append(
             $(`<pre>Theorems: (Ctr-R)</pre><div class="thm-content"></div>`)
         );
         for (var i in result['ths_rewrite']) {
-            $('div.rbottom .match-thm .rewrite-thm .thm-content').append(
+            $('div.rbottom .selected .match-thm .rewrite-thm .thm-content').append(
                 $(`<pre>${result['ths_rewrite'][i]}</pre>`)
             );
         }
-        $('div.rbottom .match-thm .rewrite-thm .thm-content').append(
+        $('div.rbottom .selected .match-thm .rewrite-thm .thm-content').append(
             $(`<a href="#" class="rewrite-goal">Other rewrite goal</a>`)
         )
     }
@@ -564,7 +564,7 @@ function display_match_thm(result) {
 
 function get_match_thm_abs() {
     var match_thm_list = [];
-    $('div.rbottom .abs-thm .thm-content pre').each(function () {
+    $('div.rbottom .selected .abs-thm .thm-content pre').each(function () {
             match_thm_list.push($(this).text())
         }
     );
@@ -573,7 +573,7 @@ function get_match_thm_abs() {
 
 function get_match_thm_rewrite() {
     var match_thm_list = [];
-    $('div.rbottom .rewrite-thm .thm-content pre').each(function () {
+    $('div.rbottom .selected .rewrite-thm .thm-content pre').each(function () {
             match_thm_list.push($(this).text())
         }
     );
