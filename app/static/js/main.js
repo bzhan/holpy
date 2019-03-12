@@ -628,6 +628,7 @@
                 });
             }
         });
+    });
 
     function rp(x) {
         if (x === 0)
@@ -770,7 +771,6 @@
                     $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
                 }
                 $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
-
             }
 
             if (ty==='header') {
