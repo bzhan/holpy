@@ -218,6 +218,7 @@
             $('div#prf'+ tab_pm).show().siblings().hide();
         });
 
+//
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
             if (document.querySelector('.code-cell.active textarea + .CodeMirror')) {
                 var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
@@ -292,33 +293,34 @@
         $('#left_json').on('click', 'a[name="edit"]', function () {
             page_num++;
             edit_mode = true;
-            var a_id = $(this).attr('id').trim();
-            var number = Number(a_id.slice(5,))-1;
-            var data_name = $(this).parents('p').find('span[name="name"]').text().trim();
-            var data_type = $(this).parents('p').find('span:eq(0)').attr('name').trim();
-            var data_content = $(this).parents('p').find('span[name="content"]').text().trim();
-            init_edit_area(page_num, a_id, data_name, data_name, data_type, data_content);
+            var a_ele = $(this);
+            init_edit_area(page_num, a_ele, data_type);
         });
 
 //      click delete then delete the content from webpage;
         $('#left_json').on('click', 'a[name="del"]', function(){
             var a_id = $(this).attr('id').trim();
             var number = Number(a_id.slice(5,))-1;
-             result_list.splice(number, 1);
-             display_result_list();
-
+            result_list.splice(number, 1);
+            display_result_list();
         });
 
-        function init_edit_area(page_num, a_id = '', data_label= '', data_name, data_type, data_content='', border='1px;solid #ffffff') {
-            var vars_str = '';
-            if (a_id) {
-                var number = Number(a_id.slice(5,))-1;
-                for(var key in result_list[number]['vars']) {
-                    vars_str += key + ':' + result_list[number]['vars'][key] +' ';
-                };
+//      the method for add_info && edit_info;
+        function init_edit_area(page_num, a_ele= '' , data_type= '') {
+            var a_id, data_name, border = '1px;solid #ffffff', data_content, vars_str = '', data_label;
+            if (!a_ele) {
+                a_id = '', data_name = '', data_content = '', border = '', number = '', data_label = data_type;
             }
             else {
-                var number = '';
+               a_id = a_ele.attr('id').trim();
+               number = Number(a_id.slice(5,))-1;
+               data_name = a_ele.parents('p').find('span[name="name"]').text().trim();
+               data_type = a_ele.parents('p').find('span:eq(0)').attr('name').trim();
+               data_content = a_ele.parents('p').find('span[name="content"]').text().trim();
+               data_label = data_name;
+               for(var key in result_list[number]['vars']) {
+                    vars_str += key + ':' + result_list[number]['vars'][key] + ' ';
+               };
             }
             $('#codeTab').append(
                 $('<li class="nav-item" name="code' + page_num + '"><a class="nav-link" ' +
@@ -465,7 +467,6 @@
             });
         })
 
-
 //      make a strict-type data from editing;id=page_num
         function make_data(ty, id) {
             var data_name = $('#data-name'+id).val().trim();
@@ -604,8 +605,7 @@
                     page_num ++;
                     edit_mode = true;
                     var ty = $(this).attr('name');
-//                init_edit_area(page_num, '', 'constant', '',  'constant',border);
-                    init_edit_area(page_num, '', ty, '', ty,'','');
+                    init_edit_area(page_num, '', data_type= ty);
                 }
             })
 
