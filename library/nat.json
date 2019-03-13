@@ -525,8 +525,12 @@
             "ty": "macro"
         },
         {
+            "name": "nat_const_ineq",
+            "ty": "macro"
+        },
+        {
             "depth": 0,
-            "name": "Normalization of expressions",
+            "name": "Test of macros",
             "ty": "header"
         },
         {
@@ -548,6 +552,12 @@
                 "y": "nat",
                 "z": "nat"
             }
+        },
+        {
+            "name": "nat_const_ineq_test1",
+            "prop": "~ 12 = 13",
+            "ty": "thm",
+            "vars": {}
         }
     ],
     "description": "Natural numbers",
