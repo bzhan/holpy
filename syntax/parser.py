@@ -340,9 +340,9 @@ def parse_extension(thy, data):
         ctxt = parse_vars(thy, data['vars'])
         prop = parse_term(thy, ctxt, data['prop'])
         if 'hint_backward' in data and data['hint_backward'] == "true":
-            thy.data["hint_backward"].add(data['name'])
+            thy.add_attribute(data['name'], 'hint_backward')
         if 'hint_rewrite' in data and data['hint_rewrite'] == "true":
-            thy.data["hint_rewrite"].add(data['name'])
+            thy.add_attribute(data['name'], 'hint_rewrite')
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Theorem(data['name'], Thm([], prop)))
 

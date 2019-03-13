@@ -156,6 +156,20 @@ class Theory():
 
         return data[name]
 
+    def add_attribute(self, name, attribute):
+        """Add an attribute for the given theorem."""
+        old_attributes = tuple()
+        if name in self.data['attributes']:
+            old_attributes = self.data['attributes'][name]
+        self.data['attributes'][name] = old_attributes + (attribute,)
+
+    def get_attributes(self, name):
+        """Get the list of attributes for the given theorem."""
+        if name in self.data['attributes']:
+            return self.data['attributes'][name]
+        else:
+            return tuple()
+
     def add_proof_macro(self, name, macro):
         """Add the given proof macro."""
         if not isinstance(macro, ProofMacro):
@@ -193,6 +207,7 @@ class Theory():
         thy.add_data_type("term_sig")
         thy.add_data_type("theorems")
         thy.add_data_type("proof_macro")
+        thy.add_data_type("attributes")
 
         # Fundamental types.
         thy.add_type_sig("bool", 0)

@@ -307,7 +307,6 @@ class ProofState():
             return []
 
         results = []
-        backwards = self.thy.get_data("hint_backward")
         for name, th in self.thy.get_data("theorems").items():
             instsp = (dict(), dict())
             As, C = th.concl.strip_implies()
@@ -330,7 +329,7 @@ class ProofState():
                 continue
 
             # All matches succeed
-            if name in backwards:
+            if 'hint_backward' in self.thy.get_attributes(name):
                 results.append((name, th))
         return sorted(results)
 
@@ -468,12 +467,11 @@ class ProofState():
 
         results = []
         goal = cur_item.th.concl
-        rewrites = self.thy.get_data("hint_rewrite")
         for th_name, th in self.thy.get_data("theorems").items():
             if th.concl.is_equals():
                 cv = top_conv(rewr_conv_thm(self.thy, th_name))
                 _, new_goal = cv(goal).concl.dest_binop()
-                if goal != new_goal and th_name in rewrites:
+                if goal != new_goal and 'hint_rewrite' in self.thy.get_attributes(th_name):
                     results.append((th_name, new_goal))
 
         return sorted(results)
