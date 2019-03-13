@@ -275,7 +275,7 @@ class TacticTest(unittest.TestCase):
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
         ths = state.rewrite_goal_thms((0,))
-        self.assertEqual([name for name, _ in ths], ["add_comm", "plus_def_1"])
+        self.assertEqual([name for name, _ in ths], ["plus_def_1"])
 
     def testRewriteGoalWithAssum(self):
         Ta = TVar("a")

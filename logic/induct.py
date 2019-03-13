@@ -5,7 +5,7 @@ import itertools
 from kernel.type import TVar, TFun, hol_bool, Type
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
-from kernel.extension import AxType, AxConstant, Theorem, TheoryExtension
+from kernel.extension import AxType, AxConstant, Theorem, Attribute, TheoryExtension
 from logic import logic
 
 """Inductive definitions.
@@ -125,5 +125,6 @@ def add_induct_def(name, T, eqs):
     for i, prop in enumerate(eqs):
         th_name = name + "_def_" + str(i + 1)
         exts.add_extension(Theorem(th_name, Thm([], prop)))
+        exts.add_extension(Attribute(th_name, "hint_rewrite"))
 
     return exts

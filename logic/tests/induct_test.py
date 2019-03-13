@@ -5,7 +5,7 @@ import unittest
 from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
-from kernel.extension import AxType, AxConstant, Theorem
+from kernel.extension import AxType, AxConstant, Theorem, Attribute
 from logic import logic, induct
 
 imp = Term.mk_implies
@@ -52,7 +52,9 @@ class InductTest(unittest.TestCase):
         res = [
             AxConstant("plus", TFun(nat, nat, nat)),
             Theorem("plus_def_1", Thm([], eq(plus(zero, n), n))),
-            Theorem("plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n)))))
+            Attribute("plus_def_1", "hint_rewrite"),
+            Theorem("plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n))))),
+            Attribute("plus_def_2", "hint_rewrite"),
         ]
         self.assertEqual(ext.data, res)
 

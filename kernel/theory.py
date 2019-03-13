@@ -426,6 +426,12 @@ class Theory():
         self.add_term_sig(const.name, const.T)
         self.add_theorem(const.name + "_def", ext.get_eq_thm())
 
+    def extend_attribute(self, ext):
+        """Extend the theory by adding an attribute."""
+        assert ext.ty == Extension.ATTRIBUTE, "extend_attribute"
+
+        self.add_attribute(ext.name, ext.attribute)
+
     def unchecked_extend(self, thy_ext):
         """Perform the given theory extension without proof checking."""
         for ext in thy_ext.get_extensions():
@@ -437,6 +443,8 @@ class Theory():
                 self.extend_constant(ext)
             elif ext.ty == Extension.THEOREM:
                 self.add_theorem(ext.name, ext.th)
+            elif ext.ty == Extension.ATTRIBUTE:
+                self.extend_attribute(ext)
             elif ext.ty == Extension.MACRO:
                 self.add_global_proof_macro(ext.name)
             else:
@@ -462,6 +470,8 @@ class Theory():
                     ext_report.add_axiom(ext.name, ext.th)
 
                 self.add_theorem(ext.name, ext.th)
+            elif ext.ty == Extension.ATTRIBUTE:
+                self.extend_attribute(ext)
             elif ext.ty == Extension.MACRO:
                 self.add_global_proof_macro(ext.name)
             else:
