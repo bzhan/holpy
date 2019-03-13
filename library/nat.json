@@ -456,6 +456,71 @@
             }
         },
         {
+            "name": "bit0_nonzero",
+            "prop": "~ m = 0 --> ~ (bit0 m = 0)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat"
+            }
+        },
+        {
+            "name": "bit1_nonzero",
+            "prop": "~ bit1 m = 0",
+            "ty": "thm",
+            "vars": {
+                "m": "nat"
+            }
+        },
+        {
+            "name": "one_nonzero",
+            "prop": "~ 1 = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "bit0_neq",
+            "prop": "~ m = n --> ~ bit0 m = bit0 n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit1_neq",
+            "prop": "~ m = n --> ~bit1 m = bit1 n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_bit1_neq",
+            "prop": "~ bit0 m = bit1 n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "bit0_neq_one",
+            "prop": "~ bit0 m = 1",
+            "ty": "thm",
+            "vars": {
+                "m": "nat"
+            }
+        },
+        {
+            "name": "bit1_neq_one",
+            "prop": "~ m = 0 --> ~ bit1 m = 1",
+            "ty": "thm",
+            "vars": {
+                "m": "nat"
+            }
+        },
+        {
             "name": "nat_norm",
             "ty": "macro"
         },

@@ -367,6 +367,15 @@
                 "B": "bool",
                 "C": "bool"
             }
+        },
+        {
+            "name": "ineq_symmetric",
+            "prop": "~ m = n --> ~ n = m",
+            "ty": "thm",
+            "vars": {
+                "m": "'a",
+                "n": "'a"
+            }
         }
     ],
     "description": "Basic results in logic",

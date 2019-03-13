@@ -6,7 +6,7 @@ from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
 from logic.conv import then_conv, beta_conv, top_conv, rewr_conv
-from logic.proofterm import ProofTerm, ProofTermMacro
+from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 
 """Standard macros in logic."""
 
@@ -169,6 +169,21 @@ class rewrite_goal_macro(ProofTermMacro):
             pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.th.concl, pt), A)
         return pt
 
+def apply_theorem(thy, th_name, *pts):
+    ths = [pt.th for pt in pts]
+    return ProofTermDeriv(apply_theorem_macro()(thy, th_name, *ths), "apply_theorem", th_name, pts)
+
+def init_theorem(thy, th_name, tyinst=None, inst=None):
+    if tyinst is None:
+        tyinst = dict()
+    if inst is None:
+        inst = dict()
+    pt = ProofTerm.theorem(thy, th_name)
+    if tyinst:
+        pt = ProofTerm.subst_type(tyinst, pt)
+    if inst:
+        pt = ProofTerm.substitution(inst, pt)
+    return pt
 
 global_macros.update({
     "arg_combination": arg_combination_macro(),

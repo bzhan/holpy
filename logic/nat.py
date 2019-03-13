@@ -7,6 +7,8 @@ from kernel.macro import ProofMacro, MacroSig, global_macros
 from logic.conv import Conv, ConvException, all_conv, rewr_conv_thm, rewr_conv_thm_sym, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm, ProofTermMacro
+from logic.logic_macro import apply_theorem, init_theorem
+from logic import logic
 from logic import term_ord
 
 """Utility functions for natural number arithmetic."""
@@ -478,7 +480,73 @@ class nat_norm_macro(ProofTermMacro):
 
         return ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
 
+def ineq_zero_proof_term(thy, n):
+    """Returns the inequality n ~= 0."""
+    assert n != 0, "ineq_zero_proof_term: n = 0"
+    if n == 1:
+        return ProofTerm.theorem(thy, "one_nonzero")
+    elif n % 2 == 0:
+        return apply_theorem(thy, "bit0_nonzero", ineq_zero_proof_term(thy, n // 2))
+    else:
+        return init_theorem(thy, "bit1_nonzero", inst={"m": to_binary(n // 2)})
+
+def ineq_one_proof_term(thy, n):
+    """Returns the inequality n ~= 1."""
+    assert n != 1, "ineq_one_proof_term: n = 1"
+    if n == 0:
+        return apply_theorem(thy, "ineq_symmetric", ProofTerm.theorem(thy, "one_nonzero"))
+    elif n % 2 == 0:
+        return init_theorem(thy, "bit0_neq_one", inst={"m": to_binary(n // 2)})
+    else:
+        return apply_theorem(thy, "bit1_neq_one", ineq_zero_proof_term(thy, n // 2))
+
+def ineq_proof_term(thy, m, n):
+    """Returns the inequality m ~= n."""
+    assert m != n, "ineq_proof_term: m = n"
+    if n == 0:
+        return ineq_zero_proof_term(thy, m)
+    elif n == 1:
+        return ineq_one_proof_term(thy, m)
+    elif m == 0:
+        return apply_theorem(thy, "ineq_symmetric", ineq_zero_proof_term(thy, n))
+    elif m == 1:
+        return apply_theorem(thy, "ineq_symmetric", ineq_one_proof_term(thy, n))
+    elif m % 2 == 0 and n % 2 == 0:
+        return apply_theorem(thy, "bit0_neq", ineq_proof_term(thy, m // 2, n // 2))
+    elif m % 2 == 1 and n % 2 == 1:
+        return apply_theorem(thy, "bit1_neq", ineq_proof_term(thy, m // 2, n // 2))
+    elif m % 2 == 0 and n % 2 == 1:
+        return init_theorem(thy, "bit0_bit1_neq", inst={"m": to_binary(m // 2), "n": to_binary(n // 2)})
+    else:
+        return apply_theorem(thy, "ineq_symmetric", ineq_proof_term(thy, n, m))
+
+class nat_const_ineq_macro(ProofTermMacro):
+    """Given m and n, with m ~= n, return the inequality theorem."""
+
+    def __init__(self):
+        self.level = 10
+        self.sig = MacroSig.TERM
+        self.has_theory = True
+        self.use_goal = True
+
+    def __call__(self, thy, args):
+        # Simply produce the goal.
+        return Thm([], args)
+
+    def get_proof_term(self, thy, args):
+        assert logic.is_neg(args) and args.arg.is_equals(), \
+               "nat_ineq_macro: goal is not an inequality."
+
+        m = args.arg.arg1
+        n = args.arg.arg
+
+        assert is_binary(m) and is_binary(n), "nat_ineq_macro: m and n are not in binary form."
+        assert from_binary(m) != from_binary(n), "nat_ineq_macro: m and n are equal."
+
+        return ineq_proof_term(thy, from_binary(m), from_binary(n))
+
 
 global_macros.update({
-    "nat_norm": nat_norm_macro()
+    "nat_norm": nat_norm_macro(),
+    "nat_const_ineq": nat_const_ineq_macro(),
 })

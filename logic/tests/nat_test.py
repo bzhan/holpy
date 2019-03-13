@@ -2,9 +2,11 @@
 
 import unittest
 
+from kernel.term import Term
 from kernel.thm import Thm
 from logic import nat
 from logic import basic
+from logic import logic
 from logic.nat import zero, one, bit0, bit1
 from syntax import parser
 
@@ -173,6 +175,22 @@ class NatTest(unittest.TestCase):
         for expr in test_data:
             goal = parser.parse_term(thy, ctxt, expr)
             prf = macro.expand((), goal)
+            self.assertEqual(thy.check_proof(prf), Thm([], goal))
+
+    def testNatIneqMacro(self):
+        test_data = [
+            (0, 1), (1, 0),
+            (0, 2), (2, 0),
+            (1, 2), (2, 1),
+            (1, 3), (3, 1),
+            (2, 3), (3, 2),
+            (10, 13), (17, 19), (22, 24),
+        ]
+
+        macro = nat.nat_const_ineq_macro()
+        for m, n in test_data:
+            goal = logic.neg(Term.mk_equals(nat.to_binary(m), nat.to_binary(n)))
+            prf = macro.get_proof_term(thy, goal).export()
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
 
