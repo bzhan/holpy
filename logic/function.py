@@ -1,7 +1,12 @@
 # Author: Bohua Zhan
 
 from kernel.type import TFun
-from kernel.term import Const, Abs
+from kernel.term import Term, Const, Abs
+from logic import logic_macro
+from logic import nat
+from logic import logic
+from logic.conv import Conv, rewr_conv_thm
+from logic.proofterm import ProofTerm, ProofTermDeriv
 
 """Utility functions for the function library."""
 
@@ -42,3 +47,30 @@ def strip_fun_upd(t):
         return f, upds + [(a, b)]
     else:
         return t, []
+
+class fun_upd_conv(Conv):
+    """Evaluate the function (f)(a1 := b1, a2 := b2, ...) on an input."""
+
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.loadTheory('function')
+
+        f, c = t.fun, t.arg
+        if is_fun_upd(f):
+            _, (f1, a, b) = f.strip_comb()
+            if a == c:
+                return rewr_conv_thm(thy, "fun_upd_same").get_proof_term(t)
+            else:
+                pt = logic_macro.init_theorem(
+                    thy, "fun_upd_other",
+                    tyinst={"a": nat.natT, "b": nat.natT},
+                    inst={"f": f1, "a": a, "b": b, "c": c})
+                macro = nat.nat_const_ineq_macro()
+                goal = logic.neg(Term.mk_equals(c, a))
+                cond = ProofTermDeriv(macro(thy, goal), "nat_const_ineq", goal, [])
+                eq = ProofTerm.implies_elim(pt, cond)
+
+                eq2 = self.get_proof_term(eq.th.concl.arg)
+                return ProofTerm.transitive(eq, eq2)
+        else:
+            return ProofTerm.beta_conv(t)
