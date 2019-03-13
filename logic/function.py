@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.type import TFun
-from kernel.term import Const
+from kernel.term import Const, Abs
 
 """Utility functions for the function library."""
 
@@ -16,6 +16,10 @@ def is_fun_upd(t):
 def fun_upd(T1, T2):
     """Returns the term fun_upd on functions of type T1 => T2."""
     return Const("fun_upd", TFun(TFun(T1, T2), T1, T2, T1, T2))
+
+def mk_const_fun(T, k):
+    """Returns the term %x::T. k."""
+    return Abs("x", T, k)
 
 def mk_fun_upd(*args):
     """Returns the term (f)(a1 := b1, a2 := b2, ...)."""

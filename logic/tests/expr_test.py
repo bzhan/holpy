@@ -8,6 +8,7 @@ from kernel.thm import Thm
 from logic import basic
 from logic import nat
 from logic import expr
+from syntax import printer
 
 natT = nat.natT
 zero = nat.zero
@@ -21,7 +22,9 @@ class ExprTest(unittest.TestCase):
         s = Var("s", TFun(natT, natT))
         t = expr.Plus(expr.V(one), expr.N(five))
         n = nat.plus(s(one), five)
-        self.assertEqual(expr.prove_avalI(thy, s, t), Thm([], expr.avalI(s, t, n)))
+        pt = expr.prove_avalI_macro().get_proof_term(thy, (s, t))
+        th = Thm([], expr.avalI(s, t, n))
+        self.assertEqual(thy.check_proof(pt.export()), th)
 
 
 if __name__ == "__main__":
