@@ -44,48 +44,6 @@
         {
             "hint_backward": "true",
             "name": "conjI",
-            "num_gaps": 1,
-            "proof": [
-                {
-                    "args": "A",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "A ⊢ A"
-                },
-                {
-                    "args": "B",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "B ⊢ B"
-                },
-                {
-                    "args": "",
-                    "id": "2",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "A, B ⊢ A ∧ B"
-                },
-                {
-                    "args": "B",
-                    "id": "3",
-                    "prevs": [
-                        "2"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "A ⊢ B ⟶ A ∧ B"
-                },
-                {
-                    "args": "A",
-                    "id": "4",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "B ⊢ A ⟶ B"
-                }
-            ],
             "prop": "A ⟶ B ⟶ A ∧ B",
             "ty": "thm",
             "vars": {
@@ -177,6 +135,7 @@
             }
         },
         {
+            "hint_backward": "true",
             "name": "exI",
             "prop": "P a --> ?a. P a",
             "ty": "thm",
@@ -186,6 +145,7 @@
             }
         },
         {
+            "hint_backward": "true",
             "name": "exE",
             "prop": "(?a. P a) --> (!a. P a --> C) --> C",
             "ty": "thm",
@@ -204,6 +164,7 @@
             }
         },
         {
+            "hint_backward": "true",
             "name": "extension",
             "prop": "(!x. f x = g x) --> f = g",
             "ty": "thm",
@@ -224,32 +185,6 @@
         },
         {
             "name": "if_not_P",
-            "num_gaps": 1,
-            "proof": [
-                {
-                    "args": "¬P",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬P ⊢ ¬P"
-                },
-                {
-                    "args": "",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "¬P ⊢ (if P then x else y) = y"
-                },
-                {
-                    "args": "¬P",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "implies_intr",
-                    "th": "⊢ ¬P ⟶ (if P then x else y) = y"
-                }
-            ],
             "prop": "~P --> (if P then x else y) = y",
             "ty": "thm",
             "vars": {

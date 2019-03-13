@@ -2,12 +2,12 @@
     "content": [
         {
             "instructions": [
-                "Select S1 as goal, use Ctrl+B with conjI",
-                "Select S1 as goal and A1 as fact, use Ctrl+B with conjD2.",
-                "Select S2 as goal and A1 as fact, use Ctrl+B with conjD1."
+                "Select 1 as goal, use Ctrl+B with conjI",
+                "Select 1 as goal and 0 as fact, use Ctrl+B with conjD2.",
+                "Select 2 as goal and 0 as fact, use Ctrl+B with conjD1."
             ],
             "name": "conj_comm",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "A ∧ B",
@@ -17,17 +17,38 @@
                     "th": "A ∧ B ⊢ A ∧ B"
                 },
                 {
-                    "args": "",
+                    "args": "conjD2, {}, {A: A, B: B}",
                     "id": "1",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ∧ B ⊢ B"
+                },
+                {
+                    "args": "conjD1, {}, {A: A, B: B}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ∧ B ⊢ A"
+                },
+                {
+                    "args": "conjI, {}, {A: B, B: A}",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
                     "th": "A ∧ B ⊢ B ∧ A"
                 },
                 {
                     "args": "A ∧ B",
-                    "id": "2",
+                    "id": "4",
                     "prevs": [
-                        "1"
+                        "3"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ A ∧ B ⟶ B ∧ A"
@@ -42,14 +63,14 @@
         },
         {
             "instructions": [
-                "Select S1 as goal and A1 as fact, use Ctrl+B with disjE.",
-                "Select S1 as goal, use Ctrl+I.",
-                "Select S2 as goal and S1 as fact, use Ctrl+B with disjI2.",
-                "Select S4 as goal, use Ctrl+I.",
-                "Select S5 as goal and S4 as fact, use Ctrl+B with disjI1."
+                "Select 1 as goal and 0 as fact, use Ctrl+B with disjE.",
+                "Select 1 as goal, use Ctrl+I.",
+                "Select 1.1 as goal and 1.0 as fact, use Ctrl+B with disjI2.",
+                "Select 2 as goal, use Ctrl+I.",
+                "Select 2.1 as goal and 2.0 as fact, use Ctrl+B with disjI1."
             ],
             "name": "disj_comm",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "A ∨ B",
@@ -62,17 +83,85 @@
                     "args": "",
                     "id": "1",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "A ∨ B ⊢ B ∧ A"
+                    "rule": "subproof",
+                    "th": "A ∨ B ⊢ A ⟶ B ∨ A"
+                },
+                {
+                    "args": "A",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "disjI2, {}, {A: B, B: A}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ∨ B, A ⊢ B ∨ A"
+                },
+                {
+                    "args": "A",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "A ∨ B ⊢ A ⟶ B ∨ A"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "A ∨ B ⊢ B ⟶ B ∨ A"
+                },
+                {
+                    "args": "B",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ⊢ B"
+                },
+                {
+                    "args": "disjI1, {}, {A: B, B: A}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ∨ B, B ⊢ B ∨ A"
+                },
+                {
+                    "args": "B",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "A ∨ B ⊢ B ⟶ B ∨ A"
+                },
+                {
+                    "args": "disjE, {}, {A: A, B: B, C: B ∨ A}",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "A ∨ B ⊢ B ∨ A"
                 },
                 {
                     "args": "A ∨ B",
-                    "id": "2",
+                    "id": "4",
                     "prevs": [
-                        "1"
+                        "3"
                     ],
                     "rule": "implies_intr",
-                    "th": "⊢ A ∨ B ⟶ B ∧ A"
+                    "th": "⊢ A ∨ B ⟶ B ∨ A"
                 }
             ],
             "prop": "A ∨ B ⟶ B | A",
@@ -104,12 +193,12 @@
         },
         {
             "instructions": [
-                "Add line 'theorem classical' after A1.",
-                "Select S2 as goal and S1 as fact, use Ctrl+B with disjE.",
-                "Select S2 as goal, use Ctrl+I.",
-                "Select S4 as goal, use Ctrl+I.",
-                "Select S5 as goal, use Ctrl+B with falseE.",
-                "Select S5 as goal and A1 as fact, use Ctrl+B with negE."
+                "Add line 'theorem classical' after 0.",
+                "Select 2 as goal and 1 as fact, use Ctrl+B with disjE.",
+                "Select 2 as goal, use Ctrl+I.",
+                "Select 3 as goal, use Ctrl+I.",
+                "Select 3.1 as goal, use Ctrl+B with falseE.",
+                "Select 3.1 as goal and 0 as fact, use Ctrl+B with negE."
             ],
             "name": "double_neg",
             "num_gaps": 0,
@@ -222,13 +311,13 @@
         },
         {
             "instructions": [
-                "Select S1 as goal and A1 as fact, use Ctrl+B with exE.",
-                "Select S1 as goal, use Ctrl+I with x as variable name.",
-                "Select S2 as goal, use Ctrl+B with conjI.",
-                "Add line 'apply_theorem conjD1 from S1' after S1.",
-                "Select S3 as goal and S2 as fact, use Ctrl+B with exI.",
-                "Add line 'apply_theorem conjD2 from S1' after S3.",
-                "Select S5 as goal and S4 as fact, use Ctrl+B with exI."
+                "Select 1 as goal and 0 as fact, use Ctrl+B with exE.",
+                "Select 1 as goal, use Ctrl+I with x as variable name.",
+                "Select 1.2 as goal, use Ctrl+B with conjI.",
+                "Add line 'apply_theorem conjD1 from 1.1' after 1.1.",
+                "Select 1.3 as goal and 1.2 as fact, use Ctrl+B with exI.",
+                "Add line 'apply_theorem conjD2 from 1.1' after 1.3.",
+                "Select 1.5 as goal and 1.4 as fact, use Ctrl+B with exI."
             ],
             "name": "ex_conj_distrib",
             "num_gaps": 2,
@@ -332,12 +421,13 @@
         },
         {
             "instructions": [
-                "Select S1 as goal, use Ctrl+B with conjI.",
-                "Select S1 as goal, use Ctrl+I with x as variable name.",
-                "Add line 'forall_elim x from A1' after A1.",
-                "Select S2 as goal and S1 as fact, use Ctrl+B with conjD1.",
-                "Select S4 as goal, use Ctrl+I with x as variable name.",
-                "Select S4 as goal and S1 as fact, use Ctrl+B with conjD2."
+                "Select 1 as goal, use Ctrl+B with conjI.",
+                "Select 1 as goal, use Ctrl+I with x as variable name.",
+                "Add line 'forall_elim x from 0' after 1.0.",
+                "Select 1.2 as goal and 1.1 as fact, use Ctrl+B with conjD1.",
+                "Select 2 as goal, use Ctrl+I with x as variable name.",
+                "Add line 'forall_elim x from 0' after 2.0.",
+                "Select 2.2 as goal and 2.1 as fact, use Ctrl+B with conjD2."
             ],
             "name": "all_conj_distrib",
             "prop": "(!x. A x & B x) --> (!x. A x) & (!x. B x)",

@@ -69,12 +69,12 @@
         {
             "hint_rewrite": "true",
             "instructions": [
-                "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
-                "Select S1 as goal, use Ctrl+R with plus_def_1.",
-                "Set sorry on S1 to reflexive 0.",
-                "Select S3 as goal, use Ctrl+I with n as variable name.",
-                "Select S4 as goal, use Ctrl+R with plus_def_2.",
-                "Set sorry on S4 to arg_combination Suc from S3."
+                "Select 0 as goal, choose 'apply induction' from menu, then enter 'nat_induct,x'.",
+                "Select 0 as goal, use Ctrl+R with plus_def_1.",
+                "Set sorry on 0 to reflexive 0.",
+                "Select 2 as goal, use Ctrl+I with n as variable name.",
+                "Select 2.2 as goal, use Ctrl+R with plus_def_2.",
+                "Set sorry on 2.2 to arg_combination Suc from 2.1."
             ],
             "name": "add_0_right",
             "num_gaps": 0,
@@ -197,12 +197,12 @@
         },
         {
             "instructions": [
-                "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
-                "Select S1 as goal, use Ctrl+R with times_def_1.",
-                "Set sorry on S1 to reflexive 0.",
-                "Select S3 as goal, use Ctrl+I with n as variable name.",
-                "Select S4 as goal, use Ctrl+R with times_def_2.",
-                "Select S4 as goal, use Ctrl+R with plus_def_1"
+                "Select 0 as goal, choose 'apply induction' from menu, then enter 'nat_induct,x'.",
+                "Select 0 as goal, use Ctrl+R with times_def_1.",
+                "Set sorry on 0 to reflexive 0.",
+                "Select 2 as goal, use Ctrl+I with n as variable name.",
+                "Select 2.2 as goal, use Ctrl+R with times_def_2.",
+                "Select 2.2 as goal, use Ctrl+R with plus_def_1"
             ],
             "name": "mult_0_right",
             "prop": "x * 0 = 0",
@@ -556,6 +556,16 @@
         },
         {
             "name": "nat_const_ineq_test1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬12 = 13",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "nat_const_ineq",
+                    "th": "⊢ ¬12 = 13"
+                }
+            ],
             "prop": "~ 12 = 13",
             "ty": "thm",
             "vars": {}

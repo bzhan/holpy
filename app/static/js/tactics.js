@@ -310,12 +310,14 @@ function split_one(s, delimiter) {
     return [arr[0], arr.slice(1).join(delimiter)];
 }
 
-function split_line(s) {
+function split_line(id, s) {
     var item = {};
-    var rest = '';
-    [item.id, rest] = split_one(s, ': ');
-    if (rest.indexOf(" by ") > 0) {
-        rest = split_one(rest, " by ")[1];
+    item.id = id
+    if (s.indexOf(" by ") > 0) {
+        rest = split_one(s, " by ")[1];
+    }
+    else {
+        rest = s.trim()
     }
     item.th = "";
 
@@ -343,7 +345,7 @@ function set_line(cm) {
         var line_no = cells[id].edit_line_number;
         var input = {
             'id': get_selected_id(),
-            'item': split_line(cm.getLine(line_no))
+            'item': split_line(cells[id].proof[line_no].id, cm.getLine(line_no))
         };
         var data = JSON.stringify(input);
         display_running();

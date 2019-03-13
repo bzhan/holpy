@@ -874,7 +874,7 @@
                 event.preventDefault();
                 unicode_replace(cm);
             } else if (event.code === 'Backspace') {
-                if (line.endsWith(": ")) {
+                if (line.trim() === '') {
                     event.preventDefault();
                     remove_line(cm);
                 }
@@ -960,7 +960,7 @@
             cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch - 5}, {readOnly: true});
             cm.addSelection({line: line_num, ch: ch - 5}, {line: line_num, ch: ch});
             cells[id].edit_line_number = line_num;
-        } else if (line.split(': ')[1].trim() === '') {
+        } else if (line.trim() === '') {
             cm.getAllMarks().forEach(e => {
                 if (e.readOnly !== undefined)
                     if (e.readOnly)
