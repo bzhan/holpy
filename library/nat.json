@@ -67,6 +67,7 @@
             "type": "nat => nat => nat"
         },
         {
+            "hint_rewrite": "true",
             "instructions": [
                 "Select S1 as goal, choose 'apply induction' from menu, then enter 'nat_induct,n'.",
                 "Select S1 as goal, use Ctrl+R with plus_def_1.",
