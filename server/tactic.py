@@ -331,9 +331,9 @@ class ProofState():
 
             # All matches succeed
             if name in backwards:
-                th = logic.subst_norm(th.concl, instsp)
-                th = printer.print_term(self.thy, th)
-                results.append((name, th))
+                t = logic.subst_norm(th.concl, instsp)
+                t = printer.print_term(self.thy, t)
+                results.append((name, t))
         return sorted(results)
 
     def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):

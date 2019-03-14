@@ -221,6 +221,7 @@
             }
         },
         {
+            "hint_backward": "true",
             "instructions": [
                 "Select S1 as goal and A1 as fact, use Ctrl+B with exE.",
                 "Select S1 as goal, use Ctrl+I with x as variable name.",

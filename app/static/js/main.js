@@ -318,7 +318,7 @@
                data_type = result_list[number]['ty'];
                data_label = data_name;
                for(var key in result_list[number]['vars']) {
-                    vars_str += k ey + ':' + result_list[number]['vars'][key] + ' ';
+                    vars_str += key + ':' + result_list[number]['vars'][key] + '\n';
                };
             }
             $('#codeTab').append(
@@ -353,7 +353,7 @@
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
                         '<font color="#006000"><b>theorem</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
-                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-vars' + page_num + '" style="width:30%;background:transparent;'+ border +'" value="' + vars_str + '">' +
+                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="height:45px;width:40%;background:transparent;'+ border +'">'+ vars_str +'</textarea>' +
                         '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:30%;background:transparent;'+ border +'" value="' + data_content + '">' +
                         '<br><br><input name="hint_backward'+ page_num + '" type="checkbox" style="margin-left:0px;"><b>&nbsp;backward</b><input name="hint_rewrite'+ page_num +'" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
                         ));
@@ -518,7 +518,7 @@
                 ajax_data['type'] = data_content;
             }
             if (ty === 'thm') {
-                var vars_str_list = $('input#data-vars' + id).val().split(' ');
+                var vars_str_list = $('textarea#data-vars' + id).val().split('\n');
                 var vars_str = {};
                 ajax_data['ty'] = 'thm';
                 ajax_data['name'] = data_name;
