@@ -352,7 +352,7 @@ class ProofState():
 
         if instsp is None:
             instsp = (dict(), dict())
-            As, C = logic.subst_norm(th.concl, instsp).strip_implies()
+            As, C = th.concl.strip_implies()
             for pat, prev in zip(As, prevs):
                 item = self.get_proof_item(prev)
                 matcher.first_order_match_incr(pat, item.th.concl, instsp)
