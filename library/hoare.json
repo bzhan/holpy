@@ -138,6 +138,20 @@
             }
         },
         {
+            "name": "Sem_Assign",
+            "prop": "Sem (Assign a b) s (fun_upd s a b)",
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'b",
+                "s": "'a => 'b"
+            }
+        },
+        {
+            "name": "eval_Sem",
+            "ty": "macro"
+        },
+        {
             "name": "P1",
             "ty": "def.ax",
             "type": "(nat => nat) com"
@@ -151,6 +165,25 @@
         },
         {
             "name": "P1_test",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Sem (Seq (Assign 0 1) (Assign 1 2)) (λx. 0) ((λx. 0)(0 := 1, 1 := 2))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "eval_Sem",
+                    "th": "⊢ Sem (Seq (Assign 0 1) (Assign 1 2)) (λx. 0) ((λx. 0)(0 := 1, 1 := 2))"
+                },
+                {
+                    "args": "P1_def, Sem P1 (λx. 0) ((λx. 0)(0 := 1, 1 := 2))",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Sem P1 (λx. 0) ((λx. 0)(0 := 1, 1 := 2))"
+                }
+            ],
             "prop": "Sem P1 (%x. 0) (fun_upd (fun_upd (%x. 0) 0 1) 1 2)",
             "ty": "thm",
             "vars": {}

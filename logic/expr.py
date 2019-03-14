@@ -24,10 +24,7 @@ Times = Const("Times", TFun(aexpT, aexpT, aexpT))
 avalI = Const("avalI", TFun(TFun(natT, natT), aexpT, natT, hol_bool))
 
 class prove_avalI_macro(ProofTermMacro):
-    """Given a state s and an expression t, return a theorem of
-    the form avalI s t n, where n is a constant natural number.
-
-    """
+    """Prove a theorem of the form avalI s t n."""
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
