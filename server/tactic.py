@@ -330,7 +330,9 @@ class ProofState():
 
             # All matches succeed
             if 'hint_backward' in self.thy.get_attributes(name):
-                results.append((name, th))
+                t = logic.subst_norm(th.concl, instsp)
+                t = printer.print_term(self.thy, t)
+                results.append((name, t))
         return sorted(results)
 
     def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):
@@ -472,6 +474,7 @@ class ProofState():
                 cv = top_conv(rewr_conv_thm(self.thy, th_name))
                 _, new_goal = cv(goal).concl.dest_binop()
                 if goal != new_goal and 'hint_rewrite' in self.thy.get_attributes(th_name):
+                    new_goal = printer.print_term(self.thy, new_goal)
                     results.append((th_name, new_goal))
 
         return sorted(results)

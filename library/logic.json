@@ -310,6 +310,7 @@
             }
         },
         {
+            "hint_backward": "true",
             "instructions": [
                 "Select 1 as goal and 0 as fact, use Ctrl+B with exE.",
                 "Select 1 as goal, use Ctrl+I with x as variable name.",

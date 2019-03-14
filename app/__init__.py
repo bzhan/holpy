@@ -203,6 +203,7 @@ def json_parse():
     return jsonify({'data': f_data})
 
 
+# add-button to add data-info;
 @app.route('/api/add-info', methods=['POST'])
 def json_add_info():
     data = json.loads(request.get_data().decode("utf-8"))
@@ -225,6 +226,7 @@ def save_file():
     return jsonify({})
 
 
+# display the json-file-name on the left;
 @app.route('/api/root_file', methods=['GET'])
 def get_root():
     json_data = {}
@@ -247,7 +249,7 @@ def match_thm():
         ths_rewrite = cell.rewrite_goal_thms(target_id)
         ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
         if ths or ths_rewrite:
-            return jsonify({'ths_abs': [item[0] for item in ths], 'ths_rewrite': [item[0] for item in ths_rewrite]})
+            return jsonify({'ths_abs': ths, 'ths_rewrite': ths_rewrite})
         else:
             return jsonify({})
 
@@ -265,15 +267,11 @@ def save_modify():
             parser.parse_extension(thy, d)
         file_data_to_output(thy, data)
     except Exception as e:
-        exc_ = []
-        exc_list = traceback2.format_exc().split('\n')[1:]
-        for e in exc_list:
-            if e:
-                exc_.append(e.strip())
+        exc_detailed = traceback2.format_exc()
         error = {
             "failed": e.__class__.__name__,
             "message": str(e),
-            "detail-content": ': '.join(exc_)
+            "detail-content": exc_detailed
         }
     return jsonify({'data': data, 'error': error})
 
