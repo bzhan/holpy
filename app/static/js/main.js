@@ -318,7 +318,7 @@
                data_type = result_list[number]['ty'];
                data_label = data_name;
                for(var key in result_list[number]['vars']) {
-                    vars_str += key + ':' + result_list[number]['vars'][key] + ' ';
+                    vars_str += k ey + ':' + result_list[number]['vars'][key] + ' ';
                };
             }
             $('#codeTab').append(
@@ -362,6 +362,10 @@
             if (data_type === 'type.ind') {
                 if (number) {
                     var argsT = result_list[number]['argsT'];
+                    data_name = '';
+                    $.each(argsT.concl, function (i,j) {
+                        data_name += j[0];
+                    })
                     $.each(result_list[number]['constrs'], function (i, v) {
                         var str_temp_var = '';
                         $.each(v.args, function (k, val) {
@@ -422,7 +426,7 @@
             if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
                 $('input[name="hint_backward'+ page_num +'"]').click();
             if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
-                $('input[name="hint_rewrite'+ page_num +'"]').click();
+                $('input[name="hint_rewrite'+ page +'"]').click();
             $('div.rbottom').append('<div id="prf'+ page_num +'"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>')
             $('div#prf'+ page_num).append(
                 '<div class="output-wrapper" style="margi-top:1px;" id="error' + page_num + '">' +

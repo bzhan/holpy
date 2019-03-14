@@ -533,6 +533,7 @@ function display(id) {
         cells[get_selected_id()].readonly_lines.push(i);
 }
 
+//???
 function display_match_thm(result) {
     if ('ths_abs' in result && result['ths_abs'].length !== 0) {
         $('div.rbottom .selected .match-thm .abs-thm').append(
@@ -540,7 +541,7 @@ function display_match_thm(result) {
         );
         for (var i in result['ths_abs']) {
             $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(
-                $(`<pre>${result['ths_abs'][i]}</pre>`)
+                $(`<div style="float:left;"><pre>${result['ths_abs'][i][0]}</pre></div><div style="float:left;"><pre>${result['ths_abs'][i][1]}</pre></div>`)
             );
         }
         $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(

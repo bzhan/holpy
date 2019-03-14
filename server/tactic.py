@@ -331,6 +331,8 @@ class ProofState():
 
             # All matches succeed
             if name in backwards:
+                th = logic.subst_norm(th.concl, instsp)
+                th = printer.print_term(self.thy, th)
                 results.append((name, th))
         return sorted(results)
 
@@ -474,6 +476,7 @@ class ProofState():
                 cv = top_conv(rewr_conv_thm(self.thy, th_name))
                 _, new_goal = cv(goal).concl.dest_binop()
                 if goal != new_goal and th_name in rewrites:
+                    new_goal = printer.print_thm(self.thy, new_goal)
                     results.append((th_name, new_goal))
 
         return sorted(results)

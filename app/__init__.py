@@ -193,10 +193,6 @@ def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
     with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
-        # for d in f_data['content']:
-        #     if 'hint_backward' in d and 'hint_rewrite' in d:
-        #         del d['hint_backward']
-        #         del d['hint_rewrite']
     thy = basic.loadImportedTheory(f_data)
     # j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
     # json.dump(f_data, j, ensure_ascii=False, indent=4, sort_keys=True)
@@ -251,7 +247,7 @@ def match_thm():
         ths_rewrite = cell.rewrite_goal_thms(target_id)
         ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
         if ths or ths_rewrite:
-            return jsonify({'ths_abs': [item[0] for item in ths], 'ths_rewrite': [item[0] for item in ths_rewrite]})
+            return jsonify({'ths_abs': ths, 'ths_rewrite': ths_rewrite})
         else:
             return jsonify({})
 

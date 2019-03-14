@@ -123,6 +123,7 @@
             }
         },
         {
+            "hint_backward": "true",
             "name": "disjI2",
             "prop": "B --> A | B",
             "ty": "thm",
