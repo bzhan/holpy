@@ -44,7 +44,10 @@ function display_checked_proof(result) {
         let id = get_selected_id();
         cells[id].edit_line_number = -1;
         cells[id]['proof'] = result['proof'];
+        var editor = get_selected_editor();
+        editor.startOperation();
         display(id);
+        editor.endOperation();
         var num_gaps = result["report"]["num_gaps"];
         cells[id]['num_gaps'] = num_gaps;
         status_output.style.color = '';
