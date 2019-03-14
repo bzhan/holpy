@@ -39,7 +39,7 @@ class prove_avalI_macro(ProofTermMacro):
         elif f == V:
             x = args[0]
             pt = init_theorem(thy, "avalI_var", inst={"s": s, "x": x})
-            cv = arg_conv(function.fun_upd_conv())
+            cv = arg_conv(function.fun_upd_eval_conv())
             pt_eq = cv.get_proof_term(pt.th.concl)
             return ProofTerm.equal_elim(pt_eq, pt)
         elif f == Plus:

@@ -6,7 +6,7 @@ from kernel.macro import MacroSig, global_macros
 from logic import logic_macro
 from logic import nat
 from logic import logic
-from logic.conv import Conv, rewr_conv_thm
+from logic.conv import Conv, rewr_conv_thm, fun_conv, then_conv, arg_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro
 
 """Utility functions for the function library."""
@@ -49,7 +49,7 @@ def strip_fun_upd(t):
     else:
         return t, []
 
-class fun_upd_conv(Conv):
+class fun_upd_eval_conv(Conv):
     """Evaluate the function (f)(a1 := b1, a2 := b2, ...) on an input."""
 
     def get_proof_term(self, t):
@@ -80,7 +80,7 @@ class fun_upd_conv(Conv):
             return ProofTerm.beta_conv(t)
 
 class fun_upd_eval_macro(ProofTermMacro):
-    """Macro using fun_upd_conv."""
+    """Macro using fun_upd_eval_conv."""
 
     def __init__(self):
         self.level = 10
@@ -88,18 +88,68 @@ class fun_upd_eval_macro(ProofTermMacro):
         self.has_theory = False
         self.use_goal = True
 
-    def __call__(self, args):
-        # Simply produce the goal
-        return Thm([], args)
-
     def get_proof_term(self, args):
         assert args.is_equals(), "fun_upd_eval_macro: goal is not an equality"
 
         t1, t2 = args.arg1, args.arg
-        pt = fun_upd_conv().get_proof_term(t1)
+        pt = fun_upd_eval_conv().get_proof_term(t1)
         assert pt.th.concl.arg == t2, "fun_upd_eval_macro: incorrect rhs"
 
         return pt
+
+class fun_upd_norm_one_conv(Conv):
+    """Normalize a function update (f)(a1 := b1, ...)(an := bn) by moving
+    the last update to the right position, combining if necessary.
+
+    """
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.loadTheory('function')
+
+        if is_fun_upd(t):
+            _, args = t.strip_comb()
+            f, a, b = args
+            if is_fun_upd(f):
+                _, args2 = f.strip_comb()
+                f2, a2, b2 = args2
+                if nat.from_binary(a) < nat.from_binary(a2):
+                    pt = logic_macro.init_theorem(
+                        thy, "fun_upd_twist",
+                        tyinst={"a": nat.natT, "b": nat.natT},
+                        inst={"f": f2, "a": a2, "b": b2, "c": a, "d": b})
+                    macro = nat.nat_const_ineq_macro()
+                    goal = logic.neg(Term.mk_equals(a, a2))
+                    cond = ProofTermDeriv(macro(thy, goal), "nat_const_ineq", goal, [])
+                    eq = ProofTerm.implies_elim(pt, cond)
+                    eq2 = fun_conv(fun_conv(arg_conv(fun_upd_norm_one_conv()))).get_proof_term(eq.th.concl.arg)
+                    return ProofTerm.transitive(eq, eq2)
+                elif nat.from_binary(a) == nat.from_binary(a2):
+                    return rewr_conv_thm(thy, "fun_upd_upd").get_proof_term(t)
+                else:
+                    return ProofTerm.reflexive(t)
+            else:
+                return ProofTerm.reflexive(t)
+        else:
+            return ProofTerm.reflexive(t)
+
+class fun_upd_norm_conv(Conv):
+    """Normalize a function update of the form (f)(a1 := b1, a2 := b2, ...).
+
+    This sorts the updates according to the key (provided in the constructor),
+    and combines updates on the same key.
+
+    """
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.loadTheory('function')
+
+        if is_fun_upd(t):
+            eq = fun_conv(fun_conv(arg_conv(fun_upd_norm_conv()))).get_proof_term(t).export()
+            return then_conv(fun_conv(fun_conv(arg_conv(fun_upd_norm_conv()))),
+                             fun_upd_norm_one_conv()).get_proof_term(t)
+        else:
+            return ProofTerm.reflexive(t)
+
 
 global_macros.update({
     "fun_upd_eval": fun_upd_eval_macro(),

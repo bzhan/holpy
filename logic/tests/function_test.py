@@ -7,7 +7,8 @@ from kernel.term import Var
 from kernel.thm import Thm
 from logic import basic
 from logic import nat
-from logic.function import mk_const_fun, mk_fun_upd, strip_fun_upd, fun_upd_conv
+from logic import function
+from logic.function import mk_const_fun, mk_fun_upd, strip_fun_upd
 from syntax import printer
 
 Ta = TVar("a")
@@ -25,6 +26,10 @@ zero = nat.zero
 one = nat.one
 five = nat.to_binary(5)
 
+def fun_upd_of_seq(*ns):
+    return mk_fun_upd(mk_const_fun(natT, zero), *[nat.to_binary(n) for n in ns])
+
+
 class FunctionTest(unittest.TestCase):
     def testMkFunUpd(self):
         self.assertEqual(mk_fun_upd(f, a1, b1, a2, b2),
@@ -36,12 +41,31 @@ class FunctionTest(unittest.TestCase):
         self.assertEqual(strip_fun_upd(mk_fun_upd(f, a1, b1, a2, b2)), (f, [(a1, b1), (a2, b2)]))
 
     def testEvalFunUpd(self):
-        f = mk_fun_upd(mk_const_fun(natT, zero), one, five)
-        cv = fun_upd_conv()
+        f = fun_upd_of_seq(1, 5)
+        cv = function.fun_upd_eval_conv()
         prf = cv.get_proof_term(f(one)).export()
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(one), five))
         prf = cv.get_proof_term(f(zero)).export()
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(zero), zero))
+
+    def testNormFunUpd(self):
+        test_data = [
+            ((0, 1), (0, 1)),
+            ((1, 0, 0, 5), (0, 5, 1, 0)),
+            ((0, 1, 1, 5), (0, 1, 1, 5)),
+            ((2, 0, 1, 1), (1, 1, 2, 0)),
+            ((2, 0, 1, 1, 0, 2), (0, 2, 1, 1, 2, 0)),
+            ((0, 1, 0, 2), (0, 2)),
+            ((2, 0, 1, 1, 2, 1, 1, 2), (1, 2, 2, 1)),
+        ]
+
+        for n_f, n_res in test_data:
+            f = fun_upd_of_seq(*n_f)
+            res = fun_upd_of_seq(*n_res)
+
+            cv = function.fun_upd_norm_conv()
+            prf = cv.get_proof_term(f).export()
+            self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f, res))
 
 
 if __name__ == "__main__":
