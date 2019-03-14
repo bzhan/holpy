@@ -207,17 +207,17 @@
         },
         {
             "name": "avalI_const",
-            "ty": "thm",
             "prop": "avalI s (N n) n",
+            "ty": "thm",
             "vars": {
-                "s": "nat => nat",
-                "n": "nat"    
+                "n": "nat",
+                "s": "nat => nat"
             }
         },
         {
             "name": "avalI_var",
-            "ty": "thm",
             "prop": "avalI s (V x) (s x)",
+            "ty": "thm",
             "vars": {
                 "s": "nat => nat",
                 "x": "nat"
@@ -225,38 +225,62 @@
         },
         {
             "name": "avalI_plus",
-            "ty": "thm",
             "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Plus a1 a2) (n1 + n2)",
+            "ty": "thm",
             "vars": {
-                "s": "nat => nat",
                 "a1": "aexp",
                 "a2": "aexp",
                 "n1": "nat",
-                "n2": "nat"
+                "n2": "nat",
+                "s": "nat => nat"
             }
         },
         {
             "name": "avalI_times",
-            "ty": "thm",
             "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Times a1 a2) (n1 * n2)",
+            "ty": "thm",
             "vars": {
-                "s": "nat => nat",
                 "a1": "aexp",
                 "a2": "aexp",
                 "n1": "nat",
-                "n2": "nat"
+                "n2": "nat",
+                "s": "nat => nat"
             }
         },
         {
+            "name": "prove_avalI",
+            "ty": "macro"
+        },
+        {
             "name": "avalI_test1",
-            "ty": "thm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "avalI ((λx. 0)(1 := 7)) (Plus (V 1) (N 5)) 12",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "prove_avalI",
+                    "th": "⊢ avalI ((λx. 0)(1 := 7)) (Plus (V 1) (N 5)) 12"
+                }
+            ],
             "prop": "avalI (fun_upd (%x. 0) 1 7) (Plus (V 1) (N 5)) 12",
+            "ty": "thm",
             "vars": {}
         },
         {
             "name": "avalI_test2",
-            "ty": "thm",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "avalI ((λx. 0)(1 := 7)) (Plus (V 0) (N 5)) 5",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "prove_avalI",
+                    "th": "⊢ avalI ((λx. 0)(1 := 7)) (Plus (V 0) (N 5)) 5"
+                }
+            ],
             "prop": "avalI (fun_upd (%x. 0) 1 7) (Plus (V 0) (N 5)) 5",
+            "ty": "thm",
             "vars": {}
         }
     ],

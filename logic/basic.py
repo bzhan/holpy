@@ -6,6 +6,7 @@ import json
 from kernel.theory import Theory
 from logic.operator import OperatorTable
 from logic import logic_macro  # Load all defined macros
+from logic import expr
 from syntax import parser
 
 

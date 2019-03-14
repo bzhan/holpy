@@ -56,6 +56,9 @@ class fun_upd_conv(Conv):
         from logic import basic
         thy = basic.loadTheory('function')
 
+        if t.ty != Term.COMB:
+            return ProofTerm.reflexive(t)
+
         f, c = t.fun, t.arg
         if is_fun_upd(f):
             _, (f1, a, b) = f.strip_comb()

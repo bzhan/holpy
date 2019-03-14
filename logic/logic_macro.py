@@ -183,6 +183,7 @@ def init_theorem(thy, th_name, tyinst=None, inst=None):
         pt = ProofTerm.subst_type(tyinst, pt)
     if inst:
         pt = ProofTerm.substitution(inst, pt)
+    pt = ProofTermDeriv(beta_norm_macro()(pt.th), "beta_norm", None, [pt])
     return pt
 
 global_macros.update({
