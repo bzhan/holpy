@@ -2,11 +2,12 @@
 
 from kernel.type import TFun
 from kernel.term import Term, Const, Abs
+from kernel.macro import MacroSig, global_macros
 from logic import logic_macro
 from logic import nat
 from logic import logic
 from logic.conv import Conv, rewr_conv_thm
-from logic.proofterm import ProofTerm, ProofTermDeriv
+from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro
 
 """Utility functions for the function library."""
 
@@ -74,3 +75,29 @@ class fun_upd_conv(Conv):
                 return ProofTerm.transitive(eq, eq2)
         else:
             return ProofTerm.beta_conv(t)
+
+class fun_upd_eval_macro(ProofTermMacro):
+    """Macro using fun_upd_conv."""
+
+    def __init__(self):
+        self.level = 10
+        self.sig = MacroSig.TERM
+        self.has_theory = False
+        self.use_goal = True
+
+    def __call__(self, args):
+        # Simply produce the goal
+        return Thm([], args)
+
+    def get_proof_term(self, args):
+        assert args.is_equals(), "fun_upd_eval_macro: goal is not an equality"
+
+        t1, t2 = args.arg1, args.arg
+        pt = fun_upd_conv().get_proof_term(t1)
+        assert pt.th.concl.arg == t2, "fun_upd_eval_macro: incorrect rhs"
+
+        return pt
+
+global_macros.update({
+    "fun_upd_eval": fun_upd_eval_macro(),
+})
