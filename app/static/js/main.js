@@ -282,7 +282,7 @@
         $('#left_json').on('click', 'a[name="edit"]', function () {
             page_num++;
             edit_mode = true;
-            var a_ele = $(this);
+            var a_ele = $(this);//把jquery对象存到a_ele变量里,就可以传到底下的函数里
             init_edit_area(page_num, a_ele);
         });
 
@@ -295,7 +295,7 @@
         });
 
 //      the method for add_info && edit_info;
-        function init_edit_area(page_num, a_ele= '', data_type= '') {
+        function init_edit_area(page_num, a_ele= '', data_type= '') {//这里不能写$(this)是因为只能指到function,
             var a_id, data_name= '', data_content= '', vars_str = '', data_label, border = '1px;solid #ffffff;border:none'
             if (!a_ele) {
                 a_id = '', border= '',data_name = '', data_content = '', number = '', data_label = data_type;
