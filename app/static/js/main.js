@@ -59,7 +59,6 @@
                     '<pre id="instruction-number", style="float:left;"> </pre>' +
                     '<a href="#" id="link-forward" style="float:left;">></a>' +
                     '<pre id="instruction" style="float:left;"> </pre></div></div>'));
-
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('div#prf'+page_num).addClass('selected').siblings().removeClass('selected');
             $('div#prf'+page_num).show().siblings().hide();
@@ -207,7 +206,7 @@
             $('div#prf'+ tab_pm).show().siblings().hide();
         });
 
-//
+//      set cursor & size;
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
             if (document.querySelector('.code-cell.active textarea + .CodeMirror')) {
                 var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
@@ -418,7 +417,7 @@
                 $('input[name="hint_rewrite'+ page +'"]').click();
             $('div.rbottom').append('<div id="prf'+ page_num +'"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>')
             $('div#prf'+ page_num).append(
-                '<div class="output-wrapper" style="margi-top:1px;" id="error' + page_num + '">' +
+                '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
                     '<pre></pre></div>');
             $('div#prf'+ page_num).addClass('selected').siblings().removeClass('selected');
             $('div#prf'+ page_num).show().siblings().hide();
@@ -496,7 +495,7 @@
             });
         })
 
-//      make a strict-type data from editing;id=page_num
+//      make a strict-type data from editing; id=page_num
         function make_data(ty, id) {
             var data_name = $('#data-name'+id).val().trim();
             var data_content = $('#data-content'+id).val().trim();
@@ -601,7 +600,7 @@
             }
         });
 
-//      click to save the related data to json file:edit && proof;
+//      click to save the related data to json file: edit && proof;
         $('a#save-file').click(function () {
             if (edit_mode) {
                 save_editor_data();
@@ -721,6 +720,14 @@
         })
     }
 
+    function high_light(list) {
+        var type = '';
+        $.each(list, function (i, val) {
+                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                });
+        return type
+    }
+
     // Display result_list on the left side of the page.
     function display_result_list() {
         result_list_dict[theory_name] = result_list;
@@ -734,20 +741,14 @@
             var ext = result_list[d];
             var ty = ext.ty, name = ext.name, depth = ext.depth;
             if (ty === 'def.ax') {
-                var type = '';
-                $.each(ext.type_hl, function (i, val) {
-                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                });
+                var type = high_light(ext.type_hl);
                 $('#left_json').append($(
                     '<div><p id="data-'+ num +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + name + '</span> :: <span name="content">' + type
                     + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
             }
 
             if (ty === 'thm') {
-                var prop = '';
-                $.each(ext.prop_hl, function (i, val) {
-                    prop = prop + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                });
+                var prop = high_light(ext.prop_hl);
                 var status_color;
                 if (ext.proof === undefined) {
                     status_color = 'red'
@@ -765,17 +766,11 @@
 
             if (ty === 'type.ind') {
                 var argsT = ext.argsT, constrs = ext.constrs;
-                var str = '', type_name = '';
-                $.each(argsT['concl'], function (k, vl) {
-                    type_name += '<tt class="' + rp(vl[1]) + '">' + vl[0] + '</tt>'
-                });
+                var str = '', type_name = high_light(argsT['concl']);
                 $.each(constrs, function (i, v) {
                     var str_temp_var = '';
                     $.each(v.args, function (k, val) {
-                        var str_temp_term = '';
-                        $.each(argsT[i][k], function (l, vlu) {
-                            str_temp_term += '<tt class="' + rp(vlu[1]) + '">' + vlu[0] + '</tt>';
-                        });
+                        var str_temp_term = high_light(argsT[i][k]);
                         str_temp_var += ' (' + val + ' :: ' + str_temp_term + ')';
                     })
                     str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
@@ -785,18 +780,12 @@
             }
 
             if (ty === 'def.ind') {
-                var type = '';
-                $.each(ext.type_hl, function (i, val) {
-                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                });
+                var type = high_light(ext.type_hl);
                 $('#left_json').append($(
                     '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
                     '</span><font color="#006000"><b> where</b></font></p>'));
                 for (var j in ext.rules) {
-                    var str = '';
-                    $.each(ext.rules[j].prop_hl, function (i, val) {
-                        str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                    });
+                    var str = high_light(ext.rules[j].prop_hl);
                     $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
                 }
                 $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
@@ -808,7 +797,7 @@
         }
     }
 
-//  display_hilight
+//  display_hilight;
     function ajax_res(data) {
         $.ajax({
             url: "/api/json",
@@ -1026,7 +1015,7 @@
     }
 
     Split(['.rtop', '.rbottom'], {
-        sizes: [70, 30],
+        sizes: [70, 50],
         direction: 'vertical',
         minSize: 39,
         onDrag: resize_editor,
