@@ -4,7 +4,7 @@ from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
 from kernel.macro import ProofMacro, MacroSig, global_macros
-from logic.conv import Conv, ConvException, all_conv, rewr_conv_thm, rewr_conv_thm_sym, \
+from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic_macro import apply_theorem, init_theorem
@@ -92,11 +92,11 @@ class Suc_conv(Conv):
         if n == zero:
             return all_conv().get_proof_term(thy, t)
         elif n == one:
-            return rewr_conv_thm(thy, "one_Suc").get_proof_term(thy, t)
+            return rewr_conv("one_Suc").get_proof_term(thy, t)
         elif n.get_head() == bit0:
-            return rewr_conv_thm(thy, "bit0_Suc").get_proof_term(thy, t)
+            return rewr_conv("bit0_Suc").get_proof_term(thy, t)
         else:
-            return then_conv(rewr_conv_thm(thy, "bit1_Suc"), arg_conv(Suc_conv())).get_proof_term(thy, t)
+            return then_conv(rewr_conv("bit1_Suc"), arg_conv(Suc_conv())).get_proof_term(thy, t)
 
 class add_conv(Conv):
     """Computes the sum of two binary numbers."""
@@ -106,21 +106,21 @@ class add_conv(Conv):
     def get_proof_term(self, thy, t):
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            cv = rewr_conv_thm(thy, "plus_def_1")
+            cv = rewr_conv("plus_def_1")
         elif n2 == zero:
-            cv = rewr_conv_thm(thy, "add_0_right")
+            cv = rewr_conv("add_0_right")
         elif n1 == one:
-            cv = then_conv(rewr_conv_thm(thy, "add_1_left"), Suc_conv())
+            cv = then_conv(rewr_conv("add_1_left"), Suc_conv())
         elif n2 == one:
-            cv = then_conv(rewr_conv_thm(thy, "add_1_right"), Suc_conv())
+            cv = then_conv(rewr_conv("add_1_right"), Suc_conv())
         elif n1.get_head() == bit0 and n2.get_head() == bit0:
-            cv = then_conv(rewr_conv_thm(thy, "bit0_bit0_add"), arg_conv(add_conv()))
+            cv = then_conv(rewr_conv("bit0_bit0_add"), arg_conv(add_conv()))
         elif n1.get_head() == bit0 and n2.get_head() == bit1:
-            cv = then_conv(rewr_conv_thm(thy, "bit0_bit1_add"), arg_conv(add_conv()))
+            cv = then_conv(rewr_conv("bit0_bit1_add"), arg_conv(add_conv()))
         elif n1.get_head() == bit1 and n2.get_head() == bit0:
-            cv = then_conv(rewr_conv_thm(thy, "bit1_bit0_add"), arg_conv(add_conv()))
+            cv = then_conv(rewr_conv("bit1_bit0_add"), arg_conv(add_conv()))
         else:
-            cv = every_conv(rewr_conv_thm(thy, "bit1_bit1_add"),
+            cv = every_conv(rewr_conv("bit1_bit1_add"),
                 arg_conv(arg_conv(add_conv())),
                 arg_conv(Suc_conv()))
 
@@ -134,21 +134,21 @@ class mult_conv(Conv):
     def get_proof_term(self, thy, t):
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            cv = rewr_conv_thm(thy, "times_def_1")
+            cv = rewr_conv("times_def_1")
         elif n2 == zero:
-            cv = rewr_conv_thm(thy, "mult_0_right")
+            cv = rewr_conv("mult_0_right")
         elif n1 == one:
-            cv = rewr_conv_thm(thy, "mult_1_left")
+            cv = rewr_conv("mult_1_left")
         elif n2 == one:
-            cv = rewr_conv_thm(thy, "mult_1_right")
+            cv = rewr_conv("mult_1_right")
         elif n1.get_head() == bit0 and n2.get_head() == bit0:
-            cv = then_conv(rewr_conv_thm(thy, "bit0_bit0_mult"), arg_conv(arg_conv(mult_conv())))
+            cv = then_conv(rewr_conv("bit0_bit0_mult"), arg_conv(arg_conv(mult_conv())))
         elif n1.get_head() == bit0 and n2.get_head() == bit1:
-            cv = then_conv(rewr_conv_thm(thy, "bit0_bit1_mult"), arg_conv(mult_conv()))
+            cv = then_conv(rewr_conv("bit0_bit1_mult"), arg_conv(mult_conv()))
         elif n1.get_head() == bit1 and n2.get_head() == bit0:
-            cv = then_conv(rewr_conv_thm(thy, "bit1_bit0_mult"), arg_conv(mult_conv()))
+            cv = then_conv(rewr_conv("bit1_bit0_mult"), arg_conv(mult_conv()))
         else:
-            cv = every_conv(rewr_conv_thm(thy, "bit1_bit1_mult"),
+            cv = every_conv(rewr_conv("bit1_bit1_mult"),
                 arg_conv(arg1_conv(add_conv())),
                 arg_conv(arg_conv(arg_conv(mult_conv()))),
                 arg_conv(add_conv()))
@@ -199,12 +199,12 @@ class swap_times_r(Conv):
     def get_proof_term(self, thy, t):
         if is_times(t.arg1):
             return every_conv(
-                rewr_conv_thm(thy, "mult_assoc"),
-                arg_conv(rewr_conv_thm(thy, "mult_comm")),
-                rewr_conv_thm_sym(thy, "mult_assoc")
+                rewr_conv("mult_assoc"),
+                arg_conv(rewr_conv("mult_comm")),
+                rewr_conv("mult_assoc", sym=True)
             ).get_proof_term(thy, t)
         else:
-            return rewr_conv_thm(thy, "mult_comm").get_proof_term(thy, t)
+            return rewr_conv("mult_comm").get_proof_term(thy, t)
 
 def compare_atom(t1, t2):
     """Compare two atoms, placing numbers last."""
@@ -221,13 +221,13 @@ class norm_mult_atom(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * a."""
     def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv_thm(thy, "times_def_1")
+            cv = rewr_conv("times_def_1")
         elif t.arg == zero:
-            cv = rewr_conv_thm(thy, "mult_0_right")
+            cv = rewr_conv("mult_0_right")
         elif t.arg1 == one:
-            cv = rewr_conv_thm(thy, "mult_1_left")
+            cv = rewr_conv("mult_1_left")
         elif t.arg == one:
-            cv = rewr_conv_thm(thy, "mult_1_right")
+            cv = rewr_conv("mult_1_right")
         elif is_times(t.arg1):
             cmp = compare_atom(t.arg1.arg, t.arg)
             if cmp == term_ord.GREATER:
@@ -238,7 +238,7 @@ class norm_mult_atom(Conv):
             elif cmp == term_ord.EQUAL:
                 if is_binary(t.arg):
                     cv = then_conv(
-                        rewr_conv_thm(thy, "mult_assoc"),
+                        rewr_conv("mult_assoc"),
                         arg_conv(nat_conv())
                     )
                 else:
@@ -248,7 +248,7 @@ class norm_mult_atom(Conv):
         else:
             cmp = compare_atom(t.arg1, t.arg)
             if cmp == term_ord.GREATER:
-                cv = rewr_conv_thm(thy, "mult_comm")
+                cv = rewr_conv("mult_comm")
             elif cmp == term_ord.EQUAL:
                 if is_binary(t.arg):
                     cv = nat_conv()
@@ -264,7 +264,7 @@ class norm_mult_monomial(Conv):
     def get_proof_term(self, thy, t):
         if is_times(t.arg):
             return every_conv(
-                rewr_conv_thm_sym(thy, "mult_assoc"),
+                rewr_conv("mult_assoc", sym=True),
                 arg1_conv(norm_mult_monomial()),
                 norm_mult_atom()
             ).get_proof_term(thy, t)
@@ -279,12 +279,12 @@ class swap_add_r(Conv):
     def get_proof_term(self, thy, t):
         if is_plus(t.arg1):
             return every_conv(
-                rewr_conv_thm(thy, "add_assoc"),
-                arg_conv(rewr_conv_thm(thy, "add_comm")),
-                rewr_conv_thm_sym(thy, "add_assoc")
+                rewr_conv("add_assoc"),
+                arg_conv(rewr_conv("add_comm")),
+                rewr_conv("add_assoc", sym=True)
             ).get_proof_term(thy, t)
         else:
-            return rewr_conv_thm(thy, "add_comm").get_proof_term(thy, t)
+            return rewr_conv("add_comm").get_proof_term(thy, t)
 
 def dest_monomial(t):
     """Remove coefficient part of a monomial t."""
@@ -305,17 +305,17 @@ class to_coeff_form(Conv):
         if is_times(t) and is_binary(t.arg):
             return all_conv().get_proof_term(thy, t)
         elif is_binary(t):
-            return rewr_conv_thm_sym(thy, "mult_1_left").get_proof_term(thy, t)
+            return rewr_conv("mult_1_left", sym=True).get_proof_term(thy, t)
         else:
-            return rewr_conv_thm_sym(thy, "mult_1_right").get_proof_term(thy, t)
+            return rewr_conv("mult_1_right", sym=True).get_proof_term(thy, t)
 
 class from_coeff_form(Conv):
     """Convert a * 1 to a, 1 * n to n, and leave a * n unchanged."""
     def get_proof_term(self, thy, t):
         if t.arg == one:
-            return rewr_conv_thm(thy, "mult_1_right").get_proof_term(thy, t)
+            return rewr_conv("mult_1_right").get_proof_term(thy, t)
         elif t.arg1 == one:
-            return rewr_conv_thm(thy, "mult_1_left").get_proof_term(thy, t)
+            return rewr_conv("mult_1_left").get_proof_term(thy, t)
         else:
             return all_conv().get_proof_term(thy, t)
 
@@ -323,7 +323,7 @@ def combine_monomial(thy):
     """Combine two monomials with the same body."""
     return every_conv(
         binop_conv(to_coeff_form()),
-        rewr_conv_thm_sym(thy, "distrib_l"),
+        rewr_conv("distrib_l", sym=True),
         arg_conv(nat_conv()),
         from_coeff_form()
     )
@@ -332,16 +332,16 @@ class norm_add_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
     def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv_thm(thy, "plus_def_1")
+            cv = rewr_conv("plus_def_1")
         elif t.arg == zero:
-            cv = rewr_conv_thm(thy, "add_0_right")
+            cv = rewr_conv("add_0_right")
         elif is_plus(t.arg1):
             cmp = compare_monomial(t.arg1.arg, t.arg)
             if cmp == term_ord.GREATER:
                 cv = then_conv(swap_add_r(), arg1_conv(norm_add_monomial()))
             elif cmp == term_ord.EQUAL:
                 cv = then_conv(
-                    rewr_conv_thm(thy, "add_assoc"),
+                    rewr_conv("add_assoc"),
                     arg_conv(combine_monomial(thy))
                 )
             else:
@@ -349,7 +349,7 @@ class norm_add_monomial(Conv):
         else:
             cmp = compare_monomial(t.arg1, t.arg)
             if cmp == term_ord.GREATER:
-                cv = rewr_conv_thm(thy, "add_comm")
+                cv = rewr_conv("add_comm")
             elif cmp == term_ord.EQUAL:
                 cv = combine_monomial(thy)
             else:
@@ -362,7 +362,7 @@ class norm_add_polynomial(Conv):
     def get_proof_term(self, thy, t):
         if is_plus(t.arg):
             return every_conv(
-                rewr_conv_thm_sym(thy, "add_assoc"),
+                rewr_conv("add_assoc", sym=True),
                 arg1_conv(norm_add_polynomial()),
                 norm_add_monomial()
             ).get_proof_term(thy, t)
@@ -374,7 +374,7 @@ class norm_mult_poly_monomial(Conv):
     def get_proof_term(self, thy, t):
         if is_plus(t.arg1):
             return every_conv(
-                rewr_conv_thm(thy, "distrib_r"),
+                rewr_conv("distrib_r"),
                 arg1_conv(norm_mult_poly_monomial()),
                 arg_conv(norm_mult_monomial()),
                 norm_add_polynomial()
@@ -387,7 +387,7 @@ class norm_mult_polynomial(Conv):
     def get_proof_term(self, thy, t):
         if is_plus(t.arg):
             return every_conv(
-                rewr_conv_thm(thy, "distrib_l"),
+                rewr_conv("distrib_l"),
                 arg1_conv(norm_mult_polynomial()),
                 arg_conv(norm_mult_poly_monomial()),
                 norm_add_polynomial()
@@ -401,7 +401,7 @@ class norm_full(Conv):
         if is_binary(t):
             cv = all_conv()
         elif is_Suc(t):
-            cv = then_conv(rewr_conv_thm_sym(thy, "add_1_right"), norm_full())
+            cv = then_conv(rewr_conv("add_1_right", sym=True), norm_full())
         elif is_plus(t):
             cv = then_conv(binop_conv(norm_full()), norm_add_polynomial())
         elif is_times(t):
@@ -517,9 +517,9 @@ class nat_eq_conv(Conv):
             return ProofTerm.reflexive(t)
 
         if a == b:
-            return rewr_conv_thm(thy, "eq_True").apply_to_pt(thy, ProofTerm.reflexive(a))
+            return rewr_conv("eq_True").apply_to_pt(thy, ProofTerm.reflexive(a))
         else:
-            return rewr_conv_thm(thy, "eq_False").apply_to_pt(thy, nat_const_ineq(thy, a, b))
+            return rewr_conv("eq_False").apply_to_pt(thy, nat_const_ineq(thy, a, b))
 
 
 global_macros.update({

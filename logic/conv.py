@@ -180,18 +180,23 @@ class rewr_conv(Conv):
     match_vars -- whether variables in pat should be matched.
     
     """
-    def __init__(self, pt, match_vars=True):
-        assert isinstance(pt, ProofTerm), "rewr_conv: argument"
+    def __init__(self, pt, match_vars=True, sym=False):
+        assert isinstance(pt, ProofTerm) or isinstance(pt, str), "rewr_conv: argument"
         self.pt = pt
-        self.th = pt.th
+        self.sym = sym
         self.match_vars = match_vars
 
+    def get_proof_term(self, thy, t):
+        if isinstance(self.pt, str):
+            self.pt = ProofTerm.theorem(thy, self.pt)
+            if self.sym:
+                self.pt = ProofTerm.symmetric(self.pt)
+                
         # Deconstruct th into assumptions and conclusion
-        self.As, self.C = self.th.concl.strip_implies()
+        self.As, self.C = self.pt.th.concl.strip_implies()
         assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
         self.pat = self.C.arg1
 
-    def get_proof_term(self, thy, t):
         tyinst, inst = dict(), dict()
 
         if self.match_vars:
@@ -207,15 +212,3 @@ class rewr_conv(Conv):
         for A in As:
             pt = ProofTerm.implies_elim(pt, ProofTerm.assume(A))
         return pt
-
-
-def rewr_conv_thm(thy, th_name):
-    """Rewrite using the theorem with the given name."""
-    return rewr_conv(ProofTerm.theorem(thy, th_name))
-
-def rewr_conv_thm_sym(thy, th_name):
-    """Rewrite in the reverse direction using the theorem with
-    the given name.
-
-    """
-    return rewr_conv(ProofTerm.symmetric(ProofTerm.theorem(thy, th_name)))

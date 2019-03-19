@@ -9,7 +9,7 @@ from kernel.proof import ProofItem, Proof, id_force_tuple
 from kernel import report
 from logic import logic, matcher
 from logic.proofterm import ProofTerm
-from logic.conv import top_conv, rewr_conv_thm, then_conv, beta_conv
+from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
 from syntax import parser, printer
 
 
@@ -475,7 +475,7 @@ class ProofState():
             if 'hint_rewrite' not in self.thy.get_attributes(th_name):
                 continue
 
-            cv = top_conv(rewr_conv_thm(self.thy, th_name))
+            cv = top_conv(rewr_conv(th_name))
             _, new_goal = cv(self.thy, goal).concl.dest_binop()
             if goal != new_goal:
                 new_goal = printer.print_term(self.thy, new_goal)
@@ -492,7 +492,7 @@ class ProofState():
 
         init_As = cur_item.th.assums
         goal = cur_item.th.concl
-        cv = then_conv(top_conv(rewr_conv_thm(self.thy, th_name)),
+        cv = then_conv(top_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
         _, new_goal = cv(self.thy, goal).concl.dest_binop()
 

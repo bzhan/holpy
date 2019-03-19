@@ -2,8 +2,7 @@
 
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Const, Abs
-from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, \
-    rewr_conv_thm, rewr_conv_thm_sym
+from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv
 from logic.proofterm import ProofTerm
 
 """Utility functions for logic."""
@@ -132,9 +131,9 @@ class norm_bool_expr(Conv):
     def get_proof_term(self, thy, t):
         if is_neg(t):
             if t.arg == true:
-                return rewr_conv_thm(thy, "not_true").get_proof_term(thy, t)
+                return rewr_conv("not_true").get_proof_term(thy, t)
             elif t.arg == false:
-                return rewr_conv_thm(thy, "not_false").get_proof_term(thy, t)
+                return rewr_conv("not_false").get_proof_term(thy, t)
             else:
                 return ProofTerm.reflexive(t)
         else:
@@ -145,7 +144,7 @@ class norm_conj_assoc_clauses(Conv):
     def get_proof_term(self, thy, t):
         if is_conj(t.arg1):
             return then_conv(
-                rewr_conv_thm_sym(thy, "conj_assoc"),
+                rewr_conv("conj_assoc", sym=True),
                 arg_conv(norm_conj_assoc_clauses())
             ).get_proof_term(thy, t)
         else:

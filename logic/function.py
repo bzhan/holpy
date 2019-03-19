@@ -6,7 +6,7 @@ from kernel.macro import MacroSig, global_macros
 from logic import logic_macro
 from logic import nat
 from logic import logic
-from logic.conv import Conv, rewr_conv_thm, fun_conv, then_conv, arg_conv
+from logic.conv import Conv, rewr_conv, fun_conv, then_conv, arg_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro
 
 """Utility functions for the function library."""
@@ -60,7 +60,7 @@ class fun_upd_eval_conv(Conv):
         if is_fun_upd(f):
             _, (f1, a, b) = f.strip_comb()
             if a == c:
-                return rewr_conv_thm(thy, "fun_upd_same").get_proof_term(thy, t)
+                return rewr_conv("fun_upd_same").get_proof_term(thy, t)
             else:
                 pt = logic_macro.init_theorem(
                     thy, "fun_upd_other",
@@ -113,7 +113,7 @@ class fun_upd_norm_one_conv(Conv):
                     eq2 = fun_conv(fun_conv(arg_conv(fun_upd_norm_one_conv()))).get_proof_term(thy, eq.th.concl.arg)
                     return ProofTerm.transitive(eq, eq2)
                 elif nat.from_binary(a) == nat.from_binary(a2):
-                    return rewr_conv_thm(thy, "fun_upd_upd").get_proof_term(thy, t)
+                    return rewr_conv("fun_upd_upd").get_proof_term(thy, t)
                 else:
                     return ProofTerm.reflexive(t)
             else:
