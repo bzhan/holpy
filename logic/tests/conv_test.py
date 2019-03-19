@@ -181,8 +181,8 @@ class ConvTest(unittest.TestCase):
 
         f1 = f(one)
         g0 = g(zero)
-        t = plus(*([f1] * 10))
-        res = plus(*([g0] * 10))
+        t = plus(*([f1] * 50))
+        res = plus(*([g0] * 50))
         self.assertEqual(cv(t), eq(t, res))
 
         prf = Proof()

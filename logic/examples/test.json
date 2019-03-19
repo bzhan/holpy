@@ -7,9 +7,9 @@
             "final": {"a": 1, "b": 2}
         },
         {
-            "com": "while (a != 5) {b := b + 7; a := a + 1}",
+            "com": "while (a != 3) {b := b + 5; a := a + 1}",
             "init": {},
-            "final": {"a": 5, "b": 35}
+            "final": {"a": 3, "b": 15}
         }
     ]
 }

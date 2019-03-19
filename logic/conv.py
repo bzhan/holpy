@@ -18,7 +18,7 @@ class Conv():
 
     """
     def __call__(self, t):
-        raise NotImplementedError
+        return self.get_proof_term(t).th
 
     def get_proof_term(self, t):
         raise NotImplementedError
@@ -186,20 +186,19 @@ class sub_conv(Conv):
     def __init__(self, cv):
         self.cv = cv
 
-    def __call__(self, t):
-        return try_conv(else_conv(comb_conv(self.cv), abs_conv(self.cv)))(t)
-
     def get_proof_term(self, t):
-        return try_conv(else_conv(comb_conv(self.cv), abs_conv(self.cv))).get_proof_term(t)
+        if t.ty == Term.COMB:
+            return comb_conv(self.cv).get_proof_term(t)
+        elif t.ty == Term.ABS:
+            return abs_conv(self.cv).get_proof_term(t)
+        else:
+            return ProofTerm.reflexive(t)
 
 class bottom_conv(Conv):
     """Applies cv repeatedly in the bottom-up manner."""
     def __init__(self, cv):
         assert isinstance(cv, Conv), "bottom_conv: argument"
         self.cv = cv
-
-    def __call__(self, t):
-        return then_conv(sub_conv(self), try_conv(self.cv))(t)
 
     def get_proof_term(self, t):
         return then_conv(sub_conv(self), try_conv(self.cv)).get_proof_term(t)
@@ -209,9 +208,6 @@ class top_conv(Conv):
     def __init__(self, cv):
         assert isinstance(cv, Conv), "top_conv: argument"
         self.cv = cv
-
-    def __call__(self, t):
-        return then_conv(try_conv(self.cv), sub_conv(self))(t)
 
     def get_proof_term(self, t):
         return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(t)
@@ -232,23 +228,6 @@ class rewr_conv(Conv):
         self.As, self.C = self.th.concl.strip_implies()
         assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
         self.pat = self.C.arg1
-
-    def __call__(self, t):
-        tyinst, inst = dict(), dict()
-
-        if self.match_vars:
-            try:
-                matcher.first_order_match_incr(self.pat, t, (tyinst, inst))
-            except matcher.MatchException:
-                raise ConvException()
-        elif self.pat != t:
-            raise ConvException()
-
-        th = Thm.substitution(inst, Thm.subst_type(tyinst, self.th))
-        As, _ = th.concl.strip_implies()
-        for A in As:
-            th = Thm.implies_elim(th, Thm.assume(A))
-        return th
 
     def get_proof_term(self, t):
         tyinst, inst = dict(), dict()
