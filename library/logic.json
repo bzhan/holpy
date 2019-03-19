@@ -840,6 +840,201 @@
             "vars": {
                 "A": "bool"
             }
+        },
+        {
+            "name": "not_true",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬true ⟶ false"
+                },
+                {
+                    "args": "¬true",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬true ⊢ ¬true"
+                },
+                {
+                    "args": "trueI, {}, {}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "¬true ⊢ true"
+                },
+                {
+                    "args": "negE, {}, {A: true}",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬true ⊢ false"
+                },
+                {
+                    "args": "¬true",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ ¬true ⟶ false"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ false ⟶ ¬true"
+                },
+                {
+                    "args": "false",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "false ⊢ false"
+                },
+                {
+                    "args": "falseE, {}, {A: ¬true}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "false ⊢ ¬true"
+                },
+                {
+                    "args": "false",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ false ⟶ ¬true"
+                },
+                {
+                    "args": "iffI, {}, {A: ¬true, B: false}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (¬true) = false"
+                }
+            ],
+            "prop": "(~true) = false",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "not_false",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬false ⟶ true"
+                },
+                {
+                    "args": "¬false",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬false ⊢ ¬false"
+                },
+                {
+                    "args": "trueI, {}, {}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "¬false ⊢ true"
+                },
+                {
+                    "args": "¬false",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ ¬false ⟶ true"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ true ⟶ ¬false"
+                },
+                {
+                    "args": "true",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "true ⊢ true"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "true ⊢ false ⟶ false"
+                },
+                {
+                    "args": "false",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "false ⊢ false"
+                },
+                {
+                    "args": "false",
+                    "id": "1.1.1",
+                    "prevs": [
+                        "1.1.0"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ false ⟶ false"
+                },
+                {
+                    "args": "negI, {}, {A: false}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "true ⊢ ¬false"
+                },
+                {
+                    "args": "true",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ true ⟶ ¬false"
+                },
+                {
+                    "args": "iffI, {}, {A: ¬false, B: true}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (¬false) = true"
+                }
+            ],
+            "prop": "(~false) = true",
+            "ty": "thm",
+            "vars": {}
         }
     ],
     "description": "Basic results in logic",

@@ -193,6 +193,20 @@ class NatTest(unittest.TestCase):
             prf = macro.get_proof_term(thy, goal).export()
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
+    def testNatEqConv(self):
+        test_data = [
+            ((zero, zero), logic.true),
+            ((one, one), logic.true),
+            ((zero, one), logic.false),
+        ]
+
+        cv = nat.nat_eq_conv()
+        for (a, b), res in test_data:
+            t = Term.mk_equals(a, b)
+            prf = cv.get_proof_term(t).export()
+            res_th = Thm.mk_equals(t, res)
+            self.assertEqual(thy.check_proof(prf), res_th)
+
 
 if __name__ == "__main__":
     unittest.main()

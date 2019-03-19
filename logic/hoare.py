@@ -6,7 +6,8 @@ from kernel.macro import MacroSig, global_macros
 from logic import nat
 from logic import function
 from logic import logic
-from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv
+from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
+    every_conv, rewr_conv_thm_sym
 from logic.proofterm import ProofTerm, ProofTermMacro
 from logic.logic_macro import init_theorem, apply_theorem
 
@@ -31,6 +32,16 @@ def Cond(T):
 def Sem(T):
     return Const("Sem", TFun(comT(T), T, T, hol_bool))
 
+# Normalize evaluation of function as well as arithmetic.
+norm_cv = then_conv(top_conv(function.fun_upd_eval_conv()), nat.norm_full())
+
+# Normalize a condition.
+norm_cond_cv = every_conv(
+    norm_cv,
+    top_conv(nat.nat_eq_conv()),
+    logic.norm_bool_expr()
+)
+
 class eval_Sem_macro(ProofTermMacro):
     """Prove a theorem of the form Sem com st st2."""
     def __init__(self):
@@ -38,9 +49,6 @@ class eval_Sem_macro(ProofTermMacro):
         self.sig = MacroSig.TERM
         self.has_theory = True
         self.use_goal = True
-
-        # Normalize evaluation of function as well as arithmetic.
-        self.norm_cv = then_conv(top_conv(function.fun_upd_eval_conv()), nat.norm_full())
 
     def eval_cond(self, thy, b):
         if Term.is_equals(b):
@@ -69,7 +77,7 @@ class eval_Sem_macro(ProofTermMacro):
             Ta = a.get_type()
             Tb = b.get_type().range_type()
             pt = init_theorem(thy, "Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
-            pt2 = arg_conv(arg_conv(self.norm_cv)).get_proof_term(pt.th.concl)
+            pt2 = arg_conv(arg_conv(norm_cv)).get_proof_term(pt.th.concl)
             return ProofTerm.equal_elim(pt2, pt)
         elif f.is_const_with_name("Seq"):
             c1, c2 = args
@@ -83,13 +91,17 @@ class eval_Sem_macro(ProofTermMacro):
         elif f.is_const_with_name("Cond"):
             b, c1, c2 = args
             b_st = top_conv(beta_conv())(b(st)).concl.arg
-            b_val, b_res = self.eval_cond(thy, b_st)
-            if b_val:
+            b_eval = norm_cond_cv.get_proof_term(b_st)
+            if b_eval.th.concl.arg == logic.true:
+                b_eq = rewr_conv_thm_sym(thy, "eq_True").get_proof_term(b_eval.th.concl)
+                b_res = ProofTerm.equal_elim(b_eq, b_eval)
                 pt1 = self.eval_Sem(thy, c1, st)
                 st2 = pt1.th.concl.arg
                 pt = init_theorem(thy, "Sem_if1", tyinst={"a": T}, inst={"b": b, "c1": c1, "c2": c2, "s": st, "s2": st2})
                 return ProofTerm.implies_elim(ProofTerm.implies_elim(pt, b_res), pt1)
             else:
+                b_eq = rewr_conv_thm_sym(thy, "eq_False").get_proof_term(b_eval.th.concl)
+                b_res = ProofTerm.equal_elim(b_eq, b_eval)
                 pt2 = self.eval_Sem(thy, c2, st)
                 st2 = pt2.th.concl.arg
                 pt = init_theorem(thy, "Sem_if2", tyinst={"a": T}, inst={"b": b, "c1": c1, "c2": c2, "s": st, "s2": st2})

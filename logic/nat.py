@@ -545,11 +545,36 @@ class nat_const_ineq_macro(ProofTermMacro):
 
         return ineq_proof_term(thy, from_binary(m), from_binary(n))
 
-
 def nat_const_ineq(thy, a, b):
     macro = nat_const_ineq_macro()
     goal = logic.neg(Term.mk_equals(a, b))
     return ProofTermDeriv(macro(thy, goal), "nat_const_ineq", goal, [])
+
+
+class nat_eq_conv(Conv):
+    """Simplify equality a = b to either True or False."""
+    def get_proof_term(self, t):
+        from logic import basic
+        thy = basic.loadTheory('nat')
+
+        if not t.is_equals():
+            return ProofTerm.reflexive(t)
+
+        a, b = t.arg1, t.arg
+        if not (is_binary(a) and is_binary(b)):
+            return ProofTerm.reflexive(t)
+
+        if a == b:
+            cv = rewr_conv_thm(thy, "eq_True")
+            pt = ProofTerm.reflexive(a)
+            pt2 = cv.get_proof_term(pt.th.concl)
+            return ProofTerm.equal_elim(pt2, pt)
+        else:
+            cv = rewr_conv_thm(thy, "eq_False")
+            pt = nat_const_ineq(thy, a, b)
+            pt2 = cv.get_proof_term(pt.th.concl)
+            return ProofTerm.equal_elim(pt2, pt)
+
 
 global_macros.update({
     "nat_norm": nat_norm_macro(),

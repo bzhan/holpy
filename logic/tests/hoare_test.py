@@ -7,6 +7,7 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from logic import nat
 from logic import hoare
+from logic import logic
 from logic.function import mk_const_fun, mk_fun_upd
 from logic import basic
 from syntax import printer
@@ -50,6 +51,18 @@ class HoareTest(unittest.TestCase):
 
     def testEvalSem3(self):
         com = Cond(abs(s, eq(s(zero), zero)), incr_one, Skip)
+        st = mk_const_fun(natT, zero)
+        st2 = fun_upd_of_seq(0, 1)
+        goal = Sem(com, st, st2)
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+
+        goal = Sem(com, st2, st2)
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+
+    def testEvalSem4(self):
+        com = Cond(abs(s, logic.neg(eq(s(zero), one))), incr_one, Skip)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)

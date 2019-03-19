@@ -74,6 +74,20 @@ class LogicTest(unittest.TestCase):
         for t, res in test_data:
             self.assertEqual(logic.beta_norm(t), res)
 
+    def testNormBoolExpr(self):
+        neg, true, false = logic.neg, logic.true, logic.false
+        test_data = [
+            (true, true),
+            (false, false),
+            (neg(true), false),
+            (neg(false), true),
+        ]
+
+        thy = basic.loadTheory('logic')
+        for t, res in test_data:
+            cv = logic.norm_bool_expr()
+            prf = cv.get_proof_term(t).export()
+            self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
     def testNormConjAssoc(self):
         conj = logic.mk_conj
         test_data = [
