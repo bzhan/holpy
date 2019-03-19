@@ -121,12 +121,14 @@
             }
         },
         {
+            "hint_backward": "true",
             "name": "trueI",
             "prop": "true",
             "ty": "thm",
             "vars": {}
         },
         {
+            "hint_backward": "true",
             "name": "falseE",
             "prop": "false --> A",
             "ty": "thm",

@@ -47,6 +47,11 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
+    def testInitProof2(self):
+        state = ProofState.init_state(thy, [A, B], [A, B], conj(A, B))
+        self.assertEqual(len(state.prf.items), 5)
+        self.assertEqual(state.check_proof(), Thm.mk_implies(A, B, conj(A, B)))
+
     def testParseInitState(self):
         state = ProofState.parse_init_state(
             thy, {'vars': {'A': 'bool', 'B': 'bool'}, 'prop': "A & B --> B & A"})

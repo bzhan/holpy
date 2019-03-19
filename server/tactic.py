@@ -152,7 +152,7 @@ class ProofState():
         n = len(assums)
         state.prf.add_item(n, "sorry", th=Thm(assums, concl))
         for i, assum in enumerate(reversed(assums), 0):
-            state.prf.add_item(n + i + 1, "implies_intr", args=assum, prevs=[n - i])
+            state.prf.add_item(n + i + 1, "implies_intr", args=assum, prevs=[n+i])
         state.check_proof(compute_only=True)
         return state
 
@@ -308,6 +308,9 @@ class ProofState():
 
         results = []
         for name, th in self.thy.get_data("theorems").items():
+            if 'hint_backward' not in self.thy.get_attributes(name):
+                continue
+
             instsp = (dict(), dict())
             As, C = th.concl.strip_implies()
             # Only process those theorems where C and the matched As
@@ -329,10 +332,9 @@ class ProofState():
                 continue
 
             # All matches succeed
-            if 'hint_backward' in self.thy.get_attributes(name):
-                t = logic.subst_norm(th.concl, instsp)
-                t = printer.print_term(self.thy, t)
-                results.append((name, t))
+            t = logic.subst_norm(th.concl, instsp)
+            t = printer.print_term(self.thy, t)
+            results.append((name, t))
         return sorted(results)
 
     def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):
@@ -470,12 +472,14 @@ class ProofState():
         results = []
         goal = cur_item.th.concl
         for th_name, th in self.thy.get_data("theorems").items():
-            if th.concl.is_equals():
-                cv = top_conv(rewr_conv_thm(self.thy, th_name))
-                _, new_goal = cv(goal).concl.dest_binop()
-                if goal != new_goal and 'hint_rewrite' in self.thy.get_attributes(th_name):
-                    new_goal = printer.print_term(self.thy, new_goal)
-                    results.append((th_name, new_goal))
+            if 'hint_rewrite' not in self.thy.get_attributes(th_name):
+                continue
+
+            cv = top_conv(rewr_conv_thm(self.thy, th_name))
+            _, new_goal = cv(goal).concl.dest_binop()
+            if goal != new_goal:
+                new_goal = printer.print_term(self.thy, new_goal)
+                results.append((th_name, new_goal))
 
         return sorted(results)
 
