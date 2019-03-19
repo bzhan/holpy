@@ -69,8 +69,8 @@ class NatTest(unittest.TestCase):
         for n in test_data:
             t = nat.Suc(nat.to_binary(n))
             res_th = Thm.mk_equals(t, nat.to_binary(n + 1))
-            self.assertEqual(cv(t), res_th)
-            prf = cv.get_proof_term(t).export()
+            self.assertEqual(cv(thy, t), res_th)
+            prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
     def testAddConv(self):
@@ -92,8 +92,8 @@ class NatTest(unittest.TestCase):
         for m, n in test_data:
             t = nat.mk_plus(nat.to_binary(m), nat.to_binary(n))
             res_th = Thm.mk_equals(t, nat.to_binary(m + n))
-            self.assertEqual(cv(t), res_th)
-            prf = cv.get_proof_term(t).export()
+            self.assertEqual(cv(thy, t), res_th)
+            prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
     def testMultConv(self):
@@ -115,8 +115,8 @@ class NatTest(unittest.TestCase):
         for m, n in test_data:
             t = nat.mk_times(nat.to_binary(m), nat.to_binary(n))
             res_th = Thm.mk_equals(t, nat.to_binary(m * n))
-            self.assertEqual(cv(t), res_th)
-            prf = cv.get_proof_term(t).export()
+            self.assertEqual(cv(thy, t), res_th)
+            prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
     def testNatConv(self):
@@ -133,8 +133,8 @@ class NatTest(unittest.TestCase):
         for expr, n in test_data:
             t = parser.parse_term(thy, {}, expr)
             res_th = Thm.mk_equals(t, nat.to_binary(n))
-            self.assertEqual(cv(t), res_th)
-            prf = cv.get_proof_term(t).export()
+            self.assertEqual(cv(thy, t), res_th)
+            prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
     def testNormFull(self):
@@ -160,7 +160,7 @@ class NatTest(unittest.TestCase):
             t = parser.parse_term(thy, ctxt, expr)
             t2 = parser.parse_term(thy, ctxt, res)
             res_th = Thm.mk_equals(t, t2)
-            prf = cv.get_proof_term(t).export()
+            prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
     def testNatNormMacro(self):
@@ -174,7 +174,7 @@ class NatTest(unittest.TestCase):
         ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
         for expr in test_data:
             goal = parser.parse_term(thy, ctxt, expr)
-            prf = macro.expand((), goal)
+            prf = macro.expand((), thy, goal)
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testNatIneqMacro(self):
@@ -203,7 +203,7 @@ class NatTest(unittest.TestCase):
         cv = nat.nat_eq_conv()
         for (a, b), res in test_data:
             t = Term.mk_equals(a, b)
-            prf = cv.get_proof_term(t).export()
+            prf = cv.get_proof_term(thy, t).export()
             res_th = Thm.mk_equals(t, res)
             self.assertEqual(thy.check_proof(prf), res_th)
 

@@ -43,9 +43,9 @@ class FunctionTest(unittest.TestCase):
     def testEvalFunUpd(self):
         f = fun_upd_of_seq(1, 5)
         cv = function.fun_upd_eval_conv()
-        prf = cv.get_proof_term(f(one)).export()
+        prf = cv.get_proof_term(thy, f(one)).export()
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(one), five))
-        prf = cv.get_proof_term(f(zero)).export()
+        prf = cv.get_proof_term(thy, f(zero)).export()
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(zero), zero))
 
     def testNormFunUpd(self):
@@ -64,7 +64,7 @@ class FunctionTest(unittest.TestCase):
             res = fun_upd_of_seq(*n_res)
 
             cv = function.fun_upd_norm_conv()
-            prf = cv.get_proof_term(f).export()
+            prf = cv.get_proof_term(thy, f).export()
             self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f, res))
 
 

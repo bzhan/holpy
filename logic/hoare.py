@@ -64,27 +64,27 @@ class eval_Sem_macro(ProofTermMacro):
             Ta = a.get_type()
             Tb = b.get_type().range_type()
             pt = init_theorem(thy, "Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
-            return arg_conv(arg_conv(norm_cv)).apply_to_pt(pt)
+            return arg_conv(arg_conv(norm_cv)).apply_to_pt(thy, pt)
         elif f.is_const_with_name("Seq"):
             c1, c2 = args
             pt1 = self.eval_Sem(thy, c1, st)
             st2 = pt1.th.concl.arg
             pt2 = self.eval_Sem(thy, c2, st2)
             pt = apply_theorem(thy, "Sem_seq", pt1, pt2)
-            return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(pt)
+            return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
         elif f.is_const_with_name("Cond"):
             b, c1, c2 = args
-            b_st = top_conv(beta_conv())(b(st)).concl.arg
-            b_eval = norm_cond_cv.get_proof_term(b_st)
+            b_st = top_conv(beta_conv())(thy, b(st)).concl.arg
+            b_eval = norm_cond_cv.get_proof_term(thy, b_st)
             if b_eval.th.concl.arg == logic.true:
-                b_res = rewr_conv_thm_sym(thy, "eq_True").apply_to_pt(b_eval)
+                b_res = rewr_conv_thm_sym(thy, "eq_True").apply_to_pt(thy, b_eval)
                 pt1 = self.eval_Sem(thy, c1, st)
                 st2 = pt1.th.concl.arg
                 pt = init_theorem(thy, "Sem_if1", tyinst={"a": T},
                                   inst={"b": b, "c1": c1, "c2": c2, "s": st, "s2": st2})
                 return ProofTerm.implies_elim(pt, b_res, pt1)
             else:
-                b_res = rewr_conv_thm_sym(thy, "eq_False").apply_to_pt(b_eval)
+                b_res = rewr_conv_thm_sym(thy, "eq_False").apply_to_pt(thy, b_eval)
                 pt2 = self.eval_Sem(thy, c2, st)
                 st2 = pt2.th.concl.arg
                 pt = init_theorem(thy, "Sem_if2", tyinst={"a": T},
@@ -92,10 +92,10 @@ class eval_Sem_macro(ProofTermMacro):
                 return ProofTerm.implies_elim(pt, b_res, pt2)
         elif f.is_const_with_name("While"):
             b, inv, c = args
-            b_st = top_conv(beta_conv())(b(st)).concl.arg
-            b_eval = norm_cond_cv.get_proof_term(b_st)
+            b_st = top_conv(beta_conv())(thy, b(st)).concl.arg
+            b_eval = norm_cond_cv.get_proof_term(thy, b_st)
             if b_eval.th.concl.arg == logic.true:
-                b_res = rewr_conv_thm_sym(thy, "eq_True").apply_to_pt(b_eval)
+                b_res = rewr_conv_thm_sym(thy, "eq_True").apply_to_pt(thy, b_eval)
                 pt1 = self.eval_Sem(thy, c, st)
                 st3 = pt1.th.concl.arg
                 pt2 = self.eval_Sem(thy, com, st3)
@@ -103,9 +103,9 @@ class eval_Sem_macro(ProofTermMacro):
                 pt = init_theorem(thy, "Sem_while_loop", tyinst={"a": T},
                                   inst={"b": b, "c": c, "I": inv, "s": st, "s3": st3, "s2": st2})
                 pt = ProofTerm.implies_elim(pt, b_res, pt1, pt2)
-                return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(pt)
+                return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
             else:
-                b_res = rewr_conv_thm_sym(thy, "eq_False").apply_to_pt(b_eval)
+                b_res = rewr_conv_thm_sym(thy, "eq_False").apply_to_pt(thy, b_eval)
                 pt = init_theorem(thy, "Sem_while_skip", tyinst={"a": T},
                                   inst={"b": b, "c": c, "I": inv, "s": st})
                 return ProofTerm.implies_elim(pt, b_res)
