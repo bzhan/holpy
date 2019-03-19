@@ -14,7 +14,7 @@ def comT(T):
     return Type("com", T)
 
 def Assign(Ta, Tb):
-    return Const("Assign", TFun(Ta, Tb, comT(TFun(Ta, Tb))))
+    return Const("Assign", TFun(Ta, TFun(TFun(Ta, Tb), Tb), comT(TFun(Ta, Tb))))
 
 def Seq(T):
     return Const("Seq", TFun(comT(T), comT(T), comT(T)))
@@ -36,7 +36,7 @@ class eval_Sem_macro(ProofTermMacro):
         if f.is_const_with_name("Assign"):
             a, b = args
             Ta = a.get_type()
-            Tb = b.get_type()
+            Tb = b.get_type().range_type()
             return init_theorem(thy, "Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
         elif f.is_const_with_name("Seq"):
             c1, c2 = args

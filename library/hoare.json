@@ -124,26 +124,26 @@
         {
             "name": "Assign",
             "ty": "def.ax",
-            "type": "'a => 'b => ('a => 'b) com"
+            "type": "'a => (('a => 'b) => 'b) => ('a => 'b) com"
         },
         {
             "hint_rewrite": "true",
             "name": "Assign_def",
-            "prop": "Assign a b = Basic (λf. (f)(a := b))",
+            "prop": "Assign a b = Basic (λf. (f)(a := b f))",
             "ty": "thm",
             "vars": {
                 "a": "'a",
-                "b": "'b",
+                "b": "('a => 'b) => 'b",
                 "f": "'a"
             }
         },
         {
             "name": "Sem_Assign",
-            "prop": "Sem (Assign a b) s (fun_upd s a b)",
+            "prop": "Sem (Assign a b) s (fun_upd s a (b s))",
             "ty": "thm",
             "vars": {
                 "a": "'a",
-                "b": "'b",
+                "b": "('a => 'b) => 'b",
                 "s": "'a => 'b"
             }
         },
@@ -159,7 +159,7 @@
         {
             "hint_rewrite": "true",
             "name": "P1_def",
-            "prop": "P1 = Seq (Assign 0 1) (Assign 1 2)",
+            "prop": "P1 = Seq (Assign 0 (%s. 1)) (Assign 1 (%s. 2))",
             "ty": "thm",
             "vars": {}
         },
@@ -168,11 +168,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem (Seq (Assign 0 1) (Assign 1 2)) (λx. 0) ((λx. 0)(0 := 1, 1 := 2))",
+                    "args": "Sem (Seq (Assign 0 (λs. 1)) (Assign 1 (λs. 2))) (λx. 0) ((λx. 0)(0 := 1, 1 := 2))",
                     "id": "0",
                     "prevs": [],
                     "rule": "eval_Sem",
-                    "th": "⊢ Sem (Seq (Assign 0 1) (Assign 1 2)) (λx. 0) ((λx. 0)(0 := 1, 1 := 2))"
+                    "th": "⊢ Sem (Seq (Assign 0 (λs. 1)) (Assign 1 (λs. 2))) (λx. 0) ((λx. 0)(0 := 1, 1 := 2))"
                 },
                 {
                     "args": "P1_def, Sem P1 (λx. 0) ((λx. 0)(0 := 1, 1 := 2))",

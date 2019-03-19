@@ -20,9 +20,12 @@ Seq = hoare.Seq(natFun)
 zero = nat.zero
 one = nat.one
 
+def const_val(x):
+    return mk_const_fun(natFun, x)
+
 class HoareTest(unittest.TestCase):
     def testEvalSem(self):
-        com = Seq(Assign(zero, one), Assign(one, nat.to_binary(2)))
+        com = Seq(Assign(zero, const_val(one)), Assign(one, const_val(nat.to_binary(2))))
         st = mk_const_fun(natT, zero)
         st2 = mk_fun_upd(mk_const_fun(natT, zero), zero, one, one, nat.to_binary(2))
         goal = Sem(com, st, st2)
