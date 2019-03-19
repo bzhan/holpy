@@ -76,8 +76,10 @@ class fun_upd_eval_conv(Conv):
 
                 eq2 = self.get_proof_term(eq.th.concl.arg)
                 return ProofTerm.transitive(eq, eq2)
-        else:
+        elif f.ty == Term.ABS:
             return ProofTerm.beta_conv(t)
+        else:
+            return ProofTerm.reflexive(t)
 
 class fun_upd_eval_macro(ProofTermMacro):
     """Macro using fun_upd_eval_conv."""
