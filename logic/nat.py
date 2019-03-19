@@ -6,7 +6,7 @@ from kernel.thm import Thm
 from kernel.macro import ProofMacro, MacroSig, global_macros
 from logic.conv import Conv, ConvException, all_conv, rewr_conv_thm, rewr_conv_thm_sym, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from logic.proofterm import ProofTerm, ProofTermMacro
+from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic_macro import apply_theorem, init_theorem
 from logic import logic
 from logic import term_ord
@@ -545,6 +545,11 @@ class nat_const_ineq_macro(ProofTermMacro):
 
         return ineq_proof_term(thy, from_binary(m), from_binary(n))
 
+
+def nat_const_ineq(thy, a, b):
+    macro = nat_const_ineq_macro()
+    goal = logic.neg(Term.mk_equals(a, b))
+    return ProofTermDeriv(macro(thy, goal), "nat_const_ineq", goal, [])
 
 global_macros.update({
     "nat_norm": nat_norm_macro(),

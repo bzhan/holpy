@@ -69,11 +69,7 @@ class fun_upd_eval_conv(Conv):
                     thy, "fun_upd_other",
                     tyinst={"a": nat.natT, "b": nat.natT},
                     inst={"f": f1, "a": a, "b": b, "c": c})
-                macro = nat.nat_const_ineq_macro()
-                goal = logic.neg(Term.mk_equals(c, a))
-                cond = ProofTermDeriv(macro(thy, goal), "nat_const_ineq", goal, [])
-                eq = ProofTerm.implies_elim(pt, cond)
-
+                eq = ProofTerm.implies_elim(pt, nat.nat_const_ineq(thy, c, a))
                 eq2 = self.get_proof_term(eq.th.concl.arg)
                 return ProofTerm.transitive(eq, eq2)
         elif f.ty == Term.ABS:
@@ -119,10 +115,7 @@ class fun_upd_norm_one_conv(Conv):
                         thy, "fun_upd_twist",
                         tyinst={"a": nat.natT, "b": nat.natT},
                         inst={"f": f2, "a": a2, "b": b2, "c": a, "d": b})
-                    macro = nat.nat_const_ineq_macro()
-                    goal = logic.neg(Term.mk_equals(a, a2))
-                    cond = ProofTermDeriv(macro(thy, goal), "nat_const_ineq", goal, [])
-                    eq = ProofTerm.implies_elim(pt, cond)
+                    eq = ProofTerm.implies_elim(pt, nat.nat_const_ineq(thy, a, a2))
                     eq2 = fun_conv(fun_conv(arg_conv(fun_upd_norm_one_conv()))).get_proof_term(eq.th.concl.arg)
                     return ProofTerm.transitive(eq, eq2)
                 elif nat.from_binary(a) == nat.from_binary(a2):

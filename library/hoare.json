@@ -122,12 +122,30 @@
             }
         },
         {
+            "name": "Skip",
+            "ty": "def.ax",
+            "type": "'a com"
+        },
+        {
+            "name": "Skip_def",
+            "prop": "Skip = Basic (%f::'a. f)",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "Sem_Skip",
+            "prop": "Sem Skip s s",
+            "ty": "thm",
+            "vars": {
+                "s": "'a"
+            }
+        },
+        {
             "name": "Assign",
             "ty": "def.ax",
             "type": "'a => (('a => 'b) => 'b) => ('a => 'b) com"
         },
         {
-            "hint_rewrite": "true",
             "name": "Assign_def",
             "prop": "Assign a b = Basic (λf. (f)(a := b f))",
             "ty": "thm",
