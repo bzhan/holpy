@@ -5,6 +5,7 @@ import unittest
 from kernel.type import TFun
 from kernel.term import Term, Var
 from kernel.thm import Thm
+from kernel.report import ProofReport
 from logic import nat
 from logic import hoare
 from logic import logic
@@ -21,12 +22,14 @@ Skip = hoare.Skip(natFun)
 Assign = hoare.Assign(natT, natT)
 Seq = hoare.Seq(natFun)
 Cond = hoare.Cond(natFun)
+While = hoare.While(natFun)
 zero = nat.zero
 one = nat.one
 
 eq = Term.mk_equals
 abs = Term.mk_abs
 s = Var("s", natFun)
+assn_true = abs(s, logic.true)
 incr_one = Assign(zero, abs(s, nat.plus(s(zero), one)))
 
 def fun_upd_of_seq(*ns):
@@ -72,6 +75,15 @@ class HoareTest(unittest.TestCase):
         goal = Sem(com, st2, st2)
         prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
+
+    def testEvalSem5(self):
+        com = While(abs(s, logic.neg(eq(s(zero), nat.to_binary(3)))), assn_true, incr_one)
+        st = mk_const_fun(natT, zero)
+        st2 = fun_upd_of_seq(0, 3)
+        goal = Sem(com, st, st2)
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        rpt = ProofReport()
+        self.assertEqual(thy.check_proof(prf, rpt), Thm([], goal))
 
 
 if __name__ == "__main__":

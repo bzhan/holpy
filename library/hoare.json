@@ -242,6 +242,43 @@
             "prop": "Sem P2 (%x. 0) ((%x. 0)(0 := 2))",
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "name": "P3",
+            "ty": "def.ax",
+            "type": "(nat => nat) com"
+        },
+        {
+            "hint_rewrite": "true",
+            "name": "P3_def",
+            "prop": "P3 = While (%s. ~(s 0 = 3)) (%s. true) (Assign 0 (%s. s 0 + 1))",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "P3_test",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Sem (While (λs. ¬s 0 = 3) (λs. true) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 3))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "eval_Sem",
+                    "th": "⊢ Sem (While (λs. ¬s 0 = 3) (λs. true) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 3))"
+                },
+                {
+                    "args": "P3_def, Sem P3 (λx. 0) ((λx. 0)(0 := 3))",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Sem P3 (λx. 0) ((λx. 0)(0 := 3))"
+                }
+            ],
+            "prop": "Sem P3 (%x. 0) ((%x. 0)(0 := 3))",
+            "ty": "thm",
+            "vars": {}
         }
     ],
     "description": "Hoare logic",
