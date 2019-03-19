@@ -16,19 +16,19 @@ from syntax import printer
 thy = basic.loadTheory('hoare')
 
 natT = nat.natT
-natFun = TFun(natT, natT)
-Sem = hoare.Sem(natFun)
-Skip = hoare.Skip(natFun)
+natFunT = TFun(natT, natT)
+Sem = hoare.Sem(natFunT)
+Skip = hoare.Skip(natFunT)
 Assign = hoare.Assign(natT, natT)
-Seq = hoare.Seq(natFun)
-Cond = hoare.Cond(natFun)
-While = hoare.While(natFun)
+Seq = hoare.Seq(natFunT)
+Cond = hoare.Cond(natFunT)
+While = hoare.While(natFunT)
 zero = nat.zero
 one = nat.one
 
 eq = Term.mk_equals
 abs = Term.mk_abs
-s = Var("s", natFun)
+s = Var("s", natFunT)
 assn_true = abs(s, logic.true)
 incr_one = Assign(zero, abs(s, nat.plus(s(zero), one)))
 

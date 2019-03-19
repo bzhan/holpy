@@ -1,0 +1,15 @@
+{
+    "name": "test",
+    "content": [
+        {
+            "com": "a := 1; b := 2",
+            "init": {},
+            "final": {"a": 1, "b": 2}
+        },
+        {
+            "com": "while (a != 5) {b := b + 7; a := a + 1}",
+            "init": {},
+            "final": {"a": 5, "b": 35}
+        }
+    ]
+}

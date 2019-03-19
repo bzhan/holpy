@@ -4,7 +4,7 @@ import unittest
 
 from logic import basic
 from logic import hoare
-from logic.hoare_parser import parse_hoare
+from logic.hoare_parser import parse_hoare, process_file
 from syntax import parser
 from syntax import printer
 
@@ -25,6 +25,9 @@ class HoareParserTest(unittest.TestCase):
             t = parse_hoare(s)
             t_res = parser.parse_term(thy, {}, res)
             self.assertEqual(t, t_res)
+
+    def testParseFile(self):
+        process_file("test")
 
 
 if __name__ == "__main__":
