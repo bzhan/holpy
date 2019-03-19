@@ -565,15 +565,9 @@ class nat_eq_conv(Conv):
             return ProofTerm.reflexive(t)
 
         if a == b:
-            cv = rewr_conv_thm(thy, "eq_True")
-            pt = ProofTerm.reflexive(a)
-            pt2 = cv.get_proof_term(pt.th.concl)
-            return ProofTerm.equal_elim(pt2, pt)
+            return rewr_conv_thm(thy, "eq_True").apply_to_pt(ProofTerm.reflexive(a))
         else:
-            cv = rewr_conv_thm(thy, "eq_False")
-            pt = nat_const_ineq(thy, a, b)
-            pt2 = cv.get_proof_term(pt.th.concl)
-            return ProofTerm.equal_elim(pt2, pt)
+            return rewr_conv_thm(thy, "eq_False").apply_to_pt(nat_const_ineq(thy, a, b))
 
 
 global_macros.update({

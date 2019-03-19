@@ -39,9 +39,7 @@ class prove_avalI_macro(ProofTermMacro):
         elif f == V:
             x = args[0]
             pt = init_theorem(thy, "avalI_var", inst={"s": s, "x": x})
-            cv = arg_conv(function.fun_upd_eval_conv())
-            pt_eq = cv.get_proof_term(pt.th.concl)
-            return ProofTerm.equal_elim(pt_eq, pt)
+            return arg_conv(function.fun_upd_eval_conv()).apply_to_pt(pt)
         elif f == Plus:
             a1, a2 = args
             pt1 = self.get_avalI_th(thy, s, a1)
@@ -49,16 +47,15 @@ class prove_avalI_macro(ProofTermMacro):
             _, args1 = pt1.th.concl.strip_comb()
             _, args2 = pt2.th.concl.strip_comb()
             pt = apply_theorem(thy, "avalI_plus", pt1, pt2)
-            cv = arg_conv(nat.nat_conv())
-            pt_eq = cv.get_proof_term(pt.th.concl)
-            return ProofTerm.equal_elim(pt_eq, pt)
+            return arg_conv(nat.nat_conv()).apply_to_pt(pt)
         elif f == Times:
             a1, a2 = args
             pt1 = self.get_avalI_th(thy, s, a1)
             pt2 = self.get_avalI_th(thy, s, a2)
             _, args1 = pt1.th.concl.strip_comb()
             _, args2 = pt2.th.concl.strip_comb()
-            return apply_theorem(thy, "avalI_times", pt1, pt2)
+            pt = apply_theorem(thy, "avalI_times", pt1, pt2)
+            return arg_conv(nat.nat_conv()).apply_to_pt(pt)
         else:
             raise NotImplementedError
 

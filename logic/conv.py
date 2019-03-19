@@ -23,6 +23,11 @@ class Conv():
     def get_proof_term(self, t):
         raise NotImplementedError
 
+    def apply_to_pt(self, pt):
+        """Apply to the given proof term."""
+        eq_pt = self.get_proof_term(pt.th.concl)
+        return ProofTerm.equal_elim(eq_pt, pt)
+
 class all_conv(Conv):
     """Returns the trivial equality t = t."""
     def __call__(self, t):
@@ -264,7 +269,12 @@ class rewr_conv(Conv):
 
 
 def rewr_conv_thm(thy, th_name):
+    """Rewrite using the theorem with the given name."""
     return rewr_conv(ProofTerm.theorem(thy, th_name))
 
 def rewr_conv_thm_sym(thy, th_name):
+    """Rewrite in the reverse direction using the theorem with
+    the given name.
+
+    """
     return rewr_conv(ProofTerm.symmetric(ProofTerm.theorem(thy, th_name)))

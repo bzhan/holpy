@@ -59,8 +59,7 @@ class beta_norm_macro(ProofTermMacro):
         return Thm(th.assums, eq_th.concl.arg)
 
     def get_proof_term(self, pt):
-        cv = top_conv(beta_conv())
-        return ProofTerm.equal_elim(cv.get_proof_term(pt.th.concl), pt)
+        return top_conv(beta_conv()).apply_to_pt(pt)
 
 class apply_theorem_macro(ProofTermMacro):
     """Apply existing theorem in the theory to a list of current
@@ -114,13 +113,11 @@ class apply_theorem_macro(ProofTermMacro):
 
         pt = ProofTerm.substitution(inst,
                 ProofTerm.subst_type(tyinst, ProofTerm.theorem(thy, name)))
-        cv = top_conv(beta_conv())
-        pt2 = cv.get_proof_term(pt.th.concl)
-        pt3 = ProofTerm.equal_elim(pt2, pt)
+        pt2 = top_conv(beta_conv()).apply_to_pt(pt)
         for pt in pts:
-            pt3 = ProofTerm.implies_elim(pt3, pt)
+            pt2 = ProofTerm.implies_elim(pt2, pt)
 
-        return pt3
+        return pt2
 
 class rewrite_goal_macro(ProofTermMacro):
     """Apply an existing equality theorem to rewrite a goal.
