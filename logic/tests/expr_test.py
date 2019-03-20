@@ -24,6 +24,7 @@ class ExprTest(unittest.TestCase):
         test_data = [
             (expr.Plus(expr.V(one), expr.N(nat.to_binary(5))), nat.to_binary(12)),
             (expr.Plus(expr.V(zero), expr.N(nat.to_binary(5))), nat.to_binary(5)),
+            (expr.Times(expr.V(one), expr.N(nat.to_binary(5))), nat.to_binary(35)),
         ]
 
         for t, n in test_data:

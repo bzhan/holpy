@@ -50,17 +50,16 @@ class beta_norm_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.NONE
-        self.has_theory = False
+        self.has_theory = True
         self.use_goal = False
 
-    def __call__(self, th):
+    def __call__(self, thy, th):
         cv = top_conv(beta_conv())
-        eq_th = cv(th.concl)
+        eq_th = cv(thy, th.concl)
         return Thm(th.assums, eq_th.concl.arg)
 
-    def get_proof_term(self, pt):
-        cv = top_conv(beta_conv())
-        return ProofTerm.equal_elim(cv.get_proof_term(pt.th.concl), pt)
+    def get_proof_term(self, thy, pt):
+        return top_conv(beta_conv()).apply_to_pt(thy, pt)
 
 class apply_theorem_macro(ProofTermMacro):
     """Apply existing theorem in the theory to a list of current
@@ -114,13 +113,11 @@ class apply_theorem_macro(ProofTermMacro):
 
         pt = ProofTerm.substitution(inst,
                 ProofTerm.subst_type(tyinst, ProofTerm.theorem(thy, name)))
-        cv = top_conv(beta_conv())
-        pt2 = cv.get_proof_term(pt.th.concl)
-        pt3 = ProofTerm.equal_elim(pt2, pt)
+        pt2 = top_conv(beta_conv()).apply_to_pt(thy, pt)
         for pt in pts:
-            pt3 = ProofTerm.implies_elim(pt3, pt)
+            pt2 = ProofTerm.implies_elim(pt2, pt)
 
-        return pt3
+        return pt2
 
 class rewrite_goal_macro(ProofTermMacro):
     """Apply an existing equality theorem to rewrite a goal.
@@ -162,7 +159,7 @@ class rewrite_goal_macro(ProofTermMacro):
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
         cv = then_conv(top_conv(rewr_conv(eq_pt)), top_conv(beta_conv()))
-        pt = cv.get_proof_term(goal)  # goal = th.concl
+        pt = cv.get_proof_term(thy, goal)  # goal = th.concl
         pt = ProofTerm.symmetric(pt)  # th.concl = goal
         pt = ProofTerm.equal_elim(pt, pts[0])  # goal
         for A in pts[1:]:
@@ -183,7 +180,7 @@ def init_theorem(thy, th_name, tyinst=None, inst=None):
         pt = ProofTerm.subst_type(tyinst, pt)
     if inst:
         pt = ProofTerm.substitution(inst, pt)
-    pt = ProofTermDeriv(beta_norm_macro()(pt.th), "beta_norm", None, [pt])
+    pt = ProofTermDeriv(beta_norm_macro()(thy, pt.th), "beta_norm", None, [pt])
     return pt
 
 global_macros.update({

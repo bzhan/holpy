@@ -2,7 +2,8 @@
 
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Const, Abs
-from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv_thm_sym
+from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv
+from logic.proofterm import ProofTerm
 
 """Utility functions for logic."""
 
@@ -125,27 +126,37 @@ def dest_if(t):
 
 """Normalization rules for logic."""
 
+class norm_bool_expr(Conv):
+    """Normalize a boolean expression."""
+    def get_proof_term(self, thy, t):
+        if is_neg(t):
+            if t.arg == true:
+                return rewr_conv("not_true").get_proof_term(thy, t)
+            elif t.arg == false:
+                return rewr_conv("not_false").get_proof_term(thy, t)
+            else:
+                return ProofTerm.reflexive(t)
+        else:
+            return ProofTerm.reflexive(t)
+
 class norm_conj_assoc_clauses(Conv):
     """Normalize (A_1 & ... & A_n) & (B_1 & ... & B_n)."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('logic')
-
+    def get_proof_term(self, thy, t):
         if is_conj(t.arg1):
             return then_conv(
-                rewr_conv_thm_sym(thy, "conj_assoc"),
+                rewr_conv("conj_assoc", sym=True),
                 arg_conv(norm_conj_assoc_clauses())
-            ).get_proof_term(t)
+            ).get_proof_term(thy, t)
         else:
-            return all_conv().get_proof_term(t)
+            return all_conv().get_proof_term(thy, t)
 
 class norm_conj_assoc(Conv):
     """Normalize conjunction with respect to associativity."""
-    def get_proof_term(self, t):
+    def get_proof_term(self, thy, t):
         if is_conj(t):
             return then_conv(
                 binop_conv(norm_conj_assoc()),
                 norm_conj_assoc_clauses()
-            ).get_proof_term(t)
+            ).get_proof_term(thy, t)
         else:
-            return all_conv().get_proof_term(t)
+            return all_conv().get_proof_term(thy, t)

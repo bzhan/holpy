@@ -11,7 +11,7 @@ from logic import basic
 from logic import logic
 from logic.proofterm import ProofTerm
 from logic import logic_macro
-from logic.conv import rewr_conv, rewr_conv_thm, every_conv, top_conv
+from logic.conv import rewr_conv, every_conv, top_conv
 
 thy = basic.loadTheory('sat')
 
@@ -81,38 +81,34 @@ def get_encode_proof(th):
     # Obtain the expansion of each As to a non-atomic term.
     pts = []
     for ptA in ptAs:
-        A = ptA.th.concl
-        rhs = A.arg
+        rhs = ptA.th.concl.arg
         if logic.is_conj(rhs):
-            cv = rewr_conv_thm(thy, "encode_conj")
+            cv = rewr_conv("encode_conj")
         elif logic.is_disj(rhs):
-            cv = rewr_conv_thm(thy, "encode_disj")
+            cv = rewr_conv("encode_disj")
         elif rhs.is_implies():
-            cv = rewr_conv_thm(thy, "encode_imp")
+            cv = rewr_conv("encode_imp")
         elif rhs.is_equals():
-            cv = rewr_conv_thm(thy, "encode_eq")
+            cv = rewr_conv("encode_eq")
         elif logic.is_neg(rhs):
-            cv = rewr_conv_thm(thy, "encode_not")
+            cv = rewr_conv("encode_not")
         else:
             cv = None
 
         if cv:
-            pts.append(ProofTerm.equal_elim(cv.get_proof_term(A), ptA))
+            pts.append(cv.apply_to_pt(thy, ptA))
 
     # Obtain the rewrite of the original formula.
     cvs = [top_conv(rewr_conv(ProofTerm.symmetric(ptA), match_vars=False)) for ptA in ptAs]
     cv = every_conv(*cvs)
 
-    pts.append(ProofTerm.equal_elim(cv.get_proof_term(F), ptF))
+    pts.append(cv.apply_to_pt(thy, ptF))
 
     pt = pts[0]
     for pt2 in pts[1:]:
         pt = logic_macro.apply_theorem(thy, 'conjI', pt, pt2)
 
-    cv = logic.norm_conj_assoc()
-    pt = ProofTerm.equal_elim(cv.get_proof_term(pt.th.concl), pt)
-
-    return pt
+    return logic.norm_conj_assoc().apply_to_pt(thy, pt)
 
 def encode(t):
     """Convert a holpy term into an equisatisfiable CNF. The result
