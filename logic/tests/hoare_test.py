@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TFun
+from kernel.type import TFun, hol_bool
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.report import ProofReport
@@ -23,6 +23,7 @@ Assign = hoare.Assign(natT, natT)
 Seq = hoare.Seq(natFunT)
 Cond = hoare.Cond(natFunT)
 While = hoare.While(natFunT)
+Valid = hoare.Valid(natFunT)
 zero = nat.zero
 one = nat.one
 
@@ -84,6 +85,20 @@ class HoareTest(unittest.TestCase):
         prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), Thm([], goal))
+
+    def testComputeWP(self):
+        Q = Var("Q", TFun(natFunT, hol_bool))
+
+        test_data = [
+            (Assign(zero, abs(s, one)),
+             abs(s, Q(mk_fun_upd(s, zero, one)))),
+            (Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, nat.to_binary(2)))),
+             abs(s, Q(mk_fun_upd(s, zero, one, one, nat.to_binary(2))))),
+        ]
+
+        for c, P in test_data:
+            prf = hoare.compute_wp(thy, c, Q).export()
+            self.assertEqual(thy.check_proof(prf), Thm([], Valid(P, c, Q)))
 
 
 if __name__ == "__main__":
