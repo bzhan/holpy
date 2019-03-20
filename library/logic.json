@@ -1035,6 +1035,14 @@
             "prop": "(~false) = true",
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "name": "eq_true",
+            "prop": "A = (A = true)",
+            "ty": "thm",
+            "vars": {
+                "A": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",

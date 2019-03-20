@@ -472,24 +472,19 @@
                 success: function (res) {
                     var result_data = res['data'];
                     var data_name = result_data['name'];
-                    var error = res['error'], flag = true;
+                    var error = res['error'];
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
                     if (error && error !== {}) {
                         var error_info = error['detail-content'];
                         $('div#' + error_id).find('pre').text(error_info);
                     }
-                    $.each(result_list, function (j, k) {
-                        if (k['name'] === data_name) {
-                            for (var key in result_data) {
-                                result_list[j][key] = result_data[key];
-                                flag = false;
-                            }
-                        }
-                    });
-                    if (flag === true) {
-                        result_list.push(result_data);
-                    }
+                    if(!a_id){
+                        result_list.push(result_data);}
+                    else{
+                        for (var key in result_data) {
+                                result_list[number][key] = result_data[key];
+                             }}
                     display_result_list();
                 }
             });
