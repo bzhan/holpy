@@ -341,6 +341,17 @@
                 "c1": "'a com",
                 "c2": "'a com"
             }
+        },
+        {
+            "name": "while_rule",
+            "prop": "Entail (%s. I s & ~b s) Q --> Valid (%s. I s & b s) c I --> Valid I (While b I c) Q",
+            "ty": "thm",
+            "vars": {
+                "b": "'a => bool",
+                "I": "'a => bool",
+                "c": "'a com",
+                "Q": "'a => bool"
+            }
         }
     ],
     "description": "Hoare logic",

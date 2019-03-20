@@ -38,6 +38,9 @@ def Sem(T):
 def Valid(T):
     return Const("Valid", TFun(TFun(T, hol_bool), comT(T), TFun(T, hol_bool), hol_bool))
 
+def Entail(T):
+    return Const("Entail", TFun(TFun(T, hol_bool), TFun(T, hol_bool), hol_bool))
+
 # Normalize evaluation of function as well as arithmetic.
 norm_cv = then_conv(top_conv(function.fun_upd_eval_conv()), nat.norm_full())
 
@@ -149,8 +152,26 @@ def compute_wp(thy, c, Q):
         Q1 = wp1.th.concl.strip_comb()[1][0]
         wp2 = compute_wp(thy, c1, Q1)
         return apply_theorem(thy, "seq_rule", wp2, wp1)
+    elif f.is_const_with_name("While"):
+        b, I, c = args
+        pt = init_theorem(thy, "while_rule", tyinst={"a": T}, inst={"I": I, "b": b, "c": c, "Q": Q})
+        As, C = pt.th.concl.strip_implies()
+        pt0 = ProofTerm.assume(As[0])
+        pt1 = vcg(thy, As[1])
+        return ProofTerm.implies_elim(pt, pt0, pt1)
     else:
         raise NotImplementedError
+
+def vcg(thy, goal):
+    """Compute the verification conditions for the goal."""
+    f, args = goal.strip_comb()
+    P, c, Q = args
+    T = Q.get_type().domain_type()
+
+    pt = compute_wp(thy, c, Q)
+    P2 = pt.th.concl.strip_comb()[1][0]
+    entail_P = ProofTerm.assume(Entail(T)(P, P2))
+    return apply_theorem(thy, "pre_rule", entail_P, pt)
 
 
 global_macros.update({

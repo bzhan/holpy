@@ -11,6 +11,7 @@ from logic import hoare
 from logic import logic
 from logic.function import mk_const_fun, mk_fun_upd
 from logic import basic
+from syntax import parser
 from syntax import printer
 
 thy = basic.loadTheory('hoare')
@@ -100,6 +101,31 @@ class HoareTest(unittest.TestCase):
             prf = hoare.compute_wp(thy, c, Q).export()
             self.assertEqual(thy.check_proof(prf), Thm([], Valid(P, c, Q)))
 
+    def testVCG(self):
+        P = Var("P", TFun(natFunT, hol_bool))
+        Q = Var("Q", TFun(natFunT, hol_bool))
+
+        test_data = [
+            Assign(zero, abs(s, one)),
+            Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, nat.to_binary(2)))),
+        ]
+
+        for c in test_data:
+            goal = Valid(P, c, Q)
+            prf = hoare.vcg(thy, goal).export()
+            self.assertEqual(thy.check_proof(prf).concl, goal)
+
+    def testVCGWhile(self):
+        A = Var("A", natT)
+        B = Var("B", natT)
+        ctxt = {"A": natT, "B": natT}
+        c = parser.parse_term(thy, ctxt, \
+            "While (%s. ~s 0 = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))")
+        P = parser.parse_term(thy, ctxt, "%s. s 0 = 0 & s 1 = 0")
+        Q = parser.parse_term(thy, ctxt, "%s. s 1 = A * B")
+        goal = Valid(P, c, Q)
+        prf = hoare.vcg(thy, goal).export()
+        self.assertEqual(thy.check_proof(prf).concl, goal)
 
 if __name__ == "__main__":
     unittest.main()
