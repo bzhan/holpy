@@ -124,6 +124,7 @@
             result_list[id]['num_gaps'] = cells[editor_id]['num_gaps'];
             result_list_dict[file_name] = result_list;
             display_result_list();
+            save_json_file();
         });
 
         function result_to_output(data) {
@@ -281,7 +282,7 @@
         $('#left_json').on('click', 'a[name="edit"]', function () {
             page_num++;
             edit_mode = true;
-            var a_ele = $(this);//把jquery对象存到a_ele变量里,就可以传到底下的函数里
+            var a_ele = $(this);
             init_edit_area(page_num, a_ele);
         });
 
@@ -291,10 +292,11 @@
             var number = Number(a_id.slice(5,))-1;
             result_list.splice(number, 1);
             display_result_list();
+            save_editor_data();
         });
 
 //      the method for add_info && edit_info;
-        function init_edit_area(page_num, a_ele= '', data_type= '') {//这里不能写$(this)是因为只能指到function,
+        function init_edit_area(page_num, a_ele= '', data_type= '') {
             var a_id, data_name= '', data_content= '', vars_str = '', data_label, border = '1px;solid #ffffff;border:none'
             if (!a_ele) {
                 a_id = '', border= '',data_name = '', data_content = '', number = '', data_label = data_type;
@@ -486,6 +488,9 @@
                                 result_list[number][key] = result_data[key];
                              }}
                     display_result_list();
+                    save_editor_data();
+
+
                 }
             });
         })
@@ -592,15 +597,6 @@
             $('#left_json').empty();
             if ($('#file-path a:last').text() !== 'root/') {
                 $('#file-path a:last').remove();
-            }
-        });
-
-//      click to save the related data to json file: edit && proof;
-        $('a#save-file').click(function () {
-            if (edit_mode) {
-                save_editor_data();
-            } else {
-                save_json_file();
             }
         });
 
