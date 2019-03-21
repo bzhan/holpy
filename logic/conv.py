@@ -53,9 +53,9 @@ class combination_conv(Conv):
 
         # Obtain some savings if one of pt1 and pt2 is reflexivity:
         if pt1.th.is_reflexive():
-            return ProofTerm.arg_combination(pt1.th.concl.arg, pt2)
+            return ProofTerm.arg_combination(thy, pt1.th.concl.arg, pt2)
         elif pt2.th.is_reflexive():
-            return ProofTerm.fun_combination(pt2.th.concl.arg, pt1)
+            return ProofTerm.fun_combination(thy, pt2.th.concl.arg, pt1)
         else:
             return ProofTerm.combination(pt1, pt2)
 

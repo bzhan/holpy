@@ -320,12 +320,8 @@ class Theory():
                 # If the method is one of the primitive derivations, obtain and
                 # apply that primitive derivation.
                 rule_fun, _ = primitive_deriv[seq.rule]
-                if seq.args is not None:
-                    args = [seq.args]
-                else:
-                    args = []
                 try:
-                    res_th = rule_fun(*(args + prev_ths))
+                    res_th = rule_fun(*prev_ths) if seq.args is None else rule_fun(seq.args, *prev_ths)
                     if rpt is not None:
                         rpt.apply_primitive_deriv()
                 except InvalidDerivationException:

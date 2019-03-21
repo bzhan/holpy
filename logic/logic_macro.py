@@ -164,8 +164,7 @@ class rewrite_goal_macro(ProofTermMacro):
         return pt
 
 def apply_theorem(thy, th_name, *pts):
-    ths = [pt.th for pt in pts]
-    return ProofTermDeriv(apply_theorem_macro()(thy, th_name, ths), "apply_theorem", th_name, pts)
+    return ProofTermDeriv("apply_theorem", thy, th_name, pts)
 
 def init_theorem(thy, th_name, tyinst=None, inst=None):
     if tyinst is None:
@@ -177,7 +176,7 @@ def init_theorem(thy, th_name, tyinst=None, inst=None):
         pt = ProofTerm.subst_type(tyinst, pt)
     if inst:
         pt = ProofTerm.substitution(inst, pt)
-    pt = ProofTermDeriv(beta_norm_macro()(thy, None, [pt.th]), "beta_norm", None, [pt])
+    pt = ProofTermDeriv("beta_norm", thy, None, [pt])
     return pt
 
 global_macros.update({

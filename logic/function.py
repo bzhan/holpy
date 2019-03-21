@@ -7,7 +7,7 @@ from logic import logic_macro
 from logic import nat
 from logic import logic
 from logic.conv import Conv, rewr_conv, fun_conv, then_conv, arg_conv
-from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro
+from logic.proofterm import ProofTerm, ProofTermMacro
 
 """Utility functions for the function library."""
 

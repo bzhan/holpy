@@ -503,9 +503,8 @@ class nat_const_ineq_macro(ProofTermMacro):
         return ineq_proof_term(thy, from_binary(m), from_binary(n))
 
 def nat_const_ineq(thy, a, b):
-    macro = nat_const_ineq_macro()
     goal = logic.neg(Term.mk_equals(a, b))
-    return ProofTermDeriv(macro(thy, goal, []), "nat_const_ineq", goal, [])
+    return ProofTermDeriv("nat_const_ineq", thy, goal, [])
 
 
 class nat_eq_conv(Conv):
