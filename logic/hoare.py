@@ -35,6 +35,9 @@ def While(T):
 def Sem(T):
     return Const("Sem", TFun(comT(T), T, T, hol_bool))
 
+def Valid(T):
+    return Const("Valid", TFun(TFun(T, hol_bool), comT(T), TFun(T, hol_bool), hol_bool))
+
 # Normalize evaluation of function as well as arithmetic.
 norm_cv = then_conv(top_conv(function.fun_upd_eval_conv()), nat.norm_full())
 
@@ -124,6 +127,31 @@ class eval_Sem_macro(ProofTermMacro):
             print(printer.print_term(thy, res_st2))
         assert st2 == res_st2, "eval_Sem_macro: wrong result."
         return pt
+
+
+def compute_wp(thy, c, Q):
+    """Compute the weakest precondition for the given command
+    and postcondition. The computation is by case analysis on
+    the form of c. Returns the validity theorem.
+
+    """
+    T = Q.get_type().domain_type()
+    f, args = c.strip_comb()
+    if f.is_const_with_name("Assign"):
+        a, b = args
+        Ta, Tb = T.domain_type(), T.range_type()
+        pt = init_theorem(thy, "assign_rule", tyinst={"a": Ta, "b": Tb},
+                          inst={"a": a, "b": b, "P": Q})
+        return pt
+    elif f.is_const_with_name("Seq"):
+        c1, c2 = args
+        wp1 = compute_wp(thy, c2, Q)
+        Q1 = wp1.th.concl.strip_comb()[1][0]
+        wp2 = compute_wp(thy, c1, Q1)
+        return apply_theorem(thy, "seq_rule", wp2, wp1)
+    else:
+        raise NotImplementedError
+
 
 global_macros.update({
     "eval_Sem": eval_Sem_macro(),
