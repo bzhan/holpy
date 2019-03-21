@@ -3,7 +3,7 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
-from kernel.macro import ProofMacro, MacroSig, global_macros
+from kernel.macro import MacroSig, global_macros
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
@@ -418,14 +418,15 @@ class nat_norm_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.has_theory = True
         self.use_goal = True
 
-    def __call__(self, thy, args):
+    def __call__(self, thy, args, pts):
         # Simply produce the goal.
+        assert len(pts) == 0, "nat_norm_macro"
         return Thm([], args)
 
-    def get_proof_term(self, thy, args):
+    def get_proof_term(self, thy, args, pts):
+        assert len(pts) == 0, "nat_norm_macro"
         assert args.is_equals(), "nat_norm_macro: goal is not an equality."
 
         t1, t2 = args.arg1, args.arg
@@ -481,14 +482,15 @@ class nat_const_ineq_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.has_theory = True
         self.use_goal = True
 
-    def __call__(self, thy, args):
+    def __call__(self, thy, args, pts):
         # Simply produce the goal.
+        assert len(pts) == 0, "nat_const_ineq_macro"
         return Thm([], args)
 
-    def get_proof_term(self, thy, args):
+    def get_proof_term(self, thy, args, pts):
+        assert len(pts) == 0, "nat_const_ineq_macro"
         assert logic.is_neg(args) and args.arg.is_equals(), \
                "nat_ineq_macro: goal is not an inequality."
 
@@ -503,7 +505,7 @@ class nat_const_ineq_macro(ProofTermMacro):
 def nat_const_ineq(thy, a, b):
     macro = nat_const_ineq_macro()
     goal = logic.neg(Term.mk_equals(a, b))
-    return ProofTermDeriv(macro(thy, goal), "nat_const_ineq", goal, [])
+    return ProofTermDeriv(macro(thy, goal, []), "nat_const_ineq", goal, [])
 
 
 class nat_eq_conv(Conv):

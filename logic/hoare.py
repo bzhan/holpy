@@ -56,7 +56,6 @@ class eval_Sem_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.has_theory = True
         self.use_goal = True
 
     def eval_Sem(self, thy, com, st):
@@ -118,7 +117,7 @@ class eval_Sem_macro(ProofTermMacro):
         else:
             raise NotImplementedError
 
-    def get_proof_term(self, thy, args, *pts):
+    def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "eval_Sem_macro"
         f, args = args.strip_comb()
         com, st, st2 = args

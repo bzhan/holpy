@@ -80,10 +80,10 @@ class fun_upd_eval_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.has_theory = False
         self.use_goal = True
 
-    def get_proof_term(self, args):
+    def get_proof_term(self, thy, args, pts):
+        assert len(pts) == 0, "fun_upd_eval_macro"
         assert args.is_equals(), "fun_upd_eval_macro: goal is not an equality"
 
         t1, t2 = args.arg1, args.arg

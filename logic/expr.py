@@ -28,7 +28,6 @@ class prove_avalI_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.has_theory = True
         self.use_goal = True
 
     def get_avalI_th(self, thy, s, t):
@@ -59,7 +58,7 @@ class prove_avalI_macro(ProofTermMacro):
         else:
             raise NotImplementedError
 
-    def get_proof_term(self, thy, args, *pts):
+    def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "prove_avalI_macro"
         f, args = args.strip_comb()
         s, t, n = args

@@ -43,7 +43,7 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1, 1, 2)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem2(self):
@@ -51,7 +51,7 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 2)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem3(self):
@@ -59,11 +59,11 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
         goal = Sem(com, st2, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem4(self):
@@ -71,11 +71,11 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
         goal = Sem(com, st2, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem5(self):
@@ -83,7 +83,7 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 3)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), Thm([], goal))
 

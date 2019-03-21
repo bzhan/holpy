@@ -157,17 +157,9 @@ class ProofTermMacro(ProofMacro):
     constructing a proof term, then export the proof term.
 
     """
-    def get_proof_term(self):
+    def get_proof_term(self, thy, args, prevs):
         raise NotImplementedError()
 
-    def expand(self, prefix, *args):
-        args_count = 0
-        if self.has_theory:
-            args_count += 1
-        if self.sig != MacroSig.NONE:
-            args_count += 1
-
-        args, prevs = args[:args_count], args[args_count:]
-
+    def expand(self, prefix, thy, args, prevs):
         pts = tuple([ProofTerm.atom(id, prev) for id, prev in prevs])
-        return self.get_proof_term(*(args + pts)).export(prefix)
+        return self.get_proof_term(thy, args, pts).export(prefix)
