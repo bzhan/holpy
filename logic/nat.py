@@ -517,9 +517,9 @@ class nat_eq_conv(Conv):
             return ProofTerm.reflexive(t)
 
         if a == b:
-            return rewr_conv("eq_True").apply_to_pt(thy, ProofTerm.reflexive(a))
+            return rewr_conv("eq_true").apply_to_pt(thy, ProofTerm.reflexive(a))
         else:
-            return rewr_conv("eq_False").apply_to_pt(thy, nat_const_ineq(thy, a, b))
+            return rewr_conv("eq_false").apply_to_pt(thy, nat_const_ineq(thy, a, b))
 
 
 global_macros.update({

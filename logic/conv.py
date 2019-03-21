@@ -144,6 +144,20 @@ def every_conv(*args):
     else:
         return then_conv(args[0], every_conv(*args[1:]))
 
+class assums_conv(Conv):
+    """Given a term of the form A1 --> ... --> An --> C, apply cv
+    to each A1, ..., An.
+
+    """
+    def __init__(self, cv):
+        self.cv = cv
+
+    def get_proof_term(self, thy, t):
+        if t.is_implies():
+            return then_conv(arg1_conv(self.cv), arg_conv(self)).get_proof_term(thy, t)
+        else:
+            return ProofTerm.reflexive(t)
+
 class sub_conv(Conv):
     def __init__(self, cv):
         self.cv = cv

@@ -7,7 +7,7 @@ from logic import nat
 from logic import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
-    every_conv, rewr_conv
+    every_conv, rewr_conv, assums_conv
 from logic.proofterm import ProofTerm, ProofTermMacro
 from logic.logic_macro import init_theorem, apply_theorem
 
@@ -83,14 +83,14 @@ class eval_Sem_macro(ProofTermMacro):
             b_st = top_conv(beta_conv())(thy, b(st)).concl.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
             if b_eval.th.concl.arg == logic.true:
-                b_res = rewr_conv("eq_True", sym=True).apply_to_pt(thy, b_eval)
+                b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
                 pt1 = self.eval_Sem(thy, c1, st)
                 st2 = pt1.th.concl.arg
                 pt = init_theorem(thy, "Sem_if1", tyinst={"a": T},
                                   inst={"b": b, "c1": c1, "c2": c2, "s": st, "s2": st2})
                 return ProofTerm.implies_elim(pt, b_res, pt1)
             else:
-                b_res = rewr_conv("eq_False", sym=True).apply_to_pt(thy, b_eval)
+                b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
                 pt2 = self.eval_Sem(thy, c2, st)
                 st2 = pt2.th.concl.arg
                 pt = init_theorem(thy, "Sem_if2", tyinst={"a": T},
@@ -101,7 +101,7 @@ class eval_Sem_macro(ProofTermMacro):
             b_st = top_conv(beta_conv())(thy, b(st)).concl.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
             if b_eval.th.concl.arg == logic.true:
-                b_res = rewr_conv("eq_True", sym=True).apply_to_pt(thy, b_eval)
+                b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
                 pt1 = self.eval_Sem(thy, c, st)
                 st3 = pt1.th.concl.arg
                 pt2 = self.eval_Sem(thy, com, st3)
@@ -111,7 +111,7 @@ class eval_Sem_macro(ProofTermMacro):
                 pt = ProofTerm.implies_elim(pt, b_res, pt1, pt2)
                 return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
             else:
-                b_res = rewr_conv("eq_False", sym=True).apply_to_pt(thy, b_eval)
+                b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
                 pt = init_theorem(thy, "Sem_while_skip", tyinst={"a": T},
                                   inst={"b": b, "c": c, "I": inv, "s": st})
                 return ProofTerm.implies_elim(pt, b_res)
@@ -173,6 +173,14 @@ def vcg(thy, goal):
     entail_P = ProofTerm.assume(Entail(T)(P, P2))
     return apply_theorem(thy, "pre_rule", entail_P, pt)
 
+def vcg_norm(thy, goal):
+    pt = vcg(thy, goal)
+    cv = every_conv(rewr_conv("Entail_def"), top_conv(beta_conv()),
+                    top_conv(function.fun_upd_eval_conv()))
+    for A in reversed(pt.th.assums):
+        pt = ProofTerm.implies_intr(A, pt)
+    pt = assums_conv(cv).apply_to_pt(thy, pt)
+    return pt
 
 global_macros.update({
     "eval_Sem": eval_Sem_macro(),
