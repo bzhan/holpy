@@ -2,11 +2,21 @@
 
 Implementation of higher-order logic in Python.
 
-This project is developed under Python 3.
+### Installation and usage:
 
-Required packages: see requirements.txt.
+This project requires Python 3.
 
-Directory structure:
+Required packages are listed in requirements.txt. To install required packages, use:
+
+```python -m pip install -r requirements.txt```
+
+Unit tests for the backend are all located in files of the form ```*/tests/*_test.py```.
+
+To start the frontend, use:
+
+```python app.py```
+
+### Directory structure:
 
 * [`kernel`](kernel/): kernel for higher-order logic.
   * [`type`](kernel/type.py): datatype for HOL types.

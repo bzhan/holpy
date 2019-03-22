@@ -7,7 +7,7 @@ from logic import nat
 from logic import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
-    every_conv, rewr_conv
+    every_conv, rewr_conv, assums_conv
 from logic.proofterm import ProofTerm, ProofTermMacro
 from logic.logic_macro import init_theorem, apply_theorem
 
@@ -38,6 +38,9 @@ def Sem(T):
 def Valid(T):
     return Const("Valid", TFun(TFun(T, hol_bool), comT(T), TFun(T, hol_bool), hol_bool))
 
+def Entail(T):
+    return Const("Entail", TFun(TFun(T, hol_bool), TFun(T, hol_bool), hol_bool))
+
 # Normalize evaluation of function as well as arithmetic.
 norm_cv = then_conv(top_conv(function.fun_upd_eval_conv()), nat.norm_full())
 
@@ -53,7 +56,6 @@ class eval_Sem_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.has_theory = True
         self.use_goal = True
 
     def eval_Sem(self, thy, com, st):
@@ -80,14 +82,14 @@ class eval_Sem_macro(ProofTermMacro):
             b_st = top_conv(beta_conv())(thy, b(st)).concl.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
             if b_eval.th.concl.arg == logic.true:
-                b_res = rewr_conv("eq_True", sym=True).apply_to_pt(thy, b_eval)
+                b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
                 pt1 = self.eval_Sem(thy, c1, st)
                 st2 = pt1.th.concl.arg
                 pt = init_theorem(thy, "Sem_if1", tyinst={"a": T},
                                   inst={"b": b, "c1": c1, "c2": c2, "s": st, "s2": st2})
                 return ProofTerm.implies_elim(pt, b_res, pt1)
             else:
-                b_res = rewr_conv("eq_False", sym=True).apply_to_pt(thy, b_eval)
+                b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
                 pt2 = self.eval_Sem(thy, c2, st)
                 st2 = pt2.th.concl.arg
                 pt = init_theorem(thy, "Sem_if2", tyinst={"a": T},
@@ -98,7 +100,7 @@ class eval_Sem_macro(ProofTermMacro):
             b_st = top_conv(beta_conv())(thy, b(st)).concl.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
             if b_eval.th.concl.arg == logic.true:
-                b_res = rewr_conv("eq_True", sym=True).apply_to_pt(thy, b_eval)
+                b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
                 pt1 = self.eval_Sem(thy, c, st)
                 st3 = pt1.th.concl.arg
                 pt2 = self.eval_Sem(thy, com, st3)
@@ -108,14 +110,14 @@ class eval_Sem_macro(ProofTermMacro):
                 pt = ProofTerm.implies_elim(pt, b_res, pt1, pt2)
                 return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
             else:
-                b_res = rewr_conv("eq_False", sym=True).apply_to_pt(thy, b_eval)
+                b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
                 pt = init_theorem(thy, "Sem_while_skip", tyinst={"a": T},
                                   inst={"b": b, "c": c, "I": inv, "s": st})
                 return ProofTerm.implies_elim(pt, b_res)
         else:
             raise NotImplementedError
 
-    def get_proof_term(self, thy, args, *pts):
+    def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "eval_Sem_macro"
         f, args = args.strip_comb()
         com, st, st2 = args
@@ -149,9 +151,35 @@ def compute_wp(thy, c, Q):
         Q1 = wp1.th.concl.strip_comb()[1][0]
         wp2 = compute_wp(thy, c1, Q1)
         return apply_theorem(thy, "seq_rule", wp2, wp1)
+    elif f.is_const_with_name("While"):
+        b, I, c = args
+        pt = init_theorem(thy, "while_rule", tyinst={"a": T}, inst={"I": I, "b": b, "c": c, "Q": Q})
+        As, C = pt.th.concl.strip_implies()
+        pt0 = ProofTerm.assume(As[0])
+        pt1 = vcg(thy, As[1])
+        return ProofTerm.implies_elim(pt, pt0, pt1)
     else:
         raise NotImplementedError
 
+def vcg(thy, goal):
+    """Compute the verification conditions for the goal."""
+    f, args = goal.strip_comb()
+    P, c, Q = args
+    T = Q.get_type().domain_type()
+
+    pt = compute_wp(thy, c, Q)
+    P2 = pt.th.concl.strip_comb()[1][0]
+    entail_P = ProofTerm.assume(Entail(T)(P, P2))
+    return apply_theorem(thy, "pre_rule", entail_P, pt)
+
+def vcg_norm(thy, goal):
+    pt = vcg(thy, goal)
+    cv = every_conv(rewr_conv("Entail_def"), top_conv(beta_conv()),
+                    top_conv(function.fun_upd_eval_conv()))
+    for A in reversed(pt.th.assums):
+        pt = ProofTerm.implies_intr(A, pt)
+    pt = assums_conv(cv).apply_to_pt(thy, pt)
+    return pt
 
 global_macros.update({
     "eval_Sem": eval_Sem_macro(),

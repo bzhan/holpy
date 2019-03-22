@@ -174,7 +174,7 @@ class NatTest(unittest.TestCase):
         ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
         for expr in test_data:
             goal = parser.parse_term(thy, ctxt, expr)
-            prf = macro.expand((), thy, goal)
+            prf = macro.expand((), thy, goal, [])
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testNatIneqMacro(self):
@@ -190,7 +190,7 @@ class NatTest(unittest.TestCase):
         macro = nat.nat_const_ineq_macro()
         for m, n in test_data:
             goal = logic.neg(Term.mk_equals(nat.to_binary(m), nat.to_binary(n)))
-            prf = macro.get_proof_term(thy, goal).export()
+            prf = macro.get_proof_term(thy, goal, []).export()
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testNatEqConv(self):

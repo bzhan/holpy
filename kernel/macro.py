@@ -38,22 +38,21 @@ class ProofMacro():
     def __init__(self):
         self.level = None
         self.sig = None
-        self.has_theory = None
         self.use_goal = None
 
-    def __call__(self):
+    def __call__(self, thy, args, prevs):
         """Obtain the result of applying the proof method.
         
-        Input is the argument of the proof method, followed by the list
-        of previous theorems.
+        Input is the current theory, argument of the proof method, and
+        the list of previous theorems.
 
         """
         raise NotImplementedError()
 
-    def expand(self):
+    def expand(self, prefix, thy, args, prevs):
         """Obtain the detailed proof of the derivation.
         
-        Input is the current id prefix, optionally the current theory,
+        Input is the current id prefix, the current theory,
         argument of the proof method, and the list of ids and statements
         of previous theorems.
 

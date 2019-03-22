@@ -316,18 +316,12 @@ class Theory():
                 except ProofException:
                     raise CheckProofException("previous item not found")
 
-            # Next, obtain list of arguments to pass in:
-            if seq.args is not None:
-                args = [seq.args]
-            else:
-                args = []
-
             if seq.rule in primitive_deriv:
                 # If the method is one of the primitive derivations, obtain and
                 # apply that primitive derivation.
                 rule_fun, _ = primitive_deriv[seq.rule]
                 try:
-                    res_th = rule_fun(*(args + prev_ths))
+                    res_th = rule_fun(*prev_ths) if seq.args is None else rule_fun(seq.args, *prev_ths)
                     if rpt is not None:
                         rpt.apply_primitive_deriv()
                 except InvalidDerivationException:
@@ -341,15 +335,14 @@ class Theory():
                 # trust level, simply evaluate the macro to check that results
                 # match. Otherwise, expand the macro and check all of the steps.
                 macro = self.get_proof_macro(seq.rule)
-                args = [self] + args if macro.has_theory else args
                 assert isinstance(macro.level, int) and macro.level >= 0, \
                     ("check_proof: invalid macro level " + str(macro.level))
                 if macro.level <= check_level:
-                    res_th = macro(*(args + prev_ths))
+                    res_th = macro(self, seq.args, prev_ths)
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
                 else:
-                    seq.subproof = macro.expand(seq.id, *(args + list(zip(seq.prevs, prev_ths))))
+                    seq.subproof = macro.expand(seq.id, self, seq.args, list(zip(seq.prevs, prev_ths)))
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
                     for s in seq.subproof.items:
