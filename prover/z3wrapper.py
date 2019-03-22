@@ -1,9 +1,17 @@
 # Author: Bohua Zhan
 
-import z3
+import importlib
+
+if importlib.util.find_spec("z3"):
+    import z3
+    z3_loaded = True
+else:
+    z3_loaded = False
 
 from kernel.type import TFun
 from kernel.term import Term
+from kernel.thm import Thm
+from kernel.macro import MacroSig, ProofMacro, global_macros
 from logic import logic
 from logic import nat
 from syntax import printer
@@ -47,3 +55,26 @@ def solve(t):
     s = z3.Solver()
     s.add(z3.Not(convert(t)))
     return str(s.check()) == 'unsat'
+
+class Z3Macro(ProofMacro):
+    """Macro invoking SMT solver Z3."""
+    def __init__(self):
+        self.level = 0
+        self.sig = MacroSig.TERM
+        self.use_goal = True
+
+    def __call__(self, thy, args, prevs):
+        if z3_loaded:
+            assert solve(args), "Z3: not solved."
+        else:
+            print("Warning: Z3 is not installed")
+
+        return Thm([], args)
+
+    def expand(self, prefix, thy, args, prevs):
+        raise NotImplementedError
+
+
+global_macros.update({
+    "z3": Z3Macro(),
+})
