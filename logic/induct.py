@@ -5,6 +5,7 @@ import itertools
 from kernel.type import TVar, TFun, hol_bool, Type
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
+
 from kernel.extension import AxType, AxConstant, Theorem, Attribute, TheoryExtension
 from logic import logic
 

@@ -14,7 +14,7 @@ from kernel import extension
 from syntax import parser, printer
 from server.tactic import ProofState
 from logic import basic
-
+from logic import induct
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
@@ -154,6 +154,9 @@ def file_data_to_output(thy, data):
 
     """
     # 如何实现induct函数，在对应的类型里调用参数，如test里的实例一样使用；
+    # parser.induct.add_induct_type(      )
+    # data = printer.print_term(thy, prop, unicode=True, highlight=True)
+
     parser.parse_extension(thy, data)
     if data['ty'] == 'def.ax':
         T = parser.parse_type(thy, data['type'])
@@ -166,6 +169,14 @@ def file_data_to_output(thy, data):
 
     elif data['ty'] == 'type.ind':
         type_dic = dict()
+        name = data['name']
+        args = data['args']
+        cons = data['constrs']
+        temp = []
+        ext_data = induct.add_induct_type(name, args, cons)
+        for i in ext_data:
+            j=parser.parse_extension(i)
+            temp.append(printer.print_type(j))
         for i, constr in enumerate(data['constrs']):
             type_list = []
             T = parser.parse_type(thy, constr['type'])
@@ -175,6 +186,7 @@ def file_data_to_output(thy, data):
             type_dic[str(i)] = type_list
             type_dic['concl'] = printer.print_type(thy, res, unicode=True, highlight=True)
         data['argsT'] = type_dic
+
 
     elif data['ty'] == 'def.ind':
         T = parser.parse_type(thy, data['type'])
@@ -195,9 +207,6 @@ def json_parse():
     with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     thy = basic.loadImportedTheory(f_data)
-    # j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
-    # json.dump(f_data, j, ensure_ascii=False, indent=4, sort_keys=True)
-    # j.close()
     for data in f_data['content']:
         file_data_to_output(thy, data)
 
