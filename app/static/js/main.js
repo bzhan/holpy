@@ -228,6 +228,7 @@
             result_list[id]['num_gaps'] = cells[editor_id]['num_gaps'];
             result_list_dict[file_name] = result_list;
             display_result_list();
+            save_json_file();
         });
 
         function result_to_output(data) {
@@ -260,7 +261,6 @@
                     'data': copy_res
                 }),
                 success: function () {
-                    alert('save success!');
                 }
             })
         }
@@ -287,7 +287,6 @@
                 type: "POST",
                 data: JSON.stringify(data),
                 success: function () {
-                    alert('save success');
                 }
             });
         }
@@ -299,7 +298,7 @@
             if (file_name) {
                 theorem_proof(result_list_dict[file_name][id], file_name);
             }
-        })
+        });
 
 //      click the tab to show;
         $('#codeTab').on("click", "a", function (e) {
@@ -395,6 +394,7 @@
             var number = Number(a_id.slice(5,))-1;
             result_list.splice(number, 1);
             display_result_list();
+            save_editor_data();
         });
 
 //      the method for add_info && edit_info;
@@ -576,22 +576,21 @@
                 success: function (res) {
                     var result_data = res['data'];
                     var data_name = result_data['name'];
-                    var error = res['error'], flag = true;
+                    var error = res['error'];
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
                     if (error && error !== {}) {
                         var error_info = error['detail-content'];
                         $('div#' + error_id).find('pre').text(error_info);
                     }
-                    if (!a_id) {
-                        result_list.push(result_data);
-                    }
-                    else {
+                    if(!a_id){
+                        result_list.push(result_data);}
+                    else{
                         for (var key in result_data) {
-                            result_list[number][key] = result_data[key];
-                        }
-                    }
+                                result_list[number][key] = result_data[key];
+                             }}
                     display_result_list();
+                    save_editor_data();
                 }
             });
         })
@@ -699,7 +698,7 @@
                 save_editor_data();
             } else {
                 save_json_file();
-            }
+              }
         });
 
 //      click to display json file;

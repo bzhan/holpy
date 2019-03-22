@@ -153,6 +153,7 @@ def file_data_to_output(thy, data):
     Also modifies thy in parsing the item.
 
     """
+    # 如何实现induct函数，在对应的类型里调用参数，如test里的实例一样使用；
     parser.parse_extension(thy, data)
     if data['ty'] == 'def.ax':
         T = parser.parse_type(thy, data['type'])

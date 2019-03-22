@@ -4,9 +4,9 @@ from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
 from kernel.macro import ProofMacro, MacroSig, global_macros
-from logic.conv import Conv, ConvException, all_conv, rewr_conv_thm, rewr_conv_thm_sym, \
+from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from logic.proofterm import ProofTerm, ProofTermMacro
+from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic_macro import apply_theorem, init_theorem
 from logic import logic
 from logic import term_ord
@@ -84,89 +84,80 @@ def from_binary(t):
 
 class Suc_conv(Conv):
     """Computes Suc of a binary number."""
-    def __call__(self, t):
+    def __call__(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg) + 1))
 
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         n = t.arg  # remove Suc
         if n == zero:
-            return all_conv().get_proof_term(t)
+            return all_conv().get_proof_term(thy, t)
         elif n == one:
-            return rewr_conv_thm(thy, "one_Suc").get_proof_term(t)
+            return rewr_conv("one_Suc").get_proof_term(thy, t)
         elif n.get_head() == bit0:
-            return rewr_conv_thm(thy, "bit0_Suc").get_proof_term(t)
+            return rewr_conv("bit0_Suc").get_proof_term(thy, t)
         else:
-            return then_conv(rewr_conv_thm(thy, "bit1_Suc"), arg_conv(Suc_conv())).get_proof_term(t)
+            return then_conv(rewr_conv("bit1_Suc"), arg_conv(Suc_conv())).get_proof_term(thy, t)
 
 class add_conv(Conv):
     """Computes the sum of two binary numbers."""
-    def __call__(self, t):
+    def __call__(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) + from_binary(t.arg)))
 
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            cv = rewr_conv_thm(thy, "plus_def_1")
+            cv = rewr_conv("plus_def_1")
         elif n2 == zero:
-            cv = rewr_conv_thm(thy, "add_0_right")
+            cv = rewr_conv("add_0_right")
         elif n1 == one:
-            cv = then_conv(rewr_conv_thm(thy, "add_1_left"), Suc_conv())
+            cv = then_conv(rewr_conv("add_1_left"), Suc_conv())
         elif n2 == one:
-            cv = then_conv(rewr_conv_thm(thy, "add_1_right"), Suc_conv())
+            cv = then_conv(rewr_conv("add_1_right"), Suc_conv())
         elif n1.get_head() == bit0 and n2.get_head() == bit0:
-            cv = then_conv(rewr_conv_thm(thy, "bit0_bit0_add"), arg_conv(add_conv()))
+            cv = then_conv(rewr_conv("bit0_bit0_add"), arg_conv(add_conv()))
         elif n1.get_head() == bit0 and n2.get_head() == bit1:
-            cv = then_conv(rewr_conv_thm(thy, "bit0_bit1_add"), arg_conv(add_conv()))
+            cv = then_conv(rewr_conv("bit0_bit1_add"), arg_conv(add_conv()))
         elif n1.get_head() == bit1 and n2.get_head() == bit0:
-            cv = then_conv(rewr_conv_thm(thy, "bit1_bit0_add"), arg_conv(add_conv()))
+            cv = then_conv(rewr_conv("bit1_bit0_add"), arg_conv(add_conv()))
         else:
-            cv = every_conv(rewr_conv_thm(thy, "bit1_bit1_add"),
+            cv = every_conv(rewr_conv("bit1_bit1_add"),
                 arg_conv(arg_conv(add_conv())),
                 arg_conv(Suc_conv()))
 
-        return cv.get_proof_term(t)
+        return cv.get_proof_term(thy, t)
 
 class mult_conv(Conv):
     """Computes the product of two binary numbers."""
-    def __call__(self, t):
+    def __call__(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) * from_binary(t.arg)))
 
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            cv = rewr_conv_thm(thy, "times_def_1")
+            cv = rewr_conv("times_def_1")
         elif n2 == zero:
-            cv = rewr_conv_thm(thy, "mult_0_right")
+            cv = rewr_conv("mult_0_right")
         elif n1 == one:
-            cv = rewr_conv_thm(thy, "mult_1_left")
+            cv = rewr_conv("mult_1_left")
         elif n2 == one:
-            cv = rewr_conv_thm(thy, "mult_1_right")
+            cv = rewr_conv("mult_1_right")
         elif n1.get_head() == bit0 and n2.get_head() == bit0:
-            cv = then_conv(rewr_conv_thm(thy, "bit0_bit0_mult"), arg_conv(arg_conv(mult_conv())))
+            cv = then_conv(rewr_conv("bit0_bit0_mult"), arg_conv(arg_conv(mult_conv())))
         elif n1.get_head() == bit0 and n2.get_head() == bit1:
-            cv = then_conv(rewr_conv_thm(thy, "bit0_bit1_mult"), arg_conv(mult_conv()))
+            cv = then_conv(rewr_conv("bit0_bit1_mult"), arg_conv(mult_conv()))
         elif n1.get_head() == bit1 and n2.get_head() == bit0:
-            cv = then_conv(rewr_conv_thm(thy, "bit1_bit0_mult"), arg_conv(mult_conv()))
+            cv = then_conv(rewr_conv("bit1_bit0_mult"), arg_conv(mult_conv()))
         else:
-            cv = every_conv(rewr_conv_thm(thy, "bit1_bit1_mult"),
+            cv = every_conv(rewr_conv("bit1_bit1_mult"),
                 arg_conv(arg1_conv(add_conv())),
                 arg_conv(arg_conv(arg_conv(mult_conv()))),
                 arg_conv(add_conv()))
 
-        return cv.get_proof_term(t)
+        return cv.get_proof_term(thy, t)
 
 class nat_conv(Conv):
     """Simplify all arithmetic operations."""
-    def __call__(self, t):
+    def __call__(self, thy, t):
         def val(t):
             """Evaluate the given term."""
             if is_binary(t):
@@ -184,7 +175,7 @@ class nat_conv(Conv):
 
         return Thm.mk_equals(t, to_binary(val(t)))
 
-    def get_proof_term(self, t):
+    def get_proof_term(self, thy, t):
         if is_binary(t):
             cv = all_conv()
         else:
@@ -198,25 +189,22 @@ class nat_conv(Conv):
             else:
                 raise ConvException()
         
-        return cv.get_proof_term(t)
+        return cv.get_proof_term(thy, t)
 
 class swap_times_r(Conv):
     """Rewrite (a * b) * c to (a * c) * b, or if the left argument
     is an atom, rewrite a * b to b * a.
 
     """
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if is_times(t.arg1):
             return every_conv(
-                rewr_conv_thm(thy, "mult_assoc"),
-                arg_conv(rewr_conv_thm(thy, "mult_comm")),
-                rewr_conv_thm_sym(thy, "mult_assoc")
-            ).get_proof_term(t)
+                rewr_conv("mult_assoc"),
+                arg_conv(rewr_conv("mult_comm")),
+                rewr_conv("mult_assoc", sym=True)
+            ).get_proof_term(thy, t)
         else:
-            return rewr_conv_thm(thy, "mult_comm").get_proof_term(t)
+            return rewr_conv("mult_comm").get_proof_term(thy, t)
 
 def compare_atom(t1, t2):
     """Compare two atoms, placing numbers last."""
@@ -231,18 +219,15 @@ def compare_atom(t1, t2):
 
 class norm_mult_atom(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * a."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv_thm(thy, "times_def_1")
+            cv = rewr_conv("times_def_1")
         elif t.arg == zero:
-            cv = rewr_conv_thm(thy, "mult_0_right")
+            cv = rewr_conv("mult_0_right")
         elif t.arg1 == one:
-            cv = rewr_conv_thm(thy, "mult_1_left")
+            cv = rewr_conv("mult_1_left")
         elif t.arg == one:
-            cv = rewr_conv_thm(thy, "mult_1_right")
+            cv = rewr_conv("mult_1_right")
         elif is_times(t.arg1):
             cmp = compare_atom(t.arg1.arg, t.arg)
             if cmp == term_ord.GREATER:
@@ -253,7 +238,7 @@ class norm_mult_atom(Conv):
             elif cmp == term_ord.EQUAL:
                 if is_binary(t.arg):
                     cv = then_conv(
-                        rewr_conv_thm(thy, "mult_assoc"),
+                        rewr_conv("mult_assoc"),
                         arg_conv(nat_conv())
                     )
                 else:
@@ -263,7 +248,7 @@ class norm_mult_atom(Conv):
         else:
             cmp = compare_atom(t.arg1, t.arg)
             if cmp == term_ord.GREATER:
-                cv = rewr_conv_thm(thy, "mult_comm")
+                cv = rewr_conv("mult_comm")
             elif cmp == term_ord.EQUAL:
                 if is_binary(t.arg):
                     cv = nat_conv()
@@ -272,40 +257,34 @@ class norm_mult_atom(Conv):
             else:
                 cv = all_conv()
 
-        return cv.get_proof_term(t)
+        return cv.get_proof_term(thy, t)
 
 class norm_mult_monomial(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * (b_1 * ... * b_n)."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if is_times(t.arg):
             return every_conv(
-                rewr_conv_thm_sym(thy, "mult_assoc"),
+                rewr_conv("mult_assoc", sym=True),
                 arg1_conv(norm_mult_monomial()),
                 norm_mult_atom()
-            ).get_proof_term(t)
+            ).get_proof_term(thy, t)
         else:
-            return norm_mult_atom().get_proof_term(t)
+            return norm_mult_atom().get_proof_term(thy, t)
 
 class swap_add_r(Conv):
     """Rewrite (a + b) + c to (a + c) + b, or if the left argument
     is an atom, rewrite a + b to b + a.
 
     """
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if is_plus(t.arg1):
             return every_conv(
-                rewr_conv_thm(thy, "add_assoc"),
-                arg_conv(rewr_conv_thm(thy, "add_comm")),
-                rewr_conv_thm_sym(thy, "add_assoc")
-            ).get_proof_term(t)
+                rewr_conv("add_assoc"),
+                arg_conv(rewr_conv("add_comm")),
+                rewr_conv("add_assoc", sym=True)
+            ).get_proof_term(thy, t)
         else:
-            return rewr_conv_thm(thy, "add_comm").get_proof_term(t)
+            return rewr_conv("add_comm").get_proof_term(thy, t)
 
 def dest_monomial(t):
     """Remove coefficient part of a monomial t."""
@@ -322,131 +301,107 @@ def compare_monomial(t1, t2):
 
 class to_coeff_form(Conv):
     """Convert a to a * 1, n to 1 * n, and leave a * n unchanged."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if is_times(t) and is_binary(t.arg):
-            return all_conv().get_proof_term(t)
+            return all_conv().get_proof_term(thy, t)
         elif is_binary(t):
-            return rewr_conv_thm_sym(thy, "mult_1_left").get_proof_term(t)
+            return rewr_conv("mult_1_left", sym=True).get_proof_term(thy, t)
         else:
-            return rewr_conv_thm_sym(thy, "mult_1_right").get_proof_term(t)
+            return rewr_conv("mult_1_right", sym=True).get_proof_term(thy, t)
 
 class from_coeff_form(Conv):
     """Convert a * 1 to a, 1 * n to n, and leave a * n unchanged."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if t.arg == one:
-            return rewr_conv_thm(thy, "mult_1_right").get_proof_term(t)
+            return rewr_conv("mult_1_right").get_proof_term(thy, t)
         elif t.arg1 == one:
-            return rewr_conv_thm(thy, "mult_1_left").get_proof_term(t)
+            return rewr_conv("mult_1_left").get_proof_term(thy, t)
         else:
-            return all_conv().get_proof_term(t)
+            return all_conv().get_proof_term(thy, t)
 
-def combine_monomial():
+def combine_monomial(thy):
     """Combine two monomials with the same body."""
-    from logic import basic
-    thy = basic.loadTheory('nat')
-
     return every_conv(
         binop_conv(to_coeff_form()),
-        rewr_conv_thm_sym(thy, "distrib_l"),
+        rewr_conv("distrib_l", sym=True),
         arg_conv(nat_conv()),
         from_coeff_form()
     )
 
 class norm_add_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv_thm(thy, "plus_def_1")
+            cv = rewr_conv("plus_def_1")
         elif t.arg == zero:
-            cv = rewr_conv_thm(thy, "add_0_right")
+            cv = rewr_conv("add_0_right")
         elif is_plus(t.arg1):
             cmp = compare_monomial(t.arg1.arg, t.arg)
             if cmp == term_ord.GREATER:
                 cv = then_conv(swap_add_r(), arg1_conv(norm_add_monomial()))
             elif cmp == term_ord.EQUAL:
                 cv = then_conv(
-                    rewr_conv_thm(thy, "add_assoc"),
-                    arg_conv(combine_monomial())
+                    rewr_conv("add_assoc"),
+                    arg_conv(combine_monomial(thy))
                 )
             else:
                 cv = all_conv()
         else:
             cmp = compare_monomial(t.arg1, t.arg)
             if cmp == term_ord.GREATER:
-                cv = rewr_conv_thm(thy, "add_comm")
+                cv = rewr_conv("add_comm")
             elif cmp == term_ord.EQUAL:
-                cv = combine_monomial()
+                cv = combine_monomial(thy)
             else:
                 cv = all_conv()
 
-        return cv.get_proof_term(t)
+        return cv.get_proof_term(thy, t)
 
 class norm_add_polynomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + (b_1 + ... + b_n)."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if is_plus(t.arg):
             return every_conv(
-                rewr_conv_thm_sym(thy, "add_assoc"),
+                rewr_conv("add_assoc", sym=True),
                 arg1_conv(norm_add_polynomial()),
                 norm_add_monomial()
-            ).get_proof_term(t)
+            ).get_proof_term(thy, t)
         else:
-            return norm_add_monomial().get_proof_term(t)
+            return norm_add_monomial().get_proof_term(thy, t)
 
 class norm_mult_poly_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) * b."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if is_plus(t.arg1):
             return every_conv(
-                rewr_conv_thm(thy, "distrib_r"),
+                rewr_conv("distrib_r"),
                 arg1_conv(norm_mult_poly_monomial()),
                 arg_conv(norm_mult_monomial()),
                 norm_add_polynomial()
-            ).get_proof_term(t)
+            ).get_proof_term(thy, t)
         else:
-            return norm_mult_monomial().get_proof_term(t)
+            return norm_mult_monomial().get_proof_term(thy, t)
 
 class norm_mult_polynomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) * (b_1 + ... + b_n)."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if is_plus(t.arg):
             return every_conv(
-                rewr_conv_thm(thy, "distrib_l"),
+                rewr_conv("distrib_l"),
                 arg1_conv(norm_mult_polynomial()),
                 arg_conv(norm_mult_poly_monomial()),
                 norm_add_polynomial()
-            ).get_proof_term(t)
+            ).get_proof_term(thy, t)
         else:
-            return norm_mult_poly_monomial().get_proof_term(t)
+            return norm_mult_poly_monomial().get_proof_term(thy, t)
 
 class norm_full(Conv):
     """Normalize expressions on natural numbers involving plus and times."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('nat')
-
+    def get_proof_term(self, thy, t):
         if is_binary(t):
             cv = all_conv()
         elif is_Suc(t):
-            cv = then_conv(rewr_conv_thm_sym(thy, "add_1_right"), norm_full())
+            cv = then_conv(rewr_conv("add_1_right", sym=True), norm_full())
         elif is_plus(t):
             cv = then_conv(binop_conv(norm_full()), norm_add_polynomial())
         elif is_times(t):
@@ -454,7 +409,7 @@ class norm_full(Conv):
         else:
             cv = all_conv()
 
-        return cv.get_proof_term(t)
+        return cv.get_proof_term(thy, t)
 
 
 class nat_norm_macro(ProofTermMacro):
@@ -463,19 +418,19 @@ class nat_norm_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.has_theory = False
+        self.has_theory = True
         self.use_goal = True
 
-    def __call__(self, args):
+    def __call__(self, thy, args):
         # Simply produce the goal.
         return Thm([], args)
 
-    def get_proof_term(self, args):
+    def get_proof_term(self, thy, args):
         assert args.is_equals(), "nat_norm_macro: goal is not an equality."
 
         t1, t2 = args.arg1, args.arg
-        pt1 = norm_full().get_proof_term(t1)
-        pt2 = norm_full().get_proof_term(t2)
+        pt1 = norm_full().get_proof_term(thy, t1)
+        pt2 = norm_full().get_proof_term(thy, t2)
         assert pt1.th.concl.arg == pt2.th.concl.arg, "nat_norm_macro: normalization is not equal."
 
         return ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
@@ -544,6 +499,27 @@ class nat_const_ineq_macro(ProofTermMacro):
         assert from_binary(m) != from_binary(n), "nat_ineq_macro: m and n are equal."
 
         return ineq_proof_term(thy, from_binary(m), from_binary(n))
+
+def nat_const_ineq(thy, a, b):
+    macro = nat_const_ineq_macro()
+    goal = logic.neg(Term.mk_equals(a, b))
+    return ProofTermDeriv(macro(thy, goal), "nat_const_ineq", goal, [])
+
+
+class nat_eq_conv(Conv):
+    """Simplify equality a = b to either True or False."""
+    def get_proof_term(self, thy, t):
+        if not t.is_equals():
+            return ProofTerm.reflexive(t)
+
+        a, b = t.arg1, t.arg
+        if not (is_binary(a) and is_binary(b)):
+            return ProofTerm.reflexive(t)
+
+        if a == b:
+            return rewr_conv("eq_True").apply_to_pt(thy, ProofTerm.reflexive(a))
+        else:
+            return rewr_conv("eq_False").apply_to_pt(thy, nat_const_ineq(thy, a, b))
 
 
 global_macros.update({

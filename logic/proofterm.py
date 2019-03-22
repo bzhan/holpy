@@ -59,8 +59,12 @@ class ProofTerm():
         return ProofTermDeriv(Thm.implies_intr(A, pt.th), "implies_intr", A, [pt])
 
     @staticmethod
-    def implies_elim(pt1, pt2):
-        return ProofTermDeriv(Thm.implies_elim(pt1.th, pt2.th), "implies_elim", None, [pt1, pt2])
+    def implies_elim(pt1, *pts):
+        if len(pts) == 0:
+            return pt1
+        else:
+            pt2 = ProofTermDeriv(Thm.implies_elim(pt1.th, pts[0].th), "implies_elim", None, [pt1, pts[0]])
+            return ProofTerm.implies_elim(pt2, *pts[1:])
 
     @staticmethod
     def subst_type(tyinst, pt):
