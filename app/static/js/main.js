@@ -105,16 +105,20 @@
             }
         });
 
-        $('#add-json').click(init_metadata_area);
-
-        function init_metadata_area() {
+        $('#add-json').click(function() {
+            var number = $('#codeTab').children().length;
+            add_page += number;
             add_page ++;
+            init_metadata_area(add_page);
+        });
+
+        function init_metadata_area(add_page) {
             var id = 'code' + add_page + '-pan';
             $('#codeTab').append(
                 $('<li class="nav-item" name="code' + add_page + '"><a class="nav-link" ' +
                     'data-toggle="tab"' +
                     'href="#code' + add_page + '-pan" name="'+ add_page +'">' +
-                    '<span> ' + '新文件'+
+                    '<span> ' + '文件'+
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="proof-tab">×</button>' +
                     '</a></li>'));
@@ -155,15 +159,15 @@
                 type: 'PUT',
                 data: JSON.stringify(data),
                 success: function(res) {
-                    alert('创建成功!');
+                    alert('保存成功!');
                 }
             })
         })
 
 //      tab on the left;
         $('#json-tab1,#json-tab2').click(function() {
-            $(this).css({'background':'yellow','text-align':'center','border-bottom':'none'});
-            $(this).siblings('li').css({'background':'#f8f8f8','text-align':'center','border-bottom':'solid 2px'});
+            $(this).css({'background':'#FAFAD2','text-align':'center','border-bottom':'none'});
+            $(this).siblings('li').css({'background':'#f8f8f8','text-align':'center','border-bottom':'solid 1px'});
         })
 
         $('#json-tab1').click(function() {
@@ -177,23 +181,32 @@
         })
 
         $('div#root-file').on('click', 'a[name="edit"]', function() {
-            var number = Number($(this).attr('id').trim())-1;
+            var number = Number($(this).attr('id').slice(4,).trim())-1;
             data = JSON.stringify(file_list[number]);
+            init_metadata_area(number);
             $.ajax({
                 url: '/api/edit_jsonFile',
                 data: data,
                 type: 'POST',
                 success: function(res) {
-
-
+                    var name = res['name'];
+                    var des = res['description'];
+                    var imports = res['imports'].join(',');
+                    $('input#fname'+number).val(name);
+                    $('input#imp'+number).val(imports);
+                    $('textarea#code'+number).val(des);
                 }
             })
         })
 
-//        $('div#root-file').on('click', 'a[name="delete"]', function() {
-//
-//        })
-
+        $('div#root-file').on('click', 'a[name="delete"]', function() {
+            var number = Number($(this).attr('id').trim())-1;
+            var json_name = $(this).attr('class');
+            file_list.splice(number,1);
+            $('div#root-file').html('');
+            display_file_list();
+            save_file_list(json_name);
+        })
 
         // Save a single proof to the webpage (not to the json file);
         $('div.rbottom').on('click', 'button.save', function () {
@@ -570,8 +583,6 @@
                         var error_info = error['detail-content'];
                         $('div#' + error_id).find('pre').text(error_info);
                     }
-//                    $.each(result_list, function (j, k) {
-//                        if (k['name'] === data_name) {
                     if (!a_id) {
                         result_list.push(result_data);
                     }
@@ -580,8 +591,6 @@
                             result_list[number][key] = result_data[key];
                         }
                     }
-//                    });
-
                     display_result_list();
                 }
             });
@@ -738,13 +747,28 @@
             success: function (r) {
                 $('#json-tab1').click();
                 file_list = r['theories'];
-                $.each(r['theories'], function (i, val) {
-                    num_root++;
-                    $('#root-file').append($('<a href="#"  ' + 'id="' + num_root + '" name="file"><font color="#006000"><b>' + val + '</b></font></a><a href="#" style="margin-left:20px;" name="edit" id="'+ num_root +'">edit</a><a href="#" style="margin-left:10px;" name="delete" id="'+ num_root +'">delete</a></br></br>'));
-                });
+                display_file_list();
             }
         });
     });
+
+    function display_file_list() {
+        $.each(file_list, function(i, val) {
+           num_root++;
+           $('#root-file').append($('<a href="#"  ' + 'id="file' + num_root + '" name="file"><font color="#006000"><b>' + val + '</b></font></a><a href="#" style="margin-left:20px;" name="edit" id="edit'+ num_root +'">edit</a><a href="#" style="margin-left:10px;" name="delete" id="'+ num_root +'" class="'+ val +'">delete</a></br></br>'));
+        });
+    }
+
+    function save_file_list(file_name) {
+        $.ajax({
+            url: '/api/save_file_list',
+            data: JSON.stringify(file_name),
+            type: 'PUT',
+            success: function(res) {
+                alert('删除成功！');
+            }
+        })
+    }
 
     function rp(x) {
         if (x === 0)

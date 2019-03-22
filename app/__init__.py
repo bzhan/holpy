@@ -22,7 +22,6 @@ app.config.from_object('config')
 
 # Dictionary from id to ProofState
 cells = dict()
-global file_list
 
 
 @app.route('/')
@@ -287,7 +286,14 @@ def add_new():
     data = json.loads(request.get_data().decode("utf-8"))
     name = data['name']
     if name in file_list:
-
+        with open('library/'+name +'.json', 'r', encoding='utf-8') as f:
+            file_data = json.load(f)
+            for key in data.keys():
+                file_data[key] = data[key]
+            f.close()
+        with open('library/'+name +'.json', 'w', encoding='utf-8') as f:
+            json.dump(file_data, f, ensure_ascii=False, indent=4)
+    else:
         with open('library/' +name +'.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
             f.close()
@@ -298,6 +304,7 @@ def add_new():
 #locate the files in the library;
 @app.route('/api/find_files', methods=['GET'])
 def find_files():
+    global file_list
     fileDir = os.path.abspath('..') + '/holpy/library'
     for i in os.walk(fileDir):
         files = [x[:-5] for x in i[2]]
@@ -309,14 +316,25 @@ def find_files():
 
 
 #get the metadata of the json-file;
-@app.route('/api/edit_jsonFile')
+@app.route('/api/edit_jsonFile', methods=['POST'])
 def edit_jsonFile():
     content = {}
     name = json.loads(request.get_data().decode('utf-8'))
     with open('library/'+ name+ '.json', 'r', encoding='utf-8') as f:
         file_data = json.load(f)
     content['description'] = file_data['description']
-    content['imports'] = file_data['import']
+    content['imports'] = file_data['imports']
     content['name'] = name
 
-    return jsonify({'content': content})
+    return jsonify(content)
+
+
+#save the file_list
+@app.route('/api/save_file_list', methods=['PUT'])
+def save_file_list():
+    file_name = json.loads(request.get_data().decode('utf-8'))
+    fileDir = os.path.abspath('..') + '/holpy/library/' +file_name + '.json'
+    os.remove(fileDir)
+
+    return jsonify({})
+
