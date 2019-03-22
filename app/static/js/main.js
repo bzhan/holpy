@@ -149,6 +149,8 @@
             var fname = $('#fname'+ pnum).val().trim();
             var imp = $('#imp'+ pnum).val().split(',');
             var des = $('#code'+ pnum).val().trim();
+            file_list.push(fname);
+            file_list.sort();
             data = {
                 'name': fname,
                 'imports': imp,
@@ -160,6 +162,8 @@
                 data: JSON.stringify(data),
                 success: function(res) {
                     alert('保存成功!');
+                    $('div#root-file').html('');
+                    display_file_list();
                 }
             })
         })
@@ -752,9 +756,10 @@
     });
 
     function display_file_list() {
+        var num_a = 0;
         $.each(file_list, function(i, val) {
-           num_root++;
-           $('#root-file').append($('<a href="#"  ' + 'id="file' + num_root + '" name="file"><font color="#006000"><b>' + val + '</b></font></a><a href="#" style="margin-left:20px;" name="edit" id="edit'+ num_root +'">edit</a><a href="#" style="margin-left:10px;" name="delete" id="'+ num_root +'" class="'+ val +'">delete</a></br></br>'));
+           num_a++;
+           $('#root-file').append($('<a href="#"  ' + 'id="file' + num_a + '" name="file"><font color="#006000"><b>' + val + '</b></font></a><a href="#" style="margin-left:20px;" name="edit" id="edit'+ num_a +'">edit</a><a href="#" style="margin-left:10px;" name="delete" id="'+ num_a +'" class="'+ val +'">delete</a></br></br>'));
         });
     }
 
@@ -915,9 +920,13 @@
             type: "POST",
             data: data,
             success: function (result) {
+                var error = result['error'];
                 theory_name = result['data']['name'];
                 theory_imports = result['data']['imports'];
                 theory_desc = result['data']['description'];
+//                if (error) {
+//                    $('div[name="tab-title"]').append('<p>'+error+'</p>')
+//                }
                 if (theory_name in result_list_dict) {
                     result_list = result_list_dict[theory_name];
                 }

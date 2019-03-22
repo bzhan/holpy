@@ -192,16 +192,17 @@ def file_data_to_output(thy, data):
 @app.route('/api/json', methods=['POST'])
 def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
-    with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
-        f_data = json.load(f)
-    thy = basic.loadImportedTheory(f_data)
-    # j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
-    # json.dump(f_data, j, ensure_ascii=False, indent=4, sort_keys=True)
-    # j.close()
-    for data in f_data['content']:
-        file_data_to_output(thy, data)
-
-    return jsonify({'data': f_data})
+    error = ''
+    try:
+        with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
+            f_data = json.load(f)
+        thy = basic.loadImportedTheory(f_data)
+        for data in f_data['content']:
+            file_data_to_output(thy, data)
+    except Exception as e:
+        error = str(e)
+        return jsonify({'data': f_data, 'error': error})
+    return jsonify({'data': f_data, 'error': error})
 
 
 # add-button to add data-info;
@@ -280,6 +281,7 @@ def save_edit():
     j.close()
 
     return jsonify({})
+
 
 # create new json file;
 @app.route('/api/add-new', methods=['PUT'])
