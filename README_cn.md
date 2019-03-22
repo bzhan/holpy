@@ -2,13 +2,19 @@
 
 用Python实现高阶逻辑。
 
-这个项目使用Python 3。
+### 安装与使用
 
-需要的包：
+本项目需要Python 3。安装本项目依赖的包裹，使用：
 
-Lark解析器：https://github.com/lark-parser/lark
+```python -m pip install -r requirements.txt```
 
-文件夹结构：
+所有后端的单元测试在```*/tests/*_test.py```文件里.
+
+启动项目网页，使用
+
+```python app.py```
+
+### 文件夹结构：
 
 * [`kernel`](kernel/)：高阶逻辑内核。
   * [`type`](kernel/type.py)：代表HOL类型的数据类型。
