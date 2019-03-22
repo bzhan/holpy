@@ -110,7 +110,7 @@ class fun_upd_norm_one_conv(Conv):
                         tyinst={"a": nat.natT, "b": nat.natT},
                         inst={"f": f2, "a": a2, "b": b2, "c": a, "d": b})
                     eq = ProofTerm.implies_elim(pt, nat.nat_const_ineq(thy, a, a2))
-                    eq2 = fun_conv(fun_conv(arg_conv(fun_upd_norm_one_conv()))).get_proof_term(thy, eq.th.concl.arg)
+                    eq2 = fun_conv(fun_conv(arg_conv(self))).get_proof_term(thy, eq.th.concl.arg)
                     return ProofTerm.transitive(eq, eq2)
                 elif nat.from_binary(a) == nat.from_binary(a2):
                     return rewr_conv("fun_upd_upd").get_proof_term(thy, t)
