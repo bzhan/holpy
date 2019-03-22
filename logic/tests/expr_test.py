@@ -29,7 +29,7 @@ class ExprTest(unittest.TestCase):
 
         for t, n in test_data:
             goal = expr.avalI(s, t, n)
-            prf = expr.prove_avalI_macro().get_proof_term(thy, goal).export()
+            prf = expr.prove_avalI_macro().get_proof_term(thy, goal, []).export()
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
 

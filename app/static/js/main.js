@@ -157,7 +157,6 @@
                     'data': copy_res
                 }),
                 success: function () {
-                    alert('save success!');
                 }
             })
         }
@@ -184,7 +183,6 @@
                 type: "POST",
                 data: JSON.stringify(data),
                 success: function () {
-                    alert('save success');
                 }
             });
         }

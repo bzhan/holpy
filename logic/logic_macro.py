@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.term import Term
-from kernel.macro import MacroSig, ProofMacro, global_macros
+from kernel.macro import MacroSig, global_macros
 from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
@@ -16,16 +16,15 @@ class arg_combination_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.TERM
-        self.has_theory = False
         self.use_goal = False
 
-    def __call__(self, f, th):
-        assert th.concl.is_equals(), "arg_combination"
-        return Thm.combination(Thm.reflexive(f), th)
+    def __call__(self, thy, f, ths):
+        assert ths[0].concl.is_equals(), "arg_combination"
+        return Thm.combination(Thm.reflexive(f), ths[0])
 
-    def get_proof_term(self, f, pt):
-        assert pt.th.concl.is_equals(), "arg_combination"
-        return ProofTerm.combination(ProofTerm.reflexive(f), pt)
+    def get_proof_term(self, thy, f, pts):
+        assert pts[0].th.concl.is_equals(), "arg_combination"
+        return ProofTerm.combination(ProofTerm.reflexive(f), pts[0])
 
 class fun_combination_macro(ProofTermMacro):
     """Given theorem f = g and term x, return f x = g x."""
@@ -33,16 +32,15 @@ class fun_combination_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.TERM
-        self.has_theory = False
         self.use_goal = False
 
-    def __call__(self, x, th):
-        assert th.concl.is_equals(), "fun_combination"
-        return Thm.combination(th, Thm.reflexive(x))
+    def __call__(self, thy, x, ths):
+        assert ths[0].concl.is_equals(), "fun_combination"
+        return Thm.combination(ths[0], Thm.reflexive(x))
 
-    def get_proof_term(self, x, pt):
-        assert pt.th.concl.is_equals(), "fun_combination"
-        return ProofTerm.combination(pt, ProofTerm.reflexive(x))
+    def get_proof_term(self, thy, x, pts):
+        assert pts[0].th.concl.is_equals(), "fun_combination"
+        return ProofTerm.combination(pts[0], ProofTerm.reflexive(x))
 
 class beta_norm_macro(ProofTermMacro):
     """Given theorem th, return the normalization of th."""
@@ -50,16 +48,17 @@ class beta_norm_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.NONE
-        self.has_theory = True
         self.use_goal = False
 
-    def __call__(self, thy, th):
+    def __call__(self, thy, args, ths):
+        assert args is None, "beta_norm_macro"
         cv = top_conv(beta_conv())
-        eq_th = cv(thy, th.concl)
-        return Thm(th.assums, eq_th.concl.arg)
+        eq_th = cv(thy, ths[0].concl)
+        return Thm(ths[0].assums, eq_th.concl.arg)
 
-    def get_proof_term(self, thy, pt):
-        return top_conv(beta_conv()).apply_to_pt(thy, pt)
+    def get_proof_term(self, thy, args, pts):
+        assert args is None, "beta_norm_macro"
+        return top_conv(beta_conv()).apply_to_pt(thy, pts[0])
 
 class apply_theorem_macro(ProofTermMacro):
     """Apply existing theorem in the theory to a list of current
@@ -76,10 +75,9 @@ class apply_theorem_macro(ProofTermMacro):
         self.level = 1
         self.with_inst = with_inst
         self.sig = MacroSig.STRING_INSTSP if with_inst else MacroSig.STRING
-        self.has_theory = True
         self.use_goal = False
 
-    def __call__(self, thy, args, *prevs):
+    def __call__(self, thy, args, prevs):
         tyinst, inst = dict(), dict()
         if self.with_inst:
             name, tyinst, inst = args
@@ -98,7 +96,7 @@ class apply_theorem_macro(ProofTermMacro):
         prev_assums = sum([prev.assums for prev in prevs], ())
         return Thm(th.assums + prev_assums, new_concl)
 
-    def get_proof_term(self, thy, args, *pts):
+    def get_proof_term(self, thy, args, pts):
         tyinst, inst = dict(), dict()
         if self.with_inst:
             name, tyinst, inst = args
@@ -139,10 +137,9 @@ class rewrite_goal_macro(ProofTermMacro):
         self.level = 1
         self.backward = backward
         self.sig = MacroSig.STRING_TERM
-        self.has_theory = True
         self.use_goal = True
 
-    def __call__(self, thy, args, *ths):
+    def __call__(self, thy, args, ths):
         assert isinstance(args, tuple) and len(args) == 2 and \
                isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
 
@@ -150,7 +147,7 @@ class rewrite_goal_macro(ProofTermMacro):
         _, goal = args
         return Thm(sum([th.assums for th in ths], ()), goal)
 
-    def get_proof_term(self, thy, args, *pts):
+    def get_proof_term(self, thy, args, pts):
         assert isinstance(args, tuple) and len(args) == 2 and \
                isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
 
@@ -167,8 +164,7 @@ class rewrite_goal_macro(ProofTermMacro):
         return pt
 
 def apply_theorem(thy, th_name, *pts):
-    ths = [pt.th for pt in pts]
-    return ProofTermDeriv(apply_theorem_macro()(thy, th_name, *ths), "apply_theorem", th_name, pts)
+    return ProofTermDeriv("apply_theorem", thy, th_name, pts)
 
 def init_theorem(thy, th_name, tyinst=None, inst=None):
     if tyinst is None:
@@ -180,7 +176,7 @@ def init_theorem(thy, th_name, tyinst=None, inst=None):
         pt = ProofTerm.subst_type(tyinst, pt)
     if inst:
         pt = ProofTerm.substitution(inst, pt)
-    pt = ProofTermDeriv(beta_norm_macro()(thy, pt.th), "beta_norm", None, [pt])
+    pt = ProofTermDeriv("beta_norm", thy, None, [pt])
     return pt
 
 global_macros.update({

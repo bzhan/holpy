@@ -31,17 +31,17 @@ class beta_conv_rhs_macro(ProofMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.TERM
-        self.has_theory = False
         self.use_goal = False
 
-    def __call__(self, th):
+    def __call__(self, thy, args, ths):
+        th = ths[0]
         assert Term.is_equals(th.concl), "beta_conv_rhs"
         (_, rhs) = th.concl.dest_binop()
 
         return Thm.transitive(th, Thm.beta_conv(rhs))
 
-    def expand(self, prefix, prev):
-        id, th = prev
+    def expand(self, prefix, thy, args, prevs):
+        id, th = prevs[0]
         assert Term.is_equals(th.concl), "beta_conv_rhs"
         (_, rhs) = th.concl.dest_binop()
 

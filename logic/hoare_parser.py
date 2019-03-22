@@ -106,6 +106,6 @@ def process_file(filename):
             st2 = mk_fun_upd(st2, nat.to_binary(str_to_nat(k)), nat.to_binary(v))
         Sem = hoare.Sem(natFunT)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal).export()
+        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         rpt = ProofReport()
         thy.check_proof(prf, rpt)

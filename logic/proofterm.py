@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.thm import Thm
+from kernel.thm import Thm, primitive_deriv
 from kernel.proof import Proof, id_force_tuple
 from kernel.macro import ProofMacro, MacroSig
 
@@ -22,69 +22,69 @@ class ProofTerm():
 
     @staticmethod
     def assume(A):
-        return ProofTermDeriv(Thm.assume(A), "assume", A, [])
+        return ProofTermDeriv("assume", None, A, [])
 
     @staticmethod
     def reflexive(x):
-        return ProofTermDeriv(Thm.reflexive(x), "reflexive", x, [])
+        return ProofTermDeriv("reflexive", None, x, [])
 
     @staticmethod
     def symmetric(pt):
-        return ProofTermDeriv(Thm.symmetric(pt.th), "symmetric", None, [pt])
+        return ProofTermDeriv("symmetric", None, None, [pt])
 
     @staticmethod
     def transitive(pt1, pt2):
-        return ProofTermDeriv(Thm.transitive(pt1.th, pt2.th), "transitive", None, [pt1, pt2])
+        return ProofTermDeriv("transitive", None, None, [pt1, pt2])
 
     @staticmethod
     def combination(pt1, pt2):
-        return ProofTermDeriv(Thm.combination(pt1.th, pt2.th), "combination", None, [pt1, pt2])
+        return ProofTermDeriv("combination", None, None, [pt1, pt2])
 
     @staticmethod
     def equal_elim(pt1, pt2):
-        return ProofTermDeriv(Thm.equal_elim(pt1.th, pt2.th), "equal_elim", None, [pt1, pt2])
+        return ProofTermDeriv("equal_elim", None, None, [pt1, pt2])
 
     @staticmethod
-    def arg_combination(f, pt):
+    def arg_combination(thy, f, pt):
         """Given x = y and term f, return f x = f y."""
-        return ProofTermDeriv(Thm.combination(Thm.reflexive(f), pt.th), "arg_combination", f, [pt])
+        return ProofTermDeriv("arg_combination", thy, f, [pt])
 
     @staticmethod
-    def fun_combination(x, pt):
+    def fun_combination(thy, x, pt):
         """Given f = g and term x, return f x = g x."""
-        return ProofTermDeriv(Thm.combination(pt.th, Thm.reflexive(x)), "fun_combination", x, [pt])
+        return ProofTermDeriv("fun_combination", thy, x, [pt])
 
     @staticmethod
     def implies_intr(A, pt):
-        return ProofTermDeriv(Thm.implies_intr(A, pt.th), "implies_intr", A, [pt])
+        return ProofTermDeriv("implies_intr", None, A, [pt])
 
     @staticmethod
     def implies_elim(pt1, *pts):
         if len(pts) == 0:
             return pt1
         else:
-            pt2 = ProofTermDeriv(Thm.implies_elim(pt1.th, pts[0].th), "implies_elim", None, [pt1, pts[0]])
+            pt2 = ProofTermDeriv("implies_elim", None, None, [pt1, pts[0]])
             return ProofTerm.implies_elim(pt2, *pts[1:])
 
     @staticmethod
     def subst_type(tyinst, pt):
-        return ProofTermDeriv(Thm.subst_type(tyinst, pt.th), "subst_type", tyinst, [pt])
+        return ProofTermDeriv("subst_type", None, tyinst, [pt])
 
     @staticmethod
     def substitution(inst, pt):
-        return ProofTermDeriv(Thm.substitution(inst, pt.th), "substitution", inst, [pt])
+        return ProofTermDeriv("substitution", None, inst, [pt])
 
     @staticmethod
     def beta_conv(x):
-        return ProofTermDeriv(Thm.beta_conv(x), "beta_conv", x, [])
+        return ProofTermDeriv("beta_conv", None, x, [])
 
     @staticmethod
     def abstraction(pt, x):
-        return ProofTermDeriv(Thm.abstraction(x, pt.th), "abstraction", x, [pt])
+        return ProofTermDeriv("abstraction", None, x, [pt])
 
     @staticmethod
     def theorem(thy, th_name):
-        return ProofTermDeriv(thy.get_theorem(th_name), "theorem", th_name, [])
+        return ProofTermDeriv("theorem", thy, th_name, [])
 
     def _export(self, prefix, seq_to_id, prf):
         """Helper function for _export.
@@ -139,16 +139,24 @@ class ProofTermAtom(ProofTerm):
 class ProofTermDeriv(ProofTerm):
     """Derivations.
     
-    th -- statement of the theorem.
     rule -- proof method used to derive the theorem.
+    thy -- current theory.
     args -- arguments to the proof method.
     prevs -- proof terms that the current one depends on.
 
     """
-    def __init__(self, th, rule, args, prevs):
+    def __init__(self, rule, thy, args, prevs):
         self.ty = ProofTerm.DERIV
-        self.th = th
         self.rule = rule
+        prev_ths = [prev.th for prev in prevs]
+        if rule == 'theorem':
+            self.th = thy.get_theorem(args)
+        elif rule in primitive_deriv:
+            rule_fun, _ = primitive_deriv[rule]
+            self.th = rule_fun(*prev_ths) if args is None else rule_fun(args, *prev_ths)
+        else:
+            macro = thy.get_proof_macro(rule)
+            self.th = macro(thy, args, prev_ths)
         self.args = args
         self.prevs = prevs
 
@@ -157,17 +165,9 @@ class ProofTermMacro(ProofMacro):
     constructing a proof term, then export the proof term.
 
     """
-    def get_proof_term(self):
+    def get_proof_term(self, thy, args, prevs):
         raise NotImplementedError()
 
-    def expand(self, prefix, *args):
-        args_count = 0
-        if self.has_theory:
-            args_count += 1
-        if self.sig != MacroSig.NONE:
-            args_count += 1
-
-        args, prevs = args[:args_count], args[args_count:]
-
+    def expand(self, prefix, thy, args, prevs):
         pts = tuple([ProofTerm.atom(id, prev) for id, prev in prevs])
-        return self.get_proof_term(*(args + pts)).export(prefix)
+        return self.get_proof_term(thy, args, pts).export(prefix)

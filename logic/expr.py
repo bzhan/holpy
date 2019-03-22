@@ -28,7 +28,6 @@ class prove_avalI_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.has_theory = True
         self.use_goal = True
 
     def get_avalI_th(self, thy, s, t):
@@ -44,22 +43,18 @@ class prove_avalI_macro(ProofTermMacro):
             a1, a2 = args
             pt1 = self.get_avalI_th(thy, s, a1)
             pt2 = self.get_avalI_th(thy, s, a2)
-            _, args1 = pt1.th.concl.strip_comb()
-            _, args2 = pt2.th.concl.strip_comb()
             pt = apply_theorem(thy, "avalI_plus", pt1, pt2)
             return arg_conv(nat.nat_conv()).apply_to_pt(thy, pt)
         elif f == Times:
             a1, a2 = args
             pt1 = self.get_avalI_th(thy, s, a1)
             pt2 = self.get_avalI_th(thy, s, a2)
-            _, args1 = pt1.th.concl.strip_comb()
-            _, args2 = pt2.th.concl.strip_comb()
             pt = apply_theorem(thy, "avalI_times", pt1, pt2)
             return arg_conv(nat.nat_conv()).apply_to_pt(thy, pt)
         else:
             raise NotImplementedError
 
-    def get_proof_term(self, thy, args, *pts):
+    def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "prove_avalI_macro"
         f, args = args.strip_comb()
         s, t, n = args
