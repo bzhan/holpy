@@ -688,7 +688,6 @@
                 ajax_data['name'] = data_name.split(' :: ')[0];
                 ajax_data['type'] = data_name.split(' :: ')[1];
             }
-
             return ajax_data;
         }
 
@@ -698,7 +697,8 @@
                 save_editor_data();
             } else {
                 save_json_file();
-              }
+            }
+
         });
 
 //      click to display json file;
