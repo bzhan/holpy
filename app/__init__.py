@@ -194,10 +194,7 @@ def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
     with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
-    thy = basic.loadImportedTheory(f_data)
-    # j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
-    # json.dump(f_data, j, ensure_ascii=False, indent=4, sort_keys=True)
-    # j.close()
+    thy = basic.loadImportedTheory(f_data['imports'])
     for data in f_data['content']:
         file_data_to_output(thy, data)
 
@@ -263,7 +260,7 @@ def save_modify():
     with open('library/' + data['file-name'] + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     try:
-        thy = basic.loadImportedTheory(f_data)
+        thy = basic.loadImportedTheory(f_data['imports'])
         for d in data['prev-list']:
             parser.parse_extension(thy, d)
         file_data_to_output(thy, data)

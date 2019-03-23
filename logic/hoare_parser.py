@@ -13,6 +13,7 @@ from logic.function import mk_const_fun, mk_fun_upd
 from logic import hoare
 from logic.proofterm import ProofTermDeriv
 from syntax import printer
+from syntax import json_output
 
 """Parsing for simple imperative programs."""
 
@@ -110,15 +111,17 @@ def parse_cond(s):
 def parse_hoare(s):
     return hoare_parser.parse(s)
 
-def process_file(filename):
+def process_file(input, output):
     thy = basic.loadTheory('hoare')
 
     dn = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(dn, 'examples/' + filename + '.json'), encoding='utf-8') as a:
+    with open(os.path.join(dn, 'examples/' + input + '.json'), encoding='utf-8') as a:
         data = json.load(a)
 
+    output = json_output.JSONTheory(output, ["hoare"], "Generated from " + input)
     content = data['content']
-    from syntax import printer
+    eval_count = 0
+    vcg_count = 0
     for run in content:
         if run['ty'] == 'eval':
             com = parse_hoare(run['com'])
@@ -132,7 +135,9 @@ def process_file(filename):
             goal = Sem(com, st1, st2)
             prf = ProofTermDeriv("eval_Sem", thy, goal, []).export()
             rpt = ProofReport()
-            thy.check_proof(prf, rpt)
+            th = thy.check_proof(prf, rpt)
+            output.add_theorem("eval" + str(eval_count), th, prf)
+            eval_count += 1
         elif run['ty'] == 'vcg':
             com = parse_hoare(run['com'])
             pre = Term.mk_abs(st, parse_cond(run['pre']))
@@ -141,6 +146,10 @@ def process_file(filename):
             goal = Valid(pre, com, post)
             prf = hoare.vcg_solve(thy, goal).export()
             rpt = ProofReport()
-            thy.check_proof(prf, rpt)
+            th = thy.check_proof(prf, rpt)
+            output.add_theorem("vcg" + str(vcg_count), th, prf)
+            vcg_count += 1
         else:
             raise TypeError()
+
+    output.export_json()

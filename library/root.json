@@ -7,6 +7,7 @@
       "function",
       "expr",
       "sat",
-      "hoare"
+      "hoare",
+      "hoare_test_output"
   ]
 }
