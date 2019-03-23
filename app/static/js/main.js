@@ -117,7 +117,7 @@
                 $('<li class="nav-item" name="code' + add_page + '"><a class="nav-link" ' +
                     'data-toggle="tab"' +
                     'href="#code' + add_page + '-pan" name="'+ add_page +'">' +
-                    '<span> ' + '文件'+
+                    '<span> ' + 'File'+
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="proof-tab">×</button>' +
                     '</a></li>'));
@@ -126,10 +126,10 @@
                 class_name = 'tab-pane fade in active code-cell';
             $('#codeTabContent').append(
                 $('<div class="' + class_name + '" id="code' + add_page + '-pan" style="margin:30px;">' +
-                    '<label for="code' + add_page + '"></label> ' +
-                    '文件名:&nbsp;<input id="fname'+ add_page +'" spellcheck="false" style="width:30%;">'+
-                    '<br><br>imports:&nbsp;<input spellcheck="false" id="imp'+ add_page +'" style="width:30%;">'+
-                    '<br><br>descriptions:&nbsp;<textarea spellcheck="false" id="code' + add_page + '" style="width:27%;" lines="1"></textarea>' +
+                    '<label for="code' + add_page + '"></label>' +
+                    'File name:&nbsp;<input id="fname'+ add_page +'" spellcheck="false" style="width:30%;">'+
+                    '<br><br>Imports:&nbsp;<input spellcheck="false" id="imp'+ add_page +'" style="width:30%;">'+
+                    '<br><br>Description:&nbsp;<textarea spellcheck="false" id="code' + add_page + '" style="width:27%;" lines="1"></textarea>' +
                     '</div>'));
             $('div.rbottom').append(
                 '<div id="prf'+ add_page +'" name="addition"><button id="'+ add_page + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;margin-left:25px;" name="save-json"><b>SAVE</b></button>' +
