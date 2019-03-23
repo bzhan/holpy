@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="../static/css/bootstrap-select.min.css">
 <link rel=stylesheet href="../static/codemirror-5.41.0/doc/docs.css">
 <link rel="stylesheet" href="../static/css/sweetalert2.min.css">
-<script src="../static/js/sweetalert2.min.js"></script>
+<script src="../static/js/sweetalezrt2.min.js"></script>
 <script src="../static/js/jquery-3.3.1.min.js"></script>
 <script src="../static/js/popper.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
@@ -109,17 +109,32 @@
                 <a class="dropdown-item fontcolor" name="def.ind" href="#" id="fun">fun</a>
             </div>
         </div>
+        <div>
+            <button class="el-button el-button--default el-button--mini" id="add-json">新建文件</button>
+        </div>
     </div>
 </div>
 
 <div class="left" id="left" style="width:80%;height:100%;overflow-y:scroll;overflow-x:auto;">
-    <div id="root-file" style="margin-bottom:20px;width:100%;">
+    <div name="tab-title" >
+        <li style="list-style:none;float:left;border-top-left-radius:5px;border-top-right-radius:5px;width:50%;" id="json-tab1" class="nav-item" name="tab1">
+            <a class="nav-link" data-toggle="tab" href="#" name="tab1">
+                <span style="color:black">Files</span>
+            </a>
+        </li>
+        <li style="list-style:none;float:left;margin-left:0px;border-top-left-radius:5px;border-top-right-radius:5px;width:50%;" id="json-tab2" class="nav-item" name="tab2">
+            <a class="nav-link" data-toggle="tab" href="#" name="tab1">
+                <span style="color:black">Content</span>
+            </a>
+        </li>
+       <br>
     </div>
-    <div id="file-path" style="margin-bottom:20px;width:100%;"></div>
-    <div id="left_json">
 
+    <!--<hr style="float:left;width:40%;border:1px solid;">-->
+    <div id="root-file" style="margin-top:20px;width:100%;float:left;font-size:15px;">
     </div>
-    <div class="input_thm" id="add-information">
+    <!--<div id="file-path" style="margin-bottom:20px;width:100%;"></div>-->
+    <div id="left_json" style="margin-top:12px;">
 
     </div>
 </div>
