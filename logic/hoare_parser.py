@@ -11,6 +11,7 @@ from logic import logic
 from logic import nat
 from logic.function import mk_const_fun, mk_fun_upd
 from logic import hoare
+from logic.proofterm import ProofTermDeriv
 from syntax import printer
 
 """Parsing for simple imperative programs."""
@@ -19,14 +20,17 @@ grammar = r"""
     ?expr: CNAME -> var_expr
         | INT -> num_expr
         | expr "+" expr -> plus_expr
+        | expr "*" expr -> times_expr
 
     ?cond: expr "==" expr -> eq_cond
         | expr "!=" expr -> ineq_cond
+        | cond "&" cond -> conj_cond
 
     ?cmd: "skip" -> skip_cmd
         | CNAME ":=" expr -> assign_cmd
         | "if" "(" cond ")" "then" cmd "else" cmd -> if_cmd
         | "while" "(" cond ")" "{" cmd "}" -> while_cmd
+        | "while" "(" cond ")" "[" cond "]" "{" cmd "}" -> while_cmd_inv
         | cmd ";" cmd -> seq_cmd
 
     %import common.CNAME
@@ -49,7 +53,12 @@ class HoareTransformer(Transformer):
         pass
 
     def var_expr(self, s):
-        return st(nat.to_binary(str_to_nat(s)))
+        if ord(s) >= ord('a') and ord(s) <= ord('z'):
+            return st(nat.to_binary(str_to_nat(s)))
+        elif ord(s) >= ord('A') and ord(s) <= ord('Z'):
+            return Var(s, nat.natT)
+        else:
+            raise NotImplementedError
 
     def num_expr(self, n):
         return nat.to_binary(int(n))
@@ -57,11 +66,17 @@ class HoareTransformer(Transformer):
     def plus_expr(self, e1, e2):
         return nat.plus(e1, e2)
 
+    def times_expr(self, e1, e2):
+        return nat.times(e1, e2)
+
     def eq_cond(self, e1, e2):
         return Term.mk_equals(e1, e2)
 
     def ineq_cond(self, e1, e2):
         return logic.neg(Term.mk_equals(e1, e2))
+
+    def conj_cond(self, b1, b2):
+        return logic.conj(b1, b2)
 
     def skip_cmd(self):
         return hoare.Skip(natFunT)
@@ -78,11 +93,19 @@ class HoareTransformer(Transformer):
         While = hoare.While(natFunT)
         return While(Term.mk_abs(st, b), Term.mk_abs(st, logic.true), c)
 
+    def while_cmd_inv(self, b, inv, c):
+        While = hoare.While(natFunT)
+        return While(Term.mk_abs(st, b), Term.mk_abs(st, inv), c)
+
     def seq_cmd(self, c1, c2):
         Seq = hoare.Seq(natFunT)
         return Seq(c1, c2)
 
+cond_parser = Lark(grammar, start="cond", parser="lalr", transformer=HoareTransformer())
 hoare_parser = Lark(grammar, start="cmd", parser="lalr", transformer=HoareTransformer())
+
+def parse_cond(s):
+    return cond_parser.parse(s)
 
 def parse_hoare(s):
     return hoare_parser.parse(s)
@@ -95,17 +118,29 @@ def process_file(filename):
         data = json.load(a)
 
     content = data['content']
-
+    from syntax import printer
     for run in content:
-        com = parse_hoare(run['com'])
-        st = mk_const_fun(nat.natT, nat.zero)
-        for k, v in sorted(run['init'].items()):
-            st = mk_fun_upd(st, nat.to_binary(str_to_nat(k)), nat.to_binary(v))
-        st2 = mk_const_fun(nat.natT, nat.zero)
-        for k, v in sorted(run['final'].items()):
-            st2 = mk_fun_upd(st2, nat.to_binary(str_to_nat(k)), nat.to_binary(v))
-        Sem = hoare.Sem(natFunT)
-        goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
-        rpt = ProofReport()
-        thy.check_proof(prf, rpt)
+        if run['ty'] == 'eval':
+            com = parse_hoare(run['com'])
+            st1 = mk_const_fun(nat.natT, nat.zero)
+            for k, v in sorted(run['init'].items()):
+                st1 = mk_fun_upd(st1, nat.to_binary(str_to_nat(k)), nat.to_binary(v))
+            st2 = mk_const_fun(nat.natT, nat.zero)
+            for k, v in sorted(run['final'].items()):
+                st2 = mk_fun_upd(st2, nat.to_binary(str_to_nat(k)), nat.to_binary(v))
+            Sem = hoare.Sem(natFunT)
+            goal = Sem(com, st1, st2)
+            prf = ProofTermDeriv("eval_Sem", thy, goal, []).export()
+            rpt = ProofReport()
+            thy.check_proof(prf, rpt)
+        elif run['ty'] == 'vcg':
+            com = parse_hoare(run['com'])
+            pre = Term.mk_abs(st, parse_cond(run['pre']))
+            post = Term.mk_abs(st, parse_cond(run['post']))
+            Valid = hoare.Valid(natFunT)
+            goal = Valid(pre, com, post)
+            prf = hoare.vcg_solve(thy, goal).export()
+            rpt = ProofReport()
+            thy.check_proof(prf, rpt)
+        else:
+            raise TypeError()
