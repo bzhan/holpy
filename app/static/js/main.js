@@ -924,9 +924,7 @@
                 theory_name = result['data']['name'];
                 theory_imports = result['data']['imports'];
                 theory_desc = result['data']['description'];
-//                if (error) {
-//                    $('div[name="tab-title"]').append('<p>'+error+'</p>')
-//                }
+
                 if (theory_name in result_list_dict) {
                     result_list = result_list_dict[theory_name];
                 }
