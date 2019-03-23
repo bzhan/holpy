@@ -31,7 +31,6 @@ class beta_conv_rhs_macro(ProofMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.TERM
-        self.use_goal = False
 
     def __call__(self, thy, args, ths):
         th = ths[0]

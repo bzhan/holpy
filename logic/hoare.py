@@ -57,7 +57,6 @@ class eval_Sem_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.use_goal = True
 
     def eval_Sem(self, thy, com, st):
         """Evaluates the effect of program com on state st."""
@@ -181,7 +180,6 @@ class vcg_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.use_goal = True
 
     def get_proof_term(self, thy, goal, pts):
         pt = vcg(thy, goal)

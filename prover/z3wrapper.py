@@ -63,7 +63,6 @@ class Z3Macro(ProofMacro):
     def __init__(self):
         self.level = 0  # No expand implemented for Z3.
         self.sig = MacroSig.TERM
-        self.use_goal = True
 
     def __call__(self, thy, args, prevs):
         if z3_loaded:

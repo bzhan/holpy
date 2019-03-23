@@ -38,7 +38,6 @@ class ProofMacro():
     def __init__(self):
         self.level = None
         self.sig = None
-        self.use_goal = None
 
     def __call__(self, thy, args, prevs):
         """Obtain the result of applying the proof method.

@@ -80,7 +80,6 @@ class fun_upd_eval_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.use_goal = True
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "fun_upd_eval_macro"
