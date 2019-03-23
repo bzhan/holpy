@@ -8,8 +8,9 @@ from logic import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv
-from logic.proofterm import ProofTerm, ProofTermMacro
+from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic_macro import init_theorem, apply_theorem
+from prover import z3wrapper
 
 
 """Automation for Hoare logic."""
@@ -172,15 +173,39 @@ def vcg(thy, goal):
     entail_P = ProofTerm.assume(Entail(T)(P, P2))
     return apply_theorem(thy, "pre_rule", entail_P, pt)
 
-def vcg_norm(thy, goal):
-    pt = vcg(thy, goal)
-    cv = every_conv(rewr_conv("Entail_def"), top_conv(beta_conv()),
-                    top_conv(function.fun_upd_eval_conv()))
-    for A in reversed(pt.th.assums):
-        pt = ProofTerm.implies_intr(A, pt)
-    pt = assums_conv(cv).apply_to_pt(thy, pt)
-    return pt
+class vcg_macro(ProofTermMacro):
+    """Compute the verification conditions for a hoare triple, then
+    normalizes the verification conditions.
+    
+    """
+    def __init__(self):
+        self.level = 10
+        self.sig = MacroSig.TERM
+        self.use_goal = True
+
+    def get_proof_term(self, thy, goal, pts):
+        pt = vcg(thy, goal)
+        cv = every_conv(rewr_conv("Entail_def"), top_conv(beta_conv()),
+                        top_conv(function.fun_upd_eval_conv()))
+        for A in reversed(pt.th.assums):
+            pt = ProofTerm.implies_intr(A, pt)
+        pt = assums_conv(cv).apply_to_pt(thy, pt)
+        return pt
+
+def vcg_solve(thy, goal):
+    """Compute the verification conditions for a hoare triple, then
+    solves the verification conditions using SMT.
+    
+    """
+    pt = ProofTermDeriv("vcg", thy, goal, [])
+    vcs = pt.th.concl.strip_implies()[0]
+    vc_pt = []
+    for vc in vcs:
+        vc_pt.append(ProofTermDeriv("z3", thy, vc, []))
+    return ProofTerm.implies_elim(pt, *vc_pt)
+
 
 global_macros.update({
     "eval_Sem": eval_Sem_macro(),
+    "vcg": vcg_macro(),
 })

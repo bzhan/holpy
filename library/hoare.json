@@ -352,8 +352,16 @@
                 "c": "'a com",
                 "Q": "'a => bool"
             }
+        },
+        {
+            "name": "z3",
+            "ty": "macro"
+        },
+        {
+            "name": "vcg",
+            "ty": "macro"
         }
-    ],
+   ],
     "description": "Hoare logic",
     "imports": [
         "function"

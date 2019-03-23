@@ -9,7 +9,7 @@ else:
     z3_loaded = False
 
 from kernel.type import TFun
-from kernel.term import Term
+from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.macro import MacroSig, ProofMacro, global_macros
 from logic import logic
@@ -28,6 +28,8 @@ def convert(t):
         else:
             print("convert: unsupported type " + repr(T))
             raise NotImplementedError
+    elif t.is_all():
+        return convert(t.arg.subst_bound(Var(t.arg.var_name, t.arg.var_T)))
     elif t.is_implies():
         return z3.Implies(convert(t.arg1), convert(t.arg))
     elif t.is_equals():
@@ -59,7 +61,7 @@ def solve(t):
 class Z3Macro(ProofMacro):
     """Macro invoking SMT solver Z3."""
     def __init__(self):
-        self.level = 0
+        self.level = 0  # No expand implemented for Z3.
         self.sig = MacroSig.TERM
         self.use_goal = True
 
