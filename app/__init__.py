@@ -192,20 +192,21 @@ def file_data_to_output(thy, data):
 @app.route('/api/json', methods=['POST'])
 def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
-    error = {}
-    try:
-        with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
-            f_data = json.load(f)
+    with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+    if 'content' in f_data:
         thy = basic.loadImportedTheory(f_data)
         for data in f_data['content']:
             file_data_to_output(thy, data)
-    except Exception as e:
-        error = {
-                "failed": e.__class__.__name__,
-                "message": str(e)
-                }
-        return jsonify({'data': f_data, 'error': error})
-    return jsonify({'data': f_data, 'error': error})
+    else:
+        f_data['content'] = []
+    # except Exception as e:
+    #     error = {
+    #             "failed": e.__class__.__name__,
+    #             "message": str(e)
+    #             }
+    #     return jsonify({'data': f_data, 'error': error})
+    return jsonify({'data': f_data})
 
 
 # add-button to add data-info;

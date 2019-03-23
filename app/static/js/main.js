@@ -106,11 +106,10 @@
         });
 
         $('#add-json').click(function() {
-            var number = $('#codeTab').children().length;
-            add_page += number;
-            add_page ++;
-            init_metadata_area(add_page);
+            page_num ++;
+            init_metadata_area(page_num);
         });
+
 
         function init_metadata_area(add_page) {
             var id = 'code' + add_page + '-pan';
@@ -186,8 +185,9 @@
 
         $('div#root-file').on('click', 'a[name="edit"]', function() {
             var number = Number($(this).attr('id').slice(4,).trim())-1;
+            page_num++;
             data = JSON.stringify(file_list[number]);
-            init_metadata_area(number);
+            init_metadata_area(page_num);
             $.ajax({
                 url: '/api/edit_jsonFile',
                 data: data,
@@ -196,9 +196,9 @@
                     var name = res['name'];
                     var des = res['description'];
                     var imports = res['imports'].join(',');
-                    $('input#fname'+number).val(name);
-                    $('input#imp'+number).val(imports);
-                    $('textarea#code'+number).val(des);
+                    $('input#fname'+ page_num).val(name);
+                    $('input#imp'+ page_num).val(imports);
+                    $('textarea#code'+ page_num).val(des);
                 }
             })
         })
@@ -702,7 +702,6 @@
             } else {
                 save_json_file();
             }
-
         });
 
 //      click to display json file;
@@ -724,7 +723,7 @@
             data = JSON.stringify(name);
             ajax_res(data);
             add_mode = true;
-            });
+        });
 
             $('div.dropdown-menu.add-info a').on('click', function() {
                 if (add_mode === true) {
@@ -848,8 +847,8 @@
     function display_result_list() {
         result_list_dict[theory_name] = result_list;
         var import_str = theory_imports.join('、');
-        $('#left_json').empty();
-        $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
+        $('#left_json').html('');
+        $('#left_json').append($('<br><div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
         '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
         var num = 0;
         for (var d in result_list) {
