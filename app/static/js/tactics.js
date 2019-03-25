@@ -387,7 +387,8 @@ function match_thm() {
         var data = {
             'id': get_selected_id(),
             'target_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
-            'conclusion_id': conclusion_id
+            'conclusion_id': conclusion_id,
+            'theory_name': name
         };
 
         $.ajax({
@@ -395,7 +396,13 @@ function match_thm() {
             type: "POST",
             data: JSON.stringify(data),
             success: function (result) {
-                display_match_thm(result);
+            var ctxt = result['ctxt'];
+            $('div#varible').html('');
+            for (let k in ctxt) {
+                $('div#varible').append('<div id="ctxt" style="margin-left:10px;"><span><b>'+ k +' :: '+ ctxt[k] +'</b></span></div><br>');
+            }
+            $('li#json-tab3').click();
+            display_match_thm(result);
             }
         })
     });

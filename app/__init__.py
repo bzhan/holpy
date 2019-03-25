@@ -211,6 +211,7 @@ def json_add_info():
     thy = basic.loadTheory(data['theory_name'])
     item = data['item']
     file_data_to_output(thy, item)
+
     return jsonify({'data': item})
 
 
@@ -229,19 +230,24 @@ def save_file():
 #match the thms for backward or rewrite;
 @app.route('/api/match_thm', methods=['POST'])
 def match_thm():
+    dict = {}
     data = json.loads(request.get_data().decode("utf-8"))
+    thy = basic.loadTheory(data['theory_name'])
     if data:
         cell = cells.get(data.get('id'))
         target_id = data.get('target_id')
+        ctxt = cell.get_ctxt(target_id)
+        for k, v in ctxt.items():
+            dict[k] = printer.print_type(thy, v)
         conclusion_id = data.get('conclusion_id')
         if not conclusion_id:
             conclusion_id = None
         ths_rewrite = cell.rewrite_goal_thms(target_id)
         ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
         if ths or ths_rewrite:
-            return jsonify({'ths_abs': ths, 'ths_rewrite': ths_rewrite})
+            return jsonify({'ths_abs': ths, 'ths_rewrite': ths_rewrite,'ctxt': dict})
         else:
-            return jsonify({})
+            return jsonify({'ctxt': dict})
 
 
 # save the edited data to left-json for updating;
