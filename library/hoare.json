@@ -123,13 +123,9 @@
         },
         {
             "name": "Skip",
-            "ty": "def.ax",
-            "type": "'a com"
-        },
-        {
-            "name": "Skip_def",
+            "type": "'a com",
             "prop": "Skip = Basic (%f::'a. f)",
-            "ty": "thm",
+            "ty": "def",
             "vars": {}
         },
         {
@@ -142,17 +138,12 @@
         },
         {
             "name": "Assign",
-            "ty": "def.ax",
-            "type": "'a => (('a => 'b) => 'b) => ('a => 'b) com"
-        },
-        {
-            "name": "Assign_def",
+            "type": "'a => (('a => 'b) => 'b) => ('a => 'b) com",
             "prop": "Assign a b = Basic (λf. (f)(a := b f))",
-            "ty": "thm",
+            "ty": "def",
             "vars": {
                 "a": "'a",
-                "b": "('a => 'b) => 'b",
-                "f": "'a"
+                "b": "('a => 'b) => 'b"
             }
         },
         {
@@ -171,14 +162,9 @@
         },
         {
             "name": "P1",
-            "ty": "def.ax",
-            "type": "(nat => nat) com"
-        },
-        {
-            "hint_rewrite": "true",
-            "name": "P1_def",
+            "type": "(nat => nat) com",
             "prop": "P1 = Seq (Assign 0 (%s. 1)) (Assign 1 (%s. 2))",
-            "ty": "thm",
+            "ty": "def",
             "vars": {}
         },
         {
@@ -208,14 +194,9 @@
         },
         {
             "name": "P2",
-            "ty": "def.ax",
-            "type": "(nat => nat) com"
-        },
-        {
-            "hint_rewrite": "true",
-            "name": "P2_def",
+            "type": "(nat => nat) com",
             "prop": "P2 = Seq (Assign 0 (%s. s 0 + 1)) (Assign 0 (%s. s 0 + 1))",
-            "ty": "thm",
+            "ty": "def",
             "vars": {}
         },
         {
@@ -245,14 +226,9 @@
         },
         {
             "name": "P3",
-            "ty": "def.ax",
-            "type": "(nat => nat) com"
-        },
-        {
-            "hint_rewrite": "true",
-            "name": "P3_def",
+            "type": "(nat => nat) com",
             "prop": "P3 = While (%s. ~(s 0 = 3)) (%s. true) (Assign 0 (%s. s 0 + 1))",
-            "ty": "thm",
+            "ty": "def",
             "vars": {}
         },
         {
@@ -282,13 +258,9 @@
         },
         {
             "name": "Entail",
-            "ty": "def.ax",
-            "type": "('a => bool) => ('a => bool) => bool"
-        },
-        {
-            "name": "Entail_def",
+            "type": "('a => bool) => ('a => bool) => bool",
             "prop": "Entail P Q = (!s. P s --> Q s)",
-            "ty": "thm",
+            "ty": "def",
             "vars": {
                 "P": "'a => bool",
                 "Q": "'a => bool"
@@ -296,16 +268,12 @@
         },
         {
             "name": "Valid",
-            "ty": "def.ax",
-            "type": "('a => bool) => 'a com => ('a => bool) => bool"
-        },
-        {
-            "name": "Valid_def",
+            "type": "('a => bool) => 'a com => ('a => bool) => bool",
             "prop": "Valid P c Q = (!s. !s2. P s --> Sem c s s2 --> Q s2)",
-            "ty": "thm",
+            "ty": "def",
             "vars": {
                 "P": "'a => bool",
-                "Q": "'a=> bool",
+                "Q": "'a => bool",
                 "c": "'a com"
             }
         },
