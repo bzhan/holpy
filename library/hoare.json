@@ -49,77 +49,73 @@
         },
         {
             "name": "Sem",
-            "ty": "def.ax",
-            "type": "'a com => 'a => 'a => bool"
-        },
-        {
-            "name": "Sem_basic",
-            "prop": "Sem (Basic f) s (f s)",
-            "ty": "thm",
-            "vars": {
-                "f": "'a => 'a",
-                "s": "'a"
-            }
-        },
-        {
-            "name": "Sem_seq",
-            "prop": "Sem c1 s s3 --> Sem c2 s3 s2 --> Sem (Seq c1 c2) s s2",
-            "ty": "thm",
-            "vars": {
-                "c1": "'a com",
-                "c2": "'a com",
-                "s": "'a",
-                "s2": "'a",
-                "s3": "'a"
-            }
-        },
-        {
-            "name": "Sem_if1",
-            "prop": "b s --> Sem c1 s s2 --> Sem (Cond b c1 c2) s s2",
-            "ty": "thm",
-            "vars": {
-                "b": "'a => bool",
-                "c1": "'a com",
-                "c2": "'a com",
-                "s": "'a",
-                "s2": "'a"
-            }
-        },
-        {
-            "name": "Sem_if2",
-            "prop": "~ b s --> Sem c2 s s2 --> Sem (Cond b c1 c2) s s2",
-            "ty": "thm",
-            "vars": {
-                "b": "'a => bool",
-                "c1": "'a com",
-                "c2": "'a com",
-                "s": "'a",
-                "s2": "'a"
-            }
-        },
-        {
-            "name": "Sem_while_skip",
-            "prop": "~ b s --> Sem (While b I c) s s",
-            "ty": "thm",
-            "vars": {
-                "I": "'a => bool",
-                "b": "'a => bool",
-                "c": "'a com",
-                "s": "'a"
-            }
-        },
-        {
-            "name": "Sem_while_loop",
-            "prop": "b s --> Sem c s s3 --> Sem (While b I c) s3 s2 --> Sem (While b I c) s s2",
-            "ty": "thm",
-            "vars": {
-                "I": "'a => bool",
-                "b": "'a => bool",
-                "c": "'a com",
-                "s": "'a",
-                "s2": "'a",
-                "s3": "'a"
-            }
+            "ty": "def.pred",
+            "type": "'a com => 'a => 'a => bool",
+            "rules": [
+                {
+                    "name": "Sem_basic",
+                    "prop": "Sem (Basic f) s (f s)",
+                    "vars": {
+                        "f": "'a => 'a",
+                        "s": "'a"
+                    }
+                },                        
+                {
+                    "name": "Sem_seq",
+                    "prop": "Sem c1 s s3 --> Sem c2 s3 s2 --> Sem (Seq c1 c2) s s2",
+                    "vars": {
+                        "c1": "'a com",
+                        "c2": "'a com",
+                        "s": "'a",
+                        "s2": "'a",
+                        "s3": "'a"
+                    }
+                },
+                {
+                    "name": "Sem_if1",
+                    "prop": "b s --> Sem c1 s s2 --> Sem (Cond b c1 c2) s s2",
+                    "vars": {
+                        "b": "'a => bool",
+                        "c1": "'a com",
+                        "c2": "'a com",
+                        "s": "'a",
+                        "s2": "'a"
+                    }
+                },
+                {
+                    "name": "Sem_if2",
+                    "prop": "~ b s --> Sem c2 s s2 --> Sem (Cond b c1 c2) s s2",
+                    "vars": {
+                        "b": "'a => bool",
+                        "c1": "'a com",
+                        "c2": "'a com",
+                        "s": "'a",
+                        "s2": "'a"
+                    }
+                },
+                {
+                    "name": "Sem_while_skip",
+                    "prop": "~ b s --> Sem (While b I c) s s",
+                    "vars": {
+                        "I": "'a => bool",
+                        "b": "'a => bool",
+                        "c": "'a com",
+                        "s": "'a"
+                    }
+                },
+                {
+                    "name": "Sem_while_loop",
+                    "prop": "b s --> Sem c s s3 --> Sem (While b I c) s3 s2 --> Sem (While b I c) s s2",
+                    "vars": {
+                        "I": "'a => bool",
+                        "b": "'a => bool",
+                        "c": "'a com",
+                        "s": "'a",
+                        "s2": "'a",
+                        "s3": "'a"
+                    }
+                }
+            ]
         },
         {
             "name": "Skip",

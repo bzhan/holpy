@@ -372,6 +372,16 @@ def parse_extension(thy, data):
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
 
+    elif data['ty'] == 'def.pred':
+        T = parse_type(thy, data['type'])
+        thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
+        rules = []
+        for rule in data['rules']:
+            ctxt = parse_vars(thy, rule['vars'])
+            prop = parse_term(thy, ctxt, rule['prop'])
+            rules.append((rule['name'], prop))
+        ext = induct.add_induct_predicate(data['name'], T, rules)
+
     elif data['ty'] == 'macro':
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Macro(data['name']))

@@ -128,3 +128,21 @@ def add_induct_def(name, T, eqs):
         exts.add_extension(Attribute(th_name, "hint_rewrite"))
 
     return exts
+
+def add_induct_predicate(name, T, props):
+    """Add the given inductive predicate.
+
+    The inductive predicate is specified by the name and type of
+    the predicate, and a list of introduction rules, where each
+    introduction rule must be given a name.
+
+    """
+    exts = TheoryExtension()
+    exts.add_extension(AxConstant(name, T))
+
+    for th_name, prop in props:
+        exts.add_extension(Theorem(th_name, Thm([], prop)))
+        exts.add_extension(Attribute(th_name, "hint_backward"))
+
+    # TODO: add induction rule
+    return exts
