@@ -269,6 +269,7 @@ def save_modify():
             "message": str(e),
             "detail-content": exc_detailed
         }
+
     return jsonify({'data': data, 'error': error})
 
 
