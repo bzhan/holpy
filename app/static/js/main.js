@@ -1,6 +1,7 @@
 (function ($) {
     var instructions = [];
     var page_num = 0;
+    var add_page = 0;
     var index = 0;
     var theory_name = "";  // Name of the current theory file
     var theory_imports = [];  // List of imports of the current theory file
@@ -13,6 +14,7 @@
     var origin_result = [];
     var edit_mode = false;
     var result_list_dict = {};
+    var file_list = [];
     var add_mode = false;
 
     $(document).ready(function () {
@@ -67,7 +69,6 @@
             });
         });
 
-
         $('#right').on('click', '.backward-step', function () {
             apply_backward_step(get_selected_editor(), is_others = true);
         });
@@ -103,6 +104,113 @@
                 instr_no_output.innerHTML = (index + 1) + '/' + instructions.length;
             }
         });
+
+        $('#add-json').click(function() {
+            page_num ++;
+            init_metadata_area(page_num);
+        });
+
+
+        function init_metadata_area(add_page) {
+            var id = 'code' + add_page + '-pan';
+            $('#codeTab').append(
+                $('<li class="nav-item" name="code' + add_page + '"><a class="nav-link" ' +
+                    'data-toggle="tab"' +
+                    'href="#code' + add_page + '-pan" name="'+ add_page +'">' +
+                    '<span> ' + 'File'+
+                    '</span><button id="close_tab" type="button" ' +
+                    'title="Remove this page" name="proof-tab">×</button>' +
+                    '</a></li>'));
+            let class_name = 'tab-pane fade active newCodeMirror code-cell';
+            if (add_page === 1)
+                class_name = 'tab-pane fade in active code-cell';
+            $('#codeTabContent').append(
+                $('<div class="' + class_name + '" id="code' + add_page + '-pan" style="margin:30px;">' +
+                    '<label for="code' + add_page + '"></label>' +
+                    'File name:&nbsp;<input id="fname'+ add_page +'" spellcheck="false" style="width:30%;">'+
+                    '<br><br>Imports:&nbsp;<input spellcheck="false" id="imp'+ add_page +'" style="width:30%;">'+
+                    '<br><br>Description:&nbsp;<textarea spellcheck="false" id="code' + add_page + '" style="width:27%;" lines="1"></textarea>' +
+                    '</div>'));
+            $('div.rbottom').append(
+                '<div id="prf'+ add_page +'" name="addition"><button id="'+ add_page + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;margin-left:25px;" name="save-json"><b>SAVE</b></button>' +
+                    '</div>');
+            $('#codeTab a[href="#code' + add_page + '-pan"]').tab('show');
+            $('div#prf'+ add_page).addClass('selected').siblings().removeClass('selected');
+            $('div#prf'+ add_page).show().siblings().hide();
+            $('.newCodeMirror').each(function () {
+                $(this).removeClass('active');
+            });
+        }
+
+//      click save to create json file;
+        $('div.rbottom').on('click', 'button[name="save-json"]', function() {
+            var pnum = $(this).attr('id');
+            var fname = $('#fname'+ pnum).val().trim();
+            var imp = $('#imp'+ pnum).val().split(',');
+            var des = $('#code'+ pnum).val().trim();
+            file_list.push(fname);
+            file_list.sort();
+            data = {
+                'name': fname,
+                'imports': imp,
+                'description': des
+            }
+            $.ajax({
+                url: '/api/add-new',
+                type: 'PUT',
+                data: JSON.stringify(data),
+                success: function(res) {
+                    alert('保存成功!');
+                    $('div#root-file').html('');
+                    display_file_list();
+                }
+            })
+        })
+
+//      tab on the left;
+        $('#json-tab1,#json-tab2').click(function() {
+            $(this).css({'background':'#FAFAD2','text-align':'center','border-bottom':'none'});
+            $(this).siblings('li').css({'background':'#f8f8f8','text-align':'center','border-bottom':'solid 1px'});
+        })
+
+        $('#json-tab1').click(function() {
+            $('div#root-file').show();
+            $('div#left_json').hide();
+        })
+
+        $('#json-tab2').click(function() {
+            $('div#root-file').hide();
+            $('div#left_json').show();
+        })
+
+        $('div#root-file').on('click', 'a[name="edit"]', function() {
+            var number = Number($(this).attr('id').slice(4,).trim())-1;
+            page_num++;
+            data = JSON.stringify(file_list[number]);
+            init_metadata_area(page_num);
+            $.ajax({
+                url: '/api/edit_jsonFile',
+                data: data,
+                type: 'POST',
+                success: function(res) {
+                    var name = res['name'];
+                    var des = res['description'];
+                    var imports = res['imports'].join(',');
+                    $('input#fname'+ page_num).val(name);
+                    $('input#imp'+ page_num).val(imports);
+                    $('textarea#code'+ page_num).val(des);
+                }
+            })
+        })
+
+        $('div#root-file').on('click', 'a[name="delete"]', function() {
+            var number = Number($(this).attr('id').trim())-1;
+            var json_name = $(this).attr('class');
+            file_list.splice(number,1);
+            $('div#root-file').html('');
+            display_file_list();
+            save_file_list(json_name);
+        })
 
         // Save a single proof to the webpage (not to the json file);
         $('div.rbottom').on('click', 'button.save', function () {
@@ -194,7 +302,7 @@
             if (file_name) {
                 theorem_proof(result_list_dict[file_name][id], file_name);
             }
-        })
+        });
 
 //      click the tab to show;
         $('#codeTab').on("click", "a", function (e) {
@@ -487,8 +595,6 @@
                              }}
                     display_result_list();
                     save_editor_data();
-
-
                 }
             });
         })
@@ -586,21 +692,23 @@
                 ajax_data['name'] = data_name.split(' :: ')[0];
                 ajax_data['type'] = data_name.split(' :: ')[1];
             }
-
             return ajax_data;
         }
 
-//      click to display the names of the json file;
-        $('#file-path').on('click', '#root-a', function () {
-            $('#left_json').empty();
-            if ($('#file-path a:last').text() !== 'root/') {
-                $('#file-path a:last').remove();
+//      click to save the related data to json file: edit && proof;
+        $('a#save-file').click(function () {
+            if (edit_mode) {
+                save_editor_data();
+            } else {
+                save_json_file();
             }
         });
 
 //      click to display json file;
-        $('#root-file').on('click', 'a', function () {
+        $('#root-file').on('click', 'a[name="file"]', function () {
             num = 0;
+            $(this).parent().hide();
+            $('#json-tab2').click();
             $('#left_json').empty();
             name = $(this).text();
             name = $.trim(name);
@@ -615,7 +723,7 @@
             data = JSON.stringify(name);
             ajax_res(data);
             add_mode = true;
-            });
+        });
 
             $('div.dropdown-menu.add-info a').on('click', function() {
                 if (add_mode === true) {
@@ -637,15 +745,33 @@
         // On loading page, retrieve list of theories from root file.
         num_root = 0;
         $.ajax({
-            url: "/api/root_file",
+            url: "/api/find_files",
             success: function (r) {
-                $.each(r['theories'], function (i, val) {
-                    num_root++;
-                    $('#root-file').append($('<a href="#"  ' + 'id="' + num_root + '"><font color="#006000"><b>' + val + '</b></font></a></br>'));
-                });
+                $('#json-tab1').click();
+                file_list = r['theories'];
+                display_file_list();
             }
         });
     });
+
+    function display_file_list() {
+        var num_a = 0;
+        $.each(file_list, function(i, val) {
+           num_a++;
+           $('#root-file').append($('<a href="#"  ' + 'id="file' + num_a + '" name="file"><font color="#006000"><b>' + val + '</b></font></a><a href="#" style="margin-left:20px;" name="edit" id="edit'+ num_a +'">edit</a><a href="#" style="margin-left:10px;" name="delete" id="'+ num_a +'" class="'+ val +'">delete</a></br></br>'));
+        });
+    }
+
+    function save_file_list(file_name) {
+        $.ajax({
+            url: '/api/save_file_list',
+            data: JSON.stringify(file_name),
+            type: 'PUT',
+            success: function(res) {
+                alert('删除成功！');
+            }
+        })
+    }
 
     function rp(x) {
         if (x === 0)
@@ -721,8 +847,8 @@
     function display_result_list() {
         result_list_dict[theory_name] = result_list;
         var import_str = theory_imports.join('、');
-        $('#left_json').empty();
-        $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
+        $('#left_json').html('');
+        $('#left_json').append($('<br><div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
         '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
         var num = 0;
         for (var d in result_list) {
@@ -793,9 +919,11 @@
             type: "POST",
             data: data,
             success: function (result) {
+                var error = result['error'];
                 theory_name = result['data']['name'];
                 theory_imports = result['data']['imports'];
                 theory_desc = result['data']['description'];
+
                 if (theory_name in result_list_dict) {
                     result_list = result_list_dict[theory_name];
                 }

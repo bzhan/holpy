@@ -1,7 +1,7 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
 from copy import copy
-import json, sys, io, traceback2
+import json, sys, io, traceback2, os
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -194,10 +194,12 @@ def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
     with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
-    thy = basic.loadImportedTheory(f_data['imports'])
-    for data in f_data['content']:
-        file_data_to_output(thy, data)
-
+    if 'content' in f_data:
+        thy = basic.loadImportedTheory(f_data['imports'])
+        for data in f_data['content']:
+            file_data_to_output(thy, data)
+    else:
+        f_data['content'] = []
     return jsonify({'data': f_data})
 
 
@@ -222,16 +224,6 @@ def save_file():
         json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
 
     return jsonify({})
-
-
-# display the json-file-name on the left;
-@app.route('/api/root_file', methods=['GET'])
-def get_root():
-    json_data = {}
-    with open('library/root.json', 'r+', encoding='utf-8') as f:
-        json_data = json.load(f)
-        f.close()
-    return jsonify(json_data)
 
 
 #match the thms for backward or rewrite;
@@ -287,3 +279,63 @@ def save_edit():
     j.close()
 
     return jsonify({})
+
+
+# create new json file;
+@app.route('/api/add-new', methods=['PUT'])
+def add_new():
+    data = json.loads(request.get_data().decode("utf-8"))
+    name = data['name']
+    if name in file_list:
+        with open('library/'+name +'.json', 'r', encoding='utf-8') as f:
+            file_data = json.load(f)
+            for key in data.keys():
+                file_data[key] = data[key]
+            f.close()
+        with open('library/'+name +'.json', 'w', encoding='utf-8') as f:
+            json.dump(file_data, f, ensure_ascii=False, indent=4)
+    else:
+        with open('library/' +name +'.json', 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+            f.close()
+
+    return jsonify({})
+
+
+#locate the files in the library;
+@app.route('/api/find_files', methods=['GET'])
+def find_files():
+    global file_list
+    fileDir = os.path.abspath('..') + '/holpy/library'
+    for i in os.walk(fileDir):
+        files = [x[:-5] for x in i[2]]
+        if files:
+            file_list = sorted(files)
+            return jsonify({'theories': sorted(files)})
+
+    return jsonify({})
+
+
+#get the metadata of the json-file;
+@app.route('/api/edit_jsonFile', methods=['POST'])
+def edit_jsonFile():
+    content = {}
+    name = json.loads(request.get_data().decode('utf-8'))
+    with open('library/'+ name+ '.json', 'r', encoding='utf-8') as f:
+        file_data = json.load(f)
+    content['description'] = file_data['description']
+    content['imports'] = file_data['imports']
+    content['name'] = name
+
+    return jsonify(content)
+
+
+#save the file_list
+@app.route('/api/save_file_list', methods=['PUT'])
+def save_file_list():
+    file_name = json.loads(request.get_data().decode('utf-8'))
+    fileDir = os.path.abspath('..') + '/holpy/library/' +file_name + '.json'
+    os.remove(fileDir)
+
+    return jsonify({})
+
