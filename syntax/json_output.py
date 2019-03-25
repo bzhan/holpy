@@ -5,6 +5,7 @@
 import json
 
 from kernel.term import get_vars
+from kernel import proof
 from logic import basic
 from syntax import printer
 
@@ -15,6 +16,21 @@ class JSONTheory():
         self.thy = basic.loadImportedTheory(imports)
         self.description = description
         self.content = []
+
+    def export_proof_json(self, item):
+        str_th = printer.print_thm(self.thy, item.th) if item.th else ""
+        str_args = printer.print_str_args(self.thy, item.rule, item.args)
+        res = {
+            'id': proof.print_id(item.id),
+            'th': str_th,
+            'rule': item.rule,
+            'args': str_args,
+            'prevs': [proof.print_id(prev) for prev in item.prevs]
+        }
+        if item.subproof:
+            return [res] + sum([self.export_proof_json(i) for i in item.subproof.items], [])
+        else:
+            return [res]
 
     def add_theorem(self, name, th, prf):
         """Add a theorem with proof to the file."""
@@ -27,8 +43,7 @@ class JSONTheory():
             "prop": printer.print_term(self.thy, th.concl),
             "vars": vars,
             "num_gaps": 0,
-            "proof": sum([printer.export_proof_item(self.thy, item, unicode=False, highlight=False)
-                          for item in prf.items], []),
+            "proof": sum([self.export_proof_json(item) for item in prf.items], []),
         }
         self.content.append(data)
 

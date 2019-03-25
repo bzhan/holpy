@@ -271,7 +271,7 @@ def print_str_args(thy, rule, args):
 @settings.with_settings
 def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
-    str_th = print_thm(thy, item.th) if item.th else ""
+    str_th = print_term(thy, item.th.concl) if item.th else ""
     str_args = print_str_args(thy, item.rule, item.args)
     res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
            'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}
