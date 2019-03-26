@@ -3,7 +3,7 @@
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Const, Abs
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv
-from logic.proofterm import ProofTerm
+from logic.proofterm import ProofTerm, refl
 
 """Utility functions for logic."""
 
@@ -130,9 +130,9 @@ class norm_bool_expr(Conv):
             elif t.arg == false:
                 return rewr_conv("not_false").get_proof_term(thy, t)
             else:
-                return ProofTerm.reflexive(t)
+                return refl(t)
         else:
-            return ProofTerm.reflexive(t)
+            return refl(t)
 
 class norm_conj_assoc_clauses(Conv):
     """Normalize (A_1 & ... & A_n) & (B_1 & ... & B_n)."""

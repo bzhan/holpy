@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.thm import Thm, primitive_deriv
+from kernel.theory import Theory
 from kernel.proof import Proof, id_force_tuple
 from kernel.macro import ProofMacro, MacroSig
 
@@ -145,13 +146,30 @@ class ProofTerm():
             prf = Proof()
         return self._export(prefix, dict(), prf)
 
-    def on_prop(self, thy, cv):
+    def on_prop(self, thy, *cvs):
         """Apply the given conversion to the proposition."""
-        return cv.apply_to_pt(thy, self)
+        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        pt = self
+        for cv in cvs:
+            pt = cv.apply_to_pt(thy, pt)
+        return pt
 
-    def on_arg(self, thy, cv):
+    def on_arg(self, thy, *cvs):
         """Apply the given conversion to the argument of the proposition."""
-        return cv.apply_to_pt(thy, self, pos="arg")
+        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        pt = self
+        for cv in cvs:
+            pt = cv.apply_to_pt(thy, pt, pos="arg")
+        return pt
+
+    def on_rhs(self, thy, *cvs):
+        """Same as on_arg, except check the current theorem is an equality."""
+        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        assert self.prop.is_equals(), "on_rhs: theorem is not an equality."
+        return self.on_arg(thy, *cvs)
+
+def refl(t):
+    return ProofTerm.reflexive(t)
 
 class ProofTermAtom(ProofTerm):
     """Atom proof terms."""

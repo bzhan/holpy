@@ -6,7 +6,7 @@ from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
 from logic.conv import then_conv, beta_conv, top_conv, rewr_conv
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
+from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
 
 """Standard macros in logic."""
 
@@ -23,7 +23,7 @@ class arg_combination_macro(ProofTermMacro):
 
     def get_proof_term(self, thy, f, pts):
         assert pts[0].prop.is_equals(), "arg_combination"
-        return ProofTerm.combination(ProofTerm.reflexive(f), pts[0])
+        return ProofTerm.combination(refl(f), pts[0])
 
 class fun_combination_macro(ProofTermMacro):
     """Given theorem f = g and term x, return f x = g x."""
@@ -38,7 +38,7 @@ class fun_combination_macro(ProofTermMacro):
 
     def get_proof_term(self, thy, x, pts):
         assert pts[0].prop.is_equals(), "fun_combination"
-        return ProofTerm.combination(pts[0], ProofTerm.reflexive(x))
+        return ProofTerm.combination(pts[0], refl(x))
 
 class beta_norm_macro(ProofTermMacro):
     """Given theorem th, return the normalization of th."""

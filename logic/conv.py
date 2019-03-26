@@ -3,7 +3,7 @@
 from kernel.type import Type
 from kernel.term import Var, Term
 from kernel.thm import Thm, InvalidDerivationException
-from logic.proofterm import ProofTerm
+from logic.proofterm import ProofTerm, refl
 from logic import matcher
 
 class ConvException(Exception):
@@ -36,7 +36,7 @@ class Conv():
 class all_conv(Conv):
     """Returns the trivial equality t = t."""
     def get_proof_term(self, thy, t):
-        return ProofTerm.reflexive(t)
+        return refl(t)
 
 class no_conv(Conv):
     """Always fails."""
@@ -173,7 +173,7 @@ class assums_conv(Conv):
         if t.is_implies():
             return then_conv(arg1_conv(self.cv), arg_conv(self)).get_proof_term(thy, t)
         else:
-            return ProofTerm.reflexive(t)
+            return refl(t)
 
 class sub_conv(Conv):
     def __init__(self, cv):
@@ -185,7 +185,7 @@ class sub_conv(Conv):
         elif t.ty == Term.ABS:
             return abs_conv(self.cv).get_proof_term(thy, t)
         else:
-            return ProofTerm.reflexive(t)
+            return refl(t)
 
 class bottom_conv(Conv):
     """Applies cv repeatedly in the bottom-up manner."""
