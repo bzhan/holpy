@@ -135,7 +135,7 @@ def print_term(thy, t):
             op_data = get_info_for_operator(t)
             # First, we take care of the case of operators
             if op_data and op_data.arity == OperatorData.BINARY and t.is_binop():
-                arg1, arg2 = t.dest_binop()
+                arg1, arg2 = t.args
 
                 # Obtain output for first argument, enclose in parenthesis
                 # if necessary.

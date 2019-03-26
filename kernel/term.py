@@ -303,10 +303,6 @@ class Term():
         """Whether self is of the form f t1 t2."""
         return self.ty == Term.COMB and self.fun.ty == Term.COMB
 
-    def dest_binop(self):
-        """Given a term f t1 t2, return (t1, t2)."""
-        return (self.fun.arg, self.arg)
-
     @property
     def arg1(self):
         """Given a term f a b, return a."""
@@ -368,6 +364,16 @@ class Term():
             return self.head.is_const_with_name("equals")
         else:
             return False
+
+    @property
+    def lhs(self):
+        assert self.is_equals(), "lhs: not an equality."
+        return self.arg1
+
+    @property
+    def rhs(self):
+        assert self.is_equals(), "rhs: not an equality."
+        return self.arg
 
     @staticmethod
     def mk_equals(s, t):

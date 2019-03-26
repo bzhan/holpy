@@ -127,7 +127,7 @@ class Thm():
         |- B
         """
         if th1.prop.is_implies():
-            (A, B) = th1.prop.dest_binop()
+            A, B = th1.prop.args
             if A == th2.prop:
                 return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), B)
             else:
@@ -152,8 +152,8 @@ class Thm():
         |- y = x
         """
         if th.prop.is_equals():
-            (x, y) = th.prop.dest_binop()
-            return Thm(th.hyps, Term.mk_equals(y,x))
+            x, y = th.prop.args
+            return Thm(th.hyps, Term.mk_equals(y, x))
         else:
             raise InvalidDerivationException("symmetric")
 
@@ -167,10 +167,10 @@ class Thm():
         |- x = z
         """
         if th1.prop.is_equals() and th2.prop.is_equals():
-            (x, y1) = th1.prop.dest_binop()
-            (y2, z) = th2.prop.dest_binop()
+            x, y1 = th1.prop.args
+            y2, z = th2.prop.args
             if y1 == y2:
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Term.mk_equals(x,z))
+                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Term.mk_equals(x, z))
             else:
                 raise InvalidDerivationException("transitive: middle term")
         else:
@@ -186,11 +186,11 @@ class Thm():
         |- f x = g y
         """
         if th1.prop.is_equals() and th2.prop.is_equals():
-            (f, g) = th1.prop.dest_binop()
-            (x, y) = th2.prop.dest_binop()
+            f, g = th1.prop.args
+            x, y = th2.prop.args
             Tf = f.get_type()
             if Tf.is_fun() and Tf.domain_type() == x.get_type():
-                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Term.mk_equals(f(x),g(y)))
+                return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Term.mk_equals(f(x), g(y)))
             else:
                 raise InvalidDerivationException("combination")
         else:
@@ -206,8 +206,8 @@ class Thm():
         |- A = B
         """
         if th1.prop.is_implies() and th2.prop.is_implies():
-            (A1, B1) = th1.prop.dest_binop()
-            (B2, A2) = th2.prop.dest_binop()
+            A1, B1 = th1.prop.args
+            B2, A2 = th2.prop.args
             if A1 == A2 and B1 == B2:
                 return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), Term.mk_equals(A1, B1))
             else:
@@ -225,7 +225,7 @@ class Thm():
         |- B
         """
         if th1.prop.is_equals():
-            (A, B) = th1.prop.dest_binop()
+            A, B = th1.prop.args
             if A == th2.prop:
                 return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), B)
             else:
@@ -289,9 +289,9 @@ class Thm():
         if any(hyp.occurs_var(x) for hyp in th.hyps):
             raise InvalidDerivationException("abstraction")
         elif th.prop.is_equals():
-            (t1, t2) = th.prop.dest_binop()
+            t1, t2 = th.prop.args
             try:
-                (t1_new, t2_new) = (Term.mk_abs(x, t1), Term.mk_abs(x, t2))
+                t1_new, t2_new = (Term.mk_abs(x, t1), Term.mk_abs(x, t2))
             except TermSubstitutionException:
                 raise InvalidDerivationException("abstraction")
             return Thm(th.hyps, Term.mk_equals(t1_new, t2_new))
