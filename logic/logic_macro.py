@@ -61,8 +61,9 @@ class apply_theorem_macro(ProofTermMacro):
     """Apply existing theorem in the theory to a list of current
     results in the proof.
 
-    If with_inst is set, the signature is (th_name, concl), where
-    th_name is the name of the theorem, concl is the expected conclusion.
+    If with_inst is set, the signature is (th_name, tyinst, inst),
+    where th_name is the name of the theorem, and tyinst, inst are
+    the instantiations of type and term variables.
 
     If with_inst is not set, the signature is th_name, where th_name
     is the name of the theorem.
@@ -158,8 +159,18 @@ class rewrite_goal_macro(ProofTermMacro):
             pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.th.prop, pt), A)
         return pt
 
-def apply_theorem(thy, th_name, *pts):
-    return ProofTermDeriv("apply_theorem", thy, th_name, pts)
+def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
+    if concl is None:
+        return ProofTermDeriv("apply_theorem", thy, th_name, pts)
+    else:
+        pt = ProofTerm.theorem(thy, th_name)
+        if tyinst is None:
+            tyinst = dict()
+        if inst is None:
+            inst = dict()
+        matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
+        pt = ProofTermDeriv("apply_theorem_for", thy, (th_name, tyinst, inst), pts)
+        return ProofTermDeriv("beta_norm", thy, None, [pt])
 
 def init_theorem(thy, th_name, tyinst=None, inst=None):
     if tyinst is None:

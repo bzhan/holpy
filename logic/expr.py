@@ -33,10 +33,10 @@ class prove_avalI_macro(ProofTermMacro):
         f, args = t.strip_comb()
         if f == N:
             n = args[0]
-            return init_theorem(thy, "avalI_const", inst={"s": s, "n": n})
+            return apply_theorem(thy, "avalI_const", concl=avalI(s, N(n), n))
         elif f == V:
             x = args[0]
-            pt = init_theorem(thy, "avalI_var", inst={"s": s, "x": x})
+            pt = apply_theorem(thy, "avalI_var", concl=avalI(s, V(x), s(x)))
             return arg_conv(function.fun_upd_eval_conv()).apply_to_pt(thy, pt)
         elif f == Plus:
             a1, a2 = args

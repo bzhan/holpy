@@ -73,61 +73,43 @@ class eval_Sem_macro(ProofTermMacro):
         elif f.is_const_with_name("Seq"):
             c1, c2 = args
             pt1 = self.eval_Sem(thy, c1, st)
-            st2 = pt1.th.prop.arg
-            pt2 = self.eval_Sem(thy, c2, st2)
+            pt2 = self.eval_Sem(thy, c2, pt1.prop.arg)
             pt = apply_theorem(thy, "Sem_seq", pt1, pt2)
             return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
         elif f.is_const_with_name("Cond"):
             b, c1, c2 = args
             b_st = top_conv(beta_conv())(thy, b(st)).prop.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
-            if b_eval.th.prop.arg == logic.true:
+            if b_eval.prop.arg == logic.true:
                 b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
                 pt1 = self.eval_Sem(thy, c1, st)
-                st2 = pt1.th.prop.arg
-                pt = init_theorem(thy, "Sem_if1", tyinst={"a": T},
-                                  inst={"b": b, "c1": c1, "c2": c2, "s": st, "s2": st2})
-                return ProofTerm.implies_elim(pt, b_res, pt1)
+                return apply_theorem(thy, "Sem_if1", b_res, pt1, concl=Sem(T)(com, st, pt1.prop.arg))
             else:
                 b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
                 pt2 = self.eval_Sem(thy, c2, st)
-                st2 = pt2.th.prop.arg
-                pt = init_theorem(thy, "Sem_if2", tyinst={"a": T},
-                                  inst={"b": b, "c1": c1, "c2": c2, "s": st, "s2": st2})
-                return ProofTerm.implies_elim(pt, b_res, pt2)
+                return apply_theorem(thy, "Sem_if2", b_res, pt2, concl=Sem(T)(com, st, pt2.prop.arg))
         elif f.is_const_with_name("While"):
             b, inv, c = args
             b_st = top_conv(beta_conv())(thy, b(st)).prop.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
-            if b_eval.th.prop.arg == logic.true:
+            if b_eval.prop.arg == logic.true:
                 b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
                 pt1 = self.eval_Sem(thy, c, st)
-                st3 = pt1.th.prop.arg
-                pt2 = self.eval_Sem(thy, com, st3)
-                st2 = pt2.th.prop.arg
-                pt = init_theorem(thy, "Sem_while_loop", tyinst={"a": T},
-                                  inst={"b": b, "c": c, "I": inv, "s": st, "s3": st3, "s2": st2})
-                pt = ProofTerm.implies_elim(pt, b_res, pt1, pt2)
+                pt2 = self.eval_Sem(thy, com, pt1.prop.arg)
+                pt = apply_theorem(thy, "Sem_while_loop", b_res, pt1, pt2,
+                                   concl=Sem(T)(com, st, pt2.prop.arg), inst={"s3": pt1.prop.arg})
                 return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
             else:
                 b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
-                pt = init_theorem(thy, "Sem_while_skip", tyinst={"a": T},
-                                  inst={"b": b, "c": c, "I": inv, "s": st})
-                return ProofTerm.implies_elim(pt, b_res)
+                return apply_theorem(thy, "Sem_while_skip", b_res, concl=Sem(T)(com, st, st))
         else:
             raise NotImplementedError
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "eval_Sem_macro"
-        f, args = args.strip_comb()
-        com, st, st2 = args
+        f, (com, st, st2) = args.strip_comb()
         pt = self.eval_Sem(thy, com, st)
-        res_st2 = pt.th.prop.arg
-        if st2 != res_st2:
-            from syntax import printer
-            print(printer.print_term(thy, st2))
-            print(printer.print_term(thy, res_st2))
-        assert st2 == res_st2, "eval_Sem_macro: wrong result."
+        assert st2 == pt.prop.arg, "eval_Sem_macro: wrong result."
         return pt
 
 
@@ -139,37 +121,31 @@ def compute_wp(thy, c, Q):
     """
     T = Q.get_type().domain_type()
     f, args = c.strip_comb()
-    if f.is_const_with_name("Assign"):
+    if f.is_const_with_name("Assign"):  # Assign a b
         a, b = args
         Ta, Tb = T.domain_type(), T.range_type()
-        pt = init_theorem(thy, "assign_rule", tyinst={"a": Ta, "b": Tb},
-                          inst={"a": a, "b": b, "P": Q})
-        return pt
-    elif f.is_const_with_name("Seq"):
-        c1, c2 = args
-        wp1 = compute_wp(thy, c2, Q)
+        return init_theorem(thy, "assign_rule", tyinst={"a": Ta, "b": Tb},
+                            inst={"a": a, "b": b, "P": Q})
+    elif f.is_const_with_name("Seq"):  # Seq c1 c2
+        wp1 = compute_wp(thy, args[1], Q)
         Q1 = wp1.prop.args[0]
-        wp2 = compute_wp(thy, c1, Q1)
+        wp2 = compute_wp(thy, args[0], Q1)
         return apply_theorem(thy, "seq_rule", wp2, wp1)
-    elif f.is_const_with_name("While"):
-        b, I, c = args
-        pt = init_theorem(thy, "while_rule", tyinst={"a": T}, inst={"I": I, "b": b, "c": c, "Q": Q})
-        As = pt.assums
-        pt0 = ProofTerm.assume(As[0])
-        pt1 = vcg(thy, As[1])
+    elif f.is_const_with_name("While"):  # While b I c
+        pt = apply_theorem(thy, "while_rule", concl=Valid(T)(args[1], c, Q))
+        pt0 = ProofTerm.assume(pt.assums[0])
+        pt1 = vcg(thy, pt.assums[1])
         return ProofTerm.implies_elim(pt, pt0, pt1)
     else:
         raise NotImplementedError
 
 def vcg(thy, goal):
     """Compute the verification conditions for the goal."""
-    f, args = goal.strip_comb()
-    P, c, Q = args
+    f, (P, c, Q) = goal.strip_comb()
     T = Q.get_type().domain_type()
 
     pt = compute_wp(thy, c, Q)
-    P2 = pt.prop.args[0]
-    entail_P = ProofTerm.assume(Entail(T)(P, P2))
+    entail_P = ProofTerm.assume(Entail(T)(P, pt.prop.args[0]))
     return apply_theorem(thy, "pre_rule", entail_P, pt)
 
 class vcg_macro(ProofTermMacro):
