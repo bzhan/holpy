@@ -43,7 +43,7 @@ def strip_fun_upd(t):
 
     """
     if is_fun_upd(t):
-        _, (f1, a, b) = t.strip_comb()
+        f1, a, b = t.args
         f, upds = strip_fun_upd(f1)
         return f, upds + [(a, b)]
     else:
@@ -58,7 +58,7 @@ class fun_upd_eval_conv(Conv):
 
         f, c = t.fun, t.arg
         if is_fun_upd(f):
-            _, (f1, a, b) = f.strip_comb()
+            f1, a, b = f.args
             if a == c:
                 return rewr_conv("fun_upd_same").get_proof_term(thy, t)
             else:
@@ -98,11 +98,9 @@ class fun_upd_norm_one_conv(Conv):
     """
     def get_proof_term(self, thy, t):
         if is_fun_upd(t):
-            _, args = t.strip_comb()
-            f, a, b = args
+            f, a, b = t.args
             if is_fun_upd(f):
-                _, args2 = f.strip_comb()
-                f2, a2, b2 = args2
+                f2, a2, b2 = f.args
                 if nat.from_binary(a) < nat.from_binary(a2):
                     pt = logic_macro.init_theorem(
                         thy, "fun_upd_twist",

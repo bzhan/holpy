@@ -138,7 +138,7 @@ def encode(t):
         if st.is_implies() or st.is_equals() or logic.is_conj(st) or logic.is_disj(st):
             r1 = get_var(subterms_dict[st.arg1])
             r2 = get_var(subterms_dict[st.arg])
-            f = st.get_head()
+            f = st.head
             eqs.append(Term.mk_equals(l, f(r1, r2)))
             if st.is_implies():
                 clauses.extend(encode_eq_imp(l, r1, r2))

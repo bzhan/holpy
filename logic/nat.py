@@ -40,10 +40,10 @@ def mk_times(*args):
         return times(mk_times(*args[:-1]), args[-1])
 
 def is_plus(t):
-    return t.is_binop() and t.get_head() == plus
+    return t.is_binop() and t.head == plus
 
 def is_times(t):
-    return t.is_binop() and t.get_head() == times
+    return t.is_binop() and t.head == times
 
 bit0 = Const("bit0", TFun(natT, natT))
 bit1 = Const("bit1", TFun(natT, natT))
@@ -61,12 +61,11 @@ def to_binary(n):
 
 def is_binary(t):
     """Whether the term t is in standard binary form."""
-    head = t.get_head()
     if t == zero or t == one:
         return True
     elif t.ty != Term.COMB:
         return False
-    elif head == bit0 or head == bit1:
+    elif t.head == bit0 or t.head == bit1:
         return is_binary(t.arg)
     else:
         return False
@@ -77,7 +76,7 @@ def from_binary(t):
         return 0
     elif t == one:
         return 1
-    elif t.get_head() == bit0:
+    elif t.head == bit0:
         return 2 * from_binary(t.arg)
     else:
         return 2 * from_binary(t.arg) + 1
@@ -93,7 +92,7 @@ class Suc_conv(Conv):
             return all_conv().get_proof_term(thy, t)
         elif n == one:
             return rewr_conv("one_Suc").get_proof_term(thy, t)
-        elif n.get_head() == bit0:
+        elif n.head == bit0:
             return rewr_conv("bit0_Suc").get_proof_term(thy, t)
         else:
             return then_conv(rewr_conv("bit1_Suc"), arg_conv(Suc_conv())).get_proof_term(thy, t)
@@ -113,11 +112,11 @@ class add_conv(Conv):
             cv = then_conv(rewr_conv("add_1_left"), Suc_conv())
         elif n2 == one:
             cv = then_conv(rewr_conv("add_1_right"), Suc_conv())
-        elif n1.get_head() == bit0 and n2.get_head() == bit0:
+        elif n1.head == bit0 and n2.head == bit0:
             cv = then_conv(rewr_conv("bit0_bit0_add"), arg_conv(add_conv()))
-        elif n1.get_head() == bit0 and n2.get_head() == bit1:
+        elif n1.head == bit0 and n2.head == bit1:
             cv = then_conv(rewr_conv("bit0_bit1_add"), arg_conv(add_conv()))
-        elif n1.get_head() == bit1 and n2.get_head() == bit0:
+        elif n1.head == bit1 and n2.head == bit0:
             cv = then_conv(rewr_conv("bit1_bit0_add"), arg_conv(add_conv()))
         else:
             cv = every_conv(rewr_conv("bit1_bit1_add"),
@@ -141,11 +140,11 @@ class mult_conv(Conv):
             cv = rewr_conv("mult_1_left")
         elif n2 == one:
             cv = rewr_conv("mult_1_right")
-        elif n1.get_head() == bit0 and n2.get_head() == bit0:
+        elif n1.head == bit0 and n2.head == bit0:
             cv = then_conv(rewr_conv("bit0_bit0_mult"), arg_conv(arg_conv(mult_conv())))
-        elif n1.get_head() == bit0 and n2.get_head() == bit1:
+        elif n1.head == bit0 and n2.head == bit1:
             cv = then_conv(rewr_conv("bit0_bit1_mult"), arg_conv(mult_conv()))
-        elif n1.get_head() == bit1 and n2.get_head() == bit0:
+        elif n1.head == bit1 and n2.head == bit0:
             cv = then_conv(rewr_conv("bit1_bit0_mult"), arg_conv(mult_conv()))
         else:
             cv = every_conv(rewr_conv("bit1_bit1_mult"),
@@ -163,12 +162,11 @@ class nat_conv(Conv):
             if is_binary(t):
                 return from_binary(t)
             else:
-                f = t.get_head()
-                if f == Suc:
+                if t.head == Suc:
                     return val(t.arg) + 1
-                elif f == plus:
+                elif t.head == plus:
                     return val(t.arg1) + val(t.arg)
-                elif f == times:
+                elif t.head == times:
                     return val(t.arg1) * val(t.arg)
                 else:
                     raise ConvException()
@@ -179,12 +177,11 @@ class nat_conv(Conv):
         if is_binary(t):
             cv = all_conv()
         else:
-            f = t.get_head()
-            if f == Suc:
+            if t.head == Suc:
                 cv = then_conv(arg_conv(nat_conv()), Suc_conv())
-            elif f == plus:
+            elif t.head == plus:
                 cv = then_conv(binop_conv(nat_conv()), add_conv())
-            elif f == times:
+            elif t.head == times:
                 cv = then_conv(binop_conv(nat_conv()), mult_conv())
             else:
                 raise ConvException()

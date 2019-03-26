@@ -289,12 +289,15 @@ class Term():
         else:
             return (self, [])
 
-    def get_head(self):
+    @property
+    def head(self):
         """Given a term f t1 t2 ... tn, returns f."""
-        if self.ty == Term.COMB:
-            return self.fun.get_head()
-        else:
-            return self
+        return self.strip_comb()[0]
+
+    @property
+    def args(self):
+        """Given a term f t1 t2 ... tn, return the list [t1, ..., tn]."""
+        return self.strip_comb()[1]
 
     def is_binop(self):
         """Whether self is of the form f t1 t2."""
@@ -312,7 +315,7 @@ class Term():
     def is_implies(self):
         """Whether self is of the form A --> B."""
         implies = Const("implies", TFun(hol_bool, hol_bool, hol_bool))
-        return self.is_binop() and self.get_head() == implies
+        return self.is_binop() and self.head == implies
 
     @staticmethod
     def mk_implies(*args):
@@ -362,7 +365,7 @@ class Term():
     def is_equals(self):
         """Whether self is of the form A = B."""
         if self.is_binop():
-            return self.get_head().is_const_with_name("equals")
+            return self.head.is_const_with_name("equals")
         else:
             return False
 

@@ -83,7 +83,7 @@ def print_term(thy, t):
 
     """
     def get_info_for_operator(t):
-        return thy.get_data("operator").get_info_for_fun(t.get_head())
+        return thy.get_data("operator").get_info_for_fun(t.head)
 
     def get_priority(t):
         if nat.is_binary(t) or hol_list.is_literal_list(t):
@@ -118,9 +118,9 @@ def print_term(thy, t):
                 return res
 
         if logic.is_if(t):
-            P, x, y = logic.dest_if(t)
+            P, x, y = t.args
             return N("if ") + helper(P, bd_vars) + N(" then ") + helper(x, bd_vars) + \
-                N(" else ") + helper(y, bd_vars)
+                   N(" else ") + helper(y, bd_vars)
 
         if t.ty == Term.VAR:
             return V(t.name)

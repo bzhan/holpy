@@ -148,7 +148,7 @@ def compute_wp(thy, c, Q):
     elif f.is_const_with_name("Seq"):
         c1, c2 = args
         wp1 = compute_wp(thy, c2, Q)
-        Q1 = wp1.th.prop.strip_comb()[1][0]
+        Q1 = wp1.prop.args[0]
         wp2 = compute_wp(thy, c1, Q1)
         return apply_theorem(thy, "seq_rule", wp2, wp1)
     elif f.is_const_with_name("While"):
@@ -168,7 +168,7 @@ def vcg(thy, goal):
     T = Q.get_type().domain_type()
 
     pt = compute_wp(thy, c, Q)
-    P2 = pt.th.prop.strip_comb()[1][0]
+    P2 = pt.prop.args[0]
     entail_P = ProofTerm.assume(Entail(T)(P, P2))
     return apply_theorem(thy, "pre_rule", entail_P, pt)
 
@@ -185,7 +185,7 @@ class vcg_macro(ProofTermMacro):
         pt = vcg(thy, goal)
         cv = every_conv(rewr_conv("Entail_def"), top_conv(beta_conv()),
                         top_conv(function.fun_upd_eval_conv()))
-        for A in reversed(pt.th.hyps):
+        for A in reversed(pt.hyps):
             pt = ProofTerm.implies_intr(A, pt)
         pt = assums_conv(cv).apply_to_pt(thy, pt)
         return pt
@@ -196,10 +196,7 @@ def vcg_solve(thy, goal):
     
     """
     pt = ProofTermDeriv("vcg", thy, goal, [])
-    vcs = pt.assums
-    vc_pt = []
-    for vc in vcs:
-        vc_pt.append(ProofTermDeriv("z3", thy, vc, []))
+    vc_pt = [ProofTermDeriv("z3", thy, vc, []) for vc in pt.assums]
     return ProofTerm.implies_elim(pt, *vc_pt)
 
 

@@ -16,7 +16,7 @@ false = Const("false", hol_bool)
     
 def is_conj(t):
     """Whether t is of the form A & B."""
-    return t.is_binop() and t.get_head() == conj
+    return t.is_binop() and t.head == conj
 
 def mk_conj(*args):
     """Construct the term s1 & ... & sn."""
@@ -41,7 +41,7 @@ def strip_conj(t):
 
 def is_disj(t):
     """Whether t is of the form A | B."""
-    return t.is_binop() and t.get_head() == disj
+    return t.is_binop() and t.head == disj
 
 def mk_disj(*args):
     """Construct the term s1 | ... | sn."""
@@ -118,11 +118,6 @@ def is_if(t):
 def mk_if(P, x, y):
     """Obtain the term if P then x else y."""
     return if_t(x.get_type())(P, x, y)
-
-def dest_if(t):
-    """Given a term if P then x else y, return (P, x, y)."""
-    _, args = t.strip_comb()
-    return args
 
 """Normalization rules for logic."""
 
