@@ -145,6 +145,14 @@ class ProofTerm():
             prf = Proof()
         return self._export(prefix, dict(), prf)
 
+    def on_prop(self, thy, cv):
+        """Apply the given conversion to the proposition."""
+        return cv.apply_to_pt(thy, self)
+
+    def on_arg(self, thy, cv):
+        """Apply the given conversion to the argument of the proposition."""
+        return cv.apply_to_pt(thy, self, pos="arg")
+
 class ProofTermAtom(ProofTerm):
     """Atom proof terms."""
     def __init__(self, id, th):

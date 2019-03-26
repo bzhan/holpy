@@ -428,7 +428,7 @@ class nat_norm_macro(ProofTermMacro):
         t1, t2 = args.arg1, args.arg
         pt1 = norm_full().get_proof_term(thy, t1)
         pt2 = norm_full().get_proof_term(thy, t2)
-        assert pt1.th.prop.arg == pt2.th.prop.arg, "nat_norm_macro: normalization is not equal."
+        assert pt1.prop.rhs == pt2.prop.rhs, "nat_norm_macro: normalization is not equal."
 
         return ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
 

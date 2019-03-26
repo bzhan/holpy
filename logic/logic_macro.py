@@ -22,7 +22,7 @@ class arg_combination_macro(ProofTermMacro):
         return Thm.combination(Thm.reflexive(f), ths[0])
 
     def get_proof_term(self, thy, f, pts):
-        assert pts[0].th.prop.is_equals(), "arg_combination"
+        assert pts[0].prop.is_equals(), "arg_combination"
         return ProofTerm.combination(ProofTerm.reflexive(f), pts[0])
 
 class fun_combination_macro(ProofTermMacro):
@@ -37,7 +37,7 @@ class fun_combination_macro(ProofTermMacro):
         return Thm.combination(ths[0], Thm.reflexive(x))
 
     def get_proof_term(self, thy, x, pts):
-        assert pts[0].th.prop.is_equals(), "fun_combination"
+        assert pts[0].prop.is_equals(), "fun_combination"
         return ProofTerm.combination(pts[0], ProofTerm.reflexive(x))
 
 class beta_norm_macro(ProofTermMacro):
@@ -104,7 +104,7 @@ class apply_theorem_macro(ProofTermMacro):
         if not self.with_inst:
             As = th.assums
             for idx, pt in enumerate(pts):
-                matcher.first_order_match_incr(As[idx], pt.th.prop, (tyinst, inst))
+                matcher.first_order_match_incr(As[idx], pt.prop, (tyinst, inst))
 
         pt = ProofTerm.substitution(inst,
                 ProofTerm.subst_type(tyinst, ProofTerm.theorem(thy, name)))
@@ -156,7 +156,7 @@ class rewrite_goal_macro(ProofTermMacro):
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
         pt = ProofTerm.equal_elim(pt, pts[0])  # goal
         for A in pts[1:]:
-            pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.th.prop, pt), A)
+            pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.prop, pt), A)
         return pt
 
 def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):

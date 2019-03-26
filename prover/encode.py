@@ -81,7 +81,7 @@ def get_encode_proof(th):
     # Obtain the expansion of each As to a non-atomic term.
     pts = []
     for ptA in ptAs:
-        rhs = ptA.th.prop.arg
+        rhs = ptA.prop.rhs
         if logic.is_conj(rhs):
             cv = rewr_conv("encode_conj")
         elif logic.is_disj(rhs):
