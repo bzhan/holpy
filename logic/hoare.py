@@ -154,7 +154,7 @@ def compute_wp(thy, c, Q):
     elif f.is_const_with_name("While"):
         b, I, c = args
         pt = init_theorem(thy, "while_rule", tyinst={"a": T}, inst={"I": I, "b": b, "c": c, "Q": Q})
-        As, C = pt.th.prop.strip_implies()
+        As = pt.assums
         pt0 = ProofTerm.assume(As[0])
         pt1 = vcg(thy, As[1])
         return ProofTerm.implies_elim(pt, pt0, pt1)
@@ -196,7 +196,7 @@ def vcg_solve(thy, goal):
     
     """
     pt = ProofTermDeriv("vcg", thy, goal, [])
-    vcs = pt.th.prop.strip_implies()[0]
+    vcs = pt.assums
     vc_pt = []
     for vc in vcs:
         vc_pt.append(ProofTermDeriv("z3", thy, vc, []))

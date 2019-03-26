@@ -207,22 +207,22 @@ class rewr_conv(Conv):
                 self.pt = ProofTerm.symmetric(self.pt)
                 
         # Deconstruct th into assumptions and conclusion
-        self.As, self.C = self.pt.th.prop.strip_implies()
-        assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
-        self.pat = self.C.arg1
+        As, C = self.pt.assums, self.pt.concl
+        assert Term.is_equals(C), "rewr_conv: theorem is not an equality."
+        pat = C.arg1
 
         tyinst, inst = dict(), dict()
 
         if self.match_vars:
             try:
-                matcher.first_order_match_incr(self.pat, t, (tyinst, inst))
+                matcher.first_order_match_incr(pat, t, (tyinst, inst))
             except matcher.MatchException:
                 raise ConvException()
-        elif self.pat != t:
+        elif pat != t:
             raise ConvException()
 
         pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, self.pt))
-        As, _ = pt.th.prop.strip_implies()
+        As = pt.assums
         for A in As:
             pt = ProofTerm.implies_elim(pt, ProofTerm.assume(A))
         return pt

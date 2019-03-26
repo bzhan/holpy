@@ -312,7 +312,7 @@ class ProofState():
                 continue
 
             instsp = (dict(), dict())
-            As, C = th.prop.strip_implies()
+            As, C = th.assums, th.concl
             # Only process those theorems where C and the matched As
             # contain all of the variables.
             if set(term.get_vars(As[:len(prevs)] + [C])) != set(term.get_vars(As + [C])):
@@ -356,7 +356,7 @@ class ProofState():
 
         if instsp is None:
             instsp = (dict(), dict())
-            As, C = th.prop.strip_implies()
+            As, C = th.assums, th.concl
             for pat, prev in zip(As, prevs):
                 item = self.get_proof_item(prev)
                 matcher.first_order_match_incr(pat, item.th.prop, instsp)

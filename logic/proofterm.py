@@ -16,6 +16,22 @@ class ProofTerm():
     """
     ATOM, DERIV = range(2)
 
+    @property
+    def hyps(self):
+        return self.th.hyps
+
+    @property
+    def prop(self):
+        return self.th.prop
+
+    @property
+    def assums(self):
+        return self.th.assums
+
+    @property
+    def concl(self):
+        return self.th.concl
+
     @staticmethod
     def atom(id, th):
         return ProofTermAtom(id, th)

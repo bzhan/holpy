@@ -42,6 +42,14 @@ class Thm():
         assert all(isinstance(A, Term) for A in self.hyps), "Thm: hyps must be terms."
         assert isinstance(prop, Term), "Thm: proposition must be a term."
 
+    @property
+    def assums(self):
+        return self.prop.strip_implies()[0]
+
+    @property
+    def concl(self):
+        return self.prop.strip_implies()[1]
+
     def __str__(self):
         """Print the given theorem."""
         if self.hyps:

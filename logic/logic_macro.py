@@ -82,7 +82,7 @@ class apply_theorem_macro(ProofTermMacro):
         th = thy.get_theorem(name)
 
         if not self.with_inst:
-            As, _ = th.prop.strip_implies()
+            As = th.assums
             for idx, prev_th in enumerate(prevs):
                 matcher.first_order_match_incr(As[idx], prev_th.prop, (tyinst, inst))
 
@@ -101,7 +101,7 @@ class apply_theorem_macro(ProofTermMacro):
         th = thy.get_theorem(name)
 
         if not self.with_inst:
-            As, _ = th.prop.strip_implies()
+            As = th.assums
             for idx, pt in enumerate(pts):
                 matcher.first_order_match_incr(As[idx], pt.th.prop, (tyinst, inst))
 
