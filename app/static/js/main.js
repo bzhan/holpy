@@ -168,19 +168,27 @@
         })
 
 //      tab on the left;
-        $('#json-tab1,#json-tab2').click(function() {
-            $(this).css({'background':'#FAFAD2','text-align':'center','border-bottom':'none'});
-            $(this).siblings('li').css({'background':'#f8f8f8','text-align':'center','border-bottom':'solid 1px'});
+        $('#json-tab1,#json-tab2,#json-tab3').click(function() {
+            $(this).css({'background':'	#F0F0F0','text-align':'center','border-bottom':'none'});
+            $(this).siblings('li').css({'background':'#f8f8f8','text-align':'center','border-bottom':'solid 1px','border-color':'#B8B8B8'});
         })
 
         $('#json-tab1').click(function() {
             $('div#root-file').show();
             $('div#left_json').hide();
+            $('div#varible').hide();
         })
 
         $('#json-tab2').click(function() {
             $('div#root-file').hide();
             $('div#left_json').show();
+            $('div#varible').hide();
+        })
+
+        $('#json-tab3').click(function() {
+            $('div#root-file').hide();
+            $('div#left_json').hide();
+            $('div#varible').show();
         })
 
         $('div#root-file').on('click', 'a[name="edit"]', function() {
@@ -838,8 +846,9 @@
     function high_light(list) {
         var type = '';
         $.each(list, function (i, val) {
-                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                });
+            type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+        });
+
         return type
     }
 

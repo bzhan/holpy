@@ -387,7 +387,8 @@ function match_thm() {
         var data = {
             'id': get_selected_id(),
             'target_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
-            'conclusion_id': conclusion_id
+            'conclusion_id': conclusion_id,
+            'theory_name': name
         };
 
         $.ajax({
@@ -395,11 +396,33 @@ function match_thm() {
             type: "POST",
             data: JSON.stringify(data),
             success: function (result) {
-                display_match_thm(result);
+            var ctxt = result['ctxt'];
+            $('div#varible').html('');
+            for (let k in ctxt) {
+            var type = '';
+            $.each(ctxt[k], function (i, val) {
+                type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+            });
+
+                $('div#varible').append('<div id="ctxt" style="margin-left:10px;"><span><b>'+ k +' :: '+ type +'</b></span></div><br>');
+            }
+            $('li#json-tab3').click();
+            display_match_thm(result);
             }
         })
     });
 }
+
+function rp(x) {
+        if (x === 0)
+            return 'normal';
+        if (x === 1)
+            return 'bound';
+        if (x === 2)
+            return 'var';
+        if (x === 3)
+            return 'tvar';
+    }
 
 // Print string without highlight at given line_no and ch. Return the new value of ch.
 function display_str(editor, str, line_no, ch, mark) {
@@ -461,7 +484,7 @@ function display_line(id, line_no) {
 
     edit_flag = true;
     // Display id in bold
-    var str_temp = ' '
+    var str_temp = ''
     for (var i = 0; i < line.id.length; i++) {
         if (line.id[i] === '.') {
             str_temp += '  '
@@ -514,25 +537,23 @@ function display(id) {
         var line = cells[id]['proof'][line_no];
         editor.setOption('lineNumberFormatter', function (line_no) {
                 if (line_no < cell.length) {
-                    var length = cells[id]['proof'][line_no]['id'].length;
-                    if (length >= large_num)
-                        large_num = length;
                     return cells[id]['proof'][line_no]['id'];
                 } else {
                     return '';
                 }
-            }
-        );
+            });
+        var length = cells[id]['proof'][line_no]['id'].length;
+        if (length >= large_num)
+            large_num = length;
         display_line(id, line_no);
         edit_flag = true;
         var len = editor.getLineHandle(line_no).text.length;
         editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
         edit_flag = false;
-    });
+    })
     $('div.tab-pane.selected div.CodeMirror-gutters').css('width', 32+large_num*3+'px');
     $('div.CodeMirror-gutters').css('text-align','left');
     $('div.tab-pane.selected div.CodeMirror-sizer').css('margin-left', 33+large_num*2+'px');
-
     cells[get_selected_id()].readonly_lines.length = 0;
     for (var i = 0; i < editor.lineCount(); i++)
         cells[get_selected_id()].readonly_lines.push(i);
