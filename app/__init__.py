@@ -14,6 +14,7 @@ from kernel import extension
 from syntax import parser, printer
 from server.tactic import ProofState
 from logic import basic
+from syntax import settings
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -237,15 +238,17 @@ def match_thm():
         cell = cells.get(data.get('id'))
         target_id = data.get('target_id')
         ctxt = cell.get_ctxt(target_id)
+        settings.settings_stack[0]['highlight'] = True
         for k, v in ctxt.items():
             dict[k] = printer.print_type(thy, v)
         conclusion_id = data.get('conclusion_id')
         if not conclusion_id:
             conclusion_id = None
+        settings.settings_stack[0]['highlight'] = False
         ths_rewrite = cell.rewrite_goal_thms(target_id)
         ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
         if ths or ths_rewrite:
-            return jsonify({'ths_abs': ths, 'ths_rewrite': ths_rewrite,'ctxt': dict})
+            return jsonify({'ths_abs': ths, 'ths_rewrite': ths_rewrite, 'ctxt': dict})
         else:
             return jsonify({'ctxt': dict})
 

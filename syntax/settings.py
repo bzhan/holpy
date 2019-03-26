@@ -8,7 +8,7 @@ settings_stack = [{
     'unicode': False,
 
     # Whether to print with highlight.
-    'highlight': True,
+    'highlight': False,
 
 }]
 
