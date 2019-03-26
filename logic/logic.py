@@ -113,7 +113,7 @@ def if_t(T):
 def is_if(t):
     """Whether t is of the form if P then x else y."""
     f, args = t.strip_comb()
-    return f.is_const_with_name("IF") and len(args) == 3
+    return f.is_const_name("IF") and len(args) == 3
 
 def mk_if(P, x, y):
     """Obtain the term if P then x else y."""

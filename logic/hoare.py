@@ -62,21 +62,21 @@ class eval_Sem_macro(ProofTermMacro):
         """Evaluates the effect of program com on state st."""
         f, args = com.strip_comb()
         T = st.get_type()
-        if f.is_const_with_name("Skip"):
+        if f.is_const_name("Skip"):
             return init_theorem(thy, "Sem_Skip", tyinst={"a": T}, inst={"s": st})
-        elif f.is_const_with_name("Assign"):
+        elif f.is_const_name("Assign"):
             a, b = args
             Ta = a.get_type()
             Tb = b.get_type().range_type()
             pt = init_theorem(thy, "Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
             return arg_conv(arg_conv(norm_cv)).apply_to_pt(thy, pt)
-        elif f.is_const_with_name("Seq"):
+        elif f.is_const_name("Seq"):
             c1, c2 = args
             pt1 = self.eval_Sem(thy, c1, st)
             pt2 = self.eval_Sem(thy, c2, pt1.prop.arg)
             pt = apply_theorem(thy, "Sem_seq", pt1, pt2)
             return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
-        elif f.is_const_with_name("Cond"):
+        elif f.is_const_name("Cond"):
             b, c1, c2 = args
             b_st = top_conv(beta_conv())(thy, b(st)).prop.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
@@ -88,7 +88,7 @@ class eval_Sem_macro(ProofTermMacro):
                 b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
                 pt2 = self.eval_Sem(thy, c2, st)
                 return apply_theorem(thy, "Sem_if2", b_res, pt2, concl=Sem(T)(com, st, pt2.prop.arg))
-        elif f.is_const_with_name("While"):
+        elif f.is_const_name("While"):
             b, inv, c = args
             b_st = top_conv(beta_conv())(thy, b(st)).prop.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
@@ -119,18 +119,18 @@ def compute_wp(thy, T, c, Q):
     the form of c. Returns the validity theorem.
 
     """
-    if c.head.is_const_with_name("Assign"):  # Assign a b
+    if c.head.is_const_name("Assign"):  # Assign a b
         a, b = c.args
         s = Var("s", T)
         P2 = Term.mk_abs(s, Q(function.mk_fun_upd(s, a, b(s).beta_conv())))
         return apply_theorem(thy, "assign_rule", inst={"b": b}, concl=Valid(T)(P2, c, Q))
-    elif c.head.is_const_with_name("Seq"):  # Seq c1 c2
+    elif c.head.is_const_name("Seq"):  # Seq c1 c2
         c1, c2 = c.args
         wp1 = compute_wp(thy, T, c2, Q)
         Q1 = wp1.prop.args[0]
         wp2 = compute_wp(thy, T, c1, Q1)
         return apply_theorem(thy, "seq_rule", wp2, wp1)
-    elif c.head.is_const_with_name("While"):  # While b I c
+    elif c.head.is_const_name("While"):  # While b I c
         _, I, _ = c.args
         pt = apply_theorem(thy, "while_rule", concl=Valid(T)(I, c, Q))
         pt0 = ProofTerm.assume(pt.assums[0])

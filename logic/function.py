@@ -17,7 +17,7 @@ def is_fun_upd(t):
 
     """
     c, args = t.strip_comb()
-    return len(args) == 3 and c.is_const_with_name("fun_upd")
+    return len(args) == 3 and c.is_const_name("fun_upd")
 
 def fun_upd(T1, T2):
     """Returns the term fun_upd on functions of type T1 => T2."""

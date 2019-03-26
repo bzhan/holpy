@@ -349,7 +349,7 @@ class Term():
         all_t = Const("all", TFun(TFun(x.T, hol_bool), hol_bool))
         return all_t(Term.mk_abs(x, body))
 
-    def is_const_with_name(self, name):
+    def is_const_name(self, name):
         """Whether self is a constant with the given name."""
         return self.ty == Term.CONST and self.name == name
 
@@ -361,7 +361,7 @@ class Term():
     def is_equals(self):
         """Whether self is of the form A = B."""
         if self.is_binop():
-            return self.head.is_const_with_name("equals")
+            return self.head.is_const_name("equals")
         else:
             return False
 
