@@ -50,7 +50,7 @@ class beta_norm_macro(ProofTermMacro):
     def __call__(self, thy, args, ths):
         assert args is None, "beta_norm_macro"
         cv = top_conv(beta_conv())
-        eq_th = cv(thy, ths[0].prop)
+        eq_th = cv.eval(thy, ths[0].prop)
         return Thm(ths[0].hyps, eq_th.prop.arg)
 
     def get_proof_term(self, thy, args, pts):

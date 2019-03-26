@@ -78,7 +78,7 @@ class eval_Sem_macro(ProofTermMacro):
             return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
         elif f.is_const_name("Cond"):
             b, c1, c2 = args
-            b_st = top_conv(beta_conv())(thy, b(st)).prop.arg
+            b_st = top_conv(beta_conv()).eval(thy, b(st)).prop.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
             if b_eval.prop.arg == logic.true:
                 b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
@@ -90,7 +90,7 @@ class eval_Sem_macro(ProofTermMacro):
                 return apply_theorem(thy, "Sem_if2", b_res, pt2, concl=Sem(T)(com, st, pt2.prop.arg))
         elif f.is_const_name("While"):
             b, inv, c = args
-            b_st = top_conv(beta_conv())(thy, b(st)).prop.arg
+            b_st = top_conv(beta_conv()).eval(thy, b(st)).prop.arg
             b_eval = norm_cond_cv.get_proof_term(thy, b_st)
             if b_eval.prop.arg == logic.true:
                 b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)

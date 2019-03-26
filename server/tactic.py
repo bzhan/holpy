@@ -476,7 +476,7 @@ class ProofState():
                 continue
 
             cv = top_conv(rewr_conv(th_name))
-            new_goal = cv(self.thy, goal).prop.rhs
+            new_goal = cv.eval(self.thy, goal).prop.rhs
             if goal != new_goal:
                 new_goal = printer.print_term(self.thy, new_goal)
                 results.append((th_name, new_goal))
@@ -494,9 +494,9 @@ class ProofState():
         goal = cur_item.th.prop
         cv = then_conv(top_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
-        new_goal = cv(self.thy, goal).prop.rhs
+        new_goal = cv.eval(self.thy, goal).prop.rhs
 
-        new_As = list(set(cv(self.thy, goal).hyps) - set(init_As))
+        new_As = list(set(cv.eval(self.thy, goal).hyps) - set(init_As))
         self.add_line_before(id, 1+len(new_As))
         self.set_line(id, "sorry", th=Thm(cur_item.th.hyps, new_goal))
         for i, A in enumerate(new_As):

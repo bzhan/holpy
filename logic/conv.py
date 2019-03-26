@@ -13,11 +13,11 @@ class Conv():
     """A conversion is a function for rewriting a term.
 
     A Conv object has two main methods:
-    __call__ - function to obtain the equality from the term.
+    eval - function to obtain the equality from the term.
     get_proof_term - function to obtain the proof term for the equality.
 
     """
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return self.get_proof_term(thy, t).th
 
     def get_proof_term(self, thy, t):
