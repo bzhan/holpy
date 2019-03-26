@@ -126,9 +126,8 @@ def compute_wp(thy, T, c, Q):
         return apply_theorem(thy, "assign_rule", inst={"b": b}, concl=Valid(T)(P2, c, Q))
     elif c.head.is_const_name("Seq"):  # Seq c1 c2
         c1, c2 = c.args
-        wp1 = compute_wp(thy, T, c2, Q)
-        Q1 = wp1.prop.args[0]
-        wp2 = compute_wp(thy, T, c1, Q1)
+        wp1 = compute_wp(thy, T, c2, Q)  # Valid Q' c2 Q
+        wp2 = compute_wp(thy, T, c1, wp1.prop.args[0])  # Valid Q'' c1 Q'
         return apply_theorem(thy, "seq_rule", wp2, wp1)
     elif c.head.is_const_name("While"):  # While b I c
         _, I, _ = c.args
@@ -141,7 +140,7 @@ def compute_wp(thy, T, c, Q):
 
 def vcg(thy, T, goal):
     """Compute the verification conditions for the goal."""
-    f, (P, c, Q) = goal.strip_comb()
+    P, c, Q = goal.args
     pt = compute_wp(thy, T, c, Q)
     entail_P = ProofTerm.assume(Entail(T)(P, pt.prop.args[0]))
     return apply_theorem(thy, "pre_rule", entail_P, pt)
@@ -159,12 +158,10 @@ class vcg_macro(ProofTermMacro):
         f, (P, c, Q) = goal.strip_comb()
         T = Q.get_type().domain_type()
         pt = vcg(thy, T, goal)
-        cv = every_conv(rewr_conv("Entail_def"), top_conv(beta_conv()),
-                        top_conv(function.fun_upd_eval_conv()))
         for A in reversed(pt.hyps):
             pt = ProofTerm.implies_intr(A, pt)
-        pt = assums_conv(cv).apply_to_pt(thy, pt)
-        return pt
+        return pt.on_assums(thy, rewr_conv("Entail_def"), top_conv(beta_conv()),
+                                 top_conv(function.fun_upd_eval_conv()))
 
 def vcg_solve(thy, goal):
     """Compute the verification conditions for a hoare triple, then

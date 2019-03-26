@@ -29,6 +29,8 @@ class Conv():
         # First, handle some position instructions
         if pos == "arg":
             return arg_conv(self).apply_to_pt(thy, pt)
+        elif pos == "assums":
+            return assums_conv(self).apply_to_pt(thy, pt)
 
         eq_pt = self.get_proof_term(thy, pt.prop)
         return ProofTerm.equal_elim(eq_pt, pt)

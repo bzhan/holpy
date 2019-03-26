@@ -168,6 +168,14 @@ class ProofTerm():
         assert self.prop.is_equals(), "on_rhs: theorem is not an equality."
         return self.on_arg(thy, *cvs)
 
+    def on_assums(self, thy, *cvs):
+        """Apply the given conversion to the assumptions."""
+        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        pt = self
+        for cv in cvs:
+            pt = cv.apply_to_pt(thy, pt, pos="assums")
+        return pt
+
 def refl(t):
     return ProofTerm.reflexive(t)
 
