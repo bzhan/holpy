@@ -1,7 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type, TFun, hol_bool
-from kernel.term import Term, Const
+from kernel.term import Term, Var, Const
 from kernel.macro import MacroSig, global_macros
 from logic import nat
 from logic import function
@@ -113,38 +113,36 @@ class eval_Sem_macro(ProofTermMacro):
         return pt
 
 
-def compute_wp(thy, c, Q):
+def compute_wp(thy, T, c, Q):
     """Compute the weakest precondition for the given command
     and postcondition. The computation is by case analysis on
     the form of c. Returns the validity theorem.
 
     """
-    T = Q.get_type().domain_type()
-    f, args = c.strip_comb()
-    if f.is_const_with_name("Assign"):  # Assign a b
-        a, b = args
-        Ta, Tb = T.domain_type(), T.range_type()
-        return init_theorem(thy, "assign_rule", tyinst={"a": Ta, "b": Tb},
-                            inst={"a": a, "b": b, "P": Q})
-    elif f.is_const_with_name("Seq"):  # Seq c1 c2
-        wp1 = compute_wp(thy, args[1], Q)
+    if c.head.is_const_with_name("Assign"):  # Assign a b
+        a, b = c.args
+        s = Var("s", T)
+        P2 = Term.mk_abs(s, Q(function.mk_fun_upd(s, a, b(s).beta_conv())))
+        return apply_theorem(thy, "assign_rule", inst={"b": b}, concl=Valid(T)(P2, c, Q))
+    elif c.head.is_const_with_name("Seq"):  # Seq c1 c2
+        c1, c2 = c.args
+        wp1 = compute_wp(thy, T, c2, Q)
         Q1 = wp1.prop.args[0]
-        wp2 = compute_wp(thy, args[0], Q1)
+        wp2 = compute_wp(thy, T, c1, Q1)
         return apply_theorem(thy, "seq_rule", wp2, wp1)
-    elif f.is_const_with_name("While"):  # While b I c
-        pt = apply_theorem(thy, "while_rule", concl=Valid(T)(args[1], c, Q))
+    elif c.head.is_const_with_name("While"):  # While b I c
+        _, I, _ = c.args
+        pt = apply_theorem(thy, "while_rule", concl=Valid(T)(I, c, Q))
         pt0 = ProofTerm.assume(pt.assums[0])
-        pt1 = vcg(thy, pt.assums[1])
+        pt1 = vcg(thy, T, pt.assums[1])
         return ProofTerm.implies_elim(pt, pt0, pt1)
     else:
         raise NotImplementedError
 
-def vcg(thy, goal):
+def vcg(thy, T, goal):
     """Compute the verification conditions for the goal."""
     f, (P, c, Q) = goal.strip_comb()
-    T = Q.get_type().domain_type()
-
-    pt = compute_wp(thy, c, Q)
+    pt = compute_wp(thy, T, c, Q)
     entail_P = ProofTerm.assume(Entail(T)(P, pt.prop.args[0]))
     return apply_theorem(thy, "pre_rule", entail_P, pt)
 
@@ -158,7 +156,9 @@ class vcg_macro(ProofTermMacro):
         self.sig = MacroSig.TERM
 
     def get_proof_term(self, thy, goal, pts):
-        pt = vcg(thy, goal)
+        f, (P, c, Q) = goal.strip_comb()
+        T = Q.get_type().domain_type()
+        pt = vcg(thy, T, goal)
         cv = every_conv(rewr_conv("Entail_def"), top_conv(beta_conv()),
                         top_conv(function.fun_upd_eval_conv()))
         for A in reversed(pt.hyps):

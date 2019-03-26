@@ -98,7 +98,7 @@ class HoareTest(unittest.TestCase):
         ]
 
         for c, P in test_data:
-            prf = hoare.compute_wp(thy, c, Q).export()
+            prf = hoare.compute_wp(thy, natFunT, c, Q).export()
             self.assertEqual(thy.check_proof(prf), Thm([], Valid(P, c, Q)))
 
     def testVCG(self):
@@ -112,7 +112,7 @@ class HoareTest(unittest.TestCase):
 
         for c in test_data:
             goal = Valid(P, c, Q)
-            prf = hoare.vcg(thy, goal).export()
+            prf = hoare.vcg(thy, natFunT, goal).export()
             self.assertEqual(thy.check_proof(prf).prop, goal)
 
     def testVCGWhile(self):
