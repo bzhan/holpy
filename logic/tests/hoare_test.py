@@ -113,7 +113,7 @@ class HoareTest(unittest.TestCase):
         for c in test_data:
             goal = Valid(P, c, Q)
             prf = hoare.vcg(thy, goal).export()
-            self.assertEqual(thy.check_proof(prf).concl, goal)
+            self.assertEqual(thy.check_proof(prf).prop, goal)
 
     def testVCGWhile(self):
         A = Var("A", natT)

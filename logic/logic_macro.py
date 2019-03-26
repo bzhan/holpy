@@ -18,11 +18,11 @@ class arg_combination_macro(ProofTermMacro):
         self.sig = MacroSig.TERM
 
     def __call__(self, thy, f, ths):
-        assert ths[0].concl.is_equals(), "arg_combination"
+        assert ths[0].prop.is_equals(), "arg_combination"
         return Thm.combination(Thm.reflexive(f), ths[0])
 
     def get_proof_term(self, thy, f, pts):
-        assert pts[0].th.concl.is_equals(), "arg_combination"
+        assert pts[0].th.prop.is_equals(), "arg_combination"
         return ProofTerm.combination(ProofTerm.reflexive(f), pts[0])
 
 class fun_combination_macro(ProofTermMacro):
@@ -33,11 +33,11 @@ class fun_combination_macro(ProofTermMacro):
         self.sig = MacroSig.TERM
 
     def __call__(self, thy, x, ths):
-        assert ths[0].concl.is_equals(), "fun_combination"
+        assert ths[0].prop.is_equals(), "fun_combination"
         return Thm.combination(ths[0], Thm.reflexive(x))
 
     def get_proof_term(self, thy, x, pts):
-        assert pts[0].th.concl.is_equals(), "fun_combination"
+        assert pts[0].th.prop.is_equals(), "fun_combination"
         return ProofTerm.combination(pts[0], ProofTerm.reflexive(x))
 
 class beta_norm_macro(ProofTermMacro):
@@ -50,8 +50,8 @@ class beta_norm_macro(ProofTermMacro):
     def __call__(self, thy, args, ths):
         assert args is None, "beta_norm_macro"
         cv = top_conv(beta_conv())
-        eq_th = cv(thy, ths[0].concl)
-        return Thm(ths[0].assums, eq_th.concl.arg)
+        eq_th = cv(thy, ths[0].prop)
+        return Thm(ths[0].hyps, eq_th.prop.arg)
 
     def get_proof_term(self, thy, args, pts):
         assert args is None, "beta_norm_macro"
@@ -82,15 +82,15 @@ class apply_theorem_macro(ProofTermMacro):
         th = thy.get_theorem(name)
 
         if not self.with_inst:
-            As, _ = th.concl.strip_implies()
+            As, _ = th.prop.strip_implies()
             for idx, prev_th in enumerate(prevs):
-                matcher.first_order_match_incr(As[idx], prev_th.concl, (tyinst, inst))
+                matcher.first_order_match_incr(As[idx], prev_th.prop, (tyinst, inst))
 
-        As, C = logic.subst_norm(th.concl, (tyinst, inst)).strip_implies()
-        new_concl = Term.mk_implies(*(As[len(prevs):] + [C]))
+        As, C = logic.subst_norm(th.prop, (tyinst, inst)).strip_implies()
+        new_prop = Term.mk_implies(*(As[len(prevs):] + [C]))
 
-        prev_assums = sum([prev.assums for prev in prevs], ())
-        return Thm(th.assums + prev_assums, new_concl)
+        prev_hyps = sum([prev.hyps for prev in prevs], ())
+        return Thm(th.hyps + prev_hyps, new_prop)
 
     def get_proof_term(self, thy, args, pts):
         tyinst, inst = dict(), dict()
@@ -101,9 +101,9 @@ class apply_theorem_macro(ProofTermMacro):
         th = thy.get_theorem(name)
 
         if not self.with_inst:
-            As, _ = th.concl.strip_implies()
+            As, _ = th.prop.strip_implies()
             for idx, pt in enumerate(pts):
-                matcher.first_order_match_incr(As[idx], pt.th.concl, (tyinst, inst))
+                matcher.first_order_match_incr(As[idx], pt.th.prop, (tyinst, inst))
 
         pt = ProofTerm.substitution(inst,
                 ProofTerm.subst_type(tyinst, ProofTerm.theorem(thy, name)))
@@ -140,7 +140,7 @@ class rewrite_goal_macro(ProofTermMacro):
 
         # Simply produce the goal
         _, goal = args
-        return Thm(sum([th.assums for th in ths], ()), goal)
+        return Thm(sum([th.hyps for th in ths], ()), goal)
 
     def get_proof_term(self, thy, args, pts):
         assert isinstance(args, tuple) and len(args) == 2 and \
@@ -151,11 +151,11 @@ class rewrite_goal_macro(ProofTermMacro):
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
         cv = then_conv(top_conv(rewr_conv(eq_pt)), top_conv(beta_conv()))
-        pt = cv.get_proof_term(thy, goal)  # goal = th.concl
-        pt = ProofTerm.symmetric(pt)  # th.concl = goal
+        pt = cv.get_proof_term(thy, goal)  # goal = th.prop
+        pt = ProofTerm.symmetric(pt)  # th.prop = goal
         pt = ProofTerm.equal_elim(pt, pts[0])  # goal
         for A in pts[1:]:
-            pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.th.concl, pt), A)
+            pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.th.prop, pt), A)
         return pt
 
 def apply_theorem(thy, th_name, *pts):

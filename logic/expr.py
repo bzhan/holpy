@@ -58,7 +58,7 @@ class prove_avalI_macro(ProofTermMacro):
         f, args = args.strip_comb()
         s, t, n = args
         pt = self.get_avalI_th(thy, s, t)
-        res_n = pt.th.concl.arg
+        res_n = pt.th.prop.arg
         assert n == res_n, "prove_avalI_macro: wrong result."
         return pt
 

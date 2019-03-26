@@ -72,7 +72,7 @@ def get_encode_proof(th):
     substitutions of As on F.
 
     """
-    As, F = th.assums[:-1], th.assums[-1]
+    As, F = th.hyps[:-1], th.hyps[-1]
 
     # Obtain the assumptions
     ptAs = [ProofTerm.assume(A) for A in As]
@@ -81,7 +81,7 @@ def get_encode_proof(th):
     # Obtain the expansion of each As to a non-atomic term.
     pts = []
     for ptA in ptAs:
-        rhs = ptA.th.concl.arg
+        rhs = ptA.th.prop.arg
         if logic.is_conj(rhs):
             cv = rewr_conv("encode_conj")
         elif logic.is_disj(rhs):

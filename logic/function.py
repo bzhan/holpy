@@ -67,7 +67,7 @@ class fun_upd_eval_conv(Conv):
                     tyinst={"a": nat.natT, "b": nat.natT},
                     inst={"f": f1, "a": a, "b": b, "c": c})
                 eq = ProofTerm.implies_elim(pt, nat.nat_const_ineq(thy, c, a))
-                eq2 = self.get_proof_term(thy, eq.th.concl.arg)
+                eq2 = self.get_proof_term(thy, eq.th.prop.arg)
                 return ProofTerm.transitive(eq, eq2)
         elif f.ty == Term.ABS:
             return ProofTerm.beta_conv(t)
@@ -87,7 +87,7 @@ class fun_upd_eval_macro(ProofTermMacro):
 
         t1, t2 = args.arg1, args.arg
         pt = fun_upd_eval_conv().get_proof_term(t1)
-        assert pt.th.concl.arg == t2, "fun_upd_eval_macro: incorrect rhs"
+        assert pt.th.prop.arg == t2, "fun_upd_eval_macro: incorrect rhs"
 
         return pt
 
@@ -109,7 +109,7 @@ class fun_upd_norm_one_conv(Conv):
                         tyinst={"a": nat.natT, "b": nat.natT},
                         inst={"f": f2, "a": a2, "b": b2, "c": a, "d": b})
                     eq = ProofTerm.implies_elim(pt, nat.nat_const_ineq(thy, a, a2))
-                    eq2 = fun_conv(fun_conv(arg_conv(self))).get_proof_term(thy, eq.th.concl.arg)
+                    eq2 = fun_conv(fun_conv(arg_conv(self))).get_proof_term(thy, eq.th.prop.arg)
                     return ProofTerm.transitive(eq, eq2)
                 elif nat.from_binary(a) == nat.from_binary(a2):
                     return rewr_conv("fun_upd_upd").get_proof_term(thy, t)

@@ -25,7 +25,7 @@ class Conv():
 
     def apply_to_pt(self, thy, pt):
         """Apply to the given proof term."""
-        eq_pt = self.get_proof_term(thy, pt.th.concl)
+        eq_pt = self.get_proof_term(thy, pt.th.prop)
         return ProofTerm.equal_elim(eq_pt, pt)
 
 class all_conv(Conv):
@@ -53,9 +53,9 @@ class combination_conv(Conv):
 
         # Obtain some savings if one of pt1 and pt2 is reflexivity:
         if pt1.th.is_reflexive():
-            return ProofTerm.arg_combination(thy, pt1.th.concl.arg, pt2)
+            return ProofTerm.arg_combination(thy, pt1.th.prop.arg, pt2)
         elif pt2.th.is_reflexive():
-            return ProofTerm.fun_combination(thy, pt2.th.concl.arg, pt1)
+            return ProofTerm.fun_combination(thy, pt2.th.prop.arg, pt1)
         else:
             return ProofTerm.combination(pt1, pt2)
 
@@ -68,7 +68,7 @@ class then_conv(Conv):
 
     def get_proof_term(self, thy, t):
         pt1 = self.cv1.get_proof_term(thy, t)
-        t2 = pt1.th.concl.arg
+        t2 = pt1.th.prop.arg
         pt2 = self.cv2.get_proof_term(thy, t2)
         
         # Obtain some savings if one of pt1 and pt2 is reflexivity:
@@ -207,7 +207,7 @@ class rewr_conv(Conv):
                 self.pt = ProofTerm.symmetric(self.pt)
                 
         # Deconstruct th into assumptions and conclusion
-        self.As, self.C = self.pt.th.concl.strip_implies()
+        self.As, self.C = self.pt.th.prop.strip_implies()
         assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
         self.pat = self.C.arg1
 
@@ -222,7 +222,7 @@ class rewr_conv(Conv):
             raise ConvException()
 
         pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, self.pt))
-        As, _ = pt.th.concl.strip_implies()
+        As, _ = pt.th.prop.strip_implies()
         for A in As:
             pt = ProofTerm.implies_elim(pt, ProofTerm.assume(A))
         return pt
