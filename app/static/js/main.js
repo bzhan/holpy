@@ -448,15 +448,20 @@
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
-            if (data_type === 'thm') {
+            if (data_type === 'thm' || data_type === 'thm.ax') {
+                if (data_type === 'thm')
+                    var type_name = 'theorem';
+                else
+                    var type_name = 'axiom';
                 if (number)
                     data_content = result_list[number]['prop'];
                 else
+                    var type_name = ''
                     $('#codeTab').find('span#'+ page_num).text('theorem');
                 $('#codeTabContent').append(
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>theorem</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
+                        '<font color="#006000"><b>'+ type_name +'</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
                         '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="height:45px;width:40%;background:transparent;'+ border +'">'+ vars_str +'</textarea>' +
                         '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:30%;background:transparent;'+ border +'" value="' + data_content + '">' +
                         '<br><br><input name="hint_backward'+ page_num + '" type="checkbox" style="margin-left:0px;"><b>&nbsp;backward</b><input name="hint_rewrite'+ page_num +'" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
@@ -493,7 +498,7 @@
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
-            if (data_type === 'def.ind') {
+            if (data_type === 'def.ind' || data_type === 'def.pred') {
                 var data_content_list = [];
                 var data_new_content = '';
                 if (number) {
@@ -871,19 +876,28 @@
                     + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
             }
 
+            if (ty === 'thm.ax') {
+                var prop = high_light(ext.prop_hl);
+                var status_color = 'green';
+                $('#left_json').append($(
+                    '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>axiom</b></font></span> <span id="thm_name" name="name"><tt>' + name +
+                    '</tt></span>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
+                    prop + '</span></p></div>'));
+            }
+
             if (ty === 'thm') {
                 var prop = high_light(ext.prop_hl);
                 var status_color;
                 if (ext.proof === undefined) {
-                    status_color = 'red'
+                    status_color = 'red';
                 } else if (ext.num_gaps > 0) {
-                    status_color = 'yellow'
+                    status_color = 'yellow';
                 } else {
-                    status_color = 'green'
+                    status_color = 'green';
                 }
                 $('#left_json').append($(
                     '<div><div style="float:left;width: 12px; height: 12px; background: ' +
-                    status_color + ';">&nbsp;</div>' + '<p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
+                    status_color + ';">&nbsp;</div>' + '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
                     '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
                     prop + '</span></p></div>'));
             }
@@ -903,10 +917,31 @@
                     '<div><p id="data-'+ num +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
             }
 
+            if (ty === 'def') {
+                var term = high_light(ext.term);
+                var type = high_light(ext.type);
+                $('#left_json').append($(
+                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b><br><span>'+ term +'</span></font></p>'));
+
+            }
+
             if (ty === 'def.ind') {
                 var type = high_light(ext.type_hl);
                 $('#left_json').append($(
                     '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b></font></p>'));
+                for (var j in ext.rules) {
+                    var str = high_light(ext.rules[j].prop_hl);
+                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
+                }
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
+            }
+
+            if (ty === 'def.pred') {
+                var type = high_light(ext.type_hl);
+                $('#left_json').append($(
+                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
                     '</span><font color="#006000"><b> where</b></font></p>'));
                 for (var j in ext.rules) {
                     var str = high_light(ext.rules[j].prop_hl);

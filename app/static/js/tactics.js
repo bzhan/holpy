@@ -390,7 +390,6 @@ function match_thm() {
             'conclusion_id': conclusion_id,
             'theory_name': name
         };
-
         $.ajax({
             url: "/api/match_thm",
             type: "POST",
@@ -403,7 +402,6 @@ function match_thm() {
             $.each(ctxt[k], function (i, val) {
                 type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
             });
-
                 $('div#varible').append('<div id="ctxt" style="margin-left:10px;"><span><b>'+ k +' :: '+ type +'</b></span></div><br>');
             }
             $('li#json-tab3').click();

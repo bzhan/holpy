@@ -160,7 +160,7 @@ def file_data_to_output(thy, data):
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
-    elif data['ty'] == 'thm':
+    elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parser.parse_vars(thy, data['vars'])
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
@@ -177,13 +177,23 @@ def file_data_to_output(thy, data):
             type_dic['concl'] = printer.print_type(thy, res, unicode=True, highlight=True)
         data['argsT'] = type_dic
 
-    elif data['ty'] == 'def.ind':
+    elif data['ty'] == 'def':
+        settings.settings_stack[0]['highlight'] = True
+        ctxt = parser.parse_vars(thy, data['vars'])
+        term = parser.parse_term(thy, ctxt, data['prop'])
+        type = parser.parse_type(thy, data['type'])
+        data['term'] = printer.print_term(thy, term)
+        data['type'] = printer.print_type(thy, type)
+        settings.settings_stack[0]['highlight'] = False
+
+    elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         for rule in data['rules']:
             ctxt = parser.parse_vars(thy, rule['vars'])
             prop = parser.parse_term(thy, ctxt, rule['prop'])
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+
     # Ignore other types of information.
     else:
         pass
