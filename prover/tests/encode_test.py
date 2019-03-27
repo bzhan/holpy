@@ -45,5 +45,6 @@ class EncodeTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(pt.export(), rpt, check_level=1), pt.th)
         self.assertEqual(len(rpt.gaps), 0)
 
+
 if __name__ == "__main__":
     unittest.main()

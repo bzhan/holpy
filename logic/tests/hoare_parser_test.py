@@ -27,7 +27,7 @@ class HoareParserTest(unittest.TestCase):
             self.assertEqual(t, t_res)
 
     def testParseFile(self):
-        process_file("test")
+        process_file("test", "hoare_test_output")
 
 
 if __name__ == "__main__":

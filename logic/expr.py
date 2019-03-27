@@ -28,7 +28,6 @@ class prove_avalI_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.use_goal = True
 
     def get_avalI_th(self, thy, s, t):
         f, args = t.strip_comb()

@@ -31,10 +31,10 @@ class BasicTest(unittest.TestCase):
 
     def testLoadTheoryWithLimit(self):
         thy = basic.loadTheory('logic_base')
-        thy1 = basic.loadTheory('logic_base', limit=('thm', 'conjD1'))
+        thy1 = basic.loadTheory('logic_base', limit=('thm.ax', 'conjD1'))
         self.assertEqual(thy.get_theorem('conjI'), thy1.get_theorem('conjI'))
         self.assertRaises(TheoryException, thy1.get_theorem, 'conjD1')
-        self.assertRaises(AssertionError, basic.loadTheory, 'logic_base', limit=('thm', 'conj'))
+        self.assertRaises(AssertionError, basic.loadTheory, 'logic_base', limit=('thm.ax', 'conj'))
 
     def testArgCombination(self):
         thy = basic.loadTheory('logic_base')

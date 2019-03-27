@@ -124,8 +124,8 @@ class HoareTest(unittest.TestCase):
         P = parser.parse_term(thy, ctxt, "%s. s 0 = 0 & s 1 = 0")
         Q = parser.parse_term(thy, ctxt, "%s. s 1 = A * B")
         goal = Valid(P, c, Q)
-        prf = hoare.vcg_norm(thy, goal).export()
-        self.assertEqual(thy.check_proof(prf).concl.strip_implies()[1], goal)
+        prf = hoare.vcg_solve(thy, goal).export()
+        self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
 
 if __name__ == "__main__":

@@ -463,11 +463,7 @@ class Term():
 
     @staticmethod
     def mk_abs(t, body):
-        """Given body in terms of t, return the term %t. body. Optional
-        arguments var_name and T specify the suggested variable name and
-        type of the abstraction (default to those of t).
-
-        """
+        """Given body in terms of t, return the term %t. body. """
         if t.ty != Term.VAR:
             raise TermSubstitutionException()
         res = Abs(t.name, t.T, body.abstract_over(t))

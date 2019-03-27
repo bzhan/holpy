@@ -418,7 +418,6 @@ class nat_norm_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.use_goal = True
 
     def __call__(self, thy, args, pts):
         # Simply produce the goal.
@@ -482,7 +481,6 @@ class nat_const_ineq_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
-        self.use_goal = True
 
     def __call__(self, thy, args, pts):
         # Simply produce the goal.

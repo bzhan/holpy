@@ -165,6 +165,10 @@ class ProofTermMacro(ProofMacro):
     constructing a proof term, then export the proof term.
 
     """
+    def __call__(self, thy, args, prevs):
+        pts = [ProofTerm.assume(prev) for prev in prevs]
+        return self.get_proof_term(thy, args, pts).th
+
     def get_proof_term(self, thy, args, prevs):
         raise NotImplementedError()
 

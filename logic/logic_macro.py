@@ -16,7 +16,6 @@ class arg_combination_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.TERM
-        self.use_goal = False
 
     def __call__(self, thy, f, ths):
         assert ths[0].concl.is_equals(), "arg_combination"
@@ -32,7 +31,6 @@ class fun_combination_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.TERM
-        self.use_goal = False
 
     def __call__(self, thy, x, ths):
         assert ths[0].concl.is_equals(), "fun_combination"
@@ -48,7 +46,6 @@ class beta_norm_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = MacroSig.NONE
-        self.use_goal = False
 
     def __call__(self, thy, args, ths):
         assert args is None, "beta_norm_macro"
@@ -75,7 +72,6 @@ class apply_theorem_macro(ProofTermMacro):
         self.level = 1
         self.with_inst = with_inst
         self.sig = MacroSig.STRING_INSTSP if with_inst else MacroSig.STRING
-        self.use_goal = False
 
     def __call__(self, thy, args, prevs):
         tyinst, inst = dict(), dict()
@@ -137,7 +133,6 @@ class rewrite_goal_macro(ProofTermMacro):
         self.level = 1
         self.backward = backward
         self.sig = MacroSig.STRING_TERM
-        self.use_goal = True
 
     def __call__(self, thy, args, ths):
         assert isinstance(args, tuple) and len(args) == 2 and \
