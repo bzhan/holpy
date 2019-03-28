@@ -6,7 +6,7 @@ from kernel.thm import Thm
 from kernel.macro import MacroSig, global_macros
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
-from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
+from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
 from logic.logic_macro import apply_theorem, init_theorem
 from logic import logic
 from logic import term_ord
@@ -40,10 +40,10 @@ def mk_times(*args):
         return times(mk_times(*args[:-1]), args[-1])
 
 def is_plus(t):
-    return t.is_binop() and t.get_head() == plus
+    return t.is_binop() and t.head == plus
 
 def is_times(t):
-    return t.is_binop() and t.get_head() == times
+    return t.is_binop() and t.head == times
 
 bit0 = Const("bit0", TFun(natT, natT))
 bit1 = Const("bit1", TFun(natT, natT))
@@ -61,12 +61,11 @@ def to_binary(n):
 
 def is_binary(t):
     """Whether the term t is in standard binary form."""
-    head = t.get_head()
     if t == zero or t == one:
         return True
     elif t.ty != Term.COMB:
         return False
-    elif head == bit0 or head == bit1:
+    elif t.head == bit0 or t.head == bit1:
         return is_binary(t.arg)
     else:
         return False
@@ -77,7 +76,7 @@ def from_binary(t):
         return 0
     elif t == one:
         return 1
-    elif t.get_head() == bit0:
+    elif t.head == bit0:
         return 2 * from_binary(t.arg)
     else:
         return 2 * from_binary(t.arg) + 1
@@ -93,7 +92,7 @@ class Suc_conv(Conv):
             return all_conv().get_proof_term(thy, t)
         elif n == one:
             return rewr_conv("one_Suc").get_proof_term(thy, t)
-        elif n.get_head() == bit0:
+        elif n.head == bit0:
             return rewr_conv("bit0_Suc").get_proof_term(thy, t)
         else:
             return then_conv(rewr_conv("bit1_Suc"), arg_conv(Suc_conv())).get_proof_term(thy, t)
@@ -113,11 +112,11 @@ class add_conv(Conv):
             cv = then_conv(rewr_conv("add_1_left"), Suc_conv())
         elif n2 == one:
             cv = then_conv(rewr_conv("add_1_right"), Suc_conv())
-        elif n1.get_head() == bit0 and n2.get_head() == bit0:
+        elif n1.head == bit0 and n2.head == bit0:
             cv = then_conv(rewr_conv("bit0_bit0_add"), arg_conv(add_conv()))
-        elif n1.get_head() == bit0 and n2.get_head() == bit1:
+        elif n1.head == bit0 and n2.head == bit1:
             cv = then_conv(rewr_conv("bit0_bit1_add"), arg_conv(add_conv()))
-        elif n1.get_head() == bit1 and n2.get_head() == bit0:
+        elif n1.head == bit1 and n2.head == bit0:
             cv = then_conv(rewr_conv("bit1_bit0_add"), arg_conv(add_conv()))
         else:
             cv = every_conv(rewr_conv("bit1_bit1_add"),
@@ -141,11 +140,11 @@ class mult_conv(Conv):
             cv = rewr_conv("mult_1_left")
         elif n2 == one:
             cv = rewr_conv("mult_1_right")
-        elif n1.get_head() == bit0 and n2.get_head() == bit0:
+        elif n1.head == bit0 and n2.head == bit0:
             cv = then_conv(rewr_conv("bit0_bit0_mult"), arg_conv(arg_conv(mult_conv())))
-        elif n1.get_head() == bit0 and n2.get_head() == bit1:
+        elif n1.head == bit0 and n2.head == bit1:
             cv = then_conv(rewr_conv("bit0_bit1_mult"), arg_conv(mult_conv()))
-        elif n1.get_head() == bit1 and n2.get_head() == bit0:
+        elif n1.head == bit1 and n2.head == bit0:
             cv = then_conv(rewr_conv("bit1_bit0_mult"), arg_conv(mult_conv()))
         else:
             cv = every_conv(rewr_conv("bit1_bit1_mult"),
@@ -163,12 +162,11 @@ class nat_conv(Conv):
             if is_binary(t):
                 return from_binary(t)
             else:
-                f = t.get_head()
-                if f == Suc:
+                if t.head == Suc:
                     return val(t.arg) + 1
-                elif f == plus:
+                elif t.head == plus:
                     return val(t.arg1) + val(t.arg)
-                elif f == times:
+                elif t.head == times:
                     return val(t.arg1) * val(t.arg)
                 else:
                     raise ConvException()
@@ -176,20 +174,18 @@ class nat_conv(Conv):
         return Thm.mk_equals(t, to_binary(val(t)))
 
     def get_proof_term(self, thy, t):
+        pt = refl(t)
         if is_binary(t):
-            cv = all_conv()
+            return pt
         else:
-            f = t.get_head()
-            if f == Suc:
-                cv = then_conv(arg_conv(nat_conv()), Suc_conv())
-            elif f == plus:
-                cv = then_conv(binop_conv(nat_conv()), add_conv())
-            elif f == times:
-                cv = then_conv(binop_conv(nat_conv()), mult_conv())
+            if t.head == Suc:
+                return pt.on_rhs(thy, arg_conv(nat_conv()), Suc_conv())
+            elif t.head == plus:
+                return pt.on_rhs(thy, binop_conv(nat_conv()), add_conv())
+            elif t.head == times:
+                return pt.on_rhs(thy, binop_conv(nat_conv()), mult_conv())
             else:
                 raise ConvException()
-        
-        return cv.get_proof_term(thy, t)
 
 class swap_times_r(Conv):
     """Rewrite (a * b) * c to (a * c) * b, or if the left argument
@@ -231,16 +227,10 @@ class norm_mult_atom(Conv):
         elif is_times(t.arg1):
             cmp = compare_atom(t.arg1.arg, t.arg)
             if cmp == term_ord.GREATER:
-                cv = then_conv(
-                    swap_times_r(),
-                    arg1_conv(norm_mult_atom())
-                )
+                cv = then_conv(swap_times_r(), arg1_conv(norm_mult_atom()))
             elif cmp == term_ord.EQUAL:
                 if is_binary(t.arg):
-                    cv = then_conv(
-                        rewr_conv("mult_assoc"),
-                        arg_conv(nat_conv())
-                    )
+                    cv = then_conv(rewr_conv("mult_assoc"), arg_conv(nat_conv()))
                 else:
                     cv = all_conv()
             else:
@@ -340,10 +330,7 @@ class norm_add_monomial(Conv):
             if cmp == term_ord.GREATER:
                 cv = then_conv(swap_add_r(), arg1_conv(norm_add_monomial()))
             elif cmp == term_ord.EQUAL:
-                cv = then_conv(
-                    rewr_conv("add_assoc"),
-                    arg_conv(combine_monomial(thy))
-                )
+                cv = then_conv(rewr_conv("add_assoc"), arg_conv(combine_monomial(thy)))
             else:
                 cv = all_conv()
         else:
@@ -419,19 +406,19 @@ class nat_norm_macro(ProofTermMacro):
         self.level = 10
         self.sig = MacroSig.TERM
 
-    def __call__(self, thy, args, pts):
+    def __call__(self, thy, goal, pts):
         # Simply produce the goal.
         assert len(pts) == 0, "nat_norm_macro"
-        return Thm([], args)
+        return Thm([], goal)
 
-    def get_proof_term(self, thy, args, pts):
+    def get_proof_term(self, thy, goal, pts):
         assert len(pts) == 0, "nat_norm_macro"
-        assert args.is_equals(), "nat_norm_macro: goal is not an equality."
+        assert goal.is_equals(), "nat_norm_macro: goal is not an equality."
 
-        t1, t2 = args.arg1, args.arg
+        t1, t2 = goal.args
         pt1 = norm_full().get_proof_term(thy, t1)
         pt2 = norm_full().get_proof_term(thy, t2)
-        assert pt1.th.concl.arg == pt2.th.concl.arg, "nat_norm_macro: normalization is not equal."
+        assert pt1.prop.rhs == pt2.prop.rhs, "nat_norm_macro: normalization is not equal."
 
         return ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
 
@@ -482,19 +469,17 @@ class nat_const_ineq_macro(ProofTermMacro):
         self.level = 10
         self.sig = MacroSig.TERM
 
-    def __call__(self, thy, args, pts):
+    def __call__(self, thy, goal, pts):
         # Simply produce the goal.
         assert len(pts) == 0, "nat_const_ineq_macro"
-        return Thm([], args)
+        return Thm([], goal)
 
-    def get_proof_term(self, thy, args, pts):
+    def get_proof_term(self, thy, goal, pts):
         assert len(pts) == 0, "nat_const_ineq_macro"
-        assert logic.is_neg(args) and args.arg.is_equals(), \
+        assert logic.is_neg(goal) and goal.arg.is_equals(), \
                "nat_ineq_macro: goal is not an inequality."
 
-        m = args.arg.arg1
-        n = args.arg.arg
-
+        m, n = goal.arg.args
         assert is_binary(m) and is_binary(n), "nat_ineq_macro: m and n are not in binary form."
         assert from_binary(m) != from_binary(n), "nat_ineq_macro: m and n are equal."
 
@@ -509,16 +494,16 @@ class nat_eq_conv(Conv):
     """Simplify equality a = b to either True or False."""
     def get_proof_term(self, thy, t):
         if not t.is_equals():
-            return ProofTerm.reflexive(t)
+            return refl(t)
 
-        a, b = t.arg1, t.arg
+        a, b = t.args
         if not (is_binary(a) and is_binary(b)):
-            return ProofTerm.reflexive(t)
+            return refl(t)
 
         if a == b:
-            return rewr_conv("eq_true").apply_to_pt(thy, ProofTerm.reflexive(a))
+            return refl(a).on_prop(thy, rewr_conv("eq_true"))
         else:
-            return rewr_conv("eq_false").apply_to_pt(thy, nat_const_ineq(thy, a, b))
+            return nat_const_ineq(thy, a, b).on_prop(thy, rewr_conv("eq_false"))
 
 
 global_macros.update({

@@ -83,7 +83,7 @@ def print_term(thy, t):
 
     """
     def get_info_for_operator(t):
-        return thy.get_data("operator").get_info_for_fun(t.get_head())
+        return thy.get_data("operator").get_info_for_fun(t.head)
 
     def get_priority(t):
         if nat.is_binary(t) or hol_list.is_literal_list(t):
@@ -118,9 +118,9 @@ def print_term(thy, t):
                 return res
 
         if logic.is_if(t):
-            P, x, y = logic.dest_if(t)
+            P, x, y = t.args
             return N("if ") + helper(P, bd_vars) + N(" then ") + helper(x, bd_vars) + \
-                N(" else ") + helper(y, bd_vars)
+                   N(" else ") + helper(y, bd_vars)
 
         if t.ty == Term.VAR:
             return V(t.name)
@@ -135,7 +135,7 @@ def print_term(thy, t):
             op_data = get_info_for_operator(t)
             # First, we take care of the case of operators
             if op_data and op_data.arity == OperatorData.BINARY and t.is_binop():
-                arg1, arg2 = t.dest_binop()
+                arg1, arg2 = t.args
 
                 # Obtain output for first argument, enclose in parenthesis
                 # if necessary.
@@ -238,11 +238,11 @@ def print_term(thy, t):
 def print_thm(thy, th):
     """Print the given theorem with highlight."""
     turnstile = N("⊢") if settings.unicode() else N("|-")
-    if th.assums:
-        str_assums = commas_join(print_term(thy, assum) for assum in th.assums)
-        return str_assums + N(" ") + turnstile + N(" ") + print_term(thy, th.concl)
+    if th.hyps:
+        str_hyps = commas_join(print_term(thy, hyp) for hyp in th.hyps)
+        return str_hyps + N(" ") + turnstile + N(" ") + print_term(thy, th.prop)
     else:
-        return turnstile + N(" ") + print_term(thy, th.concl)
+        return turnstile + N(" ") + print_term(thy, th.prop)
 
 @settings.with_settings
 def print_str_args(thy, rule, args):
@@ -271,7 +271,7 @@ def print_str_args(thy, rule, args):
 @settings.with_settings
 def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
-    str_th = print_term(thy, item.th.concl) if item.th else ""
+    str_th = print_term(thy, item.th.prop) if item.th else ""
     str_args = print_str_args(thy, item.rule, item.args)
     res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
            'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}

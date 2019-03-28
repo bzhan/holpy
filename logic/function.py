@@ -6,8 +6,8 @@ from kernel.macro import MacroSig, global_macros
 from logic import logic_macro
 from logic import nat
 from logic import logic
-from logic.conv import Conv, rewr_conv, fun_conv, then_conv, arg_conv
-from logic.proofterm import ProofTerm, ProofTermMacro
+from logic.conv import Conv, rewr_conv, then_conv, arg_conv, argn_conv
+from logic.proofterm import ProofTerm, ProofTermMacro, refl
 
 """Utility functions for the function library."""
 
@@ -17,7 +17,7 @@ def is_fun_upd(t):
 
     """
     c, args = t.strip_comb()
-    return len(args) == 3 and c.is_const_with_name("fun_upd")
+    return len(args) == 3 and c.is_const_name("fun_upd")
 
 def fun_upd(T1, T2):
     """Returns the term fun_upd on functions of type T1 => T2."""
@@ -43,7 +43,7 @@ def strip_fun_upd(t):
 
     """
     if is_fun_upd(t):
-        _, (f1, a, b) = t.strip_comb()
+        f1, a, b = t.args
         f, upds = strip_fun_upd(f1)
         return f, upds + [(a, b)]
     else:
@@ -54,25 +54,21 @@ class fun_upd_eval_conv(Conv):
 
     def get_proof_term(self, thy, t):
         if t.ty != Term.COMB:
-            return ProofTerm.reflexive(t)
+            return refl(t)
 
         f, c = t.fun, t.arg
         if is_fun_upd(f):
-            _, (f1, a, b) = f.strip_comb()
+            f1, a, b = f.args
             if a == c:
                 return rewr_conv("fun_upd_same").get_proof_term(thy, t)
             else:
-                pt = logic_macro.init_theorem(
-                    thy, "fun_upd_other",
-                    tyinst={"a": nat.natT, "b": nat.natT},
-                    inst={"f": f1, "a": a, "b": b, "c": c})
-                eq = ProofTerm.implies_elim(pt, nat.nat_const_ineq(thy, c, a))
-                eq2 = self.get_proof_term(thy, eq.th.concl.arg)
-                return ProofTerm.transitive(eq, eq2)
+                neq = nat.nat_const_ineq(thy, c, a)
+                eq = rewr_conv("fun_upd_other", conds=[neq]).get_proof_term(thy, t)
+                return eq.on_arg(thy, self)
         elif f.ty == Term.ABS:
             return ProofTerm.beta_conv(t)
         else:
-            return ProofTerm.reflexive(t)
+            return refl(t)
 
 class fun_upd_eval_macro(ProofTermMacro):
     """Macro using fun_upd_eval_conv."""
@@ -87,7 +83,7 @@ class fun_upd_eval_macro(ProofTermMacro):
 
         t1, t2 = args.arg1, args.arg
         pt = fun_upd_eval_conv().get_proof_term(t1)
-        assert pt.th.concl.arg == t2, "fun_upd_eval_macro: incorrect rhs"
+        assert pt.prop.arg == t2, "fun_upd_eval_macro: incorrect rhs"
 
         return pt
 
@@ -97,28 +93,19 @@ class fun_upd_norm_one_conv(Conv):
 
     """
     def get_proof_term(self, thy, t):
-        if is_fun_upd(t):
-            _, args = t.strip_comb()
-            f, a, b = args
-            if is_fun_upd(f):
-                _, args2 = f.strip_comb()
-                f2, a2, b2 = args2
-                if nat.from_binary(a) < nat.from_binary(a2):
-                    pt = logic_macro.init_theorem(
-                        thy, "fun_upd_twist",
-                        tyinst={"a": nat.natT, "b": nat.natT},
-                        inst={"f": f2, "a": a2, "b": b2, "c": a, "d": b})
-                    eq = ProofTerm.implies_elim(pt, nat.nat_const_ineq(thy, a, a2))
-                    eq2 = fun_conv(fun_conv(arg_conv(self))).get_proof_term(thy, eq.th.concl.arg)
-                    return ProofTerm.transitive(eq, eq2)
-                elif nat.from_binary(a) == nat.from_binary(a2):
-                    return rewr_conv("fun_upd_upd").get_proof_term(thy, t)
-                else:
-                    return ProofTerm.reflexive(t)
+        pt = refl(t)
+        if is_fun_upd(t) and is_fun_upd(t.args[0]):
+            f, a, b = t.args
+            f2, a2, b2 = f.args
+            if nat.from_binary(a) < nat.from_binary(a2):
+                neq = nat.nat_const_ineq(thy, a, a2)
+                return pt.on_rhs(thy, rewr_conv("fun_upd_twist", conds=[neq]), argn_conv(0, self))
+            elif nat.from_binary(a) == nat.from_binary(a2):
+                return pt.on_rhs(thy, rewr_conv("fun_upd_upd"))
             else:
-                return ProofTerm.reflexive(t)
+                return pt
         else:
-            return ProofTerm.reflexive(t)
+            return pt
 
 class fun_upd_norm_conv(Conv):
     """Normalize a function update of the form (f)(a1 := b1, a2 := b2, ...).
@@ -128,12 +115,11 @@ class fun_upd_norm_conv(Conv):
 
     """
     def get_proof_term(self, thy, t):
+        pt = refl(t)
         if is_fun_upd(t):
-            eq = fun_conv(fun_conv(arg_conv(fun_upd_norm_conv()))).get_proof_term(thy, t).export()
-            return then_conv(fun_conv(fun_conv(arg_conv(fun_upd_norm_conv()))),
-                             fun_upd_norm_one_conv()).get_proof_term(thy, t)
+            return pt.on_rhs(thy, argn_conv(0, self), fun_upd_norm_one_conv())
         else:
-            return ProofTerm.reflexive(t)
+            return pt
 
 
 global_macros.update({
