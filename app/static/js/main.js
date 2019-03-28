@@ -47,6 +47,7 @@
                     '<pre> </pre></div><div class="match-thm"">' +
                     '<div class="abs-thm"></div>' +
                     '<div class="rewrite-thm"></div>' +
+                    '<div class="afs-thm"></div>' +
                     '<div class="clear"></div>' +
                     '</div></div>'));
             $('#' + id).append(
@@ -68,6 +69,14 @@
 
         $('#right').on('click', ' .abs-thm .thm-content pre', function () {
             apply_backward_step(get_selected_editor(), is_others = false, select_thm = $(this).index());
+        });
+
+        $('#right').on('click', '.forward-step', function () {
+            apply_forward_step(get_selected_editor(), is_others = true);
+        });
+
+        $('#right').on('click', ' .afs-thm .thm-content pre', function () {
+            apply_forward_step(get_selected_editor(), is_others = false, select_thm = $(this).index());
         });
 
         $('#right').on('click', '.rewrite-goal', function () {
@@ -853,6 +862,7 @@
                 "Ctrl-I": introduction,
                 "Ctrl-B": apply_backward_step,
                 "Ctrl-R": rewrite_goal,
+                "Ctrl-F": apply_forward_step,
                 "Ctrl-Q": function (cm) {
                     cm.foldCode(cm.getCursor());
                 }
@@ -917,7 +927,7 @@
         editor.on("cursorActivity", function (cm) {
             if (is_mousedown) {
                 mark_text(cm);
-                apply_backward_step_and_rewrite_goal_thm(cm);
+                apply_proof_step_and_rewrite_goal_thm(cm);
                 is_mousedown = false;
                 is_ctrl_click = false;
             }

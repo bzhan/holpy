@@ -240,9 +240,12 @@ def match_thm():
         if not conclusion_id:
             conclusion_id = None
         ths_rewrite = cell.rewrite_goal_thms(target_id)
-        ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
-        if ths or ths_rewrite:
-            return jsonify({'ths_abs': [item[0] for item in ths], 'ths_rewrite': [item[0] for item in ths_rewrite]})
+        ths_abs = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
+        ths_afs = cell.apply_forward_step_thms(target_id, prevs=conclusion_id)
+        if ths_abs or ths_rewrite or ths_afs:
+            return jsonify({'ths_abs': [item[0] for item in ths_abs],
+                            'ths_rewrite': [item[0] for item in ths_rewrite],
+                            'ths_afs': [item[0] for item in ths_afs]})
         else:
             return jsonify({})
 
@@ -283,4 +286,18 @@ def save_edit():
     json.dump(f_data, j, indent=4, ensure_ascii=False, sort_keys=True)
     j.close()
 
+    return jsonify({})
+
+
+@app.route('/api/apply-forward-step', methods=['POST'])
+def apply_forward_step():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells.get(data['id'])
+        theorem = data['theorem'].split(",")
+        theorem, prevs = theorem[0], theorem[1:]
+        if prevs:
+            prevs = [prev.strip() for prev in prevs]
+        cell.apply_forward_step(data['line_id'], theorem, prevs=prevs)
+        return jsonify(cell.json_data())
     return jsonify({})

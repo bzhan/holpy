@@ -16,6 +16,7 @@ from syntax import parser, printer
 class TacticException(Exception):
     pass
 
+
 # Helper functions
 
 def incr_id_after(id, start, n):
@@ -29,10 +30,11 @@ def incr_id_after(id, start, n):
 
     """
     k = len(start)
-    if len(id) >= k and id[:k-1] == start[:k-1] and id[k-1] >= start[k-1]:
-        return id[:k-1] + (id[k-1] + n,) + id[k:]
+    if len(id) >= k and id[:k - 1] == start[:k - 1] and id[k - 1] >= start[k - 1]:
+        return id[:k - 1] + (id[k - 1] + n,) + id[k:]
     else:
         return id
+
 
 def incr_proof_item(item, start, n):
     """Increment all ids in the given proof item. Recursively increment
@@ -45,16 +47,18 @@ def incr_proof_item(item, start, n):
         for subitem in item.subproof.items:
             incr_proof_item(subitem, start, n)
 
+
 def decr_id(id, id_remove):
     """Decrement a single id, with the aim of closing the gap at
     id_remove. The logic used is similar to that incr_id_after.
     
     """
     k = len(id_remove)
-    if len(id) >= k and id[:k-1] == id_remove[:k-1] and id[k-1] > id_remove[k-1]:
-        return id[:k-1] + (id[k-1] - 1,) + id[k:]
+    if len(id) >= k and id[:k - 1] == id_remove[:k - 1] and id[k - 1] > id_remove[k - 1]:
+        return id[:k - 1] + (id[k - 1] - 1,) + id[k:]
     else:
         return id
+
 
 def decr_proof_item(item, id_remove):
     """Decrement all ids in the given proof item."""
@@ -64,9 +68,11 @@ def decr_proof_item(item, id_remove):
         for subitem in item.subproof.items:
             decr_proof_item(subitem, id_remove)
 
+
 def incr_id(id, n):
     """Increment the last number in id by n."""
     return id[:-1] + (id[-1] + n,)
+
 
 def strip_all_implies(t, names):
     """Given a term of the form
@@ -119,7 +125,7 @@ class ProofState():
             raise TacticException()
 
     def __str__(self):
-        vars = sorted(self.vars, key = lambda v: v.name)
+        vars = sorted(self.vars, key=lambda v: v.name)
         lines = "\n".join('var ' + v.name + ' :: ' + str(v.T) for v in vars)
         return lines + "\n" + str(self.prf)
 
@@ -217,7 +223,7 @@ class ProofState():
         new_id = incr_id(id, 1)
         split = new_id[-1]
         prf.items = prf.items[:split] + [ProofItem(new_id, "")] + prf.items[split:]
-        for item in prf.items[split+1:]:
+        for item in prf.items[split + 1:]:
             incr_proof_item(item, new_id, 1)
 
         self.check_proof(compute_only=True)
@@ -229,7 +235,7 @@ class ProofState():
         split = id[-1]
         new_items = [ProofItem(incr_id(id, i), "") for i in range(n)]
         prf.items = prf.items[:split] + new_items + prf.items[split:]
-        for item in prf.items[split+n:]:
+        for item in prf.items[split + n:]:
             incr_proof_item(item, id, n)
 
         self.check_proof(compute_only=True)
@@ -239,7 +245,7 @@ class ProofState():
         id = id_force_tuple(id)
         prf = self.prf.get_parent_proof(id)
         split = id[-1]
-        prf.items = prf.items[:split] + prf.items[split+1:]
+        prf.items = prf.items[:split] + prf.items[split + 1:]
         for item in prf.items[split:]:
             decr_proof_item(item, id)
 
@@ -258,6 +264,7 @@ class ProofState():
 
     def replace_id(self, old_id, new_id):
         """Replace old_id with new_id in prevs."""
+
         def replace(prf):
             for item in prf.items:
                 item.prevs = [new_id if id == old_id else id for id in item.prevs]
@@ -377,13 +384,69 @@ class ProofState():
             if new_id is not None:
                 self.replace_id(goal_id, new_id)
 
+    def get_poorf_items(self, ids):
+        return [self.prf.find_item(id) for id in ids] if ids else []
+
+    def check_items_concl(self, items):
+        for item in items:
+            if item.rule == 'sorry' or item.th is None:
+                return False
+
+        return True
+
+    def apply_forward_step_thms(self, id, prevs=None):
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+
+        if prevs:
+            cur_items = self.get_poorf_items(prevs)
+            if not self.check_items_concl(cur_items):
+                return []
+        else:
+            return []
+
+        prevs = [self.get_proof_item(id) for id in prevs]
+
+        results = []
+        for name, th in self.thy.get_data("theorems").items():
+            instsp = (dict(), dict())
+            As, C = th.concl.strip_implies()
+            if set(term.get_vars(As[:len(prevs)] + [C])) != set(term.get_vars(As + [C])):
+                continue
+
+            if not prevs and term.get_consts(C) == []:
+                continue
+
+            try:
+                for pat, prev in zip(As, prevs):
+                    matcher.first_order_match_incr(pat, prev.th.concl, instsp)
+            except matcher.MatchException:
+                continue
+
+            results.append((name, th))
+        return sorted(results)
+
+    def apply_forward_step(self, id, th_name, prevs=None, instsp=None):
+        """Apply forward step using the given theorem.
+
+        prevs - list of previous proved facts to use.
+        inst - existing instantiation.
+
+        """
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+
+        assert prevs, "apply_forward_step: prevs is not empty"
+
+        self.add_line_before(id, 1)
+        self.set_line(id, 'apply_theorem', args=th_name, prevs=prevs)
+
     def introduction(self, id, names=None):
         """Introduce assumptions for a goal of the form
 
         !x_1 ... x_k. A_1 --> ... --> A_n --> C.
 
         Argument names specifies list of variable names.
-        
         """
         id = id_force_tuple(id)
         cur_item = self.get_proof_item(id)
@@ -410,7 +473,7 @@ class ProofState():
 
         # Goal
         goal = Thm(list(cur_item.th.assums) + As, C)
-        goal_id = id + (len(vars) + len(As), )
+        goal_id = id + (len(vars) + len(As),)
         subprf.add_item(goal_id, "sorry", th=goal)
 
         # implies_intr invocations
@@ -489,13 +552,13 @@ class ProofState():
         _, new_goal = cv(goal).concl.dest_binop()
 
         new_As = list(set(cv(goal).assums) - set(init_As))
-        self.add_line_before(id, 1+len(new_As))
+        self.add_line_before(id, 1 + len(new_As))
         self.set_line(id, "sorry", th=Thm(cur_item.th.assums, new_goal))
         for i, A in enumerate(new_As):
-            self.set_line(incr_id(id, i+1), "sorry", th=Thm(cur_item.th.assums, A))
+            self.set_line(incr_id(id, i + 1), "sorry", th=Thm(cur_item.th.assums, A))
 
-        prev_ids = [incr_id(id, i) for i in range(1+len(new_As))]
-        self.set_line(incr_id(id, 1+len(new_As)), "rewrite_goal", args=(th_name, goal), prevs=prev_ids)
+        prev_ids = [incr_id(id, i) for i in range(1 + len(new_As))]
+        self.set_line(incr_id(id, 1 + len(new_As)), "rewrite_goal", args=(th_name, goal), prevs=prev_ids)
 
         # Test if the goal is already proved
         new_id = self.find_goal(Thm(cur_item.th.assums, new_goal), id)
