@@ -539,7 +539,6 @@
                         data_new_content += i + ': ' + data_content_list[i] + '\n';
                         data_rule_name += i + ': ' + data_rule_names[i] + '\n';
                     }
-
                     $('#codeTab').find('span#'+ page_num).text(ext.name);
                 }
                 else
