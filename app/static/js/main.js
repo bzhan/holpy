@@ -44,7 +44,7 @@
                     '<textarea id="code' + page_num + '"></textarea>' +
                     '</div>'));
             $('div.rbottom').append(
-                '<div id="prf'+ page_num +'" name="addition"><button id="' + proof_id + '" class="el-button el-button--default el-button--mini save" style="margin-top:5px;width:100px;margin-left:25px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
+                '<div id="prf'+ page_num +'" name="addition"><button id="' + proof_id + '" class="el-button el-button--default el-button--mini save_proof" style="margin-top:5px;width:100px;margin-left:25px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button></div>');
             init_editor("code" + page_num);
             // Add location for displaying results;
@@ -142,13 +142,19 @@
             });
         }
 
-//      click save to create json file;
+//      click save to create and save json_file metadata;
         $('div.rbottom').on('click', 'button[name="save-json"]', function() {
             var pnum = $(this).attr('id');
             var fname = $('#fname'+ pnum).val().trim();
             var imp = $('#imp'+ pnum).val().split(',');
             var des = $('#code'+ pnum).val().trim();
-            file_list.push(fname);
+            var flag = false;
+            $.each(file_list, function(i,v) {
+                if (v === fname)
+                    flag = true;
+            })
+            if (flag === false)
+                file_list.push(fname);
             file_list.sort();
             data = {
                 'name': fname,
@@ -221,7 +227,7 @@
         })
 
         // Save a single proof to the webpage (not to the json file);
-        $('div.rbottom').on('click', 'button.save', function () {
+        $('div.rbottom').on('click', 'button.save_proof', function () {
             editor_id_list = [];
             var file_name = $(this).attr('name').slice(4,);
             var editor_id = get_selected_id();
@@ -246,11 +252,14 @@
         function result_to_output(data) {
             if (data.ty === 'def.ax') {
                 delete data.type_hl;
-            } else if (data.ty === 'thm') {
+            } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
                 delete data.prop_hl;
             } else if (data.ty === 'type.ind') {
                 delete data.argsT;
-            } else if (data.ty === 'def.ind') {
+            } else if (data.ty === 'def') {
+                delete data.term;
+                delete data.type_hl;
+            } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
                 delete data.type_hl;
                 for (var i in data.rules) {
                     delete data.rules[i].prop_hl;
@@ -407,6 +416,7 @@
             result_list.splice(number, 1);
             display_result_list();
             save_editor_data();
+            alert('删除成功！');
         });
 
 //      the method for add_info && edit_info;
@@ -448,15 +458,20 @@
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
-            if (data_type === 'thm') {
+            if (data_type === 'thm' || data_type === 'thm.ax') {
+                if (data_type === 'thm')
+                    var type_name = 'theorem';
+                else
+                    var type_name = 'axiom';
                 if (number)
                     data_content = result_list[number]['prop'];
                 else
+                    var type_name = ''
                     $('#codeTab').find('span#'+ page_num).text('theorem');
                 $('#codeTabContent').append(
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>theorem</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
+                        '<font color="#006000"><b>'+ type_name +'</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
                         '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="height:45px;width:40%;background:transparent;'+ border +'">'+ vars_str +'</textarea>' +
                         '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:30%;background:transparent;'+ border +'" value="' + data_content + '">' +
                         '<br><br><input name="hint_backward'+ page_num + '" type="checkbox" style="margin-left:0px;"><b>&nbsp;backward</b><input name="hint_rewrite'+ page_num +'" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
@@ -493,39 +508,56 @@
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
-            if (data_type === 'def.ind') {
+            if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
                 var data_content_list = [];
                 var data_new_content = '';
+                var data_rule_names = [], data_rule_name = '';
+                var type_name = 'fun';
                 if (number) {
                     var ext = result_list[number];
-                    var type = '', str = '';
-                    $.each(ext.type_hl, function (i, val) {
-                        type = type + val[0];
-                    });
-                    data_name = ext.name+' :: ' + type;
-                    for (var j in ext.rules) {
-                        var data_con = ''
-                        $.each(ext.rules[j].prop_hl, function (i, val) {
-                            data_con +=  val[0];
-                        });
-                        data_content_list.push(data_con);
+                    var type = '', str = '', vars = '';
+                    data_name = ext.name + ' :: ' + ext.type;
+                    if (ext.rules) {
+                        for (var j in ext.rules) {
+                            var data_con = '';
+                            $.each(ext.rules[j].prop_hl, function (i, val) {
+                                data_con +=  val[0];
+                            });
+                            data_content_list.push(data_con);
+                            data_rule_names.push(ext.rules[j]['name']);
+                        }
+                    }
+                    if (data_type === 'def') {
+                        var i = 0, type_name = 'definition';
+                        data_content_list.push(ext.prop);
+                        for (v in ext.vars) {
+                            vars += i + ': ' + v + ':' + ext.vars[v] + '\n';
+                            i++;
+                        }
                     }
                     for (var i in data_content_list) {
                         data_new_content += i + ': ' + data_content_list[i] + '\n';
-                    };
+                        data_rule_name += i + ': ' + data_rule_names[i] + '\n';
+                    }
+
                     $('#codeTab').find('span#'+ page_num).text(ext.name);
                 }
                 else
                     $('#codeTab').find('span#'+ page_num).text('function');
                 $('#codeTabContent').append(
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>fun</b></font>:</label> ' +
-                        '<input spellcheck="false" id="data-name' + page_num + '" style="width:30%;background:transparent;'+ border +'" value="' + data_name + '">' +
+                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>'+ type_name +'</b></font>:</label> ' +
+                        '<input spellcheck="false" id="data-name' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_name + '">' +
                         '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" name="content">' + data_new_content + '</textarea>' +
-                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" placeholder="vars"></textarea></div>'
+                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ vars +'</textarea></div>'
                     ));
+                if (data_type === 'def.pred') {
+                    $('div#code' + page_num + '-pan label b').text('induct');
+                    $('textarea#data-vars'+page_num).after('<br><textarea spellcheck="false" id="data-names'+ page_num +'" style="margin-top:5px;height:110px;width:60%;background:transparent;'+ border +'" name="names">'+ data_rule_name +'</textarea>')
+                }
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-                display_lines_number(data_content_list, page_num, number);
+                if (data_type !== 'def')
+                    display_lines_number(data_content_list, page_num, number);
             }
             if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
                 $('input[name="hint_backward'+ page_num +'"]').click();
@@ -568,8 +600,8 @@
             var error_id = $(this).next().attr('id').trim();
             var id = tab_pm;
             var ty = $(this).attr('name').trim();
-            var ajax_data = make_data(ty, id);
             var number = Number(a_id.slice(5,)) - 1;
+            var ajax_data = make_data(ty, id, number);
             var prev_list = result_list.slice(0, number);
             if ($('input[name="hint_backward'+ tab_pm +'"]').prop('checked') === true)
                 result_list[number]['hint_backward'] = 'true';
@@ -603,12 +635,13 @@
                              }}
                     display_result_list();
                     save_editor_data();
+                    alert('保存成功！')
                 }
             });
         })
 
 //      make a strict-type data from editing; id=page_num
-        function make_data(ty, id) {
+        function make_data(ty, id, number) {
             var data_name = $('#data-name'+id).val().trim();
             var data_content = $('#data-content'+id).val().trim();
             var ajax_data = {};
@@ -617,10 +650,10 @@
                 ajax_data['name'] = data_name;
                 ajax_data['type'] = data_content;
             }
-            if (ty === 'thm') {
+            if (ty === 'thm' || ty === 'thm.ax') {
                 var vars_str_list = $('textarea#data-vars' + id).val().split('\n');
                 var vars_str = {};
-                ajax_data['ty'] = 'thm';
+                ajax_data['ty'] = ty;
                 ajax_data['name'] = data_name;
                 ajax_data['prop'] = data_content;
                 $.each(vars_str_list, function (i, v) {
@@ -674,29 +707,39 @@
                 ajax_data['args'] = temp_list;
                 ajax_data['constrs'] = temp_constrs;
             }
-            if (ty === 'def.ind') {
+            if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
                 var rules_list = [];
+                var rules = result_list[number].rules;
                 var props_list = data_content.split(/\n/);
                 var vars_list = $('textarea#data-vars' + id).val().trim().split(/\n/);
+                if (ty === 'def.pred')
+                    var names_list = $('textarea#data-names' + id).val().trim().split(/\n/);
                 $.each(props_list, function (i, v) {
-                    props_list[i] = v.slice(3,);
-                    vars_list[i] = vars_list[i].slice(3,);
+                    props_list[i] = $.trim(v.slice(3,));
+                    vars_list[i] = $.trim(vars_list[i].slice(3,));
+                    if (names_list)
+                        names_list[i] = $.trim(names_list[i].slice(3,));
                 })
                 $.each(props_list, function (i, v) {
                     var temp_dict = {}, temp_vars = {};
                     if (v && vars_list[i]) {
                         temp_dict['prop'] = v;
                         $.each(vars_list[i].split(/\s\s/), function (j, k) {
-                            temp_vars[k.split(':')[0]] = k.split(':')[1];
+                            temp_vars[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
                         })
+                        if (names_list)
+                            temp_dict['name'] = names_list[i];
                     } else if (!v) {
                         return true;
                     }
                     temp_dict['vars'] = temp_vars;
                     rules_list.push(temp_dict);
                 })
-                ajax_data['rules'] = rules_list;
-                ajax_data['ty'] = 'def.ind';
+                if (ty !== 'def')
+                    ajax_data['rules'] = rules_list;
+                else
+                    ajax_data['vars'] = temp_vars;
+                ajax_data['ty'] = ty;
                 ajax_data['name'] = data_name.split(' :: ')[0];
                 ajax_data['type'] = data_name.split(' :: ')[1];
             }
@@ -871,19 +914,28 @@
                     + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
             }
 
+            if (ty === 'thm.ax') {
+                var prop = high_light(ext.prop_hl);
+                var status_color = 'green';
+                $('#left_json').append($(
+                    '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>axiom</b></font></span> <span id="thm_name" name="name"><tt>' + name +
+                    '</tt></span>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
+                    prop + '</span></p></div>'));
+            }
+
             if (ty === 'thm') {
                 var prop = high_light(ext.prop_hl);
                 var status_color;
                 if (ext.proof === undefined) {
-                    status_color = 'red'
+                    status_color = 'red';
                 } else if (ext.num_gaps > 0) {
-                    status_color = 'yellow'
+                    status_color = 'yellow';
                 } else {
-                    status_color = 'green'
+                    status_color = 'green';
                 }
                 $('#left_json').append($(
                     '<div><div style="float:left;width: 12px; height: 12px; background: ' +
-                    status_color + ';">&nbsp;</div>' + '<p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
+                    status_color + ';">&nbsp;</div>' + '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
                     '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
                     prop + '</span></p></div>'));
             }
@@ -903,10 +955,31 @@
                     '<div><p id="data-'+ num +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
             }
 
+            if (ty === 'def') {
+                var term = high_light(ext.term);
+                var type = high_light(ext['type_hl']);
+                $('#left_json').append($(
+                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b><br><span name="content">'+ term +'</span></font></p>'));
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
+            }
+
             if (ty === 'def.ind') {
                 var type = high_light(ext.type_hl);
                 $('#left_json').append($(
                     '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b></font></p>'));
+                for (var j in ext.rules) {
+                    var str = high_light(ext.rules[j].prop_hl);
+                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
+                }
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
+            }
+
+            if (ty === 'def.pred') {
+                var type = high_light(ext.type_hl);
+                $('#left_json').append($(
+                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
                     '</span><font color="#006000"><b> where</b></font></p>'));
                 for (var j in ext.rules) {
                     var str = high_light(ext.rules[j].prop_hl);
