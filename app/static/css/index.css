@@ -250,6 +250,10 @@ tt.tvar {
     color: purple;
 }
 
+tt.normal{
+    color: black;
+}
+
 #variables {
     margin-left: 19px;
 }

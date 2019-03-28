@@ -154,7 +154,6 @@ def file_data_to_output(thy, data):
     Also modifies thy in parsing the item.
 
     """
-    # 如何实现induct函数，在对应的类型里调用参数，如test里的实例一样使用；
     parser.parse_extension(thy, data)
     if data['ty'] == 'def.ax':
         T = parser.parse_type(thy, data['type'])
@@ -179,11 +178,13 @@ def file_data_to_output(thy, data):
 
     elif data['ty'] == 'def':
         settings.settings_stack[0]['highlight'] = True
+        settings.settings_stack[0]['unicode'] = True
         ctxt = parser.parse_vars(thy, data['vars'])
         term = parser.parse_term(thy, ctxt, data['prop'])
         type = parser.parse_type(thy, data['type'])
         data['term'] = printer.print_term(thy, term)
-        data['type'] = printer.print_type(thy, type)
+        data['type_hl'] = printer.print_type(thy, type)
+        settings.settings_stack[0]['unicode'] = False
         settings.settings_stack[0]['highlight'] = False
 
     elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
