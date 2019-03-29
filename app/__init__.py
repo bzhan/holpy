@@ -15,6 +15,8 @@ from syntax import parser, printer
 from server.tactic import ProofState
 from logic import basic
 from logic import induct
+from kernel.extension import AxType,AxConstant,Theorem
+
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
@@ -146,13 +148,15 @@ def set_line():
         return jsonify(error)
 
 # type of ax
-def type_(thy ,type, j):
-    if type == 'kernel.extension.AxType':
-        return printer.print_type(thy, j)
-    if type == 'kernel.extension.AxConstant':
-        return printer.print_type(thy, j)
-    if type == 'kernel.extension.Theorem':
-        return printer.print_thm(thy, j)
+def type_(thy, j):
+    if isinstance(j, AxType):
+        return (printer.print_type(thy, j), 'type')
+    if isinstance(j,AxConstant):
+        if isinstance(j.T, str):
+            j.T = parser.parse_type(thy, j.T)
+        return (printer.print_type(thy, j.T), 'constant')
+    if isinstance(j, Theorem):
+        return (printer.print_thm(thy, j.th), 'theorem')
 
 # add hightlight
 def file_data_to_output(thy, data):
@@ -187,7 +191,8 @@ def file_data_to_output(thy, data):
             constrs.append(c_)
         ext = induct.add_induct_type(name, args, constrs)
         for i in ext.data:
-            ext_res.append(type_(thy ,type(i), i))
+            if type_(thy, i):
+                ext_res.append(type_(thy, i))
         for i, constr in enumerate(data['constrs']):
             type_list = []
             T = parser.parse_type(thy, constr['type'])
@@ -198,7 +203,6 @@ def file_data_to_output(thy, data):
             type_dic['concl'] = printer.print_type(thy, res, unicode=True, highlight=True)
         data['argsT'] = type_dic
         data['ext'] = ext_res
-
 
     elif data['ty'] == 'def.ind':
         name = data['name']
@@ -212,7 +216,8 @@ def file_data_to_output(thy, data):
             rules_.append(prop_)
         ext = induct.add_induct_def(name, type_d, rules_)
         for e in ext.data:
-            ext_res.append(type_(thy,type(e),e))
+            if type_(thy, e):
+                ext_res.append(type_(thy, e))
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         for rule in data['rules']:
