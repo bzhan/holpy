@@ -522,10 +522,11 @@
                     var ext = result_list[number];
                     var ext_ = ext.ext;
                     var ext_str = '';
+                    var type = '', str = '', vars = '';
+                    var type_ = '', str = '';
                     $.each(ext_ , function(i,v) {
                         ext_str += v[1] + '  ' + v[0] + '\n';
                     })
-                    var type_ = '', str = '';
                     $.each(ext.type_hl, function (i, val) {
                         type_ +=  val[0];
                     });
@@ -536,8 +537,7 @@
                             data_con +=  val[0];
                         });
                         data_content_list.push(data_con);
-
-                    var type = '', str = '', vars = '';
+                    }
                     data_name = ext.name + ' :: ' + ext.type;
                     if (ext.rules) {
                         for (var j in ext.rules) {
@@ -556,7 +556,6 @@
                             vars += i + ': ' + v + ':' + ext.vars[v] + '\n';
                             i++;
                         }
-
                     }
                     for (var i in data_content_list) {
                         data_new_content += i + ': ' + data_content_list[i] + '\n';
@@ -574,11 +573,11 @@
                         '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" name="content">' + data_new_content + '</textarea>' +
                         '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ vars +'</textarea><textarea spellcheck="false" style="height:160px;width:40%;background:transparent;'+ border +'">'+ ext_str +'</textarea></div>'
                     ));
+                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type === 'def.pred') {
                     $('div#code' + page_num + '-pan label b').text('induct');
                     $('textarea#data-vars'+page_num).after('<br><textarea spellcheck="false" id="data-names'+ page_num +'" style="margin-top:5px;height:110px;width:60%;background:transparent;'+ border +'" name="names">'+ data_rule_name +'</textarea>')
                 }
-                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type !== 'def')
                     display_lines_number(data_content_list, page_num, number);
             }
