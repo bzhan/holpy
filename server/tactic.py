@@ -312,7 +312,7 @@ class ProofState():
                 continue
 
             instsp = (dict(), dict())
-            As, C = th.concl.strip_implies()
+            As, C = th.assums, th.concl
             # Only process those theorems where C and the matched As
             # contain all of the variables.
             if set(term.get_vars(As[:len(prevs)] + [C])) != set(term.get_vars(As + [C])):
@@ -326,13 +326,13 @@ class ProofState():
 
             try:
                 for pat, prev in zip(As, prevs):
-                    matcher.first_order_match_incr(pat, prev.th.concl, instsp)
-                matcher.first_order_match_incr(C, cur_item.th.concl, instsp)
+                    matcher.first_order_match_incr(pat, prev.th.prop, instsp)
+                matcher.first_order_match_incr(C, cur_item.th.prop, instsp)
             except matcher.MatchException:
                 continue
 
             # All matches succeed
-            t = logic.subst_norm(th.concl, instsp)
+            t = logic.subst_norm(th.prop, instsp)
             t = printer.print_term(self.thy, t)
             results.append((name, t))
         return sorted(results)
@@ -356,20 +356,20 @@ class ProofState():
 
         if instsp is None:
             instsp = (dict(), dict())
-            As, C = th.concl.strip_implies()
+            As, C = th.assums, th.concl
             for pat, prev in zip(As, prevs):
                 item = self.get_proof_item(prev)
-                matcher.first_order_match_incr(pat, item.th.concl, instsp)
-            matcher.first_order_match_incr(C, cur_item.th.concl, instsp)
+                matcher.first_order_match_incr(pat, item.th.prop, instsp)
+            matcher.first_order_match_incr(C, cur_item.th.prop, instsp)
 
-        As, _ = logic.subst_norm(th.concl, instsp).strip_implies()
+        As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
 
         num_goal = len(As) - len(prevs)
         self.add_line_before(id, num_goal)
         start = id
         all_ids = [incr_id(start, i - len(prevs)) for i in range(len(prevs), len(As))]
         for goal_id, A in zip(all_ids, As[len(prevs):]):
-            self.set_line(goal_id, "sorry", th=Thm(cur_item.th.assums, A))
+            self.set_line(goal_id, "sorry", th=Thm(cur_item.th.hyps, A))
 
         tyinst, inst = instsp
         self.set_line(incr_id(start, num_goal), "apply_theorem_for",
@@ -377,7 +377,7 @@ class ProofState():
 
         # Test if the goals are already proved:
         for goal_id, A in reversed(list(zip(all_ids, As[len(prevs):]))):
-            goal = Thm(cur_item.th.assums, A)
+            goal = Thm(cur_item.th.hyps, A)
             new_id = self.find_goal(goal, goal_id)
             if new_id is not None:
                 self.replace_id(goal_id, new_id)
@@ -397,7 +397,7 @@ class ProofState():
         if names is None:
             names = []
 
-        vars, As, C = strip_all_implies(cur_item.th.concl, names)
+        vars, As, C = strip_all_implies(cur_item.th.prop, names)
 
         cur_item.rule = "subproof"
         cur_item.subproof = Proof()
@@ -414,7 +414,7 @@ class ProofState():
             subprf.add_item(cur_id, "assume", args=A, th=Thm([A], A))
 
         # Goal
-        goal = Thm(list(cur_item.th.assums) + As, C)
+        goal = Thm(list(cur_item.th.hyps) + As, C)
         goal_id = id + (len(vars) + len(As), )
         subprf.add_item(goal_id, "sorry", th=goal)
 
@@ -454,10 +454,10 @@ class ProofState():
         assert not isinstance(var, str), "apply_induction: variable not found"
 
         # Current goal
-        concl = cur_item.th.concl
+        goal = cur_item.th.prop
 
         # Instantiation for P
-        P = Term.mk_abs(var, concl)
+        P = Term.mk_abs(var, goal)
         inst = {"P": P, "x": var}
         self.apply_backward_step(id, th_name, instsp=({}, inst))
 
@@ -470,13 +470,13 @@ class ProofState():
             return []
 
         results = []
-        goal = cur_item.th.concl
+        goal = cur_item.th.prop
         for th_name, th in self.thy.get_data("theorems").items():
             if 'hint_rewrite' not in self.thy.get_attributes(th_name):
                 continue
 
             cv = top_conv(rewr_conv(th_name))
-            _, new_goal = cv(self.thy, goal).concl.dest_binop()
+            new_goal = cv.eval(self.thy, goal).prop.rhs
             if goal != new_goal:
                 new_goal = printer.print_term(self.thy, new_goal)
                 results.append((th_name, new_goal))
@@ -490,22 +490,22 @@ class ProofState():
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "rewrite_goal: id is not a gap"
 
-        init_As = cur_item.th.assums
-        goal = cur_item.th.concl
+        init_As = cur_item.th.hyps
+        goal = cur_item.th.prop
         cv = then_conv(top_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
-        _, new_goal = cv(self.thy, goal).concl.dest_binop()
+        new_goal = cv.eval(self.thy, goal).prop.rhs
 
-        new_As = list(set(cv(self.thy, goal).assums) - set(init_As))
+        new_As = list(set(cv.eval(self.thy, goal).hyps) - set(init_As))
         self.add_line_before(id, 1+len(new_As))
-        self.set_line(id, "sorry", th=Thm(cur_item.th.assums, new_goal))
+        self.set_line(id, "sorry", th=Thm(cur_item.th.hyps, new_goal))
         for i, A in enumerate(new_As):
-            self.set_line(incr_id(id, i+1), "sorry", th=Thm(cur_item.th.assums, A))
+            self.set_line(incr_id(id, i+1), "sorry", th=Thm(cur_item.th.hyps, A))
 
         prev_ids = [incr_id(id, i) for i in range(1+len(new_As))]
         self.set_line(incr_id(id, 1+len(new_As)), "rewrite_goal", args=(th_name, goal), prevs=prev_ids)
 
         # Test if the goal is already proved
-        new_id = self.find_goal(Thm(cur_item.th.assums, new_goal), id)
+        new_id = self.find_goal(Thm(cur_item.th.hyps, new_goal), id)
         if new_id is not None:
             self.replace_id(id, new_id)

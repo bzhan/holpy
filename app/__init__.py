@@ -16,6 +16,7 @@ from server.tactic import ProofState
 from logic import basic
 from logic import induct
 from kernel.extension import AxType,AxConstant,Theorem
+from syntax import settings
 
 app = Flask(__name__, static_url_path='/static')
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -165,24 +166,19 @@ def file_data_to_output(thy, data):
     Also modifies thy in parsing the item.
 
     """
-    # 如何实现induct函数，在对应的类型里调用参数，如test里的实例一样使用；
-    # parser.induct.add_induct_type(      )
-    # data = printer.print_term(thy, prop, unicode=True, highlight=True)
-
     parser.parse_extension(thy, data)
     if data['ty'] == 'def.ax':
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
-    elif data['ty'] == 'thm':
+    elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parser.parse_vars(thy, data['vars'])
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
 
     elif data['ty'] == 'type.ind':
         type_dic = dict()
-        constrs = []
-        ext_res = []
+        constrs, ext_res = [], []
         name = data['name']
         args = data['args']
         cons = data['constrs']
@@ -204,12 +200,11 @@ def file_data_to_output(thy, data):
         data['argsT'] = type_dic
         data['ext'] = ext_res
 
-    elif data['ty'] == 'def.ind':
+    elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
         name = data['name']
         type_d = data['type']
         rules = data['rules']
-        rules_ = []
-        ext_res = []
+        rules_, ext_res = [], []
         for i in rules:
             ctxt_ = parser.parse_vars(thy,i['vars'])
             prop_ = parser.parse_term(thy, ctxt_, i['prop'])
@@ -219,12 +214,24 @@ def file_data_to_output(thy, data):
             if type_(thy, e):
                 ext_res.append(type_(thy, e))
         T = parser.parse_type(thy, data['type'])
-        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         for rule in data['rules']:
             ctxt = parser.parse_vars(thy, rule['vars'])
             prop = parser.parse_term(thy, ctxt, rule['prop'])
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         data['ext'] = ext_res
+
+    elif data['ty'] == 'def':
+        settings.settings_stack[0]['highlight'] = True
+        settings.settings_stack[0]['unicode'] = True
+        ctxt = parser.parse_vars(thy, data['vars'])
+        term = parser.parse_term(thy, ctxt, data['prop'])
+        type = parser.parse_type(thy, data['type'])
+        data['term'] = printer.print_term(thy, term)
+        data['type_hl'] = printer.print_type(thy, type)
+        settings.settings_stack[0]['unicode'] = False
+        settings.settings_stack[0]['highlight'] = False
+
     # Ignore other types of information.
     else:
         pass
@@ -253,6 +260,7 @@ def json_add_info():
     thy = basic.loadTheory(data['theory_name'])
     item = data['item']
     file_data_to_output(thy, item)
+
     return jsonify({'data': item})
 
 
@@ -271,19 +279,26 @@ def save_file():
 #match the thms for backward or rewrite;
 @app.route('/api/match_thm', methods=['POST'])
 def match_thm():
+    dict = {}
     data = json.loads(request.get_data().decode("utf-8"))
+    thy = basic.loadTheory(data['theory_name'])
     if data:
         cell = cells.get(data.get('id'))
         target_id = data.get('target_id')
+        ctxt = cell.get_ctxt(target_id)
+        settings.settings_stack[0]['highlight'] = True
+        for k, v in ctxt.items():
+            dict[k] = printer.print_type(thy, v)
         conclusion_id = data.get('conclusion_id')
         if not conclusion_id:
             conclusion_id = None
+        settings.settings_stack[0]['highlight'] = False
         ths_rewrite = cell.rewrite_goal_thms(target_id)
         ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
         if ths or ths_rewrite:
-            return jsonify({'ths_abs': ths, 'ths_rewrite': ths_rewrite})
+            return jsonify({'ths_abs': ths, 'ths_rewrite': ths_rewrite, 'ctxt': dict})
         else:
-            return jsonify({})
+            return jsonify({'ctxt': dict})
 
 
 # save the edited data to left-json for updating;
@@ -305,6 +320,7 @@ def save_modify():
             "message": str(e),
             "detail-content": exc_detailed
         }
+
     return jsonify({'data': data, 'error': error})
 
 

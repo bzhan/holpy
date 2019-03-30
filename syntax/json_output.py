@@ -35,12 +35,12 @@ class JSONTheory():
     def add_theorem(self, name, th, prf):
         """Add a theorem with proof to the file."""
 
-        assert len(th.assums) == 0, "add_theorem"
-        vars = dict((v.name, str(v.T)) for v in get_vars(th.concl))
+        assert len(th.hyps) == 0, "add_theorem"
+        vars = dict((v.name, str(v.T)) for v in get_vars(th.prop))
         data = {
             "name": name,
             "ty": "thm",
-            "prop": printer.print_term(self.thy, th.concl),
+            "prop": printer.print_term(self.thy, th.prop),
             "vars": vars,
             "num_gaps": 0,
             "proof": sum([self.export_proof_json(item) for item in prf.items], []),
