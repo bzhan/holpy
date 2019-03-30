@@ -422,6 +422,7 @@
 //      the method for add_info && edit_info;
         function init_edit_area(page_num, a_ele= '', data_type= '') {
             var a_id, data_name= '', data_content= '', vars_str = '', data_label, border = '1px;solid #ffffff;border:none'
+            var class_name = 'tab-pane fade in active code-cell edit-data';
             if (!a_ele) {
                 a_id = '', border= '',data_name = '', data_content = '', number = '', data_label = data_type;
             }
@@ -431,6 +432,7 @@
                data_name = result_list[number]['name'];
                data_type = result_list[number]['ty'];
                data_label = data_name;
+
                for(var key in result_list[number]['vars']) {
                     vars_str += key + ':' + result_list[number]['vars'][key] + '\n';
                };
@@ -443,7 +445,6 @@
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="edit">×</button>' +
                     '</a></li>'));
-            var class_name = 'tab-pane fade in active code-cell edit-data';
             if (data_type === 'def.ax') {
                 if (number)
                     data_content = result_list[number]['type'];
