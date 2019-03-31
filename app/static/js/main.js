@@ -484,7 +484,7 @@
                     var argsT = result_list[number]['argsT'];
                     var ext_ = '';
                     $.each(ext, function(i, v) {
-                        ext_ += v[1] + '  ' + i + ':' +  v[0] + '\n';
+                        ext_ += v[0][1] + '  ' + v[1] + ':' +  v[0][0] + '\n';
                     })
                     data_name = '';
                     $.each(argsT.concl, function (i,j) {
@@ -525,7 +525,7 @@
                     var type = '', str = '', vars = '';
                     var type_ = '', str = '';
                     $.each(ext_ , function(i,v) {
-                        ext_str += v[1] + '  ' + i + ':' +  v[0] + '\n';
+                        ext_str += v[0][1] + '  ' + v[1] + ':' +  v[0][0] + '\n';
                     })
                     data_name = ext.name + ' :: ' + ext.type;
                     if (ext.rules) {

@@ -178,7 +178,7 @@ def file_data_to_output(thy, data):
 
     elif data['ty'] == 'type.ind':
         type_dic = dict()
-        constrs, ext_res = [], {}
+        constrs, ext_res = [], []
         name = data['name']
         args = data['args']
         cons = data['constrs']
@@ -188,8 +188,8 @@ def file_data_to_output(thy, data):
         ext = induct.add_induct_type(name, args, constrs)
         for i in ext.data:
             if type_(thy, i):
-                ext_res[i.name] = type_(thy, i)
-                # ext_res.append(type_(thy, i))
+                # ext_res[i.name] = type_(thy, i)
+                ext_res.append((type_(thy, i), i.name))
         for i, constr in enumerate(data['constrs']):
             type_list = []
             T = parser.parse_type(thy, constr['type'])
@@ -205,7 +205,7 @@ def file_data_to_output(thy, data):
         name = data['name']
         type_d = data['type']
         rules = data['rules']
-        rules_, ext_res = [], {}
+        rules_, ext_res = [], []
         for i in rules:
             ctxt_ = parser.parse_vars(thy,i['vars'])
             prop_ = parser.parse_term(thy, ctxt_, i['prop'])
@@ -213,7 +213,8 @@ def file_data_to_output(thy, data):
         ext = induct.add_induct_def(name, type_d, rules_)
         for e in ext.data:
             if type_(thy, e):
-                ext_res[e.name] = type_(thy, e)
+                #ext_res[e.name] = type_(thy, e)
+                ext_res.append((type_(thy, e), e.name))
         T = parser.parse_type(thy, data['type'])
         for rule in data['rules']:
             ctxt = parser.parse_vars(thy, rule['vars'])
