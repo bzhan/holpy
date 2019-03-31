@@ -483,8 +483,8 @@
                     var ext = result_list[number]['ext'];
                     var argsT = result_list[number]['argsT'];
                     var ext_ = '';
-                    $.each(ext, function(i,v) {
-                        ext_ += v[1] + '  ' + v[0] + '\n';
+                    $.each(ext, function(i, v) {
+                        ext_ += v[1] + '  ' + i + ':' +  v[0] + '\n';
                     })
                     data_name = '';
                     $.each(argsT.concl, function (i,j) {
@@ -508,8 +508,8 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
-                        '<br><input spellcheck="false" id="data-name' + page_num + '" style="width:40%;background:transparent;'+ border +'" value="' + data_name + '">' + '&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;' +
-                        '<br><br><textarea spellcheck="false" id="data-content' + page_num + '" style="height:160px;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea><textarea spellcheck="false" style="height:160px;width:40%;background:transparent;'+ border +'">'+ ext_ +'</textarea></div>'
+                        '<br><input spellcheck="false" id="data-name' + page_num + '" style="width:35%;background:transparent;'+ border +'" value="' + data_name + '">' + '&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;' +
+                        '<br><br><textarea spellcheck="false" id="data-content' + page_num + '" style="height:160px;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea><label style="float:right;height:80px;width:40%;background:transparent;'+ border +'"><pre>'+ ext_ +'</pre></label></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -525,7 +525,7 @@
                     var type = '', str = '', vars = '';
                     var type_ = '', str = '';
                     $.each(ext_ , function(i,v) {
-                        ext_str += v[1] + '  ' + v[0] + '\n';
+                        ext_str += v[1] + '  ' + i + ':' +  v[0] + '\n';
                     })
                     $.each(ext.type_hl, function (i, val) {
                         type_ +=  val[0];
@@ -571,7 +571,7 @@
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>'+ type_name +'</b></font>:</label> ' +
                         '<input spellcheck="false" id="data-name' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_name + '">' +
                         '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" name="content">' + data_new_content + '</textarea>' +
-                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ vars +'</textarea><textarea spellcheck="false" style="height:160px;width:40%;background:transparent;'+ border +'">'+ ext_str +'</textarea></div>'
+                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ vars +'</textarea><label id="des-'+ page_num +'" spellcheck="false" style="height:160px;width:40%;float:left;background:transparent;'+ border +'"><pre>'+ ext_str +'</pre></label></div>'
                     ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type === 'def.pred') {
