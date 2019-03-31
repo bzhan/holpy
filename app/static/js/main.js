@@ -527,17 +527,6 @@
                     $.each(ext_ , function(i,v) {
                         ext_str += v[1] + '  ' + i + ':' +  v[0] + '\n';
                     })
-                    $.each(ext.type_hl, function (i, val) {
-                        type_ +=  val[0];
-                    });
-                    data_name = ext.name+' :: ' + type_;
-                    for (var j in ext.rules) {
-                        var data_con = ''
-                        $.each(ext.rules[j].prop_hl, function (i, val) {
-                            data_con +=  val[0];
-                        });
-                        data_content_list.push(data_con);
-                    }
                     data_name = ext.name + ' :: ' + ext.type;
                     if (ext.rules) {
                         for (var j in ext.rules) {
@@ -561,7 +550,6 @@
                         data_new_content += i + ': ' + data_content_list[i] + '\n';
                         data_rule_name += i + ': ' + data_rule_names[i] + '\n';
                     }
-
                     $('#codeTab').find('span#'+ page_num).text(ext.name);
                 }
                 else
@@ -571,7 +559,7 @@
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>'+ type_name +'</b></font>:</label> ' +
                         '<input spellcheck="false" id="data-name' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_name + '">' +
                         '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" name="content">' + data_new_content + '</textarea>' +
-                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ vars +'</textarea><label id="des-'+ page_num +'" spellcheck="false" style="height:160px;width:40%;float:left;background:transparent;'+ border +'"><pre>'+ ext_str +'</pre></label></div>'
+                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ vars +'</textarea><label id="des-'+ page_num +'" style="height:160px;width:40%;float:left;background:transparent;'+ border +'"><pre>'+ ext_str +'</pre></label></div>'
                     ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type === 'def.pred') {
