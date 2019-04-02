@@ -107,6 +107,9 @@ class beta_conv(Conv):
         except InvalidDerivationException:
             raise ConvException()
 
+def beta_norm(thy, t):
+    return top_conv(beta_conv()).eval(thy, t).prop.arg
+
 class abs_conv(Conv):
     """Applies conversion to the body of abstraction."""
     def __init__(self, cv):

@@ -7,7 +7,7 @@ from logic import nat
 from logic import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
-    every_conv, rewr_conv, assums_conv
+    every_conv, rewr_conv, assums_conv, beta_norm
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic_macro import init_theorem, apply_theorem
 from prover import z3wrapper
@@ -52,63 +52,63 @@ norm_cond_cv = every_conv(
     logic.norm_bool_expr()
 )
 
+def eval_Sem(thy, com, st):
+    """Evaluates the effect of program com on state st."""
+    f, args = com.strip_comb()
+    T = st.get_type()
+    if f.is_const_name("Skip"):
+        return init_theorem(thy, "Sem_Skip", tyinst={"a": T}, inst={"s": st})
+    elif f.is_const_name("Assign"):
+        a, b = args
+        Ta = a.get_type()
+        Tb = b.get_type().range_type()
+        pt = init_theorem(thy, "Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
+        return pt.on_arg(thy, arg_conv(norm_cv))
+    elif f.is_const_name("Seq"):
+        c1, c2 = args
+        pt1 = eval_Sem(thy, c1, st)
+        pt2 = eval_Sem(thy, c2, pt1.prop.arg)
+        pt = apply_theorem(thy, "Sem_seq", pt1, pt2)
+        return pt.on_arg(thy, function.fun_upd_norm_one_conv())
+    elif f.is_const_name("Cond"):
+        b, c1, c2 = args
+        b_st = beta_norm(thy, b(st))
+        b_eval = norm_cond_cv.get_proof_term(thy, b_st)
+        if b_eval.prop.arg == logic.true:
+            b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
+            pt1 = eval_Sem(thy, c1, st)
+            return apply_theorem(thy, "Sem_if1", b_res, pt1, concl=Sem(T)(com, st, pt1.prop.arg))
+        else:
+            b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
+            pt2 = eval_Sem(thy, c2, st)
+            return apply_theorem(thy, "Sem_if2", b_res, pt2, concl=Sem(T)(com, st, pt2.prop.arg))
+    elif f.is_const_name("While"):
+        b, inv, c = args
+        b_st = beta_norm(thy, b(st))
+        b_eval = norm_cond_cv.get_proof_term(thy, b_st)
+        if b_eval.prop.arg == logic.true:
+            b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
+            pt1 = eval_Sem(thy, c, st)
+            pt2 = eval_Sem(thy, com, pt1.prop.arg)
+            pt = apply_theorem(thy, "Sem_while_loop", b_res, pt1, pt2,
+                               concl=Sem(T)(com, st, pt2.prop.arg), inst={"s3": pt1.prop.arg})
+            return pt.on_arg(thy, function.fun_upd_norm_one_conv())
+        else:
+            b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
+            return apply_theorem(thy, "Sem_while_skip", b_res, concl=Sem(T)(com, st, st))
+    else:
+        raise NotImplementedError
+
 class eval_Sem_macro(ProofTermMacro):
     """Prove a theorem of the form Sem com st st2."""
     def __init__(self):
         self.level = 10
         self.sig = MacroSig.TERM
 
-    def eval_Sem(self, thy, com, st):
-        """Evaluates the effect of program com on state st."""
-        f, args = com.strip_comb()
-        T = st.get_type()
-        if f.is_const_name("Skip"):
-            return init_theorem(thy, "Sem_Skip", tyinst={"a": T}, inst={"s": st})
-        elif f.is_const_name("Assign"):
-            a, b = args
-            Ta = a.get_type()
-            Tb = b.get_type().range_type()
-            pt = init_theorem(thy, "Sem_Assign", tyinst={"a": Ta, "b": Tb}, inst={"a": a, "b": b, "s": st})
-            return arg_conv(arg_conv(norm_cv)).apply_to_pt(thy, pt)
-        elif f.is_const_name("Seq"):
-            c1, c2 = args
-            pt1 = self.eval_Sem(thy, c1, st)
-            pt2 = self.eval_Sem(thy, c2, pt1.prop.arg)
-            pt = apply_theorem(thy, "Sem_seq", pt1, pt2)
-            return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
-        elif f.is_const_name("Cond"):
-            b, c1, c2 = args
-            b_st = top_conv(beta_conv()).eval(thy, b(st)).prop.arg
-            b_eval = norm_cond_cv.get_proof_term(thy, b_st)
-            if b_eval.prop.arg == logic.true:
-                b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
-                pt1 = self.eval_Sem(thy, c1, st)
-                return apply_theorem(thy, "Sem_if1", b_res, pt1, concl=Sem(T)(com, st, pt1.prop.arg))
-            else:
-                b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
-                pt2 = self.eval_Sem(thy, c2, st)
-                return apply_theorem(thy, "Sem_if2", b_res, pt2, concl=Sem(T)(com, st, pt2.prop.arg))
-        elif f.is_const_name("While"):
-            b, inv, c = args
-            b_st = top_conv(beta_conv()).eval(thy, b(st)).prop.arg
-            b_eval = norm_cond_cv.get_proof_term(thy, b_st)
-            if b_eval.prop.arg == logic.true:
-                b_res = rewr_conv("eq_true", sym=True).apply_to_pt(thy, b_eval)
-                pt1 = self.eval_Sem(thy, c, st)
-                pt2 = self.eval_Sem(thy, com, pt1.prop.arg)
-                pt = apply_theorem(thy, "Sem_while_loop", b_res, pt1, pt2,
-                                   concl=Sem(T)(com, st, pt2.prop.arg), inst={"s3": pt1.prop.arg})
-                return arg_conv(function.fun_upd_norm_one_conv()).apply_to_pt(thy, pt)
-            else:
-                b_res = rewr_conv("eq_false", sym=True).apply_to_pt(thy, b_eval)
-                return apply_theorem(thy, "Sem_while_skip", b_res, concl=Sem(T)(com, st, st))
-        else:
-            raise NotImplementedError
-
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "eval_Sem_macro"
         f, (com, st, st2) = args.strip_comb()
-        pt = self.eval_Sem(thy, com, st)
+        pt = eval_Sem(thy, com, st)
         assert st2 == pt.prop.arg, "eval_Sem_macro: wrong result."
         return pt
 
