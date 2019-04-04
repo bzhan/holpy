@@ -1,6 +1,7 @@
 (function ($) {
     var instructions = [];
     var page_num = 0;
+    var add_page = 0;
     var index = 0;
     var theory_name = "";  // Name of the current theory file
     var theory_imports = [];  // List of imports of the current theory file
@@ -12,12 +13,16 @@
     var proof_id = 0;
     var origin_result = [];
     var edit_mode = false;
+    var result_list_dict = {};
+    var file_list = [];
+    var add_mode = false;
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
     });
 
     $(function () {
+//      click add_cell to add a tab page;
         $('#add-cell').on('click', function () {
             page_num++;
             // Add CodeMirror textarea;
@@ -25,7 +30,7 @@
             $('#codeTab').append(
                 $('<li class="nav-item" name="code' + page_num + '"><a class="nav-link" ' +
                     'data-toggle="tab"' +
-                    'href="#code' + page_num + '-pan">' +
+                    'href="#code' + page_num + '-pan" name="'+ page_num +'">' +
                     '<span> ' +
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="proof-tab">×</button>' +
@@ -37,12 +42,13 @@
                 $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
                     '<label for="code' + page_num + '"></label> ' +
                     '<textarea id="code' + page_num + '"></textarea>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="save"><b>SAVE</b></button>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;" name="reset"><b>RESET</b></button></div>'));
+                    '</div>'));
+            $('div.rbottom').append(
+                '<div id="prf'+ page_num +'" name="addition"><button id="' + proof_id + '" class="el-button el-button--default el-button--mini save_proof" style="margin-top:5px;width:100px;margin-left:25px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button></div>');
             init_editor("code" + page_num);
-            $('div.CodeMirror-gutters').css('width', '45px');
             // Add location for displaying results;
-            $('#' + id).append(
+            $('div#prf' + page_num).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<pre> </pre></div><div class="match-thm"">' +
                     '<div class="abs-thm"></div>' +
@@ -50,14 +56,15 @@
                     '<div class="afs-thm"></div>' +
                     '<div class="clear"></div>' +
                     '</div></div>'));
-            $('#' + id).append(
+            $('div#prf' + page_num).append(
                 $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
                     '<a href="#" id="link-backward" style="float:left;"><</a>' +
                     '<pre id="instruction-number", style="float:left;"> </pre>' +
                     '<a href="#" id="link-forward" style="float:left;">></a>' +
                     '<pre id="instruction" style="float:left;"> </pre></div></div>'));
-
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+            $('div#prf'+page_num).addClass('selected').siblings().removeClass('selected');
+            $('div#prf'+page_num).show().siblings().hide();
             $('.newCodeMirror').each(function () {
                 $(this).removeClass('active');
             });
@@ -107,9 +114,131 @@
             }
         });
 
+        $('#add-json').click(function() {
+            page_num ++;
+            init_metadata_area(page_num);
+        });
+
+
+        function init_metadata_area(add_page) {
+            var id = 'code' + add_page + '-pan';
+            $('#codeTab').append(
+                $('<li class="nav-item" name="code' + add_page + '"><a class="nav-link" ' +
+                    'data-toggle="tab"' +
+                    'href="#code' + add_page + '-pan" name="'+ add_page +'">' +
+                    '<span> ' + 'File'+
+                    '</span><button id="close_tab" type="button" ' +
+                    'title="Remove this page" name="proof-tab">×</button>' +
+                    '</a></li>'));
+            let class_name = 'tab-pane fade active newCodeMirror code-cell';
+            if (add_page === 1)
+                class_name = 'tab-pane fade in active code-cell';
+            $('#codeTabContent').append(
+                $('<div class="' + class_name + '" id="code' + add_page + '-pan" style="margin:30px;">' +
+                    '<label for="code' + add_page + '"></label>' +
+                    'File name:&nbsp;<input id="fname'+ add_page +'" spellcheck="false" style="width:30%;">'+
+                    '<br><br>Imports:&nbsp;<input spellcheck="false" id="imp'+ add_page +'" style="width:30%;">'+
+                    '<br><br>Description:&nbsp;<textarea spellcheck="false" id="code' + add_page + '" style="width:27%;" lines="1"></textarea>' +
+                    '</div>'));
+            $('div.rbottom').append(
+                '<div id="prf'+ add_page +'" name="addition"><button id="'+ add_page + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;margin-left:25px;" name="save-json"><b>SAVE</b></button>' +
+                    '</div>');
+            $('#codeTab a[href="#code' + add_page + '-pan"]').tab('show');
+            $('div#prf'+ add_page).addClass('selected').siblings().removeClass('selected');
+            $('div#prf'+ add_page).show().siblings().hide();
+            $('.newCodeMirror').each(function () {
+                $(this).removeClass('active');
+            });
+        }
+
+//      click save to create and save json_file metadata;
+        $('div.rbottom').on('click', 'button[name="save-json"]', function() {
+            var pnum = $(this).attr('id');
+            var fname = $('#fname'+ pnum).val().trim();
+            var imp = $('#imp'+ pnum).val().split(',');
+            var des = $('#code'+ pnum).val().trim();
+            var flag = false;
+            $.each(file_list, function(i,v) {
+                if (v === fname)
+                    flag = true;
+            })
+            if (flag === false)
+                file_list.push(fname);
+            file_list.sort();
+            data = {
+                'name': fname,
+                'imports': imp,
+                'description': des
+            }
+            $.ajax({
+                url: '/api/add-new',
+                type: 'PUT',
+                data: JSON.stringify(data),
+                success: function(res) {
+                    alert('保存成功!');
+                    $('div#root-file').html('');
+                    display_file_list();
+                }
+            })
+        })
+
+//      tab on the left;
+        $('#json-tab1,#json-tab2,#json-tab3').click(function() {
+            $(this).css({'background':'	#F0F0F0','text-align':'center','border-bottom':'none'});
+            $(this).siblings('li').css({'background':'#f8f8f8','text-align':'center','border-bottom':'solid 1px','border-color':'#B8B8B8'});
+        })
+
+        $('#json-tab1').click(function() {
+            $('div#root-file').show();
+            $('div#left_json').hide();
+            $('div#varible').hide();
+        })
+
+        $('#json-tab2').click(function() {
+            $('div#root-file').hide();
+            $('div#left_json').show();
+            $('div#varible').hide();
+        })
+
+        $('#json-tab3').click(function() {
+            $('div#root-file').hide();
+            $('div#left_json').hide();
+            $('div#varible').show();
+        })
+
+        $('div#root-file').on('click', 'a[name="edit"]', function() {
+            var number = Number($(this).attr('id').slice(4,).trim())-1;
+            page_num++;
+            data = JSON.stringify(file_list[number]);
+            init_metadata_area(page_num);
+            $.ajax({
+                url: '/api/edit_jsonFile',
+                data: data,
+                type: 'POST',
+                success: function(res) {
+                    var name = res['name'];
+                    var des = res['description'];
+                    var imports = res['imports'].join(',');
+                    $('input#fname'+ page_num).val(name);
+                    $('input#imp'+ page_num).val(imports);
+                    $('textarea#code'+ page_num).val(des);
+                }
+            })
+        })
+
+        $('div#root-file').on('click', 'a[name="delete"]', function() {
+            var number = Number($(this).attr('id').trim())-1;
+            var json_name = $(this).attr('class');
+            file_list.splice(number,1);
+            $('div#root-file').html('');
+            display_file_list();
+            save_file_list(json_name);
+        })
+
         // Save a single proof to the webpage (not to the json file);
-        $('div.rtop').on('click', 'button[name="save"]', function () {
+        $('div.rbottom').on('click', 'button.save_proof', function () {
             editor_id_list = [];
+            var file_name = $(this).attr('name').slice(4,);
             var editor_id = get_selected_id();
             var id = Number($(this).attr('id')) - 1;
             var proof = cells[editor_id]['proof'];
@@ -124,55 +253,49 @@
             })
             result_list[id]['proof'] = output_proof;
             result_list[id]['num_gaps'] = cells[editor_id]['num_gaps'];
+            result_list_dict[file_name] = result_list;
             display_result_list();
+            save_json_file();
         });
 
         function result_to_output(data) {
             if (data.ty === 'def.ax') {
-                data.type_hl = undefined;
-            } else if (data.ty === 'thm') {
-                data.prop_hl = undefined;
+                delete data.type_hl;
+            } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
+                delete data.prop_hl;
             } else if (data.ty === 'type.ind') {
-                data.argsT = undefined;
-            } else if (data.ty === 'def.ind') {
-                data.type_hl = undefined;
+                delete data.argsT;
+            } else if (data.ty === 'def') {
+                delete data.term;
+                delete data.type_hl;
+            } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
+                delete data.type_hl;
                 for (var i in data.rules) {
-                    data.rules[i].prop_hl = undefined;
+                    delete data.rules[i].prop_hl;
                 }
             }
         }
 
-//      save all of the modified_data to the json-file;
+//      save all of the edited_tab_data to the json-file;
         function save_editor_data() {
-            var copy_result_list = result_list;
-            $.each(copy_result_list, function (i, v) {
-                if (v.ty === 'def.ax') {
-                    delete v.type_hl;
-                } else if (v.ty === 'thm') {
-                    delete v.prop_hl;
-                } else if (v.ty === 'type.ind') {
-                    delete v.argsT;
-                } else if (v.ty === 'def.ind') {
-                    delete v.type_hl;
-                    for (var i in v.rules) {
-                        delete v.rules[i].prop_hl;
-                    }
-                }
+            var copy_res = $.extend(true, [], result_list);
+            display_result_list();
+            $.each(copy_res, function (i, v) {
+                result_to_output(v);
             })
             $.ajax({
                 url: '/api/editor_file',
                 type: 'PUT',
                 data: JSON.stringify({
                     'name': name,
-                    'data': copy_result_list
+                    'data': copy_res
                 }),
                 success: function () {
-                    alert('save success');
                 }
             })
         }
 
-        // Save all changes on the webpage to the json-file;
+        // Save all changed proof on the webpage to the json-file;
         function save_json_file() {
             var output_list = [];
             for (var d in result_list) {
@@ -194,22 +317,29 @@
                 type: "POST",
                 data: JSON.stringify(data),
                 success: function () {
-                    alert('save success');
                 }
             });
         }
 
         //click reset button to reset the thm to the origin status;
-        $('div.rtop').on('click', 'button[name=reset]', function () {
+        $('div.rbottom').on('click', 'button.reset', function () {
             var id = Number($(this).attr('id')) - 1;
-            theorem_proof(result_list[id]);
-        })
-
-        $('#codeTab').on("click", "a", function (e) {
-            e.preventDefault();
-            $(this).tab('show');
+            var file_name = $(this).attr('name').slice(5,);
+            if (file_name) {
+                theorem_proof(result_list_dict[file_name][id], file_name);
+            }
         });
 
+//      click the tab to show;
+        $('#codeTab').on("click", "a", function (e) {
+            e.preventDefault();
+            var tab_pm = $(this).attr('name');
+            $(this).tab('show');
+            $('div#prf'+ tab_pm).addClass('selected').siblings().removeClass('selected');
+            $('div#prf'+ tab_pm).show().siblings().hide();
+        });
+
+//      set cursor & size;
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
             if (document.querySelector('.code-cell.active textarea + .CodeMirror')) {
                 var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
@@ -221,21 +351,20 @@
             }
         });
 
-        $('#codeTab').on('click', 'li button[name="proof-tab"]', function () {
-            var id = get_selected_id();
+//      click x on the tab to close and delete the related tab page;
+        $('#codeTab').on('click', 'li button', function () {
             var tabId = $(this).parents('li').children('a').attr('href');
-            delete cells[id];
+            if ($(this).attr('name')==='code'+tab_pm)
+                var id = get_selected_id();
+                delete cells[id];
+            var tab_pm = $(this).parents('li').attr('name').slice(4,);
+            $('div#prf'+ tab_pm).remove();
             $(this).parents('li').remove('li');
             $(tabId).remove();
             $('#codeTab a:first').tab('show');
+            $('div.rbottom div:eq(0)').addClass('selected').siblings().removeClass('selected');
+            $('div.rbottom div:eq(0)').show().siblings().hide();
         });
-
-        $('#codeTab').on('click', 'li button[name="edit"]', function () {
-            var tabId = $(this).parents('li').children('a').attr('href');
-            $(this).parents('li').remove('li');
-            $(tabId).remove();
-            $('#codeTab a:first').tab('show');
-        })
 
         $('#delete-cell').on('click', function () {
             $('.code-cell.selected').remove();
@@ -274,10 +403,9 @@
                 }, 200);
             } else {
                 $('#add-cell').click();
-//                $('#codeTab li[name="'+get_selected_id()+'"] span').text(thm_name);
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    theorem_proof(result_list[proof_id - 1]);
+                    theorem_proof(result_list[proof_id - 1], theory_name);
                 }, 200);
             }
         });
@@ -286,106 +414,222 @@
         $('#left_json').on('click', 'a[name="edit"]', function () {
             page_num++;
             edit_mode = true;
-            var vars_str = '';
+            var a_ele = $(this);
+            init_edit_area(page_num, a_ele);
+        });
+
+//      click delete then delete the content from webpage;
+        $('#left_json').on('click', 'a[name="del"]', function(){
             var a_id = $(this).attr('id').trim();
-            var number = Number(a_id.slice(5,)) - 1;
-            for (var key in result_list[number]['vars']) {
-                vars_str += key + ':' + result_list[number]['vars'][key] + ' ';
+            var number = Number(a_id.slice(5,))-1;
+            result_list.splice(number, 1);
+            display_result_list();
+            save_editor_data();
+            alert('删除成功！');
+        });
+
+//      the method for add_info && edit_info;
+        function init_edit_area(page_num, a_ele= '', data_type= '') {
+            var a_id, data_name= '', data_content= '', vars_str = '', data_label, border = '1px;solid #ffffff;border:none'
+            if (!a_ele) {
+                a_id = '', border= '',data_name = '', data_content = '', number = '', data_label = data_type;
             }
-            ;
-            var data_name = $(this).parents('p').find('span[name="name"]').text().trim();
-            var data_type = $(this).parents('p').find('span:eq(0)').attr('name').trim();
-            var data_content = $(this).parents('p').find('span[name="content"]').text().trim();
+            else {
+               a_id = a_ele.attr('id').trim();
+               number = String(Number(a_id.slice(5,))-1);
+               data_name = result_list[number]['name'];
+               data_type = result_list[number]['ty'];
+               data_label = data_name;
+               for(var key in result_list[number]['vars']) {
+                    vars_str += key + ':' + result_list[number]['vars'][key] + '\n';
+               };
+            }
             $('#codeTab').append(
                 $('<li class="nav-item" name="code' + page_num + '"><a class="nav-link" ' +
                     'data-toggle="tab"' +
-                    'href="#code' + page_num + '-pan">' +
-                    '<span id="' + page_num + '">' + data_name +
+                    'href="#code' + page_num + '-pan" name="'+ page_num +'">' +
+                    '<span id="' + page_num + '">' + data_label +
                     '</span><button id="close_tab" type="button" ' +
                     'title="Remove this page" name="edit">×</button>' +
                     '</a></li>'));
             var class_name = 'tab-pane fade in active code-cell edit-data';
-            if (data_type === 'constant') {
+            if (data_type === 'def.ax') {
+                if (number)
+                    data_content = result_list[number]['type'];
+                else
+                    $('#codeTab').find('span#'+ page_num).text('constant');
                 $('#codeTabContent').append(
-                    $('<div style="margin-left:5px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
+                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>constant</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="background:transparent;border:1px;solid #ffffff;width:10%;" value="' + data_name + '">' +
-                        '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:50%;background:transparent;border:1px;solid #ffffff;" value="' + data_content + '">' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:10px;width:20%;"><b>SAVE</b></button></div>'));
+                        '<font color="#006000"><b>constant</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="width:10%;background:transparent;'+ border +'" value="' + data_name + '">' +
+                        '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_content + '">' +
+                        '</div>'
+                        ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
-            if (data_type === 'theorem') {
+            if (data_type === 'thm' || data_type === 'thm.ax') {
+                if (data_type === 'thm')
+                    var type_name = 'theorem';
+                else
+                    var type_name = 'axiom';
+                if (number)
+                    data_content = result_list[number]['prop'];
+                else
+                    var type_name = ''
+                    $('#codeTab').find('span#'+ page_num).text('theorem');
                 $('#codeTabContent').append(
-                    $('<div style="margin-left:5px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
+                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>theorem</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' +
-                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-vars' + page_num + '" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="' + vars_str + '">' +
-                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="' + data_content + '">' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-left:44px;margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
+                        '<font color="#006000"><b>'+ type_name +'</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
+                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="height:45px;width:40%;background:transparent;'+ border +'">'+ vars_str +'</textarea>' +
+                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:30%;background:transparent;'+ border +'" value="' + data_content + '">' +
+                        '<br><br><input name="hint_backward'+ page_num + '" type="checkbox" style="margin-left:0px;"><b>&nbsp;backward</b><input name="hint_rewrite'+ page_num +'" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
+                        ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
-            if (data_type === 'datatype') {
-                var data_content_list = data_content.split(/\s\s/);
-                var data_new_content = data_content_list.join('\n');
-                $('#codeTab').find('span#' + page_num).text(data_name.split(/\s/)[1]);
-                $('#codeTabContent').append(
-                    $('<div style="margin-left:5px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
-                        '<br><input spellcheck="false" id="data-name' + page_num + '" style="width:10%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' + '&nbsp;&nbsp;=&nbsp;&nbsp;' +
-                        '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="height:60px;width:30%;background:transparent;border:1px;solid #ffffff;">' + data_new_content + '</textarea>' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
-                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-            }
-            if (data_type === 'fun') {
-                var data_content_list = data_content.split(/\s\s/);
-                var data_new_content = '';
-                for (var i in data_content_list) {
-                    data_new_content += i + ': ' + data_content_list[i] + '\n';
+            if (data_type === 'type.ind') {
+                if (number) {
+                    var ext = result_list[number]['ext'];
+                    var argsT = result_list[number]['argsT'];
+                    var ext_ = '';
+                    $.each(ext, function(i, v) {
+                        ext_ += v[0][1] + '  ' + v[1] + ':' +  v[0][0] + '\n';
+                    })
+                    data_name = '';
+                    $.each(argsT.concl, function (i,j) {
+                        data_name += j[0];
+                    })
+                    $.each(result_list[number]['constrs'], function (i, v) {
+                        var str_temp_var = '';
+                        $.each(v.args, function (k, val) {
+                            var str_temp_term = '';
+                            $.each(argsT[i][k], function (l, vlu) {
+                                str_temp_term += vlu[0];
+                            });
+                            str_temp_var += ' (' + val + ' :: ' + str_temp_term + ')';
+                        })
+                        data_content += '\n'+ v['name'] + str_temp_var;
+                    })
                 }
-                ;
-                $('#codeTab').find('span#' + page_num).text(data_name.split(' :: ')[0]);
+                else
+                    $('#codeTab').find('span#'+ page_num).text('datatype');
+                $('#codeTab').find('span#' + page_num).text(data_name);
                 $('#codeTabContent').append(
-                    $('<div style="margin-left:5px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>fun</b></font>:</label> ' +
-                        '<input spellcheck="false" id="data-name' + page_num + '" style="width:30%;background:transparent;border:1px;solid #ffffff;" value="' + data_name + '">' +
-                        '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="margin-top:5px;height:150px;width:40%;background:transparent;border:0px solid #ffffff;" name="content">' + data_new_content + '</textarea>' +
-                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:150px;width:40%;background:transparent;border:0px solid #ffffff;" placeholder="vars"></textarea>' +
-                        '<br><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>'));
+                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
+                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
+                        '&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="width:45px;background:transparent;'+ border +'" value="' + data_name + '">' + '=&nbsp;&nbsp;' +
+                        '<br><br>&nbsp;&nbsp;<textarea spellcheck="false" id="data-content' + page_num + '" style="height:160px;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea><br><label style="float:right;height:80px;width:100%;background:transparent;'+ border +'"><pre>'+ ext_ +'</pre></label></div>'
+                        ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-                display_lines_number(data_content_list, page_num, number);
             }
-            $('#codeTabContent div#code' + page_num + '-pan button').after(
-                $('<div class="output-wrapper" style="margi-top:1px;" id="error' + page_num + '">' +
-                    '<pre></pre></div>'));
-        })
+            if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
+                var data_content_list = [];
+                var data_new_content = '';
+                var data_rule_names = [], data_rule_name = '';
+                var type_name = 'fun';
+                if (number) {
+                    var ext = result_list[number];
+                    var ext_ = ext.ext;
+                    var ext_str = '';
+                    var type = '', str = '', vars = '';
+                    var type_ = '', str = '';
+                    $.each(ext_ , function(i,v) {
+                        ext_str += v[0][1] + '  ' + v[1] + ':' +  v[0][0] + '\n';
+                    })
+                    data_name = ext.name + ' :: ' + ext.type;
+                    if (ext.rules) {
+                        for (var j in ext.rules) {
+                            var data_con = '';
+                            $.each(ext.rules[j].prop_hl, function (i, val) {
+                                data_con +=  val[0];
+                            });
+                            data_content_list.push(data_con);
+                            data_rule_names.push(ext.rules[j]['name']);
+                        }
+                    }
+                    if (data_type === 'def') {
+                        var i = 0, type_name = 'definition';
+                        data_content_list.push(ext.prop);
+                        for (v in ext.vars) {
+                            vars += i + ': ' + v + ':' + ext.vars[v] + '\n';
+                            i++;
+                        }
+                    }
+                    for (var i in data_content_list) {
+                        data_new_content += i + ': ' + data_content_list[i] + '\n';
+                        data_rule_name += i + ': ' + data_rule_names[i] + '\n';
+                    }
+                    $('#codeTab').find('span#'+ page_num).text(ext.name);
+                }
+                else
+                    $('#codeTab').find('span#'+ page_num).text('function');
+                $('#codeTabContent').append(
+                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
+                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>'+ type_name +'</b></font>:</label> ' +
+                        '<input spellcheck="false" id="data-name' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_name + '">' +
+                        '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" name="content">' + data_new_content + '</textarea>' +
+                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ vars +'</textarea><br><label id="des-'+ page_num +'" style="height:160px;width:100%;float:left;background:transparent;'+ border +'"><pre>'+ ext_str +'</pre></label></div>'
+                    ));
+                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+                if (data_type === 'def.pred') {
+                    $('div#code' + page_num + '-pan label b').text('induct');
+                    $('textarea#data-vars'+page_num).after('<br><textarea spellcheck="false" id="data-names'+ page_num +'" style="margin-top:5px;height:110px;width:60%;background:transparent;'+ border +'" name="names">'+ data_rule_name +'</textarea>')
+                }
+                if (data_type !== 'def')
+                    display_lines_number(data_content_list, page_num, number);
+            }
+            if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
+                $('input[name="hint_backward'+ page_num +'"]').click();
+            if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
+                $('input[name="hint_rewrite'+ page +'"]').click();
+            $('div.rbottom').append('<div id="prf'+ page_num +'"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>')
+            $('div#prf'+ page_num).append(
+                '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
+                    '<pre></pre></div>');
+            $('div#prf'+ page_num).addClass('selected').siblings().removeClass('selected');
+            $('div#prf'+ page_num).show().siblings().hide();
+        }
 
 //      display vars_content in the textarea;
         function display_lines_number(content_list, page_num, number) {
             var data_vars_list = [];
             var data_vars_str = '';
-            $.each(result_list[number]['rules'], function (i, v) {
-                var vars_str = '';
-                for (let key in v.vars) {
-                    vars_str += key + ':' + v.vars[key] + '   ';
-                }
-//                vars_str += '\n';
-                data_vars_list.push(vars_str);
-            });
-            $.each(data_vars_list, function (i, v) {
-                data_vars_str += i + ': ' + v + '\n';
-            })
-            $('textarea#data-vars' + page_num).val(data_vars_str);
+            if (number) {
+                $.each(result_list[number]['rules'], function(i, v) {
+                    var vars_str = '';
+                    for (let key in v.vars) {
+                        vars_str += key+ ':'+ v.vars[key]+ '   ';
+                    }
+                    data_vars_list.push(vars_str);
+                    });
+                $.each(data_vars_list, function(i, v) {
+                    data_vars_str += i+ ': '+ v + '\n';
+                })
+            }
+            else {
+                data_vars_str += '';
+            }
+            $('textarea#data-vars'+ page_num).val(data_vars_str);
         }
 
-//      click save button to save content to the left-json for updating;
-        $('#codeTabContent').on('click', 'button#save-edit', function () {
-            var a_id = $(this).parent().attr('name').trim();
+//      click save button on edit tab to save content to the left-json for updating;
+        $('div.rbottom').on('click', 'button#save-edit', function () {
+            var tab_pm = $(this).parent().attr('id').slice(3,);
+            var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
             var error_id = $(this).next().attr('id').trim();
-            var id = $(this).prevAll('label').attr('name').trim();
+            var id = tab_pm;
             var ty = $(this).attr('name').trim();
-            var ajax_data = make_data(ty, id);
             var number = Number(a_id.slice(5,)) - 1;
+            var ajax_data = make_data(ty, id, number);
             var prev_list = result_list.slice(0, number);
+            if ($('input[name="hint_backward'+ tab_pm +'"]').prop('checked') === true)
+                result_list[number]['hint_backward'] = 'true';
+            else if (number !==-1 && 'hint_backward' in result_list[number])
+                delete result_list[number]['hint_backward'];
+            if ($('input[name="hint_rewrite'+ tab_pm +'"]').prop('checked') === true)
+                result_list[number]['hint_rewrite'] = 'true';
+            else if (number !==-1 && 'hint_rewrite' in result_list[number])
+                delete result_list[number]['hint_rewrite']
             ajax_data['file-name'] = name;
             ajax_data['prev-list'] = prev_list;
             $.ajax({
@@ -395,39 +639,40 @@
                 success: function (res) {
                     var result_data = res['data'];
                     var data_name = result_data['name'];
-                    var error = res['error']
+                    var error = res['error'];
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
                     if (error && error !== {}) {
                         var error_info = error['detail-content'];
                         $('div#' + error_id).find('pre').text(error_info);
                     }
-                    $.each(result_list, function (j, k) {
-                        if (k['name'] === data_name) {
-                            for (var key in result_data) {
-                                result_list[j][key] = result_data[key];
-                            }
-                        }
-                    });
+                    if(!a_id){
+                        result_list.push(result_data);}
+                    else{
+                        for (var key in result_data) {
+                                result_list[number][key] = result_data[key];
+                             }}
                     display_result_list();
+                    save_editor_data();
+                    alert('保存成功！')
                 }
             });
         })
 
-//      make a strict-type data from editing;
-        function make_data(ty, id) {
-            var data_name = $('input#data-name' + id).val().trim();
-            var data_content = $('#data-content' + id).val().trim();
+//      make a strict-type data from editing; id=page_num
+        function make_data(ty, id, number) {
+            var data_name = $('#data-name'+id).val().trim();
+            var data_content = $('#data-content'+id).val().trim();
             var ajax_data = {};
-            if (ty === 'constant') {
+            if (ty === 'def.ax') {
                 ajax_data['ty'] = 'def.ax';
                 ajax_data['name'] = data_name;
                 ajax_data['type'] = data_content;
             }
-            if (ty === 'theorem') {
-                var vars_str_list = $('input#data-vars' + id).val().split(' ');
+            if (ty === 'thm' || ty === 'thm.ax') {
+                var vars_str_list = $('textarea#data-vars' + id).val().split('\n');
                 var vars_str = {};
-                ajax_data['ty'] = 'thm';
+                ajax_data['ty'] = ty;
                 ajax_data['name'] = data_name;
                 ajax_data['prop'] = data_content;
                 $.each(vars_str_list, function (i, v) {
@@ -436,7 +681,7 @@
                 });
                 ajax_data['vars'] = vars_str;
             }
-            if (ty === 'datatype') {
+            if (ty === 'type.ind') {
                 var temp_list = [], temp_constrs = [];
                 var temp_content_list = data_content.split(/\n/);
                 if (data_name.split(/\s/).length > 1) {
@@ -481,43 +726,46 @@
                 ajax_data['args'] = temp_list;
                 ajax_data['constrs'] = temp_constrs;
             }
-            if (ty === 'fun') {
+            if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
                 var rules_list = [];
+                var rules = result_list[number].rules;
                 var props_list = data_content.split(/\n/);
                 var vars_list = $('textarea#data-vars' + id).val().trim().split(/\n/);
+                if (ty === 'def.pred')
+                    var names_list = $('textarea#data-names' + id).val().trim().split(/\n/);
                 $.each(props_list, function (i, v) {
-                    props_list[i] = v.slice(3,);
-                    vars_list[i] = vars_list[i].slice(3,);
+                    props_list[i] = $.trim(v.slice(3,));
+                    vars_list[i] = $.trim(vars_list[i].slice(3,));
+                    if (names_list)
+                        names_list[i] = $.trim(names_list[i].slice(3,));
                 })
                 $.each(props_list, function (i, v) {
                     var temp_dict = {}, temp_vars = {};
                     if (v && vars_list[i]) {
                         temp_dict['prop'] = v;
                         $.each(vars_list[i].split(/\s\s/), function (j, k) {
-                            temp_vars[k.split(':')[0]] = k.split(':')[1];
+                            temp_vars[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
                         })
+                        if (names_list)
+                            temp_dict['name'] = names_list[i];
                     } else if (!v) {
                         return true;
                     }
                     temp_dict['vars'] = temp_vars;
                     rules_list.push(temp_dict);
                 })
-                ajax_data['rules'] = rules_list;
-                ajax_data['ty'] = 'def.ind';
+                if (ty !== 'def')
+                    ajax_data['rules'] = rules_list;
+                else
+                    ajax_data['vars'] = temp_vars;
+                ajax_data['ty'] = ty;
                 ajax_data['name'] = data_name.split(' :: ')[0];
                 ajax_data['type'] = data_name.split(' :: ')[1];
             }
-
             return ajax_data;
         }
 
-        $('#file-path').on('click', '#root-a', function () {
-            $('#left_json').empty();
-            if ($('#file-path a:last').text() !== 'root/') {
-                $('#file-path a:last').remove();
-            }
-        });
-
+//      click to save the related data to json file: edit && proof;
         $('a#save-file').click(function () {
             if (edit_mode) {
                 save_editor_data();
@@ -526,10 +774,12 @@
             }
         });
 
-        $('#root-file').on('click', 'a', function () {
+//      click to display json file;
+        $('#root-file').on('click', 'a[name="file"]', function () {
             num = 0;
+            $(this).parent().hide();
+            $('#json-tab2').click();
             $('#left_json').empty();
-            $('#add-info').click(add_info);
             name = $(this).text();
             name = $.trim(name);
             if ($('#file-path').html() === '') {
@@ -539,57 +789,59 @@
             } else if ($('#file-path a:last').text() !== name) {
                 $('#file-path a:last').remove();
                 $('#root-a').after($('<a href="#"><font color="red"><b>' + name + '</b></font></a>'));
-            }
-            ;
+            };
             data = JSON.stringify(name);
             ajax_res(data);
-            $('#cons').on('click', function () {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;"><input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">'));
-            });
-            $('#them').on('click', function () {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">'
-                    + '<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">'
-                    + '<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">'));
-            });
-            $('#datat').on('click', function () {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;"><input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="args1" placeholder="args1" style="margin-bottom:5px;width:50%;float:left;">'
-                    + '<input type="text" class="datatype" id="args2" placeholder="args2" style="margin-bottom:20px;width:50%;float:left;">'));
-            });
-            $('#fun').on('click', function () {
-                $('#add-information').append($('<p>Enter the info:</p><input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">'
-                    + '<input type="text" id="function-type" placeholder="type" style="margin-bottom:5px;width:100%;">'
-                    + '<input type="text" id="function-vars1" placeholder="vars1" style="float:left;margin-bottom:5px;width:50%;">'
-                    + '<input type="text" id="function-vars2" placeholder="vars2" style="float:left;margin-bottom:5px;width:50%;">'
-                    + '<input type="text" id="function-prop1" placeholder="prop1" style="float:left;margin-bottom:5px;width:50%;">'
-                    + '<input type="text" id="function-prop2" placeholder="prop2" style=":float:left;margin-bottom:5px;width:50%;">'))
-            })
+            add_mode = true;
         });
+
+            $('div.dropdown-menu.add-info a').on('click', function() {
+                if (add_mode === true) {
+                    page_num ++;
+                    edit_mode = true;
+                    var ty = $(this).attr('name');
+                    init_edit_area(page_num, '', ty);
+                }
+            })
 
         $('#json-button').on('click', function () {
             num = 0;
             $('#left_json').empty();
             name = prompt('please enter the file name');
             var data = JSON.stringify(name);
-            $('#add-info').click(add_info);
             ajax_res(data);
         });
 
         // On loading page, retrieve list of theories from root file.
         num_root = 0;
         $.ajax({
-            url: "/api/root_file",
+            url: "/api/find_files",
             success: function (r) {
-                $.each(r['theories'], function (i, val) {
-                    num_root++;
-                    $('#root-file').append($('<a href="#"  ' + 'id="' + num_root + '"><font color="#006000"><b>' + val + '</b></font></a></br>'));
-                });
+                $('#json-tab1').click();
+                file_list = r['theories'];
+                display_file_list();
             }
         });
     });
+
+    function display_file_list() {
+        var num_a = 0;
+        $.each(file_list, function(i, val) {
+           num_a++;
+           $('#root-file').append($('<a href="#"  ' + 'id="file' + num_a + '" name="file"><font color="#006000"><b>' + val + '</b></font></a><a href="#" style="margin-left:20px;" name="edit" id="edit'+ num_a +'">edit</a><a href="#" style="margin-left:10px;" name="delete" id="'+ num_a +'" class="'+ val +'">delete</a></br></br>'));
+        });
+    }
+
+    function save_file_list(file_name) {
+        $.ajax({
+            url: '/api/save_file_list',
+            data: JSON.stringify(file_name),
+            type: 'PUT',
+            success: function(res) {
+                alert('删除成功！');
+            }
+        })
+    }
 
     function rp(x) {
         if (x === 0)
@@ -602,24 +854,8 @@
             return 'tvar';
     }
 
-    function remove_page(first) {
-        if (first)
-            pageNum = 0;
-        else
-            pageNum = 1;
-        $('#codeTab > li').each(function () {
-            var pageId = $(this).children('a').attr('href');
-            if (pageId === "#code1-pan") {
-                return true;
-            }
-            pageNum++;
-            $(this).children('a').html('Page ' + pageNum +
-                '<button id="close_tab" type="button" ' +
-                'title="Remove this page">×</button>');
-        });
-    }
 
-    function theorem_proof(r_data) {
+    function theorem_proof(r_data, the_name) {
         if (r_data['instructions'] !== undefined) {
             instructions = r_data['instructions'];
         } else {
@@ -629,7 +865,7 @@
             'id': get_selected_id(),
             'vars': r_data['vars'],
             'prop': r_data['prop'],
-            'theory_name': theory_name,
+            'theory_name': the_name,
             'thm_name': r_data['name']
         };
         var data = JSON.stringify(event);
@@ -669,172 +905,131 @@
         })
     }
 
+    function high_light(list) {
+        var type = '';
+        $.each(list, function (i, val) {
+            type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+        });
+
+        return type
+    }
+
     // Display result_list on the left side of the page.
     function display_result_list() {
+        result_list_dict[theory_name] = result_list;
         var import_str = theory_imports.join('、');
-        $('#left_json').empty();
-        $('#left_json').append($('<div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">' + theory_desc + '</font></span><br>' +
-            '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>' + import_str + '</span></font></p></div>'));
+        $('#left_json').html('');
+        $('#left_json').append($('<br><div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
+        '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
         var num = 0;
         for (var d in result_list) {
             num++;
             var ext = result_list[d];
-            var ty = ext.ty;
-            var name = ext.name;
-            var depth = ext.depth;
+            var ty = ext.ty, name = ext.name, depth = ext.depth;
             if (ty === 'def.ax') {
-                var type = '';
-                $.each(ext.type_hl, function (i, val) {
-                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                });
+                var type = high_light(ext.type_hl);
                 $('#left_json').append($(
-                    '<div><p id="data-' + num + '"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + name + '</span> :: <span name="content">' + type
-                    + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a></p></div>'));
+                    '<div><p id="data-'+ num +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + name + '</span> :: <span name="content">' + type
+                    + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
+            }
+
+            if (ty === 'thm.ax') {
+                var prop = high_light(ext.prop_hl);
+                var status_color = 'green';
+                $('#left_json').append($(
+                    '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>axiom</b></font></span> <span id="thm_name" name="name"><tt>' + name +
+                    '</tt></span>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
+                    prop + '</span></p></div>'));
             }
 
             if (ty === 'thm') {
-                var prop = '';
-                $.each(ext.prop_hl, function (i, val) {
-                    prop = prop + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                });
+                var prop = high_light(ext.prop_hl);
                 var status_color;
                 if (ext.proof === undefined) {
-                    status_color = 'red'
+                    status_color = 'red';
                 } else if (ext.num_gaps > 0) {
-                    status_color = 'yellow'
+                    status_color = 'yellow';
                 } else {
-                    status_color = 'green'
+                    status_color = 'green';
                 }
                 $('#left_json').append($(
                     '<div><div style="float:left;width: 12px; height: 12px; background: ' +
-                    status_color + ';">&nbsp;</div>' + '<p id="data-' + num + '"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
-                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
+                    status_color + ';">&nbsp;</div>' + '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
+                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
                     prop + '</span></p></div>'));
             }
 
             if (ty === 'type.ind') {
                 var argsT = ext.argsT, constrs = ext.constrs;
-                var str = '', type_name = '';
-                $.each(argsT['concl'], function (k, vl) {
-                    type_name += '<tt class="' + rp(vl[1]) + '">' + vl[0] + '</tt>'
-                });
+                var str = '', type_name = high_light(argsT['concl']);
                 $.each(constrs, function (i, v) {
                     var str_temp_var = '';
                     $.each(v.args, function (k, val) {
-                        var str_temp_term = '';
-                        $.each(argsT[i][k], function (l, vlu) {
-                            str_temp_term += '<tt class="' + rp(vlu[1]) + '">' + vlu[0] + '</tt>';
-                        });
+                        var str_temp_term = high_light(argsT[i][k]);
                         str_temp_var += ' (' + val + ' :: ' + str_temp_term + ')';
                     })
                     str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
                 })
                 $('#left_json').append($(
-                    '<div><p id="data-' + num + '"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a></p></div>'));
+                    '<div><p id="data-'+ num +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
+            }
+
+            if (ty === 'def') {
+                var term = high_light(ext.term);
+                var type = high_light(ext['type_hl']);
+                $('#left_json').append($(
+                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b><br><span name="content">'+ term +'</span></font></p>'));
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
             }
 
             if (ty === 'def.ind') {
-                var type = '';
-                $.each(ext.type_hl, function (i, val) {
-                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                });
+                var type = high_light(ext.type_hl);
                 $('#left_json').append($(
                     '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
                     '</span><font color="#006000"><b> where</b></font></p>'));
                 for (var j in ext.rules) {
-                    var str = '';
-                    $.each(ext.rules[j].prop_hl, function (i, val) {
-                        str = str + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                    });
+                    var str = high_light(ext.rules[j].prop_hl);
                     $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
                 }
-                $('#left_json p#data-' + num + ' span[name="content"]:last').after($('<a href="#" name="edit" id="data-' + num + '"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
-
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
             }
-            if (ty === 'header') {
-                $('#left_json').append($('<div><p id="data-' + num + '">&nbsp;<span id="head_name" name="name">' + name + '</span><br>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a></p></div>'))
+
+            if (ty === 'def.pred') {
+                var type = high_light(ext.type_hl);
+                $('#left_json').append($(
+                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b></font></p>'));
+                for (var j in ext.rules) {
+                    var str = high_light(ext.rules[j].prop_hl);
+                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
+                }
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
+            }
+
+            if (ty==='header') {
+                $('#left_json').append($('<div><p id="data-'+ num +'">&nbsp;<span id="head_name" name="name">' +name + '</span>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num +'"><b>edit</b></a></p></div>'))
             }
         }
     }
 
-    // Add new entry to the file.
-    function add_info() {
-        var item = {};
-        if ($('#constant, #type').val() !== '') {
-            var cons = $('#constant').val();
-            var type = $('#type').val();
-            item['ty'] = 'def.ax';
-            item['name'] = cons;
-            item['type'] = type;
-            $('#constant,#type').val('');
-        }
-
-        if ($('#thm, #term, #vars').val() !== '') {
-            var vars = {};
-            var theo = $('#thm').val();
-            var term = $('#term').val();
-            var vars_str = $('#vars').val();
-            var vars_list = vars_str.split(' ');  //  A:bool B:bool C:bool =>  ["A:bool","B:bool","C:bool"]
-            for (var i in vars_list) {
-                var v_list = vars_list[i].split(':');
-                vars[v_list[0]] = v_list[1];
-            }
-            item['ty'] = 'thm';
-            item['name'] = theo;
-            item['vars'] = vars;
-            item['prop'] = term;
-            $('#thm,#term,#vars').val('');
-        }
-        var event = {
-            "theory_name": theory_name,
-            "item": item
-        };
-
-        data_ajax = JSON.stringify(event);
-        $.ajax({
-            url: "/api/add-info",
-            type: "POST",
-            data: data_ajax,
-            success: function (result) {
-                result_list = result_list.concat(result['data']);
-                display_result_list();
-            }
-        });
-    }
-
-    $('#left_json').on('blur', 'textarea[name="edit"]', function () {
-        var value = $(this).val();
-        var ty = $(this).prev().text();
-        var id = $(this).parent().attr('id') - 1;
-        $(this).replaceWith('<span name="constant" style="border:solid 0px;"> ' + value + '</span>');
-        event = {
-            "name": name,//文件名 logicbase
-            "data": value,//bool
-            "ty": ty,//constant
-            "n": id//
-        }
-        var data = JSON.stringify(event);
-        $.ajax({
-            url: '/api/save_edit',
-            type: 'PUT',//Only send info ;
-            data: data,
-            success: function () {
-                alert('save success!');
-            }
-
-        })
-    })
-
+//  display_hilight;
     function ajax_res(data) {
         $.ajax({
             url: "/api/json",
             type: "POST",
             data: data,
             success: function (result) {
+                var error = result['error'];
                 theory_name = result['data']['name'];
                 theory_imports = result['data']['imports'];
                 theory_desc = result['data']['description'];
-                result_list = result['data']['content'];
+
+                if (theory_name in result_list_dict) {
+                    result_list = result_list_dict[theory_name];
+                }
+                else
+                    result_list = result['data']['content'];
                 display_result_list();
             }
         });
@@ -891,7 +1086,7 @@
                 event.preventDefault();
                 unicode_replace(cm);
             } else if (event.code === 'Backspace') {
-                if (line.endsWith(": ")) {
+                if (line.trim() === '') {
                     event.preventDefault();
                     remove_line(cm);
                 }
@@ -977,7 +1172,7 @@
             cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch - 5}, {readOnly: true});
             cm.addSelection({line: line_num, ch: ch - 5}, {line: line_num, ch: ch});
             cells[id].edit_line_number = line_num;
-        } else if (line.split(': ')[1].trim() === '') {
+        } else if (line.trim() === '') {
             cm.getAllMarks().forEach(e => {
                 if (e.readOnly !== undefined)
                     if (e.readOnly)
@@ -1039,15 +1234,14 @@
     }
 
     Split(['.rtop', '.rbottom'], {
-        sizes: [40, 60],
+        sizes: [70, 50],
         direction: 'vertical',
         minSize: 39,
         onDrag: resize_editor,
         gutterSize: 2,
     });
     Split(['.left', '.right'], {
-        sizes: [20, 80],
+        sizes: [30, 70],
         gutterSize: 2,
     });
-})
-(jQuery);
+})(jQuery);

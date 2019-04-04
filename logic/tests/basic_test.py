@@ -31,10 +31,10 @@ class BasicTest(unittest.TestCase):
 
     def testLoadTheoryWithLimit(self):
         thy = basic.loadTheory('logic_base')
-        thy1 = basic.loadTheory('logic_base', limit=('thm', 'conjD1'))
+        thy1 = basic.loadTheory('logic_base', limit=('thm.ax', 'conjD1'))
         self.assertEqual(thy.get_theorem('conjI'), thy1.get_theorem('conjI'))
         self.assertRaises(TheoryException, thy1.get_theorem, 'conjD1')
-        self.assertRaises(AssertionError, basic.loadTheory, 'logic_base', limit=('thm', 'conj'))
+        self.assertRaises(AssertionError, basic.loadTheory, 'logic_base', limit=('thm.ax', 'conj'))
 
     def testArgCombination(self):
         thy = basic.loadTheory('logic_base')
@@ -44,7 +44,7 @@ class BasicTest(unittest.TestCase):
         fx_eq_fy = Term.mk_equals(f(x), f(y))
         th = Thm.assume(x_eq_y)
         res = Thm([x_eq_y], fx_eq_fy)
-        self.assertEqual(macro(f, th), res)
+        self.assertEqual(macro(thy, f, [th]), res)
 
         prf = Proof(x_eq_y)
         prf.add_item(1, "arg_combination", args=f, prevs=[0])
@@ -61,7 +61,7 @@ class BasicTest(unittest.TestCase):
         fx_eq_gx = Term.mk_equals(f(x), g(x))
         th = Thm.assume(f_eq_g)
         res = Thm([f_eq_g], fx_eq_gx)
-        self.assertEqual(macro(x, th), res)
+        self.assertEqual(macro(thy, x, [th]), res)
 
         prf = Proof(f_eq_g)
         prf.add_item(1, "fun_combination", args=x, prevs=[0])

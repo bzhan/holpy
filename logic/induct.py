@@ -5,7 +5,8 @@ import itertools
 from kernel.type import TVar, TFun, hol_bool, Type
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
-from kernel.extension import AxType, AxConstant, Theorem, TheoryExtension
+
+from kernel.extension import AxType, AxConstant, Theorem, Attribute, TheoryExtension
 from logic import logic
 
 """Inductive definitions.
@@ -125,5 +126,24 @@ def add_induct_def(name, T, eqs):
     for i, prop in enumerate(eqs):
         th_name = name + "_def_" + str(i + 1)
         exts.add_extension(Theorem(th_name, Thm([], prop)))
+        exts.add_extension(Attribute(th_name, "hint_rewrite"))
 
+    return exts
+
+def add_induct_predicate(name, T, props):
+    """Add the given inductive predicate.
+
+    The inductive predicate is specified by the name and type of
+    the predicate, and a list of introduction rules, where each
+    introduction rule must be given a name.
+
+    """
+    exts = TheoryExtension()
+    exts.add_extension(AxConstant(name, T))
+
+    for th_name, prop in props:
+        exts.add_extension(Theorem(th_name, Thm([], prop)))
+        exts.add_extension(Attribute(th_name, "hint_backward"))
+
+    # TODO: add induction rule
     return exts

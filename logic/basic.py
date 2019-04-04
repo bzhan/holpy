@@ -6,6 +6,8 @@ import json
 from kernel.theory import Theory
 from logic.operator import OperatorTable
 from logic import logic_macro  # Load all defined macros
+from logic import expr
+from logic import hoare
 from syntax import parser
 
 
@@ -23,16 +25,17 @@ def getInitTheory():
 
     # Operators
     thy.add_data_type("operator", OperatorTable())
+
     return thy
 
-def loadImportedTheory(data):
+def loadImportedTheory(imports):
     """Load imported theory according to the imports field in data."""
-    if data['imports']:
+    if imports:
         # Has at least one import
-        if len(data['imports']) > 1:
+        if len(imports) > 1:
             raise NotImplementedError
 
-        return copy(loadTheory(data['imports'][0]))
+        return copy(loadTheory(imports[0]))
     else:
         return getInitTheory()
 
@@ -61,7 +64,7 @@ def loadTheory(theory_name, *, limit=None):
         assert limit_i != -1, "Limit not found"
         content = content[:limit_i]
 
-    thy = loadImportedTheory(data)
+    thy = loadImportedTheory(data['imports'])
     parser.parse_extensions(thy, content)
 
     if limit is None:

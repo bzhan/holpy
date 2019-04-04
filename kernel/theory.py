@@ -156,6 +156,20 @@ class Theory():
 
         return data[name]
 
+    def add_attribute(self, name, attribute):
+        """Add an attribute for the given theorem."""
+        old_attributes = tuple()
+        if name in self.data['attributes']:
+            old_attributes = self.data['attributes'][name]
+        self.data['attributes'][name] = old_attributes + (attribute,)
+
+    def get_attributes(self, name):
+        """Get the list of attributes for the given theorem."""
+        if name in self.data['attributes']:
+            return self.data['attributes'][name]
+        else:
+            return tuple()
+
     def add_proof_macro(self, name, macro):
         """Add the given proof macro."""
         if not isinstance(macro, ProofMacro):
@@ -193,6 +207,7 @@ class Theory():
         thy.add_data_type("term_sig")
         thy.add_data_type("theorems")
         thy.add_data_type("proof_macro")
+        thy.add_data_type("attributes")
 
         # Fundamental types.
         thy.add_type_sig("bool", 0)
@@ -301,18 +316,12 @@ class Theory():
                 except ProofException:
                     raise CheckProofException("previous item not found")
 
-            # Next, obtain list of arguments to pass in:
-            if seq.args is not None:
-                args = [seq.args]
-            else:
-                args = []
-
             if seq.rule in primitive_deriv:
                 # If the method is one of the primitive derivations, obtain and
                 # apply that primitive derivation.
                 rule_fun, _ = primitive_deriv[seq.rule]
                 try:
-                    res_th = rule_fun(*(args + prev_ths))
+                    res_th = rule_fun(*prev_ths) if seq.args is None else rule_fun(seq.args, *prev_ths)
                     if rpt is not None:
                         rpt.apply_primitive_deriv()
                 except InvalidDerivationException:
@@ -326,15 +335,14 @@ class Theory():
                 # trust level, simply evaluate the macro to check that results
                 # match. Otherwise, expand the macro and check all of the steps.
                 macro = self.get_proof_macro(seq.rule)
-                args = [self] + args if macro.has_theory else args
                 assert isinstance(macro.level, int) and macro.level >= 0, \
                     ("check_proof: invalid macro level " + str(macro.level))
                 if macro.level <= check_level:
-                    res_th = macro(*(args + prev_ths))
+                    res_th = macro(self, seq.args, prev_ths)
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
                 else:
-                    seq.subproof = macro.expand(seq.id, *(args + list(zip(seq.prevs, prev_ths))))
+                    seq.subproof = macro.expand(seq.id, self, seq.args, list(zip(seq.prevs, prev_ths)))
                     if rpt is not None:
                         rpt.expand_macro(seq.rule)
                     for s in seq.subproof.items:
@@ -411,6 +419,12 @@ class Theory():
         self.add_term_sig(const.name, const.T)
         self.add_theorem(const.name + "_def", ext.get_eq_thm())
 
+    def extend_attribute(self, ext):
+        """Extend the theory by adding an attribute."""
+        assert ext.ty == Extension.ATTRIBUTE, "extend_attribute"
+
+        self.add_attribute(ext.name, ext.attribute)
+
     def unchecked_extend(self, thy_ext):
         """Perform the given theory extension without proof checking."""
         for ext in thy_ext.get_extensions():
@@ -422,6 +436,8 @@ class Theory():
                 self.extend_constant(ext)
             elif ext.ty == Extension.THEOREM:
                 self.add_theorem(ext.name, ext.th)
+            elif ext.ty == Extension.ATTRIBUTE:
+                self.extend_attribute(ext)
             elif ext.ty == Extension.MACRO:
                 self.add_global_proof_macro(ext.name)
             else:
@@ -447,6 +463,8 @@ class Theory():
                     ext_report.add_axiom(ext.name, ext.th)
 
                 self.add_theorem(ext.name, ext.th)
+            elif ext.ty == Extension.ATTRIBUTE:
+                self.extend_attribute(ext)
             elif ext.ty == Extension.MACRO:
                 self.add_global_proof_macro(ext.name)
             else:

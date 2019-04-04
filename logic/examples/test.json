@@ -1,0 +1,23 @@
+{
+    "name": "test",
+    "content": [
+        {
+            "ty": "eval",
+            "com": "a := 1; b := 2",
+            "init": {},
+            "final": {"a": 1, "b": 2}
+        },
+        {
+            "ty": "eval",
+            "com": "while (a != 3) {b := b + 5; a := a + 1}",
+            "init": {},
+            "final": {"a": 3, "b": 15}
+        },
+        {
+            "ty": "vcg",
+            "com": "while (a != A) [b == a * B] {b := b + B; a := a + 1}",
+            "pre": "a == 0 & b == 0",
+            "post": "b == A * B"
+        }
+    ]
+}

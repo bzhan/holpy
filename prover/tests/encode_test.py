@@ -32,18 +32,19 @@ class EncodeTest(unittest.TestCase):
 
     def testEncode(self):
         t = disj(imp(a,conj(c,d)),imp(b,conj(c,e)))
-        cnf, prop = encode.encode(t)
+        cnf, th = encode.encode(t)
         self.assertEqual(len(cnf), 16)
-        self.assertEqual(len(prop.assums), 11)
-        self.assertEqual(len(logic.strip_conj(prop.concl)), 16)
+        self.assertEqual(len(th.hyps), 11)
+        self.assertEqual(len(logic.strip_conj(th.prop)), 16)
 
-        pt = encode.get_encode_proof(prop)
-        self.assertEqual(pt.th, prop)
+        pt = encode.get_encode_proof(th)
+        self.assertEqual(pt.th, th)
         
         thy = basic.loadTheory('sat')
         rpt = report.ProofReport()
         self.assertEqual(thy.check_proof(pt.export(), rpt, check_level=1), pt.th)
         self.assertEqual(len(rpt.gaps), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

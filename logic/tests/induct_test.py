@@ -5,7 +5,7 @@ import unittest
 from kernel.type import TVar, Type, TFun, hol_bool
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
-from kernel.extension import AxType, AxConstant, Theorem
+from kernel.extension import AxType, AxConstant, Theorem, Attribute
 from logic import logic, induct
 
 imp = Term.mk_implies
@@ -34,6 +34,7 @@ class InductTest(unittest.TestCase):
             Theorem("nat_Suc_inject", Thm([], imp(eq(S(n), S(n2)), eq(n, n2)))),
             Theorem("nat_induct", Thm([], imp(P(zero), all(n, imp(P(n), P(S(n)))), P(x))))
         ]
+
         self.assertEqual(nat_ext.data, res)
 
     def testInductAdd(self):
@@ -52,7 +53,9 @@ class InductTest(unittest.TestCase):
         res = [
             AxConstant("plus", TFun(nat, nat, nat)),
             Theorem("plus_def_1", Thm([], eq(plus(zero, n), n))),
-            Theorem("plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n)))))
+            Attribute("plus_def_1", "hint_rewrite"),
+            Theorem("plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n))))),
+            Attribute("plus_def_2", "hint_rewrite"),
         ]
         self.assertEqual(ext.data, res)
 
@@ -102,6 +105,8 @@ class InductTest(unittest.TestCase):
             Theorem("prod_Pair_inject", Thm([], imp(eq(pair(a, b), pair(a2, b2)), conj(eq(a, a2), eq(b, b2))))),
             Theorem("prod_induct", Thm([], imp(all(a, all(b, P(pair(a, b)))), P(x))))
         ]
+        # for i in prod_ext.data:
+        #     print(type(i))
         self.assertEqual(prod_ext.data, res)
 
 

@@ -22,11 +22,13 @@ class Extension():
     the given name and statement. If prf = None, then the theorem should
     be accepted as an axiom. Otherwise prf is a proof of the theorem.
 
+    Attribute(name, attribute): add given attribute to the given theorem.
+
     Macro(name): extend the theory by adding the given macro from
     global_macros.
 
     """
-    (AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM, MACRO) = range(5)
+    (AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM, MACRO, ATTRIBUTE) = range(6)
 
     def __str__(self):
         if self.ty == Extension.AX_TYPE:
@@ -37,6 +39,8 @@ class Extension():
             return "Constant " + self.name + " = " + str(self.expr)
         elif self.ty == Extension.THEOREM:
             return "Theorem " + self.name + ": " + str(self.th)
+        elif self.ty == Extension.ATTRIBUTE:
+            return "Attribute " + self.name + "[" + self.attribute + "]"
         elif self.ty == Extension.MACRO:
             return "Macro " + self.name
         else:
@@ -56,6 +60,8 @@ class Extension():
             return self.name == other.name and self.expr == other.expr
         elif self.ty == Extension.THEOREM:
             return self.name == other.name and self.th == other.th and self.prf == other.prf
+        elif self.ty == Extension.ATTRIBUTE:
+            return self.name == other.name and self.attribute == other.attribute
         elif self.ty == Extension.MACRO:
             return self.name == other.name
         else:
@@ -120,6 +126,18 @@ class Theorem(Extension):
         self.name = name
         self.th = th
         self.prf = prf
+
+class Attribute(Extension):
+    def __init__(self, name, attribute):
+        """Extend the theory by adding an attribute.
+
+        name -- name of the theorem.
+        attribute -- name of the attribute.
+
+        """
+        self.ty = Extension.ATTRIBUTE
+        self.name = name
+        self.attribute = attribute
 
 class Macro(Extension):
     def __init__(self, name):

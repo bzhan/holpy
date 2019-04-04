@@ -87,12 +87,12 @@
         },
         {
             "instructions": [
-                "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-                "Select S1 as goal, use Ctrl+R with append_def_1.",
-                "Set sorry on S1 to reflexive nil.",
-                "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
-                "Select S4 as goal, use Ctrl+R with append_def_2.",
-                "Set sorry on S4 to arg_combination cons x from S3."
+                "Select 0 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
+                "Select 0 as goal, use Ctrl+R with append_def_1.",
+                "Set sorry on 0 to reflexive ([]::'a list]).",
+                "Select 2 as goal, use Ctrl+I with x,xs as variable name.",
+                "Select 2.3 as goal, use Ctrl+R with append_def_2.",
+                "Set sorry on 2.3 to arg_combination cons x from 2.2."
             ],
             "name": "append_right_neutral",
             "num_gaps": 0,
@@ -196,13 +196,13 @@
         },
         {
             "instructions": [
-                "Select S1 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-                "Select S1 as goal, use Ctrl+R with append_def_1.",
-                "Set sorry on S1 to reflexive ys @ zs.",
-                "Select S3 as goal, use Ctrl+I with x,xs as variable name.",
-                "Select S4 as goal, use Ctrl+R with append_def_2.",
-                "Select S4 as goal, use Ctrl+R with append_def_2.",
-                "Set sorry on S4 to arg_combination cons x from S3."
+                "Select 0 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
+                "Select 0 as goal, use Ctrl+R with append_def_1.",
+                "Set sorry on 0 to reflexive ys @ zs.",
+                "Select 2 as goal, use Ctrl+I with x,xs as variable name.",
+                "Select 2.3 as goal, use Ctrl+R with append_def_2.",
+                "Select 2.3 as goal, use Ctrl+R with append_def_2.",
+                "Set sorry on 2.3 to arg_combination cons x from 2.2."
             ],
             "name": "append_assoc",
             "prop": "(xs @ ys) @ zs = xs @ ys @ zs",

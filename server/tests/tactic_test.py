@@ -48,6 +48,11 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
+    def testInitProof2(self):
+        state = ProofState.init_state(thy, [A, B], [A, B], conj(A, B))
+        self.assertEqual(len(state.prf.items), 5)
+        self.assertEqual(state.check_proof(), Thm.mk_implies(A, B, conj(A, B)))
+
     def testParseInitState(self):
         state = ProofState.parse_init_state(
             thy, {'vars': {'A': 'bool', 'B': 'bool'}, 'prop': "A & B --> B & A"})
@@ -310,7 +315,7 @@ class TacticTest(unittest.TestCase):
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
         ths = state.rewrite_goal_thms((0,))
-        self.assertEqual([name for name, _ in ths], ["add_comm", "plus_def_1"])
+        self.assertEqual([name for name, _ in ths], ["plus_def_1"])
 
     def testRewriteGoalWithAssum(self):
         Ta = TVar("a")
@@ -353,8 +358,8 @@ class TacticTest(unittest.TestCase):
 
     def testAVal(self):
         thy = basic.loadTheory('expr')
-        prop = thy.get_theorem('aval_test2')
-        state = ProofState.init_state(thy, [], [], prop.concl)
+        th = thy.get_theorem('aval_test2')
+        state = ProofState.init_state(thy, [], [], th.prop)
         state.rewrite_goal(0, "aval_def_3")
         state.rewrite_goal(0, "aval_def_2")
         state.rewrite_goal(0, "aval_def_1")
@@ -362,7 +367,7 @@ class TacticTest(unittest.TestCase):
         state.rewrite_goal(0, "if_not_P")
         state.set_line(0, "nat_norm", args=Term.mk_equals(nat.plus(nat.zero, nat.to_binary(5)), nat.to_binary(5)))
         state.apply_backward_step(1, "nat_zero_Suc_neq")
-        self.assertEqual(state.check_proof(no_gaps=True), prop)
+        self.assertEqual(state.check_proof(no_gaps=True), th)
 
 
 if __name__ == "__main__":

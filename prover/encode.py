@@ -9,9 +9,9 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
-from logic.proofterm import ProofTerm, ProofTermDeriv
+from logic.proofterm import ProofTerm
 from logic import logic_macro
-from logic.conv import rewr_conv, rewr_conv_thm, every_conv, top_conv
+from logic.conv import rewr_conv, every_conv, top_conv
 
 thy = basic.loadTheory('sat')
 
@@ -72,7 +72,7 @@ def get_encode_proof(th):
     substitutions of As on F.
 
     """
-    As, F = th.assums[:-1], th.assums[-1]
+    As, F = th.hyps[:-1], th.hyps[-1]
 
     # Obtain the assumptions
     ptAs = [ProofTerm.assume(A) for A in As]
@@ -81,40 +81,29 @@ def get_encode_proof(th):
     # Obtain the expansion of each As to a non-atomic term.
     pts = []
     for ptA in ptAs:
-        A = ptA.th.concl
-        rhs = A.arg
+        rhs = ptA.prop.rhs
         if logic.is_conj(rhs):
-            cv = rewr_conv_thm(thy, "encode_conj")
+            pts.append(ptA.on_prop(thy, rewr_conv("encode_conj")))
         elif logic.is_disj(rhs):
-            cv = rewr_conv_thm(thy, "encode_disj")
+            pts.append(ptA.on_prop(thy, rewr_conv("encode_disj")))
         elif rhs.is_implies():
-            cv = rewr_conv_thm(thy, "encode_imp")
+            pts.append(ptA.on_prop(thy, rewr_conv("encode_imp")))
         elif rhs.is_equals():
-            cv = rewr_conv_thm(thy, "encode_eq")
+            pts.append(ptA.on_prop(thy, rewr_conv("encode_eq")))
         elif logic.is_neg(rhs):
-            cv = rewr_conv_thm(thy, "encode_not")
-        else:
-            cv = None
-
-        if cv:
-            pts.append(ProofTerm.equal_elim(cv.get_proof_term(A), ptA))
+            pts.append(ptA.on_prop(thy, rewr_conv("encode_not")))
 
     # Obtain the rewrite of the original formula.
     cvs = [top_conv(rewr_conv(ProofTerm.symmetric(ptA), match_vars=False)) for ptA in ptAs]
     cv = every_conv(*cvs)
 
-    pts.append(ProofTerm.equal_elim(cv.get_proof_term(F), ptF))
+    pts.append(ptF.on_prop(thy, cv))
 
-    macro = logic_macro.apply_theorem_macro()
     pt = pts[0]
     for pt2 in pts[1:]:
-        pt = ProofTermDeriv(macro(thy, 'conjI', pt.th, pt2.th),
-            "apply_theorem", "conjI", [pt, pt2])
+        pt = logic_macro.apply_theorem(thy, 'conjI', pt, pt2)
 
-    cv = logic.norm_conj_assoc()
-    pt = ProofTerm.equal_elim(cv.get_proof_term(pt.th.concl), pt)
-
-    return pt
+    return pt.on_prop(thy, logic.norm_conj_assoc())
 
 def encode(t):
     """Convert a holpy term into an equisatisfiable CNF. The result
@@ -144,7 +133,7 @@ def encode(t):
         if st.is_implies() or st.is_equals() or logic.is_conj(st) or logic.is_disj(st):
             r1 = get_var(subterms_dict[st.arg1])
             r2 = get_var(subterms_dict[st.arg])
-            f = st.get_head()
+            f = st.head
             eqs.append(Term.mk_equals(l, f(r1, r2)))
             if st.is_implies():
                 clauses.extend(encode_eq_imp(l, r1, r2))

@@ -239,8 +239,8 @@ def parse_thm(thy, ctxt, s):
     """Parse a theorem (sequent)."""
     parser_setting['thy'] = thy
     th = thm_parser.parse(s)
-    th.assums = tuple(infertype.type_infer(thy, ctxt, assum) for assum in th.assums)
-    th.concl = infertype.type_infer(thy, ctxt, th.concl)
+    th.hyps = tuple(infertype.type_infer(thy, ctxt, hyp) for hyp in th.hyps)
+    th.prop = infertype.type_infer(thy, ctxt, th.prop)
     return th
 
 def parse_inst(thy, ctxt, s):
@@ -332,15 +332,28 @@ def parse_extension(thy, data):
     ext = None
 
     if data['ty'] == 'def.ax':
-        prop = parse_type(thy, data['type'])
+        T = parse_type(thy, data['type'])
         ext = extension.TheoryExtension()
-        ext.add_extension(extension.AxConstant(data['name'], prop))
+        ext.add_extension(extension.AxConstant(data['name'], T))
 
-    elif data['ty'] == 'thm':
+    elif data['ty'] == 'def':
+        T = parse_type(thy, data['type'])
+        ctxt = parse_vars(thy, data['vars'])
+        prop = parse_term(thy, ctxt, data['prop'])
+        ext = extension.TheoryExtension()
+        ext.add_extension(extension.AxConstant(data['name'], T))
+        ext.add_extension(extension.Theorem(data['name'] + "_def", Thm([], prop)))
+        ext.add_extension(extension.Attribute(data['name'] + "_def", 'int_rewrite'))
+
+    elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parse_vars(thy, data['vars'])
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Theorem(data['name'], Thm([], prop)))
+        if 'hint_backward' in data and data['hint_backward'] == "true":
+            ext.add_extension(extension.Attribute(data['name'], 'hint_backward'))
+        if 'hint_rewrite' in data and data['hint_rewrite'] == "true":
+            ext.add_extension(extension.Attribute(data['name'], 'hint_rewrite'))
 
     elif data['ty'] == 'type.ind':
         constrs = []
@@ -358,6 +371,16 @@ def parse_extension(thy, data):
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
+
+    elif data['ty'] == 'def.pred':
+        T = parse_type(thy, data['type'])
+        thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
+        rules = []
+        for rule in data['rules']:
+            ctxt = parse_vars(thy, rule['vars'])
+            prop = parse_term(thy, ctxt, rule['prop'])
+            rules.append((rule['name'], prop))
+        ext = induct.add_induct_predicate(data['name'], T, rules)
 
     elif data['ty'] == 'macro':
         ext = extension.TheoryExtension()

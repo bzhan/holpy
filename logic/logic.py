@@ -2,7 +2,8 @@
 
 from kernel.type import TVar, TFun, hol_bool
 from kernel.term import Term, Const, Abs
-from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv_thm_sym
+from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv
+from logic.proofterm import ProofTerm, refl
 
 """Utility functions for logic."""
 
@@ -15,7 +16,7 @@ false = Const("false", hol_bool)
     
 def is_conj(t):
     """Whether t is of the form A & B."""
-    return t.is_binop() and t.get_head() == conj
+    return t.is_binop() and t.head == conj
 
 def mk_conj(*args):
     """Construct the term s1 & ... & sn."""
@@ -40,7 +41,7 @@ def strip_conj(t):
 
 def is_disj(t):
     """Whether t is of the form A | B."""
-    return t.is_binop() and t.get_head() == disj
+    return t.is_binop() and t.head == disj
 
 def mk_disj(*args):
     """Construct the term s1 | ... | sn."""
@@ -112,40 +113,45 @@ def if_t(T):
 def is_if(t):
     """Whether t is of the form if P then x else y."""
     f, args = t.strip_comb()
-    return f.is_const_with_name("IF") and len(args) == 3
+    return f.is_const_name("IF") and len(args) == 3
 
 def mk_if(P, x, y):
     """Obtain the term if P then x else y."""
     return if_t(x.get_type())(P, x, y)
 
-def dest_if(t):
-    """Given a term if P then x else y, return (P, x, y)."""
-    _, args = t.strip_comb()
-    return args
-
 """Normalization rules for logic."""
+
+class norm_bool_expr(Conv):
+    """Normalize a boolean expression."""
+    def get_proof_term(self, thy, t):
+        if is_neg(t):
+            if t.arg == true:
+                return rewr_conv("not_true").get_proof_term(thy, t)
+            elif t.arg == false:
+                return rewr_conv("not_false").get_proof_term(thy, t)
+            else:
+                return refl(t)
+        else:
+            return refl(t)
 
 class norm_conj_assoc_clauses(Conv):
     """Normalize (A_1 & ... & A_n) & (B_1 & ... & B_n)."""
-    def get_proof_term(self, t):
-        from logic import basic
-        thy = basic.loadTheory('logic')
-
+    def get_proof_term(self, thy, t):
         if is_conj(t.arg1):
             return then_conv(
-                rewr_conv_thm_sym(thy, "conj_assoc"),
+                rewr_conv("conj_assoc", sym=True),
                 arg_conv(norm_conj_assoc_clauses())
-            ).get_proof_term(t)
+            ).get_proof_term(thy, t)
         else:
-            return all_conv().get_proof_term(t)
+            return all_conv().get_proof_term(thy, t)
 
 class norm_conj_assoc(Conv):
     """Normalize conjunction with respect to associativity."""
-    def get_proof_term(self, t):
+    def get_proof_term(self, thy, t):
         if is_conj(t):
             return then_conv(
                 binop_conv(norm_conj_assoc()),
                 norm_conj_assoc_clauses()
-            ).get_proof_term(t)
+            ).get_proof_term(thy, t)
         else:
-            return all_conv().get_proof_term(t)
+            return all_conv().get_proof_term(thy, t)

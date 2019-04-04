@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="../static/css/bootstrap-select.min.css">
 <link rel=stylesheet href="../static/codemirror-5.41.0/doc/docs.css">
 <link rel="stylesheet" href="../static/css/sweetalert2.min.css">
-<script src="../static/js/sweetalert2.min.js"></script>
+<script src="../static/js/sweetalezrt2.min.js"></script>
 <script src="../static/js/jquery-3.3.1.min.js"></script>
 <script src="../static/js/popper.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
@@ -54,8 +54,7 @@
                 <!----><span
                     data-vivaldi-spatnav-clickable="1">File
                     </span></button>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item fontcolor" href="#" id="save-file">Save</a>
+            <div class="dropdown-menu span" align="left">
                 <a class="dropdown-item fontcolor" href="#" onclick="$('#open-file').click()" id="file-button">Open file</a>
                 <input type="file" id="open-file" style="display:none">
                 <a class="dropdown-item fontcolor" href="#" onclick="$('#open-problem').click()" id="problem-button">Open
@@ -73,7 +72,7 @@
                 <!----><span
                     data-vivaldi-spatnav-clickable="1">Cells
                     </span></button>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu span">
                 <a class="dropdown-item fontcolor" href="#" id="add-cell" color="black">Add cell</a>
                 <a class="dropdown-item fontcolor" href="#" id="delete-cell">Delete cell</a>
                 <a class="dropdown-item fontcolor" href="#" id="run-button">Run</a>
@@ -82,12 +81,12 @@
         <div class="dropdown">
             <button data-v-bfe775a4="" type="button" id="additional_option" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false"
-                    class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle"
+                    class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle span"
                     data-vivaldi-spatnav-clickable="1" role="button" tabindex="0">
                 <!----><span
                     data-vivaldi-spatnav-clickable="1">Action
                     </span></button>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu span">
                 <a class="dropdown-item fontcolor" href="#" id="add-line-after">Add line after</a>
                 <a class="dropdown-item fontcolor" href="#" id="introduction">Introduction</a>
                 <a class="dropdown-item fontcolor" href="#" id="apply-backward-step">Apply backward step</a>
@@ -101,62 +100,62 @@
                     class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle"
                     data-vivaldi-spatnav-clickable="1" role="button" tabindex="0">
                 <!----><span
-                    data-vivaldi-spatnav-clickable="1">ADD
+                    data-vivaldi-spatnav-clickable="1">Add item
                     </span></button>
-            <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item" href="#" id="cons">constant</a>
-                <a class="dropdown-item" href="#" id="them">therom</a>
-                <a class="dropdown-item" href="#" id="datat">datatype</a>
-                <a class="dropdown-item" href="#" id="fun">fun</a>
+            <div class="dropdown-menu span add-info">
+                <a class="dropdown-item fontcolor" name="def.ax" href="#" id="constant">constant</a>
+                <a class="dropdown-item fontcolor" name="thm" href="#" id="theorem">theorem</a>
+                <a class="dropdown-item fontcolor" name="type.ind" href="#" id="datatype">datatype</a>
+                <a class="dropdown-item fontcolor" name="def.ind" href="#" id="fun">fun</a>
             </div>
         </div>
-        <button id="add-info" data-v-bfe775a4="" type="button" data-toggle="" aria-haspopup="true"
-                    aria-expanded="false"
-                    class="el-button el-button--default el-button--mini"
-                    data-vivaldi-spatnav-clickable="1" role="button" tabindex="0">
-                <!---->Add info</button>
+        <div>
+            <button class="el-button el-button--default el-button--mini" id="add-json">New File</button>
+        </div>
     </div>
 </div>
 
-<div class="left" id="left" style="width:80%;height:100%;overflow-y:scroll;overflow-x:hidden;">
-    <div id="root-file" style="margin-bottom:20px;width:100%;">
+<div class="left" id="left" style="width:80%;height:100%;overflow-y:scroll;overflow-x:auto;">
+    <div name="tab-title" style="height:6%;">
+        <span style="height:100%;width:4%;border-bottom:solid 1px;border-color:#B8B8B8;float:left;"></span>
+        <li style="height:100%;border-color:#B8B8B8;list-style:none;float:left;border-top-left-radius:5px;border-top-right-radius:5px;width:30%;" id="json-tab1" class="nav-item" name="tab1">
+            <a class="nav-link" data-toggle="tab" href="#" name="tab1">
+                <span style="color:black">Files</span>
+            </a>
+        </li>
+        <li style="height:100%;border-color:#B8B8B8;list-style:none;float:left;margin-left:0px;border-top-left-radius:5px;border-top-right-radius:5px;width:30%;" id="json-tab2" class="nav-item" name="tab2">
+            <a class="nav-link" data-toggle="tab" href="#" name="tab1">
+                <span style="color:black">Content</span>
+            </a>
+        </li>
+        <li style="height:100%;border-color:#B8B8B8;list-style:none;float:left;margin-left:0px;border-top-left-radius:5px;border-top-right-radius:5px;width:30%;" id="json-tab3" class="nav-item" name="tab2">
+            <a class="nav-link" data-toggle="tab" href="#" name="tab1">
+                <span style="color:black">Variables</span>
+            </a>
+        </li>
+       <span style="height:100%;width:6%;border-bottom:solid 1px;border-color:#B8B8B8;float:left;"></span>
+        <br>
     </div>
-    <div id="file-path" style="margin-bottom:20px;width:100%;"></div>
-    <div id="left_json">
+
+    <div id="root-file" style="margin-top:20px;width:100%;float:left;font-size:15px;">
+    </div>
+    <!--<div id="file-path" style="margin-bottom:20px;width:100%;"></div>-->
+    <div id="left_json" style="margin-top:12px;">
 
     </div>
-    <div class="input_thm" id="add-information">
-        <!--<p>Enter the info:</p>-->
-        <!--<input type="text" id="constant" placeholder="constant" style="margin-bottom:5px;width:100%;margin-top:5px;">-->
-        <!--<input type="text" id="type" placeholder="type" style="margin-bottom:20px;width:100%;">-->
-        <!--<input type="text" id="thm" placeholder="theorem" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" id="term" placeholder="term" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" id="vars" placeholder="vars" style="margin-bottom:20px;width:100%;">-->
-        <!--<input type="text" class="datatype" id="datatype" placeholder="datatype" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" class="datatype" id="args" placeholder="args" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" class="datatype" id="name1" placeholder="name1" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="name2" placeholder="name2" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="type1" placeholder="type1" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="type2" placeholder="type2" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="args1" placeholder="args1" style="margin-bottom:5px;width:50%;float:left;">-->
-        <!--<input type="text" class="datatype" id="args2" placeholder="args2" style="margin-bottom:20px;width:50%;float:left;">-->
-        <!--<input type="text" id="function" placeholder="fun" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" id="function-type" placeholder="type" style="margin-bottom:5px;width:100%;">-->
-        <!--<input type="text" id="function-vars1" placeholder="vars1" style="float:left;margin-bottom:5px;width:50%;">-->
-        <!--<input type="text" id="function-vars2" placeholder="vars2" style="float:left;margin-bottom:5px;width:50%;">-->
-        <!--<input type="text" id="function-prop1" placeholder="prop1" style="float:left;margin-bottom:5px;width:50%;">-->
-        <!--<input type="text" id="function-prop2" placeholder="prop2" style=":float:left;margin-bottom:5px;width:50%;">-->
+    <div id="varible" style="margin-top:12px;">
+
     </div>
 </div>
 
 <div class="right" id="right">
-    <div class="rtop" style="left: 0; right: 0; top: 0; bottom: 45%;">
-        <div class="code-pan" style=>
+    <div class="rtop" style="left: 0; right: 0; top: 0; bottom: 45%">
+        <div class="code-pan">
             <ul class="nav nav-tabs" id="codeTab"></ul>
-            <div class="tab-content" id="codeTabContent"></div>
+                <div class="tab-content" id="codeTabContent"></div>
         </div>
     </div>
-    <div class="rbottom" style="left: 0; right: 0; top: 55%; bottom: 0;">
+    <div class="rbottom" style="left: 0; right: 0; top: 55%; bottom: 0;overflow: auto">
     </div>
 </div>
 </body>

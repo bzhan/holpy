@@ -69,3 +69,7 @@ class SATTest(unittest.TestCase):
             prop = parser.parse_term(thy ,ctxt, problem['prop'])
             cnf, _ = encode.encode(logic.neg(prop))
             self.assertIsNone(sat.solve_cnf(cnf))
+
+
+if __name__ == "__main__":
+    unittest.main()

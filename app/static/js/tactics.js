@@ -11,15 +11,15 @@ function get_selected_editor() {
 }
 
 function get_selected_output() {
-    return document.querySelector('.code-cell.selected .output pre');
+    return document.querySelector('.rbottom .selected .output pre');
 }
 
 function get_selected_instruction() {
-    return document.querySelector('.code-cell.selected .output #instruction');
+    return document.querySelector('.rbottom .selected .output #instruction');
 }
 
 function get_selected_instruction_number() {
-    return document.querySelector('.code-cell.selected .output #instruction-number');
+    return document.querySelector('.rbottom .selected .output #instruction-number');
 }
 
 function clear_match_thm() {
@@ -45,7 +45,10 @@ function display_checked_proof(result) {
         let id = get_selected_id();
         cells[id].edit_line_number = -1;
         cells[id]['proof'] = result['proof'];
+        var editor = get_selected_editor();
+        editor.startOperation();
         display(id);
+        editor.endOperation();
         var num_gaps = result["report"]["num_gaps"];
         cells[id]['num_gaps'] = num_gaps;
         status_output.style.color = '';
@@ -227,12 +230,14 @@ function split_one(s, delimiter) {
     return [arr[0], arr.slice(1).join(delimiter)];
 }
 
-function split_line(s) {
+function split_line(id, s) {
     var item = {};
-    var rest = '';
-    [item.id, rest] = split_one(s, ': ');
-    if (rest.indexOf(" by ") > 0) {
-        rest = split_one(rest, " by ")[1];
+    item.id = id
+    if (s.indexOf(" by ") > 0) {
+        rest = split_one(s, " by ")[1];
+    }
+    else {
+        rest = s.trim()
     }
     item.th = "";
 
@@ -260,7 +265,7 @@ function set_line(cm) {
         var line_no = cells[id].edit_line_number;
         var input = {
             'id': get_selected_id(),
-            'item': split_line(cm.getLine(line_no))
+            'item': split_line(cells[id].proof[line_no].id, cm.getLine(line_no))
         };
         var data = JSON.stringify(input);
         display_running();
@@ -286,6 +291,7 @@ function apply_proof_step_and_rewrite_goal_thm(cm) {
     }
 }
 
+//match responding thms for backward;
 function match_thm() {
     var id = get_selected_id();
     var click_line_number = cells[id].click_line_number;
@@ -298,19 +304,40 @@ function match_thm() {
         var data = {
             'id': get_selected_id(),
             'target_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
-            'conclusion_id': conclusion_id
+            'conclusion_id': conclusion_id,
+            'theory_name': name
         };
-
         $.ajax({
             url: "/api/match_thm",
             type: "POST",
             data: JSON.stringify(data),
             success: function (result) {
-                display_match_thm(result);
+            var ctxt = result['ctxt'];
+            $('div#varible').html('');
+            for (let k in ctxt) {
+            var type = '';
+            $.each(ctxt[k], function (i, val) {
+                type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+            });
+                $('div#varible').append('<div id="ctxt" style="margin-left:10px;"><span><b>'+ k +' :: '+ type +'</b></span></div><br>');
+            }
+            $('li#json-tab3').click();
+            display_match_thm(result);
             }
         })
     });
 }
+
+function rp(x) {
+        if (x === 0)
+            return 'normal';
+        if (x === 1)
+            return 'bound';
+        if (x === 2)
+            return 'var';
+        if (x === 3)
+            return 'tvar';
+    }
 
 // Print string without highlight at given line_no and ch. Return the new value of ch.
 function display_str(editor, str, line_no, ch, mark) {
@@ -372,13 +399,12 @@ function display_line(id, line_no) {
 
     edit_flag = true;
     // Display id in bold
-    var str_temp = ' '
+    var str_temp = ''
     for (var i = 0; i < line.id.length; i++) {
         if (line.id[i] === '.') {
             str_temp += '  '
         }
     }
-    editor.getOption('lineNumberFormatter', 'function(line) {')
     ch = display_str(editor, str_temp, line_no, ch, {css: 'font-weight: bold'});
 
     if (line.rule === 'assume') {
@@ -410,6 +436,7 @@ function display_line(id, line_no) {
             ch = display_str(editor, line.prevs.join(', '), line_no, ch);
         }
     }
+    get_selected_editor().execCommand("goDocEnd");
     edit_flag = false;
 }
 
@@ -420,6 +447,7 @@ function display(id) {
     editor.setValue('');
     edit_flag = false;
     var cell = cells[id]['proof'];
+    var large_num = 0;
     $.each(cell, function (line_no) {
         var line = cells[id]['proof'][line_no];
         editor.setOption('lineNumberFormatter', function (line_no) {
@@ -428,15 +456,19 @@ function display(id) {
                 } else {
                     return '';
                 }
-            }
-        );
+            });
+        var length = cells[id]['proof'][line_no]['id'].length;
+        if (length >= large_num)
+            large_num = length;
         display_line(id, line_no);
         edit_flag = true;
         var len = editor.getLineHandle(line_no).text.length;
         editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
         edit_flag = false;
-    });
-
+    })
+    $('div.tab-pane.selected div.CodeMirror-gutters').css('width', 32+large_num*3+'px');
+    $('div.CodeMirror-gutters').css('text-align','left');
+    $('div.tab-pane.selected div.CodeMirror-sizer').css('margin-left', 33+large_num*2+'px');
     cells[get_selected_id()].readonly_lines.length = 0;
     for (var i = 0; i < editor.lineCount(); i++)
         cells[get_selected_id()].readonly_lines.push(i);
@@ -444,15 +476,15 @@ function display(id) {
 
 function display_match_thm(result) {
     if ('ths_abs' in result && result['ths_abs'].length !== 0) {
-        $('.code-cell.selected .match-thm .abs-thm').append(
+        $('div.rbottom .selected .match-thm .abs-thm').append(
             $(`<pre>Theorems: (Ctrl-B)</pre><div class="thm-content"></div>`)
         );
         for (var i in result['ths_abs']) {
-            $('.code-cell.selected .match-thm .abs-thm .thm-content').append(
-                $(`<pre>${result['ths_abs'][i]}</pre>`)
+            $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(
+                $(`<div style="float:left;"><pre>${result['ths_abs'][i][0]}</pre></div><div style="float:left;"><pre>${result['ths_abs'][i][1]}</pre></div>`)
             );
         }
-        $('.code-cell.selected .match-thm .abs-thm .thm-content').append(
+        $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(
             $(`<a href="#" class="backward-step">Other backward step</a>`)
         )
     }
@@ -472,15 +504,15 @@ function display_match_thm(result) {
     }
 
     if ('ths_rewrite' in result && result['ths_rewrite'].length !== 0) {
-        $('.code-cell.selected .match-thm .rewrite-thm').append(
+        $('div.rbottom .selected .match-thm .rewrite-thm').append(
             $(`<pre>Theorems: (Ctr-R)</pre><div class="thm-content"></div>`)
         );
         for (var i in result['ths_rewrite']) {
-            $('.code-cell.selected .match-thm .rewrite-thm .thm-content').append(
-                $(`<pre>${result['ths_rewrite'][i]}</pre>`)
+            $('div.rbottom .selected .match-thm .rewrite-thm .thm-content').append(
+                $(`<div style="float:left;"><pre>${result['ths_rewrite'][i][0]}</pre></div><div style="float:left;"><pre>${result['ths_rewrite'][i][1]}</pre></div>`)
             );
         }
-        $('.code-cell.selected .match-thm .rewrite-thm .thm-content').append(
+        $('div.rbottom .selected .match-thm .rewrite-thm .thm-content').append(
             $(`<a href="#" class="rewrite-goal">Other rewrite goal</a>`)
         )
     }
@@ -488,7 +520,7 @@ function display_match_thm(result) {
 
 function get_match_thm_abs() {
     var match_thm_list = [];
-    $('.code-cell.selected .abs-thm .thm-content pre').each(function () {
+    $('div.rbottom .selected .abs-thm .thm-content pre').each(function () {
             match_thm_list.push($(this).text())
         }
     );
@@ -497,7 +529,7 @@ function get_match_thm_abs() {
 
 function get_match_thm_rewrite() {
     var match_thm_list = [];
-    $('.code-cell.selected .rewrite-thm .thm-content pre').each(function () {
+    $('div.rbottom .selected .rewrite-thm .thm-content pre').each(function () {
             match_thm_list.push($(this).text())
         }
     );

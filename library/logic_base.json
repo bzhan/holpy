@@ -4,7 +4,7 @@
             "ascii_op": "&",
             "name": "conj",
             "ty": "def.ax",
-            "type": "bool => bool => bool",
+            "type": "bool ⇒ bool ⇒ bool",
             "unicode_op": "∧"
         },
         {
@@ -42,54 +42,60 @@
             "type": "bool => 'a => 'a => 'a"
         },
         {
+            "hint_backward": "true",
             "name": "conjI",
-            "prop": "A --> B --> A & B",
-            "ty": "thm",
+            "prop": "A ⟶ B ⟶ A ∧ B",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool",
                 "B": "bool"
             }
         },
         {
+            "hint_backward": "true",
             "name": "conjD1",
-            "prop": "A & B --> A",
-            "ty": "thm",
+            "prop": "A ∧ B ⟶ A",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool",
                 "B": "bool"
             }
         },
         {
+            "hint_backward": "true",
             "name": "conjD2",
             "prop": "A & B --> B",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool",
                 "B": "bool"
             }
         },
         {
+            "hint_backward": "true",
             "name": "disjI1",
             "prop": "A --> A | B",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool",
                 "B": "bool"
             }
         },
         {
+            "hint_backward": "true",
             "name": "disjI2",
             "prop": "B --> A | B",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool",
                 "B": "bool"
             }
         },
         {
+            "hint_backward": "true",
             "name": "disjE",
             "prop": "A | B --> (A --> C) --> (B --> C) --> C",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool",
                 "B": "bool",
@@ -97,48 +103,54 @@
             }
         },
         {
+            "hint_backward": "true",
             "name": "negI",
             "prop": "(A --> false) --> ~A",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool"
             }
         },
         {
+            "hint_backward": "true",
             "name": "negE",
             "prop": "~A --> A --> false",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool"
             }
         },
         {
+            "hint_backward": "true",
             "name": "trueI",
             "prop": "true",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {}
         },
         {
+            "hint_backward": "true",
             "name": "falseE",
             "prop": "false --> A",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool"
             }
         },
         {
+            "hint_backward": "true",
             "name": "exI",
             "prop": "P a --> ?a. P a",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "P": "'a => bool",
                 "a": "'a"
             }
         },
         {
+            "hint_backward": "true",
             "name": "exE",
             "prop": "(?a. P a) --> (!a. P a --> C) --> C",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "C": "bool",
                 "P": "'a => bool",
@@ -148,15 +160,16 @@
         {
             "name": "classical",
             "prop": "A | ~A",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "A": "bool"
             }
         },
         {
+            "hint_backward": "true",
             "name": "extension",
             "prop": "(!x. f x = g x) --> f = g",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "f": "'a => 'b",
                 "g": "'a => 'b"
@@ -165,7 +178,7 @@
         {
             "name": "if_P",
             "prop": "P --> (if P then x else y) = x",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "P": "bool",
                 "x": "'a",
@@ -175,7 +188,7 @@
         {
             "name": "if_not_P",
             "prop": "~P --> (if P then x else y) = y",
-            "ty": "thm",
+            "ty": "thm.ax",
             "vars": {
                 "P": "bool",
                 "x": "'a",
@@ -215,4 +228,3 @@
     "imports": [],
     "name": "logic_base"
 }
-

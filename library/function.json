@@ -316,6 +316,42 @@
                 "d": "'b",
                 "f": "'a => 'b"
             }
+        },
+        {
+            "name": "fun_upd_eval",
+            "ty": "macro"
+        },
+        {
+            "name": "fun_upd_eval_test1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(λx. 0)(1 := 5) 0 = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "fun_upd_eval",
+                    "th": "⊢ (λx. 0)(1 := 5) 0 = 0"
+                }
+            ],
+            "prop": "fun_upd (%x. 0) 1 5 0 = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "fun_upd_eval_test2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(λx. 0)(1 := 5) 1 = 5",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "fun_upd_eval",
+                    "th": "⊢ (λx. 0)(1 := 5) 1 = 5"
+                }
+            ],
+            "prop": "fun_upd (%x. 0) 1 5 1 = 5",
+            "ty": "thm",
+            "vars": {}
         }
     ],
     "description": "Functions",
