@@ -919,31 +919,26 @@
         result_list_dict[theory_name] = result_list;
         var import_str = theory_imports.join('、');
         $('#left_json').html('');
-        $('#left_json').append($('<br><div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
-        '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
+        var templ = _.template($("#template-content-header").html());
+        $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
         var num = 0;
         for (var d in result_list) {
             num++;
             var ext = result_list[d];
-            var ty = ext.ty, name = ext.name, depth = ext.depth;
+            var ty = ext.ty, name = ext.name;
             if (ty === 'def.ax') {
-                var type = high_light(ext.type_hl);
-                $('#left_json').append($(
-                    '<div><p id="data-'+ num +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + name + '</span> :: <span name="content">' + type
-                    + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
+                var templ = _.template($("#template-content-def-ax").html());
+                $('#left_json').append(templ(
+                    {num: num, name: ext.name, type: high_light(ext.type_hl)}));
             }
 
             if (ty === 'thm.ax') {
-                var prop = high_light(ext.prop_hl);
-                var status_color = 'green';
-                $('#left_json').append($(
-                    '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>axiom</b></font></span> <span id="thm_name" name="name"><tt>' + name +
-                    '</tt></span>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
-                    prop + '</span></p></div>'));
+                var templ = _.template($("#template-content-thm-ax").html());
+                $('#left_json').append(templ(
+                    {num: num, name: name, prop: high_light(ext.prop_hl)}));
             }
 
             if (ty === 'thm') {
-                var prop = high_light(ext.prop_hl);
                 var status_color;
                 if (ext.proof === undefined) {
                     status_color = 'red';
@@ -952,26 +947,16 @@
                 } else {
                     status_color = 'green';
                 }
-                $('#left_json').append($(
-                    '<div><div style="float:left;width: 12px; height: 12px; background: ' +
-                    status_color + ';">&nbsp;</div>' + '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
-                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
-                    prop + '</span></p></div>'));
+                var templ = _.template($("#template-content-thm").html());
+                $('#left_json').append(templ(
+                    {status_color: status_color, num: num, name: ext.name, prop: high_light(ext.prop_hl)}));
             }
 
             if (ty === 'type.ind') {
-                var argsT = ext.argsT, constrs = ext.constrs;
-                var str = '', type_name = high_light(argsT['concl']);
-                $.each(constrs, function (i, v) {
-                    var str_temp_var = '';
-                    $.each(v.args, function (k, val) {
-                        var str_temp_term = high_light(argsT[i][k]);
-                        str_temp_var += ' (' + val + ' :: ' + str_temp_term + ')';
-                    })
-                    str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
-                })
-                $('#left_json').append($(
-                    '<div><p id="data-'+ num +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
+                var templ = _.template($("#template-content-type-ind").html());
+                $('#left_json').append(templ(
+                    {num: num, type_name: high_light(ext.argsT['concl']),
+                     argsT: ext.argsT, constrs: ext.constrs}));
             }
 
             if (ty === 'def') {
