@@ -16,7 +16,7 @@ from syntax import parser, printer
 from server.tactic import ProofState
 from logic import basic
 from logic import induct
-from kernel.extension import AxType,AxConstant,Theorem
+from kernel.extension import AxType, AxConstant, Theorem
 from syntax import settings
 
 app = Flask(__name__, static_url_path='/static')
@@ -149,16 +149,18 @@ def set_line():
             }
         return jsonify(error)
 
+
 # type of ax
 def type_(thy, j):
     if isinstance(j, AxType):
         return (printer.print_type(thy, j), 'type')
-    if isinstance(j,AxConstant):
+    if isinstance(j, AxConstant):
         if isinstance(j.T, str):
             j.T = parser.parse_type(thy, j.T)
         return (printer.print_type(thy, j.T), 'constant')
     if isinstance(j, Theorem):
         return (printer.print_thm(thy, j.th), 'theorem')
+
 
 # 显示高亮的函数；
 def file_data_to_output(thy, data):
@@ -208,13 +210,13 @@ def file_data_to_output(thy, data):
         rules = data['rules']
         rules_, ext_res = [], []
         for i in rules:
-            ctxt_ = parser.parse_vars(thy,i['vars'])
+            ctxt_ = parser.parse_vars(thy, i['vars'])
             prop_ = parser.parse_term(thy, ctxt_, i['prop'])
             rules_.append(prop_)
         ext = induct.add_induct_def(name, type_d, rules_)
         for e in ext.data:
             if type_(thy, e):
-                #ext_res[e.name] = type_(thy, e)
+                # ext_res[e.name] = type_(thy, e)
                 ext_res.append((type_(thy, e), e.name))
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
@@ -282,7 +284,7 @@ def save_file():
     return jsonify({})
 
 
-#match the thms for backward or rewrite;
+# match the thms for backward or rewrite;
 @app.route('/api/match_thm', methods=['POST'])
 def match_thm():
     dict = {}
@@ -300,10 +302,15 @@ def match_thm():
             conclusion_id = None
         settings.settings_stack[0]['highlight'] = False
         ths_rewrite = cell.rewrite_goal_thms(target_id)
-        ths = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
+        ths_abs = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
         ths_afs = cell.apply_forward_step_thms(target_id, prevs=conclusion_id)
-        if ths or ths_rewrite:
-            return jsonify({'ths_abs': ths,'ths_afs': ths_afs, 'ths_rewrite': ths_rewrite, 'ctxt': dict})
+        if (ths_abs or ths_rewrite) or ths_afs:
+            return jsonify({
+                'ths_abs': ths_abs,
+                'ths_afs': ths_afs,
+                'ths_rewrite': ths_rewrite,
+                'ctxt': dict
+            })
         else:
             return jsonify({'ctxt': dict})
 
@@ -352,22 +359,22 @@ def add_new():
     data = json.loads(request.get_data().decode("utf-8"))
     name = data['name']
     if name in file_list:
-        with open('library/'+name +'.json', 'r', encoding='utf-8') as f:
+        with open('library/' + name + '.json', 'r', encoding='utf-8') as f:
             file_data = json.load(f)
             for key in data.keys():
                 file_data[key] = data[key]
             f.close()
-        with open('library/'+name +'.json', 'w', encoding='utf-8') as f:
+        with open('library/' + name + '.json', 'w', encoding='utf-8') as f:
             json.dump(file_data, f, ensure_ascii=False, indent=4)
     else:
-        with open('library/' +name +'.json', 'w', encoding='utf-8') as f:
+        with open('library/' + name + '.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
             f.close()
 
     return jsonify({})
 
 
-#locate the files in the library;
+# locate the files in the library;
 @app.route('/api/find_files', methods=['GET'])
 def find_files():
     global file_list
@@ -381,12 +388,12 @@ def find_files():
     return jsonify({})
 
 
-#get the metadata of the json-file;
+# get the metadata of the json-file;
 @app.route('/api/edit_jsonFile', methods=['POST'])
 def edit_jsonFile():
     content = {}
     name = json.loads(request.get_data().decode('utf-8'))
-    with open('library/'+ name+ '.json', 'r', encoding='utf-8') as f:
+    with open('library/' + name + '.json', 'r', encoding='utf-8') as f:
         file_data = json.load(f)
     content['description'] = file_data['description']
     content['imports'] = file_data['imports']
@@ -395,15 +402,14 @@ def edit_jsonFile():
     return jsonify(content)
 
 
-#save the file_list
+# save the file_list
 @app.route('/api/save_file_list', methods=['PUT'])
 def save_file_list():
     file_name = json.loads(request.get_data().decode('utf-8'))
-    fileDir = os.path.abspath('..') + '/holpy/library/' +file_name + '.json'
+    fileDir = os.path.abspath('..') + '/holpy/library/' + file_name + '.json'
     os.remove(fileDir)
 
     return jsonify({})
-
 
 
 @app.route('/api/apply-forward-step', methods=['POST'])

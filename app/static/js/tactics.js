@@ -170,7 +170,7 @@ function apply_induction(cm) {
 }
 
 function rewrite_goal(cm, is_others = false, select_thm = -1) {
-    var match_thm_list = get_match_thm_rewrite();
+    var match_thm_list = get_match_thm('rewrite');
     var theorem = '';
     if (!is_others) {
         let idx = select_thm !== -1 ? select_thm : 0;
@@ -235,8 +235,7 @@ function split_line(id, s) {
     item.id = id
     if (s.indexOf(" by ") > 0) {
         rest = split_one(s, " by ")[1];
-    }
-    else {
+    } else {
         rest = s.trim()
     }
     item.th = "";
@@ -281,7 +280,7 @@ function set_line(cm) {
     })
 }
 
-function apply_proof_step_and_rewrite_goal_thm(cm) {
+function apply_thm(cm) {
     var id = get_selected_id();
     var click_line_number = cells[id].click_line_number;
     if (click_line_number === -1) {
@@ -312,32 +311,32 @@ function match_thm() {
             type: "POST",
             data: JSON.stringify(data),
             success: function (result) {
-            var ctxt = result['ctxt'];
-            $('div#varible').html('');
-            for (let k in ctxt) {
-            var type = '';
-            $.each(ctxt[k], function (i, val) {
-                type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-            });
-                $('div#varible').append('<div id="ctxt" style="margin-left:10px;"><span><b>'+ k +' :: '+ type +'</b></span></div><br>');
-            }
-            $('li#json-tab3').click();
-            display_match_thm(result);
+                var ctxt = result['ctxt'];
+                $('div#varible').html('');
+                for (let k in ctxt) {
+                    var type = '';
+                    $.each(ctxt[k], function (i, val) {
+                        type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                    });
+                    $('div#varible').append('<div id="ctxt" style="margin-left:10px;"><span><b>' + k + ' :: ' + type + '</b></span></div><br>');
+                }
+                $('li#json-tab3').click();
+                display_match_thm(result);
             }
         })
     });
 }
 
 function rp(x) {
-        if (x === 0)
-            return 'normal';
-        if (x === 1)
-            return 'bound';
-        if (x === 2)
-            return 'var';
-        if (x === 3)
-            return 'tvar';
-    }
+    if (x === 0)
+        return 'normal';
+    if (x === 1)
+        return 'bound';
+    if (x === 2)
+        return 'var';
+    if (x === 3)
+        return 'tvar';
+}
 
 // Print string without highlight at given line_no and ch. Return the new value of ch.
 function display_str(editor, str, line_no, ch, mark) {
@@ -451,12 +450,12 @@ function display(id) {
     $.each(cell, function (line_no) {
         var line = cells[id]['proof'][line_no];
         editor.setOption('lineNumberFormatter', function (line_no) {
-                if (line_no < cell.length) {
-                    return cells[id]['proof'][line_no]['id'];
-                } else {
-                    return '';
-                }
-            });
+            if (line_no < cell.length) {
+                return cells[id]['proof'][line_no]['id'];
+            } else {
+                return '';
+            }
+        });
         var length = cells[id]['proof'][line_no]['id'].length;
         if (length >= large_num)
             large_num = length;
@@ -466,9 +465,9 @@ function display(id) {
         editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
         edit_flag = false;
     })
-    $('div.tab-pane.selected div.CodeMirror-gutters').css('width', 32+large_num*3+'px');
-    $('div.CodeMirror-gutters').css('text-align','left');
-    $('div.tab-pane.selected div.CodeMirror-sizer').css('margin-left', 33+large_num*2+'px');
+    $('div.tab-pane.selected div.CodeMirror-gutters').css('width', 32 + large_num * 3 + 'px');
+    $('div.CodeMirror-gutters').css('text-align', 'left');
+    $('div.tab-pane.selected div.CodeMirror-sizer').css('margin-left', 33 + large_num * 2 + 'px');
     cells[get_selected_id()].readonly_lines.length = 0;
     for (var i = 0; i < editor.lineCount(); i++)
         cells[get_selected_id()].readonly_lines.push(i);
@@ -481,7 +480,7 @@ function display_match_thm(result) {
         );
         for (var i in result['ths_abs']) {
             $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(
-                $(`<div style="float:left;"><pre>${result['ths_abs'][i][0]}</pre></div><div style="float:left;"><pre>${result['ths_abs'][i][1]}</pre></div>`)
+                $(`<pre>${result['ths_abs'][i][0]}  ${result['ths_abs'][i][1]}</pre>`)
             );
         }
         $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(
@@ -490,16 +489,16 @@ function display_match_thm(result) {
     }
 
     if ('ths_afs' in result && result['ths_afs'].length !== 0) {
-        $('.code-cell.selected .match-thm .afs-thm').append(
-            $(`<pre>Theorems: (Ctr-F)</pre><div class="thm-content"></div>`)
+        $('div.rbottom .selected .match-thm .afs-thm').append(
+            $(`<pre>Theorems: (Ctrl-F)</pre><div class="thm-content"></div>`)
         );
         for (var i in result['ths_afs']) {
-            $('.code-cell.selected .match-thm .afs-thm .thm-content').append(
-                $(`<pre>${result['ths_afs'][i]}</pre>`)
+            $('div.rbottom .selected .match-thm .afs-thm .thm-content').append(
+                $(`<pre>${result['ths_afs'][i][0]}  ${result['ths_afs'][i][1]}</pre>`)
             );
         }
-        $('.code-cell.selected .match-thm .afs-thm .thm-content').append(
-            $(`<a href="#" class="forward-step">Other forward step </a>`)
+        $('div.rbottom .selected .match-thm .afs-thm .thm-content').append(
+            $(`<a href="#" class="forward-step">Other forward step</a>`)
         )
     }
 
@@ -509,7 +508,7 @@ function display_match_thm(result) {
         );
         for (var i in result['ths_rewrite']) {
             $('div.rbottom .selected .match-thm .rewrite-thm .thm-content').append(
-                $(`<div style="float:left;"><pre>${result['ths_rewrite'][i][0]}</pre></div><div style="float:left;"><pre>${result['ths_rewrite'][i][1]}</pre></div>`)
+                $(`<pre>${result['ths_rewrite'][i][0]}  ${result['ths_rewrite'][i][1]}</pre>`)
             );
         }
         $('div.rbottom .selected .match-thm .rewrite-thm .thm-content').append(
@@ -518,28 +517,12 @@ function display_match_thm(result) {
     }
 }
 
-function get_match_thm_abs() {
-    var match_thm_list = [];
-    $('div.rbottom .selected .abs-thm .thm-content pre').each(function () {
-            match_thm_list.push($(this).text())
-        }
-    );
-    return match_thm_list;
-}
-
-function get_match_thm_rewrite() {
-    var match_thm_list = [];
-    $('div.rbottom .selected .rewrite-thm .thm-content pre').each(function () {
-            match_thm_list.push($(this).text())
-        }
-    );
-    return match_thm_list;
-}
-
-function get_match_thm_afs() {
-    var match_thm_list = [];
-    $('.code-cell.selected .afs-thm .thm-content pre').each(function () {
-            match_thm_list.push($(this).text())
+function get_match_thm(func_name){
+    let match_thm_list = [];
+    func_name = '.' + func_name + '-thm';
+    let css_str = 'div.rbottom .selected ' + func_name + ' .thm-content pre';
+    $(css_str).each(function () {
+            match_thm_list.push($(this).text().split('  ')[0]);
         }
     );
     return match_thm_list;
@@ -549,25 +532,23 @@ function apply_forward_step(cm, is_others = false, select_thm = -1) {
     apply_f_or_b_step(cm, is_others, select_thm, 'afs');
 }
 
-function get_proof_function(func_name) {
+function get_proof_api(func_name) {
     let func_dict = {
-        'abs': [get_match_thm_abs, '/api/apply-backward-step'],
-        'afs': [get_match_thm_afs, '/api/apply-forward-step']
+        'abs': '/api/apply-backward-step',
+        'afs': '/api/apply-forward-step'
     };
     return func_dict[func_name]
 }
 
 function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '') {
-    var func = get_proof_function(func_name);
-    if (func === undefined)
+    let api = get_proof_api(func_name);
+    if (api === undefined)
         return;
-    var method = func[0];
-    var api_url = func[1];
-    var match_thm_list = method();
-    var title = '';
-    var id = get_selected_id();
-    var click_line_number = cells[id].click_line_number;
-    var ctrl_click_line_numbers = cells[id].ctrl_click_line_numbers;
+    let match_thm_list = get_match_thm(func_name);
+    let title = '';
+    let id = get_selected_id();
+    let click_line_number = cells[id].click_line_number;
+    let ctrl_click_line_numbers = cells[id].ctrl_click_line_numbers;
     if (is_others)
         match_thm_list.length = 0;
     if (match_thm_list.length !== 0) {
@@ -590,7 +571,7 @@ function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '
             'theorem': theorem,
         };
         $.ajax({
-            url: api_url,
+            url: api,
             type: "POST",
             data: JSON.stringify(data),
             success: function (result) {
@@ -639,7 +620,7 @@ function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '
                     'line_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
                     'theorem': theorem,
                 };
-                return fetch(api_url, {
+                return fetch(api, {
                         method: 'POST', // or 'PUT'
                         body: JSON.stringify(data),
                         headers: {

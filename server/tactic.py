@@ -9,7 +9,7 @@ from kernel.proof import ProofItem, Proof, id_force_tuple
 from kernel import report
 from logic import logic, matcher
 from logic.proofterm import ProofTerm
-from logic.conv import top_conv, rewr_conv_thm, then_conv, beta_conv
+from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
 from syntax import parser, printer
 
 
@@ -408,11 +408,14 @@ class ProofState():
         results = []
         for name, th in self.thy.get_data("theorems").items():
             instsp = (dict(), dict())
-            As, C = th.concl.strip_implies()
-            if set(term.get_vars(As[:len(prevs)] + [C])) != set(term.get_vars(As + [C])):
+            As, C = th.assums, th.concl
+            if len(prevs) != len(As):
                 continue
 
-            if not prevs and term.get_consts(C) == []:
+            if set(term.get_vars(As)) != set(term.get_vars(As + [C])):
+                continue
+
+            if not term.get_consts(As):
                 continue
 
             try:
@@ -421,7 +424,10 @@ class ProofState():
             except matcher.MatchException:
                 continue
 
-            results.append((name, th))
+            # All matches succeed
+            t = logic.subst_norm(th.prop, instsp)
+            t = printer.print_term(self.thy, t)
+            results.append((name, t))
         return sorted(results)
 
     def apply_forward_step(self, id, th_name, prevs=None, instsp=None):

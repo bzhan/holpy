@@ -1122,7 +1122,7 @@
         editor.on("cursorActivity", function (cm) {
             if (is_mousedown) {
                 mark_text(cm);
-                apply_proof_step_and_rewrite_goal_thm(cm);
+                apply_thm(cm);
                 is_mousedown = false;
                 is_ctrl_click = false;
             }
