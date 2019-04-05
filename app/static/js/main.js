@@ -265,11 +265,13 @@
                 delete data.prop_hl;
             } else if (data.ty === 'type.ind') {
                 delete data.argsT;
+                delete data.ext;
             } else if (data.ty === 'def') {
                 delete data.term;
                 delete data.type_hl;
             } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
                 delete data.type_hl;
+                delete data.ext;
                 for (var i in data.rules) {
                     delete data.rules[i].prop_hl;
                 }
