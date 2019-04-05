@@ -171,21 +171,13 @@ class TacticTest(unittest.TestCase):
     def testApplyForwardStepThms1(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         ths = state.apply_forward_step_thms(1, prevs=[0])
-        results = ['classical',
-                   'conjD1',
-                   'conjD2',
-                   'conjI',
-                   'disjI1',
-                   'disjI2',
-                   'exI',
-                   'if_P',
-                   'trueI']
+        results = ['conjD1', 'conjD2']
         self.assertEqual([name for name, _ in ths], results)
 
     def testApplyForwardStepThms2(self):
         state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
         ths = state.apply_forward_step_thms(1, prevs=[0])
-        results = ['classical', 'conjI', 'disjE', 'disjI1', 'disjI2', 'exI', 'if_P', 'trueI']
+        results = []
         self.assertEqual([name for name, _ in ths], results)
 
     def testIntroduction(self):

@@ -581,7 +581,7 @@
             if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
                 $('input[name="hint_backward'+ page_num +'"]').click();
             if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
-                $('input[name="hint_rewrite'+ page +'"]').click();
+                $('input[name="hint_rewrite'+ page_num +'"]').click();
             $('div.rbottom').append('<div id="prf'+ page_num +'"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>')
             $('div#prf'+ page_num).append(
                 '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
