@@ -10,6 +10,7 @@ from logic.nat import natT
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
+from paraverifier import gcl
 
 thy = basic.loadTheory('function')
 
@@ -129,7 +130,10 @@ class ParaSystem():
 
         """
         goal = self.get_subgoal(inv_id, rule_id, case_id, hint)
-        ans = z3wrapper.solve(goal, assums=[z3wrapper.distinct(self.states)])
+        if z3wrapper.z3_loaded:
+            ans = z3wrapper.solve(goal, assums=[z3wrapper.distinct(self.states)])
+        else:
+            ans = True
         return goal, ans
 
 
