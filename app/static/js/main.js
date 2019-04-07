@@ -419,12 +419,25 @@
             alert('删除成功！');
         });
 
+//      set the textarea height auto;
+        $('#codeTabContent').on('input', 'textarea', function() {
+            var rows = $(this).val().split('\n').length+1;
+            $(this).attr('rows', rows);
+        });
+
+        function change_css(obj) {
+            if (obj.length > 0) {
+                var rows = obj.val().split('\n').length + 1;
+                obj.attr('rows', rows);
+            }
+        }
+
 //      the method for add_info && edit_info;
         function init_edit_area(page_num, a_ele= '', data_type= '') {
             var a_id, data_name= '', data_content= '', vars_str = '', data_label, border = '1px;solid #ffffff;border:none'
             var class_name = 'tab-pane fade in active code-cell edit-data';
             if (!a_ele) {
-                a_id = '', border= '',data_name = '', data_content = '', number = '', data_label = data_type;
+                a_id = '', border= '', data_name = '', data_content = '', number = '', data_label = data_type;
             }
             else {
                a_id = a_ele.attr('id').trim();
@@ -432,7 +445,6 @@
                data_name = result_list[number]['name'];
                data_type = result_list[number]['ty'];
                data_label = data_name;
-
                for(var key in result_list[number]['vars']) {
                     vars_str += key + ':' + result_list[number]['vars'][key] + '\n';
                };
@@ -473,7 +485,7 @@
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
                         '<font color="#006000"><b>'+ type_name +'</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
-                        '<br><br>vars:&nbsp;&nbsp;&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="height:45px;width:40%;background:transparent;'+ border +'">'+ vars_str +'</textarea>' +
+                        '<br><br><span style="position:absolute;">vars:</span>&nbsp;&nbsp;&nbsp;&nbsp;<textarea rows="'+ vars_str.split('\n').length +'" spellcheck="false" id="data-vars' + page_num + '" style="margin-left:3%;overflow-y:hidden;width:40%;background:transparent;'+ border +'">'+ vars_str +'</textarea>' +
                         '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:30%;background:transparent;'+ border +'" value="' + data_content + '">' +
                         '<br><br><input name="hint_backward'+ page_num + '" type="checkbox" style="margin-left:0px;"><b>&nbsp;backward</b><input name="hint_rewrite'+ page_num +'" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
                         ));
@@ -500,12 +512,14 @@
                 }
                 else
                     $('#codeTab').find('span#'+ page_num).text('datatype');
+                data_content = $.trim(data_content);
+                var i = data_content.split('\n').length;
                 $('#codeTab').find('span#' + page_num).text(data_name);
                 $('#codeTabContent').append(
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
                         '<br><input spellcheck="false" id="data-name' + page_num + '" style="width:40%;background:transparent;'+ border +'" value="' + data_name + '">' + '&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;' +
-                        '<br><br><textarea spellcheck="false" id="data-content' + page_num + '" style="height:160px;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea></div>'
+                        '<br><br><textarea spellcheck="false" id="data-content' + page_num + '" rows="'+i+'" style="overflow-y:hidden;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -545,24 +559,28 @@
                 else
                     $('#codeTab').find('span#'+ page_num).text('function');
                 $('#codeTabContent').append(
-                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
+                    $('<div style="position:relative;margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>'+ type_name +'</b></font>:</label> ' +
                         '<input spellcheck="false" id="data-name' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_name + '">' +
-                        '<br><textarea spellcheck="false" id="data-content' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" name="content">' + data_new_content + '</textarea>' +
-                        '&nbsp;&nbsp;for:&nbsp;&nbsp;<textarea spellcheck="false" id="data-vars' + page_num + '" style="margin-top:5px;height:110px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ vars +'</textarea></div>'
+                        '<br><textarea spellcheck="false" rows="'+ data_new_content.split('\n').length +'" id="data-content' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" name="content">' + $.trim(data_new_content) + '</textarea>' +
+                        '&nbsp;&nbsp;<span style="position:absolute;">for:</span>&nbsp;&nbsp;<textarea spellcheck="false" rows="" id="data-vars' + page_num + '" style="margin-left:5%;overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ $.trim(vars) +'</textarea></div>'
                     ));
                 if (data_type === 'def.pred') {
                     $('div#code' + page_num + '-pan label b').text('induct');
-                    $('textarea#data-vars'+page_num).after('<br><textarea spellcheck="false" id="data-names'+ page_num +'" style="margin-top:5px;height:110px;width:60%;background:transparent;'+ border +'" name="names">'+ data_rule_name +'</textarea>')
+                    $('textarea#data-vars'+page_num).after('<br><textarea rows="'+ data_rule_name.split('\n').length +'" spellcheck="false" id="data-names'+ page_num +'" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;'+ border +'" name="names">'+ $.trim(data_rule_name) +'</textarea>')
                 }
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type !== 'def')
                     display_lines_number(data_content_list, page_num, number);
             }
+
             if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
                 $('input[name="hint_backward'+ page_num +'"]').click();
             if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
                 $('input[name="hint_rewrite'+ page +'"]').click();
+            change_css($('textarea#data-vars'+ page_num));
+            change_css($('textarea#data-content'+ page_num));
+            change_css($('textarea#data-names'+ page_num));
             $('div.rbottom').append('<div id="prf'+ page_num +'"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>')
             $('div#prf'+ page_num).append(
                 '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
@@ -590,7 +608,7 @@
             else {
                 data_vars_str += '';
             }
-            $('textarea#data-vars'+ page_num).val(data_vars_str);
+            $('textarea#data-vars'+ page_num).val($.trim(data_vars_str));
         }
 
 //      click save button on edit tab to save content to the left-json for updating;
