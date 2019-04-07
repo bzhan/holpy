@@ -370,13 +370,13 @@
                 "Select 1 as goal and 0 as fact, use Ctrl+B with exE.",
                 "Select 1 as goal, use Ctrl+I with x as variable name.",
                 "Select 1.2 as goal, use Ctrl+B with conjI.",
-                "Add line 'apply_theorem conjD1 from 1.1' after 1.1.",
+                "Select 1.2 as goal and 1.1 as fact, use Ctrl+F with conjD1.",
                 "Select 1.3 as goal and 1.2 as fact, use Ctrl+B with exI.",
-                "Add line 'apply_theorem conjD2 from 1.1' after 1.3.",
+                "Select 1.4 as goal and 1.1 as fact, use Ctrl+F with conjD2.",
                 "Select 1.5 as goal and 1.4 as fact, use Ctrl+B with exI."
             ],
             "name": "ex_conj_distrib",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "∃x. A x ∧ B x",
@@ -407,43 +407,65 @@
                     "th": "A a ∧ B a ⊢ A a ∧ B a"
                 },
                 {
-                    "args": "",
+                    "args": "conjD1",
                     "id": "1.2",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A a ∧ B a ⊢ A a"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: A, a: a}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ ∃x. A x"
                 },
                 {
-                    "args": "",
-                    "id": "1.3",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "args": "conjD2",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A a ∧ B a ⊢ B a"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: B, a: a}",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem_for",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ ∃x. B x"
                 },
                 {
                     "args": "conjI, {}, {A: ∃x. A x, B: ∃x. B x}",
-                    "id": "1.4",
+                    "id": "1.6",
                     "prevs": [
-                        "1.2",
-                        "1.3"
+                        "1.3",
+                        "1.5"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "∃x. A x ∧ B x, A a ∧ B a ⊢ (∃x. A x) ∧ (∃x. B x)"
                 },
                 {
                     "args": "A a ∧ B a",
-                    "id": "1.5",
+                    "id": "1.7",
                     "prevs": [
-                        "1.4"
+                        "1.6"
                     ],
                     "rule": "implies_intr",
                     "th": "∃x. A x ∧ B x ⊢ A a ∧ B a ⟶ (∃x. A x) ∧ (∃x. B x)"
                 },
                 {
                     "args": "a",
-                    "id": "1.6",
+                    "id": "1.8",
                     "prevs": [
-                        "1.5"
+                        "1.7"
                     ],
                     "rule": "forall_intr",
                     "th": "∃x. A x ∧ B x ⊢ ∀a. A a ∧ B a ⟶ (∃x. A x) ∧ (∃x. B x)"
