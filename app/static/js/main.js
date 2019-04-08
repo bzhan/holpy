@@ -127,9 +127,9 @@
             $('#codeTabContent').append(
                 $('<div class="' + class_name + '" id="code' + add_page + '-pan" style="margin:30px;">' +
                     '<label for="code' + add_page + '"></label>' +
-                    'File name:&nbsp;<input id="fname'+ add_page +'" spellcheck="false" style="width:30%;">'+
-                    '<br><br>Imports:&nbsp;<input spellcheck="false" id="imp'+ add_page +'" style="width:30%;">'+
-                    '<br><br>Description:&nbsp;<textarea spellcheck="false" id="code' + add_page + '" style="width:27%;" lines="1"></textarea>' +
+                    'File name:&nbsp;<input id="fname'+ add_page +'" spellcheck="false" style="width:50%;">'+
+                    '<br><br>Imports:&nbsp;<input spellcheck="false" id="imp'+ add_page +'" style="margin-left:10px;width:50%;">'+
+                    '<br><br>Description:&nbsp;<textarea spellcheck="false" id="code' + add_page + '" style="margin-left:10px;width:45%;" rows="3"></textarea>' +
                     '</div>'));
             $('div.rbottom').append(
                 '<div id="prf'+ add_page +'" name="addition"><button id="'+ add_page + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;margin-left:25px;" name="save-json"><b>SAVE</b></button>' +
@@ -419,7 +419,30 @@
             alert('删除成功！');
         });
 
-//      set the textarea height auto;
+//      keypress to display unicode;
+        $('#codeTabContent').on('keydown', 'textarea,input', function(e) {
+            var content = $(this).val().trim();
+            var id = $(this).attr('id');
+            var pos = document.getElementById(id).selectionStart;
+            if (pos !== 0 && e.keyCode === 9) {
+                if (e && e.preventDefault) {
+                    e.preventDefault();
+                } else {
+                    window.event.returnValue = false;
+                }
+                for (var key in replace_obj) {
+                    l = key.length;
+                    if (content.substring(pos-l, pos) === key) {
+                        var len = l;
+                        content = content.slice(0, pos-l) + replace_obj[key] + content.slice(pos,);
+                    }
+                }
+                $(this).val(content);
+                document.getElementById(id).setSelectionRange(pos-len+1, pos-len+1);
+            }
+        });
+
+//      set the textarea height auto; press tab display unicode;
         $('#codeTabContent').on('input', 'textarea', function() {
             var rows = $(this).val().split('\n').length+1;
             $(this).attr('rows', rows);
@@ -585,6 +608,8 @@
             $('div#prf'+ page_num).append(
                 '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
                     '<pre></pre></div>');
+
+
             $('div#prf'+ page_num).addClass('selected').siblings().removeClass('selected');
             $('div#prf'+ page_num).show().siblings().hide();
         }
