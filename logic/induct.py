@@ -3,6 +3,7 @@
 import itertools
 
 from kernel.type import TVar, TFun, hol_bool, Type
+from kernel import term
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 
@@ -145,5 +146,27 @@ def add_induct_predicate(name, T, props):
         exts.add_extension(Theorem(th_name, Thm([], prop)))
         exts.add_extension(Attribute(th_name, "hint_backward"))
 
-    # TODO: add induction rule
+    # Case rule
+    Targs, _ = T.strip_type()
+    vars = []
+    for i, Targ in enumerate(Targs):
+        vars.append(Var("a" + str(i+1), Targ))
+
+    P = Var("P", hol_bool)
+    pred = Const(name, T)
+    assum0 = pred(*vars)
+    assums = []
+    for th_name, prop in props:
+        As, C = prop.strip_implies()
+        assert C.head == pred, "add_induct_predicate: wrong form of prop."
+        eq_assums = [Term.mk_equals(var, arg) for var, arg in zip(vars, C.args)]
+        assum = Term.mk_implies(*(eq_assums + As), P)
+        prop_vars = term.get_vars(prop)
+        for var in reversed(term.get_vars(prop)):
+            assum = Term.mk_all(var, assum)
+        assums.append(assum)
+
+    prop = Term.mk_implies(*([assum0] + assums + [P]))
+    exts.add_extension(Theorem(name + "_cases", Thm([], prop)))
+
     return exts

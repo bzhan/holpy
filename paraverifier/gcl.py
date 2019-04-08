@@ -43,6 +43,12 @@ def convert_term(var_map, s, t):
                 raise NotImplementedError
         elif t.is_equals():
             return Term.mk_equals(convert(t.arg1), convert(t.arg))
+        elif logic.is_neg(t):
+            return logic.neg(convert(t.arg))
+        elif logic.is_conj(t):
+            return logic.conj(convert(t.arg1), convert(t.arg))
+        elif logic.is_disj(t):
+            return logic.disj(convert(t.arg1), convert(t.arg))
         elif t.get_type() == hol_bool:
             return BoolV(t)
         elif t.get_type() == natT:

@@ -40,7 +40,7 @@ class Extension():
         elif self.ty == Extension.THEOREM:
             return "Theorem " + self.name + ": " + str(self.th)
         elif self.ty == Extension.ATTRIBUTE:
-            return "Attribute " + self.name + "[" + self.attribute + "]"
+            return "Attribute " + self.name + " [" + self.attribute + "]"
         elif self.ty == Extension.MACRO:
             return "Macro " + self.name
         else:
