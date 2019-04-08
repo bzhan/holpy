@@ -105,10 +105,30 @@ class InductTest(unittest.TestCase):
             Theorem("prod_Pair_inject", Thm([], imp(eq(pair(a, b), pair(a2, b2)), conj(eq(a, a2), eq(b, b2))))),
             Theorem("prod_induct", Thm([], imp(all(a, all(b, P(pair(a, b)))), P(x))))
         ]
-        # for i in prod_ext.data:
-        #     print(type(i))
         self.assertEqual(prod_ext.data, res)
 
+    def testInductPredicate(self):
+        nat = Type("nat")
+        even = Const("even", TFun(nat, hol_bool))
+        zero = Const("zero", nat)
+        Suc = Const("Suc", TFun(nat, nat))
+        n = Var("n", nat)
+        prop_zero = even(zero)
+        prop_Suc = Term.mk_implies(even(n), even(Suc(Suc(n))))
+        data = [("even_zero", prop_zero), ("even_Suc", prop_Suc)]
+        even_ext = induct.add_induct_predicate("even", TFun(nat, hol_bool), data)
+        a1 = Var("a1", nat)
+        P = Var("P", hol_bool)
+
+        res = [
+            AxConstant("even", TFun(nat, hol_bool)),
+            Theorem("even_zero", Thm([], even(zero))),
+            Attribute("even_zero", "hint_backward"),
+            Theorem("even_Suc", Thm.mk_implies(even(n), even(Suc(Suc(n))))),
+            Attribute("even_Suc", "hint_backward"),
+            Theorem("even_cases", Thm.mk_implies(even(a1), imp(eq(a1,zero), P), all(n, imp(eq(a1,Suc(Suc(n))), even(n), P)), P))
+        ]
+        self.assertEqual(even_ext.data, res)
 
 if __name__ == "__main__":
     unittest.main()
