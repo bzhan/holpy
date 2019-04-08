@@ -308,7 +308,7 @@ def add_new():
     data = json.loads(request.get_data().decode("utf-8"))
     name = data['name']
     if name in file_list:
-        with open('library/'+name +'.json', 'r', encoding='utf-8') as f:
+        with open('library/'+ name +'.json', 'r', encoding='utf-8') as f:
             file_data = json.load(f)
             for key in data.keys():
                 file_data[key] = data[key]
@@ -356,6 +356,7 @@ def edit_jsonFile():
 def save_file_list():
     file_name = json.loads(request.get_data().decode('utf-8'))
     fileDir = os.path.abspath('..') + '/holpy/library/' +file_name + '.json'
+    file_list.remove(file_name)
     os.remove(fileDir)
 
     return jsonify({})
