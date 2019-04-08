@@ -407,8 +407,12 @@ class ProofState():
 
         results = []
         for name, th in self.thy.get_data("theorems").items():
+            if 'hint_forward' not in self.thy.get_attributes(name):
+                continue
+
             instsp = (dict(), dict())
             As, C = th.assums, th.concl
+
             if len(prevs) != len(As):
                 continue
 

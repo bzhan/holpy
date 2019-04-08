@@ -53,6 +53,7 @@
         },
         {
             "hint_backward": "true",
+            "hint_forward": "true",
             "name": "conjD1",
             "prop": "A ∧ B ⟶ A",
             "ty": "thm.ax",
@@ -63,6 +64,7 @@
         },
         {
             "hint_backward": "true",
+            "hint_forward": "true",
             "name": "conjD2",
             "prop": "A & B --> B",
             "ty": "thm.ax",
@@ -73,6 +75,7 @@
         },
         {
             "hint_backward": "true",
+            "hint_forward": "true",
             "name": "disjI1",
             "prop": "A --> A | B",
             "ty": "thm.ax",
@@ -83,6 +86,7 @@
         },
         {
             "hint_backward": "true",
+            "hint_forward": "true",
             "name": "disjI2",
             "prop": "B --> A | B",
             "ty": "thm.ax",
