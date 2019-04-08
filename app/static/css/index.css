@@ -266,6 +266,14 @@ tt.normal{
     color: black;
 }
 
+span.pos {
+    positon: absolute;
+}
+
+textarea {
+    overflow-x:none;
+}
+
 #variables {
     margin-left: 19px;
 }
