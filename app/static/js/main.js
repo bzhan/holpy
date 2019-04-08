@@ -512,15 +512,12 @@
                     var type_name = 'axiom';
                 if (number)
                     data_content = result_list[number]['prop'];
-                else
-                    var type_name = ''
-                    $('#codeTab').find('span#'+ page_num).text('theorem');
                 $('#codeTabContent').append(
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
                         '<font color="#006000"><b>'+ type_name +'</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
                         '<br><br><span style="position:absolute;">vars:</span>&nbsp;&nbsp;&nbsp;&nbsp;<textarea rows="'+ vars_str.split('\n').length +'" spellcheck="false" id="data-vars' + page_num + '" style="margin-left:3%;overflow-y:hidden;width:40%;background:transparent;'+ border +'">'+ vars_str +'</textarea>' +
-                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:30%;background:transparent;'+ border +'" value="' + data_content + '">' +
+                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_content + '">' +
                         '<br><br><input name="hint_backward'+ page_num + '" type="checkbox" style="margin-left:0px;"><b>&nbsp;backward</b><input name="hint_rewrite'+ page_num +'" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
@@ -630,8 +627,6 @@
             $('div#prf'+ page_num).append(
                 '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
                     '<pre></pre></div>');
-
-
             $('div#prf'+ page_num).addClass('selected').siblings().removeClass('selected');
             $('div#prf'+ page_num).show().siblings().hide();
         }

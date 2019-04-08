@@ -405,6 +405,7 @@ def edit_jsonFile():
 def save_file_list():
     file_name = json.loads(request.get_data().decode('utf-8'))
     fileDir = os.path.abspath('..') + '/holpy/library/' + file_name + '.json'
+    file_list.remove(file_name)
     os.remove(fileDir)
 
     return jsonify({})
