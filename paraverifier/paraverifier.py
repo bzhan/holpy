@@ -10,7 +10,7 @@ from kernel import extension
 from logic import basic
 from logic import logic
 from logic import induct
-from logic.nat import natT
+from logic.nat import natT, to_binary
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
@@ -52,6 +52,11 @@ class ParaSystem():
         for i, v in enumerate(self.vars):
             self.var_map[v] = i
 
+        # state_map
+        self.state_map = dict()
+        for i, state in enumerate(self.states):
+            self.state_map[state] = i
+
     def __str__(self):
         res = "Variables: " + ", ".join(v.name for v in self.vars) + "\n"
 
@@ -69,6 +74,15 @@ class ParaSystem():
             res += "%d: %s" % (i, printer.print_term(self.thy, inv_term)) + "\n"
 
         return res
+
+    def replace_states(self, t):
+        """Replace states by their corresponding numbers."""
+        if t in self.states:
+            return to_binary(self.state_map[t])
+        elif t.ty == Term.COMB:
+            return self.replace_states(t.fun)(self.replace_states(t.arg))
+        else:
+            return t
 
     def get_subgoal(self, inv_id, rule_id, case_id, hint):
         """Obtain the subgoal for the given case and hint.
@@ -138,8 +152,9 @@ class ParaSystem():
 
         """
         goal = self.get_subgoal(inv_id, rule_id, case_id, hint)
+        goal = self.replace_states(goal)
         if z3wrapper.z3_loaded:
-            ans = z3wrapper.solve(goal, assums=[z3wrapper.distinct(self.states)])
+            ans = z3wrapper.solve(goal)
         else:
             ans = True
         return goal, ans
@@ -183,8 +198,9 @@ def load_system(filename):
         T = parser.parse_type(thy, str_T)
         vars.append(Var(nm, T))
 
-    for nm in data['states']:
+    for i, nm in enumerate(data['states']):
         thy.add_term_sig(nm, natT)
+        thy.add_theorem(nm + "_def", Thm.mk_equals(Const(nm, natT), to_binary(i)))
 
     states = [Const(nm, natT) for nm in data['states']]
 
