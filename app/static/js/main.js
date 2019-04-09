@@ -53,6 +53,7 @@
                     '<pre> </pre></div><div class="match-thm"">' +
                     '<div class="abs-thm"></div>' +
                     '<div class="rewrite-thm"></div>' +
+                    '<div class="afs-thm"></div>' +
                     '<div class="clear"></div>' +
                     '</div></div>'));
             $('div#prf' + page_num).append(
@@ -75,6 +76,14 @@
 
         $('#right').on('click', ' .abs-thm .thm-content pre', function () {
             apply_backward_step(get_selected_editor(), is_others = false, select_thm = $(this).index());
+        });
+
+        $('#right').on('click', '.forward-step', function () {
+            apply_forward_step(get_selected_editor(), is_others = true);
+        });
+
+        $('#right').on('click', ' .afs-thm .thm-content pre', function () {
+            apply_forward_step(get_selected_editor(), is_others = false, select_thm = $(this).index());
         });
 
         $('#right').on('click', '.rewrite-goal', function () {
@@ -256,11 +265,13 @@
                 delete data.prop_hl;
             } else if (data.ty === 'type.ind') {
                 delete data.argsT;
+                delete data.ext;
             } else if (data.ty === 'def') {
                 delete data.term;
                 delete data.type_hl;
             } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
                 delete data.type_hl;
+                delete data.ext;
                 for (var i in data.rules) {
                     delete data.rules[i].prop_hl;
                 }
@@ -513,7 +524,12 @@
             }
             if (data_type === 'type.ind') {
                 if (number) {
+                    var ext = result_list[number]['ext'];
                     var argsT = result_list[number]['argsT'];
+                    var ext_ = '';
+                    $.each(ext, function(i, v) {
+                        ext_ += v[0][1] + '  ' + v[1] + ':' +  v[0][0] + '\n';
+                    })
                     data_name = '';
                     $.each(argsT.concl, function (i,j) {
                         data_name += j[0];
@@ -550,7 +566,13 @@
                 var type_name = 'fun';
                 if (number) {
                     var ext = result_list[number];
+                    var ext_ = ext.ext;
+                    var ext_str = '';
                     var type = '', str = '', vars = '';
+                    var type_ = '', str = '';
+                    $.each(ext_ , function(i,v) {
+                        ext_str += v[0][1] + '  ' + v[1] + ':' +  v[0][0] + '\n';
+                    })
                     data_name = ext.name + ' :: ' + ext.type;
                     if (ext.rules) {
                         for (var j in ext.rules) {
@@ -585,11 +607,11 @@
                         '<br><textarea wrap="physical" spellcheck="false" maxlength="27" rows="8" id="data-content' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" name="content">' + $.trim(data_new_content) + '</textarea>' +
                         '&nbsp;&nbsp;<span style="position:absolute;">for:</span>&nbsp;&nbsp;<textarea wrap="physical" spellcheck="false" maxlength="27" rows="" id="data-vars' + page_num + '" style="margin-left:5%;overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ $.trim(vars) +'</textarea></div>'
                     ));
+                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type === 'def.pred') {
                     $('div#code' + page_num + '-pan label b').text('induct');
                     $('textarea#data-vars'+page_num).after('<br><textarea rows="'+ data_rule_name.split('\n').length +'" spellcheck="false" id="data-names'+ page_num +'" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;'+ border +'" name="names">'+ $.trim(data_rule_name) +'</textarea>')
                 }
-                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type !== 'def')
                     display_lines_number(data_content_list, page_num, number);
             }
@@ -938,31 +960,26 @@
         result_list_dict[theory_name] = result_list;
         var import_str = theory_imports.join('、');
         $('#left_json').html('');
-        $('#left_json').append($('<br><div id="description"><p><font color="#0000FF"><span name="description"><font color="006633">'+ theory_desc + '</font></span><br>'+
-        '<font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font>'+ import_str + '</span></font></p></div>'));
+        var templ = _.template($("#template-content-header").html());
+        $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
         var num = 0;
         for (var d in result_list) {
             num++;
             var ext = result_list[d];
-            var ty = ext.ty, name = ext.name, depth = ext.depth;
+            var ty = ext.ty, name = ext.name;
             if (ty === 'def.ax') {
-                var type = high_light(ext.type_hl);
-                $('#left_json').append($(
-                    '<div><p id="data-'+ num +'"><font color="#006000"><span name="constant"><b>constant </b></span></font><tt><span name="name">' + name + '</span> :: <span name="content">' + type
-                    + '</span></tt>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
+                var templ = _.template($("#template-content-def-ax").html());
+                $('#left_json').append(templ(
+                    {num: num, name: ext.name, type: high_light(ext.type_hl)}));
             }
 
             if (ty === 'thm.ax') {
-                var prop = high_light(ext.prop_hl);
-                var status_color = 'green';
-                $('#left_json').append($(
-                    '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>axiom</b></font></span> <span id="thm_name" name="name"><tt>' + name +
-                    '</tt></span>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
-                    prop + '</span></p></div>'));
+                var templ = _.template($("#template-content-thm-ax").html());
+                $('#left_json').append(templ(
+                    {num: num, name: name, prop: high_light(ext.prop_hl)}));
             }
 
             if (ty === 'thm') {
-                var prop = high_light(ext.prop_hl);
                 var status_color;
                 if (ext.proof === undefined) {
                     status_color = 'red';
@@ -971,26 +988,16 @@
                 } else {
                     status_color = 'green';
                 }
-                $('#left_json').append($(
-                    '<div><div style="float:left;width: 12px; height: 12px; background: ' +
-                    status_color + ';">&nbsp;</div>' + '<div><p id="data-'+ num +'"><span name="theorem"><font color="#006000"><b>theorem</b></font></span> <span id="thm_name" name="name"><tt>' + name +
-                    '</tt></span>:&nbsp;<a href="#" ' + 'id="' + num + '" name="proof">&nbsp;proof</a>&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>' + '</br>&nbsp;&nbsp;<span name="content">' +
-                    prop + '</span></p></div>'));
+                var templ = _.template($("#template-content-thm").html());
+                $('#left_json').append(templ(
+                    {status_color: status_color, num: num, name: ext.name, prop: high_light(ext.prop_hl)}));
             }
 
             if (ty === 'type.ind') {
-                var argsT = ext.argsT, constrs = ext.constrs;
-                var str = '', type_name = high_light(argsT['concl']);
-                $.each(constrs, function (i, v) {
-                    var str_temp_var = '';
-                    $.each(v.args, function (k, val) {
-                        var str_temp_term = high_light(argsT[i][k]);
-                        str_temp_var += ' (' + val + ' :: ' + str_temp_term + ')';
-                    })
-                    str += '</br>&nbsp;&nbsp;' + v['name'] + str_temp_var;
-                })
-                $('#left_json').append($(
-                    '<div><p id="data-'+ num +'"><span name="datatype"><font color="#006000"><b>datatype</b></font></span> <span name="name">' + type_name + '</span> =<span name="content">' + str + '</span>&nbsp;&nbsp;&nbsp;<a href="#" name="edit" id="data-'+ num +'"><b>edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a></p></div>'));
+                var templ = _.template($("#template-content-type-ind").html());
+                $('#left_json').append(templ(
+                    {num: num, type_name: high_light(ext.argsT['concl']),
+                     argsT: ext.argsT, constrs: ext.constrs}));
             }
 
             if (ty === 'def') {
@@ -1076,6 +1083,7 @@
                 "Ctrl-I": introduction,
                 "Ctrl-B": apply_backward_step,
                 "Ctrl-R": rewrite_goal,
+                "Ctrl-F": apply_forward_step,
                 "Ctrl-Q": function (cm) {
                     cm.foldCode(cm.getCursor());
                 }
@@ -1140,7 +1148,7 @@
         editor.on("cursorActivity", function (cm) {
             if (is_mousedown) {
                 mark_text(cm);
-                apply_backward_step_and_rewrite_goal_thm(cm);
+                apply_thm(cm);
                 is_mousedown = false;
                 is_ctrl_click = false;
             }

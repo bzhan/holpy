@@ -10,28 +10,28 @@
 <link rel="stylesheet" href="../static/css/bootstrap-select.min.css">
 <link rel=stylesheet href="../static/codemirror-5.41.0/doc/docs.css">
 <link rel="stylesheet" href="../static/css/sweetalert2.min.css">
-<script src="../static/js/sweetalezrt2.min.js"></script>
+<script src="../static/js/sweetalert2.min.js"></script>
 <script src="../static/js/jquery-3.3.1.min.js"></script>
+<script src="../static/js/underscore.min.js"></script>
 <script src="../static/js/popper.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
 <script src="../static/js/bootstrap-select.min.js"></script>
 <script src="../static/codemirror-5.41.0/lib/codemirror.js"></script>
 <script src="../static/codemirror-5.41.0/addon/scroll/simplescrollbars.js"></script>
-<!--Python代码高亮-->
 <script src="../static/codemirror-5.41.0/mode/python/python.js"></script>
-<!--引入css文件，用以支持主题-->
+<!--theme-->
 <link rel="stylesheet" href="../static/codemirror-5.41.0/theme/material.css"/>
 <link rel="stylesheet" href="../static/codemirror-5.41.0/addon/dialog/dialog.css">
 <script src="../static/codemirror-5.41.0/addon/dialog/dialog.js"></script>
 <script src="../static/codemirror-5.41.0/addon/search/searchcursor.js"></script>
 <script src="../static/codemirror-5.41.0/addon/search/search.js"></script>
 
-<!--支持代码折叠-->
+<!--code folder-->
 <link rel="stylesheet" href="../static/codemirror-5.41.0/addon/fold/foldgutter.css"/>
 <script src="../static/codemirror-5.41.0/addon/fold/foldcode.js"></script>
 <script src="../static/codemirror-5.41.0/addon/fold/foldgutter.js"></script>
 <script src="../static/codemirror-5.41.0/addon/fold/indent-fold.js"></script>
-<!--括号匹配-->
+<!--brackets-->
 <script src="../static/codemirror-5.41.0/addon/edit/matchbrackets.js"></script>
 <!--end Code Mirror -->
 
@@ -159,6 +159,83 @@
     </div>
 </div>
 </body>
+
+<script type="text/template" id='template-content-header'>
+<br>
+<div id="description"><p>
+    <font color="#0000FF"><span name="description">
+    <font color="006633"><%= theory_desc %></font></span><br>
+    <font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font><%= import_str %></span></font>
+</p></div>
+</script>
+
+<script type="text/template" id='template-content-def-ax'>
+<div><p id="data-<%=num%>"><font color="#006000"><span name="constant"><b>constant </b></span></font>
+    <tt><span name="name"><%= name %></span> ::
+        <span name="content"><%= type %></span></tt>&nbsp;&nbsp;&nbsp;
+    <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+    <a href="#" name="del" id="data-<%=num%>"><b>&nbsp;&nbsp;delete</b></a>
+</p></div>
+</script>
+
+<script type="text/template" id='template-content-thm-ax'>
+<div><p id="data-<%=num%>">
+    <span name="theorem"><font color="#006000"><b>axiom</b></font></span>
+    <span id="thm_name" name="name"><tt><%= name %></tt></span>&nbsp;&nbsp;
+    <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+    <a href="#" name="del" id="data-<%=num%>"><b>&nbsp;&nbsp;delete</b></a>
+    <br>&nbsp;&nbsp;
+    <span name="content"><%= prop %></span>
+</p></div>
+</script>
+
+<script type="text/template" id='template-content-thm'>
+<div><div style="float:left;width: 12px; height: 12px; background: <%= status_color %>;">&nbsp;</div>
+    <div><p id="data-<%=num%>">
+    <span name="theorem"><font color="#006000"><b>theorem</b></font></span>
+    <span id="thm_name" name="name"><tt><%= name %></tt></span>:&nbsp;
+    <a href="#" id="<%=num%>" name="proof">&nbsp;proof</a>&nbsp;&nbsp;
+    <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+    <a href="#" name="del" id="data-<%=num%>"><b>&nbsp;&nbsp;delete</b></a>
+    <br>&nbsp;&nbsp;<span name="content"><%= prop %></span></p>
+</div>
+</script>
+
+<script type="text/javascript">
+function high_light(list) {
+    var type = '';
+    $.each(list, function (i, val) {
+        type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+    });
+    return type
+}
+</script>
+
+<script type="text/template" id='template-content-type-ind'>
+<div><p id="data-<%=num%>">
+    <span name="datatype"><font color="#006000"><b>datatype</b></font></span>
+    <span name="name"><%= type_name %></span> =
+    <span name="content">
+        <%
+            $.each(constrs, function(i, v) {
+        %>
+                <br>&nbsp;&nbsp;  <%= v.name %>
+        <%
+                $.each(v.args, function (k, val) {
+                    var argsT_hl = high_light(argsT[i][k]);
+        %>
+                    (<%= val %> :: <%= argsT_hl %>)
+        <%
+                });
+            });
+        %>
+    </span>&nbsp;&nbsp;&nbsp;
+    <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+    <a href="#" name="del" id="data-<%=num%>"><b>&nbsp;&nbsp;delete</b></a>
+</p></div>
+</script>
+
+
 <script src="../static/js/split.min.js"></script>
 <script src="../static/js/editor.js"></script>
 <script src="../static/js/tactics.js"></script>

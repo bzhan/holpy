@@ -9,7 +9,7 @@ else:
     z3_loaded = False
 
 from kernel.type import TFun
-from kernel.term import Term, Var
+from kernel.term import Term, Var, hol_bool
 from kernel.thm import Thm
 from kernel.macro import MacroSig, ProofMacro, global_macros
 from logic import logic
@@ -25,6 +25,8 @@ def convert(t):
             return z3.Int(t.name)
         elif T == TFun(nat.natT, nat.natT):
             return z3.Function(t.name, z3.IntSort(), z3.IntSort())
+        elif T == hol_bool:
+            return z3.Bool(t.name)
         else:
             print("convert: unsupported type " + repr(T))
             raise NotImplementedError
@@ -48,13 +50,27 @@ def convert(t):
         return nat.from_binary(t)
     elif t.ty == Term.COMB:
         return convert(t.fun)(convert(t.arg))
+    elif t.ty == Term.CONST:
+        if t == logic.true:
+            return z3.BoolVal(True)
+        elif t == logic.false:
+            return z3.BoolVal(False)
+        else:
+            print("convert: unsupported constant " + repr(t))
+            raise NotImplementedError
     else:
         print("convert: unsupported operation " + repr(t))
         raise NotImplementedError
 
-def solve(t):
+def distinct(ts):
+    return z3.Distinct([convert(t) for t in ts])
+
+def solve(t, assums=None):
     """Solve the given goal using Z3."""
     s = z3.Solver()
+    if assums:
+        for assum in assums:
+            s.add(assum)
     s.add(z3.Not(convert(t)))
     return str(s.check()) == 'unsat'
 

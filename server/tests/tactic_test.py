@@ -27,6 +27,7 @@ imp = Term.mk_implies
 neg = logic.neg
 exists = logic.mk_exists
 
+
 class TacticTest(unittest.TestCase):
     def testIncrIdAfter(self):
         test_data = [
@@ -81,11 +82,11 @@ class TacticTest(unittest.TestCase):
 
     def testGetCtxt(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        self.assertEqual(state.get_ctxt(0), {'A':hol_bool, 'B':hol_bool})
+        self.assertEqual(state.get_ctxt(0), {'A': hol_bool, 'B': hol_bool})
 
     def testAddLineAfter(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        
+
         state.add_line_after(0)
         self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
@@ -153,6 +154,32 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(state.check_proof(), Thm.mk_implies(disj(A, B), disj(B, A)))
         self.assertEqual(len(state.rpt.gaps), 2)
 
+    def testApplyForwardStep1(self):
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
+        state.apply_forward_step(1, "conjD1", prevs=[0])
+        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
+        item = state.get_proof_item((1,))
+        self.assertEqual(item.th.concl, A)
+
+    def testApplyForwardStep2(self):
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
+        state.apply_forward_step(1, "conjD2", prevs=[0])
+        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
+        item = state.get_proof_item((1,))
+        self.assertEqual(item.th.concl, B)
+
+    def testApplyForwardStepThms1(self):
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
+        ths = state.apply_forward_step_thms(1, prevs=[0])
+        results = ['conjD1', 'conjD2']
+        self.assertEqual([name for name, _ in ths], results)
+
+    def testApplyForwardStepThms2(self):
+        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
+        ths = state.apply_forward_step_thms(1, prevs=[0])
+        results = []
+        self.assertEqual([name for name, _ in ths], results)
+
     def testIntroduction(self):
         state = ProofState.init_state(thy, [A, B], [], imp(disj(A, B), disj(B, A)))
         state.introduction(0)
@@ -218,8 +245,8 @@ class TacticTest(unittest.TestCase):
         A = Var("A", TFun(Ta, hol_bool))
         B = Var("B", TFun(Ta, hol_bool))
         x = Var("x", Ta)
-        ex_conj = exists(x,conj(A(x),B(x)))
-        conj_ex = conj(exists(x,A(x)),exists(x,B(x)))
+        ex_conj = exists(x, conj(A(x), B(x)))
+        conj_ex = conj(exists(x, A(x)), exists(x, B(x)))
         state = ProofState.init_state(thy, [A, B], [ex_conj], conj_ex)
         state.apply_backward_step(1, "conjI")
         state.apply_backward_step(1, "exE", prevs=[0])
@@ -245,7 +272,7 @@ class TacticTest(unittest.TestCase):
         state.introduction(2, names=["n"])
         state.rewrite_goal((2, 2), "plus_def_2")
         state.set_line((2, 2), "arg_combination", args=nat.Suc, prevs=[(2, 1)])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.plus(n,nat.zero),n))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.plus(n, nat.zero), n))
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
@@ -258,7 +285,7 @@ class TacticTest(unittest.TestCase):
         state.introduction(2, names=["n"])
         state.rewrite_goal((2, 2), "times_def_2")
         state.rewrite_goal((2, 2), "plus_def_1")
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.times(n,nat.zero),nat.zero))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.times(n, nat.zero), nat.zero))
 
     def testAppendNil(self):
         """Proof of xs @ [] = xs by induction."""
@@ -272,7 +299,7 @@ class TacticTest(unittest.TestCase):
         state.introduction(1, names=["x", "xs"])
         state.rewrite_goal((1, 3), "append_def_2")
         self.assertEqual(state.get_ctxt((1, 3)), {'x': Ta, 'xs': list.listT(Ta)})
-        state.set_line((1, 3), "arg_combination", args=list.cons(Ta)(Var("x",Ta)), prevs=[(1, 2)])
+        state.set_line((1, 3), "arg_combination", args=list.cons(Ta)(Var("x", Ta)), prevs=[(1, 2)])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(list.mk_append(xs, nil), xs))
 
     def testRewriteGoalThms(self):
@@ -309,7 +336,7 @@ class TacticTest(unittest.TestCase):
         state.add_line_after((0, 0))
         state.set_line((0, 1), "theorem", args="classical")
         state.add_line_after((0, 1))
-        state.set_line((0, 2), "substitution", args={"A": Term.mk_equals(x,a)}, prevs=[(0, 1)])
+        state.set_line((0, 2), "substitution", args={"A": Term.mk_equals(x, a)}, prevs=[(0, 1)])
         state.apply_backward_step((0, 3), "disjE", prevs=[(0, 2)])
         state.introduction((0, 3))
         state.rewrite_goal((0, 3, 1), "if_P")
@@ -330,9 +357,10 @@ class TacticTest(unittest.TestCase):
         state.rewrite_goal(0, "aval_def_1")
         state.rewrite_goal(0, "fun_upd_def")
         state.rewrite_goal(0, "if_not_P")
-        state.set_line(0, "nat_norm", args=Term.mk_equals(nat.plus(nat.zero,nat.to_binary(5)), nat.to_binary(5)))
+        state.set_line(0, "nat_norm", args=Term.mk_equals(nat.plus(nat.zero, nat.to_binary(5)), nat.to_binary(5)))
         state.apply_backward_step(1, "nat_zero_Suc_neq")
         self.assertEqual(state.check_proof(no_gaps=True), th)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -216,6 +216,14 @@ div.output-wrapper pre {
     cursor: default;
 }
 
+.match-thm .afs-thm > pre {
+    font-weight: bold;
+    font-size: 15px;
+    color: blue;
+    padding: 10px 0px 1px 39px;
+    cursor: default;
+}
+
 .match-thm a {
     font-size: 11px;
     padding: 10px 0px 1px 39px;
@@ -231,6 +239,10 @@ div.output-wrapper pre {
 }
 
 .rewrite-thm {
+    float: left;
+}
+
+.afs-thm {
     float: left;
 }
 

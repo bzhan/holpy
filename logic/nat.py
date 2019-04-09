@@ -95,7 +95,7 @@ class Suc_conv(Conv):
         elif n.head == bit0:
             return rewr_conv("bit0_Suc").get_proof_term(thy, t)
         else:
-            return then_conv(rewr_conv("bit1_Suc"), arg_conv(Suc_conv())).get_proof_term(thy, t)
+            return then_conv(rewr_conv("bit1_Suc"), arg_conv(self)).get_proof_term(thy, t)
 
 class add_conv(Conv):
     """Computes the sum of two binary numbers."""
@@ -113,14 +113,14 @@ class add_conv(Conv):
         elif n2 == one:
             cv = then_conv(rewr_conv("add_1_right"), Suc_conv())
         elif n1.head == bit0 and n2.head == bit0:
-            cv = then_conv(rewr_conv("bit0_bit0_add"), arg_conv(add_conv()))
+            cv = then_conv(rewr_conv("bit0_bit0_add"), arg_conv(self))
         elif n1.head == bit0 and n2.head == bit1:
-            cv = then_conv(rewr_conv("bit0_bit1_add"), arg_conv(add_conv()))
+            cv = then_conv(rewr_conv("bit0_bit1_add"), arg_conv(self))
         elif n1.head == bit1 and n2.head == bit0:
-            cv = then_conv(rewr_conv("bit1_bit0_add"), arg_conv(add_conv()))
+            cv = then_conv(rewr_conv("bit1_bit0_add"), arg_conv(self))
         else:
             cv = every_conv(rewr_conv("bit1_bit1_add"),
-                arg_conv(arg_conv(add_conv())),
+                arg_conv(arg_conv(self)),
                 arg_conv(Suc_conv()))
 
         return cv.get_proof_term(thy, t)
@@ -141,15 +141,15 @@ class mult_conv(Conv):
         elif n2 == one:
             cv = rewr_conv("mult_1_right")
         elif n1.head == bit0 and n2.head == bit0:
-            cv = then_conv(rewr_conv("bit0_bit0_mult"), arg_conv(arg_conv(mult_conv())))
+            cv = then_conv(rewr_conv("bit0_bit0_mult"), arg_conv(arg_conv(self)))
         elif n1.head == bit0 and n2.head == bit1:
-            cv = then_conv(rewr_conv("bit0_bit1_mult"), arg_conv(mult_conv()))
+            cv = then_conv(rewr_conv("bit0_bit1_mult"), arg_conv(self))
         elif n1.head == bit1 and n2.head == bit0:
-            cv = then_conv(rewr_conv("bit1_bit0_mult"), arg_conv(mult_conv()))
+            cv = then_conv(rewr_conv("bit1_bit0_mult"), arg_conv(self))
         else:
             cv = every_conv(rewr_conv("bit1_bit1_mult"),
                 arg_conv(arg1_conv(add_conv())),
-                arg_conv(arg_conv(arg_conv(mult_conv()))),
+                arg_conv(arg_conv(arg_conv(self))),
                 arg_conv(add_conv()))
 
         return cv.get_proof_term(thy, t)
@@ -179,11 +179,11 @@ class nat_conv(Conv):
             return pt
         else:
             if t.head == Suc:
-                return pt.on_rhs(thy, arg_conv(nat_conv()), Suc_conv())
+                return pt.on_rhs(thy, arg_conv(self), Suc_conv())
             elif t.head == plus:
-                return pt.on_rhs(thy, binop_conv(nat_conv()), add_conv())
+                return pt.on_rhs(thy, binop_conv(self), add_conv())
             elif t.head == times:
-                return pt.on_rhs(thy, binop_conv(nat_conv()), mult_conv())
+                return pt.on_rhs(thy, binop_conv(self), mult_conv())
             else:
                 raise ConvException()
 

@@ -4,6 +4,7 @@ from copy import copy
 
 from kernel.type import HOLType
 from kernel.term import Term, OpenTermException
+from kernel.extension import Extension
 from kernel import proof
 from logic.operator import OperatorData
 from logic import logic
@@ -243,6 +244,27 @@ def print_thm(thy, th):
         return str_hyps + N(" ") + turnstile + N(" ") + print_term(thy, th.prop)
     else:
         return turnstile + N(" ") + print_term(thy, th.prop)
+
+@settings.with_settings
+def print_extension(thy, ext):
+    if ext.ty == Extension.AX_TYPE:
+        return "AxType " + ext.name + " " + str(ext.arity)
+    elif ext.ty == Extension.AX_CONSTANT:
+        return "AxConstant " + ext.name + " :: " + print_type(thy, ext.T)
+    elif ext.ty == Extension.CONSTANT:
+        return "Constant " + ext.name + " = " + print_term(thy, ext.expr)
+    elif ext.ty == Extension.THEOREM:
+        return "Theorem " + ext.name + ": " + print_term(thy, ext.th.prop)
+    elif ext.ty == Extension.ATTRIBUTE:
+        return "Attribute " + ext.name + " [" + ext.attribute + "]"
+    elif ext.ty == Extension.MACRO:
+        return "Macro " + ext.name
+    else:
+        raise TypeError()
+
+@settings.with_settings
+def print_extensions(thy, exts):
+    return "\n".join(print_extension(thy, ext) for ext in exts.data)
 
 @settings.with_settings
 def print_str_args(thy, rule, args):

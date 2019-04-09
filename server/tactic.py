@@ -382,6 +382,73 @@ class ProofState():
             if new_id is not None:
                 self.replace_id(goal_id, new_id)
 
+    def get_poorf_items(self, ids):
+        return [self.prf.find_item(id) for id in ids] if ids else []
+
+    def check_items_concl(self, items):
+        for item in items:
+            if item.rule == 'sorry' or item.th is None:
+                return False
+
+        return True
+
+    def apply_forward_step_thms(self, id, prevs=None):
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+
+        if prevs:
+            cur_items = self.get_poorf_items(prevs)
+            if not self.check_items_concl(cur_items):
+                return []
+        else:
+            return []
+
+        prevs = [self.get_proof_item(id) for id in prevs]
+
+        results = []
+        for name, th in self.thy.get_data("theorems").items():
+            if 'hint_forward' not in self.thy.get_attributes(name):
+                continue
+
+            instsp = (dict(), dict())
+            As, C = th.assums, th.concl
+
+            if len(prevs) != len(As):
+                continue
+
+            if set(term.get_vars(As)) != set(term.get_vars(As + [C])):
+                continue
+
+            if not term.get_consts(As):
+                continue
+
+            try:
+                for pat, prev in zip(As, prevs):
+                    matcher.first_order_match_incr(pat, prev.th.concl, instsp)
+            except matcher.MatchException:
+                continue
+
+            # All matches succeed
+            t = logic.subst_norm(th.prop, instsp)
+            t = printer.print_term(self.thy, t)
+            results.append((name, t))
+        return sorted(results)
+
+    def apply_forward_step(self, id, th_name, prevs=None, instsp=None):
+        """Apply forward step using the given theorem.
+
+        prevs - list of previous proved facts to use.
+        inst - existing instantiation.
+
+        """
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+
+        assert prevs, "apply_forward_step: prevs is not empty"
+
+        self.add_line_before(id, 1)
+        self.set_line(id, 'apply_theorem', args=th_name, prevs=prevs)
+
     def introduction(self, id, names=None):
         """Introduce assumptions for a goal of the form
 
