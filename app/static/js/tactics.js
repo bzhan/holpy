@@ -172,57 +172,72 @@ function apply_induction(cm) {
 function rewrite_goal(cm, is_others = false, select_thm = -1) {
     var match_thm_list = get_match_thm('rewrite');
     var theorem = '';
-    if (!is_others) {
+    if (is_others)
+        match_thm_list = 0;
+    if (match_thm_list.length !== 0) {
         let idx = select_thm !== -1 ? select_thm : 0;
         theorem = match_thm_list[idx];
     }
     display_running();
-    swal({
-        title: 'Enter rewrite theorem',
-        html:
-            '<input id="swal-input1" class="swal2-input">',
-        showCancelButton: true,
-        confirmButtonText: 'confirm',
-        showLoaderOnConfirm: true,
-        focusConfirm: false,
-        preConfirm: () => {
-            var line_no = cm.getCursor().line;
-            var id = get_selected_id();
-            var input = {
-                'id': id,
-                'line_id': cells[id]['proof'][line_no]['id']
-            };
-            if (theorem !== '')
-                input['theorem'] = theorem;
-            else
+    var id = get_selected_id();
+    var line_no = cells[id].click_line_number;
+    if (theorem === '') {
+        swal({
+            title: 'Enter rewrite theorem',
+            html:
+                '<input id="swal-input1" class="swal2-input">',
+            showCancelButton: true,
+            confirmButtonText: 'confirm',
+            showLoaderOnConfirm: true,
+            focusConfirm: false,
+            preConfirm: () => {
+                var input = {
+                    'id': id,
+                    'line_id': cells[id]['proof'][line_no]['id']
+                };
                 input['theorem'] = document.getElementById('swal-input1').value;
-            var data = JSON.stringify(input);
-            return fetch("/api/rewrite-goal", {
-                method: 'POST',
-                body: data,
-                headers: {
+                var data = JSON.stringify(input);
+                return fetch("/api/rewrite-goal", {
+                    method: 'POST',
+                    body: data,
                     headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
                     },
-                },
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error(response.statusText)
-                }
-                return response.json()
-            }).catch(error => {
-                swal.showValidationMessage(
-                    `Request failed: ${error}`
-                )
-            })
-        },
-        allowOutsideClick: () => !swal.isLoading()
-    }).then((result) => {
-        if (result) {
-            display_checked_proof(result);
-        }
-    });
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(response.statusText)
+                    }
+                    return response.json()
+                }).catch(error => {
+                    swal.showValidationMessage(
+                        `Request failed: ${error}`
+                    )
+                })
+            },
+            allowOutsideClick: () => !swal.isLoading()
+        }).then((result) => {
+            if (result) {
+                display_checked_proof(result);
+            }
+        });
+    } else {
+        var data = {
+            'id': id,
+            'line_id': cells[id]['proof'][line_no]['id'],
+            'theorem': theorem
+        };
+        $.ajax({
+            url: "/api/rewrite-goal",
+            type: "POST",
+            data: JSON.stringify(data),
+            success: function (result) {
+                display_checked_proof(result);
+            }
+        })
+    }
 }
 
 function split_one(s, delimiter) {
@@ -517,7 +532,7 @@ function display_match_thm(result) {
     }
 }
 
-function get_match_thm(func_name){
+function get_match_thm(func_name) {
     let match_thm_list = [];
     func_name = '.' + func_name + '-thm';
     let css_str = 'div.rbottom .selected ' + func_name + ' .thm-content pre';
