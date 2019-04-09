@@ -582,8 +582,8 @@
                     $('<div style="position:relative;margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>'+ type_name +'</b></font>:</label> ' +
                         '<input spellcheck="false" id="data-name' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_name + '">' +
-                        '<br><textarea spellcheck="false" rows="'+ data_new_content.split('\n').length +'" id="data-content' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" name="content">' + $.trim(data_new_content) + '</textarea>' +
-                        '&nbsp;&nbsp;<span style="position:absolute;">for:</span>&nbsp;&nbsp;<textarea spellcheck="false" rows="" id="data-vars' + page_num + '" style="margin-left:5%;overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ $.trim(vars) +'</textarea></div>'
+                        '<br><textarea wrap="physical" spellcheck="false" maxlength="27" rows="8" id="data-content' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" name="content">' + $.trim(data_new_content) + '</textarea>' +
+                        '&nbsp;&nbsp;<span style="position:absolute;">for:</span>&nbsp;&nbsp;<textarea wrap="physical" spellcheck="false" maxlength="27" rows="" id="data-vars' + page_num + '" style="margin-left:5%;overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ $.trim(vars) +'</textarea></div>'
                     ));
                 if (data_type === 'def.pred') {
                     $('div#code' + page_num + '-pan label b').text('induct');
