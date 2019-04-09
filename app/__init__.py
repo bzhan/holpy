@@ -28,7 +28,17 @@ cells = dict()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('login.html')
+
+
+@app.route('/login', methods = ['POST'])
+def login():
+    name = request.form.get('name')
+    password = request.form.get('password')
+    if name == 'zhouwenfan' and password == '12':
+        return render_template('index.html',user=name)
+    else:
+        return render_template('login.html')
 
 
 @app.route('/api/init', methods=['POST'])
