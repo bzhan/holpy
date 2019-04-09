@@ -554,8 +554,9 @@
                 $('#codeTabContent').append(
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
-                        '<br><input spellcheck="false" id="data-name' + page_num + '" style="width:40%;background:transparent;'+ border +'" value="' + data_name + '">' + '&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;' +
-                        '<br><br><textarea spellcheck="false" id="data-content' + page_num + '" rows="'+i+'" style="overflow-y:hidden;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea></div>'
+                        '&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="width:45px;background:transparent;'+ border +'" value="' + data_name + '">' + '=&nbsp;&nbsp;' +
+                        '<br><br>&nbsp;&nbsp;<textarea spellcheck="false" id="data-content' + page_num + '" style="height:160px;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea>' +
+                        '<br><label style="float:right;height:80px;width:100%;background:transparent;'+ border +'"><pre>'+ ext_ +'</pre></label></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
