@@ -51,7 +51,12 @@ body.signin {
     padding: 30px;
 }
 
-.signup-footer{border-top: solid 1px rgba(255,255,255,.3);margin:20px 0;padding-top: 15px;}
+.signup-footer {
+    border-top: solid 1px rgba(255,255,255,.3);
+    margin:20px 0;
+    padding-top: 15px;
+    align: center;
+    }
 
 @media screen and (max-width: 768px) {
     .signinpanel,

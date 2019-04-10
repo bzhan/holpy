@@ -1,9 +1,9 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
 from copy import copy
-import os
+import os, sqlite3
 import json, sys, io, traceback2
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 from kernel.type import HOLType
 from kernel.term import Term
@@ -24,21 +24,59 @@ app.config.from_object('config')
 
 # Dictionary from id to ProofState
 cells = dict()
+info = ''
 
 
 @app.route('/')
 def index():
-    return render_template('login.html')
+
+    return render_template('login.html', info = info)
 
 
-@app.route('/login', methods = ['POST'])
+@app.route('/load', methods = ['GET'])
+def load():
+
+    return render_template('index.html', user = name)
+
+
+def add_user(name, password):
+    DATABASE = 'C:\\Users\\1\\PycharmProjects\\fv\\holpy\\sqlite-tools\\user.db'
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('insert into user(name, password) values("'+ name +'",'+ password +')')
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+
+def match_user():
+    DATABASE = 'C:\\Users\\1\\PycharmProjects\\fv\\holpy\\sqlite-tools\\user.db'
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('select * from users;')
+    results = cursor.fetchall()
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+    return results
+
+
+@app.route('/login', methods = ['GET', 'POST'])
 def login():
+    global name, info
+    info = ''
     name = request.form.get('name')
     password = request.form.get('password')
-    if name == 'zhouwenfan' and password == '12':
-        return render_template('index.html',user=name)
+    for k in match_user():
+        if name == k[1] and password == str(k[2]):
+            return redirect('/load')
     else:
-        return render_template('login.html')
+        info = 'wrong username or password'
+
+        return redirect('/')
 
 
 @app.route('/api/init', methods=['POST'])

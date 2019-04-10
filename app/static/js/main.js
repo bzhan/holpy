@@ -455,7 +455,7 @@
 
 //      set the textarea height auto; press tab display unicode;
         $('#codeTabContent').on('input', 'textarea', function() {
-            var rows = $(this).val().split('\n').length+1;
+            var rows = $(this).val().split('\n').length + 1;
             $(this).attr('rows', rows);
         });
 
