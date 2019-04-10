@@ -555,8 +555,8 @@
                     $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
                         '&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="width:45px;background:transparent;'+ border +'" value="' + data_name + '">' + '=&nbsp;&nbsp;' +
-                        '<br><br>&nbsp;&nbsp;<textarea spellcheck="false" id="data-content' + page_num + '" style="height:160px;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea>' +
-                        '<br><label style="float:right;height:80px;width:100%;background:transparent;'+ border +'"><pre>'+ ext_ +'</pre></label></div>'
+                        '<br><br>&nbsp;&nbsp;<textarea spellcheck="false" id="data-content' + page_num + '" rows="'+i+'" style="overflow-y:hidden;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea>' +
+                        '<br><label style="float:right;height:20%;width:100%;background:transparent;'+ border +'"><pre>'+ ext_ +'</pre></label></div>'
                         ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -606,7 +606,8 @@
                         '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>'+ type_name +'</b></font>:</label> ' +
                         '<input spellcheck="false" id="data-name' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_name + '">' +
                         '<br><textarea spellcheck="false" rows="'+ data_new_content.split('\n').length +'" id="data-content' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" name="content">' + $.trim(data_new_content) + '</textarea>' +
-                        '&nbsp;&nbsp;<span style="position:absolute;">for:</span>&nbsp;&nbsp;<textarea spellcheck="false" rows="" id="data-vars' + page_num + '" style="margin-left:5%;overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ $.trim(vars) +'</textarea></div>'
+                        '&nbsp;&nbsp;<span style="position:absolute;">for:</span>&nbsp;&nbsp;<textarea spellcheck="false" rows="" id="data-vars' + page_num + '" style="margin-left:5%;overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ $.trim(vars) +'</textarea>' +
+                        '<br><label style="float:right;height:20%;width:100%;background:transparent;'+ border +'"><pre>'+ ext_str +'</pre></label></div>'
                     ));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type === 'def.pred') {
