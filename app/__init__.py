@@ -40,18 +40,18 @@ def load():
 
 
 def add_user(name, password):
-    DATABASE = 'C:\\Users\\1\\PycharmProjects\\fv\\holpy\\sqlite-tools\\user.db'
+    DATABASE = os.path.abspath('..') + '/holpy/sqlite-tools/user.db'
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('insert into user(name, password) values("'+ name +'",'+ password +')')
+    cursor.execute('insert into users(name, password) values("'+ name +'",'+ password +');')
     cursor.close()
     conn.commit()
     conn.close()
 
 
 def match_user():
-    DATABASE = 'C:\\Users\\1\\PycharmProjects\\fv\\holpy\\sqlite-tools\\user.db'
+    DATABASE = os.path.abspath('..') + '/holpy/sqlite-tools/user.db'
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -67,9 +67,20 @@ def match_user():
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     global name, info
-    info = ''
+    info, file_ = '', []
+    origin = os.getcwd()
     name = request.form.get('name')
     password = request.form.get('password')
+    commond_c = 'mkdir '+ name
+    commond= 'cp -R ' + '../library/* ' + '../users/' + name
+    t = os.popen('ls '+ os.path.abspath('..') + '/holpy/users')
+    for i in t.readlines():
+        file_.append(i[:-1])
+    if name not in file_:
+        os.chdir(os.path.abspath(('..') + '/holpy/users'))
+        os.system(commond_c)
+        os.system(commond)
+        os.chdir(origin)
     for k in match_user():
         if name == k[1] and password == str(k[2]):
             return redirect('/load')
@@ -293,7 +304,7 @@ def file_data_to_output(thy, data):
 @app.route('/api/json', methods=['POST'])
 def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
-    with open('library/' + file_name + '.json', 'r', encoding='utf-8') as f:
+    with open('users/' + name + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     if 'content' in f_data:
         thy = basic.loadImportedTheory(f_data['imports'])
@@ -322,9 +333,9 @@ def save_file():
     json_data = json.loads(request.get_data().decode("utf-8"))
 
     data = json_data['data']
-    name = json_data['name']
+    file_name = json_data['name']
 
-    with open('library/' + name + '.json', 'w+', encoding='utf-8') as f:
+    with open('users/' + name + '/' + file_name + '.json', 'w+', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
 
     return jsonify({})
@@ -366,7 +377,7 @@ def match_thm():
 def save_modify():
     data = json.loads(request.get_data().decode("utf-8"))
     error = {}
-    with open('library/' + data['file-name'] + '.json', 'r', encoding='utf-8') as f:
+    with open('users/' + name + '/' + data['file-name'] + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     try:
         thy = basic.loadImportedTheory(f_data['imports'])
@@ -389,10 +400,10 @@ def save_modify():
 def save_edit():
     data = json.loads(request.get_data().decode("utf-8"))
     file_name = data['name']
-    with open('library/' + file_name + '.json', 'r', encoding='utf-8') as file:
+    with open('users/' + name + '/' + file_name + '.json', 'r', encoding='utf-8') as file:
         f_data = json.load(file)
     f_data['content'] = data['data']
-    j = open('library/' + file_name + '.json', 'w', encoding='utf-8')
+    j = open('users/' + name + '/' + file_name + '.json', 'w', encoding='utf-8')
     json.dump(f_data, j, indent=4, ensure_ascii=False, sort_keys=True)
     j.close()
 
@@ -403,17 +414,17 @@ def save_edit():
 @app.route('/api/add-new', methods=['PUT'])
 def add_new():
     data = json.loads(request.get_data().decode("utf-8"))
-    name = data['name']
-    if name in file_list:
-        with open('library/' + name + '.json', 'r', encoding='utf-8') as f:
+    file_name = data['name']
+    if file_name in file_list:
+        with open('users/' + name + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
             file_data = json.load(f)
             for key in data.keys():
                 file_data[key] = data[key]
             f.close()
-        with open('library/' + name + '.json', 'w', encoding='utf-8') as f:
+        with open('users/' + name + '/' + file_name + '.json', 'w', encoding='utf-8') as f:
             json.dump(file_data, f, ensure_ascii=False, indent=4)
     else:
-        with open('library/' + name + '.json', 'w', encoding='utf-8') as f:
+        with open('users/' + name + '/' + file_name + '.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
             f.close()
 
@@ -424,7 +435,7 @@ def add_new():
 @app.route('/api/find_files', methods=['GET'])
 def find_files():
     global file_list
-    fileDir = os.path.abspath('..') + '/holpy/library'
+    fileDir = os.path.abspath('..') + '/holpy/users/' + name
     for i in os.walk(fileDir):
         files = [x[:-5] for x in i[2]]
         if files:
@@ -438,8 +449,8 @@ def find_files():
 @app.route('/api/edit_jsonFile', methods=['POST'])
 def edit_jsonFile():
     content = {}
-    name = json.loads(request.get_data().decode('utf-8'))
-    with open('library/' + name + '.json', 'r', encoding='utf-8') as f:
+    file_name = json.loads(request.get_data().decode('utf-8'))
+    with open('users/' + name + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
         file_data = json.load(f)
     content['description'] = file_data['description']
     content['imports'] = file_data['imports']
@@ -452,7 +463,7 @@ def edit_jsonFile():
 @app.route('/api/save_file_list', methods=['PUT'])
 def save_file_list():
     file_name = json.loads(request.get_data().decode('utf-8'))
-    fileDir = os.path.abspath('..') + '/holpy/library/' + file_name + '.json'
+    fileDir = os.path.abspath('..') + '/holpy/users/' + name + '/' + file_name + '.json'
     file_list.remove(file_name)
     os.remove(fileDir)
 

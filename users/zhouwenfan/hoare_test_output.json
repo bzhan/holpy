@@ -1,0 +1,111 @@
+{
+    "content": [
+        {
+            "name": "eval0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Sem (Seq (Assign 0 (%s. 1)) (Assign 1 (%s. 2))) (%x. 0) ((%x. 0)(0 := 1, 1 := 2))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "eval_Sem",
+                    "th": "|- Sem (Seq (Assign 0 (%s. 1)) (Assign 1 (%s. 2))) (%x. 0) ((%x. 0)(0 := 1, 1 := 2))"
+                }
+            ],
+            "prop": "Sem (Seq (Assign 0 (%s. 1)) (Assign 1 (%s. 2))) (%x. 0) ((%x. 0)(0 := 1, 1 := 2))",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "eval1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Sem (While (%s. ~s 0 = 3) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + 1)))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "eval_Sem",
+                    "th": "|- Sem (While (%s. ~s 0 = 3) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + 1)))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))"
+                }
+            ],
+            "prop": "Sem (While (%s. ~s 0 = 3) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + 1)))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "vcg0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Valid (%s. s 0 = 0 & s 1 = 0) (While (%s. ~s 0 = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))) (%s. s 1 = A * B)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "vcg",
+                    "th": "|- (!s. s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B) --> (!s. s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B) --> (!s. s 1 = s 0 * B & ~s 0 = A --> s 1 + B = (s 0 + 1) * B) --> Valid (%s. s 0 = 0 & s 1 = 0) (While (%s. ~s 0 = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))) (%s. s 1 = A * B)"
+                },
+                {
+                    "args": "!s. s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "|- !s. s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "implies_elim",
+                    "th": "|- (!s. s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B) --> (!s. s 1 = s 0 * B & ~s 0 = A --> s 1 + B = (s 0 + 1) * B) --> Valid (%s. s 0 = 0 & s 1 = 0) (While (%s. ~s 0 = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))) (%s. s 1 = A * B)"
+                },
+                {
+                    "args": "!s. s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "|- !s. s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "implies_elim",
+                    "th": "|- (!s. s 1 = s 0 * B & ~s 0 = A --> s 1 + B = (s 0 + 1) * B) --> Valid (%s. s 0 = 0 & s 1 = 0) (While (%s. ~s 0 = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))) (%s. s 1 = A * B)"
+                },
+                {
+                    "args": "!s. s 1 = s 0 * B & ~s 0 = A --> s 1 + B = (s 0 + 1) * B",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "|- !s. s 1 = s 0 * B & ~s 0 = A --> s 1 + B = (s 0 + 1) * B"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "implies_elim",
+                    "th": "|- Valid (%s. s 0 = 0 & s 1 = 0) (While (%s. ~s 0 = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))) (%s. s 1 = A * B)"
+                }
+            ],
+            "prop": "Valid (%s. s 0 = 0 & s 1 = 0) (While (%s. ~s 0 = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))) (%s. s 1 = A * B)",
+            "ty": "thm",
+            "vars": {
+                "A": "nat",
+                "B": "nat"
+            }
+        }
+    ],
+    "description": "Generated from test",
+    "imports": [
+        "hoare"
+    ],
+    "name": "hoare_test_output"
+}
