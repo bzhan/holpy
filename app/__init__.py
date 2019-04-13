@@ -33,6 +33,28 @@ def index():
     return render_template('login.html', info = info)
 
 
+@app.route('/sign', methods=['get'])
+def sign():
+
+    return redirect('/')
+
+
+@app.route('/register', methods = ['GET'])
+def re():
+
+    return render_template('register.html')
+
+
+@app.route('/register_login', methods = ['POST'])
+def register_login():
+    name = request.form.get('name')
+    password = request.form.get('password')
+    if name and password:
+        add_user(name, password)
+
+    return redirect('/')
+
+
 @app.route('/load', methods = ['GET'])
 def load():
 

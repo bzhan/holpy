@@ -4,6 +4,10 @@ body.signin {
     color: black;
 }
 
+button.regis {
+    margin-left:30%;
+}
+
 .signinpanel {
     width: 320px;
     margin: 10% auto 0 auto;

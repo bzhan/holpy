@@ -235,6 +235,15 @@
             save_file_list(json_name);
         })
 
+        $('button#register').click(function() {
+            $.ajax({
+                url: '/api/register',
+                type: 'GET',
+                success: function() {
+                }
+            })
+        })
+
         // Save a single proof to the webpage (not to the json file);
         $('div.rbottom').on('click', 'button.save_proof', function () {
             editor_id_list = [];
