@@ -114,7 +114,6 @@
             init_metadata_area(page_num);
         });
 
-
         function init_metadata_area(add_page) {
             var id = 'code' + add_page + '-pan';
             $('#codeTab').append(
@@ -234,6 +233,15 @@
             display_file_list();
             save_file_list(json_name);
         });
+
+        $('button#register').click(function() {
+            $.ajax({
+                url: '/api/register',
+                type: 'GET',
+                success: function() {
+                }
+            })
+        })
 
         // Save a single proof to the webpage (not to the json file);
         $('div.rbottom').on('click', 'button.save_proof', function () {
