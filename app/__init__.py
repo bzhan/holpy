@@ -92,7 +92,7 @@ def add_user(name, password):
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('insert into users(name, password) values("'+ name +'",'+ password +');')
+    cursor.execute('insert into users(name, password) values("'+ name +'","'+ password +'");')
     cursor.close()
     conn.commit()
     conn.close()
@@ -136,9 +136,8 @@ def login():
                 os.chdir(origin)
 
             return redirect('/load')
-        else:
 
-            return redirect('login_error')
+    return redirect('login_error')
 
 
 @app.route('/api/init', methods=['POST'])
