@@ -88,7 +88,7 @@ def load():
 
 
 def add_user(name, password):
-    DATABASE = os.getcwd() + '/sqlite-tools/user.db'
+    DATABASE = os.getcwd() + '/users/user.db'
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -100,7 +100,7 @@ def add_user(name, password):
 
 # match the user-info in the database;
 def match_user():
-    DATABASE = os.getcwd() + '/sqlite-tools/user.db'
+    DATABASE = os.getcwd() + '/users/user.db'
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
