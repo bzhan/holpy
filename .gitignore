@@ -121,3 +121,6 @@ dmypy.json
 
 # DS_Store
 *.DS_Store
+
+# Users directory
+users/*
