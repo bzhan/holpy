@@ -58,12 +58,12 @@ def re():
 # error for same name;
 @app.route('/register_error', methods = ['GET'])
 def regi_err():
-    return render_template('register.html', info = '用户名已存在')
+    return render_template('register.html', info = 'User already exists')
 
 
 @app.route('/login_error', methods = ['GET', 'POST'])
 def login_err():
-    return render_template('login.html', info = '用户名或密码错误')
+    return render_template('login.html', info = 'Incorrect username or password')
 
 
 # register page for new user;
