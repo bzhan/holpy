@@ -24,45 +24,71 @@ app.config.from_object('config')
 
 # Dictionary from id to ProofState
 cells = dict()
-info = ''
+# global virable for sign out;
+sign_mark = False
 
 
+# init page of HOL
 @app.route('/', methods = ['GET', 'POST'])
 def index():
 
-    return render_template('login.html', info = info)
+    return render_template('login.html')
 
 
+# sign out;
 @app.route('/sign', methods=['get'])
 def sign():
+    global sign_mark
+    sign_mark = True
 
     return redirect('/')
 
 
+# register page;
 @app.route('/register', methods = ['GET'])
 def re():
 
     return render_template('register.html')
 
 
+# error for same name;
+@app.route('/register_error', methods = ['GET'])
+def regi_err():
+
+    return render_template('register.html', info = '用户名已存在')
+
+
+@app.route('/login_error', methods = ['GET', 'POST'])
+def login_err():
+
+    return render_template('login.html', info = '用户名或密码错误')
+
+
+# register page for new user;
 @app.route('/register_login', methods = ['POST'])
 def register_login():
     name = request.form.get('name')
     password = request.form.get('password')
+    for k in match_user():
+        if name == k[1]:
+            return redirect('register_error')
     if name and password:
         add_user(name, password)
 
     return redirect('/')
 
 
+#load the page of HOL with username
 @app.route('/load', methods = ['GET'])
 def load():
+    if sign_mark == True:
+        return redirect('/')
 
     return render_template('index.html', user = name)
 
 
 def add_user(name, password):
-    DATABASE = os.path.abspath('..') + '/holpy/sqlite-tools/user.db'
+    DATABASE = os.getcwd() + '/sqlite-tools/user.db'
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -72,8 +98,9 @@ def add_user(name, password):
     conn.close()
 
 
+# match the user-info in the database;
 def match_user():
-    DATABASE = os.path.abspath('..') + '/holpy/sqlite-tools/user.db'
+    DATABASE = os.getcwd() + '/sqlite-tools/user.db'
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -86,15 +113,15 @@ def match_user():
     return results
 
 
+# login for user;
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
-    global name, info
+    global name, sign_mark
     info, file_ = '', []
-    origin = os.getcwd()
     name = request.form.get('name')
     password = request.form.get('password')
     commond_c = 'mkdir '+ name
-    commond= 'cp -R ' + '../library/* ' + '../users/' + name
+    commond = 'cp -R ' + '../library/* ' + '../users/' + name
     t = os.popen('ls '+ os.path.abspath('..') + '/holpy/users')
     for i in t.readlines():
         file_.append(i[:-1])
@@ -102,14 +129,14 @@ def login():
         os.chdir(os.path.abspath(('..') + '/holpy/users'))
         os.system(commond_c)
         os.system(commond)
-        os.chdir(origin)
+        os.chdir(os.getcwd())
     for k in match_user():
         if name == k[1] and password == str(k[2]):
+            sign_mark = False
             return redirect('/load')
     else:
-        info = 'wrong username or password'
 
-        return redirect('/')
+        return redirect('login_error')
 
 
 @app.route('/api/init', methods=['POST'])

@@ -119,7 +119,6 @@
             init_metadata_area(page_num);
         });
 
-
         function init_metadata_area(add_page) {
             var id = 'code' + add_page + '-pan';
             $('#codeTab').append(
