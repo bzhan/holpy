@@ -118,25 +118,27 @@ def match_user():
 def login():
     global name, sign_mark
     info, file_ = '', []
+    origin = os.getcwd()
     name = request.form.get('name')
     password = request.form.get('password')
     commond_c = 'mkdir '+ name
     commond = 'cp -R ' + '../library/* ' + '../users/' + name
-    t = os.popen('ls '+ os.path.abspath('..') + '/holpy/users')
-    for i in t.readlines():
-        file_.append(i[:-1])
-    if name not in file_:
-        os.chdir(os.path.abspath(('..') + '/holpy/users'))
-        os.system(commond_c)
-        os.system(commond)
-        os.chdir(os.getcwd())
     for k in match_user():
         if name == k[1] and password == str(k[2]):
             sign_mark = False
-            return redirect('/load')
-    else:
+            t = os.popen('ls ' + os.path.abspath('..') + '/holpy/users')
+            for i in t.readlines():
+                file_.append(i[:-1])
+            if name not in file_:
+                os.chdir(os.path.abspath(('..') + '/holpy/users'))
+                os.system(commond_c)
+                os.system(commond)
+                os.chdir(origin)
 
-        return redirect('login_error')
+            return redirect('/load')
+        else:
+
+            return redirect('login_error')
 
 
 @app.route('/api/init', methods=['POST'])
