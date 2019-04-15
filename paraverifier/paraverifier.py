@@ -11,6 +11,9 @@ from logic import basic
 from logic import logic
 from logic import induct
 from logic.nat import natT, to_binary
+from logic.conv import rewr_conv
+from logic.proofterm import ProofTerm, ProofTermDeriv
+from logic.logic_macro import apply_theorem, init_theorem
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
@@ -162,14 +165,15 @@ class ParaSystem():
     def add_invariant(self):
         """Add the invariant for the system in GCL."""
         s = Var("s", gcl.stateT)
-        inv_t = Const("inv", TFun(gcl.stateT, hol_bool))
+        invC = Const("inv", TFun(gcl.stateT, hol_bool))
         inv_rhs = logic.mk_conj(*[gcl.convert_term(self.var_map, s, t) for _, t in self.invs])
-        prop = Term.mk_equals(inv_t(s), inv_rhs)
+        prop = Term.mk_equals(invC(s), inv_rhs)
 
         exts = extension.TheoryExtension()
         exts.add_extension(extension.AxConstant("inv", TFun(gcl.stateT, hol_bool)))
         exts.add_extension(extension.Theorem("inv_def", Thm([], prop)))
         self.thy.unchecked_extend(exts)
+        print(printer.print_extensions(self.thy, exts))
 
     def add_semantics(self):
         """Add the semantics of the system in GCL."""
@@ -183,6 +187,38 @@ class ParaSystem():
 
         exts = induct.add_induct_predicate("trans", TFun(gcl.stateT, gcl.stateT, hol_bool), props)
         self.thy.unchecked_extend(exts)
+        print(printer.print_extensions(self.thy, exts))
+
+    def get_proof(self):
+        invC = Const("inv", TFun(gcl.stateT, hol_bool))
+        transC = Const("trans", TFun(gcl.stateT, gcl.stateT, hol_bool))
+        s1 = Var("s1", gcl.stateT)
+        s2 = Var("s2", gcl.stateT)
+        prop = Thm.mk_implies(invC(s1), transC(s1,s2), invC(s2))
+        print(printer.print_thm(self.thy, prop))
+
+        trans_pt = ProofTerm.assume(transC(s1,s2))
+        print(printer.print_thm(self.thy, trans_pt.th))
+        P = Term.mk_implies(invC(s1), invC(s2))
+        ind_pt = init_theorem(self.thy, "trans_cases", inst={"a1": s1, "a2": s2, "P": P})
+        print(printer.print_thm(self.thy, ind_pt.th))
+
+        ind_As, ind_C = ind_pt.prop.strip_implies()
+        for ind_A in ind_As[1:-1]:
+            print("ind_A: ", printer.print_term(self.thy, ind_A))
+            vars, As, C = logic.strip_all_implies(ind_A, ["s", "k"])
+            for A in As:
+                print("A: ", printer.print_term(self.thy, A))
+            print("C: ", printer.print_term(self.thy, C))
+            eq1 = ProofTerm.assume(As[0])
+            eq2 = ProofTerm.assume(As[1])
+            guard = ProofTerm.assume(As[2])
+            inv_pre = ProofTerm.assume(As[3]).on_arg(self.thy, rewr_conv(eq1)) \
+                                             .on_prop(self.thy, rewr_conv("inv_def"))
+            C_goal = ProofTerm.assume(C).on_arg(self.thy, rewr_conv(eq2)) \
+                                        .on_prop(self.thy, rewr_conv("inv_def"))
+            print("inv_pre: ", printer.print_thm(self.thy, inv_pre.th))
+            print("C_goal: ", printer.print_thm(self.thy, C_goal.th))
 
 
 def load_system(filename):
