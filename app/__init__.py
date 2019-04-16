@@ -27,7 +27,7 @@ cells = dict()
 
 user_info = {
     # Whether there is an user signed in
-    'is_signed_in': True,
+    'is_signed_in': False,
 
     # Name of the user signed in
     'username': "",
