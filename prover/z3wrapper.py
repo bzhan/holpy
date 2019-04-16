@@ -33,7 +33,12 @@ def convert(t):
             print("convert: unsupported type " + repr(T))
             raise NotImplementedError
     elif t.is_all():
-        return convert(t.arg.subst_bound(Var(t.arg.var_name, t.arg.var_T)))
+        if t.arg.var_T == nat.natT:
+            v = Var(t.arg.var_name, nat.natT)
+            z3_v = z3.Int(t.arg.var_name)
+            return z3.ForAll([z3_v], convert(t.arg.subst_bound(v)))
+        else:
+            raise NotImplementedError
     elif t.is_implies():
         return z3.Implies(convert(t.arg1), convert(t.arg))
     elif t.is_equals():
@@ -64,15 +69,13 @@ def convert(t):
         print("convert: unsupported operation " + repr(t))
         raise NotImplementedError
 
-def distinct(ts):
-    return z3.Distinct([convert(t) for t in ts])
-
-def solve(t, assums=None):
+def solve(t):
     """Solve the given goal using Z3."""
     s = z3.Solver()
-    if assums:
-        for assum in assums:
-            s.add(assum)
+
+    # First strip foralls from t.
+    while Term.is_all(t):
+        t = t.arg.subst_bound(Var(t.arg.var_name, t.arg.var_T))
     s.add(z3.Not(convert(t)))
     return str(s.check()) == 'unsat'
 
