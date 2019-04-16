@@ -968,7 +968,7 @@
         result_list_dict[theory_name] = result_list;
         var import_str = theory_imports.join('、');
         $('#left_json').html('');
-        var templ = _.template($("#template-content-header").html());
+        var templ = _.template($("#template-content-theory_desc").html());
         $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
         var num = 0;
         for (var d in result_list) {
@@ -1011,40 +1011,28 @@
             }
 
             if (ty === 'def') {
-                var term = high_light(ext.term);
-                var type = high_light(ext['type_hl']);
-                $('#left_json').append($(
-                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b><br><span name="content">' + term + '</span></font></p>'));
-                $('#left_json p#data-' + num + ' span[name="content"]:last').after($('<a href="#" name="edit" id="data-' + num + '"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-' + num + '"><b>&nbsp;&nbsp;delete</b></a>'));
+                var templ = _.template($("#template-content-def").html());
+                $('#left_json').append(templ(
+                    {num: num, type: high_light(ext['type_hl']), prop: high_light(ext['prop_hl'])}));
             }
 
             if (ty === 'def.ind') {
-                var type = high_light(ext.type_hl);
-                $('#left_json').append($(
-                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b></font></p>'));
-                for (var j in ext.rules) {
-                    var str = high_light(ext.rules[j].prop_hl);
-                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
-                }
-                $('#left_json p#data-' + num + ' span[name="content"]:last').after($('<a href="#" name="edit" id="data-' + num + '"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-' + num + '"><b>&nbsp;&nbsp;delete</b></a>'));
+                var templ = _.template($("#template-content-def-ind").html());
+                $('#left_json').append(templ(
+                    {num: num, name: ext.name, type: high_light(ext.type_hl), rules: ext.rules}
+                ));
             }
 
             if (ty === 'def.pred') {
-                var type = high_light(ext.type_hl);
-                $('#left_json').append($(
-                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b></font></p>'));
-                for (var j in ext.rules) {
-                    var str = high_light(ext.rules[j].prop_hl);
-                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
-                }
-                $('#left_json p#data-' + num + ' span[name="content"]:last').after($('<a href="#" name="edit" id="data-' + num + '"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-' + num + '"><b>&nbsp;&nbsp;delete</b></a>'));
+                var templ = _.template($("#template-content-def-pred").html());
+                $('#left_json').append(templ(
+                    {num: num, name: ext.name, type: high_light(ext.type_hl), rules: ext.rules}
+                ));
             }
 
             if (ty === 'header') {
-                $('#left_json').append($('<div><p id="data-' + num + '">&nbsp;<span id="head_name" name="name">' + name + '</span>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a></p></div>'))
+                var templ = _.template($("#template-content-header").html());
+                $('#left_json').append(templ({num: num, name: ext.name}));
             }
         }
     }

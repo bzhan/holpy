@@ -283,7 +283,7 @@ def file_data_to_output(thy, data):
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
-    elif data['ty'] == 'thm':
+    elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parser.parse_vars(thy, data['vars'])
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
@@ -337,15 +337,11 @@ def file_data_to_output(thy, data):
         data['ext'] = ext_res
 
     elif data['ty'] == 'def':
-        settings.settings_stack[0]['highlight'] = True
-        settings.settings_stack[0]['unicode'] = True
         ctxt = parser.parse_vars(thy, data['vars'])
-        term = parser.parse_term(thy, ctxt, data['prop'])
-        type = parser.parse_type(thy, data['type'])
-        data['term'] = printer.print_term(thy, term)
-        data['type_hl'] = printer.print_type(thy, type)
-        settings.settings_stack[0]['unicode'] = False
-        settings.settings_stack[0]['highlight'] = False
+        prop = parser.parse_term(thy, ctxt, data['prop'])
+        T = parser.parse_type(thy, data['type'])
+        data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
     # Ignore other types of information.
     else:

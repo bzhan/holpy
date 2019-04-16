@@ -161,7 +161,7 @@
 </div>
 </body>
 
-<script type="text/template" id='template-content-header'>
+<script type="text/template" id='template-content-theory_desc'>
 <br>
 <div id="description"><p>
     <font color="#0000FF"><span name="description">
@@ -233,6 +233,65 @@ function high_light(list) {
     </span>&nbsp;&nbsp;&nbsp;
     <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
     <a href="#" name="del" id="data-<%=num%>"><b>&nbsp;&nbsp;delete</b></a>
+</p></div>
+</script>
+
+<script type="text/template" id="template-content-def">
+<div><p id="data-<%=num%>">
+    <span name="fun"><font color="#006000"><b>definition</b></font></span>
+    <span name="name"><%= name %> :: <%= type %></span><font color="#006000"><b> where</b>
+    <br>&nbsp;&nbsp;<span name="content"><%= prop %></span></font>
+    &nbsp;&nbsp;&nbsp;
+    <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+    &nbsp;&nbsp;
+    <a href="#" name="del" id="data-<%=num%>"><b>delete</b></a>
+</p></div>
+</script>
+
+<script type="text/template" id="template-content-def-ind">
+<div><p id="data-<%=num%>">
+    <span name="fun"><font color="#006000"><b>fun</b></font></span>
+    <span name="name"><%= name %> :: <%= type %></span><font color="#006000"><b> where</b></font>
+    <span name="content">
+        <%
+            $.each(rules, function(i, v) {
+                var prop_hl = high_light(v.prop_hl);
+        %>
+                <br>&nbsp;&nbsp; <%= prop_hl %>
+        <%
+            });
+        %>
+    </span>&nbsp;&nbsp;&nbsp;
+    <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+    &nbsp;&nbsp;
+    <a href="#" name="del" id="data-<%=num%>"><b>delete</b></a>
+</p></div>
+</script>
+
+<script type="text/template" id="template-content-def-pred">
+<div><p id="data-<%=num%>">
+    <span name="fun"><font color="#006000"><b>inductive</b></font></span>
+    <span name="name"><%= name %> :: <%= type %></span><font color="#006000"><b> where</b></font>
+    <span name="content">
+        <%
+            $.each(rules, function(i, v) {
+                var prop_hl = high_light(v.prop_hl);
+        %>
+                <br>&nbsp;&nbsp; <%= prop_hl %>
+        <%
+            });
+        %>
+    </span>&nbsp;&nbsp;&nbsp;
+    <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+    &nbsp;&nbsp;
+    <a href="#" name="del" id="data-<%=num%>"><b>delete</b></a>
+</p></div>
+</script>
+
+<script type="text/template" id="template-content-header">
+<div><p id="data-<%=num%>">&nbsp;
+    <span id="head_name" name="name"><%= name %></span>&nbsp;&nbsp;
+    <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
 </p></div>
 </script>
 
