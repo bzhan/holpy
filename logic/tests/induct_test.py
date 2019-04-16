@@ -117,7 +117,7 @@ class InductTest(unittest.TestCase):
         prop_Suc = Term.mk_implies(even(n), even(Suc(Suc(n))))
         data = [("even_zero", prop_zero), ("even_Suc", prop_Suc)]
         even_ext = induct.add_induct_predicate("even", TFun(nat, hol_bool), data)
-        a1 = Var("a1", nat)
+        a1 = Var("_a1", nat)
         P = Var("P", hol_bool)
 
         res = [

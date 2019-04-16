@@ -150,7 +150,7 @@ def add_induct_predicate(name, T, props):
     Targs, _ = T.strip_type()
     vars = []
     for i, Targ in enumerate(Targs):
-        vars.append(Var("a" + str(i+1), Targ))
+        vars.append(Var("_a" + str(i+1), Targ))
 
     P = Var("P", hol_bool)
     pred = Const(name, T)
