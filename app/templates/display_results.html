@@ -1,0 +1,125 @@
+<!--Templates for displaying results on the left side.-->
+
+<script type="text/template" id='template-content-theory_desc'>
+    <br>
+    <div id="description"><p>
+        <font color="#0000FF"><span name="description">
+        <font color="006633"><%= theory_desc %></font></span><br>
+        <font color="#006000"><span name="imports"><font color="0000FF"><b>imports </b></font><%= import_str %></span></font>
+    </p></div>
+</script>
+
+<script type="text/template" id='template-content-def-ax'>
+    <div><p id="data-<%=num%>"><font color="#006000"><span name="constant"><b>constant </b></span></font>
+        <tt><span name="name"><%= name %></span> ::
+            <span name="content"><%= type %></span></tt>&nbsp;&nbsp;&nbsp;
+        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+        <a href="#" name="del" id="data-<%=num%>"><b>&nbsp;&nbsp;delete</b></a>
+    </p></div>
+</script>
+
+<script type="text/template" id='template-content-thm-ax'>
+    <div id="data<%=num%>"><p id="data-<%=num%>">
+        <span name="theorem"><font color="#006000"><b>axiom</b></font></span>
+        <span id="thm_name" name="name"><tt><%= name %></tt></span>&nbsp;&nbsp;
+        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+        <a href="#" name="del" id="data-<%=num%>"><b>&nbsp;&nbsp;delete</b></a>
+        <br>&nbsp;&nbsp;
+        <span name="content"><%= prop %></span>
+    </p></div>
+</script>
+
+<script type="text/template" id='template-content-thm'>
+    <div><div style="float:left;width: 12px; height: 12px; background: <%= status_color %>;">&nbsp;</div>
+        <div><p id="data-<%=num%>">
+        <span name="theorem"><font color="#006000"><b>theorem</b></font></span>
+        <span id="thm_name" name="name"><tt><%= name %></tt></span>:&nbsp;
+        <a href="#" id="<%=num%>" name="proof">&nbsp;proof</a>&nbsp;&nbsp;
+        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+        <a href="#" name="del" id="data-<%=num%>"><b>&nbsp;&nbsp;delete</b></a>
+        <br>&nbsp;&nbsp;<span name="content"><%= prop %></span></p>
+    </div>
+</script>
+
+<script type="text/template" id='template-content-type-ind'>
+    <div><p id="data-<%=num%>">
+        <span name="datatype"><font color="#006000"><b>datatype</b></font></span>
+        <span name="name"><%= type_name %></span> =
+        <span name="content">
+            <%
+                $.each(constrs, function(i, v) {
+            %>
+                    <br>&nbsp;&nbsp;  <%= v.name %>
+            <%
+                    $.each(v.args, function (k, val) {
+                        var argsT_hl = high_light(argsT[i][k]);
+            %>
+                        (<%= val %> :: <%= argsT_hl %>)
+            <%
+                    });
+                });
+            %>
+        </span>&nbsp;&nbsp;&nbsp;
+        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+        <a href="#" name="del" id="data-<%=num%>"><b>&nbsp;&nbsp;delete</b></a>
+    </p></div>
+</script>
+
+<script type="text/template" id="template-content-def">
+    <div><p id="data-<%=num%>">
+        <span name="fun"><font color="#006000"><b>definition</b></font></span>
+        <span name="name"><%= name %> :: <%= type %></span><font color="#006000"><b> where</b>
+        <br>&nbsp;&nbsp;<span name="content"><%= prop %></span></font>
+        &nbsp;&nbsp;&nbsp;
+        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+        &nbsp;&nbsp;
+        <a href="#" name="del" id="data-<%=num%>"><b>delete</b></a>
+    </p></div>
+</script>
+
+<script type="text/template" id="template-content-def-ind">
+    <div><p id="data-<%=num%>">
+        <span name="fun"><font color="#006000"><b>fun</b></font></span>
+        <span name="name"><%= name %> :: <%= type %></span><font color="#006000"><b> where</b></font>
+        <span name="content">
+            <%
+                $.each(rules, function(i, v) {
+                    var prop_hl = high_light(v.prop_hl);
+            %>
+                    <br>&nbsp;&nbsp; <%= prop_hl %>
+            <%
+                });
+            %>
+        </span>&nbsp;&nbsp;&nbsp;
+        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+        &nbsp;&nbsp;
+        <a href="#" name="del" id="data-<%=num%>"><b>delete</b></a>
+    </p></div>
+</script>
+
+<script type="text/template" id="template-content-def-pred">
+    <div><p id="data-<%=num%>">
+        <span name="fun"><font color="#006000"><b>inductive</b></font></span>
+        <span name="name"><%= name %> :: <%= type %></span><font color="#006000"><b> where</b></font>
+        <span name="content">
+            <%
+                $.each(rules, function(i, v) {
+                    var prop_hl = high_light(v.prop_hl);
+            %>
+                    <br>&nbsp;&nbsp; <%= prop_hl %>
+            <%
+                });
+            %>
+        </span>&nbsp;&nbsp;&nbsp;
+        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+        &nbsp;&nbsp;
+        <a href="#" name="del" id="data-<%=num%>"><b>delete</b></a>
+    </p></div>
+</script>
+
+<script type="text/template" id="template-content-header">
+    <div><p id="data-<%=num%>">&nbsp;
+        <span id="head_name" name="name"><%= name %></span>&nbsp;&nbsp;
+        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+    </p></div>
+</script>

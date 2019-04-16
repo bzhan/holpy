@@ -36,6 +36,12 @@ user_info = {
     'file_list': []
 }
 
+# templates
+@app.route('/display_results.html', methods = ['GET'])
+def display_results_template():
+    return render_template('display_results.html')
+
+
 # init page of HOL
 @app.route('/', methods = ['GET', 'POST'])
 def index():

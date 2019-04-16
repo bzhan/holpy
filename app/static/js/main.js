@@ -20,6 +20,14 @@
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
     });
 
+    $(document).ready(function () {
+        var includes = $('[data-include]');
+        jQuery.each(includes, function(){
+            var file = "../" + $(this).data('include') + '.html';
+            $(this).load(file);
+        });
+    });
+
     $(function () {
 //      click add_cell to add a tab page;
         $('#add-cell').on('click', function () {
@@ -952,15 +960,6 @@
                 display_instuctions(instructions);
             }
         })
-    }
-
-    function high_light(list) {
-        var type = '';
-        $.each(list, function (i, val) {
-            type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-        });
-
-        return type
     }
 
     // Display result_list on the left side of the page.
