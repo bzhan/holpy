@@ -1,7 +1,6 @@
 (function ($) {
     var instructions = [];
     var page_num = 0;
-    var add_page = 0;
     var index = 0;
     var theory_name = "";  // Name of the current theory file
     var theory_imports = [];  // List of imports of the current theory file
@@ -33,15 +32,9 @@
         $('#add-cell').on('click', function () {
             page_num++;
             // Add CodeMirror textarea;
-            var id = 'code' + page_num + '-pan';
-            $('#codeTab').append(
-                $('<li class="nav-item" name="code' + page_num + '"><a class="nav-link" ' +
-                    'data-toggle="tab"' +
-                    'href="#code' + page_num + '-pan" name="' + page_num + '">' +
-                    '<span> ' +
-                    '</span><button id="close_tab" type="button" ' +
-                    'title="Remove this page" name="proof-tab">×</button>' +
-                    '</a></li>'));
+            var templ_tab = _.template($("#template-tab").html());
+            $('#codeTab').append(templ_tab({page_num: page_num, label: ""}));
+
             let class_name = 'tab-pane fade active newCodeMirror code-cell';
             if (page_num === 1)
                 class_name = 'tab-pane fade in active code-cell';
@@ -123,15 +116,9 @@
         });
 
         function init_metadata_area(add_page) {
-            var id = 'code' + add_page + '-pan';
-            $('#codeTab').append(
-                $('<li class="nav-item" name="code' + add_page + '"><a class="nav-link" ' +
-                    'data-toggle="tab"' +
-                    'href="#code' + add_page + '-pan" name="' + add_page + '">' +
-                    '<span> ' + 'File' +
-                    '</span><button id="close_tab" type="button" ' +
-                    'title="Remove this page" name="proof-tab">×</button>' +
-                    '</a></li>'));
+            var templ_tab = _.template($("#template-tab").html());
+            $('#codeTab').append(templ_tab({page_num: add_page, label: "File"}));
+
             let class_name = 'tab-pane fade active newCodeMirror code-cell';
             if (add_page === 1)
                 class_name = 'tab-pane fade in active code-cell';
@@ -497,14 +484,10 @@
                     vars_str += key + ':' + result_list[number]['vars'][key] + '\n';
                 }
             }
-            $('#codeTab').append(
-                $('<li class="nav-item" name="code' + page_num + '"><a class="nav-link" ' +
-                    'data-toggle="tab"' +
-                    'href="#code' + page_num + '-pan" name="' + page_num + '">' +
-                    '<span id="' + page_num + '">' + data_label +
-                    '</span><button id="close_tab" type="button" ' +
-                    'title="Remove this page" name="edit">×</button>' +
-                    '</a></li>'));
+
+            var templ_tab = _.template($("#template-tab").html());
+            $('#codeTab').append(templ_tab({page_num: page_num, label: data_label}));
+
             if (data_type === 'def.ax') {
                 if (number)
                     data_content = result_list[number]['type'];

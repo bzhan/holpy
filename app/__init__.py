@@ -41,6 +41,10 @@ user_info = {
 def display_results_template():
     return render_template('display_results.html')
 
+@app.route('/edit_area.html', methods = ['GET'])
+def edit_area_template():
+    return render_template('edit_area.html')
+
 
 # init page of HOL
 @app.route('/', methods = ['GET', 'POST'])
