@@ -11,6 +11,7 @@
     var is_ctrl_click = false;
     var click_count = 0;
     var proof_id = 0;
+    var bgColor = '';
     var origin_result = [];
     var edit_mode = false;
     var result_list_dict = {};
@@ -808,6 +809,31 @@
             return ajax_data;
         }
 
+//click to change left_json content bgcolor
+        $('#left_json').on('click','div[name="theories"]',function(){
+            if ($(this).css('background-color') === bgColor) {
+                $(this).css('background-color', '');
+            }
+            else {
+                $(this).css('background-color','yellow');
+                bgColor = $(this).css('background-color');
+                console.log(bgColor);
+            }
+        })
+
+//click DEL to delete red left_json content and save to webpage and json file
+        $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
+            if($('div[name="theories"]').css('background-color') === bgColor){
+                var a_id = $('div[name="theories"]').attr('id').trim();
+                var number = Number(a_id.slice(3,))-1;
+                result_list.splice(number, 1);
+                display_result_list();
+                save_editor_data();
+                alert('删除成功！');
+                }
+            })
+
+
 //      click to save the related data to json file: edit && proof;
         $('a#save-file').click(function () {
             if (edit_mode) {
@@ -957,6 +983,8 @@
         return type
     }
 
+
+
     // Display result_list on the left side of the page.
     function display_result_list() {
         result_list_dict[theory_name] = result_list;
@@ -1006,16 +1034,16 @@
                 var term = high_light(ext.term);
                 var type = high_light(ext['type_hl']);
                 $('#left_json').append($(
-                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b><br><span name="content">'+ term +'</span></font></p>'));
+                    '<div name="theories"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b><br><span name="content">'+ term +'</span></font></p></div>'));
                 $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
             }
 
             if (ty === 'def.ind') {
                 var type = high_light(ext.type_hl);
                 $('#left_json').append($(
-                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b></font></p>'));
+                    '<div name="theories"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b></font></p></div>'));
                 for (var j in ext.rules) {
                     var str = high_light(ext.rules[j].prop_hl);
                     $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
@@ -1026,8 +1054,8 @@
             if (ty === 'def.pred') {
                 var type = high_light(ext.type_hl);
                 $('#left_json').append($(
-                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b></font></p>'));
+                    '<div name="theories"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '</span><font color="#006000"><b> where</b></font></p></div>'));
                 for (var j in ext.rules) {
                     var str = high_light(ext.rules[j].prop_hl);
                     $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));

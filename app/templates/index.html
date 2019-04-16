@@ -113,6 +113,23 @@
         <div>
             <button class="el-button el-button--default el-button--mini" id="add-json">New File</button>
         </div>
+        <!--<div>-->
+            <!--<button class="el-button el-button&#45;&#45;default el-button&#45;&#45;mini" id="del_theo">DEL</button>-->
+        <!--</div>-->
+        <div class="dropdown">
+            <button data-v-bfe775a4="" type="button" id="additional_option" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false"
+                    class="el-button el-button--default el-button--mini el-dropdown-selfdefine dropdown-toggle"
+                    data-vivaldi-spatnav-clickable="1" role="button" tabindex="0">
+                <!----><span
+                    data-vivaldi-spatnav-clickable="1">Ctrl
+                    </span></button>
+            <div class="dropdown-menu span Ctrl">
+                <a class="dropdown-item fontcolor" name="del" href="#" id="del_theo">delete</a>
+                <a class="dropdown-item fontcolor" name="up" href="#" id="up">up arrow</a>
+                <a class="dropdown-item fontcolor" name="down" href="#" id="down">down arrow</a>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -171,7 +188,7 @@
 </script>
 
 <script type="text/template" id='template-content-def-ax'>
-<div><p id="data-<%=num%>"><font color="#006000"><span name="constant"><b>constant </b></span></font>
+<div name="theories"><p id="data-<%=num%>"><font color="#006000"><span name="constant"><b>constant </b></span></font>
     <tt><span name="name"><%= name %></span> ::
         <span name="content"><%= type %></span></tt>&nbsp;&nbsp;&nbsp;
     <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
@@ -192,7 +209,7 @@
 
 <script type="text/template" id='template-content-thm'>
 <div><div style="float:left;width: 12px; height: 12px; background: <%= status_color %>;">&nbsp;</div>
-    <div><p id="data-<%=num%>">
+    <div name="theories"><p id="data-<%=num%>">
     <span name="theorem"><font color="#006000"><b>theorem</b></font></span>
     <span id="thm_name" name="name"><tt><%= name %></tt></span>:&nbsp;
     <a href="#" id="<%=num%>" name="proof">&nbsp;proof</a>&nbsp;&nbsp;
@@ -213,7 +230,7 @@ function high_light(list) {
 </script>
 
 <script type="text/template" id='template-content-type-ind'>
-<div><p id="data-<%=num%>">
+<div name="theories" id="aa-<%=num%>"><p id="data-<%=num%>">
     <span name="datatype"><font color="#006000"><b>datatype</b></font></span>
     <span name="name"><%= type_name %></span> =
     <span name="content">
