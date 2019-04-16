@@ -106,6 +106,18 @@ def add_user(username, password):
     conn.close()
 
 
+# init database to create table users;
+def init_user():
+    DATABASE = os.getcwd() + '/users/user.db'
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('create table users(id auto_increment,name CHAR(50) not null,password CHAR(50) not null);')
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+
 # match the user-info in the database;
 def match_user():
     DATABASE = os.getcwd() + '/users/user.db'
