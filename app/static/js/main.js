@@ -965,75 +965,16 @@
     // Display result_list on the left side of the page.
     function display_result_list() {
         result_list_dict[theory_name] = result_list;
-        var import_str = theory_imports.join('、');
+        var import_str = theory_imports.join(' ');
         $('#left_json').html('');
         var templ = _.template($("#template-content-theory_desc").html());
         $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
-        var num = 0;
-        for (var d in result_list) {
-            num++;
-            var ext = result_list[d];
-            var ty = ext.ty, name = ext.name;
-            if (ty === 'def.ax') {
-                var templ = _.template($("#template-content-def-ax").html());
-                $('#left_json').append(templ(
-                    {num: num, name: ext.name, type: high_light(ext.type_hl)}));
+        $.each(result_list, function(num, ext) {
+            var templ = $("#template-content-" + ext.ty.replace(".", "-"));
+            if (templ.length == 1) {
+                $('#left_json').append(_.template(templ.html())({num: num, ext: ext}));
             }
-
-            if (ty === 'thm.ax') {
-                var templ = _.template($("#template-content-thm-ax").html());
-                $('#left_json').append(templ(
-                    {num: num, name: name, prop: high_light(ext.prop_hl)}));
-            }
-
-            if (ty === 'thm') {
-                var status_color;
-                if (ext.proof === undefined) {
-                    status_color = 'red';
-                } else if (ext.num_gaps > 0) {
-                    status_color = 'yellow';
-                } else {
-                    status_color = 'green';
-                }
-                var templ = _.template($("#template-content-thm").html());
-                $('#left_json').append(templ(
-                    {status_color: status_color, num: num, name: ext.name, prop: high_light(ext.prop_hl)}));
-            }
-
-            if (ty === 'type.ind') {
-                var templ = _.template($("#template-content-type-ind").html());
-                $('#left_json').append(templ(
-                    {
-                        num: num, type_name: high_light(ext.argsT['concl']),
-                        argsT: ext.argsT, constrs: ext.constrs
-                    }));
-            }
-
-            if (ty === 'def') {
-                var templ = _.template($("#template-content-def").html());
-                $('#left_json').append(templ(
-                    {num: num, type: high_light(ext['type_hl']), prop: high_light(ext['prop_hl'])}));
-            }
-
-            if (ty === 'def.ind') {
-                var templ = _.template($("#template-content-def-ind").html());
-                $('#left_json').append(templ(
-                    {num: num, name: ext.name, type: high_light(ext.type_hl), rules: ext.rules}
-                ));
-            }
-
-            if (ty === 'def.pred') {
-                var templ = _.template($("#template-content-def-pred").html());
-                $('#left_json').append(templ(
-                    {num: num, name: ext.name, type: high_light(ext.type_hl), rules: ext.rules}
-                ));
-            }
-
-            if (ty === 'header') {
-                var templ = _.template($("#template-content-header").html());
-                $('#left_json').append(templ({num: num, name: ext.name}));
-            }
-        }
+        });
     }
 
 //  display_hilight;
