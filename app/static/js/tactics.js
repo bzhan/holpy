@@ -347,17 +347,6 @@ function match_thm() {
     });
 }
 
-function rp(x) {
-    if (x === 0)
-        return 'normal';
-    if (x === 1)
-        return 'bound';
-    if (x === 2)
-        return 'var';
-    if (x === 3)
-        return 'tvar';
-}
-
 // Print string without highlight at given line_no and ch. Return the new value of ch.
 function display_str(editor, str, line_no, ch, mark) {
     len = str.length;

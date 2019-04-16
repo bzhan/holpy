@@ -20,6 +20,14 @@
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
     });
 
+    $(document).ready(function () {
+        var includes = $('[data-include]');
+        jQuery.each(includes, function(){
+            var file = "../" + $(this).data('include') + '.html';
+            $(this).load(file);
+        });
+    });
+
     $(function () {
 //      click add_cell to add a tab page;
         $('#add-cell').on('click', function () {
@@ -954,99 +962,19 @@
         })
     }
 
-    function high_light(list) {
-        var type = '';
-        $.each(list, function (i, val) {
-            type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-        });
-
-        return type
-    }
-
     // Display result_list on the left side of the page.
     function display_result_list() {
         result_list_dict[theory_name] = result_list;
-        var import_str = theory_imports.join('、');
+        var import_str = theory_imports.join(' ');
         $('#left_json').html('');
-        var templ = _.template($("#template-content-header").html());
+        var templ = _.template($("#template-content-theory_desc").html());
         $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
-        var num = 0;
-        for (var d in result_list) {
-            num++;
-            var ext = result_list[d];
-            var ty = ext.ty, name = ext.name;
-            if (ty === 'def.ax') {
-                var templ = _.template($("#template-content-def-ax").html());
-                $('#left_json').append(templ(
-                    {num: num, name: ext.name, type: high_light(ext.type_hl)}));
+        $.each(result_list, function(num, ext) {
+            var templ = $("#template-content-" + ext.ty.replace(".", "-"));
+            if (templ.length == 1) {
+                $('#left_json').append(_.template(templ.html())({num: num, ext: ext}));
             }
-
-            if (ty === 'thm.ax') {
-                var templ = _.template($("#template-content-thm-ax").html());
-                $('#left_json').append(templ(
-                    {num: num, name: name, prop: high_light(ext.prop_hl)}));
-            }
-
-            if (ty === 'thm') {
-                var status_color;
-                if (ext.proof === undefined) {
-                    status_color = 'red';
-                } else if (ext.num_gaps > 0) {
-                    status_color = 'yellow';
-                } else {
-                    status_color = 'green';
-                }
-                var templ = _.template($("#template-content-thm").html());
-                $('#left_json').append(templ(
-                    {status_color: status_color, num: num, name: ext.name, prop: high_light(ext.prop_hl)}));
-            }
-
-            if (ty === 'type.ind') {
-                var templ = _.template($("#template-content-type-ind").html());
-                $('#left_json').append(templ(
-                    {
-                        num: num, type_name: high_light(ext.argsT['concl']),
-                        argsT: ext.argsT, constrs: ext.constrs
-                    }));
-            }
-
-            if (ty === 'def') {
-                var term = high_light(ext.term);
-                var type = high_light(ext['type_hl']);
-                $('#left_json').append($(
-                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b><br><span name="content">' + term + '</span></font></p>'));
-                $('#left_json p#data-' + num + ' span[name="content"]:last').after($('<a href="#" name="edit" id="data-' + num + '"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-' + num + '"><b>&nbsp;&nbsp;delete</b></a>'));
-            }
-
-            if (ty === 'def.ind') {
-                var type = high_light(ext.type_hl);
-                $('#left_json').append($(
-                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b></font></p>'));
-                for (var j in ext.rules) {
-                    var str = high_light(ext.rules[j].prop_hl);
-                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
-                }
-                $('#left_json p#data-' + num + ' span[name="content"]:last').after($('<a href="#" name="edit" id="data-' + num + '"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-' + num + '"><b>&nbsp;&nbsp;delete</b></a>'));
-            }
-
-            if (ty === 'def.pred') {
-                var type = high_light(ext.type_hl);
-                $('#left_json').append($(
-                    '<p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b></font></p>'));
-                for (var j in ext.rules) {
-                    var str = high_light(ext.rules[j].prop_hl);
-                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
-                }
-                $('#left_json p#data-' + num + ' span[name="content"]:last').after($('<a href="#" name="edit" id="data-' + num + '"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-' + num + '"><b>&nbsp;&nbsp;delete</b></a>'));
-            }
-
-            if (ty === 'header') {
-                $('#left_json').append($('<div><p id="data-' + num + '">&nbsp;<span id="head_name" name="name">' + name + '</span>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num + '"><b>edit</b></a></p></div>'))
-            }
-        }
+        });
     }
 
 //  display_hilight;

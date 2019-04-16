@@ -24,56 +24,64 @@ app.config.from_object('config')
 
 # Dictionary from id to ProofState
 cells = dict()
-# global virable for sign out;
-sign_mark = False
+
+user_info = {
+    # Whether there is an user signed in
+    'is_signed_in': True,
+
+    # Name of the user signed in
+    'username': "",
+
+    # Current list of files
+    'file_list': []
+}
+
+# templates
+@app.route('/display_results.html', methods = ['GET'])
+def display_results_template():
+    return render_template('display_results.html')
 
 
 # init page of HOL
 @app.route('/', methods = ['GET', 'POST'])
 def index():
-
     return render_template('login.html')
 
 
 # sign out;
 @app.route('/sign', methods=['get'])
 def sign():
-    global sign_mark
-    sign_mark = True
-
+    user_info['is_signed_in'] = False
     return redirect('/')
 
 
 # register page;
 @app.route('/register', methods = ['GET'])
 def re():
-
     return render_template('register.html')
 
 
 # error for same name;
 @app.route('/register_error', methods = ['GET'])
 def regi_err():
-
-    return render_template('register.html', info = '用户名已存在')
+    return render_template('register.html', info = 'User already exists')
 
 
 @app.route('/login_error', methods = ['GET', 'POST'])
 def login_err():
-
-    return render_template('login.html', info = '用户名或密码错误')
+    return render_template('login.html', info = 'Incorrect username or password')
 
 
 # register page for new user;
 @app.route('/register_login', methods = ['POST'])
 def register_login():
-    name = request.form.get('name')
+    username = request.form.get('name')
     password = request.form.get('password')
     for k in match_user():
-        if name == k[1]:
+        if username == k[1]:
             return redirect('register_error')
-    if name and password:
-        add_user(name, password)
+    if username and password:
+        add_user(username, password)
 
     return redirect('/')
 
@@ -81,18 +89,18 @@ def register_login():
 #load the page of HOL with username
 @app.route('/load', methods = ['GET'])
 def load():
-    if sign_mark == True:
+    if not user_info['is_signed_in']:
         return redirect('/')
 
-    return render_template('index.html', user = name)
+    return render_template('index.html', user = user_info['username'])
 
 
-def add_user(name, password):
+def add_user(username, password):
     DATABASE = os.getcwd() + '/users/user.db'
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute('insert into users(name, password) values("'+ name +'","'+ password +'");')
+    cursor.execute('insert into users(name, password) values("'+ username +'","'+ password +'");')
     cursor.close()
     conn.commit()
     conn.close()
@@ -116,20 +124,20 @@ def match_user():
 # login for user;
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
-    global name, sign_mark
     info, file_ = '', []
     origin = os.getcwd()
-    name = request.form.get('name')
+    username = request.form.get('name')
     password = request.form.get('password')
-    commond_c = 'mkdir '+ name
-    commond = 'cp -R ' + '../library/* ' + '../users/' + name
+    commond_c = 'mkdir '+ username
+    commond = 'cp -R ' + '../library/* ' + '../users/' + username
     for k in match_user():
-        if name == k[1] and password == str(k[2]):
-            sign_mark = False
+        if username == k[1] and password == str(k[2]):
+            user_info['is_signed_in'] = True
+            user_info['username'] = username
             t = os.popen('ls ' + os.path.abspath('..') + '/holpy/users')
             for i in t.readlines():
                 file_.append(i[:-1])
-            if name not in file_:
+            if username not in file_:
                 os.chdir(os.path.abspath(('..') + '/holpy/users'))
                 os.system(commond_c)
                 os.system(commond)
@@ -281,7 +289,7 @@ def file_data_to_output(thy, data):
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
-    elif data['ty'] == 'thm':
+    elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parser.parse_vars(thy, data['vars'])
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
@@ -335,15 +343,11 @@ def file_data_to_output(thy, data):
         data['ext'] = ext_res
 
     elif data['ty'] == 'def':
-        settings.settings_stack[0]['highlight'] = True
-        settings.settings_stack[0]['unicode'] = True
         ctxt = parser.parse_vars(thy, data['vars'])
-        term = parser.parse_term(thy, ctxt, data['prop'])
-        type = parser.parse_type(thy, data['type'])
-        data['term'] = printer.print_term(thy, term)
-        data['type_hl'] = printer.print_type(thy, type)
-        settings.settings_stack[0]['unicode'] = False
-        settings.settings_stack[0]['highlight'] = False
+        prop = parser.parse_term(thy, ctxt, data['prop'])
+        T = parser.parse_type(thy, data['type'])
+        data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
     # Ignore other types of information.
     else:
@@ -354,7 +358,7 @@ def file_data_to_output(thy, data):
 @app.route('/api/json', methods=['POST'])
 def json_parse():
     file_name = json.loads(request.get_data().decode("utf-8"))
-    with open('users/' + name + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
+    with open('users/' + user_info['username'] + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     if 'content' in f_data:
         thy = basic.loadImportedTheory(f_data['imports'])
@@ -385,7 +389,7 @@ def save_file():
     data = json_data['data']
     file_name = json_data['name']
 
-    with open('users/' + name + '/' + file_name + '.json', 'w+', encoding='utf-8') as f:
+    with open('users/' + user_info['username'] + '/' + file_name + '.json', 'w+', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
 
     return jsonify({})
@@ -427,7 +431,7 @@ def match_thm():
 def save_modify():
     data = json.loads(request.get_data().decode("utf-8"))
     error = {}
-    with open('users/' + name + '/' + data['file-name'] + '.json', 'r', encoding='utf-8') as f:
+    with open('users/' + user_info['username'] + '/' + data['file-name'] + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     try:
         thy = basic.loadImportedTheory(f_data['imports'])
@@ -450,10 +454,11 @@ def save_modify():
 def save_edit():
     data = json.loads(request.get_data().decode("utf-8"))
     file_name = data['name']
-    with open('users/' + name + '/' + file_name + '.json', 'r', encoding='utf-8') as file:
+    username = user_info['username']
+    with open('users/' + username + '/' + file_name + '.json', 'r', encoding='utf-8') as file:
         f_data = json.load(file)
     f_data['content'] = data['data']
-    j = open('users/' + name + '/' + file_name + '.json', 'w', encoding='utf-8')
+    j = open('users/' + username + '/' + file_name + '.json', 'w', encoding='utf-8')
     json.dump(f_data, j, indent=4, ensure_ascii=False, sort_keys=True)
     j.close()
 
@@ -465,16 +470,17 @@ def save_edit():
 def add_new():
     data = json.loads(request.get_data().decode("utf-8"))
     file_name = data['name']
-    if file_name in file_list:
-        with open('users/' + name + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
+    username = user_info['username']
+    if file_name in user_info['file_list']:
+        with open('users/' + username + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
             file_data = json.load(f)
             for key in data.keys():
                 file_data[key] = data[key]
             f.close()
-        with open('users/' + name + '/' + file_name + '.json', 'w', encoding='utf-8') as f:
+        with open('users/' + username + '/' + file_name + '.json', 'w', encoding='utf-8') as f:
             json.dump(file_data, f, ensure_ascii=False, indent=4)
     else:
-        with open('users/' + name + '/' + file_name + '.json', 'w', encoding='utf-8') as f:
+        with open('users/' + username + '/' + file_name + '.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
             f.close()
 
@@ -484,12 +490,11 @@ def add_new():
 # locate the files in the library;
 @app.route('/api/find_files', methods=['GET'])
 def find_files():
-    global file_list
-    fileDir = os.path.abspath('..') + '/holpy/users/' + name
+    fileDir = os.path.abspath('..') + '/holpy/users/' + user_info['username']
     for i in os.walk(fileDir):
         files = [x[:-5] for x in i[2]]
         if files:
-            file_list = sorted(files)
+            user_info['file_list'] = sorted(files)
             return jsonify({'theories': sorted(files)})
 
     return jsonify({})
@@ -500,11 +505,12 @@ def find_files():
 def edit_jsonFile():
     content = {}
     file_name = json.loads(request.get_data().decode('utf-8'))
-    with open('users/' + name + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
+    username = user_info['username']
+    with open('users/' + username + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
         file_data = json.load(f)
     content['description'] = file_data['description']
     content['imports'] = file_data['imports']
-    content['name'] = name
+    content['name'] = username
 
     return jsonify(content)
 
@@ -513,8 +519,8 @@ def edit_jsonFile():
 @app.route('/api/save_file_list', methods=['PUT'])
 def save_file_list():
     file_name = json.loads(request.get_data().decode('utf-8'))
-    fileDir = os.path.abspath('..') + '/holpy/users/' + name + '/' + file_name + '.json'
-    file_list.remove(file_name)
+    fileDir = os.path.abspath('..') + '/holpy/users/' + user_info['username'] + '/' + file_name + '.json'
+    user_info['file_list'].remove(file_name)
     os.remove(fileDir)
 
     return jsonify({})
