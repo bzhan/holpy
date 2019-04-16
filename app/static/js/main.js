@@ -122,13 +122,10 @@
             let class_name = 'tab-pane fade active newCodeMirror code-cell';
             if (add_page === 1)
                 class_name = 'tab-pane fade in active code-cell';
-            $('#codeTabContent').append(
-                $('<div class="' + class_name + '" id="code' + add_page + '-pan" style="margin:30px;">' +
-                    '<label for="code' + add_page + '"></label>' +
-                    'File name:&nbsp;<input id="fname' + add_page + '" spellcheck="false" style="width:50%;">' +
-                    '<br><br>Imports:&nbsp;<input spellcheck="false" id="imp' + add_page + '" style="margin-left:10px;width:50%;">' +
-                    '<br><br>Description:&nbsp;<textarea spellcheck="false" id="code' + add_page + '" style="margin-left:10px;width:45%;" rows="3"></textarea>' +
-                    '</div>'));
+
+            var templ_form = _.template($('#template-file-metadata').html());
+            $('#codeTabContent').append(templ_form({class_name: class_name, add_page: add_page}));
+
             $('div.rbottom').append(
                 '<div id="prf' + add_page + '" name="addition"><button id="' + add_page + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;margin-left:25px;" name="save-json"><b>SAVE</b></button>' +
                 '</div>');
@@ -493,13 +490,12 @@
                     data_content = result_list[number]['type'];
                 else
                     $('#codeTab').find('span#' + page_num).text('constant');
-                $('#codeTabContent').append(
-                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>constant</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="width:10%;background:transparent;' + border + '" value="' + data_name + '">' +
-                        '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:50%;background:transparent;' + border + '" value="' + data_content + '">' +
-                        '</div>'
-                    ));
+
+                var templ_edit = _.template($("#template-edit-def-ax").html());
+                $('#codeTabContent').append(templ_edit({
+                    a_id: a_id, class_name: class_name, page_num: page_num,
+                    border: border, data_name: data_name, data_content: data_content
+                }));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'thm' || data_type === 'thm.ax') {
@@ -509,14 +505,13 @@
                     var type_name = 'axiom';
                 if (number)
                     data_content = result_list[number]['prop'];
-                $('#codeTabContent').append(
-                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>' + type_name + '</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;' + border + '" value="' + data_name + '">' +
-                        '<br><br><span style="position:absolute;">vars:</span>&nbsp;&nbsp;&nbsp;&nbsp;<textarea rows="' + vars_str.split('\n').length + '" spellcheck="false" id="data-vars' + page_num + '" style="margin-left:3%;overflow-y:hidden;width:40%;background:transparent;' + border + '">' + vars_str + '</textarea>' +
-                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:50%;background:transparent;' + border + '" value="' + data_content + '">' +
-                        '<br><br><input name="hint_backward' + page_num + '" type="checkbox" style="margin-left:0px;"><b>&nbsp;backward</b><input name="hint_rewrite' + page_num + '" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
-                    ));
+
+                var templ_edit = _.template($('#template-edit-thm').html());
+                $('#codeTabContent').append(templ_edit({
+                    a_id: a_id, class_name: class_name, type_name: type_name, page_num: page_num,
+                    border: border, data_name: data_name, vars_str: vars_str, data_content: data_content
+                }));
+
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'type.ind') {
@@ -547,26 +542,31 @@
                 data_content = $.trim(data_content);
                 var i = data_content.split('\n').length;
                 $('#codeTab').find('span#' + page_num).text(data_name);
-                $('#codeTabContent').append(
-                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
-                        '&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="width:45px;background:transparent;'+ border +'" value="' + data_name + '">' + '=&nbsp;&nbsp;' +
-                        '<br><br>&nbsp;&nbsp;<textarea spellcheck="false" id="data-content' + page_num + '" rows="'+i+'" style="overflow-y:hidden;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea>' +
-                        '<br><label style="float:right;height:20%;width:100%;background:transparent;'+ border +'"><pre>'+ ext_ +'</pre></label></div>'
-                        ));
+
+                var templ_edit = _.template($('#template-edit-type-ind').html());
+                $('#codeTabContent').append(templ_edit({
+                    a_id: a_id, class_name: class_name, page_num: page_num,
+                    border: border, data_name: data_name, i: i, data_content: data_content,
+                    ext_: ext_}));
+
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
                 var data_content_list = [];
                 var data_new_content = '';
                 var data_rule_names = [], data_rule_name = '';
-                var type_name = 'fun';
+                if (data_type === 'def.ind')
+                    var type_name = 'fun';
+                else if (data_type === 'def.pred')
+                    var type_name = 'inductive';
+                else
+                    var type_name = 'definition'
+
                 if (number) {
                     var ext = result_list[number];
                     var ext_ = ext.ext;
                     var ext_str = '';
-                    var type = '', str = '', vars = '';
-                    var type_ = '', str = '';
+                    var vars = '';
                     $.each(ext_, function (i, v) {
                         ext_str += v[0][1] + '  ' + v[1] + ':' + v[0][0] + '\n';
                     });
@@ -582,7 +582,7 @@
                         }
                     }
                     if (data_type === 'def') {
-                        var i = 0, type_name = 'definition';
+                        var i = 0;
                         data_content_list.push(ext.prop);
                         for (v in ext.vars) {
                             vars += i + ': ' + v + ':' + ext.vars[v] + '\n';
@@ -596,17 +596,16 @@
                     $('#codeTab').find('span#' + page_num).text(ext.name);
                 } else
                     $('#codeTab').find('span#' + page_num).text('function');
-                $('#codeTabContent').append(
-                    $('<div style="position:relative;margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>'+ type_name +'</b></font>:</label> ' +
-                        '<input spellcheck="false" id="data-name' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_name + '">' +
-                        '<br><textarea spellcheck="false" rows="'+ data_new_content.split('\n').length +'" id="data-content' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" name="content">' + $.trim(data_new_content) + '</textarea>' +
-                        '&nbsp;&nbsp;<span style="position:absolute;">for:</span>&nbsp;&nbsp;<textarea spellcheck="false" rows="" id="data-vars' + page_num + '" style="margin-left:5%;overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ $.trim(vars) +'</textarea>' +
-                        '<br><label style="float:right;height:20%;width:100%;background:transparent;'+ border +'"><pre>'+ ext_str +'</pre></label></div>'
-                    ));
+
+                var templ_edit = _.template($('#template-edit-def').html());
+                $('#codeTabContent').append(templ_edit({
+                    a_id: a_id, class_name: class_name, page_num: page_num,
+                    type_name: type_name, border: border, data_name: data_name,
+                    data_new_content: data_new_content, vars: vars, ext_str: ext_str
+                }));
+
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type === 'def.pred') {
-                    $('div#code' + page_num + '-pan label b').text('induct');
                     $('textarea#data-vars' + page_num).after('<br><textarea rows="' + data_rule_name.split('\n').length + '" spellcheck="false" id="data-names' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;' + border + '" name="names">' + $.trim(data_rule_name) + '</textarea>')
                 }
                 if (data_type !== 'def')

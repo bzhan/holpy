@@ -520,7 +520,7 @@ def edit_jsonFile():
         file_data = json.load(f)
     content['description'] = file_data['description']
     content['imports'] = file_data['imports']
-    content['name'] = username
+    content['name'] = file_name
 
     return jsonify(content)
 
