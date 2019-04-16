@@ -1,0 +1,498 @@
+{
+    "name": "german",
+    "vars": {
+        "Chan1_Cmd": "nat => nat",
+        "Chan2_Cmd": "nat => nat",
+        "Chan3_Cmd": "nat => nat",
+        "Chan1_Data": "nat => nat",
+        "Chan2_Data": "nat => nat",
+        "Chan3_Data": "nat => nat",
+        "Cache_State": "nat => nat",
+        "Cache_Data": "nat => nat",
+        "ShrSet": "nat => bool",
+        "InvSet": "nat => bool",
+        "CurCmd": "nat",
+        "ExGntd": "bool",
+        "MemData": "nat",
+        "AuxData": "nat",
+        "CurPtr": "nat"
+    },
+    "states": [
+        "I",
+        "S",
+        "E",
+        "Empty",
+        "ReqS",
+        "ReqE",
+        "Inv",
+        "InvAck",
+        "GntS",
+        "GntE"
+    ],
+    "rules": [
+        {
+            "name": "SendReqS",
+            "var": "k",
+            "guard": "Cache_State k = I & Chan1_Cmd k = Empty",
+            "assign": {
+                "Chan1_Cmd k": "ReqS"
+            }
+        },
+        {
+            "name": "SendReqEI",
+            "var": "k",
+            "guard": "Cache_State k = I & Chan1_Cmd k = Empty",
+            "assign": {
+                "Chan1_Cmd k": "ReqE"
+            }
+        },
+        {
+            "name": "SendReqES",
+            "var": "k",
+            "guard": "Cache_State k = S & Chan1_Cmd k = Empty",
+            "assign": {
+                "Chan1_Cmd k": "ReqE"
+            }
+        },
+        {
+            "name": "RecvReq",
+            "var": "k",
+            "guard": "CurCmd = Empty & ~Chan1_Cmd k = Empty",
+            "assign": {
+                "CurCmd": "Chan1_Cmd k",
+                "Chan1_Cmd k": "Empty",
+                "CurPtr": "k",
+                "InvSet": "ShrSet"
+            }
+        },
+        {
+            "name": "SendInvE",
+            "var": "k",
+            "guard": "Chan2_Cmd k = Empty & CurCmd = ReqE & InvSet k = true",
+            "assign": {
+                "Chan2_Cmd": "Inv",
+                "InvSet": "false"
+            }
+        },
+        {
+            "name": "SendInvS",
+            "var": "k",
+            "guard": "Chan2_Cmd k = Empty & CurCmd = ReqS & ExGntd = true & InvSet k = true",
+            "assign": {
+                "Chan2_Cmd k": "Inv",
+                "InvSet k": "false"
+            }
+        },
+        {
+            "name": "SendInvAck",
+            "var": "k",
+            "guard": "Chan2_Cmd k = Inv & Chan3_Cmd k = Empty",
+            "assign": {
+                "Chan2_Cmd k": "Empty",
+                "Chan3_Cmd k": "InvAck",
+                "Chan3_Data k": "if Cache_State k = E then Cache_Data k else Chan3_Data k",
+                "Cache_State k": "I"
+            }
+        },
+        {
+            "name": "RecvInvAck",
+            "var": "k",
+            "guard": "Chan3_Cmd k = InvAck & CurCmd = Empty",
+            "assign": {
+                "ShrSet k": "false",
+                "MemData": "if ExGntd = true then Chan3_Data k else MemData",
+                "ExGntd": "if ExGntd = true then false else ExGntd",
+                "Chan3_Cmd k": "Empty"
+            }
+        },
+        {
+            "name": "SendGntS",
+            "var": "k",
+            "guard": "Chan2_Cmd k = Empty & CurCmd = ReqS & CurPtr = k & ExGntd = false",
+            "assign": {
+                "ShrSet k": "true",
+                "CurCmd": "Empty",
+                "Chan2_Cmd k": "GntS",
+                "Chan2_Data k": "MemData"
+            }
+        },
+        {
+            "name": "SendGntE",
+            "var": "k",
+            "guard": "Chan2_Cmd k = Empty & CurCmd = ReqE & CurPtr = k & ExGntd = false & !x. ShrSet x = false",
+            "assign": {
+                "ShrSet k": "true",
+                "CurCmd": "Empty",
+                "ExGntd": "true",
+                "Chan2_Cmd k": "GntE",
+                "Chan2_Data k": "MemData"
+            }
+        },
+        {
+            "name": "RecvGntS",
+            "var": "k",
+            "guard": "Chan2_Cmd k = GntS",
+            "assign": {
+                "Cache_State k": "S",
+                "Chan2_Cmd": "Empty",
+                "Cache_Data": "Chan2_Data k"
+            }
+        },
+        {
+            "name": "RecvGntE",
+            "var": "k",
+            "guard": "Chan2_Cmd k = GntE",
+            "assign": {
+                "Cache_State k": "E",
+                "Chan2_Cmd": "Empty",
+                "Cache_Data k": "Chan2_Data k"
+            }
+        },
+        {
+            "name": "Store",
+            "var": [
+                "k",
+                "d"
+            ],
+            "guard": "Cache_State k = E",
+            "assign": {
+                "Cache_Data k": "d",
+                "AuxData": "d"
+            }
+        }
+    ],
+    "invs": [
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Cache_State i = E & Cache_State j = E)"
+        },
+        {
+            "vars": [],
+            "prop": "ExGntd = false & ~MemData = AuxData"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(~Cache_State i = I & ~Cache_Data i = AuxData)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Cache_State i = E & Chan2_Cmd j = GntE)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan3_Data i = AuxData & ExGntd = true & Chan3_Cmd i = InvAck)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(ExGntd = false & Cache_State i = E)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(~Chan2_Data i = AuxData & Chan2_Cmd i = GntS)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(~Chan2_Data i = AuxData & Chan2_Cmd i = GntE)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Cache_State i = I & Cache_State j = E)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Chan2_Cmd i = GntE & Chan2_Cmd j = GntE)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(ExGntd = true & ~Cache_State i = E & Chan2_Cmd i = Inv)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan3_Cmd i = InvAck & ShrSet i = false)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan3_Cmd i = InvAck & Cache_State i = E)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Chan3_Cmd i = InvAck & Cache_State j = E)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(ExGntd = false & Chan2_Cmd i = GntE)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan2_Cmd i = GntS & Cache_State i = E)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Chan2_Cmd i = GntS & Cache_State j = E)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan2_Cmd i = GntE & Cache_State i = E)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Cache_State i = I & Chan2_Cmd j = GntE)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(ExGntd = true & ~Cache_State i = E & Chan2_Cmd i = Empty & InvSet i = true)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan2_Cmd i = Inv & ShrSet i = false)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan3_Cmd i = InvAck & Chan2_Cmd i = GntE)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Cache_State i = E & Chan2_Cmd j = Inv)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Chan3_Cmd i = InvAck & Chan2_Cmd j = GntE)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Chan2_Cmd i = GntS & Chan2_Cmd j = GntE)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(~Cache_State i = I & ShrSet i = false)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(ExGnte = true & ~Cache_State i = E & Chan2_Cmd i = Empty & ShrSet i = true & CurCmd = Empty)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(InvSet i = true & Chan2_Cmd i = Inv)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(InvSet i = true & ShrSet i = false)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(ExGntd = true & Chan2_Cmd i = GntS)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan2_Cmd i = Inv & Chan3_Cmd i = InvAck)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Cache_State i = E & InvSet i = true)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Chan2_cmd i = Inv & Chan2_Cmd j = GntE)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan2_Cmd i = GntS & ShrSet i = false)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(~Cache_State i = I & Chan3_Cmd i = InvAck)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(ShrSet i = false & Chan2_Cmd i = GntE)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(CurCmd = Empty & Chan2_Cmd i = Inv)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(InvSet i = true & Chan3_Cmd i = InvAck)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Cache_State i = E & ShrSet j = true)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(InvSet i = true & Chan2_Cmd j = GntE)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan2_Cmd i = GntS & Chan3_Cmd i = InvAck)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan2_Cmd i = Inv & CurCmd = ReqS & ExGntd = false)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan3_Cmd i = InvAck & CurCmd = Empty)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(ShrSet i = true & Chan2_Cmd j = GntE)"
+        },
+        {
+            "vars": [
+                "i"
+            ],
+            "prop": "~(Chan3_Cmd i = InvAck & CurCmd = ReqS & ExGntd = false)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Chan2_Cmd i = Inv & CurCmd = ReqS & Chan3_Cmd j = InvAck)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Chan3_Cmd i = InvAck & CurCmd = ReqS & Chan3_Cmd j = InvAck)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(CurCmd = ReqS & Chan3_Cmd i = InvAck & InvSet j = true)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(Chan2_Cmd i = Inv & CurCmd = ReqS & Chan2_Cmd j = Inv)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(CurCmd = ReqS & InvSet i = true & Chan2_Cmd j = Inv)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(InvSet i = true & ExGntd = true & InvSet j = true)"
+        },
+        {
+            "vars": [
+                "i",
+                "j"
+            ],
+            "prop": "~(ShrSet i = true & ExGntd = true & ShrSet j = true)"
+        }
+    ]
+}

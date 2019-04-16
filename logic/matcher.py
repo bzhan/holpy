@@ -17,6 +17,8 @@ def first_order_match_incr(pat, t, instsp):
     instantiations are updated by the function.
     
     """
+    assert isinstance(pat, Term) and isinstance(t, Term), \
+           "first_order_match_incr: pat and t must be terms."
     tyinst, inst = instsp
     if pat.ty == Term.VAR:
         if pat.name in inst:
