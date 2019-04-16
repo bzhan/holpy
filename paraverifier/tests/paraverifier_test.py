@@ -42,6 +42,18 @@ class ParaverifierTest(unittest.TestCase):
         sys = load_system("german")
         log(sys)
 
+        subgoals = load_hints("german_hints")
+
+        failed = 0
+        for inv_id, rule_id, case_id, hint in subgoals:
+            goal, ans = sys.verify_subgoal(inv_id, rule_id, case_id, hint)
+            log(printer.print_term(sys.thy, goal), " --- ", "OK" if ans else "FAIL")
+            if not ans:
+                failed += 1
+
+        log("Number failed: " + str(failed))
+        self.assertEqual(failed, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

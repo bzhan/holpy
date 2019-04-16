@@ -25,6 +25,8 @@ def convert(t):
             return z3.Int(t.name)
         elif T == TFun(nat.natT, nat.natT):
             return z3.Function(t.name, z3.IntSort(), z3.IntSort())
+        elif T == TFun(nat.natT, hol_bool):
+            return z3.Function(t.name, z3.IntSort(), z3.BoolSort())
         elif T == hol_bool:
             return z3.Bool(t.name)
         else:

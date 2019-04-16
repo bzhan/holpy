@@ -118,6 +118,8 @@ class ParaSystem():
                 if case_id < len(inv_vars) and inv_vars[case_id] == t.arg and \
                    t.fun(rule_var) in assigns:
                     return assigns[t.fun(rule_var)]
+                elif t.fun in assigns:
+                    return assigns[t.fun](t.arg)
                 else:
                     return t
             elif t.ty == Term.VAR:
