@@ -178,7 +178,6 @@
                 data: JSON.stringify(data),
                 success: function (res) {
                     alert('保存成功!');
-                    $('div#root-file').html('');
                     display_file_list();
                 }
             })
@@ -237,7 +236,6 @@
             var number = Number($(this).attr('id').trim()) - 1;
             var json_name = $(this).attr('class');
             file_list.splice(number, 1);
-            $('div#root-file').html('');
             display_file_list();
             save_file_list(json_name);
         });
@@ -882,11 +880,9 @@
     });
 
     function display_file_list() {
-        var num_a = 0;
-        $.each(file_list, function (i, val) {
-            num_a++;
-            $('#root-file').append($('<a href="#"  ' + 'id="file' + num_a + '" name="file"><font color="#006000"><b>' + val + '</b></font></a><a href="#" style="margin-left:20px;" name="edit" id="edit' + num_a + '">edit</a><a href="#" style="margin-left:10px;" name="delete" id="' + num_a + '" class="' + val + '">delete</a></br></br>'));
-        });
+        $('#root-file').html('');
+        var templ = _.template($("#template-file-list").html());
+        $('#root-file').append(templ({file_list: file_list}));
     }
 
     function save_file_list(file_name) {
@@ -899,18 +895,6 @@
             }
         })
     }
-
-    function rp(x) {
-        if (x === 0)
-            return 'normal';
-        if (x === 1)
-            return 'bound';
-        if (x === 2)
-            return 'var';
-        if (x === 3)
-            return 'tvar';
-    }
-
 
     function theorem_proof(r_data, the_name) {
         if (r_data['instructions'] !== undefined) {
