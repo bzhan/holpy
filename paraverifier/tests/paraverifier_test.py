@@ -20,7 +20,7 @@ def log(*s):
 class ParaverifierTest(unittest.TestCase):
     def testMutualEx(self):
         sys = load_system("mutual_ex")
-        log(sys)
+        # log(sys)
 
         subgoals = load_hints("mutual_ex_hints")
 
@@ -34,9 +34,14 @@ class ParaverifierTest(unittest.TestCase):
         # log("Number failed: " + str(failed))
         # self.assertEqual(failed, 0)
 
-        sys.add_invariant()
-        sys.add_semantics()
-        sys.get_proof()
+        # sys.add_invariant()
+        # sys.add_semantics()
+        # sys.get_proof()
+
+    def testGerman(self):
+        sys = load_system("german")
+        log(sys)
+
 
 if __name__ == "__main__":
     unittest.main()

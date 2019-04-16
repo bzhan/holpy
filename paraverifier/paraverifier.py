@@ -217,8 +217,10 @@ class ParaSystem():
                                              .on_prop(self.thy, rewr_conv("inv_def"))
             C_goal = ProofTerm.assume(C).on_arg(self.thy, rewr_conv(eq2)) \
                                         .on_prop(self.thy, rewr_conv("inv_def"))
-            print("inv_pre: ", printer.print_thm(self.thy, inv_pre.th))
-            print("C_goal: ", printer.print_thm(self.thy, C_goal.th))
+            for t in logic.strip_conj(inv_pre.prop):
+                print("inv_pre: ", printer.print_term(self.thy, t))
+            for t in logic.strip_conj(C_goal.prop):
+                print("C_goal: ", printer.print_term(self.thy, t))
 
 
 def load_system(filename):
@@ -242,8 +244,13 @@ def load_system(filename):
 
     rules = []
     for rule in data['rules']:
-        rule_var = Var(rule['var'], natT)
-        ctxt = dict((v.name, v.T) for v in vars + [rule_var])
+        if isinstance(rule['var'], str):
+            rule_var = Var(rule['var'], natT)
+            ctxt = dict((v.name, v.T) for v in vars + [rule_var])
+        else:
+            assert isinstance(rule['var'], list)
+            rule_var = [Var(nm, natT) for nm in rule['var']]
+            ctxt = dict((v.name, v.T) for v in vars + rule_var)
         guard = parser.parse_term(thy, ctxt, rule['guard'])
         assign = dict()
         for k, v in rule['assign'].items():
