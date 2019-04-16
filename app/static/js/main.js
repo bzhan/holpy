@@ -972,7 +972,7 @@
         $.each(result_list, function(num, ext) {
             var templ = $("#template-content-" + ext.ty.replace(".", "-"));
             if (templ.length == 1) {
-                $('#left_json').append(_.template(templ.html())({num: num, ext: ext}));
+                $('#left_json').append(_.template(templ.html())({num: num+1, ext: ext}));
             }
         });
     }
