@@ -1,7 +1,7 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
 from copy import copy
-import os, sqlite3
+import os, sqlite3, shutil
 import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
@@ -106,6 +106,18 @@ def add_user(username, password):
     conn.close()
 
 
+# init database to create table users;
+def init_user():
+    DATABASE = os.getcwd() + '/users/user.db'
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('create table users(id auto_increment,name CHAR(50) not null,password CHAR(50) not null);')
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+
 # match the user-info in the database;
 def match_user():
     DATABASE = os.getcwd() + '/users/user.db'
@@ -125,23 +137,17 @@ def match_user():
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     info, file_ = '', []
-    origin = os.getcwd()
+    # origin = os.getcwd()
     username = request.form.get('name')
     password = request.form.get('password')
-    commond_c = 'mkdir '+ username
-    commond = 'cp -R ' + '../library/* ' + '../users/' + username
+    user_path = os.path.abspath('..') + '/holpy/users/' + username
     for k in match_user():
         if username == k[1] and password == str(k[2]):
             user_info['is_signed_in'] = True
             user_info['username'] = username
-            t = os.popen('ls ' + os.path.abspath('..') + '/holpy/users')
-            for i in t.readlines():
-                file_.append(i[:-1])
-            if username not in file_:
-                os.chdir(os.path.abspath(('..') + '/holpy/users'))
-                os.system(commond_c)
-                os.system(commond)
-                os.chdir(origin)
+            user_list = os.listdir(os.path.abspath('..') + '/holpy/users')
+            if username not in user_list:
+                shutil.copytree(os.path.abspath('..') + '/holpy/library', user_path)
 
             return redirect('/load')
 
