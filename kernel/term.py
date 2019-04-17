@@ -97,12 +97,7 @@ class Term():
         elif self.ty == Term.CONST:
             return "Const(" + self.name + "," + str(self.T) + ")"
         elif self.ty == Term.COMB:
-            # a $ b $ c associates to the left. So parenthesis is needed to
-            # express a $ (b $ c).
-            if self.arg.ty == Term.COMB:
-                return repr(self.fun) + " $ (" + repr(self.arg) + ")"
-            else:
-                return repr(self.fun) + " $ " + repr(self.arg)
+            return "Comb(" + repr(self.fun) + "," + repr(self.arg) + ")"
         elif self.ty == Term.ABS:
             return "Abs(" + self.var_name + "," + str(self.var_T) + "," + repr(self.body) + ")"
         elif self.ty == Term.BOUND:
