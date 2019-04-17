@@ -1054,7 +1054,7 @@
                 $('#left_json').append($(
                     '<div name="theories" id="aa_' + num +'"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
                     '</span><font color="#006000"><b> where</b><br><span name="content">'+ term +'</span></font></p></div>'));
-                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
             }
 
             if (ty === 'def.ind') {
@@ -1066,7 +1066,7 @@
                     var str = high_light(ext.rules[j].prop_hl);
                     $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
                 }
-                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
             }
 
             if (ty === 'def.pred') {
@@ -1078,7 +1078,7 @@
                     var str = high_light(ext.rules[j].prop_hl);
                     $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
                 }
-                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
+                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
             }
 
             if (ty==='header') {
