@@ -829,14 +829,20 @@
 
 //click DEL to delete red left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
-              $.each(theories_selected, function (i, v) {
-                //if($(v).css('background-color') === bgColor)){
-                    //var a_id = $('div[name="theories"]').attr('id').trim();
-                    var number = Number(v.slice(3,))-1;//3是因为aa_是3个
-                    result_list.splice(number, 1);
-                    display_result_list();
-                //  save_editor_data();
-                    alert('删除成功！');})
+            var flag = true;
+            $.each(theories_selected, function (i, v) {
+              //if($(v).css('background-color') === bgColor)){
+                 //var a_id = $('div[name="theories"]').attr('id').trim();
+                   var number = Number(v.slice(3,))-1;//3是因为aa_是3个
+                   result_list.splice(number, 1);
+                   display_result_list();
+                   flag = false;
+                   save_editor_data();
+            })
+            if(flag === false){
+                alert('删除成功！');//为了避免在each中循环打印alert，可以使用flag标记
+            }
+            theories_selected = [];
         })
 //        $('div.dropdown-menu.Ctrl a[name="up"]').on('click',function(){
 //            if($('div[name="theories"]').css('background-color') === bgColor){
