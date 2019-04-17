@@ -125,7 +125,7 @@
                     data-vivaldi-spatnav-clickable="1">Ctrl
                     </span></button>
             <div class="dropdown-menu span Ctrl">
-                <a class="dropdown-item fontcolor" name="del" href="#" id="del_theo">delete</a>
+                <a class="dropdown-item fontcolor" name="del" href="#" id="del">delete</a>
                 <a class="dropdown-item fontcolor" name="up" href="#" id="up">up arrow</a>
                 <a class="dropdown-item fontcolor" name="down" href="#" id="down">down arrow</a>
             </div>
@@ -188,7 +188,7 @@
 </script>
 
 <script type="text/template" id='template-content-def-ax'>
-<div name="theories"><p id="data-<%=num%>"><font color="#006000"><span name="constant"><b>constant </b></span></font>
+<div name="theories" id="aa-<%=num%>"><p id="data-<%=num%>"><font color="#006000"><span name="constant"><b>constant </b></span></font>
     <tt><span name="name"><%= name %></span> ::
         <span name="content"><%= type %></span></tt>&nbsp;&nbsp;&nbsp;
     <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
@@ -209,7 +209,7 @@
 
 <script type="text/template" id='template-content-thm'>
 <div><div style="float:left;width: 12px; height: 12px; background: <%= status_color %>;">&nbsp;</div>
-    <div name="theories"><p id="data-<%=num%>">
+    <div name="theories" id="aa-<%=num%>"><p id="data-<%=num%>">
     <span name="theorem"><font color="#006000"><b>theorem</b></font></span>
     <span id="thm_name" name="name"><tt><%= name %></tt></span>:&nbsp;
     <a href="#" id="<%=num%>" name="proof">&nbsp;proof</a>&nbsp;&nbsp;

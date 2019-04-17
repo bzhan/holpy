@@ -17,6 +17,7 @@
     var result_list_dict = {};
     var file_list = [];
     var add_mode = false;
+    var theories_selected = [];
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -394,7 +395,8 @@
         });
 
         //click proof then send it to the init; including the save-json-file;
-        $('#left_json').on('click', 'a[name="proof"]', function () {
+        $('#left_json').on('click', 'a[name="proof"]', function (e) {
+            e.stopPropagation();
             proof_id = $(this).attr('id');
             eidt_mode = false;
             var thm_name = $(this).parent().find('span#thm_name').text();
@@ -811,27 +813,37 @@
 
 //click to change left_json content bgcolor
         $('#left_json').on('click','div[name="theories"]',function(){
+            var id = $(this).attr('id').trim();
             if ($(this).css('background-color') === bgColor) {
                 $(this).css('background-color', '');
+                var index = theories_selected.indexOf(id);
+                theories_selected.splice(index, 1);
             }
             else {
                 $(this).css('background-color','yellow');
                 bgColor = $(this).css('background-color');
                 console.log(bgColor);
+                theories_selected.push(id);
             }
         })
 
 //click DEL to delete red left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
-            if($('div[name="theories"]').css('background-color') === bgColor){
-                var a_id = $('div[name="theories"]').attr('id').trim();
-                var number = Number(a_id.slice(3,))-1;
-                result_list.splice(number, 1);
-                display_result_list();
-                save_editor_data();
-                alert('删除成功！');
-                }
-            })
+              $.each(theories_selected, function (i, v) {
+                //if($(v).css('background-color') === bgColor)){
+                    //var a_id = $('div[name="theories"]').attr('id').trim();
+                    var number = Number(v.slice(3,))-1;//3是因为aa_是3个
+                    result_list.splice(number, 1);
+                    display_result_list();
+                //  save_editor_data();
+                    alert('删除成功！');})
+        })
+//        $('div.dropdown-menu.Ctrl a[name="up"]').on('click',function(){
+//            if($('div[name="theories"]').css('background-color') === bgColor){
+//                var a_id = $('div[name="theories"]').attr('id').trim();
+//                var number = Number(a_id.slice(3,))-2;
+//                result_list.splice(number, 1);
+//                }})
 
 
 //      click to save the related data to json file: edit && proof;
@@ -1034,7 +1046,7 @@
                 var term = high_light(ext.term);
                 var type = high_light(ext['type_hl']);
                 $('#left_json').append($(
-                    '<div name="theories"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '<div name="theories" id="aa_' + num +'"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
                     '</span><font color="#006000"><b> where</b><br><span name="content">'+ term +'</span></font></p></div>'));
                 $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a><a href="#" name="del" id="data-'+num+'"><b>&nbsp;&nbsp;delete</b></a>'));
             }
@@ -1042,7 +1054,7 @@
             if (ty === 'def.ind') {
                 var type = high_light(ext.type_hl);
                 $('#left_json').append($(
-                    '<div name="theories"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '<div name="theories" id="aa_'+num+'"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
                     '</span><font color="#006000"><b> where</b></font></p></div>'));
                 for (var j in ext.rules) {
                     var str = high_light(ext.rules[j].prop_hl);
@@ -1054,7 +1066,7 @@
             if (ty === 'def.pred') {
                 var type = high_light(ext.type_hl);
                 $('#left_json').append($(
-                    '<div name="theories"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
+                    '<div name="theories" id="aa_'+num+'"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
                     '</span><font color="#006000"><b> where</b></font></p></div>'));
                 for (var j in ext.rules) {
                     var str = high_light(ext.rules[j].prop_hl);
