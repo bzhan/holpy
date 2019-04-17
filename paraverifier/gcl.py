@@ -2,7 +2,7 @@
 
 """Utility functions for GCL (Guarded Command Language)."""
 
-from kernel.type import TFun, Type, hol_bool
+from kernel.type import TFun, Type, boolT
 from kernel.term import Term, Const
 from logic import basic
 from logic.nat import natT, to_binary
@@ -17,7 +17,7 @@ Para = Const("Para", TFun(varType, natT, varType))
 
 scalarValue = Type("scalarValue")
 NatV = Const("NatV", TFun(natT, scalarValue))
-BoolV = Const("BoolV", TFun(hol_bool, scalarValue))
+BoolV = Const("BoolV", TFun(boolT, scalarValue))
 
 stateT = TFun(varType, scalarValue)
 
@@ -49,7 +49,7 @@ def convert_term(var_map, s, t):
             return logic.conj(convert(t.arg1), convert(t.arg))
         elif logic.is_disj(t):
             return logic.disj(convert(t.arg1), convert(t.arg))
-        elif t.get_type() == hol_bool:
+        elif t.get_type() == boolT:
             return BoolV(t)
         elif t.get_type() == natT:
             return NatV(t)

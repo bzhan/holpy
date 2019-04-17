@@ -217,4 +217,4 @@ def TFun(*args):
     return res
 
 """Boolean type."""
-hol_bool = Type("bool")
+boolT = Type("bool")

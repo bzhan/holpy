@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TFun, hol_bool
+from kernel.type import TFun, boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.report import ProofReport
@@ -88,7 +88,7 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf, rpt), Thm([], goal))
 
     def testComputeWP(self):
-        Q = Var("Q", TFun(natFunT, hol_bool))
+        Q = Var("Q", TFun(natFunT, boolT))
 
         test_data = [
             (Assign(zero, abs(s, one)),
@@ -102,8 +102,8 @@ class HoareTest(unittest.TestCase):
             self.assertEqual(thy.check_proof(prf), Thm([], Valid(P, c, Q)))
 
     def testVCG(self):
-        P = Var("P", TFun(natFunT, hol_bool))
-        Q = Var("Q", TFun(natFunT, hol_bool))
+        P = Var("P", TFun(natFunT, boolT))
+        Q = Var("Q", TFun(natFunT, boolT))
 
         test_data = [
             Assign(zero, abs(s, one)),

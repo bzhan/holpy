@@ -2,15 +2,15 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, hol_bool
+from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const, Comb, Abs, Bound, TypeCheckException
 from kernel.thm import Thm, InvalidDerivationException
 
 Ta = TVar("a")
 Tb = TVar("b")
 Tab = TFun(Ta, Tb)
-A = Var("A", hol_bool)
-B = Var("B", hol_bool)
+A = Var("A", boolT)
+B = Var("B", boolT)
 x = Var("x", Ta)
 y = Var("y", Ta)
 z = Var("z", Ta)
@@ -228,7 +228,7 @@ class ThmTest(unittest.TestCase):
         self.assertRaises(InvalidDerivationException, Thm.forall_intr, Const("c", Ta), th)
 
     def testForallElim(self):
-        P = Var("P", TFun(Ta, hol_bool))
+        P = Var("P", TFun(Ta, boolT))
         th = Thm([], Term.mk_all(x, P(x)))
         self.assertEqual(Thm.forall_elim(y, th), Thm([], P(y)))
 
@@ -237,7 +237,7 @@ class ThmTest(unittest.TestCase):
         self.assertRaises(InvalidDerivationException, Thm.forall_elim, x, th)
 
     def testForallElimFail2(self):
-        P = Var("P", TFun(Ta, hol_bool))
+        P = Var("P", TFun(Ta, boolT))
         th = Thm([], Term.mk_all(x, P(x)))
         self.assertRaises(InvalidDerivationException, Thm.forall_elim, A, th)
 

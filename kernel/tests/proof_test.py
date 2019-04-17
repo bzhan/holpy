@@ -2,13 +2,13 @@
 
 import unittest
 
-from kernel.type import hol_bool
+from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof
 
-A = Var("A", hol_bool)
-B = Var("B", hol_bool)
+A = Var("A", boolT)
+B = Var("B", boolT)
 A_to_B = Term.mk_implies(A,B)
 
 class ProofTest(unittest.TestCase):

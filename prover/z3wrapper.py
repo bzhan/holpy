@@ -9,7 +9,7 @@ else:
     z3_loaded = False
 
 from kernel.type import TFun
-from kernel.term import Term, Var, hol_bool
+from kernel.term import Term, Var, boolT
 from kernel.thm import Thm
 from kernel.macro import MacroSig, ProofMacro, global_macros
 from logic import logic
@@ -25,9 +25,9 @@ def convert(t):
             return z3.Int(t.name)
         elif T == TFun(nat.natT, nat.natT):
             return z3.Function(t.name, z3.IntSort(), z3.IntSort())
-        elif T == TFun(nat.natT, hol_bool):
+        elif T == TFun(nat.natT, boolT):
             return z3.Function(t.name, z3.IntSort(), z3.BoolSort())
-        elif T == hol_bool:
+        elif T == boolT:
             return z3.Bool(t.name)
         else:
             print("convert: unsupported type " + repr(T))

@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import TVar, TFun, hol_bool
+from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const, Abs
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv
 from logic.proofterm import ProofTerm, refl
@@ -8,11 +8,11 @@ from logic.proofterm import ProofTerm, refl
 """Utility functions for logic."""
 
 
-conj = Const("conj", TFun(hol_bool, hol_bool, hol_bool))
-disj = Const("disj", TFun(hol_bool, hol_bool, hol_bool))
-neg = Const("neg", TFun(hol_bool, hol_bool))
-true = Const("true", hol_bool)
-false = Const("false", hol_bool)
+conj = Const("conj", TFun(boolT, boolT, boolT))
+disj = Const("disj", TFun(boolT, boolT, boolT))
+neg = Const("neg", TFun(boolT, boolT))
+true = Const("true", boolT)
+false = Const("false", boolT)
     
 def is_conj(t):
     """Whether t is of the form A & B."""
@@ -78,7 +78,7 @@ def mk_exists(x, body):
     the term ?x. t.
 
     """
-    exists_t = Const("exists", TFun(TFun(x.T, hol_bool), hol_bool))
+    exists_t = Const("exists", TFun(TFun(x.T, boolT), boolT))
     return exists_t(Term.mk_abs(x, body))
 
 def beta_norm(t):
@@ -108,7 +108,7 @@ def subst_norm(t, instsp):
     return beta_norm(t.subst_type(tyinst).subst(inst))
 
 def if_t(T):
-    return Const("IF", TFun(hol_bool, T, T, T))
+    return Const("IF", TFun(boolT, T, T, T))
 
 def is_if(t):
     """Whether t is of the form if P then x else y."""

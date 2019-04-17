@@ -1,6 +1,6 @@
 import unittest
 
-from kernel.type import hol_bool
+from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel import report
 from logic import logic
@@ -13,11 +13,11 @@ disj = logic.mk_disj
 neg = logic.neg
 imp = Term.mk_implies
 eq = Term.mk_equals
-a = Var('a', hol_bool)
-b = Var('b', hol_bool)
-c = Var('c', hol_bool)
-d = Var('d', hol_bool)
-e = Var('e', hol_bool)
+a = Var('a', boolT)
+b = Var('b', boolT)
+c = Var('c', boolT)
+d = Var('d', boolT)
+e = Var('e', boolT)
 
 
 class EncodeTest(unittest.TestCase):

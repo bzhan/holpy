@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TFun, hol_bool
+from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from logic import basic
 from logic.nat import natT

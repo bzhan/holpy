@@ -3,7 +3,7 @@
 import os
 import json
 
-from kernel.type import TFun, hol_bool
+from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from kernel import extension
@@ -167,19 +167,19 @@ class ParaSystem():
     def add_invariant(self):
         """Add the invariant for the system in GCL."""
         s = Var("s", gcl.stateT)
-        invC = Const("inv", TFun(gcl.stateT, hol_bool))
+        invC = Const("inv", TFun(gcl.stateT, boolT))
         inv_rhs = logic.mk_conj(*[gcl.convert_term(self.var_map, s, t) for _, t in self.invs])
         prop = Term.mk_equals(invC(s), inv_rhs)
 
         exts = extension.TheoryExtension()
-        exts.add_extension(extension.AxConstant("inv", TFun(gcl.stateT, hol_bool)))
+        exts.add_extension(extension.AxConstant("inv", TFun(gcl.stateT, boolT)))
         exts.add_extension(extension.Theorem("inv_def", Thm([], prop)))
         self.thy.unchecked_extend(exts)
         print(printer.print_extensions(self.thy, exts))
 
     def add_semantics(self):
         """Add the semantics of the system in GCL."""
-        transC = Const("trans", TFun(gcl.stateT, gcl.stateT, hol_bool))
+        transC = Const("trans", TFun(gcl.stateT, gcl.stateT, boolT))
         s = Var("s", gcl.stateT)
         props = []
         for i, (_, guard, assign) in enumerate(self.rules):
@@ -187,13 +187,13 @@ class ParaSystem():
             t2 = gcl.mk_assign(self.var_map, s, assign)
             props.append(("trans_rule" + str(i), Term.mk_implies(t, transC(s, t2))))
 
-        exts = induct.add_induct_predicate("trans", TFun(gcl.stateT, gcl.stateT, hol_bool), props)
+        exts = induct.add_induct_predicate("trans", TFun(gcl.stateT, gcl.stateT, boolT), props)
         self.thy.unchecked_extend(exts)
         print(printer.print_extensions(self.thy, exts))
 
     def get_proof(self):
-        invC = Const("inv", TFun(gcl.stateT, hol_bool))
-        transC = Const("trans", TFun(gcl.stateT, gcl.stateT, hol_bool))
+        invC = Const("inv", TFun(gcl.stateT, boolT))
+        transC = Const("trans", TFun(gcl.stateT, gcl.stateT, boolT))
         s1 = Var("s1", gcl.stateT)
         s2 = Var("s2", gcl.stateT)
         prop = Thm.mk_implies(invC(s1), transC(s1,s2), invC(s2))

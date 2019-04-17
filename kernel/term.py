@@ -3,7 +3,7 @@
 from collections import OrderedDict
 from copy import copy
 
-from kernel.type import TFun, hol_bool
+from kernel.type import TFun, boolT
 
 class OpenTermException(Exception):
     pass
@@ -310,13 +310,13 @@ class Term():
 
     def is_implies(self):
         """Whether self is of the form A --> B."""
-        implies = Const("implies", TFun(hol_bool, hol_bool, hol_bool))
+        implies = Const("implies", TFun(boolT, boolT, boolT))
         return self.is_binop() and self.head == implies
 
     @staticmethod
     def mk_implies(*args):
         """Construct the term s1 --> ... --> sn --> t."""
-        implies = Const("implies", TFun(hol_bool, hol_bool, hol_bool))
+        implies = Const("implies", TFun(boolT, boolT, boolT))
         res = args[-1]
         for s in reversed(args[:-1]):
             res = implies(s, res)
@@ -346,7 +346,7 @@ class Term():
         suggested name and type of the bound variable.
 
         """
-        all_t = Const("all", TFun(TFun(x.T, hol_bool), hol_bool))
+        all_t = Const("all", TFun(TFun(x.T, boolT), boolT))
         return all_t(Term.mk_abs(x, body))
 
     def is_const_name(self, name):
@@ -356,7 +356,7 @@ class Term():
     @staticmethod
     def equals(T):
         """Returns the equals constant for the given type."""
-        return Const("equals", TFun(T, T, hol_bool))
+        return Const("equals", TFun(T, T, boolT))
 
     def is_equals(self):
         """Whether self is of the form A = B."""

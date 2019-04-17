@@ -4,7 +4,7 @@ Tseitin encoding from formulae in holpy to CNF.
 
 from collections import OrderedDict
 
-from kernel.type import hol_bool
+from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from logic import basic
@@ -121,7 +121,7 @@ def encode(t):
 
     # The subterm at index i corresponds to variable x(i+1).
     def get_var(i):
-        return Var("x" + str(i+1), hol_bool)
+        return Var("x" + str(i+1), boolT)
 
     # Obtain the results:
     # eqs -- list of equality assumptions
