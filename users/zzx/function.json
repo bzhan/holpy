@@ -1,0 +1,358 @@
+{
+    "content": [
+        {
+            "depth": 0,
+            "name": "Function update",
+            "ty": "header"
+        },
+        {
+            "name": "fun_upd",
+            "ty": "def",
+            "type": "('a => 'b) => 'a => 'b => 'a => 'b",
+            "prop": "fun_upd f a b = (%x. if x = a then b else f x)",
+            "vars": {
+                "a": "'a",
+                "b": "'b",
+                "f": "'a => 'b"
+            }
+        },
+        {
+            "name": "fun_upd_eval",
+            "prop": "fun_upd f a b x = (if x = a then b else f x)",
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'b",
+                "f": "'a => 'b",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "fun_upd_same",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ b = b"
+                },
+                {
+                    "args": "a",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ a = a"
+                },
+                {
+                    "args": "if_P, (if a = a then b else f a) = b",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if a = a then b else f a) = b"
+                },
+                {
+                    "args": "fun_upd_eval, fun_upd f a b a = b",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ fun_upd f a b a = b"
+                }
+            ],
+            "prop": "fun_upd f a b a = b",
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'b",
+                "f": "'a => 'b"
+            }
+        },
+        {
+            "name": "fun_upd_other",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬c = a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬c = a ⊢ ¬c = a"
+                },
+                {
+                    "args": "f c",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ f c = f c"
+                },
+                {
+                    "args": "if_not_P, (if c = a then b else f c) = f c",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬c = a ⊢ (if c = a then b else f c) = f c"
+                },
+                {
+                    "args": "fun_upd_eval, fun_upd f a b c = f c",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬c = a ⊢ fun_upd f a b c = f c"
+                },
+                {
+                    "args": "¬c = a",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ ¬c = a ⟶ fun_upd f a b c = f c"
+                }
+            ],
+            "prop": "~(c = a) --> fun_upd f a b c = f c",
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'b",
+                "c": "'a",
+                "f": "'a => 'b"
+            }
+        },
+        {
+            "name": "fun_upd_triv",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. fun_upd f a (f a) x = f x"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": ""
+                },
+                {
+                    "args": "classical",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "theorem",
+                    "th": "⊢ A ∨ ¬A"
+                },
+                {
+                    "args": "{A: x = a}",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "substitution",
+                    "th": "⊢ x = a ∨ ¬x = a"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x = a ⟶ (if x = a then f a else f x) = f x"
+                },
+                {
+                    "args": "x = a",
+                    "id": "0.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = a ⊢ x = a"
+                },
+                {
+                    "args": "",
+                    "id": "0.3.1",
+                    "prevs": [
+                        "0.3.0"
+                    ],
+                    "rule": "symmetric",
+                    "th": "x = a ⊢ a = x"
+                },
+                {
+                    "args": "f",
+                    "id": "0.3.2",
+                    "prevs": [
+                        "0.3.1"
+                    ],
+                    "rule": "arg_combination",
+                    "th": "x = a ⊢ f a = f x"
+                },
+                {
+                    "args": "if_P, (if x = a then f a else f x) = f x",
+                    "id": "0.3.3",
+                    "prevs": [
+                        "0.3.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x = a ⊢ (if x = a then f a else f x) = f x"
+                },
+                {
+                    "args": "x = a",
+                    "id": "0.3.4",
+                    "prevs": [
+                        "0.3.3"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ x = a ⟶ (if x = a then f a else f x) = f x"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬x = a ⟶ (if x = a then f a else f x) = f x"
+                },
+                {
+                    "args": "¬x = a",
+                    "id": "0.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x = a ⊢ ¬x = a"
+                },
+                {
+                    "args": "if_not_P, {a: 'b}, {P: x = a, x: f a, y: f x}",
+                    "id": "0.4.1",
+                    "prevs": [
+                        "0.4.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬x = a ⊢ (if x = a then f a else f x) = f x"
+                },
+                {
+                    "args": "¬x = a",
+                    "id": "0.4.2",
+                    "prevs": [
+                        "0.4.1"
+                    ],
+                    "rule": "implies_intr",
+                    "th": "⊢ ¬x = a ⟶ (if x = a then f a else f x) = f x"
+                },
+                {
+                    "args": "disjE, {}, {A: x = a, B: ¬x = a, C: (if x = a then f a else f x) = f x}",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.2",
+                        "0.3",
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (if x = a then f a else f x) = f x"
+                },
+                {
+                    "args": "fun_upd_eval, fun_upd f a (f a) x = f x",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ fun_upd f a (f a) x = f x"
+                },
+                {
+                    "args": "x",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.6"
+                    ],
+                    "rule": "forall_intr",
+                    "th": "⊢ ∀x. fun_upd f a (f a) x = f x"
+                },
+                {
+                    "args": "extension, {a: 'a, b: 'b}, {f: fun_upd f a (f a), g: f}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ fun_upd f a (f a) = f"
+                }
+            ],
+            "prop": "fun_upd f a (f a) = f",
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "f": "'a => 'b"
+            }
+        },
+        {
+            "name": "fun_upd_upd",
+            "prop": "fun_upd (fun_upd f a b) a c = fun_upd f a c",
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'b",
+                "c": "'b",
+                "f": "'a => 'b"
+            }
+        },
+        {
+            "name": "fun_upd_twist",
+            "prop": "~c = a --> fun_upd (fun_upd f a b) c d = fun_upd (fun_upd f c d) a b",
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'b",
+                "c": "'a",
+                "d": "'b",
+                "f": "'a => 'b"
+            }
+        },
+        {
+            "name": "fun_upd_eval",
+            "ty": "macro"
+        },
+        {
+            "name": "fun_upd_eval_test1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(λx. 0)(1 := 5) 0 = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "fun_upd_eval",
+                    "th": "⊢ (λx. 0)(1 := 5) 0 = 0"
+                }
+            ],
+            "prop": "fun_upd (%x. 0) 1 5 0 = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "fun_upd_eval_test2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(λx. 0)(1 := 5) 1 = 5",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "fun_upd_eval",
+                    "th": "⊢ (λx. 0)(1 := 5) 1 = 5"
+                }
+            ],
+            "prop": "fun_upd (%x. 0) 1 5 1 = 5",
+            "ty": "thm",
+            "vars": {}
+        }
+    ],
+    "description": "Functions",
+    "imports": [
+        "nat"
+    ],
+    "name": "function"
+}
