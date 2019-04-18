@@ -837,12 +837,12 @@
                    result_list.splice(number, 1);
                    display_result_list();
                    flag = false;
-                   save_editor_data();
+                   //save_editor_data();
             })
             if(flag === false){
                 alert('删除成功！');//为了避免在each中循环打印alert，可以使用flag标记
             }
-            theories_selected = [];
+            theories_selected = [];//这里必须清空一下，因为每次删除以后id值所代表的div会变化
         })
 //        $('div.dropdown-menu.Ctrl a[name="up"]').on('click',function(){
 //            if($('div[name="theories"]').css('background-color') === bgColor){
