@@ -1,6 +1,6 @@
 '''
 from logic import logic, induct
-from kernel.type import TVar, Type, TFun, hol_bool
+from kernel.type import TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 from kernel.extension import AxType, AxConstant, Theorem, Attribute

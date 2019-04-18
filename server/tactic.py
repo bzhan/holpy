@@ -68,27 +68,6 @@ def incr_id(id, n):
     """Increment the last number in id by n."""
     return id[:-1] + (id[-1] + n,)
 
-def strip_all_implies(t, names):
-    """Given a term of the form
-
-    !x_1 ... x_k. A_1 --> ... --> A_n --> C.
-
-    Return the triple ([v_1, ..., v_k], [A_1, ... A_n], C), where
-    v_1, ..., v_k are new variables with the given names, and
-    A_1, ..., A_n, C are the body of the input term, with bound variables
-    substituted for v_1, ..., v_k.
-
-    """
-    if Term.is_all(t):
-        assert len(names) > 0, "strip_all_implies: not enough names input."
-        v = Var(names[0], t.arg.var_T)
-        vars, As, C = strip_all_implies(t.arg.subst_bound(v), names[1:])
-        return ([v] + vars, As, C)
-    else:
-        assert len(names) == 0, "strip_all_implies: too many names input."
-        As, C = t.strip_implies()
-        return ([], As, C)
-
 
 class ProofState():
     """Represents proof state on the server side."""
@@ -464,7 +443,7 @@ class ProofState():
         if names is None:
             names = []
 
-        vars, As, C = strip_all_implies(cur_item.th.prop, names)
+        vars, As, C = logic.strip_all_implies(cur_item.th.prop, names)
 
         cur_item.rule = "subproof"
         cur_item.subproof = Proof()

@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, hol_bool
+from kernel.type import TVar, TFun, boolT
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import Proof
@@ -103,8 +103,8 @@ class BasicTest(unittest.TestCase):
 
     def testApplyTheorem(self):
         thy = basic.loadTheory('logic_base')
-        A = Var("A", hol_bool)
-        B = Var("B", hol_bool)
+        A = Var("A", boolT)
+        B = Var("B", boolT)
 
         th = Thm([logic.mk_conj(A, B)], A)
 
@@ -146,8 +146,8 @@ class BasicTest(unittest.TestCase):
     def testConjComm(self):
         """Proof of commutativity of conjunction."""
         thy = basic.loadTheory('logic_base')
-        A = Var("A", hol_bool)
-        B = Var("B", hol_bool)
+        A = Var("A", boolT)
+        B = Var("B", boolT)
 
         prf = Proof(logic.mk_conj(A, B))
         prf.add_item(1, "theorem", args="conjD1")
@@ -165,8 +165,8 @@ class BasicTest(unittest.TestCase):
     def testConjCommWithMacro(self):
         """Proof of commutativity of conjunction, with macros."""
         thy = basic.loadTheory('logic_base')
-        A = Var("A", hol_bool)
-        B = Var("B", hol_bool)
+        A = Var("A", boolT)
+        B = Var("B", boolT)
 
         prf = Proof(logic.mk_conj(A, B))
         prf.add_item(1, "apply_theorem", args="conjD1", prevs=[0])
@@ -179,8 +179,8 @@ class BasicTest(unittest.TestCase):
     def testDisjComm(self):
         """Proof of commutativity of disjunction."""
         thy = basic.loadTheory('logic_base')
-        A = Var("A", hol_bool)
-        B = Var("B", hol_bool)
+        A = Var("A", boolT)
+        B = Var("B", boolT)
         disjAB = logic.mk_disj(A, B)
         disjBA = logic.mk_disj(B, A)
 
@@ -201,8 +201,8 @@ class BasicTest(unittest.TestCase):
     def testDisjCommWithMacro(self):
         """Proof of commutativity of disjunction, with macros."""
         thy = basic.loadTheory('logic_base')
-        A = Var("A", hol_bool)
-        B = Var("B", hol_bool)
+        A = Var("A", boolT)
+        B = Var("B", boolT)
         disjAB = logic.mk_disj(A, B)
         disjBA = logic.mk_disj(B, A)
 
@@ -222,8 +222,8 @@ class BasicTest(unittest.TestCase):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
         thy = basic.loadTheory('logic_base')
         Ta = TVar("a")
-        A = Var("A", TFun(Ta, hol_bool))
-        B = Var("B", TFun(Ta, hol_bool))
+        A = Var("A", TFun(Ta, boolT))
+        B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
         all_conj = Term.mk_all(x, logic.mk_conj(A(x), B(x)))
         all_A = Term.mk_all(x, A(x))
@@ -252,8 +252,8 @@ class BasicTest(unittest.TestCase):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x), using macros."""
         thy = basic.loadTheory('logic_base')
         Ta = TVar("a")
-        A = Var("A", TFun(Ta, hol_bool))
-        B = Var("B", TFun(Ta, hol_bool))
+        A = Var("A", TFun(Ta, boolT))
+        B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
         all_conj = Term.mk_all(x, logic.mk_conj(A(x), B(x)))
         all_A = Term.mk_all(x, A(x))
@@ -274,7 +274,7 @@ class BasicTest(unittest.TestCase):
     def testDoubleNeg(self):
         """Proof of A --> ~~A."""
         thy = basic.loadTheory('logic_base')
-        A = Var("A", hol_bool)
+        A = Var("A", boolT)
         neg = logic.neg
 
         prf = Proof(A)
@@ -293,7 +293,7 @@ class BasicTest(unittest.TestCase):
     def testDoubleNegInv(self):
         """Proof of ~~A --> A, requires classical axiom."""
         thy = basic.loadTheory('logic_base')
-        A = Var("A", hol_bool)
+        A = Var("A", boolT)
         neg = logic.neg
 
         prf = Proof(neg(neg(A)))
@@ -320,7 +320,7 @@ class BasicTest(unittest.TestCase):
     def testDoubleNegInvWithMacro(self):
         """Proof of ~~A --> A, using macros."""
         thy = basic.loadTheory('logic_base')
-        A = Var("A", hol_bool)
+        A = Var("A", boolT)
         neg = logic.neg
 
         prf = Proof(neg(neg(A)))
@@ -339,7 +339,7 @@ class BasicTest(unittest.TestCase):
     def testTrueAbsorb(self):
         """Proof of A --> true & A."""
         thy = basic.loadTheory('logic_base')
-        A = Var("A", hol_bool)
+        A = Var("A", boolT)
 
         prf = Proof(A)
         prf.add_item(1, "theorem", args="trueI")
@@ -355,8 +355,8 @@ class BasicTest(unittest.TestCase):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
         thy = basic.loadTheory('logic_base')
         Ta = TVar("a")
-        A = Var("A", TFun(Ta, hol_bool))
-        B = Var("B", TFun(Ta, hol_bool))
+        A = Var("A", TFun(Ta, boolT))
+        B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
         conjAB = logic.mk_conj(A(x), B(x))
         exists_conj = logic.mk_exists(x, conjAB)
@@ -402,8 +402,8 @@ class BasicTest(unittest.TestCase):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x), using macros."""
         thy = basic.loadTheory('logic_base')
         Ta = TVar("a")
-        A = Var("A", TFun(Ta, hol_bool))
-        B = Var("B", TFun(Ta, hol_bool))
+        A = Var("A", TFun(Ta, boolT))
+        B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
         conjAB = logic.mk_conj(A(x), B(x))
         exists_conj = logic.mk_exists(x, conjAB)

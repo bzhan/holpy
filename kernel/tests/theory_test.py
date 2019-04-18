@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import Type, TVar, TFun, hol_bool
+from kernel.type import Type, TVar, TFun, boolT
 from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from kernel.thm import Thm
 from kernel.proof import Proof
@@ -20,9 +20,9 @@ x = Var("x", Ta)
 y = Var("y", Ta)
 z = Var("z", Ta)
 f = Var("f", Tab)
-A = Var("A", hol_bool)
-B = Var("B", hol_bool)
-C = Var("C", hol_bool)
+A = Var("A", boolT)
+B = Var("B", boolT)
+C = Var("C", boolT)
 
 # A simple macro
 class beta_conv_rhs_macro(ProofMacro):
@@ -54,16 +54,16 @@ class TheoryTest(unittest.TestCase):
     def testEmptyTheory(self):
         self.assertEqual(thy.get_type_sig("bool"), 0)
         self.assertEqual(thy.get_type_sig("fun"), 2)
-        self.assertEqual(thy.get_term_sig("equals"), TFun(Ta,Ta,hol_bool))
-        self.assertEqual(thy.get_term_sig("implies"), TFun(hol_bool,hol_bool,hol_bool))
+        self.assertEqual(thy.get_term_sig("equals"), TFun(Ta,Ta,boolT))
+        self.assertEqual(thy.get_term_sig("implies"), TFun(boolT,boolT,boolT))
 
     def testCheckType(self):
         test_data = [
             Ta,
             TFun(Ta, Tb),
             TFun(TFun(Ta, Ta), Tb),
-            TFun(hol_bool, hol_bool),
-            TFun(TFun(Ta, hol_bool), hol_bool),
+            TFun(boolT, boolT),
+            TFun(TFun(Ta, boolT), boolT),
         ]
 
         for T in test_data:
@@ -99,9 +99,9 @@ class TheoryTest(unittest.TestCase):
     def testCheckTermFail(self):
         test_data = [
             Const("random", Ta),
-            Const("equals", TFun(Ta, Tb, hol_bool)),
+            Const("equals", TFun(Ta, Tb, boolT)),
             Const("equals", TFun(Ta, Ta, Tb)),
-            Const("implies", TFun(Ta, Ta, hol_bool)),
+            Const("implies", TFun(Ta, Ta, boolT)),
             Comb(Const("random", Tab), x),
             f(Const("random", Ta)),
             Abs("x", Ta, Const("random", Ta)),
@@ -218,7 +218,7 @@ class TheoryTest(unittest.TestCase):
 
     def testCheckProofFail7(self):
         """Typing error: type-checking failed."""
-        prf = Proof(Comb(Var("P", TFun(Tb, hol_bool)), x))
+        prf = Proof(Comb(Var("P", TFun(Tb, boolT)), x))
 
         self.assertRaisesRegex(CheckProofException, "typing error", thy.check_proof, prf)
 

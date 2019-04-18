@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, hol_bool
+from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const, Abs, Bound
 from logic import logic, matcher
 from logic import nat
@@ -56,9 +56,9 @@ class MatcherTest(unittest.TestCase):
 
     def testFirstOrderMatchFun(self):
         """First-order matching of variables in function position."""
-        P = Var("P", TFun(Ta, hol_bool))
-        Q = Var("Q", TFun(Ta, hol_bool))
-        C = Const("C", TFun(hol_bool, hol_bool, hol_bool))
+        P = Var("P", TFun(Ta, boolT))
+        Q = Var("Q", TFun(Ta, boolT))
+        C = Const("C", TFun(boolT, boolT, boolT))
 
         test_data = [
             (abs(x,P(x)), abs(x,C(P(x),Q(x))), {"P" : abs(x,C(P(x),Q(x)))}),

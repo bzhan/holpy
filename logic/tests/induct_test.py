@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, hol_bool
+from kernel.type import TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 from kernel.extension import AxType, AxConstant, Theorem, Attribute
@@ -24,7 +24,7 @@ class InductTest(unittest.TestCase):
         n = Var("n", nat)
         n2 = Var("n'", nat)
         x = Var("x", nat)
-        P = Var("P", TFun(nat, hol_bool))
+        P = Var("P", TFun(nat, boolT))
 
         res = [
             AxType("nat", 0),
@@ -71,7 +71,7 @@ class InductTest(unittest.TestCase):
         xs = Var("xs", Tlista)
         x2 = Var("x'", Ta)
         xs2 = Var("xs'", Tlista)
-        P = Var("P", TFun(Tlista, hol_bool))
+        P = Var("P", TFun(Tlista, boolT))
         xlist = Var("x", Tlista)
 
         res = [
@@ -96,7 +96,7 @@ class InductTest(unittest.TestCase):
         a2 = Var("a'", Ta)
         b2 = Var("b'", Tb)
         pair = Const("Pair", TFun(Ta, Tb, Tab))
-        P = Var("P", TFun(Tab, hol_bool))
+        P = Var("P", TFun(Tab, boolT))
         x = Var("x", Tab)
 
         res = [
@@ -109,19 +109,19 @@ class InductTest(unittest.TestCase):
 
     def testInductPredicate(self):
         nat = Type("nat")
-        even = Const("even", TFun(nat, hol_bool))
+        even = Const("even", TFun(nat, boolT))
         zero = Const("zero", nat)
         Suc = Const("Suc", TFun(nat, nat))
         n = Var("n", nat)
         prop_zero = even(zero)
         prop_Suc = Term.mk_implies(even(n), even(Suc(Suc(n))))
         data = [("even_zero", prop_zero), ("even_Suc", prop_Suc)]
-        even_ext = induct.add_induct_predicate("even", TFun(nat, hol_bool), data)
-        a1 = Var("a1", nat)
-        P = Var("P", hol_bool)
+        even_ext = induct.add_induct_predicate("even", TFun(nat, boolT), data)
+        a1 = Var("_a1", nat)
+        P = Var("P", boolT)
 
         res = [
-            AxConstant("even", TFun(nat, hol_bool)),
+            AxConstant("even", TFun(nat, boolT)),
             Theorem("even_zero", Thm([], even(zero))),
             Attribute("even_zero", "hint_backward"),
             Theorem("even_Suc", Thm.mk_implies(even(n), even(Suc(Suc(n))))),

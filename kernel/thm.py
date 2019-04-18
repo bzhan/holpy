@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 
-from kernel.type import Type, hol_bool
+from kernel.type import Type, boolT
 from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
 from kernel.macro import MacroSig
 
@@ -77,7 +77,7 @@ class Thm():
         
         """
         for t in list(self.hyps) + [self.prop]:
-            if t.checked_get_type() != hol_bool:
+            if t.checked_get_type() != boolT:
                 raise TypeCheckException()
 
     @staticmethod

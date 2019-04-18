@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TFun, hol_bool
+from kernel.type import TFun, boolT
 from kernel.term import Var, Term
 from logic import basic
 from logic.nat import natT, to_binary, zero, one
@@ -17,7 +17,7 @@ eq = Term.mk_equals
 
 class GCLTest(unittest.TestCase):
     def testConvertTerm(self):
-        a, b = Var("a", TFun(natT, natT)), Var("b", hol_bool)
+        a, b = Var("a", TFun(natT, natT)), Var("b", boolT)
         var_map = {a: 0, b: 1}
         s = Var("s", gcl.stateT)
         test_data = [
@@ -33,7 +33,7 @@ class GCLTest(unittest.TestCase):
             self.assertEqual(gcl.convert_term(var_map, s, t), res)
 
     def testMkAssign(self):
-        a, b = Var("a", TFun(natT, natT)), Var("b", hol_bool)
+        a, b = Var("a", TFun(natT, natT)), Var("b", boolT)
         var_map = {a: 0, b: 1}
         s = Var("s", gcl.stateT)
         test_data = [

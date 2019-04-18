@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, hol_bool
+from kernel.type import TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.thm import Thm
 from logic import logic
@@ -14,17 +14,17 @@ from syntax import printer
 
 thy = basic.loadTheory('list')
 
-A = Var("A", hol_bool)
-B = Var("B", hol_bool)
-C = Var("C", hol_bool)
+A = Var("A", boolT)
+B = Var("B", boolT)
+C = Var("C", boolT)
 Ta = TVar("a")
 a = Var("a", Ta)
 b = Var("b", Ta)
-P = Var("P", TFun(Ta, hol_bool))
-Q = Var("Q", TFun(Ta, hol_bool))
-R = Var("R", TFun(Ta, Ta, hol_bool))
+P = Var("P", TFun(Ta, boolT))
+Q = Var("Q", TFun(Ta, boolT))
+R = Var("R", TFun(Ta, Ta, boolT))
 f = Var("f", TFun(Ta, Ta))
-nn = Var("n", TFun(hol_bool, hol_bool))
+nn = Var("n", TFun(boolT, boolT))
 m = Var("m", nat.natT)
 n = Var("n", nat.natT)
 p = Var("p", nat.natT)
@@ -230,8 +230,8 @@ class PrinterTest(unittest.TestCase):
     def testPrintThmHighlight(self):
         """Test printing of theorems with highlight."""
         # 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
-        A = Var('A', hol_bool)
-        B = Var('B', hol_bool)
+        A = Var('A', boolT)
+        B = Var('B', boolT)
         A_to_B = Term.mk_implies(A, B)
         th = Thm([A, A_to_B], B)
         res = printer.print_thm(thy, th, highlight=True)

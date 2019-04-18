@@ -2,7 +2,7 @@
 
 from copy import copy
 
-from kernel.type import HOLType, TVar, TFun, hol_bool, TypeMatchException
+from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
 from kernel.term import Term, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import ProofException
@@ -214,9 +214,9 @@ class Theory():
         thy.add_type_sig("fun", 2)
 
         # Fundamental terms.
-        thy.add_term_sig("equals", TFun(TVar("a"), TVar("a"), hol_bool))
-        thy.add_term_sig("implies", TFun(hol_bool, hol_bool, hol_bool))
-        thy.add_term_sig("all", TFun(TFun(TVar("a"), hol_bool), hol_bool))
+        thy.add_term_sig("equals", TFun(TVar("a"), TVar("a"), boolT))
+        thy.add_term_sig("implies", TFun(boolT, boolT, boolT))
+        thy.add_term_sig("all", TFun(TFun(TVar("a"), boolT), boolT))
         
         return thy
 

@@ -25,7 +25,7 @@
     <div class="signinpanel">
         <div class="row">
             <div class="col-sm-12">
-            <form method="post" class="m-t" role="form" action="login">
+            <form method="post" class="m-t" role="form" action="register_login">
                 <div class="form-group">
                     <p style="margin-left:5px">Welcome to holpy</p>
                     <input name="name" type="text" class="form-control" placeholder="username" required="">
@@ -33,9 +33,9 @@
                 <div class="form-group">
                     <input name="password" type="password" class="form-control" placeholder="password" required="">
                 </div>
-                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+                <button type="submit" class="btn btn-primary block full-width m-b">Register</button>
                 <div>
-                    <br><a href="{{ url_for('re') }}" style="color:black;">Register new account</a>
+                    <br><a href="{{ url_for('sign') }}" style="color:black;">Login to existing account</a>
                 </div>
             </form>
             </div>

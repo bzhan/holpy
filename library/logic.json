@@ -17,29 +17,29 @@
                     "th": "A ∧ B ⊢ A ∧ B"
                 },
                 {
-                    "args": "conjD2, {}, {A: A, B: B}",
+                    "args": "conjD1",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∧ B ⊢ B"
+                    "rule": "apply_theorem",
+                    "th": "A ∧ B ⊢ A"
                 },
                 {
-                    "args": "conjD1, {}, {A: A, B: B}",
+                    "args": "conjD2",
                     "id": "2",
                     "prevs": [
                         "0"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "A ∧ B ⊢ A"
+                    "rule": "apply_theorem",
+                    "th": "A ∧ B ⊢ B"
                 },
                 {
                     "args": "conjI, {}, {A: B, B: A}",
                     "id": "3",
                     "prevs": [
-                        "1",
-                        "2"
+                        "2",
+                        "1"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "A ∧ B ⊢ B ∧ A"

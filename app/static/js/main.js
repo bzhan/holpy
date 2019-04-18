@@ -1,14 +1,12 @@
 (function ($) {
     var instructions = [];
     var page_num = 0;
-    var add_page = 0;
     var index = 0;
     var theory_name = "";  // Name of the current theory file
     var theory_imports = [];  // List of imports of the current theory file
     var result_list = [];  // Content of the current theory file
     var theory_desc = "";  // Description of the theory
-    var is_mousedown = false;
-    var is_ctrl_click = false;
+    var is_fact = false;
     var click_count = 0;
     var proof_id = 0;
     var bgColor = '';
@@ -23,31 +21,29 @@
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
     });
 
+    $(document).ready(function () {
+        var includes = $('[data-include]');
+        jQuery.each(includes, function(){
+            var file = "../" + $(this).data('include') + '.html';
+            $(this).load(file);
+        });
+    });
+
     $(function () {
 //      click add_cell to add a tab page;
         $('#add-cell').on('click', function () {
             page_num++;
             // Add CodeMirror textarea;
-            var id = 'code' + page_num + '-pan';
-            $('#codeTab').append(
-                $('<li class="nav-item" name="code' + page_num + '"><a class="nav-link" ' +
-                    'data-toggle="tab"' +
-                    'href="#code' + page_num + '-pan" name="'+ page_num +'">' +
-                    '<span> ' +
-                    '</span><button id="close_tab" type="button" ' +
-                    'title="Remove this page" name="proof-tab">×</button>' +
-                    '</a></li>'));
+            var templ_tab = _.template($("#template-tab").html());
+            $('#codeTab').append(templ_tab({page_num: page_num, label: ""}));
+
             let class_name = 'tab-pane fade active newCodeMirror code-cell';
             if (page_num === 1)
                 class_name = 'tab-pane fade in active code-cell';
             $('#codeTabContent').append(
-                $('<div class="' + class_name + '" id="code' + page_num + '-pan">' +
-                    '<label for="code' + page_num + '"></label> ' +
-                    '<textarea id="code' + page_num + '"></textarea>' +
-                    '</div>'));
-            $('div.rbottom').append(
-                '<div id="prf'+ page_num +'" name="addition"><button id="' + proof_id + '" class="el-button el-button--default el-button--mini save_proof" style="margin-top:5px;width:100px;margin-left:25px;" name="save"'+ theory_name +'><b>SAVE</b></button>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset'+ theory_name +'"><b>RESET</b></button></div>');
+                $(`<div class="${class_name}" id="code${page_num}-pan"><label for="code${page_num}"></label> <textarea id="code${page_num}"></textarea>${$('div.rbottom').append(
+                    '<div id="prf' + page_num + '" name="addition"><button id="' + proof_id + '" class="el-button el-button--default el-button--mini save_proof" style="margin-top:5px;width:100px;margin-left:25px;" name="save"' + theory_name + '><b>SAVE</b></button>' +
+                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset' + theory_name + '"><b>RESET</b></button></div>')}`));
             init_editor("code" + page_num);
             // Add location for displaying results;
             $('div#prf' + page_num).append(
@@ -65,8 +61,8 @@
                     '<a href="#" id="link-forward" style="float:left;">></a>' +
                     '<pre id="instruction" style="float:left;"> </pre></div></div>'));
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-            $('div#prf'+page_num).addClass('selected').siblings().removeClass('selected');
-            $('div#prf'+page_num).show().siblings().hide();
+            $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
+            $('div#prf' + page_num).show().siblings().hide();
             $('.newCodeMirror').each(function () {
                 $(this).removeClass('active');
             });
@@ -116,54 +112,44 @@
             }
         });
 
-        $('#add-json').click(function() {
-            page_num ++;
+        $('#add-json').click(function () {
+            page_num++;
             init_metadata_area(page_num);
         });
 
-
         function init_metadata_area(add_page) {
-            var id = 'code' + add_page + '-pan';
-            $('#codeTab').append(
-                $('<li class="nav-item" name="code' + add_page + '"><a class="nav-link" ' +
-                    'data-toggle="tab"' +
-                    'href="#code' + add_page + '-pan" name="'+ add_page +'">' +
-                    '<span> ' + 'File'+
-                    '</span><button id="close_tab" type="button" ' +
-                    'title="Remove this page" name="proof-tab">×</button>' +
-                    '</a></li>'));
+            var templ_tab = _.template($("#template-tab").html());
+            $('#codeTab').append(templ_tab({page_num: add_page, label: "File"}));
+
             let class_name = 'tab-pane fade active newCodeMirror code-cell';
             if (add_page === 1)
                 class_name = 'tab-pane fade in active code-cell';
-            $('#codeTabContent').append(
-                $('<div class="' + class_name + '" id="code' + add_page + '-pan" style="margin:30px;">' +
-                    '<label for="code' + add_page + '"></label>' +
-                    'File name:&nbsp;<input id="fname'+ add_page +'" spellcheck="false" style="width:50%;">'+
-                    '<br><br>Imports:&nbsp;<input spellcheck="false" id="imp'+ add_page +'" style="margin-left:10px;width:50%;">'+
-                    '<br><br>Description:&nbsp;<textarea spellcheck="false" id="code' + add_page + '" style="margin-left:10px;width:45%;" rows="3"></textarea>' +
-                    '</div>'));
+
+            var templ_form = _.template($('#template-file-metadata').html());
+            $('#codeTabContent').append(templ_form({class_name: class_name, add_page: add_page}));
+
             $('div.rbottom').append(
-                '<div id="prf'+ add_page +'" name="addition"><button id="'+ add_page + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;margin-left:25px;" name="save-json"><b>SAVE</b></button>' +
-                    '</div>');
+                '<div id="prf' + add_page + '" name="addition"><button id="' + add_page + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;margin-left:25px;" name="save-json"><b>SAVE</b></button>' +
+                '</div>');
             $('#codeTab a[href="#code' + add_page + '-pan"]').tab('show');
-            $('div#prf'+ add_page).addClass('selected').siblings().removeClass('selected');
-            $('div#prf'+ add_page).show().siblings().hide();
+            $('div#prf' + add_page).addClass('selected').siblings().removeClass('selected');
+            $('div#prf' + add_page).show().siblings().hide();
             $('.newCodeMirror').each(function () {
                 $(this).removeClass('active');
             });
         }
 
 //      click save to create and save json_file metadata;
-        $('div.rbottom').on('click', 'button[name="save-json"]', function() {
+        $('div.rbottom').on('click', 'button[name="save-json"]', function () {
             var pnum = $(this).attr('id');
-            var fname = $('#fname'+ pnum).val().trim();
-            var imp = $('#imp'+ pnum).val().split(',');
-            var des = $('#code'+ pnum).val().trim();
+            var fname = $('#fname' + pnum).val().trim();
+            var imp = $('#imp' + pnum).val().split(',');
+            var des = $('#code' + pnum).val().trim();
             var flag = false;
-            $.each(file_list, function(i,v) {
+            $.each(file_list, function (i, v) {
                 if (v === fname)
                     flag = true;
-            })
+            });
             if (flag === false)
                 file_list.push(fname);
             file_list.sort();
@@ -171,45 +157,49 @@
                 'name': fname,
                 'imports': imp,
                 'description': des
-            }
+            };
             $.ajax({
                 url: '/api/add-new',
                 type: 'PUT',
                 data: JSON.stringify(data),
-                success: function(res) {
+                success: function (res) {
                     alert('保存成功!');
-                    $('div#root-file').html('');
                     display_file_list();
                 }
             })
-        })
+        });
 
 //      tab on the left;
-        $('#json-tab1,#json-tab2,#json-tab3').click(function() {
-            $(this).css({'background':'	#F0F0F0','text-align':'center','border-bottom':'none'});
-            $(this).siblings('li').css({'background':'#f8f8f8','text-align':'center','border-bottom':'solid 1px','border-color':'#B8B8B8'});
-        })
+        $('#json-tab1,#json-tab2,#json-tab3').click(function () {
+            $(this).css({'background': '	#F0F0F0', 'text-align': 'center', 'border-bottom': 'none'});
+            $(this).siblings('li').css({
+                'background': '#f8f8f8',
+                'text-align': 'center',
+                'border-bottom': 'solid 1px',
+                'border-color': '#B8B8B8'
+            });
+        });
 
-        $('#json-tab1').click(function() {
+        $('#json-tab1').click(function () {
             $('div#root-file').show();
             $('div#left_json').hide();
             $('div#varible').hide();
-        })
+        });
 
-        $('#json-tab2').click(function() {
+        $('#json-tab2').click(function () {
             $('div#root-file').hide();
             $('div#left_json').show();
             $('div#varible').hide();
-        })
+        });
 
-        $('#json-tab3').click(function() {
+        $('#json-tab3').click(function () {
             $('div#root-file').hide();
             $('div#left_json').hide();
             $('div#varible').show();
-        })
+        });
 
-        $('div#root-file').on('click', 'a[name="edit"]', function() {
-            var number = Number($(this).attr('id').slice(4,).trim())-1;
+        $('div#root-file').on('click', 'a[name="edit"]', function () {
+            var number = Number($(this).attr('id').slice(4,).trim()) - 1;
             page_num++;
             data = JSON.stringify(file_list[number]);
             init_metadata_area(page_num);
@@ -217,24 +207,32 @@
                 url: '/api/edit_jsonFile',
                 data: data,
                 type: 'POST',
-                success: function(res) {
+                success: function (res) {
                     var name = res['name'];
                     var des = res['description'];
                     var imports = res['imports'].join(',');
-                    $('input#fname'+ page_num).val(name);
-                    $('input#imp'+ page_num).val(imports);
-                    $('textarea#code'+ page_num).val(des);
+                    $('input#fname' + page_num).val(name);
+                    $('input#imp' + page_num).val(imports);
+                    $('textarea#code' + page_num).val(des);
                 }
             })
-        })
+        });
 
-        $('div#root-file').on('click', 'a[name="delete"]', function() {
-            var number = Number($(this).attr('id').trim())-1;
+        $('div#root-file').on('click', 'a[name="delete"]', function () {
+            var number = Number($(this).attr('id').trim()) - 1;
             var json_name = $(this).attr('class');
-            file_list.splice(number,1);
-            $('div#root-file').html('');
+            file_list.splice(number, 1);
             display_file_list();
             save_file_list(json_name);
+        });
+
+        $('button#register').click(function() {
+            $.ajax({
+                url: '/api/register',
+                type: 'GET',
+                success: function() {
+                }
+            })
         })
 
         // Save a single proof to the webpage (not to the json file);
@@ -252,7 +250,7 @@
                 output_proof[i]['th_raw'] = undefined;
                 output_proof[i]['args'] = output_proof[i]['args_raw'];
                 output_proof[i]['args_raw'] = undefined;
-            })
+            });
             result_list[id]['proof'] = output_proof;
             result_list[id]['num_gaps'] = cells[editor_id]['num_gaps'];
             result_list_dict[file_name] = result_list;
@@ -286,7 +284,7 @@
             display_result_list();
             $.each(copy_res, function (i, v) {
                 result_to_output(v);
-            })
+            });
             $.ajax({
                 url: '/api/editor_file',
                 type: 'PUT',
@@ -304,7 +302,7 @@
             var output_list = [];
             for (var d in result_list) {
                 output_list[d] = {};
-                $.extend(output_list[d], result_list[d])  // perform copy
+                $.extend(output_list[d], result_list[d]);  // perform copy
                 result_to_output(output_list[d]);
             }
             var data = {
@@ -315,7 +313,7 @@
                     'description': theory_desc,
                     'content': output_list
                 }
-            }
+            };
             $.ajax({
                 url: "/api/save_file",
                 type: "POST",
@@ -339,8 +337,8 @@
             e.preventDefault();
             var tab_pm = $(this).attr('name');
             $(this).tab('show');
-            $('div#prf'+ tab_pm).addClass('selected').siblings().removeClass('selected');
-            $('div#prf'+ tab_pm).show().siblings().hide();
+            $('div#prf' + tab_pm).addClass('selected').siblings().removeClass('selected');
+            $('div#prf' + tab_pm).show().siblings().hide();
         });
 
 //      set cursor & size;
@@ -358,11 +356,11 @@
 //      click x on the tab to close and delete the related tab page;
         $('#codeTab').on('click', 'li button', function () {
             var tabId = $(this).parents('li').children('a').attr('href');
-            if ($(this).attr('name')==='code'+tab_pm)
+            if ($(this).attr('name') === 'code' + tab_pm)
                 var id = get_selected_id();
-                delete cells[id];
+            delete cells[id];
             var tab_pm = $(this).parents('li').attr('name').slice(4,);
-            $('div#prf'+ tab_pm).remove();
+            $('div#prf' + tab_pm).remove();
             $(this).parents('li').remove('li');
             $(tabId).remove();
             $('#codeTab a:first').tab('show');
@@ -424,9 +422,9 @@
         });
 
 //      click delete then delete the content from webpage;
-        $('#left_json').on('click', 'a[name="del"]', function(){
+        $('#left_json').on('click', 'a[name="del"]', function () {
             var a_id = $(this).attr('id').trim();
-            var number = Number(a_id.slice(5,))-1;
+            var number = Number(a_id.slice(5,)) - 1;
             result_list.splice(number, 1);
             display_result_list();
             save_editor_data();
@@ -434,7 +432,7 @@
         });
 
 //      keypress to display unicode;
-        $('#codeTabContent').on('keydown', 'textarea,input', function(e) {
+        $('#codeTabContent').on('keydown', 'textarea,input', function (e) {
             var content = $(this).val().trim();
             var id = $(this).attr('id');
             var pos = document.getElementById(id).selectionStart;
@@ -446,19 +444,19 @@
                 }
                 for (var key in replace_obj) {
                     l = key.length;
-                    if (content.substring(pos-l, pos) === key) {
+                    if (content.substring(pos - l, pos) === key) {
                         var len = l;
-                        content = content.slice(0, pos-l) + replace_obj[key] + content.slice(pos,);
+                        content = content.slice(0, pos - l) + replace_obj[key] + content.slice(pos,);
                     }
                 }
                 $(this).val(content);
-                document.getElementById(id).setSelectionRange(pos-len+1, pos-len+1);
+                document.getElementById(id).setSelectionRange(pos - len + 1, pos - len + 1);
             }
         });
 
 //      set the textarea height auto; press tab display unicode;
-        $('#codeTabContent').on('input', 'textarea', function() {
-            var rows = $(this).val().split('\n').length+1;
+        $('#codeTabContent').on('input', 'textarea', function () {
+            var rows = $(this).val().split('\n').length + 1;
             $(this).attr('rows', rows);
         });
 
@@ -470,42 +468,37 @@
         }
 
 //      the method for add_info && edit_info;
-        function init_edit_area(page_num, a_ele= '', data_type= '') {
-            var a_id, data_name= '', data_content= '', vars_str = '', data_label, border = '1px;solid #ffffff;border:none'
+        function init_edit_area(page_num, a_ele = '', data_type = '') {
+            var a_id, data_name = '', data_content = '', vars_str = '', data_label,
+                border = '1px;solid #ffffff;border:none';
             var class_name = 'tab-pane fade in active code-cell edit-data';
             if (!a_ele) {
-                a_id = '', border= '', data_name = '', data_content = '', number = '', data_label = data_type;
-            }
-            else {
-               a_id = a_ele.attr('id').trim();
-               number = String(Number(a_id.slice(5,))-1);
-               data_name = result_list[number]['name'];
-               data_type = result_list[number]['ty'];
-               data_label = data_name;
-               for(var key in result_list[number]['vars']) {
+                a_id = '', border = '', data_name = '', data_content = '', number = '', data_label = data_type;
+            } else {
+                a_id = a_ele.attr('id').trim();
+                number = String(Number(a_id.slice(5,)) - 1);
+                data_name = result_list[number]['name'];
+                data_type = result_list[number]['ty'];
+                data_label = data_name;
+                for (var key in result_list[number]['vars']) {
                     vars_str += key + ':' + result_list[number]['vars'][key] + '\n';
-               };
+                }
             }
-            $('#codeTab').append(
-                $('<li class="nav-item" name="code' + page_num + '"><a class="nav-link" ' +
-                    'data-toggle="tab"' +
-                    'href="#code' + page_num + '-pan" name="'+ page_num +'">' +
-                    '<span id="' + page_num + '">' + data_label +
-                    '</span><button id="close_tab" type="button" ' +
-                    'title="Remove this page" name="edit">×</button>' +
-                    '</a></li>'));
+
+            var templ_tab = _.template($("#template-tab").html());
+            $('#codeTab').append(templ_tab({page_num: page_num, label: data_label}));
+
             if (data_type === 'def.ax') {
                 if (number)
                     data_content = result_list[number]['type'];
                 else
-                    $('#codeTab').find('span#'+ page_num).text('constant');
-                $('#codeTabContent').append(
-                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>constant</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="width:10%;background:transparent;'+ border +'" value="' + data_name + '">' +
-                        '&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_content + '">' +
-                        '</div>'
-                        ));
+                    $('#codeTab').find('span#' + page_num).text('constant');
+
+                var templ_edit = _.template($("#template-edit-def-ax").html());
+                $('#codeTabContent').append(templ_edit({
+                    a_id: a_id, class_name: class_name, page_num: page_num,
+                    border: border, data_name: data_name, data_content: data_content
+                }));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'thm' || data_type === 'thm.ax') {
@@ -515,14 +508,13 @@
                     var type_name = 'axiom';
                 if (number)
                     data_content = result_list[number]['prop'];
-                $('#codeTabContent').append(
-                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"></label> ' +
-                        '<font color="#006000"><b>'+ type_name +'</b></font>:&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="margin-top:0px;width:20%;background:transparent;'+ border +'" value="' + data_name + '">' +
-                        '<br><br><span style="position:absolute;">vars:</span>&nbsp;&nbsp;&nbsp;&nbsp;<textarea rows="'+ vars_str.split('\n').length +'" spellcheck="false" id="data-vars' + page_num + '" style="margin-left:3%;overflow-y:hidden;width:40%;background:transparent;'+ border +'">'+ vars_str +'</textarea>' +
-                        '<br><br>term:&nbsp;&nbsp;&nbsp;<input spellcheck="false" id="data-content' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_content + '">' +
-                        '<br><br><input name="hint_backward'+ page_num + '" type="checkbox" style="margin-left:0px;"><b>&nbsp;backward</b><input name="hint_rewrite'+ page_num +'" style="margin-left:20px;" type="checkbox"><b>&nbsp;rewrite</b></div>'
-                        ));
+
+                var templ_edit = _.template($('#template-edit-thm').html());
+                $('#codeTabContent').append(templ_edit({
+                    a_id: a_id, class_name: class_name, type_name: type_name, page_num: page_num,
+                    border: border, data_name: data_name, vars_str: vars_str, data_content: data_content
+                }));
+
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'type.ind') {
@@ -530,13 +522,13 @@
                     var ext = result_list[number]['ext'];
                     var argsT = result_list[number]['argsT'];
                     var ext_ = '';
-                    $.each(ext, function(i, v) {
-                        ext_ += v[0][1] + '  ' + v[1] + ':' +  v[0][0] + '\n';
-                    })
+                    $.each(ext, function (i, v) {
+                        ext_ += v[0][1] + '  ' + v[1] + ':' + v[0][0] + '\n';
+                    });
                     data_name = '';
-                    $.each(argsT.concl, function (i,j) {
+                    $.each(argsT.concl, function (i, j) {
                         data_name += j[0];
-                    })
+                    });
                     $.each(result_list[number]['constrs'], function (i, v) {
                         var str_temp_var = '';
                         $.each(v.args, function (k, val) {
@@ -545,51 +537,55 @@
                                 str_temp_term += vlu[0];
                             });
                             str_temp_var += ' (' + val + ' :: ' + str_temp_term + ')';
-                        })
-                        data_content += '\n'+ v['name'] + str_temp_var;
+                        });
+                        data_content += '\n' + v['name'] + str_temp_var;
                     })
-                }
-                else
-                    $('#codeTab').find('span#'+ page_num).text('datatype');
+                } else
+                    $('#codeTab').find('span#' + page_num).text('datatype');
                 data_content = $.trim(data_content);
                 var i = data_content.split('\n').length;
                 $('#codeTab').find('span#' + page_num).text(data_name);
-                $('#codeTabContent').append(
-                    $('<div style="margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>datatype</b></font>:</label> ' +
-                        '&nbsp;<input spellcheck="false" id="data-name' + page_num + '" style="width:45px;background:transparent;'+ border +'" value="' + data_name + '">' + '=&nbsp;&nbsp;' +
-                        '<br><br>&nbsp;&nbsp;<textarea spellcheck="false" id="data-content' + page_num + '" rows="'+i+'" style="overflow-y:hidden;width:40%;background:transparent;'+ border +'">' + data_content + '</textarea>' +
-                        '<br><label style="float:right;height:20%;width:100%;background:transparent;'+ border +'"><pre>'+ ext_ +'</pre></label></div>'
-                        ));
+
+                var templ_edit = _.template($('#template-edit-type-ind').html());
+                $('#codeTabContent').append(templ_edit({
+                    a_id: a_id, class_name: class_name, page_num: page_num,
+                    border: border, data_name: data_name, i: i, data_content: data_content,
+                    ext_: ext_}));
+
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
                 var data_content_list = [];
                 var data_new_content = '';
                 var data_rule_names = [], data_rule_name = '';
-                var type_name = 'fun';
+                if (data_type === 'def.ind')
+                    var type_name = 'fun';
+                else if (data_type === 'def.pred')
+                    var type_name = 'inductive';
+                else
+                    var type_name = 'definition'
+
                 if (number) {
                     var ext = result_list[number];
                     var ext_ = ext.ext;
                     var ext_str = '';
-                    var type = '', str = '', vars = '';
-                    var type_ = '', str = '';
-                    $.each(ext_ , function(i,v) {
-                        ext_str += v[0][1] + '  ' + v[1] + ':' +  v[0][0] + '\n';
-                    })
+                    var vars = '';
+                    $.each(ext_, function (i, v) {
+                        ext_str += v[0][1] + '  ' + v[1] + ':' + v[0][0] + '\n';
+                    });
                     data_name = ext.name + ' :: ' + ext.type;
                     if (ext.rules) {
                         for (var j in ext.rules) {
                             var data_con = '';
                             $.each(ext.rules[j].prop_hl, function (i, val) {
-                                data_con +=  val[0];
+                                data_con += val[0];
                             });
                             data_content_list.push(data_con);
                             data_rule_names.push(ext.rules[j]['name']);
                         }
                     }
                     if (data_type === 'def') {
-                        var i = 0, type_name = 'definition';
+                        var i = 0;
                         data_content_list.push(ext.prop);
                         for (v in ext.vars) {
                             vars += i + ': ' + v + ':' + ext.vars[v] + '\n';
@@ -600,40 +596,38 @@
                         data_new_content += i + ': ' + data_content_list[i] + '\n';
                         data_rule_name += i + ': ' + data_rule_names[i] + '\n';
                     }
-                    $('#codeTab').find('span#'+ page_num).text(ext.name);
-                }
-                else
-                    $('#codeTab').find('span#'+ page_num).text('function');
-                $('#codeTabContent').append(
-                    $('<div style="position:relative;margin-left:35px;margin-top:20px;" name="' + a_id + '" class="' + class_name + '" id="code' + page_num + '-pan">' +
-                        '<label name="' + page_num + '" for="code' + page_num + '"><font color="#006000"><b>'+ type_name +'</b></font>:</label> ' +
-                        '<input spellcheck="false" id="data-name' + page_num + '" style="width:50%;background:transparent;'+ border +'" value="' + data_name + '">' +
-                        '<br><textarea spellcheck="false" rows="'+ data_new_content.split('\n').length +'" id="data-content' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" name="content">' + $.trim(data_new_content) + '</textarea>' +
-                        '&nbsp;&nbsp;<span style="position:absolute;">for:</span>&nbsp;&nbsp;<textarea spellcheck="false" rows="" id="data-vars' + page_num + '" style="margin-left:5%;overflow-y:hidden;margin-top:5px;width:40%;background:transparent;'+ border +'" placeholder="vars">'+ $.trim(vars) +'</textarea>' +
-                        '<br><label style="float:right;height:20%;width:100%;background:transparent;'+ border +'"><pre>'+ ext_str +'</pre></label></div>'
-                    ));
+                    $('#codeTab').find('span#' + page_num).text(ext.name);
+                } else
+                    $('#codeTab').find('span#' + page_num).text('function');
+
+                var templ_edit = _.template($('#template-edit-def').html());
+                $('#codeTabContent').append(templ_edit({
+                    a_id: a_id, class_name: class_name, page_num: page_num,
+                    type_name: type_name, border: border, data_name: data_name,
+                    data_new_content: data_new_content, vars: vars, ext_str: ext_str
+                }));
+
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type === 'def.pred') {
-                    $('div#code' + page_num + '-pan label b').text('induct');
-                    $('textarea#data-vars'+page_num).after('<br><textarea rows="'+ data_rule_name.split('\n').length +'" spellcheck="false" id="data-names'+ page_num +'" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;'+ border +'" name="names">'+ $.trim(data_rule_name) +'</textarea>')
+                    $('textarea#data-vars' + page_num).after('<br><textarea rows="' + data_rule_name.split('\n').length + '" spellcheck="false" id="data-names' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;' + border + '" name="names">' + $.trim(data_rule_name) + '</textarea>')
                 }
                 if (data_type !== 'def')
                     display_lines_number(data_content_list, page_num, number);
             }
 
             if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
-                $('input[name="hint_backward'+ page_num +'"]').click();
+                $('input[name="hint_backward' + page_num + '"]').click();
             if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
-                $('input[name="hint_rewrite'+ page +'"]').click();
-            change_css($('textarea#data-vars'+ page_num));
-            change_css($('textarea#data-content'+ page_num));
-            change_css($('textarea#data-names'+ page_num));
-            $('div.rbottom').append('<div id="prf'+ page_num +'"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>')
-            $('div#prf'+ page_num).append(
+                $('input[name="hint_rewrite' + page + '"]').click();
+            change_css($('textarea#data-vars' + page_num));
+            change_css($('textarea#data-content' + page_num));
+            change_css($('textarea#data-names' + page_num));
+            $('div.rbottom').append('<div id="prf' + page_num + '"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>');
+            $('div#prf' + page_num).append(
                 '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
-                    '<pre></pre></div>');
-            $('div#prf'+ page_num).addClass('selected').siblings().removeClass('selected');
-            $('div#prf'+ page_num).show().siblings().hide();
+                '<pre></pre></div>');
+            $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
+            $('div#prf' + page_num).show().siblings().hide();
         }
 
 //      display vars_content in the textarea;
@@ -641,21 +635,20 @@
             var data_vars_list = [];
             var data_vars_str = '';
             if (number) {
-                $.each(result_list[number]['rules'], function(i, v) {
+                $.each(result_list[number]['rules'], function (i, v) {
                     var vars_str = '';
                     for (let key in v.vars) {
-                        vars_str += key+ ':'+ v.vars[key]+ '   ';
+                        vars_str += key + ':' + v.vars[key] + '   ';
                     }
                     data_vars_list.push(vars_str);
-                    });
-                $.each(data_vars_list, function(i, v) {
-                    data_vars_str += i+ ': '+ v + '\n';
+                });
+                $.each(data_vars_list, function (i, v) {
+                    data_vars_str += i + ': ' + v + '\n';
                 })
-            }
-            else {
+            } else {
                 data_vars_str += '';
             }
-            $('textarea#data-vars'+ page_num).val($.trim(data_vars_str));
+            $('textarea#data-vars' + page_num).val($.trim(data_vars_str));
         }
 
 //      click save button on edit tab to save content to the left-json for updating;
@@ -668,14 +661,14 @@
             var number = Number(a_id.slice(5,)) - 1;
             var ajax_data = make_data(ty, id, number);
             var prev_list = result_list.slice(0, number);
-            if ($('input[name="hint_backward'+ tab_pm +'"]').prop('checked') === true)
+            if ($('input[name="hint_backward' + tab_pm + '"]').prop('checked') === true)
                 result_list[number]['hint_backward'] = 'true';
-            else if (number !==-1 && 'hint_backward' in result_list[number])
+            else if (number !== -1 && 'hint_backward' in result_list[number])
                 delete result_list[number]['hint_backward'];
-            if ($('input[name="hint_rewrite'+ tab_pm +'"]').prop('checked') === true)
+            if ($('input[name="hint_rewrite' + tab_pm + '"]').prop('checked') === true)
                 result_list[number]['hint_rewrite'] = 'true';
-            else if (number !==-1 && 'hint_rewrite' in result_list[number])
-                delete result_list[number]['hint_rewrite']
+            else if (number !== -1 && 'hint_rewrite' in result_list[number])
+                delete result_list[number]['hint_rewrite'];
             ajax_data['file-name'] = name;
             ajax_data['prev-list'] = prev_list;
             $.ajax({
@@ -692,23 +685,24 @@
                         var error_info = error['detail-content'];
                         $('div#' + error_id).find('pre').text(error_info);
                     }
-                    if(!a_id){
-                        result_list.push(result_data);}
-                    else{
+                    if (!a_id) {
+                        result_list.push(result_data);
+                    } else {
                         for (var key in result_data) {
-                                result_list[number][key] = result_data[key];
-                             }}
+                            result_list[number][key] = result_data[key];
+                        }
+                    }
                     display_result_list();
                     save_editor_data();
                     alert('保存成功！')
                 }
             });
-        })
+        });
 
 //      make a strict-type data from editing; id=page_num
         function make_data(ty, id, number) {
-            var data_name = $('#data-name'+id).val().trim();
-            var data_content = $('#data-content'+id).val().trim();
+            var data_name = $('#data-name' + id).val().trim();
+            var data_content = $('#data-content' + id).val().trim();
             var ajax_data = {};
             if (ty === 'def.ax') {
                 ajax_data['ty'] = 'def.ax';
@@ -743,7 +737,7 @@
                     if (temp_con_list[0].indexOf('(') > 0) {
                         arg_name = temp_con_list[0].slice(0, temp_con_list[0].indexOf('(') - 1);
                         if (temp_con_list.length > 1) {
-                            temp_con_list[0] = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1,)
+                            temp_con_list[0] = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1,);
                             temp_con_list[temp_con_list.length - 1] = temp_con_list[temp_con_list.length - 1].slice(0, -1);
                             $.each(temp_con_list, function (i, v) {
                                 args.push(v.split(' :: ')[0]);
@@ -751,11 +745,11 @@
                                 if (v.split(' :: ')[1].indexOf('⇒') >= 0) {
                                     type += '(' + v.split(' :: ')[1] + ')' + '⇒'
                                 }
-                            })
+                            });
                             type = type + data_name;
                         } else {
                             let vars_ = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[0];
-                            type = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[1]
+                            type = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[1];
                             args.push(vars_);
                             type = type + '=>' + data_name;
                         }
@@ -767,7 +761,7 @@
                     temp_con_dict['args'] = args;
                     temp_con_dict['name'] = arg_name;
                     temp_constrs.push(temp_con_dict);
-                })
+                });
                 ajax_data['ty'] = 'type.ind';
                 ajax_data['args'] = temp_list;
                 ajax_data['constrs'] = temp_constrs;
@@ -784,14 +778,14 @@
                     vars_list[i] = $.trim(vars_list[i].slice(3,));
                     if (names_list)
                         names_list[i] = $.trim(names_list[i].slice(3,));
-                })
+                });
                 $.each(props_list, function (i, v) {
                     var temp_dict = {}, temp_vars = {};
                     if (v && vars_list[i]) {
                         temp_dict['prop'] = v;
                         $.each(vars_list[i].split(/\s\s/), function (j, k) {
                             temp_vars[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
-                        })
+                        });
                         if (names_list)
                             temp_dict['name'] = names_list[i];
                     } else if (!v) {
@@ -799,7 +793,7 @@
                     }
                     temp_dict['vars'] = temp_vars;
                     rules_list.push(temp_dict);
-                })
+                });
                 if (ty !== 'def')
                     ajax_data['rules'] = rules_list;
                 else
@@ -876,20 +870,20 @@
             } else if ($('#file-path a:last').text() !== name) {
                 $('#file-path a:last').remove();
                 $('#root-a').after($('<a href="#"><font color="red"><b>' + name + '</b></font></a>'));
-            };
+            }
             data = JSON.stringify(name);
             ajax_res(data);
             add_mode = true;
         });
 
-            $('div.dropdown-menu.add-info a').on('click', function() {
-                if (add_mode === true) {
-                    page_num ++;
-                    edit_mode = true;
-                    var ty = $(this).attr('name');
-                    init_edit_area(page_num, '', ty);
-                }
-            })
+        $('div.dropdown-menu.add-info a').on('click', function () {
+            if (add_mode === true) {
+                page_num++;
+                edit_mode = true;
+                var ty = $(this).attr('name');
+                init_edit_area(page_num, '', ty);
+            }
+        });
 
         $('#json-button').on('click', function () {
             num = 0;
@@ -912,11 +906,9 @@
     });
 
     function display_file_list() {
-        var num_a = 0;
-        $.each(file_list, function(i, val) {
-           num_a++;
-           $('#root-file').append($('<a href="#"  ' + 'id="file' + num_a + '" name="file"><font color="#006000"><b>' + val + '</b></font></a><a href="#" style="margin-left:20px;" name="edit" id="edit'+ num_a +'">edit</a><a href="#" style="margin-left:10px;" name="delete" id="'+ num_a +'" class="'+ val +'">delete</a></br></br>'));
-        });
+        $('#root-file').html('');
+        var templ = _.template($("#template-file-list").html());
+        $('#root-file').append(templ({file_list: file_list}));
     }
 
     function save_file_list(file_name) {
@@ -924,23 +916,11 @@
             url: '/api/save_file_list',
             data: JSON.stringify(file_name),
             type: 'PUT',
-            success: function(res) {
+            success: function (res) {
                 alert('删除成功！');
             }
         })
     }
-
-    function rp(x) {
-        if (x === 0)
-            return 'normal';
-        if (x === 1)
-            return 'bound';
-        if (x === 2)
-            return 'var';
-        if (x === 3)
-            return 'tvar';
-    }
-
 
     function theorem_proof(r_data, the_name) {
         if (r_data['instructions'] !== undefined) {
@@ -992,99 +972,19 @@
         })
     }
 
-    function high_light(list) {
-        var type = '';
-        $.each(list, function (i, val) {
-            type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-        });
-
-        return type
-    }
-
-
-
     // Display result_list on the left side of the page.
     function display_result_list() {
         result_list_dict[theory_name] = result_list;
-        var import_str = theory_imports.join('、');
+        var import_str = theory_imports.join(' ');
         $('#left_json').html('');
-        var templ = _.template($("#template-content-header").html());
+        var templ = _.template($("#template-content-theory_desc").html());
         $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
-        var num = 0;
-        for (var d in result_list) {
-            num++;
-            var ext = result_list[d];
-            var ty = ext.ty, name = ext.name;
-            if (ty === 'def.ax') {
-                var templ = _.template($("#template-content-def-ax").html());
-                $('#left_json').append(templ(
-                    {num: num, name: ext.name, type: high_light(ext.type_hl)}));
+        $.each(result_list, function(num, ext) {
+            var templ = $("#template-content-" + ext.ty.replace(".", "-"));
+            if (templ.length == 1) {
+                $('#left_json').append(_.template(templ.html())({num: num+1, ext: ext}));
             }
-
-            if (ty === 'thm.ax') {
-                var templ = _.template($("#template-content-thm-ax").html());
-                $('#left_json').append(templ(
-                    {num: num, name: name, prop: high_light(ext.prop_hl)}));
-            }
-
-            if (ty === 'thm') {
-                var status_color;
-                if (ext.proof === undefined) {
-                    status_color = 'red';
-                } else if (ext.num_gaps > 0) {
-                    status_color = 'yellow';
-                } else {
-                    status_color = 'green';
-                }
-                var templ = _.template($("#template-content-thm").html());
-                $('#left_json').append(templ(
-                    {status_color: status_color, num: num, name: ext.name, prop: high_light(ext.prop_hl)}));
-            }
-
-            if (ty === 'type.ind') {
-                var templ = _.template($("#template-content-type-ind").html());
-                $('#left_json').append(templ(
-                    {num: num, type_name: high_light(ext.argsT['concl']),
-                     argsT: ext.argsT, constrs: ext.constrs}));
-            }
-
-            if (ty === 'def') {
-                var term = high_light(ext.term);
-                var type = high_light(ext['type_hl']);
-                $('#left_json').append($(
-                    '<div name="theories" id="aa_' + num +'"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>definition</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b><br><span name="content">'+ term +'</span></font></p></div>'));
-                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
-            }
-
-            if (ty === 'def.ind') {
-                var type = high_light(ext.type_hl);
-                $('#left_json').append($(
-                    '<div name="theories" id="aa_'+num+'"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>fun</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b></font></p></div>'));
-                for (var j in ext.rules) {
-                    var str = high_light(ext.rules[j].prop_hl);
-                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
-                }
-                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
-            }
-
-            if (ty === 'def.pred') {
-                var type = high_light(ext.type_hl);
-                $('#left_json').append($(
-                    '<div name="theories" id="aa_'+num+'"><p id="data-' + num + '"><span name="fun"><font color="#006000"><b>inductive</b></font></span> <span name="name">' + name + ' :: ' + type +
-                    '</span><font color="#006000"><b> where</b></font></p></div>'));
-                for (var j in ext.rules) {
-                    var str = high_light(ext.rules[j].prop_hl);
-                    $('#left_json p:last').append($('<span name="content"></br>&nbsp;&nbsp;' + str + '</span>'));
-                }
-                $('#left_json p#data-'+ num +' span[name="content"]:last').after($('<a href="#" name="edit" id="data-'+ num +'"><b>&nbsp;&nbsp;&nbsp;edit</b></a>'));
-            }
-
-            if (ty==='header') {
-                $('#left_json').append($('<div><p id="data-'+ num +'">&nbsp;<span id="head_name" name="name">' +name + '</span>&nbsp;&nbsp;<a href="#" name="edit" id="data-' + num +'"><b>edit</b></a></p></div>'))
-            }
-        }
+        });
     }
 
 //  display_hilight;
@@ -1101,8 +1001,7 @@
 
                 if (theory_name in result_list_dict) {
                     result_list = result_list_dict[theory_name];
-                }
-                else
+                } else
                     result_list = result['data']['content'];
                 display_result_list();
             }
@@ -1142,7 +1041,7 @@
         editor.setValue("");
         cells[editor_id] = {};
         cells[editor_id].click_line_number = -1;
-        cells[editor_id].ctrl_click_line_numbers = new Set();
+        cells[editor_id].facts = new Set();
         cells[editor_id].edit_line_number = -1;
         cells[editor_id].readonly_lines = [0];
         editor.on("keydown", function (cm, event) {
@@ -1191,6 +1090,29 @@
                 $(this).removeClass('selected');
             });
             $(cm.getTextArea().parentNode).addClass('selected');
+            if (!(undefined !== cm.target && undefined !== cm.facts)) {
+                return;
+            }
+            is_mousedown = true;
+            cm.setCursor(cm.target, 0);
+            cm.facts.forEach(val => {
+                is_mousedown = true;
+                is_fact = true;
+                cm.setCursor(val, 0);
+            });
+            delete cm.target;
+            delete cm.facts;
+        });
+
+        editor.on('blur', function (cm, event) {
+            var id = get_selected_id();
+            var target = cells[id].click_line_number;
+            var facts = [];
+            for (const val of cells[id].facts) {
+               facts.push(val);
+            }
+            cm.target = target;
+            cm.facts = facts;
         });
 
         editor.on("cursorActivity", function (cm) {
@@ -1198,7 +1120,7 @@
                 mark_text(cm);
                 apply_thm(cm);
                 is_mousedown = false;
-                is_ctrl_click = false;
+                is_fact = false;
             }
         });
 
@@ -1212,8 +1134,8 @@
         editor.on('mousedown', function (cm, event) {
             var timer = 0;
             is_mousedown = true;
-            if (event.ctrlKey)
-                is_ctrl_click = true;
+            if (exisit_fact(cm))
+                is_fact = true;
             click_count++;
             if (click_count === 1) {
                 timer = setTimeout(function () {
@@ -1269,13 +1191,13 @@
         var line = cm.getLineHandle(line_num).text;
         var id = get_selected_id();
         var cell = cells[id] ? cells[id] : undefined;
-        if (is_ctrl_click && cell.click_line_number !== undefined
+        if (is_fact && cell.click_line_number !== undefined
             && cell.click_line_number !== -1 && line_num < cell.click_line_number) {
             cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'});
-            cells[id].ctrl_click_line_numbers.add(line_num);
-            is_ctrl_click = false;
+            cells[id].facts.add(line_num);
+            is_fact = false;
         } else if (line.indexOf('sorry') !== -1) {
-            if(cell.click_line_number !== undefined && cell.click_line_number !== -1){
+            if (cell.click_line_number !== undefined && cell.click_line_number !== -1) {
                 cm.getAllMarks().forEach(e => {
                     if (e.css !== undefined)
                         if (e.css.indexOf('background: red') !== -1)
@@ -1286,18 +1208,23 @@
                 css: "background: red"
             });
             cells[id].click_line_number = line_num;
-        }else{
+        } else {
             cm.getAllMarks().forEach(e => {
                 if (e.css !== undefined)
                     if (e.css.indexOf('background') !== -1)
                         e.clear();
             });
             cells[id].click_line_number = -1;
-            cells[id].ctrl_click_line_numbers.clear();
+            cells[id].facts.clear();
         }
 
         clear_match_thm();
         cm.setCursor(origin_pos);
+    }
+
+    function exisit_fact(cm) {
+        var id = get_selected_id();
+        return cells[id].click_line_number !== -1;
     }
 
     function resize_editor() {

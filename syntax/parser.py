@@ -2,7 +2,7 @@
 
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import TVar, Type, TFun, hol_bool
+from kernel.type import TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.macro import MacroSig
 from kernel.thm import Thm
@@ -354,6 +354,8 @@ def parse_extension(thy, data):
             ext.add_extension(extension.Attribute(data['name'], 'hint_backward'))
         if 'hint_rewrite' in data and data['hint_rewrite'] == "true":
             ext.add_extension(extension.Attribute(data['name'], 'hint_rewrite'))
+        if 'hint_forward' in data and data['hint_forward'] == 'true':
+            ext.add_extension(extension.Attribute(data['name'], 'hint_forward'))
 
     elif data['ty'] == 'type.ind':
         constrs = []

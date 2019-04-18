@@ -28,6 +28,8 @@ class Z3WrapperTest(unittest.TestCase):
             ("s 0 = s 1", False),
             ("s 0 + s 1 = A --> A + s 2 = B --> s 0 + s 2 + s 1 = B", True),
             ("s 0 + s 1 = A --> A + s 2 = B --> s 0 + s 2 = B", False),
+            ("(!n. s n = 0) --> s 2 = 0", True),
+            ("(!n. s n = 0) --> s 0 = 1", False),
         ]
 
         for s, res in test_data:

@@ -2,7 +2,7 @@
 
 import itertools
 
-from kernel.type import TVar, TFun, hol_bool, Type
+from kernel.type import TVar, TFun, boolT, Type
 from kernel import term
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
@@ -88,7 +88,7 @@ def add_induct_type(name, targs, constrs):
     # Add the inductive theorem.
     tvars = [TVar(targ) for targ in targs]
     T = Type(name, *tvars)
-    var_P = Var("P", TFun(T, hol_bool))
+    var_P = Var("P", TFun(T, boolT))
     ind_assums = []
     for cname, cT, vars in constrs:
         A = Const(cname, cT)
@@ -150,9 +150,9 @@ def add_induct_predicate(name, T, props):
     Targs, _ = T.strip_type()
     vars = []
     for i, Targ in enumerate(Targs):
-        vars.append(Var("a" + str(i+1), Targ))
+        vars.append(Var("_a" + str(i+1), Targ))
 
-    P = Var("P", hol_bool)
+    P = Var("P", boolT)
     pred = Const(name, T)
     assum0 = pred(*vars)
     assums = []

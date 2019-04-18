@@ -266,6 +266,11 @@ tt.normal{
     color: black;
 }
 
+p.login-user {
+    color: black;
+    font-weight: bold;
+}
+
 span.pos {
     positon: absolute;
 }
