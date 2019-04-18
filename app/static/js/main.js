@@ -823,16 +823,20 @@
 
 //click DEL to delete red left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
+            var number = '';
             $.each(theories_selected, function (i, v) {
-                   var number = Number(v.slice(3,))-1;
-                   result_list.splice(number, 1);
+                   number = Number(v.slice(3,))-1;
+                   result_list[number] = '';
             })
-            //save_editor_data();
+            result_list = result_list.filter(function(item) {
+                return item !== '';
+            });
+            save_editor_data();
             display_result_list();
             if(theories_selected.length > 0){
                 alert('删除成功！');
+                theories_selected = [];
             }
-            theories_selected = [];
         })
 //        $('div.dropdown-menu.Ctrl a[name="up"]').on('click',function(){
 //            if($('div[name="theories"]').css('background-color') === bgColor){
@@ -976,9 +980,11 @@
         var templ = _.template($("#template-content-theory_desc").html());
         $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
         $.each(result_list, function(num, ext) {
-            var templ = $("#template-content-" + ext.ty.replace(".", "-"));
-            if (templ.length == 1) {
-                $('#left_json').append(_.template(templ.html())({num: num+1, ext: ext}));
+            if (ext) {
+                var templ = $("#template-content-" + ext.ty.replace(".", "-"));
+                if (templ.length == 1) {
+                    $('#left_json').append(_.template(templ.html())({num: num+1, ext: ext}));
+                }
             }
         });
     }
