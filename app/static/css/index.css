@@ -71,6 +71,7 @@ body {
 
 .input {
     display: flex;
+    font-family: monospace;
     margin-top: 20px;
 }
 
@@ -277,6 +278,7 @@ span.pos {
 
 textarea {
     overflow-x:none;
+    font-family: monospace;
 }
 
 #variables {
