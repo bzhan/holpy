@@ -327,6 +327,7 @@
             if (file_name) {
                 get_selected_editor().reset = true;
                 theorem_proof(result_list_dict[file_name][id], file_name);
+                get_selected_editor().reset = false;
             }
         });
 
