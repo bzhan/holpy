@@ -722,7 +722,8 @@
                 ajax_data['prop'] = data_content;
                 $.each(vars_str_list, function (i, v) {
                     let v_list = v.split('::');
-                    vars_str[$.trim(v_list[0])] = $.trim(v_list[1]);
+                    if (v_list[0])
+                        vars_str[$.trim(v_list[0])] = $.trim(v_list[1]);
                 });
                 ajax_data['vars'] = vars_str;
             }
