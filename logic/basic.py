@@ -28,18 +28,18 @@ def getInitTheory():
 
     return thy
 
-def loadImportedTheory(imports):
+def loadImportedTheory(imports, username):
     """Load imported theory according to the imports field in data."""
     if imports:
         # Has at least one import
         if len(imports) > 1:
             raise NotImplementedError
 
-        return copy(loadTheory(imports[0]))
+        return copy(loadTheory(imports[0], user = username))
     else:
         return getInitTheory()
 
-def loadTheory(theory_name, *, limit=None):
+def loadTheory(theory_name, *, limit=None, user):
     """Load the theory with the given theory name. Optional limit is
     a pair (ty, name) specifying the first item that should not
     be loaded.
@@ -50,7 +50,7 @@ def loadTheory(theory_name, *, limit=None):
         return loaded_theories[theory_name]
 
     # Otherwise, open the corresponding file.
-    with open('library/' + theory_name + '.json', encoding='utf-8') as a:
+    with open('users/' + user + '/' + theory_name + '.json', encoding='utf-8') as a:
         data = json.load(a)
 
     content = data['content']
@@ -64,7 +64,7 @@ def loadTheory(theory_name, *, limit=None):
         assert limit_i != -1, "Limit not found"
         content = content[:limit_i]
 
-    thy = loadImportedTheory(data['imports'])
+    thy = loadImportedTheory(data['imports'], username = user)
     parser.parse_extensions(thy, content)
 
     if limit is None:
