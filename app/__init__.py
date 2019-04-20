@@ -27,7 +27,7 @@ cells = dict()
 
 user_info = {
     # Whether there is an user signed in
-    'is_signed_in': True,
+    'is_signed_in': False,
 
     # Name of the user signed in
     'username': "",
@@ -40,6 +40,10 @@ user_info = {
 @app.route('/display_results.html', methods = ['GET'])
 def display_results_template():
     return render_template('display_results.html')
+
+@app.route('/edit_area.html', methods = ['GET'])
+def edit_area_template():
+    return render_template('edit_area.html')
 
 
 # init page of HOL
@@ -514,7 +518,7 @@ def edit_jsonFile():
         file_data = json.load(f)
     content['description'] = file_data['description']
     content['imports'] = file_data['imports']
-    content['name'] = username
+    content['name'] = file_name
 
     return jsonify(content)
 

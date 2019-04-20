@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun, hol_bool
+from kernel.type import Type, TFun, boolT
 from kernel.term import Const
 from kernel.thm import Thm
 from kernel.macro import MacroSig, global_macros
@@ -21,7 +21,7 @@ V = Const("V", TFun(natT, aexpT))
 Plus = Const("Plus", TFun(aexpT, aexpT, aexpT))
 Times = Const("Times", TFun(aexpT, aexpT, aexpT))
 
-avalI = Const("avalI", TFun(TFun(natT, natT), aexpT, natT, hol_bool))
+avalI = Const("avalI", TFun(TFun(natT, natT), aexpT, natT, boolT))
 
 class prove_avalI_macro(ProofTermMacro):
     """Prove a theorem of the form avalI s t n."""

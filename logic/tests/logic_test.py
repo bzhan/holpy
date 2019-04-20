@@ -2,17 +2,17 @@
 
 import unittest
 
-from kernel.type import TVar, hol_bool
+from kernel.type import TVar, boolT
 from kernel.term import Term, Var, Abs, Bound
 from kernel.thm import Thm
 from logic import logic
 from logic import basic
 
 Ta = TVar("a")
-a = Var("a", hol_bool)
-b = Var("b", hol_bool)
-c = Var("c", hol_bool)
-d = Var("d", hol_bool)
+a = Var("a", boolT)
+b = Var("b", boolT)
+c = Var("c", boolT)
+d = Var("d", boolT)
 x = Var("x", Ta)
 y = Var("y", Ta)
 abs = Term.mk_abs

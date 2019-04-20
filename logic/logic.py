@@ -1,18 +1,18 @@
 # Author: Bohua Zhan
 
-from kernel.type import TVar, TFun, hol_bool
-from kernel.term import Term, Const, Abs
+from kernel.type import TVar, TFun, boolT
+from kernel.term import Term, Var, Const, Abs
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv
 from logic.proofterm import ProofTerm, refl
 
 """Utility functions for logic."""
 
 
-conj = Const("conj", TFun(hol_bool, hol_bool, hol_bool))
-disj = Const("disj", TFun(hol_bool, hol_bool, hol_bool))
-neg = Const("neg", TFun(hol_bool, hol_bool))
-true = Const("true", hol_bool)
-false = Const("false", hol_bool)
+conj = Const("conj", TFun(boolT, boolT, boolT))
+disj = Const("disj", TFun(boolT, boolT, boolT))
+neg = Const("neg", TFun(boolT, boolT))
+true = Const("true", boolT)
+false = Const("false", boolT)
     
 def is_conj(t):
     """Whether t is of the form A & B."""
@@ -78,7 +78,7 @@ def mk_exists(x, body):
     the term ?x. t.
 
     """
-    exists_t = Const("exists", TFun(TFun(x.T, hol_bool), hol_bool))
+    exists_t = Const("exists", TFun(TFun(x.T, boolT), boolT))
     return exists_t(Term.mk_abs(x, body))
 
 def beta_norm(t):
@@ -108,7 +108,7 @@ def subst_norm(t, instsp):
     return beta_norm(t.subst_type(tyinst).subst(inst))
 
 def if_t(T):
-    return Const("IF", TFun(hol_bool, T, T, T))
+    return Const("IF", TFun(boolT, T, T, T))
 
 def is_if(t):
     """Whether t is of the form if P then x else y."""
@@ -118,6 +118,28 @@ def is_if(t):
 def mk_if(P, x, y):
     """Obtain the term if P then x else y."""
     return if_t(x.get_type())(P, x, y)
+
+def strip_all_implies(t, names):
+    """Given a term of the form
+
+    !x_1 ... x_k. A_1 --> ... --> A_n --> C.
+
+    Return the triple ([v_1, ..., v_k], [A_1, ... A_n], C), where
+    v_1, ..., v_k are new variables with the given names, and
+    A_1, ..., A_n, C are the body of the input term, with bound variables
+    substituted for v_1, ..., v_k.
+
+    """
+    if Term.is_all(t):
+        assert len(names) > 0, "strip_all_implies: not enough names input."
+        v = Var(names[0], t.arg.var_T)
+        vars, As, C = strip_all_implies(t.arg.subst_bound(v), names[1:])
+        return ([v] + vars, As, C)
+    else:
+        assert len(names) == 0, "strip_all_implies: too many names input."
+        As, C = t.strip_implies()
+        return ([], As, C)
+
 
 """Normalization rules for logic."""
 

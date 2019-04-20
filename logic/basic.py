@@ -1,6 +1,8 @@
 # Author: Bohua Zhan
 
 from copy import copy
+import os
+import inspect
 import json
 
 from kernel.theory import Theory
@@ -50,7 +52,8 @@ def loadTheory(theory_name, *, limit=None, user):
         return loaded_theories[theory_name]
 
     # Otherwise, open the corresponding file.
-    with open('users/' + user + '/' + theory_name + '.json', encoding='utf-8') as a:
+    dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    with open(dir + '/../users/' + user + '/' + theory_name + '.json', encoding='utf-8') as a:
         data = json.load(a)
 
     content = data['content']

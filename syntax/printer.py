@@ -322,3 +322,19 @@ def print_proof_item(thy, item):
 def print_proof(thy, prf):
     """Print the given proof."""
     return '\n'.join(print_proof_item(thy, item) for item in prf.items)
+
+@settings.with_settings
+def print_tyinst(thy, tyinst):
+    """Print a type instantiation."""
+    return "{" + ", ".join(nm + ": " + print_type(thy, T) for nm, T in sorted(tyinst.items())) + "}"
+
+@settings.with_settings
+def print_inst(thy, inst):
+    """Print a term instantiation."""
+    return "{" + ", ".join(nm + ": " + print_term(thy, t) for nm, t in sorted(inst.items())) + "}"
+
+@settings.with_settings
+def print_instsp(thy, instsp):
+    """Print a pair of type and term instantiations."""
+    tyinst, inst = instsp
+    return print_tyinst(thy, tyinst) + ", " + print_inst(thy, inst)

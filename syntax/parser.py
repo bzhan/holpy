@@ -2,7 +2,7 @@
 
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import TVar, Type, TFun, hol_bool
+from kernel.type import TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.macro import MacroSig
 from kernel.thm import Thm

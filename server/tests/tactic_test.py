@@ -3,7 +3,7 @@
 import unittest
 import io
 
-from kernel.type import TVar, TFun, hol_bool
+from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from kernel.proof import Proof
@@ -19,8 +19,8 @@ from server.tactic import ProofState
 
 thy = basic.loadTheory('logic_base')
 
-A = Var("A", hol_bool)
-B = Var("B", hol_bool)
+A = Var("A", boolT)
+B = Var("B", boolT)
 conj = logic.mk_conj
 disj = logic.mk_disj
 imp = Term.mk_implies
@@ -82,7 +82,7 @@ class TacticTest(unittest.TestCase):
 
     def testGetCtxt(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        self.assertEqual(state.get_ctxt(0), {'A': hol_bool, 'B': hol_bool})
+        self.assertEqual(state.get_ctxt(0), {'A': boolT, 'B': boolT})
 
     def testAddLineAfter(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
@@ -192,8 +192,8 @@ class TacticTest(unittest.TestCase):
 
     def testIntroduction3(self):
         Ta = TVar("a")
-        A = Var("A", TFun(Ta, hol_bool))
-        B = Var("B", TFun(Ta, hol_bool))
+        A = Var("A", TFun(Ta, boolT))
+        B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
         state = ProofState.init_state(thy, [A, B], [], Term.mk_all(x, imp(A(x), B(x))))
         state.introduction(0, ["x"])
@@ -242,8 +242,8 @@ class TacticTest(unittest.TestCase):
     def testExistsConj(self):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
         Ta = TVar("a")
-        A = Var("A", TFun(Ta, hol_bool))
-        B = Var("B", TFun(Ta, hol_bool))
+        A = Var("A", TFun(Ta, boolT))
+        B = Var("B", TFun(Ta, boolT))
         x = Var("x", Ta)
         ex_conj = exists(x, conj(A(x), B(x)))
         conj_ex = conj(exists(x, A(x)), exists(x, B(x)))

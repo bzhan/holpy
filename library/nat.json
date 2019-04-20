@@ -338,26 +338,18 @@
         },
         {
             "name": "bit0",
-            "ty": "def.ax",
-            "type": "nat => nat"
-        },
-        {
-            "name": "bit1",
-            "ty": "def.ax",
-            "type": "nat => nat"
-        },
-        {
-            "name": "bit0_def",
+            "ty": "def",
+            "type": "nat => nat",
             "prop": "bit0 n = n + n",
-            "ty": "thm",
             "vars": {
                 "n": "nat"
             }
         },
         {
-            "name": "bit1_def",
+            "name": "bit1",
+            "ty": "def",
+            "type": "nat => nat",
             "prop": "bit1 n = n + n + 1",
-            "ty": "thm",
             "vars": {
                 "n": "nat"
             }

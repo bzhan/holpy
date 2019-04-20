@@ -2,7 +2,7 @@
 
 import unittest
 
-from kernel.type import TVar, Type, TFun, HOLType, hol_bool
+from kernel.type import TVar, Type, TFun, HOLType, boolT
 from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
@@ -16,17 +16,17 @@ thy = basic.loadTheory('list')
 
 Ta = TVar("a")
 ctxt = {
-    "A" : hol_bool,
-    "B" : hol_bool,
-    "C" : hol_bool,
-    "P" : TFun(Ta, hol_bool),
-    "Q" : TFun(Ta, hol_bool),
-    "R" : TFun(Ta, Ta, hol_bool),
+    "A" : boolT,
+    "B" : boolT,
+    "C" : boolT,
+    "P" : TFun(Ta, boolT),
+    "Q" : TFun(Ta, boolT),
+    "R" : TFun(Ta, Ta, boolT),
     "a" : Ta,
     "b" : Ta,
     "c" : Ta,
     "f" : TFun(Ta, Ta),
-    "nn" : TFun(hol_bool, hol_bool),
+    "nn" : TFun(boolT, boolT),
     "m" : nat.natT,
     "n" : nat.natT,
     "p" : nat.natT,
@@ -35,9 +35,9 @@ ctxt = {
     "zs" : Type("list", Ta),
 }
 
-A = Var("A", hol_bool)
-B = Var("B", hol_bool)
-C = Var("C", hol_bool)
+A = Var("A", boolT)
+B = Var("B", boolT)
+C = Var("C", boolT)
 
 class ParserTest(unittest.TestCase):
     def testParseType(self):

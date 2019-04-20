@@ -7,13 +7,9 @@
         },
         {
             "name": "fun_upd",
-            "ty": "def.ax",
-            "type": "('a => 'b) => 'a => 'b => 'a => 'b"
-        },
-        {
-            "name": "fun_upd_def",
+            "ty": "def",
+            "type": "('a => 'b) => 'a => 'b => 'a => 'b",
             "prop": "fun_upd f a b = (%x. if x = a then b else f x)",
-            "ty": "thm",
             "vars": {
                 "a": "'a",
                 "b": "'b",

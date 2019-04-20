@@ -202,50 +202,48 @@
         },
         {
             "name": "avalI",
-            "ty": "def.ax",
-            "type": "(nat => nat) => aexp => nat => bool"
-        },
-        {
-            "name": "avalI_const",
-            "prop": "avalI s (N n) n",
-            "ty": "thm",
-            "vars": {
-                "n": "nat",
-                "s": "nat => nat"
-            }
-        },
-        {
-            "name": "avalI_var",
-            "prop": "avalI s (V x) (s x)",
-            "ty": "thm",
-            "vars": {
-                "s": "nat => nat",
-                "x": "nat"
-            }
-        },
-        {
-            "name": "avalI_plus",
-            "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Plus a1 a2) (n1 + n2)",
-            "ty": "thm",
-            "vars": {
-                "a1": "aexp",
-                "a2": "aexp",
-                "n1": "nat",
-                "n2": "nat",
-                "s": "nat => nat"
-            }
-        },
-        {
-            "name": "avalI_times",
-            "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Times a1 a2) (n1 * n2)",
-            "ty": "thm",
-            "vars": {
-                "a1": "aexp",
-                "a2": "aexp",
-                "n1": "nat",
-                "n2": "nat",
-                "s": "nat => nat"
-            }
+            "ty": "def.pred",
+            "type": "(nat => nat) => aexp => nat => bool",
+            "rules": [
+                {
+                    "name": "avalI_const",
+                    "prop": "avalI s (N n) n",
+                    "vars": {
+                        "n": "nat",
+                        "s": "nat => nat"
+                    }
+                },
+                {
+                    "name": "avalI_var",
+                    "prop": "avalI s (V x) (s x)",
+                    "vars": {
+                        "s": "nat => nat",
+                        "x": "nat"
+                    }
+                },
+                {
+                    "name": "avalI_plus",
+                    "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Plus a1 a2) (n1 + n2)",
+                    "vars": {
+                        "a1": "aexp",
+                        "a2": "aexp",
+                        "n1": "nat",
+                        "n2": "nat",
+                        "s": "nat => nat"
+                    }
+                },
+                {
+                    "name": "avalI_times",
+                    "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Times a1 a2) (n1 * n2)",
+                    "vars": {
+                        "a1": "aexp",
+                        "a2": "aexp",
+                        "n1": "nat",
+                        "n2": "nat",
+                        "s": "nat => nat"
+                    }
+                }
+            ]
         },
         {
             "name": "prove_avalI",
