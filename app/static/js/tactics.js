@@ -482,47 +482,39 @@ function display(id) {
         cells[get_selected_id()].readonly_lines.push(i);
 }
 
+function match_thm_texts(method_name) {
+    if (method_name === 'abs')
+        return ['Theorems: (Ctrl-B)', 'Other backward step', 'backward-step'];
+    else if (method_name === 'afs')
+        return ['(Theorems: Ctrl-F)', 'Other forward step', 'forward-step'];
+    else if (method_name === 'rewrite')
+        return ['Theorems: (Ctrl-R)', 'Other rewrite goal', 'rewrite-goal'];
+}
+
 function display_match_thm(result) {
+    var template_match_thm = _.template($("#template-match-thm").html());
     if ('ths_abs' in result && result['ths_abs'].length !== 0) {
-        $('div.rbottom .selected .match-thm .abs-thm').append(
-            $(`<pre>Theorems: (Ctrl-B)</pre><div class="thm-content"></div>`)
-        );
-        for (var i in result['ths_abs']) {
-            $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(
-                $(`<pre>${result['ths_abs'][i][0]}  ${result['ths_abs'][i][1]}</pre>`)
-            );
-        }
-        $('div.rbottom .selected .match-thm .abs-thm .thm-content').append(
-            $(`<a href="#" class="backward-step">Other backward step</a>`)
-        )
+        template_match_thm({
+            result: result['ths_abs'],
+            method_name: 'abs',
+            match_thm_texts: match_thm_texts('abs')
+        })
     }
 
     if ('ths_afs' in result && result['ths_afs'].length !== 0) {
-        $('div.rbottom .selected .match-thm .afs-thm').append(
-            $(`<pre>Theorems: (Ctrl-F)</pre><div class="thm-content"></div>`)
-        );
-        for (var i in result['ths_afs']) {
-            $('div.rbottom .selected .match-thm .afs-thm .thm-content').append(
-                $(`<pre>${result['ths_afs'][i][0]}  ${result['ths_afs'][i][1]}</pre>`)
-            );
-        }
-        $('div.rbottom .selected .match-thm .afs-thm .thm-content').append(
-            $(`<a href="#" class="forward-step">Other forward step</a>`)
-        )
+        template_match_thm({
+            result: result['ths_afs'],
+            method_name: 'afs',
+            match_thm_texts: match_thm_texts('afs')
+        })
     }
 
     if ('ths_rewrite' in result && result['ths_rewrite'].length !== 0) {
-        $('div.rbottom .selected .match-thm .rewrite-thm').append(
-            $(`<pre>Theorems: (Ctr-R)</pre><div class="thm-content"></div>`)
-        );
-        for (var i in result['ths_rewrite']) {
-            $('div.rbottom .selected .match-thm .rewrite-thm .thm-content').append(
-                $(`<pre>${result['ths_rewrite'][i][0]}  ${result['ths_rewrite'][i][1]}</pre>`)
-            );
-        }
-        $('div.rbottom .selected .match-thm .rewrite-thm .thm-content').append(
-            $(`<a href="#" class="rewrite-goal">Other rewrite goal</a>`)
-        )
+        template_match_thm({
+            result: result['ths_rewrite'],
+            method_name: 'rewrite',
+            match_thm_texts: match_thm_texts('rewrite')
+        })
     }
 }
 
@@ -702,7 +694,7 @@ function set_focus_rewrite(cm) {
     cm.setCursor(line_no, 0);
 }
 
-function set_focus_intro(cm){
+function set_focus_intro(cm) {
     var line_no = pre_line;
     var line_count = cm.lineCount();
     for (var i = line_no; i < line_count; i++) {
