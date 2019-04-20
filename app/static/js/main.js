@@ -199,7 +199,7 @@
         });
 
         $('div#root-file').on('click', 'a[name="edit"]', function () {
-            var number = Number($(this).attr('id').slice(4,).trim()) - 1;
+            var number = Number($(this).attr('id').slice(4,).trim());
             page_num++;
             data = JSON.stringify(file_list[number]);
             init_metadata_area(page_num);
@@ -219,7 +219,7 @@
         });
 
         $('div#root-file').on('click', 'a[name="delete"]', function () {
-            var number = Number($(this).attr('id').trim()) - 1;
+            var number = Number($(this).attr('id').trim());
             var json_name = $(this).attr('class');
             file_list.splice(number, 1);
             display_file_list();
@@ -240,7 +240,7 @@
             editor_id_list = [];
             var file_name = $(this).attr('name').slice(4,);
             var editor_id = get_selected_id();
-            var id = Number($(this).attr('id')) - 1;
+            var id = Number($(this).attr('id'));
             var proof = cells[editor_id]['proof'];
             var output_proof = [];
             $.each(proof, function (i) {
@@ -325,7 +325,7 @@
 
         //click reset button to reset the thm to the origin status;
         $('div.rbottom').on('click', 'button.reset', function () {
-            var id = Number($(this).attr('id')) - 1;
+            var id = Number($(this).attr('id'));
             var file_name = $(this).attr('name').slice(5,);
             if (file_name) {
                 theorem_proof(result_list_dict[file_name][id], file_name);
@@ -424,7 +424,7 @@
 //      click delete then delete the content from webpage;
         $('#left_json').on('click', 'a[name="del"]', function () {
             var a_id = $(this).attr('id').trim();
-            var number = Number(a_id.slice(5,)) - 1;
+            var number = Number(a_id.slice(5,));
             result_list.splice(number, 1);
             display_result_list();
             save_editor_data();
@@ -437,20 +437,23 @@
             var id = $(this).attr('id');
             var pos = document.getElementById(id).selectionStart;
             if (pos !== 0 && e.keyCode === 9) {
-                if (e && e.preventDefault) {
-                    e.preventDefault();
-                } else {
-                    window.event.returnValue = false;
-                }
+                var len = '';
                 for (var key in replace_obj) {
-                    l = key.length;
+                    var l = key.length;
                     if (content.substring(pos - l, pos) === key) {
-                        var len = l;
-                        content = content.slice(0, pos - l) + replace_obj[key] + content.slice(pos,);
+                        if (e && e.preventDefault) {
+                            e.preventDefault();
+                        } else {
+                            window.event.returnValue = false;
+                        };
+                        len = l;
+                        content = content.slice(0, pos - len) + replace_obj[key] + content.slice(pos,);
                     }
                 }
-                $(this).val(content);
-                document.getElementById(id).setSelectionRange(pos - len + 1, pos - len + 1);
+                if (len) {
+                    $(this).val(content);
+                    document.getElementById(id).setSelectionRange(pos - len + 1, pos - len + 1);
+                }
             }
         });
 
@@ -476,12 +479,12 @@
                 a_id = '', border = '', data_name = '', data_content = '', number = '', data_label = data_type;
             } else {
                 a_id = a_ele.attr('id').trim();
-                number = String(Number(a_id.slice(5,)) - 1);
+                number = String(Number(a_id.slice(5,)));
                 data_name = result_list[number]['name'];
                 data_type = result_list[number]['ty'];
                 data_label = data_name;
                 for (var key in result_list[number]['vars']) {
-                    vars_str += key + ':' + result_list[number]['vars'][key] + '\n';
+                    vars_str += key + '::' + result_list[number]['vars'][key] + '\n';
                 }
             }
 
@@ -658,7 +661,7 @@
             var error_id = $(this).next().attr('id').trim();
             var id = tab_pm;
             var ty = $(this).attr('name').trim();
-            var number = Number(a_id.slice(5,)) - 1;
+            var number = Number(a_id.slice(5,));
             var ajax_data = make_data(ty, id, number);
             var prev_list = result_list.slice(0, number);
             if ($('input[name="hint_backward' + tab_pm + '"]').prop('checked') === true)
@@ -685,16 +688,18 @@
                         var error_info = error['detail-content'];
                         $('div#' + error_id).find('pre').text(error_info);
                     }
-                    if (!a_id) {
-                        result_list.push(result_data);
-                    } else {
-                        for (var key in result_data) {
-                            result_list[number][key] = result_data[key];
+                    else {
+                        if (!a_id) {
+                            result_list.push(result_data);
+                        } else {
+                            for (var key in result_data) {
+                                result_list[number][key] = result_data[key];
+                            }
                         }
+                        display_result_list();
+                        save_editor_data();
+                        alert('保存成功！');
                     }
-                    display_result_list();
-                    save_editor_data();
-                    alert('保存成功！')
                 }
             });
         });
@@ -716,8 +721,8 @@
                 ajax_data['name'] = data_name;
                 ajax_data['prop'] = data_content;
                 $.each(vars_str_list, function (i, v) {
-                    let v_list = v.split(':');
-                    vars_str[v_list[0]] = v_list[1];
+                    let v_list = v.split('::');
+                    vars_str[$.trim(v_list[0])] = $.trim(v_list[1]);
                 });
                 ajax_data['vars'] = vars_str;
             }
