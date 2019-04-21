@@ -9,8 +9,11 @@
     var is_fact = false;
     var click_count = 0;
     var proof_id = 0;
+<<<<<<< HEAD
     var bgColor = '';
     var origin_result = [];
+=======
+>>>>>>> czxiang
     var edit_mode = false;
     var result_list_dict = {};
     var file_list = [];
@@ -23,7 +26,7 @@
 
     $(document).ready(function () {
         var includes = $('[data-include]');
-        jQuery.each(includes, function(){
+        jQuery.each(includes, function () {
             var file = "../" + $(this).data('include') + '.html';
             $(this).load(file);
         });
@@ -226,11 +229,11 @@
             save_file_list(json_name);
         });
 
-        $('button#register').click(function() {
+        $('button#register').click(function () {
             $.ajax({
                 url: '/api/register',
                 type: 'GET',
-                success: function() {
+                success: function () {
                 }
             })
         })
@@ -328,7 +331,9 @@
             var id = Number($(this).attr('id'));
             var file_name = $(this).attr('name').slice(5,);
             if (file_name) {
+                get_selected_editor().reset = true;
                 theorem_proof(result_list_dict[file_name][id], file_name);
+                get_selected_editor().reset = false;
             }
         });
 
@@ -553,7 +558,8 @@
                 $('#codeTabContent').append(templ_edit({
                     a_id: a_id, class_name: class_name, page_num: page_num,
                     border: border, data_name: data_name, i: i, data_content: data_content,
-                    ext_: ext_}));
+                    ext_: ext_
+                }));
 
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -617,11 +623,13 @@
                 if (data_type !== 'def')
                     display_lines_number(data_content_list, page_num, number);
             }
-
+            var edit_thm_form = get_selected_edit_form('edit-thm-form');
             if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
-                $('input[name="hint_backward' + page_num + '"]').click();
+                edit_thm_form.elements.hint_backward.click();
+            if (number && 'hint_forward' in result_list[number] && result_list[number]['hint_forward'] === 'true')
+                edit_thm_form.elements.hint_forward.click();
             if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
-                $('input[name="hint_rewrite' + page + '"]').click();
+                edit_thm_form.elements.hint_rewrite.click();
             change_css($('textarea#data-vars' + page_num));
             change_css($('textarea#data-content' + page_num));
             change_css($('textarea#data-names' + page_num));
@@ -656,6 +664,7 @@
 
 //      click save button on edit tab to save content to the left-json for updating;
         $('div.rbottom').on('click', 'button#save-edit', function () {
+            var edit_thm_form = get_selected_edit_form('edit-thm-form');
             var tab_pm = $(this).parent().attr('id').slice(3,);
             var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
             var error_id = $(this).next().attr('id').trim();
@@ -664,11 +673,15 @@
             var number = Number(a_id.slice(5,));
             var ajax_data = make_data(ty, id, number);
             var prev_list = result_list.slice(0, number);
-            if ($('input[name="hint_backward' + tab_pm + '"]').prop('checked') === true)
+            if (edit_thm_form.elements.hint_backward.checked === true)
                 result_list[number]['hint_backward'] = 'true';
             else if (number !== -1 && 'hint_backward' in result_list[number])
                 delete result_list[number]['hint_backward'];
-            if ($('input[name="hint_rewrite' + tab_pm + '"]').prop('checked') === true)
+            if (edit_thm_form.elements.hint_forward.checked ===  true)
+                result_list[number]['hint_forward'] = 'true';
+            else if (number !== -1 && 'hint_forward' in result_list[number])
+                delete result_list[number]['hint_forward'];
+            if (edit_thm_form.elements.hint_rewrite.checked ===  true)
                 result_list[number]['hint_rewrite'] = 'true';
             else if (number !== -1 && 'hint_rewrite' in result_list[number])
                 delete result_list[number]['hint_rewrite'];
@@ -947,6 +960,9 @@
             type: "POST",
             data: data,
             success: function (result) {
+                cells[get_selected_id()].click_line_number = -1;
+                cells[get_selected_id()].facts.clear();
+                clear_match_thm();
                 display_checked_proof(result);
                 get_selected_editor().focus();
                 display_instuctions(instructions);
@@ -988,7 +1004,7 @@
             if (ext) {
                 var templ = $("#template-content-" + ext.ty.replace(".", "-"));
                 if (templ.length == 1) {
-                    $('#left_json').append(_.template(templ.html())({num: num+1, ext: ext}));
+                    $('#left_json').append(_.template(templ.html())({num: num + 1, ext: ext}));
                 }
             }
         });
@@ -1097,7 +1113,7 @@
                 $(this).removeClass('selected');
             });
             $(cm.getTextArea().parentNode).addClass('selected');
-            if (!(undefined !== cm.target && undefined !== cm.facts)) {
+            if (!(undefined !== cm.target && undefined !== cm.facts) || cm.reset) {
                 return;
             }
             is_mousedown = true;
@@ -1116,7 +1132,7 @@
             var target = cells[id].click_line_number;
             var facts = [];
             for (const val of cells[id].facts) {
-               facts.push(val);
+                facts.push(val);
             }
             cm.target = target;
             cm.facts = facts;
