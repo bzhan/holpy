@@ -615,11 +615,11 @@
             }
             var edit_thm_form = get_selected_edit_form('edit-thm-form');
             if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
-                edit_thm_form.elements['hint_backward' + page_num].click();
+                edit_thm_form.elements.hint_backward.click();
             if (number && 'hint_forward' in result_list[number] && result_list[number]['hint_forward'] === 'true')
-                edit_thm_form.elements['hint_forward' + page_num].click();
+                edit_thm_form.elements.hint_forward.click();
             if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
-                edit_thm_form.elements['hint_rewrite' + page_num].click();
+                edit_thm_form.elements.hint_rewrite.click();
             change_css($('textarea#data-vars' + page_num));
             change_css($('textarea#data-content' + page_num));
             change_css($('textarea#data-names' + page_num));
@@ -663,15 +663,15 @@
             var number = Number(a_id.slice(5,)) - 1;
             var ajax_data = make_data(ty, id, number);
             var prev_list = result_list.slice(0, number);
-            if (edit_thm_form.elements['hint_backward' + tab_pm].checked === true)
+            if (edit_thm_form.elements.hint_backward.checked === true)
                 result_list[number]['hint_backward'] = 'true';
             else if (number !== -1 && 'hint_backward' in result_list[number])
                 delete result_list[number]['hint_backward'];
-            if (edit_thm_form.elements['hint_forward' + tab_pm].checked ===  true)
+            if (edit_thm_form.elements.hint_forward.checked ===  true)
                 result_list[number]['hint_forward'] = 'true';
             else if (number !== -1 && 'hint_forward' in result_list[number])
                 delete result_list[number]['hint_forward'];
-            if (edit_thm_form.elements['hint_rewrite' + tab_pm].checked ===  true)
+            if (edit_thm_form.elements.hint_rewrite.checked ===  true)
                 result_list[number]['hint_rewrite'] = 'true';
             else if (number !== -1 && 'hint_rewrite' in result_list[number])
                 delete result_list[number]['hint_rewrite'];
