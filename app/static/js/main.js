@@ -199,7 +199,7 @@
         });
 
         $('div#root-file').on('click', 'a[name="edit"]', function () {
-            var number = Number($(this).attr('id').slice(4,).trim());
+            var number = Number($(this).attr('id').slice(4,).trim())-1;
             page_num++;
             data = JSON.stringify(file_list[number]);
             init_metadata_area(page_num);
@@ -989,7 +989,7 @@
             if (ext) {
                 var templ = $("#template-content-" + ext.ty.replace(".", "-"));
                 if (templ.length == 1) {
-                    $('#left_json').append(_.template(templ.html())({num: num+1, ext: ext}));
+                    $('#left_json').append(_.template(templ.html())({num: num, ext: ext}));
                 }
             }
         });
