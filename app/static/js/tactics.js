@@ -24,6 +24,10 @@ function get_selected_instruction_number() {
     return document.querySelector('.rbottom .selected .output #instruction-number');
 }
 
+function get_selected_edit_form(id) {
+   return document.querySelector('#' + id);
+}
+
 function clear_match_thm() {
     $('.match-thm .abs-thm').empty();
     $('.match-thm .rewrite-thm').empty();

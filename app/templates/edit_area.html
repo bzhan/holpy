@@ -35,18 +35,19 @@
 <script type="text/template" id='template-edit-thm'>
     <div style="margin-left:35px;margin-top:20px;" name="<%= a_id %>" class="<%= class_name %>"
          id="code<%=page_num%>-pan">
-        <form>
+        <form id="edit-thm-form">
             <div class="form-group">
                 <div class="col-auto">
                     <label name="<%= page_num %>" for="data-name<%= page_num %>" style="text-transform: capitalize;"><%=
                         type_name %></label>
-                    <input type="text" class="form-control" id="data-name<%= page_num %>" value="<%= data_name %>">
+                    <input type="text" name="<%= type_name %>" class="form-control" id="data-name<%= page_num %>" value="<%= data_name %>">
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-auto">
                     <label name="<%= page_num %>" for="data-vars<%= page_num %>">Vars</label>
                     <textarea rows="<%= vars_str.split('\n').length %>" spellcheck="false"
+                              name="vars"
                               class="form-control"
                               id="data-vars<%= page_num %>"><%= vars_str %>
             </textarea>
@@ -55,7 +56,9 @@
             <div class="form-group">
                 <div class="col-auto">
                     <label name="<%= page_num %>" for="data-content<%= page_num %>">Term</label>
-                    <input type="text" class="form-control" spellcheck="false" id="data-content<%= page_num %>"
+                    <input type="text"
+                           name="terms"
+                           class="form-control" spellcheck="false" id="data-content<%= page_num %>"
                            value="<%= data_content %>">
                 </div>
             </div>

@@ -613,13 +613,13 @@
                 if (data_type !== 'def')
                     display_lines_number(data_content_list, page_num, number);
             }
-
+            var edit_thm_form = get_selected_edit_form('edit-thm-form');
             if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
-                $('input[name="hint_backward' + page_num + '"]').click();
+                edit_thm_form.elements['hint_backward' + page_num].click();
             if (number && 'hint_forward' in result_list[number] && result_list[number]['hint_forward'] === 'true')
-                $('input[name="hint_forward' + page_num + '"]').click();
+                edit_thm_form.elements['hint_forward' + page_num].click();
             if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
-                $('input[name="hint_rewrite' + page_num + '"]').click();
+                edit_thm_form.elements['hint_rewrite' + page_num].click();
             change_css($('textarea#data-vars' + page_num));
             change_css($('textarea#data-content' + page_num));
             change_css($('textarea#data-names' + page_num));
@@ -654,6 +654,7 @@
 
 //      click save button on edit tab to save content to the left-json for updating;
         $('div.rbottom').on('click', 'button#save-edit', function () {
+            var edit_thm_form = get_selected_edit_form('edit-thm-form');
             var tab_pm = $(this).parent().attr('id').slice(3,);
             var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
             var error_id = $(this).next().attr('id').trim();
@@ -662,15 +663,15 @@
             var number = Number(a_id.slice(5,)) - 1;
             var ajax_data = make_data(ty, id, number);
             var prev_list = result_list.slice(0, number);
-            if ($('input[name="hint_backward' + tab_pm + '"]').prop('checked') === true)
+            if (edit_thm_form.elements['hint_backward' + tab_pm].checked === true)
                 result_list[number]['hint_backward'] = 'true';
             else if (number !== -1 && 'hint_backward' in result_list[number])
                 delete result_list[number]['hint_backward'];
-            if ($('input[name="hint_forward' + tab_pm + '"]').prop('checked') === true)
+            if (edit_thm_form.elements['hint_forward' + tab_pm].checked ===  true)
                 result_list[number]['hint_forward'] = 'true';
             else if (number !== -1 && 'hint_forward' in result_list[number])
                 delete result_list[number]['hint_forward'];
-            if ($('input[name="hint_rewrite' + tab_pm + '"]').prop('checked') === true)
+            if (edit_thm_form.elements['hint_rewrite' + tab_pm].checked ===  true)
                 result_list[number]['hint_rewrite'] = 'true';
             else if (number !== -1 && 'hint_rewrite' in result_list[number])
                 delete result_list[number]['hint_rewrite'];
