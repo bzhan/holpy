@@ -9,11 +9,6 @@
     var is_fact = false;
     var click_count = 0;
     var proof_id = 0;
-<<<<<<< HEAD
-    var bgColor = '';
-    var origin_result = [];
-=======
->>>>>>> czxiang
     var edit_mode = false;
     var result_list_dict = {};
     var file_list = [];
