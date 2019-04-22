@@ -186,7 +186,6 @@ def init_saved_proof():
         return jsonify(error)
     return jsonify({})
 
-
 @app.route('/api/add-line-after', methods=['POST'])
 def add_line_after():
     data = json.loads(request.get_data().decode("utf-8"))

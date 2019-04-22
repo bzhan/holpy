@@ -414,7 +414,8 @@
         });
 
 //      click edit then create a tab page for the editing;
-        $('#left_json').on('click', 'a[name="edit"]', function () {
+        $('#left_json').on('click', 'a[name="edit"]', function (s) {
+            s.stopPropagation();
             page_num++;
             edit_mode = true;
             var a_ele = $(this);
@@ -821,7 +822,7 @@
             }
         })
 
-//click DEL to delete red left_json content and save to webpage and json file
+//click DEL to delete yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
             var number = '';
             $.each(theories_selected, function (i, v) {
@@ -838,12 +839,38 @@
                 theories_selected = [];
             }
         })
-//        $('div.dropdown-menu.Ctrl a[name="up"]').on('click',function(){
-//            if($('div[name="theories"]').css('background-color') === bgColor){
-//                var a_id = $('div[name="theories"]').attr('id').trim();
-//                var number = Number(a_id.slice(3,))-2;
-//                result_list.splice(number, 1);
-//                }})
+
+        function exchange(number) {
+            var temp = result_list[number];
+            result_list[number] = result_list[number - 1];
+            result_list[number-1] = temp;
+            save_editor_data();
+            display_result_list();
+            theories_selected = [];
+        }
+
+
+ //click UP to move up the yellow left_json content and save to webpage and json file
+        $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function(){
+            $('div[name="theories"]').each(function (i, v) {
+                if($('div[name="theories"]').eq(i).css('background-color') === bgColor){
+                    var a_id = $(this).attr('id').trim();
+                    var number = Number(a_id.slice(3,))-1;
+                    if(result_list[0].ty === 'header'){
+                        if (number>1) {
+                        exchange(number);
+                        alert('success!');
+                        }
+                    }
+                    else{
+                        if (number > 0) {
+                            exchange(number);
+                            alert('success!');
+                        }
+                    }
+                }
+            })
+        })
 
 
 //      click to save the related data to json file: edit && proof;
