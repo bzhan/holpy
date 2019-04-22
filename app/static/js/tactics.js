@@ -24,8 +24,8 @@ function get_selected_instruction_number() {
     return document.querySelector('.rbottom .selected .output #instruction-number');
 }
 
-function get_selected_edit_form(id) {
-    return document.querySelector('.code-cell.active #' + id);
+function get_selected_edit_form(name) {
+    return document.querySelector('.code-cell.active form[name=' + name + ']');
 }
 
 function clear_match_thm() {
