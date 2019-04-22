@@ -197,7 +197,7 @@
         });
 
         $('div#root-file').on('click', 'a[name="edit"]', function () {
-            var number = Number($(this).attr('id').slice(4,).trim());
+            var number = Number($(this).attr('id').slice(4,).trim())-1;
             page_num++;
             data = JSON.stringify(file_list[number]);
             init_metadata_area(page_num);
@@ -398,17 +398,17 @@
             proof_id = $(this).attr('id');
             eidt_mode = false;
             var thm_name = $(this).parent().find('span#thm_name').text();
-            if (result_list[proof_id - 1]['proof']) {
+            if (result_list[proof_id]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    init_saved_proof(result_list[proof_id - 1]);
+                    init_saved_proof(result_list[proof_id]);
                 }, 200);
             } else {
                 $('#add-cell').click();
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    theorem_proof(result_list[proof_id - 1], theory_name);
+                    theorem_proof(result_list[proof_id], theory_name);
                 }, 200);
             }
         });
@@ -692,7 +692,7 @@
                     var error = res['error'];
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
-                    if (error && error !== {}) {
+                    if (error.message) {
                         var error_info = error['detail-content'];
                         $('div#' + error_id).find('pre').text(error_info);
                     }
@@ -730,7 +730,8 @@
                 ajax_data['prop'] = data_content;
                 $.each(vars_str_list, function (i, v) {
                     let v_list = v.split('::');
-                    vars_str[$.trim(v_list[0])] = $.trim(v_list[1]);
+                    if (v_list[0])
+                        vars_str[$.trim(v_list[0])] = $.trim(v_list[1]);
                 });
                 ajax_data['vars'] = vars_str;
             }
@@ -999,7 +1000,7 @@
             if (ext) {
                 var templ = $("#template-content-" + ext.ty.replace(".", "-"));
                 if (templ.length == 1) {
-                    $('#left_json').append(_.template(templ.html())({num: num + 1, ext: ext}));
+                    $('#left_json').append(_.template(templ.html())({num: num, ext: ext}));
                 }
             }
         });
