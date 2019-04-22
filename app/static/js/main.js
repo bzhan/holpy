@@ -843,7 +843,7 @@
             result_list = result_list.filter(function(item) {
                 return item !== '';
             });
-            //save_editor_data();
+            save_editor_data();
             display_result_list();
             if(theories_selected.length > 0){
                 alert('删除成功！');
@@ -855,7 +855,7 @@
             var temp = result_list[number];
             result_list[number] = result_list[number - 1];
             result_list[number-1] = temp;
-           // save_editor_data();
+            save_editor_data();
             display_result_list();
             theories_selected = [];
         }
