@@ -684,7 +684,7 @@
                     var error = res['error'];
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
-                    if (error && error !== {}) {
+                    if (error.message) {
                         var error_info = error['detail-content'];
                         $('div#' + error_id).find('pre').text(error_info);
                     }
