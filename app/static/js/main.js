@@ -398,17 +398,17 @@
             proof_id = $(this).attr('id');
             eidt_mode = false;
             var thm_name = $(this).parent().find('span#thm_name').text();
-            if (result_list[proof_id - 1]['proof']) {
+            if (result_list[proof_id]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    init_saved_proof(result_list[proof_id - 1]);
+                    init_saved_proof(result_list[proof_id]);
                 }, 200);
             } else {
                 $('#add-cell').click();
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    theorem_proof(result_list[proof_id - 1], theory_name);
+                    theorem_proof(result_list[proof_id], theory_name);
                 }, 200);
             }
         });
