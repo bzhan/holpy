@@ -25,7 +25,7 @@ function get_selected_instruction_number() {
 }
 
 function get_selected_edit_form(id) {
-    return document.querySelector('#' + id);
+    return document.querySelector('.code-cell.active #' + id);
 }
 
 function clear_match_thm() {
