@@ -41,6 +41,7 @@ user_info = {
 def display_results_template():
     return render_template('display_results.html')
 
+
 @app.route('/edit_area.html', methods = ['GET'])
 def edit_area_template():
     return render_template('edit_area.html')
@@ -140,8 +141,6 @@ def match_user():
 # login for user;
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
-    info, file_ = '', []
-    # origin = os.getcwd()
     username = request.form.get('name')
     password = request.form.get('password')
     user_path = os.path.abspath('..') + '/holpy/users/' + username
@@ -162,7 +161,7 @@ def login():
 def init_component():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']))
+        thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']), user = user_info['username'])
         cell = ProofState.parse_init_state(thy, data)
         cells[data['id']] = cell
         return jsonify(cell.json_data())
@@ -174,7 +173,7 @@ def init_saved_proof():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         try:
-            thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']))
+            thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']), user = user_info['username'])
             cell = ProofState.parse_proof(thy, data)
             cells[data['id']] = cell
             return jsonify(cell.json_data())
@@ -370,7 +369,7 @@ def json_parse():
     with open('users/' + user_info['username'] + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     if 'content' in f_data:
-        thy = basic.loadImportedTheory(f_data['imports'])
+        thy = basic.loadImportedTheory(f_data['imports'], username = user_info['username'])
         for data in f_data['content']:
             file_data_to_output(thy, data)
     else:
@@ -383,7 +382,7 @@ def json_parse():
 def json_add_info():
     data = json.loads(request.get_data().decode("utf-8"))
 
-    thy = basic.loadTheory(data['theory_name'])
+    thy = basic.loadTheory(data['theory_name'], user = user_info['username'])
     item = data['item']
     file_data_to_output(thy, item)
 
@@ -409,7 +408,7 @@ def save_file():
 def match_thm():
     dict = {}
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.loadTheory(data['theory_name'])
+    thy = basic.loadTheory(data['theory_name'], user = user_info['username'])
     if data:
         cell = cells.get(data.get('id'))
         target_id = data.get('target_id')
@@ -443,7 +442,7 @@ def save_modify():
     with open('users/' + user_info['username'] + '/' + data['file-name'] + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     try:
-        thy = basic.loadImportedTheory(f_data['imports'])
+        thy = basic.loadImportedTheory(f_data['imports'], user_info['username'])
         for d in data['prev-list']:
             parser.parse_extension(thy, d)
         file_data_to_output(thy, data)

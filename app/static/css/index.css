@@ -3,7 +3,7 @@ body {
     font-size: 14px;
     overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-    height : 96%;
+    height: 96%;
     overflow: hidden;
 }
 
@@ -71,6 +71,7 @@ body {
 
 .input {
     display: flex;
+    font-family: monospace;
     margin-top: 20px;
 }
 
@@ -262,7 +263,7 @@ tt.tvar {
     color: purple;
 }
 
-tt.normal{
+tt.normal {
     color: black;
 }
 
@@ -276,7 +277,8 @@ span.pos {
 }
 
 textarea {
-    overflow-x:none;
+    overflow-x: none;
+    font-family: monospace;
 }
 
 #variables {
@@ -285,4 +287,8 @@ textarea {
 
 #assumes {
     margin-left: 21px;
+}
+
+.form-check-label{
+    width: 50px;
 }

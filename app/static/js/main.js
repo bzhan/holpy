@@ -9,13 +9,12 @@
     var is_fact = false;
     var click_count = 0;
     var proof_id = 0;
-    var bgColor = '';
-    var origin_result = [];
     var edit_mode = false;
     var result_list_dict = {};
     var file_list = [];
     var add_mode = false;
     var theories_selected = [];//list of the id of bgcolor div
+    var bgColor = '';//the color of left_json content
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -23,7 +22,7 @@
 
     $(document).ready(function () {
         var includes = $('[data-include]');
-        jQuery.each(includes, function(){
+        jQuery.each(includes, function () {
             var file = "../" + $(this).data('include') + '.html';
             $(this).load(file);
         });
@@ -199,7 +198,7 @@
         });
 
         $('div#root-file').on('click', 'a[name="edit"]', function () {
-            var number = Number($(this).attr('id').slice(4,).trim()) - 1;
+            var number = Number($(this).attr('id').slice(4,).trim())-1;
             page_num++;
             data = JSON.stringify(file_list[number]);
             init_metadata_area(page_num);
@@ -219,18 +218,18 @@
         });
 
         $('div#root-file').on('click', 'a[name="delete"]', function () {
-            var number = Number($(this).attr('id').trim()) - 1;
+            var number = Number($(this).attr('id').trim());
             var json_name = $(this).attr('class');
             file_list.splice(number, 1);
             display_file_list();
             save_file_list(json_name);
         });
 
-        $('button#register').click(function() {
+        $('button#register').click(function () {
             $.ajax({
                 url: '/api/register',
                 type: 'GET',
-                success: function() {
+                success: function () {
                 }
             })
         })
@@ -240,7 +239,7 @@
             editor_id_list = [];
             var file_name = $(this).attr('name').slice(4,);
             var editor_id = get_selected_id();
-            var id = Number($(this).attr('id')) - 1;
+            var id = Number($(this).attr('id'));
             var proof = cells[editor_id]['proof'];
             var output_proof = [];
             $.each(proof, function (i) {
@@ -325,10 +324,12 @@
 
         //click reset button to reset the thm to the origin status;
         $('div.rbottom').on('click', 'button.reset', function () {
-            var id = Number($(this).attr('id')) - 1;
+            var id = Number($(this).attr('id'));
             var file_name = $(this).attr('name').slice(5,);
             if (file_name) {
+                get_selected_editor().reset = true;
                 theorem_proof(result_list_dict[file_name][id], file_name);
+                get_selected_editor().reset = false;
             }
         });
 
@@ -398,17 +399,17 @@
             proof_id = $(this).attr('id');
             eidt_mode = false;
             var thm_name = $(this).parent().find('span#thm_name').text();
-            if (result_list[proof_id - 1]['proof']) {
+            if (result_list[proof_id]['proof']) {
                 $('#add-cell').click();
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    init_saved_proof(result_list[proof_id - 1]);
+                    init_saved_proof(result_list[proof_id]);
                 }, 200);
             } else {
                 $('#add-cell').click();
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    theorem_proof(result_list[proof_id - 1], theory_name);
+                    theorem_proof(result_list[proof_id], theory_name);
                 }, 200);
             }
         });
@@ -425,7 +426,7 @@
 //      click delete then delete the content from webpage;
         $('#left_json').on('click', 'a[name="del"]', function () {
             var a_id = $(this).attr('id').trim();
-            var number = Number(a_id.slice(5,)) - 1;
+            var number = Number(a_id.slice(5,));
             result_list.splice(number, 1);
             display_result_list();
             save_editor_data();
@@ -438,52 +439,43 @@
             var id = $(this).attr('id');
             var pos = document.getElementById(id).selectionStart;
             if (pos !== 0 && e.keyCode === 9) {
-                if (e && e.preventDefault) {
-                    e.preventDefault();
-                } else {
-                    window.event.returnValue = false;
-                }
+                var len = '';
                 for (var key in replace_obj) {
-                    l = key.length;
+                    var l = key.length;
                     if (content.substring(pos - l, pos) === key) {
-                        var len = l;
-                        content = content.slice(0, pos - l) + replace_obj[key] + content.slice(pos,);
+                        if (e && e.preventDefault) {
+                            e.preventDefault();
+                        } else {
+                            window.event.returnValue = false;
+                        };
+                        len = l;
+                        content = content.slice(0, pos - len) + replace_obj[key] + content.slice(pos,);
                     }
                 }
-                $(this).val(content);
-                document.getElementById(id).setSelectionRange(pos - len + 1, pos - len + 1);
+                if (len) {
+                    $(this).val(content);
+                    document.getElementById(id).setSelectionRange(pos - len + 1, pos - len + 1);
+                }
             }
         });
 
 //      set the textarea height auto; press tab display unicode;
         $('#codeTabContent').on('input', 'textarea', function () {
-            var rows = $(this).val().split('\n').length + 1;
+            var rows = $(this).val().split('\n').length;
             $(this).attr('rows', rows);
         });
 
-        function change_css(obj) {
-            if (obj.length > 0) {
-                var rows = obj.val().split('\n').length + 1;
-                obj.attr('rows', rows);
-            }
-        }
-
 //      the method for add_info && edit_info;
         function init_edit_area(page_num, a_ele = '', data_type = '') {
-            var a_id, data_name = '', data_content = '', vars_str = '', data_label,
-                border = '1px;solid #ffffff;border:none';
-            var class_name = 'tab-pane fade in active code-cell edit-data';
+            var a_id, data_name = '', data_content = '', data_label;
             if (!a_ele) {
-                a_id = '', border = '', data_name = '', data_content = '', number = '', data_label = data_type;
+                a_id = '', data_name = '', data_content = '', number = '', data_label = data_type;
             } else {
                 a_id = a_ele.attr('id').trim();
-                number = String(Number(a_id.slice(5,)) - 1);
+                number = String(Number(a_id.slice(5,)));
                 data_name = result_list[number]['name'];
                 data_type = result_list[number]['ty'];
                 data_label = data_name;
-                for (var key in result_list[number]['vars']) {
-                    vars_str += key + ':' + result_list[number]['vars'][key] + '\n';
-                }
             }
 
             var templ_tab = _.template($("#template-tab").html());
@@ -497,25 +489,40 @@
 
                 var templ_edit = _.template($("#template-edit-def-ax").html());
                 $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, class_name: class_name, page_num: page_num,
-                    border: border, data_name: data_name, data_content: data_content
+                    a_id: a_id, page_num: page_num,
+                    data_name: data_name, data_content: data_content
                 }));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'thm' || data_type === 'thm.ax') {
-                if (data_type === 'thm')
-                    var type_name = 'theorem';
-                else
-                    var type_name = 'axiom';
-                if (number)
-                    data_content = result_list[number]['prop'];
-
                 var templ_edit = _.template($('#template-edit-thm').html());
-                $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, class_name: class_name, type_name: type_name, page_num: page_num,
-                    border: border, data_name: data_name, vars_str: vars_str, data_content: data_content
-                }));
+                $('#codeTabContent').append(templ_edit({page_num: page_num}));
 
+                var form = document.getElementById('edit-thm-form' + page_num);
+                if (data_type === 'thm')
+                    form.name.labels[0].textContent = 'Theorem';
+                else
+                    form.name.labels[0].textContent = 'Axiom';
+                if (number) {
+                    form.number.value = number;
+                    form.name.value = data_name;
+                    form.prop.value = result_list[number].prop;
+                    vars_lines = []
+                    $.each(result_list[number].vars, function (nm, T) {
+                        vars_lines.push(nm + ' :: ' + T);
+                    });
+                    form.vars.rows = vars_lines.length;
+                    form.vars.value = vars_lines.join('\n');
+                    if (result_list[number].hint_backward === 'true')
+                        form.hint_backward.checked = true;
+                    if (result_list[number].hint_forward === 'true')
+                        form.hint_forward.checked = true;
+                    if (result_list[number].hint_rewrite === 'true')
+                        form.hint_rewrite.checked = true;
+                }
+                else {
+                    form.number.value = -1;
+                }
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'type.ind') {
@@ -549,9 +556,10 @@
 
                 var templ_edit = _.template($('#template-edit-type-ind').html());
                 $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, class_name: class_name, page_num: page_num,
-                    border: border, data_name: data_name, i: i, data_content: data_content,
-                    ext_: ext_}));
+                    a_id: a_id, page_num: page_num,
+                    data_name: data_name, i: i, data_content: data_content,
+                    ext_: ext_
+                }));
 
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -603,26 +611,18 @@
 
                 var templ_edit = _.template($('#template-edit-def').html());
                 $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, class_name: class_name, page_num: page_num,
-                    type_name: type_name, border: border, data_name: data_name,
+                    a_id: a_id, page_num: page_num,
+                    type_name: type_name, data_name: data_name,
                     data_new_content: data_new_content, vars: vars, ext_str: ext_str
                 }));
 
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type === 'def.pred') {
-                    $('textarea#data-vars' + page_num).after('<br><textarea rows="' + data_rule_name.split('\n').length + '" spellcheck="false" id="data-names' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;' + border + '" name="names">' + $.trim(data_rule_name) + '</textarea>')
+                    $('textarea#data-vars' + page_num).after('<br><textarea rows="' + data_rule_name.split('\n').length + '" spellcheck="false" id="data-names' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;" name="names">' + $.trim(data_rule_name) + '</textarea>')
                 }
                 if (data_type !== 'def')
-                    display_lines_number(data_content_list, page_num, number);
+                    display_lines_number(page_num, number);
             }
-
-            if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
-                $('input[name="hint_backward' + page_num + '"]').click();
-            if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
-                $('input[name="hint_rewrite' + page + '"]').click();
-            change_css($('textarea#data-vars' + page_num));
-            change_css($('textarea#data-content' + page_num));
-            change_css($('textarea#data-names' + page_num));
             $('div.rbottom').append('<div id="prf' + page_num + '"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>');
             $('div#prf' + page_num).append(
                 '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
@@ -632,7 +632,7 @@
         }
 
 //      display vars_content in the textarea;
-        function display_lines_number(content_list, page_num, number) {
+        function display_lines_number(page_num, number) {
             var data_vars_list = [];
             var data_vars_str = '';
             if (number) {
@@ -654,22 +654,20 @@
 
 //      click save button on edit tab to save content to the left-json for updating;
         $('div.rbottom').on('click', 'button#save-edit', function () {
+            var edit_thm_form = get_selected_edit_form('edit-thm-form');
             var tab_pm = $(this).parent().attr('id').slice(3,);
-            var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
             var error_id = $(this).next().attr('id').trim();
             var id = tab_pm;
             var ty = $(this).attr('name').trim();
-            var number = Number(a_id.slice(5,)) - 1;
-            var ajax_data = make_data(ty, id, number);
+            if (ty == 'thm' || ty == 'thm-ax') {
+                var number = edit_thm_form.number.value;
+            }
+            else {
+                var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
+                var number = Number(a_id.slice(5,));    
+            }
+            var ajax_data = make_data(edit_thm_form, ty, id, number);
             var prev_list = result_list.slice(0, number);
-            if ($('input[name="hint_backward' + tab_pm + '"]').prop('checked') === true)
-                result_list[number]['hint_backward'] = 'true';
-            else if (number !== -1 && 'hint_backward' in result_list[number])
-                delete result_list[number]['hint_backward'];
-            if ($('input[name="hint_rewrite' + tab_pm + '"]').prop('checked') === true)
-                result_list[number]['hint_rewrite'] = 'true';
-            else if (number !== -1 && 'hint_rewrite' in result_list[number])
-                delete result_list[number]['hint_rewrite'];
             ajax_data['file-name'] = name;
             ajax_data['prev-list'] = prev_list;
             $.ajax({
@@ -678,51 +676,62 @@
                 data: JSON.stringify(ajax_data),
                 success: function (res) {
                     var result_data = res['data'];
-                    var data_name = result_data['name'];
                     var error = res['error'];
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
-                    if (error && error !== {}) {
+                    if (error.message) {
                         var error_info = error['detail-content'];
                         $('div#' + error_id).find('pre').text(error_info);
                     }
-                    if (!a_id) {
-                        result_list.push(result_data);
-                    } else {
-                        for (var key in result_data) {
-                            result_list[number][key] = result_data[key];
+                    else {
+                        if (number === '-1') {
+                            result_list.push(result_data);
+                        } else {
+                            delete result_list[number].hint_forward;
+                            delete result_list[number].hint_backward;
+                            delete result_list[number].hint_rewrite;
+                            for (var key in result_data) {
+                                result_list[number][key] = result_data[key];
+                            }
                         }
+                        display_result_list();
+                        save_editor_data();
+                        alert('保存成功！');
                     }
-                    display_result_list();
-                    save_editor_data();
-                    alert('保存成功！')
                 }
             });
         });
 
 //      make a strict-type data from editing; id=page_num
-        function make_data(ty, id, number) {
-            var data_name = $('#data-name' + id).val().trim();
-            var data_content = $('#data-content' + id).val().trim();
+        function make_data(form, ty, id, number) {
             var ajax_data = {};
             if (ty === 'def.ax') {
+                var data_name = $('#data-name' + id).val().trim();
+                var data_content = $('#data-content' + id).val().trim();
                 ajax_data['ty'] = 'def.ax';
                 ajax_data['name'] = data_name;
                 ajax_data['type'] = data_content;
             }
             if (ty === 'thm' || ty === 'thm.ax') {
-                var vars_str_list = $('textarea#data-vars' + id).val().split('\n');
-                var vars_str = {};
                 ajax_data['ty'] = ty;
-                ajax_data['name'] = data_name;
-                ajax_data['prop'] = data_content;
-                $.each(vars_str_list, function (i, v) {
-                    let v_list = v.split(':');
-                    vars_str[v_list[0]] = v_list[1];
+                ajax_data['name'] = form.name.value;
+                ajax_data['prop'] = form.prop.value;
+                ajax_data['vars'] = {};
+                $.each(form.vars.value.split('\n'), function (i, v) {
+                    let [nm, T] = v.split('::');
+                    if (nm)
+                        ajax_data['vars'][nm.trim()] = T.trim();
                 });
-                ajax_data['vars'] = vars_str;
+                if (form.hint_backward.checked === true)
+                    ajax_data['hint_backward'] = 'true';
+                if (form.hint_forward.checked ===  true)
+                    ajax_data['hint_forward'] = 'true';
+                if (form.hint_rewrite.checked ===  true)
+                    ajax_data['hint_rewrite'] = 'true';
             }
             if (ty === 'type.ind') {
+                var data_name = $('#data-name' + id).val().trim();
+                var data_content = $('#data-content' + id).val().trim();
                 var temp_list = [], temp_constrs = [];
                 var temp_content_list = data_content.split(/\n/);
                 if (data_name.split(/\s/).length > 1) {
@@ -768,6 +777,8 @@
                 ajax_data['constrs'] = temp_constrs;
             }
             if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
+                var data_name = $('#data-name' + id).val().trim();
+                var data_content = $('#data-content' + id).val().trim();
                 var rules_list = [];
                 var rules = result_list[number].rules;
                 var props_list = data_content.split(/\n/);
@@ -826,13 +837,13 @@
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
             var number = '';
             $.each(theories_selected, function (i, v) {
-                   number = Number(v.slice(3,))-1;
+                   number = Number(v.slice(3,));
                    result_list[number] = '';
             })
             result_list = result_list.filter(function(item) {
                 return item !== '';
             });
-            save_editor_data();
+            //save_editor_data();
             display_result_list();
             if(theories_selected.length > 0){
                 alert('删除成功！');
@@ -844,7 +855,7 @@
             var temp = result_list[number];
             result_list[number] = result_list[number - 1];
             result_list[number-1] = temp;
-            save_editor_data();
+           // save_editor_data();
             display_result_list();
             theories_selected = [];
         }
@@ -855,7 +866,7 @@
             $('div[name="theories"]').each(function (i, v) {
                 if($('div[name="theories"]').eq(i).css('background-color') === bgColor){
                     var a_id = $(this).attr('id').trim();
-                    var number = Number(a_id.slice(3,))-1;
+                    var number = Number(a_id.slice(3,));
                     if(result_list[0].ty === 'header'){
                         if (number>1) {
                         exchange(number);
@@ -871,7 +882,6 @@
                 }
             })
         })
-
 
 //      click to save the related data to json file: edit && proof;
         $('a#save-file').click(function () {
@@ -969,6 +979,9 @@
             type: "POST",
             data: data,
             success: function (result) {
+                cells[get_selected_id()].click_line_number = -1;
+                cells[get_selected_id()].facts.clear();
+                clear_match_thm();
                 display_checked_proof(result);
                 get_selected_editor().focus();
                 display_instuctions(instructions);
@@ -1010,7 +1023,7 @@
             if (ext) {
                 var templ = $("#template-content-" + ext.ty.replace(".", "-"));
                 if (templ.length == 1) {
-                    $('#left_json').append(_.template(templ.html())({num: num+1, ext: ext}));
+                    $('#left_json').append(_.template(templ.html())({num: num, ext: ext}));
                 }
             }
         });
@@ -1119,7 +1132,7 @@
                 $(this).removeClass('selected');
             });
             $(cm.getTextArea().parentNode).addClass('selected');
-            if (!(undefined !== cm.target && undefined !== cm.facts)) {
+            if (!(undefined !== cm.target && undefined !== cm.facts) || cm.reset) {
                 return;
             }
             is_mousedown = true;
@@ -1138,7 +1151,7 @@
             var target = cells[id].click_line_number;
             var facts = [];
             for (const val of cells[id].facts) {
-               facts.push(val);
+                facts.push(val);
             }
             cm.target = target;
             cm.facts = facts;
