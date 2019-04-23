@@ -370,7 +370,7 @@ def json_parse():
     with open('users/' + user_info['username'] + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     if 'content' in f_data:
-        thy = basic.loadImportedTheory(f_data['imports'], username = user_info['username'])
+        thy = basic.loadImportedTheory(f_data['imports'], user=user_info['username'])
         for data in f_data['content']:
             file_data_to_output(thy, data)
     else:
@@ -383,7 +383,7 @@ def json_parse():
 def json_add_info():
     data = json.loads(request.get_data().decode("utf-8"))
 
-    thy = basic.loadTheory(data['theory_name'], user = user_info['username'])
+    thy = basic.loadTheory(data['theory_name'], user=user_info['username'])
     item = data['item']
     file_data_to_output(thy, item)
 
@@ -409,7 +409,7 @@ def save_file():
 def match_thm():
     dict = {}
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.loadTheory(data['theory_name'], user = user_info['username'])
+    thy = basic.loadTheory(data['theory_name'], user=user_info['username'])
     if data:
         cell = cells.get(data.get('id'))
         target_id = data.get('target_id')
