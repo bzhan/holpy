@@ -216,7 +216,7 @@ class ProofTermMacro(ProofMacro):
 
     """
     def __call__(self, thy, args, prevs):
-        pts = [ProofTerm.assume(prev) for prev in prevs]
+        pts = [ProofTerm.assume(prev.prop) for prev in prevs]
         return self.get_proof_term(thy, args, pts).th
 
     def get_proof_term(self, thy, args, prevs):

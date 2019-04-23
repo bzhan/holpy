@@ -459,33 +459,21 @@
 
 //      set the textarea height auto; press tab display unicode;
         $('#codeTabContent').on('input', 'textarea', function () {
-            var rows = $(this).val().split('\n').length + 1;
+            var rows = $(this).val().split('\n').length;
             $(this).attr('rows', rows);
         });
 
-        function change_css(obj) {
-            if (obj.length > 0) {
-                var rows = obj.val().split('\n').length + 1;
-                obj.attr('rows', rows);
-            }
-        }
-
 //      the method for add_info && edit_info;
         function init_edit_area(page_num, a_ele = '', data_type = '') {
-            var a_id, data_name = '', data_content = '', vars_str = '', data_label,
-                border = '1px;solid #ffffff;border:none';
-            var class_name = 'tab-pane fade in active code-cell edit-data';
+            var a_id, data_name = '', data_content = '', data_label;
             if (!a_ele) {
-                a_id = '', border = '', data_name = '', data_content = '', number = '', data_label = data_type;
+                a_id = '', data_name = '', data_content = '', number = '', data_label = data_type;
             } else {
                 a_id = a_ele.attr('id').trim();
                 number = String(Number(a_id.slice(5,)));
                 data_name = result_list[number]['name'];
                 data_type = result_list[number]['ty'];
                 data_label = data_name;
-                for (var key in result_list[number]['vars']) {
-                    vars_str += key + '::' + result_list[number]['vars'][key] + '\n';
-                }
             }
 
             var templ_tab = _.template($("#template-tab").html());
@@ -499,25 +487,40 @@
 
                 var templ_edit = _.template($("#template-edit-def-ax").html());
                 $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, class_name: class_name, page_num: page_num,
-                    border: border, data_name: data_name, data_content: data_content
+                    a_id: a_id, page_num: page_num,
+                    data_name: data_name, data_content: data_content
                 }));
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'thm' || data_type === 'thm.ax') {
-                if (data_type === 'thm')
-                    var type_name = 'theorem';
-                else
-                    var type_name = 'axiom';
-                if (number)
-                    data_content = result_list[number]['prop'];
-
                 var templ_edit = _.template($('#template-edit-thm').html());
-                $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, class_name: class_name, type_name: type_name, page_num: page_num,
-                    border: border, data_name: data_name, vars_str: vars_str, data_content: data_content
-                }));
+                $('#codeTabContent').append(templ_edit({page_num: page_num}));
 
+                var form = document.getElementById('edit-thm-form' + page_num);
+                if (data_type === 'thm')
+                    form.name.labels[0].textContent = 'Theorem';
+                else
+                    form.name.labels[0].textContent = 'Axiom';
+                if (number) {
+                    form.number.value = number;
+                    form.name.value = data_name;
+                    form.prop.value = result_list[number].prop;
+                    vars_lines = []
+                    $.each(result_list[number].vars, function (nm, T) {
+                        vars_lines.push(nm + ' :: ' + T);
+                    });
+                    form.vars.rows = vars_lines.length;
+                    form.vars.value = vars_lines.join('\n');
+                    if (result_list[number].hint_backward === 'true')
+                        form.hint_backward.checked = true;
+                    if (result_list[number].hint_forward === 'true')
+                        form.hint_forward.checked = true;
+                    if (result_list[number].hint_rewrite === 'true')
+                        form.hint_rewrite.checked = true;
+                }
+                else {
+                    form.number.value = -1;
+                }
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'type.ind') {
@@ -551,8 +554,8 @@
 
                 var templ_edit = _.template($('#template-edit-type-ind').html());
                 $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, class_name: class_name, page_num: page_num,
-                    border: border, data_name: data_name, i: i, data_content: data_content,
+                    a_id: a_id, page_num: page_num,
+                    data_name: data_name, i: i, data_content: data_content,
                     ext_: ext_
                 }));
 
@@ -606,28 +609,18 @@
 
                 var templ_edit = _.template($('#template-edit-def').html());
                 $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, class_name: class_name, page_num: page_num,
-                    type_name: type_name, border: border, data_name: data_name,
+                    a_id: a_id, page_num: page_num,
+                    type_name: type_name, data_name: data_name,
                     data_new_content: data_new_content, vars: vars, ext_str: ext_str
                 }));
 
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type === 'def.pred') {
-                    $('textarea#data-vars' + page_num).after('<br><textarea rows="' + data_rule_name.split('\n').length + '" spellcheck="false" id="data-names' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;' + border + '" name="names">' + $.trim(data_rule_name) + '</textarea>')
+                    $('textarea#data-vars' + page_num).after('<br><textarea rows="' + data_rule_name.split('\n').length + '" spellcheck="false" id="data-names' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;" name="names">' + $.trim(data_rule_name) + '</textarea>')
                 }
                 if (data_type !== 'def')
-                    display_lines_number(data_content_list, page_num, number);
+                    display_lines_number(page_num, number);
             }
-            var edit_thm_form = get_selected_edit_form('edit-thm-form');
-            if (number && 'hint_backward' in result_list[number] && result_list[number]['hint_backward'] === 'true')
-                edit_thm_form.elements.hint_backward.click();
-            if (number && 'hint_forward' in result_list[number] && result_list[number]['hint_forward'] === 'true')
-                edit_thm_form.elements.hint_forward.click();
-            if (number && 'hint_rewrite' in result_list[number] && result_list[number]['hint_rewrite'] === 'true')
-                edit_thm_form.elements.hint_rewrite.click();
-            change_css($('textarea#data-vars' + page_num));
-            change_css($('textarea#data-content' + page_num));
-            change_css($('textarea#data-names' + page_num));
             $('div.rbottom').append('<div id="prf' + page_num + '"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>');
             $('div#prf' + page_num).append(
                 '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
@@ -637,7 +630,7 @@
         }
 
 //      display vars_content in the textarea;
-        function display_lines_number(content_list, page_num, number) {
+        function display_lines_number(page_num, number) {
             var data_vars_list = [];
             var data_vars_str = '';
             if (number) {
@@ -661,25 +654,18 @@
         $('div.rbottom').on('click', 'button#save-edit', function () {
             var edit_thm_form = get_selected_edit_form('edit-thm-form');
             var tab_pm = $(this).parent().attr('id').slice(3,);
-            var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
             var error_id = $(this).next().attr('id').trim();
             var id = tab_pm;
             var ty = $(this).attr('name').trim();
-            var number = Number(a_id.slice(5,));
-            var ajax_data = make_data(ty, id, number);
+            if (ty == 'thm' || ty == 'thm-ax') {
+                var number = edit_thm_form.number.value;
+            }
+            else {
+                var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
+                var number = Number(a_id.slice(5,));    
+            }
+            var ajax_data = make_data(edit_thm_form, ty, id, number);
             var prev_list = result_list.slice(0, number);
-            if (edit_thm_form.elements.hint_backward.checked === true)
-                result_list[number]['hint_backward'] = 'true';
-            else if (number !== -1 && 'hint_backward' in result_list[number])
-                delete result_list[number]['hint_backward'];
-            if (edit_thm_form.elements.hint_forward.checked ===  true)
-                result_list[number]['hint_forward'] = 'true';
-            else if (number !== -1 && 'hint_forward' in result_list[number])
-                delete result_list[number]['hint_forward'];
-            if (edit_thm_form.elements.hint_rewrite.checked ===  true)
-                result_list[number]['hint_rewrite'] = 'true';
-            else if (number !== -1 && 'hint_rewrite' in result_list[number])
-                delete result_list[number]['hint_rewrite'];
             ajax_data['file-name'] = name;
             ajax_data['prev-list'] = prev_list;
             $.ajax({
@@ -688,7 +674,6 @@
                 data: JSON.stringify(ajax_data),
                 success: function (res) {
                     var result_data = res['data'];
-                    var data_name = result_data['name'];
                     var error = res['error'];
                     delete result_data['file-name'];
                     delete result_data['prev-list'];
@@ -697,9 +682,12 @@
                         $('div#' + error_id).find('pre').text(error_info);
                     }
                     else {
-                        if (!a_id) {
+                        if (number === '-1') {
                             result_list.push(result_data);
                         } else {
+                            delete result_list[number].hint_forward;
+                            delete result_list[number].hint_backward;
+                            delete result_list[number].hint_rewrite;
                             for (var key in result_data) {
                                 result_list[number][key] = result_data[key];
                             }
@@ -713,29 +701,35 @@
         });
 
 //      make a strict-type data from editing; id=page_num
-        function make_data(ty, id, number) {
-            var data_name = $('#data-name' + id).val().trim();
-            var data_content = $('#data-content' + id).val().trim();
+        function make_data(form, ty, id, number) {
             var ajax_data = {};
             if (ty === 'def.ax') {
+                var data_name = $('#data-name' + id).val().trim();
+                var data_content = $('#data-content' + id).val().trim();
                 ajax_data['ty'] = 'def.ax';
                 ajax_data['name'] = data_name;
                 ajax_data['type'] = data_content;
             }
             if (ty === 'thm' || ty === 'thm.ax') {
-                var vars_str_list = $('textarea#data-vars' + id).val().split('\n');
-                var vars_str = {};
                 ajax_data['ty'] = ty;
-                ajax_data['name'] = data_name;
-                ajax_data['prop'] = data_content;
-                $.each(vars_str_list, function (i, v) {
-                    let v_list = v.split('::');
-                    if (v_list[0])
-                        vars_str[$.trim(v_list[0])] = $.trim(v_list[1]);
+                ajax_data['name'] = form.name.value;
+                ajax_data['prop'] = form.prop.value;
+                ajax_data['vars'] = {};
+                $.each(form.vars.value.split('\n'), function (i, v) {
+                    let [nm, T] = v.split('::');
+                    if (nm)
+                        ajax_data['vars'][nm.trim()] = T.trim();
                 });
-                ajax_data['vars'] = vars_str;
+                if (form.hint_backward.checked === true)
+                    ajax_data['hint_backward'] = 'true';
+                if (form.hint_forward.checked ===  true)
+                    ajax_data['hint_forward'] = 'true';
+                if (form.hint_rewrite.checked ===  true)
+                    ajax_data['hint_rewrite'] = 'true';
             }
             if (ty === 'type.ind') {
+                var data_name = $('#data-name' + id).val().trim();
+                var data_content = $('#data-content' + id).val().trim();
                 var temp_list = [], temp_constrs = [];
                 var temp_content_list = data_content.split(/\n/);
                 if (data_name.split(/\s/).length > 1) {
@@ -781,6 +775,8 @@
                 ajax_data['constrs'] = temp_constrs;
             }
             if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
+                var data_name = $('#data-name' + id).val().trim();
+                var data_content = $('#data-content' + id).val().trim();
                 var rules_list = [];
                 var rules = result_list[number].rules;
                 var props_list = data_content.split(/\n/);
@@ -852,13 +848,6 @@
                 theories_selected = [];
             }
         })
-//        $('div.dropdown-menu.Ctrl a[name="up"]').on('click',function(){
-//            if($('div[name="theories"]').css('background-color') === bgColor){
-//                var a_id = $('div[name="theories"]').attr('id').trim();
-//                var number = Number(a_id.slice(3,))-2;
-//                result_list.splice(number, 1);
-//                }})
-
 
 //      click to save the related data to json file: edit && proof;
         $('a#save-file').click(function () {
