@@ -335,10 +335,10 @@ class Theory():
                 # trust level, simply evaluate the macro to check that results
                 # match. Otherwise, expand the macro and check all of the steps.
                 macro = self.get_proof_macro(seq.rule)
-                assert isinstance(macro.level, int) and macro.level >= 0, \
+                assert macro.level is None or (isinstance(macro.level, int) and macro.level >= 0), \
                     ("check_proof: invalid macro level " + str(macro.level))
-                if macro.level <= check_level:
-                    res_th = macro(self, seq.args, prev_ths)
+                if macro.level is not None and macro.level <= check_level:
+                    res_th = macro.eval(self, seq.args, prev_ths)
                     if rpt is not None:
                         rpt.eval_macro(seq.rule)
                 else:

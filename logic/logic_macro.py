@@ -17,7 +17,7 @@ class arg_combination_macro(ProofTermMacro):
         self.level = 1
         self.sig = MacroSig.TERM
 
-    def __call__(self, thy, f, ths):
+    def eval(self, thy, f, ths):
         assert ths[0].prop.is_equals(), "arg_combination"
         return Thm.combination(Thm.reflexive(f), ths[0])
 
@@ -32,7 +32,7 @@ class fun_combination_macro(ProofTermMacro):
         self.level = 1
         self.sig = MacroSig.TERM
 
-    def __call__(self, thy, x, ths):
+    def eval(self, thy, x, ths):
         assert ths[0].prop.is_equals(), "fun_combination"
         return Thm.combination(ths[0], Thm.reflexive(x))
 
@@ -47,7 +47,7 @@ class beta_norm_macro(ProofTermMacro):
         self.level = 1
         self.sig = MacroSig.NONE
 
-    def __call__(self, thy, args, ths):
+    def eval(self, thy, args, ths):
         assert args is None, "beta_norm_macro"
         cv = top_conv(beta_conv())
         eq_th = cv.eval(thy, ths[0].prop)
@@ -74,7 +74,7 @@ class apply_theorem_macro(ProofTermMacro):
         self.with_inst = with_inst
         self.sig = MacroSig.STRING_INSTSP if with_inst else MacroSig.STRING
 
-    def __call__(self, thy, args, prevs):
+    def eval(self, thy, args, prevs):
         tyinst, inst = dict(), dict()
         if self.with_inst:
             name, tyinst, inst = args
@@ -135,7 +135,7 @@ class rewrite_goal_macro(ProofTermMacro):
         self.backward = backward
         self.sig = MacroSig.STRING_TERM
 
-    def __call__(self, thy, args, ths):
+    def eval(self, thy, args, ths):
         assert isinstance(args, tuple) and len(args) == 2 and \
                isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
 

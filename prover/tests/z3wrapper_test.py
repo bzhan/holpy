@@ -51,9 +51,9 @@ class Z3WrapperTest(unittest.TestCase):
         for s, res in test_data:
             t = parser.parse_term(thy, ctxt, s)
             if res:
-                self.assertEqual(macro(thy, t, []), Thm([], t))
+                self.assertEqual(macro.eval(thy, t, []), Thm([], t))
             else:
-                self.assertRaises(AssertionError, macro, thy, t, [])
+                self.assertRaises(AssertionError, macro.eval, thy, t, [])
 
 
 if __name__ == "__main__":

@@ -85,7 +85,7 @@ class Z3Macro(ProofMacro):
         self.level = 0  # No expand implemented for Z3.
         self.sig = MacroSig.TERM
 
-    def __call__(self, thy, args, prevs):
+    def eval(self, thy, args, prevs):
         if z3_loaded:
             assert solve(args), "Z3: not solved."
         else:

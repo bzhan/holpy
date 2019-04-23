@@ -83,7 +83,7 @@ def from_binary(t):
 
 class Suc_conv(Conv):
     """Computes Suc of a binary number."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg) + 1))
 
     def get_proof_term(self, thy, t):
@@ -99,7 +99,7 @@ class Suc_conv(Conv):
 
 class add_conv(Conv):
     """Computes the sum of two binary numbers."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) + from_binary(t.arg)))
 
     def get_proof_term(self, thy, t):
@@ -127,7 +127,7 @@ class add_conv(Conv):
 
 class mult_conv(Conv):
     """Computes the product of two binary numbers."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) * from_binary(t.arg)))
 
     def get_proof_term(self, thy, t):
@@ -156,7 +156,7 @@ class mult_conv(Conv):
 
 class nat_conv(Conv):
     """Simplify all arithmetic operations."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         def val(t):
             """Evaluate the given term."""
             if is_binary(t):
@@ -406,7 +406,7 @@ class nat_norm_macro(ProofTermMacro):
         self.level = 10
         self.sig = MacroSig.TERM
 
-    def __call__(self, thy, goal, pts):
+    def eval(self, thy, goal, pts):
         # Simply produce the goal.
         assert len(pts) == 0, "nat_norm_macro"
         return Thm([], goal)
@@ -469,7 +469,7 @@ class nat_const_ineq_macro(ProofTermMacro):
         self.level = 10
         self.sig = MacroSig.TERM
 
-    def __call__(self, thy, goal, pts):
+    def eval(self, thy, goal, pts):
         # Simply produce the goal.
         assert len(pts) == 0, "nat_const_ineq_macro"
         return Thm([], goal)

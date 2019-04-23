@@ -25,7 +25,7 @@ class ProofMacro():
     
     A macro consists of the following data:
     
-    __call__ -- obtain the result of applying the proof method.
+    eval -- obtain the result of applying the proof method.
 
     expand -- obtain the detailed proof of the derivation.
 
@@ -39,7 +39,7 @@ class ProofMacro():
         self.level = None
         self.sig = None
 
-    def __call__(self, thy, args, prevs):
+    def eval(self, thy, args, prevs):
         """Obtain the result of applying the proof method.
         
         Input is the current theory, argument of the proof method, and

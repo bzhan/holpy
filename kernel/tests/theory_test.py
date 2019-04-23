@@ -32,7 +32,7 @@ class beta_conv_rhs_macro(ProofMacro):
         self.level = 1
         self.sig = MacroSig.TERM
 
-    def __call__(self, thy, args, ths):
+    def eval(self, thy, args, ths):
         th = ths[0]
         assert Term.is_equals(th.prop), "beta_conv_rhs"
         rhs = th.prop.rhs

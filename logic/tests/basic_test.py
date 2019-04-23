@@ -44,7 +44,7 @@ class BasicTest(unittest.TestCase):
         fx_eq_fy = Term.mk_equals(f(x), f(y))
         th = Thm.assume(x_eq_y)
         res = Thm([x_eq_y], fx_eq_fy)
-        self.assertEqual(macro(thy, f, [th]), res)
+        self.assertEqual(macro.eval(thy, f, [th]), res)
 
         prf = Proof(x_eq_y)
         prf.add_item(1, "arg_combination", args=f, prevs=[0])
@@ -61,7 +61,7 @@ class BasicTest(unittest.TestCase):
         fx_eq_gx = Term.mk_equals(f(x), g(x))
         th = Thm.assume(f_eq_g)
         res = Thm([f_eq_g], fx_eq_gx)
-        self.assertEqual(macro(thy, x, [th]), res)
+        self.assertEqual(macro.eval(thy, x, [th]), res)
 
         prf = Proof(f_eq_g)
         prf.add_item(1, "fun_combination", args=x, prevs=[0])
