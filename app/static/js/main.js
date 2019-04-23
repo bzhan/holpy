@@ -13,7 +13,7 @@
     var result_list_dict = {};
     var file_list = [];
     var add_mode = false;
-    var theories_selected = [];//list of the id of bgcolor div
+    var items_selected = [];//list of the id of bgcolor div
     var bgColor = '';//the color of left_json content
 
     $(document).ready(function () {
@@ -822,21 +822,21 @@
             var id = $(this).attr('id').trim();
             if ($(this).css('background-color') === bgColor) {
                 $(this).css('background-color', '');
-                var index = theories_selected.indexOf(id);
-                theories_selected.splice(index, 1);
+                var index = items_selected.indexOf(id);
+                items_selected.splice(index, 1);
             }
             else {
                 $(this).css('background-color','yellow');
                 bgColor = $(this).css('background-color');
                 console.log(bgColor);
-                theories_selected.push(id);
+                items_selected.push(id);
             }
         })
 
 //click DEL to delete yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
             var number = '';
-            $.each(theories_selected, function (i, v) {
+            $.each(items_selected, function (i, v) {
                    number = Number(v.slice(3,));
                    result_list[number] = '';
             })
@@ -845,9 +845,9 @@
             });
             save_editor_data();
             display_result_list();
-            if(theories_selected.length > 0){
+            if(items_selected.length > 0){
                 alert('删除成功！');
-                theories_selected = [];
+                items_selected = [];
             }
         })
 
@@ -856,8 +856,9 @@
             result_list[number] = result_list[number - 1];
             result_list[number-1] = temp;
             save_editor_data();
+            items_selected = [];
             display_result_list();
-            theories_selected = [];
+
         }
 
 
