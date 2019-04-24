@@ -89,7 +89,7 @@ def print_term(thy, t):
     def get_priority(t):
         if nat.is_binary(t) or hol_list.is_literal_list(t):
             return 100  # Nat atom case
-        elif t.ty == Term.COMB:
+        elif t.is_comb():
             op_data = get_info_for_operator(t)
             if op_data is not None:
                 return op_data.priority
@@ -97,7 +97,7 @@ def print_term(thy, t):
                 return 10
             else:
                 return 95  # Function application
-        elif t.ty == Term.ABS:
+        elif t.is_abs():
             return 10
         else:
             return 100  # Atom case
@@ -123,16 +123,16 @@ def print_term(thy, t):
             return N("if ") + helper(P, bd_vars) + N(" then ") + helper(x, bd_vars) + \
                    N(" else ") + helper(y, bd_vars)
 
-        if t.ty == Term.VAR:
+        if t.is_var():
             return V(t.name)
 
-        elif t.ty == Term.CONST:
+        elif t.is_const():
             if hasattr(t, "print_type") and t.print_type:
                 return N("(" + t.name + "::") + print_type(thy, t.T) + N(")")
             else:
                 return N(t.name)
 
-        elif t.ty == Term.COMB:
+        elif t.is_comb():
             op_data = get_info_for_operator(t)
             # First, we take care of the case of operators
             if op_data and op_data.arity == OperatorData.BINARY and t.is_binop():
@@ -214,7 +214,7 @@ def print_term(thy, t):
                     str_arg = helper(t.arg, bd_vars)
                 return str_fun + N(" ") + str_arg
 
-        elif t.ty == Term.ABS:
+        elif t.is_abs():
             lambda_str = "%" if not settings.unicode() else "λ"
             if hasattr(t, "print_type"):
                 var_str = B(t.var_name) + N("::") + print_type(thy, t.var_T)
@@ -223,7 +223,7 @@ def print_term(thy, t):
             body_repr = helper(t.body, [t.var_name] + bd_vars)
             return N(lambda_str) + var_str + N(". ") + body_repr
 
-        elif t.ty == Term.BOUND:
+        elif t.is_bound():
             if t.n >= len(bd_vars):
                 raise OpenTermException
             else:

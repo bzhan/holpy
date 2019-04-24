@@ -11,7 +11,7 @@ else:
 from kernel.type import TFun
 from kernel.term import Term, Var, boolT
 from kernel.thm import Thm
-from kernel.macro import MacroSig, ProofMacro, global_macros
+from kernel.macro import ProofMacro, global_macros
 from logic import logic
 from logic import nat
 from syntax import printer
@@ -19,7 +19,7 @@ from syntax import printer
 
 def convert(t):
     """Convert term t to Z3 input."""
-    if t.ty == Term.VAR:
+    if t.is_var():
         T = t.get_type()
         if T == nat.natT:
             return z3.Int(t.name)
@@ -55,9 +55,9 @@ def convert(t):
         return convert(t.arg1) * convert(t.arg)
     elif nat.is_binary(t):
         return nat.from_binary(t)
-    elif t.ty == Term.COMB:
+    elif t.is_comb():
         return convert(t.fun)(convert(t.arg))
-    elif t.ty == Term.CONST:
+    elif t.is_const():
         if t == logic.true:
             return z3.BoolVal(True)
         elif t == logic.false:
@@ -83,9 +83,9 @@ class Z3Macro(ProofMacro):
     """Macro invoking SMT solver Z3."""
     def __init__(self):
         self.level = 0  # No expand implemented for Z3.
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
-    def __call__(self, thy, args, prevs):
+    def eval(self, thy, args, prevs):
         if z3_loaded:
             assert solve(args), "Z3: not solved."
         else:

@@ -66,12 +66,12 @@ def strip_disj(t):
 
 def is_neg(t):
     """Whether t is of the form ~ A."""
-    return t.ty == Term.COMB and t.fun == neg
+    return t.is_comb() and t.fun == neg
 
 def is_exists(t):
     """Whether t is of the form ?x. P x."""
-    return t.ty == Term.COMB and t.fun.ty == Term.CONST and \
-        t.fun.name == "exists" and t.arg.ty == Term.ABS
+    return t.is_comb() and t.fun.is_const() and \
+        t.fun.name == "exists" and t.arg.is_abs()
 
 def mk_exists(x, body):
     """Given a variable x and a term t possibly depending on x, return
@@ -83,18 +83,18 @@ def mk_exists(x, body):
 
 def beta_norm(t):
     """Normalize t using beta-conversion."""
-    if t.ty == Term.VAR or t.ty == Term.CONST:
+    if t.is_var() or t.is_const():
         return t
-    elif t.ty == Term.COMB:
+    elif t.is_comb():
         f = beta_norm(t.fun)
         x = beta_norm(t.arg)
-        if f.ty == Term.ABS:
+        if f.is_abs():
             return f(x).beta_conv()
         else:
             return f(x)
-    elif t.ty == Term.ABS:
+    elif t.is_abs():
         return Abs(t.var_name, t.var_T, beta_norm(t.body))
-    elif t.ty == Term.BOUND:
+    elif t.is_bound():
         return t
     else:
         raise TypeError()

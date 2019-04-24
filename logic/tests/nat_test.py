@@ -69,7 +69,7 @@ class NatTest(unittest.TestCase):
         for n in test_data:
             t = nat.Suc(nat.to_binary(n))
             res_th = Thm.mk_equals(t, nat.to_binary(n + 1))
-            self.assertEqual(cv(thy, t), res_th)
+            self.assertEqual(cv.eval(thy, t), res_th)
             prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
@@ -92,7 +92,7 @@ class NatTest(unittest.TestCase):
         for m, n in test_data:
             t = nat.mk_plus(nat.to_binary(m), nat.to_binary(n))
             res_th = Thm.mk_equals(t, nat.to_binary(m + n))
-            self.assertEqual(cv(thy, t), res_th)
+            self.assertEqual(cv.eval(thy, t), res_th)
             prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
@@ -115,7 +115,7 @@ class NatTest(unittest.TestCase):
         for m, n in test_data:
             t = nat.mk_times(nat.to_binary(m), nat.to_binary(n))
             res_th = Thm.mk_equals(t, nat.to_binary(m * n))
-            self.assertEqual(cv(thy, t), res_th)
+            self.assertEqual(cv.eval(thy, t), res_th)
             prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
@@ -133,7 +133,7 @@ class NatTest(unittest.TestCase):
         for expr, n in test_data:
             t = parser.parse_term(thy, {}, expr)
             res_th = Thm.mk_equals(t, nat.to_binary(n))
-            self.assertEqual(cv(thy, t), res_th)
+            self.assertEqual(cv.eval(thy, t), res_th)
             prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 

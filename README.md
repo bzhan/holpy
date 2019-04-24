@@ -4,7 +4,7 @@ Implementation of higher-order logic in Python.
 
 ### Installation and usage:
 
-This project requires Python 3.
+This project requires Python 3.5.
 
 Required packages are listed in requirements.txt. To install required packages, use:
 
@@ -51,4 +51,4 @@ To start the frontend, use:
   * [`templates/index.html`](app/templates/index.html): main HTML page.
   * [`__init__.py`](app/__init__.py): main server program.
 
-* [`examples`](examples/): sample input files.
+* [`library`](library/): main library of theories.

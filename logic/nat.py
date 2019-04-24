@@ -3,7 +3,7 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
-from kernel.macro import MacroSig, global_macros
+from kernel import macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
@@ -21,7 +21,7 @@ plus = Const("plus", TFun(natT, natT, natT))
 times = Const("times", TFun(natT, natT, natT))
 
 def is_Suc(t):
-    return t.ty == Term.COMB and t.fun == Suc
+    return t.is_comb() and t.fun == Suc
 
 def mk_plus(*args):
     if not args:
@@ -83,7 +83,7 @@ def from_binary(t):
 
 class Suc_conv(Conv):
     """Computes Suc of a binary number."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg) + 1))
 
     def get_proof_term(self, thy, t):
@@ -99,10 +99,12 @@ class Suc_conv(Conv):
 
 class add_conv(Conv):
     """Computes the sum of two binary numbers."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) + from_binary(t.arg)))
 
     def get_proof_term(self, thy, t):
+        if not (is_plus(t) and is_binary(t.arg1) and is_binary(t.arg)):
+            raise ConvException
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
             cv = rewr_conv("plus_def_1")
@@ -127,7 +129,7 @@ class add_conv(Conv):
 
 class mult_conv(Conv):
     """Computes the product of two binary numbers."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) * from_binary(t.arg)))
 
     def get_proof_term(self, thy, t):
@@ -156,7 +158,7 @@ class mult_conv(Conv):
 
 class nat_conv(Conv):
     """Simplify all arithmetic operations."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         def val(t):
             """Evaluate the given term."""
             if is_binary(t):
@@ -404,9 +406,9 @@ class nat_norm_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
-    def __call__(self, thy, goal, pts):
+    def eval(self, thy, goal, pts):
         # Simply produce the goal.
         assert len(pts) == 0, "nat_norm_macro"
         return Thm([], goal)
@@ -467,9 +469,9 @@ class nat_const_ineq_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
-    def __call__(self, thy, goal, pts):
+    def eval(self, thy, goal, pts):
         # Simply produce the goal.
         assert len(pts) == 0, "nat_const_ineq_macro"
         return Thm([], goal)
@@ -506,7 +508,7 @@ class nat_eq_conv(Conv):
             return nat_const_ineq(thy, a, b).on_prop(thy, rewr_conv("eq_false"))
 
 
-global_macros.update({
+macro.global_macros.update({
     "nat_norm": nat_norm_macro(),
     "nat_const_ineq": nat_const_ineq_macro(),
 })

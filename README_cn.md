@@ -4,7 +4,7 @@
 
 ### 安装与使用
 
-本项目需要Python 3。安装本项目依赖的包裹，使用：
+本项目需要Python 3.5。安装本项目依赖的包裹，使用：
 
 ```python -m pip install -r requirements.txt```
 

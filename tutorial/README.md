@@ -23,3 +23,5 @@ This is a tutorial on backend programming for holpy, which can also serve as an 
 8. [Proof terms](https://nbviewer.jupyter.org/urls/gitee.com/bhzhan/holpy/raw/master/tutorial/proofterms.ipynb)
 
 9. [Macros](https://nbviewer.jupyter.org/urls/gitee.com/bhzhan/holpy/raw/master/tutorial/macros.ipynb)
+
+10. [Conversions I](https://nbviewer.jupyter.org/urls/gitee.com/bhzhan/holpy/raw/master/tutorial/conversions.ipynb)
