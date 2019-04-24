@@ -336,10 +336,10 @@ class ProofState():
         if instsp is None:
             instsp = (dict(), dict())
             As, C = th.assums, th.concl
+            matcher.first_order_match_incr(C, cur_item.th.prop, instsp)
             for pat, prev in zip(As, prevs):
                 item = self.get_proof_item(prev)
                 matcher.first_order_match_incr(pat, item.th.prop, instsp)
-            matcher.first_order_match_incr(C, cur_item.th.prop, instsp)
 
         As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
 
@@ -350,9 +350,15 @@ class ProofState():
         for goal_id, A in zip(all_ids, As[len(prevs):]):
             self.set_line(goal_id, "sorry", th=Thm(cur_item.th.hyps, A))
 
-        tyinst, inst = instsp
-        self.set_line(incr_id(start, num_goal), "apply_theorem_for",
-                      args=(th_name, tyinst, inst), prevs=prevs + all_ids, th=cur_item.th)
+        # If it is possible to instantiate all variables from assumptions,
+        # use apply_theorem. Otherwise, use apply_theorem_for.
+        if set(term.get_vars(th.assums)) != set(term.get_vars(th.prop)):
+            tyinst, inst = instsp
+            self.set_line(incr_id(start, num_goal), "apply_theorem_for",
+                          args=(th_name, tyinst, inst), prevs=prevs + all_ids, th=cur_item.th)
+        else:
+            self.set_line(incr_id(start, num_goal), "apply_theorem",
+                          args=th_name, prevs=prevs + all_ids, th=cur_item.th)
 
         # Test if the goals are already proved:
         for goal_id, A in reversed(list(zip(all_ids, As[len(prevs):]))):
