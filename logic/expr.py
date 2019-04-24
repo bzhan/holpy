@@ -10,7 +10,7 @@ from logic import function
 from logic.nat import natT
 from logic.conv import arg_conv
 from logic.proofterm import ProofTermMacro, ProofTerm
-from logic.logic_macro import apply_theorem, init_theorem
+from logic.logic_macro import apply_theorem
 
 """Automation for arithmetic expressions."""
 

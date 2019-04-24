@@ -13,7 +13,7 @@ from logic import induct
 from logic.nat import natT, to_binary
 from logic.conv import rewr_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
-from logic.logic_macro import apply_theorem, init_theorem
+from logic.logic_macro import apply_theorem
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
@@ -202,7 +202,7 @@ class ParaSystem():
         trans_pt = ProofTerm.assume(transC(s1,s2))
         # print(printer.print_thm(self.thy, trans_pt.th))
         P = Term.mk_implies(invC(s1), invC(s2))
-        ind_pt = init_theorem(self.thy, "trans_cases", inst={"a1": s1, "a2": s2, "P": P})
+        ind_pt = apply_theorem(self.thy, "trans_cases", inst={"a1": s1, "a2": s2, "P": P})
         # print(printer.print_thm(self.thy, ind_pt.th))
 
         ind_As, ind_C = ind_pt.prop.strip_implies()
