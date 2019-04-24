@@ -65,7 +65,7 @@ class fun_upd_eval_conv(Conv):
                 neq = nat.nat_const_ineq(thy, c, a)
                 eq = rewr_conv("fun_upd_other", conds=[neq]).get_proof_term(thy, t)
                 return eq.on_arg(thy, self)
-        elif f.ty == Term.ABS:
+        elif f.is_abs():
             return ProofTerm.beta_conv(t)
         else:
             return refl(t)

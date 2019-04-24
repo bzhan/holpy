@@ -185,9 +185,9 @@ class sub_conv(Conv):
         self.cv = cv
 
     def get_proof_term(self, thy, t):
-        if t.ty == Term.COMB:
+        if t.is_comb():
             return comb_conv(self.cv).get_proof_term(thy, t)
-        elif t.ty == Term.ABS:
+        elif t.is_abs():
             return abs_conv(self.cv).get_proof_term(thy, t)
         else:
             return refl(t)

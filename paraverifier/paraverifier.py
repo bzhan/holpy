@@ -82,7 +82,7 @@ class ParaSystem():
         """Replace states by their corresponding numbers."""
         if t in self.states:
             return to_binary(self.state_map[t])
-        elif t.ty == Term.COMB:
+        elif t.is_comb():
             return self.replace_states(t.fun)(self.replace_states(t.arg))
         else:
             return t
@@ -113,7 +113,7 @@ class ParaSystem():
 
         # Obtain invariant on the updated state.
         def subst(t):
-            if t.ty == Term.COMB and t.fun in self.vars and t.arg in inv_vars:
+            if t.is_comb() and t.fun in self.vars and t.arg in inv_vars:
                 # Substitution for a parameterized variable
                 if case_id < len(inv_vars) and inv_vars[case_id] == t.arg and \
                    t.fun(rule_var) in assigns:
@@ -122,15 +122,15 @@ class ParaSystem():
                     return assigns[t.fun](t.arg)
                 else:
                     return t
-            elif t.ty == Term.VAR:
+            elif t.is_var():
                 # Substitution for a non-parameterized variable
                 if t in assigns:
                     return assigns[t]
                 else:
                     return t
-            elif t.ty == Term.CONST:
+            elif t.is_const():
                 return t
-            elif t.ty == Term.COMB:
+            elif t.is_comb():
                 return subst(t.fun)(subst(t.arg))
             else:
                 raise NotImplementedError

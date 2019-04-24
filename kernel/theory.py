@@ -243,19 +243,19 @@ class Theory():
         the theory.
 
         """
-        if t.ty == Term.VAR:
+        if t.is_var():
             return None
-        elif t.ty == Term.CONST:
+        elif t.is_const():
             try:
                 self.get_term_sig(t.name).match(t.T)
             except TypeMatchException:
                 raise TheoryException("Check term: " + repr(t))
-        elif t.ty == Term.COMB:
+        elif t.is_comb():
             self.check_term(t.fun)
             self.check_term(t.arg)
-        elif t.ty == Term.ABS:
+        elif t.is_abs():
             self.check_term(t.body)
-        elif t.ty == Term.BOUND:
+        elif t.is_bound():
             return None
         else:
             raise TypeError()

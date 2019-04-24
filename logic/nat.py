@@ -21,7 +21,7 @@ plus = Const("plus", TFun(natT, natT, natT))
 times = Const("times", TFun(natT, natT, natT))
 
 def is_Suc(t):
-    return t.ty == Term.COMB and t.fun == Suc
+    return t.is_comb() and t.fun == Suc
 
 def mk_plus(*args):
     if not args:
@@ -103,6 +103,8 @@ class add_conv(Conv):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) + from_binary(t.arg)))
 
     def get_proof_term(self, thy, t):
+        if not (is_plus(t) and is_binary(t.arg1) and is_binary(t.arg)):
+            raise ConvException
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
             cv = rewr_conv("plus_def_1")

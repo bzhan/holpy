@@ -55,13 +55,13 @@ def fast_compare(t1, t2):
     """Fast ordering between t1 and t2."""
     if t1.ty != t2.ty:
         return compare(t1.ty, t2.ty)
-    elif t1.ty == Term.VAR or t1.ty == Term.CONST:
+    elif t1.is_var() or t1.is_const():
         return compare_pair((t1.name, t1.T), (t2.name, t2.T), compare, fast_compare_typ)
-    elif t1.ty == Term.COMB:
+    elif t1.is_comb():
         return compare_pair((t1.fun, t1.arg), (t2.fun, t2.arg), fast_compare, fast_compare)
-    elif t1.ty == Term.ABS:
+    elif t1.is_abs():
         return compare_pair((t1.var_T, t1.body), (t2.var_T, t2.body), fast_compare_typ, fast_compare)
-    elif t1.ty == Term.BOUND:
+    elif t1.is_bound():
         return compare(t1.n, t2.n)
     else:
         raise TypeError()
