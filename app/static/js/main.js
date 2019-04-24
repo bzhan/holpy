@@ -14,8 +14,6 @@
     var file_list = [];
     var add_mode = false;
     var items_selected = [];//list of the id of bgcolor div
-    var bgColor = '';//the color of left_json content
-    var up_flag = true;
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -822,14 +820,10 @@
         $('#left_json').on('click','div[name="theories"]',function(){
             var id = $(this).attr('id').slice(3,).trim();
             if (items_selected.indexOf(id) >= 0) {
-//                $(this).css('background-color', '');
                 var index = items_selected.indexOf(id);
                 items_selected.splice(index, 1);
             }
             else {
-//                $(this).css('background-color','yellow');
-//                bgColor = $(this).css('background-color');
-//                console.log(bgColor);
                 items_selected.push(id);
             }
             display_result_list();
@@ -853,7 +847,6 @@
         })
 
         function exchange_up(number) {
-            up_flag = true;
             var temp = result_list[number];
             result_list[number] = result_list[number - 1];
             result_list[number-1] = temp;
@@ -864,7 +857,6 @@
 
  //click UP to move up the yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function(){
-            up_flag = false;
             $.each(items_selected, function (i, v) {
                 var temp = v;
                 if(result_list[0]['ty'] === 'header'){
@@ -880,7 +872,7 @@
                     }
                 }
             })
-            if(up_flag === true)
+            if(items_selected.length > 0)
             {
                 alert('success!');
             }
