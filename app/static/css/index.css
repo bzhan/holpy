@@ -149,6 +149,10 @@ a.fontcolor {
     float: left;
 }
 
+.selected_item {
+    background-color : yellow;
+}
+
 div.left {
     border: 0px solid;
     height: 80%;

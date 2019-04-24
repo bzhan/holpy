@@ -13,7 +13,8 @@
     var result_list_dict = {};
     var file_list = [];
     var add_mode = false;
-    var theories_selected = [];//list of the id of bgcolor div
+    var items_selected = [];//list of the id of bgcolor div
+    var bgColor = '';//the color of left_json content
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -414,7 +415,8 @@
         });
 
 //      click edit then create a tab page for the editing;
-        $('#left_json').on('click', 'a[name="edit"]', function () {
+        $('#left_json').on('click', 'a[name="edit"]', function (s) {
+            s.stopPropagation();
             page_num++;
             edit_mode = true;
             var a_ele = $(this);
@@ -815,39 +817,94 @@
             return ajax_data;
         }
 
-//click to change left_json content bgcolor
+//      click to change left_json content bgcolor
         $('#left_json').on('click','div[name="theories"]',function(){
-            var id = $(this).attr('id').trim();
-            if ($(this).css('background-color') === bgColor) {
-                $(this).css('background-color', '');
-                var index = theories_selected.indexOf(id);
-                theories_selected.splice(index, 1);
+            var id = $(this).attr('id').slice(3,).trim();
+            if (items_selected.indexOf(id) >= 0) {
+//                $(this).css('background-color', '');
+                var index = items_selected.indexOf(id);
+                items_selected.splice(index, 1);
             }
             else {
-                $(this).css('background-color','yellow');
-                bgColor = $(this).css('background-color');
-                console.log(bgColor);
-                theories_selected.push(id);
+//                $(this).css('background-color','yellow');
+//                bgColor = $(this).css('background-color');
+//                console.log(bgColor);
+                items_selected.push(id);
             }
+            display_result_list();
         })
 
-//click DEL to delete red left_json content and save to webpage and json file
+//click DEL to delete yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
             var number = '';
-            $.each(theories_selected, function (i, v) {
-                   number = Number(v.slice(3,))-1;
-                   result_list[number] = '';
+            $.each(items_selected, function (i, v) {
+                   result_list[v] = '';
             })
             result_list = result_list.filter(function(item) {
                 return item !== '';
             });
-            save_editor_data();
-            display_result_list();
-            if(theories_selected.length > 0){
+            //save_editor_data();
+            if(items_selected.length > 0){
                 alert('删除成功！');
-                theories_selected = [];
+                items_selected = [];
+            }
+            display_result_list();
+        })
+
+        function exchange_up(number) {
+            var temp = result_list[number];
+            result_list[number] = result_list[number - 1];
+            result_list[number-1] = temp;
+            //save_editor_data();
+            display_result_list();
+
+        }
+
+
+ //click UP to move up the yellow left_json content and save to webpage and json file
+        $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function(){
+            $.each(items_selected, function (i, v) {
+                var temp = v;
+                if(result_list[0]['ty'] === 'header'){
+                    if (v > String(1)) {
+                        items_selected[i] = String(Number(v) - 1);
+                        exchange_up(temp);
+                    }
+                }
+                else {
+                    if (v > String(0)) {
+                        items_selected[i] = String(Number(v) - 1);
+                        exchange_up(temp);
+                    }
+                }
+            })
+            if(items_selected.length > 0)
+            {
+                alert('success!');
             }
         })
+
+//        function exchange_down(number) {
+//            var temp = result_list[number];
+//            result_list[number] = result_list[number + 1];
+//            result_list[number+1] = temp;
+//            //save_editor_data();
+//            display_result_list();
+//
+//        }
+//
+////click down to move down the yellow left_json content and save to webpage and json file
+//        $('div.dropdown-menu.Ctrl a[name="down"]').on('click', function(){
+//            $.each(items_selected, function (i, v) {
+//                var temp = v;
+//                items_selected[i] = String(Number(v) + 1);
+//                exchange_down(temp);
+//            })
+//            if(items_selected.length > 0)
+//            {
+//                alert('success!');
+//            }
+//        })
 
 //      click to save the related data to json file: edit && proof;
         $('a#save-file').click(function () {
@@ -861,6 +918,7 @@
 //      click to display json file;
         $('#root-file').on('click', 'a[name="file"]', function () {
             num = 0;
+            items_selected = [];
             $(this).parent().hide();
             $('#json-tab2').click();
             $('#left_json').empty();
@@ -987,12 +1045,17 @@
         $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
         $.each(result_list, function(num, ext) {
             if (ext) {
+                var class_item = '';
+                if (items_selected.indexOf(String(num)) >= 0) {
+                    class_item = 'selected_item';
+                }
                 var templ = $("#template-content-" + ext.ty.replace(".", "-"));
                 if (templ.length == 1) {
-                    $('#left_json').append(_.template(templ.html())({num: num, ext: ext}));
+                    $('#left_json').append(_.template(templ.html())({num: num, ext: ext, class_item: class_item}));
                 }
             }
         });
+//        items_selected = [];
     }
 
 //  display_hilight;
