@@ -175,7 +175,7 @@ class ParaSystem():
         exts.add_extension(extension.AxConstant("inv", TFun(gcl.stateT, boolT)))
         exts.add_extension(extension.Theorem("inv_def", Thm([], prop)))
         self.thy.unchecked_extend(exts)
-        print(printer.print_extensions(self.thy, exts))
+        # print(printer.print_extensions(self.thy, exts))
 
     def add_semantics(self):
         """Add the semantics of the system in GCL."""
@@ -189,7 +189,7 @@ class ParaSystem():
 
         exts = induct.add_induct_predicate("trans", TFun(gcl.stateT, gcl.stateT, boolT), props)
         self.thy.unchecked_extend(exts)
-        print(printer.print_extensions(self.thy, exts))
+        # print(printer.print_extensions(self.thy, exts))
 
     def get_proof(self):
         invC = Const("inv", TFun(gcl.stateT, boolT))
@@ -197,21 +197,21 @@ class ParaSystem():
         s1 = Var("s1", gcl.stateT)
         s2 = Var("s2", gcl.stateT)
         prop = Thm.mk_implies(invC(s1), transC(s1,s2), invC(s2))
-        print(printer.print_thm(self.thy, prop))
+        # print(printer.print_thm(self.thy, prop))
 
         trans_pt = ProofTerm.assume(transC(s1,s2))
-        print(printer.print_thm(self.thy, trans_pt.th))
+        # print(printer.print_thm(self.thy, trans_pt.th))
         P = Term.mk_implies(invC(s1), invC(s2))
         ind_pt = init_theorem(self.thy, "trans_cases", inst={"a1": s1, "a2": s2, "P": P})
-        print(printer.print_thm(self.thy, ind_pt.th))
+        # print(printer.print_thm(self.thy, ind_pt.th))
 
         ind_As, ind_C = ind_pt.prop.strip_implies()
         for ind_A in ind_As[1:-1]:
-            print("ind_A: ", printer.print_term(self.thy, ind_A))
+            # print("ind_A: ", printer.print_term(self.thy, ind_A))
             vars, As, C = logic.strip_all_implies(ind_A, ["s", "k"])
-            for A in As:
-                print("A: ", printer.print_term(self.thy, A))
-            print("C: ", printer.print_term(self.thy, C))
+            # for A in As:
+            #     print("A: ", printer.print_term(self.thy, A))
+            # print("C: ", printer.print_term(self.thy, C))
             eq1 = ProofTerm.assume(As[0])
             eq2 = ProofTerm.assume(As[1])
             guard = ProofTerm.assume(As[2])
@@ -219,10 +219,10 @@ class ParaSystem():
                                              .on_prop(self.thy, rewr_conv("inv_def"))
             C_goal = ProofTerm.assume(C).on_arg(self.thy, rewr_conv(eq2)) \
                                         .on_prop(self.thy, rewr_conv("inv_def"))
-            for t in logic.strip_conj(inv_pre.prop):
-                print("inv_pre: ", printer.print_term(self.thy, t))
-            for t in logic.strip_conj(C_goal.prop):
-                print("C_goal: ", printer.print_term(self.thy, t))
+            # for t in logic.strip_conj(inv_pre.prop):
+            #     print("inv_pre: ", printer.print_term(self.thy, t))
+            # for t in logic.strip_conj(C_goal.prop):
+            #     print("C_goal: ", printer.print_term(self.thy, t))
 
 
 def load_system(filename):
