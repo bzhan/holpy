@@ -1,5 +1,14 @@
 # Author: Bohua Zhan
 
+from typing import Dict
+
+from kernel.type import HOLType
+from kernel.term import Term
+
+TyInst = Dict[str, HOLType]
+Inst = Dict[str, Term]
+
+
 """Global store of macros. Keys are names of the macros,
 values are the corresponding macro objects.
 
@@ -9,10 +18,6 @@ extension adding it by name.
 
 """
 global_macros = dict()
-
-class MacroSig():
-    """Signature for the arguments of proof macro."""
-    NONE, TERM, TYINST, INST, STRING, STRING_TYPE, STRING_TERM, STRING_INSTSP = range(8)
 
 
 class ProofMacro():
@@ -29,7 +34,7 @@ class ProofMacro():
 
     expand -- obtain the detailed proof of the derivation.
 
-    sig -- signature of the macro, of type MacroSig.
+    sig -- signature of the macro.
 
     level -- trustworthiness level of a macro. Smaller is greater
     trustworthiness.

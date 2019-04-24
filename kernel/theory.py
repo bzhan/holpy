@@ -1,12 +1,13 @@
 # Author: Bohua Zhan
 
 from copy import copy
+from typing import Tuple
 
 from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
 from kernel.term import Term, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import ProofException
-from kernel.macro import MacroSig, ProofMacro, global_macros
+from kernel.macro import ProofMacro, global_macros
 from kernel.extension import Extension
 from kernel.report import ExtensionReport
 
@@ -384,11 +385,11 @@ class Theory():
     def get_proof_rule_sig(self, name):
         """Obtain the argument signature of the proof rule."""
         if name == "theorem":
-            return MacroSig.STRING
+            return str
         elif name == "variable":
-            return MacroSig.STRING_TYPE
+            return Tuple[str, HOLType]
         elif name == "sorry" or name == "subproof":
-            return MacroSig.NONE
+            return None
         elif name in primitive_deriv:
             _, sig = primitive_deriv[name]
             return sig

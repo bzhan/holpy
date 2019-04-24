@@ -4,7 +4,8 @@ from collections import OrderedDict
 
 from kernel.type import Type, boolT
 from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
-from kernel.macro import MacroSig
+from kernel import macro
+
 
 class InvalidDerivationException(Exception):
     """Exception during derivation. Provides error message."""
@@ -331,19 +332,19 @@ class Thm():
 
 # Table of primitive derivations
 primitive_deriv = {
-    "assume" : (Thm.assume, MacroSig.TERM),
-    "implies_intr" : (Thm.implies_intr, MacroSig.TERM),
-    "implies_elim" : (Thm.implies_elim, MacroSig.NONE),
-    "reflexive" : (Thm.reflexive, MacroSig.TERM),
-    "symmetric" : (Thm.symmetric, MacroSig.NONE),
-    "transitive" : (Thm.transitive, MacroSig.NONE),
-    "combination" : (Thm.combination, MacroSig.NONE),
-    "equal_intr" : (Thm.equal_intr, MacroSig.NONE),
-    "equal_elim" : (Thm.equal_elim, MacroSig.NONE),
-    "subst_type" : (Thm.subst_type, MacroSig.TYINST),
-    "substitution" : (Thm.substitution, MacroSig.INST),
-    "beta_conv" : (Thm.beta_conv, MacroSig.TERM),
-    "abstraction" : (Thm.abstraction, MacroSig.TERM),
-    "forall_intr" : (Thm.forall_intr, MacroSig.TERM),
-    "forall_elim" : (Thm.forall_elim, MacroSig.TERM)
+    "assume" : (Thm.assume, Term),
+    "implies_intr" : (Thm.implies_intr, Term),
+    "implies_elim" : (Thm.implies_elim, None),
+    "reflexive" : (Thm.reflexive, Term),
+    "symmetric" : (Thm.symmetric, None),
+    "transitive" : (Thm.transitive, None),
+    "combination" : (Thm.combination, None),
+    "equal_intr" : (Thm.equal_intr, None),
+    "equal_elim" : (Thm.equal_elim, None),
+    "subst_type" : (Thm.subst_type, macro.TyInst),
+    "substitution" : (Thm.substitution, macro.Inst),
+    "beta_conv" : (Thm.beta_conv, Term),
+    "abstraction" : (Thm.abstraction, Term),
+    "forall_intr" : (Thm.forall_intr, Term),
+    "forall_elim" : (Thm.forall_elim, Term)
 }

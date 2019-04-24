@@ -1,10 +1,11 @@
 # Author: Bohua Zhan
 
+from typing import Tuple
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import TVar, Type, TFun, boolT
+from kernel.type import HOLType, TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
-from kernel.macro import MacroSig
+from kernel import macro
 from kernel.thm import Thm
 from kernel.proof import ProofItem, id_force_tuple
 from kernel import extension
@@ -286,29 +287,29 @@ def parse_proof_rule(thy, ctxt, data):
 
     try:
         sig = thy.get_proof_rule_sig(rule)
-        if sig == MacroSig.NONE:
+        if sig == None:
             assert args == "", "rule expects no argument."
             return ProofItem(id, rule, prevs=prevs, th=th)
-        elif sig == MacroSig.STRING:
+        elif sig == str:
             return ProofItem(id, rule, args=args, prevs=prevs, th=th)
-        elif sig == MacroSig.TERM:
+        elif sig == Term:
             t = parse_term(thy, ctxt, args)
             return ProofItem(id, rule, args=t, prevs=prevs, th=th)
-        elif sig == MacroSig.INST:
+        elif sig == macro.Inst:
             inst = parse_inst(thy, ctxt, args)
             return ProofItem(id, rule, args=inst, prevs=prevs, th=th)
-        elif sig == MacroSig.TYINST:
+        elif sig == macro.TyInst:
             tyinst = tyinst_parser(thy, ctxt).parse(args)
             return ProofItem(id, rule, args=tyinst, prevs=prevs, th=th)
-        elif sig == MacroSig.STRING_TYPE:
+        elif sig == Tuple[str, HOLType]:
             s1, s2 = args.split(",", 1)
             T = parse_type(thy, s2)
             return ProofItem(id, rule, args=(s1, T), prevs=prevs, th=th)
-        elif sig == MacroSig.STRING_TERM:
+        elif sig == Tuple[str, Term]:
             s1, s2 = args.split(",", 1)
             t = parse_term(thy, ctxt, s2)
             return ProofItem(id, rule, args=(s1, t), prevs=prevs, th=th)
-        elif sig == MacroSig.STRING_INSTSP:
+        elif sig == Tuple[str, macro.TyInst, macro.Inst]:
             s1, s2 = args.split(",", 1)
             tyinst, inst = parse_instsp(thy, ctxt, s2)
             return ProofItem(id, rule, args=(s1, tyinst, inst), prevs=prevs, th=th)

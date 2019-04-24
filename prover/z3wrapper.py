@@ -11,7 +11,7 @@ else:
 from kernel.type import TFun
 from kernel.term import Term, Var, boolT
 from kernel.thm import Thm
-from kernel.macro import MacroSig, ProofMacro, global_macros
+from kernel.macro import ProofMacro, global_macros
 from logic import logic
 from logic import nat
 from syntax import printer
@@ -83,7 +83,7 @@ class Z3Macro(ProofMacro):
     """Macro invoking SMT solver Z3."""
     def __init__(self):
         self.level = 0  # No expand implemented for Z3.
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def eval(self, thy, args, prevs):
         if z3_loaded:

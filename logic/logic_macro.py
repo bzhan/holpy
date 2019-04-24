@@ -1,7 +1,9 @@
 # Author: Bohua Zhan
 
+from typing import Tuple
+
 from kernel.term import Term
-from kernel.macro import MacroSig, global_macros
+from kernel import macro
 from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
@@ -15,7 +17,7 @@ class arg_combination_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 1
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def eval(self, thy, f, ths):
         assert ths[0].prop.is_equals(), "arg_combination"
@@ -30,7 +32,7 @@ class fun_combination_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 1
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def eval(self, thy, x, ths):
         assert ths[0].prop.is_equals(), "fun_combination"
@@ -45,7 +47,7 @@ class beta_norm_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 1
-        self.sig = MacroSig.NONE
+        self.sig = None
 
     def eval(self, thy, args, ths):
         assert args is None, "beta_norm_macro"
@@ -72,7 +74,7 @@ class apply_theorem_macro(ProofTermMacro):
     def __init__(self, *, with_inst=False):
         self.level = 1
         self.with_inst = with_inst
-        self.sig = MacroSig.STRING_INSTSP if with_inst else MacroSig.STRING
+        self.sig = Tuple[str, macro.TyInst, macro.Inst] if with_inst else str
 
     def eval(self, thy, args, prevs):
         tyinst, inst = dict(), dict()
@@ -136,7 +138,7 @@ class rewrite_goal_macro(ProofTermMacro):
     def __init__(self, *, backward=False):
         self.level = 1
         self.backward = backward
-        self.sig = MacroSig.STRING_TERM
+        self.sig = Tuple[str, Term]
 
     def eval(self, thy, args, ths):
         assert isinstance(args, tuple) and len(args) == 2 and \
@@ -191,7 +193,7 @@ def init_theorem(thy, th_name, tyinst=None, inst=None):
     pt = ProofTermDeriv("beta_norm", thy, None, [pt])
     return pt
 
-global_macros.update({
+macro.global_macros.update({
     "arg_combination": arg_combination_macro(),
     "fun_combination": fun_combination_macro(),
     "beta_norm": beta_norm_macro(),

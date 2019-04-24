@@ -2,7 +2,7 @@
 
 from kernel.type import TFun
 from kernel.term import Term, Const, Abs
-from kernel.macro import MacroSig, global_macros
+from kernel.macro import global_macros
 from logic import logic_macro
 from logic import nat
 from logic import logic
@@ -75,7 +75,7 @@ class fun_upd_eval_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "fun_upd_eval_macro"

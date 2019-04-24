@@ -3,7 +3,7 @@
 from kernel.thm import Thm, primitive_deriv
 from kernel.theory import Theory
 from kernel.proof import Proof, id_force_tuple
-from kernel.macro import ProofMacro, MacroSig
+from kernel.macro import ProofMacro
 
 class ProofTerm():
     """A proof term contains the derivation tree of a theorem.

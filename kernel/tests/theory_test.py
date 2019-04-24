@@ -6,7 +6,7 @@ from kernel.type import Type, TVar, TFun, boolT
 from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from kernel.thm import Thm
 from kernel.proof import Proof
-from kernel.macro import MacroSig, ProofMacro
+from kernel.macro import ProofMacro
 from kernel.theory import Theory, TheoryException, CheckProofException
 from kernel.extension import AxType, AxConstant, Constant, Theorem, TheoryExtension
 from kernel.report import ProofReport, ExtensionReport
@@ -30,7 +30,7 @@ class beta_conv_rhs_macro(ProofMacro):
 
     def __init__(self):
         self.level = 1
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def eval(self, thy, args, ths):
         th = ths[0]
@@ -256,7 +256,7 @@ class TheoryTest(unittest.TestCase):
         th = Thm.mk_equals(t,x)
 
         # Check obtaining signature
-        self.assertEqual(thy.get_proof_rule_sig("beta_conv_rhs"), MacroSig.TERM)
+        self.assertEqual(thy.get_proof_rule_sig("beta_conv_rhs"), Term)
 
         # Check proof without trusting beta_conv_rhs
         rpt = ProofReport()

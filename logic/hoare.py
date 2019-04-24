@@ -2,7 +2,7 @@
 
 from kernel.type import Type, TFun, boolT
 from kernel.term import Term, Var, Const
-from kernel.macro import MacroSig, global_macros
+from kernel.macro import global_macros
 from logic import nat
 from logic import function
 from logic import logic
@@ -103,7 +103,7 @@ class eval_Sem_macro(ProofTermMacro):
     """Prove a theorem of the form Sem com st st2."""
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "eval_Sem_macro"
@@ -152,7 +152,7 @@ class vcg_macro(ProofTermMacro):
     """
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def get_proof_term(self, thy, goal, pts):
         f, (P, c, Q) = goal.strip_comb()

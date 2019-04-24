@@ -3,7 +3,7 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
-from kernel.macro import MacroSig, global_macros
+from kernel import macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
@@ -406,7 +406,7 @@ class nat_norm_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def eval(self, thy, goal, pts):
         # Simply produce the goal.
@@ -469,7 +469,7 @@ class nat_const_ineq_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def eval(self, thy, goal, pts):
         # Simply produce the goal.
@@ -508,7 +508,7 @@ class nat_eq_conv(Conv):
             return nat_const_ineq(thy, a, b).on_prop(thy, rewr_conv("eq_false"))
 
 
-global_macros.update({
+macro.global_macros.update({
     "nat_norm": nat_norm_macro(),
     "nat_const_ineq": nat_const_ineq_macro(),
 })
