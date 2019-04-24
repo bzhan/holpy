@@ -234,7 +234,6 @@
 
         // Save a single proof to the webpage (not to the json file);
         $('div.rbottom').on('click', 'button.save_proof', function () {
-            editor_id_list = [];
             var file_name = $(this).attr('name').slice(4,);
             var editor_id = get_selected_id();
             var id = Number($(this).attr('id'));
@@ -1047,7 +1046,6 @@
                 }
             }
         });
-//        items_selected = [];
     }
 
 //  display_hilight;
@@ -1071,9 +1069,8 @@
         });
     }
 
-    function init_editor(editor_id = "code1") {
-        var id = editor_id;
-        var editor = CodeMirror.fromTextArea(document.getElementById(editor_id), {
+    function init_editor(id) {
+        var editor = CodeMirror.fromTextArea(document.getElementById(id), {
             mode: "text/x-python",
             lineNumbers: true,
             firstLineNumber: 0,
@@ -1098,18 +1095,18 @@
         var rtop = document.querySelector('.rtop');
         editor.setSize("auto", rtop.clientHeight - 40);
         editor.setValue("");
-        cells[editor_id] = {};
-        cells[editor_id].click_line_number = -1;
-        cells[editor_id].facts = new Set();
-        cells[editor_id].edit_line_number = -1;
-        cells[editor_id].readonly_lines = [0];
+        cells[id] = {
+            click_line_number: -1,
+            facts: new Set(),
+            edit_line_number: -1,
+            readonly_lines: [0]
+        };
         editor.on("keydown", function (cm, event) {
             let line_no = cm.getCursor().line;
             let line = cm.getLine(line_no);
-            var id = get_selected_id();
             if (event.code === 'Enter') {
                 event.preventDefault();
-                if (cells[id].edit_line_number !== undefined && cells[id].edit_line_number !== -1) {
+                if (cells[id].edit_line_number !== -1) {
                     set_line(cm);
                 } else {
                     add_line_after(cm);
@@ -1124,7 +1121,7 @@
                 }
             } else if (event.code === 'Escape') {
                 event.preventDefault();
-                if (cells[id].edit_line_number !== undefined && cells[id].edit_line_number !== -1) {
+                if (cells[id].edit_line_number !== -1) {
                     cm.getAllMarks().forEach(e => {
                         if (e.readOnly !== undefined) {
                             if (e.readOnly) {
