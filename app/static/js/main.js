@@ -181,19 +181,19 @@
         $('#json-tab1').click(function () {
             $('div#root-file').show();
             $('div#left_json').hide();
-            $('div#varible').hide();
+            $('div#variable').hide();
         });
 
         $('#json-tab2').click(function () {
             $('div#root-file').hide();
             $('div#left_json').show();
-            $('div#varible').hide();
+            $('div#variable').hide();
         });
 
         $('#json-tab3').click(function () {
             $('div#root-file').hide();
             $('div#left_json').hide();
-            $('div#varible').show();
+            $('div#variable').show();
         });
 
         $('div#root-file').on('click', 'a[name="edit"]', function () {
