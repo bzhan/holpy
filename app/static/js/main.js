@@ -431,7 +431,7 @@
         });
 
 //      keypress to display unicode;
-        $('#codeTabContent').on('keydown', 'textarea,input', function (e) {
+        $('#codeTabContent').on('keydown', '.unicode-replace', function (e) {
             var content = $(this).val().trim();
             var id = $(this).attr('id');
             var pos = document.getElementById(id).selectionStart;
