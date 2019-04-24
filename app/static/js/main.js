@@ -1242,7 +1242,7 @@
             // Choose a new goal
             cells[id].click_line_number = line_num;
         }
-        else {
+        else if (cells[id].click_line_number !== -1) {
             // Choose or unchoose a fact
             if (cells[id].facts.has(line_num))
                 cells[id].facts.delete(line_num)
