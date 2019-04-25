@@ -13,7 +13,6 @@
     var file_list = [];
     var add_mode = false;
     var items_selected = [];//list of the id of bgcolor div
-    var arrow_flag = true;
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -825,6 +824,7 @@
             else {
                 items_selected.push(id);
             }
+            items_selected.sort();
             display_result_list();
         })
 
@@ -837,69 +837,74 @@
             result_list = result_list.filter(function(item) {
                 return item !== '';
             });
-            //save_editor_data();
-            if(items_selected.length > 0){
-                alert('删除成功！');
-                items_selected = [];
-            }
+            save_editor_data();
             display_result_list();
         })
 
         function exchange_up(number) {
-            arrow_flag = true;
-            var temp = result_list[number];
-            result_list[number] = result_list[number - 1];
-            result_list[number-1] = temp;
-            //save_editor_data();
-            display_result_list();
+            var m = 1;
+            number = Number(number);
+            if (number >0 && number < result_list.length ) {
+                if (result_list[number-1]['ty'] === "macro" ){
+                    m = 2;
+                }
+                var temp = result_list[number];
+                result_list[number] = result_list[number - m];
+                result_list[number-m] = temp;
+                save_editor_data();
+                display_result_list();
+            }
         }
 
 
  //click UP to move up the yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function(){
-            arrow_flag = false;
             $.each(items_selected, function (i, v) {
+                var n = 1;
                 var temp = v;
+                if (result_list[Number(temp)-1]['ty'] === "macro" ){
+                    n = 2;
+                }
                 if(result_list[0]['ty'] === 'header'){
                     if (v > String(1)) {
-                        items_selected[i] = String(Number(v) - 1);
+                        items_selected[i] = String(Number(v) - n);
                         exchange_up(temp);
                     }
                 }
                 else {
                     if (v > String(0)) {
-                        items_selected[i] = String(Number(v) - 1);
+                        items_selected[i] = String(Number(v) - n);
                         exchange_up(temp);
                     }
                 }
             })
-            if(arrow_flag === true)
-            {
-                alert('success!');
-            }
         })
 
         function exchange_down(number) {
-            arrow_flag = true;
-            var temp = result_list[number];
-            result_list[number] = result_list[Number(number)+1];//munber是字符串，相减可以但是直接相加就是连接了
-            result_list[Number(number)+1] = temp;
-            //save_editor_data();
-            display_result_list();
+            var m = 1;
+            number = Number(number);
+            if (number >=0 && number < result_list.length) {
+                if (result_list[number+1]['ty'] === "macro" ){
+                    m = 2;
+                }
+                var temp = result_list[number];
+                result_list[number] = result_list[number + m];
+                result_list[number + m] = temp;
+                save_editor_data();
+                display_result_list();
+            }
         }
 
 //click down to move down the yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="down"]').on('click', function(){
-            arrow_flag = false;
-            $.each(items_selected, function (i, v) {
-                var temp = v;
-                alert('1')
-                items_selected[i] = String(Number(v) + 1);
+            for (let i = items_selected.length-1;i >= 0;i--) {
+                var temp = items_selected[i];
+                var n = 1;
+                if (result_list[Number(temp)+1]['ty'] === "macro" ){
+                    n = 2;
+                }
+                items_selected[i] = String(Number(temp) + n);
                 exchange_down(temp);
-            })
-            if(arrow_flag === true)
-            {
-                alert('success!');
             }
         })
 
