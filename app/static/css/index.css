@@ -280,6 +280,19 @@ p.login-user {
     font-weight: bold;
 }
 
+textarea.temp_type {
+    display: none;
+}
+
+textarea.form-control.content {
+    float:left;
+    overflow-y:hidden;
+    margin-top:5px;
+    margin-bottom:10px;
+    width:80%;
+    background:transparent
+}
+
 textarea {
     overflow-x: none;
     font-family: monospace;

@@ -533,6 +533,12 @@
                     $.each(ext, function (i, v) {
                         ext_ += v[0][1] + '  ' + v[1] + ':' + v[0][0] + '\n';
                     });
+                    var templ_edit = _.template($('#template-edit-type-ind').html());
+                    $('#codeTabContent').append(templ_edit({
+                        a_id: a_id, page_num: page_num,
+                        ext_: ext_
+                    }));
+                    var form = document.getElementById('edit-type-form' + page_num);
                     data_name = '';
                     $.each(argsT.concl, function (i, j) {
                         data_name += j[0];
@@ -553,12 +559,7 @@
                 data_content = $.trim(data_content);
                 var i = data_content.split('\n').length;
                 $('#codeTab').find('span#' + page_num).text(data_name);
-                var templ_edit = _.template($('#template-edit-type-ind').html());
-                $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, page_num: page_num,
-                    ext_: ext_
-                }));
-                var form = document.getElementById('edit-type-form' + page_num);
+
                 form.data_name.value = data_name;
                 form.data_content.textContent = data_content;
                 form.data_content.rows = i;
@@ -584,6 +585,13 @@
                     $.each(ext_, function (i, v) {
                         ext_str += v[0][1] + '  ' + v[1] + ':' + v[0][0] + '\n';
                     });
+                    var templ_edit = _.template($('#template-edit-def').html());
+                    $('#codeTabContent').append(templ_edit({
+                        a_id: a_id, page_num: page_num,
+                        type_name: type_name,
+                        ext_str: ext_str
+                    }));
+                    var form = document.getElementById('edit-def-form' + page_num);
                     data_name = ext.name + ' :: ' + ext.type;
                     if (ext.rules) {
                         for (var j in ext.rules) {
@@ -610,14 +618,7 @@
                     $('#codeTab').find('span#' + page_num).text(ext.name);
                 } else
                     $('#codeTab').find('span#' + page_num).text('function');
-
-                var templ_edit = _.template($('#template-edit-def').html());
-                $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, page_num: page_num,
-                    type_name: type_name,
-                    ext_str: ext_str
-                }));
-                var form = document.getElementById('edit-def-form' + page_num);
+                form.number.value = number;
                 form.data_name.value = data_name;
                 form.content.textContent = $.trim(data_new_content);
                 form.data_vars.textContent = $.trim(vars);
@@ -625,10 +626,9 @@
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 var templ_vars_edit = _.template($('#template-edit-def').html());
                 if (data_type === 'def.pred') {
-                    var form_var = document.getElementById('edit-vars-form' + page_num);
-                    $('textarea#data-vars' + page_num).after(template_templ_vars_edit({page_num : page_num}));
-                    form_var.vars_name.textContent = $.trim(data_rule_name);
-                    form_var.vars_name.rows = $.trim(data_rule_name).split('\n').length;
+                    form.vars_name.class = 'type_pred'
+                    form.vars_name.textContent = $.trim(data_rule_name);
+                    form.vars_name.rows = $.trim(data_rule_name).split('\n').length;
                 }
                 if (data_type !== 'def')
                     display_lines_number(page_num, number);
