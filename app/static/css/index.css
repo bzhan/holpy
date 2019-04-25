@@ -107,6 +107,10 @@ a.fontcolor {
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+.selected_item {
+    background-color : yellow;
+}
+
 .match-thm pre :empty {
     display: none;
 }
