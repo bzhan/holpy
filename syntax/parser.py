@@ -1,10 +1,11 @@
 # Author: Bohua Zhan
 
+from typing import Tuple
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import TVar, Type, TFun, boolT
+from kernel.type import HOLType, TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
-from kernel.macro import MacroSig
+from kernel import macro
 from kernel.thm import Thm
 from kernel.proof import ProofItem, id_force_tuple
 from kernel import extension
@@ -264,6 +265,36 @@ def parse_instsp(thy, ctxt, s):
         inst[k] = infertype.type_infer(thy, ctxt, inst[k])
     return tyinst, inst
 
+def parse_args(thy, ctxt, sig, args):
+    """Parse the argument according to the signature."""
+    try:
+        if sig == None:
+            assert args == "", "rule expects no argument."
+            return None
+        elif sig == str:
+            return args
+        elif sig == Term:
+            return parse_term(thy, ctxt, args)
+        elif sig == macro.Inst:
+            return parse_inst(thy, ctxt, args)
+        elif sig == macro.TyInst:
+            return parse_tyinst(thy, args)
+        elif sig == Tuple[str, HOLType]:
+            s1, s2 = args.split(",", 1)
+            return s1, parse_type(thy, s2)
+        elif sig == Tuple[str, Term]:
+            s1, s2 = args.split(",", 1)
+            return s1, parse_term(thy, ctxt, s2)
+        elif sig == Tuple[str, macro.TyInst, macro.Inst]:
+            s1, s2 = args.split(",", 1)
+            tyinst, inst = parse_instsp(thy, ctxt, s2)
+            return s1, tyinst, inst
+        else:
+            raise TypeError()
+    except exceptions.UnexpectedToken as e:
+        raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
+                              % (args, e.token, e.column))
+
 def parse_proof_rule(thy, ctxt, data):
     """Parse a proof rule.
 
@@ -274,49 +305,19 @@ def parse_proof_rule(thy, ctxt, data):
     require different parsing of the arguments.
 
     """
-    id, rule, args, prevs, th = data['id'], data['rule'], data['args'], data['prevs'], data['th']
+    id, rule = data['id'], data['rule']
 
     if rule == "":
         return ProofItem(id, "")
 
-    if th == "":
+    if data['th'] == "":
         th = None
     else:
-        th = parse_thm(thy, ctxt, th)
+        th = parse_thm(thy, ctxt, data['th'])
 
-    try:
-        sig = thy.get_proof_rule_sig(rule)
-        if sig == MacroSig.NONE:
-            assert args == "", "rule expects no argument."
-            return ProofItem(id, rule, prevs=prevs, th=th)
-        elif sig == MacroSig.STRING:
-            return ProofItem(id, rule, args=args, prevs=prevs, th=th)
-        elif sig == MacroSig.TERM:
-            t = parse_term(thy, ctxt, args)
-            return ProofItem(id, rule, args=t, prevs=prevs, th=th)
-        elif sig == MacroSig.INST:
-            inst = parse_inst(thy, ctxt, args)
-            return ProofItem(id, rule, args=inst, prevs=prevs, th=th)
-        elif sig == MacroSig.TYINST:
-            tyinst = tyinst_parser(thy, ctxt).parse(args)
-            return ProofItem(id, rule, args=tyinst, prevs=prevs, th=th)
-        elif sig == MacroSig.STRING_TYPE:
-            s1, s2 = args.split(",", 1)
-            T = parse_type(thy, s2)
-            return ProofItem(id, rule, args=(s1, T), prevs=prevs, th=th)
-        elif sig == MacroSig.STRING_TERM:
-            s1, s2 = args.split(",", 1)
-            t = parse_term(thy, ctxt, s2)
-            return ProofItem(id, rule, args=(s1, t), prevs=prevs, th=th)
-        elif sig == MacroSig.STRING_INSTSP:
-            s1, s2 = args.split(",", 1)
-            tyinst, inst = parse_instsp(thy, ctxt, s2)
-            return ProofItem(id, rule, args=(s1, tyinst, inst), prevs=prevs, th=th)
-        else:
-            raise TypeError()
-    except exceptions.UnexpectedToken as e:
-        raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
-                              % (args, e.token, e.column))
+    sig = thy.get_proof_rule_sig(rule)
+    args = parse_args(thy, ctxt, sig, data['args'])
+    return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)
 
 def parse_vars(thy, vars_data):
     ctxt = {}

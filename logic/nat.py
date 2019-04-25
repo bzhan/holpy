@@ -3,11 +3,11 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
-from kernel.macro import MacroSig, global_macros
+from kernel import macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
-from logic.logic_macro import apply_theorem, init_theorem
+from logic.logic_macro import apply_theorem
 from logic import logic
 from logic import term_ord
 
@@ -21,7 +21,7 @@ plus = Const("plus", TFun(natT, natT, natT))
 times = Const("times", TFun(natT, natT, natT))
 
 def is_Suc(t):
-    return t.ty == Term.COMB and t.fun == Suc
+    return t.is_comb() and t.fun == Suc
 
 def mk_plus(*args):
     if not args:
@@ -83,7 +83,7 @@ def from_binary(t):
 
 class Suc_conv(Conv):
     """Computes Suc of a binary number."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg) + 1))
 
     def get_proof_term(self, thy, t):
@@ -99,10 +99,12 @@ class Suc_conv(Conv):
 
 class add_conv(Conv):
     """Computes the sum of two binary numbers."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) + from_binary(t.arg)))
 
     def get_proof_term(self, thy, t):
+        if not (is_plus(t) and is_binary(t.arg1) and is_binary(t.arg)):
+            raise ConvException
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
             cv = rewr_conv("plus_def_1")
@@ -127,7 +129,7 @@ class add_conv(Conv):
 
 class mult_conv(Conv):
     """Computes the product of two binary numbers."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) * from_binary(t.arg)))
 
     def get_proof_term(self, thy, t):
@@ -156,7 +158,7 @@ class mult_conv(Conv):
 
 class nat_conv(Conv):
     """Simplify all arithmetic operations."""
-    def __call__(self, thy, t):
+    def eval(self, thy, t):
         def val(t):
             """Evaluate the given term."""
             if is_binary(t):
@@ -404,9 +406,9 @@ class nat_norm_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
-    def __call__(self, thy, goal, pts):
+    def eval(self, thy, goal, pts):
         # Simply produce the goal.
         assert len(pts) == 0, "nat_norm_macro"
         return Thm([], goal)
@@ -430,7 +432,7 @@ def ineq_zero_proof_term(thy, n):
     elif n % 2 == 0:
         return apply_theorem(thy, "bit0_nonzero", ineq_zero_proof_term(thy, n // 2))
     else:
-        return init_theorem(thy, "bit1_nonzero", inst={"m": to_binary(n // 2)})
+        return apply_theorem(thy, "bit1_nonzero", inst={"m": to_binary(n // 2)})
 
 def ineq_one_proof_term(thy, n):
     """Returns the inequality n ~= 1."""
@@ -438,7 +440,7 @@ def ineq_one_proof_term(thy, n):
     if n == 0:
         return apply_theorem(thy, "ineq_symmetric", ProofTerm.theorem(thy, "one_nonzero"))
     elif n % 2 == 0:
-        return init_theorem(thy, "bit0_neq_one", inst={"m": to_binary(n // 2)})
+        return apply_theorem(thy, "bit0_neq_one", inst={"m": to_binary(n // 2)})
     else:
         return apply_theorem(thy, "bit1_neq_one", ineq_zero_proof_term(thy, n // 2))
 
@@ -458,7 +460,7 @@ def ineq_proof_term(thy, m, n):
     elif m % 2 == 1 and n % 2 == 1:
         return apply_theorem(thy, "bit1_neq", ineq_proof_term(thy, m // 2, n // 2))
     elif m % 2 == 0 and n % 2 == 1:
-        return init_theorem(thy, "bit0_bit1_neq", inst={"m": to_binary(m // 2), "n": to_binary(n // 2)})
+        return apply_theorem(thy, "bit0_bit1_neq", inst={"m": to_binary(m // 2), "n": to_binary(n // 2)})
     else:
         return apply_theorem(thy, "ineq_symmetric", ineq_proof_term(thy, n, m))
 
@@ -467,9 +469,9 @@ class nat_const_ineq_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
-    def __call__(self, thy, goal, pts):
+    def eval(self, thy, goal, pts):
         # Simply produce the goal.
         assert len(pts) == 0, "nat_const_ineq_macro"
         return Thm([], goal)
@@ -506,7 +508,7 @@ class nat_eq_conv(Conv):
             return nat_const_ineq(thy, a, b).on_prop(thy, rewr_conv("eq_false"))
 
 
-global_macros.update({
+macro.global_macros.update({
     "nat_norm": nat_norm_macro(),
     "nat_const_ineq": nat_const_ineq_macro(),
 })

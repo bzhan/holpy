@@ -30,14 +30,14 @@ def getInitTheory():
 
     return thy
 
-def loadImportedTheory(imports, username):
+def loadImportedTheory(imports, user=""):
     """Load imported theory according to the imports field in data."""
     if imports:
         # Has at least one import
         if len(imports) > 1:
             raise NotImplementedError
 
-        return copy(loadTheory(imports[0], user = username))
+        return copy(loadTheory(imports[0], user=user))
     else:
         return getInitTheory()
 
@@ -71,7 +71,7 @@ def loadTheory(theory_name, *, limit=None, user=""):
         assert limit_i != -1, "Limit not found"
         content = content[:limit_i]
 
-    thy = loadImportedTheory(data['imports'], username = user)
+    thy = loadImportedTheory(data['imports'], user=user)
     parser.parse_extensions(thy, content)
 
     if limit is None:

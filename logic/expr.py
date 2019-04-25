@@ -1,16 +1,16 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type, TFun, boolT
-from kernel.term import Const
+from kernel.term import Term, Const
 from kernel.thm import Thm
-from kernel.macro import MacroSig, global_macros
+from kernel.macro import global_macros
 from logic import logic
 from logic import nat
 from logic import function
 from logic.nat import natT
 from logic.conv import arg_conv
 from logic.proofterm import ProofTermMacro, ProofTerm
-from logic.logic_macro import apply_theorem, init_theorem
+from logic.logic_macro import apply_theorem
 
 """Automation for arithmetic expressions."""
 
@@ -27,7 +27,7 @@ class prove_avalI_macro(ProofTermMacro):
     """Prove a theorem of the form avalI s t n."""
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def get_avalI_th(self, thy, s, t):
         def helper(t):

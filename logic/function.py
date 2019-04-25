@@ -2,7 +2,7 @@
 
 from kernel.type import TFun
 from kernel.term import Term, Const, Abs
-from kernel.macro import MacroSig, global_macros
+from kernel.macro import global_macros
 from logic import logic_macro
 from logic import nat
 from logic import logic
@@ -65,7 +65,7 @@ class fun_upd_eval_conv(Conv):
                 neq = nat.nat_const_ineq(thy, c, a)
                 eq = rewr_conv("fun_upd_other", conds=[neq]).get_proof_term(thy, t)
                 return eq.on_arg(thy, self)
-        elif f.ty == Term.ABS:
+        elif f.is_abs():
             return ProofTerm.beta_conv(t)
         else:
             return refl(t)
@@ -75,7 +75,7 @@ class fun_upd_eval_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 10
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "fun_upd_eval_macro"

@@ -1,7 +1,9 @@
 # Author: Bohua Zhan
 
+from typing import Tuple
+
 from kernel.term import Term
-from kernel.macro import MacroSig, global_macros
+from kernel import macro
 from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
@@ -15,9 +17,9 @@ class arg_combination_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 1
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
-    def __call__(self, thy, f, ths):
+    def eval(self, thy, f, ths):
         assert ths[0].prop.is_equals(), "arg_combination"
         return Thm.combination(Thm.reflexive(f), ths[0])
 
@@ -30,9 +32,9 @@ class fun_combination_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 1
-        self.sig = MacroSig.TERM
+        self.sig = Term
 
-    def __call__(self, thy, x, ths):
+    def eval(self, thy, x, ths):
         assert ths[0].prop.is_equals(), "fun_combination"
         return Thm.combination(ths[0], Thm.reflexive(x))
 
@@ -45,9 +47,9 @@ class beta_norm_macro(ProofTermMacro):
 
     def __init__(self):
         self.level = 1
-        self.sig = MacroSig.NONE
+        self.sig = None
 
-    def __call__(self, thy, args, ths):
+    def eval(self, thy, args, ths):
         assert args is None, "beta_norm_macro"
         cv = top_conv(beta_conv())
         eq_th = cv.eval(thy, ths[0].prop)
@@ -72,9 +74,9 @@ class apply_theorem_macro(ProofTermMacro):
     def __init__(self, *, with_inst=False):
         self.level = 1
         self.with_inst = with_inst
-        self.sig = MacroSig.STRING_INSTSP if with_inst else MacroSig.STRING
+        self.sig = Tuple[str, macro.TyInst, macro.Inst] if with_inst else str
 
-    def __call__(self, thy, args, prevs):
+    def eval(self, thy, args, prevs):
         tyinst, inst = dict(), dict()
         if self.with_inst:
             name, tyinst, inst = args
@@ -108,7 +110,10 @@ class apply_theorem_macro(ProofTermMacro):
 
         pt = ProofTerm.substitution(inst,
                 ProofTerm.subst_type(tyinst, ProofTerm.theorem(thy, name)))
-        pt2 = top_conv(beta_conv()).apply_to_pt(thy, pt)
+        if logic.beta_norm(pt.prop) == pt.prop:
+            pt2 = pt
+        else:
+            pt2 = top_conv(beta_conv()).apply_to_pt(thy, pt)
         for pt in pts:
             pt2 = ProofTerm.implies_elim(pt2, pt)
 
@@ -133,9 +138,9 @@ class rewrite_goal_macro(ProofTermMacro):
     def __init__(self, *, backward=False):
         self.level = 1
         self.backward = backward
-        self.sig = MacroSig.STRING_TERM
+        self.sig = Tuple[str, Term]
 
-    def __call__(self, thy, args, ths):
+    def eval(self, thy, args, ths):
         assert isinstance(args, tuple) and len(args) == 2 and \
                isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
 
@@ -160,7 +165,15 @@ class rewrite_goal_macro(ProofTermMacro):
         return pt
 
 def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
-    if concl is None:
+    """Wrapper for apply_theorem and apply_theorem_for macros.
+
+    The function takes optional arguments concl, tyinst, and inst. Matching
+    always starts with tyinst and inst. If conclusion is specified, it is
+    matched next. Finally, the assumptions are matched.
+
+    """
+    if concl is None and tyinst is None and inst is None:
+        # Normal case, can use apply_theorem
         return ProofTermDeriv("apply_theorem", thy, th_name, pts)
     else:
         pt = ProofTerm.theorem(thy, th_name)
@@ -168,24 +181,16 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
             tyinst = dict()
         if inst is None:
             inst = dict()
-        matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
+        if concl is not None:
+            matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
         pt = ProofTermDeriv("apply_theorem_for", thy, (th_name, tyinst, inst), pts)
-        return ProofTermDeriv("beta_norm", thy, None, [pt])
+        if logic.beta_norm(pt.prop) == pt.prop:
+            return pt
+        else:
+            return ProofTermDeriv("beta_norm", thy, None, [pt])
 
-def init_theorem(thy, th_name, tyinst=None, inst=None):
-    if tyinst is None:
-        tyinst = dict()
-    if inst is None:
-        inst = dict()
-    pt = ProofTerm.theorem(thy, th_name)
-    if tyinst:
-        pt = ProofTerm.subst_type(tyinst, pt)
-    if inst:
-        pt = ProofTerm.substitution(inst, pt)
-    pt = ProofTermDeriv("beta_norm", thy, None, [pt])
-    return pt
 
-global_macros.update({
+macro.global_macros.update({
     "arg_combination": arg_combination_macro(),
     "fun_combination": fun_combination_macro(),
     "beta_norm": beta_norm_macro(),

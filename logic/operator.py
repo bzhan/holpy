@@ -44,7 +44,7 @@ class OperatorTable():
         if the function is not found.
 
         """
-        if t.ty == Term.CONST:
+        if t.is_const():
             for d in self.data:
                 if d.fun_name == t.name:
                     return d

@@ -6,15 +6,13 @@
     var theory_imports = [];  // List of imports of the current theory file
     var result_list = [];  // Content of the current theory file
     var theory_desc = "";  // Description of the theory
-    var is_fact = false;
     var click_count = 0;
     var proof_id = 0;
     var edit_mode = false;
     var result_list_dict = {};
     var file_list = [];
     var add_mode = false;
-    var bgColor = '';
-    var theories_selected = [];//list of the id of bgcolor div
+    var items_selected = [];//list of the id of bgcolor div
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -182,19 +180,19 @@
         $('#json-tab1').click(function () {
             $('div#root-file').show();
             $('div#left_json').hide();
-            $('div#varible').hide();
+            $('div#variable').hide();
         });
 
         $('#json-tab2').click(function () {
             $('div#root-file').hide();
             $('div#left_json').show();
-            $('div#varible').hide();
+            $('div#variable').hide();
         });
 
         $('#json-tab3').click(function () {
             $('div#root-file').hide();
             $('div#left_json').hide();
-            $('div#varible').show();
+            $('div#variable').show();
         });
 
         $('div#root-file').on('click', 'a[name="edit"]', function () {
@@ -238,7 +236,6 @@
 
         // Save a single proof to the webpage (not to the json file);
         $('div.rbottom').on('click', 'button.save_proof', function () {
-            editor_id_list = [];
             var file_name = $(this).attr('name').slice(4,);
             var editor_id = get_selected_id();
             var id = Number($(this).attr('id'));
@@ -417,7 +414,8 @@
         });
 
 //      click edit then create a tab page for the editing;
-        $('#left_json').on('click', 'a[name="edit"]', function () {
+        $('#left_json').on('click', 'a[name="edit"]', function (s) {
+            s.stopPropagation();
             page_num++;
             edit_mode = true;
             var a_ele = $(this);
@@ -435,7 +433,7 @@
         });
 
 //      keypress to display unicode;
-        $('#codeTabContent').on('keydown', 'textarea,input', function (e) {
+        $('#codeTabContent').on('keydown', '.unicode-replace', function (e) {
             var content = $(this).val().trim();
             var id = $(this).attr('id');
             var pos = document.getElementById(id).selectionStart;
@@ -829,38 +827,87 @@
             return ajax_data;
         }
 
-//click to change left_json content bgcolor
+//      click to change left_json content bgcolor
         $('#left_json').on('click','div[name="theories"]',function(){
-            var id = $(this).attr('id').trim();
-            if ($(this).css('background-color') === bgColor) {
-                $(this).css('background-color', '');
-                var index = theories_selected.indexOf(id);
-                theories_selected.splice(index, 1);
+            var id = $(this).attr('id').slice(3,).trim();
+            if (items_selected.indexOf(id) >= 0) {
+                var index = items_selected.indexOf(id);
+                items_selected.splice(index, 1);
             }
             else {
-                $(this).css('background-color','yellow');
-                bgColor = $(this).css('background-color');
-                console.log(bgColor);
-                theories_selected.push(id);
+                items_selected.push(id);
             }
+            display_result_list();
         })
 
-//click DEL to delete red left_json content and save to webpage and json file
+//click DEL to delete yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
             var number = '';
-            $.each(theories_selected, function (i, v) {
-                   number = Number(v.slice(3,))-1;
-                   result_list[number] = '';
+            $.each(items_selected, function (i, v) {
+                   result_list[v] = '';
             })
             result_list = result_list.filter(function(item) {
                 return item !== '';
             });
-            save_editor_data();
-            display_result_list();
-            if(theories_selected.length > 0){
+            //save_editor_data();
+            if(items_selected.length > 0){
                 alert('删除成功！');
-                theories_selected = [];
+                items_selected = [];
             }
+            display_result_list();
+        })
+
+        function exchange_up(number) {
+            var temp = result_list[number];
+            result_list[number] = result_list[number - 1];
+            result_list[number-1] = temp;
+            //save_editor_data();
+            display_result_list();
+        }
+
+
+ //click UP to move up the yellow left_json content and save to webpage and json file
+        $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function(){
+            $.each(items_selected, function (i, v) {
+                var temp = v;
+                if(result_list[0]['ty'] === 'header'){
+                    if (v > String(1)) {
+                        items_selected[i] = String(Number(v) - 1);
+                        exchange_up(temp);
+                    }
+                }
+                else {
+                    if (v > String(0)) {
+                        items_selected[i] = String(Number(v) - 1);
+                        exchange_up(temp);
+                    }
+                }
+            })
+            if(items_selected.length > 0)
+            {
+                alert('success!');
+            }
+        })
+
+        function exchange_down(number) {
+            var temp = result_list[number];
+            result_list[number] = result_list[Number(number)+1];//munber是字符串，相减可以但是直接相加就是连接了
+            result_list[Number(number)+1] = temp;
+            //save_editor_data();
+            display_result_list();
+            if(items_selected.length > 0)
+            {
+                alert('success!');
+            }
+        }
+
+//click down to move down the yellow left_json content and save to webpage and json file
+        $('div.dropdown-menu.Ctrl a[name="down"]').on('click', function(){
+            $.each(items_selected, function (i, v) {
+                var temp = v;
+                items_selected[i] = String(Number(v) + 1);
+                exchange_down(temp);
+            })
         })
 
 //      click to save the related data to json file: edit && proof;
@@ -875,6 +922,7 @@
 //      click to display json file;
         $('#root-file').on('click', 'a[name="file"]', function () {
             num = 0;
+            items_selected = [];
             $(this).parent().hide();
             $('#json-tab2').click();
             $('#left_json').empty();
@@ -1001,9 +1049,13 @@
         $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
         $.each(result_list, function(num, ext) {
             if (ext) {
+                var class_item = '';
+                if (items_selected.indexOf(String(num)) >= 0) {
+                    class_item = 'selected_item';
+                }
                 var templ = $("#template-content-" + ext.ty.replace(".", "-"));
                 if (templ.length == 1) {
-                    $('#left_json').append(_.template(templ.html())({num: num, ext: ext}));
+                    $('#left_json').append(_.template(templ.html())({num: num, ext: ext, class_item: class_item}));
                 }
             }
         });
@@ -1030,16 +1082,11 @@
         });
     }
 
-    function init_editor(editor_id = "code1") {
-        var id = editor_id;
-//        var cell = cells[id]['proof'];
-        var editor = CodeMirror.fromTextArea(document.getElementById(editor_id), {
+    function init_editor(id) {
+        var editor = CodeMirror.fromTextArea(document.getElementById(id), {
             mode: "text/x-python",
             lineNumbers: true,
             firstLineNumber: 0,
-            lineNumberFormatter: function (line) {
-                return line;
-            },
             theme: "",
             lineWrapping: false,
             foldGutter: true,
@@ -1061,18 +1108,18 @@
         var rtop = document.querySelector('.rtop');
         editor.setSize("auto", rtop.clientHeight - 40);
         editor.setValue("");
-        cells[editor_id] = {};
-        cells[editor_id].click_line_number = -1;
-        cells[editor_id].facts = new Set();
-        cells[editor_id].edit_line_number = -1;
-        cells[editor_id].readonly_lines = [0];
+        cells[id] = {
+            click_line_number: -1,
+            facts: new Set(),
+            edit_line_number: -1,
+            readonly_lines: [0]
+        };
         editor.on("keydown", function (cm, event) {
             let line_no = cm.getCursor().line;
             let line = cm.getLine(line_no);
-            var id = get_selected_id();
             if (event.code === 'Enter') {
                 event.preventDefault();
-                if (cells[id].edit_line_number !== undefined && cells[id].edit_line_number !== -1) {
+                if (cells[id].edit_line_number !== -1) {
                     set_line(cm);
                 } else {
                     add_line_after(cm);
@@ -1087,7 +1134,7 @@
                 }
             } else if (event.code === 'Escape') {
                 event.preventDefault();
-                if (cells[id].edit_line_number !== undefined && cells[id].edit_line_number !== -1) {
+                if (cells[id].edit_line_number !== -1) {
                     cm.getAllMarks().forEach(e => {
                         if (e.readOnly !== undefined) {
                             if (e.readOnly) {
@@ -1112,29 +1159,6 @@
                 $(this).removeClass('selected');
             });
             $(cm.getTextArea().parentNode).addClass('selected');
-            if (!(undefined !== cm.target && undefined !== cm.facts) || cm.reset) {
-                return;
-            }
-            is_mousedown = true;
-            cm.setCursor(cm.target, 0);
-            cm.facts.forEach(val => {
-                is_mousedown = true;
-                is_fact = true;
-                cm.setCursor(val, 0);
-            });
-            delete cm.target;
-            delete cm.facts;
-        });
-
-        editor.on('blur', function (cm, event) {
-            var id = get_selected_id();
-            var target = cells[id].click_line_number;
-            var facts = [];
-            for (const val of cells[id].facts) {
-                facts.push(val);
-            }
-            cm.target = target;
-            cm.facts = facts;
         });
 
         editor.on("cursorActivity", function (cm) {
@@ -1142,7 +1166,6 @@
                 mark_text(cm);
                 apply_thm(cm);
                 is_mousedown = false;
-                is_fact = false;
             }
         });
 
@@ -1156,8 +1179,6 @@
         editor.on('mousedown', function (cm, event) {
             var timer = 0;
             is_mousedown = true;
-            if (exisit_fact(cm))
-                is_fact = true;
             click_count++;
             if (click_count === 1) {
                 timer = setTimeout(function () {
@@ -1205,48 +1226,44 @@
         }
     }
 
-    function mark_text(cm) {
-        var origin_pos = cm.getCursor();
-        cm.setCursor(cm.getCursor().line, Number.MAX_SAFE_INTEGER);
-        var line_num = cm.getCursor().line;
-        var ch = cm.getCursor().ch;
-        var line = cm.getLineHandle(line_num).text;
+    function display_facts_and_goal(cm) {
         var id = get_selected_id();
-        var cell = cells[id] ? cells[id] : undefined;
-        if (is_fact && cell.click_line_number !== undefined
-            && cell.click_line_number !== -1 && line_num < cell.click_line_number) {
-            cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {css: 'background: yellow'});
-            cells[id].facts.add(line_num);
-            is_fact = false;
-        } else if (line.indexOf('sorry') !== -1) {
-            if (cell.click_line_number !== undefined && cell.click_line_number !== -1) {
-                cm.getAllMarks().forEach(e => {
-                    if (e.css !== undefined)
-                        if (e.css.indexOf('background: red') !== -1)
-                            e.clear();
-                });
+        cm.getAllMarks().forEach(e => {
+            if (e.css === 'background: red' || e.css == 'background: yellow') {
+                e.clear()
             }
-            cm.markText({line: line_num, ch: ch - 5}, {line: line_num, ch: ch}, {
-                css: "background: red"
-            });
-            cells[id].click_line_number = line_num;
-        } else {
-            cm.getAllMarks().forEach(e => {
-                if (e.css !== undefined)
-                    if (e.css.indexOf('background') !== -1)
-                        e.clear();
-            });
-            cells[id].click_line_number = -1;
-            cells[id].facts.clear();
+        });
+        if (cells[id].click_line_number !== -1) {
+            goal_no = cells[id].click_line_number;
+            goal_line = cm.getLineHandle(goal_no).text;
+            cm.markText({line: goal_no, ch: goal_line.length - 5},
+                        {line: goal_no, ch: goal_line.length},
+                        {css: 'background: red'});    
         }
-
-        clear_match_thm();
-        cm.setCursor(origin_pos);
+        for (let fact_no of cells[id].facts) {
+            fact_line = cm.getLineHandle(fact_no).text;
+            cm.markText({line: fact_no, ch: 0}, {line: fact_no, ch: fact_line.length},
+                        {css: 'background: yellow'});
+        }
     }
 
-    function exisit_fact(cm) {
+    function mark_text(cm) {
+        var line_num = cm.getCursor().line;
+        var line = cm.getLineHandle(line_num).text;
         var id = get_selected_id();
-        return cells[id].click_line_number !== -1;
+        if (line.indexOf('sorry') !== -1) {
+            // Choose a new goal
+            cells[id].click_line_number = line_num;
+        }
+        else if (cells[id].click_line_number !== -1) {
+            // Choose or unchoose a fact
+            if (cells[id].facts.has(line_num))
+                cells[id].facts.delete(line_num)
+            else
+                cells[id].facts.add(line_num)
+        }
+        display_facts_and_goal(cm);
+        clear_match_thm();
     }
 
     function resize_editor() {

@@ -20,7 +20,7 @@ def first_order_match_incr(pat, t, instsp):
     assert isinstance(pat, Term) and isinstance(t, Term), \
            "first_order_match_incr: pat and t must be terms."
     tyinst, inst = instsp
-    if pat.ty == Term.VAR:
+    if pat.is_var():
         if pat.name in inst:
             if t != inst[pat.name]:
                 raise MatchException()
@@ -34,7 +34,7 @@ def first_order_match_incr(pat, t, instsp):
             inst[pat.name] = t
     elif pat.ty != t.ty:
         raise MatchException()
-    elif pat.ty == Term.CONST:
+    elif pat.is_const():
         if pat.name != t.name:
             raise MatchException()
         else:
@@ -42,28 +42,31 @@ def first_order_match_incr(pat, t, instsp):
                 pat.T.match_incr(t.T, tyinst)
             except TypeMatchException:
                 raise MatchException()
-    elif pat.ty == Term.COMB:
-        if pat.fun.ty == Term.VAR and pat.arg == Bound(0):
+    elif pat.is_comb():
+        if pat.fun.is_var() and pat.arg == Bound(0):
             if pat.fun.name not in inst:
-                inst[pat.fun.name] = Abs("x", pat.fun.T.domain_type(), t)
+                if t.arg == Bound(0):
+                    inst[pat.fun.name] = t.fun
+                else:
+                    inst[pat.fun.name] = Abs("x", pat.fun.T.domain_type(), t)
             else:
                 inst_name = inst[pat.fun.name]
-                if inst_name.ty == Term.ABS and inst_name.body == t:
+                if inst_name.is_abs() and inst_name.body == t:
                     pass
-                elif inst_name.ty == Term.VAR and t == Comb(inst_name, Bound(0)):
+                elif inst_name.is_var() and t == Comb(inst_name, Bound(0)):
                     pass
                 else:
                     raise MatchException()
         else:
             first_order_match_incr(pat.fun, t.fun, instsp)
             first_order_match_incr(pat.arg, t.arg, instsp)
-    elif pat.ty == Term.ABS:
+    elif pat.is_abs():
         try:
             pat.var_T.match_incr(t.var_T, tyinst)
         except TypeMatchException:
             raise MatchException()
         first_order_match_incr(pat.body, t.body, instsp)
-    elif pat.ty == Term.BOUND:
+    elif pat.is_bound():
         if pat.n == t.n:
             return None
         else:

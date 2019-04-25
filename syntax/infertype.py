@@ -67,7 +67,7 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
     def infer(t, bd_vars):
         # Var case: if type is not known, try to obtain it from context,
         # otherwise, make a new type.
-        if t.ty == Term.VAR:
+        if t.is_var():
             if t.T is None:
                 if t.name in ctxt:
                     t.T = ctxt[t.name]
@@ -78,7 +78,7 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
 
         # Const case: if type is not known, obtain it from theory,
         # replacing arbitrary variables by new types.
-        elif t.ty == Term.CONST:
+        elif t.is_const():
             if t.T is None:
                 T = thy.get_term_sig(t.name)
                 Tvars = T.get_tvars()
@@ -91,7 +91,7 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
 
         # Comb case: recursively infer type of fun and arg, then
         # unify funT with argT => resT, where resT is a new type.
-        elif t.ty == Term.COMB:
+        elif t.is_comb():
             funT = infer(t.fun, bd_vars)
             argT = infer(t.arg, bd_vars)
             resT = new_type()
@@ -102,7 +102,7 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
         # Abs case: if var_T is not known, make a new type. Recursively
         # call infer on the body under the context where var_name has
         # type var_T. The resulting type is var_T => body_T.
-        elif t.ty == Term.ABS:
+        elif t.is_abs():
             if t.var_T is None:
                 t.var_T = new_type()
                 add_type(t.var_T)
@@ -112,7 +112,7 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
             return resT
 
         # Bound variables should not appear during inference.
-        elif t.ty == Term.BOUND:
+        elif t.is_bound():
             return bd_vars[t.n]
 
         else:
@@ -150,24 +150,24 @@ def infer_printed_type(thy, t):
     
     """
     def clear_const_type(t):
-        if t.ty == Term.CONST and not hasattr(t, "print_type"):
+        if t.is_const() and not hasattr(t, "print_type"):
             t.backupT = t.T
             t.T = None
-        elif t.ty == Term.COMB:
+        elif t.is_comb():
             clear_const_type(t.fun)
             clear_const_type(t.arg)
-        elif t.ty == Term.ABS and not hasattr(t, "print_type"):
+        elif t.is_abs() and not hasattr(t, "print_type"):
             t.backup_var_T = t.var_T
             t.var_T = None
             clear_const_type(t.body)
 
     def recover_const_type(t):
-        if t.ty == Term.CONST:
+        if t.is_const():
             t.T = t.backupT
-        elif t.ty == Term.COMB:
+        elif t.is_comb():
             recover_const_type(t.fun)
             recover_const_type(t.arg)
-        elif t.ty == Term.ABS:
+        elif t.is_abs():
             t.var_T = t.backup_var_T
             recover_const_type(t.body)
 
@@ -181,16 +181,16 @@ def infer_printed_type(thy, t):
         to_replace, to_replaceT = None, None
         def find_to_replace(t):
             nonlocal to_replace, to_replaceT
-            if t.ty == Term.CONST and has_internalT(t.T):
+            if t.is_const() and has_internalT(t.T):
                 if to_replace is None or len(str(t.T)) < len(str(to_replaceT)):
                     to_replace = t
                     to_replaceT = t.T
-            elif t.ty == Term.ABS and has_internalT(t.var_T):
+            elif t.is_abs() and has_internalT(t.var_T):
                 if to_replace is None or len(str(t.var_T)) < len(str(to_replaceT)):
                     to_replace = t
                     to_replaceT = t.var_T
                 find_to_replace(t.body)
-            elif t.ty == Term.COMB:
+            elif t.is_comb():
                 find_to_replace(t.fun)
                 find_to_replace(t.arg)
 

@@ -3,7 +3,7 @@
 from kernel.thm import Thm, primitive_deriv
 from kernel.theory import Theory
 from kernel.proof import Proof, id_force_tuple
-from kernel.macro import ProofMacro, MacroSig
+from kernel.macro import ProofMacro
 
 class ProofTerm():
     """A proof term contains the derivation tree of a theorem.
@@ -206,7 +206,7 @@ class ProofTermDeriv(ProofTerm):
             self.th = rule_fun(*prev_ths) if args is None else rule_fun(args, *prev_ths)
         else:
             macro = thy.get_proof_macro(rule)
-            self.th = macro(thy, args, prev_ths)
+            self.th = macro.eval(thy, args, prev_ths)
         self.args = args
         self.prevs = prevs
 
@@ -215,7 +215,7 @@ class ProofTermMacro(ProofMacro):
     constructing a proof term, then export the proof term.
 
     """
-    def __call__(self, thy, args, prevs):
+    def eval(self, thy, args, prevs):
         pts = [ProofTerm.assume(prev.prop) for prev in prevs]
         return self.get_proof_term(thy, args, pts).th
 
