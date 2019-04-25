@@ -626,9 +626,9 @@
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 var templ_vars_edit = _.template($('#template-edit-def').html());
                 if (data_type === 'def.pred') {
-                    form.vars_name.class = 'type_pred'
-                    form.vars_name.textContent = $.trim(data_rule_name);
-                    form.vars_name.rows = $.trim(data_rule_name).split('\n').length;
+                    form.vars_names.style.display = '';
+                    form.vars_names.textContent = $.trim(data_rule_name);
+                    form.vars_names.rows = $.trim(data_rule_name).split('\n').length;
                 }
                 if (data_type !== 'def')
                     display_lines_number(page_num, number);
