@@ -168,7 +168,7 @@
 
 //      tab on the left;
         $('#json-tab1,#json-tab2,#json-tab3').click(function () {
-            $(this).css({'background': '	#F0F0F0', 'text-align': 'center', 'border-bottom': 'none'});
+            $(this).css({'background': '#F0F0F0', 'text-align': 'center', 'border-bottom': 'none'});
             $(this).siblings('li').css({
                 'background': '#f8f8f8',
                 'text-align': 'center',
@@ -958,9 +958,11 @@
     });
 
     function display_file_list() {
-        $('#root-file').html('');
-        var templ = _.template($("#template-file-list").html());
-        $('#root-file').append(templ({file_list: file_list}));
+        $(function () {
+            $('#root-file').html('');
+            var templ = _.template($("#template-file-list").html());
+            $('#root-file').append(templ({file_list: file_list}));    
+        });
     }
 
     function save_file_list(file_name) {
@@ -994,11 +996,8 @@
             type: "POST",
             data: data,
             success: function (result) {
-                cells[get_selected_id()].click_line_number = -1;
-                cells[get_selected_id()].facts.clear();
                 clear_match_thm();
                 display_checked_proof(result);
-                get_selected_editor().focus();
                 display_instuctions(instructions);
             }
         });
@@ -1021,7 +1020,6 @@
             data: data,
             success: function (result) {
                 display_checked_proof(result);
-                get_selected_editor().focus();
                 display_instuctions(instructions);
             }
         })
@@ -1210,27 +1208,6 @@
             cells[id].readonly_lines.splice(line_num, 1);
             cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {readOnly: true});
             cells[id].edit_line_number = line_num;
-        }
-    }
-
-    function display_facts_and_goal(cm) {
-        var id = get_selected_id();
-        cm.getAllMarks().forEach(e => {
-            if (e.css === 'background: red' || e.css == 'background: yellow') {
-                e.clear()
-            }
-        });
-        if (cells[id].click_line_number !== -1) {
-            goal_no = cells[id].click_line_number;
-            goal_line = cm.getLineHandle(goal_no).text;
-            cm.markText({line: goal_no, ch: goal_line.length - 5},
-                        {line: goal_no, ch: goal_line.length},
-                        {css: 'background: red'});    
-        }
-        for (let fact_no of cells[id].facts) {
-            fact_line = cm.getLineHandle(fact_no).text;
-            cm.markText({line: fact_no, ch: 0}, {line: fact_no, ch: fact_line.length},
-                        {css: 'background: yellow'});
         }
     }
 

@@ -29,3 +29,24 @@ function get_status_color(ext) {
         return 'green';
     }
 }
+
+function display_facts_and_goal(cm) {
+    var id = get_selected_id();
+    cm.getAllMarks().forEach(e => {
+        if (e.css === 'background: red' || e.css == 'background: yellow') {
+            e.clear()
+        }
+    });
+    if (cells[id].click_line_number !== -1) {
+        goal_no = cells[id].click_line_number;
+        goal_line = cm.getLineHandle(goal_no).text;
+        cm.markText({line: goal_no, ch: goal_line.length - 5},
+                    {line: goal_no, ch: goal_line.length},
+                    {css: 'background: red'});    
+    }
+    for (let fact_no of cells[id].facts) {
+        fact_line = cm.getLineHandle(fact_no).text;
+        cm.markText({line: fact_no, ch: 0}, {line: fact_no, ch: fact_line.length},
+                    {css: 'background: yellow'});
+    }
+}
