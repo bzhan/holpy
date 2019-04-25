@@ -15,7 +15,7 @@
     var add_mode = false;
     var items_selected = [];//list of the id of bgcolor div
     var bgColor = '';//the color of left_json content
-    var up_flag = true;
+    var arrow_flag = true;
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -853,7 +853,7 @@
         })
 
         function exchange_up(number) {
-            up_flag = true;
+            arrow_flag = true;
             var temp = result_list[number];
             result_list[number] = result_list[number - 1];
             result_list[number-1] = temp;
@@ -864,7 +864,7 @@
 
  //click UP to move up the yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function(){
-            up_flag = false;
+            arrow_flag = false;
             $.each(items_selected, function (i, v) {
                 var temp = v;
                 if(result_list[0]['ty'] === 'header'){
@@ -880,31 +880,34 @@
                     }
                 }
             })
-            if(up_flag === true)
+            if(arrow_flag === true)
             {
                 alert('success!');
             }
         })
 
         function exchange_down(number) {
+            arrow_flag = true;
             var temp = result_list[number];
             result_list[number] = result_list[Number(number)+1];//munber是字符串，相减可以但是直接相加就是连接了
             result_list[Number(number)+1] = temp;
             //save_editor_data();
             display_result_list();
-            if(items_selected.length > 0)
-            {
-                alert('success!');
-            }
         }
 
 //click down to move down the yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="down"]').on('click', function(){
+            arrow_flag = false;
             $.each(items_selected, function (i, v) {
                 var temp = v;
+                alert('1')
                 items_selected[i] = String(Number(v) + 1);
                 exchange_down(temp);
             })
+            if(arrow_flag === true)
+            {
+                alert('success!');
+            }
         })
 
 //      click to save the related data to json file: edit && proof;
