@@ -664,19 +664,19 @@
 
 //      click save button on edit tab to save content to the left-json for updating;
         $('div.rbottom').on('click', 'button#save-edit', function () {
-            var edit_thm_form = get_selected_edit_form('edit-thm-form');
+            var edit_form = get_selected_edit_form('edit-form');
             var tab_pm = $(this).parent().attr('id').slice(3,);
             var error_id = $(this).next().attr('id').trim();
             var id = tab_pm;
             var ty = $(this).attr('name').trim();
             if (ty == 'thm' || ty == 'thm-ax') {
-                var number = edit_thm_form.number.value;
+                var number = edit_form.number.value;
             }
             else {
                 var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
                 var number = Number(a_id.slice(5,));    
             }
-            var ajax_data = make_data(edit_thm_form, ty, id, number);
+            var ajax_data = make_data(edit_form, ty, id, number);
             var prev_list = result_list.slice(0, number);
             ajax_data['file-name'] = name;
             ajax_data['prev-list'] = prev_list;
@@ -1048,8 +1048,8 @@
         var templ = _.template($("#template-content-theory_desc").html());
         $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
         $.each(result_list, function(num, ext) {
+            var class_item = '';
             if (ext) {
-                var class_item = '';
                 if (items_selected.indexOf(String(num)) >= 0) {
                     class_item = 'selected_item';
                 }
