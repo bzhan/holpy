@@ -27,6 +27,26 @@ def V(s):
 def TV(s):
     return [(s, 3)] if settings.highlight() else s
 
+def optimize_highlight(lst):
+    """Optimize a highlight list (s1, n1), ... by combining parts that have
+    the same color.
+
+    """
+    if len(lst) == 0:
+        return lst
+    else:
+        prev = lst[0]
+        new_lst = []
+        for s, n in lst[1:]:
+            if s.strip() == "" or prev[1] == n:
+                # Combine with previous:
+                prev = (prev[0] + s, prev[1])
+            else:
+                new_lst.append(prev)
+                prev = (s, n)
+        new_lst.append(prev)
+    return new_lst
+
 @settings.with_settings
 def commas_join(strs):
     """Given a list of output (with or without highlight), join them with
@@ -73,7 +93,10 @@ def print_type(thy, T):
         else:
             raise TypeError()
 
-    return helper(T)
+    res = helper(T)
+    if settings.highlight():
+        res = optimize_highlight(res)
+    return res
 
 @settings.with_settings
 def print_term(thy, t):
@@ -233,7 +256,11 @@ def print_term(thy, t):
 
     t = copy(t)  # make copy here, because infer_printed_type may change t.
     infertype.infer_printed_type(thy, t)
-    return helper(t, [])
+
+    res = helper(t, [])
+    if settings.highlight():
+        res = optimize_highlight(res)
+    return res
 
 @settings.with_settings
 def print_thm(thy, th):
