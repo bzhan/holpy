@@ -9,13 +9,27 @@
 </script>
 
 <script type="text/template" id='template-file-metadata'>
-    <div class="<%=class_name%>" id="code<%=add_page%>-pan" style="margin:30px;">
-        <label for="code<%=add_page%>"></label>File name:&nbsp;
-        <input id="fname<%=add_page%>" spellcheck="false" style="width:50%;">
-        <br><br>Imports:&nbsp;
-        <input spellcheck="false" id="imp<%=add_page%>" style="margin-left:10px;width:50%;">
-        <br><br>Description:&nbsp;
-        <textarea spellcheck="false" id="code<%=add_page%>" style="margin-left:10px;width:45%;" rows="3"></textarea>
+    <div class="<%=class_name%>" id="code<%=add_page%>-pan" style="margin-left:20px;margin-top:20px;">
+        <form id="edit-metadata-form<%=add_page%>" name="edit-form">
+            <div class="form-group">
+                <div class="col-auto">
+                    <label for="fname<%=add_page%>">File name:</label>
+                    <input name="fname" class="form-control" id="fname<%=add_page%>" spellcheck="false" style="margin-left:10px;width:60%;">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-auto">
+                    <label for="imp<%=add_page%>">Imports:</label>
+                    <input spellcheck="false" class="form-control" name="imports" id="imp<%=add_page%>" style="margin-left:10px;width:60%;">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-auto">
+                    <label for="code<%=add_page%>">Description:</label>
+                    <textarea spellcheck="false" class="form-control" name="description" id="code<%=add_page%>" style="margin-left:10px;width:60%;" rows="3"></textarea>
+                </div>
+            </div>
+        </form>
     </div>
 </script>
 
@@ -23,13 +37,19 @@
     <div style="margin-left:35px;margin-top:20px;" name="<%=a_id%>"
          class="tab-pane fade in active code-cell edit-data"
          id="code<%=page_num%>-pan">
-        <label name="<%=page_num%>" for="code<%=page_num%>"></label>
-        <font color="#006000"><b>constant</b></font>&nbsp;
-        <input spellcheck="false" id="data-name<%=page_num%>"
-               style="width:10%;background:transparent" value="<%=data_name%>">
-        &nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;
-        <input spellcheck="false" id="data-content<%=page_num%>"
-               style="width:50%;background:transparent" value="<%=data_content%>">
+         <form id="edit-constant-form<%=page_num%>" name="edit-form">
+             <input type="hidden" name="number">
+             <div class="form-group">
+                 <div class="col-auto">
+                    <label name="<%=page_num%>" for="data-name<%=page_num%>" style="float:left"><font color="#006000"><b>constant:&nbsp;&nbsp;</b></font></label>
+                    <input spellcheck="false" class="form-control" id="data-name<%=page_num%>"
+                           style="float:left;width:20%;background:transparent;" name="data_name">
+                     <span style="float:left;">&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;</span>
+                    <input spellcheck="false" class="form-control" id="data-content<%=page_num%>"
+                           style="float:left;width:50%;background:transparent" name="data_content">
+                 </div>
+             </div>
+         </form>
     </div>
 </script>
 
@@ -37,7 +57,7 @@
     <div style="margin-left:20px;margin-top:20px;"
          class="tab-pane fade in active code-cell edit-data"
          id="code<%=page_num%>-pan">
-        <form id="edit-thm-form<%=page_num%>" name="edit-thm-form">
+        <form id="edit-thm-form<%=page_num%>" name="edit-form">
             <input type="hidden" name="number">
             <div class="form-group">
                 <div class="col-auto">
@@ -91,18 +111,32 @@
     <div style="margin-left:35px;margin-top:20px;" name="<%=a_id%>"
          class="tab-pane fade in active code-cell edit-data"
          id="code<%=page_num%>-pan">
-        <label name="<%=page_num%>" for="code<%=page_num%>">
-            <font color="#006000"><b>datatype</b></font>
-        </label>&nbsp;
-        <input spellcheck="false" id="data-name<%=page_num%>"
-               style="width:45px;background:transparent" value="<%=data_name%>">
-        =&nbsp;&nbsp;<br><br>&nbsp;&nbsp;
-        <textarea spellcheck="false" id="data-content<%=page_num%>" rows="<%=i%>"
-                  style="overflow-y:hidden;width:40%;background:transparent"
-        ><%= data_content %></textarea>
-        <br><label style="float:right;height:20%;width:100%;background:transparent">
-        <pre><%= ext_ %></pre>
-    </label>
+        <form id="edit-type-form<%=page_num%>" name="edit-form">
+            <input type="hidden" name="number">
+            <div class="form-group">
+                <div class="col-auto">
+                    <label name="<%=page_num%>" for="data-name<%=page_num%>">
+                    <font color="#006000"><b>datatype</b></font>
+                    </label>
+                    <input spellcheck="false" name="data_name" id="data-name<%=page_num%>"
+                           style="width:30%;background:transparent" class="form-control">
+                </div>
+            </div>
+            <span>=</span><br>
+            <div class="form-group">
+                <div class="col-auto">
+                    <textarea spellcheck="false" class="form-control" name="data_content" id="data-content<%=page_num%>" rows=""
+                          style="overflow-y:hidden;width:60%;background:transparent"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-auto">
+                    <label style="float:right;height:20%;width:100%;background:transparent">
+                    <pre><%= ext_ %></pre>
+                    </label>
+                </div>
+            </div>
+        </form>
     </div>
 </script>
 
@@ -110,21 +144,44 @@
     <div style="position:relative;margin-left:35px;margin-top:20px;" name="<%=a_id%>"
          class="tab-pane fade in active code-cell edit-data"
          id="code<%=page_num%>-pan">
-        <label name="<%=page_num%>" for="code<%=page_num%>">
-            <font color="#006000"><b><%= type_name %></b></font>
-        </label>&nbsp;
-        <input spellcheck="false" id="data-name<%=page_num%>"
-               style="width:50%;background:transparent" value="<%=data_name%>">
-        <br><textarea spellcheck="false" rows="<%= data_new_content.split('\n').length %>"
-                      id="data-content<%=page_num%>"
-                      style="overflow-y:hidden;margin-top:5px;width:40%;background:transparent"
-                      name="content"><%= $.trim(data_new_content) %></textarea>
-        &nbsp;&nbsp;<span style="position:absolute;">for:</span>&nbsp;&nbsp;
-        <textarea spellcheck="false" rows="" id="data-vars<%=page_num%>"
-                  style="margin-left:5%;overflow-y:hidden;margin-top:5px;width:40%;background:transparent"
-                  placeholder="vars"><%= $.trim(vars) %></textarea>
-        <br><label style="float:right;height:20%;width:100%;background:transparent">
-        <pre><%= ext_str %></pre>
-    </label>
+        <form id="edit-def-form<%=page_num%>" name="edit-form">
+            <input type="hidden" name="number">
+            <div class="form-group">
+                <div class="col-auto">
+                    <label name="<%=page_num%>" for="data-name<%=page_num%>" style="float:left;">
+                        <font color="#006000"><b><%= type_name %></b></font>
+                    </label>
+                    <input spellcheck="false" class="form-control" id="data-name<%=page_num%>"
+                       style="margin-left:3%;margin-bottom:3%;float:left;width:50%;background:transparent" name="data_name">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-auto" >
+                    <textarea spellcheck="false" class="form-control content" rows="" id="data-content<%=page_num%>"
+                              name="content"></textarea>
+                </div>
+            </div><br>
+            <div style="float:left;margin-left:3%;"><br>&nbsp;<span style="position:absolute;">for:</span>&nbsp;</div>
+            <div class="form-group">
+                <div class="col-auto">
+                    <textarea spellcheck="false" rows="" name="data_vars" class="form-control" id="data-vars<%=page_num%>"
+                          style="float:left;overflow-y:hidden;margin-top:5px;width:80%;background:transparent"
+                          placeholder="vars"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-auto">
+                    <textarea rows="" spellcheck="false" id="data-names<%page_num%>" style="display:none;overflow-y:hidden;margin-top:5px;width:80%;background:transparent;" name="vars_names" class=""></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-auto">
+                    <label style="float:right;height:20%;width:100%;background:transparent">
+                        <pre><%= ext_str %></pre>
+                    </label>
+                </div>
+            </div>
+        </form>
     </div>
+
 </script>

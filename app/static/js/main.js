@@ -198,8 +198,10 @@
         $('div#root-file').on('click', 'a[name="edit"]', function () {
             var number = Number($(this).attr('id').slice(4,).trim())-1;
             page_num++;
+
             data = JSON.stringify(file_list[number]);
             init_metadata_area(page_num);
+            var form = document.getElementById('edit-metadata-form' + page_num);
             $.ajax({
                 url: '/api/edit_jsonFile',
                 data: data,
@@ -208,9 +210,9 @@
                     var name = res['name'];
                     var des = res['description'];
                     var imports = res['imports'].join(',');
-                    $('input#fname' + page_num).val(name);
-                    $('input#imp' + page_num).val(imports);
-                    $('textarea#code' + page_num).val(des);
+                    form.fname.value = name;
+                    form.imports.value = imports;
+                    form.description.textContent = des;
                 }
             })
         });
@@ -483,12 +485,13 @@
                     data_content = result_list[number]['type'];
                 else
                     $('#codeTab').find('span#' + page_num).text('constant');
-
                 var templ_edit = _.template($("#template-edit-def-ax").html());
                 $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, page_num: page_num,
-                    data_name: data_name, data_content: data_content
+                    a_id: a_id, page_num: page_num
                 }));
+                var form = document.getElementById('edit-constant-form' + page_num);
+                form.data_name.value = data_name;
+                form.data_content.value = data_content;
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
             if (data_type === 'thm' || data_type === 'thm.ax') {
@@ -530,6 +533,12 @@
                     $.each(ext, function (i, v) {
                         ext_ += v[0][1] + '  ' + v[1] + ':' + v[0][0] + '\n';
                     });
+                    var templ_edit = _.template($('#template-edit-type-ind').html());
+                    $('#codeTabContent').append(templ_edit({
+                        a_id: a_id, page_num: page_num,
+                        ext_: ext_
+                    }));
+                    var form = document.getElementById('edit-type-form' + page_num);
                     data_name = '';
                     $.each(argsT.concl, function (i, j) {
                         data_name += j[0];
@@ -551,12 +560,9 @@
                 var i = data_content.split('\n').length;
                 $('#codeTab').find('span#' + page_num).text(data_name);
 
-                var templ_edit = _.template($('#template-edit-type-ind').html());
-                $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, page_num: page_num,
-                    data_name: data_name, i: i, data_content: data_content,
-                    ext_: ext_
-                }));
+                form.data_name.value = data_name;
+                form.data_content.textContent = data_content;
+                form.data_content.rows = i;
 
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -579,6 +585,13 @@
                     $.each(ext_, function (i, v) {
                         ext_str += v[0][1] + '  ' + v[1] + ':' + v[0][0] + '\n';
                     });
+                    var templ_edit = _.template($('#template-edit-def').html());
+                    $('#codeTabContent').append(templ_edit({
+                        a_id: a_id, page_num: page_num,
+                        type_name: type_name,
+                        ext_str: ext_str
+                    }));
+                    var form = document.getElementById('edit-def-form' + page_num);
                     data_name = ext.name + ' :: ' + ext.type;
                     if (ext.rules) {
                         for (var j in ext.rules) {
@@ -605,17 +618,18 @@
                     $('#codeTab').find('span#' + page_num).text(ext.name);
                 } else
                     $('#codeTab').find('span#' + page_num).text('function');
-
-                var templ_edit = _.template($('#template-edit-def').html());
-                $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, page_num: page_num,
-                    type_name: type_name, data_name: data_name,
-                    data_new_content: data_new_content, vars: vars, ext_str: ext_str
-                }));
-
+                form.number.value = number;
+                form.data_name.value = data_name;
+                form.content.textContent = $.trim(data_new_content);
+                form.data_vars.textContent = $.trim(vars);
+                form.data_vars.rows = $.trim(vars).split('\n').length;
+                form.content.rows = $.trim(data_new_content).split('\n').length;
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+                var templ_vars_edit = _.template($('#template-edit-def').html());
                 if (data_type === 'def.pred') {
-                    $('textarea#data-vars' + page_num).after('<br><textarea rows="' + data_rule_name.split('\n').length + '" spellcheck="false" id="data-names' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;" name="names">' + $.trim(data_rule_name) + '</textarea>')
+                    form.vars_names.style.display = '';
+                    form.vars_names.textContent = $.trim(data_rule_name);
+                    form.vars_names.rows = $.trim(data_rule_name).split('\n').length;
                 }
                 if (data_type !== 'def')
                     display_lines_number(page_num, number);
@@ -632,6 +646,7 @@
         function display_lines_number(page_num, number) {
             var data_vars_list = [];
             var data_vars_str = '';
+            var form = document.getElementById('edit-def-form' + page_num);
             if (number) {
                 $.each(result_list[number]['rules'], function (i, v) {
                     var vars_str = '';
@@ -646,24 +661,26 @@
             } else {
                 data_vars_str += '';
             }
-            $('textarea#data-vars' + page_num).val($.trim(data_vars_str));
+            form.data_vars.value = $.trim(data_vars_str);
+            form.data_vars.rows = $.trim(data_vars_str).split('\n').length;
+//            $('textarea#data-vars' + page_num).val($.trim(data_vars_str));
         }
 
 //      click save button on edit tab to save content to the left-json for updating;
         $('div.rbottom').on('click', 'button#save-edit', function () {
-            var edit_thm_form = get_selected_edit_form('edit-thm-form');
+            var edit_form = get_selected_edit_form('edit-form');
             var tab_pm = $(this).parent().attr('id').slice(3,);
             var error_id = $(this).next().attr('id').trim();
             var id = tab_pm;
             var ty = $(this).attr('name').trim();
             if (ty == 'thm' || ty == 'thm-ax') {
-                var number = edit_thm_form.number.value;
+                var number = edit_form.number.value;
             }
             else {
                 var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
                 var number = Number(a_id.slice(5,));    
             }
-            var ajax_data = make_data(edit_thm_form, ty, id, number);
+            var ajax_data = make_data(edit_form, ty, id, number);
             var prev_list = result_list.slice(0, number);
             ajax_data['file-name'] = name;
             ajax_data['prev-list'] = prev_list;
@@ -703,8 +720,8 @@
         function make_data(form, ty, id, number) {
             var ajax_data = {};
             if (ty === 'def.ax') {
-                var data_name = $('#data-name' + id).val().trim();
-                var data_content = $('#data-content' + id).val().trim();
+                var data_name = $.trim(form.data_name.value);
+                var data_content = $.trim(form.data_content.value);
                 ajax_data['ty'] = 'def.ax';
                 ajax_data['name'] = data_name;
                 ajax_data['type'] = data_content;
@@ -727,8 +744,8 @@
                     ajax_data['hint_rewrite'] = 'true';
             }
             if (ty === 'type.ind') {
-                var data_name = $('#data-name' + id).val().trim();
-                var data_content = $('#data-content' + id).val().trim();
+                var data_name = $.trim(form.data_name.value);
+                var data_content = $.trim(form.data_content.value);
                 var temp_list = [], temp_constrs = [];
                 var temp_content_list = data_content.split(/\n/);
                 if (data_name.split(/\s/).length > 1) {
@@ -774,27 +791,28 @@
                 ajax_data['constrs'] = temp_constrs;
             }
             if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
-                var data_name = $('#data-name' + id).val().trim();
-                var data_content = $('#data-content' + id).val().trim();
+                var data_name = $.trim(form.data_name.value);
+                var data_content = $.trim(form.content.value);
                 var rules_list = [];
                 var rules = result_list[number].rules;
                 var props_list = data_content.split(/\n/);
-                var vars_list = $('textarea#data-vars' + id).val().trim().split(/\n/);
+                var vars_list = $.trim(form.data_vars.value).split(/\n/);
                 if (ty === 'def.pred')
-                    var names_list = $('textarea#data-names' + id).val().trim().split(/\n/);
+                    var names_list = $.trim(form.vars_names.value).split(/\n/);
+                $.each(vars_list, function (i, m) {
+                    vars_list[i] = $.trim(m.slice(3,));
+                });
                 $.each(props_list, function (i, v) {
                     props_list[i] = $.trim(v.slice(3,));
-                    vars_list[i] = $.trim(vars_list[i].slice(3,));
                     if (names_list)
                         names_list[i] = $.trim(names_list[i].slice(3,));
                 });
                 $.each(props_list, function (i, v) {
-                    var temp_dict = {}, temp_vars = {};
+                    temp_dict = {}
+                    temp_vars = {};
                     if (v && vars_list[i]) {
                         temp_dict['prop'] = v;
-                        $.each(vars_list[i].split(/\s\s/), function (j, k) {
-                            temp_vars[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
-                        });
+                        temp_vars[$.trim(vars_list[i].split(':')[0])] = $.trim(vars_list[i].split(':')[1]);
                         if (names_list)
                             temp_dict['name'] = names_list[i];
                     } else if (!v) {
@@ -805,8 +823,14 @@
                 });
                 if (ty !== 'def')
                     ajax_data['rules'] = rules_list;
-                else
-                    ajax_data['vars'] = temp_vars;
+                else {
+                    var temp_vars_ = {};
+                    $.each(vars_list, function (j, k) {
+                        temp_vars_[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
+                    });
+                    ajax_data['prop'] = $.trim(temp_dict['prop']);
+                    ajax_data['vars'] = temp_vars_;
+                }
                 ajax_data['ty'] = ty;
                 ajax_data['name'] = data_name.split(' :: ')[0];
                 ajax_data['type'] = data_name.split(' :: ')[1];
@@ -1044,8 +1068,8 @@
         var templ = _.template($("#template-content-theory_desc").html());
         $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
         $.each(result_list, function(num, ext) {
+            var class_item = '';
             if (ext) {
-                var class_item = '';
                 if (items_selected.indexOf(String(num)) >= 0) {
                     class_item = 'selected_item';
                 }
