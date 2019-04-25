@@ -335,13 +335,13 @@ function match_thm() {
             data: JSON.stringify(data),
             success: function (result) {
                 var ctxt = result['ctxt'];
-                $('div#varible').html('');
+                $('div#variable').html('');
                 for (let k in ctxt) {
                     var type = '';
                     $.each(ctxt[k], function (i, val) {
                         type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
                     });
-                    $('div#varible').append('<div id="ctxt" style="margin-left:10px;"><span><b>' + k + ' :: ' + type + '</b></span></div><br>');
+                    $('div#variable').append('<div id="ctxt" style="margin-left:10px;"><span><b>' + k + ' :: ' + type + '</b></span></div><br>');
                 }
                 $('li#json-tab3').click();
                 clear_match_thm();

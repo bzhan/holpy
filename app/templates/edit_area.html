@@ -48,7 +48,7 @@
             <div class="form-group">
                 <div class="col-auto">
                     <label for="data-vars<%= page_num %>">Variables</label>
-                    <textarea spellcheck="false" name="vars" class="form-control"
+                    <textarea spellcheck="false" name="vars" class="form-control unicode-replace"
                               id="data-vars<%= page_num %>"></textarea>
                 </div>
             </div>
@@ -56,7 +56,8 @@
                 <div class="col-auto">
                     <label for="data-content<%= page_num %>">Proposition</label>
                     <input type="text" name="prop"
-                           class="form-control" spellcheck="false" id="data-content<%= page_num %>">
+                           class="form-control unicode-replace" spellcheck="false"
+                           id="data-content<%= page_num %>">
                 </div>
             </div>
             <div class="form-group">

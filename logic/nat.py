@@ -7,7 +7,7 @@ from kernel import macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
-from logic.logic_macro import apply_theorem, init_theorem
+from logic.logic_macro import apply_theorem
 from logic import logic
 from logic import term_ord
 
@@ -432,7 +432,7 @@ def ineq_zero_proof_term(thy, n):
     elif n % 2 == 0:
         return apply_theorem(thy, "bit0_nonzero", ineq_zero_proof_term(thy, n // 2))
     else:
-        return init_theorem(thy, "bit1_nonzero", inst={"m": to_binary(n // 2)})
+        return apply_theorem(thy, "bit1_nonzero", inst={"m": to_binary(n // 2)})
 
 def ineq_one_proof_term(thy, n):
     """Returns the inequality n ~= 1."""
@@ -440,7 +440,7 @@ def ineq_one_proof_term(thy, n):
     if n == 0:
         return apply_theorem(thy, "ineq_symmetric", ProofTerm.theorem(thy, "one_nonzero"))
     elif n % 2 == 0:
-        return init_theorem(thy, "bit0_neq_one", inst={"m": to_binary(n // 2)})
+        return apply_theorem(thy, "bit0_neq_one", inst={"m": to_binary(n // 2)})
     else:
         return apply_theorem(thy, "bit1_neq_one", ineq_zero_proof_term(thy, n // 2))
 
@@ -460,7 +460,7 @@ def ineq_proof_term(thy, m, n):
     elif m % 2 == 1 and n % 2 == 1:
         return apply_theorem(thy, "bit1_neq", ineq_proof_term(thy, m // 2, n // 2))
     elif m % 2 == 0 and n % 2 == 1:
-        return init_theorem(thy, "bit0_bit1_neq", inst={"m": to_binary(m // 2), "n": to_binary(n // 2)})
+        return apply_theorem(thy, "bit0_bit1_neq", inst={"m": to_binary(m // 2), "n": to_binary(n // 2)})
     else:
         return apply_theorem(thy, "ineq_symmetric", ineq_proof_term(thy, n, m))
 

@@ -7,6 +7,10 @@ body {
     overflow: hidden;
 }
 
+a, a:visited, a:link, .quasilink {
+    color: #A21313;
+}
+  
 .home-header {
     height: 40px;
     border-bottom: 1px solid #bfbfbf;
@@ -66,9 +70,6 @@ body {
     overflow: auto;
 }
 
-.input-area {
-}
-
 .input {
     display: flex;
     font-family: monospace;
@@ -121,7 +122,6 @@ a.fontcolor {
 .split {
     border: 1px solid red;
     padding: 0px;
-    margins: 0px;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -274,10 +274,6 @@ tt.normal {
 p.login-user {
     color: black;
     font-weight: bold;
-}
-
-span.pos {
-    positon: absolute;
 }
 
 textarea {

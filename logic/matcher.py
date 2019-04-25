@@ -45,7 +45,10 @@ def first_order_match_incr(pat, t, instsp):
     elif pat.is_comb():
         if pat.fun.is_var() and pat.arg == Bound(0):
             if pat.fun.name not in inst:
-                inst[pat.fun.name] = Abs("x", pat.fun.T.domain_type(), t)
+                if t.arg == Bound(0):
+                    inst[pat.fun.name] = t.fun
+                else:
+                    inst[pat.fun.name] = Abs("x", pat.fun.T.domain_type(), t)
             else:
                 inst_name = inst[pat.fun.name]
                 if inst_name.is_abs() and inst_name.body == t:

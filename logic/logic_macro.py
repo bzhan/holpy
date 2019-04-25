@@ -165,7 +165,15 @@ class rewrite_goal_macro(ProofTermMacro):
         return pt
 
 def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
-    if concl is None:
+    """Wrapper for apply_theorem and apply_theorem_for macros.
+
+    The function takes optional arguments concl, tyinst, and inst. Matching
+    always starts with tyinst and inst. If conclusion is specified, it is
+    matched next. Finally, the assumptions are matched.
+
+    """
+    if concl is None and tyinst is None and inst is None:
+        # Normal case, can use apply_theorem
         return ProofTermDeriv("apply_theorem", thy, th_name, pts)
     else:
         pt = ProofTerm.theorem(thy, th_name)
@@ -173,25 +181,14 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
             tyinst = dict()
         if inst is None:
             inst = dict()
-        matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
+        if concl is not None:
+            matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
         pt = ProofTermDeriv("apply_theorem_for", thy, (th_name, tyinst, inst), pts)
         if logic.beta_norm(pt.prop) == pt.prop:
             return pt
         else:
             return ProofTermDeriv("beta_norm", thy, None, [pt])
 
-def init_theorem(thy, th_name, tyinst=None, inst=None):
-    if tyinst is None:
-        tyinst = dict()
-    if inst is None:
-        inst = dict()
-    pt = ProofTerm.theorem(thy, th_name)
-    if tyinst:
-        pt = ProofTerm.subst_type(tyinst, pt)
-    if inst:
-        pt = ProofTerm.substitution(inst, pt)
-    pt = ProofTermDeriv("beta_norm", thy, None, [pt])
-    return pt
 
 macro.global_macros.update({
     "arg_combination": arg_combination_macro(),
