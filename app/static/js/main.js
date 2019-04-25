@@ -622,10 +622,13 @@
                 form.content.textContent = $.trim(data_new_content);
                 form.data_vars.textContent = $.trim(vars);
                 form.content.rows = $.trim(data_new_content).split('\n').length;
-//                form.data_vars.rows = $.trim(vars).split('\n').length;
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+                var templ_vars_edit = _.template($('#template-edit-def').html());
                 if (data_type === 'def.pred') {
-                    $('textarea#data-vars' + page_num).after('<br><textarea rows="' + data_rule_name.split('\n').length + '" spellcheck="false" id="data-names' + page_num + '" style="overflow-y:hidden;margin-top:5px;width:60%;background:transparent;" name="names">' + $.trim(data_rule_name) + '</textarea>')
+                    var form_var = document.getElementById('edit-vars-form' + page_num);
+                    $('textarea#data-vars' + page_num).after(template_templ_vars_edit({page_num : page_num}));
+                    form_var.vars_name.textContent = $.trim(data_rule_name);
+                    form_var.vars_name.rows = $.trim(data_rule_name).split('\n').length;
                 }
                 if (data_type !== 'def')
                     display_lines_number(page_num, number);
