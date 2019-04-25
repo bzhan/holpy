@@ -37,8 +37,8 @@ function display_facts_and_goal(cm) {
             e.clear()
         }
     });
-    if (cells[id].click_line_number !== -1) {
-        goal_no = cells[id].click_line_number;
+    if (cells[id].goal !== -1) {
+        goal_no = cells[id].goal;
         goal_line = cm.getLineHandle(goal_no).text;
         cm.markText({line: goal_no, ch: goal_line.length - 5},
                     {line: goal_no, ch: goal_line.length},

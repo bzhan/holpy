@@ -73,11 +73,11 @@ function display_checked_proof(result, pre_line_no=0) {
         if (new_line_no === -1) {
             editor.setCursor(0, 0);
             cells[id].facts.clear();
-            cells[id].click_line_number = -1;
+            cells[id].goal = -1;
         } else {
             editor.setCursor(new_line_no, 0);
             cells[id].facts.clear();
-            cells[id].click_line_number = new_line_no;    
+            cells[id].goal = new_line_no;    
         }
         display_facts_and_goal(editor);
         apply_thm();
@@ -203,7 +203,7 @@ function rewrite_goal(cm, is_others = false, select_thm = -1) {
     }
     display_running();
     var id = get_selected_id();
-    var line_no = cells[id].click_line_number;
+    var line_no = cells[id].goal;
     if (theorem === '') {
         swal({
             title: 'Enter rewrite theorem',
@@ -320,8 +320,8 @@ function set_line(cm) {
 
 function apply_thm(cm) {
     var id = get_selected_id();
-    var click_line_number = cells[id].click_line_number;
-    if (click_line_number === -1) {
+    var goal = cells[id].goal;
+    if (goal === -1) {
         return;
     } else {
         match_thm();
@@ -331,7 +331,7 @@ function apply_thm(cm) {
 //match responding thms for backward;
 function match_thm() {
     var id = get_selected_id();
-    var click_line_number = cells[id].click_line_number;
+    var goal = cells[id].goal;
     var facts = cells[id].facts;
     $(document).ready(function () {
         var conclusion_id = [];
@@ -340,7 +340,7 @@ function match_thm() {
         });
         var data = {
             'id': get_selected_id(),
-            'target_id': cells[get_selected_id()]['proof'][click_line_number]['id'],
+            'target_id': cells[get_selected_id()]['proof'][goal]['id'],
             'conclusion_id': conclusion_id,
             'theory_name': name
         };
@@ -473,20 +473,19 @@ function display(id) {
     edit_flag = true;
     editor.setValue('');
     edit_flag = false;
-    var cell = cells[id]['proof'];
+    var proof = cells[id]['proof'];
+    editor.setOption('lineNumberFormatter', function (line_no) {
+        if (line_no < proof.length) {
+            return proof[line_no].id;
+        } else {
+            return '';
+        }
+    });
     var large_num = 0;
-    $.each(cell, function (line_no) {
-        var line = cells[id]['proof'][line_no];
-        editor.setOption('lineNumberFormatter', function (line_no) {
-            if (line_no < cell.length) {
-                return cells[id]['proof'][line_no]['id'];
-            } else {
-                return '';
-            }
-        });
-        var length = cells[id]['proof'][line_no]['id'].length;
-        if (length >= large_num)
-            large_num = length;
+    $.each(proof, function (line_no, line) {
+        var id_len = line.id.length;
+        if (id_len >= large_num)
+            large_num = id_len;
         display_line(id, line_no);
         edit_flag = true;
         var len = editor.getLineHandle(line_no).text.length;
@@ -495,17 +494,14 @@ function display(id) {
     });
     $('div.tab-pane.selected div.CodeMirror-gutters').css('width', 32 + large_num * 3 + 'px');
     $('div.CodeMirror-gutters').css('text-align', 'left');
-    $('div.tab-pane.selected div.CodeMirror-sizer').css('margin-left', 33 + large_num * 2 + 'px');
-    cells[get_selected_id()].readonly_lines.length = 0;
-    for (var i = 0; i < editor.lineCount(); i++)
-        cells[get_selected_id()].readonly_lines.push(i);
+    $('div.tab-pane.selected div.CodeMirror-sizer').css('margin-left', 32 + large_num * 3 + 'px');
 }
 
 function match_thm_texts(method_name) {
     if (method_name === 'abs')
         return ['Theorems: (Ctrl-B)', 'Other backward step', 'backward-step'];
     else if (method_name === 'afs')
-        return ['(Theorems: Ctrl-F)', 'Other forward step', 'forward-step'];
+        return ['Theorems: (Ctrl-F)', 'Other forward step', 'forward-step'];
     else if (method_name === 'rewrite')
         return ['Theorems: (Ctrl-R)', 'Other rewrite goal', 'rewrite-goal'];
 }
@@ -542,9 +538,8 @@ function get_match_thm(func_name) {
     func_name = '.' + func_name + '-thm';
     let css_str = 'div.rbottom .selected ' + func_name + ' .thm-content pre';
     $(css_str).each(function () {
-            match_thm_list.push($(this).text().split('  ')[0]);
-        }
-    );
+        match_thm_list.push($(this).text().split('  ')[0]);
+    });
     return match_thm_list;
 }
 
@@ -568,26 +563,29 @@ function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '
     let title = '';
     let id = get_selected_id();
     let facts = cells[id].facts;
-    let line_no = cells[id].click_line_number;
+    let line_no = cells[id].goal;
+
+    // Obtain the list of fact_id separated by commas.
+    let fact_id = '';
+    if (line_no !== -1 && facts.size !== 0) {
+        facts.forEach(function (val) {
+            fact_id += cells[id]['proof'][val]['id'] + ', ';
+        });
+    }
+    fact_id = fact_id.slice(0, fact_id.length - 2);
+    goal_id = cells[id]['proof'][line_no]['id']
+
     if (is_others)
         match_thm_list.length = 0;
     if (match_thm_list.length !== 0) {
         let idx = select_thm !== -1 ? select_thm : 0;
-        let fact_id = '';
-        let theorem = '';
-        if (line_no !== -1 && facts.size !== 0) {
-            facts.forEach((val) => {
-                fact_id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
-            });
-        }
-        fact_id = fact_id.slice(0, fact_id.length - 2);
-        theorem = match_thm_list[idx];
+        let theorem = match_thm_list[idx];
         if (fact_id !== "") {
             theorem += ', ' + fact_id;
         }
         var data = {
-            'id': get_selected_id(),
-            'line_id': cells[get_selected_id()]['proof'][line_no]['id'],
+            'id': id,
+            'line_id': goal_id,
             'theorem': theorem,
         };
         $.ajax({
@@ -601,41 +599,30 @@ function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '
         });
     } else {
         if (line_no !== -1 && facts.size !== 0) {
-            let conclusion = '';
-            facts.forEach((val) => {
-                conclusion += '' + (val + 1) + ', ';
-            });
-            conclusion = conclusion.slice(0, conclusion.length - 2);
-            title = 'Target: ' + (line_no + 1) + '\nConclusion: ' + conclusion;
-        } else if (click_line_number !== -1 && facts.size === 0) {
-            title = 'Target: ' + (line_no + 1);
+            title = 'Goal: ' + goal_id + '\nFacts: ' + fact_id;
+        } else if (line_no !== -1 && facts.size === 0) {
+            title = 'Goal: ' + goal_id;
         } else {
             title = 'Please enter the theorem used';
         }
         swal({
             title: title,
-            html:
-                '<input id="swal-input1" class="swal2-input">',
+            html: '<input id="swal-input1" class="swal2-input">',
             showCancelButton: true,
             confirmButtonText: 'confirm',
             showLoaderOnConfirm: true,
             focusConfirm: false,
             preConfirm: () => {
                 document.querySelector('#swal-input1').focus();
-                let fact_id = '';
                 let theorem = '';
                 if (line_no !== -1 && facts.size !== 0) {
-                    facts.forEach((val) => {
-                        fact_id += '' + cells[get_selected_id()]['proof'][val]['id'] + ', ';
-                    });
-                    fact_id = fact_id.slice(0, fact_id.length - 2);
                     theorem = document.getElementById('swal-input1').value + ', ' + fact_id;
                 } else if (line_no !== -1 && facts.size === 0) {
                     theorem = document.getElementById('swal-input1').value;
                 }
                 var data = {
-                    'id': get_selected_id(),
-                    'line_id': cells[get_selected_id()]['proof'][line_no]['id'],
+                    'id': id,
+                    'line_id': goal_id,
                     'theorem': theorem,
                 };
                 return fetch(api, {
@@ -655,9 +642,7 @@ function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '
                     return response.json()
                 })
                     .catch(error => {
-                        swal.showValidationMessage(
-                            `Request failed: ${error}`
-                        )
+                        swal.showValidationMessage(`Request failed: ${error}`)
                     })
             },
             allowOutsideClick:

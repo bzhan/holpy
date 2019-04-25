@@ -1094,10 +1094,9 @@
         editor.setSize("auto", rtop.clientHeight - 40);
         editor.setValue("");
         cells[id] = {
-            click_line_number: -1,
+            goal: -1,
             facts: new Set(),
             edit_line_number: -1,
-            readonly_lines: [0]
         };
         editor.on("keydown", function (cm, event) {
             let line_no = cm.getCursor().line;
@@ -1132,8 +1131,6 @@
                         line: cells[id].edit_line_number,
                         ch: Number.MAX_SAFE_INTEGER
                     });
-                    cells[id].readonly_lines.push(cells[id].edit_line_number);
-                    cells[id].readonly_lines.sort();
                     cells[id].edit_line_number = -1;
                 }
             }
@@ -1156,7 +1153,7 @@
 
         editor.on('beforeChange', function (cm, change) {
             if (!edit_flag &&
-                cells[get_selected_id()].readonly_lines.indexOf(change.from.line) !== -1) {
+                cells[get_selected_id()].edit_line_number !== change.from.line) {
                 change.cancel();
             }
         });
@@ -1184,29 +1181,9 @@
         var line = cm.getLineHandle(line_num).text;
         var id = get_selected_id();
         if (line.indexOf('sorry') !== -1) {
-            cm.getAllMarks().forEach(e => {
-                if (e.readOnly !== undefined)
-                    if (e.readOnly)
-                        e.clear();
-                if (e.css !== undefined)
-                    if (e.css.indexOf('background') !== -1)
-                        e.clear();
-            });
-            cells[id].readonly_lines.splice(line_num, 1);
-            cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch - 5}, {readOnly: true});
             cm.addSelection({line: line_num, ch: ch - 5}, {line: line_num, ch: ch});
             cells[id].edit_line_number = line_num;
         } else if (line.trim() === '') {
-            cm.getAllMarks().forEach(e => {
-                if (e.readOnly !== undefined)
-                    if (e.readOnly)
-                        e.clear();
-                if (e.css !== undefined)
-                    if (e.css.indexOf('background') !== -1)
-                        e.clear();
-            });
-            cells[id].readonly_lines.splice(line_num, 1);
-            cm.markText({line: line_num, ch: 0}, {line: line_num, ch: ch}, {readOnly: true});
             cells[id].edit_line_number = line_num;
         }
     }
@@ -1217,9 +1194,9 @@
         var id = get_selected_id();
         if (line.indexOf('sorry') !== -1) {
             // Choose a new goal
-            cells[id].click_line_number = line_num;
+            cells[id].goal = line_num;
         }
-        else if (cells[id].click_line_number !== -1) {
+        else if (cells[id].goal !== -1) {
             // Choose or unchoose a fact
             if (cells[id].facts.has(line_num))
                 cells[id].facts.delete(line_num)
