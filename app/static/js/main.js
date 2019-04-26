@@ -327,7 +327,7 @@
             var file_name = $(this).attr('name').slice(5,);
             if (file_name) {
                 get_selected_editor().reset = true;
-                theorem_proof(result_list_dict[file_name][id], file_name);
+                init_empty_proof(file_name, id);
                 get_selected_editor().reset = false;
             }
         });
@@ -402,13 +402,13 @@
                 $('#add-cell').click();
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    init_saved_proof(result_list[proof_id]);
+                    init_saved_proof(theory_name, proof_id);
                 }, 200);
             } else {
                 $('#add-cell').click();
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    theorem_proof(result_list[proof_id], theory_name);
+                    init_empty_proof(theory_name, proof_id);
                 }, 200);
             }
         });
@@ -970,40 +970,38 @@
         })
     }
 
-    function theorem_proof(r_data, the_name) {
-        if (r_data['instructions'] !== undefined) {
-            instructions = r_data['instructions'];
-        } else {
-            instructions = []
-        }
+    // Initialize empty proof for the theorem with given file name and item_id.
+    function init_empty_proof(file_name, item_id) {
+        r_data = result_list_dict[file_name][item_id]
         var event = {
             'id': get_selected_id(),
             'vars': r_data['vars'],
             'prop': r_data['prop'],
-            'theory_name': the_name,
+            'theory_name': file_name,
             'thm_name': r_data['name']
         };
         var data = JSON.stringify(event);
         display_running();
         $.ajax({
-            url: "/api/init",
+            url: "/api/init-empty-proof",
             type: "POST",
             data: data,
             success: function (result) {
                 clear_match_thm();
                 display_checked_proof(result);
-                display_instuctions(instructions);
+                display_instructions(r_data.instructions);
             }
         });
     }
 
-    function init_saved_proof(r_data) {
-        instructions = r_data['instructions'];
+    // Load saved proof for the theorem with given file name and item_id.
+    function init_saved_proof(file_name, item_id) {
+        r_data = result_list_dict[file_name][item_id]
         var event = {
             'id': get_selected_id(),
             'vars': r_data['vars'],
             'proof': r_data['proof'],
-            'theory_name': theory_name,
+            'theory_name': file_name,
             'thm_name': r_data['name']
         };
         var data = JSON.stringify(event);
@@ -1014,7 +1012,7 @@
             data: data,
             success: function (result) {
                 display_checked_proof(result);
-                display_instuctions(instructions);
+                display_instructions(r_data.instructions);
             }
         })
     }
@@ -1088,8 +1086,9 @@
         editor.setSize("auto", rtop.clientHeight - 40);
         editor.setValue("");
         cells[id] = {
-            goal: -1,
+            theory_name: theory_name,
             facts: new Set(),
+            goal: -1,
             edit_line_number: -1,
         };
         editor.on("keydown", function (cm, event) {
@@ -1140,7 +1139,7 @@
         editor.on("cursorActivity", function (cm) {
             if (is_mousedown) {
                 mark_text(cm);
-                apply_thm(cm);
+                match_thm();
                 is_mousedown = false;
             }
         });

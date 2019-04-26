@@ -157,11 +157,12 @@ def login():
     return redirect('login_error')
 
 
-@app.route('/api/init', methods=['POST'])
-def init_component():
+@app.route('/api/init-empty-proof', methods=['POST'])
+def init_empty_proof():
+    """Initialize empty proof."""
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']), user = user_info['username'])
+        thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
         cell = ProofState.parse_init_state(thy, data)
         cells[data['id']] = cell
         return jsonify(cell.json_data())
@@ -170,10 +171,11 @@ def init_component():
 
 @app.route('/api/init-saved-proof', methods=['POST'])
 def init_saved_proof():
+    """Load saved proof."""
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         try:
-            thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']), user = user_info['username'])
+            thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
             cell = ProofState.parse_proof(thy, data)
             cells[data['id']] = cell
             return jsonify(cell.json_data())
@@ -396,35 +398,31 @@ def save_file():
     return jsonify({})
 
 
-# match the thms for backward or rewrite;
 @app.route('/api/match_thm', methods=['POST'])
 def match_thm():
-    dict = {}
+    """Match for hints to backward, forward, and rewrite steps."""
     data = json.loads(request.get_data().decode("utf-8"))
     thy = basic.loadTheory(data['theory_name'], user=user_info['username'])
     if data:
-        cell = cells.get(data.get('id'))
-        target_id = data.get('target_id')
-        ctxt = cell.get_ctxt(target_id)
-        settings.settings_stack[0]['highlight'] = True
+        cell = cells[data['id']]
+        facts_id = data['facts_id']
+        goal_id = data['goal_id']
+        ctxt = cell.get_ctxt(goal_id)
+        print_ctxt = {}
         for k, v in ctxt.items():
-            dict[k] = printer.print_type(thy, v)
-        conclusion_id = data.get('conclusion_id')
-        if not conclusion_id:
-            conclusion_id = None
-        settings.settings_stack[0]['highlight'] = False
-        ths_rewrite = cell.rewrite_goal_thms(target_id)
-        ths_abs = cell.apply_backward_step_thms(target_id, prevs=conclusion_id)
-        ths_afs = cell.apply_forward_step_thms(target_id, prevs=conclusion_id)
-        if (ths_abs or ths_rewrite) or ths_afs:
+            print_ctxt[k] = printer.print_type(thy, v, highlight=True)
+        ths_rewrite = cell.rewrite_goal_thms(goal_id)
+        ths_abs = cell.apply_backward_step_thms(goal_id, prevs=facts_id)
+        ths_afs = cell.apply_forward_step_thms(goal_id, prevs=facts_id)
+        if ths_abs or ths_rewrite or ths_afs:
             return jsonify({
                 'ths_abs': ths_abs,
                 'ths_afs': ths_afs,
                 'ths_rewrite': ths_rewrite,
-                'ctxt': dict
+                'ctxt': print_ctxt
             })
         else:
-            return jsonify({'ctxt': dict})
+            return jsonify({'ctxt': print_ctxt})
 
 
 # save the edited data to left-json for updating;

@@ -80,12 +80,12 @@ function display_checked_proof(result, pre_line_no=0) {
             cells[id].goal = new_line_no;    
         }
         display_facts_and_goal(editor);
-        apply_thm();
+        match_thm();
         editor.focus();
     }
 }
 
-function display_instuctions(instructions) {
+function display_instructions(instructions) {
     var instr_output = get_selected_instruction();
     instr_output.innerHTML = instructions[0];
     var instr_no_output = get_selected_instruction_number();
@@ -318,51 +318,44 @@ function set_line(cm) {
     })
 }
 
-function apply_thm(cm) {
-    var id = get_selected_id();
-    var goal = cells[id].goal;
-    if (goal === -1) {
-        return;
-    } else {
-        match_thm();
-    }
-}
-
 //match responding thms for backward;
 function match_thm() {
     var id = get_selected_id();
     var goal = cells[id].goal;
     var facts = cells[id].facts;
-    $(document).ready(function () {
-        var conclusion_id = [];
-        facts.forEach(val => {
-            conclusion_id.push(cells[get_selected_id()]['proof'][val]['id']);
-        });
-        var data = {
-            'id': get_selected_id(),
-            'target_id': cells[get_selected_id()]['proof'][goal]['id'],
-            'conclusion_id': conclusion_id,
-            'theory_name': name
-        };
-        $.ajax({
-            url: "/api/match_thm",
-            type: "POST",
-            data: JSON.stringify(data),
-            success: function (result) {
-                var ctxt = result['ctxt'];
-                $('div#variable').html('');
-                for (let k in ctxt) {
-                    var type = '';
-                    $.each(ctxt[k], function (i, val) {
-                        type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                    });
-                    $('div#variable').append('<div id="ctxt" style="margin-left:10px;"><span><b>' + k + ' :: ' + type + '</b></span></div><br>');
-                }
-                $('li#json-tab3').click();
-                clear_match_thm();
-                display_match_thm(result);
+
+    if (goal === -1) {
+        return;
+    }
+
+    var facts_id = [];
+    facts.forEach(val => {
+        facts_id.push(cells[id]['proof'][val]['id']);
+    });
+    var data = {
+        'id': id,
+        'goal_id': cells[id]['proof'][goal]['id'],
+        'facts_id': facts_id,
+        'theory_name': cells[id].theory_name
+    };
+    $.ajax({
+        url: "/api/match_thm",
+        type: "POST",
+        data: JSON.stringify(data),
+        success: function (result) {
+            var ctxt = result['ctxt'];
+            $('div#variable').html('');
+            for (let k in ctxt) {
+                var type = '';
+                $.each(ctxt[k], function (i, val) {
+                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+                });
+                $('div#variable').append('<div id="ctxt" style="margin-left:10px;"><span><b>' + k + ' :: ' + type + '</b></span></div><br>');
             }
-        })
+            $('li#json-tab3').click();
+            clear_match_thm();
+            display_match_thm(result);
+        }
     });
 }
 
