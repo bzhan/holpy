@@ -627,7 +627,7 @@
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 var templ_vars_edit = _.template($('#template-edit-def').html());
                 if (data_type === 'def.pred') {
-                    form.vars_names.style.display = '';
+//                    form.vars_names.addClass('asd');
                     form.vars_names.textContent = $.trim(data_rule_name);
                     form.vars_names.rows = $.trim(data_rule_name).split('\n').length;
                 }
@@ -810,9 +810,11 @@
                 $.each(props_list, function (i, v) {
                     temp_dict = {}
                     temp_vars = {};
-                    if (v && vars_list[i]) {
+                    if (ty !== 'def' && v && vars_list[i]) {
                         temp_dict['prop'] = v;
-                        temp_vars[$.trim(vars_list[i].split(':')[0])] = $.trim(vars_list[i].split(':')[1]);
+                        $.each(vars_list[i].split(/\s\s\s/), function (j, k) {
+                            temp_vars[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
+                        });
                         if (names_list)
                             temp_dict['name'] = names_list[i];
                     } else if (!v) {
@@ -820,15 +822,14 @@
                     }
                     temp_dict['vars'] = temp_vars;
                     rules_list.push(temp_dict);
-                });
-                if (ty !== 'def')
                     ajax_data['rules'] = rules_list;
-                else {
+                });
+                if (ty === 'def') {
                     var temp_vars_ = {};
                     $.each(vars_list, function (j, k) {
                         temp_vars_[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
                     });
-                    ajax_data['prop'] = $.trim(temp_dict['prop']);
+                    ajax_data['prop'] = $.trim(props_list[0]);
                     ajax_data['vars'] = temp_vars_;
                 }
                 ajax_data['ty'] = ty;
