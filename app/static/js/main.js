@@ -627,7 +627,7 @@
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 var templ_vars_edit = _.template($('#template-edit-def').html());
                 if (data_type === 'def.pred') {
-                    form.vars_names.style.display = '';
+//                    form.vars_names.addClass('asd');
                     form.vars_names.textContent = $.trim(data_rule_name);
                     form.vars_names.rows = $.trim(data_rule_name).split('\n').length;
                 }
