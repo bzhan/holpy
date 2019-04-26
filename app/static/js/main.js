@@ -620,17 +620,15 @@
                     $('#codeTab').find('span#' + page_num).text('function');
                 form.number.value = number;
                 form.data_name.value = data_name;
-                form.content.textContent = $.trim(data_new_content);
-                form.data_vars.textContent = $.trim(vars);
-                form.data_vars.rows = $.trim(vars).split('\n').length;
-                form.content.rows = $.trim(data_new_content).split('\n').length;
-                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-                var templ_vars_edit = _.template($('#template-edit-def').html());
+                form.content.textContent = data_new_content.trim();
+                form.content.rows = data_new_content.trim().split('\n').length;
+                form.data_vars.textContent = vars.trim();
+                form.data_vars.rows = vars.trim().split('\n').length;
                 if (data_type === 'def.pred') {
-//                    form.vars_names.addClass('asd');
-                    form.vars_names.textContent = $.trim(data_rule_name);
-                    form.vars_names.rows = $.trim(data_rule_name).split('\n').length;
+                    form.vars_names.textContent = data_rule_name.trim();
+                    form.vars_names.rows = data_rule_name.trim().split('\n').length;
                 }
+                $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type !== 'def')
                     display_lines_number(page_num, number);
             }
