@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel.type import HOLType
 from kernel.term import Const
 from kernel.thm import Thm
 
@@ -99,6 +100,7 @@ class AxConstant(Extension):
         """
         self.ty = Extension.AX_CONSTANT
         self.name = name
+        assert isinstance(T, HOLType), "AxConstant: T must be HOLType."
         self.T = T
 
 class Constant(Extension):

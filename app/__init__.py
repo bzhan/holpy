@@ -273,23 +273,20 @@ def set_line():
         return jsonify(error)
 
 
-# type of ax
-def type_(thy, j):
-    if isinstance(j, AxType):
-        return (printer.print_type(thy, j), 'type')
-    if isinstance(j, AxConstant):
-        if isinstance(j.T, str):
-            j.T = parser.parse_type(thy, j.T)
-        return (printer.print_type(thy, j.T), 'constant')
-    if isinstance(j, Theorem):
-        return (printer.print_thm(thy, j.th), 'theorem')
+def print_extension(thy, ext):
+    """Print given extension."""
+    if isinstance(ext, AxType):
+        return "Type " + ext.name
+    elif isinstance(ext, AxConstant):
+        return "Constant " + ext.name + " :: " + printer.print_type(thy, ext.T, unicode=True)
+    elif isinstance(ext, Theorem):
+        return "Theorem " + ext.name + ": " + printer.print_term(thy, ext.th.prop, unicode=True)
 
 
-# 显示高亮的函数；
 def file_data_to_output(thy, data):
-    """Convert an item in the theory in json format in the file to
-    json format sent to the web client. Modifies data in-place.
-    Also modifies thy in parsing the item.
+    """Convert items in the theory from json format for the file to
+    json format for the web client. Modifies data in-place.
+    Also modifies argument thy in parsing the item.
 
     """
     parser.parse_extension(thy, data)
@@ -303,68 +300,64 @@ def file_data_to_output(thy, data):
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
 
     elif data['ty'] == 'type.ind':
-        type_dic = dict()
-        constrs, ext_res = [], []
-        name = data['name']
-        args = data['args']
-        cons = data['constrs']
-        for c in cons:
-            c_ = (c['name'], parser.parse_type(thy, c['type']), c['args'])
-            constrs.append(c_)
-        ext = induct.add_induct_type(name, args, constrs)
-        for i in ext.data:
-            if type_(thy, i):
-                # ext_res[i.name] = type_(thy, i)
-                ext_res.append((type_(thy, i), i.name))
-        for i, constr in enumerate(data['constrs']):
-            type_list = []
+        constrs = []
+        for constr in data['constrs']:
             T = parser.parse_type(thy, constr['type'])
-            argsT, res = HOLType.strip_type(T)
-            for a in argsT:
-                type_list.append(printer.print_type(thy, a, unicode=True, highlight=True))
-            type_dic[str(i)] = type_list
-            type_dic['concl'] = printer.print_type(thy, res, unicode=True, highlight=True)
-        data['argsT'] = type_dic
-        data['ext'] = ext_res
+            constrs.append((constr['name'], T, constr['args']))
+        exts = induct.add_induct_type(data['name'], data['args'], constrs)
+
+        # Obtain items added by the extension
+        ext_output = []
+        for ext in exts.data:
+            s = print_extension(thy, ext)
+            if s:
+                ext_output.append(s)
+        data['ext'] = ext_output
+
+        # Obtain types of arguments for each constructor
+        data['argsT'] = dict()
+        for i, constr in enumerate(data['constrs']):
+            T = parser.parse_type(thy, constr['type'])
+            argsT, _ = HOLType.strip_type(T)
+            argsT = [printer.print_type(thy, a, unicode=True, highlight=True) for a in argsT]
+            data['argsT'][str(i)] = argsT
 
     elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
-        name = data['name']
-        type_d = data['type']
-        rules = data['rules']
-        rules_, ext_res = [], []
-        for i in rules:
-            ctxt_ = parser.parse_vars(thy, i['vars'])
-            prop_ = parser.parse_term(thy, ctxt_, i['prop'])
-            rules_.append(prop_)
-        ext = induct.add_induct_def(name, type_d, rules_)
-        for e in ext.data:
-            if type_(thy, e):
-                # ext_res[e.name] = type_(thy, e)
-                ext_res.append((type_(thy, e), e.name))
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+
+        rules = []
         for rule in data['rules']:
             ctxt = parser.parse_vars(thy, rule['vars'])
             prop = parser.parse_term(thy, ctxt, rule['prop'])
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
-        data['ext'] = ext_res
+            rules.append(prop)
+        exts = induct.add_induct_def(data['name'], T, rules)
+
+        # Obtain items added by the extension
+        ext_output = []
+        for ext in exts.data:
+            s = print_extension(thy, ext)
+            if s:
+                ext_output.append(s)
+        data['ext'] = ext_output
 
     elif data['ty'] == 'def':
+        T = parser.parse_type(thy, data['type'])
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+
         ctxt = parser.parse_vars(thy, data['vars'])
         prop = parser.parse_term(thy, ctxt, data['prop'])
-        T = parser.parse_type(thy, data['type'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
     # Ignore other types of information.
     else:
         pass
 
 
-# first open json_file
-@app.route('/api/json', methods=['POST'])
-def json_parse():
+@app.route('/api/load-json-file', methods=['POST'])
+def load_json_file():
+    """Loads json file for the given user and file name."""
     file_name = json.loads(request.get_data().decode("utf-8"))
     with open('users/' + user_info['username'] + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)

@@ -8,7 +8,6 @@
     var theory_desc = "";  // Description of the theory
     var click_count = 0;
     var proof_id = 0;
-    var edit_mode = false;
     var result_list_dict = {};
     var file_list = [];
     var add_mode = false;
@@ -195,10 +194,12 @@
             $('div#variable').show();
         });
 
+        // Edit metadata for a file
         $('div#root-file').on('click', 'a[name="edit"]', function () {
-            var number = Number($(this).attr('id').slice(4,).trim())-1;
-            page_num++;
+            // File's id is "edit[n]"
+            var number = Number($(this).attr('id').slice(4,).trim());
 
+            page_num++;
             data = JSON.stringify(file_list[number]);
             init_metadata_area(page_num);
             var form = document.getElementById('edit-metadata-form' + page_num);
@@ -207,12 +208,9 @@
                 data: data,
                 type: 'POST',
                 success: function (res) {
-                    var name = res['name'];
-                    var des = res['description'];
-                    var imports = res['imports'].join(',');
-                    form.fname.value = name;
-                    form.imports.value = imports;
-                    form.description.textContent = des;
+                    form.fname.value = res.name;
+                    form.imports.value = res.imports.join(',');
+                    form.description.textContent = res.description;
                 }
             })
         });
@@ -256,6 +254,8 @@
             save_json_file();
         });
 
+        // Convert items in the theory from json format for the web client
+        // back to the json format for the file.
         function result_to_output(data) {
             if (data.ty === 'def.ax') {
                 delete data.type_hl;
@@ -265,8 +265,8 @@
                 delete data.argsT;
                 delete data.ext;
             } else if (data.ty === 'def') {
-                delete data.term;
                 delete data.type_hl;
+                delete data.prop_hl;
             } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
                 delete data.type_hl;
                 delete data.ext;
@@ -417,7 +417,6 @@
         $('#left_json').on('click', 'a[name="edit"]', function (s) {
             s.stopPropagation();
             page_num++;
-            edit_mode = true;
             var a_ele = $(this);
             init_edit_area(page_num, a_ele);
         });
@@ -464,21 +463,24 @@
             $(this).attr('rows', rows);
         });
 
-//      the method for add_info && edit_info;
+        // Initialize edit area, for both editing an existing item and
+        // creating a new item.
+        // 
+        // page_num: index of the current tab.
+        // a_ele: if editing an existing item, id of the current item.
+        // data_type: if adding a new item, type of the new item.
         function init_edit_area(page_num, a_ele = '', data_type = '') {
-            var a_id, data_name = '', data_content = '', data_label;
+            var data_name = '', data_content = '';
             if (!a_ele) {
-                a_id = '', data_name = '', data_content = '', number = '', data_label = data_type;
+                data_name = '', data_content = '', number = '';
             } else {
-                a_id = a_ele.attr('id').trim();
-                number = String(Number(a_id.slice(5,)));
+                number = String(Number(a_ele.attr('id').trim().slice(5,)));
                 data_name = result_list[number]['name'];
                 data_type = result_list[number]['ty'];
-                data_label = data_name;
             }
 
             var templ_tab = _.template($("#template-tab").html());
-            $('#codeTab').append(templ_tab({page_num: page_num, label: data_label}));
+            $('#codeTab').append(templ_tab({page_num: page_num, label: data_type}));
 
             if (data_type === 'def.ax') {
                 if (number)
@@ -486,13 +488,15 @@
                 else
                     $('#codeTab').find('span#' + page_num).text('constant');
                 var templ_edit = _.template($("#template-edit-def-ax").html());
-                $('#codeTabContent').append(templ_edit({
-                    a_id: a_id, page_num: page_num
-                }));
+                $('#codeTabContent').append(templ_edit({page_num: page_num}));
                 var form = document.getElementById('edit-constant-form' + page_num);
                 form.data_name.value = data_name;
                 form.data_content.value = data_content;
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+                if (number)
+                    form.number.value = number
+                else
+                    form.number.value = -1
             }
             if (data_type === 'thm' || data_type === 'thm.ax') {
                 var templ_edit = _.template($('#template-edit-thm').html());
@@ -529,20 +533,12 @@
                 if (number) {
                     var ext = result_list[number]['ext'];
                     var argsT = result_list[number]['argsT'];
-                    var ext_ = '';
-                    $.each(ext, function (i, v) {
-                        ext_ += v[0][1] + '  ' + v[1] + ':' + v[0][0] + '\n';
-                    });
+                    var data_name = result_list[number].name;
                     var templ_edit = _.template($('#template-edit-type-ind').html());
                     $('#codeTabContent').append(templ_edit({
-                        a_id: a_id, page_num: page_num,
-                        ext_: ext_
+                        page_num: page_num, ext_output: ext.join('\n')
                     }));
                     var form = document.getElementById('edit-type-form' + page_num);
-                    data_name = '';
-                    $.each(argsT.concl, function (i, j) {
-                        data_name += j[0];
-                    });
                     $.each(result_list[number]['constrs'], function (i, v) {
                         var str_temp_var = '';
                         $.each(v.args, function (k, val) {
@@ -563,6 +559,10 @@
                 form.data_name.value = data_name;
                 form.data_content.textContent = data_content;
                 form.data_content.rows = i;
+                if (number)
+                    form.number.value = number
+                else
+                    form.number.value = -1
 
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             }
@@ -579,17 +579,11 @@
 
                 if (number) {
                     var ext = result_list[number];
-                    var ext_ = ext.ext;
-                    var ext_str = '';
                     var vars = '';
-                    $.each(ext_, function (i, v) {
-                        ext_str += v[0][1] + '  ' + v[1] + ':' + v[0][0] + '\n';
-                    });
                     var templ_edit = _.template($('#template-edit-def').html());
                     $('#codeTabContent').append(templ_edit({
-                        a_id: a_id, page_num: page_num,
-                        type_name: type_name,
-                        ext_str: ext_str
+                        page_num: page_num, type_name: type_name,
+                        ext_output: ext.ext.join('\n')
                     }));
                     var form = document.getElementById('edit-def-form' + page_num);
                     data_name = ext.name + ' :: ' + ext.type;
@@ -628,6 +622,10 @@
                     form.vars_names.textContent = data_rule_name.trim();
                     form.vars_names.rows = data_rule_name.trim().split('\n').length;
                 }
+                if (number)
+                    form.number.value = number
+                else
+                    form.number.value = -1
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
                 if (data_type !== 'def')
                     display_lines_number(page_num, number);
@@ -661,7 +659,6 @@
             }
             form.data_vars.value = $.trim(data_vars_str);
             form.data_vars.rows = $.trim(data_vars_str).split('\n').length;
-//            $('textarea#data-vars' + page_num).val($.trim(data_vars_str));
         }
 
 //      click save button on edit tab to save content to the left-json for updating;
@@ -671,16 +668,10 @@
             var error_id = $(this).next().attr('id').trim();
             var id = tab_pm;
             var ty = $(this).attr('name').trim();
-            if (ty == 'thm' || ty == 'thm-ax') {
-                var number = edit_form.number.value;
-            }
-            else {
-                var a_id = $('div#code' + tab_pm + '-pan').attr('name').trim();
-                var number = Number(a_id.slice(5,));    
-            }
+            var number = edit_form.number.value;
             var ajax_data = make_data(edit_form, ty, id, number);
             var prev_list = result_list.slice(0, number);
-            ajax_data['file-name'] = name;
+            ajax_data['file-name'] = theory_name;
             ajax_data['prev-list'] = prev_list;
             $.ajax({
                 url: '/api/save_modify',
@@ -853,9 +844,8 @@
 
 //click DEL to delete yellow left_json content and save to webpage and json file
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
-            var number = '';
             $.each(items_selected, function (i, v) {
-                   result_list[v] = '';
+                result_list[v] = '';
             })
             result_list = result_list.filter(function(item) {
                 return item !== '';
@@ -931,61 +921,43 @@
             }
         })
 
-//      click to save the related data to json file: edit && proof;
-        $('a#save-file').click(function () {
-            if (edit_mode) {
-                save_editor_data();
-            } else {
-                save_json_file();
-            }
-        });
-
-//      click to display json file;
-        $('#root-file').on('click', 'a[name="file"]', function () {
-            num = 0;
+        // Open json file with the given name.
+        function open_json_file(name) {
             items_selected = [];
-            $(this).parent().hide();
             $('#json-tab2').click();
             $('#left_json').empty();
-            name = $(this).text();
-            name = $.trim(name);
-            if ($('#file-path').html() === '') {
-                $('#file-path').append($('<a href="#" id="root-a"><font color="red"><b>root/</b></font></a><a href="#"><font color="red"><b>' + name + '</b></font></a>'));
-            } else if ($('#file-path a:last').text() === 'root/') {
-                $('#root-a').after($('<a href="#"><font color="red"><b>' + name + '</b></font></a>'));
-            } else if ($('#file-path a:last').text() !== name) {
-                $('#file-path a:last').remove();
-                $('#root-a').after($('<a href="#"><font color="red"><b>' + name + '</b></font></a>'));
-            }
-            data = JSON.stringify(name);
-            ajax_res(data);
+            var data = JSON.stringify(name);
+            load_json_file(data);
             add_mode = true;
+        }
+
+        // Open json file from links in the 'Files' tab.
+        $('#root-file').on('click', 'a[name="file"]', function () {
+            open_json_file($(this).text().trim());
+        });
+
+        // Open json file from menu.
+        $('#json-button').on('click', function () {
+            var name = prompt('Please enter the file name');
+            if (name !== null) {
+                open_json_file(name);
+            }
         });
 
         $('div.dropdown-menu.add-info a').on('click', function () {
             if (add_mode === true) {
                 page_num++;
-                edit_mode = true;
                 var ty = $(this).attr('name');
                 init_edit_area(page_num, '', ty);
             }
         });
 
-        $('#json-button').on('click', function () {
-            num = 0;
-            $('#left_json').empty();
-            name = prompt('please enter the file name');
-            var data = JSON.stringify(name);
-            ajax_res(data);
-        });
-
-        // On loading page, retrieve list of theories from root file.
-        num_root = 0;
+        // On loading page, obtain list of theories.
         $.ajax({
             url: "/api/find_files",
-            success: function (r) {
+            success: function (res) {
                 $('#json-tab1').click();
-                file_list = r['theories'];
+                file_list = res.theories;
                 display_file_list();
             }
         });
@@ -1080,22 +1052,22 @@
         });
     }
 
-//  display_hilight;
-    function ajax_res(data) {
+    // Load json file from server and display the results.
+    function load_json_file(data) {
         $.ajax({
-            url: "/api/json",
+            url: "/api/load-json-file",
             type: "POST",
             data: data,
             success: function (result) {
-                var error = result['error'];
-                theory_name = result['data']['name'];
-                theory_imports = result['data']['imports'];
-                theory_desc = result['data']['description'];
+                theory_name = result.data.name;
+                theory_imports = result.data.imports;
+                theory_desc = result.data.description;
 
                 if (theory_name in result_list_dict) {
                     result_list = result_list_dict[theory_name];
-                } else
-                    result_list = result['data']['content'];
+                } else {
+                    result_list = result.data.content;
+                }
                 display_result_list();
             }
         });
