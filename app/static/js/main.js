@@ -858,9 +858,6 @@
             var m = 1;
             number = Number(number);
             if (number >0 && number < result_list.length ) {
-                if (result_list[number-1]['ty'] === "macro" ){
-                    m = 2;
-                }
                 var temp = result_list[number];
                 result_list[number] = result_list[number - m];
                 result_list[number-m] = temp;
@@ -875,9 +872,6 @@
             $.each(items_selected, function (i, v) {
                 var n = 1;
                 var temp = v;
-                if (result_list[Number(temp)-1]['ty'] === "macro" ){
-                    n = 2;
-                }
                 if(result_list[0]['ty'] === 'header'){
                     if (v > String(1)) {
                         items_selected[i] = String(Number(v) - n);
@@ -897,9 +891,6 @@
             var m = 1;
             number = Number(number);
             if (number >=0 && number < result_list.length) {
-                if (result_list[number+1]['ty'] === "macro" ){
-                    m = 2;
-                }
                 var temp = result_list[number];
                 result_list[number] = result_list[number + m];
                 result_list[number + m] = temp;
@@ -913,9 +904,6 @@
             for (let i = items_selected.length-1;i >= 0;i--) {
                 var temp = items_selected[i];
                 var n = 1;
-                if (result_list[Number(temp)+1]['ty'] === "macro" ){
-                    n = 2;
-                }
                 items_selected[i] = String(Number(temp) + n);
                 exchange_down(temp);
             }
@@ -1037,18 +1025,18 @@
         var import_str = theory_imports.join(' ');
         $('#left_json').html('');
         var templ = _.template($("#template-content-theory_desc").html());
-        $('#left_json').append(templ({theory_desc: theory_desc, import_str: import_str}));
+        $('#left_json').append(templ({
+            theory_desc: theory_desc, import_str: import_str
+        }));
         $.each(result_list, function(num, ext) {
             var class_item = '';
-            if (ext) {
-                if (items_selected.indexOf(String(num)) >= 0) {
-                    class_item = 'selected_item';
-                }
-                var templ = $("#template-content-" + ext.ty.replace(".", "-"));
-                if (templ.length == 1) {
-                    $('#left_json').append(_.template(templ.html())({num: num, ext: ext, class_item: class_item}));
-                }
+            if (items_selected.indexOf(String(num)) >= 0) {
+                class_item = 'selected_item';
             }
+            var templ = $("#template-content-" + ext.ty.replace(".", "-"));
+            $('#left_json').append(_.template(templ.html())({
+                num: num, ext: ext, class_item: class_item
+            }));
         });
     }
 
