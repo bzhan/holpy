@@ -33,11 +33,8 @@
             var templ_tab = _.template($("#template-tab").html());
             $('#codeTab').append(templ_tab({page_num: page_num, label: ""}));
 
-            let class_name = 'tab-pane fade active newCodeMirror code-cell';
-            if (page_num === 1)
-                class_name = 'tab-pane fade in active code-cell';
             $('#codeTabContent').append(
-                $(`<div class="${class_name}" id="code${page_num}-pan"><label for="code${page_num}"></label> <textarea id="code${page_num}"></textarea>${$('div.rbottom').append(
+                $(`<div class="tab-pane fade active code-cell" id="code${page_num}-pan"><label for="code${page_num}"></label> <textarea id="code${page_num}"></textarea>${$('div.rbottom').append(
                     '<div id="prf' + page_num + '" name="addition"><button id="' + proof_id + '" class="el-button el-button--default el-button--mini save_proof" style="margin-top:5px;width:100px;margin-left:25px;" name="save"' + theory_name + '><b>SAVE</b></button>' +
                     '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset' + theory_name + '"><b>RESET</b></button></div>')}`));
             init_editor("code" + page_num);
@@ -59,7 +56,7 @@
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
             $('div#prf' + page_num).show().siblings().hide();
-            $('.newCodeMirror').each(function () {
+            $('.code-cell').each(function () {
                 $(this).removeClass('active');
             });
         });
@@ -117,12 +114,8 @@
             var templ_tab = _.template($("#template-tab").html());
             $('#codeTab').append(templ_tab({page_num: add_page, label: "File"}));
 
-            let class_name = 'tab-pane fade active newCodeMirror code-cell';
-            if (add_page === 1)
-                class_name = 'tab-pane fade in active code-cell';
-
             var templ_form = _.template($('#template-file-metadata').html());
-            $('#codeTabContent').append(templ_form({class_name: class_name, add_page: add_page}));
+            $('#codeTabContent').append(templ_form({add_page: add_page}));
 
             $('div.rbottom').append(
                 '<div id="prf' + add_page + '" name="addition"><button id="' + add_page + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;margin-left:25px;" name="save-json"><b>SAVE</b></button>' +
@@ -130,7 +123,7 @@
             $('#codeTab a[href="#code' + add_page + '-pan"]').tab('show');
             $('div#prf' + add_page).addClass('selected').siblings().removeClass('selected');
             $('div#prf' + add_page).show().siblings().hide();
-            $('.newCodeMirror').each(function () {
+            $('.code-cell').each(function () {
                 $(this).removeClass('active');
             });
         }

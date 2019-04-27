@@ -485,9 +485,9 @@ function display(id) {
         editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
         edit_flag = false;
     });
-    $('div.tab-pane.selected div.CodeMirror-gutters').css('width', 32 + large_num * 3 + 'px');
+    $('div.code-cell.selected div.CodeMirror-gutters').css('width', 32 + large_num * 3 + 'px');
     $('div.CodeMirror-gutters').css('text-align', 'left');
-    $('div.tab-pane.selected div.CodeMirror-sizer').css('margin-left', 32 + large_num * 3 + 'px');
+    $('div.code-cell.selected div.CodeMirror-sizer').css('margin-left', 32 + large_num * 3 + 'px');
 }
 
 function match_thm_texts(method_name) {
