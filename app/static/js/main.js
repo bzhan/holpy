@@ -315,11 +315,8 @@
         $('#codeTab').on('shown.bs.tab', 'a', function (event) {
             if (document.querySelector('.code-cell.active textarea + .CodeMirror')) {
                 var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
-                var rtop = document.querySelector('.rtop');
                 editor.focus();
-                editor.setCursor(editor.lineCount(), Number.MAX_SAFE_INTEGER);
-                editor.setSize("auto", rtop.clientHeight - 40);
-                editor.refresh();
+                resize_editor();
             }
         });
 
@@ -1051,9 +1048,9 @@
                 }
             }
         });
-        var rtop = document.querySelector('.rtop');
-        editor.setSize("auto", rtop.clientHeight - 40);
         editor.setValue("");
+        resize_editor();
+
         cells[id] = {
             theory_name: theory_name,
             facts: new Set(),
