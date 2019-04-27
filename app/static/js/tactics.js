@@ -37,7 +37,10 @@ function display_running() {
     status_output.innerHTML = "Running";
 }
 
-// Display result returned from the server.
+// Display proof returned from the server.
+//
+// result: proof data returned from the server.
+// pre_line_no: line number for the sorry before the operation.
 function display_checked_proof(result, pre_line_no=0) {
     var status_output = get_selected_output();
 
@@ -263,11 +266,13 @@ function rewrite_goal(cm, is_others = false, select_thm = -1) {
     }
 }
 
+// Split off the first token according to the delimiter.
 function split_one(s, delimiter) {
     arr = s.split(delimiter);
     return [arr[0], arr.slice(1).join(delimiter)];
 }
 
+// Produce proof item from id and user-input string.
 function split_line(id, s) {
     var item = {};
     item.id = id
@@ -343,16 +348,9 @@ function match_thm() {
         type: "POST",
         data: JSON.stringify(data),
         success: function (result) {
-            var ctxt = result['ctxt'];
-            $('div#variable').html('');
-            for (let k in ctxt) {
-                var type = '';
-                $.each(ctxt[k], function (i, val) {
-                    type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
-                });
-                $('div#variable').append('<div id="ctxt" style="margin-left:10px;"><span><b>' + k + ' :: ' + type + '</b></span></div><br>');
-            }
-            $('li#json-tab3').click();
+            var templ_variable = _.template($('#template-variable').html());
+            $('div#variable').html(templ_variable({ctxt: result.ctxt}));
+
             clear_match_thm();
             display_match_thm(result);
         }

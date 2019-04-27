@@ -70,3 +70,16 @@
         </div>
     </div>
 </script>
+
+<script type="text/template" id="template-variable">
+    <%
+    $.each(ctxt, function(nm, T) {
+    %>
+        <div style="margin-left:10px;">
+            <span><b><%= nm %> :: <%= highlight_html(T) %></b></span>
+        </div
+        ><br>
+    <%
+    });
+    %>
+</script>

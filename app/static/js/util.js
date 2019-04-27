@@ -10,13 +10,13 @@ function rp(x) {
         return 'tvar';
 }
 
-// Display a list of (s, color) in html form.
-function high_light(list) {
-    var type = '';
-    $.each(list, function (i, val) {
-        type = type + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
+// Convert a list of (s, color) to html form.
+function highlight_html(lst) {
+    var output = '';
+    $.each(lst, function (i, val) {
+        output = output + '<tt class="' + rp(val[1]) + '">' + val[0] + '</tt>';
     });
-    return type
+    return output
 }
 
 // Return the status color of a theorem.

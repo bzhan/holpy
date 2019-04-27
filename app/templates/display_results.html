@@ -31,7 +31,7 @@
 <script type="text/template" id='template-content-def-ax'>
     <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>"><font color="#006000"><span name="constant"><b>constant </b></span></font>
         <tt><span name="name"><%= ext.name %></span> ::
-            <span name="content"><%= high_light(ext.type_hl) %></span></tt>&nbsp;&nbsp;&nbsp;
+            <span name="content"><%= highlight_html(ext.type_hl) %></span></tt>&nbsp;&nbsp;&nbsp;
         <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
     </p></div>
 </script>
@@ -42,7 +42,7 @@
         <span id="thm_name" name="name"><tt><%= ext.name %></tt></span>&nbsp;&nbsp;
         <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
         <br>&nbsp;&nbsp;
-        <span name="content"><%= high_light(ext.prop_hl) %></span>
+        <span name="content"><%= highlight_html(ext.prop_hl) %></span>
     </p></div>
 </script>
 
@@ -54,7 +54,7 @@
             <span id="thm_name" name="name"><tt><%= ext.name %></tt></span>:&nbsp;
             <a href="#" id="<%=num%>" name="proof">&nbsp;proof</a>&nbsp;&nbsp;
             <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
-            <br>&nbsp;&nbsp;<span name="content"><%= high_light(ext.prop_hl) %></span></p>
+            <br>&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span></p>
         </div>
     </div>
 </script>
@@ -71,7 +71,7 @@
             <%
                     $.each(v.args, function (k, val) {
             %>
-                        (<%= val %> :: <%= high_light(ext.argsT[i][k]) %>)
+                        (<%= val %> :: <%= highlight_html(ext.argsT[i][k]) %>)
             <%
                     });
                 });
@@ -84,8 +84,8 @@
 <script type="text/template" id="template-content-def">
     <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>">
         <span name="fun"><font color="#006000"><b>definition</b></font></span>
-        <span name="name"><%= ext.name %> :: <%= high_light(ext.type_hl) %></span><font color="#006000"><b> where</b>
-        <br>&nbsp;&nbsp;<span name="content"><%= high_light(ext.prop_hl) %></span></font>
+        <span name="name"><%= ext.name %> :: <%= highlight_html(ext.type_hl) %></span><font color="#006000"><b> where</b>
+        <br>&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span></font>
         &nbsp;&nbsp;&nbsp;
         <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
     </p></div>
@@ -94,13 +94,13 @@
 <script type="text/template" id="template-content-def-ind">
     <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>">
         <span name="fun"><font color="#006000"><b>fun</b></font></span>
-        <span name="name"><%= ext.name %> :: <%= high_light(ext.type_hl) %></span>
+        <span name="name"><%= ext.name %> :: <%= highlight_html(ext.type_hl) %></span>
         <font color="#006000"><b> where</b></font>
         <span name="content">
             <%
                 $.each(ext.rules, function(i, v) {
             %>
-                    <br>&nbsp;&nbsp; <%= high_light(v.prop_hl) %>
+                    <br>&nbsp;&nbsp; <%= highlight_html(v.prop_hl) %>
             <%
                 });
             %>
@@ -112,13 +112,13 @@
 <script type="text/template" id="template-content-def-pred">
     <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>">
         <span name="fun"><font color="#006000"><b>inductive</b></font></span>
-        <span name="name"><%= ext.name %> :: <%= high_light(ext.type_hl) %></span>
+        <span name="name"><%= ext.name %> :: <%= highlight_html(ext.type_hl) %></span>
         <font color="#006000"><b> where</b></font>
         <span name="content">
             <%
                 $.each(ext.rules, function(i, v) {
             %>
-                    <br>&nbsp;&nbsp; <%= high_light(v.prop_hl) %>
+                    <br>&nbsp;&nbsp; <%= highlight_html(v.prop_hl) %>
             <%
                 });
             %>
