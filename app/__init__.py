@@ -415,18 +415,15 @@ def match_thm():
         print_ctxt = {}
         for k, v in ctxt.items():
             print_ctxt[k] = printer.print_type(thy, v, highlight=True)
-        ths_rewrite = cell.rewrite_goal_thms(goal_id)
-        ths_abs = cell.apply_backward_step_thms(goal_id, prevs=facts_id)
-        ths_afs = cell.apply_forward_step_thms(goal_id, prevs=facts_id)
-        if ths_abs or ths_rewrite or ths_afs:
-            return jsonify({
-                'ths_abs': ths_abs,
-                'ths_afs': ths_afs,
-                'ths_rewrite': ths_rewrite,
-                'ctxt': print_ctxt
-            })
-        else:
-            return jsonify({'ctxt': print_ctxt})
+        rewrite_ths = cell.rewrite_goal_thms(goal_id)
+        backward_ths = cell.apply_backward_step_thms(goal_id, prevs=facts_id)
+        forward_ths = cell.apply_forward_step_thms(goal_id, prevs=facts_id)
+        return jsonify({
+            'backward': backward_ths,
+            'forward': forward_ths,
+            'rewrite': rewrite_ths,
+            'ctxt': print_ctxt
+        })
 
 
 # save the edited data to left-json for updating;

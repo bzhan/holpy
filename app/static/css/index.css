@@ -209,23 +209,7 @@ div.output-wrapper pre {
     cursor: pointer;
 }
 
-.match-thm .abs-thm > pre {
-    font-weight: bold;
-    font-size: 15px;
-    color: blue;
-    padding: 10px 0px 1px 39px;
-    cursor: default;
-}
-
-.match-thm .rewrite-thm > pre {
-    font-weight: bold;
-    font-size: 15px;
-    color: blue;
-    padding: 10px 0px 1px 39px;
-    cursor: default;
-}
-
-.match-thm .afs-thm > pre {
+.match-thm .match-thm-output > pre {
     font-weight: bold;
     font-size: 15px;
     color: blue;
@@ -243,15 +227,7 @@ div.output-wrapper pre {
     display: none;
 }
 
-.abs-thm {
-    float: left;
-}
-
-.rewrite-thm {
-    float: left;
-}
-
-.afs-thm {
+.match-thm-output {
     float: left;
 }
 

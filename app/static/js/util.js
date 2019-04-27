@@ -50,3 +50,22 @@ function display_facts_and_goal(cm) {
                     {css: 'background: yellow'});
     }
 }
+
+// Information for each kind of tactic
+tactic_info = {
+    'backward': {
+        title: 'Theorems: (Ctrl-B)',
+        other: 'Other backward step',
+        api: '/api/apply-backward-step'
+    },
+    'forward': {
+        title: 'Theorems: (Ctrl-F)',
+        other: 'Other forward step',
+        api: '/api/apply-forward-step'
+    },
+    'rewrite': {
+        title: 'Theorems: (Ctrl-R)',
+        other: 'Other rewrite goal',
+        api: '/api/rewrite-goal'
+    }
+}

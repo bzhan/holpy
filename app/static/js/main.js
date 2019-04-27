@@ -54,28 +54,12 @@
             });
         });
 
-        $('#right').on('click', '.backward-step', function () {
-            apply_backward_step(get_selected_editor(), is_others = true);
+        $('#right').on('click', '.other-step', function () {
+            apply_thm_tactic(select_thm = -1, func_name = this.name);
         });
 
-        $('#right').on('click', ' .abs-thm .thm-content pre', function () {
-            apply_backward_step(get_selected_editor(), is_others = false, select_thm = $(this).index());
-        });
-
-        $('#right').on('click', '.forward-step', function () {
-            apply_forward_step(get_selected_editor(), is_others = true);
-        });
-
-        $('#right').on('click', ' .afs-thm .thm-content pre', function () {
-            apply_forward_step(get_selected_editor(), is_others = false, select_thm = $(this).index());
-        });
-
-        $('#right').on('click', '.rewrite-goal', function () {
-            rewrite_goal(get_selected_editor(), is_others = true);
-        });
-
-        $('#right').on('click', ' .rewrite-thm .thm-content pre', function () {
-            rewrite_goal(get_selected_editor(), is_others = false, select_thm = $(this).index());
+        $('#right').on('click', '.thm-content pre', function () {
+            apply_thm_tactic(select_thm = $(this).index(), func_name = this.className);
         });
 
         $('#right').on('click', '#link-backward', function () {
@@ -367,7 +351,7 @@
         });
 
         $('#apply-backward-step').on("click", function () {
-            apply_backward_step(get_selected_editor());
+            apply_backward_step();
         });
 
         $('#apply-induction').on("click", function () {
@@ -375,7 +359,7 @@
         });
 
         $('#rewrite-goal').on("click", function () {
-            rewrite_goal(get_selected_editor());
+            rewrite_goal();
         });
 
         //click proof then send it to the init; including the save-json-file;
@@ -973,7 +957,6 @@
             type: "POST",
             data: data,
             success: function (result) {
-                clear_match_thm();
                 display_checked_proof(result);
                 display_instructions(r_data.instructions);
             }
@@ -1183,7 +1166,6 @@
                 cells[id].facts.add(line_num)
         }
         display_facts_and_goal(cm);
-        clear_match_thm();
     }
 
     function resize_editor() {

@@ -26,12 +26,6 @@ function get_selected_edit_form(name) {
     return document.querySelector('.code-cell.active form[name=' + name + ']');
 }
 
-function clear_match_thm() {
-    $('.match-thm .abs-thm').empty();
-    $('.match-thm .rewrite-thm').empty();
-    $('.match-thm .afs-thm').empty();
-}
-
 function display_running() {
     var status_output = get_selected_output();
     status_output.innerHTML = "Running";
@@ -167,10 +161,6 @@ function introduction(cm) {
     })
 }
 
-function apply_backward_step(cm, is_others = false, select_thm = -1) {
-    apply_f_or_b_step(cm, is_others, select_thm, 'abs')
-}
-
 function apply_induction(cm) {
     $(document).ready(function () {
         var line_no = cm.getCursor().line;
@@ -193,77 +183,6 @@ function apply_induction(cm) {
             }
         })
     })
-}
-
-function rewrite_goal(cm, is_others = false, select_thm = -1) {
-    var match_thm_list = get_match_thm('rewrite');
-    var theorem = '';
-    if (is_others)
-        match_thm_list = 0;
-    if (match_thm_list.length !== 0) {
-        let idx = select_thm !== -1 ? select_thm : 0;
-        theorem = match_thm_list[idx];
-    }
-    display_running();
-    var id = get_selected_id();
-    var line_no = cells[id].goal;
-    if (theorem === '') {
-        swal({
-            title: 'Enter rewrite theorem',
-            html:
-                '<input id="swal-input1" class="swal2-input">',
-            showCancelButton: true,
-            confirmButtonText: 'confirm',
-            showLoaderOnConfirm: true,
-            focusConfirm: false,
-            preConfirm: () => {
-                var input = {
-                    'id': id,
-                    'line_id': cells[id]['proof'][line_no]['id']
-                };
-                input['theorem'] = document.getElementById('swal-input1').value;
-                var data = JSON.stringify(input);
-                return fetch("/api/rewrite-goal", {
-                    method: 'POST',
-                    body: data,
-                    headers: {
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                    },
-                }).then(response => {
-                    if (!response.ok) {
-                        throw new Error(response.statusText)
-                    }
-                    return response.json()
-                }).catch(error => {
-                    swal.showValidationMessage(
-                        `Request failed: ${error}`
-                    )
-                })
-            },
-            allowOutsideClick: () => !swal.isLoading()
-        }).then((result) => {
-            if (result) {
-                display_checked_proof(result, line_no);
-            }
-        });
-    } else {
-        var data = {
-            'id': id,
-            'line_id': cells[id]['proof'][line_no]['id'],
-            'theorem': theorem
-        };
-        $.ajax({
-            url: "/api/rewrite-goal",
-            type: "POST",
-            data: JSON.stringify(data),
-            success: function (result) {
-                display_checked_proof(result, line_no);
-            }
-        })
-    }
 }
 
 // Split off the first token according to the delimiter.
@@ -323,7 +242,7 @@ function set_line(cm) {
     })
 }
 
-//match responding thms for backward;
+// Query the server to match theorems for each parameterized tactic
 function match_thm() {
     var id = get_selected_id();
     var goal = cells[id].goal;
@@ -351,7 +270,7 @@ function match_thm() {
             var templ_variable = _.template($('#template-variable').html());
             $('div#variable').html(templ_variable({ctxt: result.ctxt}));
 
-            clear_match_thm();
+            cells[id]['match-thm'] = result;
             display_match_thm(result);
         }
     });
@@ -488,89 +407,49 @@ function display(id) {
     $('div.code-cell.selected div.CodeMirror-sizer').css('margin-left', 32 + large_num * 3 + 'px');
 }
 
-function match_thm_texts(method_name) {
-    if (method_name === 'abs')
-        return ['Theorems: (Ctrl-B)', 'Other backward step', 'backward-step'];
-    else if (method_name === 'afs')
-        return ['Theorems: (Ctrl-F)', 'Other forward step', 'forward-step'];
-    else if (method_name === 'rewrite')
-        return ['Theorems: (Ctrl-R)', 'Other rewrite goal', 'rewrite-goal'];
-}
-
 function display_match_thm(result) {
+    $('div.rbottom .selected .match-thm').html('');
     var template_match_thm = _.template($("#template-match-thm").html());
-    if ('ths_abs' in result && result['ths_abs'].length !== 0) {
-        template_match_thm({
-            result: result['ths_abs'],
-            method_name: 'abs',
-            match_thm_texts: match_thm_texts('abs')
-        })
-    }
 
-    if ('ths_afs' in result && result['ths_afs'].length !== 0) {
-        template_match_thm({
-            result: result['ths_afs'],
-            method_name: 'afs',
-            match_thm_texts: match_thm_texts('afs')
-        })
-    }
-
-    if ('ths_rewrite' in result && result['ths_rewrite'].length !== 0) {
-        template_match_thm({
-            result: result['ths_rewrite'],
-            method_name: 'rewrite',
-            match_thm_texts: match_thm_texts('rewrite')
-        })
-    }
-}
-
-function get_match_thm(func_name) {
-    let match_thm_list = [];
-    func_name = '.' + func_name + '-thm';
-    let css_str = 'div.rbottom .selected ' + func_name + ' .thm-content pre';
-    $(css_str).each(function () {
-        match_thm_list.push($(this).text().split('  ')[0]);
+    $.each(tactic_info, function (key) {
+        if (result[key].length !== 0) {
+            $('div.rbottom .selected .match-thm').append(template_match_thm({
+                func_name: key,
+                result: result[key],
+            }));    
+        }
     });
-    return match_thm_list;
+    $('div.rbottom .selected .match-thm').append('<div class=clear></div>')
 }
 
-function apply_forward_step(cm, is_others = false, select_thm = -1) {
-    apply_f_or_b_step(cm, is_others, select_thm, 'afs');
-}
-
-function get_proof_api(func_name) {
-    let func_dict = {
-        'abs': '/api/apply-backward-step',
-        'afs': '/api/apply-forward-step'
-    };
-    return func_dict[func_name]
-}
-
-function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '') {
-    let api = get_proof_api(func_name);
+// Apply proof step parameterized by theorems.
+// select_thm: index of selected theorem, -1 for apply other theorem.
+function apply_thm_tactic(select_thm = -1, func_name = '') {
+    let api = tactic_info[func_name].api;
     if (api === undefined)
         return;
-    let match_thm_list = get_match_thm(func_name);
-    let title = '';
+
     let id = get_selected_id();
+    let match_thm_list = cells[id]['match-thm'][func_name];
     let facts = cells[id].facts;
     let line_no = cells[id].goal;
 
+    if (line_no === -1)
+        return;
+
+    if (match_thm_list.length === 0)
+        select_thm = -1
+
     // Obtain the list of fact_id separated by commas.
-    let fact_id = '';
-    if (line_no !== -1 && facts.size !== 0) {
-        facts.forEach(function (val) {
-            fact_id += cells[id]['proof'][val]['id'] + ', ';
-        });
-    }
-    fact_id = fact_id.slice(0, fact_id.length - 2);
+    facts_id = []
+    facts.forEach(function (val) {
+        facts_id.push(cells[id]['proof'][val]['id']);
+    });
+    fact_id = facts_id.join(', ');
     goal_id = cells[id]['proof'][line_no]['id']
 
-    if (is_others)
-        match_thm_list.length = 0;
-    if (match_thm_list.length !== 0) {
-        let idx = select_thm !== -1 ? select_thm : 0;
-        let theorem = match_thm_list[idx];
+    if (select_thm !== -1) {
+        var theorem = match_thm_list[select_thm][0];
         if (fact_id !== "") {
             theorem += ', ' + fact_id;
         }
@@ -584,17 +463,13 @@ function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '
             type: "POST",
             data: JSON.stringify(data),
             success: function (result) {
-                clear_match_thm();
                 display_checked_proof(result, line_no);
             }
         });
     } else {
-        if (line_no !== -1 && facts.size !== 0) {
-            title = 'Goal: ' + goal_id + '\nFacts: ' + fact_id;
-        } else if (line_no !== -1 && facts.size === 0) {
-            title = 'Goal: ' + goal_id;
-        } else {
-            title = 'Please enter the theorem used';
+        var title = 'Goal: ' + goal_id
+        if (facts.size !== 0) {
+            title = title + '\nFacts: ' + fact_id;
         }
         swal({
             title: title,
@@ -605,11 +480,9 @@ function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '
             focusConfirm: false,
             preConfirm: () => {
                 document.querySelector('#swal-input1').focus();
-                let theorem = '';
-                if (line_no !== -1 && facts.size !== 0) {
-                    theorem = document.getElementById('swal-input1').value + ', ' + fact_id;
-                } else if (line_no !== -1 && facts.size === 0) {
-                    theorem = document.getElementById('swal-input1').value;
+                var theorem = document.getElementById('swal-input1').value;
+                if (facts.size !== 0) {
+                    theorem = theorem + ', ' + fact_id;
                 }
                 var data = {
                     'id': id,
@@ -640,9 +513,20 @@ function apply_f_or_b_step(cm, is_others = false, select_thm = -1, func_name = '
                 () => !swal.isLoading()
         }).then((result) => {
             if (result) {
-                clear_match_thm();
                 display_checked_proof(result['value'], line_no);
             }
         })
     }
+}
+
+function apply_backward_step() {
+    apply_thm_tactic(0, 'backward')
+}
+
+function apply_forward_step() {
+    apply_thm_tactic(0, 'forward');
+}
+
+function rewrite_goal() {
+    apply_thm_tactic(0, 'rewrite');
 }
