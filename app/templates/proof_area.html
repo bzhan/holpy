@@ -1,0 +1,72 @@
+<script type="text/template" id='template-tab'>
+    <li class="nav-item" name="code<%=page_num%>">
+        <a class="nav-link" data-toggle="tab" href="#code<%=page_num%>-pan" name="<%=page_num%>">
+            <span><%=label%></span>
+            <button id="close_tab" type="button" title="Remove this page" name="proof-tab">×</button>
+        </a>
+    </li>
+</script>
+
+<script type="text/template" id="template-codepan">
+    <div class="tab-pane fade active code-cell" id="code<%=page_num%>-pan">
+        <label for="code<%=page_num%>"></label>
+        <textarea id="code<%=page_num%>"></textarea>
+    </div>
+</script>
+
+<script type="text/template" id="template-proof-rbottom">
+    <div id="prf<%=page_num%>" name="addition">
+        <button id="<%=proof_id%>" class="el-button el-button--default el-button--mini save_proof"
+                style="margin-top:5px;width:100px;margin-left:25px;" name="save<%=theory_name%>">
+            <b>SAVE</b>
+        </button>
+        <button id="<%=proof_id%>" class="el-button el-button--default el-button--mini reset"
+                style="margin-top:5px;width:100px;" name="reset<%=theory_name%>">
+            <b>RESET</b>
+        </button>
+        <div class="output-wrapper">
+            <div class="output">
+                <div class="output-area">
+                    <pre></pre>
+                </div>
+                <div class="match-thm">
+                    <div class="abs-thm"></div>
+                    <div class="rewrite-thm"></div>
+                    <div class="afs-thm"></div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+        <div class="output-wrapper">
+            <div class="output">
+                <div class="output-area">
+                    <a href="#" id="link-backward" style="float:left;"><</a>
+                    <pre id="instruction-number", style="float:left;"></pre>
+                    <a href="#" id="link-forward" style="float:left;">></a>
+                    <pre id="instruction" style="float:left;"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="template-metadata-rbottom">
+    <div id="prf<%=add_page%>" name="addition">
+        <button id="<%=add_page%>" class="el-button el-button--default el-button--mini"
+                style="margin-top:5px;width:100px;margin-left:25px;" name="save-json">
+            <b>SAVE</b>
+        </button>
+    </div>
+</script>
+
+<script type="text/template" id="template-edit-rbottom">
+    <div id="prf<%=page_num%>">
+        <button id="save-edit" name="<%=data_type%>"
+                class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;">
+            <b>SAVE</b>
+        </button>
+        <div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error<%=page_num%>">
+            <pre></pre>
+        </div>
+    </div>
+</script>

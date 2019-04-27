@@ -11,12 +11,13 @@
     var result_list_dict = {};
     var file_list = [];
     var add_mode = false;
-    var items_selected = [];//list of the id of bgcolor div
+    var items_selected = []; // List of selected items in the displayed theory.
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
     });
 
+    // Load html templates
     $(document).ready(function () {
         var includes = $('[data-include]');
         jQuery.each(includes, function () {
@@ -26,33 +27,25 @@
     });
 
     $(function () {
-//      click add_cell to add a tab page;
+        // Add new tab for editing proofs
         $('#add-cell').on('click', function () {
             page_num++;
-            // Add CodeMirror textarea;
+            // Add new tab
             var templ_tab = _.template($("#template-tab").html());
             $('#codeTab').append(templ_tab({page_num: page_num, label: ""}));
 
-            $('#codeTabContent').append(
-                $(`<div class="tab-pane fade active code-cell" id="code${page_num}-pan"><label for="code${page_num}"></label> <textarea id="code${page_num}"></textarea>${$('div.rbottom').append(
-                    '<div id="prf' + page_num + '" name="addition"><button id="' + proof_id + '" class="el-button el-button--default el-button--mini save_proof" style="margin-top:5px;width:100px;margin-left:25px;" name="save"' + theory_name + '><b>SAVE</b></button>' +
-                    '<button id="' + proof_id + '" class="el-button el-button--default el-button--mini reset" style="margin-top:5px;width:100px;" name="reset' + theory_name + '"><b>RESET</b></button></div>')}`));
+            // Add CodeMirror textarea
+            var templ_codepan = _.template($("#template-codepan").html());
+            $('#codeTabContent').append(templ_codepan({page_num: page_num}));
+
+            // Add buttons and location for displaying results
+            var templ_rbottom = _.template($("#template-proof-rbottom").html());
+            $('div.rbottom').append(templ_rbottom({
+                page_num: page_num, proof_id: proof_id, theory_name: theory_name
+            }));
+
             init_editor("code" + page_num);
-            // Add location for displaying results;
-            $('div#prf' + page_num).append(
-                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<pre> </pre></div><div class="match-thm"">' +
-                    '<div class="abs-thm"></div>' +
-                    '<div class="rewrite-thm"></div>' +
-                    '<div class="afs-thm"></div>' +
-                    '<div class="clear"></div>' +
-                    '</div></div>'));
-            $('div#prf' + page_num).append(
-                $('<div class="output-wrapper"><div class="output"><div class="output-area">' +
-                    '<a href="#" id="link-backward" style="float:left;"><</a>' +
-                    '<pre id="instruction-number", style="float:left;"> </pre>' +
-                    '<a href="#" id="link-forward" style="float:left;">></a>' +
-                    '<pre id="instruction" style="float:left;"> </pre></div></div>'));
+
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
             $('div#prf' + page_num).show().siblings().hide();
@@ -117,9 +110,9 @@
             var templ_form = _.template($('#template-file-metadata').html());
             $('#codeTabContent').append(templ_form({add_page: add_page}));
 
-            $('div.rbottom').append(
-                '<div id="prf' + add_page + '" name="addition"><button id="' + add_page + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:100px;margin-left:25px;" name="save-json"><b>SAVE</b></button>' +
-                '</div>');
+            var templ_rbottom = _.template($('#template-metadata-rbottom').html());
+            $('div.rbottom').append(templ_rbottom({add_page: add_page}));
+
             $('#codeTab a[href="#code' + add_page + '-pan"]').tab('show');
             $('div#prf' + add_page).addClass('selected').siblings().removeClass('selected');
             $('div#prf' + add_page).show().siblings().hide();
@@ -623,10 +616,10 @@
                 if (data_type !== 'def')
                     display_lines_number(page_num, number);
             }
-            $('div.rbottom').append('<div id="prf' + page_num + '"><button id="save-edit" name="' + data_type + '" class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;"><b>SAVE</b></button></div>');
-            $('div#prf' + page_num).append(
-                '<div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error' + page_num + '">' +
-                '<pre></pre></div>');
+
+            var templ_rbottom = _.template($('#template-edit-rbottom').html());
+            $('div.rbottom').append(templ_rbottom({page_num: page_num, data_type: data_type}));
+
             $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
             $('div#prf' + page_num).show().siblings().hide();
         }
