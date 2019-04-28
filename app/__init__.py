@@ -217,8 +217,15 @@ def apply_backward_step():
         theorem = data['theorem'].split(",")
         theorem, prevs = theorem[0], theorem[1:]
         prevs = [prev.strip() for prev in prevs]
-        cell.apply_backward_step(data['line_id'], theorem, prevs=prevs)
-        return jsonify(cell.json_data())
+        try:
+            cell.apply_backward_step(data['line_id'], theorem, prevs=prevs)
+            return jsonify(cell.json_data())
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+            return jsonify(error)
     return jsonify({})
 
 
@@ -230,8 +237,15 @@ def apply_forward_step():
         theorem = data['theorem'].split(",")
         theorem, prevs = theorem[0], theorem[1:]
         prevs = [prev.strip() for prev in prevs]
-        cell.apply_forward_step(data['line_id'], theorem, prevs=prevs)
-        return jsonify(cell.json_data())
+        try:
+            cell.apply_forward_step(data['line_id'], theorem, prevs=prevs)
+            return jsonify(cell.json_data())
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+            return jsonify(error)
     return jsonify({})
 
 
@@ -252,8 +266,15 @@ def rewrite_goal():
     if data:
         cell = cells[data['id']]
         theorem = data['theorem']
-        cell.rewrite_goal(data['line_id'], theorem)
-        return jsonify(cell.json_data())
+        try:
+            cell.rewrite_goal(data['line_id'], theorem)
+            return jsonify(cell.json_data())
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+            return jsonify(error)
     return jsonify({})
 
 
@@ -262,8 +283,8 @@ def set_line():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells[data['id']]
+        line_id = data['item']['id']
         try:
-            line_id = data['item']['id']
             item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(line_id), data['item'])
             cell.set_line(item.id, item.rule, args=item.args, prevs=item.prevs, th=item.th)
             return jsonify(cell.json_data())
@@ -272,7 +293,7 @@ def set_line():
                 "failed": e.__class__.__name__,
                 "message": str(e)
             }
-        return jsonify(error)
+            return jsonify(error)
 
 
 def print_extension(thy, ext):
@@ -434,20 +455,6 @@ def check_modify():
     return jsonify({'content': data['content'], 'error': error})
 
 
-# save the edited data to the json file;
-@app.route('/api/editor_file', methods=['PUT'])
-def save_edit():
-    data = json.loads(request.get_data().decode("utf-8"))
-    filename = data['name']
-    with open_file(filename, 'r') as f:
-        f_data = json.load(f)
-    f_data['content'] = data['data']
-    with open_file(filename, 'w') as j:
-        json.dump(f_data, j, indent=4, ensure_ascii=False, sort_keys=True)
-
-    return jsonify({})
-
-
 # Save metadata for an existing or new json file.
 @app.route('/api/save-metadata', methods=['PUT'])
 def save_metadata():
@@ -469,7 +476,7 @@ def save_metadata():
     return jsonify({})
 
 
-@app.route('/api/find_files', methods=['GET'])
+@app.route('/api/find-files', methods=['GET'])
 def find_files():
     """Find list of files in user's directory."""
     fileDir = './users/' + user_info['username']

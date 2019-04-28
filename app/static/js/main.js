@@ -297,27 +297,12 @@
         $('#left_json').on('click', 'a[name="proof"]', function (e) {
             e.stopPropagation();
             var item_id = $(this).parents().attr('item_id');
-            var cur_item = json_files[cur_theory_name].content[item_id];
-            var thm_name = cur_item.name;
-            if (cur_item.proof) {
-                init_proof_tab(cur_theory_name, item_id);
-                setTimeout(function () {
-                    $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    init_saved_proof(cur_theory_name, item_id);
-                }, 200);
-            } else {
-                init_proof_tab(cur_theory_name, item_id);
-                setTimeout(function () {
-                    $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    init_empty_proof(cur_theory_name, item_id);
-                }, 200);
-            }
+            init_proof_tab(cur_theory_name, item_id);
         });
 
         // Create editing area after clicking 'edit' link on the left side.
         $('#left_json').on('click', 'a[name="edit"]', function (e) {
             e.stopPropagation();
-            page_num++;
             var item_id = $(this).parents().attr('item_id');
             init_edit_area(page_num, item_id);
         });
@@ -361,6 +346,8 @@
         // number: if editing an existing item, id of the current item.
         // data_type: if adding a new item, type of the new item.
         function init_edit_area(page_num, number = '', data_type = '') {
+            page_num++;
+
             var data_name = '', data_content = '';
             if (!number) {
                 data_name = '', data_content = '';
@@ -783,7 +770,6 @@
 
         $('div.dropdown-menu.add-info a').on('click', function () {
             if (add_mode === true) {
-                page_num++;
                 var ty = $(this).attr('name');
                 init_edit_area(page_num, '', ty);
             }
@@ -791,7 +777,7 @@
 
         // On loading page, obtain list of theories.
         $.ajax({
-            url: "/api/find_files",
+            url: "/api/find-files",
             success: function (res) {
                 $('#json-tab1').click();
                 file_list = res.theories;
@@ -825,6 +811,15 @@
         $('.code-cell').each(function () {
             $(this).removeClass('active');
         });
+
+        var cur_item = json_files[theory_name].content[item_id];
+        var thm_name = cur_item.name;
+
+        $('#codeTab li[name="code' + page_num + '"] span').text(thm_name);
+        if (cur_item.proof)
+            init_saved_proof(theory_name, item_id);
+        else
+            init_empty_proof(theory_name, item_id);
     }
 
     function display_file_list() {
@@ -862,7 +857,7 @@
             type: "POST",
             data: JSON.stringify(data),
             success: function (result) {
-                display_checked_proof(result);
+                display_checked_proof(result, 0);
                 display_instructions(item.instructions);
             }
         });
@@ -884,7 +879,7 @@
             type: 'POST',
             data: JSON.stringify(data),
             success: function (result) {
-                display_checked_proof(result);
+                display_checked_proof(result, 0);
                 display_instructions(item.instructions);
             }
         })
@@ -952,6 +947,7 @@
             }
         });
         editor.setValue("");
+        $(editor.getTextArea().parentNode).addClass('selected').siblings().removeClass('selected');
         resize_editor(editor);
 
         cells[id] = {
@@ -998,11 +994,8 @@
             }
         });
 
-        editor.on("focus", function (cm, event) {
-            $('#codeTabContent .code-cell').each(function () {
-                $(this).removeClass('selected');
-            });
-            $(cm.getTextArea().parentNode).addClass('selected');
+        editor.on("focus", function (cm) {
+            $(cm.getTextArea().parentNode).addClass('selected').siblings().removeClass('selected');
         });
 
         editor.on("cursorActivity", function (cm) {

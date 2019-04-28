@@ -35,20 +35,21 @@ function display_running() {
 //
 // result: proof data returned from the server.
 // pre_line_no: line number for the sorry before the operation.
-function display_checked_proof(result, pre_line_no=0) {
+function display_checked_proof(result, pre_line_no) {
     var status_output = get_selected_output();
+    var id = get_selected_id();
 
     if ("failed" in result) {
         status_output.innerHTML = result["failed"] + ": " + result["message"];
         status_output.style.color = 'red';
     } else {
-        edit_flag = true;
-        let id = get_selected_id();
         cells[id].edit_line_number = -1;
         cells[id]['proof'] = result['proof'];
         var editor = get_selected_editor();
         editor.startOperation();
+        edit_flag = true;
         display(id);
+        edit_flag = false;
         editor.endOperation();
         var num_gaps = result["report"]["num_gaps"];
         cells[id]['num_gaps'] = num_gaps;
@@ -335,7 +336,6 @@ function display_line(id, line_no) {
     var line = cells[id]['proof'][line_no];
     var ch = 0;
 
-    edit_flag = true;
     // Display id in bold
     var str_temp = ''
     for (var i = 0; i < line.id.length; i++) {
@@ -375,15 +375,12 @@ function display_line(id, line_no) {
         }
     }
     get_selected_editor().execCommand("goDocEnd");
-    edit_flag = false;
 }
 
 // Display the given content in the textarea with the given id.
 function display(id) {
     var editor = get_selected_editor();
-    edit_flag = true;
     editor.setValue('');
-    edit_flag = false;
     var proof = cells[id]['proof'];
     editor.setOption('lineNumberFormatter', function (line_no) {
         if (line_no < proof.length) {
@@ -398,10 +395,8 @@ function display(id) {
         if (id_len >= large_num)
             large_num = id_len;
         display_line(id, line_no);
-        edit_flag = true;
         var len = editor.getLineHandle(line_no).text.length;
         editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
-        edit_flag = false;
     });
     $('div.code-cell.selected div.CodeMirror-gutters').css('width', 32 + large_num * 3 + 'px');
     $('div.CodeMirror-gutters').css('text-align', 'left');
@@ -479,6 +474,7 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
             confirmButtonText: 'confirm',
             showLoaderOnConfirm: true,
             focusConfirm: false,
+            allowOutsideClick: () => !swal.isLoading(),
             preConfirm: () => {
                 document.querySelector('#swal-input1').focus();
                 var theorem = document.getElementById('swal-input1').value;
@@ -490,31 +486,21 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
                     'line_id': goal_id,
                     'theorem': theorem,
                 };
-                return fetch(api, {
-                        method: 'POST', // or 'PUT'
-                        body: JSON.stringify(data),
-                        headers: {
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json',
-                            },
-                        },
+                return $.ajax({
+                    url: api,
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    success: function (result) {
+                        if ('failed' in result)
+                            swal.showValidationMessage('Request failed: ' + result['failed'])
+                        else
+                            return result
                     }
-                ).then(response => {
-                    if (!response.ok) {
-                        throw new Error(response.statusText)
-                    }
-                    return response.json()
-                })
-                    .catch(error => {
-                        swal.showValidationMessage(`Request failed: ${error}`)
-                    })
-            },
-            allowOutsideClick:
-                () => !swal.isLoading()
+                });
+            }
         }).then((result) => {
             if (result) {
-                display_checked_proof(result['value'], line_no);
+                display_checked_proof(result.value, line_no);
             }
         })
     }
