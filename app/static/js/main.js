@@ -82,35 +82,37 @@
             }
         });
 
-        $('#add-json').click(function () {
+        // Add new json file.
+        $('#new-file').click(function () {
             page_num++;
             init_metadata_area(page_num);
         });
 
-        function init_metadata_area(add_page) {
+        // Initialize form for editing metadata.
+        function init_metadata_area(page_num) {
             var templ_tab = _.template($("#template-tab").html());
-            $('#codeTab').append(templ_tab({page_num: add_page, label: "File"}));
+            $('#codeTab').append(templ_tab({page_num: page_num, label: "File"}));
 
             var templ_form = _.template($('#template-file-metadata').html());
-            $('#codeTabContent').append(templ_form({add_page: add_page}));
+            $('#codeTabContent').append(templ_form({page_num: page_num}));
 
             var templ_rbottom = _.template($('#template-metadata-rbottom').html());
-            $('div.rbottom').append(templ_rbottom({add_page: add_page}));
+            $('div.rbottom').append(templ_rbottom({page_num: page_num}));
 
-            $('#codeTab a[href="#code' + add_page + '-pan"]').tab('show');
-            $('div#prf' + add_page).addClass('selected').siblings().removeClass('selected');
-            $('div#prf' + add_page).show().siblings().hide();
+            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+            $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
+            $('div#prf' + page_num).show().siblings().hide();
             $('.code-cell').each(function () {
                 $(this).removeClass('active');
             });
         }
 
-//      click save to create and save json_file metadata;
-        $('div.rbottom').on('click', 'button[name="save-json"]', function () {
-            var pnum = $(this).attr('id');
-            var fname = $('#fname' + pnum).val().trim();
-            var imp = $('#imp' + pnum).val().split(',');
-            var des = $('#code' + pnum).val().trim();
+        // Save metadata for json file.
+        $('div.rbottom').on('click', 'button[name="save-metadata"]', function () {
+            var form = get_selected_edit_form('edit-form');
+            var fname = form.fname.value.trim();
+            var imports = form.imports.value.split(',');
+            var description = form.description.value.trim();
             var flag = false;
             $.each(file_list, function (i, v) {
                 if (v === fname)
@@ -121,15 +123,15 @@
             file_list.sort();
             data = {
                 'name': fname,
-                'imports': imp,
-                'description': des
+                'imports': imports,
+                'description': description
             };
             $.ajax({
-                url: '/api/add-new',
+                url: '/api/save-metadata',
                 type: 'PUT',
                 data: JSON.stringify(data),
-                success: function (res) {
-                    alert('保存成功!');
+                success: function () {
+                    alert('Saved file ' + fname);
                     display_file_list();
                 }
             })
@@ -166,7 +168,7 @@
 
         // Edit metadata for a file
         $('div#root-file').on('click', 'a[name="edit"]', function () {
-            // File's id is "edit[n]"
+            // File's id is "edit{n}"
             var number = Number($(this).attr('id').slice(4,).trim());
 
             page_num++;
@@ -174,13 +176,14 @@
             init_metadata_area(page_num);
             var form = document.getElementById('edit-metadata-form' + page_num);
             $.ajax({
-                url: '/api/edit_jsonFile',
+                url: '/api/get-metadata',
                 data: data,
                 type: 'POST',
                 success: function (res) {
                     form.fname.value = res.name;
                     form.imports.value = res.imports.join(',');
                     form.description.textContent = res.description;
+                    form.description.rows = 5;
                 }
             })
         });
@@ -190,17 +193,8 @@
             var json_name = $(this).attr('class');
             file_list.splice(number, 1);
             display_file_list();
-            save_file_list(json_name);
+            remove_file(json_name);
         });
-
-        $('button#register').click(function () {
-            $.ajax({
-                url: '/api/register',
-                type: 'GET',
-                success: function () {
-                }
-            })
-        })
 
         // Save a single proof to the webpage (not to the json file);
         $('div.rbottom').on('click', 'button.save_proof', function () {
@@ -283,7 +277,7 @@
                 }
             };
             $.ajax({
-                url: "/api/save_file",
+                url: "/api/save-file",
                 type: "POST",
                 data: JSON.stringify(data),
                 success: function () {
@@ -359,11 +353,10 @@
             rewrite_goal();
         });
 
-        //click proof then send it to the init; including the save-json-file;
+        // Initialize proof after clicking 'proof' link on the left side.
         $('#left_json').on('click', 'a[name="proof"]', function (e) {
             e.stopPropagation();
             proof_id = $(this).attr('id');
-            eidt_mode = false;
             var thm_name = $(this).parent().find('span#thm_name').text();
             if (result_list[proof_id]['proof']) {
                 $('#add-cell').click();
@@ -380,25 +373,15 @@
             }
         });
 
-//      click edit then create a tab page for the editing;
-        $('#left_json').on('click', 'a[name="edit"]', function (s) {
-            s.stopPropagation();
+        // Create editing area after clicking 'edit' link on the left side.
+        $('#left_json').on('click', 'a[name="edit"]', function (e) {
+            e.stopPropagation();
             page_num++;
             var a_ele = $(this);
             init_edit_area(page_num, a_ele);
         });
 
-//      click delete then delete the content from webpage;
-        $('#left_json').on('click', 'a[name="del"]', function () {
-            var a_id = $(this).attr('id').trim();
-            var number = Number(a_id.slice(5,));
-            result_list.splice(number, 1);
-            display_result_list();
-            save_editor_data();
-            alert('删除成功！');
-        });
-
-//      keypress to display unicode;
+        // Use tab key to insert unicode characters.
         $('#codeTabContent').on('keydown', '.unicode-replace', function (e) {
             var content = $(this).val().trim();
             var id = $(this).attr('id');
@@ -424,8 +407,8 @@
             }
         });
 
-//      set the textarea height auto; press tab display unicode;
-        $('#codeTabContent').on('input', 'textarea', function () {
+        // Auto-adjust number of rows for a textarea.
+        $('#codeTabContent').on('input', 'textarea.adjust-rows', function () {
             var rows = $(this).val().split('\n').length;
             $(this).attr('rows', rows);
         });
@@ -548,9 +531,12 @@
                     var ext = result_list[number];
                     var vars = '';
                     var templ_edit = _.template($('#template-edit-def').html());
+                    var ext_output = "";
+                    if ('ext' in ext) {
+                        ext_output = ext.ext.join('\n');
+                    }
                     $('#codeTabContent').append(templ_edit({
-                        page_num: page_num, type_name: type_name,
-                        ext_output: ext.ext.join('\n')
+                        page_num: page_num, type_name: type_name, ext_output: ext_output
                     }));
                     var form = document.getElementById('edit-def-form' + page_num);
                     data_name = ext.name + ' :: ' + ext.type;
@@ -630,13 +616,13 @@
 
 //      click save button on edit tab to save content to the left-json for updating;
         $('div.rbottom').on('click', 'button#save-edit', function () {
-            var edit_form = get_selected_edit_form('edit-form');
+            var form = get_selected_edit_form('edit-form');
             var tab_pm = $(this).parent().attr('id').slice(3,);
             var error_id = $(this).next().attr('id').trim();
             var id = tab_pm;
             var ty = $(this).attr('name').trim();
-            var number = edit_form.number.value;
-            var ajax_data = make_data(edit_form, ty, id, number);
+            var number = form.number.value;
+            var ajax_data = make_data(form, ty, id, number);
             var prev_list = result_list.slice(0, number);
             ajax_data['file-name'] = theory_name;
             ajax_data['prev-list'] = prev_list;
@@ -926,13 +912,13 @@
         });
     }
 
-    function save_file_list(file_name) {
+    function remove_file(file_name) {
         $.ajax({
-            url: '/api/save_file_list',
+            url: '/api/remove-file',
             data: JSON.stringify(file_name),
             type: 'PUT',
             success: function (res) {
-                alert('删除成功！');
+                alert('Removed file ' + file_name);
             }
         })
     }
@@ -1049,7 +1035,7 @@
             }
         });
         editor.setValue("");
-        resize_editor();
+        resize_editor(editor);
 
         cells[id] = {
             theory_name: theory_name,
@@ -1165,8 +1151,10 @@
         display_facts_and_goal(cm);
     }
 
-    function resize_editor() {
-        var editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+    function resize_editor(editor) {
+        if (editor === undefined) {
+            editor = document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
+        }
         var rtop = document.querySelector('.rtop');
         editor.setSize("auto", rtop.clientHeight - 40);
         editor.refresh();

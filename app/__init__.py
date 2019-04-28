@@ -6,15 +6,11 @@ import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 from kernel.type import HOLType
-from kernel.term import Term
-from kernel.thm import primitive_deriv
-from kernel import extension
 from syntax import parser, printer
 from server.tactic import ProofState
 from logic import basic
 from logic import induct
 from kernel.extension import AxType, AxConstant, Theorem
-from syntax import settings
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 app = Flask(__name__, static_url_path='/static')
@@ -32,15 +28,14 @@ user_info = {
     # Name of the user signed in
     'username': "",
 
-    # Current list of files
+    # List of files in user's directory
     'file_list': []
 }
 
-# templates
+# Templates
 @app.route('/display_results.html', methods = ['GET'])
 def display_results_template():
     return render_template('display_results.html')
-
 
 @app.route('/edit_area.html', methods = ['GET'])
 def edit_area_template():
@@ -51,51 +46,46 @@ def proof_area_template():
     return render_template('proof_area.html')
 
 
-# init page of HOL
+# Login page
 @app.route('/', methods = ['GET', 'POST'])
 def index():
     return render_template('login.html')
 
-
-# sign out;
-@app.route('/sign', methods=['get'])
-def sign():
+# Sign out
+@app.route('/sign-out', methods=['get'])
+def sign_out():
     user_info['is_signed_in'] = False
     return redirect('/')
 
-
-# register page;
+# Register page
 @app.route('/register', methods = ['GET'])
-def re():
+def register():
     return render_template('register.html')
 
-
-# error for same name;
-@app.route('/register_error', methods = ['GET'])
-def regi_err():
+# Error for user already exists
+@app.route('/register-error', methods = ['GET'])
+def register_error():
     return render_template('register.html', info = 'User already exists')
 
-
-@app.route('/login_error', methods = ['GET', 'POST'])
-def login_err():
+# Error for incorrect username or password
+@app.route('/login-error', methods = ['GET', 'POST'])
+def login_error():
     return render_template('login.html', info = 'Incorrect username or password')
 
-
-# register page for new user;
+# Register new user
 @app.route('/register_login', methods = ['POST'])
 def register_login():
     username = request.form.get('name')
     password = request.form.get('password')
-    for k in match_user():
+    for k in get_users():
         if username == k[1]:
-            return redirect('register_error')
+            return redirect('register-error')
     if username and password:
         add_user(username, password)
 
     return redirect('/')
 
-
-#load the page of HOL with username
+# Load main page for the given user
 @app.route('/load', methods = ['GET'])
 def load():
     if not user_info['is_signed_in']:
@@ -105,6 +95,7 @@ def load():
 
 
 def add_user(username, password):
+    """Add new user to the database."""
     DATABASE = os.getcwd() + '/users/user.db'
 
     conn = sqlite3.connect(DATABASE)
@@ -114,9 +105,8 @@ def add_user(username, password):
     conn.commit()
     conn.close()
 
-
-# init database to create table users;
 def init_user():
+    """Create users table."""
     DATABASE = os.getcwd() + '/users/user.db'
 
     conn = sqlite3.connect(DATABASE)
@@ -126,9 +116,8 @@ def init_user():
     conn.commit()
     conn.close()
 
-
-# match the user-info in the database;
-def match_user():
+def get_users():
+    """Get list of username-password from the database."""
     DATABASE = os.getcwd() + '/users/user.db'
 
     conn = sqlite3.connect(DATABASE)
@@ -141,14 +130,13 @@ def match_user():
 
     return results
 
-
-# login for user;
+# Login for user
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     username = request.form.get('name')
     password = request.form.get('password')
     user_path = os.path.abspath('..') + '/holpy/users/' + username
-    for k in match_user():
+    for k in get_users():
         if username == k[1] and password == str(k[2]):
             user_info['is_signed_in'] = True
             user_info['username'] = username
@@ -158,7 +146,7 @@ def login():
 
             return redirect('/load')
 
-    return redirect('login_error')
+    return redirect('login-error')
 
 
 @app.route('/api/init-empty-proof', methods=['POST'])
@@ -215,13 +203,9 @@ def remove_line():
 def introduction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))
-        len_before = len(cell.prf.items)
-        cell.introduction(data['line_id'], data.get('var_name'))
-        line_diff = (len(cell.prf.items) - len_before) / 2
-        result = cell.json_data()
-        result["line-diff"] = line_diff
-        return jsonify(result)
+        cell = cells[data['id']]
+        cell.introduction(data['line_id'], data['var_name'])
+        return jsonify(cell.json_data())
     return jsonify({})
 
 
@@ -229,12 +213,24 @@ def introduction():
 def apply_backward_step():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data['id'])
+        cell = cells[data['id']]
         theorem = data['theorem'].split(",")
         theorem, prevs = theorem[0], theorem[1:]
-        if prevs:
-            prevs = [prev.strip() for prev in prevs]
+        prevs = [prev.strip() for prev in prevs]
         cell.apply_backward_step(data['line_id'], theorem, prevs=prevs)
+        return jsonify(cell.json_data())
+    return jsonify({})
+
+
+@app.route('/api/apply-forward-step', methods=['POST'])
+def apply_forward_step():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells[data['id']]
+        theorem = data['theorem'].split(",")
+        theorem, prevs = theorem[0], theorem[1:]
+        prevs = [prev.strip() for prev in prevs]
+        cell.apply_forward_step(data['line_id'], theorem, prevs=prevs)
         return jsonify(cell.json_data())
     return jsonify({})
 
@@ -243,8 +239,8 @@ def apply_backward_step():
 def apply_induction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))
-        theorem, var = data.get('theorem').split(",")
+        cell = cells[data['id']]
+        theorem, var = data['theorem'].split(",")
         cell.apply_induction(data['line_id'], theorem, var)
         return jsonify(cell.json_data())
     return jsonify({})
@@ -254,8 +250,8 @@ def apply_induction():
 def rewrite_goal():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data.get('id'))
-        theorem = data.get('theorem')
+        cell = cells[data['id']]
+        theorem = data['theorem']
         cell.rewrite_goal(data['line_id'], theorem)
         return jsonify(cell.json_data())
     return jsonify({})
@@ -265,7 +261,7 @@ def rewrite_goal():
 def set_line():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells.get(data['id'])
+        cell = cells[data['id']]
         try:
             line_id = data['item']['id']
             item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(line_id), data['item'])
@@ -361,11 +357,16 @@ def file_data_to_output(thy, data):
         pass
 
 
+def open_file(filename, mode):
+    """Open json file for the current user and given filename, and mode."""
+    return open('users/' + user_info['username'] + '/' + filename + '.json', mode, encoding='utf-8')
+
+
+# Loads json file for the given user and file name.
 @app.route('/api/load-json-file', methods=['POST'])
 def load_json_file():
-    """Loads json file for the given user and file name."""
-    file_name = json.loads(request.get_data().decode("utf-8"))
-    with open('users/' + user_info['username'] + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
+    filename = json.loads(request.get_data().decode("utf-8"))
+    with open_file(filename, 'r') as f:
         f_data = json.load(f)
     if 'content' in f_data:
         thy = basic.loadImportedTheory(f_data['imports'], user=user_info['username'])
@@ -376,33 +377,18 @@ def load_json_file():
     return jsonify({'data': f_data})
 
 
-# add-button to add data-info;
-@app.route('/api/add-info', methods=['POST'])
-def json_add_info():
+@app.route('/api/save-file', methods=['POST'])
+def save_file():
+    """Save given data to file."""
     data = json.loads(request.get_data().decode("utf-8"))
 
-    thy = basic.loadTheory(data['theory_name'], user=user_info['username'])
-    item = data['item']
-    file_data_to_output(thy, item)
-
-    return jsonify({'data': item})
-
-
-# save the related data to json file;
-@app.route('/api/save_file', methods=['POST'])
-def save_file():
-    json_data = json.loads(request.get_data().decode("utf-8"))
-
-    data = json_data['data']
-    file_name = json_data['name']
-
-    with open('users/' + user_info['username'] + '/' + file_name + '.json', 'w+', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
+    with open_file(data['name'], 'w+') as f:
+        json.dump(data['data'], f, indent=4, ensure_ascii=False, sort_keys=True)
 
     return jsonify({})
 
 
-@app.route('/api/match_thm', methods=['POST'])
+@app.route('/api/match-thm', methods=['POST'])
 def match_thm():
     """Match for hints to backward, forward, and rewrite steps."""
     data = json.loads(request.get_data().decode("utf-8"))
@@ -411,13 +397,12 @@ def match_thm():
         cell = cells[data['id']]
         facts_id = data['facts_id']
         goal_id = data['goal_id']
-        ctxt = cell.get_ctxt(goal_id)
-        print_ctxt = {}
-        for k, v in ctxt.items():
-            print_ctxt[k] = printer.print_type(thy, v, highlight=True)
-        rewrite_ths = cell.rewrite_goal_thms(goal_id)
         backward_ths = cell.apply_backward_step_thms(goal_id, prevs=facts_id)
         forward_ths = cell.apply_forward_step_thms(goal_id, prevs=facts_id)
+        rewrite_ths = cell.rewrite_goal_thms(goal_id)
+        ctxt = cell.get_ctxt(goal_id)
+        print_ctxt = dict((k, printer.print_type(thy, v, highlight=True))
+                          for k, v in ctxt.items())
         return jsonify({
             'backward': backward_ths,
             'forward': forward_ths,
@@ -426,12 +411,12 @@ def match_thm():
         })
 
 
-# save the edited data to left-json for updating;
 @app.route('/api/save_modify', methods=['POST'])
 def save_modify():
+    """Check an edited item for validity."""
     data = json.loads(request.get_data().decode("utf-8"))
     error = {}
-    with open('users/' + user_info['username'] + '/' + data['file-name'] + '.json', 'r', encoding='utf-8') as f:
+    with open_file(data['file-name'], 'r') as f:
         f_data = json.load(f)
     try:
         thy = basic.loadImportedTheory(f_data['imports'], user_info['username'])
@@ -453,88 +438,71 @@ def save_modify():
 @app.route('/api/editor_file', methods=['PUT'])
 def save_edit():
     data = json.loads(request.get_data().decode("utf-8"))
-    file_name = data['name']
-    username = user_info['username']
-    with open('users/' + username + '/' + file_name + '.json', 'r', encoding='utf-8') as file:
-        f_data = json.load(file)
+    filename = data['name']
+    with open_file(filename, 'r') as f:
+        f_data = json.load(f)
     f_data['content'] = data['data']
-    j = open('users/' + username + '/' + file_name + '.json', 'w', encoding='utf-8')
-    json.dump(f_data, j, indent=4, ensure_ascii=False, sort_keys=True)
-    j.close()
+    with open_file(filename, 'w') as j:
+        json.dump(f_data, j, indent=4, ensure_ascii=False, sort_keys=True)
 
     return jsonify({})
 
 
-# create new json file;
-@app.route('/api/add-new', methods=['PUT'])
-def add_new():
+# Save metadata for an existing or new json file.
+@app.route('/api/save-metadata', methods=['PUT'])
+def save_metadata():
     data = json.loads(request.get_data().decode("utf-8"))
     file_name = data['name']
-    username = user_info['username']
     if file_name in user_info['file_list']:
-        with open('users/' + username + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
+        # Existing file
+        with open_file(file_name, 'r') as f:
             file_data = json.load(f)
             for key in data.keys():
                 file_data[key] = data[key]
-            f.close()
-        with open('users/' + username + '/' + file_name + '.json', 'w', encoding='utf-8') as f:
+        with open_file(file_name, 'w') as f:
             json.dump(file_data, f, ensure_ascii=False, indent=4)
     else:
-        with open('users/' + username + '/' + file_name + '.json', 'w', encoding='utf-8') as f:
+        # New file
+        with open_file(file_name, 'w') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
-            f.close()
 
     return jsonify({})
 
 
-# locate the files in the library;
 @app.route('/api/find_files', methods=['GET'])
 def find_files():
+    """Find list of files in user's directory."""
     fileDir = os.path.abspath('..') + '/holpy/users/' + user_info['username']
-    for i in os.walk(fileDir):
-        files = [x[:-5] for x in i[2]]
-        if files:
-            user_info['file_list'] = sorted(files)
-            return jsonify({'theories': sorted(files)})
+    files = []
+    for f in os.listdir(fileDir):
+        if f.endswith('.json'):
+            files.append(f[:-5])
 
-    return jsonify({})
+    user_info['file_list'] = sorted(files)
+    return jsonify({'theories': user_info['file_list']})
 
 
-# get the metadata of the json-file;
-@app.route('/api/edit_jsonFile', methods=['POST'])
-def edit_jsonFile():
+@app.route('/api/get-metadata', methods=['POST'])
+def get_metadata():
+    """Get metadata for the json file."""
     content = {}
-    file_name = json.loads(request.get_data().decode('utf-8'))
+    filename = json.loads(request.get_data().decode('utf-8'))
     username = user_info['username']
-    with open('users/' + username + '/' + file_name + '.json', 'r', encoding='utf-8') as f:
+    with open_file(filename, 'r') as f:
         file_data = json.load(f)
     content['description'] = file_data['description']
     content['imports'] = file_data['imports']
-    content['name'] = file_name
+    content['name'] = filename
 
     return jsonify(content)
 
 
-# save the file_list
-@app.route('/api/save_file_list', methods=['PUT'])
-def save_file_list():
-    file_name = json.loads(request.get_data().decode('utf-8'))
-    fileDir = os.path.abspath('..') + '/holpy/users/' + user_info['username'] + '/' + file_name + '.json'
-    user_info['file_list'].remove(file_name)
+@app.route('/api/remove-file', methods=['PUT'])
+def remove_file():
+    """Remove file with the given name."""
+    filename = json.loads(request.get_data().decode('utf-8'))
+    fileDir = os.path.abspath('..') + '/holpy/users/' + user_info['username'] + '/' + filename + '.json'
+    user_info['file_list'].remove(filename)
     os.remove(fileDir)
 
-    return jsonify({})
-
-
-@app.route('/api/apply-forward-step', methods=['POST'])
-def apply_forward_step():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells.get(data['id'])
-        theorem = data['theorem'].split(",")
-        theorem, prevs = theorem[0], theorem[1:]
-        if prevs:
-            prevs = [prev.strip() for prev in prevs]
-        cell.apply_forward_step(data['line_id'], theorem, prevs=prevs)
-        return jsonify(cell.json_data())
     return jsonify({})

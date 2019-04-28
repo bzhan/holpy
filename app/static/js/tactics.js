@@ -263,14 +263,14 @@ function match_thm() {
         'theory_name': cells[id].theory_name
     };
     $.ajax({
-        url: "/api/match_thm",
+        url: "/api/match-thm",
         type: "POST",
         data: JSON.stringify(data),
         success: function (result) {
             var templ_variable = _.template($('#template-variable').html());
             $('div#variable').html(templ_variable({ctxt: result.ctxt}));
 
-            cells[id]['match-thm'] = result;
+            cells[id]['match_thm'] = result;
             display_match_thm(result);
         }
     });
@@ -430,7 +430,7 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
         return;
 
     let id = get_selected_id();
-    let match_thm_list = cells[id]['match-thm'][func_name];
+    let match_thm_list = cells[id]['match_thm'][func_name];
     let facts = cells[id].facts;
     let line_no = cells[id].goal;
 

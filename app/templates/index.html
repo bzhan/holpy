@@ -99,7 +99,7 @@
             </div>
         </div>
         <div>
-            <button class="el-button el-button--mini" id="add-json">New File</button>
+            <button class="el-button el-button--mini" id="new-file">New File</button>
         </div>
         <div class="dropdown">
             <button type="button" id="additional_option" data-toggle="dropdown"
@@ -115,7 +115,7 @@
         </div>
     </div>
     <p class="login-user">{{ user }}&nbsp;
-        <a href="{{ url_for('sign') }}" id="sign-out"
+        <a href="{{ url_for('sign_out') }}" id="sign-out"
            onclick="javascript:location.replace('sign'); event.returnValue=false;">
            sign out
         </a>
