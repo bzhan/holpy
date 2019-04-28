@@ -10,25 +10,18 @@ function get_selected_editor() {
     return document.querySelector('.code-cell.selected textarea + .CodeMirror').CodeMirror;
 }
 
-function get_selected_output() {
-    return document.querySelector('.rbottom .selected .output pre');
-}
-
-function get_selected_instruction() {
-    return document.querySelector('.rbottom .selected .output #instruction');
-}
-
-function get_selected_instruction_number() {
-    return document.querySelector('.rbottom .selected .output #instruction-number');
-}
-
 function get_selected_edit_form(name) {
     return document.querySelector('.code-cell.active form[name=' + name + ']');
 }
 
+function display_status(status, color='') {
+    var status_output = document.querySelector('.rbottom .selected .output pre');
+    status_output.innerHTML = status;
+    status_output.style.color = color;
+}
+
 function display_running() {
-    var status_output = get_selected_output();
-    status_output.innerHTML = "Running";
+    display_status('Running');
 }
 
 // Display proof returned from the server.
@@ -36,12 +29,10 @@ function display_running() {
 // result: proof data returned from the server.
 // pre_line_no: line number for the sorry before the operation.
 function display_checked_proof(result, pre_line_no) {
-    var status_output = get_selected_output();
     var id = get_selected_id();
 
     if ("failed" in result) {
-        status_output.innerHTML = result["failed"] + ": " + result["message"];
-        status_output.style.color = 'red';
+        display_status(result["failed"] + ": " + result["message"], 'red');
     } else {
         cells[id].edit_line_number = -1;
         cells[id]['proof'] = result['proof'];
@@ -53,11 +44,10 @@ function display_checked_proof(result, pre_line_no) {
         editor.endOperation();
         var num_gaps = result["report"]["num_gaps"];
         cells[id]['num_gaps'] = num_gaps;
-        status_output.style.color = '';
         if (num_gaps > 0) {
-            status_output.innerHTML = "OK. " + num_gaps + " gap(s) remaining."
+            display_status("OK. " + num_gaps + " gap(s) remaining.");
         } else {
-            status_output.innerHTML = "OK. Proof complete!"
+            display_status("OK. Proof complete!");
         }
 
         var line_count = editor.lineCount();
@@ -83,11 +73,12 @@ function display_checked_proof(result, pre_line_no) {
     }
 }
 
-function display_instructions(instructions) {
-    var instr_output = get_selected_instruction();
-    instr_output.innerHTML = instructions[0];
-    var instr_no_output = get_selected_instruction_number();
-    instr_no_output.innerHTML = '1/' + instructions.length;
+function display_instructions() {
+    var id = get_selected_id();
+    var instr_output = document.querySelector('.rbottom .selected .output #instruction');
+    instr_output.innerHTML = cells[id].instructions[cells[id].index];
+    var instr_no_output = document.querySelector('.rbottom .selected .output #instruction-number');
+    instr_no_output.innerHTML = (cells[id].index + 1) + '/' + cells[id].instructions.length;
 }
 
 function add_line_after(cm) {

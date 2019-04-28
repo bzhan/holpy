@@ -1,13 +1,11 @@
 (function ($) {
     var selected_tab = 'files';   // Selected tab on the left side.
     var page_num = 0;   // Number of tabs opened on the right side.
-    var instructions = [];
-    var index = 0;
-    var click_count = 0;
     var cur_theory_name = "";  // Name of the current theory file.
     var json_files = {};  // All loaded theory data.
     var file_list = [];  // List of all files for the current user.
     var items_selected = [];  // List of selected items in the displayed theory.
+    var click_count = 0;
 
     $(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -28,22 +26,18 @@
         });
 
         $('#right').on('click', '#link-backward', function () {
-            if (index > 0) {
-                index--;
-                var instr_output = get_selected_instruction();
-                instr_output.innerHTML = instructions[index];
-                var instr_no_output = get_selected_instruction_number();
-                instr_no_output.innerHTML = (index + 1) + '/' + instructions.length;
+            var cell = cells[get_selected_id()];
+            if (cell.index > 0) {
+                cell.index--;
+                display_instructions();
             }
         });
 
         $('#right').on('click', '#link-forward', function () {
-            if (index < instructions.length - 1) {
-                index++;
-                var instr_output = get_selected_instruction();
-                instr_output.innerHTML = instructions[index];
-                var instr_no_output = get_selected_instruction_number();
-                instr_no_output.innerHTML = (index + 1) + '/' + instructions.length;
+            var cell = cells[get_selected_id()];
+            if (cell.index < cell.instructions.length - 1) {
+                cell.index++;
+                display_instructions();
             }
         });
 
@@ -152,7 +146,7 @@
             init_empty_proof(file_name, item_id);
         });
 
-//      click the tab to show;
+        // Click a tab to show.
         $('#codeTab').on("click", "a", function (e) {
             e.preventDefault();
             var tab_pm = $(this).attr('name');
@@ -161,8 +155,8 @@
             $('div#prf' + tab_pm).show().siblings().hide();
         });
 
-//      set cursor & size;
-        $('#codeTab').on('shown.bs.tab', 'a', function (event) {
+        // Set cursor & size.
+        $('#codeTab').on('shown.bs.tab', 'a', function () {
             if (document.querySelector('.code-cell.active textarea + .CodeMirror')) {
                 var editor = document.querySelector('.code-cell.active textarea + .CodeMirror').CodeMirror;
                 editor.focus();
@@ -170,7 +164,7 @@
             }
         });
 
-//      click x on the tab to close and delete the related tab page;
+        // Delete a tab.
         $('#codeTab').on('click', 'li button', function () {
             var tabId = $(this).parents('li').children('a').attr('href');
             if ($(this).attr('name') === 'code' + tab_pm)
@@ -183,10 +177,6 @@
             $('#codeTab a:first').tab('show');
             $('div.rbottom div:eq(0)').addClass('selected').siblings().removeClass('selected');
             $('div.rbottom div:eq(0)').show().siblings().hide();
-        });
-
-        $('#delete-cell').on('click', function () {
-            $('.code-cell.selected').remove();
         });
 
         $('#introduction').on("click", function () {
@@ -360,6 +350,7 @@
             }
         });
 
+        // Add new item from menu.
         $('div.dropdown-menu.add-info a').on('click', function () {
             if (selected_tab === 'content') {
                 var ty = $(this).attr('name');
@@ -801,14 +792,15 @@
             init_empty_proof(theory_name, item_id);
     }
 
+    // Display list of files.
     function display_file_list() {
         $(function () {
-            $('#panel-files').html('');
             var templ = _.template($("#template-file-list").html());
-            $('#panel-files').append(templ({file_list: file_list}));    
+            $('#panel-files').html(templ({file_list: file_list}));    
         });
     }
 
+    // Remove given file from directory.
     function remove_file(file_name) {
         $.ajax({
             url: '/api/remove-file',
@@ -837,7 +829,10 @@
             data: JSON.stringify(data),
             success: function (result) {
                 display_checked_proof(result, 0);
-                display_instructions(item.instructions);
+                var id = get_selected_id();
+                cells[id].instructions = item.instructions;
+                cells[id].index = 0;
+                display_instructions();
             }
         });
     }
@@ -859,7 +854,10 @@
             data: JSON.stringify(data),
             success: function (result) {
                 display_checked_proof(result, 0);
-                display_instructions(item.instructions);
+                var id = get_selected_id();
+                cells[id].instructions = item.instructions;
+                cells[id].index = 0;
+                display_instructions();
             }
         })
     }
