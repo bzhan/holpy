@@ -29,38 +29,37 @@
 </script>
 
 <script type="text/template" id='template-content-def-ax'>
-    <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>"><font color="#006000"><span name="constant"><b>constant </b></span></font>
+    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
+        <font color="#006000"><span name="constant"><b>constant </b></span></font>
         <tt><span name="name"><%= ext.name %></span> ::
             <span name="content"><%= highlight_html(ext.type_hl) %></span></tt>&nbsp;&nbsp;&nbsp;
-        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
-    </p></div>
+        <a href="#" name="edit" item_id="<%=num%>"><b>edit</b></a>
+    </div>
 </script>
 
 <script type="text/template" id='template-content-thm-ax'>
-    <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>">
+    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <span name="theorem"><font color="#006000"><b>axiom</b></font></span>
         <span id="thm_name" name="name"><tt><%= ext.name %></tt></span>&nbsp;&nbsp;
-        <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
+        <a href="#" name="edit"><b>edit</b></a>
         <br>&nbsp;&nbsp;
         <span name="content"><%= highlight_html(ext.prop_hl) %></span>
-    </p></div>
+    </div>
 </script>
 
 <script type="text/template" id='template-content-thm'>
-    <div>
-        <div style="float:left;width: 12px; height: 12px; background: <%= get_status_color(ext) %>;">&nbsp;</div>
-        <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>">
-            <span name="theorem"><font color="#006000"><b>theorem</b></font></span>
-            <span id="thm_name" name="name"><tt><%= ext.name %></tt></span>:&nbsp;
-            <a href="#" id="<%=num%>" name="proof">&nbsp;proof</a>&nbsp;&nbsp;
-            <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
-            <br>&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span></p>
-        </div>
+    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
+        <span style="float:left;width: 12px; height: 12px; background: <%= get_status_color(ext) %>;">&nbsp;</span>
+        <span name="theorem"><font color="#006000"><b>theorem</b></font></span>
+        <span name="name"><tt><%= ext.name %></tt></span>:&nbsp;
+        <a href="#" name="proof">&nbsp;proof</a>&nbsp;&nbsp;
+        <a href="#" name="edit"><b>edit</b></a>
+        <br>&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span>
     </div>
 </script>
 
 <script type="text/template" id='template-content-type-ind'>
-    <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>">
+    <div name="theories" item_id="<%=num%>" class="<%=class_item%>" style="margin-bottom:10pt">
         <span name="datatype"><font color="#006000"><b>datatype</b></font></span>
         <span name="name"><%= ext.name %></span> =
         <span name="content">
@@ -78,21 +77,21 @@
             %>
         </span>&nbsp;&nbsp;&nbsp;
         <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
-    </p></div>
+    </div>
 </script>
 
 <script type="text/template" id="template-content-def">
-    <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>">
+    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <span name="fun"><font color="#006000"><b>definition</b></font></span>
         <span name="name"><%= ext.name %> :: <%= highlight_html(ext.type_hl) %></span><font color="#006000"><b> where</b>
         <br>&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span></font>
         &nbsp;&nbsp;&nbsp;
         <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
-    </p></div>
+    </div>
 </script>
 
 <script type="text/template" id="template-content-def-ind">
-    <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>">
+    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <span name="fun"><font color="#006000"><b>fun</b></font></span>
         <span name="name"><%= ext.name %> :: <%= highlight_html(ext.type_hl) %></span>
         <font color="#006000"><b> where</b></font>
@@ -106,11 +105,11 @@
             %>
         </span>&nbsp;&nbsp;&nbsp;
         <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
-    </p></div>
+    </div>
 </script>
 
 <script type="text/template" id="template-content-def-pred">
-    <div name="theories" id="aa-<%=num%>" class="<%=class_item%>"><p id="data-<%=num%>">
+    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <span name="fun"><font color="#006000"><b>inductive</b></font></span>
         <span name="name"><%= ext.name %> :: <%= highlight_html(ext.type_hl) %></span>
         <font color="#006000"><b> where</b></font>
@@ -124,19 +123,19 @@
             %>
         </span>&nbsp;&nbsp;&nbsp;
         <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
-    </p></div>
+    </div>
 </script>
 
 <script type="text/template" id="template-content-header">
-    <div id="aa-<%=num%>"><p id="data-<%=num%>">
+    <div item_id="<%=num%>" class="<%=class_item%>">
         <span id="head_name" name="name"><%= ext.name %></span>&nbsp;&nbsp;
         <a href="#" name="edit" id="data-<%=num%>"><b>edit</b></a>
-    </p></div>
+    </div>
 </script>
 
 <script type="text/template" id="template-content-macro">
-    <div id="aa-<%=num%>"><p id="data-<%=num%>">
+    <div item_id="<%=num%>" class="<%=class_item%>">
         <span name="macro"><font color="#006000"><b>macro</b></font></span>
         <span name="name"><%= ext.name %></span>
-    </p></div>
+    </div>
 </script>

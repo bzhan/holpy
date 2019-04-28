@@ -33,21 +33,21 @@ user_info = {
 }
 
 # Templates
-@app.route('/display_results.html', methods = ['GET'])
+@app.route('/display_results.html', methods=['GET'])
 def display_results_template():
     return render_template('display_results.html')
 
-@app.route('/edit_area.html', methods = ['GET'])
+@app.route('/edit_area.html', methods=['GET'])
 def edit_area_template():
     return render_template('edit_area.html')
 
-@app.route('/proof_area.html', methods = ['GET'])
+@app.route('/proof_area.html', methods=['GET'])
 def proof_area_template():
     return render_template('proof_area.html')
 
 
 # Login page
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('login.html')
 
@@ -58,22 +58,22 @@ def sign_out():
     return redirect('/')
 
 # Register page
-@app.route('/register', methods = ['GET'])
+@app.route('/register', methods=['GET'])
 def register():
     return render_template('register.html')
 
 # Error for user already exists
-@app.route('/register-error', methods = ['GET'])
+@app.route('/register-error', methods=['GET'])
 def register_error():
-    return render_template('register.html', info = 'User already exists')
+    return render_template('register.html', info='User already exists')
 
 # Error for incorrect username or password
-@app.route('/login-error', methods = ['GET', 'POST'])
+@app.route('/login-error', methods=['GET', 'POST'])
 def login_error():
-    return render_template('login.html', info = 'Incorrect username or password')
+    return render_template('login.html', info='Incorrect username or password')
 
 # Register new user
-@app.route('/register_login', methods = ['POST'])
+@app.route('/register_login', methods=['POST'])
 def register_login():
     username = request.form.get('name')
     password = request.form.get('password')
@@ -86,12 +86,12 @@ def register_login():
     return redirect('/')
 
 # Load main page for the given user
-@app.route('/load', methods = ['GET'])
+@app.route('/load', methods=['GET'])
 def load():
     if not user_info['is_signed_in']:
         return redirect('/')
 
-    return render_template('index.html', user = user_info['username'])
+    return render_template('index.html', user=user_info['username'])
 
 
 def add_user(username, password):
@@ -131,18 +131,18 @@ def get_users():
     return results
 
 # Login for user
-@app.route('/login', methods = ['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     username = request.form.get('name')
     password = request.form.get('password')
-    user_path = os.path.abspath('..') + '/holpy/users/' + username
+    user_path = './users/' + username
     for k in get_users():
         if username == k[1] and password == str(k[2]):
             user_info['is_signed_in'] = True
             user_info['username'] = username
-            user_list = os.listdir(os.path.abspath('..') + '/holpy/users')
+            user_list = os.listdir('./users')
             if username not in user_list:
-                shutil.copytree(os.path.abspath('..') + '/holpy/library', user_path)
+                shutil.copytree('./library', user_path)
 
             return redirect('/load')
 
@@ -383,7 +383,7 @@ def save_file():
     data = json.loads(request.get_data().decode("utf-8"))
 
     with open_file(data['name'], 'w+') as f:
-        json.dump(data['data'], f, indent=4, ensure_ascii=False, sort_keys=True)
+        json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
 
     return jsonify({})
 
@@ -411,27 +411,27 @@ def match_thm():
         })
 
 
-@app.route('/api/save_modify', methods=['POST'])
-def save_modify():
-    """Check an edited item for validity."""
+@app.route('/api/check-modify', methods=['POST'])
+def check_modify():
+    """Check a modified item for validity."""
     data = json.loads(request.get_data().decode("utf-8"))
     error = {}
-    with open_file(data['file-name'], 'r') as f:
+    with open_file(data['file_name'], 'r') as f:
         f_data = json.load(f)
     try:
         thy = basic.loadImportedTheory(f_data['imports'], user_info['username'])
-        for d in data['prev-list']:
+        for d in data['prev_list']:
             parser.parse_extension(thy, d)
-        file_data_to_output(thy, data)
+        file_data_to_output(thy, data['content'])
     except Exception as e:
         exc_detailed = traceback2.format_exc()
-        error = {
+        return jsonify({
             "failed": e.__class__.__name__,
             "message": str(e),
-            "detail-content": exc_detailed
-        }
+            "detail_content": exc_detailed
+        })
 
-    return jsonify({'data': data, 'error': error})
+    return jsonify({'content': data['content'], 'error': error})
 
 
 # save the edited data to the json file;
@@ -472,7 +472,7 @@ def save_metadata():
 @app.route('/api/find_files', methods=['GET'])
 def find_files():
     """Find list of files in user's directory."""
-    fileDir = os.path.abspath('..') + '/holpy/users/' + user_info['username']
+    fileDir = './users/' + user_info['username']
     files = []
     for f in os.listdir(fileDir):
         if f.endswith('.json'):
@@ -501,7 +501,7 @@ def get_metadata():
 def remove_file():
     """Remove file with the given name."""
     filename = json.loads(request.get_data().decode('utf-8'))
-    fileDir = os.path.abspath('..') + '/holpy/users/' + user_info['username'] + '/' + filename + '.json'
+    fileDir = './users/' + user_info['username'] + '/' + filename + '.json'
     user_info['file_list'].remove(filename)
     os.remove(fileDir)
 

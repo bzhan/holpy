@@ -285,3 +285,7 @@ textarea {
 .form-check-label{
     width: 50px;
 }
+
+.theory_item {
+    margin-bottom: 15px;
+}

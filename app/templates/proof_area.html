@@ -16,12 +16,14 @@
 
 <script type="text/template" id="template-proof-rbottom">
     <div id="prf<%=page_num%>" name="addition">
-        <button id="<%=proof_id%>" class="el-button el-button--default el-button--mini save_proof"
-                style="margin-top:5px;width:100px;margin-left:25px;" name="save<%=theory_name%>">
+        <button class="el-button el-button--mini save_proof"
+                style="margin-top:5px;width:100px;margin-left:25px;"
+                theory_name="<%=theory_name%>" item_id="<%=item_id%>">
             <b>SAVE</b>
         </button>
-        <button id="<%=proof_id%>" class="el-button el-button--default el-button--mini reset"
-                style="margin-top:5px;width:100px;" name="reset<%=theory_name%>">
+        <button class="el-button el-button--mini reset"
+                style="margin-top:5px;width:100px;"
+                theory_name="<%=theory_name%>" item_id="<%=item_id%>">
             <b>RESET</b>
         </button>
         <div class="output-wrapper">
@@ -57,8 +59,8 @@
 
 <script type="text/template" id="template-edit-rbottom">
     <div id="prf<%=page_num%>">
-        <button id="save-edit" name="<%=data_type%>"
-                class="el-button el-button--default el-button--mini" style="margin-top:5px;width:20%;">
+        <button data_type="<%=data_type%>" theory_name="<%=theory_name%>"
+                class="el-button el-button--mini save-edit" style="margin-top:5px;width:20%;">
             <b>SAVE</b>
         </button>
         <div class="output-wrapper" style="margin-top:15px;margin-left:40px;" id="error<%=page_num%>">

@@ -143,6 +143,7 @@ function introduction(cm) {
         var input = {
             "id": id,
             "line_id": cells[id]['proof'][line_no]['id'],
+            "var_name": ""
         };
 
         if (line.indexOf("have ∀") !== -1 || line.indexOf("show ∀") !== -1) {

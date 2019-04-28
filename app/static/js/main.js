@@ -2,16 +2,12 @@
     var instructions = [];
     var page_num = 0;
     var index = 0;
-    var theory_name = "";  // Name of the current theory file
-    var theory_imports = [];  // List of imports of the current theory file
-    var result_list = [];  // Content of the current theory file
-    var theory_desc = "";  // Description of the theory
+    var cur_theory_name = "";  // Name of the current theory file
     var click_count = 0;
-    var proof_id = 0;
-    var result_list_dict = {};
-    var file_list = [];
+    var json_files = {};
+    var file_list = [];  // List of all files for the current user
     var add_mode = false;
-    var items_selected = []; // List of selected items in the displayed theory.
+    var items_selected = [];  // List of selected items in the displayed theory
 
     $(document).ready(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -27,33 +23,6 @@
     });
 
     $(function () {
-        // Add new tab for editing proofs
-        $('#add-cell').on('click', function () {
-            page_num++;
-            // Add new tab
-            var templ_tab = _.template($("#template-tab").html());
-            $('#codeTab').append(templ_tab({page_num: page_num, label: ""}));
-
-            // Add CodeMirror textarea
-            var templ_codepan = _.template($("#template-codepan").html());
-            $('#codeTabContent').append(templ_codepan({page_num: page_num}));
-
-            // Add buttons and location for displaying results
-            var templ_rbottom = _.template($("#template-proof-rbottom").html());
-            $('div.rbottom').append(templ_rbottom({
-                page_num: page_num, proof_id: proof_id, theory_name: theory_name
-            }));
-
-            init_editor("code" + page_num);
-
-            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-            $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
-            $('div#prf' + page_num).show().siblings().hide();
-            $('.code-cell').each(function () {
-                $(this).removeClass('active');
-            });
-        });
-
         $('#right').on('click', '.other-step', function () {
             apply_thm_tactic(select_thm = -1, func_name = this.name);
         });
@@ -196,31 +165,31 @@
             remove_file(json_name);
         });
 
-        // Save a single proof to the webpage (not to the json file);
+        // Save a single proof.
         $('div.rbottom').on('click', 'button.save_proof', function () {
-            var file_name = $(this).attr('name').slice(4,);
+            var filename = $(this).attr('theory_name');
+            var item_id = $(this).attr('item_id');
             var editor_id = get_selected_id();
-            var id = Number($(this).attr('id'));
-            var proof = cells[editor_id]['proof'];
+            var proof = cells[editor_id].proof;
             var output_proof = [];
-            $.each(proof, function (i) {
-                output_proof.push({});
-                $.extend(output_proof[i], proof[i]);  // perform copy
-                output_proof[i]['th'] = output_proof[i]['th_raw'];
-                output_proof[i]['th_raw'] = undefined;
-                output_proof[i]['args'] = output_proof[i]['args_raw'];
-                output_proof[i]['args_raw'] = undefined;
+            $.each(proof, function (i, prf) {
+                output_proof.push($.extend(true, {}, prf));  // perform deep copy
+                output_proof[i].th = output_proof[i].th_raw;
+                delete output_proof[i].th_raw;
+                output_proof[i].args = output_proof[i].args_raw;
+                delete output_proof[i].args_raw;
             });
-            result_list[id]['proof'] = output_proof;
-            result_list[id]['num_gaps'] = cells[editor_id]['num_gaps'];
-            result_list_dict[file_name] = result_list;
-            display_result_list();
-            save_json_file();
+            json_files[filename].content[item_id].proof = output_proof;
+            json_files[filename].content[item_id].num_gaps = cells[editor_id].num_gaps;
+            if (cur_theory_name === filename) {
+                display_theory_items();
+            }
+            save_json_file(filename);
         });
 
         // Convert items in the theory from json format for the web client
         // back to the json format for the file.
-        function result_to_output(data) {
+        function item_to_output(data) {
             if (data.ty === 'def.ax') {
                 delete data.type_hl;
             } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
@@ -240,60 +209,31 @@
             }
         }
 
-//      save all of the edited_tab_data to the json-file;
-        function save_editor_data() {
-            var copy_res = $.extend(true, [], result_list);
-            display_result_list();
-            $.each(copy_res, function (i, v) {
-                result_to_output(v);
-            });
-            $.ajax({
-                url: '/api/editor_file',
-                type: 'PUT',
-                data: JSON.stringify({
-                    'name': name,
-                    'data': copy_res
-                }),
-                success: function () {
-                }
-            })
-        }
-
         // Save all changed proof on the webpage to the json-file;
-        function save_json_file() {
-            var output_list = [];
-            for (var d in result_list) {
-                output_list[d] = {};
-                $.extend(output_list[d], result_list[d]);  // perform copy
-                result_to_output(output_list[d]);
-            }
+        function save_json_file(filename) {
+            var content = [];
+            $.each(json_files[filename].content, function (i, item) {
+                content.push($.extend(true, {}, item));  // perform deep copy
+                item_to_output(content[i]);
+            });
             var data = {
-                'name': name,
-                'data': {
-                    'name': theory_name,
-                    'imports': theory_imports,
-                    'description': theory_desc,
-                    'content': output_list
-                }
+                name: filename,
+                imports: json_files[filename].imports,
+                description: json_files[filename].description,
+                content: content
             };
             $.ajax({
                 url: "/api/save-file",
                 type: "POST",
                 data: JSON.stringify(data),
-                success: function () {
-                }
             });
         }
 
-        //click reset button to reset the thm to the origin status;
+        // Reset proof to original status.
         $('div.rbottom').on('click', 'button.reset', function () {
-            var id = Number($(this).attr('id'));
-            var file_name = $(this).attr('name').slice(5,);
-            if (file_name) {
-                get_selected_editor().reset = true;
-                init_empty_proof(file_name, id);
-                get_selected_editor().reset = false;
-            }
+            var item_id = $(this).attr('item_id');
+            var file_name = $(this).attr('theory_name');
+            init_empty_proof(file_name, item_id);
         });
 
 //      click the tab to show;
@@ -356,19 +296,20 @@
         // Initialize proof after clicking 'proof' link on the left side.
         $('#left_json').on('click', 'a[name="proof"]', function (e) {
             e.stopPropagation();
-            proof_id = $(this).attr('id');
-            var thm_name = $(this).parent().find('span#thm_name').text();
-            if (result_list[proof_id]['proof']) {
-                $('#add-cell').click();
+            var item_id = $(this).parents().attr('item_id');
+            var cur_item = json_files[cur_theory_name].content[item_id];
+            var thm_name = cur_item.name;
+            if (cur_item.proof) {
+                init_proof_tab(cur_theory_name, item_id);
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    init_saved_proof(theory_name, proof_id);
+                    init_saved_proof(cur_theory_name, item_id);
                 }, 200);
             } else {
-                $('#add-cell').click();
+                init_proof_tab(cur_theory_name, item_id);
                 setTimeout(function () {
                     $('#codeTab li[name="' + get_selected_id() + '"] span').text(thm_name);
-                    init_empty_proof(theory_name, proof_id);
+                    init_empty_proof(cur_theory_name, item_id);
                 }, 200);
             }
         });
@@ -377,8 +318,8 @@
         $('#left_json').on('click', 'a[name="edit"]', function (e) {
             e.stopPropagation();
             page_num++;
-            var a_ele = $(this);
-            init_edit_area(page_num, a_ele);
+            var item_id = $(this).parents().attr('item_id');
+            init_edit_area(page_num, item_id);
         });
 
         // Use tab key to insert unicode characters.
@@ -417,16 +358,16 @@
         // creating a new item.
         // 
         // page_num: index of the current tab.
-        // a_ele: if editing an existing item, id of the current item.
+        // number: if editing an existing item, id of the current item.
         // data_type: if adding a new item, type of the new item.
-        function init_edit_area(page_num, a_ele = '', data_type = '') {
+        function init_edit_area(page_num, number = '', data_type = '') {
             var data_name = '', data_content = '';
-            if (!a_ele) {
-                data_name = '', data_content = '', number = '';
+            if (!number) {
+                data_name = '', data_content = '';
             } else {
-                number = String(Number(a_ele.attr('id').trim().slice(5,)));
-                data_name = result_list[number]['name'];
-                data_type = result_list[number]['ty'];
+                var item = json_files[cur_theory_name].content[number];
+                var data_name = item.name;
+                var data_type = item.ty;
             }
 
             var templ_tab = _.template($("#template-tab").html());
@@ -434,7 +375,7 @@
 
             if (data_type === 'def.ax') {
                 if (number)
-                    data_content = result_list[number]['type'];
+                    data_content = item.type;
                 else
                     $('#codeTab').find('span#' + page_num).text('constant');
                 var templ_edit = _.template($("#template-edit-def-ax").html());
@@ -460,18 +401,18 @@
                 if (number) {
                     form.number.value = number;
                     form.name.value = data_name;
-                    form.prop.value = result_list[number].prop;
+                    form.prop.value = item.prop;
                     vars_lines = []
-                    $.each(result_list[number].vars, function (nm, T) {
+                    $.each(item.vars, function (nm, T) {
                         vars_lines.push(nm + ' :: ' + T);
                     });
                     form.vars.rows = vars_lines.length;
                     form.vars.value = vars_lines.join('\n');
-                    if (result_list[number].hint_backward === 'true')
+                    if (item.hint_backward === 'true')
                         form.hint_backward.checked = true;
-                    if (result_list[number].hint_forward === 'true')
+                    if (item.hint_forward === 'true')
                         form.hint_forward.checked = true;
-                    if (result_list[number].hint_rewrite === 'true')
+                    if (item.hint_rewrite === 'true')
                         form.hint_rewrite.checked = true;
                 }
                 else {
@@ -481,15 +422,15 @@
             }
             if (data_type === 'type.ind') {
                 if (number) {
-                    var ext = result_list[number]['ext'];
-                    var argsT = result_list[number]['argsT'];
-                    var data_name = result_list[number].name;
+                    var ext = item.ext;
+                    var argsT = item.argsT;
+                    var data_name = item.name;
                     var templ_edit = _.template($('#template-edit-type-ind').html());
                     $('#codeTabContent').append(templ_edit({
                         page_num: page_num, ext_output: ext.join('\n')
                     }));
                     var form = document.getElementById('edit-type-form' + page_num);
-                    $.each(result_list[number]['constrs'], function (i, v) {
+                    $.each(item.constrs, function (i, v) {
                         var str_temp_var = '';
                         $.each(v.args, function (k, val) {
                             var str_temp_term = '';
@@ -502,7 +443,7 @@
                     })
                 } else
                     $('#codeTab').find('span#' + page_num).text('datatype');
-                data_content = $.trim(data_content);
+                data_content = data_content.trim();
                 var i = data_content.split('\n').length;
                 $('#codeTab').find('span#' + page_num).text(data_name);
 
@@ -528,33 +469,32 @@
                     var type_name = 'definition'
 
                 if (number) {
-                    var ext = result_list[number];
                     var vars = '';
                     var templ_edit = _.template($('#template-edit-def').html());
                     var ext_output = "";
-                    if ('ext' in ext) {
-                        ext_output = ext.ext.join('\n');
+                    if ('ext' in item) {
+                        ext_output = item.ext.join('\n');
                     }
                     $('#codeTabContent').append(templ_edit({
                         page_num: page_num, type_name: type_name, ext_output: ext_output
                     }));
                     var form = document.getElementById('edit-def-form' + page_num);
-                    data_name = ext.name + ' :: ' + ext.type;
-                    if (ext.rules) {
-                        for (var j in ext.rules) {
+                    data_name = item.name + ' :: ' + item.type;
+                    if (item.rules) {
+                        for (var j in item.rules) {
                             var data_con = '';
-                            $.each(ext.rules[j].prop_hl, function (i, val) {
+                            $.each(item.rules[j].prop_hl, function (i, val) {
                                 data_con += val[0];
                             });
                             data_content_list.push(data_con);
-                            data_rule_names.push(ext.rules[j]['name']);
+                            data_rule_names.push(item.rules[j]['name']);
                         }
                     }
                     if (data_type === 'def') {
                         var i = 0;
-                        data_content_list.push(ext.prop);
-                        for (v in ext.vars) {
-                            vars += i + ': ' + v + ':' + ext.vars[v] + '\n';
+                        data_content_list.push(item.prop);
+                        for (v in item.vars) {
+                            vars += i + ': ' + v + ':' + item.vars[v] + '\n';
                             i++;
                         }
                     }
@@ -562,7 +502,7 @@
                         data_new_content += i + ': ' + data_content_list[i] + '\n';
                         data_rule_name += i + ': ' + data_rule_names[i] + '\n';
                     }
-                    $('#codeTab').find('span#' + page_num).text(ext.name);
+                    $('#codeTab').find('span#' + page_num).text(item.name);
                 } else
                     $('#codeTab').find('span#' + page_num).text('function');
                 form.number.value = number;
@@ -580,121 +520,108 @@
                 else
                     form.number.value = -1
                 $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-                if (data_type !== 'def')
-                    display_lines_number(page_num, number);
+
+                if (data_type !== 'def') {
+                    var data_vars_list = [];
+                    var data_vars_str = '';
+                    if (number) {
+                        $.each(item.rules, function (i, v) {
+                            var vars_str = '';
+                            for (let key in v.vars) {
+                                vars_str += key + ':' + v.vars[key] + '   ';
+                            }
+                            data_vars_list.push(vars_str);
+                        });
+                        $.each(data_vars_list, function (i, v) {
+                            data_vars_str += i + ': ' + v + '\n';
+                        })
+                    }
+                    form.data_vars.value = data_vars_str.trim();
+                    form.data_vars.rows = form.data_vars.value.split('\n').length;
+                }
             }
 
             var templ_rbottom = _.template($('#template-edit-rbottom').html());
-            $('div.rbottom').append(templ_rbottom({page_num: page_num, data_type: data_type}));
+            $('div.rbottom').append(templ_rbottom({
+                page_num: page_num, data_type: data_type, theory_name: cur_theory_name}));
 
             $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
             $('div#prf' + page_num).show().siblings().hide();
         }
 
-//      display vars_content in the textarea;
-        function display_lines_number(page_num, number) {
-            var data_vars_list = [];
-            var data_vars_str = '';
-            var form = document.getElementById('edit-def-form' + page_num);
-            if (number) {
-                $.each(result_list[number]['rules'], function (i, v) {
-                    var vars_str = '';
-                    for (let key in v.vars) {
-                        vars_str += key + ':' + v.vars[key] + '   ';
-                    }
-                    data_vars_list.push(vars_str);
-                });
-                $.each(data_vars_list, function (i, v) {
-                    data_vars_str += i + ': ' + v + '\n';
-                })
-            } else {
-                data_vars_str += '';
-            }
-            form.data_vars.value = $.trim(data_vars_str);
-            form.data_vars.rows = $.trim(data_vars_str).split('\n').length;
-        }
-
-//      click save button on edit tab to save content to the left-json for updating;
-        $('div.rbottom').on('click', 'button#save-edit', function () {
+        // Save information for an item.
+        $('div.rbottom').on('click', 'button.save-edit', function () {
             var form = get_selected_edit_form('edit-form');
-            var tab_pm = $(this).parent().attr('id').slice(3,);
-            var error_id = $(this).next().attr('id').trim();
-            var id = tab_pm;
-            var ty = $(this).attr('name').trim();
+            var error_id = $(this).next().attr('id');
+            var ty = $(this).attr('data_type');
+            var theory_name = $(this).attr('theory_name');
             var number = form.number.value;
-            var ajax_data = make_data(form, ty, id, number);
-            var prev_list = result_list.slice(0, number);
-            ajax_data['file-name'] = theory_name;
-            ajax_data['prev-list'] = prev_list;
+            var data = {};
+            data.file_name = theory_name;
+            data.prev_list = json_files[theory_name].content.slice(0, number);
+            data.content = make_data(form, ty);
             $.ajax({
-                url: '/api/save_modify',
+                url: '/api/check-modify',
                 type: 'POST',
-                data: JSON.stringify(ajax_data),
+                data: JSON.stringify(data),
                 success: function (res) {
-                    var result_data = res['data'];
-                    var error = res['error'];
-                    delete result_data['file-name'];
-                    delete result_data['prev-list'];
-                    if (error.message) {
-                        var error_info = error['detail-content'];
-                        $('div#' + error_id).find('pre').text(error_info);
-                    }
-                    else {
+                    if ('failed' in res) {
+                        $('div#' + error_id).find('pre').text(res.detail_content);
+                    } else {
                         if (number === '-1') {
-                            result_list.push(result_data);
+                            json_files[theory_name].content.push(res.content);
                         } else {
-                            delete result_list[number].hint_forward;
-                            delete result_list[number].hint_backward;
-                            delete result_list[number].hint_rewrite;
-                            for (var key in result_data) {
-                                result_list[number][key] = result_data[key];
+                            item = json_files[theory_name].content[number]
+                            delete item.hint_forward;
+                            delete item.hint_backward;
+                            delete item.hint_rewrite;
+                            for (var key in res.content) {
+                                item[key] = res.content[key];
                             }
                         }
-                        display_result_list();
-                        save_editor_data();
-                        alert('保存成功！');
+                        save_json_file(theory_name);
+                        display_theory_items();
+                        alert('Saved ' + item.name);
                     }
                 }
             });
         });
 
-//      make a strict-type data from editing; id=page_num
-        function make_data(form, ty, id, number) {
-            var ajax_data = {};
+        // Read data from the form into item.
+        function make_data(form, ty) {
+            var item = {};
             if (ty === 'def.ax') {
-                var data_name = $.trim(form.data_name.value);
-                var data_content = $.trim(form.data_content.value);
-                ajax_data['ty'] = 'def.ax';
-                ajax_data['name'] = data_name;
-                ajax_data['type'] = data_content;
+                item.ty = 'def.ax';
+                item.name = form.data_name.value.trim();
+                item.type = form.data_content.value.trim();
             }
             if (ty === 'thm' || ty === 'thm.ax') {
-                ajax_data['ty'] = ty;
-                ajax_data['name'] = form.name.value;
-                ajax_data['prop'] = form.prop.value;
-                ajax_data['vars'] = {};
+                item.ty = ty;
+                item.name = form.name.value;
+                item.prop = form.prop.value;
+                item.vars = {};
                 $.each(form.vars.value.split('\n'), function (i, v) {
                     let [nm, T] = v.split('::');
                     if (nm)
-                        ajax_data['vars'][nm.trim()] = T.trim();
+                        item.vars[nm.trim()] = T.trim();
                 });
                 if (form.hint_backward.checked === true)
-                    ajax_data['hint_backward'] = 'true';
+                    item.hint_backward = 'true';
                 if (form.hint_forward.checked ===  true)
-                    ajax_data['hint_forward'] = 'true';
+                    item.hint_forward = 'true';
                 if (form.hint_rewrite.checked ===  true)
-                    ajax_data['hint_rewrite'] = 'true';
+                    item.hint_rewrite = 'true';
             }
             if (ty === 'type.ind') {
-                var data_name = $.trim(form.data_name.value);
-                var data_content = $.trim(form.data_content.value);
+                var data_name = form.data_name.value.trim();
+                var data_content = form.data_content.value.trim();
                 var temp_list = [], temp_constrs = [];
                 var temp_content_list = data_content.split(/\n/);
                 if (data_name.split(/\s/).length > 1) {
                     temp_list.push(data_name.split(/\s/)[0].slice(1,));
-                    ajax_data['name'] = data_name.split(/\s/)[1];
+                    item.name = data_name.split(/\s/)[1];
                 } else {
-                    ajax_data['name'] = data_name;
+                    item.name = data_name;
                 }
                 $.each(temp_content_list, function (i, v) {
                     var temp_con_list = v.split(') (');
@@ -721,33 +648,32 @@
                         }
                     } else {
                         arg_name = temp_con_list[0];
-                        type = ajax_data['name'];
+                        type = item.name;
                     }
                     temp_con_dict['type'] = type;
                     temp_con_dict['args'] = args;
                     temp_con_dict['name'] = arg_name;
                     temp_constrs.push(temp_con_dict);
                 });
-                ajax_data['ty'] = 'type.ind';
-                ajax_data['args'] = temp_list;
-                ajax_data['constrs'] = temp_constrs;
+                item.ty = 'type.ind';
+                item.args = temp_list;
+                item.constrs = temp_constrs;
             }
             if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
-                var data_name = $.trim(form.data_name.value);
-                var data_content = $.trim(form.content.value);
+                var data_name = form.data_name.value.trim();
+                var data_content = form.content.value.trim();
                 var rules_list = [];
-                var rules = result_list[number].rules;
                 var props_list = data_content.split(/\n/);
-                var vars_list = $.trim(form.data_vars.value).split(/\n/);
+                var vars_list = form.data_vars.value.trim().split(/\n/);
                 if (ty === 'def.pred')
-                    var names_list = $.trim(form.vars_names.value).split(/\n/);
+                    var names_list = form.vars_names.value.trim().split(/\n/);
                 $.each(vars_list, function (i, m) {
-                    vars_list[i] = $.trim(m.slice(3,));
+                    vars_list[i] = m.slice(3,).trim();
                 });
                 $.each(props_list, function (i, v) {
-                    props_list[i] = $.trim(v.slice(3,));
+                    props_list[i] = v.slice(3,).trim();
                     if (names_list)
-                        names_list[i] = $.trim(names_list[i].slice(3,));
+                        names_list[i] = names_list[i].slice(3,).trim();
                 });
                 $.each(props_list, function (i, v) {
                     temp_dict = {}
@@ -755,7 +681,7 @@
                     if (ty !== 'def' && v && vars_list[i]) {
                         temp_dict['prop'] = v;
                         $.each(vars_list[i].split(/\s\s\s/), function (j, k) {
-                            temp_vars[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
+                            temp_vars[k.split(':')[0].trim()] = k.split(':')[1].trim();
                         });
                         if (names_list)
                             temp_dict['name'] = names_list[i];
@@ -764,102 +690,73 @@
                     }
                     temp_dict['vars'] = temp_vars;
                     rules_list.push(temp_dict);
-                    ajax_data['rules'] = rules_list;
+                    item.rules = rules_list;
                 });
                 if (ty === 'def') {
                     var temp_vars_ = {};
                     $.each(vars_list, function (j, k) {
                         temp_vars_[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
                     });
-                    ajax_data['prop'] = $.trim(props_list[0]);
-                    ajax_data['vars'] = temp_vars_;
+                    item.prop = $.trim(props_list[0]);
+                    item.vars = temp_vars_;
                 }
-                ajax_data['ty'] = ty;
-                ajax_data['name'] = data_name.split(' :: ')[0];
-                ajax_data['type'] = data_name.split(' :: ')[1];
+                item.ty = ty;
+                item.name = data_name.split(' :: ')[0];
+                item.type = data_name.split(' :: ')[1];
             }
-            return ajax_data;
+            return item;
         }
 
-//      click to change left_json content bgcolor
+        // Select / unselect an item by left click.
         $('#left_json').on('click','div[name="theories"]',function(){
-            var id = $(this).attr('id').slice(3,).trim();
-            if (items_selected.indexOf(id) >= 0) {
-                var index = items_selected.indexOf(id);
+            var item_id = Number($(this).attr('item_id'));
+            if (items_selected.indexOf(item_id) >= 0) {
+                var index = items_selected.indexOf(item_id);
                 items_selected.splice(index, 1);
             }
             else {
-                items_selected.push(id);
+                items_selected.push(item_id);
             }
             items_selected.sort();
-            display_result_list();
+            display_theory_items();
         })
 
-//click DEL to delete yellow left_json content and save to webpage and json file
+        // Delete an item from menu.
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
+            content = json_files[cur_theory_name].content;
             $.each(items_selected, function (i, v) {
-                result_list[v] = '';
-            })
-            result_list = result_list.filter(function(item) {
-                return item !== '';
+                content[v] = '';
             });
-            save_editor_data();
-            display_result_list();
+            content = content.filter(item => (item !== ''));
+            save_json_file(cur_theory_name);
+            display_theory_items();
         })
 
-        function exchange_up(number) {
-            var m = 1;
-            number = Number(number);
-            if (number >0 && number < result_list.length ) {
-                var temp = result_list[number];
-                result_list[number] = result_list[number - m];
-                result_list[number-m] = temp;
-                save_editor_data();
-                display_result_list();
-            }
-        }
-
-
- //click UP to move up the yellow left_json content and save to webpage and json file
-        $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function(){
+        // Move up an item or sequence of items.
+        $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function() {
+            content = json_files[cur_theory_name].content;
+            if (items_selected[0] === 0)
+                return;
             $.each(items_selected, function (i, v) {
-                var n = 1;
-                var temp = v;
-                if(result_list[0]['ty'] === 'header'){
-                    if (v > String(1)) {
-                        items_selected[i] = String(Number(v) - n);
-                        exchange_up(temp);
-                    }
-                }
-                else {
-                    if (v > String(0)) {
-                        items_selected[i] = String(Number(v) - n);
-                        exchange_up(temp);
-                    }
-                }
-            })
+                items_selected[i] = v - 1;
+                [content[i-1], content[i]] = [content[i], content[i-1]]
+            });
+            save_json_file(cur_theory_name);
+            display_theory_items();
         })
 
-        function exchange_down(number) {
-            var m = 1;
-            number = Number(number);
-            if (number >=0 && number < result_list.length) {
-                var temp = result_list[number];
-                result_list[number] = result_list[number + m];
-                result_list[number + m] = temp;
-                save_editor_data();
-                display_result_list();
-            }
-        }
-
-//click down to move down the yellow left_json content and save to webpage and json file
+        // Move down an item or sequence of items.
         $('div.dropdown-menu.Ctrl a[name="down"]').on('click', function(){
-            for (let i = items_selected.length-1;i >= 0;i--) {
-                var temp = items_selected[i];
-                var n = 1;
-                items_selected[i] = String(Number(temp) + n);
-                exchange_down(temp);
-            }
+            content = json_files[cur_theory_name].content;
+            items_selected.reverse();
+            if (items_selected[0] === content.length - 1)
+                return;
+            $.each(items_selected, function (i, v) {
+                items_selected[i] = v + 1;
+                [content[i], content[i+1]] = [content[i], content[i+1]]
+            });
+            save_json_file(cur_theory_name);
+            display_theory_items();
         })
 
         // Open json file with the given name.
@@ -867,8 +764,7 @@
             items_selected = [];
             $('#json-tab2').click();
             $('#left_json').empty();
-            var data = JSON.stringify(name);
-            load_json_file(data);
+            load_json_file(name);
             add_mode = true;
         }
 
@@ -904,6 +800,33 @@
         });
     });
 
+    // Add new tab for editing proofs
+    function init_proof_tab(theory_name, item_id) {
+        page_num++;
+        // Add new tab
+        var templ_tab = _.template($("#template-tab").html());
+        $('#codeTab').append(templ_tab({page_num: page_num, label: ""}));
+
+        // Add CodeMirror textarea
+        var templ_codepan = _.template($("#template-codepan").html());
+        $('#codeTabContent').append(templ_codepan({page_num: page_num}));
+
+        // Add buttons and location for displaying results
+        var templ_rbottom = _.template($("#template-proof-rbottom").html());
+        $('div.rbottom').append(templ_rbottom({
+            page_num: page_num, item_id: item_id, theory_name: theory_name
+        }));
+
+        init_editor("code" + page_num, theory_name);
+
+        $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+        $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
+        $('div#prf' + page_num).show().siblings().hide();
+        $('.code-cell').each(function () {
+            $(this).removeClass('active');
+        });
+    }
+
     function display_file_list() {
         $(function () {
             $('#root-file').html('');
@@ -917,7 +840,7 @@
             url: '/api/remove-file',
             data: JSON.stringify(file_name),
             type: 'PUT',
-            success: function (res) {
+            success: function () {
                 alert('Removed file ' + file_name);
             }
         })
@@ -925,93 +848,87 @@
 
     // Initialize empty proof for the theorem with given file name and item_id.
     function init_empty_proof(file_name, item_id) {
-        r_data = result_list_dict[file_name][item_id]
-        var event = {
+        var item = json_files[file_name].content[item_id];
+        var data = {
             'id': get_selected_id(),
-            'vars': r_data['vars'],
-            'prop': r_data['prop'],
+            'vars': item.vars,
+            'prop': item.prop,
             'theory_name': file_name,
-            'thm_name': r_data['name']
+            'thm_name': item.name
         };
-        var data = JSON.stringify(event);
         display_running();
         $.ajax({
             url: "/api/init-empty-proof",
             type: "POST",
-            data: data,
+            data: JSON.stringify(data),
             success: function (result) {
                 display_checked_proof(result);
-                display_instructions(r_data.instructions);
+                display_instructions(item.instructions);
             }
         });
     }
 
     // Load saved proof for the theorem with given file name and item_id.
     function init_saved_proof(file_name, item_id) {
-        r_data = result_list_dict[file_name][item_id]
-        var event = {
+        var item = json_files[file_name].content[item_id];
+        var data = {
             'id': get_selected_id(),
-            'vars': r_data['vars'],
-            'proof': r_data['proof'],
+            'vars': item.vars,
+            'proof': item.proof,
             'theory_name': file_name,
-            'thm_name': r_data['name']
+            'thm_name': item.name
         };
-        var data = JSON.stringify(event);
         display_running();
         $.ajax({
             url: "/api/init-saved-proof",
             type: 'POST',
-            data: data,
+            data: JSON.stringify(data),
             success: function (result) {
                 display_checked_proof(result);
-                display_instructions(r_data.instructions);
+                display_instructions(item.instructions);
             }
         })
     }
 
-    // Display result_list on the left side of the page.
-    function display_result_list() {
-        result_list_dict[theory_name] = result_list;
-        var import_str = theory_imports.join(' ');
-        $('#left_json').html('');
+    // Display items for the current theory on the left side of the page.
+    function display_theory_items() {
+        var theory = json_files[cur_theory_name];
         var templ = _.template($("#template-content-theory_desc").html());
-        $('#left_json').append(templ({
-            theory_desc: theory_desc, import_str: import_str
+        $('#left_json').html(templ({
+            theory_desc: theory.description,
+            import_str: theory.imports.join(' ')
         }));
-        $.each(result_list, function(num, ext) {
-            var class_item = '';
-            if (items_selected.indexOf(String(num)) >= 0) {
-                class_item = 'selected_item';
+        $.each(theory.content, function(num, ext) {
+            var class_item = 'theory_item';
+            if (items_selected.indexOf(num) >= 0) {
+                class_item = 'theory_item selected_item';
             }
-            var templ = $("#template-content-" + ext.ty.replace(".", "-"));
-            $('#left_json').append(_.template(templ.html())({
+            var templ = _.template($("#template-content-" + ext.ty.replace(".", "-")).html());
+            $('#left_json').append(templ({
                 num: num, ext: ext, class_item: class_item
             }));
         });
     }
 
     // Load json file from server and display the results.
-    function load_json_file(data) {
-        $.ajax({
-            url: "/api/load-json-file",
-            type: "POST",
-            data: data,
-            success: function (result) {
-                theory_name = result.data.name;
-                theory_imports = result.data.imports;
-                theory_desc = result.data.description;
-
-                if (theory_name in result_list_dict) {
-                    result_list = result_list_dict[theory_name];
-                } else {
-                    result_list = result.data.content;
+    function load_json_file(name) {
+        cur_theory_name = name;
+        if (name in json_files) {
+            display_theory_items();
+        } else {
+            $.ajax({
+                url: "/api/load-json-file",
+                type: "POST",
+                data: JSON.stringify(name),
+                success: function (result) {
+                    json_files[cur_theory_name] = result.data;
+                    display_theory_items();
                 }
-                display_result_list();
-            }
-        });
-    }
+            });
+        }
+    }   
 
-    function init_editor(id) {
+    function init_editor(id, theory_name) {
         var editor = CodeMirror.fromTextArea(document.getElementById(id), {
             mode: "text/x-python",
             lineNumbers: true,
