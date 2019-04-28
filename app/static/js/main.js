@@ -1,13 +1,13 @@
 (function ($) {
+    var selected_tab = 'files';   // Selected tab on the left side.
+    var page_num = 0;   // Number of tabs opened on the right side.
     var instructions = [];
-    var page_num = 0;
     var index = 0;
-    var cur_theory_name = "";  // Name of the current theory file
     var click_count = 0;
-    var json_files = {};
-    var file_list = [];  // List of all files for the current user
-    var add_mode = false;
-    var items_selected = [];  // List of selected items in the displayed theory
+    var cur_theory_name = "";  // Name of the current theory file.
+    var json_files = {};  // All loaded theory data.
+    var file_list = [];  // List of all files for the current user.
+    var items_selected = [];  // List of selected items in the displayed theory.
 
     $(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -80,8 +80,8 @@
             })
         });
 
-//      tab on the left;
-        $('#json-tab1,#json-tab2,#json-tab3').click(function () {
+        // Tabs on the left
+        $('#json-tab-files,#json-tab-content,#json-tab-proof').click(function () {
             $(this).css({'background': '#F0F0F0', 'text-align': 'center', 'border-bottom': 'none'});
             $(this).siblings('li').css({
                 'background': '#f8f8f8',
@@ -89,28 +89,13 @@
                 'border-bottom': 'solid 1px',
                 'border-color': '#B8B8B8'
             });
-        });
-
-        $('#json-tab1').click(function () {
-            $('div#root-file').show();
-            $('div#left_json').hide();
-            $('div#variable').hide();
-        });
-
-        $('#json-tab2').click(function () {
-            $('div#root-file').hide();
-            $('div#left_json').show();
-            $('div#variable').hide();
-        });
-
-        $('#json-tab3').click(function () {
-            $('div#root-file').hide();
-            $('div#left_json').hide();
-            $('div#variable').show();
+            selected_tab = $(this).attr('id').slice(9,);
+            $('div.left-panel').hide();
+            $('div#panel-' + selected_tab).show();
         });
 
         // Edit metadata for a file
-        $('div#root-file').on('click', 'a[name="edit"]', function () {
+        $('div#panel-files').on('click', 'a[name="edit"]', function () {
             // File's id is "edit{n}"
             var number = Number($(this).attr('id').slice(4,).trim());
 
@@ -130,7 +115,7 @@
             })
         });
 
-        $('div#root-file').on('click', 'a[name="delete"]', function () {
+        $('div#panel-files').on('click', 'a[name="delete"]', function () {
             var number = Number($(this).attr('id').trim());
             var json_name = $(this).attr('class');
             file_list.splice(number, 1);
@@ -225,17 +210,17 @@
         });
 
         // Initialize proof after clicking 'proof' link on the left side.
-        $('#left_json').on('click', 'a[name="proof"]', function (e) {
+        $('#panel-content').on('click', 'a[name="proof"]', function (e) {
             e.stopPropagation();
             var item_id = $(this).parents().attr('item_id');
             init_proof_tab(cur_theory_name, item_id);
         });
 
         // Create editing area after clicking 'edit' link on the left side.
-        $('#left_json').on('click', 'a[name="edit"]', function (e) {
+        $('#panel-content').on('click', 'a[name="edit"]', function (e) {
             e.stopPropagation();
             var item_id = $(this).parents().attr('item_id');
-            init_edit_area(page_num, item_id);
+            init_edit_area(item_id);
         });
 
         // Use tab key to insert unicode characters.
@@ -309,7 +294,7 @@
         });
 
         // Select / unselect an item by left click.
-        $('#left_json').on('click','div[name="theories"]',function(){
+        $('#panel-content').on('click','div[name="theories"]',function(){
             var item_id = Number($(this).attr('item_id'));
             if (items_selected.indexOf(item_id) >= 0) {
                 var index = items_selected.indexOf(item_id);
@@ -363,7 +348,7 @@
         })
 
         // Open json file from links in the 'Files' tab.
-        $('#root-file').on('click', 'a[name="file"]', function () {
+        $('#panel-files').on('click', 'a[name="file"]', function () {
             open_json_file($(this).text().trim());
         });
 
@@ -376,9 +361,9 @@
         });
 
         $('div.dropdown-menu.add-info a').on('click', function () {
-            if (add_mode === true) {
+            if (selected_tab === 'content') {
                 var ty = $(this).attr('name');
-                init_edit_area(page_num, '', ty);
+                init_edit_area('', ty);
             }
         });
 
@@ -386,7 +371,7 @@
         $.ajax({
             url: "/api/find-files",
             success: function (res) {
-                $('#json-tab1').click();
+                $('#json-tab-files').click();
                 file_list = res.theories;
                 display_file_list();
             }
@@ -396,10 +381,9 @@
     // Open json file with the given name.
     function open_json_file(name) {
         items_selected = [];
-        $('#json-tab2').click();
-        $('#left_json').empty();
+        $('#json-tab-content').click();
+        $('#panel-content').empty();
         load_json_file(name);
-        add_mode = true;
     }
 
     // Initialize form for editing metadata.
@@ -468,10 +452,9 @@
     // Initialize edit area, for both editing an existing item and
     // creating a new item.
     // 
-    // page_num: index of the current tab.
     // number: if editing an existing item, id of the current item.
     // data_type: if adding a new item, type of the new item.
-    function init_edit_area(page_num, number = '', data_type = '') {
+    function init_edit_area(number = '', data_type = '') {
         page_num++;
 
         var data_name = '', data_content = '';
@@ -820,9 +803,9 @@
 
     function display_file_list() {
         $(function () {
-            $('#root-file').html('');
+            $('#panel-files').html('');
             var templ = _.template($("#template-file-list").html());
-            $('#root-file').append(templ({file_list: file_list}));    
+            $('#panel-files').append(templ({file_list: file_list}));    
         });
     }
 
@@ -885,7 +868,7 @@
     function display_theory_items() {
         var theory = json_files[cur_theory_name];
         var templ = _.template($("#template-content-theory_desc").html());
-        $('#left_json').html(templ({
+        $('#panel-content').html(templ({
             theory_desc: theory.description,
             import_str: theory.imports.join(' ')
         }));
@@ -895,7 +878,7 @@
                 class_item = 'theory_item selected_item';
             }
             var templ = _.template($("#template-content-" + ext.ty.replace(".", "-")).html());
-            $('#left_json').append(templ({
+            $('#panel-content').append(templ({
                 num: num, ext: ext, class_item: class_item
             }));
         });

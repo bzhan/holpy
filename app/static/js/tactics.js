@@ -270,7 +270,7 @@ function match_thm() {
         data: JSON.stringify(data),
         success: function (result) {
             var templ_variable = _.template($('#template-variable').html());
-            $('div#variable').html(templ_variable({ctxt: result.ctxt}));
+            $('div#panel-proof').html(templ_variable({ctxt: result.ctxt}));
 
             cells[id]['match_thm'] = result;
             display_match_thm(result);
