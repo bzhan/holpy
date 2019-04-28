@@ -324,11 +324,12 @@
 
         // Delete an item from menu.
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
-            content = json_files[cur_theory_name].content;
+            theory = json_files[cur_theory_name];
             $.each(items_selected, function (i, v) {
-                content[v] = '';
+                theory.content[v] = '';
             });
-            content = content.filter(item => (item !== ''));
+            theory.content = theory.content.filter(item => item !== '');
+            items_selected = [];
             save_json_file(cur_theory_name);
             display_theory_items();
         })
@@ -340,7 +341,7 @@
                 return;
             $.each(items_selected, function (i, v) {
                 items_selected[i] = v - 1;
-                [content[i-1], content[i]] = [content[i], content[i-1]]
+                [content[v-1], content[v]] = [content[v], content[v-1]]
             });
             save_json_file(cur_theory_name);
             display_theory_items();
@@ -354,8 +355,9 @@
                 return;
             $.each(items_selected, function (i, v) {
                 items_selected[i] = v + 1;
-                [content[i], content[i+1]] = [content[i], content[i+1]]
+                [content[v], content[v+1]] = [content[v+1], content[v]]
             });
+            items_selected.reverse();
             save_json_file(cur_theory_name);
             display_theory_items();
         })
