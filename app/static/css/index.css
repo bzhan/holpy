@@ -90,7 +90,7 @@ a, a:visited, a:link, .quasilink {
 
 /*}*/
 
-a.fontcolor {
+a.dropdown-item {
     color: black;
 }
 

@@ -44,61 +44,45 @@
         <div class="dropdown">
             <button type="button" id="additional_option" data-toggle="dropdown"
                     class="el-button el-button--mini dropdown-toggle"
-                    role="button" tabindex="0">
-                File
-            </button>
+                    role="button" tabindex="0">File</button>
             <div class="dropdown-menu span">
-                <a class="dropdown-item fontcolor" href="#"
-                   onclick="$('#open-file').click()" id="file-button">Open file</a>
-                <input type="file" id="open-file" style="display:none">
-                <a class="dropdown-item fontcolor" href="#"
-                   onclick="$('#open-problem').click()" id="problem-button">Open problem</a>
-                <input type="file" id="open-problem" style="display:none">
-                <a class="dropdown-item fontcolor" href="#"
-                   onclick="$('#open-json').click()" id="json-button">Open json file</a>
+                <a class="dropdown-item" href="#" id="new-file">New file</a>
+                <a class="dropdown-item" href="#"
+                   onclick="$('#open-json').click()" id="json-button">Open file</a>
                 <input type="text" id="open-json" style="display:none">
             </div>
         </div>
         <div class="dropdown">
             <button type="button" id="additional_option" data-toggle="dropdown"
                     class="el-button el-button--mini dropdown-toggle"
-                    role="button" tabindex="0">
-                Action
-            </button>
+                    role="button" tabindex="0">Action</button>
             <div class="dropdown-menu span">
-                <a class="dropdown-item fontcolor" href="#" id="add-line-after">Add line after</a>
-                <a class="dropdown-item fontcolor" href="#" id="introduction">Introduction</a>
-                <a class="dropdown-item fontcolor" href="#" id="apply-backward-step">Apply backward step</a>
-                <a class="dropdown-item fontcolor" href="#" id="apply-induction">Apply induction</a>
-                <a class="dropdown-item fontcolor" href="#" id="rewrite-goal">Rewrite goal</a>
+                <a class="dropdown-item" href="#" id="add-line-after">Add line after</a>
+                <a class="dropdown-item" href="#" id="introduction">Introduction</a>
+                <a class="dropdown-item" href="#" id="apply-backward-step">Apply backward step</a>
+                <a class="dropdown-item" href="#" id="apply-induction">Apply induction</a>
+                <a class="dropdown-item" href="#" id="rewrite-goal">Rewrite goal</a>
             </div>
         </div>
         <div class="dropdown">
             <button type="button" id="additional_option" data-toggle="dropdown"
                     class="el-button el-button--mini dropdown-toggle"
-                    role="button" tabindex="0">
-                Add item
-            </button>
+                    role="button" tabindex="0">Add item</button>
             <div class="dropdown-menu span add-info">
-                <a class="dropdown-item fontcolor" name="def.ax" href="#" id="constant">constant</a>
-                <a class="dropdown-item fontcolor" name="thm" href="#" id="theorem">theorem</a>
-                <a class="dropdown-item fontcolor" name="type.ind" href="#" id="datatype">datatype</a>
-                <a class="dropdown-item fontcolor" name="def.ind" href="#" id="fun">fun</a>
+                <a class="dropdown-item" name="def.ax" href="#" id="constant">constant</a>
+                <a class="dropdown-item" name="thm" href="#" id="theorem">theorem</a>
+                <a class="dropdown-item" name="type.ind" href="#" id="datatype">datatype</a>
+                <a class="dropdown-item" name="def.ind" href="#" id="fun">fun</a>
             </div>
-        </div>
-        <div>
-            <button class="el-button el-button--mini" id="new-file">New File</button>
         </div>
         <div class="dropdown">
             <button type="button" id="additional_option" data-toggle="dropdown"
                     class="el-button el-button--mini dropdown-toggle"
-                    role="button" tabindex="0">
-                Items
-            </button>
+                    role="button" tabindex="0">Items</button>
             <div class="dropdown-menu span Ctrl">
-                <a class="dropdown-item fontcolor" name="del" href="#" id="del">Delete</a>
-                <a class="dropdown-item fontcolor" name="up" href="#" id="up">Move up</a>
-                <a class="dropdown-item fontcolor" name="down" href="#" id="down">Move down</a>
+                <a class="dropdown-item" name="del" href="#" id="del">Delete</a>
+                <a class="dropdown-item" name="up" href="#" id="up">Move up</a>
+                <a class="dropdown-item" name="down" href="#" id="down">Move down</a>
             </div>
         </div>
     </div>
