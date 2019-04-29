@@ -7,7 +7,7 @@ from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 from kernel.type import HOLType
 from syntax import parser, printer
-from server.tactic import ProofState
+from server.server import ProofState
 from logic import basic
 from logic import induct
 from kernel.extension import AxType, AxConstant, Theorem

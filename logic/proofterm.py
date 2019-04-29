@@ -100,8 +100,17 @@ class ProofTerm():
         return ProofTermDeriv("abstraction", None, x, [pt])
 
     @staticmethod
+    def forall_intr(x, pt):
+        return ProofTermDeriv("forall_intr", None, x, [pt])
+
+    @staticmethod
     def theorem(thy, th_name):
         return ProofTermDeriv("theorem", thy, th_name, [])
+
+    @staticmethod
+    def sorry(th):
+        assert isinstance(th, Thm), "sorry: input must be a theorem."
+        return ProofTermDeriv("sorry", None, None, [], th=th)
 
     def _export(self, prefix, seq_to_id, prf):
         """Helper function for _export.
@@ -135,7 +144,10 @@ class ProofTerm():
         
         id = prefix + (len(prf.items),)
         seq_to_id[self.th] = id
-        prf.add_item(id, self.rule, args=self.args, prevs=ids)
+        if self.rule == 'sorry':
+            prf.add_item(id, self.rule, args=self.args, prevs=ids, th=self.th)
+        else:
+            prf.add_item(id, self.rule, args=self.args, prevs=ids)
         return prf
 
     def export(self, prefix=None, prf=None):
@@ -195,11 +207,14 @@ class ProofTermDeriv(ProofTerm):
     prevs -- proof terms that the current one depends on.
 
     """
-    def __init__(self, rule, thy, args, prevs):
+    def __init__(self, rule, thy, args, prevs, th=None):
         self.ty = ProofTerm.DERIV
         self.rule = rule
         prev_ths = [prev.th for prev in prevs]
-        if rule == 'theorem':
+        if rule == 'sorry':
+            assert th is not None, "ProofTermDeriv: must provide th for sorry."
+            self.th = th
+        elif rule == 'theorem':
             self.th = thy.get_theorem(args)
         elif rule in primitive_deriv:
             rule_fun, _ = primitive_deriv[rule]
