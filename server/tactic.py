@@ -6,6 +6,7 @@ from logic import logic
 from logic import matcher
 from logic.proofterm import ProofTerm
 from logic.logic_macro import apply_theorem
+from syntax import printer
 
 class Tactic:
     """Represents a tactic function.
@@ -21,11 +22,43 @@ class Tactic:
 
 class rule(Tactic):
     """Apply a theorem in the backward direction."""
-    def __init__(self, th_name, prevs=None, instsp=None):
-        assert isinstance(th_name, str), "rule: argument"
+    def __init__(self, th_name=None, prevs=None, instsp=None):
+        assert th_name is None or isinstance(th_name, str), "rule: argument"
         self.th_name = th_name
         self.prevs = prevs if prevs else []
         self.instsp = instsp
+
+    def search(self, thy, goal):
+        results = []
+        for name, th in thy.get_data("theorems").items():
+            if 'hint_backward' not in thy.get_attributes(name):
+                continue
+
+            instsp = (dict(), dict())
+            As, C = th.assums, th.concl
+            # Only process those theorems where C and the matched As
+            # contain all of the variables.
+            if set(term.get_vars(As[:len(self.prevs)] + [C])) != set(term.get_vars(As + [C])):
+                continue
+
+            # When there is no assumptions to match, only process those
+            # theorems where C contains at least a constant (skip falseE,
+            # induction theorems, etc).
+            if not self.prevs and term.get_consts(C) == []:
+                continue
+
+            try:
+                for pat, prev in zip(As, self.prevs):
+                    matcher.first_order_match_incr(pat, prev.prop, instsp)
+                matcher.first_order_match_incr(C, goal.prop, instsp)
+            except matcher.MatchException:
+                continue
+
+            # All matches succeed
+            t = logic.subst_norm(th.prop, instsp)
+            t = printer.print_term(thy, t)
+            results.append((name, t))
+        return sorted(results)
 
     def get_proof_term(self, thy, goal):
         if isinstance(self.th_name, str):

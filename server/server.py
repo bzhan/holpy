@@ -278,43 +278,15 @@ class ProofState():
         """
         id = id_force_tuple(id)
         prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
-        prevs = [self.get_proof_item(id) for id in prevs]
 
         # Obtain the statement to be proved.
         cur_item = self.get_proof_item(id)
         if cur_item.rule != "sorry":
             return []
 
-        results = []
-        for name, th in self.thy.get_data("theorems").items():
-            if 'hint_backward' not in self.thy.get_attributes(name):
-                continue
-
-            instsp = (dict(), dict())
-            As, C = th.assums, th.concl
-            # Only process those theorems where C and the matched As
-            # contain all of the variables.
-            if set(term.get_vars(As[:len(prevs)] + [C])) != set(term.get_vars(As + [C])):
-                continue
-
-            # When there is no assumptions to match, only process those
-            # theorems where C contains at least a constant (skip falseE,
-            # induction theorems, etc).
-            if not prevs and term.get_consts(C) == []:
-                continue
-
-            try:
-                for pat, prev in zip(As, prevs):
-                    matcher.first_order_match_incr(pat, prev.th.prop, instsp)
-                matcher.first_order_match_incr(C, cur_item.th.prop, instsp)
-            except matcher.MatchException:
-                continue
-
-            # All matches succeed
-            t = logic.subst_norm(th.prop, instsp)
-            t = printer.print_term(self.thy, t)
-            results.append((name, t))
-        return sorted(results)
+        prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
+        rule_tac = tactic.rule(prevs=prevs)
+        return rule_tac.search(self.thy, cur_item.th)
 
     def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):
         """Apply backward step using the given theorem.
