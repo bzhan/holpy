@@ -8,10 +8,10 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, id_force_tuple
 from kernel import report
 from logic import logic, matcher
-from logic.proofterm import ProofTerm
+from logic.proofterm import ProofTerm, ProofTermAtom
 from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
 from syntax import parser, printer
-
+from server import tactic
 
 class TacticException(Exception):
     pass
@@ -330,42 +330,23 @@ class ProofState():
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "apply_backward_step: id is not a gap"
 
-        # Instantiate the given theorem.
-        th = self.thy.get_theorem(th_name)
+        prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
+        rule_tac = tactic.rule(th_name, prevs=prevs, instsp=instsp)
+        pt = rule_tac.get_proof_term(self.thy, cur_item.th)
+        new_prf = pt.export(prefix=id, subproof=False)
 
-        if instsp is None:
-            instsp = (dict(), dict())
-            As, C = th.assums, th.concl
-            matcher.first_order_match_incr(C, cur_item.th.prop, instsp)
-            for pat, prev in zip(As, prevs):
-                item = self.get_proof_item(prev)
-                matcher.first_order_match_incr(pat, item.th.prop, instsp)
-
-        As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
-
-        num_goal = len(As) - len(prevs)
-        self.add_line_before(id, num_goal)
-        start = id
-        all_ids = [incr_id(start, i - len(prevs)) for i in range(len(prevs), len(As))]
-        for goal_id, A in zip(all_ids, As[len(prevs):]):
-            self.set_line(goal_id, "sorry", th=Thm(cur_item.th.hyps, A))
-
-        # If it is possible to instantiate all variables from assumptions,
-        # use apply_theorem. Otherwise, use apply_theorem_for.
-        if set(term.get_vars(th.assums)) != set(term.get_vars(th.prop)):
-            tyinst, inst = instsp
-            self.set_line(incr_id(start, num_goal), "apply_theorem_for",
-                          args=(th_name, tyinst, inst), prevs=prevs + all_ids, th=cur_item.th)
-        else:
-            self.set_line(incr_id(start, num_goal), "apply_theorem",
-                          args=th_name, prevs=prevs + all_ids, th=cur_item.th)
+        self.add_line_before(id, len(new_prf.items) - 1)
+        for i, item in enumerate(new_prf.items):
+            cur_id = item.id
+            prf = self.prf.get_parent_proof(cur_id)
+            prf.items[cur_id[-1]] = item
+        self.check_proof(compute_only=True)
 
         # Test if the goals are already proved:
-        for goal_id, A in reversed(list(zip(all_ids, As[len(prevs):]))):
-            goal = Thm(cur_item.th.hyps, A)
-            new_id = self.find_goal(goal, goal_id)
+        for item in new_prf.items:
+            new_id = self.find_goal(self.get_proof_item(item.id).th, item.id)
             if new_id is not None:
-                self.replace_id(goal_id, new_id)
+                self.replace_id(item.id, new_id)
 
     def apply_forward_step_thms(self, id, prevs=None):
         id = id_force_tuple(id)

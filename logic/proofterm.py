@@ -112,7 +112,7 @@ class ProofTerm():
         assert isinstance(th, Thm), "sorry: input must be a theorem."
         return ProofTermDeriv("sorry", None, None, [], th=th)
 
-    def _export(self, prefix, seq_to_id, prf):
+    def _export(self, prefix, seq_to_id, prf, subproof):
         """Helper function for _export.
         
         prefix -- current id prefix. Used in generating ids.
@@ -121,6 +121,8 @@ class ProofTerm():
         is updated by the function.
 
         prf -- the currently built proof. Updated by the function.
+
+        subproof -- whether to start a subproof or continue the prefix.
 
         """
         # Should not call _export when self is already in seq_to_id
@@ -137,12 +139,16 @@ class ProofTerm():
                 if prev.th in seq_to_id:
                     ids.append(seq_to_id[prev.th])
                 else:
-                    prev._export(prefix, seq_to_id, prf)
+                    prev._export(prefix, seq_to_id, prf, subproof)
                     ids.append(prf.items[-1].id)
             else:
                 raise TypeError()
         
-        id = prefix + (len(prf.items),)
+        if subproof:
+            id = prefix + (len(prf.items),)
+        else:
+            id = prefix[:-1] + (prefix[-1] + len(prf.items),)
+
         seq_to_id[self.th] = id
         if self.rule == 'sorry':
             prf.add_item(id, self.rule, args=self.args, prevs=ids, th=self.th)
@@ -150,13 +156,13 @@ class ProofTerm():
             prf.add_item(id, self.rule, args=self.args, prevs=ids)
         return prf
 
-    def export(self, prefix=None, prf=None):
+    def export(self, prefix=None, prf=None, subproof=True):
         """Convert to proof object."""
         if prefix is None:
             prefix = tuple()
         if prf is None:
             prf = Proof()
-        return self._export(prefix, dict(), prf)
+        return self._export(prefix, dict(), prf, subproof)
 
     def on_prop(self, thy, *cvs):
         """Apply the given conversion to the proposition."""
@@ -194,6 +200,7 @@ def refl(t):
 class ProofTermAtom(ProofTerm):
     """Atom proof terms."""
     def __init__(self, id, th):
+        assert isinstance(th, Thm), "ProofTermAtom: th must be a Thm object."
         self.ty = ProofTerm.ATOM
         self.id = id_force_tuple(id)
         self.th = th

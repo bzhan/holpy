@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel import term
 from kernel.thm import Thm
 from logic import logic
 from logic import matcher
@@ -20,20 +21,34 @@ class Tactic:
 
 class rule(Tactic):
     """Apply a theorem in the backward direction."""
-    def __init__(self, th_name):
+    def __init__(self, th_name, prevs=None, instsp=None):
         assert isinstance(th_name, str), "rule: argument"
         self.th_name = th_name
+        self.prevs = prevs if prevs else []
+        self.instsp = instsp
 
     def get_proof_term(self, thy, goal):
         if isinstance(self.th_name, str):
             th = thy.get_theorem(self.th_name)
 
-        _, C = th.assums, th.concl
-        instsp = matcher.first_order_match(C, goal.prop)
-        As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
-        pts = [ProofTerm.sorry(Thm([], A)) for A in As]
+        As, C = th.assums, th.concl
 
-        return apply_theorem(thy, self.th_name, *pts)
+        if self.instsp is None:
+            instsp = (dict(), dict())
+            matcher.first_order_match_incr(C, goal.prop, instsp)
+            for pat, prev in zip(As, self.prevs):
+                matcher.first_order_match_incr(pat, prev.prop, instsp)
+        else:
+            instsp = self.instsp
+
+        As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
+        pts = self.prevs + [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(self.prevs):]]
+
+        if set(term.get_vars(th.assums)) != set(term.get_vars(th.prop)):
+            tyinst, inst = instsp
+            return apply_theorem(thy, self.th_name, *pts, tyinst=tyinst, inst=inst)
+        else:
+            return apply_theorem(thy, self.th_name, *pts)
 
 class intros(Tactic):
     """Given a goal of form !x_1 ... x_n. P, introduce variables
