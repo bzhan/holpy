@@ -4,7 +4,7 @@ from kernel import term
 from kernel.thm import Thm
 from logic import logic
 from logic import matcher
-from logic.proofterm import ProofTerm
+from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic_macro import apply_theorem
 from syntax import printer
 
@@ -95,8 +95,6 @@ class intros(Tactic):
         vars, As, C = logic.strip_all_implies(goal.prop, self.var_names)
         
         pt = ProofTerm.sorry(Thm(As, C))
-        for A in reversed(As):
-            pt = ProofTerm.implies_intr(A, pt)
-        for var in reversed(vars):
-            pt = ProofTerm.forall_intr(var, pt)
-        return pt
+        ptAs = [ProofTerm.assume(A) for A in As]
+        ptVars = [ProofTerm.variable(var.name, var.T) for var in vars]
+        return ProofTermDeriv('intros', thy, None, ptVars + ptAs + [pt])

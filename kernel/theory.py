@@ -4,7 +4,7 @@ from copy import copy
 from typing import Tuple
 
 from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
-from kernel.term import Term, TypeCheckException
+from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import ProofException
 from kernel.macro import ProofMacro, global_macros
@@ -301,7 +301,9 @@ class Theory():
                 raise CheckProofException("theorem not found")
         elif seq.rule == "variable":
             # Declares a variable. Skip check.
-            return None
+            nm, T = seq.args
+            v = Var(nm, T)
+            res_th = Thm.mk_equals(v, v)
         elif seq.rule == "subproof":
             for s in seq.subproof.items:
                 self._check_proof_item(prf, s, rpt, no_gaps, compute_only, check_level)

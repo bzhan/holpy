@@ -59,6 +59,17 @@ class beta_norm_macro(ProofTermMacro):
         assert args is None, "beta_norm_macro"
         return top_conv(beta_conv()).apply_to_pt(thy, pts[0])
 
+class intros_macro(ProofTermMacro):
+    """Introduce assumptions and variables."""
+    def get_proof_term(self, thy, args, prevs):
+        pt, intros = prevs[-1], prevs[:-1]        
+        for intro in reversed(intros):
+            if intro.th.is_reflexive():
+                pt = ProofTerm.forall_intr(intro.prop.rhs, pt)
+            else:
+                pt = ProofTerm.implies_intr(intro.prop, pt)
+        return pt
+
 class apply_theorem_macro(ProofTermMacro):
     """Apply existing theorem in the theory to a list of current
     results in the proof.
@@ -194,6 +205,7 @@ macro.global_macros.update({
     "arg_combination": arg_combination_macro(),
     "fun_combination": fun_combination_macro(),
     "beta_norm": beta_norm_macro(),
+    "intros": intros_macro(),
     "apply_theorem": apply_theorem_macro(),
     "apply_theorem_for": apply_theorem_macro(with_inst=True),
     "rewrite_goal": rewrite_goal_macro(),

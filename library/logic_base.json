@@ -212,6 +212,10 @@
             "ty": "macro"
         },
         {
+            "name": "intros",
+            "ty": "macro"
+        },
+        {
             "name": "apply_theorem",
             "ty": "macro"
         },

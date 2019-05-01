@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel.term import Term, Var
 from kernel.thm import Thm, primitive_deriv
 from kernel.theory import Theory
 from kernel.proof import Proof, id_force_tuple
@@ -36,6 +37,10 @@ class ProofTerm():
     @staticmethod
     def atom(id, th):
         return ProofTermAtom(id, th)
+
+    @staticmethod
+    def variable(nm, T):
+        return ProofTermDeriv("variable", None, (nm, T), [])
 
     @staticmethod
     def assume(A):
@@ -221,6 +226,10 @@ class ProofTermDeriv(ProofTerm):
         if rule == 'sorry':
             assert th is not None, "ProofTermDeriv: must provide th for sorry."
             self.th = th
+        elif rule == 'variable':
+            nm, T = args
+            v = Var(nm, T)
+            self.th = Thm([], Term.mk_equals(v, v))
         elif rule == 'theorem':
             self.th = thy.get_theorem(args)
         elif rule in primitive_deriv:
@@ -238,7 +247,7 @@ class ProofTermMacro(ProofMacro):
 
     """
     def eval(self, thy, args, prevs):
-        pts = [ProofTerm.assume(prev.prop) for prev in prevs]
+        pts = [ProofTerm.sorry(prev) for prev in prevs]
         return self.get_proof_term(thy, args, pts).th
 
     def get_proof_term(self, thy, args, prevs):
