@@ -446,19 +446,8 @@ class ProofState():
         if cur_item.rule != "sorry":
             return []
 
-        results = []
-        goal = cur_item.th.prop
-        for th_name, th in self.thy.get_data("theorems").items():
-            if 'hint_rewrite' not in self.thy.get_attributes(th_name):
-                continue
-
-            cv = top_conv(rewr_conv(th_name))
-            new_goal = cv.eval(self.thy, goal).prop.rhs
-            if goal != new_goal:
-                new_goal = printer.print_term(self.thy, new_goal)
-                results.append((th_name, new_goal))
-
-        return sorted(results)
+        rewrite_tac = tactic.rewrite()
+        return rewrite_tac.search(self.thy, cur_item.th)
 
     def rewrite_goal(self, id, th_name, *, backward=False):
         """Apply an existing equality theorem to the given goal."""
@@ -467,22 +456,19 @@ class ProofState():
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "rewrite_goal: id is not a gap"
 
-        init_As = cur_item.th.hyps
-        goal = cur_item.th.prop
-        cv = then_conv(top_conv(rewr_conv(th_name)),
-                       top_conv(beta_conv()))
-        new_goal = cv.eval(self.thy, goal).prop.rhs
+        rewrite_tac = tactic.rewrite(th_name)
+        pt = rewrite_tac.get_proof_term(self.thy, cur_item.th)
+        new_prf = pt.export(prefix=id, subproof=False)
 
-        new_As = list(set(cv.eval(self.thy, goal).hyps) - set(init_As))
-        self.add_line_before(id, 1+len(new_As))
-        self.set_line(id, "sorry", th=Thm(cur_item.th.hyps, new_goal))
-        for i, A in enumerate(new_As):
-            self.set_line(incr_id(id, i+1), "sorry", th=Thm(cur_item.th.hyps, A))
+        self.add_line_before(id, len(new_prf.items) - 1)
+        for i, item in enumerate(new_prf.items):
+            cur_id = item.id
+            prf = self.prf.get_parent_proof(cur_id)
+            prf.items[cur_id[-1]] = item
+        self.check_proof(compute_only=True)
 
-        prev_ids = [incr_id(id, i) for i in range(1+len(new_As))]
-        self.set_line(incr_id(id, 1+len(new_As)), "rewrite_goal", args=(th_name, goal), prevs=prev_ids)
-
-        # Test if the goal is already proved
-        new_id = self.find_goal(Thm(cur_item.th.hyps, new_goal), id)
-        if new_id is not None:
-            self.replace_id(id, new_id)
+        # Test if the goals are already proved:
+        for item in new_prf.items:
+            new_id = self.find_goal(self.get_proof_item(item.id).th, item.id)
+            if new_id is not None:
+                self.replace_id(item.id, new_id)

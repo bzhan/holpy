@@ -5,6 +5,7 @@ from kernel.term import Term
 from kernel.thm import Thm
 from logic import logic
 from logic import matcher
+from logic.conv import then_conv, top_conv, rewr_conv, beta_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic_macro import apply_theorem
 from syntax import printer
@@ -114,3 +115,35 @@ class var_induct(Tactic):
             raise NotImplementedError
         inst = {f.name: P, args[0].name: self.var}
         return rule(self.th_name, instsp=({}, inst)).get_proof_term(thy, goal)
+
+class rewrite(Tactic):
+    """Rewrite the goal using a theorem."""
+    def __init__(self, th_name=None):
+        assert th_name is None or isinstance(th_name, str), "rule: argument"
+        self.th_name = th_name
+
+    def search(self, thy, goal):
+        results = []
+        for th_name, th in thy.get_data("theorems").items():
+            if 'hint_rewrite' not in thy.get_attributes(th_name):
+                continue
+
+            cv = top_conv(rewr_conv(th_name))
+            new_goal = cv.eval(thy, goal.prop).prop.rhs
+            if goal.prop != new_goal:
+                new_goal = printer.print_term(thy, new_goal)
+                results.append((th_name, new_goal))
+
+        return sorted(results)
+
+    def get_proof_term(self, thy, goal):
+        init_As = goal.hyps
+        C = goal.prop
+        cv = then_conv(top_conv(rewr_conv(self.th_name)),
+                       top_conv(beta_conv()))
+        new_goal = cv.eval(thy, C).prop.rhs
+        new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
+
+        new_As = list(set(cv.eval(thy, C).hyps) - set(init_As))
+        new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
+        return ProofTermDeriv('rewrite_goal', thy, args=(self.th_name, C), prevs=[new_goal_pts] + new_As_pts)
