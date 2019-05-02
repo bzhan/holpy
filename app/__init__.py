@@ -303,6 +303,21 @@ def set_line():
             }
             return jsonify(error)
 
+@app.route('/api/apply-cases', methods=['POST'])
+def apply_cases():
+    data = json.loads(request.get_data().decode("utf-8"))
+    cell = cells[data['id']]
+    line_id = data['line_id']
+    try:
+        A = parser.parse_term(cell.thy, cell.get_ctxt(line_id), data['case'])
+        cell.apply_cases(line_id, A)
+        return jsonify(cell.json_data())
+    except Exception as e:
+        error = {
+            "failed": e.__class__.__name__,
+            "message": str(e)
+        }
+        return jsonify(error)
 
 def print_extension(thy, ext):
     """Print given extension."""

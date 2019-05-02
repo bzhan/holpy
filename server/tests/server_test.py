@@ -230,13 +230,10 @@ class ServerTest(unittest.TestCase):
     def testDoubleNegInv(self):
         """Proof of ~~A --> A."""
         state = ProofState.init_state(thy, [A], [neg(neg(A))], A)
-        state.add_line_after(0)
-        state.set_line(1, "theorem", args="classical")
-        state.apply_backward_step(2, "disjE", prevs=[1])
+        state.apply_cases(1, A)
+        state.introduction(1)
         state.introduction(2)
-        state.introduction(3)
-        state.apply_backward_step((3, 1), "falseE")
-        state.apply_backward_step((3, 1), "negE", prevs=[0])
+        state.apply_backward_step((2, 1), "negE_gen", prevs=[0])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(neg(neg(A)), A))
 
     def testExistsConj(self):

@@ -147,3 +147,15 @@ class rewrite(Tactic):
         new_As = list(set(cv.eval(thy, C).hyps) - set(init_As))
         new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
         return ProofTermDeriv('rewrite_goal', thy, args=(self.th_name, C), prevs=[new_goal_pts] + new_As_pts)
+
+class cases(Tactic):
+    """Case checking on an expression."""
+    def __init__(self, A):
+        self.A = A
+
+    def get_proof_term(self, thy, goal):
+        As = goal.hyps
+        C = goal.prop
+        goal1 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(self.A, C)))
+        goal2 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(logic.neg(self.A), C)))
+        return apply_theorem(thy, 'classical_cases', goal1, goal2)

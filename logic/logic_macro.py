@@ -98,6 +98,7 @@ class apply_theorem_macro(ProofTermMacro):
 
         if not self.with_inst:
             As = th.assums
+            assert len(prevs) <= len(As), "apply_theorem_macro: too many prevs."
             for idx, prev_th in enumerate(prevs):
                 matcher.first_order_match_incr(As[idx], prev_th.prop, (tyinst, inst))
 

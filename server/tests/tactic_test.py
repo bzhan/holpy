@@ -95,6 +95,15 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(prf.items[1], ProofItem(1, 'sorry', th=Thm.mk_equals(a, a)))
         self.assertEqual(thy.check_proof(prf), goal)
 
+    def testCases(self):
+        A = Var('A', boolT)
+        B = Var('B', boolT)
+        C = Var('C', boolT)
+        cases_tac = tactic.cases(A)
+        pt = cases_tac.get_proof_term(thy, ProofTerm.sorry(Thm([B], C)))
+        prf = pt.export()
+        self.assertEqual(thy.check_proof(prf), Thm([B], C))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -177,6 +177,28 @@ function apply_induction(cm) {
     })
 }
 
+function apply_cases(cm) {
+    $(document).ready(function () {
+        var line_no = cm.getCursor().line;
+        var id = get_selected_id();
+        var input = {
+            'id': id,
+            'line_id': cells[id]['proof'][line_no]['id'],
+            'case': prompt('Enter case')
+        }
+        display_running();
+
+        $.ajax({
+            url: "/api/apply-cases",
+            type: "POST",
+            data: JSON.stringify(input),
+            success: function (result) {
+                display_checked_proof(result, line_no);
+            }
+        })
+    })
+}
+
 // Split off the first token according to the delimiter.
 function split_one(s, delimiter) {
     arr = s.split(delimiter);

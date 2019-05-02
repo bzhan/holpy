@@ -442,3 +442,9 @@ class ProofState():
 
         id = id_force_tuple(id)
         self.apply_tactic(id, tactic.rewrite(th_name))
+
+    def apply_cases(self, id, A):
+        """Apply case analysis on A."""
+
+        id = id_force_tuple(id)
+        self.apply_tactic(id, tactic.cases(A))
