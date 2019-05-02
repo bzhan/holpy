@@ -268,6 +268,30 @@ class ProofState():
         except (AttributeError, IndexError):
             raise TacticException()
 
+    def apply_tactic(self, id, tactic, prevs=None):
+        cur_item = self.get_proof_item(id)
+        assert cur_item.rule == "sorry", "apply_backward_step: id is not a gap"
+
+        if prevs is None:
+            prevs = []
+
+        pt = tactic.get_proof_term(self.thy, cur_item.th)
+        new_prf = pt.export(prefix=id, subproof=False)
+
+        self.add_line_before(id, len(new_prf.items) - 1)
+        for i, item in enumerate(new_prf.items):
+            cur_id = item.id
+            prf = self.prf.get_parent_proof(cur_id)
+            prf.items[cur_id[-1]] = item
+        self.check_proof(compute_only=True)
+
+        # Test if the goals are already proved:
+        for item in new_prf.items:
+            new_id = self.find_goal(self.get_proof_item(item.id).th, item.id)
+            if new_id is not None:
+                self.replace_id(item.id, new_id)
+
+
     def apply_backward_step_thms(self, id, prevs=None):
         """Return the list of theorems that can be used for applying
         backward step.
@@ -297,28 +321,10 @@ class ProofState():
         """
         id = id_force_tuple(id)
         prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
-
-        # Obtain the statement to be proved.
-        cur_item = self.get_proof_item(id)
-        assert cur_item.rule == "sorry", "apply_backward_step: id is not a gap"
-
         prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
+
         rule_tac = tactic.rule(th_name, prevs=prevs, instsp=instsp)
-        pt = rule_tac.get_proof_term(self.thy, cur_item.th)
-        new_prf = pt.export(prefix=id, subproof=False)
-
-        self.add_line_before(id, len(new_prf.items) - 1)
-        for i, item in enumerate(new_prf.items):
-            cur_id = item.id
-            prf = self.prf.get_parent_proof(cur_id)
-            prf.items[cur_id[-1]] = item
-        self.check_proof(compute_only=True)
-
-        # Test if the goals are already proved:
-        for item in new_prf.items:
-            new_id = self.find_goal(self.get_proof_item(item.id).th, item.id)
-            if new_id is not None:
-                self.replace_id(item.id, new_id)
+        self.apply_tactic(id, rule_tac, prevs)
 
     def apply_forward_step_thms(self, id, prevs=None):
         id = id_force_tuple(id)
@@ -409,8 +415,6 @@ class ProofState():
         
         """
         id = id_force_tuple(id)
-        cur_item = self.get_proof_item(id)
-        assert cur_item.rule == "sorry", "apply_induction: id is not a gap"
 
         # Find variable
         assert isinstance(var, str), "apply_induction: input must be a string"
@@ -422,21 +426,7 @@ class ProofState():
         assert isinstance(var, Var), "apply_induction: variable not found"
 
         induct_tac = tactic.var_induct(th_name, var)
-        pt = induct_tac.get_proof_term(self.thy, cur_item.th)
-        new_prf = pt.export(prefix=id, subproof=False)
-
-        self.add_line_before(id, len(new_prf.items) - 1)
-        for i, item in enumerate(new_prf.items):
-            cur_id = item.id
-            prf = self.prf.get_parent_proof(cur_id)
-            prf.items[cur_id[-1]] = item
-        self.check_proof(compute_only=True)
-
-        # Test if the goals are already proved:
-        for item in new_prf.items:
-            new_id = self.find_goal(self.get_proof_item(item.id).th, item.id)
-            if new_id is not None:
-                self.replace_id(item.id, new_id)
+        self.apply_tactic(id, induct_tac)
 
     def rewrite_goal_thms(self, id):
         """Find list of theorems on which rewrite_goal can be applied."""
@@ -453,22 +443,4 @@ class ProofState():
         """Apply an existing equality theorem to the given goal."""
 
         id = id_force_tuple(id)
-        cur_item = self.get_proof_item(id)
-        assert cur_item.rule == "sorry", "rewrite_goal: id is not a gap"
-
-        rewrite_tac = tactic.rewrite(th_name)
-        pt = rewrite_tac.get_proof_term(self.thy, cur_item.th)
-        new_prf = pt.export(prefix=id, subproof=False)
-
-        self.add_line_before(id, len(new_prf.items) - 1)
-        for i, item in enumerate(new_prf.items):
-            cur_id = item.id
-            prf = self.prf.get_parent_proof(cur_id)
-            prf.items[cur_id[-1]] = item
-        self.check_proof(compute_only=True)
-
-        # Test if the goals are already proved:
-        for item in new_prf.items:
-            new_id = self.find_goal(self.get_proof_item(item.id).th, item.id)
-            if new_id is not None:
-                self.replace_id(item.id, new_id)
+        self.apply_tactic(id, tactic.rewrite(th_name))
