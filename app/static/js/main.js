@@ -59,31 +59,30 @@
         // Save metadata for json file.
         $('div.rbottom').on('click', 'button[name="save-metadata"]', function () {
             var form = get_selected_edit_form('edit-form');
+            var prev_name = form.prev_name.value;
             var fname = form.fname.value.trim();
-            var imports = form.imports.value.split(',');
+            if (form.imports.value.trim() == '')
+                var imports = []
+            else
+                var imports = form.imports.value.split(',');
             var description = form.description.value.trim();
-            var flag = false;
-            $.each(file_list, function (i, v) {
-                if (v === fname)
-                    flag = true;
-            });
-            if (flag === false)
+
+            if (prev_name === '') {
                 file_list.push(fname);
-            file_list.sort();
-            data = {
-                'name': fname,
-                'imports': imports,
-                'description': description
-            };
-            $.ajax({
-                url: '/api/save-metadata',
-                type: 'PUT',
-                data: JSON.stringify(data),
-                success: function () {
-                    alert('Saved file ' + fname);
-                    display_file_list();
+                file_list.sort();
+                display_file_list();
+                json_files[fname] = {
+                    name: fname,
+                    imports: imports,
+                    description: description,
+                    content: []
                 }
-            })
+            } else {
+                json_files[fname].imports = imports;
+                json_files[fname].description = description;
+            }
+            save_json_file(fname);
+            alert('Saved ' + fname);
         });
 
         // Tabs on the left
@@ -104,29 +103,40 @@
         $('div#panel-files').on('click', 'a[name="edit"]', function () {
             // File's id is "edit{n}"
             var number = Number($(this).attr('id').slice(4,).trim());
+            var filename = file_list[number];
 
-            data = JSON.stringify(file_list[number]);
             init_metadata_area();
             var form = document.getElementById('edit-metadata-form' + page_num);
-            $.ajax({
-                url: '/api/get-metadata',
-                data: data,
-                type: 'POST',
-                success: function (res) {
-                    form.fname.value = res.name;
-                    form.imports.value = res.imports.join(',');
-                    form.description.textContent = res.description;
-                    form.description.rows = 5;
-                }
-            })
+            if (filename in json_files) {
+                data = json_files[filename];
+                form.prev_name.value = data.name;
+                form.fname.value = data.name;
+                form.imports.value = data.imports.join(',');
+                form.description.textContent = data.description;
+                form.description.rows = 5;
+            } else {
+                $.ajax({
+                    url: '/api/load-json-file',
+                    data: JSON.stringify(filename),
+                    type: 'POST',
+                    success: function (res) {
+                        json_files[res.name] = res
+                        form.prev_name.value = res.name;
+                        form.fname.value = res.name;
+                        form.imports.value = res.imports.join(',');
+                        form.description.textContent = res.description;
+                        form.description.rows = 5;
+                    }
+                })    
+            }
         });
 
         $('div#panel-files').on('click', 'a[name="delete"]', function () {
-            var number = Number($(this).attr('id').trim());
-            var json_name = $(this).attr('class');
+            var number = Number($(this).attr('id').slice(6,).trim());
+            var filename = file_list[number];
             file_list.splice(number, 1);
+            remove_file(filename);
             display_file_list();
-            remove_file(json_name);
         });
 
         // Save a single proof.
@@ -386,7 +396,21 @@
         items_selected = [];
         $('#json-tab-content').click();
         $('#panel-content').empty();
-        load_json_file(name);
+
+        cur_theory_name = name;
+        if (name in json_files) {
+            display_theory_items();
+        } else {
+            $.ajax({
+                url: "/api/load-json-file",
+                type: "POST",
+                data: JSON.stringify(name),
+                success: function (result) {
+                    json_files[cur_theory_name] = result;
+                    display_theory_items();
+                }
+            });
+        }
     }
 
     // Initialize form for editing metadata.
@@ -893,24 +917,6 @@
             }));
         });
     }
-
-    // Load json file from server and display the results.
-    function load_json_file(name) {
-        cur_theory_name = name;
-        if (name in json_files) {
-            display_theory_items();
-        } else {
-            $.ajax({
-                url: "/api/load-json-file",
-                type: "POST",
-                data: JSON.stringify(name),
-                success: function (result) {
-                    json_files[cur_theory_name] = result.data;
-                    display_theory_items();
-                }
-            });
-        }
-    }   
 
     function init_editor(id, theory_name) {
         var editor = CodeMirror.fromTextArea(document.getElementById(id), {

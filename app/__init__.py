@@ -403,7 +403,7 @@ def load_json_file():
             file_data_to_output(thy, data)
     else:
         f_data['content'] = []
-    return jsonify({'data': f_data})
+    return jsonify(f_data)
 
 
 @app.route('/api/save-file', methods=['POST'])
@@ -414,6 +414,10 @@ def save_file():
     with open_file(data['name'], 'w+') as f:
         json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
     basic.clear_cache(user=user_info['username'])
+
+    if data['name'] not in user_info['file_list']:
+        user_info['file_list'].append(data['name'])
+        user_info['file_list'].sort()
 
     return jsonify({})
 
@@ -464,27 +468,6 @@ def check_modify():
     return jsonify({'content': data['content'], 'error': error})
 
 
-# Save metadata for an existing or new json file.
-@app.route('/api/save-metadata', methods=['PUT'])
-def save_metadata():
-    data = json.loads(request.get_data().decode("utf-8"))
-    file_name = data['name']
-    if file_name in user_info['file_list']:
-        # Existing file
-        with open_file(file_name, 'r') as f:
-            file_data = json.load(f)
-            for key in data.keys():
-                file_data[key] = data[key]
-        with open_file(file_name, 'w') as f:
-            json.dump(file_data, f, ensure_ascii=False, indent=4)
-    else:
-        # New file
-        with open_file(file_name, 'w') as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
-
-    return jsonify({})
-
-
 @app.route('/api/find-files', methods=['GET'])
 def find_files():
     """Find list of files in user's directory."""
@@ -496,21 +479,6 @@ def find_files():
 
     user_info['file_list'] = sorted(files)
     return jsonify({'theories': user_info['file_list']})
-
-
-@app.route('/api/get-metadata', methods=['POST'])
-def get_metadata():
-    """Get metadata for the json file."""
-    content = {}
-    filename = json.loads(request.get_data().decode('utf-8'))
-    username = user_info['username']
-    with open_file(filename, 'r') as f:
-        file_data = json.load(f)
-    content['description'] = file_data['description']
-    content['imports'] = file_data['imports']
-    content['name'] = filename
-
-    return jsonify(content)
 
 
 @app.route('/api/remove-file', methods=['PUT'])
