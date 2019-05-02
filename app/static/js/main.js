@@ -44,6 +44,18 @@
         // Add new json file.
         $('#new-file').click(init_metadata_area);
 
+        // Refresh file data.
+        $('#refresh-files').click(function () {
+            $.ajax({
+                url: '/api/refresh-files',
+                type: 'POST',
+                data: JSON.stringify({}),
+                success: function() {
+                    location.reload();
+                }
+            })
+        });
+
         // Save metadata for json file.
         $('div.rbottom').on('click', 'button[name="save-metadata"]', function () {
             var form = get_selected_edit_form('edit-form');

@@ -148,6 +148,14 @@ def login():
 
     return redirect('login-error')
 
+# Replace user data with library data
+@app.route('/api/refresh-files', methods=['POST'])
+def refresh_files():
+    user_path = './users/' + user_info['username']
+    shutil.rmtree(user_path)
+    shutil.copytree('./library', user_path)
+    return jsonify({})
+
 
 @app.route('/api/init-empty-proof', methods=['POST'])
 def init_empty_proof():
