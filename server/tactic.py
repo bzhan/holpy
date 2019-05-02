@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel import term
+from kernel.term import Term
 from kernel.thm import Thm
 from logic import logic
 from logic import matcher
@@ -84,8 +85,8 @@ class rule(Tactic):
             return apply_theorem(thy, self.th_name, *pts)
 
 class intros(Tactic):
-    """Given a goal of form !x_1 ... x_n. P, introduce variables
-    corresponding to x_1, ..., x_n.
+    """Given a goal of form !x_1 ... x_n. A_1 --> ... --> A_n --> C,
+    introduce variables for x_1, ..., x_n and assumptions for A_1, ..., A_n.
     
     """
     def __init__(self, *var_names):
@@ -98,3 +99,18 @@ class intros(Tactic):
         ptAs = [ProofTerm.assume(A) for A in As]
         ptVars = [ProofTerm.variable(var.name, var.T) for var in vars]
         return ProofTermDeriv('intros', thy, None, ptVars + ptAs + [pt])
+
+class var_induct(Tactic):
+    """Apply induction rule on a variable."""
+    def __init__(self, th_name, var):
+        self.th_name = th_name
+        self.var = var
+
+    def get_proof_term(self, thy, goal):
+        P = Term.mk_abs(self.var, goal.prop)
+        th = thy.get_theorem(self.th_name)
+        f, args = th.concl.strip_comb()
+        if len(args) != 1:
+            raise NotImplementedError
+        inst = {f.name: P, args[0].name: self.var}
+        return rule(self.th_name, instsp=({}, inst)).get_proof_term(thy, goal)

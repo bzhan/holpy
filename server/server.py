@@ -419,15 +419,24 @@ class ProofState():
                 var = v
                 break
 
-        assert not isinstance(var, str), "apply_induction: variable not found"
+        assert isinstance(var, Var), "apply_induction: variable not found"
 
-        # Current goal
-        goal = cur_item.th.prop
+        induct_tac = tactic.var_induct(th_name, var)
+        pt = induct_tac.get_proof_term(self.thy, cur_item.th)
+        new_prf = pt.export(prefix=id, subproof=False)
 
-        # Instantiation for P
-        P = Term.mk_abs(var, goal)
-        inst = {"P": P, "x": var}
-        self.apply_backward_step(id, th_name, instsp=({}, inst))
+        self.add_line_before(id, len(new_prf.items) - 1)
+        for i, item in enumerate(new_prf.items):
+            cur_id = item.id
+            prf = self.prf.get_parent_proof(cur_id)
+            prf.items[cur_id[-1]] = item
+        self.check_proof(compute_only=True)
+
+        # Test if the goals are already proved:
+        for item in new_prf.items:
+            new_id = self.find_goal(self.get_proof_item(item.id).th, item.id)
+            if new_id is not None:
+                self.replace_id(item.id, new_id)
 
     def rewrite_goal_thms(self, id):
         """Find list of theorems on which rewrite_goal can be applied."""

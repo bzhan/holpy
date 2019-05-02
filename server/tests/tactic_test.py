@@ -48,11 +48,11 @@ class TacticTest(unittest.TestCase):
     def testRule4(self):
         n = Var('n', natT)
         goal = Thm([], Term.mk_equals(plus(n, zero), n))
-        inst = {'P': Term.mk_abs(n, goal.prop), 'n': n}
+        inst = {'P': Term.mk_abs(n, goal.prop), 'x': n}
         rule_tac = tactic.rule('nat_induct', instsp=({}, inst))
         pt = rule_tac.get_proof_term(thy, ProofTerm.sorry(goal))
         prf = pt.export()
-        self.assertEqual(prf.items[2], ProofItem(2, 'apply_theorem_for', args=('nat_induct', {}, inst), prevs=[0, 1]))
+        self.assertEqual(thy.check_proof(prf), goal)
 
     def testIntros(self):
         Ta = TVar('a')
@@ -62,6 +62,14 @@ class TacticTest(unittest.TestCase):
         goal = Thm([], Term.mk_all(x, Term.mk_implies(P(x), Q(x))))
         intros_tac = tactic.intros('x')
         pt = intros_tac.get_proof_term(thy, ProofTerm.sorry(goal))
+        prf = pt.export()
+        self.assertEqual(thy.check_proof(prf), goal)
+
+    def testInduct(self):
+        n = Var('n', natT)
+        goal = Thm([], Term.mk_equals(plus(n, zero), n))
+        induct_tac = tactic.var_induct('nat_induct', n)
+        pt = induct_tac.get_proof_term(thy, ProofTerm.sorry(goal))
         prf = pt.export()
         self.assertEqual(thy.check_proof(prf), goal)
 
