@@ -83,7 +83,7 @@ class LogicTest(unittest.TestCase):
             (neg(false), true),
         ]
 
-        thy = basic.loadTheory('logic')
+        thy = basic.load_theory('logic')
         for t, res in test_data:
             cv = logic.norm_bool_expr()
             prf = cv.get_proof_term(thy, t).export()
@@ -97,7 +97,7 @@ class LogicTest(unittest.TestCase):
             (conj(conj(conj(a, b), c), d), conj(a, b, c, d)),
         ]
 
-        thy = basic.loadTheory('logic')
+        thy = basic.load_theory('logic')
         for t, res in test_data:
             cv = logic.norm_conj_assoc()
             prf = cv.get_proof_term(thy, t).export()

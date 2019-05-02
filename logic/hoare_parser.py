@@ -112,7 +112,7 @@ def parse_hoare(s):
     return hoare_parser.parse(s)
 
 def process_file(input, output):
-    thy = basic.loadTheory('hoare')
+    thy = basic.load_theory('hoare')
 
     dn = os.path.dirname(os.path.realpath(__file__))
     with open(os.path.join(dn, 'examples/' + input + '.json'), encoding='utf-8') as a:

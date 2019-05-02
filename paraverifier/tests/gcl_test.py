@@ -12,7 +12,7 @@ from paraverifier import gcl
 from paraverifier.gcl import Para, Ident, NatV, BoolV
 from syntax import printer
 
-thy = basic.loadTheory("gcl")
+thy = basic.load_theory("gcl")
 eq = Term.mk_equals
 
 class GCLTest(unittest.TestCase):

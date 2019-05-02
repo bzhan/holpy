@@ -17,7 +17,7 @@ from syntax import parser
 loaded_theories = dict()
 
 
-def getInitTheory():
+def get_init_theory():
     """Returns a (fresh copy of) the initial theory. This is an
     extension of EmptyTheory, adding only the operator data field.
 
@@ -30,26 +30,26 @@ def getInitTheory():
 
     return thy
 
-def loadImportedTheory(imports, user=""):
+def load_imported_theory(imports, user=""):
     """Load imported theory according to the imports field in data."""
     if imports:
         # Has at least one import
         if len(imports) > 1:
             raise NotImplementedError
 
-        return copy(loadTheory(imports[0], user=user))
+        return copy(load_theory(imports[0], user=user))
     else:
-        return getInitTheory()
+        return get_init_theory()
 
-def loadTheory(theory_name, *, limit=None, user=""):
+def load_theory(theory_name, *, limit=None, user=""):
     """Load the theory with the given theory name. Optional limit is
     a pair (ty, name) specifying the first item that should not
     be loaded.
     
     """
     # If the theory is already loaded, return the theory.
-    if limit is None and theory_name in loaded_theories:
-        return loaded_theories[theory_name]
+    if limit is None and (theory_name, user) in loaded_theories:
+        return loaded_theories[(theory_name, user)]
 
     # Otherwise, open the corresponding file.
     if user == "":
@@ -71,10 +71,15 @@ def loadTheory(theory_name, *, limit=None, user=""):
         assert limit_i != -1, "Limit not found"
         content = content[:limit_i]
 
-    thy = loadImportedTheory(data['imports'], user=user)
+    thy = load_imported_theory(data['imports'], user=user)
     parser.parse_extensions(thy, content)
 
     if limit is None:
-        loaded_theories[theory_name] = thy
+        loaded_theories[(theory_name, user)] = thy
 
     return thy
+
+def clear_cache(user=""):
+    """Clear cached theories for the given user."""
+    global loaded_theories
+    loaded_theories = {k: v for k, v in loaded_theories.items() if k[1] != user}

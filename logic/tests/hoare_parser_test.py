@@ -8,7 +8,7 @@ from logic.hoare_parser import parse_hoare, process_file
 from syntax import parser
 from syntax import printer
 
-thy = basic.loadTheory('hoare')
+thy = basic.load_theory('hoare')
 
 
 class HoareParserTest(unittest.TestCase):

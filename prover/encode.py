@@ -13,7 +13,7 @@ from logic.proofterm import ProofTerm
 from logic import logic_macro
 from logic.conv import rewr_conv, every_conv, top_conv
 
-thy = basic.loadTheory('sat')
+thy = basic.load_theory('sat')
 
 conj = logic.mk_conj
 disj = logic.mk_disj

@@ -162,7 +162,7 @@ def init_empty_proof():
     """Initialize empty proof."""
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+        thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
         cell = ProofState.parse_init_state(thy, data)
         cells[data['id']] = cell
         return jsonify(cell.json_data())
@@ -175,7 +175,7 @@ def init_saved_proof():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         try:
-            thy = basic.loadTheory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+            thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
             cell = ProofState.parse_proof(thy, data)
             cells[data['id']] = cell
             return jsonify(cell.json_data())
@@ -398,7 +398,7 @@ def load_json_file():
     with open_file(filename, 'r') as f:
         f_data = json.load(f)
     if 'content' in f_data:
-        thy = basic.loadImportedTheory(f_data['imports'], user=user_info['username'])
+        thy = basic.load_imported_theory(f_data['imports'], user=user_info['username'])
         for data in f_data['content']:
             file_data_to_output(thy, data)
     else:
@@ -413,6 +413,7 @@ def save_file():
 
     with open_file(data['name'], 'w+') as f:
         json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
+    basic.clear_cache(user=user_info['username'])
 
     return jsonify({})
 
@@ -421,7 +422,7 @@ def save_file():
 def match_thm():
     """Match for hints to backward, forward, and rewrite steps."""
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.loadTheory(data['theory_name'], user=user_info['username'])
+    thy = basic.load_theory(data['theory_name'], user=user_info['username'])
     if data:
         cell = cells[data['id']]
         facts_id = data['facts_id']
@@ -448,7 +449,7 @@ def check_modify():
     with open_file(data['file_name'], 'r') as f:
         f_data = json.load(f)
     try:
-        thy = basic.loadImportedTheory(f_data['imports'], user_info['username'])
+        thy = basic.load_imported_theory(f_data['imports'], user_info['username'])
         for d in data['prev_list']:
             parser.parse_extension(thy, d)
         file_data_to_output(thy, data['content'])

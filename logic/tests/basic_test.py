@@ -22,22 +22,22 @@ g = Var("g", TFun(Ta,Ta))
 
 class BasicTest(unittest.TestCase):
     def testLoadTheory(self):
-        thy1 = basic.loadTheory('logic_base')
-        thy2 = basic.loadTheory('logic')
+        thy1 = basic.load_theory('logic_base')
+        thy2 = basic.load_theory('logic')
 
         self.assertEqual(thy1.get_theorem('conjI'), thy2.get_theorem('conjI'))
         self.assertRaises(TheoryException, thy1.get_theorem, 'conj_comm')
         self.assertIsInstance(thy2.get_theorem('conj_comm'), Thm)
 
     def testLoadTheoryWithLimit(self):
-        thy = basic.loadTheory('logic_base')
-        thy1 = basic.loadTheory('logic_base', limit=('thm.ax', 'conjD1'))
+        thy = basic.load_theory('logic_base')
+        thy1 = basic.load_theory('logic_base', limit=('thm.ax', 'conjD1'))
         self.assertEqual(thy.get_theorem('conjI'), thy1.get_theorem('conjI'))
         self.assertRaises(TheoryException, thy1.get_theorem, 'conjD1')
-        self.assertRaises(AssertionError, basic.loadTheory, 'logic_base', limit=('thm.ax', 'conj'))
+        self.assertRaises(AssertionError, basic.load_theory, 'logic_base', limit=('thm.ax', 'conj'))
 
     def testArgCombination(self):
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         macro = logic_macro.arg_combination_macro()
 
         x_eq_y = Term.mk_equals(x, y)
@@ -54,7 +54,7 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(rpt.prim_steps, 3)
 
     def testFunCombination(self):
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         macro = logic_macro.fun_combination_macro()
 
         f_eq_g = Term.mk_equals(f, g)
@@ -72,7 +72,7 @@ class BasicTest(unittest.TestCase):
 
     def testCombination(self):
         """Test arg and fun combination together using proofs."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
 
         prf = Proof(Term.mk_equals(f,g), Term.mk_equals(x,y))
         prf.add_item(2, "arg_combination", args=f, prevs=[1])
@@ -84,7 +84,7 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), th)
 
     def testBetaNorm(self):
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
 
         t = Term.mk_abs(x, f(x))
         prf = Proof(Term.mk_equals(t(x), y))
@@ -102,7 +102,7 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(rpt2.macro_steps, 1)
 
     def testApplyTheorem(self):
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         A = Var("A", boolT)
         B = Var("B", boolT)
 
@@ -123,7 +123,7 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(rpt.macro_steps, 1)
 
     def testRewriteGoal(self):
-        thy = basic.loadTheory('nat')
+        thy = basic.load_theory('nat')
 
         n = Var("n", nat.natT)
         eq = Term.mk_equals
@@ -145,7 +145,7 @@ class BasicTest(unittest.TestCase):
 
     def testConjComm(self):
         """Proof of commutativity of conjunction."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         A = Var("A", boolT)
         B = Var("B", boolT)
 
@@ -164,7 +164,7 @@ class BasicTest(unittest.TestCase):
 
     def testConjCommWithMacro(self):
         """Proof of commutativity of conjunction, with macros."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         A = Var("A", boolT)
         B = Var("B", boolT)
 
@@ -178,7 +178,7 @@ class BasicTest(unittest.TestCase):
 
     def testDisjComm(self):
         """Proof of commutativity of disjunction."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         A = Var("A", boolT)
         B = Var("B", boolT)
         disjAB = logic.mk_disj(A, B)
@@ -200,7 +200,7 @@ class BasicTest(unittest.TestCase):
 
     def testDisjCommWithMacro(self):
         """Proof of commutativity of disjunction, with macros."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         A = Var("A", boolT)
         B = Var("B", boolT)
         disjAB = logic.mk_disj(A, B)
@@ -220,7 +220,7 @@ class BasicTest(unittest.TestCase):
 
     def testAllConj(self):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         Ta = TVar("a")
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
@@ -250,7 +250,7 @@ class BasicTest(unittest.TestCase):
 
     def testAllConjWithMacro(self):
         """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x), using macros."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         Ta = TVar("a")
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
@@ -273,7 +273,7 @@ class BasicTest(unittest.TestCase):
 
     def testDoubleNeg(self):
         """Proof of A --> ~~A."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         A = Var("A", boolT)
         neg = logic.neg
 
@@ -292,7 +292,7 @@ class BasicTest(unittest.TestCase):
 
     def testDoubleNegInv(self):
         """Proof of ~~A --> A, requires classical axiom."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         A = Var("A", boolT)
         neg = logic.neg
 
@@ -319,7 +319,7 @@ class BasicTest(unittest.TestCase):
 
     def testDoubleNegInvWithMacro(self):
         """Proof of ~~A --> A, using macros."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         A = Var("A", boolT)
         neg = logic.neg
 
@@ -338,7 +338,7 @@ class BasicTest(unittest.TestCase):
 
     def testTrueAbsorb(self):
         """Proof of A --> true & A."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         A = Var("A", boolT)
 
         prf = Proof(A)
@@ -353,7 +353,7 @@ class BasicTest(unittest.TestCase):
         
     def testExistsConj(self):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         Ta = TVar("a")
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
@@ -400,7 +400,7 @@ class BasicTest(unittest.TestCase):
 
     def testExistsConjWithMacro(self):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x), using macros."""
-        thy = basic.loadTheory('logic_base')
+        thy = basic.load_theory('logic_base')
         Ta = TVar("a")
         A = Var("A", TFun(Ta, boolT))
         B = Var("B", TFun(Ta, boolT))
@@ -427,7 +427,7 @@ class BasicTest(unittest.TestCase):
 
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
-        thy = basic.loadTheory('nat')
+        thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
         eq = Term.mk_equals
         prf = Proof()
@@ -450,7 +450,7 @@ class BasicTest(unittest.TestCase):
 
     def testAddZeroRightWithMacro(self):
         """Proof of n + 0 = n by induction, using macros."""
-        thy = basic.loadTheory('nat')
+        thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
         eq = Term.mk_equals
         plus = nat.plus
@@ -470,7 +470,7 @@ class BasicTest(unittest.TestCase):
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
-        thy = basic.loadTheory('nat')
+        thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
         eq = Term.mk_equals
         prf = Proof()
@@ -495,7 +495,7 @@ class BasicTest(unittest.TestCase):
 
     def testMultZeroRightWithMacro(self):
         """Proof of n * 0 = 0 by induction, using macros."""
-        thy = basic.loadTheory('nat')
+        thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
         eq = Term.mk_equals
         zero = nat.zero

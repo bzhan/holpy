@@ -17,7 +17,7 @@ from syntax import printer
 from server import server
 from server.server import ProofState
 
-thy = basic.loadTheory('logic_base')
+thy = basic.load_theory('logic_base')
 
 A = Var("A", boolT)
 B = Var("B", boolT)
@@ -202,7 +202,7 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(len(state.prf.items[0].subproof.items), 4)
 
     def testApplyInduction(self):
-        thy = basic.loadTheory('nat')
+        thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
         state.apply_induction(0, "nat_induct", "n")
@@ -263,7 +263,7 @@ class ServerTest(unittest.TestCase):
 
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
-        thy = basic.loadTheory('nat')
+        thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
         state.apply_induction(0, "nat_induct", "n")
@@ -276,7 +276,7 @@ class ServerTest(unittest.TestCase):
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
-        thy = basic.loadTheory('nat')
+        thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.times(n, nat.zero), nat.zero))
         state.apply_induction(0, "nat_induct", "n")
@@ -289,7 +289,7 @@ class ServerTest(unittest.TestCase):
 
     def testAppendNil(self):
         """Proof of xs @ [] = xs by induction."""
-        thy = basic.loadTheory('list')
+        thy = basic.load_theory('list')
         Ta = TVar("a")
         xs = Var("xs", list.listT(Ta))
         nil = list.nil(Ta)
@@ -303,7 +303,7 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(list.mk_append(xs, nil), xs))
 
     def testRewriteGoalThms(self):
-        thy = basic.loadTheory('nat')
+        thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
         ths = state.rewrite_goal_thms((0,))
@@ -322,7 +322,7 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
 
     def testFunUpdTriv(self):
-        thy = basic.loadTheory('function')
+        thy = basic.load_theory('function')
         Ta = TVar("a")
         Tb = TVar("b")
         f = Var("f", TFun(Ta, Tb))
@@ -349,7 +349,7 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(state.check_proof(no_gaps=True), Thm([], prop))
 
     def testAVal(self):
-        thy = basic.loadTheory('expr')
+        thy = basic.load_theory('expr')
         th = thy.get_theorem('aval_test2')
         state = ProofState.init_state(thy, [], [], th.prop)
         state.rewrite_goal(0, "aval_def_3")

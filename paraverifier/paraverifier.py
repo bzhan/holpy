@@ -230,7 +230,7 @@ def load_system(filename):
     with open(os.path.join(dn, 'examples/' + filename + '.json'), encoding='utf-8') as a:
         data = json.load(a)
 
-    thy = basic.loadTheory('gcl')
+    thy = basic.load_theory('gcl')
 
     name = data['name']
     vars = []

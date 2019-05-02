@@ -6,7 +6,7 @@ from logic import basic
 from syntax import parser
 from prover import encode, sat
 
-thy = basic.loadTheory('logic_base')
+thy = basic.load_theory('logic_base')
 
 class SATTest(unittest.TestCase):
     def testDisplayCNF(self):

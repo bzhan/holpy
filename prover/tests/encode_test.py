@@ -40,7 +40,7 @@ class EncodeTest(unittest.TestCase):
         pt = encode.get_encode_proof(th)
         self.assertEqual(pt.th, th)
         
-        thy = basic.loadTheory('sat')
+        thy = basic.load_theory('sat')
         rpt = report.ProofReport()
         self.assertEqual(thy.check_proof(pt.export(), rpt, check_level=1), pt.th)
         self.assertEqual(len(rpt.gaps), 0)

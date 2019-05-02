@@ -15,7 +15,7 @@ natT = nat.natT
 zero = nat.zero
 one = nat.one
 
-thy = basic.loadTheory('expr')
+thy = basic.load_theory('expr')
 
 class ExprTest(unittest.TestCase):
     def testProveEvalI(self):

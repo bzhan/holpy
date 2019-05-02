@@ -10,7 +10,7 @@ from logic import nat
 from logic import list
 from syntax.infertype import type_infer, infer_printed_type, TypeInferenceException
 
-thy = basic.loadTheory('list')
+thy = basic.load_theory('list')
 
 Ta = TVar("a")
 listT = list.listT

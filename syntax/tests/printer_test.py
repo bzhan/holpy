@@ -12,7 +12,7 @@ from logic import basic
 from logic import function
 from syntax import printer
 
-thy = basic.loadTheory('list')
+thy = basic.load_theory('list')
 
 A = Var("A", boolT)
 B = Var("B", boolT)
@@ -180,7 +180,7 @@ class PrinterTest(unittest.TestCase):
             (function.mk_fun_upd(f, a, b, b, a), "(f)(a := b, b := a)"),
         ]
 
-        thy = basic.loadTheory('function')
+        thy = basic.load_theory('function')
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
 

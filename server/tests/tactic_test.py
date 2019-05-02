@@ -13,7 +13,7 @@ from logic.nat import natT, plus, zero
 from server import tactic
 from syntax import printer
 
-thy = basic.loadTheory('nat')
+thy = basic.load_theory('nat')
 
 class TacticTest(unittest.TestCase):
     def testRule(self):

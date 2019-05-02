@@ -12,7 +12,7 @@ from logic import basic
 from syntax.printer import print_term, print_type
 import syntax.parser as parser
 
-thy = basic.loadTheory('list')
+thy = basic.load_theory('list')
 
 Ta = TVar("a")
 ctxt = {
@@ -207,7 +207,7 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(print_term(thy, t), s)
 
     def testParseFunction(self):
-        thy = basic.loadTheory('function')
+        thy = basic.load_theory('function')
         test_data = [
             ("(f)(a := b)", "'a => 'a"),
             ("(f)(a := b, b := a)", "'a => 'a"),
@@ -221,7 +221,7 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(print_term(thy, t), s)
 
     def testInferType2(self):
-        thy = basic.loadTheory('function')
+        thy = basic.load_theory('function')
         test_data = [
             ("(%x. 0)(1 := 7)", "nat => nat")
         ]

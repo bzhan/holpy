@@ -10,7 +10,7 @@ from logic import logic
 from logic.nat import zero, one, bit0, bit1
 from syntax import parser
 
-thy = basic.loadTheory('nat')
+thy = basic.load_theory('nat')
 
 class NatTest(unittest.TestCase):
     def testPlus(self):

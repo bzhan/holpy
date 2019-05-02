@@ -14,7 +14,7 @@ from logic import basic
 from syntax import parser
 from syntax import printer
 
-thy = basic.loadTheory('hoare')
+thy = basic.load_theory('hoare')
 
 natT = nat.natT
 natFunT = TFun(natT, natT)

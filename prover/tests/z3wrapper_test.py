@@ -10,7 +10,7 @@ from syntax import parser
 from syntax import printer
 from prover import z3wrapper
 
-thy = basic.loadTheory('nat')
+thy = basic.load_theory('nat')
 
 natT = nat.natT
 

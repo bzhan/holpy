@@ -9,7 +9,7 @@ from logic.nat import natT, to_binary
 from logic import logic
 from logic import function
 
-thy = basic.loadTheory("gcl")
+thy = basic.load_theory("gcl")
 
 varType = Type("varType")
 Ident = Const("Ident", TFun(natT, varType))

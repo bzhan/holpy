@@ -12,7 +12,7 @@ from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, botto
     arg_conv, rewr_conv, ConvException
 from logic import nat
 
-thy = basic.loadTheory('logic_base')
+thy = basic.load_theory('logic_base')
 abs = Term.mk_abs
 eq = Thm.mk_equals
 

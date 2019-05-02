@@ -19,7 +19,7 @@ a2 = Var("a2", Ta)
 b1 = Var("b1", Ta)
 b2 = Var("b2", Ta)
 
-thy = basic.loadTheory('function')
+thy = basic.load_theory('function')
 
 natT = nat.natT
 zero = nat.zero

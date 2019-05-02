@@ -9,7 +9,7 @@ from kernel.proof import Proof
 from logic import basic
 from logic.proofterm import ProofTerm
 
-thy = basic.loadTheory('logic_base')
+thy = basic.load_theory('logic_base')
 
 Ta = TVar("a")
 x = Var("x", Ta)
