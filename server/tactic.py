@@ -94,7 +94,7 @@ class intros(Tactic):
     def get_proof_term(self, thy, goal):
         vars, As, C = logic.strip_all_implies(goal.prop, self.var_names)
         
-        pt = ProofTerm.sorry(Thm(As, C))
+        pt = ProofTerm.sorry(Thm(list(goal.hyps) + As, C))
         ptAs = [ProofTerm.assume(A) for A in As]
         ptVars = [ProofTerm.variable(var.name, var.T) for var in vars]
         return ProofTermDeriv('intros', thy, None, ptVars + ptAs + [pt])

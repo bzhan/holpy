@@ -391,39 +391,17 @@ class ProofState():
 
         cur_item.rule = "subproof"
         cur_item.subproof = Proof()
-        subprf = cur_item.subproof
 
-        # Variables
-        for i, var in enumerate(vars):
-            cur_id = id + (i,)
-            subprf.add_item(cur_id, "variable", args=(var.name, var.T))
-
-        # Assumptions
-        for i, A in enumerate(As):
-            cur_id = id + (len(vars) + i,)
-            subprf.add_item(cur_id, "assume", args=A, th=Thm([A], A))
-
-        # Goal
-        goal = Thm(list(cur_item.th.hyps) + As, C)
-        goal_id = id + (len(vars) + len(As), )
-        subprf.add_item(goal_id, "sorry", th=goal)
-
-        # implies_intr invocations
-        for i, A in enumerate(reversed(As)):
-            cur_id = id + (len(vars) + len(As) + i + 1,)
-            prev_id = id + (len(vars) + len(As) + i,)
-            subprf.add_item(cur_id, "implies_intr", args=A, prevs=[prev_id])
-
-        # forall_intr invocations
-        for i, var in enumerate(reversed(vars)):
-            cur_id = id + (len(vars) + 2 * len(As) + i + 1,)
-            prev_id = id + (len(vars) + 2 * len(As) + i,)
-            subprf.add_item(cur_id, "forall_intr", args=var, prevs=[prev_id])
+        intros_tac = tactic.intros(*names)
+        pt = intros_tac.get_proof_term(self.thy, cur_item.th)
+        cur_item.subproof = pt.export(prefix=id)
+        self.check_proof(compute_only=True)
 
         # Test if the goal is already proved
-        new_id = self.find_goal(goal, goal_id)
-        if new_id is not None:
-            self.replace_id(goal_id, new_id)
+        for item in cur_item.subproof.items:
+            new_id = self.find_goal(self.get_proof_item(item.id).th, item.id)
+            if new_id is not None:
+                self.replace_id(item.id, new_id)
 
     def apply_induction(self, id, th_name, var):
         """Apply induction using the given theorem and on the given

@@ -199,7 +199,7 @@ class ServerTest(unittest.TestCase):
         state.introduction(0, ["x"])
         self.assertEqual(state.check_proof(), Thm([], Term.mk_all(x, imp(A(x), B(x)))))
         self.assertEqual(len(state.prf.items), 1)
-        self.assertEqual(len(state.prf.items[0].subproof.items), 5)
+        self.assertEqual(len(state.prf.items[0].subproof.items), 4)
 
     def testApplyInduction(self):
         thy = basic.loadTheory('nat')
