@@ -172,8 +172,13 @@ class rewrite_goal_macro(ProofTermMacro):
         cv = then_conv(top_conv(rewr_conv(eq_pt)), top_conv(beta_conv()))
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
-        pt = ProofTerm.equal_elim(pt, pts[0])  # goal
-        for A in pts[1:]:
+        if Term.is_equals(pt.prop.lhs) and pt.prop.lhs.lhs == pt.prop.lhs.rhs:
+            pt = ProofTerm.equal_elim(pt, ProofTerm.reflexive(pt.prop.lhs.lhs))
+        else:
+            pt = ProofTerm.equal_elim(pt, pts[0])  # goal
+            pts = pts[1:]
+
+        for A in pts:
             pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.prop, pt), A)
         return pt
 

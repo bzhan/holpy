@@ -79,7 +79,6 @@ class TacticTest(unittest.TestCase):
         rewrite_tac = tactic.rewrite('plus_def_1')
         pt = rewrite_tac.get_proof_term(thy, ProofTerm.sorry(goal))
         prf = pt.export()
-        self.assertEqual(prf.items[0], ProofItem(0, 'sorry', th=Thm.mk_equals(n, n)))
         self.assertEqual(thy.check_proof(prf), goal)
 
     def testRewrite2(self):
@@ -91,8 +90,7 @@ class TacticTest(unittest.TestCase):
         rewrite_tac = tactic.rewrite('if_P')
         pt = rewrite_tac.get_proof_term(thy, ProofTerm.sorry(goal))
         prf = pt.export()
-        self.assertEqual(prf.items[0], ProofItem(0, 'sorry', th=Thm.mk_equals(b, b)))
-        self.assertEqual(prf.items[1], ProofItem(1, 'sorry', th=Thm.mk_equals(a, a)))
+        self.assertEqual(prf.items[0], ProofItem(0, 'sorry', th=Thm.mk_equals(a, a)))
         self.assertEqual(thy.check_proof(prf), goal)
 
     def testCases(self):

@@ -265,10 +265,9 @@ class ServerTest(unittest.TestCase):
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
         state.apply_induction(0, "nat_induct", "n")
         state.rewrite_goal(0, "plus_def_1")
-        state.set_line(0, "reflexive", args=nat.zero)
-        state.introduction(2, names=["n"])
-        state.rewrite_goal((2, 2), "plus_def_2")
-        state.set_line((2, 2), "arg_combination", args=nat.Suc, prevs=[(2, 1)])
+        state.introduction(1, names=["n"])
+        state.rewrite_goal((1, 2), "plus_def_2")
+        state.set_line((1, 2), "arg_combination", args=nat.Suc, prevs=[(1, 1)])
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.plus(n, nat.zero), n))
 
     def testMultZeroRight(self):
@@ -278,10 +277,9 @@ class ServerTest(unittest.TestCase):
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.times(n, nat.zero), nat.zero))
         state.apply_induction(0, "nat_induct", "n")
         state.rewrite_goal(0, "times_def_1")
-        state.set_line(0, "reflexive", args=nat.zero)
-        state.introduction(2, names=["n"])
-        state.rewrite_goal((2, 2), "times_def_2")
-        state.rewrite_goal((2, 2), "plus_def_1")
+        state.introduction(1, names=["n"])
+        state.rewrite_goal((1, 2), "times_def_2")
+        state.rewrite_goal((1, 2), "plus_def_1")
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.times(n, nat.zero), nat.zero))
 
     def testAppendNil(self):
@@ -314,8 +312,7 @@ class ServerTest(unittest.TestCase):
         if_t = logic.mk_if(eq_a, b, a)
         state = ProofState.init_state(thy, [a, b], [], Term.mk_equals(if_t, b))
         state.rewrite_goal(0, "if_P")
-        state.set_line(0, "reflexive", args=b)
-        state.set_line(1, "reflexive", args=a)
+        state.set_line(0, "reflexive", args=a)
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
 
     def testFunUpdTriv(self):
@@ -342,7 +339,6 @@ class ServerTest(unittest.TestCase):
         state.set_line((0, 3, 2), "arg_combination", args=f, prevs=[(0, 3, 1)])
         state.introduction((0, 4))
         state.rewrite_goal((0, 4, 1), "if_not_P")
-        state.set_line((0, 4, 1), "reflexive", args=f(x))
         self.assertEqual(state.check_proof(no_gaps=True), Thm([], prop))
 
     def testAVal(self):

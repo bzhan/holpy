@@ -142,11 +142,15 @@ class rewrite(Tactic):
         cv = then_conv(top_conv(rewr_conv(self.th_name)),
                        top_conv(beta_conv()))
         new_goal = cv.eval(thy, C).prop.rhs
-        new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
 
         new_As = list(set(cv.eval(thy, C).hyps) - set(init_As))
         new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
-        return ProofTermDeriv('rewrite_goal', thy, args=(self.th_name, C), prevs=[new_goal_pts] + new_As_pts)
+        if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
+            return ProofTermDeriv('rewrite_goal', thy, args=(self.th_name, C), prevs=new_As_pts)
+        else:
+            new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
+            return ProofTermDeriv('rewrite_goal', thy, args=(self.th_name, C), prevs=[new_goal_pts] + new_As_pts)
+
 
 class cases(Tactic):
     """Case checking on an expression."""
