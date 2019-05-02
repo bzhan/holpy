@@ -62,6 +62,7 @@ class beta_norm_macro(ProofTermMacro):
 class intros_macro(ProofTermMacro):
     """Introduce assumptions and variables."""
     def get_proof_term(self, thy, args, prevs):
+        assert len(prevs) >= 2, "intros_macro"
         pt, intros = prevs[-1], prevs[:-1]        
         for intro in reversed(intros):
             if intro.th.is_reflexive():

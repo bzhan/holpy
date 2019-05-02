@@ -159,6 +159,7 @@
                 display_theory_items();
             }
             save_json_file(filename);
+            alert('Saved ' + json_files[filename].content[item_id].name + '.');
         });
 
         // Reset proof to original status.
@@ -868,7 +869,8 @@
                 var id = get_selected_id();
                 cells[id].instructions = item.instructions;
                 cells[id].index = 0;
-                display_instructions();
+                if (cells[id].instructions !== undefined)
+                    display_instructions();
             }
         });
     }

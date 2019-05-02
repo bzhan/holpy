@@ -116,9 +116,7 @@ class ProofState():
         ...
         n-1: assume An
         n: C by sorry
-        n+1: An --> C by implies_intr n-1 from n
-        ...
-        2n: A1 --> ... --> An --> C by implies_intr 0 from 2n-1.
+        n+1: A1 --> ... --> An --> C by intros from 0, 1, ..., n.
 
         """
         assert all(isinstance(var, Term) for var in vars), "init_state: vars must be terms."
@@ -130,8 +128,8 @@ class ProofState():
         state.prf = Proof(*assums)
         n = len(assums)
         state.prf.add_item(n, "sorry", th=Thm(assums, concl))
-        for i, assum in enumerate(reversed(assums), 0):
-            state.prf.add_item(n + i + 1, "implies_intr", args=assum, prevs=[n+i])
+        if len(assums) > 0:
+            state.prf.add_item(n + 1, "intros", prevs=range(n+1))
         state.check_proof(compute_only=True)
         return state
 

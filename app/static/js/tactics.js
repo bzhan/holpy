@@ -98,7 +98,6 @@ function add_line_after(cm) {
             data: data,
             success: function (result) {
                 display_checked_proof(result, line_no);
-                cm.setCursor(line_number + 1, Number.MAX_SAFE_INTEGER);
             }
         })
     })
@@ -244,6 +243,10 @@ function match_thm() {
     if (goal === -1) {
         return;
     }
+    facts.forEach(val => {
+        if (cells[id]['proof'][val].th === '')
+            return;
+    });
 
     var facts_id = [];
     facts.forEach(val => {
