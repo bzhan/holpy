@@ -447,6 +447,7 @@
         } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
             delete data.prop_hl;
         } else if (data.ty === 'type.ind') {
+            delete data.type_hl;
             delete data.argsT;
             delete data.ext;
         } else if (data.ty === 'def') {
@@ -899,7 +900,8 @@
                 var id = get_selected_id();
                 cells[id].instructions = item.instructions;
                 cells[id].index = 0;
-                display_instructions();
+                if (cells[id].instructions !== undefined)
+                    display_instructions();
             }
         })
     }

@@ -5,7 +5,7 @@ import os, sqlite3, shutil
 import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
-from kernel.type import HOLType
+from kernel.type import HOLType, TVar, Type
 from syntax import parser, printer
 from server.server import ProofState
 from logic import basic
@@ -361,12 +361,16 @@ def file_data_to_output(thy, data):
                 ext_output.append(s)
         data['ext'] = ext_output
 
+        # Obtain type to be defined
+        T = Type(data['name'], *(TVar(nm) for nm in data['args']))
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+
         # Obtain types of arguments for each constructor
         data['argsT'] = dict()
         for i, constr in enumerate(data['constrs']):
             T = parser.parse_type(thy, constr['type'])
             argsT, _ = HOLType.strip_type(T)
-            argsT = [printer.print_type(thy, a, unicode=True, highlight=True) for a in argsT]
+            argsT = [printer.print_type(thy, argT, unicode=True, highlight=True) for argT in argsT]
             data['argsT'][str(i)] = argsT
 
     elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
