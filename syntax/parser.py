@@ -344,7 +344,7 @@ def parse_extension(thy, data):
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
         ext.add_extension(extension.Theorem(data['name'] + "_def", Thm([], prop)))
-        ext.add_extension(extension.Attribute(data['name'] + "_def", 'int_rewrite'))
+        ext.add_extension(extension.Attribute(data['name'] + "_def", 'hint_rewrite'))
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parse_vars(thy, data['vars'])

@@ -151,9 +151,10 @@ def login():
 # Replace user data with library data
 @app.route('/api/refresh-files', methods=['POST'])
 def refresh_files():
-    user_path = './users/' + user_info['username']
-    shutil.rmtree(user_path)
-    shutil.copytree('./library', user_path)
+    if user_info['username']:
+        user_path = './users/' + user_info['username']
+        shutil.rmtree(user_path)
+        shutil.copytree('./library', user_path)
     return jsonify({})
 
 
