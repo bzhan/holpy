@@ -354,6 +354,20 @@ def apply_cases():
         }
         return jsonify(error)
 
+@app.route('/api/apply-prev', methods=['POST'])
+def apply_prev():
+    data = json.loads(request.get_data().decode("utf-8"))
+    cell = cells[data['id']]
+    try:
+        cell.apply_prev(data['line_id'], data['prev_id'])
+        return jsonify(cell.json_data())
+    except Exception as e:
+        error = {
+            "failed": e.__class__.__name__,
+            "message": str(e)
+        }
+        return jsonify(error)
+
 def print_extension(thy, ext):
     """Print given extension."""
     if isinstance(ext, AxType):

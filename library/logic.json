@@ -1168,6 +1168,15 @@
             "prop": "(~false) = true",
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "name": "pierce",
+            "prop": "((A --> B) --> A) --> A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
         }
     ],
     "description": "Basic results in logic",

@@ -467,3 +467,11 @@ class ProofState():
 
         id = id_force_tuple(id)
         self.apply_tactic(id, tactic.cases(A))
+
+    def apply_prev(self, id, prev):
+        """Apply previously proved rule."""
+
+        id = id_force_tuple(id)
+        prev = id_force_tuple(prev)
+        prev = ProofTermAtom(prev, self.get_proof_item(prev).th)
+        self.apply_tactic(id, tactic.apply_prev(prev), prevs=[prev])

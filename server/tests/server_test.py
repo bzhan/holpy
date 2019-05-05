@@ -364,6 +364,17 @@ class ServerTest(unittest.TestCase):
         state.apply_backward_step(1, "nat_zero_Suc_neq")
         self.assertEqual(state.check_proof(no_gaps=True), th)
 
+    def testPierce(self):
+        thy = basic.load_theory('logic_base')
+        state = ProofState.init_state(thy, [A, B], [imp(imp(A, B), A)], A)
+        state.apply_cases(1, A)
+        state.introduction(1)
+        state.introduction(2)
+        state.apply_prev((2, 1), 0)
+        state.introduction((2, 1))
+        state.apply_backward_step((2, 1, 1), 'negE_gen', prevs=[(2, 0)])
+        self.assertEqual(state.check_proof(no_gaps=True), Thm([], imp(imp(imp(A, B), A), A)))
+
 
 if __name__ == "__main__":
     unittest.main()

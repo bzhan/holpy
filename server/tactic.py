@@ -181,6 +181,15 @@ class rewrite_goal_with_prev(Tactic):
             new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
             return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[self.pt, new_goal_pts] + new_As_pts)
 
+class apply_prev(Tactic):
+    def __init__(self, pt):
+        self.pt = pt
+
+    def get_proof_term(self, thy, goal):
+        assert self.pt.concl == goal.prop, "apply_prev"
+        As_pts = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in self.pt.assums]
+        return ProofTerm.implies_elim(self.pt, *As_pts)
+
 class cases(Tactic):
     """Case checking on an expression."""
     def __init__(self, A):

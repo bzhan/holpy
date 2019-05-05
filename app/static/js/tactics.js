@@ -252,6 +252,32 @@ function apply_cases(cm) {
     })
 }
 
+function apply_prev() {
+    $(document).ready(function () {
+        var id = get_selected_id();
+        var line_no = cells[id].goal;
+        if (cells[id].facts.size !== 1)
+            return;
+        var fact_no;
+        cells[id].facts.forEach(v => fact_no = v);
+        var input = {
+            'id': id,
+            'line_id': cells[id]['proof'][line_no]['id'],
+            'prev_id': cells[id]['proof'][fact_no]['id']
+        }
+        display_running();
+
+        $.ajax({
+            url: "/api/apply-prev",
+            type: "POST",
+            data: JSON.stringify(input),
+            success: function (result) {
+                display_checked_proof(result, line_no);
+            }
+        })
+    })
+}
+
 // Split off the first token according to the delimiter.
 function split_one(s, delimiter) {
     arr = s.split(delimiter);
