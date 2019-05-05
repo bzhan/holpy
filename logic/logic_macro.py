@@ -182,6 +182,33 @@ class rewrite_goal_macro(ProofTermMacro):
             pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.prop, pt), A)
         return pt
 
+class rewrite_goal_with_prev_macro(ProofTermMacro):
+    def __init__(self, *, backward=False):
+        self.level = 1
+        self.backward = backward
+        self.sig = Term
+
+    def get_proof_term(self, thy, args, pts):
+        assert isinstance(args, Term), "rewrite_goal_macro: signature"
+
+        goal = args
+        eq_pt = pts[0]
+        pts = pts[1:]
+        if self.backward:
+            eq_pt = ProofTerm.symmetric(eq_pt)
+        cv = then_conv(top_conv(rewr_conv(eq_pt, match_vars=False)), top_conv(beta_conv()))
+        pt = cv.get_proof_term(thy, goal)  # goal = th.prop
+        pt = ProofTerm.symmetric(pt)  # th.prop = goal
+        if Term.is_equals(pt.prop.lhs) and pt.prop.lhs.lhs == pt.prop.lhs.rhs:
+            pt = ProofTerm.equal_elim(pt, ProofTerm.reflexive(pt.prop.lhs.rhs))
+        else:
+            pt = ProofTerm.equal_elim(pt, pts[0])
+            pts = pts[1:]
+
+        for A in pts:
+            pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.prop, pt), A)
+        return pt
+
 def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
     """Wrapper for apply_theorem and apply_theorem_for macros.
 
@@ -216,5 +243,7 @@ macro.global_macros.update({
     "apply_theorem": apply_theorem_macro(),
     "apply_theorem_for": apply_theorem_macro(with_inst=True),
     "rewrite_goal": rewrite_goal_macro(),
-    "rewrite_back_goal": rewrite_goal_macro(backward=True)
+    "rewrite_back_goal": rewrite_goal_macro(backward=True),
+    "rewrite_goal_with_prev": rewrite_goal_with_prev_macro(),
+    "rewrite_back_goal_with_prev": rewrite_goal_with_prev_macro(backward=True),
 })

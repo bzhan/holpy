@@ -273,7 +273,7 @@ def apply_forall_elim():
             }
             return jsonify(error)
     return jsonify({})
-        
+
 
 @app.route('/api/apply-induction', methods=['POST'])
 def apply_induction():
@@ -294,6 +294,23 @@ def rewrite_goal():
         theorem = data['theorem']
         try:
             cell.rewrite_goal(data['line_id'], theorem)
+            return jsonify(cell.json_data())
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+            return jsonify(error)
+    return jsonify({})
+
+
+@app.route('/api/rewrite-goal-with-prev', methods=['POST'])
+def rewrite_goal_with_prev():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells[data['id']]
+        try:
+            cell.rewrite_goal_with_prev(data['line_id'], data['prev_id'])
             return jsonify(cell.json_data())
         except Exception as e:
             error = {

@@ -232,6 +232,14 @@
             "ty": "macro"
         },
         {
+            "name": "rewrite_goal_with_prev",
+            "ty": "macro"
+        },
+        {
+            "name": "rewrite_back_goal_with_prev",
+            "ty": "macro"
+        },
+        {
             "name": "classical_cases",
             "num_gaps": 0,
             "proof": [

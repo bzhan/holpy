@@ -277,7 +277,7 @@ class ServerTest(unittest.TestCase):
         state.rewrite_goal(0, "plus_def_1")
         state.introduction(1, names=["n"])
         state.rewrite_goal((1, 2), "plus_def_2")
-        state.set_line((1, 2), "arg_combination", args=nat.Suc, prevs=[(1, 1)])
+        state.rewrite_goal_with_prev((1, 2), (1, 1))
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.plus(n, nat.zero), n))
 
     def testMultZeroRight(self):
@@ -304,7 +304,7 @@ class ServerTest(unittest.TestCase):
         state.introduction(1, names=["x", "xs"])
         state.rewrite_goal((1, 3), "append_def_2")
         self.assertEqual(state.get_ctxt((1, 3)), {'x': Ta, 'xs': list.listT(Ta)})
-        state.set_line((1, 3), "arg_combination", args=list.cons(Ta)(Var("x", Ta)), prevs=[(1, 2)])
+        state.rewrite_goal_with_prev((1, 3), (1, 2))
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(list.mk_append(xs, nil), xs))
 
     def testRewriteGoalThms(self):
@@ -346,7 +346,7 @@ class ServerTest(unittest.TestCase):
         state.rewrite_goal((0, 3, 1), "if_P")
         state.add_line_after((0, 3, 0))
         state.set_line((0, 3, 1), "symmetric", prevs=[(0, 3, 0)])
-        state.set_line((0, 3, 2), "arg_combination", args=f, prevs=[(0, 3, 1)])
+        state.rewrite_goal_with_prev((0, 3, 2), (0, 3, 1))
         state.introduction((0, 4))
         state.rewrite_goal((0, 4, 1), "if_not_P")
         self.assertEqual(state.check_proof(no_gaps=True), Thm([], prop))

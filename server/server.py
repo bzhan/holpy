@@ -454,6 +454,14 @@ class ProofState():
         id = id_force_tuple(id)
         self.apply_tactic(id, tactic.rewrite(th_name))
 
+    def rewrite_goal_with_prev(self, id, prev):
+        """Apply existence fact to the given goal."""
+
+        id = id_force_tuple(id)
+        prev = id_force_tuple(prev)
+        prev = ProofTermAtom(prev, self.get_proof_item(prev).th)
+        self.apply_tactic(id, tactic.rewrite_goal_with_prev(prev), prevs=[prev])
+
     def apply_cases(self, id, A):
         """Apply case analysis on A."""
 

@@ -212,6 +212,8 @@
 
         $('#apply-forall-elim').on("click", apply_forall_elim);
 
+        $('#rewrite-goal-with-prev').on("click", apply_rewrite_goal_with_prev);
+
         $('#add-line-after').on("click", function () {
             add_line_after(get_selected_editor());
         });

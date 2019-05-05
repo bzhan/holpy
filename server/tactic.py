@@ -162,6 +162,24 @@ class rewrite(Tactic):
             new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
             return ProofTermDeriv('rewrite_goal', thy, args=(self.th_name, C), prevs=[new_goal_pts] + new_As_pts)
 
+class rewrite_goal_with_prev(Tactic):
+    def __init__(self, pt):
+        self.pt = pt
+
+    def get_proof_term(self, thy, goal):
+        init_As = goal.hyps
+        C = goal.prop
+        cv = then_conv(top_conv(rewr_conv(self.pt, match_vars=False)),
+                       top_conv(beta_conv()))
+        new_goal = cv.eval(thy, C).prop.rhs
+
+        new_As = list(set(cv.eval(thy, C).hyps) - set(init_As))
+        new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
+        if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
+            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[self.pt] + new_As_pts)
+        else:
+            new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
+            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[self.pt, new_goal_pts] + new_As_pts)
 
 class cases(Tactic):
     """Case checking on an expression."""
