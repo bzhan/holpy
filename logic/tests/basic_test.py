@@ -130,8 +130,7 @@ class BasicTest(unittest.TestCase):
         zero = nat.zero
         plus = nat.mk_plus
         prf = Proof()
-        prf.add_item(0, "reflexive", args=zero)
-        prf.add_item(1, "rewrite_goal", args=("plus_def_1", eq(plus(zero,zero),zero)), prevs=[0])
+        prf.add_item(0, "rewrite_goal", args=("plus_def_1", eq(plus(zero,zero),zero)))
 
         th = Thm([], eq(plus(zero,zero),zero))
         rpt = ProofReport()
@@ -140,7 +139,7 @@ class BasicTest(unittest.TestCase):
 
         rpt2 = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt2, check_level=1), th)
-        self.assertEqual(rpt2.prim_steps, 1)
+        self.assertEqual(rpt2.prim_steps, 0)
         self.assertEqual(rpt2.macro_steps, 1)
 
     def testConjComm(self):
@@ -415,8 +414,8 @@ class BasicTest(unittest.TestCase):
         prf.add_item(1, "assume", args=conjAB)
         prf.add_item(2, "apply_theorem", args="conjD1", prevs=[1])
         prf.add_item(3, "apply_theorem", args="conjD2", prevs=[1])
-        prf.add_item(4, "apply_theorem", args="exI", prevs=[2])
-        prf.add_item(5, "apply_theorem", args="exI", prevs=[3])
+        prf.add_item(4, "apply_theorem_for", args=("exI", {}, {'P': A, 'a': x}), prevs=[2])
+        prf.add_item(5, "apply_theorem_for", args=("exI", {}, {'P': B, 'a': x}), prevs=[3])
         prf.add_item(6, "apply_theorem", args="conjI", prevs=[4, 5])
         prf.add_item(7, "implies_intr", args=conjAB, prevs=[6])
         prf.add_item(8, "forall_intr", args=x, prevs=[7])

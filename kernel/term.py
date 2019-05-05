@@ -431,6 +431,22 @@ class Term():
         else:
             raise TermSubstitutionException()
 
+    def beta_norm(self):
+        """Normalize self using beta-conversion."""
+        if self.is_var() or self.is_const() or self.is_bound():
+            return self
+        elif self.is_comb():
+            f = self.fun.beta_norm()
+            x = self.arg.beta_norm()
+            if f.is_abs():
+                return f(x).beta_conv()
+            else:
+                return f(x)
+        elif self.is_abs():
+            return Abs(self.var_name, self.var_T, self.body.beta_norm())
+        else:
+            raise TypeError()
+
     def occurs_var(self, t):
         """Whether the variable t occurs in self."""
         if self.is_var():

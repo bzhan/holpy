@@ -29,6 +29,46 @@ conj = logic.mk_conj
 exists = logic.mk_exists
 
 class MatcherTest(unittest.TestCase):
+    def testToInternalVars(self):
+        test_data = [
+            (Var("x", TVar("a")), Var("_x", TVar("_a"))),
+            (Var("x", natT), Var("_x", natT)),
+            (Const("x", TVar("a")), Const("x", TVar("_a"))),
+            (Const("x", natT), Const("x", natT)),
+            (Abs("x", TVar("a"), Var("y", TVar("b"))), Abs("x", TVar("_a"), Var("_y", TVar("_b")))),
+        ]
+
+        for t, res in test_data:
+            self.assertEqual(matcher.to_internal_vars(t), res)
+
+    def testToInternalInstsp(self):
+        test_data = [
+            (({"a": TVar("a")}, {"x": Var("x", TVar("a"))}),
+             ({"_a": TVar("a")}, {"_x": Var("x", TVar("a"))})),
+        ]
+
+        for instsp, res in test_data:
+            self.assertEqual(matcher.to_internal_instsp(instsp), res)
+
+    def testFromInternalInstsp(self):
+        test_data = [
+            (({"_a": TVar("a")}, {"_x": Var("x", TVar("a"))}),
+             ({"a": TVar("a")}, {"x": Var("x", TVar("a"))})),
+        ]
+
+        for instsp, res in test_data:
+            self.assertEqual(matcher.from_internal_instsp(instsp), res)
+
+    def testIsPattern(self):
+        test_data = [
+            (Var('a', Ta), True),
+            (Var('f', TFun(Ta, Tb))(Var('a', Ta)), False),
+            (Const('f', TFun(Ta, Tb))(Var('a', Ta)), True),
+        ]
+
+        for t, res in test_data:
+            self.assertEqual(matcher.is_pattern(t, []), res)
+
     def testFirstOrderMatch(self):
         test_data = [
             (x, y, {"x" : y}),
@@ -62,7 +102,7 @@ class MatcherTest(unittest.TestCase):
 
         test_data = [
             (abs(x,P(x)), abs(x,C(P(x),Q(x))), {"P" : abs(x,C(P(x),Q(x)))}),
-            (abs(x,C(P(x),Q(x))), abs(x,C(Q(x),P(x))), {"P": abs(x,Q(x)), "Q": abs(x,P(x))}),
+            (abs(x,C(P(x),Q(x))), abs(x,C(Q(x),P(x))), {"P": Q, "Q": P}),
             (abs(x,C(P(x),P(x))), abs(x,C(C(P(x),Q(x)),C(P(x),Q(x)))), {"P": abs(x,C(P(x),Q(x)))}),
             (exists(x,P(x)), exists(x,conj(P(x),Q(x))), {"P": abs(x,conj(P(x),Q(x)))}),
         ]

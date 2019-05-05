@@ -339,6 +339,7 @@ def parse_extension(thy, data):
 
     elif data['ty'] == 'def':
         T = parse_type(thy, data['type'])
+        thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         ctxt = parse_vars(thy, data['vars'])
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()

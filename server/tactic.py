@@ -50,9 +50,14 @@ class rule(Tactic):
                 continue
 
             try:
-                for pat, prev in zip(As, self.prevs):
-                    matcher.first_order_match_incr(pat, prev.prop, instsp)
-                matcher.first_order_match_incr(C, goal.prop, instsp)
+                if matcher.is_pattern(C, []):
+                    matcher.first_order_match_incr(C, goal.prop, instsp)
+                    for pat, prev in zip(As, self.prevs):
+                        matcher.first_order_match_incr(pat, prev.prop, instsp)
+                else:
+                    for pat, prev in zip(As, self.prevs):
+                        matcher.first_order_match_incr(pat, prev.prop, instsp)
+                    matcher.first_order_match_incr(C, goal.prop, instsp)
             except matcher.MatchException:
                 continue
 
@@ -70,16 +75,22 @@ class rule(Tactic):
 
         if self.instsp is None:
             instsp = (dict(), dict())
-            matcher.first_order_match_incr(C, goal.prop, instsp)
-            for pat, prev in zip(As, self.prevs):
-                matcher.first_order_match_incr(pat, prev.prop, instsp)
+            if matcher.is_pattern(C, []):
+                matcher.first_order_match_incr(C, goal.prop, instsp)
+                for pat, prev in zip(As, self.prevs):
+                    matcher.first_order_match_incr(pat, prev.prop, instsp)
+            else:
+                for pat, prev in zip(As, self.prevs):
+                    matcher.first_order_match_incr(pat, prev.prop, instsp)
+                matcher.first_order_match_incr(C, goal.prop, instsp)
         else:
             instsp = self.instsp
 
         As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
         pts = self.prevs + [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(self.prevs):]]
 
-        if set(term.get_vars(th.assums)) != set(term.get_vars(th.prop)):
+        if set(term.get_vars(th.assums)) != set(term.get_vars(th.prop)) or \
+           not matcher.is_pattern_list(th.assums, []):
             tyinst, inst = instsp
             return apply_theorem(thy, self.th_name, *pts, tyinst=tyinst, inst=inst)
         else:

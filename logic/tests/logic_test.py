@@ -64,16 +64,6 @@ class LogicTest(unittest.TestCase):
         for t, res in test_data:
             self.assertEqual(logic.strip_disj(t), res)
 
-    def testBetaNorm(self):
-        test_data = [
-            (abs(x,x)(x), x),
-            (abs(x,abs(y,y))(x,y), y),
-            (abs(x,abs(y,x))(x,y), x),
-        ]
-
-        for t, res in test_data:
-            self.assertEqual(logic.beta_norm(t), res)
-
     def testNormBoolExpr(self):
         neg, true, false = logic.neg, logic.true, logic.false
         test_data = [
@@ -88,6 +78,7 @@ class LogicTest(unittest.TestCase):
             cv = logic.norm_bool_expr()
             prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), Thm.mk_equals(t, res))
+
     def testNormConjAssoc(self):
         conj = logic.mk_conj
         test_data = [

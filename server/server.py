@@ -88,7 +88,7 @@ class ProofState():
         prf = self.prf
         try:
             for n in id:
-                for item in prf.items[:n]:
+                for item in prf.items[:n+1]:
                     if item.rule == "variable":
                         nm, T = item.args
                         ctxt[nm] = T
@@ -173,11 +173,11 @@ class ProofState():
             ctxt[name] = T
         state.prf = Proof()
         for line in data['proof']:
+            if line['rule'] == "variable":
+                nm, str_T = line['args'].split(',', 1)
+                ctxt[nm] = parser.parse_type(thy, str_T.strip())
             item = parser.parse_proof_rule(thy, ctxt, line)
             state.prf.insert_item(item)
-            if item.rule == "variable":
-                nm, T = item.args
-                ctxt[nm] = T
 
         state.check_proof(compute_only=True)
         return state

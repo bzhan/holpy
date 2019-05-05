@@ -145,13 +145,16 @@ class HOLType():
         else:
             raise TypeError()
 
-    def match_incr(self, T, tyinst):
+    def match_incr(self, T, tyinst, internal_only=False):
         """Incremental match. Match self (as a pattern) with T. Here tyinst
         is the current instantiation. This is updated by the function.
 
         """
         if self.ty == HOLType.TVAR:
-            if self.name in tyinst:
+            if internal_only and not self.name.startswith('_'):
+                if self != T:
+                    raise TypeMatchException()
+            elif self.name in tyinst:
                 if T != tyinst[self.name]:
                     raise TypeMatchException()
             else:
@@ -161,17 +164,17 @@ class HOLType():
                 raise TypeMatchException()
             else:
                 for arg, argT in zip(self.args, T.args):
-                    arg.match_incr(argT, tyinst)
+                    arg.match_incr(argT, tyinst, internal_only=internal_only)
         else:
             raise TypeError()
 
-    def match(self, T):
+    def match(self, T, internal_only=False):
         """Match self (as a pattern) with T. Returns either a dictionary
         containing the match, or raise TypeMatchException.
 
         """
         tyinst = dict()
-        self.match_incr(T, tyinst)
+        self.match_incr(T, tyinst, internal_only=internal_only)
         return tyinst
 
     def get_tvars(self):

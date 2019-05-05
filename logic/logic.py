@@ -81,31 +81,13 @@ def mk_exists(x, body):
     exists_t = Const("exists", TFun(TFun(x.T, boolT), boolT))
     return exists_t(Term.mk_abs(x, body))
 
-def beta_norm(t):
-    """Normalize t using beta-conversion."""
-    if t.is_var() or t.is_const():
-        return t
-    elif t.is_comb():
-        f = beta_norm(t.fun)
-        x = beta_norm(t.arg)
-        if f.is_abs():
-            return f(x).beta_conv()
-        else:
-            return f(x)
-    elif t.is_abs():
-        return Abs(t.var_name, t.var_T, beta_norm(t.body))
-    elif t.is_bound():
-        return t
-    else:
-        raise TypeError()
-
 def subst_norm(t, instsp):
     """Substitute using the given instantiation, then normalize with
     respect to beta-conversion.
 
     """
     tyinst, inst = instsp
-    return beta_norm(t.subst_type(tyinst).subst(inst))
+    return t.subst_type(tyinst).subst(inst).beta_norm()
 
 def if_t(T):
     return Const("IF", TFun(boolT, T, T, T))

@@ -123,7 +123,7 @@ class apply_theorem_macro(ProofTermMacro):
 
         pt = ProofTerm.substitution(inst,
                 ProofTerm.subst_type(tyinst, ProofTerm.theorem(thy, name)))
-        if logic.beta_norm(pt.prop) == pt.prop:
+        if pt.prop.beta_norm() == pt.prop:
             pt2 = pt
         else:
             pt2 = top_conv(beta_conv()).apply_to_pt(thy, pt)
@@ -202,7 +202,7 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
         if concl is not None:
             matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
         pt = ProofTermDeriv("apply_theorem_for", thy, (th_name, tyinst, inst), pts)
-        if logic.beta_norm(pt.prop) == pt.prop:
+        if pt.prop.beta_norm() == pt.prop:
             return pt
         else:
             return ProofTermDeriv("beta_norm", thy, None, [pt])

@@ -159,6 +159,19 @@ class TermTest(unittest.TestCase):
         for t, res in test_data:
             self.assertEqual(t.beta_conv(), res)
 
+    def testBetaNorm(self):
+        x = Var('x', Ta)
+        y = Var('y', Ta)
+        abs = term.Term.mk_abs
+        test_data = [
+            (abs(x,x)(x), x),
+            (abs(x,abs(y,y))(x,y), y),
+            (abs(x,abs(y,x))(x,y), x),
+        ]
+
+        for t, res in test_data:
+            self.assertEqual(t.beta_norm(), res)
+
     def testOccursVar(self):
         test_data = [
             (a, a, True),

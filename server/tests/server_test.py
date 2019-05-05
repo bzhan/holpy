@@ -80,6 +80,16 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(len(state.vars), 2)
         self.assertEqual(len(state.prf.items), 3)
 
+    def testParseProof2(self):
+        data = {
+            'vars': {},
+            'proof': [
+                {'id': 0, 'rule': 'variable', 'args': "a, 'a", 'prevs': [], 'th': ''}
+            ]
+        }
+        state = ProofState.parse_proof(thy, data)
+        self.assertEqual(len(state.prf.items), 1)
+
     def testGetCtxt(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         self.assertEqual(state.get_ctxt(0), {'A': boolT, 'B': boolT})
