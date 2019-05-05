@@ -258,6 +258,23 @@ def apply_forward_step():
     return jsonify({})
 
 
+@app.route('/api/apply-forall-elim', methods=['POST'])
+def apply_forall_elim():
+    data = json.loads(request.get_data().decode("utf-8"))
+    if data:
+        cell = cells[data['id']]
+        try:
+            cell.apply_forall_elim(data['line_id'], data['prev'], data['s'])
+            return jsonify(cell.json_data())
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+            return jsonify(error)
+    return jsonify({})
+        
+
 @app.route('/api/apply-induction', methods=['POST'])
 def apply_induction():
     data = json.loads(request.get_data().decode("utf-8"))

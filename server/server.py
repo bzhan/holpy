@@ -407,6 +407,17 @@ class ProofState():
             if new_id is not None:
                 self.replace_id(item.id, new_id)
 
+    def apply_forall_elim(self, id, prev, s):
+        """Elimination of forall statement."""
+        id = id_force_tuple(id)
+        cur_item = self.get_proof_item(id)
+        assert cur_item.rule == "sorry", "introduction: id is not a gap"
+
+        t = parser.parse_term(self.thy, self.get_ctxt(id), s)
+
+        self.add_line_before(id, 1)
+        self.set_line(id, 'forall_elim', args=t, prevs=[prev])
+
     def apply_induction(self, id, th_name, var):
         """Apply induction using the given theorem and on the given
         variable.

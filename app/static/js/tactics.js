@@ -177,6 +177,33 @@ function apply_induction(cm) {
     })
 }
 
+function apply_forall_elim() {
+    $(document).ready(function () {
+        var id = get_selected_id();
+        var line_no = cells[id].goal;
+        if (cells[id].facts.size !== 1)
+            return;
+        var fact_no;
+        cells[id].facts.forEach(v => fact_no = v);
+        var input = {
+            'id': id,
+            'line_id': cells[id]['proof'][line_no]['id'],
+            'prev': cells[id]['proof'][fact_no]['id'],
+            's': prompt('Enter term to instantiate')
+        }
+        display_running();
+
+        $.ajax({
+            url: "/api/apply-forall-elim",
+            type: "POST",
+            data: JSON.stringify(input),
+            success: function (result) {
+                display_checked_proof(result, line_no);
+            }
+        })
+    })
+}
+
 function apply_cases(cm) {
     $(document).ready(function () {
         var line_no = cm.getCursor().line;

@@ -208,7 +208,9 @@
 
         $('#apply-cases').on("click", function () {
             apply_cases(get_selected_editor());
-        })
+        });
+
+        $('#apply-forall-elim').on("click", apply_forall_elim);
 
         $('#add-line-after').on("click", function () {
             add_line_after(get_selected_editor());
