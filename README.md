@@ -44,7 +44,8 @@ To start the frontend, use:
   * [`parser`](syntax/parser.py): parsing functions, built using Lark parser.
 
 * [`server`](server/): toplevel functions.
-  * [`tactic`](server/tactic.py): definition of proof state and standard operations on proof states.
+  * [`server`](server/server.py): definition of proof state and standard operations on proof states.
+  * [`tactic`](server/tactic.py): definition of tactics.
 
 * [`app`](app/): web application.
   * [`static/js/main.js`](app/static/js/main.js): main javascript file.
