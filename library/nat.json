@@ -155,6 +155,25 @@
         },
         {
             "name": "add_1_left",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "plus_def_1, Suc (0 + x) = Suc x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (0 + x) = Suc x"
+                },
+                {
+                    "args": "plus_def_2, 1 + x = Suc x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 + x = Suc x"
+                }
+            ],
             "prop": "1 + x = Suc x",
             "ty": "thm",
             "vars": {
@@ -163,6 +182,76 @@
         },
         {
             "name": "add_1_right",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "plus_def_1, 0 + 1 = 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 + 1 = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. n + 1 = Suc n ⟶ Suc n + 1 = Suc (Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "n + 1 = Suc n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n + 1 = Suc n ⊢ n + 1 = Suc n"
+                },
+                {
+                    "args": "Suc (n + 1) = Suc (Suc n)",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n + 1 = Suc n ⊢ Suc (n + 1) = Suc (Suc n)"
+                },
+                {
+                    "args": "plus_def_2, Suc n + 1 = Suc (Suc n)",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n + 1 = Suc n ⊢ Suc n + 1 = Suc (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. n + 1 = Suc n ⟶ Suc n + 1 = Suc (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λx. x + 1 = Suc x, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x + 1 = Suc x"
+                }
+            ],
             "prop": "x + 1 = Suc x",
             "ty": "thm",
             "vars": {
@@ -171,6 +260,93 @@
         },
         {
             "name": "add_comm",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "plus_def_1, 0 + y = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 + y = y"
+                },
+                {
+                    "args": "add_0_right, 0 + y = y + 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 + y = y + 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. n + y = y + n ⟶ Suc n + y = y + Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "n + y = y + n",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n + y = y + n ⊢ n + y = y + n"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "n + y = y + n ⊢ Suc (y + n) = y + Suc n"
+                },
+                {
+                    "args": "Suc (n + y) = y + Suc n",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n + y = y + n ⊢ Suc (n + y) = y + Suc n"
+                },
+                {
+                    "args": "plus_def_2, Suc n + y = y + Suc n",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n + y = y + n ⊢ Suc n + y = y + Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. n + y = y + n ⟶ Suc n + y = y + Suc n"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λx. x + y = y + x, x: x}",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x + y = y + x"
+                }
+            ],
             "prop": "x + y = y + x",
             "ty": "thm",
             "vars": {
@@ -180,6 +356,85 @@
         },
         {
             "name": "add_assoc",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "plus_def_1, 0 + y + z = 0 + (y + z)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 + y + z = 0 + (y + z)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. n + y + z = n + (y + z) ⟶ Suc n + y + z = Suc n + (y + z)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "n + y + z = n + (y + z)",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n + y + z = n + (y + z) ⊢ n + y + z = n + (y + z)"
+                },
+                {
+                    "args": "Suc (n + y + z) = Suc (n + (y + z))",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n + y + z = n + (y + z) ⊢ Suc (n + y + z) = Suc (n + (y + z))"
+                },
+                {
+                    "args": "plus_def_2, Suc (n + y) + z = Suc (n + (y + z))",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n + y + z = n + (y + z) ⊢ Suc (n + y) + z = Suc (n + (y + z))"
+                },
+                {
+                    "args": "plus_def_2, Suc n + y + z = Suc n + (y + z)",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n + y + z = n + (y + z) ⊢ Suc n + y + z = Suc n + (y + z)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. n + y + z = n + (y + z) ⟶ Suc n + y + z = Suc n + (y + z)"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λx. x + y + z = x + (y + z), x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x + y + z = x + (y + z)"
+                }
+            ],
             "prop": "x + y + z = x + (y + z)",
             "ty": "thm",
             "vars": {
@@ -189,6 +444,7 @@
             }
         },
         {
+            "hint_rewrite": "true",
             "instructions": [
                 "Select 0 as goal, choose 'apply induction' from menu, then enter 'nat_induct,x'.",
                 "Select 0 as goal, use Ctrl+R with times_def_1.",
@@ -198,6 +454,76 @@
                 "Select 2.2 as goal, use Ctrl+R with plus_def_1"
             ],
             "name": "mult_0_right",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "times_def_1, 0 * 0 = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 * 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. n * 0 = 0 ⟶ Suc n * 0 = 0"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "n * 0 = 0",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n * 0 = 0 ⊢ n * 0 = 0"
+                },
+                {
+                    "args": "plus_def_1, 0 + n * 0 = 0",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n * 0 = 0 ⊢ 0 + n * 0 = 0"
+                },
+                {
+                    "args": "times_def_2, Suc n * 0 = 0",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n * 0 = 0 ⊢ Suc n * 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. n * 0 = 0 ⟶ Suc n * 0 = 0"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λx. x * 0 = 0, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x * 0 = 0"
+                }
+            ],
             "prop": "x * 0 = 0",
             "ty": "thm",
             "vars": {
@@ -206,6 +532,34 @@
         },
         {
             "name": "mult_1_left",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "add_0_right, x + 0 = x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x + 0 = x"
+                },
+                {
+                    "args": "times_def_1, x + 0 * x = x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x + 0 * x = x"
+                },
+                {
+                    "args": "times_def_2, 1 * x = x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 * x = x"
+                }
+            ],
             "prop": "1 * x = x",
             "ty": "thm",
             "vars": {
@@ -214,6 +568,94 @@
         },
         {
             "name": "mult_1_right",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "times_def_1, 0 * 1 = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 * 1 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. n * 1 = n ⟶ Suc n * 1 = Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "n * 1 = n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n * 1 = n ⊢ n * 1 = n"
+                },
+                {
+                    "args": "Suc (n * 1) = Suc n",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n * 1 = n ⊢ Suc (n * 1) = Suc n"
+                },
+                {
+                    "args": "plus_def_1, Suc (0 + n * 1) = Suc n",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n * 1 = n ⊢ Suc (0 + n * 1) = Suc n"
+                },
+                {
+                    "args": "plus_def_2, 1 + n * 1 = Suc n",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n * 1 = n ⊢ 1 + n * 1 = Suc n"
+                },
+                {
+                    "args": "times_def_2, Suc n * 1 = Suc n",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n * 1 = n ⊢ Suc n * 1 = Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. n * 1 = n ⟶ Suc n * 1 = Suc n"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λx. x * 1 = x, x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x * 1 = x"
+                }
+            ],
             "prop": "x * 1 = x",
             "ty": "thm",
             "vars": {
@@ -222,6 +664,93 @@
         },
         {
             "name": "distrib_l",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "add_0_right, 0 = 0 + 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = 0 + 0"
+                },
+                {
+                    "args": "times_def_1, 0 * (y + z) = 0 * y + 0 * z",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 * (y + z) = 0 * y + 0 * z"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. n * (y + z) = n * y + n * z ⟶ Suc n * (y + z) = Suc n * y + Suc n * z"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "n * (y + z) = n * y + n * z",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n * (y + z) = n * y + n * z ⊢ n * (y + z) = n * y + n * z"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "n * (y + z) = n * y + n * z ⊢ y + z + (n * y + n * z) = y + n * y + (z + n * z)"
+                },
+                {
+                    "args": "y + z + n * (y + z) = y + n * y + (z + n * z)",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n * (y + z) = n * y + n * z ⊢ y + z + n * (y + z) = y + n * y + (z + n * z)"
+                },
+                {
+                    "args": "times_def_2, Suc n * (y + z) = Suc n * y + Suc n * z",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n * (y + z) = n * y + n * z ⊢ Suc n * (y + z) = Suc n * y + Suc n * z"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. n * (y + z) = n * y + n * z ⟶ Suc n * (y + z) = Suc n * y + Suc n * z"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λx. x * (y + z) = x * y + x * z, x: x}",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x * (y + z) = x * y + x * z"
+                }
+            ],
             "prop": "x * (y + z) = x * y + x * z",
             "ty": "thm",
             "vars": {
@@ -232,6 +761,74 @@
         },
         {
             "name": "distrib_r",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "add_0_right, 0 = 0 + 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = 0 + 0"
+                },
+                {
+                    "args": "mult_0_right, (x + y) * 0 = x * 0 + y * 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (x + y) * 0 = x * 0 + y * 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. (x + y) * n = x * n + y * n ⟶ (x + y) * Suc n = x * Suc n + y * Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "(x + y) * n = x * n + y * n",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(x + y) * n = x * n + y * n ⊢ (x + y) * n = x * n + y * n"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "(x + y) * n = x * n + y * n ⊢ (x + y) * Suc n = x * Suc n + y * Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. (x + y) * n = x * n + y * n ⟶ (x + y) * Suc n = x * Suc n + y * Suc n"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λz. (x + y) * z = x * z + y * z, x: z}",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (x + y) * z = x * z + y * z"
+                }
+            ],
             "prop": "(x + y) * z = x * z + y * z",
             "ty": "thm",
             "vars": {
@@ -242,6 +839,83 @@
         },
         {
             "name": "mult_assoc",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "times_def_1, 0 * z = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 * z = 0"
+                },
+                {
+                    "args": "times_def_1, 0 * y * z = 0 * (y * z)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 * y * z = 0 * (y * z)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. n * y * z = n * (y * z) ⟶ Suc n * y * z = Suc n * (y * z)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "n * y * z = n * (y * z)",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n * y * z = n * (y * z) ⊢ n * y * z = n * (y * z)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "n * y * z = n * (y * z) ⊢ (y + n * y) * z = y * z + n * (y * z)"
+                },
+                {
+                    "args": "times_def_2, Suc n * y * z = Suc n * (y * z)",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n * y * z = n * (y * z) ⊢ Suc n * y * z = Suc n * (y * z)"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. n * y * z = n * (y * z) ⟶ Suc n * y * z = Suc n * (y * z)"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λx. x * y * z = x * (y * z), x: x}",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x * y * z = x * (y * z)"
+                }
+            ],
             "prop": "x * y * z = x * (y * z)",
             "ty": "thm",
             "vars": {
