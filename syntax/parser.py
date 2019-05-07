@@ -390,6 +390,10 @@ def parse_extension(thy, data):
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Macro(data['name']))
 
+    elif data['ty'] == 'method':
+        ext = extension.TheoryExtension()
+        ext.add_extension(extension.Method(data['name']))
+
     if ext:
         thy.unchecked_extend(ext)
 

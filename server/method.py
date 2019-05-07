@@ -2,19 +2,11 @@
 
 from kernel.term import Term, Var
 from kernel.proof import id_force_tuple, Proof
+from kernel.theory import Method, global_methods
 from logic.proofterm import ProofTermAtom
 from syntax import parser
 from server import tactic
 
-global_methods = dict()
-
-class Method:
-    """Methods represent potential actions on the state."""
-    def search(self, state, id, prevs):
-        pass
-
-    def apply(self, state, id, args, prevs):
-        pass
 
 class cases_method(Method):
     """Case analysis."""
@@ -145,11 +137,11 @@ class induction(Method):
 
 
 def apply_method(state, data):
-    method_name = data['method_name']
-    assert method_name in global_methods, \
-        "apply_method: method " + method_name + " not found"
+    """Apply a method to the state. Here data is a dictionary containing
+    all necessary information.
 
-    method = global_methods[method_name]
+    """
+    method = state.thy.get_method(data['method_name'])
     goal_id = id_force_tuple(data['goal_id'])
     fact_ids = [id_force_tuple(fact_id) for fact_id in data['fact_ids']] if data['fact_ids'] else []
     return method.apply(state, goal_id, data, fact_ids)

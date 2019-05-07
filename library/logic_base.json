@@ -240,6 +240,42 @@
             "ty": "macro"
         },
         {
+            "name": "cases",
+            "ty": "method"
+        },
+        {
+            "name": "apply_prev",
+            "ty": "method"
+        },
+        {
+            "name": "rewrite_goal_with_prev",
+            "ty": "method"
+        },
+        {
+            "name": "rewrite_goal",
+            "ty": "method"
+        },
+        {
+            "name": "apply_forward_step",
+            "ty": "method"
+        },
+        {
+            "name": "apply_backward_step",
+            "ty": "method"
+        },
+        {
+            "name": "introduction",
+            "ty": "method"
+        },
+        {
+            "name": "forall_elim",
+            "ty": "method"
+        },
+        {
+            "name": "induction",
+            "ty": "method"
+        },
+        {
             "name": "classical_cases",
             "num_gaps": 0,
             "proof": [

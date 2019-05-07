@@ -11,7 +11,7 @@ from logic import logic_macro  # Load all defined macros
 from logic import expr
 from logic import hoare
 from syntax import parser
-
+from server import method
 
 """Global record of loaded theories."""
 loaded_theories = dict()

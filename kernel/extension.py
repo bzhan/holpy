@@ -28,8 +28,11 @@ class Extension():
     Macro(name): extend the theory by adding the given macro from
     global_macros.
 
+    Method(name): extend the theory by adding the given method from
+    global_methods.
+
     """
-    (AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM, MACRO, ATTRIBUTE) = range(6)
+    AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM, MACRO, METHOD, ATTRIBUTE = range(7)
 
     def __str__(self):
         if self.ty == Extension.AX_TYPE:
@@ -44,6 +47,8 @@ class Extension():
             return "Attribute " + self.name + " [" + self.attribute + "]"
         elif self.ty == Extension.MACRO:
             return "Macro " + self.name
+        elif self.ty == Extension.METHOD:
+            return "Method " + self.name
         else:
             raise TypeError()
 
@@ -64,6 +69,8 @@ class Extension():
         elif self.ty == Extension.ATTRIBUTE:
             return self.name == other.name and self.attribute == other.attribute
         elif self.ty == Extension.MACRO:
+            return self.name == other.name
+        elif self.ty == Extension.METHOD:
             return self.name == other.name
         else:
             raise TypeError()
@@ -149,6 +156,16 @@ class Macro(Extension):
 
         """
         self.ty = Extension.MACRO
+        self.name = name
+
+class Method(Extension):
+    def __init__(self, name):
+        """Extending the theory by adding a method.
+
+        name -- name of the method.
+
+        """
+        self.ty = Extension.METHOD
         self.name = name
 
 class TheoryExtension():

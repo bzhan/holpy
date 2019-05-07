@@ -11,6 +11,16 @@ from kernel.macro import ProofMacro, global_macros
 from kernel.extension import Extension
 from kernel.report import ExtensionReport
 
+global_methods = dict()
+
+class Method:
+    """Methods represent potential actions on the state."""
+    def search(self, state, id, prevs):
+        pass
+
+    def apply(self, state, id, args, prevs):
+        pass
+
 class TheoryException(Exception):
     """General exception for theory operations."""
     def __init__(self, str):
@@ -174,7 +184,7 @@ class Theory():
     def add_proof_macro(self, name, macro):
         """Add the given proof macro."""
         if not isinstance(macro, ProofMacro):
-            raise TypeError()
+            raise TypeError
 
         self.add_data("proof_macro", name, macro)
 
@@ -198,6 +208,33 @@ class Theory():
         
         return data[name]
 
+    def add_method(self, name, method):
+        """Add a given method."""
+        if not isinstance(method, Method):
+            raise TypeError
+
+        self.add_data("method", name, method)
+
+    def add_global_method(self, name):
+        """Add a method from global_methods."""
+        if name not in global_methods:
+            raise TheoryException("Method " + name + " not found")
+
+        self.add_method(name, global_methods[name])
+
+    def has_method(self, name):
+        """Whether the given name corresponds to a method."""
+        data = self.get_data("method")
+        return name in data
+
+    def get_method(self, name):
+        """Returns the method with that name."""
+        data = self.get_data("method")
+        if name not in data:
+            raise TheoryException("Method " + name + " not found")
+        
+        return data[name]
+
     @staticmethod
     def EmptyTheory():
         """Empty theory, with the absolute minimum setup."""
@@ -208,6 +245,7 @@ class Theory():
         thy.add_data_type("term_sig")
         thy.add_data_type("theorems")
         thy.add_data_type("proof_macro")
+        thy.add_data_type("method")
         thy.add_data_type("attributes")
 
         # Fundamental types.
@@ -443,6 +481,8 @@ class Theory():
                 self.extend_attribute(ext)
             elif ext.ty == Extension.MACRO:
                 self.add_global_proof_macro(ext.name)
+            elif ext.ty == Extension.METHOD:
+                self.add_global_method(ext.name)
             else:
                 raise TypeError()
 
@@ -470,6 +510,8 @@ class Theory():
                 self.extend_attribute(ext)
             elif ext.ty == Extension.MACRO:
                 self.add_global_proof_macro(ext.name)
+            elif ext.ty == Extension.METHOD:
+                self.add_global_method(ext.name)
             else:
                 raise TypeError()
 

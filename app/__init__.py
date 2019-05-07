@@ -156,6 +156,8 @@ def refresh_files():
         user_path = './users/' + user_info['username']
         shutil.rmtree(user_path)
         shutil.copytree('./library', user_path)
+        basic.clear_cache(user=user_info['username'])
+
     return jsonify({})
 
 
