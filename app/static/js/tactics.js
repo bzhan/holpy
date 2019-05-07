@@ -145,13 +145,14 @@ function current_state() {
 
 function introduction() {
     var input = current_state();
-    input.var_name = "";
+    input.method_name = 'introduction';
+    input.names = "";
     if (input.line.indexOf("⊢ ∀") !== -1) {
-        input.var_name = prompt('Enter variable name').split(",");
+        input.names = prompt('Enter variable name').split(",");
     }
     display_running();
     $.ajax({
-        url: "/api/introduction",
+        url: "/api/apply-method",
         type: "POST",
         data: JSON.stringify(input),
         success: display_checked_proof
@@ -160,10 +161,12 @@ function introduction() {
 
 function apply_induction() {
     var input = current_state();
-    input.theorem = prompt('Enter induction theorem and variable name');
+    input.method_name = 'induction';
+    input.theorem = prompt('Enter induction theorem');
+    input.var = prompt('Enter variable name');
     display_running();
     $.ajax({
-        url: "/api/apply-induction",
+        url: "/api/apply-method",
         type: "POST",
         data: JSON.stringify(input),
         success: display_checked_proof
@@ -172,12 +175,11 @@ function apply_induction() {
 
 function apply_forall_elim() {
     var input = current_state();
-    if (input.fact_ids.length !== 1)
-        return;
+    input.method_name = 'forall_elim';
     input.s = prompt('Enter term to instantiate');
     display_running();
     $.ajax({
-        url: "/api/apply-forall-elim",
+        url: "/api/apply-method",
         type: "POST",
         data: JSON.stringify(input),
         success: display_checked_proof

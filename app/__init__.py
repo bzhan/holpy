@@ -209,52 +209,6 @@ def remove_line():
     return jsonify({})
 
 
-@app.route('/api/introduction', methods=['POST'])
-def introduction():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        try:
-            cell.introduction(data['goal_id'], data['var_name'])
-            return jsonify(cell.json_data())
-        except Exception as e:
-            error = {
-                "failed": e.__class__.__name__,
-                "message": str(e)
-            }
-            return jsonify(error)        
-    return jsonify({})
-
-
-@app.route('/api/apply-forall-elim', methods=['POST'])
-def apply_forall_elim():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        try:
-            assert len(data['fact_ids']) == 1, "apply_forall_elim"
-            cell.apply_forall_elim(data['goal_id'], data['fact_ids'][0], data['s'])
-            return jsonify(cell.json_data())
-        except Exception as e:
-            error = {
-                "failed": e.__class__.__name__,
-                "message": str(e)
-            }
-            return jsonify(error)
-    return jsonify({})
-
-
-@app.route('/api/apply-induction', methods=['POST'])
-def apply_induction():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        theorem, var = data['theorem'].split(",")
-        cell.apply_induction(data['goal_id'], theorem, var)
-        return jsonify(cell.json_data())
-    return jsonify({})
-
-
 @app.route('/api/set-line', methods=['POST'])
 def set_line():
     data = json.loads(request.get_data().decode("utf-8"))

@@ -12,6 +12,7 @@ from logic.proofterm import ProofTerm, ProofTermAtom
 from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
 from syntax import parser, printer
 from server import tactic
+from server import method
 
 class TacticException(Exception):
     pass
@@ -354,71 +355,33 @@ class ProofState():
             results.append((name, t))
         return sorted(results)
 
-    def apply_forward_step(self, id, th_name, prevs=None, instsp=None):
+    def apply_forward_step(self, id, th_name, prevs=None):
         """Apply forward step using the given theorem."""
-        id = id_force_tuple(id)
-        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
-
-        assert prevs, "apply_forward_step: prevs is not empty"
-
-        self.add_line_before(id, 1)
-        self.set_line(id, 'apply_theorem', args=th_name, prevs=prevs)
+        method.apply_method(self, {
+            'method_name': 'apply_forward_step',
+            'goal_id': id, 'fact_ids': prevs, 'theorem': th_name
+        })
 
     def introduction(self, id, names=None):
-        """Introduce assumptions for a goal of the form
-
-        !x_1 ... x_k. A_1 --> ... --> A_n --> C.
-
-        Argument names specifies list of variable names.
-        
-        """
-        id = id_force_tuple(id)
-        cur_item = self.get_proof_item(id)
-        assert cur_item.rule == "sorry", "introduction: id is not a gap"
-
-        prop = cur_item.th.prop
-        assert prop.is_implies() or prop.is_all(), "introduction"
-
-        cur_item.rule = "subproof"
-        cur_item.subproof = Proof()
-
-        intros_tac = tactic.intros()
-        pt = intros_tac.get_proof_term(self.thy, cur_item.th, args=names)
-        cur_item.subproof = pt.export(prefix=id)
-        self.check_proof(compute_only=True)
-
-        # Test if the goal is already proved
-        for item in cur_item.subproof.items:
-            new_id = self.find_goal(self.get_proof_item(item.id).th, item.id)
-            if new_id is not None:
-                self.replace_id(item.id, new_id)
+        """Introduce variables and assumptions."""
+        method.apply_method(self, {
+            'method_name': 'introduction',
+            'goal_id': id, 'fact_ids': [], 'names': names
+        })
 
     def apply_forall_elim(self, id, prev, s):
         """Elimination of forall statement."""
-        id = id_force_tuple(id)
-        cur_item = self.get_proof_item(id)
-        assert cur_item.rule == "sorry", "introduction: id is not a gap"
-
-        t = parser.parse_term(self.thy, self.get_ctxt(id), s)
-
-        self.add_line_before(id, 1)
-        self.set_line(id, 'forall_elim', args=t, prevs=[prev])
+        method.apply_method(self, {
+            'method_name': 'forall_elim',
+            'goal_id': id, 'fact_ids': [prev], 's': s
+        })
 
     def apply_induction(self, id, th_name, var):
-        """Apply induction using the given theorem and on the given
-        variable.
-        
-        """
-        # Find variable
-        assert isinstance(var, str), "apply_induction: input must be a string"
-        for v in self.vars:
-            if v.name == var:
-                var = v
-                break
-
-        assert isinstance(var, Var), "apply_induction: variable not found"
-
-        self.apply_tactic(id, tactic.var_induct(), args=(th_name, var))
+        """Apply induction using the given theorem and variable."""
+        method.apply_method(self, {
+            'method_name': 'induction',
+            'goal_id': id, 'fact_ids': [], 'theorem': th_name, 'var': var
+        })
 
     def rewrite_goal_thms(self, id):
         """Find list of theorems on which rewrite_goal can be applied."""
