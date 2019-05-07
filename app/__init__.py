@@ -226,40 +226,6 @@ def introduction():
     return jsonify({})
 
 
-@app.route('/api/apply-backward-step', methods=['POST'])
-def apply_backward_step():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        try:
-            cell.apply_backward_step(data['goal_id'], data['theorem'], prevs=data['fact_ids'])
-            return jsonify(cell.json_data())
-        except Exception as e:
-            error = {
-                "failed": e.__class__.__name__,
-                "message": str(e)
-            }
-            return jsonify(error)
-    return jsonify({})
-
-
-@app.route('/api/apply-forward-step', methods=['POST'])
-def apply_forward_step():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        try:
-            cell.apply_forward_step(data['goal_id'], data['theorem'], prevs=data['fact_ids'])
-            return jsonify(cell.json_data())
-        except Exception as e:
-            error = {
-                "failed": e.__class__.__name__,
-                "message": str(e)
-            }
-            return jsonify(error)
-    return jsonify({})
-
-
 @app.route('/api/apply-forall-elim', methods=['POST'])
 def apply_forall_elim():
     data = json.loads(request.get_data().decode("utf-8"))
@@ -286,23 +252,6 @@ def apply_induction():
         theorem, var = data['theorem'].split(",")
         cell.apply_induction(data['goal_id'], theorem, var)
         return jsonify(cell.json_data())
-    return jsonify({})
-
-
-@app.route('/api/rewrite-goal', methods=['POST'])
-def rewrite_goal():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        try:
-            cell.rewrite_goal(data['goal_id'], data['theorem'])
-            return jsonify(cell.json_data())
-        except Exception as e:
-            error = {
-                "failed": e.__class__.__name__,
-                "message": str(e)
-            }
-            return jsonify(error)
     return jsonify({})
 
 

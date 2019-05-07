@@ -50,6 +50,44 @@ class rewrite_goal_with_prev_method(Method):
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=prevs)
 
+class rewrite_goal(Method):
+    """Rewrite using a theorem."""
+    def __init__(self):
+        self.sig = {'theorem': str}
+
+    def search(self, state, id, prevs):
+        pass
+
+    def apply(self, state, id, data, prevs):
+        state.apply_tactic(id, tactic.rewrite(), args=data['theorem'])
+
+class apply_forward_step(Method):
+    """Apply theorem in the forward direction."""
+    def __init__(self):
+        self.sig = {'theorem': str}
+
+    def search(self, state, id, prevs):
+        pass
+
+    def apply(self, state, id, data, prevs):
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+
+        assert prevs, "apply_forward_step: prevs is not empty"
+
+        state.add_line_before(id, 1)
+        state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
+
+class apply_backward_step(Method):
+    """Apply theorem in the backward direction."""
+    def __init__(self):
+        self.sig = {'theorem': str}
+
+    def search(self, state, id, prevs):
+        pass
+
+    def apply(self, state, id, data, prevs):
+        state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
 
 def apply_method(state, data):
     method_name = data['method_name']
@@ -64,4 +102,7 @@ global_methods.update({
     "cases": cases_method(),
     "apply_prev": apply_prev_method(),
     "rewrite_goal_with_prev": rewrite_goal_with_prev_method(),
+    "rewrite_goal": rewrite_goal(),
+    "apply_forward_step": apply_forward_step(),
+    "apply_backward_step": apply_backward_step()
 })

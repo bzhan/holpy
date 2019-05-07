@@ -461,8 +461,8 @@ function display_match_thm(result) {
 // Apply proof step parameterized by theorems.
 // select_thm: index of selected theorem, -1 for apply other theorem.
 function apply_thm_tactic(select_thm = -1, func_name = '') {
-    let api = tactic_info[func_name].api;
-    if (api === undefined)
+    let method = tactic_info[func_name].method;
+    if (method === undefined)
         return;
 
     let id = get_selected_id();
@@ -473,9 +473,10 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
 
     var input = current_state();
     if (select_thm !== -1) {
+        input.method_name = method
         input.theorem = match_thm_list[select_thm][0];
         $.ajax({
-            url: api,
+            url: '/api/apply-method',
             type: "POST",
             data: JSON.stringify(input),
             success: display_checked_proof

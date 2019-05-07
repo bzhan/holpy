@@ -56,16 +56,16 @@ tactic_info = {
     'backward': {
         title: 'Theorems: (Ctrl-B)',
         other: 'Other backward step',
-        api: '/api/apply-backward-step'
+        method: 'apply_backward_step'
     },
     'forward': {
         title: 'Theorems: (Ctrl-F)',
         other: 'Other forward step',
-        api: '/api/apply-forward-step'
+        method: 'apply_forward_step'
     },
     'rewrite': {
         title: 'Theorems: (Ctrl-R)',
         other: 'Other rewrite goal',
-        api: '/api/rewrite-goal'
+        method: 'rewrite_goal'
     }
 }

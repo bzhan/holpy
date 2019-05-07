@@ -355,12 +355,7 @@ class ProofState():
         return sorted(results)
 
     def apply_forward_step(self, id, th_name, prevs=None, instsp=None):
-        """Apply forward step using the given theorem.
-
-        prevs - list of previous proved facts to use.
-        inst - existing instantiation.
-
-        """
+        """Apply forward step using the given theorem."""
         id = id_force_tuple(id)
         prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
 
