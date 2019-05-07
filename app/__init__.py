@@ -213,8 +213,15 @@ def introduction():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells[data['id']]
-        cell.introduction(data['line_id'], data['var_name'])
-        return jsonify(cell.json_data())
+        try:
+            cell.introduction(data['goal_id'], data['var_name'])
+            return jsonify(cell.json_data())
+        except Exception as e:
+            error = {
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            }
+            return jsonify(error)        
     return jsonify({})
 
 
@@ -223,11 +230,8 @@ def apply_backward_step():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells[data['id']]
-        theorem = data['theorem'].split(",")
-        theorem, prevs = theorem[0], theorem[1:]
-        prevs = [prev.strip() for prev in prevs]
         try:
-            cell.apply_backward_step(data['line_id'], theorem, prevs=prevs)
+            cell.apply_backward_step(data['goal_id'], data['theorem'], prevs=data['fact_ids'])
             return jsonify(cell.json_data())
         except Exception as e:
             error = {
@@ -243,11 +247,8 @@ def apply_forward_step():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells[data['id']]
-        theorem = data['theorem'].split(",")
-        theorem, prevs = theorem[0], theorem[1:]
-        prevs = [prev.strip() for prev in prevs]
         try:
-            cell.apply_forward_step(data['line_id'], theorem, prevs=prevs)
+            cell.apply_forward_step(data['goal_id'], data['theorem'], prevs=data['fact_ids'])
             return jsonify(cell.json_data())
         except Exception as e:
             error = {
@@ -264,7 +265,8 @@ def apply_forall_elim():
     if data:
         cell = cells[data['id']]
         try:
-            cell.apply_forall_elim(data['line_id'], data['prev'], data['s'])
+            assert len(data['fact_ids']) == 1, "apply_forall_elim"
+            cell.apply_forall_elim(data['goal_id'], data['fact_ids'][0], data['s'])
             return jsonify(cell.json_data())
         except Exception as e:
             error = {
@@ -281,7 +283,7 @@ def apply_induction():
     if data:
         cell = cells[data['id']]
         theorem, var = data['theorem'].split(",")
-        cell.apply_induction(data['line_id'], theorem, var)
+        cell.apply_induction(data['goal_id'], theorem, var)
         return jsonify(cell.json_data())
     return jsonify({})
 
@@ -291,9 +293,8 @@ def rewrite_goal():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         cell = cells[data['id']]
-        theorem = data['theorem']
         try:
-            cell.rewrite_goal(data['line_id'], theorem)
+            cell.rewrite_goal(data['goal_id'], data['theorem'])
             return jsonify(cell.json_data())
         except Exception as e:
             error = {
@@ -310,7 +311,8 @@ def rewrite_goal_with_prev():
     if data:
         cell = cells[data['id']]
         try:
-            cell.rewrite_goal_with_prev(data['line_id'], data['prev_id'])
+            assert len(data['fact_ids']) == 1, "rewrite_goal_with_prev"
+            cell.rewrite_goal_with_prev(data['goal_id'], data['fact_ids'][0])
             return jsonify(cell.json_data())
         except Exception as e:
             error = {
@@ -342,7 +344,7 @@ def set_line():
 def apply_cases():
     data = json.loads(request.get_data().decode("utf-8"))
     cell = cells[data['id']]
-    line_id = data['line_id']
+    line_id = data['goal_id']
     try:
         A = parser.parse_term(cell.thy, cell.get_ctxt(line_id), data['case'])
         cell.apply_cases(line_id, A)
@@ -359,7 +361,8 @@ def apply_prev():
     data = json.loads(request.get_data().decode("utf-8"))
     cell = cells[data['id']]
     try:
-        cell.apply_prev(data['line_id'], data['prev_id'])
+        assert len(data['fact_ids']) == 1, "apply_prev"
+        cell.apply_prev(data['goal_id'], data['fact_ids'][0])
         return jsonify(cell.json_data())
     except Exception as e:
         error = {

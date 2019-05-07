@@ -393,6 +393,8 @@ class ProofState():
 
         vars, As, C = logic.strip_all_implies(cur_item.th.prop, names)
 
+        assert len(vars) + len(As) > 0, "introduction"
+
         cur_item.rule = "subproof"
         cur_item.subproof = Proof()
 

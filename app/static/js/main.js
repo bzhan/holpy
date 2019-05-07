@@ -202,13 +202,9 @@
             $('div.rbottom div:eq(0)').show().siblings().hide();
         });
 
-        $('#introduction').on("click", function () {
-            introduction(get_selected_editor());
-        });
+        $('#introduction').on("click", introduction);
 
-        $('#apply-cases').on("click", function () {
-            apply_cases(get_selected_editor());
-        });
+        $('#apply-cases').on("click", apply_cases);
 
         $('#apply-forall-elim').on("click", apply_forall_elim);
 
@@ -220,17 +216,11 @@
             add_line_after(get_selected_editor());
         });
 
-        $('#apply-backward-step').on("click", function () {
-            apply_backward_step();
-        });
+        $('#apply-backward-step').on("click", apply_backward_step);
 
-        $('#apply-induction').on("click", function () {
-            apply_induction(get_selected_editor());
-        });
+        $('#apply-induction').on("click", apply_induction);
 
-        $('#rewrite-goal').on("click", function () {
-            rewrite_goal();
-        });
+        $('#rewrite-goal').on("click", rewrite_goal);
 
         // Initialize proof after clicking 'proof' link on the left side.
         $('#panel-content').on('click', 'a[name="proof"]', function (e) {
@@ -876,8 +866,9 @@
             type: "POST",
             data: JSON.stringify(data),
             success: function (result) {
-                display_checked_proof(result, 0);
                 var id = get_selected_id();
+                cells[id].goal = -1;
+                display_checked_proof(result);
                 cells[id].instructions = item.instructions;
                 cells[id].index = 0;
                 if (cells[id].instructions !== undefined)
@@ -902,8 +893,9 @@
             type: 'POST',
             data: JSON.stringify(data),
             success: function (result) {
-                display_checked_proof(result, 0);
                 var id = get_selected_id();
+                cells[id].goal = -1;
+                display_checked_proof(result);
                 cells[id].instructions = item.instructions;
                 cells[id].index = 0;
                 if (cells[id].instructions !== undefined)

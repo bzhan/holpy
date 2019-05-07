@@ -28,7 +28,7 @@ function display_running() {
 //
 // result: proof data returned from the server.
 // pre_line_no: line number for the sorry before the operation.
-function display_checked_proof(result, pre_line_no) {
+function display_checked_proof(result) {
     var id = get_selected_id();
 
     if ("failed" in result) {
@@ -52,6 +52,9 @@ function display_checked_proof(result, pre_line_no) {
 
         var line_count = editor.lineCount();
         var new_line_no = -1;
+        var pre_line_no = 0;
+        if (cells[id].goal !== -1)
+            pre_line_no = cells[id].goal;
         for (var i = pre_line_no; i < line_count; i++) {
             if (editor.getLine(i).indexOf('sorry') !== -1) {
                 new_line_no = i;
@@ -97,7 +100,7 @@ function add_line_after(cm) {
             type: "POST",
             data: data,
             success: function (result) {
-                display_checked_proof(result, line_no);
+                display_checked_proof(result);
             }
         })
     })
@@ -119,162 +122,100 @@ function remove_line(cm) {
             type: "POST",
             data: data,
             success: function (result) {
-                display_checked_proof(result, line_no);
+                display_checked_proof(result);
                 cm.setCursor(line_no - 1, Number.MAX_SAFE_INTEGER);
             }
         })
     })
 }
 
-function introduction(cm) {
-    $(document).ready(function () {
-        var id = get_selected_id();
-        var line_no = cm.getCursor().line;
-        var line = cm.getLine(line_no);
-        var input = {
-            "id": id,
-            "line_id": cells[id]['proof'][line_no]['id'],
-            "var_name": ""
-        };
+function current_state() {
+    var id = get_selected_id();
+    var goal_no = cells[id].goal;
+    var fact_ids = [];
+    cells[id].facts.forEach(v =>
+        fact_ids.push(cells[id]['proof'][v]['id']));
+    return {
+        'id': id,
+        'goal_id': cells[id]['proof'][goal_no]['id'],
+        'fact_ids': fact_ids,
+        'line': cells[id]['proof'][goal_no]['th_raw']
+    }
+}
 
-        if (line.indexOf("have ∀") !== -1 || line.indexOf("show ∀") !== -1) {
-            input["var_name"] = prompt('Enter variable name').split(",")
-        }
-        var data = JSON.stringify(input);
-        display_running();
-        $.ajax({
-            url: "/api/introduction",
-            type: "POST",
-            data: data,
-            success: function (result) {
-                display_checked_proof(result, line_no);
-            }
-        })
+function introduction() {
+    var input = current_state();
+    input.var_name = "";
+    if (input.line.indexOf("⊢ ∀") !== -1) {
+        input.var_name = prompt('Enter variable name').split(",");
+    }
+    display_running();
+    $.ajax({
+        url: "/api/introduction",
+        type: "POST",
+        data: JSON.stringify(input),
+        success: display_checked_proof
     })
 }
 
-function apply_induction(cm) {
-    $(document).ready(function () {
-        var line_no = cm.getCursor().line;
-        var id = get_selected_id();
-        var input = {
-            'id': id,
-            'line_id': cells[id]['proof'][line_no]['id']
-        };
-
-        input['theorem'] = prompt('Enter induction theorem and variable name');
-        var data = JSON.stringify(input);
-        display_running();
-
-        $.ajax({
-            url: "/api/apply-induction",
-            type: "POST",
-            data: data,
-            success: function (result) {
-                display_checked_proof(result, line_no);
-            }
-        })
+function apply_induction() {
+    var input = current_state();
+    input.theorem = prompt('Enter induction theorem and variable name');
+    display_running();
+    $.ajax({
+        url: "/api/apply-induction",
+        type: "POST",
+        data: JSON.stringify(input),
+        success: display_checked_proof
     })
 }
 
 function apply_forall_elim() {
-    $(document).ready(function () {
-        var id = get_selected_id();
-        var line_no = cells[id].goal;
-        if (cells[id].facts.size !== 1)
-            return;
-        var fact_no;
-        cells[id].facts.forEach(v => fact_no = v);
-        var input = {
-            'id': id,
-            'line_id': cells[id]['proof'][line_no]['id'],
-            'prev': cells[id]['proof'][fact_no]['id'],
-            's': prompt('Enter term to instantiate')
-        }
-        display_running();
-
-        $.ajax({
-            url: "/api/apply-forall-elim",
-            type: "POST",
-            data: JSON.stringify(input),
-            success: function (result) {
-                display_checked_proof(result, line_no);
-            }
-        })
+    var input = current_state();
+    if (input.fact_ids.length !== 1)
+        return;
+    input.s = prompt('Enter term to instantiate');
+    display_running();
+    $.ajax({
+        url: "/api/apply-forall-elim",
+        type: "POST",
+        data: JSON.stringify(input),
+        success: display_checked_proof
     })
 }
 
 function apply_rewrite_goal_with_prev() {
-    $(document).ready(function () {
-        var id = get_selected_id();
-        var line_no = cells[id].goal;
-        if (cells[id].facts.size !== 1)
-            return;
-        var fact_no;
-        cells[id].facts.forEach(v => fact_no = v);
-        var input = {
-            'id': id,
-            'line_id': cells[id]['proof'][line_no]['id'],
-            'prev_id': cells[id]['proof'][fact_no]['id']
-        }
-        display_running();
-
-        $.ajax({
-            url: "/api/rewrite-goal-with-prev",
-            type: "POST",
-            data: JSON.stringify(input),
-            success: function (result) {
-                display_checked_proof(result, line_no);
-            }
-        })
+    var input = current_state();
+    display_running();
+    $.ajax({
+        url: "/api/rewrite-goal-with-prev",
+        type: "POST",
+        data: JSON.stringify(input),
+        success: display_checked_proof
     })
 }
 
-function apply_cases(cm) {
-    $(document).ready(function () {
-        var line_no = cm.getCursor().line;
-        var id = get_selected_id();
-        var input = {
-            'id': id,
-            'line_id': cells[id]['proof'][line_no]['id'],
-            'case': prompt('Enter case')
-        }
-        display_running();
-
-        $.ajax({
-            url: "/api/apply-cases",
-            type: "POST",
-            data: JSON.stringify(input),
-            success: function (result) {
-                display_checked_proof(result, line_no);
-            }
-        })
+function apply_cases() {
+    var input = current_state();
+    input.case = prompt('Enter case');
+    display_running();
+    $.ajax({
+        url: "/api/apply-cases",
+        type: "POST",
+        data: JSON.stringify(input),
+        success: display_checked_proof
     })
 }
 
 function apply_prev() {
-    $(document).ready(function () {
-        var id = get_selected_id();
-        var line_no = cells[id].goal;
-        if (cells[id].facts.size !== 1)
-            return;
-        var fact_no;
-        cells[id].facts.forEach(v => fact_no = v);
-        var input = {
-            'id': id,
-            'line_id': cells[id]['proof'][line_no]['id'],
-            'prev_id': cells[id]['proof'][fact_no]['id']
-        }
-        display_running();
+    var input = current_state();
+    display_running();
 
-        $.ajax({
-            url: "/api/apply-prev",
-            type: "POST",
-            data: JSON.stringify(input),
-            success: function (result) {
-                display_checked_proof(result, line_no);
-            }
-        })
+    $.ajax({
+        url: "/api/apply-prev",
+        type: "POST",
+        data: JSON.stringify(input),
+        success: display_checked_proof
     })
 }
 
@@ -329,7 +270,7 @@ function set_line(cm) {
             type: "POST",
             data: data,
             success: function (result) {
-                display_checked_proof(result, line_no);
+                display_checked_proof(result);
             }
         })
     })
@@ -522,45 +463,23 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
 
     let id = get_selected_id();
     let match_thm_list = cells[id]['match_thm'][func_name];
-    let facts = cells[id].facts;
-    let line_no = cells[id].goal;
-
-    if (line_no === -1)
-        return;
 
     if (match_thm_list.length === 0)
         select_thm = -1
 
-    // Obtain the list of fact_id separated by commas.
-    facts_id = []
-    facts.forEach(function (val) {
-        facts_id.push(cells[id]['proof'][val]['id']);
-    });
-    fact_id = facts_id.join(', ');
-    goal_id = cells[id]['proof'][line_no]['id']
-
+    var input = current_state();
     if (select_thm !== -1) {
-        var theorem = match_thm_list[select_thm][0];
-        if (fact_id !== "") {
-            theorem += ', ' + fact_id;
-        }
-        var data = {
-            'id': id,
-            'line_id': goal_id,
-            'theorem': theorem,
-        };
+        input.theorem = match_thm_list[select_thm][0];
         $.ajax({
             url: api,
             type: "POST",
-            data: JSON.stringify(data),
-            success: function (result) {
-                display_checked_proof(result, line_no);
-            }
+            data: JSON.stringify(input),
+            success: display_checked_proof
         });
     } else {
-        var title = 'Goal: ' + goal_id
+        var title = 'Goal: ' + input.goal_id;
         if (facts.size !== 0) {
-            title = title + '\nFacts: ' + fact_id;
+            title = title + '\nFacts: ' + input.fact_ids.join(', ')
         }
         swal({
             title: title,
@@ -572,22 +491,14 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
             allowOutsideClick: () => !swal.isLoading(),
             preConfirm: () => {
                 document.querySelector('#swal-input1').focus();
-                var theorem = document.getElementById('swal-input1').value;
-                if (facts.size !== 0) {
-                    theorem = theorem + ', ' + fact_id;
-                }
-                var data = {
-                    'id': id,
-                    'line_id': goal_id,
-                    'theorem': theorem,
-                };
+                input.theorem = document.getElementById('swal-input1').value;
                 return $.ajax({
                     url: api,
                     type: "POST",
-                    data: JSON.stringify(data),
+                    data: JSON.stringify(input),
                     success: function (result) {
                         if ('failed' in result)
-                            swal.showValidationMessage('Request failed: ' + result['failed'])
+                            swal.showValidationMessage('Request failed: ' + result.failed)
                         else
                             return result
                     }
@@ -595,7 +506,7 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
             }
         }).then((result) => {
             if (result) {
-                display_checked_proof(result.value, line_no);
+                display_checked_proof(result.value);
             }
         })
     }
