@@ -244,30 +244,107 @@
             }
         },
         {
-            "instructions": [
-                "Add line 'theorem classical' after 0.",
-                "Select 2 as goal and 1 as fact, use Ctrl+B with disjE.",
-                "Select 2 as goal, use Ctrl+I.",
-                "Select 3 as goal, use Ctrl+I.",
-                "Select 3.1 as goal, use Ctrl+B with falseE.",
-                "Select 3.1 as goal and 0 as fact, use Ctrl+B with negE."
-            ],
             "name": "double_neg",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "¬¬A",
+                    "args": "",
                     "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬¬A ⟶ A"
+                },
+                {
+                    "args": "¬¬A",
+                    "id": "0.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "¬¬A ⊢ ¬¬A"
                 },
                 {
                     "args": "",
-                    "id": "1",
+                    "id": "0.1",
                     "prevs": [],
                     "rule": "subproof",
                     "th": "¬¬A ⊢ A ⟶ A"
+                },
+                {
+                    "args": "A",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.0"
+                    ],
+                    "rule": "intros",
+                    "th": "¬¬A ⊢ A ⟶ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬¬A ⊢ ¬A ⟶ A"
+                },
+                {
+                    "args": "¬A",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬A ⊢ ¬A"
+                },
+                {
+                    "args": "negE_gen, {}, {A: ¬A, C: A}",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.0",
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬¬A, ¬A ⊢ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬¬A ⊢ ¬A ⟶ A"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬¬A ⊢ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬¬A ⟶ A"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ A ⟶ ¬¬A"
                 },
                 {
                     "args": "A",
@@ -279,72 +356,292 @@
                 {
                     "args": "",
                     "id": "1.1",
-                    "prevs": [
-                        "1.0",
-                        "1.0"
-                    ],
-                    "rule": "intros",
-                    "th": "¬¬A ⊢ A ⟶ A"
-                },
-                {
-                    "args": "",
-                    "id": "2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "¬¬A ⊢ ¬A ⟶ A"
+                    "th": "A ⊢ ¬A ⟶ false"
                 },
                 {
                     "args": "¬A",
-                    "id": "2.0",
+                    "id": "1.1.0",
                     "prevs": [],
                     "rule": "assume",
                     "th": "¬A ⊢ ¬A"
                 },
                 {
-                    "args": "negE_gen, {}, {A: ¬A, C: A}",
-                    "id": "2.1",
+                    "args": "negE",
+                    "id": "1.1.1",
                     "prevs": [
-                        "0",
-                        "2.0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "¬¬A, ¬A ⊢ A"
-                },
-                {
-                    "args": "",
-                    "id": "2.2",
-                    "prevs": [
-                        "2.0",
-                        "2.1"
-                    ],
-                    "rule": "intros",
-                    "th": "¬¬A ⊢ ¬A ⟶ A"
-                },
-                {
-                    "args": "classical_cases",
-                    "id": "3",
-                    "prevs": [
-                        "1",
-                        "2"
+                        "1.1.0",
+                        "1.0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "¬¬A ⊢ A"
+                    "th": "¬A, A ⊢ false"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "1.1.2",
                     "prevs": [
-                        "0",
-                        "3"
+                        "1.1.0",
+                        "1.1.1"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ¬¬A ⟶ A"
+                    "th": "A ⊢ ¬A ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A ⊢ ¬¬A"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ⟶ ¬¬A"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (¬¬A) = A"
                 }
             ],
-            "prop": "~~A --> A",
+            "prop": "(~~A) = A",
             "ty": "thm",
             "vars": {
                 "A": "bool"
+            }
+        },
+        {
+            "name": "disj_conv_imp",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬A ∨ B ⟶ A ⟶ B"
+                },
+                {
+                    "args": "¬A ∨ B",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬A ∨ B ⊢ ¬A ∨ B"
+                },
+                {
+                    "args": "A",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬A ∨ B, A ⊢ ¬A ⟶ B"
+                },
+                {
+                    "args": "¬A",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬A ⊢ ¬A"
+                },
+                {
+                    "args": "negE_gen, {}, {A: A, C: B}",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬A, ¬A ∨ B, A ⊢ B"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬A ∨ B, A ⊢ ¬A ⟶ B"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬A ∨ B, A ⊢ B ⟶ B"
+                },
+                {
+                    "args": "B",
+                    "id": "0.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ⊢ B"
+                },
+                {
+                    "args": "",
+                    "id": "0.3.1",
+                    "prevs": [
+                        "0.3.0",
+                        "0.3.0"
+                    ],
+                    "rule": "intros",
+                    "th": "¬A ∨ B, A ⊢ B ⟶ B"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.2",
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬A ∨ B, A ⊢ B"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬A ∨ B ⟶ A ⟶ B"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (A ⟶ B) ⟶ ¬A ∨ B"
+                },
+                {
+                    "args": "A ⟶ B",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⟶ B ⊢ A ⟶ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "A ⟶ B ⊢ A ⟶ ¬A ∨ B"
+                },
+                {
+                    "args": "A",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊢ A"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "A ⟶ B, A ⊢ ¬A ∨ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "A ⟶ B ⊢ A ⟶ ¬A ∨ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "A ⟶ B ⊢ ¬A ⟶ ¬A ∨ B"
+                },
+                {
+                    "args": "¬A",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬A ⊢ ¬A"
+                },
+                {
+                    "args": "disjI1, {}, {A: ¬A, B: B}",
+                    "id": "1.2.1",
+                    "prevs": [
+                        "1.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬A ⊢ ¬A ∨ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "A ⟶ B ⊢ ¬A ⟶ ¬A ∨ B"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "A ⟶ B ⊢ ¬A ∨ B"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (A ⟶ B) ⟶ ¬A ∨ B"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (¬A ∨ B) = (A ⟶ B)"
+                }
+            ],
+            "prop": "(~A | B) = (A --> B)",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
             }
         },
         {
@@ -629,6 +926,78 @@
         },
         {
             "name": "ineq_symmetric",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬m = n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬m = n ⊢ ¬m = n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬m = n ⊢ n = m ⟶ false"
+                },
+                {
+                    "args": "n = m",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = m ⊢ n = m"
+                },
+                {
+                    "args": "m = n",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = m ⊢ m = n"
+                },
+                {
+                    "args": "negE",
+                    "id": "1.2",
+                    "prevs": [
+                        "0",
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬m = n, n = m ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬m = n ⊢ n = m ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬m = n ⊢ ¬n = m"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬m = n ⟶ ¬n = m"
+                }
+            ],
             "prop": "~ m = n --> ~ n = m",
             "ty": "thm",
             "vars": {
@@ -638,7 +1007,7 @@
         },
         {
             "name": "eq_true",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -741,17 +1110,27 @@
                     "th": "A = true ⊢ A = true"
                 },
                 {
-                    "args": "",
+                    "args": "trueI",
                     "id": "1.1",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "A",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
                     "th": "A = true ⊢ A"
                 },
                 {
                     "args": "A = true",
-                    "id": "1.2",
+                    "id": "1.3",
                     "prevs": [
-                        "1.1"
+                        "1.2"
                     ],
                     "rule": "implies_intr",
                     "th": "⊢ A = true ⟶ A"
