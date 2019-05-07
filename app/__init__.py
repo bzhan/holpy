@@ -7,6 +7,7 @@ from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 from kernel.type import HOLType, TVar, Type
 from syntax import parser, printer
+from server import method
 from server.server import ProofState
 from logic import basic
 from logic import induct
@@ -305,24 +306,6 @@ def rewrite_goal():
     return jsonify({})
 
 
-@app.route('/api/rewrite-goal-with-prev', methods=['POST'])
-def rewrite_goal_with_prev():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        try:
-            assert len(data['fact_ids']) == 1, "rewrite_goal_with_prev"
-            cell.rewrite_goal_with_prev(data['goal_id'], data['fact_ids'][0])
-            return jsonify(cell.json_data())
-        except Exception as e:
-            error = {
-                "failed": e.__class__.__name__,
-                "message": str(e)
-            }
-            return jsonify(error)
-    return jsonify({})
-
-
 @app.route('/api/set-line', methods=['POST'])
 def set_line():
     data = json.loads(request.get_data().decode("utf-8"))
@@ -340,29 +323,12 @@ def set_line():
             }
             return jsonify(error)
 
-@app.route('/api/apply-cases', methods=['POST'])
-def apply_cases():
-    data = json.loads(request.get_data().decode("utf-8"))
-    cell = cells[data['id']]
-    line_id = data['goal_id']
-    try:
-        A = parser.parse_term(cell.thy, cell.get_ctxt(line_id), data['case'])
-        cell.apply_cases(line_id, A)
-        return jsonify(cell.json_data())
-    except Exception as e:
-        error = {
-            "failed": e.__class__.__name__,
-            "message": str(e)
-        }
-        return jsonify(error)
-
-@app.route('/api/apply-prev', methods=['POST'])
-def apply_prev():
+@app.route('/api/apply-method', methods=['POST'])
+def apply_method():
     data = json.loads(request.get_data().decode("utf-8"))
     cell = cells[data['id']]
     try:
-        assert len(data['fact_ids']) == 1, "apply_prev"
-        cell.apply_prev(data['goal_id'], data['fact_ids'][0])
+        method.apply_method(cell, data)
         return jsonify(cell.json_data())
     except Exception as e:
         error = {
@@ -500,10 +466,10 @@ def match_thm():
     thy = basic.load_theory(data['theory_name'], user=user_info['username'])
     if data:
         cell = cells[data['id']]
-        facts_id = data['facts_id']
+        fact_ids = data['fact_ids']
         goal_id = data['goal_id']
-        backward_ths = cell.apply_backward_step_thms(goal_id, prevs=facts_id)
-        forward_ths = cell.apply_forward_step_thms(goal_id, prevs=facts_id)
+        backward_ths = cell.apply_backward_step_thms(goal_id, prevs=fact_ids)
+        forward_ths = cell.apply_forward_step_thms(goal_id, prevs=fact_ids)
         rewrite_ths = cell.rewrite_goal_thms(goal_id)
         ctxt = cell.get_ctxt(goal_id)
         print_ctxt = dict((k, printer.print_type(thy, v, highlight=True))

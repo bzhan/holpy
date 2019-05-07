@@ -186,9 +186,11 @@ function apply_forall_elim() {
 
 function apply_rewrite_goal_with_prev() {
     var input = current_state();
+    input.method_name = 'rewrite_goal_with_prev';
     display_running();
+
     $.ajax({
-        url: "/api/rewrite-goal-with-prev",
+        url: "/api/apply-method",
         type: "POST",
         data: JSON.stringify(input),
         success: display_checked_proof
@@ -197,10 +199,11 @@ function apply_rewrite_goal_with_prev() {
 
 function apply_cases() {
     var input = current_state();
+    input.method_name = 'cases';
     input.case = prompt('Enter case');
     display_running();
     $.ajax({
-        url: "/api/apply-cases",
+        url: "/api/apply-method",
         type: "POST",
         data: JSON.stringify(input),
         success: display_checked_proof
@@ -209,10 +212,11 @@ function apply_cases() {
 
 function apply_prev() {
     var input = current_state();
+    input.method_name = 'apply_prev';
     display_running();
 
     $.ajax({
-        url: "/api/apply-prev",
+        url: "/api/apply-method",
         type: "POST",
         data: JSON.stringify(input),
         success: display_checked_proof
@@ -290,14 +294,14 @@ function match_thm() {
             return;
     });
 
-    var facts_id = [];
+    var fact_ids = [];
     facts.forEach(val => {
-        facts_id.push(cells[id]['proof'][val]['id']);
+        fact_ids.push(cells[id]['proof'][val]['id']);
     });
     var data = {
         'id': id,
         'goal_id': cells[id]['proof'][goal]['id'],
-        'facts_id': facts_id,
+        'fact_ids': fact_ids,
         'theory_name': cells[id].theory_name
     };
     $.ajax({
