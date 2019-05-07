@@ -7,9 +7,9 @@
         },
         {
             "name": "fun_upd",
+            "prop": "fun_upd f a b = (%x. if x = a then b else f x)",
             "ty": "def",
             "type": "('a => 'b) => 'a => 'b => 'a => 'b",
-            "prop": "fun_upd f a b = (%x. if x = a then b else f x)",
             "vars": {
                 "a": "'a",
                 "b": "'b",
@@ -17,6 +17,7 @@
             }
         },
         {
+            "hint_rewrite": "true",
             "name": "fun_upd_eval",
             "prop": "fun_upd f a b x = (if x = a then b else f x)",
             "ty": "thm",

@@ -98,10 +98,10 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "append_def_1, {a: 'a}, {xs: ([]::'a list)}",
+                    "args": "append_def_1, ([]::'a list) @ [] = []",
                     "id": "0",
                     "prevs": [],
-                    "rule": "apply_theorem_for",
+                    "rule": "rewrite_goal",
                     "th": "⊢ ([]::'a list) @ [] = []"
                 },
                 {
@@ -116,14 +116,14 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": ""
+                    "th": "⊢ x = x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": ""
+                    "th": "⊢ xs = xs"
                 },
                 {
                     "args": "xs @ [] = xs",
@@ -133,12 +133,12 @@
                     "th": "xs @ [] = xs ⊢ xs @ [] = xs"
                 },
                 {
-                    "args": "cons x",
+                    "args": "x # xs @ [] = x # xs",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
                     ],
-                    "rule": "arg_combination",
+                    "rule": "rewrite_goal_with_prev",
                     "th": "xs @ [] = xs ⊢ x # xs @ [] = x # xs"
                 },
                 {
@@ -151,30 +151,15 @@
                     "th": "xs @ [] = xs ⊢ (x # xs) @ [] = x # xs"
                 },
                 {
-                    "args": "xs @ [] = xs",
+                    "args": "",
                     "id": "1.5",
                     "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.2",
                         "1.4"
                     ],
-                    "rule": "implies_intr",
-                    "th": "⊢ xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
-                },
-                {
-                    "args": "xs",
-                    "id": "1.6",
-                    "prevs": [
-                        "1.5"
-                    ],
-                    "rule": "forall_intr",
-                    "th": "⊢ ∀xs. xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
-                },
-                {
-                    "args": "x",
-                    "id": "1.7",
-                    "prevs": [
-                        "1.6"
-                    ],
-                    "rule": "forall_intr",
+                    "rule": "intros",
                     "th": "⊢ ∀x::'a. ∀xs. xs @ [] = xs ⟶ (x # xs) @ [] = x # xs"
                 },
                 {
