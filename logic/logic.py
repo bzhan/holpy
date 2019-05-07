@@ -114,6 +114,7 @@ def strip_all_implies(t, names):
     """
     if Term.is_all(t):
         assert len(names) > 0, "strip_all_implies: not enough names input."
+        assert isinstance(names[0], str), "strip_all_implies: names must be strings."
         v = Var(names[0], t.arg.var_T)
         vars, As, C = strip_all_implies(t.arg.subst_bound(v), names[1:])
         return ([v] + vars, As, C)

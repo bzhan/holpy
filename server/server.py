@@ -266,14 +266,25 @@ class ProofState():
         except (AttributeError, IndexError):
             raise TacticException()
 
-    def apply_tactic(self, id, tactic, prevs=None):
+    def apply_search(self, id, tactic, prevs=None):
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+        prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
+
         cur_item = self.get_proof_item(id)
-        assert cur_item.rule == "sorry", "apply_backward_step: id is not a gap"
+        assert cur_item.rule == "sorry", "apply_search: id is not a gap"
 
-        if prevs is None:
-            prevs = []
+        return tactic.search(self.thy, cur_item.th, prevs=prevs)
 
-        pt = tactic.get_proof_term(self.thy, cur_item.th)
+    def apply_tactic(self, id, tactic, args=None, prevs=None):
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+        prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
+        
+        cur_item = self.get_proof_item(id)
+        assert cur_item.rule == "sorry", "apply_tactic: id is not a gap"
+
+        pt = tactic.get_proof_term(self.thy, cur_item.th, args=args, prevs=prevs)
         new_prf = pt.export(prefix=id, subproof=False)
 
         self.add_line_before(id, len(new_prf.items) - 1)
@@ -294,21 +305,8 @@ class ProofState():
         """Return the list of theorems that can be used for applying
         backward step.
 
-        This is done by first matching each of the prevs against the
-        assumptions in order, then match the conclusion.
-
         """
-        id = id_force_tuple(id)
-        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
-
-        # Obtain the statement to be proved.
-        cur_item = self.get_proof_item(id)
-        if cur_item.rule != "sorry":
-            return []
-
-        prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
-        rule_tac = tactic.rule(prevs=prevs)
-        return rule_tac.search(self.thy, cur_item.th)
+        return self.apply_search(id, tactic.rule(), prevs=prevs)
 
     def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):
         """Apply backward step using the given theorem.
@@ -317,12 +315,7 @@ class ProofState():
         inst - existing instantiation.
 
         """
-        id = id_force_tuple(id)
-        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
-        prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
-
-        rule_tac = tactic.rule(th_name, prevs=prevs, instsp=instsp)
-        self.apply_tactic(id, rule_tac, prevs)
+        self.apply_tactic(id, tactic.rule(), args=(th_name, instsp), prevs=prevs)
 
     def apply_forward_step_thms(self, id, prevs=None):
         id = id_force_tuple(id)
@@ -388,18 +381,14 @@ class ProofState():
         cur_item = self.get_proof_item(id)
         assert cur_item.rule == "sorry", "introduction: id is not a gap"
 
-        if names is None:
-            names = []
-
-        vars, As, C = logic.strip_all_implies(cur_item.th.prop, names)
-
-        assert len(vars) + len(As) > 0, "introduction"
+        prop = cur_item.th.prop
+        assert prop.is_implies() or prop.is_all(), "introduction"
 
         cur_item.rule = "subproof"
         cur_item.subproof = Proof()
 
-        intros_tac = tactic.intros(*names)
-        pt = intros_tac.get_proof_term(self.thy, cur_item.th)
+        intros_tac = tactic.intros()
+        pt = intros_tac.get_proof_term(self.thy, cur_item.th, args=names)
         cur_item.subproof = pt.export(prefix=id)
         self.check_proof(compute_only=True)
 
@@ -425,8 +414,6 @@ class ProofState():
         variable.
         
         """
-        id = id_force_tuple(id)
-
         # Find variable
         assert isinstance(var, str), "apply_induction: input must be a string"
         for v in self.vars:
@@ -436,44 +423,24 @@ class ProofState():
 
         assert isinstance(var, Var), "apply_induction: variable not found"
 
-        induct_tac = tactic.var_induct(th_name, var)
-        self.apply_tactic(id, induct_tac)
+        self.apply_tactic(id, tactic.var_induct(), args=(th_name, var))
 
     def rewrite_goal_thms(self, id):
         """Find list of theorems on which rewrite_goal can be applied."""
-
-        id = id_force_tuple(id)
-        cur_item = self.get_proof_item(id)
-        if cur_item.rule != "sorry":
-            return []
-
-        rewrite_tac = tactic.rewrite()
-        return rewrite_tac.search(self.thy, cur_item.th)
+        return self.apply_search(id, tactic.rewrite())
 
     def rewrite_goal(self, id, th_name, *, backward=False):
         """Apply an existing equality theorem to the given goal."""
-
-        id = id_force_tuple(id)
-        self.apply_tactic(id, tactic.rewrite(th_name))
+        self.apply_tactic(id, tactic.rewrite(), args=th_name)
 
     def rewrite_goal_with_prev(self, id, prev):
         """Apply existence fact to the given goal."""
-
-        id = id_force_tuple(id)
-        prev = id_force_tuple(prev)
-        prev = ProofTermAtom(prev, self.get_proof_item(prev).th)
-        self.apply_tactic(id, tactic.rewrite_goal_with_prev(prev), prevs=[prev])
+        self.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=[prev])
 
     def apply_cases(self, id, A):
         """Apply case analysis on A."""
-
-        id = id_force_tuple(id)
-        self.apply_tactic(id, tactic.cases(A))
+        self.apply_tactic(id, tactic.cases(), args=A)
 
     def apply_prev(self, id, prev):
         """Apply previously proved rule."""
-
-        id = id_force_tuple(id)
-        prev = id_force_tuple(prev)
-        prev = ProofTermAtom(prev, self.get_proof_item(prev).th)
-        self.apply_tactic(id, tactic.apply_prev(prev), prevs=[prev])
+        self.apply_tactic(id, tactic.apply_prev(), prevs=[prev])

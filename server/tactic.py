@@ -13,24 +13,25 @@ from syntax import printer
 class Tactic:
     """Represents a tactic function.
 
-    A tactic takes a proof term containing a single step with rule
-    sorry, and converts it to a proof term containing zero or more
-    sorries. Tactics can be combined in the usual manner.
+    A tactic takes a target theorem, and returns a proof term
+    containing zero or more sorries. Tactics can be combined in the
+    usual manner.
+
+    get_proof_term can be supplied with two more arguments: args
+    for extra data provided to the tactic, and prevs for the list
+    of existing facts to use.
 
     """
-    def get_proof_term(self, thy, goal):
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
         raise NotImplementedError
 
 
 class rule(Tactic):
     """Apply a theorem in the backward direction."""
-    def __init__(self, th_name=None, prevs=None, instsp=None):
-        assert th_name is None or isinstance(th_name, str), "rule: argument"
-        self.th_name = th_name
-        self.prevs = prevs if prevs else []
-        self.instsp = instsp
+    def search(self, thy, goal, *, prevs=None):
+        if prevs is None:
+            prevs = []
 
-    def search(self, thy, goal):
         results = []
         for name, th in thy.get_data("theorems").items():
             if 'hint_backward' not in thy.get_attributes(name):
@@ -40,22 +41,22 @@ class rule(Tactic):
             As, C = th.assums, th.concl
             # Only process those theorems where C and the matched As
             # contain all of the variables.
-            if set(term.get_vars(As[:len(self.prevs)] + [C])) != set(term.get_vars(As + [C])):
+            if set(term.get_vars(As[:len(prevs)] + [C])) != set(term.get_vars(As + [C])):
                 continue
 
             # When there is no assumptions to match, only process those
             # theorems where C contains at least a constant (skip falseE,
             # induction theorems, etc).
-            if not self.prevs and term.get_consts(C) == []:
+            if not prevs and term.get_consts(C) == []:
                 continue
 
             try:
                 if matcher.is_pattern(C, []):
                     matcher.first_order_match_incr(C, goal.prop, instsp)
-                    for pat, prev in zip(As, self.prevs):
+                    for pat, prev in zip(As, prevs):
                         matcher.first_order_match_incr(pat, prev.prop, instsp)
                 else:
-                    for pat, prev in zip(As, self.prevs):
+                    for pat, prev in zip(As, prevs):
                         matcher.first_order_match_incr(pat, prev.prop, instsp)
                     matcher.first_order_match_incr(C, goal.prop, instsp)
             except matcher.MatchException:
@@ -67,45 +68,53 @@ class rule(Tactic):
             results.append((name, t))
         return sorted(results)
 
-    def get_proof_term(self, thy, goal):
-        if isinstance(self.th_name, str):
-            th = thy.get_theorem(self.th_name)
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
+        if isinstance(args, tuple):
+            th_name, instsp = args
+        else:
+            th_name = args
+            instsp = None
+        assert isinstance(th_name, str), "rule: theorem name must be a string"
 
+        if prevs is None:
+            prevs = []
+        
+        th = thy.get_theorem(th_name)
         As, C = th.assums, th.concl
 
-        if self.instsp is None:
+        if instsp is None:
             instsp = (dict(), dict())
             if matcher.is_pattern(C, []):
                 matcher.first_order_match_incr(C, goal.prop, instsp)
-                for pat, prev in zip(As, self.prevs):
+                for pat, prev in zip(As, prevs):
                     matcher.first_order_match_incr(pat, prev.prop, instsp)
             else:
-                for pat, prev in zip(As, self.prevs):
+                for pat, prev in zip(As, prevs):
                     matcher.first_order_match_incr(pat, prev.prop, instsp)
                 matcher.first_order_match_incr(C, goal.prop, instsp)
-        else:
-            instsp = self.instsp
 
         As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
-        pts = self.prevs + [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(self.prevs):]]
+        pts = prevs + [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(prevs):]]
 
         if set(term.get_vars(th.assums)) != set(term.get_vars(th.prop)) or \
            not matcher.is_pattern_list(th.assums, []):
             tyinst, inst = instsp
-            return apply_theorem(thy, self.th_name, *pts, tyinst=tyinst, inst=inst)
+            return apply_theorem(thy, th_name, *pts, tyinst=tyinst, inst=inst)
         else:
-            return apply_theorem(thy, self.th_name, *pts)
+            return apply_theorem(thy, th_name, *pts)
 
 class intros(Tactic):
     """Given a goal of form !x_1 ... x_n. A_1 --> ... --> A_n --> C,
     introduce variables for x_1, ..., x_n and assumptions for A_1, ..., A_n.
     
     """
-    def __init__(self, *var_names):
-        self.var_names = var_names
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
+        if args is None:
+            var_names = []
+        else:
+            var_names = args
 
-    def get_proof_term(self, thy, goal):
-        vars, As, C = logic.strip_all_implies(goal.prop, self.var_names)
+        vars, As, C = logic.strip_all_implies(goal.prop, var_names)
         
         pt = ProofTerm.sorry(Thm(list(goal.hyps) + As, C))
         ptAs = [ProofTerm.assume(A) for A in As]
@@ -114,26 +123,19 @@ class intros(Tactic):
 
 class var_induct(Tactic):
     """Apply induction rule on a variable."""
-    def __init__(self, th_name, var):
-        self.th_name = th_name
-        self.var = var
-
-    def get_proof_term(self, thy, goal):
-        P = Term.mk_abs(self.var, goal.prop)
-        th = thy.get_theorem(self.th_name)
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
+        th_name, var = args
+        P = Term.mk_abs(var, goal.prop)
+        th = thy.get_theorem(th_name)
         f, args = th.concl.strip_comb()
         if len(args) != 1:
             raise NotImplementedError
-        inst = {f.name: P, args[0].name: self.var}
-        return rule(self.th_name, instsp=({}, inst)).get_proof_term(thy, goal)
+        inst = {f.name: P, args[0].name: var}
+        return rule().get_proof_term(thy, goal, args=(th_name, ({}, inst)))
 
 class rewrite(Tactic):
     """Rewrite the goal using a theorem."""
-    def __init__(self, th_name=None):
-        assert th_name is None or isinstance(th_name, str), "rule: argument"
-        self.th_name = th_name
-
-    def search(self, thy, goal):
+    def search(self, thy, goal, *, prevs=None):
         results = []
         for th_name, th in thy.get_data("theorems").items():
             if 'hint_rewrite' not in thy.get_attributes(th_name):
@@ -147,57 +149,58 @@ class rewrite(Tactic):
 
         return sorted(results)
 
-    def get_proof_term(self, thy, goal):
+    def get_proof_term(self, thy, goal, args=None, prevs=None):
+        th_name = args
+
         init_As = goal.hyps
         C = goal.prop
-        cv = then_conv(top_conv(rewr_conv(self.th_name)),
+        cv = then_conv(top_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
         new_goal = cv.eval(thy, C).prop.rhs
 
         new_As = list(set(cv.eval(thy, C).hyps) - set(init_As))
         new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
         if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-            return ProofTermDeriv('rewrite_goal', thy, args=(self.th_name, C), prevs=new_As_pts)
+            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=new_As_pts)
         else:
             new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
-            return ProofTermDeriv('rewrite_goal', thy, args=(self.th_name, C), prevs=[new_goal_pts] + new_As_pts)
+            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=[new_goal_pts] + new_As_pts)
 
 class rewrite_goal_with_prev(Tactic):
-    def __init__(self, pt):
-        self.pt = pt
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
+        assert isinstance(prevs, list) and len(prevs) == 1, "rewrite_goal_with_prev"
+        pt = prevs[0]
 
-    def get_proof_term(self, thy, goal):
         init_As = goal.hyps
         C = goal.prop
-        cv = then_conv(top_conv(rewr_conv(self.pt, match_vars=False)),
+        cv = then_conv(top_conv(rewr_conv(pt, match_vars=False)),
                        top_conv(beta_conv()))
         new_goal = cv.eval(thy, C).prop.rhs
 
         new_As = list(set(cv.eval(thy, C).hyps) - set(init_As))
         new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
         if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[self.pt] + new_As_pts)
+            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[pt] + new_As_pts)
         else:
             new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
-            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[self.pt, new_goal_pts] + new_As_pts)
+            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[pt, new_goal_pts] + new_As_pts)
 
 class apply_prev(Tactic):
-    def __init__(self, pt):
-        self.pt = pt
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
+        assert isinstance(prevs, list) and len(prevs) == 1, "apply_prev"
+        pt = prevs[0]
 
-    def get_proof_term(self, thy, goal):
-        assert self.pt.concl == goal.prop, "apply_prev"
-        As_pts = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in self.pt.assums]
-        return ProofTerm.implies_elim(self.pt, *As_pts)
+        assert pt.concl == goal.prop, "apply_prev"
+        As_pts = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in pt.assums]
+        return ProofTerm.implies_elim(pt, *As_pts)
 
 class cases(Tactic):
     """Case checking on an expression."""
-    def __init__(self, A):
-        self.A = A
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
+        assert isinstance(args, Term), "cases"
 
-    def get_proof_term(self, thy, goal):
         As = goal.hyps
         C = goal.prop
-        goal1 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(self.A, C)))
-        goal2 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(logic.neg(self.A), C)))
+        goal1 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(args, C)))
+        goal2 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(logic.neg(args), C)))
         return apply_theorem(thy, 'classical_cases', goal1, goal2)
