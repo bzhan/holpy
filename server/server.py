@@ -275,15 +275,23 @@ class ProofState():
         except (AttributeError, IndexError):
             raise TacticException()
 
-    def apply_search(self, id, tactic, prevs=None):
+    def apply_search(self, id, method, prevs=None):
         id = id_force_tuple(id)
         prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
-        prevs = [ProofTermAtom(prev, self.get_proof_item(prev).th) for prev in prevs]
-
-        cur_item = self.get_proof_item(id)
-        assert cur_item.rule == "sorry", "apply_search: id is not a gap"
-
-        return tactic.search(self.thy, cur_item.th, prevs=prevs)
+        return method.search(self, id, prevs)
+    
+    def search_method(self, id, prevs):
+        """Perform search for each method."""
+        id = id_force_tuple(id)
+        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+        results = []
+        method_data = self.thy.get_data("method")
+        for name, method in method_data.items():
+            res = method.search(self, id, prevs)
+            for r in res:
+                r['_method_name'] = name
+            results.extend(res)
+        return results
 
     def apply_tactic(self, id, tactic, args=None, prevs=None):
         id = id_force_tuple(id)
@@ -309,14 +317,6 @@ class ProofState():
             if new_id is not None:
                 self.replace_id(item.id, new_id)
 
-
-    def apply_backward_step_thms(self, id, prevs=None):
-        """Return the list of theorems that can be used for applying
-        backward step.
-
-        """
-        return self.apply_search(id, tactic.rule(), prevs=prevs)
-
     def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):
         """Apply backward step using the given theorem.
         
@@ -325,43 +325,6 @@ class ProofState():
 
         """
         self.apply_tactic(id, tactic.rule(), args=(th_name, instsp), prevs=prevs)
-
-    def apply_forward_step_thms(self, id, prevs=None):
-        id = id_force_tuple(id)
-        prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
-
-        prevs = [self.get_proof_item(id) for id in prevs]
-        if len(prevs) == 0 or any(item.rule == 'sorry' for item in prevs):
-            return []
-
-        results = []
-        for name, th in self.thy.get_data("theorems").items():
-            if 'hint_forward' not in self.thy.get_attributes(name):
-                continue
-
-            instsp = (dict(), dict())
-            As, C = th.assums, th.concl
-
-            if len(prevs) != len(As):
-                continue
-
-            if set(term.get_vars(As)) != set(term.get_vars(As + [C])):
-                continue
-
-            if not term.get_consts(As):
-                continue
-
-            try:
-                for pat, prev in zip(As, prevs):
-                    matcher.first_order_match_incr(pat, prev.th.concl, instsp)
-            except matcher.MatchException:
-                continue
-
-            # All matches succeed
-            t = logic.subst_norm(th.prop, instsp)
-            t = printer.print_term(self.thy, t)
-            results.append((name, t))
-        return sorted(results)
 
     def apply_forward_step(self, id, th_name, prevs=None):
         """Apply forward step using the given theorem."""
@@ -390,10 +353,6 @@ class ProofState():
             'method_name': 'induction',
             'goal_id': id, 'fact_ids': [], 'theorem': th_name, 'var': var
         })
-
-    def rewrite_goal_thms(self, id):
-        """Find list of theorems on which rewrite_goal can be applied."""
-        return self.apply_search(id, tactic.rewrite())
 
     def rewrite_goal(self, id, th_name, *, backward=False):
         """Apply an existing equality theorem to the given goal."""

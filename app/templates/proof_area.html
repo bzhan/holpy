@@ -83,19 +83,13 @@
 </script>
 
 <script type="text/template" id="template-match-thm">
-    <div class="match-thm-output">
-        <pre><%= tactic_info[func_name].title %></pre>
-        <div class="thm-content">
-            <%
-            $.each(result, function(i, val) {
-            %>
-                <pre class="<%= func_name %>"><%= val[0] %>  <%= val[1] %></pre>
-            <%
-            });
-            %>
-            <a href="#" class="other-step" name="<%=func_name%>">
-                <%= tactic_info[func_name].other %>
-            </a>
-        </div>
+    <div class="thm-content">
+        <%
+        $.each(search_res, function(i, val) {
+        %>
+            <pre><%= JSON.stringify(val) %></pre>
+        <%
+        });
+        %>
     </div>
 </script>

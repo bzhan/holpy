@@ -364,25 +364,27 @@ def save_file():
     return jsonify({})
 
 
-@app.route('/api/match-thm', methods=['POST'])
-def match_thm():
-    """Match for hints to backward, forward, and rewrite steps."""
+@app.route('/api/search-method', methods=['POST'])
+def search_method():
+    """Match for applicable methods and their arguments."""
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.load_theory(data['theory_name'], user=user_info['username'])
     if data:
         cell = cells[data['id']]
+        thy = cell.thy
         fact_ids = data['fact_ids']
         goal_id = data['goal_id']
-        backward_ths = cell.apply_backward_step_thms(goal_id, prevs=fact_ids)
-        forward_ths = cell.apply_forward_step_thms(goal_id, prevs=fact_ids)
-        rewrite_ths = cell.rewrite_goal_thms(goal_id)
+        search_res = cell.search_method(goal_id, fact_ids)
+        for res in search_res:
+            if '_goal' in res:
+                res['_goal'] = [printer.print_term(thy, t) for t in res['_goal']]
+            if '_fact' in res:
+                res['_fact'] = [printer.print_term(thy, t) for t in res['_fact']]
+
         ctxt = cell.get_ctxt(goal_id)
         print_ctxt = dict((k, printer.print_type(thy, v, highlight=True))
                           for k, v in ctxt.items())
         return jsonify({
-            'backward': backward_ths,
-            'forward': forward_ths,
-            'rewrite': rewrite_ths,
+            'search_res': search_res,
             'ctxt': print_ctxt
         })
 

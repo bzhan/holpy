@@ -132,6 +132,9 @@ function remove_line(cm) {
 function current_state() {
     var id = get_selected_id();
     var goal_no = cells[id].goal;
+    if (goal_no === -1)
+        return undefined;
+
     var fact_ids = [];
     cells[id].facts.forEach(v =>
         fact_ids.push(cells[id]['proof'][v]['id']));
@@ -159,13 +162,20 @@ function introduction() {
     })
 }
 
-function apply_method(method_name) {
+function apply_method(method_name, args) {
     var id = get_selected_id();
     var sigs = cells[id].method_sig[method_name];
     var input = current_state();
     input.method_name = method_name;
+
+    if (args === undefined)
+        args = {};
+
     $.each(sigs, function (i, sig) {
-        input[sig] = prompt('Enter ' + sig);
+        if (sig in args)
+            input[sig] = args[sig];
+        else
+            input[sig] = prompt('Enter ' + sig);
     });
     display_running();
     $.ajax({
@@ -236,37 +246,20 @@ function set_line(cm) {
 // Query the server to match theorems for each parameterized tactic
 function match_thm() {
     var id = get_selected_id();
-    var goal = cells[id].goal;
-    var facts = cells[id].facts;
-
-    if (goal === -1) {
+    var input = current_state();
+    if (input === undefined)
         return;
-    }
-    facts.forEach(val => {
-        if (cells[id]['proof'][val].th === '')
-            return;
-    });
 
-    var fact_ids = [];
-    facts.forEach(val => {
-        fact_ids.push(cells[id]['proof'][val]['id']);
-    });
-    var data = {
-        'id': id,
-        'goal_id': cells[id]['proof'][goal]['id'],
-        'fact_ids': fact_ids,
-        'theory_name': cells[id].theory_name
-    };
     $.ajax({
-        url: "/api/match-thm",
+        url: "/api/search-method",
         type: "POST",
-        data: JSON.stringify(data),
+        data: JSON.stringify(input),
         success: function (result) {
             var templ_variable = _.template($('#template-variable').html());
             $('div#panel-proof').html(templ_variable({ctxt: result.ctxt}));
 
-            cells[id]['match_thm'] = result;
-            display_match_thm(result);
+            cells[id].search_res = result.search_res;
+            display_match_thm();
         }
     });
 }
@@ -282,7 +275,7 @@ function display_str(editor, str, line_no, ch, mark) {
 }
 
 // Print string with highlight at given line_no and ch.
-// p[0] is the printed stpython -m pip install --upgrade pipring, p[1] is the color.
+// p[0] is the printed string, p[1] is the color.
 // Return the new value of ch.
 function display_highlight_str(editor, p, line_no, ch) {
     var color;
@@ -374,7 +367,7 @@ function display_line(id, line_no) {
 function display(id) {
     var editor = get_selected_editor();
     editor.setValue('');
-    var proof = cells[id]['proof'];
+    var proof = cells[id].proof;
     editor.setOption('lineNumberFormatter', function (line_no) {
         if (line_no < proof.length) {
             return proof[line_no].id;
@@ -396,88 +389,23 @@ function display(id) {
     $('div.code-cell.selected div.CodeMirror-sizer').css('margin-left', 32 + max_id_len * 3 + 'px');
 }
 
-function display_match_thm(result) {
+function display_match_thm() {
+    var id = get_selected_id();
+    var search_res = cells[id].search_res;
+    console.log(search_res);
+
     $('div.rbottom .selected .match-thm').html('');
     var template_match_thm = _.template($("#template-match-thm").html());
 
-    $.each(tactic_info, function (key) {
-        if (result[key].length !== 0) {
-            $('div.rbottom .selected .match-thm').append(template_match_thm({
-                func_name: key,
-                result: result[key],
-            }));    
-        }
-    });
-    $('div.rbottom .selected .match-thm').append('<div class=clear></div>')
+    $('div.rbottom .selected .match-thm').append(template_match_thm({search_res}));
+    $('div.rbottom .selected .match-thm').append('<div class=clear></div>');
 }
 
-// Apply proof step parameterized by theorems.
-// select_thm: index of selected theorem, -1 for apply other theorem.
-function apply_thm_tactic(select_thm = -1, func_name = '') {
-    let method = tactic_info[func_name].method;
-    if (method === undefined)
+function apply_thm_tactic(res_id) {
+    var id = get_selected_id();
+    var res = cells[id].search_res[res_id];
+    if (res === undefined)
         return;
 
-    let id = get_selected_id();
-    let match_thm_list = cells[id]['match_thm'][func_name];
-
-    if (match_thm_list.length === 0)
-        select_thm = -1
-
-    var input = current_state();
-    input.method_name = method;
-    if (select_thm !== -1) {
-        input.theorem = match_thm_list[select_thm][0];
-        $.ajax({
-            url: '/api/apply-method',
-            type: "POST",
-            data: JSON.stringify(input),
-            success: display_checked_proof
-        });
-    } else {
-        var title = 'Goal: ' + input.goal_id;
-        if (input.fact_ids.length !== 0) {
-            title = title + '\nFacts: ' + input.fact_ids.join(', ')
-        }
-        swal({
-            title: title,
-            html: '<input id="swal-input1" class="swal2-input">',
-            showCancelButton: true,
-            confirmButtonText: 'confirm',
-            showLoaderOnConfirm: true,
-            focusConfirm: false,
-            allowOutsideClick: () => !swal.isLoading(),
-            preConfirm: () => {
-                document.querySelector('#swal-input1').focus();
-                input.theorem = document.getElementById('swal-input1').value;
-                return $.ajax({
-                    url: '/api/apply-method',
-                    type: "POST",
-                    data: JSON.stringify(input),
-                    success: function (result) {
-                        if ('failed' in result)
-                            swal.showValidationMessage('Request failed: ' + result.failed)
-                        else
-                            return result
-                    }
-                });
-            }
-        }).then((result) => {
-            if (result) {
-                display_checked_proof(result.value);
-            }
-        })
-    }
-}
-
-function apply_backward_step() {
-    apply_thm_tactic(0, 'backward')
-}
-
-function apply_forward_step() {
-    apply_thm_tactic(0, 'forward');
-}
-
-function rewrite_goal() {
-    apply_thm_tactic(0, 'rewrite');
+    apply_method(res._method_name, res);
 }
