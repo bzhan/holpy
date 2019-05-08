@@ -234,6 +234,17 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
         else:
             return ProofTermDeriv("beta_norm", thy, None, [pt])
 
+class imp_conj_macro(ProofTermMacro):
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+
+    def eval(self, thy, args, ths):
+        raise NotImplementedError
+
+    def get_proof_term(self, thy, args, pts):
+        return ProofTerm.assume(args)
+
 
 macro.global_macros.update({
     "arg_combination": arg_combination_macro(),
