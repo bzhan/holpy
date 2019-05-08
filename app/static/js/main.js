@@ -204,13 +204,21 @@
 
         $('#introduction').on("click", introduction);
 
-        $('#apply-cases').on("click", apply_cases);
+        $('#apply-cases').on("click", function () {
+            apply_method('cases')
+        });
 
-        $('#apply-forall-elim').on("click", apply_forall_elim);
+        $('#apply-forall-elim').on("click", function () {
+            apply_method('forall_elim')
+        });
 
-        $('#rewrite-goal-with-prev').on("click", apply_rewrite_goal_with_prev);
+        $('#rewrite-goal-with-prev').on("click", function () {
+            apply_method('rewrite_goal_with_prev')
+        });
 
-        $('#apply-prev').on('click', apply_prev);
+        $('#apply-prev').on('click', function () {
+            apply_method('apply_prev')
+        });
 
         $('#add-line-after').on("click", function () {
             add_line_after(get_selected_editor());
@@ -218,7 +226,9 @@
 
         $('#apply-backward-step').on("click", apply_backward_step);
 
-        $('#apply-induction').on("click", apply_induction);
+        $('#apply-induction').on("click", function () {
+            apply_method('induction')
+        });
 
         $('#rewrite-goal').on("click", rewrite_goal);
 
@@ -868,6 +878,7 @@
             success: function (result) {
                 var id = get_selected_id();
                 cells[id].goal = -1;
+                cells[id].method_sig = result.method_sig;
                 display_checked_proof(result);
                 cells[id].instructions = item.instructions;
                 cells[id].index = 0;
@@ -895,6 +906,7 @@
             success: function (result) {
                 var id = get_selected_id();
                 cells[id].goal = -1;
+                cells[id].method_sig = result.method_sig;
                 display_checked_proof(result);
                 cells[id].instructions = item.instructions;
                 cells[id].index = 0;

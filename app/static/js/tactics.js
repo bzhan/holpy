@@ -35,7 +35,7 @@ function display_checked_proof(result) {
         display_status(result["failed"] + ": " + result["message"], 'red');
     } else {
         cells[id].edit_line_number = -1;
-        cells[id]['proof'] = result['proof'];
+        cells[id].proof = result.proof;
         var editor = get_selected_editor();
         editor.startOperation();
         edit_flag = true;
@@ -159,64 +159,15 @@ function introduction() {
     })
 }
 
-function apply_induction() {
+function apply_method(method_name) {
+    var id = get_selected_id();
+    var sigs = cells[id].method_sig[method_name];
     var input = current_state();
-    input.method_name = 'induction';
-    input.theorem = prompt('Enter induction theorem');
-    input.var = prompt('Enter variable name');
+    input.method_name = method_name;
+    $.each(sigs, function (i, sig) {
+        input[sig] = prompt('Enter ' + sig);
+    });
     display_running();
-    $.ajax({
-        url: "/api/apply-method",
-        type: "POST",
-        data: JSON.stringify(input),
-        success: display_checked_proof
-    })
-}
-
-function apply_forall_elim() {
-    var input = current_state();
-    input.method_name = 'forall_elim';
-    input.s = prompt('Enter term to instantiate');
-    display_running();
-    $.ajax({
-        url: "/api/apply-method",
-        type: "POST",
-        data: JSON.stringify(input),
-        success: display_checked_proof
-    })
-}
-
-function apply_rewrite_goal_with_prev() {
-    var input = current_state();
-    input.method_name = 'rewrite_goal_with_prev';
-    display_running();
-
-    $.ajax({
-        url: "/api/apply-method",
-        type: "POST",
-        data: JSON.stringify(input),
-        success: display_checked_proof
-    })
-}
-
-function apply_cases() {
-    var input = current_state();
-    input.method_name = 'cases';
-    input.case = prompt('Enter case');
-    display_running();
-    $.ajax({
-        url: "/api/apply-method",
-        type: "POST",
-        data: JSON.stringify(input),
-        success: display_checked_proof
-    })
-}
-
-function apply_prev() {
-    var input = current_state();
-    input.method_name = 'apply_prev';
-    display_running();
-
     $.ajax({
         url: "/api/apply-method",
         type: "POST",

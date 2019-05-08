@@ -153,6 +153,13 @@ class ProofState():
 
         return ProofState.init_state(thy, vars, assums, concl)
 
+    def get_method_sig(self):
+        """Obtain signature of all methods in the theory."""
+        sig = {}
+        for name, method in self.thy.get_data('method').items():
+            sig[name] = method.sig
+        return sig
+
     def json_data(self):
         """Export proof in json format."""
         self.check_proof()
@@ -160,7 +167,8 @@ class ProofState():
             "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
             "proof": sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
                           for item in self.prf.items], []),
-            "report": self.rpt.json_data()
+            "report": self.rpt.json_data(),
+            "method_sig": self.get_method_sig()
         }
 
     @staticmethod

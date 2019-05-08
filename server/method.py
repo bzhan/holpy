@@ -11,7 +11,7 @@ from server import tactic
 class cases_method(Method):
     """Case analysis."""
     def __init__(self):
-        self.sig = {'case': str}
+        self.sig = ['case']
 
     def search(self, state, id, prevs):
         return True
@@ -23,7 +23,7 @@ class cases_method(Method):
 class apply_prev_method(Method):
     """Apply previous fact."""
     def __init__(self):
-        self.sig = {}
+        self.sig = []
 
     def search(self, state, id, prevs):
         return len(prevs) == 1
@@ -34,7 +34,7 @@ class apply_prev_method(Method):
 class rewrite_goal_with_prev_method(Method):
     """Rewrite using previous fact."""
     def __init__(self):
-        self.sig = {}
+        self.sig = []
 
     def search(self, state, id, prevs):
         return len(prevs) == 1
@@ -45,7 +45,7 @@ class rewrite_goal_with_prev_method(Method):
 class rewrite_goal(Method):
     """Rewrite using a theorem."""
     def __init__(self):
-        self.sig = {'theorem': str}
+        self.sig = ['theorem']
 
     def search(self, state, id, prevs):
         pass
@@ -56,7 +56,7 @@ class rewrite_goal(Method):
 class apply_forward_step(Method):
     """Apply theorem in the forward direction."""
     def __init__(self):
-        self.sig = {'theorem': str}
+        self.sig = ['theorem']
 
     def search(self, state, id, prevs):
         pass
@@ -69,7 +69,7 @@ class apply_forward_step(Method):
 class apply_backward_step(Method):
     """Apply theorem in the backward direction."""
     def __init__(self):
-        self.sig = {'theorem': str}
+        self.sig = ['theorem']
 
     def search(self, state, id, prevs):
         pass
@@ -80,7 +80,7 @@ class apply_backward_step(Method):
 class introduction(Method):
     """Introducing variables and assumptions."""
     def __init__(self):
-        self.sig = {}
+        self.sig = []
 
     def search(self, state, id, prevs):
         pass
@@ -109,7 +109,7 @@ class introduction(Method):
 class forall_elim(Method):
     """Elimination of forall statement."""
     def __init__(self):
-        self.sig = {'s': str}
+        self.sig = ['s']
 
     def search(self, state, id, prevs):
         pass
@@ -122,7 +122,7 @@ class forall_elim(Method):
 class induction(Method):
     """Apply induction."""
     def __init__(self):
-        self.sig = {'theorem': str, 'var': str}
+        self.sig = ['theorem', 'var']
 
     def search(self, state, id, prevs):
         pass
