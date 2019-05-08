@@ -50,3 +50,29 @@ function display_facts_and_goal(cm) {
                     {css: 'background: yellow'});
     }
 }
+
+function print_search_res(res) {
+    if (res._method_name === "apply_backward_step") {
+        if (res._goal.length === 0)
+            return res.theorem + " (b): (solves)"
+        else
+            return res.theorem + " (b): " + res._goal.join(", ");
+    } else if (res._method_name === "apply_forward_step") {
+        return res.theorem + " (f): obtain " + res._fact;
+    } else if (res._method_name === "rewrite_goal") {
+        if (res._goal.length === 0)
+            return res.theorem + " (r): (solves)";
+        else
+            return res.theorem + " (r): " + res._goal.join(", ");
+    } else if (res._method_name === "introduction") {
+        return "introduction";
+    } else if (res._method_name === "rewrite_goal_with_prev") {
+        return "rewrite with fact";
+    } else if (res._method_name === "apply_prev") {
+        return "apply fact";
+    } else if (res._method_name === "forall_elim") {
+        return "forall elimination";
+    } else {
+        return JSON.stringify(res);
+    }
+}

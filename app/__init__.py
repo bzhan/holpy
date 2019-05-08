@@ -376,9 +376,9 @@ def search_method():
         search_res = cell.search_method(goal_id, fact_ids)
         for res in search_res:
             if '_goal' in res:
-                res['_goal'] = [printer.print_term(thy, t) for t in res['_goal']]
+                res['_goal'] = [printer.print_term(thy, t, unicode=True) for t in res['_goal']]
             if '_fact' in res:
-                res['_fact'] = [printer.print_term(thy, t) for t in res['_fact']]
+                res['_fact'] = [printer.print_term(thy, t, unicode=True) for t in res['_fact']]
 
         ctxt = cell.get_ctxt(goal_id)
         print_ctxt = dict((k, printer.print_type(thy, v, highlight=True))

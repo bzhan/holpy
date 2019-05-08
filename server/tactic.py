@@ -102,9 +102,10 @@ class rewrite(Tactic):
         C = goal.prop
         cv = then_conv(top_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
-        new_goal = cv.eval(thy, C).prop.rhs
+        th = cv.eval(thy, C)
+        new_goal = th.prop.rhs
 
-        new_As = list(set(cv.eval(thy, C).hyps) - set(init_As))
+        new_As = list(th.hyps)
         new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
         if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
             return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=new_As_pts)

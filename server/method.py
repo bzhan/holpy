@@ -69,6 +69,9 @@ class rewrite_goal(Method):
 
     def search(self, state, id, prevs):
         cur_th = state.get_proof_item(id).th
+        if cur_th.prop.is_all():
+            return []
+
         thy = state.thy
         results = []
         for th_name, th in thy.get_data("theorems").items():
@@ -76,9 +79,14 @@ class rewrite_goal(Method):
                 continue
 
             cv = top_conv(rewr_conv(th_name))
-            new_goal = cv.eval(thy, cur_th.prop).prop.rhs
+            th = cv.eval(thy, cur_th.prop)
+            new_goal = th.prop.rhs
+            new_As = list(th.hyps)
             if cur_th.prop != new_goal:
-                results.append({"theorem": th_name, "_goal": [new_goal]})
+                if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
+                    results.append({"theorem": th_name, "_goal": new_As})
+                else:
+                    results.append({"theorem": th_name, "_goal": [new_goal] + new_As})
 
         return sorted(results, key = lambda d: d['theorem'])
 

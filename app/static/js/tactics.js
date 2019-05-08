@@ -392,7 +392,6 @@ function display(id) {
 function display_match_thm() {
     var id = get_selected_id();
     var search_res = cells[id].search_res;
-    console.log(search_res);
 
     $('div.rbottom .selected .match-thm').html('');
     var template_match_thm = _.template($("#template-match-thm").html());
