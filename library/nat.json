@@ -339,7 +339,7 @@
         },
         {
             "name": "add_comm",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "plus_def_1, 0 + y = y",
@@ -379,11 +379,11 @@
                     "th": "n + y = y + n ⊢ n + y = y + n"
                 },
                 {
-                    "args": "",
+                    "args": "add_Suc_right, Suc (y + n) = y + Suc n",
                     "id": "2.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "n + y = y + n ⊢ Suc (y + n) = y + Suc n"
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (y + n) = y + Suc n"
                 },
                 {
                     "args": "Suc (n + y) = y + Suc n",
@@ -989,15 +989,34 @@
                     "id": "2.2",
                     "prevs": [],
                     "rule": "sorry",
+                    "th": "(x + y) * n = x * n + y * n ⊢ x + y + (x * n + y * n) = x + x * n + (y + y * n)"
+                },
+                {
+                    "args": "x + y + (x + y) * n = x + x * n + (y + y * n)",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "(x + y) * n = x * n + y * n ⊢ x + y + (x + y) * n = x + x * n + (y + y * n)"
+                },
+                {
+                    "args": "mult_Suc_right, (x + y) * Suc n = x * Suc n + y * Suc n",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "(x + y) * n = x * n + y * n ⊢ (x + y) * Suc n = x * Suc n + y * Suc n"
                 },
                 {
                     "args": "",
-                    "id": "2.3",
+                    "id": "2.5",
                     "prevs": [
                         "2.0",
                         "2.1",
-                        "2.2"
+                        "2.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀n. (x + y) * n = x * n + y * n ⟶ (x + y) * Suc n = x * Suc n + y * Suc n"
@@ -1023,7 +1042,7 @@
         },
         {
             "name": "mult_assoc",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "times_def_1, 0 * z = 0",
@@ -1063,28 +1082,39 @@
                     "th": "n * y * z = n * (y * z) ⊢ n * y * z = n * (y * z)"
                 },
                 {
-                    "args": "",
+                    "args": "y * z + n * y * z = y * z + n * (y * z)",
                     "id": "2.2",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n * y * z = n * (y * z) ⊢ y * z + n * y * z = y * z + n * (y * z)"
+                },
+                {
+                    "args": "distrib_r, (y + n * y) * z = y * z + n * (y * z)",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "n * y * z = n * (y * z) ⊢ (y + n * y) * z = y * z + n * (y * z)"
                 },
                 {
                     "args": "times_def_2, Suc n * y * z = Suc n * (y * z)",
-                    "id": "2.3",
+                    "id": "2.4",
                     "prevs": [
-                        "2.2"
+                        "2.3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "n * y * z = n * (y * z) ⊢ Suc n * y * z = Suc n * (y * z)"
                 },
                 {
                     "args": "",
-                    "id": "2.4",
+                    "id": "2.5",
                     "prevs": [
                         "2.0",
                         "2.1",
-                        "2.3"
+                        "2.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀n. n * y * z = n * (y * z) ⟶ Suc n * y * z = Suc n * (y * z)"
@@ -1110,7 +1140,7 @@
         },
         {
             "name": "mult_comm",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "times_def_1, 0 * y = 0",
@@ -1150,28 +1180,39 @@
                     "th": "n * y = y * n ⊢ n * y = y * n"
                 },
                 {
-                    "args": "",
+                    "args": "y + n * y = y + y * n",
                     "id": "2.2",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n * y = y * n ⊢ y + n * y = y + y * n"
+                },
+                {
+                    "args": "mult_Suc_right, y + n * y = y * Suc n",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "n * y = y * n ⊢ y + n * y = y * Suc n"
                 },
                 {
                     "args": "times_def_2, Suc n * y = y * Suc n",
-                    "id": "2.3",
+                    "id": "2.4",
                     "prevs": [
-                        "2.2"
+                        "2.3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "n * y = y * n ⊢ Suc n * y = y * Suc n"
                 },
                 {
                     "args": "",
-                    "id": "2.4",
+                    "id": "2.5",
                     "prevs": [
                         "2.0",
                         "2.1",
-                        "2.3"
+                        "2.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀n. n * y = y * n ⟶ Suc n * y = y * Suc n"
@@ -1275,6 +1316,34 @@
         },
         {
             "name": "one_Suc",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "plus_def_1, Suc 1 = Suc (0 + 1)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc 1 = Suc (0 + 1)"
+                },
+                {
+                    "args": "plus_def_2, Suc 1 = 1 + 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc 1 = 1 + 1"
+                },
+                {
+                    "args": "bit0_def, Suc 1 = 2",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc 1 = 2"
+                }
+            ],
             "prop": "Suc 1 = bit0 1",
             "ty": "thm",
             "vars": {}

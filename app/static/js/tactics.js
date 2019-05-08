@@ -382,18 +382,18 @@ function display(id) {
             return '';
         }
     });
-    var large_num = 0;
+    var max_id_len = 0;
     $.each(proof, function (line_no, line) {
         var id_len = line.id.length;
-        if (id_len >= large_num)
-            large_num = id_len;
+        if (id_len >= max_id_len)
+        max_id_len = id_len;
         display_line(id, line_no);
         var len = editor.getLineHandle(line_no).text.length;
         editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
     });
-    $('div.code-cell.selected div.CodeMirror-gutters').css('width', 32 + large_num * 3 + 'px');
+    $('div.code-cell.selected div.CodeMirror-gutters').css('width', 32 + max_id_len * 3 + 'px');
     $('div.CodeMirror-gutters').css('text-align', 'left');
-    $('div.code-cell.selected div.CodeMirror-sizer').css('margin-left', 32 + large_num * 3 + 'px');
+    $('div.code-cell.selected div.CodeMirror-sizer').css('margin-left', 32 + max_id_len * 3 + 'px');
 }
 
 function display_match_thm(result) {
@@ -425,8 +425,8 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
         select_thm = -1
 
     var input = current_state();
+    input.method_name = method;
     if (select_thm !== -1) {
-        input.method_name = method
         input.theorem = match_thm_list[select_thm][0];
         $.ajax({
             url: '/api/apply-method',
@@ -436,7 +436,7 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
         });
     } else {
         var title = 'Goal: ' + input.goal_id;
-        if (facts.size !== 0) {
+        if (input.fact_ids.length !== 0) {
             title = title + '\nFacts: ' + input.fact_ids.join(', ')
         }
         swal({
@@ -451,7 +451,7 @@ function apply_thm_tactic(select_thm = -1, func_name = '') {
                 document.querySelector('#swal-input1').focus();
                 input.theorem = document.getElementById('swal-input1').value;
                 return $.ajax({
-                    url: api,
+                    url: '/api/apply-method',
                     type: "POST",
                     data: JSON.stringify(input),
                     success: function (result) {
