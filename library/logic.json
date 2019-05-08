@@ -425,7 +425,7 @@
         },
         {
             "name": "disj_conv_imp",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -559,16 +559,28 @@
                 {
                     "args": "",
                     "id": "1.1.1",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "1.0",
+                        "1.1.0"
+                    ],
+                    "rule": "implies_elim",
+                    "th": "A ⟶ B, A ⊢ B"
+                },
+                {
+                    "args": "disjI2, {}, {A: ¬A, B: B}",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "apply_theorem_for",
                     "th": "A ⟶ B, A ⊢ ¬A ∨ B"
                 },
                 {
                     "args": "",
-                    "id": "1.1.2",
+                    "id": "1.1.3",
                     "prevs": [
                         "1.1.0",
-                        "1.1.1"
+                        "1.1.2"
                     ],
                     "rule": "intros",
                     "th": "A ⟶ B ⊢ A ⟶ ¬A ∨ B"
@@ -1154,7 +1166,7 @@
         },
         {
             "name": "eq_false",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -1185,22 +1197,23 @@
                     "th": "A ⊢ A"
                 },
                 {
-                    "args": "negE, {}, {A: A}",
+                    "args": "negE",
                     "id": "0.1.1",
                     "prevs": [
                         "0.0",
                         "0.1.0"
                     ],
-                    "rule": "apply_theorem_for",
+                    "rule": "apply_theorem",
                     "th": "¬A, A ⊢ false"
                 },
                 {
-                    "args": "A",
+                    "args": "",
                     "id": "0.1.2",
                     "prevs": [
+                        "0.1.0",
                         "0.1.1"
                     ],
-                    "rule": "implies_intr",
+                    "rule": "intros",
                     "th": "¬A ⊢ A ⟶ false"
                 },
                 {
@@ -1224,34 +1237,36 @@
                         "0.2.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬A, false ⊢ A"
+                    "th": "false ⊢ A"
                 },
                 {
-                    "args": "false",
+                    "args": "",
                     "id": "0.2.2",
                     "prevs": [
+                        "0.2.0",
                         "0.2.1"
                     ],
-                    "rule": "implies_intr",
+                    "rule": "intros",
                     "th": "¬A ⊢ false ⟶ A"
                 },
                 {
-                    "args": "iffI, {}, {A: A, B: false}",
+                    "args": "iffI",
                     "id": "0.3",
                     "prevs": [
                         "0.1",
                         "0.2"
                     ],
-                    "rule": "apply_theorem_for",
+                    "rule": "apply_theorem",
                     "th": "¬A ⊢ A = false"
                 },
                 {
-                    "args": "¬A",
+                    "args": "",
                     "id": "0.4",
                     "prevs": [
+                        "0.0",
                         "0.3"
                     ],
-                    "rule": "implies_intr",
+                    "rule": "intros",
                     "th": "⊢ ¬A ⟶ A = false"
                 },
                 {
@@ -1273,57 +1288,62 @@
                     "id": "1.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "A = false ⊢ A ⟶ false"
+                    "th": "A = false ⊢ false ⟶ false"
                 },
                 {
-                    "args": "A",
+                    "args": "false",
                     "id": "1.1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "A ⊢ A"
+                    "th": "false ⊢ false"
                 },
                 {
                     "args": "",
                     "id": "1.1.1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "A = false, A ⊢ false"
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.0"
+                    ],
+                    "rule": "intros",
+                    "th": "A = false ⊢ false ⟶ false"
                 },
                 {
-                    "args": "A",
-                    "id": "1.1.2",
+                    "args": "A ⟶ false",
+                    "id": "1.2",
                     "prevs": [
-                        "1.1.1"
+                        "1.0",
+                        "1.1"
                     ],
-                    "rule": "implies_intr",
+                    "rule": "rewrite_goal_with_prev",
                     "th": "A = false ⊢ A ⟶ false"
                 },
                 {
-                    "args": "negI, {}, {A: A}",
-                    "id": "1.2",
-                    "prevs": [
-                        "1.1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "A = false ⊢ ¬A"
-                },
-                {
-                    "args": "A = false",
+                    "args": "negI",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
                     ],
-                    "rule": "implies_intr",
+                    "rule": "apply_theorem",
+                    "th": "A = false ⊢ ¬A"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ A = false ⟶ ¬A"
                 },
                 {
-                    "args": "iffI, {}, {A: ¬A, B: A = false}",
+                    "args": "iffI",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
-                    "rule": "apply_theorem_for",
+                    "rule": "apply_theorem",
                     "th": "⊢ (¬A) = (A = false)"
                 }
             ],
