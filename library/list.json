@@ -843,7 +843,7 @@
     ],
     "description": "Lists",
     "imports": [
-        "nat"
+        "set"
     ],
     "name": "list"
 }

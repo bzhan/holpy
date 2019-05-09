@@ -37,6 +37,11 @@ class OperatorTable():
             OperatorData("zero", 0, arity=OperatorData.CONST, ascii_op="0"),
             OperatorData("append", 65, assoc=RIGHT, ascii_op="@"),
             OperatorData("cons", 65, assoc=RIGHT, ascii_op="#"),
+            OperatorData("member", 50, assoc=LEFT, ascii_op="MEM", unicode_op="∈"),
+            OperatorData("subset", 50, assoc=LEFT, ascii_op="SUB", unicode_op="⊆"),
+            OperatorData("inter", 70, assoc=LEFT, ascii_op="INTER", unicode_op="∩"),
+            OperatorData("union", 65, assoc=LEFT, ascii_op="UNION", unicode_op="∪"),
+            OperatorData("empty_set", 0, arity=OperatorData.CONST, ascii_op="{}", unicode_op="∅"),
         ]
 
     def get_info_for_fun(self, t):

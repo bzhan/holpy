@@ -14,6 +14,7 @@ from logic import logic
 from logic import nat
 from logic import list
 from logic import function
+from logic import set
 from syntax import infertype
 
 # import sys,io
@@ -44,6 +45,7 @@ grammar = r"""
         | ("?"|"∃") CNAME ". " term           -> exists_notype
         | "[]"                     -> literal_list  // Empty list
         | "[" term ("," term)* "]" -> literal_list  // List
+        | ("{}"|"∅")               -> empty_set     // Empty set
         | "if" term "then" term "else" term  -> if_expr // if expression
         | "(" term ")(" term ":=" term ("," term ":=" term)* ")"   -> fun_upd // function update
         | "(" term ")"                    // Parenthesis
@@ -53,15 +55,23 @@ grammar = r"""
 
     ?times: times "*" comb | comb       // Multiplication: priority 70
 
-    ?plus: plus "+" times | times       // Addition: priority 65
+    ?inter: inter ("INTER"|"∩") times | times     // Intersection: priority 70
+
+    ?plus: plus "+" inter | inter       // Addition: priority 65
 
     ?append: plus "@" append | plus     // Append: priority 65
 
     ?cons: append "#" cons | append     // Cons: priority 65
 
-    ?eq: eq "=" cons | cons             // Equality: priority 50
+    ?union: union ("UNION"|"∪") cons | cons       // Union: priority 65
 
-    ?neg: ("~"|"¬") neg -> neg | eq     // Negation: priority 40 
+    ?eq: eq "=" union | union           // Equality: priority 50
+
+    ?mem: mem ("MEM"|"∈") mem | eq              // Membership: priority 50
+
+    ?subset: subset ("SUB"|"⊆") subset | mem    // Subset: priority 50
+
+    ?neg: ("~"|"¬") neg -> neg | subset // Negation: priority 40
 
     ?conj: neg ("&"|"∧") conj | neg     // Conjunction: priority 35
 
@@ -196,6 +206,21 @@ class HOLTransformer(Transformer):
 
     def imp(self, s, t):
         return Term.mk_implies(s, t)
+
+    def empty_set(self):
+        return set.empty_set(None)
+
+    def mem(self, x, A):
+        return Const("member", None)(x, A)
+
+    def subset(self, A, B):
+        return Const("subset", None)(A, B)
+
+    def inter(self, A, B):
+        return Const("inter", None)(A, B)
+
+    def union(self, A, B):
+        return Const("union", None)(A, B)
 
     def thm(self, *args):
         return Thm(args[:-1], args[-1])

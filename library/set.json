@@ -13,7 +13,7 @@
             "type": "'a => 'a set => bool"
         },
         {
-            "name": "empty",
+            "name": "empty_set",
             "ty": "def.ax",
             "type": "'a set"
         },
@@ -25,7 +25,7 @@
         {
             "hint_backward": "true",
             "name": "member_empty",
-            "prop": "~(member x empty)",
+            "prop": "~(member x empty_set)",
             "ty": "thm.ax",
             "vars": {
                 "x": "'a"
@@ -86,7 +86,7 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x. member x empty ⟶ member x A"
+                    "th": "⊢ ∀x. member x empty_set ⟶ member x A"
                 },
                 {
                     "args": "x, 'a",
@@ -96,18 +96,18 @@
                     "th": "⊢ x = x"
                 },
                 {
-                    "args": "member x empty",
+                    "args": "member x empty_set",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "member x empty ⊢ member x empty"
+                    "th": "member x empty_set ⊢ member x empty_set"
                 },
                 {
                     "args": "",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "member x empty ⊢ member x A"
+                    "th": "member x empty_set ⊢ member x A"
                 },
                 {
                     "args": "",
@@ -118,7 +118,7 @@
                         "0.2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x. member x empty ⟶ member x A"
+                    "th": "⊢ ∀x. member x empty_set ⟶ member x A"
                 },
                 {
                     "args": "subsetI",
@@ -127,10 +127,10 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ subset empty A"
+                    "th": "⊢ subset empty_set A"
                 }
             ],
-            "prop": "subset empty A",
+            "prop": "subset empty_set A",
             "ty": "thm",
             "vars": {
                 "A": "'a set"
@@ -800,7 +800,7 @@
     ],
     "description": "Basic results about sets.",
     "imports": [
-        "logic"
+        "nat"
     ],
     "name": "set"
 }

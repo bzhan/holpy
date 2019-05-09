@@ -8,6 +8,7 @@ from kernel.thm import Thm
 from logic import logic
 from logic import nat
 from logic import list
+from logic import set
 from logic import basic
 from logic import function
 from syntax import printer
@@ -40,9 +41,6 @@ all = Term.mk_all
 neg = logic.neg
 exists = logic.mk_exists
 mk_if = logic.mk_if
-nil = list.nil
-cons = list.mk_cons
-append = list.mk_append
 
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
@@ -158,6 +156,9 @@ class PrinterTest(unittest.TestCase):
             self.assertEqual(printer.print_term(thy, t), s)
 
     def testPrintList(self):
+        nil = list.nil
+        cons = list.mk_cons
+        append = list.mk_append
         test_data = [
             (append(xs, ys), "xs @ ys"),
             (append(append(xs, ys), zs), "(xs @ ys) @ zs"),
@@ -174,6 +175,22 @@ class PrinterTest(unittest.TestCase):
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
 
+    def testPrintSet(self):
+        A = Var("A", set.setT(Ta))
+        B = Var("B", set.setT(Ta))
+        x = Var("x", Ta)
+        test_data = [
+            (set.empty_set(Ta), "({}::'a set)", "(∅::'a set)"),
+            (set.mk_mem(x, A), "x MEM A", "x ∈ A"),
+            (set.mk_subset(A, B), "A SUB B", "A ⊆ B"),
+            (set.mk_inter(A, B), "A INTER B", "A ∩ B"),
+            (set.mk_union(A, B), "A UNION B", "A ∪ B"),
+        ]
+
+        for t, s1, s2 in test_data:
+            self.assertEqual(printer.print_term(thy, t), s1)
+            self.assertEqual(printer.print_term(thy, t, unicode=True), s2)
+
     def testPrintFunction(self):
         test_data = [
             (function.mk_fun_upd(f, a, b), "(f)(a := b)"),
@@ -186,8 +203,8 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintWithType(self):
         test_data = [
-            (nil(Ta), "([]::'a list)"),
-            (eq(nil(Ta),nil(Ta)), "([]::'a list) = []"),
+            (list.nil(Ta), "([]::'a list)"),
+            (eq(list.nil(Ta), list.nil(Ta)), "([]::'a list) = []"),
             (all(a, eq(a, a)), "!a::'a. a = a"),
         ]
 
