@@ -4,7 +4,7 @@ from kernel import term
 from kernel.term import Term, Var
 from kernel.proof import id_force_tuple, Proof
 from kernel.theory import Method, global_methods
-from logic.conv import top_conv, rewr_conv, beta_conv
+from logic.conv import top_conv, rewr_conv, beta_conv, then_conv
 from logic.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic
@@ -53,7 +53,18 @@ class rewrite_goal_with_prev_method(Method):
             prev_th = state.get_proof_item(prevs[0]).th
             cur_th = state.get_proof_item(id).th
             if prev_th.prop.is_equals():
-                return [{}]
+                pt = ProofTermAtom(prevs[0], prev_th)
+                cv = then_conv(top_conv(rewr_conv(pt, match_vars=False)),
+                               top_conv(beta_conv()))
+                eq_th = cv.eval(state.thy, cur_th.prop)
+            new_goal = eq_th.prop.rhs
+
+            new_As = list(set(eq_th.hyps) - set(cur_th.hyps))
+            if cur_th.prop != new_goal:
+                if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
+                    return [{"_goal": new_As}]
+                else:
+                    return [{"_goal": [new_goal] + new_As}]
             else:
                 return []
         else:

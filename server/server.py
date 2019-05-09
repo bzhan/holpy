@@ -291,6 +291,11 @@ class ProofState():
             for r in res:
                 r['_method_name'] = name
             results.extend(res)
+
+        # If there is an element in results that solves the goal,
+        # output only results that solves.
+        if any('_goal' in r and len(r['_goal']) == 0 for r in results):
+            results = list(filter(lambda r: '_goal' in r and len(r['_goal']) == 0, results))
         return results
 
     def apply_tactic(self, id, tactic, args=None, prevs=None):

@@ -67,7 +67,10 @@ function print_search_res(res) {
     } else if (res._method_name === "introduction") {
         return "introduction";
     } else if (res._method_name === "rewrite_goal_with_prev") {
-        return "rewrite with fact";
+        if (res._goal.length === 0)
+            return "rewrite with fact: (solves)"
+        else
+            return "rewrite with fact: " + res._goal.join(", ");
     } else if (res._method_name === "apply_prev") {
         return "apply fact";
     } else if (res._method_name === "forall_elim") {

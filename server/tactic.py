@@ -102,10 +102,10 @@ class rewrite(Tactic):
         C = goal.prop
         cv = then_conv(top_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
-        th = cv.eval(thy, C)
-        new_goal = th.prop.rhs
+        eq_th = cv.eval(thy, C)
+        new_goal = eq_th.prop.rhs
 
-        new_As = list(th.hyps)
+        new_As = list(eq_th.hyps)
         new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
         if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
             return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=new_As_pts)
@@ -122,9 +122,11 @@ class rewrite_goal_with_prev(Tactic):
         C = goal.prop
         cv = then_conv(top_conv(rewr_conv(pt, match_vars=False)),
                        top_conv(beta_conv()))
-        new_goal = cv.eval(thy, C).prop.rhs
+        
+        eq_th = cv.eval(thy, C)
+        new_goal = eq_th.prop.rhs
 
-        new_As = list(set(cv.eval(thy, C).hyps) - set(init_As))
+        new_As = list(set(eq_th.hyps) - set(init_As))
         new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
         if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
             return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[pt] + new_As_pts)
