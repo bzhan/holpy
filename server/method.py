@@ -304,6 +304,19 @@ class induction(Method):
 
         state.apply_tactic(id, tactic.var_induct(), args=(data['theorem'], var))
 
+class new_var(Method):
+    """Create new variable."""
+    def __init__(self):
+        self.sig = ['name', 'type']
+
+    def search(self, state, id, prevs):
+        return []
+
+    def apply(self, state, id, data, prevs):
+        state.add_line_before(id, 1)
+        T = parser.parse_type(state.thy, data['type'])
+        state.set_line(id, 'variable', args=(data['name'], T), prevs=[])
+
 
 def apply_method(state, data):
     """Apply a method to the state. Here data is a dictionary containing
@@ -327,4 +340,5 @@ global_methods.update({
     "forall_elim": forall_elim(),
     "inst_exists_goal": inst_exists_goal(),
     "induction": induction(),
+    "new_var": new_var(),
 })

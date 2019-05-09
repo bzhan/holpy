@@ -280,6 +280,10 @@
             "ty": "method"
         },
         {
+            "name": "new_var",
+            "ty": "method"
+        },
+        {
             "name": "classical_cases",
             "num_gaps": 0,
             "proof": [

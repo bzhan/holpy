@@ -2396,7 +2396,7 @@
         },
         {
             "name": "drinker",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -2413,18 +2413,51 @@
                     "th": "∀x. P x ⊢ ∀x. P x"
                 },
                 {
-                    "args": "",
+                    "args": "x, 'a",
                     "id": "0.1",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "∀x. P x ⊢ ∃x. P x ⟶ (∀x. P x)"
+                    "rule": "variable",
+                    "th": "⊢ x = x"
                 },
                 {
                     "args": "",
                     "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. P x ⊢ P x ⟶ (∀x. P x)"
+                },
+                {
+                    "args": "P x",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P x ⊢ P x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0",
+                        "0.0"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. P x ⊢ P x ⟶ (∀x. P x)"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx. P x ⟶ (∀x. P x), a: x}",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. P x ⊢ ∃a. P a ⟶ (∀x. P x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
                     "prevs": [
                         "0.0",
-                        "0.1"
+                        "0.3"
                     ],
                     "rule": "intros",
                     "th": "⊢ (∀x. P x) ⟶ (∃x. P x ⟶ (∀x. P x))"

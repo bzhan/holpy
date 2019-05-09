@@ -80,6 +80,8 @@ function print_search_res(res) {
             return "induction " + res.theorem + " var: " + res.var
         else
             return "induction " + res.theorem;
+    } else if (res._method_name === "inst_exists_goal") {
+        return "instantiate exists goal";
     } else {
         return JSON.stringify(res);
     }

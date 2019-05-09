@@ -200,6 +200,10 @@
 
         $('#introduction').on("click", introduction);
 
+        $('#new-var').on("click", function () {
+            apply_method('new_var')
+        });
+
         $('#apply-cases').on("click", function () {
             apply_method('cases')
         });
