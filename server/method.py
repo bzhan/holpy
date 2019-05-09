@@ -260,7 +260,22 @@ class induction(Method):
         self.sig = ['theorem', 'var']
 
     def search(self, state, id, prevs):
-        return []
+        cur_th = state.get_proof_item(id).th
+        if len(cur_th.hyps) > 0:
+            return []
+
+        results = []
+        for name, th in state.thy.get_data("theorems").items():
+            if 'var_induct' not in state.thy.get_attributes(name):
+                continue
+
+            var_T = th.concl.arg.T
+            vars = [v for v in term.get_vars(cur_th.prop) if v.T == var_T]
+            if len(vars) == 1:
+                results.append({'theorem': name, 'var': vars[0].name})
+            elif len(vars) > 1:
+                results.append({'theorem': name})
+        return results
 
     def apply(self, state, id, data, prevs):
         # Find variable

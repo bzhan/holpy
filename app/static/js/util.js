@@ -75,6 +75,11 @@ function print_search_res(res) {
         return "apply fact";
     } else if (res._method_name === "forall_elim") {
         return "forall elimination";
+    } else if (res._method_name === "induction") {
+        if ('var' in res)
+            return "induction " + res.theorem + " var: " + res.var
+        else
+            return "induction " + res.theorem;
     } else {
         return JSON.stringify(res);
     }
