@@ -34,7 +34,7 @@ class apply_prev_method(Method):
             prev_th = state.get_proof_item(prevs[0]).th
             cur_th = state.get_proof_item(id).th
             if prev_th.prop.is_implies() and prev_th.prop.arg == cur_th.prop:
-                return [{}]
+                return [{"_goal": prev_th.assums}]
             else:
                 return []
         else:
@@ -49,24 +49,27 @@ class rewrite_goal_with_prev_method(Method):
         self.sig = []
 
     def search(self, state, id, prevs):
-        if len(prevs) == 1:
-            prev_th = state.get_proof_item(prevs[0]).th
-            cur_th = state.get_proof_item(id).th
-            if prev_th.prop.is_equals():
-                pt = ProofTermAtom(prevs[0], prev_th)
-                cv = then_conv(top_conv(rewr_conv(pt, match_vars=False)),
-                               top_conv(beta_conv()))
-                eq_th = cv.eval(state.thy, cur_th.prop)
-            new_goal = eq_th.prop.rhs
+        if len(prevs) != 1:
+            return []
+        
+        prev_th = state.get_proof_item(prevs[0]).th
+        cur_th = state.get_proof_item(id).th
 
-            new_As = list(set(eq_th.hyps) - set(cur_th.hyps))
-            if cur_th.prop != new_goal:
-                if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-                    return [{"_goal": new_As}]
-                else:
-                    return [{"_goal": [new_goal] + new_As}]
+        if not prev_th.prop.is_equals():
+            return []
+
+        pt = ProofTermAtom(prevs[0], prev_th)
+        cv = then_conv(top_conv(rewr_conv(pt, match_vars=False)),
+                       top_conv(beta_conv()))
+        eq_th = cv.eval(state.thy, cur_th.prop)
+        new_goal = eq_th.prop.rhs
+
+        new_As = list(set(eq_th.hyps) - set(cur_th.hyps))
+        if cur_th.prop != new_goal:
+            if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
+                return [{"_goal": new_As}]
             else:
-                return []
+                return [{"_goal": [new_goal] + new_As}]
         else:
             return []
 

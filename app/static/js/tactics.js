@@ -151,7 +151,7 @@ function introduction() {
     input.method_name = 'introduction';
     input.names = "";
     if (input.line.indexOf("⊢ ∀") !== -1) {
-        input.names = prompt('Enter variable name').split(",");
+        input.names = prompt('Enter vars').split(",");
     }
     display_running();
     $.ajax({

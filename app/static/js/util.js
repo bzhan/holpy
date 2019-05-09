@@ -58,7 +58,7 @@ function print_search_res(res) {
         else
             return res.theorem + " (b): " + res._goal.join(", ");
     } else if (res._method_name === "apply_forward_step") {
-        return res.theorem + " (f): obtain " + res._fact;
+        return res.theorem + " (f): have " + res._fact;
     } else if (res._method_name === "rewrite_goal") {
         if (res._goal.length === 0)
             return res.theorem + " (r): (solves)";
@@ -72,7 +72,7 @@ function print_search_res(res) {
         else
             return "rewrite with fact: " + res._goal.join(", ");
     } else if (res._method_name === "apply_prev") {
-        return "apply fact";
+        return "apply fact: " + res._goal.join(", ");
     } else if (res._method_name === "forall_elim") {
         return "forall elimination";
     } else if (res._method_name === "induction") {
