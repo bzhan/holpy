@@ -493,6 +493,169 @@
                 "B": "'a set",
                 "C": "'a set"
             }
+        },
+        {
+            "name": "inter",
+            "ty": "def.ax",
+            "type": "'a set => 'a set => 'a set"
+        },
+        {
+            "name": "union",
+            "ty": "def.ax",
+            "type": "'a set => 'a set => 'a set"
+        },
+        {
+            "hint_rewrite": "true",
+            "name": "member_inter_iff",
+            "prop": "member x (inter A B) = ((member x A) & (member x B))",
+            "ty": "thm.ax",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "hint_rewrite": "true",
+            "name": "member_union_iff",
+            "prop": "member x (union A B) = ((member x A) | (member x B))",
+            "ty": "thm.ax",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "subset_union_id",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. member x A ⟶ member x (union A B)"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "member x A",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x A ⊢ member x A"
+                },
+                {
+                    "args": "disjI1, {}, {A: member x A, B: member x B}",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "member x A ⊢ member x A ∨ member x B"
+                },
+                {
+                    "args": "member_union_iff, member x (union A B)",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "member x A ⊢ member x (union A B)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. member x A ⟶ member x (union A B)"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ subset A (union A B)"
+                }
+            ],
+            "prop": "subset A (union A B)",
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set"
+            }
+        },
+        {
+            "name": "inter_subset_id",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. member x (inter A B) ⟶ member x A"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "member x (inter A B)",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x (inter A B) ⊢ member x (inter A B)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "member x (inter A B) ⊢ member x A"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. member x (inter A B) ⟶ member x A"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ subset (inter A B) A"
+                }
+            ],
+            "prop": "subset (inter A B) A",
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set"
+            }
         }
     ],
     "description": "Basic results about sets.",
