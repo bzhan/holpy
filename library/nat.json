@@ -1180,21 +1180,20 @@
                     "th": "n * y = y * n ⊢ n * y = y * n"
                 },
                 {
-                    "args": "y + n * y = y + y * n",
+                    "args": "mult_Suc_right, y + y * n = y * Suc n",
                     "id": "2.2",
-                    "prevs": [
-                        "2.1"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "n * y = y * n ⊢ y + n * y = y + y * n"
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y + y * n = y * Suc n"
                 },
                 {
-                    "args": "mult_Suc_right, y + n * y = y * Suc n",
+                    "args": "y + n * y = y * Suc n",
                     "id": "2.3",
                     "prevs": [
+                        "2.1",
                         "2.2"
                     ],
-                    "rule": "rewrite_goal",
+                    "rule": "rewrite_goal_with_prev",
                     "th": "n * y = y * n ⊢ y + n * y = y * Suc n"
                 },
                 {
@@ -1316,34 +1315,6 @@
         },
         {
             "name": "one_Suc",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "plus_def_1, Suc 1 = Suc (0 + 1)",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc 1 = Suc (0 + 1)"
-                },
-                {
-                    "args": "plus_def_2, Suc 1 = 1 + 1",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc 1 = 1 + 1"
-                },
-                {
-                    "args": "bit0_def, Suc 1 = 2",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc 1 = 2"
-                }
-            ],
             "prop": "Suc 1 = bit0 1",
             "ty": "thm",
             "vars": {}
