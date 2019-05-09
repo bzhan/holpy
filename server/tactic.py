@@ -161,6 +161,7 @@ class inst_exists_goal(Tactic):
 
         C = goal.prop
         assert logic.is_exists(C), "inst_exists_goal: goal is not exists statement"
-        assert C.arg.var_T == args.T, "inst_exists_goal: incorrect type"
+        argT = args.get_type()
+        assert C.arg.var_T == argT, "inst_exists_goal: incorrect type"
 
-        return rule().get_proof_term(thy, goal, args=('exI', ({'a': args.T}, {'P': C.arg, 'a': args})))
+        return rule().get_proof_term(thy, goal, args=('exI', ({'a': argT}, {'P': C.arg, 'a': args})))

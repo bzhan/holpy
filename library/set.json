@@ -656,6 +656,146 @@
                 "A": "'a set",
                 "B": "'a set"
             }
+        },
+        {
+            "name": "collect",
+            "ty": "def.ax",
+            "type": "('a => bool) => 'a set"
+        },
+        {
+            "hint_rewrite": "true",
+            "name": "member_collect_iff",
+            "prop": "member x (collect P) = P x",
+            "ty": "thm.ax",
+            "vars": {
+                "P": "'a => bool",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "cantor",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. ¬f x = collect (λx. ¬member x (f x))"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ f x = collect (λx. ¬member x (f x)) ⟶ false"
+                },
+                {
+                    "args": "f x = collect (λx. ¬member x (f x))",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ f x = collect (λx. ¬member x (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ member x (f x) ⟶ false"
+                },
+                {
+                    "args": "member x (f x)",
+                    "id": "0.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x (f x) ⊢ member x (f x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "f x = collect (λx. ¬member x (f x)), member x (f x) ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.2",
+                    "prevs": [
+                        "0.1.1.0",
+                        "0.1.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ member x (f x) ⟶ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ ¬member x (f x) ⟶ false"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ f x = collect (λx. ¬member x (f x)) ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬f x = collect (λx. ¬member x (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. ¬f x = collect (λx. ¬member x (f x))"
+                },
+                {
+                    "args": "exI, {a: 'a set}, {P: λS. ∀x. ¬f x = S, a: collect (λx. ¬member x (f x))}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a. ∀x. ¬f x = a"
+                }
+            ],
+            "prop": "∃S. ∀x. ~ f x  = S",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'a set"
+            }
         }
     ],
     "description": "Basic results about sets.",
