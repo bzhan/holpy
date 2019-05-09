@@ -386,6 +386,54 @@
                 "A": "bool",
                 "C": "bool"
             }
+        },
+        {
+            "hint_backward": "true",
+            "name": "iffI",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "A ⟶ B",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⟶ B ⊢ A ⟶ B"
+                },
+                {
+                    "args": "B ⟶ A",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "B ⟶ A ⊢ B ⟶ A"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "equal_intr",
+                    "th": "A ⟶ B, B ⟶ A ⊢ A = B"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (A ⟶ B) ⟶ (B ⟶ A) ⟶ A = B"
+                }
+            ],
+            "prop": "(A --> B) --> (B --> A) --> (A = B)",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
         }
     ],
     "description": "Foundation of higher-order logic",
