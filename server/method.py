@@ -257,6 +257,22 @@ class forall_elim(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'forall_elim', args=t, prevs=prevs)
 
+class inst_exists_goal(Method):
+    """Instantiate an exists goal."""
+    def __init__(self):
+        self.sig = ['s']
+
+    def search(self, state, id, prev):
+        cur_th = state.get_proof_item(id).th
+        if logic.is_exists(cur_th.prop):
+            return [{}]
+        else:
+            return []
+
+    def apply(self, state, id, data, prevs):
+        t = parser.parse_term(state.thy, state.get_ctxt(id), data['s'])
+        state.apply_tactic(id, tactic.inst_exists_goal(), args=t, prevs=[])
+
 class induction(Method):
     """Apply induction."""
     def __init__(self):
@@ -309,5 +325,6 @@ global_methods.update({
     "apply_backward_step": apply_backward_step(),
     "introduction": introduction(),
     "forall_elim": forall_elim(),
+    "inst_exists_goal": inst_exists_goal(),
     "induction": induction(),
 })

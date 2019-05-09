@@ -153,3 +153,14 @@ class cases(Tactic):
         goal1 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(args, C)))
         goal2 = ProofTerm.sorry(Thm(goal.hyps, Term.mk_implies(logic.neg(args), C)))
         return apply_theorem(thy, 'classical_cases', goal1, goal2)
+
+class inst_exists_goal(Tactic):
+    """Instantiate an exists goal."""
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
+        assert isinstance(args, Term), "inst_exists_goal"
+
+        C = goal.prop
+        assert logic.is_exists(C), "inst_exists_goal: goal is not exists statement"
+        assert C.arg.var_T == args.T, "inst_exists_goal: incorrect type"
+
+        return rule().get_proof_term(thy, goal, args=('exI', ({'a': args.T}, {'P': C.arg, 'a': args})))

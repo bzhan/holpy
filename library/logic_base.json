@@ -272,6 +272,10 @@
             "ty": "method"
         },
         {
+            "name": "inst_exists_goal",
+            "ty": "method"
+        },
+        {
             "name": "induction",
             "ty": "method"
         },
