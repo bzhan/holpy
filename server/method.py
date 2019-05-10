@@ -135,6 +135,31 @@ class rewrite_fact(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'rewrite_fact', args=data['theorem'], prevs=prevs)
 
+class rewrite_fact_with_prev(Method):
+    """Rewrite fact using a previous equality."""
+    def __init__(self):
+        self.sig = []
+
+    def search(self, state, id, prevs):
+        if len(prevs) != 2:
+            return []
+
+        eq_th, prev_th = [state.get_proof_item(prev).th for prev in prevs]
+        if not eq_th.prop.is_equals():
+            return []
+
+        cv = top_sweep_conv(rewr_conv(ProofTermAtom(prevs[0], eq_th), match_vars=False))
+        th = cv.eval(state.thy, prev_th.prop)
+        new_fact = th.prop.rhs
+        if prev_th.prop != new_fact:
+            return [{}]
+        else:
+            return []
+
+    def apply(self, state, id, data, prevs):
+        state.add_line_before(id, 1)
+        state.set_line(id, 'rewrite_fact_with_prev', prevs=prevs)
+
 class apply_forward_step(Method):
     """Apply theorem in the forward direction."""
     def __init__(self):
@@ -363,6 +388,7 @@ global_methods.update({
     "rewrite_goal_with_prev": rewrite_goal_with_prev_method(),
     "rewrite_goal": rewrite_goal(),
     "rewrite_fact": rewrite_fact(),
+    "rewrite_fact_with_prev": rewrite_fact_with_prev(),
     "apply_forward_step": apply_forward_step(),
     "apply_backward_step": apply_backward_step(),
     "introduction": introduction(),

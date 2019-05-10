@@ -73,6 +73,8 @@ function print_search_res(res) {
             return "rewrite with fact: (solves)"
         else
             return "rewrite with fact: " + res._goal.join(", ");
+    } else if (res._method_name === "rewrite_fact_with_prev") {
+        return "rewrite fact with fact";
     } else if (res._method_name === "apply_prev") {
         return "apply fact: " + res._goal.join(", ");
     } else if (res._method_name === "forall_elim") {

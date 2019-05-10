@@ -223,6 +223,17 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
             pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.prop, pt), A)
         return pt
 
+class rewrite_fact_with_prev_macro(ProofTermMacro):
+    def __init__(self):
+        self.level = 1
+        self.sig = None
+
+    def get_proof_term(self, thy, args, pts):
+        eq_pt, pt = pts
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, match_vars=False)),
+                       top_conv(beta_conv()))
+        return pt.on_prop(thy, cv)
+
 def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
     """Wrapper for apply_theorem and apply_theorem_for macros.
 
@@ -272,4 +283,5 @@ macro.global_macros.update({
     "rewrite_goal_with_prev": rewrite_goal_with_prev_macro(),
     "rewrite_back_goal_with_prev": rewrite_goal_with_prev_macro(backward=True),
     "rewrite_fact": rewrite_fact_macro(),
+    "rewrite_fact_with_prev": rewrite_fact_with_prev_macro(),
 })
