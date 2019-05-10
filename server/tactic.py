@@ -5,7 +5,7 @@ from kernel.term import Term
 from kernel.thm import Thm
 from logic import logic
 from logic import matcher
-from logic.conv import then_conv, top_conv, rewr_conv, beta_conv
+from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, top_sweep_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic_macro import apply_theorem
 from syntax import printer
@@ -120,7 +120,7 @@ class rewrite_goal_with_prev(Tactic):
 
         init_As = goal.hyps
         C = goal.prop
-        cv = then_conv(top_conv(rewr_conv(pt, match_vars=False)),
+        cv = then_conv(top_sweep_conv(rewr_conv(pt, match_vars=False)),
                        top_conv(beta_conv()))
         
         eq_th = cv.eval(thy, C)

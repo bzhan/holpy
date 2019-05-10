@@ -7,7 +7,7 @@ from kernel import macro
 from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
-from logic.conv import then_conv, beta_conv, top_conv, rewr_conv
+from logic.conv import then_conv, beta_conv, top_conv, rewr_conv, top_sweep_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
 
 """Standard macros in logic."""
@@ -192,7 +192,7 @@ class rewrite_fact_macro(ProofTermMacro):
 
         th_name = args
         eq_pt = ProofTerm.theorem(thy, th_name)
-        cv = then_conv(top_conv(rewr_conv(eq_pt)), top_conv(beta_conv()))
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt)), top_conv(beta_conv()))
         return pts[0].on_prop(thy, cv)
 
 class rewrite_goal_with_prev_macro(ProofTermMacro):
@@ -209,7 +209,8 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
         pts = pts[1:]
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
-        cv = then_conv(top_conv(rewr_conv(eq_pt, match_vars=False)), top_conv(beta_conv()))
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, match_vars=False)),
+                       top_conv(beta_conv()))
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
         if Term.is_equals(pt.prop.lhs) and pt.prop.lhs.lhs == pt.prop.lhs.rhs:

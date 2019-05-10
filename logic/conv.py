@@ -210,6 +210,15 @@ class top_conv(Conv):
     def get_proof_term(self, thy, t):
         return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(thy, t)
 
+class top_sweep_conv(Conv):
+    """Applies cv in the top-down manner, but only at the first level."""
+    def __init__(self, cv):
+        assert isinstance(cv, Conv), "top_sweep_conv: argument"
+        self.cv = cv
+
+    def get_proof_term(self, thy, t):
+        return else_conv(self.cv, else_conv(sub_conv(self), all_conv())).get_proof_term(thy, t)
+
 class rewr_conv(Conv):
     """Rewrite using the given equality theorem.
     
