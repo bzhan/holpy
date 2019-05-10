@@ -64,6 +64,8 @@ function print_search_res(res) {
             return res.theorem + " (r): (solves)";
         else
             return res.theorem + " (r): " + res._goal.join(", ");
+    } else if (res._method_name === "rewrite_fact") {
+        return res.theorem + " (r): have " + res._fact;
     } else if (res._method_name === "introduction") {
         return "introduction";
     } else if (res._method_name === "rewrite_goal_with_prev") {

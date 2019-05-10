@@ -240,6 +240,10 @@
             "ty": "macro"
         },
         {
+            "name": "rewrite_fact",
+            "ty": "macro"
+        },
+        {
             "name": "cases",
             "ty": "method"
         },
@@ -253,6 +257,10 @@
         },
         {
             "name": "rewrite_goal",
+            "ty": "method"
+        },
+        {
+            "name": "rewrite_fact",
             "ty": "method"
         },
         {

@@ -102,10 +102,38 @@ class rewrite_goal(Method):
                 else:
                     results.append({"theorem": th_name, "_goal": [new_goal] + new_As})
 
-        return sorted(results, key = lambda d: d['theorem'])
+        return sorted(results, key=lambda d: d['theorem'])
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rewrite(), args=data['theorem'])
+
+class rewrite_fact(Method):
+    """Rewrite fact using a theorem."""
+    def __init__(self):
+        self.sig = ['theorem']
+
+    def search(self, state, id, prevs):
+        if len(prevs) != 1:
+            return []
+
+        prev_th = state.get_proof_item(prevs[0]).th
+        thy = state.thy
+        results = []
+        for th_name, th in thy.get_data("theorems").items():
+            if 'hint_rewrite' not in thy.get_attributes(th_name):
+                continue
+
+            cv = top_conv(rewr_conv(th_name))
+            th = cv.eval(thy, prev_th.prop)
+            new_fact = th.prop.rhs
+            if prev_th.prop != new_fact:
+                results.append({"theorem": th_name, "_fact": [new_fact]})
+
+        return sorted(results, key=lambda d: d['theorem'])
+
+    def apply(self, state, id, data, prevs):
+        state.add_line_before(id, 1)
+        state.set_line(id, 'rewrite_fact', args=data['theorem'], prevs=prevs)
 
 class apply_forward_step(Method):
     """Apply theorem in the forward direction."""
@@ -145,7 +173,7 @@ class apply_forward_step(Method):
             t = logic.subst_norm(th.prop, instsp)
             _, new_fact = t.strip_implies()
             results.append({"theorem": name, "_fact": [new_fact]})
-        return sorted(results, key = lambda d: d['theorem'])
+        return sorted(results, key=lambda d: d['theorem'])
 
     def apply(self, state, id, data, prevs):
         assert prevs, "apply_forward_step: prevs is not empty"
@@ -197,7 +225,7 @@ class apply_backward_step(Method):
             As, C = t.strip_implies()
 
             results.append({"theorem": name, "_goal": As[len(prevs):]})
-        return sorted(results, key = lambda d: d['theorem'])
+        return sorted(results, key=lambda d: d['theorem'])
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
@@ -334,6 +362,7 @@ global_methods.update({
     "apply_prev": apply_prev_method(),
     "rewrite_goal_with_prev": rewrite_goal_with_prev_method(),
     "rewrite_goal": rewrite_goal(),
+    "rewrite_fact": rewrite_fact(),
     "apply_forward_step": apply_forward_step(),
     "apply_backward_step": apply_backward_step(),
     "introduction": introduction(),
