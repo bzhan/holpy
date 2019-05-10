@@ -599,14 +599,14 @@
         },
         {
             "name": "inter_subset_id",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x. member x (inter A B) ⟶ member x A"
+                    "th": "⊢ ∀x. x ∈ A ∩ B ⟶ x ∈ A"
                 },
                 {
                     "args": "x, 'a",
@@ -616,29 +616,40 @@
                     "th": "⊢ x = x"
                 },
                 {
-                    "args": "member x (inter A B)",
+                    "args": "x ∈ A ∩ B",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "member x (inter A B) ⊢ member x (inter A B)"
+                    "th": "x ∈ A ∩ B ⊢ x ∈ A ∩ B"
                 },
                 {
-                    "args": "",
+                    "args": "member_inter_iff",
                     "id": "0.2",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "member x (inter A B) ⊢ member x A"
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ A ∩ B ⊢ x ∈ A ∧ x ∈ B"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ A ∩ B ⊢ x ∈ A"
                 },
                 {
                     "args": "",
-                    "id": "0.3",
+                    "id": "0.4",
                     "prevs": [
                         "0.0",
                         "0.1",
-                        "0.2"
+                        "0.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x. member x (inter A B) ⟶ member x A"
+                    "th": "⊢ ∀x. x ∈ A ∩ B ⟶ x ∈ A"
                 },
                 {
                     "args": "subsetI",
@@ -647,7 +658,7 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ subset (inter A B) A"
+                    "th": "⊢ A ∩ B ⊆ A"
                 }
             ],
             "prop": "subset (inter A B) A",
@@ -674,14 +685,14 @@
         },
         {
             "name": "cantor",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x. ¬f x = collect (λx. ¬member x (f x))"
+                    "th": "⊢ ∀x. ¬f x = collect (λx. ¬x ∈ f x)"
                 },
                 {
                     "args": "x, 'a",
@@ -695,52 +706,120 @@
                     "id": "0.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ f x = collect (λx. ¬member x (f x)) ⟶ false"
+                    "th": "⊢ f x = collect (λx. ¬x ∈ f x) ⟶ false"
                 },
                 {
-                    "args": "f x = collect (λx. ¬member x (f x))",
+                    "args": "f x = collect (λx. ¬x ∈ f x)",
                     "id": "0.1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ f x = collect (λx. ¬member x (f x))"
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ f x = collect (λx. ¬x ∈ f x)"
                 },
                 {
                     "args": "",
                     "id": "0.1.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ member x (f x) ⟶ false"
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ x ∈ f x ⟶ false"
                 },
                 {
-                    "args": "member x (f x)",
+                    "args": "x ∈ f x",
                     "id": "0.1.1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "member x (f x) ⊢ member x (f x)"
+                    "th": "x ∈ f x ⊢ x ∈ f x"
                 },
                 {
                     "args": "",
                     "id": "0.1.1.1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "f x = collect (λx. ¬member x (f x)), member x (f x) ⊢ false"
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "f x = collect (λx. ¬x ∈ f x), x ∈ f x ⊢ x ∈ collect (λx. ¬x ∈ f x)"
+                },
+                {
+                    "args": "member_collect_iff",
+                    "id": "0.1.1.2",
+                    "prevs": [
+                        "0.1.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "f x = collect (λx. ¬x ∈ f x), x ∈ f x ⊢ ¬x ∈ f x"
+                },
+                {
+                    "args": "negE",
+                    "id": "0.1.1.3",
+                    "prevs": [
+                        "0.1.1.2",
+                        "0.1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "f x = collect (λx. ¬x ∈ f x), x ∈ f x ⊢ false"
                 },
                 {
                     "args": "",
-                    "id": "0.1.1.2",
+                    "id": "0.1.1.4",
                     "prevs": [
                         "0.1.1.0",
-                        "0.1.1.1"
+                        "0.1.1.3"
                     ],
                     "rule": "intros",
-                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ member x (f x) ⟶ false"
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ x ∈ f x ⟶ false"
                 },
                 {
                     "args": "",
                     "id": "0.1.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ ¬member x (f x) ⟶ false"
+                    "rule": "subproof",
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ ¬x ∈ f x ⟶ false"
+                },
+                {
+                    "args": "¬x ∈ f x",
+                    "id": "0.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x ∈ f x ⊢ ¬x ∈ f x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2.1",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.2.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "f x = collect (λx. ¬x ∈ f x), ¬x ∈ f x ⊢ ¬x ∈ collect (λx. ¬x ∈ f x)"
+                },
+                {
+                    "args": "member_collect_iff",
+                    "id": "0.1.2.2",
+                    "prevs": [
+                        "0.1.2.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "f x = collect (λx. ¬x ∈ f x), ¬x ∈ f x ⊢ ¬¬x ∈ f x"
+                },
+                {
+                    "args": "negE",
+                    "id": "0.1.2.3",
+                    "prevs": [
+                        "0.1.2.2",
+                        "0.1.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "f x = collect (λx. ¬x ∈ f x), ¬x ∈ f x ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2.4",
+                    "prevs": [
+                        "0.1.2.0",
+                        "0.1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ ¬x ∈ f x ⟶ false"
                 },
                 {
                     "args": "classical_cases",
@@ -750,7 +829,7 @@
                         "0.1.2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "f x = collect (λx. ¬member x (f x)) ⊢ false"
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ false"
                 },
                 {
                     "args": "",
@@ -760,7 +839,7 @@
                         "0.1.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ f x = collect (λx. ¬member x (f x)) ⟶ false"
+                    "th": "⊢ f x = collect (λx. ¬x ∈ f x) ⟶ false"
                 },
                 {
                     "args": "negI",
@@ -769,7 +848,7 @@
                         "0.1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ ¬f x = collect (λx. ¬member x (f x))"
+                    "th": "⊢ ¬f x = collect (λx. ¬x ∈ f x)"
                 },
                 {
                     "args": "",
@@ -779,10 +858,10 @@
                         "0.2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x. ¬f x = collect (λx. ¬member x (f x))"
+                    "th": "⊢ ∀x. ¬f x = collect (λx. ¬x ∈ f x)"
                 },
                 {
-                    "args": "exI, {a: 'a set}, {P: λS. ∀x. ¬f x = S, a: collect (λx. ¬member x (f x))}",
+                    "args": "exI, {a: 'a set}, {P: λS. ∀x. ¬f x = S, a: collect (λx. ¬x ∈ f x)}",
                     "id": "1",
                     "prevs": [
                         "0"
