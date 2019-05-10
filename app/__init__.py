@@ -131,6 +131,7 @@ def get_users():
 
     return results
 
+
 # Login for user
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -148,6 +149,7 @@ def login():
             return redirect('/load')
 
     return redirect('login-error')
+
 
 # Replace user data with library data
 @app.route('/api/refresh-files', methods=['POST'])
@@ -228,6 +230,7 @@ def set_line():
             }
             return jsonify(error)
 
+
 @app.route('/api/apply-method', methods=['POST'])
 def apply_method():
     data = json.loads(request.get_data().decode("utf-8"))
@@ -264,12 +267,17 @@ def file_data_to_output(thy, data):
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
+        temp_list = []
+        for k, v in data['vars'].items():
+            temp_list.append(k + ' :: ' + v)
         ctxt = parser.parse_vars(thy, data['vars'])
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+        data['vars_lines'] = temp_list
 
     elif data['ty'] == 'type.ind':
         constrs = []
+        data_content = ''
         for constr in data['constrs']:
             T = parser.parse_type(thy, constr['type'])
             constrs.append((constr['name'], T, constr['args']))
@@ -294,11 +302,25 @@ def file_data_to_output(thy, data):
             argsT, _ = HOLType.strip_type(T)
             argsT = [printer.print_type(thy, argT, unicode=True, highlight=True) for argT in argsT]
             data['argsT'][str(i)] = argsT
+        for i,c in enumerate(data['constrs']):
+            str_temp_var = ''
+            for j,a in enumerate(c['args']):
+                str_temp_term = ''
+                for m,t in enumerate(data['argsT'][str(i)][j]):
+                    str_temp_term += t[0]
+                str_temp_var += ' (' + a + ' :: ' + str_temp_term + ')'
+            data_content += '\n' + c['name'] + str_temp_var
+        data['type_content'] = data_content
 
     elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
+        data_content_list = []
+        data_new_content = ''
+        data_rule_names = []
+        data_rule_name = ''
+        data_vars_list = []
+        data_vars_str = ''
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
-
         rules = []
         for rule in data['rules']:
             ctxt = parser.parse_vars(thy, rule['vars'])
@@ -315,8 +337,45 @@ def file_data_to_output(thy, data):
                 ext_output.append(s)
         data['ext'] = ext_output
 
+        if data['ty'] == 'def.ind':
+            type_name = 'fun'
+        if data['ty'] == 'def.pred':
+            type_name = 'inductive'
+        data['ext_output'] = '\n'.join(ext_output)
+        data['type_name'] = type_name
+
+        for k, r in enumerate(data['rules']):
+            vars_str = ''
+            for m, v in enumerate(r['vars']):
+                vars_str += str(m) + ':' + v + '   '
+            data_vars_list.append(vars_str)
+        for n, dv in enumerate(data_vars_list):
+            data_vars_str += str(n) + ': ' + dv + '\n'
+        for r in data['rules']:
+            data_con = ''
+            for p in r['prop_hl']:
+                data_con += p[0]
+            data_content_list.append(data_con)
+            if 'name' in r:
+                data_rule_names.append(r['name'])
+        for j,dc in enumerate(data_content_list):
+            data_new_content += str(j) + ': ' + dc + '\n'
+            data_rule_name += str(j) + ': ' + dc + '\n'
+        data['data_new_content'] = data_new_content
+        data['data_rule_name'] = data_rule_name
+        data['data_vars_str'] = data_vars_str
+
     elif data['ty'] == 'def':
+        i = 0
+        vars = ''
+        data_content_list = []
+        data_content_list.append(data['prop'])
+        for j, v in enumerate(data['vars']):
+            vars += str(i) + ': ' + str(j) + ':' + v + '\n'
+            i += 1
+        data['item_vars'] = vars
         T = parser.parse_type(thy, data['type'])
+        data['type_name'] = 'definition'
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
         ctxt = parser.parse_vars(thy, data['vars'])
