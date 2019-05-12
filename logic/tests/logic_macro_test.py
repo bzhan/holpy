@@ -6,7 +6,7 @@ from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm, InvalidDerivationException
 from logic import logic
-from logic.logic_macro import imp_conj_macro
+from logic.logic_macro import imp_conj_macro, trivial_macro
 from logic import basic
 from syntax import printer
 
@@ -17,6 +17,21 @@ conj = logic.mk_conj
 
 
 class LogicMacroTest(unittest.TestCase):
+    def testTrivialMacro(self):
+        macro = trivial_macro()
+        A = Var("A", boolT)
+        B = Var("B", boolT)
+        test_data = [
+            imp(A, A),
+            imp(A, B, A),
+            imp(A, A, B, A),
+        ]
+
+        for t in test_data:
+            pt = macro.get_proof_term(thy, t, [])
+            prf = pt.export()
+            self.assertEqual(thy.check_proof(prf), Thm([], t))
+        
     def testImpConjMacro(self):
         macro = imp_conj_macro()
         A = Var("A", boolT)

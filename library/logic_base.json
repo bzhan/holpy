@@ -248,6 +248,10 @@
             "ty": "macro"
         },
         {
+            "name": "trivial",
+            "ty": "macro"
+        },
+        {
             "name": "cases",
             "ty": "method"
         },
