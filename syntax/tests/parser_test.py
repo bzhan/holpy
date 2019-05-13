@@ -9,6 +9,7 @@ from kernel.proof import ProofItem
 from logic import logic
 from logic import nat
 from logic import basic
+from logic import set
 from syntax.printer import print_term, print_type
 import syntax.parser as parser
 
@@ -219,6 +220,33 @@ class ParserTest(unittest.TestCase):
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
             self.assertEqual(print_term(thy, t), s)
+
+    def testParseSet(self):
+        ctxt = {
+            "x" : Ta,
+            "A" : set.setT(Ta),
+            "B" : set.setT(Ta),
+        }
+        test_data = [
+            ("({}::'a set)", "(∅::'a set)", "'a set"),
+            ("x MEM A", "x ∈ A", "bool"),
+            ("A SUB B", "A ⊆ B", "bool"),
+            ("A INTER B", "A ∩ B", "'a set"),
+            ("A UNION B", "A ∪ B", "'a set"),
+        ]
+
+        for s1, s2, Ts in test_data:
+            T = parser.parse_type(thy, Ts)
+
+            t1 = parser.parse_term(thy, ctxt, s1)
+            self.assertIsInstance(t1, Term)
+            self.assertEqual(t1.checked_get_type(), T)
+            self.assertEqual(print_term(thy, t1), s1)
+
+            t2 = parser.parse_term(thy, ctxt, s2)
+            self.assertIsInstance(t2, Term)
+            self.assertEqual(t2.checked_get_type(), T)
+            self.assertEqual(print_term(thy, t2, unicode=True), s2)
 
     def testInferType2(self):
         thy = basic.load_theory('function')

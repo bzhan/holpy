@@ -11,6 +11,7 @@ from kernel.theory import Theory, TheoryException
 from logic import basic
 from logic import logic
 from logic import nat
+from logic import set
 from logic import logic_macro
 from syntax import printer
 
@@ -514,6 +515,20 @@ class BasicTest(unittest.TestCase):
         prf.add_item(9, "apply_theorem_for", args=("nat_induct", {}, {"P": Term.mk_abs(n, eq(times(n,zero),zero)), "x": n}), prevs=[1, 8])
         th = Thm.mk_equals(times(n, zero), zero)
         self.assertEqual(thy.check_proof(prf), th)
+
+    def testIntersection(self):
+        """Proof of x : A INTER B --> x : A."""
+        thy = basic.load_theory('set')
+        x = Var('x', Ta)
+        A = Var('A', set.setT(Ta))
+        B = Var('B', set.setT(Ta))
+        x_in_AB = set.mk_mem(x, set.mk_inter(A, B))
+        x_in_A = set.mk_mem(x, A)
+        prf = Proof(x_in_AB)
+        prf.add_item(1, "rewrite_fact", args="member_inter_iff", prevs=[0])
+        prf.add_item(2, "apply_theorem", args="conjD1", prevs=[1])
+        prf.add_item(3, "implies_intr", args=x_in_AB, prevs=[2])
+        self.assertEqual(thy.check_proof(prf), Thm.mk_implies(x_in_AB, x_in_A))
 
 
 if __name__ == "__main__":

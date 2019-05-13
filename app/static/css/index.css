@@ -209,14 +209,6 @@ div.output-wrapper pre {
     cursor: pointer;
 }
 
-.match-thm .match-thm-output > pre {
-    font-weight: bold;
-    font-size: 15px;
-    color: blue;
-    padding: 10px 0px 1px 39px;
-    cursor: default;
-}
-
 .match-thm a {
     font-size: 11px;
     padding: 10px 0px 1px 39px;
@@ -225,10 +217,6 @@ div.output-wrapper pre {
 
 .thm-content pre:empty {
     display: none;
-}
-
-.match-thm-output {
-    float: left;
 }
 
 .clear {

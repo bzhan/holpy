@@ -339,7 +339,7 @@
         },
         {
             "name": "add_comm",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "plus_def_1, 0 + y = y",
@@ -379,11 +379,11 @@
                     "th": "n + y = y + n ⊢ n + y = y + n"
                 },
                 {
-                    "args": "",
+                    "args": "add_Suc_right, Suc (y + n) = y + Suc n",
                     "id": "2.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "n + y = y + n ⊢ Suc (y + n) = y + Suc n"
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (y + n) = y + Suc n"
                 },
                 {
                     "args": "Suc (n + y) = y + Suc n",
@@ -989,15 +989,34 @@
                     "id": "2.2",
                     "prevs": [],
                     "rule": "sorry",
+                    "th": "(x + y) * n = x * n + y * n ⊢ x + y + (x * n + y * n) = x + x * n + (y + y * n)"
+                },
+                {
+                    "args": "x + y + (x + y) * n = x + x * n + (y + y * n)",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "(x + y) * n = x * n + y * n ⊢ x + y + (x + y) * n = x + x * n + (y + y * n)"
+                },
+                {
+                    "args": "mult_Suc_right, (x + y) * Suc n = x * Suc n + y * Suc n",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "(x + y) * n = x * n + y * n ⊢ (x + y) * Suc n = x * Suc n + y * Suc n"
                 },
                 {
                     "args": "",
-                    "id": "2.3",
+                    "id": "2.5",
                     "prevs": [
                         "2.0",
                         "2.1",
-                        "2.2"
+                        "2.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀n. (x + y) * n = x * n + y * n ⟶ (x + y) * Suc n = x * Suc n + y * Suc n"
@@ -1023,7 +1042,7 @@
         },
         {
             "name": "mult_assoc",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "times_def_1, 0 * z = 0",
@@ -1063,28 +1082,39 @@
                     "th": "n * y * z = n * (y * z) ⊢ n * y * z = n * (y * z)"
                 },
                 {
-                    "args": "",
+                    "args": "y * z + n * y * z = y * z + n * (y * z)",
                     "id": "2.2",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n * y * z = n * (y * z) ⊢ y * z + n * y * z = y * z + n * (y * z)"
+                },
+                {
+                    "args": "distrib_r, (y + n * y) * z = y * z + n * (y * z)",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "n * y * z = n * (y * z) ⊢ (y + n * y) * z = y * z + n * (y * z)"
                 },
                 {
                     "args": "times_def_2, Suc n * y * z = Suc n * (y * z)",
-                    "id": "2.3",
+                    "id": "2.4",
                     "prevs": [
-                        "2.2"
+                        "2.3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "n * y * z = n * (y * z) ⊢ Suc n * y * z = Suc n * (y * z)"
                 },
                 {
                     "args": "",
-                    "id": "2.4",
+                    "id": "2.5",
                     "prevs": [
                         "2.0",
                         "2.1",
-                        "2.3"
+                        "2.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀n. n * y * z = n * (y * z) ⟶ Suc n * y * z = Suc n * (y * z)"
@@ -1110,7 +1140,7 @@
         },
         {
             "name": "mult_comm",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "times_def_1, 0 * y = 0",
@@ -1150,28 +1180,38 @@
                     "th": "n * y = y * n ⊢ n * y = y * n"
                 },
                 {
-                    "args": "",
+                    "args": "mult_Suc_right, y + y * n = y * Suc n",
                     "id": "2.2",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y + y * n = y * Suc n"
+                },
+                {
+                    "args": "y + n * y = y * Suc n",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
                     "th": "n * y = y * n ⊢ y + n * y = y * Suc n"
                 },
                 {
                     "args": "times_def_2, Suc n * y = y * Suc n",
-                    "id": "2.3",
+                    "id": "2.4",
                     "prevs": [
-                        "2.2"
+                        "2.3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "n * y = y * n ⊢ Suc n * y = y * Suc n"
                 },
                 {
                     "args": "",
-                    "id": "2.4",
+                    "id": "2.5",
                     "prevs": [
                         "2.0",
                         "2.1",
-                        "2.3"
+                        "2.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀n. n * y = y * n ⟶ Suc n * y = y * Suc n"
@@ -1275,12 +1315,59 @@
         },
         {
             "name": "one_Suc",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ Suc 1 = 1 + 1"
+                },
+                {
+                    "args": "bit0_def, Suc 1 = 2",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc 1 = 2"
+                }
+            ],
             "prop": "Suc 1 = bit0 1",
             "ty": "thm",
             "vars": {}
         },
         {
             "name": "bit0_Suc",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ Suc (n + n) = n + n + 1"
+                },
+                {
+                    "args": "bit1_def, Suc (n + n) = bit1 n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (n + n) = bit1 n"
+                },
+                {
+                    "args": "bit0_def, Suc (bit0 n) = bit1 n",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (bit0 n) = bit1 n"
+                }
+            ],
             "prop": "Suc (bit0 n) = bit1 n",
             "ty": "thm",
             "vars": {
@@ -1289,6 +1376,34 @@
         },
         {
             "name": "bit1_Suc",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ Suc (n + n + 1) = Suc n + Suc n"
+                },
+                {
+                    "args": "bit1_def, Suc (bit1 n) = Suc n + Suc n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (bit1 n) = Suc n + Suc n"
+                },
+                {
+                    "args": "bit0_def, Suc (bit1 n) = bit0 (Suc n)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (bit1 n) = bit0 (Suc n)"
+                }
+            ],
             "prop": "Suc (bit1 n) = bit0 (Suc n)",
             "ty": "thm",
             "vars": {
@@ -1297,6 +1412,25 @@
         },
         {
             "name": "bit0_bit0_add",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ m + m + (n + n) = m + n + (m + n)"
+                },
+                {
+                    "args": "bit0_def, bit0 m + bit0 n = bit0 (m + n)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit0 m + bit0 n = bit0 (m + n)"
+                }
+            ],
             "prop": "bit0 m + bit0 n = bit0 (m + n)",
             "ty": "thm",
             "vars": {
@@ -1306,6 +1440,34 @@
         },
         {
             "name": "bit0_bit1_add",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ m + m + (n + n + 1) = m + n + (m + n) + 1"
+                },
+                {
+                    "args": "bit1_def, m + m + bit1 n = bit1 (m + n)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m + m + bit1 n = bit1 (m + n)"
+                },
+                {
+                    "args": "bit0_def, bit0 m + bit1 n = bit1 (m + n)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit0 m + bit1 n = bit1 (m + n)"
+                }
+            ],
             "prop": "bit0 m + bit1 n = bit1 (m + n)",
             "ty": "thm",
             "vars": {
@@ -1315,6 +1477,34 @@
         },
         {
             "name": "bit1_bit0_add",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ m + m + 1 + (n + n) = m + n + (m + n) + 1"
+                },
+                {
+                    "args": "bit1_def, bit1 m + (n + n) = bit1 (m + n)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit1 m + (n + n) = bit1 (m + n)"
+                },
+                {
+                    "args": "bit0_def, bit1 m + bit0 n = bit1 (m + n)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit1 m + bit0 n = bit1 (m + n)"
+                }
+            ],
             "prop": "bit1 m + bit0 n = bit1 (m + n)",
             "ty": "thm",
             "vars": {
@@ -1324,6 +1514,34 @@
         },
         {
             "name": "bit1_bit1_add",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ m + m + 1 + (n + n + 1) = Suc (m + n) + Suc (m + n)"
+                },
+                {
+                    "args": "bit1_def, bit1 m + bit1 n = Suc (m + n) + Suc (m + n)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit1 m + bit1 n = Suc (m + n) + Suc (m + n)"
+                },
+                {
+                    "args": "bit0_def, bit1 m + bit1 n = bit0 (Suc (m + n))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit1 m + bit1 n = bit0 (Suc (m + n))"
+                }
+            ],
             "prop": "bit1 m + bit1 n = bit0 (Suc (m + n))",
             "ty": "thm",
             "vars": {
@@ -1333,6 +1551,25 @@
         },
         {
             "name": "bit0_bit0_mult",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (m + m) * (n + n) = m * n + m * n + (m * n + m * n)"
+                },
+                {
+                    "args": "bit0_def, bit0 m * bit0 n = bit0 (bit0 (m * n))",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit0 m * bit0 n = bit0 (bit0 (m * n))"
+                }
+            ],
             "prop": "bit0 m * bit0 n = bit0 (bit0 (m * n))",
             "ty": "thm",
             "vars": {
@@ -1342,6 +1579,34 @@
         },
         {
             "name": "bit0_bit1_mult",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (m + m) * (n + n + 1) = m * (n + n + 1) + m * (n + n + 1)"
+                },
+                {
+                    "args": "bit1_def, (m + m) * bit1 n = m * bit1 n + m * bit1 n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (m + m) * bit1 n = m * bit1 n + m * bit1 n"
+                },
+                {
+                    "args": "bit0_def, bit0 m * bit1 n = bit0 (m * bit1 n)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit0 m * bit1 n = bit0 (m * bit1 n)"
+                }
+            ],
             "prop": "bit0 m * bit1 n = bit0 (m * bit1 n)",
             "ty": "thm",
             "vars": {
@@ -1351,6 +1616,34 @@
         },
         {
             "name": "bit1_bit0_mult",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (m + m + 1) * (n + n) = (m + m + 1) * n + (m + m + 1) * n"
+                },
+                {
+                    "args": "bit1_def, bit1 m * (n + n) = bit1 m * n + bit1 m * n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit1 m * (n + n) = bit1 m * n + bit1 m * n"
+                },
+                {
+                    "args": "bit0_def, bit1 m * bit0 n = bit0 (bit1 m * n)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit1 m * bit0 n = bit0 (bit1 m * n)"
+                }
+            ],
             "prop": "bit1 m * bit0 n = bit0 (bit1 m * n)",
             "ty": "thm",
             "vars": {
@@ -1360,6 +1653,34 @@
         },
         {
             "name": "bit1_bit1_mult",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (m + m + 1) * (n + n + 1) = m + n + (m * n + m * n) + (m + n + (m * n + m * n)) + 1"
+                },
+                {
+                    "args": "bit1_def, bit1 m * bit1 n = bit1 (m + n + (m * n + m * n))",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit1 m * bit1 n = bit1 (m + n + (m * n + m * n))"
+                },
+                {
+                    "args": "bit0_def, bit1 m * bit1 n = bit1 (m + n + bit0 (m * n))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit1 m * bit1 n = bit1 (m + n + bit0 (m * n))"
+                }
+            ],
             "prop": "bit1 m * bit1 n = bit1 (m + n + bit0 (m * n))",
             "ty": "thm",
             "vars": {
@@ -1480,6 +1801,123 @@
             "prop": "~ 12 = 13",
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "name": "Sigma",
+            "rules": [
+                {
+                    "prop": "Sigma f 0 = 0",
+                    "vars": {
+                        "f": "nat => nat"
+                    }
+                },
+                {
+                    "prop": "Sigma f (Suc n) = Sigma f n + f n",
+                    "vars": {
+                        "f": "nat => nat",
+                        "n": "nat"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "(nat => nat) => nat => nat"
+        },
+        {
+            "name": "Sigma_plus",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "plus_def_1, 0 = 0 + 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = 0 + 0"
+                },
+                {
+                    "args": "Sigma_def_1, Sigma (λx. f x + g x) 0 = Sigma f 0 + Sigma g 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Sigma (λx. f x + g x) 0 = Sigma f 0 + Sigma g 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⟶ Sigma (λx. f x + g x) (Suc n) = Sigma f (Suc n) + Sigma g (Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma (λx. f x + g x) n = Sigma f n + Sigma g n"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma f n + Sigma g n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)"
+                },
+                {
+                    "args": "Sigma (λx. f x + g x) n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma (λx. f x + g x) n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)"
+                },
+                {
+                    "args": "Sigma_def_2, Sigma (λx. f x + g x) (Suc n) = Sigma f (Suc n) + Sigma g (Suc n)",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma (λx. f x + g x) (Suc n) = Sigma f (Suc n) + Sigma g (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⟶ Sigma (λx. f x + g x) (Suc n) = Sigma f (Suc n) + Sigma g (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. Sigma (λx. f x + g x) n = Sigma f n + Sigma g n, x: n}",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Sigma (λx. f x + g x) n = Sigma f n + Sigma g n"
+                }
+            ],
+            "prop": "Sigma (%x. f x + g x) n = Sigma f n + Sigma g n",
+            "ty": "thm",
+            "vars": {
+                "f": "nat => nat",
+                "g": "nat => nat",
+                "n": "nat"
+            }
         }
     ],
     "description": "Natural numbers",

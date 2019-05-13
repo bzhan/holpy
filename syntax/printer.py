@@ -10,6 +10,7 @@ from logic.operator import OperatorData
 from logic import logic
 from logic import nat
 from logic import list as hol_list
+from logic import set
 from logic import function
 from syntax import settings
 from syntax import infertype
@@ -140,6 +141,13 @@ def print_term(thy, t):
                 return N("(") + res + N("::") + print_type(thy, t.T) + N(")")
             else:
                 return res
+
+        if set.is_literal_set(t):
+            empty_set = "∅" if settings.unicode() else "{}"
+            if hasattr(t, "print_type"):
+                return N("(") + N(empty_set) + N("::") + print_type(thy, t.T) + N(")")
+            else:
+                return N(empty_set)
 
         if logic.is_if(t):
             P, x, y = t.args

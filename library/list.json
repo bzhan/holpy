@@ -414,7 +414,7 @@
         {
             "hint_rewrite": "true",
             "name": "rev_append",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "append_right_neutral, rev ys = rev ys @ []",
@@ -470,11 +470,11 @@
                     "th": "rev (xs @ ys) = rev ys @ rev xs ⊢ rev (xs @ ys) = rev ys @ rev xs"
                 },
                 {
-                    "args": "",
+                    "args": "append_assoc, (rev ys @ rev xs) @ [x] = rev ys @ rev xs @ [x]",
                     "id": "3.3",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "rev (xs @ ys) = rev ys @ rev xs ⊢ (rev ys @ rev xs) @ [x] = rev ys @ rev xs @ [x]"
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (rev ys @ rev xs) @ [x] = rev ys @ rev xs @ [x]"
                 },
                 {
                     "args": "rev (xs @ ys) @ [x] = rev ys @ rev xs @ [x]",
@@ -843,7 +843,7 @@
     ],
     "description": "Lists",
     "imports": [
-        "nat"
+        "set"
     ],
     "name": "list"
 }

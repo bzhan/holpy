@@ -32,7 +32,8 @@ class InductTest(unittest.TestCase):
             AxConstant("Suc", TFun(nat, nat)),
             Theorem("nat_zero_Suc_neq", Thm([], logic.neg(eq(zero, S(n))))),
             Theorem("nat_Suc_inject", Thm([], imp(eq(S(n), S(n2)), eq(n, n2)))),
-            Theorem("nat_induct", Thm([], imp(P(zero), all(n, imp(P(n), P(S(n)))), P(x))))
+            Theorem("nat_induct", Thm([], imp(P(zero), all(n, imp(P(n), P(S(n)))), P(x)))),
+            Attribute("nat_induct", "var_induct")
         ]
 
         self.assertEqual(nat_ext.data, res)
@@ -80,7 +81,8 @@ class InductTest(unittest.TestCase):
             AxConstant("cons", TFun(Ta, Tlista, Tlista)),
             Theorem("list_nil_cons_neq", Thm([], logic.neg(eq(nil, cons(x, xs))))),
             Theorem("list_cons_inject", Thm([], imp(eq(cons(x, xs), cons(x2, xs2)), conj(eq(x, x2), eq(xs, xs2))))),
-            Theorem("list_induct", Thm([], imp(P(nil), all(x, all(xs, imp(P(xs), P(cons(x, xs))))), P(xlist))))
+            Theorem("list_induct", Thm([], imp(P(nil), all(x, all(xs, imp(P(xs), P(cons(x, xs))))), P(xlist)))),
+            Attribute("list_induct", "var_induct")
         ]
         self.assertEqual(list_ext.data, res)
 
@@ -103,7 +105,8 @@ class InductTest(unittest.TestCase):
             AxType("prod", 2),
             AxConstant("Pair", TFun(Ta, Tb, Tab)),
             Theorem("prod_Pair_inject", Thm([], imp(eq(pair(a, b), pair(a2, b2)), conj(eq(a, a2), eq(b, b2))))),
-            Theorem("prod_induct", Thm([], imp(all(a, all(b, P(pair(a, b)))), P(x))))
+            Theorem("prod_induct", Thm([], imp(all(a, all(b, P(pair(a, b)))), P(x)))),
+            Attribute("prod_induct", "var_induct")
         ]
         self.assertEqual(prod_ext.data, res)
 

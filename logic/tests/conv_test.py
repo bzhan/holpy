@@ -9,7 +9,7 @@ from kernel.proof import Proof
 from logic import basic
 from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
-    arg_conv, rewr_conv, ConvException
+    top_sweep_conv, arg_conv, rewr_conv, ConvException
 from logic import nat
 
 thy = basic.load_theory('logic_base')
@@ -191,6 +191,17 @@ class ConvTest(unittest.TestCase):
         cv.get_proof_term(thy, t).export(prf=prf)
         self.assertEqual(thy.check_proof(prf, check_level=1), eq(t, res))
 
+    def testTopSweepConv(self):
+        f = Const("f", TFun(natT, natT))
+        x = Var("x", natT)
+
+        th0 = eq(x, f(x))
+        cv = top_sweep_conv(rewr_conv(ProofTerm.atom(0, th0), match_vars=False))
+
+        prf = Proof()
+        prf.add_item(0, "sorry", th=th0)
+        cv.get_proof_term(thy, f(x)).export(prf=prf)
+        self.assertEqual(thy.check_proof(prf), eq(f(x), f(f(x))))
 
 if __name__ == "__main__":
     unittest.main()

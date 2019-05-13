@@ -1,0 +1,87 @@
+{
+    "content": [
+        {
+            "args": [],
+            "name": "real",
+            "ty": "type.ax"
+        },
+        {
+            "name": "rplus",
+            "ty": "def.ax",
+            "type": "real => real => real"
+        },
+        {
+            "name": "uminus",
+            "ty": "def.ax",
+            "type": "real => real"
+        },
+        {
+            "name": "rminus",
+            "ty": "def.ax",
+            "type": "real => real => real"
+        },
+        {
+            "name": "rtimes",
+            "ty": "def.ax",
+            "type": "real => real => real"
+        },
+        {
+            "name": "rinverse",
+            "ty": "def.ax",
+            "type": "real => real => real"
+        },
+        {
+            "name": "rdivide",
+            "ty": "def.ax",
+            "type": "real => real => real"
+        },
+        {
+            "name": "of_nat",
+            "ty": "def.ax",
+            "type": "nat => real"
+        },
+        {
+            "name": "radd_assoc",
+            "prop": "rplus x (rplus y z) = rplus (rplus x y) z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "radd_comm",
+            "prop": "rplus x y = rplus y x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "rmult_assoc",
+            "prop": "rtimes x (rtimes y z) = rtimes (rtimes x y) z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "name": "rmult_comm",
+            "prop": "rtimes x y = rtimes y x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        }
+    ],
+    "description": "real numbers",
+    "imports": [
+        "nat"
+    ],
+    "name": "real"
+}

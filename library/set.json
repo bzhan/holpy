@@ -1,0 +1,885 @@
+{
+    "content": [
+        {
+            "args": [
+                "a"
+            ],
+            "name": "set",
+            "ty": "type.ax"
+        },
+        {
+            "name": "member",
+            "ty": "def.ax",
+            "type": "'a => 'a set => bool"
+        },
+        {
+            "name": "empty_set",
+            "ty": "def.ax",
+            "type": "'a set"
+        },
+        {
+            "name": "univ",
+            "ty": "def.ax",
+            "type": "'a set"
+        },
+        {
+            "hint_backward": "true",
+            "name": "member_empty",
+            "prop": "~(member x empty_set)",
+            "ty": "thm.ax",
+            "vars": {
+                "x": "'a"
+            }
+        },
+        {
+            "hint_backward": "true",
+            "name": "member_univ",
+            "prop": "member x univ",
+            "ty": "thm.ax",
+            "vars": {
+                "x": "'a"
+            }
+        },
+        {
+            "hint_backward": "true",
+            "name": "member_ext",
+            "prop": "(!x. member x A = member x B) --> A = B",
+            "ty": "thm.ax",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set"
+            }
+        },
+        {
+            "name": "subset",
+            "ty": "def.ax",
+            "type": "'a set => 'a set => bool"
+        },
+        {
+            "hint_backward": "true",
+            "name": "subsetI",
+            "prop": "(!x. member x A --> member x B) --> subset A B",
+            "ty": "thm.ax",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set"
+            }
+        },
+        {
+            "hint_backward": "true",
+            "hint_forward": "true",
+            "name": "subsetE",
+            "prop": "subset A B --> member x A --> member x B",
+            "ty": "thm.ax",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "subset_empty",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. member x empty_set ⟶ member x A"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "member x empty_set",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x empty_set ⊢ member x empty_set"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "member x empty_set ⊢ member x A"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. member x empty_set ⟶ member x A"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ subset empty_set A"
+                }
+            ],
+            "prop": "subset empty_set A",
+            "ty": "thm",
+            "vars": {
+                "A": "'a set"
+            }
+        },
+        {
+            "name": "subset_univ",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. member x A ⟶ member x univ"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "member x A",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x A ⊢ member x A"
+                },
+                {
+                    "args": "member_univ, {a: 'a}, {x: x}",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ member x univ"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. member x A ⟶ member x univ"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ subset A univ"
+                }
+            ],
+            "prop": "subset A univ",
+            "ty": "thm",
+            "vars": {
+                "A": "'a set"
+            }
+        },
+        {
+            "name": "subset_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. member x A ⟶ member x A"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "member x A",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x A ⊢ member x A"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. member x A ⟶ member x A"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ subset A A"
+                }
+            ],
+            "prop": "subset A A",
+            "ty": "thm",
+            "vars": {
+                "A": "'a set"
+            }
+        },
+        {
+            "name": "subset_antisym",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "subset A B",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "subset A B ⊢ subset A B"
+                },
+                {
+                    "args": "subset B A",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "subset B A ⊢ subset B A"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "subset A B, subset B A ⊢ ∀x. member x A = member x B"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "subset A B, subset B A ⊢ member x A ⟶ member x B"
+                },
+                {
+                    "args": "member x A",
+                    "id": "2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x A ⊢ member x A"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "2.1.1",
+                    "prevs": [
+                        "0",
+                        "2.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "subset A B, member x A ⊢ member x B"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.2",
+                    "prevs": [
+                        "2.1.0",
+                        "2.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "subset A B, subset B A ⊢ member x A ⟶ member x B"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "subset A B, subset B A ⊢ member x B ⟶ member x A"
+                },
+                {
+                    "args": "member x B",
+                    "id": "2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x B ⊢ member x B"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "2.2.1",
+                    "prevs": [
+                        "1",
+                        "2.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "subset B A, subset A B, member x B ⊢ member x A"
+                },
+                {
+                    "args": "",
+                    "id": "2.2.2",
+                    "prevs": [
+                        "2.2.0",
+                        "2.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "subset A B, subset B A ⊢ member x B ⟶ member x A"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "subset A B, subset B A ⊢ member x A = member x B"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "subset A B, subset B A ⊢ ∀x. member x A = member x B"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "subset A B, subset B A ⊢ A = B"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ subset A B ⟶ subset B A ⟶ A = B"
+                }
+            ],
+            "prop": "subset A B --> subset B A --> A = B",
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set"
+            }
+        },
+        {
+            "name": "subset_trans",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "subset A B",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "subset A B ⊢ subset A B"
+                },
+                {
+                    "args": "subset B C",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "subset B C ⊢ subset B C"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "subset A B, subset B C ⊢ ∀x. member x A ⟶ member x C"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "member x A",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x A ⊢ member x A"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "2.2",
+                    "prevs": [
+                        "0",
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "subset A B, subset B C, member x A ⊢ member x B"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "2.3",
+                    "prevs": [
+                        "1",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "subset B C, subset A B, member x A ⊢ member x C"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "subset A B, subset B C ⊢ ∀x. member x A ⟶ member x C"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "subset A B, subset B C ⊢ subset A C"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ subset A B ⟶ subset B C ⟶ subset A C"
+                }
+            ],
+            "prop": "subset A B --> subset B C --> subset A C",
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set",
+                "C": "'a set"
+            }
+        },
+        {
+            "name": "inter",
+            "ty": "def.ax",
+            "type": "'a set => 'a set => 'a set"
+        },
+        {
+            "name": "union",
+            "ty": "def.ax",
+            "type": "'a set => 'a set => 'a set"
+        },
+        {
+            "hint_rewrite": "true",
+            "name": "member_inter_iff",
+            "prop": "member x (inter A B) = ((member x A) & (member x B))",
+            "ty": "thm.ax",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "hint_rewrite": "true",
+            "name": "member_union_iff",
+            "prop": "member x (union A B) = ((member x A) | (member x B))",
+            "ty": "thm.ax",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "subset_union_id",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. member x A ⟶ member x (union A B)"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "member x A",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "member x A ⊢ member x A"
+                },
+                {
+                    "args": "disjI1, {}, {A: member x A, B: member x B}",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "member x A ⊢ member x A ∨ member x B"
+                },
+                {
+                    "args": "member_union_iff, member x (union A B)",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "member x A ⊢ member x (union A B)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. member x A ⟶ member x (union A B)"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ subset A (union A B)"
+                }
+            ],
+            "prop": "subset A (union A B)",
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set"
+            }
+        },
+        {
+            "name": "inter_subset_id",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ A ∩ B ⟶ x ∈ A"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "x ∈ A ∩ B",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ A ∩ B ⊢ x ∈ A ∩ B"
+                },
+                {
+                    "args": "member_inter_iff",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ A ∩ B ⊢ x ∈ A ∧ x ∈ B"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ A ∩ B ⊢ x ∈ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ A ∩ B ⟶ x ∈ A"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ A ∩ B ⊆ A"
+                }
+            ],
+            "prop": "subset (inter A B) A",
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set"
+            }
+        },
+        {
+            "name": "collect",
+            "ty": "def.ax",
+            "type": "('a => bool) => 'a set"
+        },
+        {
+            "hint_rewrite": "true",
+            "name": "member_collect_iff",
+            "prop": "member x (collect P) = P x",
+            "ty": "thm.ax",
+            "vars": {
+                "P": "'a => bool",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "cantor",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. ¬f x = collect (λx. ¬x ∈ f x)"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ f x = collect (λx. ¬x ∈ f x) ⟶ false"
+                },
+                {
+                    "args": "f x = collect (λx. ¬x ∈ f x)",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ f x = collect (λx. ¬x ∈ f x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ x ∈ f x ⟶ false"
+                },
+                {
+                    "args": "x ∈ f x",
+                    "id": "0.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ f x ⊢ x ∈ f x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.1",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "f x = collect (λx. ¬x ∈ f x), x ∈ f x ⊢ x ∈ collect (λx. ¬x ∈ f x)"
+                },
+                {
+                    "args": "member_collect_iff",
+                    "id": "0.1.1.2",
+                    "prevs": [
+                        "0.1.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "f x = collect (λx. ¬x ∈ f x), x ∈ f x ⊢ ¬x ∈ f x"
+                },
+                {
+                    "args": "negE",
+                    "id": "0.1.1.3",
+                    "prevs": [
+                        "0.1.1.2",
+                        "0.1.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "f x = collect (λx. ¬x ∈ f x), x ∈ f x ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.4",
+                    "prevs": [
+                        "0.1.1.0",
+                        "0.1.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ x ∈ f x ⟶ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ ¬x ∈ f x ⟶ false"
+                },
+                {
+                    "args": "¬x ∈ f x",
+                    "id": "0.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x ∈ f x ⊢ ¬x ∈ f x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2.1",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.2.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "f x = collect (λx. ¬x ∈ f x), ¬x ∈ f x ⊢ ¬x ∈ collect (λx. ¬x ∈ f x)"
+                },
+                {
+                    "args": "member_collect_iff",
+                    "id": "0.1.2.2",
+                    "prevs": [
+                        "0.1.2.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "f x = collect (λx. ¬x ∈ f x), ¬x ∈ f x ⊢ ¬¬x ∈ f x"
+                },
+                {
+                    "args": "negE",
+                    "id": "0.1.2.3",
+                    "prevs": [
+                        "0.1.2.2",
+                        "0.1.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "f x = collect (λx. ¬x ∈ f x), ¬x ∈ f x ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2.4",
+                    "prevs": [
+                        "0.1.2.0",
+                        "0.1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ ¬x ∈ f x ⟶ false"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "f x = collect (λx. ¬x ∈ f x) ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ f x = collect (λx. ¬x ∈ f x) ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬f x = collect (λx. ¬x ∈ f x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. ¬f x = collect (λx. ¬x ∈ f x)"
+                },
+                {
+                    "args": "exI, {a: 'a set}, {P: λS. ∀x. ¬f x = S, a: collect (λx. ¬x ∈ f x)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a. ∀x. ¬f x = a"
+                }
+            ],
+            "prop": "∃S. ∀x. ~ f x  = S",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'a set"
+            }
+        }
+    ],
+    "description": "Basic results about sets.",
+    "imports": [
+        "nat"
+    ],
+    "name": "set"
+}

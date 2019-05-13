@@ -15,6 +15,7 @@ from logic import list
 from logic import function
 from syntax import printer
 from server import server
+from server import method
 from server.server import ProofState
 
 thy = basic.load_theory('logic_base')
@@ -137,19 +138,19 @@ class ServerTest(unittest.TestCase):
 
     def testApplyBackwardStepThms(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        ths = state.apply_backward_step_thms(1)
-        self.assertEqual([name for name, _ in ths], ["conjI"])
+        search_res = state.apply_search(1, method.apply_backward_step())
+        self.assertEqual([res['theorem'] for res in search_res], ["conjI"])
 
     def testApplyBackwardStepThms2(self):
         state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
-        ths = state.apply_backward_step_thms(1, prevs=[0])
-        self.assertEqual([name for name, _ in ths], ["disjE"])
+        search_res = state.apply_search(1, method.apply_backward_step(), prevs=[0])
+        self.assertEqual([res['theorem'] for res in search_res], ["disjE"])
 
     def testApplyBackwardStepThms3(self):
         """Example of two results."""
         state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
-        ths = state.apply_backward_step_thms(1)
-        self.assertEqual([name for name, _ in ths], ["disjI1", "disjI2"])
+        search_res = state.apply_search(1, method.apply_backward_step())
+        self.assertEqual([res['theorem'] for res in search_res], ["disjI1", "disjI2"])
 
     def testApplyBackwardStep(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
@@ -180,15 +181,13 @@ class ServerTest(unittest.TestCase):
 
     def testApplyForwardStepThms1(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        ths = state.apply_forward_step_thms(1, prevs=[0])
-        results = ['conjD1', 'conjD2']
-        self.assertEqual([name for name, _ in ths], results)
+        search_res = state.apply_search(1, method.apply_forward_step(), prevs=[0])
+        self.assertEqual([res['theorem'] for res in search_res], ['conjD1', 'conjD2'])
 
     def testApplyForwardStepThms2(self):
         state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
-        ths = state.apply_forward_step_thms(1, prevs=[0])
-        results = []
-        self.assertEqual([name for name, _ in ths], results)
+        search_res = state.apply_search(1, method.apply_forward_step(), prevs=[0])
+        self.assertEqual([res['theorem'] for res in search_res], [])
 
     def testIntroduction(self):
         state = ProofState.init_state(thy, [A, B], [], imp(disj(A, B), disj(B, A)))
@@ -307,8 +306,8 @@ class ServerTest(unittest.TestCase):
         thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
-        ths = state.rewrite_goal_thms((0,))
-        self.assertEqual([name for name, _ in ths], ["plus_def_1"])
+        search_res = state.apply_search(0, method.rewrite_goal())
+        self.assertEqual([res['theorem'] for res in search_res], ["plus_def_1"])
 
     def testRewriteGoalWithAssum(self):
         Ta = TVar("a")

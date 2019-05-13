@@ -17,12 +17,8 @@
             $(this).load(file);
         });
 
-        $('#right').on('click', '.other-step', function () {
-            apply_thm_tactic(select_thm = -1, func_name = this.name);
-        });
-
         $('#right').on('click', '.thm-content pre', function () {
-            apply_thm_tactic(select_thm = $(this).index(), func_name = this.className);
+            apply_thm_tactic($(this).index());
         });
 
         $('#right').on('click', '#link-backward', function () {
@@ -204,6 +200,10 @@
 
         $('#introduction').on("click", introduction);
 
+        $('#new-var').on("click", function () {
+            apply_method('new_var')
+        });
+
         $('#apply-cases').on("click", function () {
             apply_method('cases')
         });
@@ -224,13 +224,17 @@
             add_line_after(get_selected_editor());
         });
 
-        $('#apply-backward-step').on("click", apply_backward_step);
+        $('#apply-backward-step').on("click", function () {
+            apply_method('apply_backward_step')
+        });
 
         $('#apply-induction').on("click", function () {
             apply_method('induction')
         });
 
-        $('#rewrite-goal').on("click", rewrite_goal);
+        $('#rewrite-goal').on("click", function () {
+            apply_method('rewrite_goal')
+        });
 
         // Initialize proof after clicking 'proof' link on the left side.
         $('#panel-content').on('click', 'a[name="proof"]', function (e) {
@@ -895,9 +899,15 @@
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             extraKeys: {
                 "Ctrl-I": introduction,
-                "Ctrl-B": apply_backward_step,
-                "Ctrl-R": rewrite_goal,
-                "Ctrl-F": apply_forward_step,
+                "Ctrl-B": function () {
+                    apply_method('apply_backward_step')
+                },
+                "Ctrl-R": function () {
+                    apply_method('rewrite_goal')
+                },
+                "Ctrl-F": function () {
+                    apply_method('apply_forward_step')
+                },
                 "Ctrl-Q": function (cm) {
                     cm.foldCode(cm.getCursor());
                 }

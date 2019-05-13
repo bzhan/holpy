@@ -1,9 +1,13 @@
 # Author: Bohua Zhan
 
+from kernel import term
 from kernel.term import Term, Var
 from kernel.proof import id_force_tuple, Proof
 from kernel.theory import Method, global_methods
+from logic.conv import top_conv, rewr_conv, beta_conv, then_conv, top_sweep_conv
 from logic.proofterm import ProofTermAtom
+from logic import matcher
+from logic import logic
 from syntax import parser
 from server import tactic
 
@@ -14,7 +18,7 @@ class cases_method(Method):
         self.sig = ['case']
 
     def search(self, state, id, prevs):
-        return True
+        return []
 
     def apply(self, state, id, data, prevs):
         A = parser.parse_term(state.thy, state.get_ctxt(id), data['case'])
@@ -26,7 +30,15 @@ class apply_prev_method(Method):
         self.sig = []
 
     def search(self, state, id, prevs):
-        return len(prevs) == 1
+        if len(prevs) == 1:
+            prev_th = state.get_proof_item(prevs[0]).th
+            cur_th = state.get_proof_item(id).th
+            if prev_th.prop.is_implies() and prev_th.prop.arg == cur_th.prop:
+                return [{"_goal": prev_th.assums}]
+            else:
+                return []
+        else:
+            return []
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.apply_prev(), prevs=prevs)
@@ -37,7 +49,29 @@ class rewrite_goal_with_prev_method(Method):
         self.sig = []
 
     def search(self, state, id, prevs):
-        return len(prevs) == 1
+        if len(prevs) != 1:
+            return []
+        
+        prev_th = state.get_proof_item(prevs[0]).th
+        cur_th = state.get_proof_item(id).th
+
+        if not prev_th.prop.is_equals():
+            return []
+
+        pt = ProofTermAtom(prevs[0], prev_th)
+        cv = then_conv(top_sweep_conv(rewr_conv(pt, match_vars=False)),
+                       top_conv(beta_conv()))
+        eq_th = cv.eval(state.thy, cur_th.prop)
+        new_goal = eq_th.prop.rhs
+
+        new_As = list(set(eq_th.hyps) - set(cur_th.hyps))
+        if cur_th.prop != new_goal:
+            if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
+                return [{"_goal": new_As}]
+            else:
+                return [{"_goal": [new_goal] + new_As}]
+        else:
+            return []
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=prevs)
@@ -48,10 +82,83 @@ class rewrite_goal(Method):
         self.sig = ['theorem']
 
     def search(self, state, id, prevs):
-        pass
+        cur_th = state.get_proof_item(id).th
+        if cur_th.prop.is_all():
+            return []
+
+        thy = state.thy
+        results = []
+        for th_name, th in thy.get_data("theorems").items():
+            if 'hint_rewrite' not in thy.get_attributes(th_name):
+                continue
+
+            cv = top_conv(rewr_conv(th_name))
+            th = cv.eval(thy, cur_th.prop)
+            new_goal = th.prop.rhs
+            new_As = list(th.hyps)
+            if cur_th.prop != new_goal:
+                if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
+                    results.append({"theorem": th_name, "_goal": new_As})
+                else:
+                    results.append({"theorem": th_name, "_goal": [new_goal] + new_As})
+
+        return sorted(results, key=lambda d: d['theorem'])
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rewrite(), args=data['theorem'])
+
+class rewrite_fact(Method):
+    """Rewrite fact using a theorem."""
+    def __init__(self):
+        self.sig = ['theorem']
+
+    def search(self, state, id, prevs):
+        if len(prevs) != 1:
+            return []
+
+        prev_th = state.get_proof_item(prevs[0]).th
+        thy = state.thy
+        results = []
+        for th_name, th in thy.get_data("theorems").items():
+            if 'hint_rewrite' not in thy.get_attributes(th_name):
+                continue
+
+            cv = top_sweep_conv(rewr_conv(th_name))
+            th = cv.eval(thy, prev_th.prop)
+            new_fact = th.prop.rhs
+            if prev_th.prop != new_fact:
+                results.append({"theorem": th_name, "_fact": [new_fact]})
+
+        return sorted(results, key=lambda d: d['theorem'])
+
+    def apply(self, state, id, data, prevs):
+        state.add_line_before(id, 1)
+        state.set_line(id, 'rewrite_fact', args=data['theorem'], prevs=prevs)
+
+class rewrite_fact_with_prev(Method):
+    """Rewrite fact using a previous equality."""
+    def __init__(self):
+        self.sig = []
+
+    def search(self, state, id, prevs):
+        if len(prevs) != 2:
+            return []
+
+        eq_th, prev_th = [state.get_proof_item(prev).th for prev in prevs]
+        if not eq_th.prop.is_equals():
+            return []
+
+        cv = top_sweep_conv(rewr_conv(ProofTermAtom(prevs[0], eq_th), match_vars=False))
+        th = cv.eval(state.thy, prev_th.prop)
+        new_fact = th.prop.rhs
+        if prev_th.prop != new_fact:
+            return [{}]
+        else:
+            return []
+
+    def apply(self, state, id, data, prevs):
+        state.add_line_before(id, 1)
+        state.set_line(id, 'rewrite_fact_with_prev', prevs=prevs)
 
 class apply_forward_step(Method):
     """Apply theorem in the forward direction."""
@@ -59,7 +166,39 @@ class apply_forward_step(Method):
         self.sig = ['theorem']
 
     def search(self, state, id, prevs):
-        pass
+        prev_ths = [state.get_proof_item(prev).th for prev in prevs]
+        thy = state.thy
+        if len(prevs) == 0:
+            return []
+
+        results = []
+        for name, th in thy.get_data("theorems").items():
+            if 'hint_forward' not in thy.get_attributes(name):
+                continue
+
+            instsp = (dict(), dict())
+            As, C = th.prop.strip_implies()
+
+            if len(prevs) != len(As):
+                continue
+
+            if set(term.get_vars(As)) != set(term.get_vars(As + [C])):
+                continue
+
+            if not term.get_consts(As):
+                continue
+
+            try:
+                for pat, prev in zip(As, prev_ths):
+                    matcher.first_order_match_incr(pat, prev.concl, instsp)
+            except matcher.MatchException:
+                continue
+
+            # All matches succeed
+            t = logic.subst_norm(th.prop, instsp)
+            _, new_fact = t.strip_implies()
+            results.append({"theorem": name, "_fact": [new_fact]})
+        return sorted(results, key=lambda d: d['theorem'])
 
     def apply(self, state, id, data, prevs):
         assert prevs, "apply_forward_step: prevs is not empty"
@@ -72,7 +211,46 @@ class apply_backward_step(Method):
         self.sig = ['theorem']
 
     def search(self, state, id, prevs):
-        pass
+        goal_th = state.get_proof_item(id).th
+        prev_ths = [state.get_proof_item(prev).th for prev in prevs]
+        thy = state.thy
+
+        results = []
+        for name, th in thy.get_data("theorems").items():
+            if 'hint_backward' not in thy.get_attributes(name):
+                continue
+
+            instsp = (dict(), dict())
+            As, C = th.assums, th.concl
+            # Only process those theorems where C and the matched As
+            # contain all of the variables.
+            if set(term.get_vars(As[:len(prevs)] + [C])) != set(term.get_vars(As + [C])):
+                continue
+
+            # When there is no assumptions to match, only process those
+            # theorems where C contains at least a constant (skip falseE,
+            # induction theorems, etc).
+            if len(prevs) == 0 and term.get_consts(C) == []:
+                continue
+
+            try:
+                if matcher.is_pattern(C, []):
+                    matcher.first_order_match_incr(C, goal_th.prop, instsp)
+                    for pat, prev in zip(As, prev_ths):
+                        matcher.first_order_match_incr(pat, prev.prop, instsp)
+                else:
+                    for pat, prev in zip(As, prev_ths):
+                        matcher.first_order_match_incr(pat, prev.prop, instsp)
+                    matcher.first_order_match_incr(C, goal_th.prop, instsp)
+            except matcher.MatchException:
+                continue
+
+            # All matches succeed
+            t = logic.subst_norm(th.prop, instsp)
+            As, C = t.strip_implies()
+
+            results.append({"theorem": name, "_goal": As[len(prevs):]})
+        return sorted(results, key=lambda d: d['theorem'])
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
@@ -80,10 +258,16 @@ class apply_backward_step(Method):
 class introduction(Method):
     """Introducing variables and assumptions."""
     def __init__(self):
-        self.sig = []
+        self.sig = ["names"]
 
     def search(self, state, id, prevs):
-        pass
+        goal_th = state.get_proof_item(id).th
+        if goal_th.prop.is_all():
+            return [{}]
+        elif goal_th.prop.is_implies():
+            return [{"names": ""}]
+        else:
+            return []
 
     def apply(self, state, id, data, prevs):
         cur_item = state.get_proof_item(id)
@@ -112,12 +296,35 @@ class forall_elim(Method):
         self.sig = ['s']
 
     def search(self, state, id, prevs):
-        pass
+        if len(prevs) == 1:
+            prev_th = state.get_proof_item(prevs[0]).th
+            if prev_th.prop.is_all():
+                return [{}]
+            else:
+                return []
+        else:
+            return []
 
     def apply(self, state, id, data, prevs):
         t = parser.parse_term(state.thy, state.get_ctxt(id), data['s'])
         state.add_line_before(id, 1)
         state.set_line(id, 'forall_elim', args=t, prevs=prevs)
+
+class inst_exists_goal(Method):
+    """Instantiate an exists goal."""
+    def __init__(self):
+        self.sig = ['s']
+
+    def search(self, state, id, prev):
+        cur_th = state.get_proof_item(id).th
+        if logic.is_exists(cur_th.prop):
+            return [{}]
+        else:
+            return []
+
+    def apply(self, state, id, data, prevs):
+        t = parser.parse_term(state.thy, state.get_ctxt(id), data['s'])
+        state.apply_tactic(id, tactic.inst_exists_goal(), args=t, prevs=[])
 
 class induction(Method):
     """Apply induction."""
@@ -125,7 +332,22 @@ class induction(Method):
         self.sig = ['theorem', 'var']
 
     def search(self, state, id, prevs):
-        pass
+        cur_th = state.get_proof_item(id).th
+        if len(cur_th.hyps) > 0:
+            return []
+
+        results = []
+        for name, th in state.thy.get_data("theorems").items():
+            if 'var_induct' not in state.thy.get_attributes(name):
+                continue
+
+            var_T = th.concl.arg.T
+            vars = [v for v in term.get_vars(cur_th.prop) if v.T == var_T]
+            if len(vars) == 1:
+                results.append({'theorem': name, 'var': vars[0].name})
+            elif len(vars) > 1:
+                results.append({'theorem': name})
+        return results
 
     def apply(self, state, id, data, prevs):
         # Find variable
@@ -134,6 +356,19 @@ class induction(Method):
         var = Var(data['var'], ctxt[data['var']])
 
         state.apply_tactic(id, tactic.var_induct(), args=(data['theorem'], var))
+
+class new_var(Method):
+    """Create new variable."""
+    def __init__(self):
+        self.sig = ['name', 'type']
+
+    def search(self, state, id, prevs):
+        return []
+
+    def apply(self, state, id, data, prevs):
+        state.add_line_before(id, 1)
+        T = parser.parse_type(state.thy, data['type'])
+        state.set_line(id, 'variable', args=(data['name'], T), prevs=[])
 
 
 def apply_method(state, data):
@@ -152,9 +387,13 @@ global_methods.update({
     "apply_prev": apply_prev_method(),
     "rewrite_goal_with_prev": rewrite_goal_with_prev_method(),
     "rewrite_goal": rewrite_goal(),
+    "rewrite_fact": rewrite_fact(),
+    "rewrite_fact_with_prev": rewrite_fact_with_prev(),
     "apply_forward_step": apply_forward_step(),
     "apply_backward_step": apply_backward_step(),
     "introduction": introduction(),
     "forall_elim": forall_elim(),
+    "inst_exists_goal": inst_exists_goal(),
     "induction": induction(),
+    "new_var": new_var(),
 })

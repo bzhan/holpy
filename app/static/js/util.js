@@ -51,21 +51,42 @@ function display_facts_and_goal(cm) {
     }
 }
 
-// Information for each kind of tactic
-tactic_info = {
-    'backward': {
-        title: 'Theorems: (Ctrl-B)',
-        other: 'Other backward step',
-        method: 'apply_backward_step'
-    },
-    'forward': {
-        title: 'Theorems: (Ctrl-F)',
-        other: 'Other forward step',
-        method: 'apply_forward_step'
-    },
-    'rewrite': {
-        title: 'Theorems: (Ctrl-R)',
-        other: 'Other rewrite goal',
-        method: 'rewrite_goal'
+function print_search_res(res) {
+    if (res._method_name === "apply_backward_step") {
+        if (res._goal.length === 0)
+            return res.theorem + " (b): (solves)"
+        else
+            return res.theorem + " (b): " + res._goal.join(", ");
+    } else if (res._method_name === "apply_forward_step") {
+        return res.theorem + " (f): have " + res._fact;
+    } else if (res._method_name === "rewrite_goal") {
+        if (res._goal.length === 0)
+            return res.theorem + " (r): (solves)";
+        else
+            return res.theorem + " (r): " + res._goal.join(", ");
+    } else if (res._method_name === "rewrite_fact") {
+        return res.theorem + " (r): have " + res._fact;
+    } else if (res._method_name === "introduction") {
+        return "introduction";
+    } else if (res._method_name === "rewrite_goal_with_prev") {
+        if (res._goal.length === 0)
+            return "rewrite with fact: (solves)"
+        else
+            return "rewrite with fact: " + res._goal.join(", ");
+    } else if (res._method_name === "rewrite_fact_with_prev") {
+        return "rewrite fact with fact";
+    } else if (res._method_name === "apply_prev") {
+        return "apply fact: " + res._goal.join(", ");
+    } else if (res._method_name === "forall_elim") {
+        return "forall elimination";
+    } else if (res._method_name === "induction") {
+        if ('var' in res)
+            return "induction " + res.theorem + " var: " + res.var
+        else
+            return "induction " + res.theorem;
+    } else if (res._method_name === "inst_exists_goal") {
+        return "instantiate exists goal";
+    } else {
+        return JSON.stringify(res);
     }
 }

@@ -7,7 +7,7 @@ from kernel import macro
 from kernel.proof import Proof
 from kernel.thm import Thm
 from logic import logic, matcher
-from logic.conv import then_conv, beta_conv, top_conv, rewr_conv
+from logic.conv import then_conv, beta_conv, top_conv, rewr_conv, top_sweep_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
 
 """Standard macros in logic."""
@@ -44,7 +44,6 @@ class fun_combination_macro(ProofTermMacro):
 
 class beta_norm_macro(ProofTermMacro):
     """Given theorem th, return the normalization of th."""
-
     def __init__(self):
         self.level = 1
         self.sig = None
@@ -61,6 +60,10 @@ class beta_norm_macro(ProofTermMacro):
 
 class intros_macro(ProofTermMacro):
     """Introduce assumptions and variables."""
+    def __init__(self):
+        self.level = 1
+        self.sig = None
+
     def get_proof_term(self, thy, args, prevs):
         assert len(prevs) >= 2, "intros_macro"
         pt, intros = prevs[-1], prevs[:-1]        
@@ -182,7 +185,26 @@ class rewrite_goal_macro(ProofTermMacro):
             pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.prop, pt), A)
         return pt
 
+class rewrite_fact_macro(ProofTermMacro):
+    def __init__(self):
+        self.level = 1
+        self.sig = str
+
+    def get_proof_term(self, thy, args, pts):
+        assert len(pts) == 1 and isinstance(args, str), "rewrite_fact_macro: signature"
+
+        th_name = args
+        eq_pt = ProofTerm.theorem(thy, th_name)
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt)), top_conv(beta_conv()))
+        return pts[0].on_prop(thy, cv)
+
 class rewrite_goal_with_prev_macro(ProofTermMacro):
+    """Given an input equality theorem and a goal, the macro rewrites
+    the goal to a new form. The new goal, if it is not a reflexivity, is
+    resolved using the second input theorem. The remaining input theorems
+    are used to resolve conditions that arise when applying the equality.
+
+    """
     def __init__(self, *, backward=False):
         self.level = 1
         self.backward = backward
@@ -196,7 +218,8 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
         pts = pts[1:]
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
-        cv = then_conv(top_conv(rewr_conv(eq_pt, match_vars=False)), top_conv(beta_conv()))
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, match_vars=False)),
+                       top_conv(beta_conv()))
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
         if Term.is_equals(pt.prop.lhs) and pt.prop.lhs.lhs == pt.prop.lhs.rhs:
@@ -208,6 +231,41 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
         for A in pts:
             pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.prop, pt), A)
         return pt
+
+class rewrite_fact_with_prev_macro(ProofTermMacro):
+    """This macro is provided with two input theorems. The first input
+    theorem is an equality, which is used to rewrite the second input
+    theorem.
+
+    """
+    def __init__(self):
+        self.level = 1
+        self.sig = None
+
+    def get_proof_term(self, thy, args, pts):
+        eq_pt, pt = pts
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, match_vars=False)),
+                       top_conv(beta_conv()))
+        return pt.on_prop(thy, cv)
+
+class trivial_macro(ProofTermMacro):
+    """Prove a proposition of the form A_1 --> ... --> A_n --> B, where
+    B agrees with one of A_i.
+
+    """
+    def __init__(self):
+        self.level = 1
+        self.sig = Term
+
+    def get_proof_term(self, thy, args, pts):
+        As, C = args.strip_implies()
+        assert C in As, "trivial_macro"
+
+        pt = ProofTerm.assume(C)
+        for A in reversed(As):
+            pt = ProofTerm.implies_intr(A, pt)
+        return pt
+
 
 def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
     """Wrapper for apply_theorem and apply_theorem_for macros.
@@ -257,4 +315,7 @@ macro.global_macros.update({
     "rewrite_back_goal": rewrite_goal_macro(backward=True),
     "rewrite_goal_with_prev": rewrite_goal_with_prev_macro(),
     "rewrite_back_goal_with_prev": rewrite_goal_with_prev_macro(backward=True),
+    "rewrite_fact": rewrite_fact_macro(),
+    "rewrite_fact_with_prev": rewrite_fact_with_prev_macro(),
+    "trivial": trivial_macro(),
 })

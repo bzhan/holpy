@@ -103,6 +103,7 @@ def add_induct_type(name, targs, constrs):
     ind_concl = var_P(Var("x", T))
     th_name = name + "_induct"
     exts.add_extension(Theorem(th_name, Thm.mk_implies(*(ind_assums + [ind_concl]))))
+    exts.add_extension(Attribute(th_name, "var_induct"))
 
     return exts
 
