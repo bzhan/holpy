@@ -28,7 +28,7 @@ class ParserException(Exception):
 
 
 grammar = r"""
-    ?type: "'" CNAME -> tvar              // Type variable
+    ?type: "'" CNAME  -> tvar              // Type variable
         | type ("=>"|"⇒") type -> funtype       // Function types
         | CNAME -> type                   // Type constants
         | type CNAME                      // Type constructor with one argument
@@ -95,6 +95,8 @@ grammar = r"""
         | "{" type_pair ("," type_pair)* "}"
 
     instsp: tyinst "," inst
+    
+    type_ind: CNAME ("(" CNAME "::" type ")")*
 
     %import common.CNAME
     %import common.WS
@@ -240,6 +242,10 @@ class HOLTransformer(Transformer):
     def instsp(self, *args):
         return tuple(args)
 
+    def type_ind(self, *args):
+        print(args)
+
+
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
 
@@ -249,6 +255,7 @@ thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
 instsp_parser = get_parser_for("instsp")
+type_ind_parser = get_parser_for("type_ind")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -289,6 +296,11 @@ def parse_instsp(thy, ctxt, s):
     for k in inst:
         inst[k] = infertype.type_infer(thy, ctxt, inst[k])
     return tyinst, inst
+
+def parse_type_ind(thy, s):
+    """Parse an inductive definition."""
+    parser_setting['thy'] = thy
+    return type_ind_parser.parse(s)
 
 def parse_args(thy, ctxt, sig, args):
     """Parse the argument according to the signature."""

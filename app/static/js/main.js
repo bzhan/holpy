@@ -510,18 +510,18 @@
         var templ_tab = _.template($("#template-tab").html());
         $('#codeTab').append(templ_tab({page_num: page_num, label: data_type}));
         if (data_type === 'def.ax') {
-            if (!number)
-                $('#codeTab').find('span#' + page_num).text('constant');
             var templ_edit = _.template($("#template-edit-def-ax").html());
             $('#codeTabContent').append(templ_edit({page_num: page_num}));
             var form = document.getElementById('edit-constant-form' + page_num);
-            form.data_name.value = item['name'];
-            form.data_content.value = item['type'];
-            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-            if (number)
-                form.number.value = number
-            else
-                form.number.value = -1
+            if (!number) {
+                $('#codeTab').find('span#' + page_num).text('constant');
+                form.number.value = -1;
+            }
+            else {
+                form.data_name.value = item['name'];
+                form.data_content.value = item['type'];
+                form.number.value = number;
+            }
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         }
         if (data_type === 'thm' || data_type === 'thm.ax') {
@@ -553,21 +553,21 @@
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         }
         if (data_type === 'type.ind') {
+            var templ_edit = _.template($('#template-edit-type-ind').html());
+            var ext = [];
             if (number) {
-                var ext = item['ext'];
+                ext = item['ext'];
                 var argsT = item['argsT'];
-                var templ_edit = _.template($('#template-edit-type-ind').html());
-                $('#codeTabContent').append(templ_edit({
-                    page_num: page_num, ext_output: ext.join('\n')
-                }));
-                var form = document.getElementById('edit-type-form' + page_num);
                 data_content = item['type_content']
             } else
                 $('#codeTab').find('span#' + page_num).text('datatype');
+            $('#codeTabContent').append(templ_edit({
+                page_num: page_num, ext_output: ext.join('\n')
+            }));
+            var form = document.getElementById('edit-type-form' + page_num);
             data_content = data_content.trim();
             var i = data_content.split('\n').length;
             $('#codeTab').find('span#' + page_num).text(data_name);
-
             form.data_name.value = data_name;
             form.data_content.textContent = data_content;
             form.data_content.rows = i;
@@ -575,18 +575,19 @@
                 form.number.value = number
             else
                 form.number.value = -1
-
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         }
         if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
-            var type_name = item['type_name'];
-            if (number) {
-                var templ_edit = _.template($('#template-edit-def').html());
+            var type_name = 'fun';
+            var templ_edit = _.template($('#template-edit-def').html());
+            if (number)
                 var ext_output = item['ext_output'];
-                $('#codeTabContent').append(templ_edit({
+            $('#codeTabContent').append(templ_edit({
                     page_num: page_num, type_name: type_name, ext_output: ext_output
-                }));
-                var form = document.getElementById('edit-def-form' + page_num);
+            }));
+            var form = document.getElementById('edit-def-form' + page_num);
+            if (number) {
+                type_name = item['type_name'];
                 data_name = item.name + ' :: ' + item.type;
                 if (data_type === 'def') {
                     var vars = item['item_vars'];
@@ -594,33 +595,32 @@
                     form.data_vars.rows = vars.trim().split('\n').length;
                 }
                 $('#codeTab').find('span#' + page_num).text(item.name);
-            } else
+                if (item && item['ty'] !== 'def') {
+                    data_new_content = item['data_new_content'];
+                    data_rule_name = item['data_rule_name'];
+                }
+                form.number.value = number;
+                form.data_name.value = data_name;
+                form.content.textContent = data_new_content.trim();
+                form.content.rows = data_new_content.trim().split('\n').length;
+                if (data_type === 'def.pred') {
+                    form.vars_names.textContent = data_rule_name.trim();
+                    form.vars_names.rows = data_rule_name.trim().split('\n').length;
+                }
+                form.number.value = number;
+            }
+            else {
+                form.number.value = -1;
                 $('#codeTab').find('span#' + page_num).text('function');
-            if (item['ty'] !== 'def') {
-                data_new_content = item['data_new_content'];
-                data_rule_name = item['data_rule_name'];
             }
-            form.number.value = number;
-            form.data_name.value = data_name;
-            form.content.textContent = data_new_content.trim();
-            form.content.rows = data_new_content.trim().split('\n').length;
-            if (data_type === 'def.pred') {
-                form.vars_names.textContent = data_rule_name.trim();
-                form.vars_names.rows = data_rule_name.trim().split('\n').length;
-            }
-            if (number)
-                form.number.value = number
-            else
-                form.number.value = -1
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-
             if (data_type !== 'def') {
                 var data_vars_str = '';
                 if (number) {
                     data_vars_str = item['data_vars_str'];
+                    form.data_vars.value = data_vars_str.trim();
+                    form.data_vars.rows = form.data_vars.value.split('\n').length;
                 }
-                form.data_vars.value = data_vars_str.trim();
-                form.data_vars.rows = form.data_vars.value.split('\n').length;
             }
         }
 

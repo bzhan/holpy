@@ -356,7 +356,7 @@
             "vars": {
                 "A": "bool",
                 "C": "bool"
-            },
+            }
         },
         {
             "hint_backward": "true",

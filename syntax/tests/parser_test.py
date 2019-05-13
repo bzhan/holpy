@@ -353,6 +353,14 @@ class ParserTest(unittest.TestCase):
         for s, res in test_data:
             self.assertEqual(parser.parse_proof_rule(thy, ctxt, s), res)
 
+    def testParseTypeInd(self):
+        test_data = [
+            "cons (x ::'a) (xs ::'a list)"
+        ]
+
+        for s in test_data:
+            print("input", s, "output", parser.parse_type_ind(thy, s))
+
 
 if __name__ == "__main__":
-    unittest.main()
+    ParserTest.testParseTypeInd()
