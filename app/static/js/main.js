@@ -518,6 +518,7 @@
                 form.number.value = number
             else
                 form.number.value = -1
+            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         }
         if (data_type === 'thm' || data_type === 'thm.ax') {
             var templ_edit = _.template($('#template-edit-thm').html());
@@ -585,6 +586,8 @@
                 data_name = item.name + ' :: ' + item.type;
                 if (data_type === 'def') {
                     var vars = item['item_vars'];
+                    form.data_vars.textContent = vars.trim();
+                    form.data_vars.rows = vars.trim().split('\n').length;
                 }
                 $('#codeTab').find('span#' + page_num).text(item.name);
             } else
@@ -597,8 +600,6 @@
             form.data_name.value = data_name;
             form.content.textContent = data_new_content.trim();
             form.content.rows = data_new_content.trim().split('\n').length;
-            form.data_vars.textContent = vars.trim();
-            form.data_vars.rows = vars.trim().split('\n').length;
             if (data_type === 'def.pred') {
                 form.vars_names.textContent = data_rule_name.trim();
                 form.vars_names.rows = data_rule_name.trim().split('\n').length;
@@ -610,8 +611,9 @@
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
 
             if (data_type !== 'def') {
+                var data_vars_str = '';
                 if (number) {
-                    var data_vars_str = item['data_vars_str'];
+                    data_vars_str = item['data_vars_str'];
                 }
                 form.data_vars.value = data_vars_str.trim();
                 form.data_vars.rows = form.data_vars.value.split('\n').length;

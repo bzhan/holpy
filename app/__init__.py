@@ -313,12 +313,8 @@ def file_data_to_output(thy, data):
         data['type_content'] = data_content
 
     elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
-        data_content_list = []
-        data_new_content = ''
-        data_rule_names = []
-        data_rule_name = ''
-        data_vars_list = []
-        data_vars_str = ''
+        container = [[], [], [], '', '', '']
+        data_content_list, data_rule_names, data_vars_list, data_new_content, data_rule_name, data_vars_str = container
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         rules = []
