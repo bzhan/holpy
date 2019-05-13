@@ -1801,6 +1801,123 @@
             "prop": "~ 12 = 13",
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "name": "Sigma",
+            "rules": [
+                {
+                    "prop": "Sigma f 0 = 0",
+                    "vars": {
+                        "f": "nat => nat"
+                    }
+                },
+                {
+                    "prop": "Sigma f (Suc n) = Sigma f n + f n",
+                    "vars": {
+                        "f": "nat => nat",
+                        "n": "nat"
+                    }
+                }
+            ],
+            "ty": "def.ind",
+            "type": "(nat => nat) => nat => nat"
+        },
+        {
+            "name": "Sigma_plus",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "plus_def_1, 0 = 0 + 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = 0 + 0"
+                },
+                {
+                    "args": "Sigma_def_1, Sigma (λx. f x + g x) 0 = Sigma f 0 + Sigma g 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Sigma (λx. f x + g x) 0 = Sigma f 0 + Sigma g 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⟶ Sigma (λx. f x + g x) (Suc n) = Sigma f (Suc n) + Sigma g (Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ n = n"
+                },
+                {
+                    "args": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma (λx. f x + g x) n = Sigma f n + Sigma g n"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma f n + Sigma g n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)"
+                },
+                {
+                    "args": "Sigma (λx. f x + g x) n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma (λx. f x + g x) n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)"
+                },
+                {
+                    "args": "Sigma_def_2, Sigma (λx. f x + g x) (Suc n) = Sigma f (Suc n) + Sigma g (Suc n)",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma (λx. f x + g x) (Suc n) = Sigma f (Suc n) + Sigma g (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⟶ Sigma (λx. f x + g x) (Suc n) = Sigma f (Suc n) + Sigma g (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. Sigma (λx. f x + g x) n = Sigma f n + Sigma g n, x: n}",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Sigma (λx. f x + g x) n = Sigma f n + Sigma g n"
+                }
+            ],
+            "prop": "Sigma (%x. f x + g x) n = Sigma f n + Sigma g n",
+            "ty": "thm",
+            "vars": {
+                "f": "nat => nat",
+                "g": "nat => nat",
+                "n": "nat"
+            }
         }
     ],
     "description": "Natural numbers",
