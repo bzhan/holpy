@@ -244,10 +244,11 @@
         });
 
         // Create editing area after clicking 'edit' link on the left side.
-        $('#panel-content').on('click', 'a[name="edit"]', function (e) {
-            e.stopPropagation();
-            var item_id = $(this).parents().attr('item_id');
-            init_edit_area(item_id);
+        $('a#edit_item').click(function() {
+            if (items_selected.length === 1) {
+                var item_id = items_selected[0];
+                init_edit_area(item_id);
+            }
         });
 
         // Use tab key to insert unicode characters.
@@ -260,11 +261,12 @@
                 for (var key in replace_obj) {
                     var l = key.length;
                     if (content.substring(pos - l, pos) === key) {
-                        if (e && e.preventDefault) {
-                            e.preventDefault();
-                        } else {
-                            window.event.returnValue = false;
-                        };
+                        preventD()
+//                        if (e && e.preventDefault) {
+//                            e.preventDefault();
+//                        } else {
+//                            window.event.returnValue = false;
+//                        };
                         len = l;
                         content = content.slice(0, pos - len) + replace_obj[key] + content.slice(pos,);
                     }
@@ -321,18 +323,68 @@
         });
 
         // Select / unselect an item by left click.
-        $('#panel-content').on('click','div[name="theories"]',function(){
+        $('#panel-content').on('click','div[name="theories"]',function(e){
             var item_id = Number($(this).attr('item_id'));
-            if (items_selected.indexOf(item_id) >= 0) {
-                var index = items_selected.indexOf(item_id);
-                items_selected.splice(index, 1);
+            if(e.shiftKey) {
+                preventD(e);
+                add_selected_items(item_id, items_selected[items_selected.length - 1]);
+                display_theory_items();
+                alert('ok');
             }
             else {
-                items_selected.push(item_id);
+                if (items_selected.indexOf(item_id) >= 0) {
+                    items_selected.length = 0;
+//                    var index = items_selected.indexOf(item_id);
+//                    items_selected.splice(index, 1);
+                }
+                else {
+                    items_selected.length = 0;
+                    items_selected.push(item_id);
+                }
+                items_selected.sort();
+                display_theory_items();
             }
-            items_selected.sort();
-            display_theory_items();
         })
+
+        function add_selected_items(id1, id2) {
+            if (id1 > id2) {
+                for(let i = id2; i<=id1; i++){
+                    if (items_selected.indexOf(i) === -1)
+                        items_selected.push(i);
+                }
+                items_selected.sort();
+            }
+            else if(id1 < id2) {
+                for(let i = id1;i<=id2;i++) {
+                    if (items_selected.indexOf(i) === -1)
+                        items_selected.push(i);
+                }
+                items_selected.sort();
+            }
+        }
+
+        function preventD(e) {
+            if (e && e.preventDefault) {
+                e.preventDefault();
+            }
+            else {
+                window.event.returnValue = false;
+            };
+        }
+//
+//        $(document).on('keydown', function(e) {
+//            if (e.keyCode === 16) {
+//                preventD(e);
+//                $('#panel-content').on('click', 'div[name="theories"]', function(e){
+//                    var item_id = Number($(this).attr('item_id'));
+//                    preventD(e);
+//                    add_selected_items(item_id, items_selected[items_selected.length - 1]);
+//                    display_theory_items();
+//                    alert('ok');
+//                    e.stop();
+//                })
+//            }
+//        })
 
         // Delete an item from menu.
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
@@ -347,30 +399,46 @@
         })
 
         // Move up an item or sequence of items.
-        $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function() {
-            content = json_files[cur_theory_name].content;
-            if (items_selected[0] === 0)
-                return;
+        function item_exchange_up() {
             $.each(items_selected, function (i, v) {
                 items_selected[i] = v - 1;
                 [content[v-1], content[v]] = [content[v], content[v-1]]
             });
-            save_json_file(cur_theory_name);
-            display_theory_items();
-        })
+        }
+
+         $(document).keydown(function(e) {
+            if (e.keyCode === 38 && e.ctrlKey){
+                content = json_files[cur_theory_name].content;
+                if (items_selected[0] === 0)
+                    return;
+                if ($('div[item_id="0"]').attr('name') && items_selected[0] !== 0){
+                    item_exchange_up();
+                }
+                else {
+                    if (items_selected[0] !== 1){
+                        item_exchange_up();
+                    }
+                }
+                save_json_file(cur_theory_name);
+                display_theory_items();
+            }
+         })
 
         // Move down an item or sequence of items.
-        $('div.dropdown-menu.Ctrl a[name="down"]').on('click', function(){
-            content = json_files[cur_theory_name].content;
-            items_selected.reverse();
-            if (items_selected[0] === content.length - 1)
-                return;
-            $.each(items_selected, function (i, v) {
-                items_selected[i] = v + 1;
-                [content[v], content[v+1]] = [content[v+1], content[v]]
-            });
-            items_selected.reverse();
-            save_json_file(cur_theory_name);
+//        $('div.dropdown-menu.Ctrl a[name="down"]').on('click', function(){
+        $(document).keydown(function(e) {
+            if(e.ctrlKey && e.keyCode === 40 && items_selected[items_selected.length-1] < json_files[cur_theory_name].content.length -1) {
+                content = json_files[cur_theory_name].content;
+                items_selected.reverse();
+                if (items_selected[0] === content.length - 1)
+                    return;
+                $.each(items_selected, function (i, v) {
+                    items_selected[i] = v + 1;
+                    [content[v], content[v+1]] = [content[v+1], content[v]]
+                });
+                items_selected.reverse();
+            }
+//            save_json_file(cur_theory_name);
             display_theory_items();
         })
 
@@ -555,10 +623,11 @@
         if (data_type === 'type.ind') {
             var templ_edit = _.template($('#template-edit-type-ind').html());
             var ext = [];
+            var temp_name = $('div[item_id="'+ number + '"').find('span[name="name"]').text();
             if (number) {
                 ext = item['ext'];
                 var argsT = item['argsT'];
-                data_content = item['type_content']
+                data_content = item['type_content'];
             } else
                 $('#codeTab').find('span#' + page_num).text('datatype');
             $('#codeTabContent').append(templ_edit({
@@ -644,12 +713,7 @@
             item.ty = ty;
             item.name = form.name.value;
             item.prop = form.prop.value;
-            item.vars = {};
-            $.each(form.vars.value.split('\n'), function (i, v) {
-                let [nm, T] = v.split('::');
-                if (nm)
-                    item.vars[nm.trim()] = T.trim();
-            });
+            item.vars = $.trim(form.vars.value);
             if (form.hint_backward.checked === true)
                 item.hint_backward = 'true';
             if (form.hint_forward.checked ===  true)
@@ -658,60 +722,62 @@
                 item.hint_rewrite = 'true';
         }
         if (ty === 'type.ind') {
-            var data_name = form.data_name.value.trim();
-            var data_content = form.data_content.value.trim();
-            var temp_list = [], temp_constrs = [];
-            var temp_content_list = data_content.split(/\n/);
-            if (data_name.split(/\s/).length > 1) {
-                temp_list.push(data_name.split(/\s/)[0].slice(1,));
-                item.name = data_name.split(/\s/)[1];
-            } else {
-                item.name = data_name;
-            }
-            $.each(temp_content_list, function (i, v) {
-                var temp_con_list = v.split(') (');
-                var temp_con_dict = {};
-                var arg_name = '', args = [], type = '';
-                if (temp_con_list[0].indexOf('(') > 0) {
-                    arg_name = temp_con_list[0].slice(0, temp_con_list[0].indexOf('(') - 1);
-                    if (temp_con_list.length > 1) {
-                        temp_con_list[0] = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1,);
-                        temp_con_list[temp_con_list.length - 1] = temp_con_list[temp_con_list.length - 1].slice(0, -1);
-                        $.each(temp_con_list, function (i, v) {
-                            args.push(v.split(' :: ')[0]);
-                            type += v.split(' :: ')[1] + '⇒';
-                            if (v.split(' :: ')[1].indexOf('⇒') >= 0) {
-                                type += '(' + v.split(' :: ')[1] + ')' + '⇒'
-                            }
-                        });
-                        type = type + data_name;
-                    } else {
-                        let vars_ = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[0];
-                        type = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[1];
-                        args.push(vars_);
-                        type = type + '=>' + data_name;
-                    }
-                } else {
-                    arg_name = temp_con_list[0];
-                    type = item.name;
-                }
-                temp_con_dict['type'] = type;
-                temp_con_dict['args'] = args;
-                temp_con_dict['name'] = arg_name;
-                temp_constrs.push(temp_con_dict);
-            });
+            item.data_name = form.data_name.value.trim();
+            item.data_content = form.data_content.value.trim();
+//            var temp_list = [], temp_constrs = [];
+//            var temp_content_list = item.data_content.split(/\n/);
+//            if (item.data_name.split(/\s/).length > 1) {
+//                temp_list.push(item.data_name.split(/\s/)[0].slice(1,));
+//                item.name = item.data_name.split(/\s/)[1];
+//            } else {
+//                item.name = item.data_name;
+//            }
+
+//            $.each(temp_content_list, function (i, v) {
+//                var temp_con_list = v.split(') (');
+//                var temp_con_dict = {};
+//                var arg_name = '', args = [], type = '';
+//                if (temp_con_list[0].indexOf('(') > 0) {
+//                    arg_name = temp_con_list[0].slice(0, temp_con_list[0].indexOf('(') - 1);
+//                    if (temp_con_list.length > 1) {
+//                        temp_con_list[0] = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1,);
+//                        temp_con_list[temp_con_list.length - 1] = temp_con_list[temp_con_list.length - 1].slice(0, -1);
+//                        $.each(temp_con_list, function (i, v) {
+//                            args.push(v.split(' :: ')[0]);
+//                            type += v.split(' :: ')[1] + '⇒';
+//                            if (v.split(' :: ')[1].indexOf('⇒') >= 0) {
+//                                type += '(' + v.split(' :: ')[1] + ')' + '⇒'
+//                            }
+//                        });
+//                        type = type + data_name;
+//                    } else {
+//                        let vars_ = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[0];
+//                        type = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[1];
+//                        args.push(vars_);
+//                        type = type + '=>' + data_name;
+//                    }
+//                } else {
+//                    arg_name = temp_con_list[0];
+//                    type = item.name;
+//                }
+//                temp_con_dict['type'] = type;
+//                temp_con_dict['args'] = args;
+//                temp_con_dict['name'] = arg_name;
+//                temp_constrs.push(temp_con_dict);
+//            });
             item.ty = 'type.ind';
-            item.args = temp_list;
-            item.constrs = temp_constrs;
+//            item.args = temp_list;
+//            item.constrs = temp_constrs;
         }
         if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
-            var data_name = form.data_name.value.trim();
-            var data_content = form.content.value.trim();
+            item.data_name = form.data_name.value.trim();
+            item.data_content = form.content.value.trim();
+            item.ty = ty;
             var rules_list = [];
             var props_list = data_content.split(/\n/);
-            var vars_list = form.data_vars.value.trim().split(/\n/);
+            item.vars_list = form.data_vars.value.trim().split(/\n/);
             if (ty === 'def.pred')
-                var names_list = form.vars_names.value.trim().split(/\n/);
+                item.names_list = form.vars_names.value.trim().split(/\n/);
             $.each(vars_list, function (i, m) {
                 vars_list[i] = m.slice(3,).trim();
             });

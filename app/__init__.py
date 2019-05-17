@@ -12,6 +12,7 @@ from server.server import ProofState
 from logic import basic
 from logic import induct
 from kernel.extension import AxType, AxConstant, Theorem
+from kernel.type import TFun
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 app = Flask(__name__, static_url_path='/static')
@@ -193,6 +194,7 @@ def init_saved_proof():
         return jsonify(error)
     return jsonify({})
 
+
 @app.route('/api/add-line-after', methods=['POST'])
 def add_line_after():
     data = json.loads(request.get_data().decode("utf-8"))
@@ -298,18 +300,17 @@ def file_data_to_output(thy, data):
         # Obtain types of arguments for each constructor
         data['argsT'] = dict()
         for i, constr in enumerate(data['constrs']):
+            str_temp_var = ''
             T = parser.parse_type(thy, constr['type'])
             argsT, _ = HOLType.strip_type(T)
             argsT = [printer.print_type(thy, argT, unicode=True, highlight=True) for argT in argsT]
             data['argsT'][str(i)] = argsT
-        for i,c in enumerate(data['constrs']):
-            str_temp_var = ''
-            for j,a in enumerate(c['args']):
+            for j,a in enumerate(constr['args']):
                 str_temp_term = ''
                 for m,t in enumerate(data['argsT'][str(i)][j]):
                     str_temp_term += t[0]
                 str_temp_var += ' (' + a + ' :: ' + str_temp_term + ')'
-            data_content += '\n' + c['name'] + str_temp_var
+            data_content += '\n' + constr['name'] + str_temp_var
         data['type_content'] = data_content
 
     elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
@@ -342,18 +343,17 @@ def file_data_to_output(thy, data):
 
         for k, r in enumerate(data['rules']):
             vars_str = ''
+            data_con = ''
             for m, v in enumerate(r['vars']):
                 vars_str += str(m) + ':' + v + '   '
             data_vars_list.append(vars_str)
-        for n, dv in enumerate(data_vars_list):
-            data_vars_str += str(n) + ': ' + dv + '\n'
-        for r in data['rules']:
-            data_con = ''
             for p in r['prop_hl']:
                 data_con += p[0]
             data_content_list.append(data_con)
             if 'name' in r:
                 data_rule_names.append(r['name'])
+        for n, dv in enumerate(data_vars_list):
+            data_vars_str += str(n) + ': ' + dv + '\n'
         for j,dc in enumerate(data_content_list):
             data_new_content += str(j) + ': ' + dc + '\n'
             data_rule_name += str(j) + ': ' + dc + '\n'
@@ -449,13 +449,39 @@ def check_modify():
     """Check a modified item for validity."""
     data = json.loads(request.get_data().decode("utf-8"))
     error = {}
+    item = data['content']
+    thy = basic.load_theory('list')
+    if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
+        for v in item['vars'].split('\n'):
+            (nm, T) = parser.parse_thm_vars(thy, v)
+            if nm:
+                item['vars'][nm.strip()] = T.strip()
+    if item['ty'] == 'type.ind':
+        constrs, temp_list = [], []
+        if len(item['data_name'].split(' ')) > 1:
+            temp_list.append(item['data_name'].split(' ')[0][1:])
+            item['name'] = item['data_name'].split(' ')[1]
+        else:
+            item['name'] = item['data_name']
+        item['args'] = temp_list
+        apd = Type(item['name'], *(TVar(nm) for nm in item['args']))
+        for c in item['data_content'].split('\n'):
+            constr = parser.parse_type_ind(thy, c)
+            type_list = constr['type'] + [apd]
+            constr['type'] = str(TFun(type_list))
+            constrs.append(constr)
+        item['constrs'] = constrs
+    # if item['ty'] == 'def.ind' or item['ty'] == 'def' or item['ty'] == 'def.pred':
+
+
+
     with open_file(data['file_name'], 'r') as f:
         f_data = json.load(f)
     try:
         thy = basic.load_imported_theory(f_data['imports'], user_info['username'])
         for d in data['prev_list']:
             parser.parse_extension(thy, d)
-        file_data_to_output(thy, data['content'])
+        file_data_to_output(thy, item)
     except Exception as e:
         exc_detailed = traceback2.format_exc()
         return jsonify({
@@ -464,7 +490,7 @@ def check_modify():
             "detail_content": exc_detailed
         })
 
-    return jsonify({'content': data['content'], 'error': error})
+    return jsonify({'content': item, 'error': error})
 
 
 @app.route('/api/find-files', methods=['GET'])
@@ -489,3 +515,4 @@ def remove_file():
     os.remove(fileDir)
 
     return jsonify({})
+
