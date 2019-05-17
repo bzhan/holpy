@@ -247,7 +247,8 @@
         $('a#edit_item').click(function() {
             if (items_selected.length === 1) {
                 var item_id = items_selected[0];
-                init_edit_area(item_id);
+                init_edit_area(String(item_id));
+//                init_edit_area('0');
             }
         });
 

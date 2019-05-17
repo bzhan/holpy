@@ -456,10 +456,12 @@ def check_modify():
     item = data['content']
     thy = basic.load_theory('list')
     if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
+        vars = {}
         for v in item['vars'].split('\n'):
             (nm, T) = parser.parse_thm_vars(thy, v)
             if nm:
-                item['vars'][nm.strip()] = T.strip()
+                vars[nm.strip()] = T.strip()
+        item['vars'] = vars
     if item['ty'] == 'type.ind':
         constrs, temp_list = [], []
         if len(item['data_name'].split(' ')) > 1:
