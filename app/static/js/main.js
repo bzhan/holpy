@@ -261,12 +261,11 @@
                 for (var key in replace_obj) {
                     var l = key.length;
                     if (content.substring(pos - l, pos) === key) {
-                        preventD()
-//                        if (e && e.preventDefault) {
-//                            e.preventDefault();
-//                        } else {
-//                            window.event.returnValue = false;
-//                        };
+                        if (e && e.preventDefault) {
+                            e.preventDefault();
+                        } else {
+                            window.event.returnValue = false;
+                        };
                         len = l;
                         content = content.slice(0, pos - len) + replace_obj[key] + content.slice(pos,);
                     }
@@ -329,7 +328,6 @@
                 preventD(e);
                 add_selected_items(item_id, items_selected[items_selected.length - 1]);
                 display_theory_items();
-                alert('ok');
             }
             else {
                 if (items_selected.indexOf(item_id) >= 0) {
@@ -371,20 +369,6 @@
                 window.event.returnValue = false;
             };
         }
-//
-//        $(document).on('keydown', function(e) {
-//            if (e.keyCode === 16) {
-//                preventD(e);
-//                $('#panel-content').on('click', 'div[name="theories"]', function(e){
-//                    var item_id = Number($(this).attr('item_id'));
-//                    preventD(e);
-//                    add_selected_items(item_id, items_selected[items_selected.length - 1]);
-//                    display_theory_items();
-//                    alert('ok');
-//                    e.stop();
-//                })
-//            }
-//        })
 
         // Delete an item from menu.
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
@@ -425,7 +409,6 @@
          })
 
         // Move down an item or sequence of items.
-//        $('div.dropdown-menu.Ctrl a[name="down"]').on('click', function(){
         $(document).keydown(function(e) {
             if(e.ctrlKey && e.keyCode === 40 && items_selected[items_selected.length-1] < json_files[cur_theory_name].content.length -1) {
                 content = json_files[cur_theory_name].content;
