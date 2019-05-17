@@ -364,14 +364,18 @@ def file_data_to_output(thy, data):
     elif data['ty'] == 'def':
         i = 0
         vars = ''
+        data_new_content = ''
         data_content_list = []
         data_content_list.append(data['prop'])
+        for j,dc in enumerate(data_content_list):
+            data_new_content += str(j) + ': ' + dc + '\n'
         for j, v in enumerate(data['vars']):
             vars += str(i) + ': ' + str(j) + ':' + v + '\n'
             i += 1
         data['item_vars'] = vars
         T = parser.parse_type(thy, data['type'])
         data['type_name'] = 'definition'
+        data['data_new_content'] = data_new_content
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
         ctxt = parser.parse_vars(thy, data['vars'])

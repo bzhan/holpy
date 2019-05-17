@@ -321,6 +321,13 @@
             });
         });
 
+        $(document).keydown(function(e){
+            preventD();
+            if (e.click)
+                alert('asd')
+
+        })
+
         // Select / unselect an item by left click.
         $('#panel-content').on('click','div[name="theories"]',function(e){
             var item_id = Number($(this).attr('item_id'));
@@ -332,8 +339,6 @@
             else {
                 if (items_selected.indexOf(item_id) >= 0) {
                     items_selected.length = 0;
-//                    var index = items_selected.indexOf(item_id);
-//                    items_selected.splice(index, 1);
                 }
                 else {
                     items_selected.length = 0;
@@ -645,6 +650,7 @@
                     var vars = item['item_vars'];
                     form.data_vars.textContent = vars.trim();
                     form.data_vars.rows = vars.trim().split('\n').length;
+                    data_new_content = item['data_new_content'];
                 }
                 $('#codeTab').find('span#' + page_num).text(item.name);
                 if (item && item['ty'] !== 'def') {
