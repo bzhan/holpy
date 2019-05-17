@@ -243,12 +243,11 @@
             init_proof_tab(cur_theory_name, item_id);
         });
 
-        // Create editing area after clicking 'edit' link on the left side.
+        // Create editing area after clicking 'edit' link.
         $('a#edit_item').click(function() {
             if (items_selected.length === 1) {
                 var item_id = items_selected[0];
                 init_edit_area(String(item_id));
-//                init_edit_area('0');
             }
         });
 
@@ -321,13 +320,6 @@
                 }
             });
         });
-
-        $(document).keydown(function(e){
-            preventD();
-            if (e.click)
-                alert('asd')
-
-        })
 
         // Select / unselect an item by left click.
         $('#panel-content').on('click','div[name="theories"]',function(e){
@@ -427,7 +419,7 @@
                 });
                 items_selected.reverse();
             }
-//            save_json_file(cur_theory_name);
+            save_json_file(cur_theory_name);
             display_theory_items();
         })
 
