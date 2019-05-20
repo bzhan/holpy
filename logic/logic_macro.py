@@ -6,7 +6,8 @@ from kernel.term import Term
 from kernel import macro
 from kernel.proof import Proof
 from kernel.thm import Thm
-from logic import logic, matcher
+from logic import logic, matcher, logic
+from logic.logic import is_conj
 from logic.conv import then_conv, beta_conv, top_conv, rewr_conv, top_sweep_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
 
@@ -301,21 +302,22 @@ class imp_conj_macro(ProofTermMacro):
 
     def eval(self, thy, args, ths):
         def strip(root, lst):
-            if root[0].is_var():
-                lst.append(root[0])
+            if not is_conj(root):
+                lst.append(root)
                 return
-            if root[1][0].is_comb():
-                strip(root[1][0].strip_comb(), lst)
+            left = root.strip_comb()[1][0]
+            if is_conj(left):
+                strip(left, lst)
             else:
-                lst.append(root[1][0])
-            if root[1][1].is_comb():
-                strip(root[1][1].strip_comb(), lst)
+                lst.append(left)
+            right = root.strip_comb()[1][1]
+            if is_conj(right):
+                strip(right, lst)
             else:
-                lst.append(root[1][1])
+                lst.append(right)
 
         A, C = args.strip_implies()
-        A = A[0].strip_comb()
-        C = C.strip_comb()
+        A = A[0]
         lst_A, lst_C = [], []
         strip(A, lst_A)
         strip(C, lst_C)
@@ -325,7 +327,7 @@ class imp_conj_macro(ProofTermMacro):
 
     def get_proof_term(self, thy, args, pts):
         def traverse_A(root):
-            if root.prop.is_var():
+            if not is_conj(root.prop):
                 if root.prop not in dct.keys():
                    dct[root.prop] = root
                 return
@@ -335,13 +337,13 @@ class imp_conj_macro(ProofTermMacro):
             traverse_A(right)
 
         def traverse_C(root):
-            if root.prop.is_var():
+            if not is_conj(root.prop):
                 assert root.prop in dct.keys(), 'imp_conj_macro'
                 return dct[root.prop]
             left = apply_theorem(thy, 'conjD1', root)
             right = apply_theorem(thy, 'conjD2', root)
-            leftpt = dct[left.prop] if left.prop.is_var() else traverse_C(left)
-            rightpt = dct[right.prop] if right.prop.is_var() else traverse_C(right)
+            leftpt = dct[left.prop] if not is_conj(left.prop) else traverse_C(left)
+            rightpt = dct[right.prop] if not is_conj(right.prop) else traverse_C(right)
             concl = apply_theorem(thy, 'conjI', leftpt, rightpt)
             return concl
 

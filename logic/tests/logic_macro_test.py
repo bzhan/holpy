@@ -38,18 +38,21 @@ class LogicMacroTest(unittest.TestCase):
         B = Var("B", boolT)
         C = Var("C", boolT)
         D = Var("D", boolT)
-        E = Var("E", boolT)
         test_data = [
-            imp(conj(conj(A, conj(D, B), C)), conj(conj(A, D, C), conj(C, B))),
-            imp(conj(C, D), B)
+            (imp(conj(conj(A, conj(D, B), C)), conj(conj(A, D, C), conj(A, B))), True),
+            (imp(conj(C, D), A), False)
         ]
 
-        for t in test_data:
+        for t, res in test_data:
             print("Testing:", printer.print_term(thy, t))
-            pt = macro.get_proof_term(thy, t, [])
-            prf = pt.export()
-            thy.check_proof(prf)
-            print(printer.print_proof(thy, prf))
+            if res:
+                pt = macro.get_proof_term(thy, t, [])
+                self.assertEqual(pt, Thm([], t))
+                prf = pt.export()
+                thy.check_proof(prf)
+                print(printer.print_proof(thy, prf))
+            else:
+                self.assertRaises(AssertionError, macro.get_proof_term, thy, t, [])
 
     def testImpConjMacroEval(self):
         macro = imp_conj_macro()
@@ -58,15 +61,17 @@ class LogicMacroTest(unittest.TestCase):
         C = Var("C", boolT)
         D = Var("D", boolT)
         test_data = [
-            (imp(conj(conj(A, conj(D, B), C)), conj(conj(A, D, C), conj(C, B))), True),
-            (imp(C, B), True),
+            (imp(conj(conj(A, conj(D, B))), conj(conj(A, D, C), conj(C, A))), True),
+            (imp(B, C), False),
         ]
 
         for t, res in test_data:
+            print("Testing:", printer.print_term(thy, t))
             if res:
                 self.assertEqual(macro.eval(thy, t, []), Thm([], t))
+
             else:
-                self.assertRaises(InvalidDerivationException, macro.eval, thy, t, [])
+                self.assertRaises(AssertionError, macro.eval, thy, t, [])
 
 
 if __name__ == "__main__":
