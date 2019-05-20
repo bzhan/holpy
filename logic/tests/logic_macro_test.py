@@ -61,7 +61,7 @@ class LogicMacroTest(unittest.TestCase):
         C = Var("C", boolT)
         D = Var("D", boolT)
         test_data = [
-            (imp(conj(conj(A, conj(D, B))), conj(conj(A, D, C), conj(C, A))), True),
+            (imp(conj(conj(A, conj(D, B))), conj(conj(A, D), conj(B, A))), True),
             (imp(B, C), False),
         ]
 
