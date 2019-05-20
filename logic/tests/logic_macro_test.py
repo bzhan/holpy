@@ -31,16 +31,17 @@ class LogicMacroTest(unittest.TestCase):
             pt = macro.get_proof_term(thy, t, [])
             prf = pt.export()
             self.assertEqual(thy.check_proof(prf), Thm([], t))
-        
+
     def testImpConjMacro(self):
         macro = imp_conj_macro()
         A = Var("A", boolT)
         B = Var("B", boolT)
         C = Var("C", boolT)
         D = Var("D", boolT)
+        E = Var("E", boolT)
         test_data = [
-            imp(conj(A, B), conj(B, A)),
-            imp(conj(conj(A, B), conj(C, D)), conj(B, conj(D, C), B)),
+            imp(conj(conj(A, conj(D, B), C)), conj(conj(A, D, C), conj(C, B))),
+            imp(conj(C, D), B)
         ]
 
         for t in test_data:
@@ -49,7 +50,6 @@ class LogicMacroTest(unittest.TestCase):
             prf = pt.export()
             thy.check_proof(prf)
             print(printer.print_proof(thy, prf))
-            print()
 
     def testImpConjMacroEval(self):
         macro = imp_conj_macro()
@@ -58,8 +58,8 @@ class LogicMacroTest(unittest.TestCase):
         C = Var("C", boolT)
         D = Var("D", boolT)
         test_data = [
-            (imp(conj(A, B), conj(B, A)), True),
-            (imp(conj(A, B), conj(C, A)), False),
+            (imp(conj(conj(A, conj(D, B), C)), conj(conj(A, D, C), conj(C, B))), True),
+            (imp(C, B), True),
         ]
 
         for t, res in test_data:

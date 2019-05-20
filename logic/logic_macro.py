@@ -248,6 +248,7 @@ class rewrite_fact_with_prev_macro(ProofTermMacro):
                        top_conv(beta_conv()))
         return pt.on_prop(thy, cv)
 
+
 class trivial_macro(ProofTermMacro):
     """Prove a proposition of the form A_1 --> ... --> A_n --> B, where
     B agrees with one of A_i.
@@ -292,16 +293,70 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
         else:
             return ProofTermDeriv("beta_norm", thy, None, [pt])
 
+
 class imp_conj_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = Term
 
     def eval(self, thy, args, ths):
-        raise NotImplementedError
+        def strip(root, lst):
+            if root[0].is_var():
+                lst.append(root[0])
+                return
+            if root[1][0].is_comb():
+                strip(root[1][0].strip_comb(), lst)
+            else:
+                lst.append(root[1][0])
+            if root[1][1].is_comb():
+                strip(root[1][1].strip_comb(), lst)
+            else:
+                lst.append(root[1][1])
+
+        A, C = args.strip_implies()
+        A = A[0].strip_comb()
+        C = C.strip_comb()
+        lst_A, lst_C = [], []
+        strip(A, lst_A)
+        strip(C, lst_C)
+        for i in lst_C:
+            assert i in lst_A, 'imp_conj_macro'
+        return Thm([], args)
 
     def get_proof_term(self, thy, args, pts):
-        return ProofTerm.assume(args)
+        def traverse_A(root):
+            if root.prop.is_var():
+                if root.prop not in dct.keys():
+                   dct[root.prop] = root
+                return
+            left = apply_theorem(thy, 'conjD1', root)
+            traverse_A(left)
+            right = apply_theorem(thy, 'conjD2', root)
+            traverse_A(right)
+
+        def traverse_C(root):
+            if root.prop.is_var():
+                assert root.prop in dct.keys(), 'imp_conj_macro'
+                return dct[root.prop]
+            left = apply_theorem(thy, 'conjD1', root)
+            right = apply_theorem(thy, 'conjD2', root)
+            leftpt = dct[left.prop] if left.prop.is_var() else traverse_C(left)
+            rightpt = dct[right.prop] if right.prop.is_var() else traverse_C(right)
+            concl = apply_theorem(thy, 'conjI', leftpt, rightpt)
+            return concl
+
+        A, C = args.strip_implies()
+        A = A[0]
+        dct = dict()
+
+        assume_A = ProofTerm.assume(A)
+        traverse_A(assume_A)
+
+        assume_C = ProofTerm.assume(C)
+        concl = traverse_C(assume_C)
+
+        concl = ProofTerm.implies_intr(concl.hyps[0], concl)
+        return concl
 
 
 macro.global_macros.update({
