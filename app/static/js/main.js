@@ -17,6 +17,35 @@
             $(this).load(file);
         });
 
+//        var input_list = [];
+//        swal({
+//          title: "Enter ",
+//          html: '<input id="sig-input1" class="swal2-input"><input id="sig-input2" class="swal2-input">'+
+//                '<input id="sig-input3" class="swal2-input">',
+//          showCancelButton: true,
+//          confirmButtonColor: "#DD6B55",
+//          cancelButtonColor: "#DD6B55",
+//          confirmButtonText: "确认",
+//          cancelButtonText: "取消",
+//          closeOnConfirm: false,
+//          closeOnCancel: false,
+//          preConfirm: () => {
+//                for (let i=1;i<=count;i++) {
+//                    document.querySelector('#sig-input'+i).focus();
+//                    input[sig_list[i-1]] = document.getElementById('sig-input'+i).value;
+//                }
+//          }
+//        }).then((input) => {
+//            $.ajax({
+//                url: "/api/apply-method",
+//                type: "POST",
+//                data: JSON.stringify(input),
+//                success: display_checked_proof
+//            })
+//        })
+
+
+
         $('#right').on('click', '.thm-content pre', function () {
             apply_thm_tactic($(this).index());
         });
@@ -636,6 +665,8 @@
                     page_num: page_num, type_name: type_name, ext_output: ext_output
             }));
             var form = document.getElementById('edit-def-form' + page_num);
+//            $('textarea#data-content'+page_num).addClass('CodeMirror selected code-cell');
+
             if (number) {
                 type_name = item['type_name'];
                 data_name = item.name + ' :: ' + item.type;
@@ -650,6 +681,7 @@
                     data_new_content = item['data_new_content'];
                     data_rule_name = item['data_rule_name'];
                 }
+
                 form.number.value = number;
                 form.data_name.value = data_name;
                 form.content.textContent = data_new_content.trim();
@@ -659,11 +691,15 @@
                     form.vars_names.rows = data_rule_name.trim().split('\n').length;
                 }
                 form.number.value = number;
+//                init_editor("data-content" + page_num, cur_theory_name, content = data_new_content.trim(), flag=false);
             }
+
             else {
+                init_editor("data-content" + page_num, cur_theory_name, content = '', flag=false);
                 form.number.value = -1;
                 $('#codeTab').find('span#' + page_num).text('function');
             }
+
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             if (data_type !== 'def') {
                 var data_vars_str = '';
@@ -753,11 +789,15 @@
         }
         if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
             item.data_name = form.data_name.value.trim();
-            item.data_content = form.content.value.trim();
+            item.data_content = form.content.value.trim().split(/\n/);
             item.ty = ty;
+            item.vars_list = form.data_vars.value.trim().split(/\n/);
+            item.vars_names_list = form.vars_names.trim().split(/\n/);
+
+
             var rules_list = [];
             var props_list = data_content.split(/\n/);
-            item.vars_list = form.data_vars.value.trim().split(/\n/);
+
             if (ty === 'def.pred')
                 item.names_list = form.vars_names.value.trim().split(/\n/);
             $.each(vars_list, function (i, m) {
@@ -932,7 +972,7 @@
         });
     }
 
-    function init_editor(id, theory_name) {
+    function init_editor(id, theory_name, content='', flag=true) {
         var editor = CodeMirror.fromTextArea(document.getElementById(id), {
             mode: "text/x-python",
             lineNumbers: true,
@@ -961,9 +1001,10 @@
                 }
             }
         });
-        editor.setValue("");
+        editor.setValue('');
         $(editor.getTextArea().parentNode).addClass('selected').siblings().removeClass('selected');
-        resize_editor();
+        if (flag)
+            resize_editor();
 
         cells[id] = {
             theory_name: theory_name,

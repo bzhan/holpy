@@ -100,7 +100,6 @@ grammar = r"""
     
     thm_vars: CNAME "::" type
     
-    fun_name: CNAME "::" type
 
     %import common.CNAME
     %import common.WS
@@ -260,8 +259,8 @@ class HOLTransformer(Transformer):
     def thm_vars(self, *args):
         return (str(args[0]), str(args[1]))
 
-    def fun_name(self, *args):
-        return args
+    # def fun_name(self, *args):
+    #     return args
 
 
 def get_parser_for(start):
@@ -275,7 +274,7 @@ tyinst_parser = get_parser_for("tyinst")
 instsp_parser = get_parser_for("instsp")
 type_ind_parser = get_parser_for("type_ind")
 thm_vars_parser = get_parser_for("thm_vars")
-fun_name_parser = get_parser_for("fun_name")
+# fun_name_parser = get_parser_for("fun_name")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -325,10 +324,10 @@ def parse_type_ind(thy, s):
 def parse_thm_vars(thy, s):
     parser_setting['thy'] = thy
     return thm_vars_parser.parse(s)
-
-def parse_fun_name(thy, s):
-    parser_setting['thy'] = thy
-    return fun_name_parser.parse(s)
+#
+# def parse_fun_name(thy, s):
+#     parser_setting['thy'] = thy
+#     return fun_name_parser.parse(s)
 
 def parse_args(thy, ctxt, sig, args):
     """Parse the argument according to the signature."""

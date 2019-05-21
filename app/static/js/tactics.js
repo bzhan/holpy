@@ -163,8 +163,12 @@ function introduction() {
 }
 
 function apply_method(method_name, args) {
+    var count = 0;
+    var isConfirm_ = false;
+    var sig_list = [];
     var id = get_selected_id();
     var sigs = cells[id].method_sig[method_name];
+    var input_list = [];
     var input = current_state();
     input.method_name = method_name;
 
@@ -174,16 +178,52 @@ function apply_method(method_name, args) {
     $.each(sigs, function (i, sig) {
         if (sig in args)
             input[sig] = args[sig];
-        else
-            input[sig] = prompt('Enter ' + sig);
+        else {
+            sig_list.push(sig);
+//            input[sig] = prompt('Enter ' + sig);
+            count += 1;
+        }
     });
     display_running();
-    $.ajax({
-        url: "/api/apply-method",
-        type: "POST",
-        data: JSON.stringify(input),
-        success: display_checked_proof
-    })
+    var input_html = '';
+    if (count>0) {
+        for (let i=1;i<=count;i++) {
+            input_html += '<input id="sig-input"'+ i +' class="swal2-input">';
+        }
+        swal({
+              title: "Enter",
+              html: input_html,
+              showCancelButton: true,
+              confirmButtonColor: "#DD6B55",
+              cancelButtonColor: "#DD6B55",
+              confirmButtonText: "确认",
+              cancelButtonText: "取消",
+              closeOnConfirm: false,
+              closeOnCancel: false,
+              preConfirm: () => {
+                    for (let i=1;i<=count;i++) {
+                        document.querySelector('input#sig-input'+i).focus();
+                        input[sig_list[i-1]] = document.getElementById('sig-input'+i).value;
+                    }
+              }
+            }).then((input) => {
+//                if (isConfirm_) {
+//                    alert('asdas');
+                $.ajax({
+                    url: "/api/apply-method",
+                    type: "POST",
+                    data: JSON.stringify(input),
+                    success: display_checked_proof
+                })
+//                }
+            });
+    }
+//    $.ajax({
+//        url: "/api/apply-method",
+//        type: "POST",
+//        data: JSON.stringify(input),
+//        success: display_checked_proof
+//    })
 }
 
 // Split off the first token according to the delimiter.

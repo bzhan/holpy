@@ -345,7 +345,7 @@ def file_data_to_output(thy, data):
             vars_str = ''
             data_con = ''
             for m, v in enumerate(r['vars']):
-                vars_str += str(m) + ':' + v + '   '
+                vars_str += str(m) + '::' + v + '   '
             data_vars_list.append(vars_str)
             for p in r['prop_hl']:
                 data_con += p[0]
@@ -370,7 +370,7 @@ def file_data_to_output(thy, data):
         for j,dc in enumerate(data_content_list):
             data_new_content += str(j) + ': ' + dc + '\n'
         for j, v in enumerate(data['vars']):
-            vars += str(i) + ': ' + str(j) + ':' + v + '\n'
+            vars += str(i) + ': ' + str(j) + '::' + v + '\n'
             i += 1
         data['item_vars'] = vars
         T = parser.parse_type(thy, data['type'])
@@ -478,7 +478,8 @@ def check_modify():
             constrs.append(constr)
         item['constrs'] = constrs
     # if item['ty'] == 'def.ind' or item['ty'] == 'def' or item['ty'] == 'def.pred':
-
+    #     item['name'] = parser.parse_thm_vars(thy, item['data_name'])[0]
+    #     item['type'] = parser.parse_thm_vars(thy, item['data_name'])[1]
 
 
     with open_file(data['file_name'], 'r') as f:
