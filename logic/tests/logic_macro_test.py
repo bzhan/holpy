@@ -40,17 +40,17 @@ class LogicMacroTest(unittest.TestCase):
         D = Var("D", boolT)
         test_data = [
             (imp(conj(conj(A, conj(D, B), C)), conj(conj(A, D, C), conj(A, B))), True),
-            (imp(conj(C, D), A), False)
+            (imp(conj(C, D), A), False),
+            (imp(conj(A, B), conj(A, conj(B, C))), False),
+            (imp(conj(A, conj(B, C)), conj(A, B)), True),
         ]
 
         for t, res in test_data:
-            print("Testing:", printer.print_term(thy, t))
             if res:
                 pt = macro.get_proof_term(thy, t, [])
                 self.assertEqual(pt, Thm([], t))
                 prf = pt.export()
                 thy.check_proof(prf)
-                print(printer.print_proof(thy, prf))
             else:
                 self.assertRaises(AssertionError, macro.get_proof_term, thy, t, [])
 
@@ -63,13 +63,13 @@ class LogicMacroTest(unittest.TestCase):
         test_data = [
             (imp(conj(conj(A, conj(D, B))), conj(conj(A, D), conj(B, A))), True),
             (imp(B, C), False),
+            (imp(conj(A, B), conj(A, conj(B, C))), False),
+            (imp(conj(A, conj(B, C)), conj(A, B)), True),
         ]
 
         for t, res in test_data:
-            print("Testing:", printer.print_term(thy, t))
             if res:
                 self.assertEqual(macro.eval(thy, t, []), Thm([], t))
-
             else:
                 self.assertRaises(AssertionError, macro.eval, thy, t, [])
 

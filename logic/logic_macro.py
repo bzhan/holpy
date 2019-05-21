@@ -301,64 +301,46 @@ class imp_conj_macro(ProofTermMacro):
         self.sig = Term
 
     def eval(self, thy, args, ths):
-        def strip(root, lst):
-            if not is_conj(root):
-                lst.append(root)
-                return
-            left = root.strip_comb()[1][0]
-            if is_conj(left):
-                strip(left, lst)
+        def strip(t):
+            if is_conj(t):
+                return strip(t.arg1).union(strip(t.arg))
             else:
-                lst.append(left)
-            right = root.strip_comb()[1][1]
-            if is_conj(right):
-                strip(right, lst)
-            else:
-                lst.append(right)
+                return {t}
 
-        A, C = args.strip_implies()
-        A = A[0]
-        lst_A, lst_C = [], []
-        strip(A, lst_A)
-        strip(C, lst_C)
-        for i in lst_C:
-            assert i in lst_A, 'imp_conj_macro'
+        As, C = args.strip_implies()
+        assert len(As) == 1, 'imp_conj_macro'
+        assert strip(C).issubset(strip(As[0])), 'imp_conj_macro'
         return Thm([], args)
 
     def get_proof_term(self, thy, args, pts):
-        def traverse_A(root):
-            if not is_conj(root.prop):
-                if root.prop not in dct.keys():
-                   dct[root.prop] = root
-                return
-            left = apply_theorem(thy, 'conjD1', root)
-            traverse_A(left)
-            right = apply_theorem(thy, 'conjD2', root)
-            traverse_A(right)
-
-        def traverse_C(root):
-            if not is_conj(root.prop):
-                assert root.prop in dct.keys(), 'imp_conj_macro'
-                return dct[root.prop]
-            left = apply_theorem(thy, 'conjD1', root)
-            right = apply_theorem(thy, 'conjD2', root)
-            leftpt = dct[left.prop] if not is_conj(left.prop) else traverse_C(left)
-            rightpt = dct[right.prop] if not is_conj(right.prop) else traverse_C(right)
-            concl = apply_theorem(thy, 'conjI', leftpt, rightpt)
-            return concl
-
-        A, C = args.strip_implies()
-        A = A[0]
         dct = dict()
 
-        assume_A = ProofTerm.assume(A)
-        traverse_A(assume_A)
+        def traverse_A(pt):
+            # Given proof term showing a conjunction, put proof terms
+            # showing atoms of the conjunction in dct.
+            if is_conj(pt.prop):
+                traverse_A(apply_theorem(thy, 'conjD1', pt))
+                traverse_A(apply_theorem(thy, 'conjD2', pt))
+            else:
+                dct[pt.prop] = pt
 
-        assume_C = ProofTerm.assume(C)
-        concl = traverse_C(assume_C)
+        def traverse_C(t):
+            # Return proof term with conclusion t
+            if is_conj(t):
+                left = traverse_C(t.arg1)
+                right = traverse_C(t.arg)
+                return apply_theorem(thy, 'conjI', left, right)
+            else:
+                assert t in dct.keys(), 'imp_conj_macro'
+                return dct[t]
 
-        concl = ProofTerm.implies_intr(concl.hyps[0], concl)
-        return concl
+        As, C = args.strip_implies()
+        assert len(As) == 1, 'imp_conj_macro'
+        A = As[0]
+
+        traverse_A(ProofTerm.assume(A))
+        concl = traverse_C(C)
+        return ProofTerm.implies_intr(A, concl)
 
 
 macro.global_macros.update({
