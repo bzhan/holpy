@@ -231,6 +231,8 @@ def set_line():
                 "message": str(e)
             }
             return jsonify(error)
+    return jsonify({})
+
 
 
 @app.route('/api/apply-method', methods=['POST'])
@@ -446,6 +448,8 @@ def search_method():
             'search_res': search_res,
             'ctxt': print_ctxt
         })
+
+    return jsonify({})
 
 
 @app.route('/api/check-modify', methods=['POST'])

@@ -188,7 +188,7 @@ function apply_method(method_name, args) {
     var input_html = '';
     if (count>0) {
         for (let i=1;i<=count;i++) {
-            input_html += '<input id="sig-input"'+ i +' class="swal2-input">';
+            input_html += '<input id="sig-input'+ i +'" class="swal2-input">';
         }
         swal({
               title: "Enter",
