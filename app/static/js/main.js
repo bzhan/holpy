@@ -17,6 +17,35 @@
             $(this).load(file);
         });
 
+//        var input_list = [];
+//        swal({
+//          title: "Enter ",
+//          html: '<input id="sig-input1" class="swal2-input"><input id="sig-input2" class="swal2-input">'+
+//                '<input id="sig-input3" class="swal2-input">',
+//          showCancelButton: true,
+//          confirmButtonColor: "#DD6B55",
+//          cancelButtonColor: "#DD6B55",
+//          confirmButtonText: "确认",
+//          cancelButtonText: "取消",
+//          closeOnConfirm: false,
+//          closeOnCancel: false,
+//          preConfirm: () => {
+//                for (let i=1;i<=count;i++) {
+//                    document.querySelector('#sig-input'+i).focus();
+//                    input[sig_list[i-1]] = document.getElementById('sig-input'+i).value;
+//                }
+//          }
+//        }).then((input) => {
+//            $.ajax({
+//                url: "/api/apply-method",
+//                type: "POST",
+//                data: JSON.stringify(input),
+//                success: display_checked_proof
+//            })
+//        })
+
+
+
         $('#right').on('click', '.thm-content pre', function () {
             apply_thm_tactic($(this).index());
         });
@@ -243,11 +272,12 @@
             init_proof_tab(cur_theory_name, item_id);
         });
 
-        // Create editing area after clicking 'edit' link on the left side.
-        $('#panel-content').on('click', 'a[name="edit"]', function (e) {
-            e.stopPropagation();
-            var item_id = $(this).parents().attr('item_id');
-            init_edit_area(item_id);
+        // Create editing area after clicking 'edit' link.
+        $('a#edit_item').click(function() {
+            if (items_selected.length === 1) {
+                var item_id = items_selected[0];
+                init_edit_area(String(item_id));
+            }
         });
 
         // Use tab key to insert unicode characters.
@@ -321,18 +351,51 @@
         });
 
         // Select / unselect an item by left click.
-        $('#panel-content').on('click','div[name="theories"]',function(){
+        $('#panel-content').on('click','div[name="theories"]',function(e){
             var item_id = Number($(this).attr('item_id'));
-            if (items_selected.indexOf(item_id) >= 0) {
-                var index = items_selected.indexOf(item_id);
-                items_selected.splice(index, 1);
+            if(e.shiftKey) {
+                preventD(e);
+                add_selected_items(item_id, items_selected[items_selected.length - 1]);
+                display_theory_items();
             }
             else {
-                items_selected.push(item_id);
+                if (items_selected.indexOf(item_id) >= 0) {
+                    items_selected.length = 0;
+                }
+                else {
+                    items_selected.length = 0;
+                    items_selected.push(item_id);
+                }
+                items_selected.sort();
+                display_theory_items();
             }
-            items_selected.sort();
-            display_theory_items();
         })
+
+        function add_selected_items(id1, id2) {
+            if (id1 > id2) {
+                for(let i = id2; i<=id1; i++){
+                    if (items_selected.indexOf(i) === -1)
+                        items_selected.push(i);
+                }
+                items_selected.sort();
+            }
+            else if(id1 < id2) {
+                for(let i = id1;i<=id2;i++) {
+                    if (items_selected.indexOf(i) === -1)
+                        items_selected.push(i);
+                }
+                items_selected.sort();
+            }
+        }
+
+        function preventD(e) {
+            if (e && e.preventDefault) {
+                e.preventDefault();
+            }
+            else {
+                window.event.returnValue = false;
+            };
+        }
 
         // Delete an item from menu.
         $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
@@ -347,29 +410,44 @@
         })
 
         // Move up an item or sequence of items.
-        $('div.dropdown-menu.Ctrl a[name="up"]').on('click', function() {
-            content = json_files[cur_theory_name].content;
-            if (items_selected[0] === 0)
-                return;
+        function item_exchange_up() {
             $.each(items_selected, function (i, v) {
                 items_selected[i] = v - 1;
                 [content[v-1], content[v]] = [content[v], content[v-1]]
             });
-            save_json_file(cur_theory_name);
-            display_theory_items();
-        })
+        }
+
+         $(document).keydown(function(e) {
+            if (e.keyCode === 38 && e.ctrlKey){
+                content = json_files[cur_theory_name].content;
+                if (items_selected[0] === 0)
+                    return;
+                if ($('div[item_id="0"]').attr('name') && items_selected[0] !== 0){
+                    item_exchange_up();
+                }
+                else {
+                    if (items_selected[0] !== 1){
+                        item_exchange_up();
+                    }
+                }
+                save_json_file(cur_theory_name);
+                display_theory_items();
+            }
+         })
 
         // Move down an item or sequence of items.
-        $('div.dropdown-menu.Ctrl a[name="down"]').on('click', function(){
-            content = json_files[cur_theory_name].content;
-            items_selected.reverse();
-            if (items_selected[0] === content.length - 1)
-                return;
-            $.each(items_selected, function (i, v) {
-                items_selected[i] = v + 1;
-                [content[v], content[v+1]] = [content[v+1], content[v]]
-            });
-            items_selected.reverse();
+        $(document).keydown(function(e) {
+            if(e.ctrlKey && e.keyCode === 40 && items_selected[items_selected.length-1] < json_files[cur_theory_name].content.length -1) {
+                content = json_files[cur_theory_name].content;
+                items_selected.reverse();
+                if (items_selected[0] === content.length - 1)
+                    return;
+                $.each(items_selected, function (i, v) {
+                    items_selected[i] = v + 1;
+                    [content[v], content[v+1]] = [content[v+1], content[v]]
+                });
+                items_selected.reverse();
+            }
             save_json_file(cur_theory_name);
             display_theory_items();
         })
@@ -499,34 +577,30 @@
     // data_type: if adding a new item, type of the new item.
     function init_edit_area(number = '', data_type = '') {
         page_num++;
-
+        var res = {};
         var data_name = '', data_content = '';
-        if (!number) {
-            data_name = '', data_content = '';
-        } else {
+        if (number) {
             var item = json_files[cur_theory_name].content[number];
             var data_name = item.name;
             var data_type = item.ty;
-        }
+        };
 
         var templ_tab = _.template($("#template-tab").html());
         $('#codeTab').append(templ_tab({page_num: page_num, label: data_type}));
-
         if (data_type === 'def.ax') {
-            if (number)
-                data_content = item.type;
-            else
-                $('#codeTab').find('span#' + page_num).text('constant');
             var templ_edit = _.template($("#template-edit-def-ax").html());
             $('#codeTabContent').append(templ_edit({page_num: page_num}));
             var form = document.getElementById('edit-constant-form' + page_num);
-            form.data_name.value = data_name;
-            form.data_content.value = data_content;
+            if (!number) {
+                $('#codeTab').find('span#' + page_num).text('constant');
+                form.number.value = -1;
+            }
+            else {
+                form.data_name.value = item['name'];
+                form.data_content.value = item['type'];
+                form.number.value = number;
+            }
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-            if (number)
-                form.number.value = number
-            else
-                form.number.value = -1
         }
         if (data_type === 'thm' || data_type === 'thm.ax') {
             var templ_edit = _.template($('#template-edit-thm').html());
@@ -539,19 +613,16 @@
                 form.name.labels[0].textContent = 'Axiom';
             if (number) {
                 form.number.value = number;
-                form.name.value = data_name;
-                form.prop.value = item.prop;
-                vars_lines = []
-                $.each(item.vars, function (nm, T) {
-                    vars_lines.push(nm + ' :: ' + T);
-                });
+                form.name.value = item['name'];
+                form.prop.value = item['prop'];
+                vars_lines = item['vars_lines']
                 form.vars.rows = vars_lines.length;
                 form.vars.value = vars_lines.join('\n');
-                if (item.hint_backward === 'true')
+                if (item['hint_backward'] === 'true')
                     form.hint_backward.checked = true;
-                if (item.hint_forward === 'true')
+                if (item['hint_forward'] === 'true')
                     form.hint_forward.checked = true;
-                if (item.hint_rewrite === 'true')
+                if (item['hint_rewrite'] === 'true')
                     form.hint_rewrite.checked = true;
             }
             else {
@@ -560,32 +631,22 @@
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         }
         if (data_type === 'type.ind') {
+            var templ_edit = _.template($('#template-edit-type-ind').html());
+            var ext = [];
+            var temp_name = $('div[item_id="'+ number + '"').find('span[name="name"]').text();
             if (number) {
-                var ext = item.ext;
-                var argsT = item.argsT;
-                var data_name = item.name;
-                var templ_edit = _.template($('#template-edit-type-ind').html());
-                $('#codeTabContent').append(templ_edit({
-                    page_num: page_num, ext_output: ext.join('\n')
-                }));
-                var form = document.getElementById('edit-type-form' + page_num);
-                $.each(item.constrs, function (i, v) {
-                    var str_temp_var = '';
-                    $.each(v.args, function (k, val) {
-                        var str_temp_term = '';
-                        $.each(argsT[i][k], function (l, vlu) {
-                            str_temp_term += vlu[0];
-                        });
-                        str_temp_var += ' (' + val + ' :: ' + str_temp_term + ')';
-                    });
-                    data_content += '\n' + v['name'] + str_temp_var;
-                })
+                ext = item['ext'];
+                var argsT = item['argsT'];
+                data_content = item['type_content'];
             } else
                 $('#codeTab').find('span#' + page_num).text('datatype');
+            $('#codeTabContent').append(templ_edit({
+                page_num: page_num, ext_output: ext.join('\n')
+            }));
+            var form = document.getElementById('edit-type-form' + page_num);
             data_content = data_content.trim();
             var i = data_content.split('\n').length;
             $('#codeTab').find('span#' + page_num).text(data_name);
-
             form.data_name.value = data_name;
             form.data_content.textContent = data_content;
             form.data_content.rows = i;
@@ -593,90 +654,60 @@
                 form.number.value = number
             else
                 form.number.value = -1
-
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         }
         if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
-            var data_content_list = [];
-            var data_new_content = '';
-            var data_rule_names = [], data_rule_name = '';
-            if (data_type === 'def.ind')
-                var type_name = 'fun';
-            else if (data_type === 'def.pred')
-                var type_name = 'inductive';
-            else
-                var type_name = 'definition'
+            var type_name = 'fun';
+            var templ_edit = _.template($('#template-edit-def').html());
+            if (number)
+                var ext_output = item['ext_output'];
+            $('#codeTabContent').append(templ_edit({
+                    page_num: page_num, type_name: type_name, ext_output: ext_output
+            }));
+            var form = document.getElementById('edit-def-form' + page_num);
+//            $('textarea#data-content'+page_num).addClass('CodeMirror selected code-cell');
 
             if (number) {
-                var vars = '';
-                var templ_edit = _.template($('#template-edit-def').html());
-                var ext_output = "";
-                if ('ext' in item) {
-                    ext_output = item.ext.join('\n');
-                }
-                $('#codeTabContent').append(templ_edit({
-                    page_num: page_num, type_name: type_name, ext_output: ext_output
-                }));
-                var form = document.getElementById('edit-def-form' + page_num);
+                type_name = item['type_name'];
                 data_name = item.name + ' :: ' + item.type;
-                if (item.rules) {
-                    for (var j in item.rules) {
-                        var data_con = '';
-                        $.each(item.rules[j].prop_hl, function (i, val) {
-                            data_con += val[0];
-                        });
-                        data_content_list.push(data_con);
-                        data_rule_names.push(item.rules[j]['name']);
-                    }
-                }
                 if (data_type === 'def') {
-                    var i = 0;
-                    data_content_list.push(item.prop);
-                    for (v in item.vars) {
-                        vars += i + ': ' + v + ':' + item.vars[v] + '\n';
-                        i++;
-                    }
-                }
-                for (var i in data_content_list) {
-                    data_new_content += i + ': ' + data_content_list[i] + '\n';
-                    data_rule_name += i + ': ' + data_rule_names[i] + '\n';
+                    var vars = item['item_vars'];
+                    form.data_vars.textContent = vars.trim();
+                    form.data_vars.rows = vars.trim().split('\n').length;
+                    data_new_content = item['data_new_content'];
                 }
                 $('#codeTab').find('span#' + page_num).text(item.name);
-            } else
-                $('#codeTab').find('span#' + page_num).text('function');
-            form.number.value = number;
-            form.data_name.value = data_name;
-            form.content.textContent = data_new_content.trim();
-            form.content.rows = data_new_content.trim().split('\n').length;
-            form.data_vars.textContent = vars.trim();
-            form.data_vars.rows = vars.trim().split('\n').length;
-            if (data_type === 'def.pred') {
-                form.vars_names.textContent = data_rule_name.trim();
-                form.vars_names.rows = data_rule_name.trim().split('\n').length;
-            }
-            if (number)
-                form.number.value = number
-            else
-                form.number.value = -1
-            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+                if (item && item['ty'] !== 'def') {
+                    data_new_content = item['data_new_content'];
+                    data_rule_name = item['data_rule_name'];
+                }
 
+                form.number.value = number;
+                form.data_name.value = data_name;
+                form.content.textContent = data_new_content.trim();
+                form.content.rows = data_new_content.trim().split('\n').length;
+                if (data_type === 'def.pred') {
+                    form.vars_names.textContent = data_rule_name.trim();
+                    form.vars_names.rows = data_rule_name.trim().split('\n').length;
+                }
+                form.number.value = number;
+//                init_editor("data-content" + page_num, cur_theory_name, content = data_new_content.trim(), flag=false);
+            }
+
+            else {
+                init_editor("data-content" + page_num, cur_theory_name, content = '', flag=false);
+                form.number.value = -1;
+                $('#codeTab').find('span#' + page_num).text('function');
+            }
+
+            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             if (data_type !== 'def') {
-                var data_vars_list = [];
                 var data_vars_str = '';
                 if (number) {
-                    $.each(item.rules, function (i, v) {
-                        var vars_str = '';
-                        for (let key in v.vars) {
-                            vars_str += key + ':' + v.vars[key] + '   ';
-                        }
-                        data_vars_list.push(vars_str);
-                    });
-                    $.each(data_vars_list, function (i, v) {
-                        data_vars_str += i + ': ' + v + '\n';
-                    })
+                    data_vars_str = item['data_vars_str'];
+                    form.data_vars.value = data_vars_str.trim();
+                    form.data_vars.rows = form.data_vars.value.split('\n').length;
                 }
-                form.data_vars.value = data_vars_str.trim();
-                form.data_vars.rows = form.data_vars.value.split('\n').length;
             }
         }
 
@@ -700,12 +731,7 @@
             item.ty = ty;
             item.name = form.name.value;
             item.prop = form.prop.value;
-            item.vars = {};
-            $.each(form.vars.value.split('\n'), function (i, v) {
-                let [nm, T] = v.split('::');
-                if (nm)
-                    item.vars[nm.trim()] = T.trim();
-            });
+            item.vars = $.trim(form.vars.value);
             if (form.hint_backward.checked === true)
                 item.hint_backward = 'true';
             if (form.hint_forward.checked ===  true)
@@ -714,60 +740,66 @@
                 item.hint_rewrite = 'true';
         }
         if (ty === 'type.ind') {
-            var data_name = form.data_name.value.trim();
-            var data_content = form.data_content.value.trim();
-            var temp_list = [], temp_constrs = [];
-            var temp_content_list = data_content.split(/\n/);
-            if (data_name.split(/\s/).length > 1) {
-                temp_list.push(data_name.split(/\s/)[0].slice(1,));
-                item.name = data_name.split(/\s/)[1];
-            } else {
-                item.name = data_name;
-            }
-            $.each(temp_content_list, function (i, v) {
-                var temp_con_list = v.split(') (');
-                var temp_con_dict = {};
-                var arg_name = '', args = [], type = '';
-                if (temp_con_list[0].indexOf('(') > 0) {
-                    arg_name = temp_con_list[0].slice(0, temp_con_list[0].indexOf('(') - 1);
-                    if (temp_con_list.length > 1) {
-                        temp_con_list[0] = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1,);
-                        temp_con_list[temp_con_list.length - 1] = temp_con_list[temp_con_list.length - 1].slice(0, -1);
-                        $.each(temp_con_list, function (i, v) {
-                            args.push(v.split(' :: ')[0]);
-                            type += v.split(' :: ')[1] + '⇒';
-                            if (v.split(' :: ')[1].indexOf('⇒') >= 0) {
-                                type += '(' + v.split(' :: ')[1] + ')' + '⇒'
-                            }
-                        });
-                        type = type + data_name;
-                    } else {
-                        let vars_ = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[0];
-                        type = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[1];
-                        args.push(vars_);
-                        type = type + '=>' + data_name;
-                    }
-                } else {
-                    arg_name = temp_con_list[0];
-                    type = item.name;
-                }
-                temp_con_dict['type'] = type;
-                temp_con_dict['args'] = args;
-                temp_con_dict['name'] = arg_name;
-                temp_constrs.push(temp_con_dict);
-            });
+            item.data_name = form.data_name.value.trim();
+            item.data_content = form.data_content.value.trim();
+//            var temp_list = [], temp_constrs = [];
+//            var temp_content_list = item.data_content.split(/\n/);
+//            if (item.data_name.split(/\s/).length > 1) {
+//                temp_list.push(item.data_name.split(/\s/)[0].slice(1,));
+//                item.name = item.data_name.split(/\s/)[1];
+//            } else {
+//                item.name = item.data_name;
+//            }
+
+//            $.each(temp_content_list, function (i, v) {
+//                var temp_con_list = v.split(') (');
+//                var temp_con_dict = {};
+//                var arg_name = '', args = [], type = '';
+//                if (temp_con_list[0].indexOf('(') > 0) {
+//                    arg_name = temp_con_list[0].slice(0, temp_con_list[0].indexOf('(') - 1);
+//                    if (temp_con_list.length > 1) {
+//                        temp_con_list[0] = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1,);
+//                        temp_con_list[temp_con_list.length - 1] = temp_con_list[temp_con_list.length - 1].slice(0, -1);
+//                        $.each(temp_con_list, function (i, v) {
+//                            args.push(v.split(' :: ')[0]);
+//                            type += v.split(' :: ')[1] + '⇒';
+//                            if (v.split(' :: ')[1].indexOf('⇒') >= 0) {
+//                                type += '(' + v.split(' :: ')[1] + ')' + '⇒'
+//                            }
+//                        });
+//                        type = type + data_name;
+//                    } else {
+//                        let vars_ = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[0];
+//                        type = temp_con_list[0].slice(temp_con_list[0].indexOf('(') + 1, -1).split(' :: ')[1];
+//                        args.push(vars_);
+//                        type = type + '=>' + data_name;
+//                    }
+//                } else {
+//                    arg_name = temp_con_list[0];
+//                    type = item.name;
+//                }
+//                temp_con_dict['type'] = type;
+//                temp_con_dict['args'] = args;
+//                temp_con_dict['name'] = arg_name;
+//                temp_constrs.push(temp_con_dict);
+//            });
             item.ty = 'type.ind';
-            item.args = temp_list;
-            item.constrs = temp_constrs;
+//            item.args = temp_list;
+//            item.constrs = temp_constrs;
         }
         if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
-            var data_name = form.data_name.value.trim();
-            var data_content = form.content.value.trim();
+            item.data_name = form.data_name.value.trim();
+            item.data_content = form.content.value.trim().split(/\n/);
+            item.ty = ty;
+            item.vars_list = form.data_vars.value.trim().split(/\n/);
+            item.vars_names_list = form.vars_names.trim().split(/\n/);
+
+
             var rules_list = [];
             var props_list = data_content.split(/\n/);
-            var vars_list = form.data_vars.value.trim().split(/\n/);
+
             if (ty === 'def.pred')
-                var names_list = form.vars_names.value.trim().split(/\n/);
+                item.names_list = form.vars_names.value.trim().split(/\n/);
             $.each(vars_list, function (i, m) {
                 vars_list[i] = m.slice(3,).trim();
             });
@@ -940,7 +972,7 @@
         });
     }
 
-    function init_editor(id, theory_name) {
+    function init_editor(id, theory_name, content='', flag=true) {
         var editor = CodeMirror.fromTextArea(document.getElementById(id), {
             mode: "text/x-python",
             lineNumbers: true,
@@ -969,9 +1001,10 @@
                 }
             }
         });
-        editor.setValue("");
+        editor.setValue('');
         $(editor.getTextArea().parentNode).addClass('selected').siblings().removeClass('selected');
-        resize_editor();
+        if (flag)
+            resize_editor();
 
         cells[id] = {
             theory_name: theory_name,

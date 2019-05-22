@@ -56,7 +56,7 @@
             <input type="hidden" name="number">
             <div class="form-group">
                 <div class="col-auto">
-                    <label for="data-name<%= page_num %>"></label>
+                    <font color="#006000"><b><label for="data-name<%= page_num %>"></label></b></font>
                     <input type="text" name="name" class="form-control" id="data-name<%= page_num %>">
                 </div>
             </div>
@@ -151,10 +151,11 @@
                        style="margin-left:3%;margin-bottom:3%;float:left;width:50%;background:transparent" name="data_name">
                 </div>
             </div>
+            <br><br><br>
             <div class="form-group">
                 <div class="col-auto" >
                     <textarea spellcheck="false" class="form-control adjust-rows"
-                              id="data-content<%=page_num%>" name="content"></textarea>
+                              id="data-content<%=page_num%>" name="content" style="float:left;"></textarea>
                 </div>
             </div><br>
             <div style="float:left;margin-left:3%;"><span style="position:absolute;">for:</span>&nbsp;</div>
