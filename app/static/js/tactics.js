@@ -187,7 +187,7 @@ function apply_method(method_name, args) {
 
     if (count>0) {
         for (let i=1;i<=count;i++) {
-            input_html += '<label style="text-align:right;width:25%;">sig'+ sig_list[i-1] +':</label>&nbsp;<input id="sig-input'+ i +'" class="swal2-input" style="width:63%;"><br>';
+            input_html += '<label style="text-align:right;width:20%;">'+ sig_list[i-1] +':</label>&nbsp;<input id="sig-input'+ i +'" class="swal2-input" style="width:63%;"><br>';
         }
         swal({
               title: "Enter",
@@ -195,8 +195,8 @@ function apply_method(method_name, args) {
               showCancelButton: true,
               confirmButtonColor: "#DD6B55",
               cancelButtonColor: "#DD6B55",
-              confirmButtonText: "确认",
-              cancelButtonText: "取消",
+              confirmButtonText: "Confirm",
+              cancelButtonText: "Cancel",
               closeOnConfirm: false,
               closeOnCancel: false,
               preConfirm: () => {
