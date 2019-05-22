@@ -170,11 +170,10 @@ function apply_method(method_name, args) {
     var sigs = cells[id].method_sig[method_name];
     var input_list = [];
     var input = current_state();
+    var input_html = '';
     input.method_name = method_name;
-
     if (args === undefined)
         args = {};
-
     $.each(sigs, function (i, sig) {
         if (sig in args)
             input[sig] = args[sig];
@@ -185,7 +184,7 @@ function apply_method(method_name, args) {
         }
     });
     display_running();
-    var input_html = '';
+
     if (count>0) {
         for (let i=1;i<=count;i++) {
             input_html += '<input id="sig-input'+ i +'" class="swal2-input">';
@@ -206,24 +205,19 @@ function apply_method(method_name, args) {
                         input[sig_list[i-1]] = document.getElementById('sig-input'+i).value;
                     }
               }
-            }).then((input) => {
-//                if (isConfirm_) {
-//                    alert('asdas');
-                $.ajax({
-                    url: "/api/apply-method",
-                    type: "POST",
-                    data: JSON.stringify(input),
-                    success: display_checked_proof
-                })
-//                }
+            }).then(function(isConfirm)  {
+                if (isConfirm.value) {
+                    $.ajax({
+                        url: "/api/apply-method",
+                        type: "POST",
+                        data: JSON.stringify(input),
+                        success: display_checked_proof
+                    })
+                }
+                else
+                    swal('wrong','','error');
             });
     }
-//    $.ajax({
-//        url: "/api/apply-method",
-//        type: "POST",
-//        data: JSON.stringify(input),
-//        success: display_checked_proof
-//    })
 }
 
 // Split off the first token according to the delimiter.
