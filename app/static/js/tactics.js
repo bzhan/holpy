@@ -215,6 +215,13 @@ function apply_method(method_name, args) {
                     })
                 }
             });
+    } else {
+        $.ajax({
+            url: "/api/apply-method",
+            type: "POST",
+            data: JSON.stringify(input),
+            success: display_checked_proof
+        })
     }
 }
 
