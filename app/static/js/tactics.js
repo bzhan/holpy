@@ -164,13 +164,10 @@ function introduction() {
 
 function apply_method(method_name, args) {
     var count = 0;
-    var isConfirm_ = false;
     var sig_list = [];
     var id = get_selected_id();
     var sigs = cells[id].method_sig[method_name];
-    var input_list = [];
     var input = current_state();
-    var input_html = '';
     input.method_name = method_name;
     if (args === undefined)
         args = {};
@@ -179,42 +176,40 @@ function apply_method(method_name, args) {
             input[sig] = args[sig];
         else {
             sig_list.push(sig);
-//            input[sig] = prompt('Enter ' + sig);
             count += 1;
         }
     });
     display_running();
 
-    if (count>0) {
-        for (let i=1;i<=count;i++) {
-            input_html += '<label style="text-align:right;width:20%;">'+ sig_list[i-1] +':</label>&nbsp;<input id="sig-input'+ i +'" class="swal2-input" style="width:63%;"><br>';
+    if (count > 0) {
+        var input_html = '';
+        for (let i = 1; i <= count; i++) {
+            input_html += '<label style="text-align:right;width:15%">' + sig_list[i-1] +
+                          ':</label>&nbsp;<input id="sig-input' + i + '" style="width:70%;"><br>';
         }
         swal({
-              title: "Enter",
-              html: input_html,
-              showCancelButton: true,
-              confirmButtonColor: "#DD6B55",
-              cancelButtonColor: "#DD6B55",
-              confirmButtonText: "Confirm",
-              cancelButtonText: "Cancel",
-              closeOnConfirm: false,
-              closeOnCancel: false,
-              preConfirm: () => {
-                    for (let i=1;i<=count;i++) {
-                        document.querySelector('input#sig-input'+i).focus();
-                        input[sig_list[i-1]] = document.getElementById('sig-input'+i).value;
-                    }
-              }
-            }).then(function(isConfirm)  {
-                if (isConfirm.value) {
-                    $.ajax({
-                        url: "/api/apply-method",
-                        type: "POST",
-                        data: JSON.stringify(input),
-                        success: display_checked_proof
-                    })
+            title: "Method " + method_name,
+            html: input_html,
+            showCancelButton: true,
+            confirmButtonText: "Confirm",
+            cancelButtonText: "Cancel",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+            preConfirm: () => {
+                for (let i = 1; i <= count; i++) {
+                    input[sig_list[i-1]] = document.getElementById('sig-input' + i).value;
                 }
-            });
+            }
+        }).then(function (isConfirm) {
+            if (isConfirm.value) {
+                $.ajax({
+                    url: "/api/apply-method",
+                    type: "POST",
+                    data: JSON.stringify(input),
+                    success: display_checked_proof
+                })
+            }
+        });
     } else {
         $.ajax({
             url: "/api/apply-method",
