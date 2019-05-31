@@ -56,7 +56,13 @@
             <input type="hidden" name="number">
             <div class="form-group">
                 <div class="col-auto">
-                    <font color="#006000"><b><label for="data-name<%= page_num %>"></label></b></font>
+                    <font color="#006000">
+                        <select id="dropdown_datatype" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;">
+                            <option value="thm"><b>Theroem</b></option>
+                            <option value="def.ax"><b>Constant</b></option>
+                            <option value="type.ind"><b>Function</b></option>
+                            <option value="def.ind"><b>Definition</b></option>
+                        </select></font>
                     <input type="text" name="name" class="form-control" id="data-name<%= page_num %>">
                 </div>
             </div>

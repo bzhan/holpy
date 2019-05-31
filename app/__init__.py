@@ -234,7 +234,6 @@ def set_line():
     return jsonify({})
 
 
-
 @app.route('/api/apply-method', methods=['POST'])
 def apply_method():
     data = json.loads(request.get_data().decode("utf-8"))
@@ -248,6 +247,7 @@ def apply_method():
             "message": str(e)
         }
         return jsonify(error)
+
 
 def print_extension(thy, ext):
     """Print given extension."""

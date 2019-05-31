@@ -251,6 +251,37 @@
             }
         });
 
+//        $('a#add_end').click(function() {
+//            if (cur_theory_name){
+//                json_files[cur_theory_name].content.push({'ty':'none'});
+//                $('div#panel-content').append('<div><p>-----------------</p></div>');
+//            }
+//        })
+
+        $('a#add_before, a#add_after, a#add_end').click(function() {
+            if (cur_theory_name) {
+                if ($(this).attr('id') === 'add_before' && items_selected.length === 1) {
+                    var item_id = items_selected[0];
+                    if(item_id !== 0) {
+                        $('<div><p>-------------</p></div>').insertBefore($('div#panel-content .theory_item:eq('+ item_id +')'));
+//                        json_files[cur_theory_name].content.splice(item_id-1, 0, {'ty': 'none'});
+                    }
+                    else
+                        $('<div><p>-------------</p></div>').insertBefore($('div#panel-content .theory_item:eq('+ item_id +')'));
+//                        json_files[cur_theory_name].content.splice(item_id, 0, {'ty': 'none'});
+                }
+                else if($(this).attr('id') === 'add_after' && items_selected.length ===1) {
+                    var item_id = items_selected[0];
+//                    json_files[cur_theory_name].content.splice(item_id+1, 0, {'ty':'none'});
+                    $('<div><p>-------------</p></div>').insertAfter($('div#panel-content .theory_item:eq('+ item_id +')'));
+                }
+                else if($(this).attr('id') === 'add_end') {
+//                    json_files[cur_theory_name].content.push({'ty':'none'});
+                    $('div#panel-content').append('<div><p>-----------------</p></div>');
+                }
+            }
+        })
+
         // Use tab key to insert unicode characters.
         $('#codeTabContent').on('keydown', '.unicode-replace', function (e) {
             var content = $(this).val().trim();
@@ -436,12 +467,17 @@
         });
 
         // Add new item from menu.
-        $('div.dropdown-menu.add-info a').on('click', function () {
+        $('button#additional_option_additem').on('click', function () {
             if (selected_tab === 'content') {
-                var ty = $(this).attr('name');
+                var ty = 'thm';
                 init_edit_area('', ty);
             }
         });
+
+        $('div.code-pan').on('change' ,'select#dropdown_datatype', function() {
+            var ty = $(this).find('option:selected').val();
+            init_edit_area('', ty);
+        })
 
         // On loading page, obtain list of theories.
         $.ajax({
@@ -569,6 +605,7 @@
                 form.data_content.value = item['type'];
                 form.number.value = number;
             }
+            $('div[name="constant'+ page_num +'"]')
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         }
         if (data_type === 'thm' || data_type === 'thm.ax') {
@@ -576,10 +613,10 @@
             $('#codeTabContent').append(templ_edit({page_num: page_num}));
 
             var form = document.getElementById('edit-thm-form' + page_num);
-            if (data_type === 'thm')
-                form.name.labels[0].textContent = 'Theorem';
-            else
-                form.name.labels[0].textContent = 'Axiom';
+//            if (data_type === 'thm')
+//                form.name.labels[0].textContent = 'Theorem';
+//            else
+//                form.name.labels[0].textContent = 'Axiom';
             if (number) {
                 form.number.value = number;
                 form.name.value = item['name'];
