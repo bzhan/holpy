@@ -278,3 +278,7 @@ textarea {
 .theory_item {
     margin-bottom: 15px;
 }
+
+.hidden-ele {
+    display: none;
+}
