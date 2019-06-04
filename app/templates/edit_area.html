@@ -35,7 +35,7 @@
         <form id="edit-thm-form<%=page_num%>" name="edit-form">
             <font color="#006000">
                 <div class="dropdown-box<%=page_num%>">
-                    <select id="dropdown_datatype" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;">
+                    <select id="dropdown_datatype" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;" name="<%=page_num%>">
                         <option value="thm"><b>Theroem</b></option>
                         <option value="def.ax"><b>Constant</b></option>
                         <option value="type.ind"><b>Datatype</b></option>
@@ -47,7 +47,7 @@
                 </div>
             </font>
 
-            <div class="form-group hidden-ele" name="constant-<%=page_num%>">
+            <div class="form-group hidden-ele total<%=page_num%>" name="constant-<%=page_num%>">
                 <input type="hidden" name="number-constant">
                 <div class="col-auto">
                     <div class="data-title<%=page_num%>">
@@ -60,7 +60,8 @@
                            style="float:left;width:50%;background:transparent" name="data_content_constant">
                 </div>
             </div>
-            <div name="thm-<%=page_num%>" class="hidden-ele">
+
+            <div name="thm-<%=page_num%>" class="hidden-ele total<%=page_num%>">
                 <input type="hidden" name="number-thm">
                 <div class="form-group">
                     <div class="col-auto">
@@ -110,7 +111,7 @@
                 </div>
             </div>
 
-            <div name="type-<%=page_num%>" class="hidden-ele">
+            <div name="type-<%=page_num%>" class="hidden-ele total<%=page_num%>">
                 <input type="hidden" name="number-type">
                 <div class="form-group">
                     <div class="col-auto">
@@ -138,7 +139,7 @@
                 </div>
             </div>
 
-            <div name="def-<%=page_num%>" class="hidden-ele" style="position:relative;">
+            <div name="def-<%=page_num%>" class="hidden-ele total<%=page_num%>" style="position:relative;">
                 <input type="hidden" name="number-def">
                 <div class="form-group">
                     <div class="col-auto">
