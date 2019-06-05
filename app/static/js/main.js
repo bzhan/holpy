@@ -476,7 +476,7 @@
             }
         });
 
-        $('div.code-pan').on('change' ,'select#dropdown_datatype', function() {
+        $('div.code-pan').on('change' ,'select', function() {
             var page_n = $(this).attr('name');
             var ty = $(this).find('option:selected').val();
             $('div.total'+ page_n).each(function() {
