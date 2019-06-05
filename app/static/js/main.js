@@ -754,7 +754,7 @@
         if (ty === 'def.ax') {
             item.ty = 'def.ax';
             item.name = form.data_name.value.trim();
-            item.type = form.data_content.value.trim();
+            item.type = form.data_content_constant.value.trim();
         }
         if (ty === 'thm' || ty === 'thm.ax') {
             item.ty = ty;
@@ -769,22 +769,23 @@
                 item.hint_rewrite = 'true';
         }
         if (ty === 'type.ind') {
-            item.data_name = form.data_name.value.trim();
-            item.data_content = form.data_content.value.trim();
+            item.data_name = form.data_name_type.value.trim();
+            item.data_content = form.data_content_type.value.trim();
             item.ty = 'type.ind';
         }
         if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
-            item.data_name = form.data_name.value.trim();
-            item.data_content = form.content.value.trim().split(/\n/);
+            item.name = form.data_name_def.value.split('::')[0].trim();
+            item.type = form.data_name_def.value.split('::')[1].trim();
+            var data_content = form.content.value.trim().split(/\n/);
             item.ty = ty;
-            item.vars_list = form.data_vars.value.trim().split(/\n/);
-            item.vars_names_list = form.vars_names.trim().split(/\n/);
+            var vars_list = form.data_vars.value.trim().split(/\n/);
+            var vars_names_list = $.trim(form.vars_names.value).split(/\n/);
 
             var rules_list = [];
-            var props_list = data_content.split(/\n/);
+            var props_list = data_content;
 
             if (ty === 'def.pred')
-                item.names_list = form.vars_names.value.trim().split(/\n/);
+                var names_list = form.vars_names.value.trim().split(/\n/);
             $.each(vars_list, function (i, m) {
                 vars_list[i] = m.slice(3,).trim();
             });
@@ -818,9 +819,6 @@
                 item.prop = $.trim(props_list[0]);
                 item.vars = temp_vars_;
             }
-            item.ty = ty;
-            item.name = data_name.split(' :: ')[0];
-            item.type = data_name.split(' :: ')[1];
         }
         return item;
     }
