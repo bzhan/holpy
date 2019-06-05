@@ -743,7 +743,7 @@
         var templ_rbottom = _.template($('#template-edit-rbottom').html());
         $('div.rbottom').append(templ_rbottom({
             page_num: page_num, data_type: data_type, theory_name: cur_theory_name}));
-        $('select#dropdown_datatype').val(data_type);
+        $('select#dropdown_datatype' + page_num).val(data_type);
         $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
         $('div#prf' + page_num).show().siblings().hide();
     }

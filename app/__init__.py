@@ -307,9 +307,9 @@ def file_data_to_output(thy, data):
             argsT, _ = HOLType.strip_type(T)
             argsT = [printer.print_type(thy, argT, unicode=True, highlight=True) for argT in argsT]
             data['argsT'][str(i)] = argsT
-            for j,a in enumerate(constr['args']):
+            for j, a in enumerate(constr['args']):
                 str_temp_term = ''
-                for m,t in enumerate(data['argsT'][str(i)][j]):
+                for m, t in enumerate(data['argsT'][str(i)][j]):
                     str_temp_term += t[0]
                 str_temp_var += ' (' + a + ' :: ' + str_temp_term + ')'
             data_content += '\n' + constr['name'] + str_temp_var
@@ -355,10 +355,10 @@ def file_data_to_output(thy, data):
             if 'name' in r:
                 data_rule_names.append(r['name'])
         for n, dv in enumerate(data_vars_list):
-            data_vars_str += str(n) + ': ' + dv + '\n'
+            data_vars_str += ' ' + dv + '\n'
         for j,dc in enumerate(data_content_list):
-            data_new_content += str(j) + ': ' + dc + '\n'
-            data_rule_name += str(j) + ': ' + dc + '\n'
+            data_new_content += ' ' + dc + '\n'
+            data_rule_name +=  ' ' + dc + '\n'
         data['data_new_content'] = data_new_content
         data['data_rule_name'] = data_rule_name
         data['data_vars_str'] = data_vars_str
