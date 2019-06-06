@@ -335,7 +335,7 @@
                     if ('failed' in res) {
                         $('div#' + error_id).find('pre').text(res.detail_content);
                     } else {
-                        if (number === '') {
+                        if (number === '' || number === '-1') {
                             json_files[theory_name].content.push(res.content);
                         } else {
                             item = json_files[theory_name].content[number]
