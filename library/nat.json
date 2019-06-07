@@ -1762,6 +1762,14 @@
             "ty": "macro"
         },
         {
+            "name": "nat_norm",
+            "ty": "method"
+        },
+        {
+            "name": "nat_const_ineq",
+            "ty": "method"
+        },
+        {
             "depth": 0,
             "name": "Test of macros",
             "ty": "header"

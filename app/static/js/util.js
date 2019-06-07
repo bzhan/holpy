@@ -88,6 +88,10 @@ function print_search_res(res) {
         return "instantiate exists goal";
     } else if (res._method_name === "prove_avalI") {
         return "prove_avalI: (solves)";
+    } else if (res._method_name === "nat_norm") {
+        return "nat_norm: (solves)";
+    } else if (res._method_name === "nat_const_ineq") {
+        return "nat_const_ineq: (solves)";
     } else {
         return JSON.stringify(res);
     }

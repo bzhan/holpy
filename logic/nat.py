@@ -3,6 +3,7 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
+from kernel.theory import global_methods
 from kernel import macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
@@ -10,6 +11,8 @@ from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
 from logic.logic_macro import apply_theorem
 from logic import logic
 from logic import term_ord
+from server.method import Method
+from server.tactic import MacroTactic
 
 """Utility functions for natural number arithmetic."""
 
@@ -413,6 +416,16 @@ class nat_norm_macro(ProofTermMacro):
         assert len(pts) == 0, "nat_norm_macro"
         return Thm([], goal)
 
+    def can_eval(self, thy, goal):
+        assert isinstance(goal, Term), "nat_norm_macro"
+        if not goal.is_equals():
+            return False
+
+        t1, t2 = goal.args
+        pt1 = norm_full().get_proof_term(thy, t1)
+        pt2 = norm_full().get_proof_term(thy, t2)
+        return pt1.prop.rhs == pt2.prop.rhs
+
     def get_proof_term(self, thy, goal, pts):
         assert len(pts) == 0, "nat_norm_macro"
         assert goal.is_equals(), "nat_norm_macro: goal is not an equality."
@@ -423,6 +436,26 @@ class nat_norm_macro(ProofTermMacro):
         assert pt1.prop.rhs == pt2.prop.rhs, "nat_norm_macro: normalization is not equal."
 
         return ProofTerm.transitive(pt1, ProofTerm.symmetric(pt2))
+
+class nat_norm_method(Method):
+    """Apply nat_norm macro."""
+    def __init__(self):
+        self.sig = []
+
+    def search(self, state, id, prevs):
+        if len(prevs) != 0:
+            return []
+
+        cur_th = state.get_proof_item(id).th
+        if nat_norm_macro().can_eval(state.thy, cur_th.prop):
+            return [{}]
+        else:
+            return []
+
+    def apply(self, state, id, data, prevs):
+        assert len(prevs) == 0, "nat_norm_method"
+        state.apply_tactic(id, MacroTactic('nat_norm'))
+
 
 def ineq_zero_proof_term(thy, n):
     """Returns the inequality n ~= 0."""
@@ -476,6 +509,14 @@ class nat_const_ineq_macro(ProofTermMacro):
         assert len(pts) == 0, "nat_const_ineq_macro"
         return Thm([], goal)
 
+    def can_eval(self, thy, goal):
+        assert isinstance(goal, Term), "nat_const_ineq_macro"
+        if not (logic.is_neg(goal) and goal.arg.is_equals()):
+            return False
+
+        m, n = goal.arg.args
+        return is_binary(m) and is_binary(n) and from_binary(m) != from_binary(n)
+
     def get_proof_term(self, thy, goal, pts):
         assert len(pts) == 0, "nat_const_ineq_macro"
         assert logic.is_neg(goal) and goal.arg.is_equals(), \
@@ -490,6 +531,26 @@ class nat_const_ineq_macro(ProofTermMacro):
 def nat_const_ineq(thy, a, b):
     goal = logic.neg(Term.mk_equals(a, b))
     return ProofTermDeriv("nat_const_ineq", thy, goal, [])
+
+
+class nat_const_ineq_method(Method):
+    """Apply nat_const_ineq macro."""
+    def __init__(self):
+        self.sig = []
+
+    def search(self, state, id, prevs):
+        if len(prevs) != 0:
+            return []
+
+        cur_th = state.get_proof_item(id).th
+        if nat_const_ineq_macro().can_eval(state.thy, cur_th.prop):
+            return [{}]
+        else:
+            return []
+
+    def apply(self, state, id, data, prevs):
+        assert len(prevs) == 0, "nat_const_ineq_method"
+        state.apply_tactic(id, MacroTactic('nat_const_ineq'))
 
 
 class nat_eq_conv(Conv):
@@ -511,4 +572,9 @@ class nat_eq_conv(Conv):
 macro.global_macros.update({
     "nat_norm": nat_norm_macro(),
     "nat_const_ineq": nat_const_ineq_macro(),
+})
+
+global_methods.update({
+    "nat_norm": nat_norm_method(),
+    "nat_const_ineq": nat_const_ineq_method(),
 })
