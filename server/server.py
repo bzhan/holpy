@@ -290,6 +290,7 @@ class ProofState():
             res = method.search(self, id, prevs)
             for r in res:
                 r['_method_name'] = name
+                r['display'] = method.display_step(self, id, r, prevs)
             results.extend(res)
 
         # If there is an element in results that solves the goal,

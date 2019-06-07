@@ -120,6 +120,9 @@ class prove_avalI_method(Method):
         else:
             return []
 
+    def display_step(self, state, id, data, prevs):
+        return "prove_avalI: (solves)"
+
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "prove_avalI_method"
         state.apply_tactic(id, MacroTactic('prove_avalI'))

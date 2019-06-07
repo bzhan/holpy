@@ -452,6 +452,9 @@ class nat_norm_method(Method):
         else:
             return []
 
+    def display_step(self, state, id, data, prevs):
+        return "nat_norm: (solves)"
+
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "nat_norm_method"
         state.apply_tactic(id, MacroTactic('nat_norm'))
@@ -547,6 +550,9 @@ class nat_const_ineq_method(Method):
             return [{}]
         else:
             return []
+
+    def display_step(self, state, id, data, prevs):
+        return "nat_const_ineq: (solves)"
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "nat_const_ineq_method"
