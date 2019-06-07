@@ -3,34 +3,77 @@
 import unittest
 
 from kernel.type import TFun
-from kernel.term import Var
+from kernel.term import Term, Var
 from kernel.thm import Thm
 from logic import basic
 from logic import nat
 from logic import expr
 from logic import function
+from logic.expr import N, V, Plus, Times
 from syntax import printer
+from server.server import ProofState
+
+thy = basic.load_theory('expr')
 
 natT = nat.natT
 zero = nat.zero
 one = nat.one
+to_binary = nat.to_binary
 
-thy = basic.load_theory('expr')
+def fun_upd_of_seq(*ns):
+    return function.mk_fun_upd(function.mk_const_fun(natT, zero), *[nat.to_binary(n) for n in ns])
 
 class ExprTest(unittest.TestCase):
-    def testProveEvalI(self):
-        s = function.mk_fun_upd(function.mk_const_fun(natT, zero), one, nat.to_binary(7))
+    def testProveAvalI(self):
+        s = fun_upd_of_seq(1, 7)
 
         test_data = [
-            (expr.Plus(expr.V(one), expr.N(nat.to_binary(5))), nat.to_binary(12)),
-            (expr.Plus(expr.V(zero), expr.N(nat.to_binary(5))), nat.to_binary(5)),
-            (expr.Times(expr.V(one), expr.N(nat.to_binary(5))), nat.to_binary(35)),
+            (Plus(V(one), N(to_binary(5))), to_binary(12)),
+            (Plus(V(zero), N(to_binary(5))), to_binary(5)),
+            (Times(V(one), N(to_binary(5))), to_binary(35)),
         ]
 
+        macro = expr.prove_avalI_macro()
         for t, n in test_data:
             goal = expr.avalI(s, t, n)
-            prf = expr.prove_avalI_macro().get_proof_term(thy, goal, []).export()
+
+            # Test get_avalI
+            self.assertEqual(to_binary(macro.get_avalI(thy, s, t)), n)
+
+            # Test can_eval
+            self.assertTrue(macro.can_eval(thy, goal))
+
+            # Test eval
+            self.assertEqual(macro.eval(thy, goal, []), Thm([], goal))
+
+            # Test get_proof_term
+            prf = macro.get_proof_term(thy, goal, []).export()
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
+
+    def testProveAvalIFail(self):
+        s = fun_upd_of_seq(1, 7)
+        s2 = Var("s2", TFun(natT, natT))
+        s3 = function.mk_fun_upd(s2, zero, one)
+        macro = expr.prove_avalI_macro()
+
+        # Value does not match
+        self.assertFalse(macro.can_eval(thy, expr.avalI(s, V(one), to_binary(5))))
+
+        # State cannot be evaluated
+        self.assertFalse(macro.can_eval(thy, expr.avalI(s2, V(one), to_binary(5))))
+        self.assertFalse(macro.can_eval(thy, expr.avalI(s3, V(one), to_binary(5))))
+
+        # Goal is not avalI
+        self.assertFalse(macro.can_eval(thy, Term.mk_equals(V(one), N(zero))))
+
+    def testProveAvalIMethod(self):
+        method = expr.prove_avalI_method()
+        thy = basic.load_theory('expr')
+        th = thy.get_theorem('avalI_test1')
+
+        state = ProofState.init_state(thy, [], [], th.prop)
+        self.assertEqual(method.search(state, (0,), []), [{}])
+        method.apply(state, (0,), {}, [])
 
 
 if __name__ == "__main__":

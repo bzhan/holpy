@@ -26,6 +26,29 @@ class Tactic:
         raise NotImplementedError
 
 
+class MacroTactic(Tactic):
+    """Construct a tactic from a macro.
+    
+    The name of the macro is provided at initialization. The first
+    argument of the macro must be the goal statement. The remaining
+    arguments are supplied by the tactic.
+    
+    """
+    def __init__(self, macro):
+        self.macro = macro
+
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
+        assert isinstance(goal, Thm), "MacroTactic"
+        if prevs is None:
+            prevs = []
+
+        if args is None:
+            args = goal.prop
+        else:
+            args = (goal.prop,) + args
+
+        return ProofTermDeriv(self.macro, thy, args, prevs)
+
 class rule(Tactic):
     """Apply a theorem in the backward direction."""
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):

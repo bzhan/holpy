@@ -86,6 +86,8 @@ function print_search_res(res) {
             return "induction " + res.theorem;
     } else if (res._method_name === "inst_exists_goal") {
         return "instantiate exists goal";
+    } else if (res._method_name === "prove_avalI") {
+        return "prove_avalI: (solves)";
     } else {
         return JSON.stringify(res);
     }

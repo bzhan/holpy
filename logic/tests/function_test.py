@@ -8,7 +8,7 @@ from kernel.thm import Thm
 from logic import basic
 from logic import nat
 from logic import function
-from logic.function import mk_const_fun, mk_fun_upd, strip_fun_upd
+from logic.function import mk_fun_upd, strip_fun_upd
 from syntax import printer
 
 Ta = TVar("a")
@@ -24,10 +24,9 @@ thy = basic.load_theory('function')
 natT = nat.natT
 zero = nat.zero
 one = nat.one
-five = nat.to_binary(5)
 
 def fun_upd_of_seq(*ns):
-    return mk_fun_upd(mk_const_fun(natT, zero), *[nat.to_binary(n) for n in ns])
+    return mk_fun_upd(function.mk_const_fun(natT, zero), *[nat.to_binary(n) for n in ns])
 
 
 class FunctionTest(unittest.TestCase):
@@ -44,7 +43,7 @@ class FunctionTest(unittest.TestCase):
         f = fun_upd_of_seq(1, 5)
         cv = function.fun_upd_eval_conv()
         prf = cv.get_proof_term(thy, f(one)).export()
-        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(one), five))
+        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(one), nat.to_binary(5)))
         prf = cv.get_proof_term(thy, f(zero)).export()
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(zero), zero))
 

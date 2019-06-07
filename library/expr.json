@@ -250,6 +250,10 @@
             "ty": "macro"
         },
         {
+            "name": "prove_avalI",
+            "ty": "method"
+        },
+        {
             "name": "avalI_test1",
             "num_gaps": 0,
             "proof": [
