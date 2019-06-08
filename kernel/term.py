@@ -439,7 +439,7 @@ class Term():
             f = self.fun.beta_norm()
             x = self.arg.beta_norm()
             if f.is_abs():
-                return f(x).beta_conv()
+                return f(x).beta_conv().beta_norm()
             else:
                 return f(x)
         elif self.is_abs():

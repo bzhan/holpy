@@ -288,11 +288,7 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
             inst = dict()
         if concl is not None:
             matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
-        pt = ProofTermDeriv("apply_theorem_for", thy, (th_name, tyinst, inst), pts)
-        if pt.prop.beta_norm() == pt.prop:
-            return pt
-        else:
-            return ProofTermDeriv("beta_norm", thy, None, [pt])
+        return ProofTermDeriv("apply_theorem_for", thy, (th_name, tyinst, inst), pts)
 
 
 class imp_conj_macro(ProofTermMacro):
