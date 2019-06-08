@@ -311,7 +311,7 @@ def print_str_args(thy, rule, args, prop):
             items = sorted(val.items(), key = lambda pair: pair[0])
             return N('{') + commas_join(N(key + ': ') + str_val(val) for key, val in items) + N('}')
         elif isinstance(val, Term):
-            if val == prop and settings.highlight():
+            if val == prop and rule != 'assume' and settings.highlight():
                 return Gray("⟨goal⟩")
             else:
                 return print_term(thy, val)

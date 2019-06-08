@@ -25,9 +25,6 @@ function display_running() {
 }
 
 // Display proof returned from the server.
-//
-// result: proof data returned from the server.
-// pre_line_no: line number for the sorry before the operation.
 function display_checked_proof(result) {
     var id = get_selected_id();
 
@@ -193,8 +190,6 @@ function apply_method(method_name, args) {
             showCancelButton: true,
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
-            closeOnConfirm: false,
-            closeOnCancel: false,
             preConfirm: () => {
                 for (let i = 1; i <= count; i++) {
                     input[sig_list[i-1]] = document.getElementById('sig-input' + i).value;

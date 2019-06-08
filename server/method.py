@@ -328,11 +328,10 @@ class introduction(Method):
         prop = cur_item.th.prop
         assert prop.is_implies() or prop.is_all(), "introduction"
 
-        cur_item.rule = "subproof"
-        cur_item.subproof = Proof()
-
         intros_tac = tactic.intros()
-        pt = intros_tac.get_proof_term(state.thy, cur_item.th, args=data['names'])
+        pt = intros_tac.get_proof_term(state.thy, cur_item.th, args=data['names'].split(","))
+
+        cur_item.rule = "subproof"
         cur_item.subproof = pt.export(prefix=id)
         state.check_proof(compute_only=True)
 

@@ -451,9 +451,9 @@
                     [content[v], content[v+1]] = [content[v+1], content[v]]
                 });
                 items_selected.reverse();
+                save_json_file(cur_theory_name);
+                display_theory_items();
             }
-            save_json_file(cur_theory_name);
-            display_theory_items();
         })
 
         // Open json file from links in the 'Files' tab.
