@@ -68,15 +68,10 @@
         <span name="name"><%= highlight_html(ext.type_hl) %></span> =
         <span name="content">
             <%
-                $.each(ext.constrs, function(i, v) {
+                $.each(ext.constr_output_hl, function(i, v) {
             %>
-                    <br>&nbsp;&nbsp;  <%= v.name %>
+                    <br>&nbsp;&nbsp;  <%= highlight_html(v) %>
             <%
-                    $.each(v.args, function (k, val) {
-            %>
-                        (<%= val %> :: <%= highlight_html(ext.argsT[i][k]) %>)
-            <%
-                    });
                 });
             %>
         </span>&nbsp;&nbsp;&nbsp;

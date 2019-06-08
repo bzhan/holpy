@@ -6,7 +6,7 @@ import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 from kernel.type import HOLType, TVar, Type
-from syntax import parser, printer
+from syntax import parser, printer, settings
 from server import method
 from server.server import ProofState
 from logic import basic
@@ -248,16 +248,28 @@ def apply_method():
         }
         return jsonify(error)
 
+def str_of_extension(thy, exts):
+    """Print given extension for display in the edit area."""
+    res = []
+    for ext in exts.data:
+        if isinstance(ext, AxType):
+            res.append("Type " + ext.name)
+        elif isinstance(ext, AxConstant):
+            res.append("Constant " + ext.name + " :: " + printer.print_type(thy, ext.T, unicode=True))
+        elif isinstance(ext, Theorem):
+            res.append("Theorem " + ext.name + ": " + printer.print_term(thy, ext.th.prop, unicode=True))
+    return '\n'.join(res)
 
-def print_extension(thy, ext):
-    """Print given extension."""
-    if isinstance(ext, AxType):
-        return "Type " + ext.name
-    elif isinstance(ext, AxConstant):
-        return "Constant " + ext.name + " :: " + printer.print_type(thy, ext.T, unicode=True)
-    elif isinstance(ext, Theorem):
-        return "Theorem " + ext.name + ": " + printer.print_term(thy, ext.th.prop, unicode=True)
-
+@settings.with_settings
+def str_of_constr(thy, constr):
+    """Print a given constructor."""
+    T = parser.parse_type(thy, constr['type'])
+    argsT, _ = HOLType.strip_type(T)
+    assert len(argsT) == len(constr['args']), "file_data_to_output: unexpected number of args."
+    res = printer.N(constr['name'])
+    for i, arg in enumerate(constr['args']):
+        res += printer.N(' (' + arg + ' :: ') + printer.print_type(thy, argsT[i]) + printer.N(')')
+    return res
 
 def file_data_to_output(thy, data):
     """Convert items in the theory from json format for the file to
@@ -271,118 +283,66 @@ def file_data_to_output(thy, data):
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
-        temp_list = []
-        for k, v in data['vars'].items():
-            temp_list.append(k + ' :: ' + v)
         ctxt = parser.parse_vars(thy, data['vars'])
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-        data['vars_lines'] = temp_list
+        data['vars_lines'] = [k + ' :: ' + v for k, v in data['vars'].items()]
 
     elif data['ty'] == 'type.ind':
         constrs = []
-        data_content = ''
+        data['constr_output'] = []
+        data['constr_output_hl'] = []
         for constr in data['constrs']:
             T = parser.parse_type(thy, constr['type'])
             constrs.append((constr['name'], T, constr['args']))
+            data['constr_output'].append(str_of_constr(thy, constr, unicode=True, highlight=False))
+            data['constr_output_hl'].append(str_of_constr(thy, constr, unicode=True, highlight=True))
         exts = induct.add_induct_type(data['name'], data['args'], constrs)
-
-        # Obtain items added by the extension
-        ext_output = []
-        for ext in exts.data:
-            s = print_extension(thy, ext)
-            if s:
-                ext_output.append(s)
-        data['ext'] = ext_output
 
         # Obtain type to be defined
         T = Type(data['name'], *(TVar(nm) for nm in data['args']))
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
-        # Obtain types of arguments for each constructor
-        data['argsT'] = dict()
-        for i, constr in enumerate(data['constrs']):
-            str_temp_var = ''
-            T = parser.parse_type(thy, constr['type'])
-            argsT, _ = HOLType.strip_type(T)
-            argsT = [printer.print_type(thy, argT, unicode=True, highlight=True) for argT in argsT]
-            data['argsT'][str(i)] = argsT
-            for j, a in enumerate(constr['args']):
-                str_temp_term = ''
-                for m, t in enumerate(data['argsT'][str(i)][j]):
-                    str_temp_term += t[0]
-                str_temp_var += ' (' + a + ' :: ' + str_temp_term + ')'
-            data_content += '\n' + constr['name'] + str_temp_var
-        data['type_content'] = data_content
+        # Obtain items added by the extension
+        data['ext_output'] = str_of_extension(thy, exts)
 
     elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
-        container = [[], [], [], '', '', '']
-        data_content_list, data_rule_names, data_vars_list, data_new_content, data_rule_name, data_vars_str = container
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         rules = []
+        data['edit_vars'] = []
+        data['edit_content'] = []
+        data['edit_names'] = []
         for rule in data['rules']:
             ctxt = parser.parse_vars(thy, rule['vars'])
             prop = parser.parse_term(thy, ctxt, rule['prop'])
-            rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
             rules.append(prop)
+            rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+            data['edit_vars'].append('   '.join(nm + ' :: ' + T for nm, T in rule['vars'].items()))
+            data['edit_content'].append(printer.print_term(thy, prop, unicode=True, highlight=False))
+            if 'name' in rule:
+                data['edit_names'].append(rule['name'])
         exts = induct.add_induct_def(data['name'], T, rules)
 
         # Obtain items added by the extension
-        ext_output = []
-        for ext in exts.data:
-            s = print_extension(thy, ext)
-            if s:
-                ext_output.append(s)
-        data['ext'] = ext_output
+        data['ext_output'] = str_of_extension(thy, exts)
 
+        # Type of the item (for display)
         if data['ty'] == 'def.ind':
-            type_name = 'fun'
-        if data['ty'] == 'def.pred':
-            type_name = 'inductive'
-        data['ext_output'] = '\n'.join(ext_output)
-        data['type_name'] = type_name
-
-        for k, r in enumerate(data['rules']):
-            vars_str = ''
-            data_con = ''
-            for m, v in enumerate(r['vars']):
-                vars_str += str(m) + '::' + v + '   '
-            data_vars_list.append(vars_str)
-            for p in r['prop_hl']:
-                data_con += p[0]
-            data_content_list.append(data_con)
-            if 'name' in r:
-                data_rule_names.append(r['name'])
-        for n, dv in enumerate(data_vars_list):
-            data_vars_str += ' ' + dv + '\n'
-        for j,dc in enumerate(data_content_list):
-            data_new_content += ' ' + dc + '\n'
-            data_rule_name +=  ' ' + dc + '\n'
-        data['data_new_content'] = data_new_content
-        data['data_rule_name'] = data_rule_name
-        data['data_vars_str'] = data_vars_str
+            data['type_name'] = 'fun'
+        else:  # data['ty'] == 'def.pred':
+            data['type_name'] = 'inductive'
 
     elif data['ty'] == 'def':
-        i = 0
-        vars = ''
-        data_new_content = ''
-        data_content_list = []
-        data_content_list.append(data['prop'])
-        for j,dc in enumerate(data_content_list):
-            data_new_content += str(j) + ': ' + dc + '\n'
-        for j, v in enumerate(data['vars']):
-            vars += str(i) + ': ' + str(j) + '::' + v + '\n'
-            i += 1
-        data['item_vars'] = vars
         T = parser.parse_type(thy, data['type'])
-        data['type_name'] = 'definition'
-        data['data_new_content'] = data_new_content
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
         ctxt = parser.parse_vars(thy, data['vars'])
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+        data['edit_content'] = printer.print_term(thy, prop, unicode=True, highlight=False)
+        data['edit_vars'] = [k + ' :: ' + v for k, v in data['vars'].items()]
+        data['type_name'] = 'definition'
 
     # Ignore other types of information.
     else:
@@ -482,10 +442,6 @@ def check_modify():
             constr['type'] = str(TFun(type_list))
             constrs.append(constr)
         item['constrs'] = constrs
-    # if item['ty'] == 'def.ind' or item['ty'] == 'def' or item['ty'] == 'def.pred':
-    #     item['name'] = parser.parse_thm_vars(thy, item['data_name'])[0]
-    #     item['type'] = parser.parse_thm_vars(thy, item['data_name'])[1]
-
 
     with open_file(data['file_name'], 'r') as f:
         f_data = json.load(f)
