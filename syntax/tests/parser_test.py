@@ -360,7 +360,7 @@ class ParserTest(unittest.TestCase):
         ]
 
         for s, res in test_data:
-            self.assertEqual(parser.parse_type_ind(thy, s), res)
+            self.assertEqual(parser.parse_ind_constr(thy, s), res)
 
 
 if __name__ == "__main__":

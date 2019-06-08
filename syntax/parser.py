@@ -96,10 +96,9 @@ grammar = r"""
 
     instsp: tyinst "," inst
     
-    type_ind: CNAME ("(" CNAME "::" type ")")*
-    
-    thm_vars: CNAME "::" type
-    
+    var_decl: CNAME "::" type  // variable declaration
+
+    ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types    
 
     %import common.CNAME
     %import common.WS
@@ -231,10 +230,10 @@ class HOLTransformer(Transformer):
         return Thm(args[:-1], args[-1])
 
     def term_pair(self, name, T):
-        return (name, T)
+        return (str(name), T)
 
     def type_pair(self, name, T):
-        return (name, T)
+        return (str(name), T)
 
     def inst(self, *args):
         return dict(args)
@@ -245,22 +244,18 @@ class HOLTransformer(Transformer):
     def instsp(self, *args):
         return tuple(args)
 
-    def type_ind(self, *args):
-        constrs, vars_list, temp_list = {}, [], []
+    def ind_constr(self, *args):
+        constrs = {}
         constrs['name'] = str(args[0])
+        constrs['args'] = []
+        constrs['type'] = []
         for id in range(1, len(args), 2):
-            vars_list.append(str(args[id]))
-        constrs['args'] = vars_list
-        for id in range(2, len(args), 2):
-            temp_list.append(args[id])
-        constrs['type'] = temp_list
+            constrs['args'].append(str(args[id]))
+            constrs['type'].append(args[id+1])
         return constrs
 
-    def thm_vars(self, *args):
-        return (str(args[0]), str(args[1]))
-
-    # def fun_name(self, *args):
-    #     return args
+    def var_decl(self, name, T):
+        return (str(name), T)
 
 
 def get_parser_for(start):
@@ -272,9 +267,8 @@ thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
 instsp_parser = get_parser_for("instsp")
-type_ind_parser = get_parser_for("type_ind")
-thm_vars_parser = get_parser_for("thm_vars")
-# fun_name_parser = get_parser_for("fun_name")
+var_decl_parser = get_parser_for("var_decl")
+ind_constr_parser = get_parser_for("ind_constr")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -316,14 +310,15 @@ def parse_instsp(thy, ctxt, s):
         inst[k] = infertype.type_infer(thy, ctxt, inst[k])
     return tyinst, inst
 
-def parse_type_ind(thy, s):
-    """Parse an inductive definition."""
+def parse_ind_constr(thy, s):
+    """Parse a constructor for an inductive type definition."""
     parser_setting['thy'] = thy
-    return type_ind_parser.parse(s)
+    return ind_constr_parser.parse(s)
 
-def parse_thm_vars(thy, s):
+def parse_var_decl(thy, s):
+    """Parse a variable declaration."""
     parser_setting['thy'] = thy
-    return thm_vars_parser.parse(s)
+    return var_decl_parser.parse(s)
 
 def parse_args(thy, ctxt, sig, args):
     """Parse the argument according to the signature."""

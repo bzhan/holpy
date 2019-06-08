@@ -336,6 +336,10 @@
                         $('div#' + error_id).find('pre').text(res.detail_content);
                     } else {
                         item = res.content;
+                        delete item.data_content;
+                        delete item.names_list;
+                        delete item.vars_list;
+                        delete item.data_name;
                         if (number === '' || number === '-1') {
                             json_files[theory_name].content.push(item);
                         } else {
@@ -562,6 +566,7 @@
             delete data.constr_output;
             delete data.constr_output_hl;
             delete data.type_hl;
+            delete data.edit_type;
             delete data.ext_output;
         } else if (data.ty === 'def') {
             delete data.type_hl;
@@ -576,6 +581,7 @@
             delete data.edit_content;
             delete data.edit_names;
             delete data.type_name;
+            delete data.ext_output;
             for (var i in data.rules) {
                 delete data.rules[i].prop_hl;
             }
@@ -671,7 +677,7 @@
                 $('#codeTab').find('span#' + page_num).text(item.name);
 
                 var form = document.getElementById('edit-thm-form' + page_num);
-                form.data_name_type.value = item.name;
+                form.data_name_type.value = item.edit_type;
                 form.data_content_type.textContent = item.constr_output.join('\n');
                 form.data_content_type.rows = item.constr_output.length;
                 form['number-type'].value = number
@@ -742,7 +748,7 @@
             item.ty = ty;
             item.name = form.name.value;
             item.prop = form.prop.value;
-            item.vars = $.trim(form.vars.value);
+            item.vars = form.vars.value.trim().split('\n');
             if (form.hint_backward.checked === true)
                 item.hint_backward = 'true';
             if (form.hint_forward.checked === true)
@@ -752,55 +758,19 @@
         }
         if (ty === 'type.ind') {
             item.data_name = form.data_name_type.value.trim();
-            item.data_content = form.data_content_type.value.trim();
+            item.data_content = form.data_content_type.value.trim().split('\n');
             item.ty = 'type.ind';
         }
         if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
+            item.ty = ty;
             item.name = form.data_name_def.value.split('::')[0].trim();
             item.type = form.data_name_def.value.split('::')[1].trim();
-            var data_content = form.content.value.trim().split(/\n/);
-            item.ty = ty;
-            var vars_list = form.data_vars.value.trim().split(/\n/);
-            var vars_names_list = $.trim(form.vars_names.value).split(/\n/);
-
-            var rules_list = [];
-            var props_list = data_content;
-
-            if (ty === 'def.pred')
-                var names_list = form.vars_names.value.trim().split(/\n/);
-            $.each(vars_list, function (i, m) {
-                vars_list[i] = m.slice(3,).trim();
-            });
-            $.each(props_list, function (i, v) {
-                props_list[i] = v.slice(3,).trim();
-                if (names_list)
-                    names_list[i] = names_list[i].slice(3,).trim();
-            });
-            $.each(props_list, function (i, v) {
-                temp_dict = {}
-                temp_vars = {};
-                if (ty !== 'def' && v && vars_list[i]) {
-                    temp_dict['prop'] = v;
-                    $.each(vars_list[i].split(/\s\s\s/), function (j, k) {
-                        temp_vars[k.split(':')[0].trim()] = k.split(':')[1].trim();
-                    });
-                    if (names_list)
-                        temp_dict['name'] = names_list[i];
-                } else if (!v) {
-                    return true;
-                }
-                temp_dict['vars'] = temp_vars;
-                rules_list.push(temp_dict);
-                item.rules = rules_list;
-            });
-            if (ty === 'def') {
-                var temp_vars_ = {};
-                $.each(vars_list, function (j, k) {
-                    temp_vars_[$.trim(k.split(':')[0])] = $.trim(k.split(':')[1]);
-                });
-                item.prop = $.trim(props_list[0]);
-                item.vars = temp_vars_;
-            }
+            if (ty === 'def')
+                item.prop = form.content.value.trim();
+            else
+                item.data_content = form.content.value.trim().split('\n');
+            item.vars_list = form.data_vars.value.trim().split('\n');
+            item.names_list = form.vars_names.value.trim().split('\n');
         }
         return item;
     }

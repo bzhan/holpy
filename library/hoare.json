@@ -119,7 +119,7 @@
         },
         {
             "name": "Skip",
-            "prop": "Skip = Basic (%f::'a. f)",
+            "prop": "Skip = Basic (λf::'a. f)",
             "ty": "def",
             "type": "'a com",
             "vars": {}

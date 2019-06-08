@@ -264,7 +264,7 @@ def str_of_extension(thy, exts):
 def str_of_constr(thy, constr):
     """Print a given constructor."""
     T = parser.parse_type(thy, constr['type'])
-    argsT, _ = HOLType.strip_type(T)
+    argsT, _ = T.strip_type()
     assert len(argsT) == len(constr['args']), "file_data_to_output: unexpected number of args."
     res = printer.N(constr['name'])
     for i, arg in enumerate(constr['args']):
@@ -302,6 +302,7 @@ def file_data_to_output(thy, data):
         # Obtain type to be defined
         T = Type(data['name'], *(TVar(nm) for nm in data['args']))
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+        data['edit_type'] = printer.print_type(thy, T, unicode=True, highlight=False)
 
         # Obtain items added by the extension
         data['ext_output'] = str_of_extension(thy, exts)
@@ -412,6 +413,14 @@ def search_method():
     return jsonify({})
 
 
+def parse_var_decls(thy, var_decls):
+    res = dict()
+    for var_decl in var_decls:
+        if var_decl:
+            nm, T = parser.parse_var_decl(thy, var_decl)
+            res[nm] = str(T)
+    return res
+
 @app.route('/api/check-modify', methods=['POST'])
 def check_modify():
     """Check a modified item for validity."""
@@ -419,29 +428,42 @@ def check_modify():
     error = {}
     item = data['content']
     thy = basic.load_theory('list')
-    vars = {}
     if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
-        if item['vars']:
-            for v in item['vars'].split('\n'):
-                (nm, T) = parser.parse_thm_vars(thy, v)
-                if nm:
-                    vars[nm.strip()] = T.strip()
-        item['vars'] = vars
+        item['vars'] = parse_var_decls(thy, item['vars'])
+
     if item['ty'] == 'type.ind':
-        constrs, temp_list = [], []
-        if len(item['data_name'].split(' ')) > 1:
-            temp_list.append(item['data_name'].split(' ')[0][1:])
-            item['name'] = item['data_name'].split(' ')[1]
-        else:
-            item['name'] = item['data_name']
-        item['args'] = temp_list
-        apd = Type(item['name'], *(TVar(nm) for nm in item['args']))
-        for c in item['data_content'].split('\n'):
-            constr = parser.parse_type_ind(thy, c)
-            type_list = constr['type'] + [apd]
-            constr['type'] = str(TFun(type_list))
-            constrs.append(constr)
-        item['constrs'] = constrs
+        T = parser.parse_type(thy, item['data_name'])
+        assert T.ty == HOLType.TYPE and all(argT.ty == HOLType.TVAR for argT in T.args), \
+            "invalid input type."
+        item['name'] = T.name
+        item['args'] = [argT.name for argT in T.args]
+
+        item['constrs'] = []
+        for constr in item['data_content']:
+            if constr:
+                constr = parser.parse_ind_constr(thy, constr)
+                constr['type'] = str(TFun(*(constr['type'] + [T])))
+                item['constrs'].append(constr)
+
+    if item['ty'] == 'def':
+        item['vars'] = parse_var_decls(thy, item['vars_list'])
+
+    if item['ty'] == 'def.ind':
+        item['rules'] = []
+        assert len(item['vars_list']) == len(item['data_content']), \
+            "numbers of lines in input do not match"
+        for prop, vars in zip(item['data_content'], item['vars_list']):
+            vars = parse_var_decls(thy, vars.split('   '))
+            item['rules'].append({'prop': prop, 'vars': vars})
+
+    if item['ty'] == 'def.pred':
+        item['rules'] = []
+        assert len(item['names_list']) == len(item['data_content']) and \
+            len(item['vars_list']) == len(item['data_content']), \
+            "number of lines in input do not match"
+        for name, vars, prop in zip(item['names_list'], item['vars_list'], item['data_content']):
+            vars = parse_var_decls(thy, vars.split('   '))
+            item['rules'].append({'name': name, 'prop': prop, 'vars': vars})
 
     with open_file(data['file_name'], 'r') as f:
         f_data = json.load(f)

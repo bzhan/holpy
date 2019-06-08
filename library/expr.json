@@ -13,14 +13,14 @@
                         "n"
                     ],
                     "name": "N",
-                    "type": "nat=>aexp"
+                    "type": "nat => aexp"
                 },
                 {
                     "args": [
                         "x"
                     ],
                     "name": "V",
-                    "type": "nat=>aexp"
+                    "type": "nat => aexp"
                 },
                 {
                     "args": [
@@ -28,7 +28,7 @@
                         "a2"
                     ],
                     "name": "Plus",
-                    "type": "aexp⇒aexp⇒aexp"
+                    "type": "aexp => aexp => aexp"
                 },
                 {
                     "args": [
@@ -36,9 +36,10 @@
                         "c2"
                     ],
                     "name": "Times",
-                    "type": "aexp⇒aexp⇒aexp"
+                    "type": "aexp => aexp => aexp"
                 }
             ],
+            "data_name": "aexp",
             "name": "aexp",
             "ty": "type.ind"
         },
@@ -49,13 +50,13 @@
                     "prop": "aval (N n) s = n",
                     "vars": {
                         "n": "nat",
-                        "s": "nat=>nat"
+                        "s": "nat => nat"
                     }
                 },
                 {
                     "prop": "aval (V x) s = s x",
                     "vars": {
-                        "s": "nat=>nat",
+                        "s": "nat => nat",
                         "x": "nat"
                     }
                 },
@@ -64,7 +65,7 @@
                     "vars": {
                         "a1": "aexp",
                         "a2": "aexp",
-                        "s": "nat=>nat"
+                        "s": "nat => nat"
                     }
                 },
                 {
@@ -72,7 +73,7 @@
                     "vars": {
                         "a1": "aexp",
                         "a2": "aexp",
-                        "s": "nat=>nat"
+                        "s": "nat => nat"
                     }
                 }
             ],
@@ -202,8 +203,6 @@
         },
         {
             "name": "avalI",
-            "ty": "def.pred",
-            "type": "(nat => nat) => aexp => nat => bool",
             "rules": [
                 {
                     "name": "avalI_const",
@@ -223,7 +222,7 @@
                 },
                 {
                     "name": "avalI_plus",
-                    "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Plus a1 a2) (n1 + n2)",
+                    "prop": "avalI s a1 n1 ⟶ avalI s a2 n2 ⟶ avalI s (Plus a1 a2) (n1 + n2)",
                     "vars": {
                         "a1": "aexp",
                         "a2": "aexp",
@@ -234,7 +233,7 @@
                 },
                 {
                     "name": "avalI_times",
-                    "prop": "avalI s a1 n1 --> avalI s a2 n2 --> avalI s (Times a1 a2) (n1 * n2)",
+                    "prop": "avalI s a1 n1 ⟶ avalI s a2 n2 ⟶ avalI s (Times a1 a2) (n1 * n2)",
                     "vars": {
                         "a1": "aexp",
                         "a2": "aexp",
@@ -243,7 +242,9 @@
                         "s": "nat => nat"
                     }
                 }
-            ]
+            ],
+            "ty": "def.pred",
+            "type": "(nat => nat) => aexp => nat => bool"
         },
         {
             "name": "prove_avalI",
