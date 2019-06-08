@@ -355,11 +355,12 @@ class ParserTest(unittest.TestCase):
 
     def testParseTypeInd(self):
         test_data = [
-            "cons (x ::'a) (xs ::'a list)"
+            ("cons (x ::'a) (xs ::'a list)",
+             {'name': 'cons', 'type': [TVar('a'), Type('list', TVar('a'))], 'args': ['x', 'xs']}),
         ]
 
-        for s in test_data:
-            print("input", s, "output", parser.parse_type_ind(thy, s))
+        for s, res in test_data:
+            self.assertEqual(parser.parse_type_ind(thy, s), res)
 
 
 if __name__ == "__main__":

@@ -324,10 +324,6 @@ def parse_type_ind(thy, s):
 def parse_thm_vars(thy, s):
     parser_setting['thy'] = thy
     return thm_vars_parser.parse(s)
-#
-# def parse_fun_name(thy, s):
-#     parser_setting['thy'] = thy
-#     return fun_name_parser.parse(s)
 
 def parse_args(thy, ctxt, sig, args):
     """Parse the argument according to the signature."""
