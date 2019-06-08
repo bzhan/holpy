@@ -1832,7 +1832,7 @@
         },
         {
             "name": "Sigma_plus",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "plus_def_1, 0 = 0 + 0",
@@ -1872,11 +1872,11 @@
                     "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma (λx. f x + g x) n = Sigma f n + Sigma g n"
                 },
                 {
-                    "args": "",
+                    "args": "Sigma f n + Sigma g n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)",
                     "id": "2.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n ⊢ Sigma f n + Sigma g n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)"
+                    "rule": "nat_norm",
+                    "th": "⊢ Sigma f n + Sigma g n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)"
                 },
                 {
                     "args": "Sigma (λx. f x + g x) n + (f n + g n) = Sigma f n + f n + (Sigma g n + g n)",

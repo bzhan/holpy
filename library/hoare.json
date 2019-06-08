@@ -49,8 +49,6 @@
         },
         {
             "name": "Sem",
-            "ty": "def.pred",
-            "type": "'a com => 'a => 'a => bool",
             "rules": [
                 {
                     "name": "Sem_basic",
@@ -59,7 +57,7 @@
                         "f": "'a => 'a",
                         "s": "'a"
                     }
-                },                        
+                },
                 {
                     "name": "Sem_seq",
                     "prop": "Sem c1 s s3 --> Sem c2 s3 s2 --> Sem (Seq c1 c2) s s2",
@@ -115,17 +113,38 @@
                         "s3": "'a"
                     }
                 }
-            ]
+            ],
+            "ty": "def.pred",
+            "type": "'a com => 'a => 'a => bool"
         },
         {
             "name": "Skip",
-            "type": "'a com",
             "prop": "Skip = Basic (%f::'a. f)",
             "ty": "def",
+            "type": "'a com",
             "vars": {}
         },
         {
             "name": "Sem_Skip",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Sem_basic, {a: 'a}, {f: λf::'a. f, s: s}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Sem (Basic (λf. f)) s s"
+                },
+                {
+                    "args": "Skip_def, Sem Skip s s",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Sem Skip s s"
+                }
+            ],
             "prop": "Sem Skip s s",
             "ty": "thm",
             "vars": {
@@ -134,9 +153,9 @@
         },
         {
             "name": "Assign",
-            "type": "'a => (('a => 'b) => 'b) => ('a => 'b) com",
             "prop": "Assign a b = Basic (λf. (f)(a := b f))",
             "ty": "def",
+            "type": "'a => (('a => 'b) => 'b) => ('a => 'b) com",
             "vars": {
                 "a": "'a",
                 "b": "('a => 'b) => 'b"
@@ -144,6 +163,25 @@
         },
         {
             "name": "Sem_Assign",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Sem_basic, {a: 'a ⇒ 'b}, {f: λf. (f)(a := b f), s: s}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Sem (Basic (λf. (f)(a := b f))) s ((s)(a := b s))"
+                },
+                {
+                    "args": "Assign_def, Sem (Assign a b) s ((s)(a := b s))",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Sem (Assign a b) s ((s)(a := b s))"
+                }
+            ],
             "prop": "Sem (Assign a b) s (fun_upd s a (b s))",
             "ty": "thm",
             "vars": {
@@ -158,9 +196,9 @@
         },
         {
             "name": "P1",
-            "type": "(nat => nat) com",
             "prop": "P1 = Seq (Assign 0 (%s. 1)) (Assign 1 (%s. 2))",
             "ty": "def",
+            "type": "(nat => nat) com",
             "vars": {}
         },
         {
@@ -190,9 +228,9 @@
         },
         {
             "name": "P2",
-            "type": "(nat => nat) com",
             "prop": "P2 = Seq (Assign 0 (%s. s 0 + 1)) (Assign 0 (%s. s 0 + 1))",
             "ty": "def",
+            "type": "(nat => nat) com",
             "vars": {}
         },
         {
@@ -222,9 +260,9 @@
         },
         {
             "name": "P3",
-            "type": "(nat => nat) com",
             "prop": "P3 = While (%s. ~(s 0 = 3)) (%s. true) (Assign 0 (%s. s 0 + 1))",
             "ty": "def",
+            "type": "(nat => nat) com",
             "vars": {}
         },
         {
@@ -254,9 +292,9 @@
         },
         {
             "name": "Entail",
-            "type": "('a => bool) => ('a => bool) => bool",
             "prop": "Entail P Q = (!s. P s --> Q s)",
             "ty": "def",
+            "type": "('a => bool) => ('a => bool) => bool",
             "vars": {
                 "P": "'a => bool",
                 "Q": "'a => bool"
@@ -264,9 +302,9 @@
         },
         {
             "name": "Valid",
-            "type": "('a => bool) => 'a com => ('a => bool) => bool",
             "prop": "Valid P c Q = (!s. !s2. P s --> Sem c s s2 --> Q s2)",
             "ty": "def",
+            "type": "('a => bool) => 'a com => ('a => bool) => bool",
             "vars": {
                 "P": "'a => bool",
                 "Q": "'a => bool",
@@ -311,10 +349,10 @@
             "prop": "Entail (%s. I s & ~b s) Q --> Valid (%s. I s & b s) c I --> Valid I (While b I c) Q",
             "ty": "thm",
             "vars": {
-                "b": "'a => bool",
                 "I": "'a => bool",
-                "c": "'a com",
-                "Q": "'a => bool"
+                "Q": "'a => bool",
+                "b": "'a => bool",
+                "c": "'a com"
             }
         },
         {
@@ -325,7 +363,7 @@
             "name": "vcg",
             "ty": "macro"
         }
-   ],
+    ],
     "description": "Hoare logic",
     "imports": [
         "function"
