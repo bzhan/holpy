@@ -87,7 +87,7 @@
         <%
         $.each(search_res, function(i, val) {
         %>
-            <pre><%= val.display %></pre>
+            <pre><%= highlight_html(val.display) %></pre>
         <%
         });
         %>

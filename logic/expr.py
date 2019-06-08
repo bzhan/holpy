@@ -14,6 +14,7 @@ from logic.proofterm import ProofTermMacro, ProofTerm
 from logic.logic_macro import apply_theorem
 from server.method import Method
 from server.tactic import MacroTactic
+from syntax import printer, settings
 
 """Automation for arithmetic expressions."""
 
@@ -120,8 +121,9 @@ class prove_avalI_method(Method):
         else:
             return []
 
+    @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return "prove_avalI: (solves)"
+        return printer.N("prove_avalI: (solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "prove_avalI_method"
