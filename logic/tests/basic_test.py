@@ -113,7 +113,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(1, "apply_theorem", args="conjD1", prevs=[0])
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.prim_steps, 4)
+        self.assertEqual(rpt.prim_steps, 3)
 
         # Reset data for the next check
         prf = Proof(logic.mk_conj(A, B))

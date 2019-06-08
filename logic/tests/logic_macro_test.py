@@ -2,12 +2,13 @@
 
 import unittest
 
-from kernel.type import boolT
+from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm, InvalidDerivationException
 from logic import logic
-from logic.logic_macro import imp_conj_macro, trivial_macro
+from logic import logic_macro
 from logic import basic
+from logic.proofterm import ProofTerm
 from syntax import printer
 
 thy = basic.load_theory('logic_base')
@@ -18,7 +19,7 @@ conj = logic.mk_conj
 
 class LogicMacroTest(unittest.TestCase):
     def testTrivialMacro(self):
-        macro = trivial_macro()
+        macro = logic_macro.trivial_macro()
         A = Var("A", boolT)
         B = Var("B", boolT)
         test_data = [
@@ -32,8 +33,20 @@ class LogicMacroTest(unittest.TestCase):
             prf = pt.export()
             self.assertEqual(thy.check_proof(prf), Thm([], t))
 
+    def testApplyFactMacro(self):
+        macro = logic_macro.apply_fact_macro()
+        Ta = TVar("a")
+        P = Var("P", TFun(Ta, boolT))
+        Q = Var("Q", TFun(Ta, boolT))
+        s = Var("s", Ta)
+        pt = ProofTerm.assume(Term.mk_all(s, Term.mk_implies(P(s), Q(s))))
+        pt2 = ProofTerm.assume(P(s))
+        pt3 = macro.get_proof_term(thy, None, [pt, pt2])
+        prf = pt3.export()
+        self.assertEqual(thy.check_proof(prf).prop, Q(s))
+
     def testImpConjMacro(self):
-        macro = imp_conj_macro()
+        macro = logic_macro.imp_conj_macro()
         A = Var("A", boolT)
         B = Var("B", boolT)
         C = Var("C", boolT)
@@ -55,7 +68,7 @@ class LogicMacroTest(unittest.TestCase):
                 self.assertRaises(AssertionError, macro.get_proof_term, thy, t, [])
 
     def testImpConjMacroEval(self):
-        macro = imp_conj_macro()
+        macro = logic_macro.imp_conj_macro()
         A = Var("A", boolT)
         B = Var("B", boolT)
         C = Var("C", boolT)

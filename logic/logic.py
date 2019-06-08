@@ -101,6 +101,19 @@ def mk_if(P, x, y):
     """Obtain the term if P then x else y."""
     return if_t(x.get_type())(P, x, y)
 
+def get_forall_names(t):
+    """Given a term of the form
+
+    !x_1 ... x_k. A_1 --> ... --> A_n --> C.
+
+    return the names x_1, ... x_k.
+
+    """
+    if Term.is_all(t):
+        return [t.arg.var_name] + get_forall_names(t.arg.body)
+    else:
+        return []
+
 def strip_all_implies(t, names):
     """Given a term of the form
 

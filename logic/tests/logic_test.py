@@ -64,6 +64,14 @@ class LogicTest(unittest.TestCase):
         for t, res in test_data:
             self.assertEqual(logic.strip_disj(t), res)
 
+    def testGetForallName(self):
+        test_data = [
+            (Term.mk_all(x, Term.mk_all(y, Term.mk_equals(x, y))), ["x", "y"]),
+        ]
+
+        for t, res in test_data:
+            self.assertEqual(logic.get_forall_names(t), res)
+
     def testNormBoolExpr(self):
         neg, true, false = logic.neg, logic.true, logic.false
         test_data = [

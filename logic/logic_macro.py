@@ -2,12 +2,12 @@
 
 from typing import Tuple
 
+from kernel import term
 from kernel.term import Term
 from kernel import macro
 from kernel.proof import Proof
 from kernel.thm import Thm
-from logic import logic, matcher, logic
-from logic.logic import is_conj
+from logic import logic, matcher
 from logic.conv import then_conv, beta_conv, top_conv, rewr_conv, top_sweep_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
 
@@ -125,16 +125,46 @@ class apply_theorem_macro(ProofTermMacro):
             for idx, pt in enumerate(pts):
                 matcher.first_order_match_incr(As[idx], pt.prop, (tyinst, inst))
 
-        pt = ProofTerm.substitution(inst,
-                ProofTerm.subst_type(tyinst, ProofTerm.theorem(thy, name)))
-        if pt.prop.beta_norm() == pt.prop:
-            pt2 = pt
-        else:
-            pt2 = top_conv(beta_conv()).apply_to_pt(thy, pt)
-        for pt in pts:
-            pt2 = ProofTerm.implies_elim(pt2, pt)
+        pt = ProofTerm.theorem(thy, name)
+        if tyinst:
+            pt = ProofTerm.subst_type(tyinst, pt)
+        if inst:
+            pt = ProofTerm.substitution(inst, pt)
+        if pt.prop.beta_norm() != pt.prop:
+            pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
+        for prev_pt in pts:
+            pt = ProofTerm.implies_elim(pt, prev_pt)
 
-        return pt2
+        return pt
+
+class apply_fact_macro(ProofTermMacro):
+    """Apply a given fact to a list of facts."""
+    def __init__(self):
+        self.level = 1
+        self.sig = None
+
+    def get_proof_term(self, thy, args, pts):
+        pt, pt_prevs = pts[0], pts[1:]
+
+        # First, obtain the patterns
+        vars = term.get_vars(pt.prop)
+        new_names = logic.get_forall_names(pt.prop)
+        assert {v.name for v in vars}.isdisjoint(set(new_names)), "apply_fact: name conflict"
+        new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
+        assert len(pt_prevs) <= len(As), "apply_fact: too many prevs"
+
+        tyinst, inst = dict(), {v.name: v for v in vars}
+        for idx, pt_prev in enumerate(pt_prevs):
+            matcher.first_order_match_incr(As[idx], pt_prev.prop, (tyinst, inst))
+
+        for new_name in new_names:
+            pt = ProofTerm.forall_elim(inst[new_name], pt)
+        if pt.prop.beta_norm() != pt.prop:
+            pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
+        for prev_pt in pt_prevs:
+            pt = ProofTerm.implies_elim(pt, prev_pt)
+
+        return pt
 
 class rewrite_goal_macro(ProofTermMacro):
     """Apply an existing equality theorem to rewrite a goal.
@@ -298,7 +328,7 @@ class imp_conj_macro(ProofTermMacro):
 
     def eval(self, thy, args, ths):
         def strip(t):
-            if is_conj(t):
+            if logic.is_conj(t):
                 return strip(t.arg1).union(strip(t.arg))
             else:
                 return {t}
@@ -314,7 +344,7 @@ class imp_conj_macro(ProofTermMacro):
         def traverse_A(pt):
             # Given proof term showing a conjunction, put proof terms
             # showing atoms of the conjunction in dct.
-            if is_conj(pt.prop):
+            if logic.is_conj(pt.prop):
                 traverse_A(apply_theorem(thy, 'conjD1', pt))
                 traverse_A(apply_theorem(thy, 'conjD2', pt))
             else:
@@ -322,7 +352,7 @@ class imp_conj_macro(ProofTermMacro):
 
         def traverse_C(t):
             # Return proof term with conclusion t
-            if is_conj(t):
+            if logic.is_conj(t):
                 left = traverse_C(t.arg1)
                 right = traverse_C(t.arg)
                 return apply_theorem(thy, 'conjI', left, right)
@@ -346,6 +376,7 @@ macro.global_macros.update({
     "intros": intros_macro(),
     "apply_theorem": apply_theorem_macro(),
     "apply_theorem_for": apply_theorem_macro(with_inst=True),
+    "apply_fact": apply_fact_macro(),
     "rewrite_goal": rewrite_goal_macro(),
     "rewrite_back_goal": rewrite_goal_macro(backward=True),
     "rewrite_goal_with_prev": rewrite_goal_with_prev_macro(),

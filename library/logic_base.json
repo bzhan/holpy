@@ -224,6 +224,10 @@
             "ty": "macro"
         },
         {
+            "name": "apply_fact",
+            "ty": "macro"
+        },
+        {
             "name": "rewrite_goal",
             "ty": "macro"
         },
@@ -281,6 +285,10 @@
         },
         {
             "name": "apply_backward_step",
+            "ty": "method"
+        },
+        {
+            "name": "apply_fact",
             "ty": "method"
         },
         {

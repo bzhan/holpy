@@ -109,6 +109,10 @@ class ProofTerm():
         return ProofTermDeriv("forall_intr", None, x, [pt])
 
     @staticmethod
+    def forall_elim(s, pt):
+        return ProofTermDeriv("forall_elim", None, s, [pt])
+
+    @staticmethod
     def theorem(thy, th_name):
         return ProofTermDeriv("theorem", thy, th_name, [])
 

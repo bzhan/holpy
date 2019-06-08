@@ -2,7 +2,7 @@
 
 from kernel import term
 from kernel.term import Term, Var
-from kernel.proof import id_force_tuple, Proof
+from kernel.proof import id_force_tuple, print_id, Proof
 from kernel.theory import Method, global_methods
 from logic.conv import top_conv, rewr_conv, beta_conv, then_conv, top_sweep_conv
 from logic.proofterm import ProofTermAtom
@@ -444,6 +444,48 @@ class new_var(Method):
         T = parser.parse_type(state.thy, data['type'])
         state.set_line(id, 'variable', args=(data['name'], T), prevs=[])
 
+class apply_fact(Method):
+    """When one of the prevs is an forall/implies fact, apply that fact
+    to the remaining prevs.
+
+    """
+    def __init__(self):
+        self.sig = []
+
+    def search(self, state, id, prevs):
+        prev_ths = [state.get_proof_item(prev).th for prev in prevs]
+        thy = state.thy
+        if len(prevs) < 2:
+            return []
+
+        th, prev_ths = prev_ths[0], prev_ths[1:]
+
+        # First, obtain the patterns
+        vars = term.get_vars(th.prop)
+        new_names = logic.get_forall_names(th.prop)
+        assert {v.name for v in vars}.isdisjoint(set(new_names)), "apply_fact: name conflict"
+        new_vars, As, C = logic.strip_all_implies(th.prop, new_names)
+        if len(prev_ths) > len(As):
+            return []
+
+        tyinst, inst = dict(), {v.name: v for v in vars}
+        try:
+            for idx, prev_th in enumerate(prev_ths):
+                matcher.first_order_match_incr(As[idx], prev_th.prop, (tyinst, inst))
+        except matcher.MatchException:
+            return []
+
+        return [{}]
+
+    @settings.with_settings
+    def display_step(self, state, id, data, prevs):
+        return printer.N("Apply fact " + print_id(prevs[0]) + " onto " + \
+            ",".join(print_id(id) for id in prevs[1:]))
+
+    def apply(self, state, id, data, prevs):
+        state.add_line_before(id, 1)
+        state.set_line(id, 'apply_fact', prevs=prevs)
+
 
 def apply_method(state, data):
     """Apply a method to the state. Here data is a dictionary containing
@@ -465,6 +507,7 @@ global_methods.update({
     "rewrite_fact_with_prev": rewrite_fact_with_prev(),
     "apply_forward_step": apply_forward_step(),
     "apply_backward_step": apply_backward_step(),
+    "apply_fact": apply_fact(),
     "introduction": introduction(),
     "forall_elim": forall_elim(),
     "inst_exists_goal": inst_exists_goal(),
