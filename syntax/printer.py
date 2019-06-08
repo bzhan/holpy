@@ -28,6 +28,9 @@ def V(s):
 def TV(s):
     return [(s, 3)] if settings.highlight() else s
 
+def Gray(s):
+    return [(s, 4)] if settings.highlight() else s
+
 def optimize_highlight(lst):
     """Optimize a highlight list (s1, n1), ... by combining parts that have
     the same color.
@@ -302,20 +305,23 @@ def print_extensions(thy, exts):
     return "\n".join(print_extension(thy, ext) for ext in exts.data)
 
 @settings.with_settings
-def print_str_args(thy, rule, args):
+def print_str_args(thy, rule, args, prop):
     def str_val(val):
         if isinstance(val, dict):
             items = sorted(val.items(), key = lambda pair: pair[0])
             return N('{') + commas_join(N(key + ': ') + str_val(val) for key, val in items) + N('}')
         elif isinstance(val, Term):
-            return print_term(thy, val)
+            if val == prop and settings.highlight():
+                return Gray("⟨goal⟩")
+            else:
+                return print_term(thy, val)
         elif isinstance(val, HOLType):
             return print_type(thy, val)
         else:
             return N(str(val))
 
     # Print var :: T for variables
-    if rule == 'variable':
+    if rule == 'variable' and settings.highlight():
         return N(args[0] + ' :: ') + str_val(args[1])
 
     if isinstance(args, tuple):
@@ -329,12 +335,12 @@ def print_str_args(thy, rule, args):
 def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
     str_th = print_term(thy, item.th.prop) if item.th else ""
-    str_args = print_str_args(thy, item.rule, item.args)
+    str_args = print_str_args(thy, item.rule, item.args, item.th.prop)
     res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
            'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}
     if settings.highlight():
         res['th_raw'] = print_thm(thy, item.th, highlight=False) if item.th else ""
-        res['args_raw'] = print_str_args(thy, '', item.args, highlight=False)
+        res['args_raw'] = print_str_args(thy, item.rule, item.args, item.th.prop, highlight=False)
     if item.subproof:
         return [res] + sum([export_proof_item(thy, i) for i in item.subproof.items], [])
     else:
