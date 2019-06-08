@@ -557,16 +557,26 @@
             delete data.type_hl;
         } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
             delete data.prop_hl;
+            delete data.vars_lines;
         } else if (data.ty === 'type.ind') {
             delete data.type_hl;
             delete data.argsT;
             delete data.ext;
+            delete data.type_content;
         } else if (data.ty === 'def') {
             delete data.type_hl;
             delete data.prop_hl;
+            delete data.data_new_content;
+            delete data.item_vars;
+            delete data.type_name;
         } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
             delete data.type_hl;
             delete data.ext;
+            delete data.data_new_content;
+            delete data.data_rule_name;
+            delete data.data_vars_str;
+            delete data.ext_output;
+            delete data.type_name;
             for (var i in data.rules) {
                 delete data.rules[i].prop_hl;
             }
