@@ -28,154 +28,156 @@
     </div>
 </script>
 
-<script type="text/template" id='template-edit-def-ax'>
-    <div style="margin-left:35px;margin-top:20px;"
-         class="tab-pane fade active code-cell edit-data"
-         id="code<%=page_num%>-pan">
-        <form id="edit-constant-form<%=page_num%>" name="edit-form">
-            <input type="hidden" name="number">
-            <div class="form-group">
-                <div class="col-auto">
-                    <label name="<%=page_num%>" for="data-name<%=page_num%>" style="float:left"><font color="#006000"><b>constant:&nbsp;&nbsp;</b></font></label>
-                    <input spellcheck="false" class="form-control" id="data-name<%=page_num%>"
-                           style="float:left;width:20%;background:transparent;" name="data_name">
-                    <span style="float:left;">&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;</span>
-                    <input spellcheck="false" class="form-control" id="data-content<%=page_num%>"
-                           style="float:left;width:50%;background:transparent" name="data_content">
-                </div>
-            </div>
-        </form>
-    </div>
-</script>
-
 <script type="text/template" id='template-edit-thm'>
     <div style="margin-left:20px;margin-top:20px;"
          class="tab-pane fade active code-cell edit-data"
          id="code<%=page_num%>-pan">
         <form id="edit-thm-form<%=page_num%>" name="edit-form">
-            <input type="hidden" name="number">
-            <div class="form-group">
-                <div class="col-auto">
-                    <font color="#006000"><b><label for="data-name<%= page_num %>"></label></b></font>
-                    <input type="text" name="name" class="form-control" id="data-name<%= page_num %>">
+            <font color="#006000">
+                <div class="dropdown-box<%=page_num%>">
+                    <select id="dropdown_datatype<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;" name="<%=page_num%>">
+                        <option value="thm"><b>Theroem</b></option>
+                        <option value="def.ax"><b>Constant</b></option>
+                        <option value="type.ind"><b>Datatype</b></option>
+                        <option value="def.ind"><b>Function</b></option>
+                        <option value="thm.ax">Axiom</option>
+                        <option value="def.pred">Inductive</option>
+                        <option value="def">Definition</option>
+                    </select>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="col-auto">
-                    <label for="data-vars<%= page_num %>">Variables</label>
-                    <textarea spellcheck="false" name="vars" class="form-control unicode-replace adjust-rows"
-                              id="data-vars<%= page_num %>"></textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-auto">
-                    <label for="data-content<%= page_num %>">Proposition</label>
-                    <input type="text" name="prop"
-                           class="form-control unicode-replace" spellcheck="false"
-                           id="data-content<%= page_num %>">
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="form-check-inline">
-                    <div class="col-auto">
-                        <input class="form-check-input" type="checkbox" id="backward-check<%= page_num %>"
-                               name="hint_backward">
-                        <label class="form-check-label" for="backward-check<%= page_num %>">Backward</label>
-                    </div>
-                </div>
-                <div class="form-check-inline">
-                    <div class="col-auto">
-                        <input class="form-check-input" type="checkbox" id="forward-check<%= page_num %>"
-                               name="hint_forward">
-                        <label class="form-check-label" for="forward-check<%= page_num %>">Forward</label>
-                    </div>
-                </div>
-                <div class="form-check-inline">
-                    <div class="col-auto">
-                        <input class="form-check-input" type="checkbox" id="rewrite-check<%= page_num %>"
-                               name="hint_rewrite">
-                        <label class="form-check-label" for="rewrite-check<%= page_num %>">Rewrite</label>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</script>
+            </font>
 
-<script type="text/template" id='template-edit-type-ind'>
-    <div style="margin-left:35px;margin-top:20px;"
-         class="tab-pane fade active code-cell edit-data"
-         id="code<%=page_num%>-pan">
-        <form id="edit-type-form<%=page_num%>" name="edit-form">
-            <input type="hidden" name="number">
-            <div class="form-group">
+            <div class="form-group hidden-ele total<%=page_num%>" name="constant-<%=page_num%>">
+                <input type="hidden" name="number-constant">
                 <div class="col-auto">
-                    <label name="<%=page_num%>" for="data-name<%=page_num%>">
-                    <font color="#006000"><b>datatype</b></font>
-                    </label>
-                    <input spellcheck="false" name="data_name" id="data-name<%=page_num%>"
-                           style="width:30%;background:transparent" class="form-control">
-                </div>
-            </div>
-            <span>=</span><br>
-            <div class="form-group">
-                <div class="col-auto">
-                    <textarea spellcheck="false" class="form-control adjust-rows" name="data_content"
-                              id="data-content<%=page_num%>"
-                              style="overflow-y:hidden;width:60%;background:transparent"></textarea>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-auto">
-                    <label style="float:right;height:20%;width:100%;background:transparent">
-                    <pre><%= ext_output %></pre>
-                    </label>
-                </div>
-            </div>
-        </form>
-    </div>
-</script>
-
-<script type="text/template" id='template-edit-def'>
-    <div style="position:relative;margin-left:35px;margin-top:20px;"
-         class="tab-pane fade active code-cell edit-data"
-         id="code<%=page_num%>-pan">
-        <form id="edit-def-form<%=page_num%>" name="edit-form">
-            <input type="hidden" name="number">
-            <div class="form-group">
-                <div class="col-auto">
-                    <label name="<%=page_num%>" for="data-name<%=page_num%>" style="float:left;">
-                        <font color="#006000"><b><%= type_name %></b></font>
-                    </label>
+                    <div class="data-title<%=page_num%>">
+                        <label id="constant--<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;background:transparent;">Constant</label>
+                    </div>
                     <input spellcheck="false" class="form-control" id="data-name<%=page_num%>"
-                       style="margin-left:3%;margin-bottom:3%;float:left;width:50%;background:transparent" name="data_name">
+                           style="float:left;width:20%;background:transparent;" name="data_name">
+                    <span style="float:left;">&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp;</span>
+                    <input spellcheck="false" class="form-control" id="data-content<%=page_num%>"
+                           style="float:left;width:50%;background:transparent" name="data_content_constant">
                 </div>
             </div>
-            <br><br><br>
-            <div class="form-group">
-                <div class="col-auto" >
-                    <textarea spellcheck="false" class="form-control adjust-rows"
-                              id="data-content<%=page_num%>" name="content" style="float:left;"></textarea>
+
+            <div name="thm-<%=page_num%>" class="hidden-ele total<%=page_num%>">
+                <input type="hidden" name="number-thm">
+                <div class="form-group">
+                    <div class="col-auto">
+                        <div class="data-title<%=page_num%>">
+                            <label id="thm--<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;background:transparent;">Theorem</label>
+                        </div>
+                        <input type="text" name="name" class="form-control" id="data-name<%= page_num %>">
+                    </div>
                 </div>
-            </div><br>
-            <div style="float:left;margin-left:3%;"><span style="position:absolute;">for:</span>&nbsp;</div>
-            <div class="form-group">
-                <div class="col-auto">
-                    <textarea spellcheck="false" class="form-control adjust-rows"
-                              id="data-vars<%=page_num%>" name="data_vars" placeholder="vars"></textarea>
+                <div class="form-group">
+                    <div class="col-auto">
+                        <label for="data-vars<%= page_num %>">Variables</label>
+                        <textarea spellcheck="false" name="vars" class="form-control unicode-replace adjust-rows"
+                                  id="data-vars<%= page_num %>"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-auto">
+                        <label for="data-content<%= page_num %>">Proposition</label>
+                        <input type="text" name="prop"
+                               class="form-control unicode-replace" spellcheck="false"
+                               id="data-content<%= page_num %>">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-check-inline">
+                        <div class="col-auto">
+                            <input class="form-check-input" type="checkbox" id="backward-check<%= page_num %>"
+                                   name="hint_backward">
+                            <label class="form-check-label" for="backward-check<%= page_num %>">Backward</label>
+                        </div>
+                    </div>
+                    <div class="form-check-inline">
+                        <div class="col-auto">
+                            <input class="form-check-input" type="checkbox" id="forward-check<%= page_num %>"
+                                   name="hint_forward">
+                            <label class="form-check-label" for="forward-check<%= page_num %>">Forward</label>
+                        </div>
+                    </div>
+                    <div class="form-check-inline">
+                        <div class="col-auto">
+                            <input class="form-check-input" type="checkbox" id="rewrite-check<%= page_num %>"
+                                   name="hint_rewrite">
+                            <label class="form-check-label" for="rewrite-check<%= page_num %>">Rewrite</label>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-auto">
-                    <textarea spellcheck="false" class="form-control adjust-rows"
-                              id="data-names<%page_num%>" name="vars_names"></textarea>
+
+            <div name="type-<%=page_num%>" class="hidden-ele total<%=page_num%>">
+                <input type="hidden" name="number-type">
+                <div class="form-group">
+                    <div class="col-auto">
+                        <div class="data-title<%=page_num%>">
+                            <label id="datatype--<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;background:transparent;">Datatype</label>
+                        </div>
+                        <input spellcheck="false" name="data_name_type" id="data-name<%=page_num%>"
+                               style="width:30%;background:transparent" class="form-control">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="col-auto">
-                    <label style="float:right;height:20%;width:100%;background:transparent">
+                <span>=</span><br>
+                <div class="form-group">
+                    <div class="col-auto">
+                        <textarea spellcheck="false" class="form-control adjust-rows" name="data_content_type"
+                                  id="data-content<%=page_num%>"
+                                  style="overflow-y:hidden;width:60%;background:transparent"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-auto">
+                        <label style="float:right;height:20%;width:100%;background:transparent">
                         <pre><%= ext_output %></pre>
-                    </label>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div name="def-<%=page_num%>" class="hidden-ele total<%=page_num%>" style="position:relative;">
+                <input type="hidden" name="number-def">
+                <div class="form-group">
+                    <div class="col-auto">
+                        <div class="data-tittle">
+                            <label name="<%=page_num%>" for="data-name<%=page_num%>" style="float:left;">
+                                <font color="#006000"><b><%= type_name %></b></font>
+                            </label>
+                        </div>
+                        <input spellcheck="false" class="form-control" id="data-name<%=page_num%>"
+                           style="margin-left:3%;margin-bottom:3%;float:left;width:50%;background:transparent" name="data_name_def">
+                    </div>
+                </div>
+                <br><br><br>
+                <div class="form-group">
+                    <div class="col-auto" >
+                        <textarea spellcheck="false" class="form-control adjust-rows"
+                                  id="data-content<%=page_num%>" name="content" style="float:left;"></textarea>
+                    </div>
+                </div><br>
+                <div style="float:left;margin-left:3%;"><span style="position:absolute;">for:</span>&nbsp;</div>
+                <div class="form-group">
+                    <div class="col-auto">
+                        <textarea spellcheck="false" class="form-control adjust-rows"
+                                  id="data-vars<%=page_num%>" name="data_vars" placeholder="vars"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-auto">
+                        <textarea spellcheck="false" class="form-control adjust-rows"
+                                  id="data-names<%page_num%>" name="vars_names"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-auto">
+                        <label style="float:right;height:20%;width:100%;background:transparent">
+                            <pre><%= ext_output %></pre>
+                        </label>
+                    </div>
                 </div>
             </div>
         </form>
