@@ -694,7 +694,7 @@
         },
         {
             "name": "rev_length",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "length_def_1, length ([]::'a list) = 0",
@@ -750,11 +750,11 @@
                     "th": "length (rev xs) = length xs ⊢ length (rev xs) = length xs"
                 },
                 {
-                    "args": "",
+                    "args": "length xs + 1 = Suc (length xs)",
                     "id": "3.3",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "length (rev xs) = length xs ⊢ length xs + 1 = Suc (length xs)"
+                    "rule": "nat_norm",
+                    "th": "⊢ length xs + 1 = Suc (length xs)"
                 },
                 {
                     "args": "length (rev xs) + 1 = Suc (length xs)",

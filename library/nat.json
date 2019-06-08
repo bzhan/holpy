@@ -751,7 +751,7 @@
         },
         {
             "name": "mult_Suc_right",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "times_def_1, 0 * Suc y = 0 * y",
@@ -791,11 +791,11 @@
                     "th": "n * Suc y = n + n * y ⊢ n * Suc y = n + n * y"
                 },
                 {
-                    "args": "",
+                    "args": "Suc (y + (n + n * y)) = Suc (n + (y + n * y))",
                     "id": "2.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "n * Suc y = n + n * y ⊢ Suc (y + (n + n * y)) = Suc (n + (y + n * y))"
+                    "rule": "nat_norm",
+                    "th": "⊢ Suc (y + (n + n * y)) = Suc (n + (y + n * y))"
                 },
                 {
                     "args": "Suc (y + n * Suc y) = Suc (n + (y + n * y))",
@@ -856,7 +856,7 @@
         },
         {
             "name": "distrib_l",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "add_0_right, 0 = 0 + 0",
@@ -896,11 +896,11 @@
                     "th": "n * (y + z) = n * y + n * z ⊢ n * (y + z) = n * y + n * z"
                 },
                 {
-                    "args": "",
+                    "args": "y + z + (n * y + n * z) = y + n * y + (z + n * z)",
                     "id": "2.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "n * (y + z) = n * y + n * z ⊢ y + z + (n * y + n * z) = y + n * y + (z + n * z)"
+                    "rule": "nat_norm",
+                    "th": "⊢ y + z + (n * y + n * z) = y + n * y + (z + n * z)"
                 },
                 {
                     "args": "y + z + n * (y + z) = y + n * y + (z + n * z)",
@@ -953,7 +953,7 @@
         },
         {
             "name": "distrib_r",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "add_0_right, 0 = 0 + 0",
@@ -993,11 +993,11 @@
                     "th": "(x + y) * n = x * n + y * n ⊢ (x + y) * n = x * n + y * n"
                 },
                 {
-                    "args": "",
+                    "args": "x + y + (x * n + y * n) = x + x * n + (y + y * n)",
                     "id": "2.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "(x + y) * n = x * n + y * n ⊢ x + y + (x * n + y * n) = x + x * n + (y + y * n)"
+                    "rule": "nat_norm",
+                    "th": "⊢ x + y + (x * n + y * n) = x + x * n + (y + y * n)"
                 },
                 {
                     "args": "x + y + (x + y) * n = x + x * n + (y + y * n)",
@@ -1323,13 +1323,13 @@
         },
         {
             "name": "one_Suc",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "Suc 1 = 1 + 1",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ Suc 1 = 1 + 1"
                 },
                 {
@@ -1348,13 +1348,13 @@
         },
         {
             "name": "bit0_Suc",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "Suc (n + n) = n + n + 1",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ Suc (n + n) = n + n + 1"
                 },
                 {
@@ -1384,13 +1384,13 @@
         },
         {
             "name": "bit1_Suc",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "Suc (n + n + 1) = Suc n + Suc n",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ Suc (n + n + 1) = Suc n + Suc n"
                 },
                 {
@@ -1420,13 +1420,13 @@
         },
         {
             "name": "bit0_bit0_add",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "m + m + (n + n) = m + n + (m + n)",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ m + m + (n + n) = m + n + (m + n)"
                 },
                 {
@@ -1448,13 +1448,13 @@
         },
         {
             "name": "bit0_bit1_add",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "m + m + (n + n + 1) = m + n + (m + n) + 1",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ m + m + (n + n + 1) = m + n + (m + n) + 1"
                 },
                 {
@@ -1485,13 +1485,13 @@
         },
         {
             "name": "bit1_bit0_add",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "m + m + 1 + (n + n) = m + n + (m + n) + 1",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ m + m + 1 + (n + n) = m + n + (m + n) + 1"
                 },
                 {
@@ -1522,13 +1522,13 @@
         },
         {
             "name": "bit1_bit1_add",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "m + m + 1 + (n + n + 1) = Suc (m + n) + Suc (m + n)",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ m + m + 1 + (n + n + 1) = Suc (m + n) + Suc (m + n)"
                 },
                 {
@@ -1559,13 +1559,13 @@
         },
         {
             "name": "bit0_bit0_mult",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "(m + m) * (n + n) = m * n + m * n + (m * n + m * n)",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ (m + m) * (n + n) = m * n + m * n + (m * n + m * n)"
                 },
                 {
@@ -1587,13 +1587,13 @@
         },
         {
             "name": "bit0_bit1_mult",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "(m + m) * (n + n + 1) = m * (n + n + 1) + m * (n + n + 1)",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ (m + m) * (n + n + 1) = m * (n + n + 1) + m * (n + n + 1)"
                 },
                 {
@@ -1624,13 +1624,13 @@
         },
         {
             "name": "bit1_bit0_mult",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "(m + m + 1) * (n + n) = (m + m + 1) * n + (m + m + 1) * n",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ (m + m + 1) * (n + n) = (m + m + 1) * n + (m + m + 1) * n"
                 },
                 {
@@ -1661,13 +1661,13 @@
         },
         {
             "name": "bit1_bit1_mult",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "(m + m + 1) * (n + n + 1) = m + n + (m * n + m * n) + (m + n + (m * n + m * n)) + 1",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "nat_norm",
                     "th": "⊢ (m + m + 1) * (n + n + 1) = m + n + (m * n + m * n) + (m + n + (m * n + m * n)) + 1"
                 },
                 {
