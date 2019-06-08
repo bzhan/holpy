@@ -341,6 +341,10 @@ class ProofState():
 
     def introduction(self, id, names=None):
         """Introduce variables and assumptions."""
+        if names is None:
+            names = ""
+        elif isinstance(names, list):
+            names = ",".join(names)
         method.apply_method(self, {
             'method_name': 'introduction',
             'goal_id': id, 'fact_ids': [], 'names': names

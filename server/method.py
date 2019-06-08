@@ -38,7 +38,7 @@ class cases_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("case ") + printer.print_term(thy, A)
+        return printer.N("case ") + printer.print_term(state.thy, data['case'])
 
     def apply(self, state, id, data, prevs):
         A = parser.parse_term(state.thy, state.get_ctxt(id), data['case'])
@@ -329,7 +329,11 @@ class introduction(Method):
         assert prop.is_implies() or prop.is_all(), "introduction"
 
         intros_tac = tactic.intros()
-        pt = intros_tac.get_proof_term(state.thy, cur_item.th, args=data['names'].split(","))
+        if data['names'] == '':
+            names = []
+        else:
+            names = data['names'].split(",")
+        pt = intros_tac.get_proof_term(state.thy, cur_item.th, args=names)
 
         cur_item.rule = "subproof"
         cur_item.subproof = pt.export(prefix=id)

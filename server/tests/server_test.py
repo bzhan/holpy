@@ -255,7 +255,7 @@ class ServerTest(unittest.TestCase):
         conj_ex = conj(exists(x, A(x)), exists(x, B(x)))
         state = ProofState.init_state(thy, [A, B], [ex_conj], conj_ex)
         state.apply_backward_step(1, "exE", prevs=[0])
-        state.introduction(1, "x")
+        state.introduction(1, names=["x"])
         state.apply_backward_step((1, 2), "conjI")
         state.apply_forward_step((1, 2), "conjD1", prevs=[(1, 1)])
         state.apply_backward_step((1, 3), "exI", prevs=[(1, 2)])
