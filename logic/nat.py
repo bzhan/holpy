@@ -258,6 +258,8 @@ class norm_add_1(Conv):
         else:
             return norm_add_atom_1().get_proof_term(thy, t)
 
+# Second level normalization.
+
 class swap_times_r(Conv):
     """Rewrite (a * b) * c to (a * c) * b, or if the left argument
     is an atom, rewrite a * b to b * a.
@@ -272,6 +274,9 @@ class swap_times_r(Conv):
             ).get_proof_term(thy, t)
         else:
             return rewr_conv("mult_comm").get_proof_term(thy, t)
+
+def has_binary_thms(thy):
+    return thy.has_theorem('bit1_bit1_mult')
 
 class norm_mult_atom(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * a."""
@@ -289,7 +294,7 @@ class norm_mult_atom(Conv):
             if cmp == term_ord.GREATER:
                 cv = then_conv(swap_times_r(), arg1_conv(norm_mult_atom()))
             elif cmp == term_ord.EQUAL:
-                if is_binary(t.arg):
+                if is_binary(t.arg) and has_binary_thms(thy):
                     cv = then_conv(rewr_conv("mult_assoc"), arg_conv(nat_conv()))
                 else:
                     cv = all_conv()
@@ -300,7 +305,7 @@ class norm_mult_atom(Conv):
             if cmp == term_ord.GREATER:
                 cv = rewr_conv("mult_comm")
             elif cmp == term_ord.EQUAL:
-                if is_binary(t.arg):
+                if is_binary(t.arg) and has_binary_thms(thy):
                     cv = nat_conv()
                 else:
                     cv = all_conv()
@@ -330,9 +335,12 @@ def dest_monomial(t):
     else:
         return t
 
-def compare_monomial(t1, t2):
+def compare_monomial(thy, t1, t2):
     """Compare two monomials by their body."""
-    return term_ord.fast_compare(dest_monomial(t1), dest_monomial(t2))
+    if has_binary_thms(thy):
+        return term_ord.fast_compare(dest_monomial(t1), dest_monomial(t2))
+    else:
+        return term_ord.fast_compare(t1, t2)
 
 class to_coeff_form(Conv):
     """Convert a to a * 1, n to 1 * n, and leave a * n unchanged."""
@@ -371,18 +379,18 @@ class norm_add_monomial(Conv):
         elif t.arg == zero:
             cv = rewr_conv("add_0_right")
         elif is_plus(t.arg1):
-            cmp = compare_monomial(t.arg1.arg, t.arg)
+            cmp = compare_monomial(thy, t.arg1.arg, t.arg)
             if cmp == term_ord.GREATER:
                 cv = then_conv(swap_add_r(), arg1_conv(norm_add_monomial()))
-            elif cmp == term_ord.EQUAL:
+            elif cmp == term_ord.EQUAL and has_binary_thms(thy):
                 cv = then_conv(rewr_conv("add_assoc"), arg_conv(combine_monomial(thy)))
             else:
                 cv = all_conv()
         else:
-            cmp = compare_monomial(t.arg1, t.arg)
+            cmp = compare_monomial(thy, t.arg1, t.arg)
             if cmp == term_ord.GREATER:
                 cv = rewr_conv("add_comm")
-            elif cmp == term_ord.EQUAL:
+            elif cmp == term_ord.EQUAL and has_binary_thms(thy):
                 cv = combine_monomial(thy)
             else:
                 cv = all_conv()
@@ -430,8 +438,8 @@ class norm_mult_polynomial(Conv):
 class norm_full(Conv):
     """Normalize expressions on natural numbers involving plus and times."""
     def get_proof_term(self, thy, t):
-        if thy.has_theorem('bit1_bit1_mult'):
-            # Full conversion
+        if thy.has_theorem('mult_comm'):
+            # Full conversion, with or without binary numbers
             if is_binary(t):
                 cv = all_conv()
             elif is_Suc(t):
@@ -442,9 +450,6 @@ class norm_full(Conv):
                 cv = then_conv(binop_conv(norm_full()), norm_mult_polynomial())
             else:
                 cv = all_conv()
-        elif thy.has_theorem('mult_comm'):
-            # Conversion using only semiring rules
-            cv = all_conv()
         elif thy.has_theorem('add_assoc'):
             # Conversion using only AC rules for addition
             if is_binary(t):
