@@ -67,6 +67,14 @@
             "type": "nat => nat => nat"
         },
         {
+            "name": "nat_norm",
+            "ty": "macro"
+        },
+        {
+            "name": "nat_norm",
+            "ty": "method"
+        },
+        {
             "hint_rewrite": "true",
             "instructions": [
                 "Select 0 as goal, choose 'apply induction' from menu, then enter 'nat_induct,x'.",
@@ -1754,16 +1762,8 @@
             }
         },
         {
-            "name": "nat_norm",
-            "ty": "macro"
-        },
-        {
             "name": "nat_const_ineq",
             "ty": "macro"
-        },
-        {
-            "name": "nat_norm",
-            "ty": "method"
         },
         {
             "name": "nat_const_ineq",

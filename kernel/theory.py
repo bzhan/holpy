@@ -158,6 +158,11 @@ class Theory():
             raise TypeError()
 
         self.add_data("theorems", name, th)
+
+    def has_theorem(self, name):
+        """Returns whether the current theory contains the given theorem."""
+        data = self.get_data("theorems")
+        return name in data
     
     def get_theorem(self, name):
         """Returns the theorem under that name."""

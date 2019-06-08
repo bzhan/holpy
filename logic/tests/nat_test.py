@@ -163,6 +163,25 @@ class NatTest(unittest.TestCase):
             prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
 
+    def testNormFullLevel1(self):
+        thy = basic.load_theory('nat', limit=('thm', 'mult_0_right'))
+        test_data = [
+            ("y + (x + x * y)", "x + y + x * y"),
+            ("z + y + x", "x + y + z"),
+            ("1 + y", "y + 1"),
+            ("Suc (x + y)", "x + y + 1"),
+            ("2 + 3 + x", "x + 2 + 3"),
+        ]
+
+        cv = nat.norm_full()
+        ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
+        for expr, res in test_data:
+            t = parser.parse_term(thy, ctxt, expr)
+            t2 = parser.parse_term(thy, ctxt, res)
+            res_th = Thm.mk_equals(t, t2)
+            prf = cv.get_proof_term(thy, t).export()
+            self.assertEqual(thy.check_proof(prf), res_th)
+
     def testNatNormMacro(self):
         test_data = [
             ("x * (y * z) = y * (z * x)"),

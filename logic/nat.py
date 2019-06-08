@@ -16,6 +16,8 @@ from server.tactic import MacroTactic
 
 """Utility functions for natural number arithmetic."""
 
+# Basic definitions
+
 natT = Type("nat")
 zero = Const("zero", natT)
 Suc = Const("Suc", TFun(natT, natT))
@@ -47,6 +49,8 @@ def is_plus(t):
 
 def is_times(t):
     return t.is_binop() and t.head == times
+
+# Arithmetic on binary numbers
 
 bit0 = Const("bit0", TFun(natT, natT))
 bit1 = Const("bit1", TFun(natT, natT))
@@ -192,6 +196,68 @@ class nat_conv(Conv):
             else:
                 raise ConvException()
 
+# Normalization on the semiring.
+
+# First level normalization: AC rules for addition only.
+
+def compare_atom(t1, t2):
+    """Compare two atoms, placing numbers last."""
+    if is_binary(t1) and is_binary(t2):
+        return term_ord.EQUAL
+    elif is_binary(t1):
+        return term_ord.GREATER
+    elif is_binary(t2):
+        return term_ord.LESS
+    else:
+        return term_ord.fast_compare(t1, t2)
+
+class swap_add_r(Conv):
+    """Rewrite (a + b) + c to (a + c) + b, or if the left argument
+    is an atom, rewrite a + b to b + a.
+
+    """
+    def get_proof_term(self, thy, t):
+        if is_plus(t.arg1):
+            return every_conv(
+                rewr_conv("add_assoc"),
+                arg_conv(rewr_conv("add_comm")),
+                rewr_conv("add_assoc", sym=True)
+            ).get_proof_term(thy, t)
+        else:
+            return rewr_conv("add_comm").get_proof_term(thy, t)
+
+class norm_add_atom_1(Conv):
+    """Normalize expression of the form (a_1 + ... + a_n) + a."""
+    def get_proof_term(self, thy, t):
+        if t.arg1 == zero:
+            cv = rewr_conv("plus_def_1")
+        elif t.arg == zero:
+            cv = rewr_conv("add_0_right")
+        elif is_plus(t.arg1):
+            if compare_atom(t.arg1.arg, t.arg) == term_ord.GREATER:
+                cv = then_conv(swap_add_r(), arg1_conv(norm_add_atom_1()))
+            else:
+                cv = all_conv()
+        else:
+            if compare_atom(t.arg1, t.arg) == term_ord.GREATER:
+                cv = rewr_conv("add_comm")
+            else:
+                cv = all_conv()
+
+        return cv.get_proof_term(thy, t)
+
+class norm_add_1(Conv):
+    """Normalize expression of the form (a_1 + ... + a_n) + (b_1 + ... + b_n)."""
+    def get_proof_term(self, thy, t):
+        if is_plus(t.arg):
+            return every_conv(
+                rewr_conv("add_assoc", sym=True),
+                arg1_conv(norm_add_1()),
+                norm_add_atom_1()
+            ).get_proof_term(thy, t)
+        else:
+            return norm_add_atom_1().get_proof_term(thy, t)
+
 class swap_times_r(Conv):
     """Rewrite (a * b) * c to (a * c) * b, or if the left argument
     is an atom, rewrite a * b to b * a.
@@ -206,17 +272,6 @@ class swap_times_r(Conv):
             ).get_proof_term(thy, t)
         else:
             return rewr_conv("mult_comm").get_proof_term(thy, t)
-
-def compare_atom(t1, t2):
-    """Compare two atoms, placing numbers last."""
-    if is_binary(t1) and is_binary(t2):
-        return term_ord.EQUAL
-    elif is_binary(t1):
-        return term_ord.GREATER
-    elif is_binary(t2):
-        return term_ord.LESS
-    else:
-        return term_ord.fast_compare(t1, t2)
 
 class norm_mult_atom(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * a."""
@@ -265,21 +320,6 @@ class norm_mult_monomial(Conv):
             ).get_proof_term(thy, t)
         else:
             return norm_mult_atom().get_proof_term(thy, t)
-
-class swap_add_r(Conv):
-    """Rewrite (a + b) + c to (a + c) + b, or if the left argument
-    is an atom, rewrite a + b to b + a.
-
-    """
-    def get_proof_term(self, thy, t):
-        if is_plus(t.arg1):
-            return every_conv(
-                rewr_conv("add_assoc"),
-                arg_conv(rewr_conv("add_comm")),
-                rewr_conv("add_assoc", sym=True)
-            ).get_proof_term(thy, t)
-        else:
-            return rewr_conv("add_comm").get_proof_term(thy, t)
 
 def dest_monomial(t):
     """Remove coefficient part of a monomial t."""
@@ -390,14 +430,31 @@ class norm_mult_polynomial(Conv):
 class norm_full(Conv):
     """Normalize expressions on natural numbers involving plus and times."""
     def get_proof_term(self, thy, t):
-        if is_binary(t):
+        if thy.has_theorem('bit1_bit1_mult'):
+            # Full conversion
+            if is_binary(t):
+                cv = all_conv()
+            elif is_Suc(t):
+                cv = then_conv(rewr_conv("add_1_right", sym=True), norm_full())
+            elif is_plus(t):
+                cv = then_conv(binop_conv(norm_full()), norm_add_polynomial())
+            elif is_times(t):
+                cv = then_conv(binop_conv(norm_full()), norm_mult_polynomial())
+            else:
+                cv = all_conv()
+        elif thy.has_theorem('mult_comm'):
+            # Conversion using only semiring rules
             cv = all_conv()
-        elif is_Suc(t):
-            cv = then_conv(rewr_conv("add_1_right", sym=True), norm_full())
-        elif is_plus(t):
-            cv = then_conv(binop_conv(norm_full()), norm_add_polynomial())
-        elif is_times(t):
-            cv = then_conv(binop_conv(norm_full()), norm_mult_polynomial())
+        elif thy.has_theorem('add_assoc'):
+            # Conversion using only AC rules for addition
+            if is_binary(t):
+                cv = all_conv()
+            elif is_Suc(t):
+                cv = then_conv(rewr_conv("add_1_right", sym=True), norm_full())
+            elif is_plus(t):
+                cv = then_conv(binop_conv(norm_full()), norm_add_1())
+            else:
+                cv = all_conv()
         else:
             cv = all_conv()
 
