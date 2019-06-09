@@ -399,7 +399,7 @@ def parse_extension(thy, data):
     elif data['ty'] == 'def':
         T = parse_type(thy, data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
-        ctxt = parse_vars(thy, data['vars'])
+        ctxt = {'vars': {}, 'consts': {data['name']: T}}
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
@@ -430,7 +430,7 @@ def parse_extension(thy, data):
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         rules = []
         for rule in data['rules']:
-            ctxt = parse_vars(thy, rule['vars'])
+            ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
@@ -440,7 +440,7 @@ def parse_extension(thy, data):
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         rules = []
         for rule in data['rules']:
-            ctxt = parse_vars(thy, rule['vars'])
+            ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append((rule['name'], prop))
         ext = induct.add_induct_predicate(data['name'], T, rules)
