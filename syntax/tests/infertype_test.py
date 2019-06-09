@@ -15,7 +15,7 @@ thy = basic.load_theory('list')
 Ta = TVar("a")
 listT = list.listT
 
-ctxt = {
+ctxt = {'vars': {
     "A" : boolT,
     "B" : boolT,
     "C" : boolT,
@@ -33,7 +33,7 @@ ctxt = {
     "xs" : listT(Ta),
     "ys" : listT(Ta),
     "zs" : listT(Ta),
-}
+}}
 
 class InferTypeTest(unittest.TestCase):
     def testInferType(self):

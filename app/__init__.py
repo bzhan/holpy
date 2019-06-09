@@ -404,7 +404,7 @@ def search_method():
 
         ctxt = cell.get_ctxt(goal_id)
         print_ctxt = dict((k, printer.print_type(thy, v, highlight=True))
-                          for k, v in ctxt.items())
+                          for k, v in ctxt['vars'].items())
         return jsonify({
             'search_res': search_res,
             'ctxt': print_ctxt

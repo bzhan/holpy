@@ -155,7 +155,7 @@ class NatTest(unittest.TestCase):
         ]
 
         cv = nat.norm_full()
-        ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
+        ctxt = {'vars': {"x": nat.natT, "y": nat.natT, "z": nat.natT}}
         for expr, res in test_data:
             t = parser.parse_term(thy, ctxt, expr)
             t2 = parser.parse_term(thy, ctxt, res)
@@ -174,7 +174,7 @@ class NatTest(unittest.TestCase):
         ]
 
         cv = nat.norm_full()
-        ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
+        ctxt = {'vars': {"x": nat.natT, "y": nat.natT, "z": nat.natT}}
         for expr, res in test_data:
             t = parser.parse_term(thy, ctxt, expr)
             t2 = parser.parse_term(thy, ctxt, res)
@@ -190,7 +190,7 @@ class NatTest(unittest.TestCase):
         ]
 
         cv = nat.norm_full()
-        ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
+        ctxt = {'vars': {"x": nat.natT, "y": nat.natT, "z": nat.natT}}
         for expr, res in test_data:
             t = parser.parse_term(thy, ctxt, expr)
             t2 = parser.parse_term(thy, ctxt, res)
@@ -206,7 +206,7 @@ class NatTest(unittest.TestCase):
         ]
 
         macro = nat.nat_norm_macro()
-        ctxt = {"x": nat.natT, "y": nat.natT, "z": nat.natT}
+        ctxt = {'vars': {"x": nat.natT, "y": nat.natT, "z": nat.natT}}
         for expr in test_data:
             goal = parser.parse_term(thy, ctxt, expr)
             prf = macro.expand((), thy, goal, [])

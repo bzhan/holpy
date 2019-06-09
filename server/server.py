@@ -82,9 +82,9 @@ class ProofState():
     def get_ctxt(self, id):
         """Obtain the context at the given id."""
         id = id_force_tuple(id)
-        ctxt = {}
+        ctxt = {'vars': {}}
         for v in self.vars:
-            ctxt[v.name] = v.T
+            ctxt['vars'][v.name] = v.T
 
         prf = self.prf
         try:
@@ -92,7 +92,7 @@ class ProofState():
                 for item in prf.items[:n+1]:
                     if item.rule == "variable":
                         nm, T = item.args
-                        ctxt[nm] = T
+                        ctxt['vars'][nm] = T
                 prf = prf.items[n].subproof
             return ctxt
         except (AttributeError, IndexError):
@@ -142,12 +142,12 @@ class ProofState():
         data['prop']: proposition to be proved. In the form A1 --> ... --> An --> C.
 
         """
-        ctxt = {}
+        ctxt = {'vars': {}}
         vars = []
         for name, str_T in data['vars'].items():
             T = parser.parse_type(thy, str_T)
             vars.append(Var(name, T))
-            ctxt[name] = T
+            ctxt['vars'][name] = T
         prop = parser.parse_term(thy, ctxt, data['prop'])
         assums, concl = prop.strip_implies()
 
@@ -174,17 +174,17 @@ class ProofState():
     @staticmethod
     def parse_proof(thy, data):
         """Obtain proof from json format."""
-        ctxt = {}
+        ctxt = {'vars': {}}
         state = ProofState(thy)
         for name, str_T in data['vars'].items():
             T = parser.parse_type(thy, str_T)
             state.vars.append(Var(name, T))
-            ctxt[name] = T
+            ctxt['vars'][name] = T
         state.prf = Proof()
         for line in data['proof']:
             if line['rule'] == "variable":
                 nm, str_T = line['args'].split(',', 1)
-                ctxt[nm] = parser.parse_type(thy, str_T.strip())
+                ctxt['vars'][nm] = parser.parse_type(thy, str_T.strip())
             item = parser.parse_proof_rule(thy, ctxt, line)
             state.prf.insert_item(item)
 

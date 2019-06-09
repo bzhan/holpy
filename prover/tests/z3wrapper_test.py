@@ -19,7 +19,7 @@ class Z3WrapperTest(unittest.TestCase):
         if not z3wrapper.z3_loaded:
             return
 
-        ctxt = {"s": TFun(natT, natT), "A": natT, "B": natT}
+        ctxt = {'vars': {"s": TFun(natT, natT), "A": natT, "B": natT}}
         test_data = [
             ("s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B", True),
             ("s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B", True),
@@ -42,7 +42,7 @@ class Z3WrapperTest(unittest.TestCase):
 
         macro = z3wrapper.Z3Macro()
 
-        ctxt = {"s": TFun(natT, natT), "A": natT, "B": natT}
+        ctxt = {'vars': {"s": TFun(natT, natT), "A": natT, "B": natT}}
         test_data = [
             ("A * B + 1 = 1 + B * A", True),
             ("s 0 = s 1", False),

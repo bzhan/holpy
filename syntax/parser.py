@@ -375,9 +375,9 @@ def parse_proof_rule(thy, ctxt, data):
     return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)
 
 def parse_vars(thy, vars_data):
-    ctxt = {}
+    ctxt = {'vars': {}}
     for k, v in vars_data.items():
-        ctxt[k] = parse_type(thy, v)
+        ctxt['vars'][k] = parse_type(thy, v)
     return ctxt
 
 def parse_extension(thy, data):

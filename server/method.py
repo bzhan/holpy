@@ -422,8 +422,8 @@ class induction(Method):
     def apply(self, state, id, data, prevs):
         # Find variable
         ctxt = state.get_ctxt(id)
-        assert data['var'] in ctxt, "induction: cannot find variable."
-        var = Var(data['var'], ctxt[data['var']])
+        assert data['var'] in ctxt['vars'], "induction: cannot find variable."
+        var = Var(data['var'], ctxt['vars'][data['var']])
 
         state.apply_tactic(id, tactic.var_induct(), args=(data['theorem'], var))
 

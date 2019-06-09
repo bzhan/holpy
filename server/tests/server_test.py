@@ -93,7 +93,7 @@ class ServerTest(unittest.TestCase):
 
     def testGetCtxt(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        self.assertEqual(state.get_ctxt(0), {'A': boolT, 'B': boolT})
+        self.assertEqual(state.get_ctxt(0), {'vars': {'A': boolT, 'B': boolT}})
 
     def testAddLineAfter(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
@@ -297,7 +297,7 @@ class ServerTest(unittest.TestCase):
         state.apply_backward_step(0, "append_def_1")
         state.introduction(1, names=["x", "xs"])
         state.rewrite_goal((1, 3), "append_def_2")
-        self.assertEqual(state.get_ctxt((1, 3)), {'x': Ta, 'xs': list.listT(Ta)})
+        self.assertEqual(state.get_ctxt((1, 3)), {'vars': {'x': Ta, 'xs': list.listT(Ta)}})
         state.rewrite_goal_with_prev((1, 3), (1, 2))
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(list.mk_append(xs, nil), xs))
 
