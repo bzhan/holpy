@@ -145,20 +145,14 @@ function current_state() {
 
 function introduction() {
     var input = current_state();
-    input.method_name = 'introduction';
-    input.names = "";
     if (input.line.indexOf("⊢ ∀") !== -1) {
-        input.names = prompt('Enter vars').split(",");
+        apply_method('introduction');
+    } else {
+        apply_method('introduction', {names: ''});
     }
-    display_running();
-    $.ajax({
-        url: "/api/apply-method",
-        type: "POST",
-        data: JSON.stringify(input),
-        success: display_checked_proof
-    })
 }
 
+// Apply method with the given name and initial set of arguments
 function apply_method(method_name, args) {
     var count = 0;
     var sig_list = [];
