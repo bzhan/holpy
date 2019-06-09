@@ -200,14 +200,6 @@
             }
         },
         {
-            "name": "arg_combination",
-            "ty": "macro"
-        },
-        {
-            "name": "fun_combination",
-            "ty": "macro"
-        },
-        {
             "name": "beta_norm",
             "ty": "macro"
         },

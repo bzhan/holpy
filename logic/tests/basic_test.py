@@ -37,53 +37,6 @@ class BasicTest(unittest.TestCase):
         self.assertRaises(TheoryException, thy1.get_theorem, 'conjD1')
         self.assertRaises(AssertionError, basic.load_theory, 'logic_base', limit=('thm.ax', 'conj'))
 
-    def testArgCombination(self):
-        thy = basic.load_theory('logic_base')
-        macro = logic_macro.arg_combination_macro()
-
-        x_eq_y = Term.mk_equals(x, y)
-        fx_eq_fy = Term.mk_equals(f(x), f(y))
-        th = Thm.assume(x_eq_y)
-        res = Thm([x_eq_y], fx_eq_fy)
-        self.assertEqual(macro.eval(thy, f, [th]), res)
-
-        prf = Proof(x_eq_y)
-        prf.add_item(1, "arg_combination", args=f, prevs=[0])
-        rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), res)
-        self.assertEqual(rpt.macros_expand, {"arg_combination"})
-        self.assertEqual(rpt.prim_steps, 3)
-
-    def testFunCombination(self):
-        thy = basic.load_theory('logic_base')
-        macro = logic_macro.fun_combination_macro()
-
-        f_eq_g = Term.mk_equals(f, g)
-        fx_eq_gx = Term.mk_equals(f(x), g(x))
-        th = Thm.assume(f_eq_g)
-        res = Thm([f_eq_g], fx_eq_gx)
-        self.assertEqual(macro.eval(thy, x, [th]), res)
-
-        prf = Proof(f_eq_g)
-        prf.add_item(1, "fun_combination", args=x, prevs=[0])
-        rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), res)
-        self.assertEqual(rpt.macros_expand, {"fun_combination"})
-        self.assertEqual(rpt.prim_steps, 3)
-
-    def testCombination(self):
-        """Test arg and fun combination together using proofs."""
-        thy = basic.load_theory('logic_base')
-
-        prf = Proof(Term.mk_equals(f,g), Term.mk_equals(x,y))
-        prf.add_item(2, "arg_combination", args=f, prevs=[1])
-        prf.add_item(3, "fun_combination", args=y, prevs=[0])
-        prf.add_item(4, "transitive", prevs=[2, 3])
-        prf.add_item(5, "implies_intr", args=Term.mk_equals(x,y), prevs=[4])
-        prf.add_item(6, "implies_intr", args=Term.mk_equals(f,g), prevs=[5])
-        th = Thm.mk_implies(Term.mk_equals(f,g), Term.mk_equals(x,y), Term.mk_equals(f(x),g(y)))
-        self.assertEqual(thy.check_proof(prf), th)
-
     def testBetaNorm(self):
         thy = basic.load_theory('logic_base')
 
@@ -136,7 +89,7 @@ class BasicTest(unittest.TestCase):
         th = Thm([], eq(plus(zero,zero),zero))
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.prim_steps, 9)
+        self.assertEqual(rpt.prim_steps, 8)
 
         rpt2 = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt2, check_level=1), th)
@@ -440,11 +393,12 @@ class BasicTest(unittest.TestCase):
         prf.add_item(6, "assume", args=eq(nat.plus(n,nat.zero), n))
         prf.add_item(7, "theorem", args="plus_def_2")
         prf.add_item(8, "substitution", args={"m": n, "n": nat.zero}, prevs=[7])
-        prf.add_item(9, "arg_combination", args=nat.Suc, prevs=[6])
-        prf.add_item(10, "transitive", prevs=[8, 9])
-        prf.add_item(11, "implies_intr", args=eq(nat.plus(n,nat.zero), n), prevs=[10])
-        prf.add_item(12, "forall_intr", args=n, prevs=[11])
-        prf.add_item(13, "implies_elim", prevs=[5, 12])
+        prf.add_item(9, "reflexive", args=nat.Suc)
+        prf.add_item(10, "combination", prevs=[9, 6])
+        prf.add_item(11, "transitive", prevs=[8, 10])
+        prf.add_item(12, "implies_intr", args=eq(nat.plus(n,nat.zero), n), prevs=[11])
+        prf.add_item(13, "forall_intr", args=n, prevs=[12])
+        prf.add_item(14, "implies_elim", prevs=[5, 13])
         th = Thm.mk_equals(nat.plus(n, nat.zero), n)
         self.assertEqual(thy.check_proof(prf), th)
 
@@ -460,11 +414,12 @@ class BasicTest(unittest.TestCase):
         prf.add_item(0, "reflexive", args=zero)
         prf.add_item(1, "rewrite_goal", args=("plus_def_1", eq(plus(zero,zero),zero)), prevs=[0])
         prf.add_item(2, "assume", args=eq(plus(n,zero),n))
-        prf.add_item(3, "arg_combination", args=S, prevs=[2])
-        prf.add_item(4, "rewrite_goal", args=("plus_def_2", eq(plus(S(n),zero),S(n))), prevs=[3])
-        prf.add_item(5, "implies_intr", args=eq(plus(n,zero),n), prevs=[4])
-        prf.add_item(6, "forall_intr", args=n, prevs=[5])
-        prf.add_item(7, "apply_theorem_for", args=("nat_induct", {}, {"P": Term.mk_abs(n, eq(plus(n,zero),n)), "x": n}), prevs=[1, 6])
+        prf.add_item(3, "reflexive", args=S)
+        prf.add_item(4, "combination", prevs=[3, 2])
+        prf.add_item(5, "rewrite_goal", args=("plus_def_2", eq(plus(S(n),zero),S(n))), prevs=[4])
+        prf.add_item(6, "implies_intr", args=eq(plus(n,zero),n), prevs=[5])
+        prf.add_item(7, "forall_intr", args=n, prevs=[6])
+        prf.add_item(8, "apply_theorem_for", args=("nat_induct", {}, {"P": Term.mk_abs(n, eq(plus(n,zero),n)), "x": n}), prevs=[1, 7])
         th = Thm.mk_equals(plus(n, zero), n)
         self.assertEqual(thy.check_proof(prf), th)
 

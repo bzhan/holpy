@@ -350,7 +350,7 @@ def export_proof_item(thy, item):
 def print_proof_item(thy, item):
     """Print the given proof item."""
     str_id = proof.print_id(item.id)
-    str_args = " " + print_str_args(thy, item.rule, item.args) if item.args else ""
+    str_args = " " + print_str_args(thy, item.rule, item.args, item.th.prop) if item.args else ""
     str_prevs = " from " + ", ".join(proof.print_id(prev) for prev in item.prevs) if item.prevs else ""
     str_th = print_thm(thy, item.th) + " by " if item.th else ""
     cur_line = str_id + ": " + str_th + item.rule + str_args + str_prevs

@@ -118,7 +118,7 @@ class ConvTest(unittest.TestCase):
         res_th = eq(t, res)
         self.assertEqual(cv.eval(thy, t), res_th)
         prf = cv.get_proof_term(thy, t).export()
-        self.assertEqual(len(prf.items), 5)
+        self.assertEqual(len(prf.items), 6)
         self.assertEqual(thy.check_proof(prf), res_th)
 
     def testBottomBetaConv(self):
@@ -128,7 +128,7 @@ class ConvTest(unittest.TestCase):
         res_th = eq(t, res)
         self.assertEqual(cv.eval(thy, t), res_th)
         prf = cv.get_proof_term(thy, t).export()
-        self.assertEqual(len(prf.items), 4)
+        self.assertEqual(len(prf.items), 5)
         self.assertEqual(thy.check_proof(prf), res_th)
 
     def testTopBetaConvLarge(self):
@@ -141,7 +141,7 @@ class ConvTest(unittest.TestCase):
             res = f(res, res)
         prf = cv.get_proof_term(thy, t).export()
         self.assertEqual(cv.eval(thy, t), eq(t, res))
-        self.assertEqual(len(prf.items), 29)
+        self.assertEqual(len(prf.items), 30)
         self.assertEqual(thy.check_proof(prf), eq(t, res))
 
     def testBottomBetaConvLarge(self):
@@ -154,7 +154,7 @@ class ConvTest(unittest.TestCase):
             res = f(res, res)
         prf = cv.get_proof_term(thy, t).export()
         self.assertEqual(cv.eval(thy, t), eq(t, res))
-        self.assertEqual(len(prf.items), 22)
+        self.assertEqual(len(prf.items), 23)
         self.assertEqual(thy.check_proof(prf), eq(t, res))
 
     def testTopBetaConvAbs(self):
