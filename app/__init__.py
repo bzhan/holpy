@@ -311,15 +311,13 @@ def file_data_to_output(thy, data):
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         rules = []
-        data['edit_vars'] = []
         data['edit_content'] = []
         data['edit_names'] = []
         for rule in data['rules']:
-            ctxt = parser.parse_vars(thy, rule['vars'])
+            ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parser.parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-            data['edit_vars'].append('   '.join(nm + ' :: ' + T for nm, T in rule['vars'].items()))
             data['edit_content'].append(printer.print_term(thy, prop, unicode=True, highlight=False))
             if 'name' in rule:
                 data['edit_names'].append(rule['name'])
@@ -338,11 +336,10 @@ def file_data_to_output(thy, data):
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
-        ctxt = parser.parse_vars(thy, data['vars'])
+        ctxt = {'vars': {}, 'consts': {data['name']: T}}
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
         data['edit_content'] = printer.print_term(thy, prop, unicode=True, highlight=False)
-        data['edit_vars'] = [k + ' :: ' + v for k, v in data['vars'].items()]
         data['type_name'] = 'definition'
 
     # Ignore other types of information.
@@ -446,24 +443,19 @@ def check_modify():
                 item['constrs'].append(constr)
 
     if item['ty'] == 'def':
-        item['vars'] = parse_var_decls(thy, item['vars_list'])
+        pass
 
     if item['ty'] == 'def.ind':
         item['rules'] = []
-        assert len(item['vars_list']) == len(item['data_content']), \
-            "numbers of lines in input do not match"
-        for prop, vars in zip(item['data_content'], item['vars_list']):
-            vars = parse_var_decls(thy, vars.split('   '))
-            item['rules'].append({'prop': prop, 'vars': vars})
+        for prop in item['data_content']:
+            item['rules'].append({'prop': prop})
 
     if item['ty'] == 'def.pred':
         item['rules'] = []
-        assert len(item['names_list']) == len(item['data_content']) and \
-            len(item['vars_list']) == len(item['data_content']), \
+        assert len(item['names_list']) == len(item['data_content']), \
             "number of lines in input do not match"
-        for name, vars, prop in zip(item['names_list'], item['vars_list'], item['data_content']):
-            vars = parse_var_decls(thy, vars.split('   '))
-            item['rules'].append({'name': name, 'prop': prop, 'vars': vars})
+        for name, prop in zip(item['names_list'], item['data_content']):
+            item['rules'].append({'name': name, 'prop': prop})
 
     with open_file(data['file_name'], 'r') as f:
         f_data = json.load(f)

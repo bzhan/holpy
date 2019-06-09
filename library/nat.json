@@ -29,17 +29,10 @@
             "name": "plus",
             "rules": [
                 {
-                    "prop": "0 + n = n",
-                    "vars": {
-                        "n": "nat"
-                    }
+                    "prop": "0 + n = n"
                 },
                 {
-                    "prop": "Suc m + n = Suc (m + n)",
-                    "vars": {
-                        "m": "nat",
-                        "n": "nat"
-                    }
+                    "prop": "Suc m + n = Suc (m + n)"
                 }
             ],
             "ty": "def.ind",
@@ -50,17 +43,10 @@
             "name": "times",
             "rules": [
                 {
-                    "prop": "0 * n = 0",
-                    "vars": {
-                        "n": "nat"
-                    }
+                    "prop": "0 * n = 0"
                 },
                 {
-                    "prop": "Suc m * n = n + m * n",
-                    "vars": {
-                        "m": "nat",
-                        "n": "nat"
-                    }
+                    "prop": "Suc m * n = n + m * n"
                 }
             ],
             "ty": "def.ind",
@@ -1307,19 +1293,13 @@
             "name": "bit0",
             "prop": "bit0 n = n + n",
             "ty": "def",
-            "type": "nat => nat",
-            "vars": {
-                "n": "nat"
-            }
+            "type": "nat => nat"
         },
         {
             "name": "bit1",
             "prop": "bit1 n = n + n + 1",
             "ty": "def",
-            "type": "nat => nat",
-            "vars": {
-                "n": "nat"
-            }
+            "type": "nat => nat"
         },
         {
             "name": "one_Suc",
@@ -1814,17 +1794,10 @@
             "name": "Sigma",
             "rules": [
                 {
-                    "prop": "Sigma f 0 = 0",
-                    "vars": {
-                        "f": "nat => nat"
-                    }
+                    "prop": "Sigma f 0 = 0"
                 },
                 {
-                    "prop": "Sigma f (Suc n) = Sigma f n + f n",
-                    "vars": {
-                        "f": "nat => nat",
-                        "n": "nat"
-                    }
+                    "prop": "Sigma f (Suc n) = Sigma f n + f n"
                 }
             ],
             "ty": "def.ind",

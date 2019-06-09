@@ -338,7 +338,6 @@
                         item = res.content;
                         delete item.data_content;
                         delete item.names_list;
-                        delete item.vars_list;
                         delete item.data_name;
                         if (number === '' || number === '-1') {
                             json_files[theory_name].content.push(item);
@@ -707,8 +706,6 @@
                     form.content.textContent = item.edit_content.join('\n');
                     form.content.rows = item.edit_content.length;    
                 }
-                form.data_vars.textContent = item.edit_vars.join('\n');
-                form.data_vars.rows = item.edit_vars.length;
                 if (data_type === 'def.pred') {
                     form.vars_names.textContent = item.edit_names.join('\n');
                     form.vars_names.rows = item.edit_names.length;
@@ -769,7 +766,6 @@
                 item.prop = form.content.value.trim();
             else
                 item.data_content = form.content.value.trim().split('\n');
-            item.vars_list = form.data_vars.value.trim().split('\n');
             item.names_list = form.vars_names.value.trim().split('\n');
         }
         return item;

@@ -49,16 +49,10 @@
             "type": "scalarValue => bool",
             "rules": [
                 {
-                    "prop": "scalar_is_nat (NatV n) = true",
-                    "vars": {
-                        "n": "nat"
-                    }
+                    "prop": "scalar_is_nat (NatV n) = true"
                 },
                 {
-                    "prop": "scalar_is_nat (BoolV b) = false",
-                    "vars": {
-                        "b": "bool"
-                    }
+                    "prop": "scalar_is_nat (BoolV b) = false"
                 }
             ]
         },
@@ -68,16 +62,10 @@
             "type": "scalarValue => bool",
             "rules": [
                 {
-                    "prop": "scalar_is_bool (NatV n) = false",
-                    "vars": {
-                        "n": "nat"
-                    }
+                    "prop": "scalar_is_bool (NatV n) = false"
                 },
                 {
-                    "prop": "scalar_is_bool (BoolV b) = true",
-                    "vars": {
-                        "b": "bool"
-                    }
+                    "prop": "scalar_is_bool (BoolV b) = true"
                 }
             ]
         },
@@ -87,16 +75,10 @@
             "type": "scalarValue => nat",
             "rules": [
                 {
-                    "prop": "scalar_of_nat (NatV n) = n",
-                    "vars": {
-                        "n": "nat"
-                    }
+                    "prop": "scalar_of_nat (NatV n) = n"
                 },
                 {
-                    "prop": "scalar_of_nat (BoolV b) = 0",
-                    "vars": {
-                        "b": "bool"
-                    }
+                    "prop": "scalar_of_nat (BoolV b) = 0"
                 }
             ]
         },
@@ -106,16 +88,10 @@
             "type": "scalarValue => bool",
             "rules": [
                 {
-                    "prop": "scalar_of_bool (NatV n) = false",
-                    "vars": {
-                        "n": "nat"
-                    }
+                    "prop": "scalar_of_bool (NatV n) = false"
                 },
                 {
-                    "prop": "scalar_of_bool (BoolV b) = b",
-                    "vars": {
-                        "b": "bool"
-                    }
+                    "prop": "scalar_of_bool (BoolV b) = b"
                 }
             ]
         },

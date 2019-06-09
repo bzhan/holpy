@@ -9,12 +9,7 @@
             "name": "fun_upd",
             "prop": "fun_upd f a b = (%x. if x = a then b else f x)",
             "ty": "def",
-            "type": "('a => 'b) => 'a => 'b => 'a => 'b",
-            "vars": {
-                "a": "'a",
-                "b": "'b",
-                "f": "'a => 'b"
-            }
+            "type": "('a => 'b) => 'a => 'b => 'a => 'b"
         },
         {
             "hint_rewrite": "true",
