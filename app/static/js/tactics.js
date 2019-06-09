@@ -332,11 +332,9 @@ function display_highlight_strs(editor, ps, line_no, ch) {
 // Detect whether the given line is the last of a section
 function is_last_id(id, line_no) {
     if (cells[id]['proof'].length - 1 === line_no) {
-        return true
+        return true;
     }
-    var line_id = cells[id]['proof'][line_no].id
-    var line_id2 = cells[id]['proof'][line_no + 1].id
-    return line_id.split('.').length > line_id2.split('.').length
+    return cells[id]['proof'][line_no+1].rule === 'intros';
 }
 
 function display_have_prompt(editor, id, line_no, ch) {
@@ -414,6 +412,9 @@ function display(id) {
         display_line(id, line_no);
         var len = editor.getLineHandle(line_no).text.length;
         editor.replaceRange('\n', {line: line_no, ch: len}, {line: line_no, ch: len + 1});
+        if (line.rule === 'intros') {
+            editor.markText({line: line_no, ch: 0}, {line: line_no}, {inclusiveRight: true, inclusiveLeft: true, collapsed: 'true'});
+        }
     });
     $('div.code-cell.selected div.CodeMirror-gutters').css('width', 32 + max_id_len * 3 + 'px');
     $('div.CodeMirror-gutters').css('text-align', 'left');
