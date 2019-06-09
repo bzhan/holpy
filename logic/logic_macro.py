@@ -289,6 +289,10 @@ class trivial_macro(ProofTermMacro):
         self.level = 1
         self.sig = Term
 
+    def can_eval(self, thy, args):
+        As, C = args.strip_implies()
+        return C in As
+
     def get_proof_term(self, thy, args, pts):
         As, C = args.strip_implies()
         assert C in As, "trivial_macro"

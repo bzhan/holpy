@@ -579,28 +579,11 @@
                     "th": "¬¬A ⊢ ¬¬A"
                 },
                 {
-                    "args": "",
+                    "args": "A ⟶ A",
                     "id": "0.1",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "¬¬A ⊢ A ⟶ A"
-                },
-                {
-                    "args": "A",
-                    "id": "0.1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "A ⊢ A"
-                },
-                {
-                    "args": "",
-                    "id": "0.1.1",
-                    "prevs": [
-                        "0.1.0",
-                        "0.1.0"
-                    ],
-                    "rule": "intros",
-                    "th": "¬¬A ⊢ A ⟶ A"
+                    "rule": "trivial",
+                    "th": "⊢ A ⟶ A"
                 },
                 {
                     "args": "",
@@ -2234,28 +2217,11 @@
                     "th": "(A ⟶ B) ⟶ A ⊢ (A ⟶ B) ⟶ A"
                 },
                 {
-                    "args": "",
+                    "args": "A ⟶ A",
                     "id": "1",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "(A ⟶ B) ⟶ A ⊢ A ⟶ A"
-                },
-                {
-                    "args": "A",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "A ⊢ A"
-                },
-                {
-                    "args": "",
-                    "id": "1.1",
-                    "prevs": [
-                        "1.0",
-                        "1.0"
-                    ],
-                    "rule": "intros",
-                    "th": "(A ⟶ B) ⟶ A ⊢ A ⟶ A"
+                    "rule": "trivial",
+                    "th": "⊢ A ⟶ A"
                 },
                 {
                     "args": "",
@@ -2293,7 +2259,7 @@
                         "2.1.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "¬A, A ⊢ B"
+                    "th": "¬A, (A ⟶ B) ⟶ A, A ⊢ B"
                 },
                 {
                     "args": "",
