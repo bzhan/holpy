@@ -570,15 +570,12 @@
         } else if (data.ty === 'def') {
             delete data.type_hl;
             delete data.prop_hl;
-            delete data.edit_vars;
             delete data.edit_content;
             delete data.type_name;
         } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
             delete data.type_hl;
             delete data.ext;
-            delete data.edit_vars;
             delete data.edit_content;
-            delete data.edit_names;
             delete data.type_name;
             delete data.ext_output;
             for (var i in data.rules) {
@@ -706,11 +703,6 @@
                     form.content.textContent = item.edit_content.join('\n');
                     form.content.rows = item.edit_content.length;    
                 }
-                if (data_type === 'def.pred') {
-                    form.vars_names.textContent = item.edit_names.join('\n');
-                    form.vars_names.rows = item.edit_names.length;
-                }
-
                 form['number-def'].value = number;
                 form.data_name_def.value = item.name + ' :: ' + item.type;
             } else {
@@ -766,7 +758,6 @@
                 item.prop = form.content.value.trim();
             else
                 item.data_content = form.content.value.trim().split('\n');
-            item.names_list = form.vars_names.value.trim().split('\n');
         }
         return item;
     }

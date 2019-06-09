@@ -312,15 +312,15 @@ def file_data_to_output(thy, data):
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         rules = []
         data['edit_content'] = []
-        data['edit_names'] = []
         for rule in data['rules']:
             ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parser.parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-            data['edit_content'].append(printer.print_term(thy, prop, unicode=True, highlight=False))
+            content = printer.print_term(thy, prop, unicode=True, highlight=False)
             if 'name' in rule:
-                data['edit_names'].append(rule['name'])
+                content = rule['name'] + ': ' + content
+            data['edit_content'].append(content)
         exts = induct.add_induct_def(data['name'], T, rules)
 
         # Obtain items added by the extension
@@ -451,11 +451,13 @@ def check_modify():
             item['rules'].append({'prop': prop})
 
     if item['ty'] == 'def.pred':
+        T = parser.parse_type(thy, item['type'])
         item['rules'] = []
-        assert len(item['names_list']) == len(item['data_content']), \
-            "number of lines in input do not match"
-        for name, prop in zip(item['names_list'], item['data_content']):
-            item['rules'].append({'name': name, 'prop': prop})
+        for content in item['data_content']:
+            thy.add_term_sig(item['name'], T)  # Add this first, for parsing later.
+            ctxt = {'vars': {}, 'consts': {item['name']: T}}
+            name, prop = parser.parse_named_thm(thy, ctxt, content)
+            item['rules'].append({'name': name, 'prop': printer.print_term(thy, prop)})
 
     with open_file(data['file_name'], 'r') as f:
         f_data = json.load(f)

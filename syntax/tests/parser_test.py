@@ -362,6 +362,16 @@ class ParserTest(unittest.TestCase):
         for s, res in test_data:
             self.assertEqual(parser.parse_ind_constr(thy, s), res)
 
+    def testParseNamedThm(self):
+        ctxt = {'vars': {'A': boolT, 'B': boolT}}
+        test_data = [
+            ("conjI: A = B", ('conjI', Term.mk_equals(A, B))),
+            ("A = B", (None, Term.mk_equals(A, B)))
+        ]
+
+        for s, res in test_data:
+            self.assertEqual(parser.parse_named_thm(thy, ctxt, s), res)
+
 
 if __name__ == "__main__":
     ParserTest.testParseTypeInd()

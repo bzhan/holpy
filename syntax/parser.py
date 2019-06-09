@@ -98,7 +98,9 @@ grammar = r"""
     
     var_decl: CNAME "::" type  // variable declaration
 
-    ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types    
+    ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types
+
+    named_thm: CNAME ":" term | term  // named theorem
 
     %import common.CNAME
     %import common.WS
@@ -257,6 +259,9 @@ class HOLTransformer(Transformer):
     def var_decl(self, name, T):
         return (str(name), T)
 
+    def named_thm(self, *args):
+        return tuple(args)
+
 
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
@@ -266,6 +271,7 @@ term_parser = get_parser_for("term")
 thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
+named_thm_parser = get_parser_for("named_thm")
 instsp_parser = get_parser_for("instsp")
 var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
@@ -301,6 +307,14 @@ def parse_tyinst(thy, s):
     """Parse a type instantiation."""
     parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
+
+def parse_named_thm(thy, ctxt, s):
+    """Parse a named theorem."""
+    res = named_thm_parser.parse(s)
+    if len(res) == 1:
+        return (None, infertype.type_infer(thy, ctxt, res[0]))
+    else:
+        return (str(res[0]), infertype.type_infer(thy, ctxt, res[1]))
 
 def parse_instsp(thy, ctxt, s):
     """Parse type and term instantiations."""
