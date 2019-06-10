@@ -338,9 +338,7 @@
 //                            json_files[theory_name].content.push(item);
                             $.each(json_files[theory_name].content, function(i, j) {
                                 if (j['ty'] === 'pre-data') {
-                                    j = item;
-//                                    var templ_add = _.template($('#template-content-theory_desc')£»
-//                                    $('div[item_id = "'+ i +'"]').replace(templ_add)
+                                    json_files[theory_name].content[i] = item;
                                 }
                             })
                         } else {
