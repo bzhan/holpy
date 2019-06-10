@@ -41,11 +41,11 @@
         // Add new json file.
         $('#new-file').click(init_metadata_area);
 
-        $('button#additional-option-items').click(() => {
-            $('div#right').css('z-index', '-100');
+        $('button#additional-option-items,#additional-option-file,#additional-option-action').click(() => {
+            $('div.rtop').css('z-index', '-100');
         })
 
-        $('div.rtop').click(()=> {
+        $('div#right').click(()=> {
             if ($('div.rtop').css('z-index') === '-100')
                 $('div.rtop').css('z-index', '0');
         })
@@ -272,12 +272,12 @@
                     var item_id = items_selected[0];
                     json_files[cur_theory_name].content.splice(item_id+1, 0, {'ty':'pre-data'});
                 }
-                else if($(this).attr('id') === 'add_end') {
+            }
+            if (cur_theory_name && $(this).attr('id') === 'add_end') {
                     json_files[cur_theory_name].content.push({'ty':'pre-data'});
                 }
-                display_theory_items();
-                save_json_file(cur_theory_name);
-            }
+            display_theory_items();
+            save_json_file(cur_theory_name);
         })
 
         // Use tab key to insert unicode characters.
