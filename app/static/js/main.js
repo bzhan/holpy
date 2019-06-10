@@ -6,6 +6,7 @@
     var file_list = [];  // List of all files for the current user.
     var items_selected = [];  // List of selected items in the displayed theory.
     var click_count = 0;
+    var add_tab_number = ''; //add new data tab's page_num;
 
     $(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -252,27 +253,21 @@
         });
 
         $('a#add_before, a#add_after, a#add_end').click(function() {
-            if (cur_theory_name) {
-                if ($(this).attr('id') === 'add_before' && items_selected.length === 1) {
-                    var item_id = items_selected[0];
-                    if(item_id !== 0) {
-                        $('<div><p><pre>   </pre></p></div>').insertBefore($('div#panel-content .theory_item:eq('+ item_id +')'));
-//                        json_files[cur_theory_name].content.splice(item_id-1, 0, {'ty': 'none'});
-                    }
-                    else
-                        $('<div><p><pre>  </pre></p></div>').insertBefore($('div#panel-content .theory_item:eq('+ item_id +')'));
-//                        json_files[cur_theory_name].content.splice(item_id, 0, {'ty': 'none'});
+            init_edit_area('', 'thm', add_mode = true);
+            if (cur_theory_name && items_selected.length === 1) {
+                if ($(this).attr('id') === 'add_before') {
+                    json_files[cur_theory_name].content.splice(items_selected[0], 0, {'ty': 'pre-data'});
+                    items_selected[0] += 1;
                 }
-                else if($(this).attr('id') === 'add_after' && items_selected.length ===1) {
+                else if($(this).attr('id') === 'add_after') {
                     var item_id = items_selected[0];
-//                    json_files[cur_theory_name].content.splice(item_id+1, 0, {'ty':'none'});
-                    $('<div><p><pre>    </pre></p></div>').insertAfter($('div#panel-content .theory_item:eq('+ item_id +')'));
+                    json_files[cur_theory_name].content.splice(item_id+1, 0, {'ty':'pre-data'});
                 }
                 else if($(this).attr('id') === 'add_end') {
-//                    json_files[cur_theory_name].content.push({'ty':'none'});
-                    $('div#panel-content').append('<div><p><pre>  </pre></p></div>');
+                    json_files[cur_theory_name].content.push({'ty':'pre-data'});
                 }
-//                refresh();
+                display_theory_items();
+                save_json_file(cur_theory_name);
             }
         })
 
@@ -341,7 +336,14 @@
                         delete item.vars_list;
                         delete item.data_name;
                         if (number === '' || number === '-1') {
-                            json_files[theory_name].content.push(item);
+//                            json_files[theory_name].content.push(item);
+                            $.each(json_files[theory_name].content, function(i, j) {
+                                if (j['ty'] === 'pre-data') {
+                                    j = item;
+//                                    var templ_add = _.template($('#template-content-theory_desc')£»
+//                                    $('div[item_id = "'+ i +'"]').replace(templ_add)
+                                }
+                            })
                         } else {
                             item = json_files[theory_name].content[number]
                             delete item.hint_forward;
@@ -592,7 +594,7 @@
     function save_json_file(filename) {
         var content = [];
         $.each(json_files[filename].content, function (i, item) {
-            content.push($.extend(true, {}, item));  // perform deep copy
+            content.push($.extend(true, {}, item));  // perform deep copy//////
             item_to_output(content[i]);
         });
         var data = {
@@ -613,7 +615,7 @@
     // 
     // number: if editing an existing item, id of the current item.
     // data_type: if adding a new item, type of the new item.
-    function init_edit_area(number = '', data_type = '') {
+    function init_edit_area(number = '', data_type = '', add_mode = false) {
         page_num++;
         var ext_output = '';
         var templ_tab = _.template($("#template-tab").html());
@@ -639,6 +641,10 @@
         }
 
         if (data_type === 'thm' || data_type === 'thm.ax') {
+            if (add_mode) {
+                add_tab_number = page_num;
+                $('ul#codeTab li[name="code'+ page_num +'"] a').text('New-data');
+            }
             var templ_edit = _.template($('#template-edit-thm').html());
             $('#codeTabContent').append(templ_edit({page_num: page_num, ext_output: ext_output, type_name: ''}));
             var form = document.getElementById('edit-thm-form' + page_num);
