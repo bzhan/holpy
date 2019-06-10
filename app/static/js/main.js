@@ -41,6 +41,15 @@
         // Add new json file.
         $('#new-file').click(init_metadata_area);
 
+        $('button#additional-option-items').click(() => {
+            $('div#right').css('z-index', '-100');
+        })
+
+        $('div.rtop').click(()=> {
+            if ($('div.rtop').css('z-index') === '-100')
+                $('div.rtop').css('z-index', '0');
+        })
+
         // Refresh file data.
         $('#refresh-files').click(function () {
             $.ajax({
