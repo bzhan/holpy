@@ -14,7 +14,7 @@ class TypeInferenceException(Exception):
 
 
 def is_internal_type(T):
-    """Whether T is an internal type used for type inference
+    """Whether T is an internal type variable used for type inference
     (and hence can be unified).
 
     """
@@ -25,13 +25,17 @@ def unify(uf, T1, T2):
     data structure.
     
     """
+    # First, find representatives of T1 and T2
     T1 = uf.find(T1)
     T2 = uf.find(T2)
+    # Type constructors, recursively unify each argument
     if T1.ty == HOLType.TYPE and T2.ty == HOLType.TYPE and T1.name == T2.name:
         for i in range(len(T1.args)):
             unify(uf, T1.args[i], T2.args[i])
+    # Concrete type variables
     elif T1.ty == HOLType.TVAR and T2.ty == HOLType.TVAR and T1.name == T2.name:
         return
+    # Internal (unifiable) type variables
     elif is_internal_type(T1):
         uf.union(T2, T1, force_first=True)
     elif is_internal_type(T2):
@@ -50,7 +54,11 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
     # Number of internal type variables created.
     num_internal = 0
 
-    # Returns a new type variable.
+    # Records type of variables assigned during inference. This enforces
+    # the condition that all occurrence of a variable have the same type.
+    incr_ctxt = dict()
+
+    # Create and return a new type variable.
     def new_type():
         nonlocal num_internal
         T = TVar("_t" + str(num_internal))
@@ -69,10 +77,13 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
         # otherwise, make a new type.
         if t.is_var():
             if t.T is None:
-                if t.name in ctxt:
-                    t.T = ctxt[t.name]
+                if t.name in ctxt['vars']:
+                    t.T = ctxt['vars'][t.name]
+                elif t.name in incr_ctxt:
+                    t.T = incr_ctxt[t.name]
                 else:
                     t.T = new_type()
+                    incr_ctxt[t.name] = t.T
             add_type(t.T)
             return t.T
 
@@ -80,12 +91,15 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
         # replacing arbitrary variables by new types.
         elif t.is_const():
             if t.T is None:
-                T = thy.get_term_sig(t.name)
-                Tvars = T.get_tvars()
-                tyinst = dict()
-                for Tv in Tvars:
-                    tyinst[Tv.name] = new_type()
-                t.T = T.subst(tyinst)
+                if 'consts' in ctxt and t.name in ctxt['consts']:
+                    t.T = ctxt['consts'][t.name]
+                else:
+                    T = thy.get_term_sig(t.name)
+                    Tvars = T.get_tvars()
+                    tyinst = dict()
+                    for Tv in Tvars:
+                        tyinst[Tv.name] = new_type()
+                    t.T = T.subst(tyinst)
             add_type(t.T)
             return t.T
 
@@ -123,11 +137,8 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
     # Replace vars and constants with the appropriate type.
     tyinst = dict()
     for i in range(num_internal):
-        rep = uf.find(TVar("_t" + str(i)))
-        if forbid_internal and is_internal_type(rep):
-            raise TypeInferenceException("Unspecified type\n" + repr(t))
-        if not is_internal_type(rep):
-            tyinst["_t" + str(i)] = rep
+        nm = "_t" + str(i)
+        tyinst[nm] = uf.find(TVar(nm))
 
     for i in range(100):
         repr_t = repr(t)
@@ -135,6 +146,10 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
         if repr_t == repr(t):
             break
     assert i != 99, "type_infer: infinite loop at substitution."
+
+    for k, v in tyinst.items():
+        if forbid_internal and is_internal_type(v):
+            raise TypeInferenceException("Unspecified type\n" + repr(t))
 
     return t
 

@@ -31,15 +31,10 @@
             "name": "length",
             "rules": [
                 {
-                    "prop": "length (nil::'a list) = 0",
-                    "vars": {}
+                    "prop": "length (nil::'a list) = 0"
                 },
                 {
-                    "prop": "length (cons x xs) = Suc (length xs)",
-                    "vars": {
-                        "x": "'a",
-                        "xs": "'a list"
-                    }
+                    "prop": "length (cons x xs) = Suc (length xs)"
                 }
             ],
             "ty": "def.ind",
@@ -50,18 +45,10 @@
             "name": "append",
             "rules": [
                 {
-                    "prop": "nil @ xs = xs",
-                    "vars": {
-                        "xs": "'a list"
-                    }
+                    "prop": "nil @ xs = xs"
                 },
                 {
-                    "prop": "cons x xs @ ys = cons x (xs @ ys)",
-                    "vars": {
-                        "x": "'a",
-                        "xs": "'a list",
-                        "ys": "'a list"
-                    }
+                    "prop": "cons x xs @ ys = cons x (xs @ ys)"
                 }
             ],
             "ty": "def.ind",
@@ -71,15 +58,10 @@
             "name": "rev",
             "rules": [
                 {
-                    "prop": "rev (nil::'a list) = nil",
-                    "vars": {}
+                    "prop": "rev (nil::'a list) = nil"
                 },
                 {
-                    "prop": "rev (cons x xs) = rev xs @ cons x nil",
-                    "vars": {
-                        "x": "'a",
-                        "xs": "'a list"
-                    }
+                    "prop": "rev (cons x xs) = rev xs @ cons x nil"
                 }
             ],
             "ty": "def.ind",

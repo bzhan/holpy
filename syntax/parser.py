@@ -98,7 +98,9 @@ grammar = r"""
     
     var_decl: CNAME "::" type  // variable declaration
 
-    ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types    
+    ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types
+
+    named_thm: CNAME ":" term | term  // named theorem
 
     %import common.CNAME
     %import common.WS
@@ -257,6 +259,9 @@ class HOLTransformer(Transformer):
     def var_decl(self, name, T):
         return (str(name), T)
 
+    def named_thm(self, *args):
+        return tuple(args)
+
 
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
@@ -266,6 +271,7 @@ term_parser = get_parser_for("term")
 thm_parser = get_parser_for("thm")
 inst_parser = get_parser_for("inst")
 tyinst_parser = get_parser_for("tyinst")
+named_thm_parser = get_parser_for("named_thm")
 instsp_parser = get_parser_for("instsp")
 var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
@@ -301,6 +307,14 @@ def parse_tyinst(thy, s):
     """Parse a type instantiation."""
     parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
+
+def parse_named_thm(thy, ctxt, s):
+    """Parse a named theorem."""
+    res = named_thm_parser.parse(s)
+    if len(res) == 1:
+        return (None, infertype.type_infer(thy, ctxt, res[0]))
+    else:
+        return (str(res[0]), infertype.type_infer(thy, ctxt, res[1]))
 
 def parse_instsp(thy, ctxt, s):
     """Parse type and term instantiations."""
@@ -375,9 +389,9 @@ def parse_proof_rule(thy, ctxt, data):
     return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)
 
 def parse_vars(thy, vars_data):
-    ctxt = {}
+    ctxt = {'vars': {}}
     for k, v in vars_data.items():
-        ctxt[k] = parse_type(thy, v)
+        ctxt['vars'][k] = parse_type(thy, v)
     return ctxt
 
 def parse_extension(thy, data):
@@ -399,7 +413,7 @@ def parse_extension(thy, data):
     elif data['ty'] == 'def':
         T = parse_type(thy, data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
-        ctxt = parse_vars(thy, data['vars'])
+        ctxt = {'vars': {}, 'consts': {data['name']: T}}
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
@@ -430,7 +444,7 @@ def parse_extension(thy, data):
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         rules = []
         for rule in data['rules']:
-            ctxt = parse_vars(thy, rule['vars'])
+            ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
@@ -440,7 +454,7 @@ def parse_extension(thy, data):
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         rules = []
         for rule in data['rules']:
-            ctxt = parse_vars(thy, rule['vars'])
+            ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append((rule['name'], prop))
         ext = induct.add_induct_predicate(data['name'], T, rules)

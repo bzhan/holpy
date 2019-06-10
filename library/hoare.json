@@ -52,66 +52,27 @@
             "rules": [
                 {
                     "name": "Sem_basic",
-                    "prop": "Sem (Basic f) s (f s)",
-                    "vars": {
-                        "f": "'a => 'a",
-                        "s": "'a"
-                    }
+                    "prop": "Sem (Basic f) s (f s)" 
                 },
                 {
                     "name": "Sem_seq",
-                    "prop": "Sem c1 s s3 --> Sem c2 s3 s2 --> Sem (Seq c1 c2) s s2",
-                    "vars": {
-                        "c1": "'a com",
-                        "c2": "'a com",
-                        "s": "'a",
-                        "s2": "'a",
-                        "s3": "'a"
-                    }
+                    "prop": "Sem c1 s s3 --> Sem c2 s3 s2 --> Sem (Seq c1 c2) s s2"
                 },
                 {
                     "name": "Sem_if1",
-                    "prop": "b s --> Sem c1 s s2 --> Sem (Cond b c1 c2) s s2",
-                    "vars": {
-                        "b": "'a => bool",
-                        "c1": "'a com",
-                        "c2": "'a com",
-                        "s": "'a",
-                        "s2": "'a"
-                    }
+                    "prop": "b s --> Sem c1 s s2 --> Sem (Cond b c1 c2) s s2"
                 },
                 {
                     "name": "Sem_if2",
-                    "prop": "~ b s --> Sem c2 s s2 --> Sem (Cond b c1 c2) s s2",
-                    "vars": {
-                        "b": "'a => bool",
-                        "c1": "'a com",
-                        "c2": "'a com",
-                        "s": "'a",
-                        "s2": "'a"
-                    }
+                    "prop": "~ b s --> Sem c2 s s2 --> Sem (Cond b c1 c2) s s2"
                 },
                 {
                     "name": "Sem_while_skip",
-                    "prop": "~ b s --> Sem (While b I c) s s",
-                    "vars": {
-                        "I": "'a => bool",
-                        "b": "'a => bool",
-                        "c": "'a com",
-                        "s": "'a"
-                    }
+                    "prop": "~ b s --> Sem (While b I c) s s"
                 },
                 {
                     "name": "Sem_while_loop",
-                    "prop": "b s --> Sem c s s3 --> Sem (While b I c) s3 s2 --> Sem (While b I c) s s2",
-                    "vars": {
-                        "I": "'a => bool",
-                        "b": "'a => bool",
-                        "c": "'a com",
-                        "s": "'a",
-                        "s2": "'a",
-                        "s3": "'a"
-                    }
+                    "prop": "b s --> Sem c s s3 --> Sem (While b I c) s3 s2 --> Sem (While b I c) s s2"
                 }
             ],
             "ty": "def.pred",
@@ -121,8 +82,7 @@
             "name": "Skip",
             "prop": "Skip = Basic (λf::'a. f)",
             "ty": "def",
-            "type": "'a com",
-            "vars": {}
+            "type": "'a com"
         },
         {
             "name": "Sem_Skip",
@@ -155,11 +115,7 @@
             "name": "Assign",
             "prop": "Assign a b = Basic (λf. (f)(a := b f))",
             "ty": "def",
-            "type": "'a => (('a => 'b) => 'b) => ('a => 'b) com",
-            "vars": {
-                "a": "'a",
-                "b": "('a => 'b) => 'b"
-            }
+            "type": "'a => (('a => 'b) => 'b) => ('a => 'b) com"
         },
         {
             "name": "Sem_Assign",
@@ -198,8 +154,7 @@
             "name": "P1",
             "prop": "P1 = Seq (Assign 0 (%s. 1)) (Assign 1 (%s. 2))",
             "ty": "def",
-            "type": "(nat => nat) com",
-            "vars": {}
+            "type": "(nat => nat) com"
         },
         {
             "name": "P1_test",
@@ -230,8 +185,7 @@
             "name": "P2",
             "prop": "P2 = Seq (Assign 0 (%s. s 0 + 1)) (Assign 0 (%s. s 0 + 1))",
             "ty": "def",
-            "type": "(nat => nat) com",
-            "vars": {}
+            "type": "(nat => nat) com"
         },
         {
             "name": "P2_test",
@@ -262,8 +216,7 @@
             "name": "P3",
             "prop": "P3 = While (%s. ~(s 0 = 3)) (%s. true) (Assign 0 (%s. s 0 + 1))",
             "ty": "def",
-            "type": "(nat => nat) com",
-            "vars": {}
+            "type": "(nat => nat) com"
         },
         {
             "name": "P3_test",
@@ -294,22 +247,13 @@
             "name": "Entail",
             "prop": "Entail P Q = (!s. P s --> Q s)",
             "ty": "def",
-            "type": "('a => bool) => ('a => bool) => bool",
-            "vars": {
-                "P": "'a => bool",
-                "Q": "'a => bool"
-            }
+            "type": "('a => bool) => ('a => bool) => bool"
         },
         {
             "name": "Valid",
             "prop": "Valid P c Q = (!s. !s2. P s --> Sem c s s2 --> Q s2)",
             "ty": "def",
-            "type": "('a => bool) => 'a com => ('a => bool) => bool",
-            "vars": {
-                "P": "'a => bool",
-                "Q": "'a => bool",
-                "c": "'a com"
-            }
+            "type": "('a => bool) => 'a com => ('a => bool) => bool"
         },
         {
             "name": "pre_rule",

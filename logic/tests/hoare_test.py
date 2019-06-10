@@ -118,7 +118,7 @@ class HoareTest(unittest.TestCase):
     def testVCGWhile(self):
         A = Var("A", natT)
         B = Var("B", natT)
-        ctxt = {"A": natT, "B": natT}
+        ctxt = {'vars': {"A": natT, "B": natT}}
         c = parser.parse_term(thy, ctxt, \
             "While (%s. ~s 0 = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))")
         P = parser.parse_term(thy, ctxt, "%s. s 0 = 0 & s 1 = 0")

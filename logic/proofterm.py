@@ -67,16 +67,6 @@ class ProofTerm():
         return ProofTermDeriv("equal_elim", None, None, [pt1, pt2])
 
     @staticmethod
-    def arg_combination(thy, f, pt):
-        """Given x = y and term f, return f x = f y."""
-        return ProofTermDeriv("arg_combination", thy, f, [pt])
-
-    @staticmethod
-    def fun_combination(thy, x, pt):
-        """Given f = g and term x, return f x = g x."""
-        return ProofTermDeriv("fun_combination", thy, x, [pt])
-
-    @staticmethod
     def implies_intr(A, pt):
         return ProofTermDeriv("implies_intr", None, A, [pt])
 

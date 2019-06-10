@@ -16,7 +16,7 @@ import syntax.parser as parser
 thy = basic.load_theory('list')
 
 Ta = TVar("a")
-ctxt = {
+ctxt = {'vars': {
     "A" : boolT,
     "B" : boolT,
     "C" : boolT,
@@ -34,7 +34,7 @@ ctxt = {
     "xs" : Type("list", Ta),
     "ys" : Type("list", Ta),
     "zs" : Type("list", Ta),
-}
+}}
 
 A = Var("A", boolT)
 B = Var("B", boolT)
@@ -222,11 +222,11 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(print_term(thy, t), s)
 
     def testParseSet(self):
-        ctxt = {
+        ctxt = {'vars': {
             "x" : Ta,
             "A" : set.setT(Ta),
             "B" : set.setT(Ta),
-        }
+        }}
         test_data = [
             ("({}::'a set)", "(∅::'a set)", "'a set"),
             ("x MEM A", "x ∈ A", "bool"),
@@ -361,6 +361,16 @@ class ParserTest(unittest.TestCase):
 
         for s, res in test_data:
             self.assertEqual(parser.parse_ind_constr(thy, s), res)
+
+    def testParseNamedThm(self):
+        ctxt = {'vars': {'A': boolT, 'B': boolT}}
+        test_data = [
+            ("conjI: A = B", ('conjI', Term.mk_equals(A, B))),
+            ("A = B", (None, Term.mk_equals(A, B)))
+        ]
+
+        for s, res in test_data:
+            self.assertEqual(parser.parse_named_thm(thy, ctxt, s), res)
 
 
 if __name__ == "__main__":

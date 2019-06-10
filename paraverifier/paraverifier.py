@@ -248,11 +248,11 @@ def load_system(filename):
     for rule in data['rules']:
         if isinstance(rule['var'], str):
             rule_var = Var(rule['var'], natT)
-            ctxt = dict((v.name, v.T) for v in vars + [rule_var])
+            ctxt = {'vars': {v.name: v.T for v in vars + [rule_var]}}
         else:
             assert isinstance(rule['var'], list)
             rule_var = [Var(nm, natT) for nm in rule['var']]
-            ctxt = dict((v.name, v.T) for v in vars + rule_var)
+            ctxt = {'vars': {v.name: v.T for v in vars + rule_var}}
         guard = parser.parse_term(thy, ctxt, rule['guard'])
         assign = dict()
         for k, v in rule['assign'].items():
@@ -262,7 +262,7 @@ def load_system(filename):
     invs = []
     for inv in data['invs']:
         inv_vars = [Var(nm, natT) for nm in inv['vars']]
-        ctxt = dict((v.name, v.T) for v in vars + inv_vars)
+        ctxt = {'vars': {v.name: v.T for v in vars + inv_vars}}
         prop = parser.parse_term(thy, ctxt, inv['prop'])
         invs.append((inv_vars, prop))
 

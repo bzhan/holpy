@@ -13,36 +13,6 @@ from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
 
 """Standard macros in logic."""
 
-class arg_combination_macro(ProofTermMacro):
-    """Given theorem x = y and term f, return f x = f y."""
-
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-
-    def eval(self, thy, f, ths):
-        assert ths[0].prop.is_equals(), "arg_combination"
-        return Thm.combination(Thm.reflexive(f), ths[0])
-
-    def get_proof_term(self, thy, f, pts):
-        assert pts[0].prop.is_equals(), "arg_combination"
-        return ProofTerm.combination(refl(f), pts[0])
-
-class fun_combination_macro(ProofTermMacro):
-    """Given theorem f = g and term x, return f x = g x."""
-
-    def __init__(self):
-        self.level = 1
-        self.sig = Term
-
-    def eval(self, thy, x, ths):
-        assert ths[0].prop.is_equals(), "fun_combination"
-        return Thm.combination(ths[0], Thm.reflexive(x))
-
-    def get_proof_term(self, thy, x, pts):
-        assert pts[0].prop.is_equals(), "fun_combination"
-        return ProofTerm.combination(pts[0], refl(x))
-
 class beta_norm_macro(ProofTermMacro):
     """Given theorem th, return the normalization of th."""
     def __init__(self):
@@ -289,6 +259,10 @@ class trivial_macro(ProofTermMacro):
         self.level = 1
         self.sig = Term
 
+    def can_eval(self, thy, args):
+        As, C = args.strip_implies()
+        return C in As
+
     def get_proof_term(self, thy, args, pts):
         As, C = args.strip_implies()
         assert C in As, "trivial_macro"
@@ -370,8 +344,6 @@ class imp_conj_macro(ProofTermMacro):
 
 
 macro.global_macros.update({
-    "arg_combination": arg_combination_macro(),
-    "fun_combination": fun_combination_macro(),
     "beta_norm": beta_norm_macro(),
     "intros": intros_macro(),
     "apply_theorem": apply_theorem_macro(),
