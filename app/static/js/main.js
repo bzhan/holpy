@@ -42,7 +42,8 @@
         $('#new-file').click(init_metadata_area);
 
         $('button#additional-option-items,#additional-option-file,#additional-option-action').click(() => {
-            $('div.rtop').css('z-index', '-100');
+            if ($('div.rtop').css('z-index') !== '-100')
+                $('div.rtop').css('z-index', '-100');
         })
 
         $('div#right').click(()=> {
@@ -262,21 +263,25 @@
         });
 
         $('a#add_before, a#add_after, a#add_end').click(function() {
-            init_edit_area('', 'thm', add_mode = true);
+            var num = 0;
             if (cur_theory_name && items_selected.length === 1) {
                 if ($(this).attr('id') === 'add_before') {
                     json_files[cur_theory_name].content.splice(items_selected[0], 0, {'ty': 'pre-data'});
+                    num = items_selected[0];
                     items_selected[0] += 1;
                 }
                 else if($(this).attr('id') === 'add_after') {
                     var item_id = items_selected[0];
                     json_files[cur_theory_name].content.splice(item_id+1, 0, {'ty':'pre-data'});
+                    num = item_id + 1;
                 }
             }
             if (cur_theory_name && $(this).attr('id') === 'add_end') {
                     json_files[cur_theory_name].content.push({'ty':'pre-data'});
+                    num = json_files[cur_theory_name].content.length - 1;
                 }
             display_theory_items();
+            init_edit_area('', 'thm', add_mode = true, pos=num);
             save_json_file(cur_theory_name);
         })
 
@@ -316,6 +321,7 @@
         $('div.rbottom').on('click', 'button.save-edit', function () {
             var form = get_selected_edit_form('edit-form');
             var error_id = $(this).next().attr('id');
+            var add_num = $(this).attr('name');
             var ty = $(this).attr('data_type');
             if (ty === 'def.ax')
                 var data_type = 'constant';
@@ -344,12 +350,7 @@
                         delete item.names_list;
                         delete item.data_name;
                         if (number === '' || number === '-1') {
-//                            json_files[theory_name].content.push(item);
-                            $.each(json_files[theory_name].content, function(i, j) {
-                                if (j['ty'] === 'pre-data') {
-                                    json_files[theory_name].content[i] = item;
-                                }
-                            })
+                            json_files[theory_name].content[add_num] = item;
                         } else {
                             item = json_files[theory_name].content[number]
                             delete item.hint_forward;
@@ -618,7 +619,7 @@
     // 
     // number: if editing an existing item, id of the current item.
     // data_type: if adding a new item, type of the new item.
-    function init_edit_area(number = '', data_type = '', add_mode = false) {
+    function init_edit_area(number = '', data_type = '', add_mode = false, pos = '') {
         page_num++;
         var ext_output = '';
         var templ_tab = _.template($("#template-tab").html());
@@ -732,7 +733,7 @@
             $('div.data-title'+ page_num).hide();
         var templ_rbottom = _.template($('#template-edit-rbottom').html());
         $('div.rbottom').append(templ_rbottom({
-            page_num: page_num, data_type: data_type, theory_name: cur_theory_name}));
+            page_num: page_num, data_type: data_type, theory_name: cur_theory_name, pos: pos}));
         $('select#dropdown_datatype' + page_num).val(data_type);
         $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
         $('div#prf' + page_num).show().siblings().hide();
