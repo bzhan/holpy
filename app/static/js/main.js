@@ -647,7 +647,7 @@
         if (data_type === 'thm' || data_type === 'thm.ax') {
             if (add_mode) {
                 add_tab_number = page_num;
-                $('ul#codeTab li[name="code'+ page_num +'"] a').text('New-data');
+                $('ul#codeTab li[name="code'+ page_num +'"] a span').text('New-data');
             }
             var templ_edit = _.template($('#template-edit-thm').html());
             $('#codeTabContent').append(templ_edit({page_num: page_num, ext_output: ext_output, type_name: ''}));
