@@ -315,13 +315,19 @@ def file_data_to_output(thy, data):
         for rule in data['rules']:
             ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parser.parse_term(thy, ctxt, rule['prop'])
-            rules.append(prop)
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
             content = printer.print_term(thy, prop, unicode=True, highlight=False)
-            if 'name' in rule:
+            if data['ty'] == 'def.pred':
                 content = rule['name'] + ': ' + content
+                rules.append((rule['name'], prop))
+            else:
+                rules.append(prop)
             data['edit_content'].append(content)
-        exts = induct.add_induct_def(data['name'], T, rules)
+
+        if data['ty'] == 'def.ind':
+            exts = induct.add_induct_def(data['name'], T, rules)
+        else:
+            exts = induct.add_induct_predicate(data['name'], T, rules)
 
         # Obtain items added by the extension
         data['ext_output'] = str_of_extension(thy, exts)
