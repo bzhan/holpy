@@ -6,12 +6,7 @@ from kernel.type import HOLType
 from kernel.term import Term, OpenTermException
 from kernel.extension import Extension
 from kernel import proof
-from logic.operator import OperatorData
-from logic import logic
-from logic import nat
-from logic import list as hol_list
-from logic import set
-from logic import function
+from syntax.operator import OperatorData
 from syntax import settings
 from syntax import infertype
 
@@ -110,6 +105,13 @@ def print_term(thy, t):
     Note we do not yet handle name collisions in lambda terms.
 
     """
+    # Import modules for custom parsed data
+    from logic import logic
+    from logic import nat
+    from logic import list as hol_list
+    from logic import set
+    from logic import function
+    
     def get_info_for_operator(t):
         return thy.get_data("operator").get_info_for_fun(t.head)
 

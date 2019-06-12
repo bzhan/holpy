@@ -6,11 +6,11 @@ import inspect
 import json
 
 from kernel.theory import Theory
-from logic.operator import OperatorTable
 from logic import logic_macro  # Load all defined macros
 from logic import expr
 from logic import hoare
 from syntax import parser
+from syntax import operator
 from server import method
 
 """Global record of loaded theories."""
@@ -26,7 +26,7 @@ def get_init_theory():
     thy = Theory.EmptyTheory()
 
     # Operators
-    thy.add_data_type("operator", OperatorTable())
+    thy.add_data_type("operator", operator.OperatorTable())
 
     return thy
 
