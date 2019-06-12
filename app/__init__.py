@@ -12,6 +12,7 @@ from syntax import parser, printer, settings
 from server import server, method
 from logic import basic
 from logic import induct
+from imp import imp
 
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')

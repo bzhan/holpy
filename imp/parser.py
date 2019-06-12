@@ -10,7 +10,7 @@ from logic import basic
 from logic import logic
 from data import nat
 from data.function import mk_const_fun, mk_fun_upd
-from logic import hoare
+from imp import imp
 from logic.proofterm import ProofTermDeriv
 from syntax import printer
 from syntax import json_output
@@ -80,36 +80,36 @@ class HoareTransformer(Transformer):
         return logic.conj(b1, b2)
 
     def skip_cmd(self):
-        return hoare.Skip(natFunT)
+        return imp.Skip(natFunT)
 
     def assign_cmd(self, v, e):
-        Assign = hoare.Assign(nat.natT, nat.natT)
+        Assign = imp.Assign(nat.natT, nat.natT)
         return Assign(nat.to_binary(str_to_nat(v)), Term.mk_abs(st, e))
 
     def if_cmd(self, b, c1, c2):
-        Cond = hoare.Cond(natFunT)
+        Cond = imp.Cond(natFunT)
         return Cond(Term.mk_abs(st, b), c1, c2)
 
     def while_cmd(self, b, c):
-        While = hoare.While(natFunT)
+        While = imp.While(natFunT)
         return While(Term.mk_abs(st, b), Term.mk_abs(st, logic.true), c)
 
     def while_cmd_inv(self, b, inv, c):
-        While = hoare.While(natFunT)
+        While = imp.While(natFunT)
         return While(Term.mk_abs(st, b), Term.mk_abs(st, inv), c)
 
     def seq_cmd(self, c1, c2):
-        Seq = hoare.Seq(natFunT)
+        Seq = imp.Seq(natFunT)
         return Seq(c1, c2)
 
 cond_parser = Lark(grammar, start="cond", parser="lalr", transformer=HoareTransformer())
-hoare_parser = Lark(grammar, start="cmd", parser="lalr", transformer=HoareTransformer())
+com_parser = Lark(grammar, start="cmd", parser="lalr", transformer=HoareTransformer())
 
 def parse_cond(s):
     return cond_parser.parse(s)
 
-def parse_hoare(s):
-    return hoare_parser.parse(s)
+def parse_com(s):
+    return com_parser.parse(s)
 
 def process_file(input, output):
     thy = basic.load_theory('hoare')
@@ -124,14 +124,14 @@ def process_file(input, output):
     vcg_count = 0
     for run in content:
         if run['ty'] == 'eval':
-            com = parse_hoare(run['com'])
+            com = parse_com(run['com'])
             st1 = mk_const_fun(nat.natT, nat.zero)
             for k, v in sorted(run['init'].items()):
                 st1 = mk_fun_upd(st1, nat.to_binary(str_to_nat(k)), nat.to_binary(v))
             st2 = mk_const_fun(nat.natT, nat.zero)
             for k, v in sorted(run['final'].items()):
                 st2 = mk_fun_upd(st2, nat.to_binary(str_to_nat(k)), nat.to_binary(v))
-            Sem = hoare.Sem(natFunT)
+            Sem = imp.Sem(natFunT)
             goal = Sem(com, st1, st2)
             prf = ProofTermDeriv("eval_Sem", thy, goal, []).export()
             rpt = ProofReport()
@@ -139,12 +139,12 @@ def process_file(input, output):
             output.add_theorem("eval" + str(eval_count), th, prf)
             eval_count += 1
         elif run['ty'] == 'vcg':
-            com = parse_hoare(run['com'])
+            com = parse_com(run['com'])
             pre = Term.mk_abs(st, parse_cond(run['pre']))
             post = Term.mk_abs(st, parse_cond(run['post']))
-            Valid = hoare.Valid(natFunT)
+            Valid = imp.Valid(natFunT)
             goal = Valid(pre, com, post)
-            prf = hoare.vcg_solve(thy, goal).export()
+            prf = imp.vcg_solve(thy, goal).export()
             rpt = ProofReport()
             th = thy.check_proof(prf, rpt)
             output.add_theorem("vcg" + str(vcg_count), th, prf)
