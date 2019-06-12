@@ -5,14 +5,14 @@ import os, sqlite3, shutil
 import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
-from kernel.type import HOLType, TVar, Type
+
+from kernel.type import HOLType, TVar, Type, TFun
+from kernel import extension
 from syntax import parser, printer, settings
-from server import method
-from server.server import ProofState
+from server import server, method
 from logic import basic
 from logic import induct
-from kernel.extension import AxType, AxConstant, Theorem
-from kernel.type import TFun
+
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 app = Flask(__name__, static_url_path='/static')
@@ -170,7 +170,7 @@ def init_empty_proof():
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
         thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
-        cell = ProofState.parse_init_state(thy, data)
+        cell = server.ProofState.parse_init_state(thy, data)
         cells[data['id']] = cell
         return jsonify(cell.json_data())
     return jsonify({})
@@ -183,7 +183,7 @@ def init_saved_proof():
     if data:
         try:
             thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
-            cell = ProofState.parse_proof(thy, data)
+            cell = server.ProofState.parse_proof(thy, data)
             cells[data['id']] = cell
             return jsonify(cell.json_data())
         except Exception as e:
@@ -252,11 +252,11 @@ def str_of_extension(thy, exts):
     """Print given extension for display in the edit area."""
     res = []
     for ext in exts.data:
-        if isinstance(ext, AxType):
+        if isinstance(ext, extension.AxType):
             res.append("Type " + ext.name)
-        elif isinstance(ext, AxConstant):
+        elif isinstance(ext, extension.AxConstant):
             res.append("Constant " + ext.name + " :: " + printer.print_type(thy, ext.T, unicode=True))
-        elif isinstance(ext, Theorem):
+        elif isinstance(ext, extension.Theorem):
             res.append("Theorem " + ext.name + ": " + printer.print_term(thy, ext.th.prop, unicode=True))
     return '\n'.join(res)
 

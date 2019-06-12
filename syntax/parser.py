@@ -10,15 +10,7 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem, id_force_tuple
 from kernel import extension
 from logic import induct
-from logic import logic
-from logic import nat
-from logic import list
-from logic import function
-from logic import set
 from syntax import infertype
-
-# import sys,io
-# sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 
 class ParserException(Exception):
@@ -142,9 +134,11 @@ class HOLTransformer(Transformer):
         return t
 
     def number(self, n):
+        from logic import nat
         return nat.to_binary(int(n))
 
     def literal_list(self, *args):
+        from logic import list
         return list.mk_literal_list(args, None)
 
     def if_expr(self, P, x, y):
@@ -187,9 +181,11 @@ class HOLTransformer(Transformer):
         return exists_t(Abs(var_name, None, body.abstract_over(Var(var_name, None))))
 
     def times(self, lhs, rhs):
+        from logic import nat
         return nat.times(lhs, rhs)
 
     def plus(self, lhs, rhs):
+        from logic import nat
         return nat.plus(lhs, rhs)
 
     def append(self, lhs, rhs):
@@ -202,18 +198,22 @@ class HOLTransformer(Transformer):
         return Const("equals", None)(lhs, rhs)
 
     def neg(self, t):
+        from logic import logic
         return logic.neg(t)
 
     def conj(self, s, t):
+        from logic import logic
         return logic.mk_conj(s, t)
 
     def disj(self, s, t):
+        from logic import logic
         return logic.mk_disj(s, t)
 
     def imp(self, s, t):
         return Term.mk_implies(s, t)
 
     def empty_set(self):
+        from logic import set
         return set.empty_set(None)
 
     def mem(self, x, A):

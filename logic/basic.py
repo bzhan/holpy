@@ -11,7 +11,7 @@ from logic import expr
 from logic import hoare
 from syntax import parser
 from syntax import operator
-from server import method
+from server import method  # Load all defined methods
 
 """Global record of loaded theories."""
 loaded_theories = dict()

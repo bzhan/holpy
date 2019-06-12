@@ -4,7 +4,7 @@ from kernel.type import Type, TFun, boolT
 from kernel.term import Term, Const
 from kernel.thm import Thm
 from kernel.macro import global_macros
-from kernel.theory import global_methods
+from kernel.theory import Method, global_methods
 from logic import logic
 from logic import nat
 from logic import function
@@ -12,7 +12,6 @@ from logic.nat import natT
 from logic.conv import arg_conv
 from logic.proofterm import ProofTermMacro, ProofTerm
 from logic.logic_macro import apply_theorem
-from server.method import Method
 from server.tactic import MacroTactic
 from syntax import printer, settings
 

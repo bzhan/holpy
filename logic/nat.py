@@ -3,7 +3,7 @@
 from kernel.type import Type, TFun
 from kernel.term import Term, Const
 from kernel.thm import Thm
-from kernel.theory import global_methods
+from kernel.theory import Method, global_methods
 from kernel import macro
 from logic.conv import Conv, ConvException, all_conv, rewr_conv, \
     then_conv, arg_conv, arg1_conv, every_conv, binop_conv
@@ -11,7 +11,6 @@ from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
 from logic.logic_macro import apply_theorem
 from logic import logic
 from logic import term_ord
-from server.method import Method
 from server.tactic import MacroTactic
 from syntax import printer, settings
 
