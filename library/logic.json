@@ -1,29 +1,6 @@
 {
     "content": [
         {
-            "steps": [
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1",
-                    "theorem": "conjI"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1",
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "theorem": "conjD2"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "2",
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "theorem": "conjD1"
-                }
-            ],
             "name": "conj_comm",
             "num_gaps": 0,
             "proof": [
@@ -74,6 +51,30 @@
                 }
             ],
             "prop": "A ∧ B ⟶ B ∧ A",
+            "steps": [
+                {
+                    "fact_ids": [],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -81,34 +82,6 @@
             }
         },
         {
-            "steps": [
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1",
-                    "fact_ids": ["0"],
-                    "theorem": "disjE"
-                },
-                {
-                    "method_name": "introduction",
-                    "goal_id": "1"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1.1",
-                    "fact_ids": ["1.0"],
-                    "theorem": "disjI2"
-                },
-                {
-                    "method_name": "introduction",
-                    "goal_id": "2"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "2.1",
-                    "fact_ids": ["2.0"],
-                    "theorem": "disjI1"
-                }
-            ],
             "name": "disj_comm",
             "num_gaps": 0,
             "proof": [
@@ -208,6 +181,44 @@
                 }
             ],
             "prop": "A ∨ B ⟶ B | A",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "fact_ids": [],
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "fact_ids": [],
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -600,51 +611,6 @@
             }
         },
         {
-            "steps": [
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "0",
-                    "theorem": "iffI"
-                },
-                {
-                    "method_name": "introduction",
-                    "goal_id": "0"
-                },
-                {
-                    "method_name": "cases",
-                    "goal_id": "0.1",
-                    "case": "A"
-                },
-                {
-                    "method_name": "introduction",
-                    "goal_id": "0.2"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "0.2.1",
-                    "fact_ids": ["0.0"],
-                    "theorem": "negE_gen"
-                },
-                {
-                    "method_name": "introduction",
-                    "goal_id": "1"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1.1",
-                    "theorem": "negI"
-                },
-                {
-                    "method_name": "introduction",
-                    "goal_id": "1.1"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1.1.1",
-                    "fact_ids": ["1.1.0"],
-                    "theorem": "negE"
-                }
-            ],
             "name": "double_neg",
             "num_gaps": 0,
             "proof": [
@@ -802,6 +768,66 @@
                 }
             ],
             "prop": "(~~A) = A",
+            "steps": [
+                {
+                    "fact_ids": [],
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "fact_ids": [],
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "case": "A",
+                    "fact_ids": [],
+                    "goal_id": "0.1",
+                    "method_name": "cases"
+                },
+                {
+                    "fact_ids": [],
+                    "goal_id": "0.2",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "fact_ids": [],
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "fact_ids": [],
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "bool"
@@ -1042,48 +1068,6 @@
         },
         {
             "hint_backward": "true",
-            "steps": [
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1",
-                    "fact_ids": "0",
-                    "theorem": "exE"
-                },
-                {
-                    "method_name": "introduction",
-                    "goal_id": "1",
-                    "names": "x"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1.2",
-                    "theorem": "conjI"
-                },
-                {
-                    "method_name": "apply_forward_step",
-                    "goal_id": "1.2",
-                    "fact_ids": ["1.1"],
-                    "theorem": "conjD1"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1.3",
-                    "fact_ids": ["1.2"],
-                    "theorem": "exI"
-                },
-                {
-                    "method_name": "apply_forward_step",
-                    "goal_id": "1.4",
-                    "fact_ids": ["1.1"],
-                    "theorem": "conjD2"
-                },
-                {
-                    "method_name": "apply_backward_step",
-                    "goal_id": "1.5",
-                    "fact_ids": ["1.4"],
-                    "theorem": "exI"
-                }
-            ],
             "name": "ex_conj_distrib",
             "num_gaps": 0,
             "proof": [
@@ -1194,6 +1178,56 @@
                 }
             ],
             "prop": "(?x. A x & B x) --> (?x. A x) & (?x. B x)",
+            "steps": [
+                {
+                    "fact_ids": "0",
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exE"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "'a => bool",
@@ -2430,6 +2464,41 @@
                 }
             ],
             "prop": "((A --> B) --> A) --> A",
+            "steps": [
+                {
+                    "case": "A",
+                    "fact_ids": [],
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "fact_ids": [],
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [],
+                    "goal_id": "2.1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "bool",

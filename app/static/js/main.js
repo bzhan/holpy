@@ -162,6 +162,7 @@
             });
             json_files[filename].content[item_id].proof = output_proof;
             json_files[filename].content[item_id].num_gaps = cells[editor_id].num_gaps;
+            json_files[filename].content[item_id].steps = cells[editor_id].steps;
             if (cur_theory_name === filename) {
                 display_theory_items();
             }
@@ -854,6 +855,7 @@
                 display_checked_proof(result);
                 cells[id].instructions = item.instructions;
                 cells[id].index = 0;
+                cells[id].steps = [];
                 if (cells[id].instructions !== undefined)
                     display_instructions();
             }
