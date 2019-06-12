@@ -2,6 +2,7 @@
 
 import unittest
 import io
+import json
 
 from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const
@@ -27,6 +28,19 @@ disj = logic.mk_disj
 imp = Term.mk_implies
 neg = logic.neg
 exists = logic.mk_exists
+
+def testMethods(self, thy_name, thm_name):
+    """Test list of steps for the given theorem."""
+    thy = basic.load_theory(thy_name, limit=('thm', thm_name))
+    with open('./library/' + thy_name + '.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+        for val in f_data['content']:
+            if val['ty'] == 'thm' and val['name'] == thm_name:
+                state = ProofState.parse_init_state(thy, val)
+                goal = state.prf.items[-1].th
+                for step in val['steps']:
+                    method.apply_method(state, step)
+                self.assertEqual(state.check_proof(no_gaps=True), goal)
 
 
 class ServerTest(unittest.TestCase):
@@ -220,21 +234,11 @@ class ServerTest(unittest.TestCase):
 
     def testConjComm(self):
         """Proof of A & B --> B & A."""
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        state.apply_backward_step(1, "conjI")
-        state.apply_backward_step(1, "conjD2", prevs=[0])
-        state.apply_backward_step(2, "conjD1", prevs=[0])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(conj(A, B), conj(B, A)))
+        testMethods(self, 'logic', 'conj_comm')
 
     def testDisjComm(self):
         """Proof of A | B --> B | A."""
-        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
-        state.apply_backward_step(1, "disjE", prevs=[0])
-        state.introduction(1)
-        state.apply_backward_step((1, 1), "disjI2", prevs=[(1, 0)])
-        state.introduction(2)
-        state.apply_backward_step((2, 1), "disjI1", prevs=[(2, 0)])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(disj(A, B), disj(B, A)))
+        testMethods(self, 'logic', 'disj_comm')
 
     def testDoubleNegInv(self):
         """Proof of ~~A --> A."""

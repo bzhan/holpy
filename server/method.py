@@ -329,10 +329,10 @@ class introduction(Method):
         assert prop.is_implies() or prop.is_all(), "introduction"
 
         intros_tac = tactic.intros()
-        if data['names'] == '':
-            names = []
-        else:
+        if 'names' in data and data['names'] != '':
             names = data['names'].split(",")
+        else:
+            names = []
         pt = intros_tac.get_proof_term(state.thy, cur_item.th, args=names)
 
         cur_item.rule = "subproof"
@@ -494,7 +494,8 @@ def apply_method(state, data):
     """
     method = state.thy.get_method(data['method_name'])
     goal_id = id_force_tuple(data['goal_id'])
-    fact_ids = [id_force_tuple(fact_id) for fact_id in data['fact_ids']] if data['fact_ids'] else []
+    fact_ids = [id_force_tuple(fact_id) for fact_id in data['fact_ids']] \
+        if 'fact_ids' in data and data['fact_ids'] else []
     return method.apply(state, goal_id, data, fact_ids)
 
 

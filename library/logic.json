@@ -1,10 +1,28 @@
 {
     "content": [
         {
-            "instructions": [
-                "Select 1 as goal, use Ctrl+B with conjI",
-                "Select 1 as goal and 0 as fact, use Ctrl+B with conjD2.",
-                "Select 2 as goal and 0 as fact, use Ctrl+B with conjD1."
+            "steps": [
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1",
+                    "theorem": "conjI"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1",
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "theorem": "conjD2"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "2",
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "theorem": "conjD1"
+                }
             ],
             "name": "conj_comm",
             "num_gaps": 0,
@@ -63,12 +81,33 @@
             }
         },
         {
-            "instructions": [
-                "Select 1 as goal and 0 as fact, use Ctrl+B with disjE.",
-                "Select 1 as goal, use Ctrl+I.",
-                "Select 1.1 as goal and 1.0 as fact, use Ctrl+B with disjI2.",
-                "Select 2 as goal, use Ctrl+I.",
-                "Select 2.1 as goal and 2.0 as fact, use Ctrl+B with disjI1."
+            "steps": [
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1",
+                    "fact_ids": ["0"],
+                    "theorem": "disjE"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "1"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1.1",
+                    "fact_ids": ["1.0"],
+                    "theorem": "disjI2"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "2"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "2.1",
+                    "fact_ids": ["2.0"],
+                    "theorem": "disjI1"
+                }
             ],
             "name": "disj_comm",
             "num_gaps": 0,

@@ -142,12 +142,8 @@ class ProofState():
         data['prop']: proposition to be proved. In the form A1 --> ... --> An --> C.
 
         """
-        ctxt = {'vars': {}}
-        vars = []
-        for name, str_T in data['vars'].items():
-            T = parser.parse_type(thy, str_T)
-            vars.append(Var(name, T))
-            ctxt['vars'][name] = T
+        ctxt = parser.parse_vars(thy, data['vars'])
+        vars = [Var(name, T) for name, T in ctxt['vars'].items()]
         prop = parser.parse_term(thy, ctxt, data['prop'])
         assums, concl = prop.strip_implies()
 
@@ -174,12 +170,9 @@ class ProofState():
     @staticmethod
     def parse_proof(thy, data):
         """Obtain proof from json format."""
-        ctxt = {'vars': {}}
+        ctxt = parser.parse_vars(thy, data['vars'])
         state = ProofState(thy)
-        for name, str_T in data['vars'].items():
-            T = parser.parse_type(thy, str_T)
-            state.vars.append(Var(name, T))
-            ctxt['vars'][name] = T
+        state.vars = [Var(name, T) for name, T in ctxt['vars'].items()]
         state.prf = Proof()
         for line in data['proof']:
             if line['rule'] == "variable":
