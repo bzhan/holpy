@@ -163,6 +163,8 @@ function apply_method_ajax(input) {
             steps = cells[input.id].steps;
             delete input.id;
             delete input.line;
+            if (input.fact_ids.length == 0)
+                delete input.fact_ids;
             steps.push(input);
             display_checked_proof(result);
         }

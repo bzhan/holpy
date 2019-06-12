@@ -96,41 +96,48 @@ def load():
 
     return render_template('index.html', user=user_info['username'])
 
+DATABASE = os.getcwd() + '/users/user.db'
+
+def user_dir():
+    """Returns directory for the user."""
+    assert user_info['username'], "user_dir: empty username."
+    if user_info['username'] == 'master':
+        return 'library/'
+    else:
+        return './users/' + user_info['username']
+
+def user_file(filename):
+    """Return json file for the current user and given filename."""
+    assert user_info['username'], "user_file: empty username."
+    if user_info['username'] == 'master':
+        return 'library/' + filename + '.json'
+    else:
+        return 'users/' + user_info['username'] + '/' + filename + '.json'
 
 def add_user(username, password):
     """Add new user to the database."""
-    DATABASE = os.getcwd() + '/users/user.db'
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('insert into users(name, password) values("'+ username +'","'+ password +'");')
-    cursor.close()
-    conn.commit()
-    conn.close()
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute('insert into users(name, password) values("'+ username +'","'+ password +'");')
+        cursor.close()
+        conn.commit()
 
 def init_user():
     """Create users table."""
-    DATABASE = os.getcwd() + '/users/user.db'
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('create table users(id auto_increment,name CHAR(50) not null,password CHAR(50) not null);')
-    cursor.close()
-    conn.commit()
-    conn.close()
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute('create table users(id auto_increment,name CHAR(50) not null,password CHAR(50) not null);')
+        cursor.close()
+        conn.commit()
 
 def get_users():
     """Get list of username-password from the database."""
-    DATABASE = os.getcwd() + '/users/user.db'
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('select * from users;')
-    results = cursor.fetchall()
-    cursor.close()
-    conn.commit()
-    conn.close()
-
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute('select * from users;')
+        results = cursor.fetchall()
+        cursor.close()
+        conn.commit()
     return results
 
 
@@ -139,14 +146,13 @@ def get_users():
 def login():
     username = request.form.get('name')
     password = request.form.get('password')
-    user_path = './users/' + username
     for k in get_users():
         if username == k[1] and password == str(k[2]):
             user_info['is_signed_in'] = True
             user_info['username'] = username
             user_list = os.listdir('./users')
-            if username not in user_list:
-                shutil.copytree('./library', user_path)
+            if username != 'master' and username not in user_list:
+                shutil.copytree('./library', user_dir())
 
             return redirect('/load')
 
@@ -156,10 +162,9 @@ def login():
 # Replace user data with library data
 @app.route('/api/refresh-files', methods=['POST'])
 def refresh_files():
-    if user_info['username']:
-        user_path = './users/' + user_info['username']
-        shutil.rmtree(user_path)
-        shutil.copytree('./library', user_path)
+    if user_info['username'] and user_info['username'] != 'master':
+        shutil.rmtree(user_dir())
+        shutil.copytree('./library', user_dir())
         basic.clear_cache(user=user_info['username'])
 
     return jsonify({})
@@ -354,16 +359,11 @@ def file_data_to_output(thy, data):
         pass
 
 
-def open_file(filename, mode):
-    """Open json file for the current user and given filename, and mode."""
-    return open('users/' + user_info['username'] + '/' + filename + '.json', mode, encoding='utf-8')
-
-
 # Loads json file for the given user and file name.
 @app.route('/api/load-json-file', methods=['POST'])
 def load_json_file():
     filename = json.loads(request.get_data().decode("utf-8"))
-    with open_file(filename, 'r') as f:
+    with open(user_file(filename), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     if 'content' in f_data:
         thy = basic.load_imported_theory(f_data['imports'], user=user_info['username'])
@@ -379,7 +379,7 @@ def save_file():
     """Save given data to file."""
     data = json.loads(request.get_data().decode("utf-8"))
 
-    with open_file(data['name'], 'w+') as f:
+    with open(user_file(data['name']), 'w+', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
     basic.clear_cache(user=user_info['username'])
 
@@ -466,7 +466,7 @@ def check_modify():
             name, prop = parser.parse_named_thm(thy, ctxt, content)
             item['rules'].append({'name': name, 'prop': printer.print_term(thy, prop)})
 
-    with open_file(data['file_name'], 'r') as f:
+    with open(user_file(data['file_name']), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     try:
         thy = basic.load_imported_theory(f_data['imports'], user_info['username'])
@@ -487,9 +487,8 @@ def check_modify():
 @app.route('/api/find-files', methods=['GET'])
 def find_files():
     """Find list of files in user's directory."""
-    fileDir = './users/' + user_info['username']
     files = []
-    for f in os.listdir(fileDir):
+    for f in os.listdir(user_dir()):
         if f.endswith('.json'):
             files.append(f[:-5])
 
@@ -501,9 +500,8 @@ def find_files():
 def remove_file():
     """Remove file with the given name."""
     filename = json.loads(request.get_data().decode('utf-8'))
-    fileDir = './users/' + user_info['username'] + '/' + filename + '.json'
     user_info['file_list'].remove(filename)
-    os.remove(fileDir)
+    os.remove(user_file(filename))
 
     return jsonify({})
 

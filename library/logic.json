@@ -1180,7 +1180,9 @@
             "prop": "(?x. A x & B x) --> (?x. A x) & (?x. B x)",
             "steps": [
                 {
-                    "fact_ids": "0",
+                    "fact_ids": [
+                        "0"
+                    ],
                     "goal_id": "1",
                     "method_name": "apply_backward_step",
                     "theorem": "exE"
@@ -1188,7 +1190,7 @@
                 {
                     "goal_id": "1",
                     "method_name": "introduction",
-                    "names": "x"
+                    "names": "a"
                 },
                 {
                     "goal_id": "1.2",
