@@ -868,9 +868,11 @@
         var data = {
             'id': get_selected_id(),
             'vars': item.vars,
+            'prop': item.prop,
             'proof': item.proof,
             'theory_name': file_name,
-            'thm_name': item.name
+            'thm_name': item.name,
+            'steps': item.steps
         };
         display_running();
         $.ajax({
@@ -882,7 +884,7 @@
                 cells[id].goal = -1;
                 cells[id].method_sig = result.method_sig;
                 display_checked_proof(result);
-                cells[id].instructions = item.instructions;
+                cells[id].instructions = result.steps_output;
                 cells[id].index = 0;
                 if (cells[id].instructions !== undefined)
                     display_instructions();

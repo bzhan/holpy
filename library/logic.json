@@ -1237,15 +1237,6 @@
             }
         },
         {
-            "instructions": [
-                "Select 1 as goal, use Ctrl+B with conjI.",
-                "Select 1 as goal, use Ctrl+I with x as variable name.",
-                "Add line 'forall_elim x from 0' after 1.0.",
-                "Select 1.2 as goal and 1.1 as fact, use Ctrl+B with conjD1.",
-                "Select 2 as goal, use Ctrl+I with x as variable name.",
-                "Add line 'forall_elim x from 0' after 2.0.",
-                "Select 2.2 as goal and 2.1 as fact, use Ctrl+B with conjD2."
-            ],
             "name": "all_conj_distrib",
             "num_gaps": 0,
             "proof": [

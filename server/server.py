@@ -159,27 +159,39 @@ class ProofState():
     def json_data(self):
         """Export proof in json format."""
         self.check_proof()
-        return {
+        res = {
             "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
             "proof": sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
                           for item in self.prf.items], []),
             "report": self.rpt.json_data(),
-            "method_sig": self.get_method_sig()
+            "method_sig": self.get_method_sig(),
         }
+        if hasattr(self, 'steps'):
+            res['steps'] = self.steps
+            res['steps_output'] = self.steps_output
+        return res
 
     @staticmethod
     def parse_proof(thy, data):
         """Obtain proof from json format."""
-        ctxt = parser.parse_vars(thy, data['vars'])
-        state = ProofState(thy)
-        state.vars = [Var(name, T) for name, T in ctxt['vars'].items()]
-        state.prf = Proof()
-        for line in data['proof']:
-            if line['rule'] == "variable":
-                nm, str_T = line['args'].split(',', 1)
-                ctxt['vars'][nm] = parser.parse_type(thy, str_T.strip())
-            item = parser.parse_proof_rule(thy, ctxt, line)
-            state.prf.insert_item(item)
+        if 'steps' in data:
+            state = ProofState.parse_init_state(thy, data)
+            state.steps = data['steps']
+            state.steps_output = []
+            for step in data['steps']:
+                state.steps_output.append(method.display_method(state, step))
+                method.apply_method(state, step)
+        else:
+            ctxt = parser.parse_vars(thy, data['vars'])
+            state = ProofState(thy)
+            state.vars = [Var(name, T) for name, T in ctxt['vars'].items()]
+            state.prf = Proof()
+            for line in data['proof']:
+                if line['rule'] == "variable":
+                    nm, str_T = line['args'].split(',', 1)
+                    ctxt['vars'][nm] = parser.parse_type(thy, str_T.strip())
+                item = parser.parse_proof_rule(thy, ctxt, line)
+                state.prf.insert_item(item)
 
         state.check_proof(compute_only=True)
         return state

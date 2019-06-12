@@ -15,7 +15,8 @@ def display_goals(state, data):
     """Return list of goals in string form. If there is no goals
     remaining, return '(solves)'.
 
-    """ 
+    """
+    assert '_goal' in data, "display_goals"
     if data['_goal']:
         goals = [printer.print_term(state.thy, t) for t in data['_goal']]
         return printer.commas_join(goals)
@@ -497,6 +498,15 @@ def apply_method(state, data):
     fact_ids = [id_force_tuple(fact_id) for fact_id in data['fact_ids']] \
         if 'fact_ids' in data and data['fact_ids'] else []
     return method.apply(state, goal_id, data, fact_ids)
+
+def display_method(state, step):
+    method = global_methods[step['method_name']]
+    goal_id = id_force_tuple(step['goal_id'])
+    fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']]
+    search_res = method.search(state, goal_id, fact_ids)
+    for res in search_res:
+        if all(res[sig] == step[sig] for sig in method.sig):
+            return method.display_step(state, goal_id, res, fact_ids)
 
 
 global_methods.update({

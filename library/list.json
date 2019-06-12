@@ -183,15 +183,6 @@
             }
         },
         {
-            "instructions": [
-                "Select 0 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-                "Select 0 as goal, use Ctrl+R with append_def_1.",
-                "Set sorry on 0 to reflexive ys @ zs.",
-                "Select 2 as goal, use Ctrl+I with x,xs as variable name.",
-                "Select 2.3 as goal, use Ctrl+R with append_def_2.",
-                "Select 2.3 as goal, use Ctrl+R with append_def_2.",
-                "Set sorry on 2.3 to arg_combination cons x from 2.2."
-            ],
             "name": "append_assoc",
             "num_gaps": 0,
             "proof": [
