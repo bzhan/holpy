@@ -65,6 +65,9 @@ class rule(Tactic):
         th = thy.get_theorem(th_name)
         As, C = th.assums, th.concl
 
+        assert set(term.get_vars(As[:len(prevs)] + [C])) == set(term.get_vars(As + [C])), \
+            "rule: cannot match all variables."
+
         if instsp is None:
             instsp = (dict(), dict())
             if matcher.is_pattern(C, []):

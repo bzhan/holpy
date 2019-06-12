@@ -69,13 +69,33 @@
         },
         {
             "hint_rewrite": "true",
-            "instructions": [
-                "Select 0 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-                "Select 0 as goal, use Ctrl+R with append_def_1.",
-                "Set sorry on 0 to reflexive ([]::'a list]).",
-                "Select 2 as goal, use Ctrl+I with x,xs as variable name.",
-                "Select 2.3 as goal, use Ctrl+R with append_def_2.",
-                "Set sorry on 2.3 to arg_combination cons x from 2.2."
+            "steps": [
+                {
+                    "method_name": "induction",
+                    "goal_id": "0",
+                    "theorem": "list_induct",
+                    "var": "xs"
+                },
+                {
+                    "method_name": "rewrite_goal",
+                    "goal_id": "0",
+                    "theorem": "append_def_1"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "1",
+                    "names": "x, xs"
+                },
+                {
+                    "method_name": "rewrite_goal",
+                    "goal_id": "1.3",
+                    "theorem": "append_def_2"
+                },
+                {
+                    "method_name": "rewrite_goal_with_prev",
+                    "goal_id": "1.3",
+                    "fact_ids": ["1.2"]
+                }
             ],
             "name": "append_right_neutral",
             "num_gaps": 0,

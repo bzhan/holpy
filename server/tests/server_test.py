@@ -241,69 +241,24 @@ class ServerTest(unittest.TestCase):
         testMethods(self, 'logic', 'disj_comm')
 
     def testDoubleNegInv(self):
-        """Proof of ~~A --> A."""
-        state = ProofState.init_state(thy, [A], [neg(neg(A))], A)
-        state.apply_cases(1, A)
-        state.introduction(2)
-        state.apply_backward_step((2, 1), "negE_gen", prevs=[0])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(neg(neg(A)), A))
+        """Proof of ~~A = A."""
+        testMethods(self, 'logic', 'double_neg')
 
     def testExistsConj(self):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
-        Ta = TVar("a")
-        A = Var("A", TFun(Ta, boolT))
-        B = Var("B", TFun(Ta, boolT))
-        x = Var("x", Ta)
-        ex_conj = exists(x, conj(A(x), B(x)))
-        conj_ex = conj(exists(x, A(x)), exists(x, B(x)))
-        state = ProofState.init_state(thy, [A, B], [ex_conj], conj_ex)
-        state.apply_backward_step(1, "exE", prevs=[0])
-        state.introduction(1, names=["x"])
-        state.apply_backward_step((1, 2), "conjI")
-        state.apply_forward_step((1, 2), "conjD1", prevs=[(1, 1)])
-        state.apply_backward_step((1, 3), "exI", prevs=[(1, 2)])
-        state.apply_forward_step((1, 4), "conjD2", prevs=[(1, 1)])
-        state.apply_backward_step((1, 5), "exI", prevs=[(1, 4)])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(ex_conj, conj_ex))
+        testMethods(self, 'logic', 'ex_conj_distrib')
 
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
-        thy = basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
-        state.apply_induction(0, "nat_induct", "n")
-        state.rewrite_goal(0, "plus_def_1")
-        state.introduction(1, names=["n"])
-        state.rewrite_goal((1, 2), "plus_def_2")
-        state.rewrite_goal_with_prev((1, 2), (1, 1))
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.plus(n, nat.zero), n))
+        testMethods(self, 'nat', 'add_0_right')
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
-        thy = basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.times(n, nat.zero), nat.zero))
-        state.apply_induction(0, "nat_induct", "n")
-        state.rewrite_goal(0, "times_def_1")
-        state.introduction(1, names=["n"])
-        state.rewrite_goal((1, 2), "times_def_2")
-        state.rewrite_goal((1, 2), "plus_def_1")
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.times(n, nat.zero), nat.zero))
+        testMethods(self, 'nat', 'mult_0_right')
 
     def testAppendNil(self):
         """Proof of xs @ [] = xs by induction."""
-        thy = basic.load_theory('list')
-        Ta = TVar("a")
-        xs = Var("xs", list.listT(Ta))
-        nil = list.nil(Ta)
-        state = ProofState.init_state(thy, [xs], [], Term.mk_equals(list.mk_append(xs, nil), xs))
-        state.apply_induction(0, "list_induct", "xs")
-        state.apply_backward_step(0, "append_def_1")
-        state.introduction(1, names=["x", "xs"])
-        state.rewrite_goal((1, 3), "append_def_2")
-        self.assertEqual(state.get_ctxt((1, 3)), {'vars': {'x': Ta, 'xs': list.listT(Ta)}})
-        state.rewrite_goal_with_prev((1, 3), (1, 2))
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(list.mk_append(xs, nil), xs))
+        testMethods(self, 'list', 'append_right_neutral')
 
     def testRewriteGoalThms(self):
         thy = basic.load_theory('nat')

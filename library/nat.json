@@ -62,13 +62,33 @@
         },
         {
             "hint_rewrite": "true",
-            "instructions": [
-                "Select 0 as goal, choose 'apply induction' from menu, then enter 'nat_induct,x'.",
-                "Select 0 as goal, use Ctrl+R with plus_def_1.",
-                "Set sorry on 0 to reflexive 0.",
-                "Select 2 as goal, use Ctrl+I with n as variable name.",
-                "Select 2.2 as goal, use Ctrl+R with plus_def_2.",
-                "Set sorry on 2.2 to arg_combination Suc from 2.1."
+            "steps": [
+                {
+                    "method_name": "induction",
+                    "goal_id": "0",
+                    "theorem": "nat_induct",
+                    "var": "x"
+                },
+                {
+                    "method_name": "rewrite_goal",
+                    "goal_id": "0",
+                    "theorem": "plus_def_1"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "1",
+                    "names": "n"
+                },
+                {
+                    "method_name": "rewrite_goal",
+                    "goal_id": "1.2",
+                    "theorem": "plus_def_2"
+                },
+                {
+                    "method_name": "rewrite_goal_with_prev",
+                    "goal_id": "1.2",
+                    "fact_ids": ["1.1"]
+                }
             ],
             "name": "add_0_right",
             "num_gaps": 0,
@@ -518,13 +538,33 @@
         },
         {
             "hint_rewrite": "true",
-            "instructions": [
-                "Select 0 as goal, choose 'apply induction' from menu, then enter 'nat_induct,x'.",
-                "Select 0 as goal, use Ctrl+R with times_def_1.",
-                "Set sorry on 0 to reflexive 0.",
-                "Select 2 as goal, use Ctrl+I with n as variable name.",
-                "Select 2.2 as goal, use Ctrl+R with times_def_2.",
-                "Select 2.2 as goal, use Ctrl+R with plus_def_1"
+            "steps": [
+                {
+                    "method_name": "induction",
+                    "goal_id": "0",
+                    "theorem": "nat_induct",
+                    "var": "x"
+                },
+                {
+                    "method_name": "rewrite_goal",
+                    "goal_id": "0",
+                    "theorem": "times_def_1"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "1",
+                    "names": "n"
+                },
+                {
+                    "method_name": "rewrite_goal",
+                    "goal_id": "1.2",
+                    "theorem": "times_def_2"
+                },
+                {
+                    "method_name": "rewrite_goal",
+                    "goal_id": "1.2",
+                    "theorem": "plus_def_1"
+                }
             ],
             "name": "mult_0_right",
             "num_gaps": 0,

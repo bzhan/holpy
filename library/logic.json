@@ -600,6 +600,51 @@
             }
         },
         {
+            "steps": [
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "0",
+                    "theorem": "iffI"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "0"
+                },
+                {
+                    "method_name": "cases",
+                    "goal_id": "0.1",
+                    "case": "A"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "0.2"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "0.2.1",
+                    "fact_ids": ["0.0"],
+                    "theorem": "negE_gen"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "1"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1.1",
+                    "theorem": "negI"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "1.1"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1.1.1",
+                    "fact_ids": ["1.1.0"],
+                    "theorem": "negE"
+                }
+            ],
             "name": "double_neg",
             "num_gaps": 0,
             "proof": [
@@ -997,14 +1042,47 @@
         },
         {
             "hint_backward": "true",
-            "instructions": [
-                "Select 1 as goal and 0 as fact, use Ctrl+B with exE.",
-                "Select 1 as goal, use Ctrl+I with x as variable name.",
-                "Select 1.2 as goal, use Ctrl+B with conjI.",
-                "Select 1.2 as goal and 1.1 as fact, use Ctrl+F with conjD1.",
-                "Select 1.3 as goal and 1.2 as fact, use Ctrl+B with exI.",
-                "Select 1.4 as goal and 1.1 as fact, use Ctrl+F with conjD2.",
-                "Select 1.5 as goal and 1.4 as fact, use Ctrl+B with exI."
+            "steps": [
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1",
+                    "fact_ids": "0",
+                    "theorem": "exE"
+                },
+                {
+                    "method_name": "introduction",
+                    "goal_id": "1",
+                    "names": "x"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1.2",
+                    "theorem": "conjI"
+                },
+                {
+                    "method_name": "apply_forward_step",
+                    "goal_id": "1.2",
+                    "fact_ids": ["1.1"],
+                    "theorem": "conjD1"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1.3",
+                    "fact_ids": ["1.2"],
+                    "theorem": "exI"
+                },
+                {
+                    "method_name": "apply_forward_step",
+                    "goal_id": "1.4",
+                    "fact_ids": ["1.1"],
+                    "theorem": "conjD2"
+                },
+                {
+                    "method_name": "apply_backward_step",
+                    "goal_id": "1.5",
+                    "fact_ids": ["1.4"],
+                    "theorem": "exI"
+                }
             ],
             "name": "ex_conj_distrib",
             "num_gaps": 0,
