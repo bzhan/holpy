@@ -6,8 +6,8 @@ from kernel.type import TVar, TFun, Type, boolT
 from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from logic import basic
 from logic import logic
-from logic import nat
-from logic import list
+from data import nat
+from data import list
 from syntax.infertype import type_infer, infer_printed_type, TypeInferenceException
 
 thy = basic.load_theory('list')

@@ -107,16 +107,16 @@ def print_term(thy, t):
     """
     # Import modules for custom parsed data
     from logic import logic
-    from logic import nat
-    from logic import list as hol_list
-    from logic import set
-    from logic import function
+    from data import nat
+    from data import list
+    from data import set
+    from data import function
     
     def get_info_for_operator(t):
         return thy.get_data("operator").get_info_for_fun(t.head)
 
     def get_priority(t):
-        if nat.is_binary(t) or hol_list.is_literal_list(t):
+        if nat.is_binary(t) or list.is_literal_list(t):
             return 100  # Nat atom case
         elif t.is_comb():
             op_data = get_info_for_operator(t)
@@ -139,8 +139,8 @@ def print_term(thy, t):
         if nat.is_binary(t):
             return N(str(nat.from_binary(t)))
 
-        if hol_list.is_literal_list(t):
-            items = hol_list.dest_literal_list(t)
+        if list.is_literal_list(t):
+            items = list.dest_literal_list(t)
             res = N('[') + commas_join(helper(item, bd_vars) for item in items) + N(']')
             if hasattr(t, "print_type"):
                 return N("(") + res + N("::") + print_type(thy, t.T) + N(")")

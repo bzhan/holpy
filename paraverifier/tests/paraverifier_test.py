@@ -5,7 +5,7 @@ import unittest
 from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const
 from logic import basic
-from logic.nat import natT
+from data.nat import natT
 from logic.logic import true, false, neg, mk_conj
 from syntax import printer
 from paraverifier import gcl

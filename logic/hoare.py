@@ -3,8 +3,8 @@
 from kernel.type import Type, TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.macro import global_macros
-from logic import nat
-from logic import function
+from data import nat
+from data import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm

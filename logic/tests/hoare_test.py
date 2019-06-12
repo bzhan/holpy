@@ -6,10 +6,10 @@ from kernel.type import TFun, boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.report import ProofReport
-from logic import nat
+from data import nat
 from logic import hoare
 from logic import logic
-from logic.function import mk_const_fun, mk_fun_upd
+from data.function import mk_const_fun, mk_fun_upd
 from logic import basic
 from syntax import parser
 from syntax import printer

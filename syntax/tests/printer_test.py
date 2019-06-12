@@ -5,12 +5,12 @@ import unittest
 from kernel.type import TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.thm import Thm
-from logic import logic
-from logic import nat
-from logic import list
-from logic import set
 from logic import basic
-from logic import function
+from logic import logic
+from data import nat
+from data import list
+from data import set
+from data import function
 from syntax import printer
 
 thy = basic.load_theory('list')

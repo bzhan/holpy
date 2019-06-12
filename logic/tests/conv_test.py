@@ -10,7 +10,7 @@ from logic import basic
 from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
     top_sweep_conv, arg_conv, rewr_conv, ConvException
-from logic import nat
+from data import nat
 
 thy = basic.load_theory('logic_base')
 abs = Term.mk_abs

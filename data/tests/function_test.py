@@ -6,9 +6,9 @@ from kernel.type import TVar, TFun
 from kernel.term import Var
 from kernel.thm import Thm
 from logic import basic
-from logic import nat
-from logic import function
-from logic.function import mk_fun_upd, strip_fun_upd
+from data import nat
+from data import function
+from data.function import mk_fun_upd, strip_fun_upd
 from syntax import printer
 
 Ta = TVar("a")

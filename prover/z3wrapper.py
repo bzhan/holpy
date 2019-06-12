@@ -13,7 +13,7 @@ from kernel.term import Term, Var, boolT
 from kernel.thm import Thm
 from kernel.macro import ProofMacro, global_macros
 from logic import logic
-from logic import nat
+from data import nat
 from syntax import printer
 
 

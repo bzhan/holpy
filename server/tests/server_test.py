@@ -10,9 +10,9 @@ from kernel.proof import Proof
 from kernel.report import ProofReport
 from logic import logic
 from logic import basic
-from logic import nat
-from logic import list
-from logic import function
+from data import nat
+from data import list
+from data import function
 from syntax import printer
 from server import server
 from server import method

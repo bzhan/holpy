@@ -4,10 +4,10 @@ import unittest
 
 from kernel.term import Term
 from kernel.thm import Thm
-from logic import nat
+from data import nat
 from logic import basic
 from logic import logic
-from logic.nat import zero, one, bit0, bit1
+from data.nat import zero, one, bit0, bit1
 from syntax import parser
 
 thy = basic.load_theory('nat')

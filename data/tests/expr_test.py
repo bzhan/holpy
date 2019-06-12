@@ -6,10 +6,10 @@ from kernel.type import TFun
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from logic import basic
-from logic import nat
-from logic import expr
-from logic import function
-from logic.expr import N, V, Plus, Times
+from data import nat
+from data import expr
+from data import function
+from data.expr import N, V, Plus, Times
 from syntax import printer
 from server.server import ProofState
 

@@ -7,9 +7,9 @@ from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
-from logic import nat
+from data import nat
 from logic import basic
-from logic import set
+from data import set
 from syntax.printer import print_term, print_type
 import syntax.parser as parser
 

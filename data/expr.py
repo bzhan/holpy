@@ -6,9 +6,9 @@ from kernel.thm import Thm
 from kernel.macro import global_macros
 from kernel.theory import Method, global_methods
 from logic import logic
-from logic import nat
-from logic import function
-from logic.nat import natT
+from data import nat
+from data import function
+from data.nat import natT
 from logic.conv import arg_conv
 from logic.proofterm import ProofTermMacro, ProofTerm
 from logic.logic_macro import apply_theorem

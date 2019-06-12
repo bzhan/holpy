@@ -5,9 +5,9 @@
 from kernel.type import TFun, Type, boolT
 from kernel.term import Term, Const
 from logic import basic
-from logic.nat import natT, to_binary
+from data.nat import natT, to_binary
 from logic import logic
-from logic import function
+from data import function
 
 thy = basic.load_theory("gcl")
 

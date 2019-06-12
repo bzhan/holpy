@@ -8,8 +8,8 @@ from kernel.term import Term, Var
 from kernel.report import ProofReport
 from logic import basic
 from logic import logic
-from logic import nat
-from logic.function import mk_const_fun, mk_fun_upd
+from data import nat
+from data.function import mk_const_fun, mk_fun_upd
 from logic import hoare
 from logic.proofterm import ProofTermDeriv
 from syntax import printer

@@ -10,7 +10,7 @@ from kernel.report import ProofReport
 from logic import logic
 from logic import logic_macro
 from logic import basic
-from logic import nat
+from data import nat
 from logic.proofterm import ProofTerm
 from syntax import printer
 

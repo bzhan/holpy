@@ -10,7 +10,7 @@ from kernel import extension
 from logic import basic
 from logic import logic
 from logic import induct
-from logic.nat import natT, to_binary
+from data.nat import natT, to_binary
 from logic.conv import rewr_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic_macro import apply_theorem

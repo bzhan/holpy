@@ -4,7 +4,7 @@ import unittest
 
 from kernel.type import TFun
 from kernel.thm import Thm
-from logic import nat
+from data import nat
 from logic import basic
 from syntax import parser
 from syntax import printer

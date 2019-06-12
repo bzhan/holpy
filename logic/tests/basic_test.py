@@ -9,8 +9,8 @@ from kernel.proof import Proof
 from kernel.theory import Theory, TheoryException
 from logic import basic
 from logic import logic
-from logic import nat
-from logic import set
+from data import nat
+from data import set
 from logic import logic_macro
 from syntax import printer
 
