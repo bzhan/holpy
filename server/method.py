@@ -502,10 +502,11 @@ def apply_method(state, data):
 def display_method(state, step):
     method = global_methods[step['method_name']]
     goal_id = id_force_tuple(step['goal_id'])
-    fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']]
+    fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
+        if 'fact_ids' in step and step['fact_ids'] else []
     search_res = method.search(state, goal_id, fact_ids)
     for res in search_res:
-        if all(res[sig] == step[sig] for sig in method.sig):
+        if all(sig not in res or res[sig] == step[sig] for sig in method.sig):
             return method.display_step(state, goal_id, res, fact_ids)
 
 
