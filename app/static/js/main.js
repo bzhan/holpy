@@ -1042,10 +1042,14 @@
         }
     }
 
+    // Select goal or fact
     function mark_text(cm) {
         var line_num = cm.getCursor().line;
         var line = cm.getLineHandle(line_num).text;
         var id = get_selected_id();
+        if (line_num >= cells[id].proof.length) {
+            return;
+        }
         if (line.indexOf('sorry') !== -1) {
             // Choose a new goal
             cells[id].goal = line_num;
