@@ -711,6 +711,8 @@
                 if (data_type === 'def') {
                     form.content.textContent = item.edit_content;
                     form.content.rows = 1;
+                    if (item.attributes && item.attributes.includes('hint_rewrite'))
+                        form.hint_rewrite_def.checked = true;
                 } else {
                     form.content.textContent = item.edit_content.join('\n');
                     form.content.rows = item.edit_content.length;    
@@ -769,6 +771,9 @@
             item.type = form.data_name_def.value.split('::')[1].trim();
             if (ty === 'def')
                 item.prop = form.content.value.trim();
+                item.attributes = [];
+                if (form.hint_rewrite_def.checked == true)
+                    item.attributes.push('hint_rewrite');
             else
                 item.data_content = form.content.value.trim().split('\n');
         }

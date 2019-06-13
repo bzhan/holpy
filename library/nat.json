@@ -61,34 +61,8 @@
             "ty": "method"
         },
         {
-            "attributes": ["hint_rewrite"],
-            "steps": [
-                {
-                    "method_name": "induction",
-                    "goal_id": "0",
-                    "theorem": "nat_induct",
-                    "var": "x"
-                },
-                {
-                    "method_name": "rewrite_goal",
-                    "goal_id": "0",
-                    "theorem": "plus_def_1"
-                },
-                {
-                    "method_name": "introduction",
-                    "goal_id": "1",
-                    "names": "n"
-                },
-                {
-                    "method_name": "rewrite_goal",
-                    "goal_id": "1.2",
-                    "theorem": "plus_def_2"
-                },
-                {
-                    "method_name": "rewrite_goal_with_prev",
-                    "goal_id": "1.2",
-                    "fact_ids": ["1.1"]
-                }
+            "attributes": [
+                "hint_rewrite"
             ],
             "name": "add_0_right",
             "num_gaps": 0,
@@ -162,6 +136,36 @@
                 }
             ],
             "prop": "x + 0 = x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "x"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "plus_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "plus_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "nat"
@@ -537,34 +541,8 @@
             }
         },
         {
-            "attributes": ["hint_rewrite"],
-            "steps": [
-                {
-                    "method_name": "induction",
-                    "goal_id": "0",
-                    "theorem": "nat_induct",
-                    "var": "x"
-                },
-                {
-                    "method_name": "rewrite_goal",
-                    "goal_id": "0",
-                    "theorem": "times_def_1"
-                },
-                {
-                    "method_name": "introduction",
-                    "goal_id": "1",
-                    "names": "n"
-                },
-                {
-                    "method_name": "rewrite_goal",
-                    "goal_id": "1.2",
-                    "theorem": "times_def_2"
-                },
-                {
-                    "method_name": "rewrite_goal",
-                    "goal_id": "1.2",
-                    "theorem": "plus_def_1"
-                }
+            "attributes": [
+                "hint_rewrite"
             ],
             "name": "mult_0_right",
             "num_gaps": 0,
@@ -638,6 +616,34 @@
                 }
             ],
             "prop": "x * 0 = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "x"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "times_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "times_def_2"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "plus_def_1"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "nat"
@@ -1330,6 +1336,7 @@
             "ty": "header"
         },
         {
+            "attributes": [],
             "name": "bit0",
             "prop": "bit0 n = n + n",
             "ty": "def",
