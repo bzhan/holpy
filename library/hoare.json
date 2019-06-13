@@ -79,6 +79,20 @@
             "type": "'a com => 'a => 'a => bool"
         },
         {
+            "attributes": [
+                "hint_forward"
+            ],
+            "name": "Sem_Seq_elim",
+            "prop": "Sem (Seq c1 c2) s s2 --> ? s3. Sem c1 s s3 & Sem c2 s3 s2",
+            "ty": "thm",
+            "vars": {
+                "c1": "'a com",
+                "c2": "'a com",
+                "s": "'a",
+                "s2": "'a"
+            }
+        },
+        {
             "name": "Skip",
             "prop": "Skip = Basic (λf::'a. f)",
             "ty": "def",
@@ -144,6 +158,20 @@
                 "a": "'a",
                 "b": "('a => 'b) => 'b",
                 "s": "'a => 'b"
+            }
+        },
+        {
+            "attributes": [
+                "hint_forward"
+            ],
+            "name": "Sem_Assign_elim",
+            "prop": "Sem (Assign a b) s s2 --> s2 = (s)(a := b s)",
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "('a => 'b) => 'b",
+                "s": "'a => 'b",
+                "s2": "'a => 'b"
             }
         },
         {
@@ -442,7 +470,113 @@
         },
         {
             "name": "assign_rule",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀s. ∀s2. P ((s)(a := b s)) ⟶ Sem (Assign a b) s s2 ⟶ P s2"
+                },
+                {
+                    "args": "s, 'a ⇒ 'b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ s = s"
+                },
+                {
+                    "args": "s2, 'a ⇒ 'b",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ s2 = s2"
+                },
+                {
+                    "args": "P ((s)(a := b s))",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P ((s)(a := b s)) ⊢ P ((s)(a := b s))"
+                },
+                {
+                    "args": "Sem (Assign a b) s s2",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Sem (Assign a b) s s2 ⊢ Sem (Assign a b) s s2"
+                },
+                {
+                    "args": "Sem_Assign_elim",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Sem (Assign a b) s s2 ⊢ s2 = (s)(a := b s)"
+                },
+                {
+                    "args": "P s2",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4",
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "Sem (Assign a b) s s2, P ((s)(a := b s)) ⊢ P s2"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.3",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀s. ∀s2. P ((s)(a := b s)) ⟶ Sem (Assign a b) s s2 ⟶ P s2"
+                },
+                {
+                    "args": "Valid_def, Valid (λs. P ((s)(a := b s))) (Assign a b) P",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Valid (λs. P ((s)(a := b s))) (Assign a b) P"
+                }
+            ],
             "prop": "Valid (%s. P ((s)(a := b s))) (Assign a b) P",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "Valid_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "s, s2"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "Sem_Assign_elim"
+                },
+                {
+                    "fact_ids": [
+                        "0.4"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "P": "('a => 'b) => bool",
@@ -452,7 +586,284 @@
         },
         {
             "name": "seq_rule",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "Valid P c1 Q",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Valid P c1 Q ⊢ Valid P c1 Q"
+                },
+                {
+                    "args": "Valid Q c2 R",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Valid Q c2 R ⊢ Valid Q c2 R"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Valid P c1 Q, Valid Q c2 R ⊢ ∀s. ∀s2. P s ⟶ Sem (Seq c1 c2) s s2 ⟶ R s2"
+                },
+                {
+                    "args": "s, 'a",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ s = s"
+                },
+                {
+                    "args": "s2, 'a",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ s2 = s2"
+                },
+                {
+                    "args": "P s",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P s ⊢ P s"
+                },
+                {
+                    "args": "Sem (Seq c1 c2) s s2",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Sem (Seq c1 c2) s s2 ⊢ Sem (Seq c1 c2) s s2"
+                },
+                {
+                    "args": "Sem_Seq_elim",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Sem (Seq c1 c2) s s2 ⊢ ∃s3. Sem c1 s s3 ∧ Sem c2 s3 s2"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "Valid P c1 Q, Valid Q c2 R, P s, Sem (Seq c1 c2) s s2 ⊢ ∀a. Sem c1 s a ∧ Sem c2 a s2 ⟶ R s2"
+                },
+                {
+                    "args": "s3, 'a",
+                    "id": "2.5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ s3 = s3"
+                },
+                {
+                    "args": "Sem c1 s s3 ∧ Sem c2 s3 s2",
+                    "id": "2.5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Sem c1 s s3 ∧ Sem c2 s3 s2"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.5.2",
+                    "prevs": [
+                        "2.5.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Sem c1 s s3"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2.5.3",
+                    "prevs": [
+                        "2.5.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Sem c2 s3 s2"
+                },
+                {
+                    "args": "Valid_def",
+                    "id": "2.5.4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "Valid P c1 Q ⊢ ∀s. ∀s2. P s ⟶ Sem c1 s s2 ⟶ Q s2"
+                },
+                {
+                    "args": "Valid_def",
+                    "id": "2.5.5",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "Valid Q c2 R ⊢ ∀s. ∀s2. Q s ⟶ Sem c2 s s2 ⟶ R s2"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.6",
+                    "prevs": [
+                        "2.5.4",
+                        "2.2",
+                        "2.5.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "Valid P c1 Q, P s, Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ Q s3"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.7",
+                    "prevs": [
+                        "2.5.5",
+                        "2.5.6",
+                        "2.5.3"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "Valid Q c2 R, Valid P c1 Q, P s, Sem c1 s s3 ∧ Sem c2 s3 s2 ⊢ R s2"
+                },
+                {
+                    "args": "",
+                    "id": "2.5.8",
+                    "prevs": [
+                        "2.5.0",
+                        "2.5.1",
+                        "2.5.7"
+                    ],
+                    "rule": "intros",
+                    "th": "Valid P c1 Q, Valid Q c2 R, P s, Sem (Seq c1 c2) s s2 ⊢ ∀s3. Sem c1 s s3 ∧ Sem c2 s3 s2 ⟶ R s2"
+                },
+                {
+                    "args": "exE",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.4",
+                        "2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "Sem (Seq c1 c2) s s2, Valid P c1 Q, Valid Q c2 R, P s ⊢ R s2"
+                },
+                {
+                    "args": "",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.3",
+                        "2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "Valid P c1 Q, Valid Q c2 R ⊢ ∀s. ∀s2. P s ⟶ Sem (Seq c1 c2) s s2 ⟶ R s2"
+                },
+                {
+                    "args": "Valid_def, Valid P (Seq c1 c2) R",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "Valid P c1 Q, Valid Q c2 R ⊢ Valid P (Seq c1 c2) R"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Valid P c1 Q ⟶ Valid Q c2 R ⟶ Valid P (Seq c1 c2) R"
+                }
+            ],
             "prop": "Valid P c1 Q --> Valid Q c2 R --> Valid P (Seq c1 c2) R",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "Valid_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "s,s2"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "Sem_Seq_elim"
+                },
+                {
+                    "fact_ids": [
+                        "2.4"
+                    ],
+                    "goal_id": "2.5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exE"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "introduction",
+                    "names": "s3"
+                },
+                {
+                    "fact_ids": [
+                        "2.5.1"
+                    ],
+                    "goal_id": "2.5.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.5.1"
+                    ],
+                    "goal_id": "2.5.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.5.4",
+                    "method_name": "rewrite_fact",
+                    "theorem": "Valid_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2.5.5",
+                    "method_name": "rewrite_fact",
+                    "theorem": "Valid_def"
+                },
+                {
+                    "fact_ids": [
+                        "2.5.4",
+                        "2.2",
+                        "2.5.2"
+                    ],
+                    "goal_id": "2.5.6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.5.5",
+                        "2.5.6",
+                        "2.5.3"
+                    ],
+                    "goal_id": "2.5.7",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "P": "'a => bool",

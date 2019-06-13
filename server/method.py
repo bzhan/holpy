@@ -482,7 +482,7 @@ class apply_fact(Method):
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
         return printer.N("Apply fact (f) " + print_id(prevs[0]) + " onto " + \
-            ",".join(print_id(id) for id in prevs[1:]))
+            ", ".join(print_id(id) for id in prevs[1:]))
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)

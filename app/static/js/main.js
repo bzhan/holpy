@@ -887,6 +887,7 @@
                 cells[id].goal = -1;
                 cells[id].method_sig = result.method_sig;
                 display_checked_proof(result);
+                cells[id].steps = result.steps;
                 cells[id].instructions = result.steps_output;
                 cells[id].index = 0;
                 if (cells[id].instructions !== undefined)
