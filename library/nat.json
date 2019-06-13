@@ -61,7 +61,7 @@
             "ty": "method"
         },
         {
-            "hint_rewrite": "true",
+            "attributes": ["hint_rewrite"],
             "steps": [
                 {
                     "method_name": "induction",
@@ -537,7 +537,7 @@
             }
         },
         {
-            "hint_rewrite": "true",
+            "attributes": ["hint_rewrite"],
             "steps": [
                 {
                     "method_name": "induction",

@@ -68,7 +68,7 @@
             "type": "'a list => 'a list"
         },
         {
-            "hint_rewrite": "true",
+            "attributes": ["hint_rewrite"],
             "steps": [
                 {
                     "method_name": "induction",
@@ -281,7 +281,7 @@
             }
         },
         {
-            "hint_rewrite": "true",
+            "attributes": ["hint_rewrite"],
             "name": "length_append",
             "num_gaps": 0,
             "proof": [
@@ -405,7 +405,7 @@
             }
         },
         {
-            "hint_rewrite": "true",
+            "attributes": ["hint_rewrite"],
             "name": "rev_append",
             "num_gaps": 0,
             "proof": [

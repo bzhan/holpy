@@ -42,7 +42,9 @@
             "type": "bool => 'a => 'a => 'a"
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "conjI",
             "prop": "A ⟶ B ⟶ A ∧ B",
             "ty": "thm.ax",
@@ -52,8 +54,10 @@
             }
         },
         {
-            "hint_backward": "true",
-            "hint_forward": "true",
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "conjD1",
             "prop": "A ∧ B ⟶ A",
             "ty": "thm.ax",
@@ -63,8 +67,10 @@
             }
         },
         {
-            "hint_backward": "true",
-            "hint_forward": "true",
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "conjD2",
             "prop": "A & B --> B",
             "ty": "thm.ax",
@@ -74,8 +80,10 @@
             }
         },
         {
-            "hint_backward": "true",
-            "hint_forward": "true",
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "disjI1",
             "prop": "A --> A | B",
             "ty": "thm.ax",
@@ -85,8 +93,10 @@
             }
         },
         {
-            "hint_backward": "true",
-            "hint_forward": "true",
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "disjI2",
             "prop": "B --> A | B",
             "ty": "thm.ax",
@@ -96,7 +106,9 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "disjE",
             "prop": "A | B --> (A --> C) --> (B --> C) --> C",
             "ty": "thm.ax",
@@ -107,7 +119,9 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "negI",
             "prop": "(A --> false) --> ~A",
             "ty": "thm.ax",
@@ -116,7 +130,9 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "negE",
             "prop": "~A --> A --> false",
             "ty": "thm.ax",
@@ -125,14 +141,18 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "trueI",
             "prop": "true",
             "ty": "thm.ax",
             "vars": {}
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "falseE",
             "prop": "false --> A",
             "ty": "thm.ax",
@@ -141,7 +161,9 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "exI",
             "prop": "P a --> ?a. P a",
             "ty": "thm.ax",
@@ -151,7 +173,9 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "exE",
             "prop": "(?a. P a) --> (!a. P a --> C) --> C",
             "ty": "thm.ax",
@@ -170,7 +194,9 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "extension",
             "prop": "(!x. f x = g x) --> f = g",
             "ty": "thm.ax",
@@ -359,7 +385,9 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "negE_gen",
             "num_gaps": 0,
             "proof": [
@@ -416,7 +444,9 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "iffI",
             "num_gaps": 0,
             "proof": [

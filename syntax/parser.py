@@ -425,11 +425,11 @@ def parse_extension(thy, data):
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Theorem(data['name'], Thm([], prop)))
-        if 'hint_backward' in data and data['hint_backward'] == "true":
+        if 'attributes' in data and 'hint_backward' in data['attributes']:
             ext.add_extension(extension.Attribute(data['name'], 'hint_backward'))
-        if 'hint_rewrite' in data and data['hint_rewrite'] == "true":
+        if 'attributes' in data and 'hint_rewrite' in data['attributes']:
             ext.add_extension(extension.Attribute(data['name'], 'hint_rewrite'))
-        if 'hint_forward' in data and data['hint_forward'] == 'true':
+        if 'attributes' in data and 'hint_forward' in data['attributes']:
             ext.add_extension(extension.Attribute(data['name'], 'hint_forward'))
 
     elif data['ty'] == 'type.ind':

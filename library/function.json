@@ -12,7 +12,7 @@
             "type": "('a => 'b) => 'a => 'b => 'a => 'b"
         },
         {
-            "hint_rewrite": "true",
+            "attributes": ["hint_rewrite"],
             "name": "fun_upd_eval",
             "prop": "fun_upd f a b x = (if x = a then b else f x)",
             "ty": "thm",

@@ -354,9 +354,6 @@
                             json_files[theory_name].content[add_num] = item;
                         } else {
                             item = json_files[theory_name].content[number]
-                            delete item.hint_forward;
-                            delete item.hint_backward;
-                            delete item.hint_rewrite;
                             for (var key in res.content) {
                                 item[key] = res.content[key];
                             }
@@ -599,7 +596,7 @@
     function save_json_file(filename) {
         var content = [];
         $.each(json_files[filename].content, function (i, item) {
-            content.push($.extend(true, {}, item));  // perform deep copy//////
+            content.push($.extend(true, {}, item));  // perform deep copy
             item_to_output(content[i]);
         });
         var data = {
@@ -664,11 +661,11 @@
                 vars_lines = item['vars_lines']
                 form.vars.rows = vars_lines.length;
                 form.vars.value = vars_lines.join('\n');
-                if (item['hint_backward'] === 'true')
+                if (item.attributes && item.attributes.includes('hint_backward'))
                     form.hint_backward.checked = true;
-                if (item['hint_forward'] === 'true')
+                if (item.attributes && item.attributes.includes('hint_forward'))
                     form.hint_forward.checked = true;
-                if (item['hint_rewrite'] === 'true')
+                if (item.attributes && item.attributes.includes('hint_rewrite'))
                     form.hint_rewrite.checked = true;
             }
             else {
@@ -753,12 +750,13 @@
             item.name = form.name.value;
             item.prop = form.prop.value;
             item.vars = form.vars.value.trim().split('\n');
+            item.attributes = [];
             if (form.hint_backward.checked === true)
-                item.hint_backward = 'true';
+                item.attributes.push('hint_backward');
             if (form.hint_forward.checked === true)
-                item.hint_forward = 'true';
+                item.attributes.push('hint_forward');
             if (form.hint_rewrite.checked === true)
-                item.hint_rewrite = 'true';
+                item.attributes.push('hint_rewrite');
         }
         if (ty === 'type.ind') {
             item.data_name = form.data_name_type.value.trim();

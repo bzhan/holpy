@@ -1067,7 +1067,7 @@
             }
         },
         {
-            "hint_backward": "true",
+            "attributes": ["hint_backward"],
             "name": "ex_conj_distrib",
             "num_gaps": 0,
             "proof": [
