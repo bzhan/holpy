@@ -51,19 +51,20 @@ class apply_prev_method(Method):
         self.sig = []
 
     def search(self, state, id, prevs):
-        if len(prevs) == 1:
-            prev_th = state.get_proof_item(prevs[0]).th
-            cur_th = state.get_proof_item(id).th
-            if prev_th.prop.is_implies() and prev_th.prop.arg == cur_th.prop:
-                return [{"_goal": prev_th.assums}]
-            else:
-                return []
-        else:
+        try:
+            id = id_force_tuple(id)
+            prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
+            prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            cur_item = state.get_proof_item(id)
+            pt = tactic.apply_prev().get_proof_term(state.thy, cur_item.th, args=None, prevs=prevs)
+        except (AssertionError, matcher.MatchException):
             return []
+        else:
+            return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("apply fact: ") + display_goals(state, data)
+        return printer.N("Apply fact (b): ") + display_goals(state, data)
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.apply_prev(), prevs=prevs)
@@ -331,7 +332,7 @@ class introduction(Method):
 
         intros_tac = tactic.intros()
         if 'names' in data and data['names'] != '':
-            names = data['names'].split(",")
+            names = [name.strip() for name in data['names'].split(",")]
         else:
             names = []
         pt = intros_tac.get_proof_term(state.thy, cur_item.th, args=names)
@@ -469,10 +470,10 @@ class apply_fact(Method):
         if len(prev_ths) > len(As):
             return []
 
-        tyinst, inst = dict(), {v.name: v for v in vars}
+        instsp = dict(), {v.name: v for v in vars}
         try:
             for idx, prev_th in enumerate(prev_ths):
-                matcher.first_order_match_incr(As[idx], prev_th.prop, (tyinst, inst))
+                matcher.first_order_match_incr(As[idx], prev_th.prop, instsp)
         except matcher.MatchException:
             return []
 
@@ -480,7 +481,7 @@ class apply_fact(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("Apply fact " + print_id(prevs[0]) + " onto " + \
+        return printer.N("Apply fact (f) " + print_id(prevs[0]) + " onto " + \
             ",".join(print_id(id) for id in prevs[1:]))
 
     def apply(self, state, id, data, prevs):

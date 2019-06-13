@@ -8,6 +8,7 @@ from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from kernel.proof import Proof
+from kernel.theory import global_methods
 from kernel.report import ProofReport
 from logic import logic
 from logic import basic
@@ -18,6 +19,7 @@ from syntax import printer
 from server import server
 from server import method
 from server.server import ProofState
+from imp import imp
 
 thy = basic.load_theory('logic_base')
 
@@ -29,7 +31,7 @@ imp = Term.mk_implies
 neg = logic.neg
 exists = logic.mk_exists
 
-def testMethods(self, thy_name, thm_name):
+def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, print_search=False):
     """Test list of steps for the given theorem."""
     thy = basic.load_theory(thy_name, limit=('thm', thm_name))
     with open('./library/' + thy_name + '.json', 'r', encoding='utf-8') as f:
@@ -38,9 +40,19 @@ def testMethods(self, thy_name, thm_name):
             if val['ty'] == 'thm' and val['name'] == thm_name:
                 state = ProofState.parse_init_state(thy, val)
                 goal = state.prf.items[-1].th
-                for step in val['steps']:
+                for i, step in enumerate(val['steps']):
+                    if print_search:
+                        print('Step ' + str(i))
+                        if 'fact_ids' not in step:
+                            step['fact_ids'] = []
+                        res = state.search_method(step['goal_id'], step['fact_ids'])
+                        for r in res:
+                            m = global_methods[r['_method_name']]
+                            print(m.display_step(state, step['goal_id'], r, step['fact_ids']))
                     method.apply_method(state, step)
-                self.assertEqual(state.check_proof(no_gaps=True), goal)
+                self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
+                if print_proof:
+                    print(printer.print_proof(thy, state.prf))
 
 
 class ServerTest(unittest.TestCase):
@@ -314,6 +326,10 @@ class ServerTest(unittest.TestCase):
     def testPierce(self):
         """Proof of ((A --> B) --> A) --> A."""
         testMethods(self, 'logic', 'pierce')
+
+    def testHoarePreRule(self):
+        """Proof of Entail P Q --> Valid Q c R --> Valid P c R."""
+        testMethods(self, 'hoare', 'pre_rule')
 
 
 if __name__ == "__main__":

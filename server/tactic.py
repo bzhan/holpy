@@ -161,13 +161,34 @@ class rewrite_goal_with_prev(Tactic):
             return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[pt, new_goal_pts] + new_As_pts)
 
 class apply_prev(Tactic):
+    """Applies an existing fact in the backward direction."""
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):
-        assert isinstance(prevs, list) and len(prevs) == 1, "apply_prev"
-        pt = prevs[0]
+        assert isinstance(prevs, list) and len(prevs) >= 1, "apply_prev"
+        pt, prev_pts = prevs[0], prevs[1:]
 
-        assert pt.concl == goal.prop, "apply_prev"
-        As_pts = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in pt.assums]
-        return ProofTerm.implies_elim(pt, *As_pts)
+        # First, obtain the patterns
+        vars = term.get_vars(pt.prop)
+        new_names = logic.get_forall_names(pt.prop)
+        assert {v.name for v in vars}.isdisjoint(set(new_names)), "apply_prev: name conflict"
+        new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
+        assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
+
+        instsp = dict(), {v.name: v for v in vars}
+        assert set(new_names).issubset({v.name for v in term.get_vars(As[:len(prev_pts)] + [C])}), \
+            "apply_prev: cannot match all variables"
+        matcher.first_order_match_incr(C, goal.prop, instsp)
+        for idx, prev_pt in enumerate(prev_pts):
+            matcher.first_order_match_incr(As[idx], prev_pt.prop, instsp)
+
+        tyinst, inst = instsp
+        if tyinst:
+            pt = ProofTerm.subst_type(tyinst, pt)
+        for new_name in new_names:
+            pt = ProofTerm.forall_elim(inst[new_name], pt)
+        As, C = pt.prop.strip_implies()
+        
+        new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(prev_pts):]]
+        return ProofTermDeriv('apply_fact', thy, args=None, prevs=prevs + new_goals)
 
 class cases(Tactic):
     """Case checking on an expression."""

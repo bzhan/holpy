@@ -127,6 +127,8 @@ class apply_fact_macro(ProofTermMacro):
         for idx, pt_prev in enumerate(pt_prevs):
             matcher.first_order_match_incr(As[idx], pt_prev.prop, (tyinst, inst))
 
+        if tyinst:
+            pt = ProofTerm.subst_type(tyinst, pt)
         for new_name in new_names:
             pt = ProofTerm.forall_elim(inst[new_name], pt)
         if pt.prop.beta_norm() != pt.prop:

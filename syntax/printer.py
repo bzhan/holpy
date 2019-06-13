@@ -67,6 +67,7 @@ def commas_join(strs):
 
 @settings.with_settings
 def print_type(thy, T):
+    assert isinstance(T, HOLType), "print_type: input is not a type."
     def helper(T):
         if T.ty == HOLType.TVAR:
             return TV("'" + T.name)
@@ -105,6 +106,7 @@ def print_term(thy, t):
     Note we do not yet handle name collisions in lambda terms.
 
     """
+    assert isinstance(t, Term), "print_term: input is not a term."
     # Import modules for custom parsed data
     from logic import logic
     from data import nat

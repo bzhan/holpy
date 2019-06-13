@@ -16,7 +16,10 @@ def id_force_tuple(id):
 
 def print_id(id):
     """Print id in n1.n2.n3 form."""
-    return ".".join(str(i) for i in id)
+    if isinstance(id, str):
+        return id
+    else:
+        return ".".join(str(i) for i in id)
 
 class ProofException(Exception):
     pass

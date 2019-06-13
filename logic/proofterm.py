@@ -111,6 +111,24 @@ class ProofTerm():
         assert isinstance(th, Thm), "sorry: input must be a theorem."
         return ProofTermDeriv("sorry", None, None, [], th=th)
 
+    def get_gaps(self):
+        """Return list of gaps of the proof term. Return value is
+        a list of Thm objects.
+
+        """
+        res = set()
+        def search(pt):
+            if pt.ty == ProofTerm.ATOM:
+                return
+            if pt.rule == 'sorry':
+                res.add(pt.th)
+            else:
+                for prev in pt.prevs:
+                    search(prev)
+
+        search(self)
+        return list(res)
+
     def _export(self, prefix, seq_to_id, prf, subproof):
         """Helper function for _export.
         
