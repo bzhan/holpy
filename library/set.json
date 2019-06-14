@@ -23,7 +23,9 @@
             "type": "'a set"
         },
         {
-            "attributes": ["hint_backward"],
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "member_empty",
             "prop": "~(member x empty_set)",
             "ty": "thm.ax",
@@ -32,7 +34,9 @@
             }
         },
         {
-            "attributes": ["hint_backward"],
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "member_univ",
             "prop": "member x univ",
             "ty": "thm.ax",
@@ -41,7 +45,9 @@
             }
         },
         {
-            "attributes": ["hint_backward"],
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "member_ext",
             "prop": "(!x. member x A = member x B) --> A = B",
             "ty": "thm.ax",
@@ -56,7 +62,9 @@
             "type": "'a set => 'a set => bool"
         },
         {
-            "attributes": ["hint_backward"],
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "subsetI",
             "prop": "(!x. member x A --> member x B) --> subset A B",
             "ty": "thm.ax",
@@ -66,7 +74,10 @@
             }
         },
         {
-            "attributes": ["hint_backward", "hint_forward"],
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "subsetE",
             "prop": "subset A B --> member x A --> member x B",
             "ty": "thm.ax",
@@ -504,7 +515,9 @@
             "type": "'a set => 'a set => 'a set"
         },
         {
-            "attributes": ["hint_rewrite"],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "member_inter_iff",
             "prop": "member x (inter A B) = ((member x A) & (member x B))",
             "ty": "thm.ax",
@@ -515,7 +528,9 @@
             }
         },
         {
-            "attributes": ["hint_rewrite"],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "member_union_iff",
             "prop": "member x (union A B) = ((member x A) | (member x B))",
             "ty": "thm.ax",
@@ -673,7 +688,9 @@
             "type": "('a => bool) => 'a set"
         },
         {
-            "attributes": ["hint_rewrite"],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "member_collect_iff",
             "prop": "member x (collect P) = P x",
             "ty": "thm.ax",
@@ -873,6 +890,24 @@
             "ty": "thm",
             "vars": {
                 "f": "'a => 'a set"
+            }
+        },
+        {
+            "name": "insert",
+            "ty": "def.ax",
+            "type": "'a => 'a set => 'a set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "member_insert",
+            "prop": "(x ∈ (insert y s)) = (x = y | (x ∈ s))",
+            "ty": "thm.ax",
+            "vars": {
+                "s": "'a set",
+                "x": "'a",
+                "y": "'a"
             }
         }
     ],

@@ -150,11 +150,15 @@ def print_term(thy, t):
                 return res
 
         if set.is_literal_set(t):
-            empty_set = "∅" if settings.unicode() else "{}"
-            if hasattr(t, "print_type"):
-                return N("(") + N(empty_set) + N("::") + print_type(thy, t.T) + N(")")
+            items = set.dest_literal_set(t)
+            if set.is_empty_set(t):
+                res = N('∅') if settings.unicode() else N('{}')
             else:
-                return N(empty_set)
+                res = N('{') + commas_join(helper(item, bd_vars) for item in items) + N('}')
+            if hasattr(t, "print_type"):
+                return N("(") + res + N("::") + print_type(thy, t.T) + N(")")
+            else:
+                return res
 
         if logic.is_if(t):
             P, x, y = t.args

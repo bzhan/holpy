@@ -179,12 +179,16 @@ class PrinterTest(unittest.TestCase):
         A = Var("A", set.setT(Ta))
         B = Var("B", set.setT(Ta))
         x = Var("x", Ta)
+        y = Var("y", Ta)
         test_data = [
             (set.empty_set(Ta), "({}::'a set)", "(∅::'a set)"),
             (set.mk_mem(x, A), "x MEM A", "x ∈ A"),
             (set.mk_subset(A, B), "A SUB B", "A ⊆ B"),
             (set.mk_inter(A, B), "A INTER B", "A ∩ B"),
             (set.mk_union(A, B), "A UNION B", "A ∪ B"),
+            (set.mk_insert(x, set.empty_set(Ta)), "{x}", "{x}"),
+            (set.mk_insert(x, set.mk_insert(y, set.empty_set(Ta))), "{x, y}", "{x, y}"),
+            (set.mk_insert(x, A), "insert x A", "insert x A"),
         ]
 
         for t, s1, s2 in test_data:

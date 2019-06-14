@@ -223,9 +223,10 @@ class ParserTest(unittest.TestCase):
 
     def testParseSet(self):
         ctxt = {'vars': {
-            "x" : Ta,
-            "A" : set.setT(Ta),
-            "B" : set.setT(Ta),
+            "x": Ta,
+            "y": Ta,
+            "A": set.setT(Ta),
+            "B": set.setT(Ta),
         }}
         test_data = [
             ("({}::'a set)", "(∅::'a set)", "'a set"),
@@ -233,6 +234,9 @@ class ParserTest(unittest.TestCase):
             ("A SUB B", "A ⊆ B", "bool"),
             ("A INTER B", "A ∩ B", "'a set"),
             ("A UNION B", "A ∪ B", "'a set"),
+            ("{x}", "{x}", "'a set"),
+            ("{x, y}", "{x, y}", "'a set"),
+            ("insert x A", "insert x A", "'a set"),
         ]
 
         for s1, s2, Ts in test_data:

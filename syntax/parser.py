@@ -37,7 +37,8 @@ grammar = r"""
         | ("?"|"∃") CNAME ". " term           -> exists_notype
         | "[]"                     -> literal_list  // Empty list
         | "[" term ("," term)* "]" -> literal_list  // List
-        | ("{}"|"∅")               -> empty_set     // Empty set
+        | ("{}"|"∅")               -> literal_set   // Empty set
+        | "{" term ("," term)* "}" -> literal_set   // Set
         | "if" term "then" term "else" term  -> if_expr // if expression
         | "(" term ")(" term ":=" term ("," term ":=" term)* ")"   -> fun_upd // function update
         | "(" term ")"                    // Parenthesis
@@ -212,9 +213,9 @@ class HOLTransformer(Transformer):
     def imp(self, s, t):
         return Term.mk_implies(s, t)
 
-    def empty_set(self):
+    def literal_set(self, *args):
         from data import set
-        return set.empty_set(None)
+        return set.mk_literal_set(args, None)
 
     def mem(self, x, A):
         return Const("member", None)(x, A)
