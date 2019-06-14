@@ -255,6 +255,25 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(t2.checked_get_type(), T)
             self.assertEqual(print_term(thy, t2, unicode=True), s2)
 
+    def testParseInterval(self):
+        thy = basic.load_theory('set')
+        ctxt = {'vars': {
+            "m": nat.natT,
+            "n": nat.natT
+        }}
+        test_data = [
+            ("{m..n}", "nat set"),
+            ("{1..m}", "nat set"),
+        ]
+
+        for s, Ts in test_data:
+            T = parser.parse_type(thy, Ts)
+
+            t = parser.parse_term(thy, ctxt, s)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(t.checked_get_type(), T)
+            self.assertEqual(print_term(thy, t), s)
+
     def testInferType2(self):
         thy = basic.load_theory('function')
         test_data = [

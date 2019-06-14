@@ -1946,6 +1946,12 @@
                 "g": "nat => nat",
                 "n": "nat"
             }
+        },
+        {
+            "ty": "def",
+            "name": "less_eq",
+            "type": "nat => nat => bool",
+            "prop": "less_eq m n = (?p. n = m + p)"
         }
     ],
     "description": "Natural numbers",

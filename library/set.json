@@ -1276,6 +1276,12 @@
                 "A": "'a set",
                 "x": "'a"
             }
+        },
+        {
+            "ty": "def",
+            "name": "nat_interval",
+            "type": "nat => nat => nat set",
+            "prop": "nat_interval m n = {p. less_eq m p & less_eq p n}"
         }
     ],
     "description": "Basic results about sets.",

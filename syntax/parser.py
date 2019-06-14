@@ -43,6 +43,7 @@ grammar = r"""
         | "{" CNAME ". " term "}"          -> collect_set_notype
         | "if" term "then" term "else" term  -> if_expr // if expression
         | "(" term ")(" term ":=" term ("," term ":=" term)* ")"   -> fun_upd // function update
+        | "{" term ".." term "}"   -> nat_interval
         | "(" term ")"                    // Parenthesis
         | "(" term "::" type ")"   -> typed_term    // Term with specified type
 
@@ -238,6 +239,10 @@ class HOLTransformer(Transformer):
 
     def union(self, A, B):
         return Const("union", None)(A, B)
+
+    def nat_interval(self, m, n):
+        from data import interval
+        return interval.mk_interval(m, n)
 
     def thm(self, *args):
         return Thm(args[:-1], args[-1])

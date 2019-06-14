@@ -113,6 +113,7 @@ def print_term(thy, t):
     from data import list
     from data import set
     from data import function
+    from data import interval
     
     def get_info_for_operator(t):
         return thy.get_data("operator").get_info_for_fun(t.head)
@@ -159,6 +160,9 @@ def print_term(thy, t):
                 return N("(") + res + N("::") + print_type(thy, t.T) + N(")")
             else:
                 return res
+
+        if interval.is_interval(t):
+            return N("{") + helper(t.arg1, bd_vars) + N("..") + helper(t.arg, bd_vars) + N("}")
 
         if t.is_comb() and t.fun.is_const_name('collect') and t.arg.is_abs():
             body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)

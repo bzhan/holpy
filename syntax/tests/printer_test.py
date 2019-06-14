@@ -11,6 +11,7 @@ from data import nat
 from data import list
 from data import set
 from data import function
+from data import interval
 from syntax import printer
 
 thy = basic.load_theory('list')
@@ -197,6 +198,17 @@ class PrinterTest(unittest.TestCase):
         for t, s1, s2 in test_data:
             self.assertEqual(printer.print_term(thy, t), s1)
             self.assertEqual(printer.print_term(thy, t, unicode=True), s2)
+
+    def testPrintInterval(self):
+        m = Var("m", nat.natT)
+        n = Var("n", nat.natT)
+        test_data = [
+            (interval.mk_interval(m, n), "{m..n}"),
+            (interval.mk_interval(nat.one, m), "{1..m}"),
+        ]
+
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
 
     def testPrintFunction(self):
         test_data = [
