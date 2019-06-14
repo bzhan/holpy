@@ -1161,7 +1161,8 @@
         },
         {
             "name": "insert",
-            "ty": "def.ax",
+            "prop": "insert x A = {y. y = x | member y A}",
+            "ty": "def",
             "type": "'a => 'a set => 'a set"
         },
         {
@@ -1169,12 +1170,111 @@
                 "hint_rewrite"
             ],
             "name": "member_insert",
-            "prop": "(x ∈ (insert y s)) = (x = y | (x ∈ s))",
-            "ty": "thm.ax",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect_iff, y ∈ {y. y = x ∨ y ∈ A} = (y = x ∨ y ∈ A)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y ∈ {y. y = x ∨ y ∈ A} = (y = x ∨ y ∈ A)"
+                },
+                {
+                    "args": "insert_def, y ∈ insert x A = (y = x ∨ y ∈ A)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y ∈ insert x A = (y = x ∨ y ∈ A)"
+                }
+            ],
+            "prop": "(y ∈ (insert x A)) = (y = x | (y ∈ A))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "insert_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect_iff"
+                }
+            ],
+            "ty": "thm",
             "vars": {
-                "s": "'a set",
+                "A": "'a set",
                 "x": "'a",
                 "y": "'a"
+            }
+        },
+        {
+            "name": "set_diff",
+            "prop": "set_diff A B = {x. member x A & ~ member x B}",
+            "ty": "def",
+            "type": "'a set => 'a set => 'a set"
+        },
+        {
+            "name": "member_set_diff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect_iff, x ∈ {x. x ∈ A ∧ ¬x ∈ B} = (x ∈ A ∧ ¬x ∈ B)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {x. x ∈ A ∧ ¬x ∈ B} = (x ∈ A ∧ ¬x ∈ B)"
+                },
+                {
+                    "args": "set_diff_def, x ∈ set_diff A B = (x ∈ A ∧ ¬x ∈ B)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ set_diff A B = (x ∈ A ∧ ¬x ∈ B)"
+                }
+            ],
+            "prop": "member x (set_diff A B) = (member x A & ~ member x B)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "set_diff_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect_iff"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "A": "'a set",
+                "B": "'a set",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "finite",
+            "ty": "def.ax",
+            "type": "'a set => bool"
+        },
+        {
+            "attributes": [],
+            "name": "finite_empty",
+            "prop": "finite (empty_set::'a set)",
+            "ty": "thm.ax",
+            "vars": {}
+        },
+        {
+            "name": "finite_insert",
+            "prop": "finite A --> finite (insert x A)",
+            "ty": "thm.ax",
+            "vars": {
+                "A": "'a set",
+                "x": "'a"
             }
         }
     ],
