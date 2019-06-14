@@ -79,7 +79,9 @@ grammar = r"""
 
     ?imp: disj ("-->"|"⟶") imp | disj  // Implies: priority 25
 
-    ?term: imp
+    ?iff: imp ("<-->"|"⟷") iff | imp   // Iff: priority 25
+
+    ?term: iff
 
     thm: ("|-"|"⊢") term
         | term ("," term)* ("|-"|"⊢") term
@@ -235,6 +237,9 @@ class HOLTransformer(Transformer):
 
     def imp(self, s, t):
         return Term.mk_implies(s, t)
+
+    def iff(self, s, t):
+        return Const("equals", None)(s, t)
 
     def literal_set(self, *args):
         from data import set

@@ -52,9 +52,9 @@ class PrinterTest(unittest.TestCase):
             (imp(A, B, C), "A --> B --> C"),
             (imp(imp(A, B), C), "(A --> B) --> C"),
             (imp(A, eq(a, b)), "A --> a = b"),
-            (eq(imp(A, B), imp(B, C)), "(A --> B) = (B --> C)"),
-            (eq(A, eq(B, C)), "A = (B = C)"),
-            (eq(eq(A, B), C), "A = B = C"),
+            (eq(imp(A, B), imp(B, C)), "(A --> B) <--> B --> C"),
+            (eq(A, eq(B, C)), "A <--> B <--> C"),
+            (eq(eq(A, B), C), "(A <--> B) <--> C"),
 
             # Conjunction and disjunction
             (conj(A, B), "A & B"),
@@ -85,9 +85,9 @@ class PrinterTest(unittest.TestCase):
             (disj(imp(A, B), C), "(A --> B) | C"),
             (neg(conj(A, B)), "~(A & B)"),
             (neg(imp(A, B)), "~(A --> B)"),
-            (neg(eq(A, B)), "~A = B"),
-            (eq(neg(A), B), "(~A) = B"),
-            (eq(neg(A), neg(B)), "(~A) = (~B)"),
+            (neg(eq(A, B)), "~(A <--> B)"),
+            (eq(neg(A), B), "~A <--> B"),
+            (eq(neg(A), neg(B)), "~A <--> ~B"),
 
             # Abstraction
             (abs(a, conj(P(a),Q(a))), "%a. P a & Q a"),
@@ -101,7 +101,7 @@ class PrinterTest(unittest.TestCase):
             (imp(all(a, P(a)), Q(a)), "(!a. P a) --> Q a"),
             (imp(all(a, P(a)), all(a, Q(a))), "(!a. P a) --> (!a. Q a)"),
             (imp(exists(a, P(a)), exists(a, Q(a))), "(?a. P a) --> (?a. Q a)"),
-            (eq(A, all(a, P(a))), "A = (!a. P a)"),
+            (eq(A, all(a, P(a))), "A <--> (!a. P a)"),
             (exists(a, P(a)), "?a. P a"),
             (exists(a, all(b, R(a, b))), "?a. !b. R a b"),
             (all(a, exists(b, R(a, b))), "!a. ?b. R a b"),

@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel.type import boolT
 from kernel.term import Term
 
 class OperatorData():
@@ -28,6 +29,7 @@ class OperatorTable():
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
         self.data = [
             OperatorData("equals", 50, assoc=LEFT, ascii_op="="),
+            OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷"),
             OperatorData("implies", 25, assoc=RIGHT, ascii_op="-->", unicode_op="⟶"),
             OperatorData("conj", 35, assoc=RIGHT, ascii_op="&", unicode_op="∧"),
             OperatorData("disj", 30, assoc=RIGHT, ascii_op="|", unicode_op="∨"),
@@ -51,9 +53,17 @@ class OperatorTable():
         if the function is not found.
 
         """
+        LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
         if t.is_const():
-            for d in self.data:
-                if d.fun_name == t.name:
-                    return d
+            if t.name == 'equals':
+                Targs, _ = t.T.strip_type()
+                if Targs[0] == boolT:
+                    return OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷")
+                else:
+                    return OperatorData("equals", 50, assoc=LEFT, ascii_op="=")
+            else:
+                for d in self.data:
+                    if d.fun_name == t.name:
+                        return d
 
         return None
