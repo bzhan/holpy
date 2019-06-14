@@ -180,6 +180,7 @@ class PrinterTest(unittest.TestCase):
         B = Var("B", set.setT(Ta))
         x = Var("x", Ta)
         y = Var("y", Ta)
+        P = Var("P", TFun(Ta, boolT))
         test_data = [
             (set.empty_set(Ta), "({}::'a set)", "(∅::'a set)"),
             (set.mk_mem(x, A), "x MEM A", "x ∈ A"),
@@ -189,6 +190,8 @@ class PrinterTest(unittest.TestCase):
             (set.mk_insert(x, set.empty_set(Ta)), "{x}", "{x}"),
             (set.mk_insert(x, set.mk_insert(y, set.empty_set(Ta))), "{x, y}", "{x, y}"),
             (set.mk_insert(x, A), "insert x A", "insert x A"),
+            (set.mk_collect(x, P(x)), "{x. P x}", "{x. P x}"),
+            (set.collect(Ta)(P), "collect P", "collect P"),
         ]
 
         for t, s1, s2 in test_data:

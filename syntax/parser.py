@@ -39,6 +39,8 @@ grammar = r"""
         | "[" term ("," term)* "]" -> literal_list  // List
         | ("{}"|"∅")               -> literal_set   // Empty set
         | "{" term ("," term)* "}" -> literal_set   // Set
+        | "{" CNAME "::" type "." term "}" -> collect_set
+        | "{" CNAME ". " term "}"          -> collect_set_notype
         | "if" term "then" term "else" term  -> if_expr // if expression
         | "(" term ")(" term ":=" term ("," term ":=" term)* ")"   -> fun_upd // function update
         | "(" term ")"                    // Parenthesis
@@ -180,6 +182,14 @@ class HOLTransformer(Transformer):
     def exists_notype(self, var_name, body):
         exists_t = Const("exists", None)
         return exists_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
+
+    def collect_set(self, var_name, T, body):
+        from data import set
+        return set.collect(T)(Abs(str(var_name), T, body.abstract_over(Var(var_name, None))))
+
+    def collect_set_notype(self, var_name, body):
+        from data import set
+        return set.collect(None)(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
     def times(self, lhs, rhs):
         from data import nat

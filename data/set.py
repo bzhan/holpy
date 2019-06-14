@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type, TFun, boolT
+from kernel.term import Term
 from kernel.term import Const
 
 """Utility functions for sets."""
@@ -79,3 +80,16 @@ def dest_literal_set(t):
         return [t.arg1] + dest_literal_set(t.arg)
     else:
         raise AssertionError("dest_literal_set")
+
+def collect(T):
+    if T is None:
+        return Const("collect", None)
+    return Const("collect", TFun(TFun(T, boolT), setT(T)))
+
+def mk_collect(x, body):
+    """Given term x and a term P possibly depending on x, return
+    the term {x. P}.
+
+    """
+    assert x.is_var(), "mk_collect"
+    return collect(x.T)(Term.mk_abs(x, body))

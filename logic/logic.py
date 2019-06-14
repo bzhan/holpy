@@ -74,10 +74,11 @@ def is_exists(t):
         t.fun.name == "exists" and t.arg.is_abs()
 
 def mk_exists(x, body):
-    """Given a variable x and a term t possibly depending on x, return
-    the term ?x. t.
+    """Given a variable x and a term P possibly depending on x, return
+    the term ?x. P.
 
     """
+    assert x.is_var(), "mk_exists"
     exists_t = Const("exists", TFun(TFun(x.T, boolT), boolT))
     return exists_t(Term.mk_abs(x, body))
 

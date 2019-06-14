@@ -160,6 +160,10 @@ def print_term(thy, t):
             else:
                 return res
 
+        if t.is_comb() and t.fun.is_const_name('collect') and t.arg.is_abs():
+            body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
+            return N("{") + B(t.arg.var_name) + N(". ") + body_repr + "}"
+
         if logic.is_if(t):
             P, x, y = t.args
             return N("if ") + helper(P, bd_vars) + N(" then ") + helper(x, bd_vars) + \
