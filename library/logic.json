@@ -785,7 +785,8 @@
                     "case": "A",
                     "fact_ids": [],
                     "goal_id": "0.1",
-                    "method_name": "cases"
+                    "method_name": "cases",
+                    "no_search": "true"
                 },
                 {
                     "fact_ids": [],
@@ -1067,7 +1068,9 @@
             }
         },
         {
-            "attributes": ["hint_backward"],
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "ex_conj_distrib",
             "num_gaps": 0,
             "proof": [
@@ -1353,6 +1356,55 @@
                 }
             ],
             "prop": "(!x. A x & B x) --> (!x. A x) & (!x. B x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "'a => bool",

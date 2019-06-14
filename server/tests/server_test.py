@@ -260,6 +260,10 @@ class ServerTest(unittest.TestCase):
         """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
         testMethods(self, 'logic', 'ex_conj_distrib')
 
+    def testForallConj(self):
+        """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
+        testMethods(self, 'logic', 'all_conj_distrib')
+
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
         testMethods(self, 'nat', 'add_0_right')
@@ -310,18 +314,13 @@ class ServerTest(unittest.TestCase):
         state.rewrite_goal((0, 2, 1), "if_not_P")
         self.assertEqual(state.check_proof(no_gaps=True), Thm([], prop))
 
-    def testAVal(self):
-        thy = basic.load_theory('expr')
-        th = thy.get_theorem('aval_test2')
-        state = ProofState.init_state(thy, [], [], th.prop)
-        state.rewrite_goal(0, "aval_def_3")
-        state.rewrite_goal(0, "aval_def_2")
-        state.rewrite_goal(0, "aval_def_1")
-        state.rewrite_goal(0, "fun_upd_def")
-        state.rewrite_goal(0, "if_not_P")
-        state.set_line(0, "nat_norm", args=Term.mk_equals(nat.plus(nat.zero, nat.to_binary(5)), nat.to_binary(5)))
-        state.apply_backward_step(1, "nat_zero_Suc_neq")
-        self.assertEqual(state.check_proof(no_gaps=True), th)
+    def testAVal1(self):
+        """Proof of aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12."""
+        testMethods(self, 'expr', 'aval_test1')
+
+    def testAVal2(self):
+        """Proof of aval (Plus (V 0) (N 5)) ((%x. 0)(1 := 7)) = 5."""
+        testMethods(self, 'expr', 'aval_test2')
 
     def testPierce(self):
         """Proof of ((A --> B) --> A) --> A."""

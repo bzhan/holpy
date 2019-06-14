@@ -39,7 +39,7 @@ class cases_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("case ") + printer.print_term(state.thy, data['case'])
+        return printer.N("case ") + data['case']
 
     def apply(self, state, id, data, prevs):
         A = parser.parse_term(state.thy, state.get_ctxt(id), data['case'])
@@ -321,7 +321,10 @@ class introduction(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("introduction")
+        res = "introduction on " + print_id(id)
+        if 'names' in data and data['names'] != "":
+            res += " with names " + data['names']
+        return printer.N(res)
 
     def apply(self, state, id, data, prevs):
         cur_item = state.get_proof_item(id)
@@ -506,9 +509,12 @@ def display_method(state, step):
     fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
         if 'fact_ids' in step and step['fact_ids'] else []
     search_res = method.search(state, goal_id, fact_ids)
-    for res in search_res:
-        if all(sig not in res or res[sig] == step[sig] for sig in method.sig):
-            return method.display_step(state, goal_id, res, fact_ids)
+    if 'no_search' in step:
+        return method.display_step(state, goal_id, step, fact_ids)
+    else:
+        for res in search_res:
+            if all(sig not in res or res[sig] == step[sig] for sig in method.sig):
+                return method.display_step(state, goal_id, res, fact_ids)
 
 
 global_methods.update({

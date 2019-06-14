@@ -206,6 +206,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "if_P",
             "prop": "P --> (if P then x else y) = x",
             "ty": "thm.ax",
@@ -216,6 +219,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "if_not_P",
             "prop": "~P --> (if P then x else y) = y",
             "ty": "thm.ax",
