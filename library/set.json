@@ -176,7 +176,8 @@
         },
         {
             "name": "subset",
-            "ty": "def.ax",
+            "prop": "subset A B = (!x. member x A --> member x B)",
+            "ty": "def",
             "type": "'a set => 'a set => bool"
         },
         {
@@ -184,8 +185,44 @@
                 "hint_backward"
             ],
             "name": "subsetI",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. x ∈ A ⟶ x ∈ B",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ A ⟶ x ∈ B ⊢ ∀x. x ∈ A ⟶ x ∈ B"
+                },
+                {
+                    "args": "subset_def, A ⊆ B",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ A ⟶ x ∈ B ⊢ A ⊆ B"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ A ⟶ x ∈ B) ⟶ A ⊆ B"
+                }
+            ],
             "prop": "(!x. member x A --> member x B) --> subset A B",
-            "ty": "thm.ax",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "subset_def"
+                }
+            ],
+            "ty": "thm",
             "vars": {
                 "A": "'a set",
                 "B": "'a set"
@@ -197,8 +234,73 @@
                 "hint_forward"
             ],
             "name": "subsetE",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "A ⊆ B",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ⊆ B ⊢ A ⊆ B"
+                },
+                {
+                    "args": "x ∈ A",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ A ⊢ x ∈ A"
+                },
+                {
+                    "args": "subset_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "A ⊆ B ⊢ ∀x. x ∈ A ⟶ x ∈ B"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "A ⊆ B, x ∈ A ⊢ x ∈ B"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ A ⊆ B ⟶ x ∈ A ⟶ x ∈ B"
+                }
+            ],
             "prop": "subset A B --> member x A --> member x B",
-            "ty": "thm.ax",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "subset_def"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
             "vars": {
                 "A": "'a set",
                 "B": "'a set",

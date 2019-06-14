@@ -237,15 +237,19 @@
         });
 
         $('#apply-backward-step').on("click", function () {
-            apply_method('apply_backward_step')
+            apply_method('apply_backward_step');
         });
 
         $('#apply-induction').on("click", function () {
-            apply_method('induction')
+            apply_method('induction');
         });
 
         $('#rewrite-goal').on("click", function () {
-            apply_method('rewrite_goal')
+            apply_method('rewrite_goal');
+        });
+
+        $('#rewrite-fact').on("click", function () {
+            apply_method('rewrite_fact');
         });
 
         // Initialize proof after clicking 'proof' link on the left side.
