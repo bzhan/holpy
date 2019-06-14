@@ -176,6 +176,11 @@ class ParserTest(unittest.TestCase):
             ("0 + 0", "nat"),
             ("m * 0", "nat"),
 
+            # Ordering on natural numbers
+            ("m <= n", "bool"),
+            ("m < n", "bool"),
+            ("m + n <= p", "bool"),
+
             # Binary numbers
             ("1", "nat"),
             ("2", "nat"),

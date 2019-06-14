@@ -140,6 +140,9 @@ class PrinterTest(unittest.TestCase):
             (nat.zero, "0"),
             (nat.plus(nat.zero, nat.zero), "0 + 0"),
             (nat.times(m, nat.zero), "m * 0"),
+            (nat.less_eq(m, n), "m <= n"),
+            (nat.less(m, n), "m < n"),
+            (nat.less_eq(nat.plus(m, n), p), "m + n <= p"),
         ]
 
         for t, s in test_data:

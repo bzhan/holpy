@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type, TFun
+from kernel.type import Type, TFun, boolT
 from kernel.term import Term, Const
 from kernel.thm import Thm
 from kernel.theory import Method, global_methods
@@ -24,6 +24,8 @@ Suc = Const("Suc", TFun(natT, natT))
 one = Suc(zero)
 plus = Const("plus", TFun(natT, natT, natT))
 times = Const("times", TFun(natT, natT, natT))
+less_eq = Const("less_eq", TFun(natT, natT, boolT))
+less = Const("less", TFun(natT, natT, boolT))
 
 def is_Suc(t):
     return t.is_comb() and t.fun == Suc

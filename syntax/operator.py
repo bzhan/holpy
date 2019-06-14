@@ -34,6 +34,8 @@ class OperatorTable():
             OperatorData("neg", 40, arity=OperatorData.UNARY, ascii_op="~", unicode_op="¬"),
             OperatorData("plus", 65, assoc=LEFT, ascii_op="+"),
             OperatorData("times", 70, assoc=LEFT, ascii_op="*"),
+            OperatorData("less_eq", 50, assoc=LEFT, ascii_op="<=", unicode_op="≤"),
+            OperatorData("less", 50, assoc=LEFT, ascii_op="<"),
             OperatorData("zero", 0, arity=OperatorData.CONST, ascii_op="0"),
             OperatorData("append", 65, assoc=RIGHT, ascii_op="@"),
             OperatorData("cons", 65, assoc=RIGHT, ascii_op="#"),

@@ -67,7 +67,11 @@ grammar = r"""
 
     ?subset: subset ("SUB"|"⊆") subset | mem    // Subset: priority 50
 
-    ?neg: ("~"|"¬") neg -> neg | subset // Negation: priority 40
+    ?less_eq: less_eq ("<="|"≤") less_eq | subset  // Less-equal: priority 50
+
+    ?less: less "<" less | less_eq      // Less: priority 50
+
+    ?neg: ("~"|"¬") neg -> neg | less   // Negation: priority 40
 
     ?conj: neg ("&"|"∧") conj | neg     // Conjunction: priority 35
 
@@ -199,6 +203,14 @@ class HOLTransformer(Transformer):
     def plus(self, lhs, rhs):
         from data import nat
         return nat.plus(lhs, rhs)
+
+    def less_eq(self, lhs, rhs):
+        from data import nat
+        return nat.less_eq(lhs, rhs)
+
+    def less(self, lhs, rhs):
+        from data import nat
+        return nat.less(lhs, rhs)
 
     def append(self, lhs, rhs):
         return Const("append", None)(lhs, rhs)
