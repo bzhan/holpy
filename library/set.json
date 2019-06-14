@@ -13,13 +13,32 @@
             "type": "'a => 'a set => bool"
         },
         {
-            "name": "empty_set",
+            "name": "collect",
             "ty": "def.ax",
+            "type": "('a => bool) => 'a set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "member_collect_iff",
+            "prop": "member x (collect P) = P x",
+            "ty": "thm.ax",
+            "vars": {
+                "P": "'a => bool",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "empty_set",
+            "prop": "empty_set = {x. false}",
+            "ty": "def",
             "type": "'a set"
         },
         {
             "name": "univ",
-            "ty": "def.ax",
+            "prop": "univ = {x. true}",
+            "ty": "def",
             "type": "'a set"
         },
         {
@@ -27,8 +46,62 @@
                 "hint_backward"
             ],
             "name": "member_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "false ⟶ false",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ false ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬false"
+                },
+                {
+                    "args": "member_collect_iff, ¬x ∈ {x. false}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬x ∈ {x. false}"
+                },
+                {
+                    "args": "empty_set_def, ¬x ∈ ∅",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬x ∈ ∅"
+                }
+            ],
             "prop": "~(member x empty_set)",
-            "ty": "thm.ax",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "empty_set_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect_iff"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                }
+            ],
+            "ty": "thm",
             "vars": {
                 "x": "'a"
             }
@@ -38,8 +111,53 @@
                 "hint_backward"
             ],
             "name": "member_univ",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "trueI",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "member_collect_iff, x ∈ {x. true}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {x. true}"
+                },
+                {
+                    "args": "univ_def, x ∈ univ",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ univ"
+                }
+            ],
             "prop": "member x univ",
-            "ty": "thm.ax",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "univ_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect_iff"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                }
+            ],
+            "ty": "thm",
             "vars": {
                 "x": "'a"
             }
@@ -506,12 +624,14 @@
         },
         {
             "name": "inter",
-            "ty": "def.ax",
+            "prop": "inter A B = {x. (member x A) & (member x B)}",
+            "ty": "def",
             "type": "'a set => 'a set => 'a set"
         },
         {
             "name": "union",
-            "ty": "def.ax",
+            "prop": "union A B = {x. (member x A) | (member x B)}",
+            "ty": "def",
             "type": "'a set => 'a set => 'a set"
         },
         {
@@ -519,8 +639,39 @@
                 "hint_rewrite"
             ],
             "name": "member_inter_iff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect_iff, x ∈ {x. x ∈ A ∧ x ∈ B} = (x ∈ A ∧ x ∈ B)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {x. x ∈ A ∧ x ∈ B} = (x ∈ A ∧ x ∈ B)"
+                },
+                {
+                    "args": "inter_def, x ∈ A ∩ B = (x ∈ A ∧ x ∈ B)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ A ∩ B = (x ∈ A ∧ x ∈ B)"
+                }
+            ],
             "prop": "member x (inter A B) = ((member x A) & (member x B))",
-            "ty": "thm.ax",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "inter_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect_iff"
+                }
+            ],
+            "ty": "thm",
             "vars": {
                 "A": "'a set",
                 "B": "'a set",
@@ -532,8 +683,39 @@
                 "hint_rewrite"
             ],
             "name": "member_union_iff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect_iff, x ∈ {x. x ∈ A ∨ x ∈ B} = (x ∈ A ∨ x ∈ B)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {x. x ∈ A ∨ x ∈ B} = (x ∈ A ∨ x ∈ B)"
+                },
+                {
+                    "args": "union_def, x ∈ A ∪ B = (x ∈ A ∨ x ∈ B)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ A ∪ B = (x ∈ A ∨ x ∈ B)"
+                }
+            ],
             "prop": "member x (union A B) = ((member x A) | (member x B))",
-            "ty": "thm.ax",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "union_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect_iff"
+                }
+            ],
+            "ty": "thm",
             "vars": {
                 "A": "'a set",
                 "B": "'a set",
@@ -680,23 +862,6 @@
             "vars": {
                 "A": "'a set",
                 "B": "'a set"
-            }
-        },
-        {
-            "name": "collect",
-            "ty": "def.ax",
-            "type": "('a => bool) => 'a set"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "member_collect_iff",
-            "prop": "member x (collect P) = P x",
-            "ty": "thm.ax",
-            "vars": {
-                "P": "'a => bool",
-                "x": "'a"
             }
         },
         {
