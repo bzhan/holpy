@@ -2,7 +2,8 @@
 
 from kernel import term
 from kernel.term import Term, Var
-from kernel.proof import id_force_tuple, print_id, Proof
+from kernel.thm import Thm
+from kernel.proof import id_force_tuple, print_id, Proof, ProofException
 from kernel.theory import Method, global_methods
 from logic.conv import top_conv, rewr_conv, beta_conv, then_conv, top_sweep_conv
 from logic.proofterm import ProofTermAtom
@@ -10,6 +11,10 @@ from logic import matcher
 from logic import logic
 from syntax import parser, printer, settings
 from server import tactic
+
+def incr_id(id, n):
+    """Increment the last number in id by n."""
+    return id[:-1] + (id[-1] + n,)
 
 def display_goals(state, data):
     """Return list of goals in string form. If there is no goals
@@ -350,6 +355,61 @@ class introduction(Method):
             if new_id is not None:
                 state.replace_id(item.id, new_id)
 
+class exists_elim(Method):
+    """Make use of an exists fact."""
+    def __init__(self):
+        self.sig = ['names']
+
+    def search(self, state, id, prevs):
+        if len(prevs) == 1:
+            prev_th = state.get_proof_item(prevs[0]).th
+            if logic.is_exists(prev_th.prop):
+                return [{}]
+            else:
+                return []
+        else:
+            return []
+
+    @settings.with_settings
+    def display_step(self, state, id, data, prevs):
+        return printer.N("Instantiate exists fact")
+
+    def apply(self, state, id, data, prevs):
+        # Parse the list of variable names
+        names = [name.strip() for name in data['names'].split(',')]
+        assert len(prevs) == 1, "exists_elim"
+
+        exists_item = state.get_proof_item(prevs[0])
+        exists_prop = exists_item.th.prop
+        assert logic.is_exists(exists_prop), "exists_elim"
+
+        vars, body = logic.strip_exists(exists_prop, names)
+
+        # Add one line for each variable, and one line for body of exists
+        state.add_line_before(id, len(vars) + 1)
+        for i, var in enumerate(vars):
+            state.set_line(incr_id(id, i), 'variable', args=(var.name, var.T), prevs=[])
+        state.set_line(incr_id(id, len(vars)), 'assume', args=body, prevs=[])
+
+        # Find the intros at the end, append exists fact and new variables
+        # and assumptions to prevs.
+        new_intros = [prevs[0]] + [incr_id(id, i) for i in range(len(vars)+1)]
+        i = len(vars) + 1
+        while True:
+            try:
+                item = state.get_proof_item(incr_id(id, i))
+            except ProofException:
+                raise AssertionError("exists_elim: cannot find intros at the end")
+            else:
+                if item.rule == 'intros':
+                    item.prevs = item.prevs[:-1] + new_intros + [item.prevs[-1]]
+                    break
+                else:
+                    state.set_line(incr_id(id, i), item.rule, args=item.args, prevs=item.prevs, \
+                                   th=Thm(list(item.th.hyps) + [body], item.th.prop))
+            i += 1
+
+
 class forall_elim(Method):
     """Elimination of forall statement."""
     def __init__(self):
@@ -379,7 +439,10 @@ class inst_exists_goal(Method):
     def __init__(self):
         self.sig = ['s']
 
-    def search(self, state, id, prev):
+    def search(self, state, id, prevs):
+        if len(prevs) > 0:
+            return []
+
         cur_th = state.get_proof_item(id).th
         if logic.is_exists(cur_th.prop):
             return [{}]
@@ -529,6 +592,7 @@ global_methods.update({
     "apply_fact": apply_fact(),
     "introduction": introduction(),
     "forall_elim": forall_elim(),
+    "exists_elim": exists_elim(),
     "inst_exists_goal": inst_exists_goal(),
     "induction": induction(),
     "new_var": new_var(),

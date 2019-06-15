@@ -137,6 +137,23 @@ def strip_all_implies(t, names):
         As, C = t.strip_implies()
         return ([], As, C)
 
+def strip_exists(t, names):
+    """Given a term of the form
+
+    ?x_1 ... x_k. C
+
+    Return the pair ([v_1, ..., v_k], C), where C is the body of the
+    input term, with bound variables substituted for v_1, ..., v_k.
+
+    """
+    if is_exists(t):
+        assert len(names) > 0, "strip_exists: not enough names input."
+        assert isinstance(names[0], str), "strip_exists: names must be strings."
+        v = Var(names[0], t.arg.var_T)
+        vars, body = strip_exists(t.arg.subst_bound(v), names[1:])
+        return ([v] + vars, body)
+    else:
+        return ([], t)
 
 """Normalization rules for logic."""
 

@@ -39,10 +39,13 @@ class intros_macro(ProofTermMacro):
         assert len(prevs) >= 2, "intros_macro"
         pt, intros = prevs[-1], prevs[:-1]        
         for intro in reversed(intros):
-            if intro.th.is_reflexive():
+            if intro.th.is_reflexive():  # variable case
                 pt = ProofTerm.forall_intr(intro.prop.rhs, pt)
-            else:
+            elif len(intro.th.hyps) == 1 and intro.th.hyps[0] == intro.th.prop:  # assume case
                 pt = ProofTerm.implies_intr(intro.prop, pt)
+            else:
+                assert logic.is_exists(intro.prop), "intros_macro"
+                pt = apply_theorem(thy, 'exE', intro, pt)
         return pt
 
 class apply_theorem_macro(ProofTermMacro):
@@ -283,6 +286,8 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
     matched next. Finally, the assumptions are matched.
 
     """
+    assert isinstance(pts, tuple) and all(isinstance(pt, ProofTerm) for pt in pts), \
+        "apply_theorem: *pts must be a list of theorems."
     if concl is None and tyinst is None and inst is None:
         # Normal case, can use apply_theorem
         return ProofTermDeriv("apply_theorem", thy, th_name, pts)

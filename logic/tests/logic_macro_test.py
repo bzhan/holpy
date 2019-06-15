@@ -11,7 +11,7 @@ from logic import logic
 from logic import logic_macro
 from logic import basic
 from data import nat
-from logic.proofterm import ProofTerm
+from logic.proofterm import ProofTerm, ProofTermDeriv
 from syntax import printer
 
 thy = basic.load_theory('logic_base')
@@ -61,6 +61,21 @@ class LogicMacroTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf, rpt, check_level=1), th)
         self.assertEqual(rpt.prim_steps, 1)
         self.assertEqual(rpt.macro_steps, 1)
+
+    def testIntro(self):
+        macro = logic_macro.intros_macro()
+
+        Ta = TVar('a')
+        x = Var('x', Ta)
+        P = Var('P', TFun(Ta, boolT))
+        C = Var('C', boolT)
+        pt1 = ProofTerm.sorry(Thm([], logic.mk_exists(x, P(x))))
+        pt2 = ProofTerm.variable('x', Ta)
+        pt3 = ProofTerm.assume(P(x))
+        pt4 = ProofTerm.sorry(Thm([P(x)], C))
+        pt4 = ProofTermDeriv('intros', thy, None, [pt1, pt2, pt3, pt4])
+        prf = pt4.export()
+        self.assertEqual(thy.check_proof(prf), Thm([], C))
 
     def testRewriteGoal(self):
         thy = basic.load_theory('nat')

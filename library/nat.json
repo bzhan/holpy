@@ -1948,8 +1948,11 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "less_eq",
-            "prop": "less_eq m n = (?p. n = m + p)",
+            "prop": "m ≤ n ⟷ (∃p. n = m + p)",
             "ty": "def",
             "type": "nat => nat => bool"
         },
@@ -2051,141 +2054,91 @@
                     "th": "m ≤ n ⊢ ∃p. n = m + p"
                 },
                 {
-                    "args": "",
-                    "id": "4",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "k ≤ m, m ≤ n ⊢ ∀a. m = k + a ⟶ (∃p. n = k + p)"
-                },
-                {
                     "args": "p, nat",
-                    "id": "4.0",
+                    "id": "4",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ p = p"
                 },
                 {
                     "args": "m = k + p",
-                    "id": "4.1",
+                    "id": "5",
                     "prevs": [],
                     "rule": "assume",
                     "th": "m = k + p ⊢ m = k + p"
                 },
                 {
-                    "args": "",
-                    "id": "4.2",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "k ≤ m, m ≤ n, m = k + p ⊢ ∀a. n = m + a ⟶ (∃p. n = k + p)"
-                },
-                {
                     "args": "q, nat",
-                    "id": "4.2.0",
+                    "id": "6",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ q = q"
                 },
                 {
                     "args": "n = m + q",
-                    "id": "4.2.1",
+                    "id": "7",
                     "prevs": [],
                     "rule": "assume",
                     "th": "n = m + q ⊢ n = m + q"
                 },
                 {
                     "args": "k + p + q = k + (p + q)",
-                    "id": "4.2.2",
+                    "id": "8",
                     "prevs": [],
                     "rule": "nat_norm",
                     "th": "⊢ k + p + q = k + (p + q)"
                 },
                 {
                     "args": "m + q = k + (p + q)",
-                    "id": "4.2.3",
+                    "id": "9",
                     "prevs": [
-                        "4.1",
-                        "4.2.2"
+                        "5",
+                        "8"
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "m = k + p, k ≤ m, m ≤ n, n = m + q ⊢ m + q = k + (p + q)"
                 },
                 {
                     "args": "n = k + (p + q)",
-                    "id": "4.2.4",
+                    "id": "10",
                     "prevs": [
-                        "4.2.1",
-                        "4.2.3"
+                        "7",
+                        "9"
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "n = m + q, k ≤ m, m ≤ n, m = k + p ⊢ n = k + (p + q)"
                 },
                 {
                     "args": "exI, {a: nat}, {P: λp. n = k + p, a: p + q}",
-                    "id": "4.2.5",
+                    "id": "11",
                     "prevs": [
-                        "4.2.4"
+                        "10"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "k ≤ m, m ≤ n, m = k + p, n = m + q ⊢ ∃a. n = k + a"
                 },
                 {
-                    "args": "",
-                    "id": "4.2.6",
-                    "prevs": [
-                        "4.2.0",
-                        "4.2.1",
-                        "4.2.5"
-                    ],
-                    "rule": "intros",
-                    "th": "k ≤ m, m ≤ n, m = k + p ⊢ ∀q. n = m + q ⟶ (∃p. n = k + p)"
-                },
-                {
-                    "args": "exE",
-                    "id": "4.3",
-                    "prevs": [
-                        "3",
-                        "4.2"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "m ≤ n, k ≤ m, m = k + p ⊢ ∃p. n = k + p"
-                },
-                {
-                    "args": "",
-                    "id": "4.4",
-                    "prevs": [
-                        "4.0",
-                        "4.1",
-                        "4.3"
-                    ],
-                    "rule": "intros",
-                    "th": "k ≤ m, m ≤ n ⊢ ∀p. m = k + p ⟶ (∃p. n = k + p)"
-                },
-                {
-                    "args": "exE",
-                    "id": "5",
-                    "prevs": [
-                        "2",
-                        "4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "k ≤ m, m ≤ n ⊢ ∃p. n = k + p"
-                },
-                {
                     "args": "less_eq_def, k ≤ n",
-                    "id": "6",
+                    "id": "12",
                     "prevs": [
-                        "5"
+                        "11"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "k ≤ m, m ≤ n ⊢ k ≤ n"
+                    "th": "k ≤ m, m ≤ n, m = k + p, n = m + q ⊢ k ≤ n"
                 },
                 {
                     "args": "",
-                    "id": "7",
+                    "id": "13",
                     "prevs": [
                         "0",
                         "1",
-                        "6"
+                        "2",
+                        "4",
+                        "5",
+                        "3",
+                        "6",
+                        "7",
+                        "12"
                     ],
                     "rule": "intros",
                     "th": "⊢ k ≤ m ⟶ m ≤ n ⟶ k ≤ n"
@@ -2219,48 +2172,38 @@
                         "2"
                     ],
                     "goal_id": "4",
-                    "method_name": "apply_backward_step",
-                    "theorem": "exE"
-                },
-                {
-                    "goal_id": "4",
-                    "method_name": "introduction",
+                    "method_name": "exists_elim",
                     "names": "p"
                 },
                 {
                     "fact_ids": [
                         "3"
                     ],
-                    "goal_id": "4.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "exE"
-                },
-                {
-                    "goal_id": "4.2",
-                    "method_name": "introduction",
+                    "goal_id": "6",
+                    "method_name": "exists_elim",
                     "names": "q"
                 },
                 {
-                    "goal_id": "4.2.2",
+                    "goal_id": "8",
                     "method_name": "inst_exists_goal",
                     "s": "p + q"
                 },
                 {
                     "fact_ids": [
-                        "4.2.1"
+                        "7"
                     ],
-                    "goal_id": "4.2.2",
+                    "goal_id": "8",
                     "method_name": "rewrite_goal_with_prev"
                 },
                 {
                     "fact_ids": [
-                        "4.1"
+                        "5"
                     ],
-                    "goal_id": "4.2.2",
+                    "goal_id": "8",
                     "method_name": "rewrite_goal_with_prev"
                 },
                 {
-                    "goal_id": "4.2.2",
+                    "goal_id": "8",
                     "method_name": "nat_norm"
                 }
             ],

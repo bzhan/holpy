@@ -33,26 +33,29 @@ exists = logic.mk_exists
 
 def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, print_search=False):
     """Test list of steps for the given theorem."""
+    def test_val(thy, val):
+        state = ProofState.parse_init_state(thy, val)
+        goal = state.prf.items[-1].th
+        for i, step in enumerate(val['steps']):
+            if print_search:
+                print('Step ' + str(i))
+                if 'fact_ids' not in step:
+                    step['fact_ids'] = []
+                res = state.search_method(step['goal_id'], step['fact_ids'])
+                for r in res:
+                    m = global_methods[r['_method_name']]
+                    print(m.display_step(state, step['goal_id'], r, step['fact_ids']))
+            method.apply_method(state, step)
+        self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
+        if print_proof:
+            print(printer.print_proof(thy, state.prf))
+        
     thy = basic.load_theory(thy_name, limit=('thm', thm_name))
     with open('./library/' + thy_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
         for val in f_data['content']:
             if val['ty'] == 'thm' and val['name'] == thm_name:
-                state = ProofState.parse_init_state(thy, val)
-                goal = state.prf.items[-1].th
-                for i, step in enumerate(val['steps']):
-                    if print_search:
-                        print('Step ' + str(i))
-                        if 'fact_ids' not in step:
-                            step['fact_ids'] = []
-                        res = state.search_method(step['goal_id'], step['fact_ids'])
-                        for r in res:
-                            m = global_methods[r['_method_name']]
-                            print(m.display_step(state, step['goal_id'], r, step['fact_ids']))
-                    method.apply_method(state, step)
-                self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
-                if print_proof:
-                    print(printer.print_proof(thy, state.prf))
+                test_val(thy, val)
 
 
 class ServerTest(unittest.TestCase):
@@ -329,6 +332,10 @@ class ServerTest(unittest.TestCase):
     def testHoarePreRule(self):
         """Proof of Entail P Q --> Valid Q c R --> Valid P c R."""
         testMethods(self, 'hoare', 'pre_rule')
+
+    def testNatLessEqTrans(self):
+        """Proof of k <= m --> m <= n --> k <= n."""
+        testMethods(self, 'nat', 'less_eq_trans')
 
 
 if __name__ == "__main__":

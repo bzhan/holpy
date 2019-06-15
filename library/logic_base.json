@@ -173,9 +173,7 @@
             }
         },
         {
-            "attributes": [
-                "hint_backward"
-            ],
+            "attributes": [],
             "name": "exE",
             "prop": "(?a. P a) --> (!a. P a --> C) --> C",
             "ty": "thm.ax",
@@ -325,6 +323,10 @@
         },
         {
             "name": "inst_exists_goal",
+            "ty": "method"
+        },
+        {
+            "name": "exists_elim",
             "ty": "method"
         },
         {
