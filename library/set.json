@@ -21,7 +21,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "member_collect_iff",
+            "name": "member_collect",
             "prop": "member x (collect P) = P x",
             "ty": "thm.ax",
             "vars": {
@@ -65,7 +65,7 @@
                     "th": "⊢ ¬false"
                 },
                 {
-                    "args": "member_collect_iff, ¬x ∈ {x. false}",
+                    "args": "member_collect, ¬x ∈ {x. false}",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -93,7 +93,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "member_collect_iff"
+                    "theorem": "member_collect"
                 },
                 {
                     "goal_id": "0",
@@ -121,7 +121,7 @@
                     "th": "⊢ true"
                 },
                 {
-                    "args": "member_collect_iff, x ∈ {x. true}",
+                    "args": "member_collect, x ∈ {x. true}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -149,7 +149,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "member_collect_iff"
+                    "theorem": "member_collect"
                 },
                 {
                     "goal_id": "0",
@@ -744,7 +744,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "member_collect_iff, x ∈ {x. x ∈ A ∧ x ∈ B} = (x ∈ A ∧ x ∈ B)",
+                    "args": "member_collect, x ∈ {x. x ∈ A ∧ x ∈ B} = (x ∈ A ∧ x ∈ B)",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -770,7 +770,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "member_collect_iff"
+                    "theorem": "member_collect"
                 }
             ],
             "ty": "thm",
@@ -788,7 +788,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "member_collect_iff, x ∈ {x. x ∈ A ∨ x ∈ B} = (x ∈ A ∨ x ∈ B)",
+                    "args": "member_collect, x ∈ {x. x ∈ A ∨ x ∈ B} = (x ∈ A ∨ x ∈ B)",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -814,7 +814,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "member_collect_iff"
+                    "theorem": "member_collect"
                 }
             ],
             "ty": "thm",
@@ -1023,7 +1023,7 @@
                     "th": "f x = {x. ¬x ∈ f x}, x ∈ f x ⊢ x ∈ {x. ¬x ∈ f x}"
                 },
                 {
-                    "args": "member_collect_iff",
+                    "args": "member_collect",
                     "id": "0.1.1.2",
                     "prevs": [
                         "0.1.1.1"
@@ -1076,7 +1076,7 @@
                     "th": "f x = {x. ¬x ∈ f x}, ¬x ∈ f x ⊢ ¬x ∈ {x. ¬x ∈ f x}"
                 },
                 {
-                    "args": "member_collect_iff",
+                    "args": "member_collect",
                     "id": "0.1.2.2",
                     "prevs": [
                         "0.1.2.1"
@@ -1199,7 +1199,7 @@
                     ],
                     "goal_id": "0.1.1.2",
                     "method_name": "rewrite_fact",
-                    "theorem": "member_collect_iff"
+                    "theorem": "member_collect"
                 },
                 {
                     "fact_ids": [
@@ -1228,7 +1228,7 @@
                     ],
                     "goal_id": "0.1.2.2",
                     "method_name": "rewrite_fact",
-                    "theorem": "member_collect_iff"
+                    "theorem": "member_collect"
                 },
                 {
                     "fact_ids": [
@@ -1258,7 +1258,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "member_collect_iff, y ∈ {y. y = x ∨ y ∈ A} = (y = x ∨ y ∈ A)",
+                    "args": "member_collect, y ∈ {y. y = x ∨ y ∈ A} = (y = x ∨ y ∈ A)",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -1284,7 +1284,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "member_collect_iff"
+                    "theorem": "member_collect"
                 }
             ],
             "ty": "thm",
@@ -1502,7 +1502,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "member_collect_iff, x ∈ {x. x ∈ A ∧ ¬x ∈ B} = (x ∈ A ∧ ¬x ∈ B)",
+                    "args": "member_collect, x ∈ {x. x ∈ A ∧ ¬x ∈ B} = (x ∈ A ∧ ¬x ∈ B)",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -1528,7 +1528,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "member_collect_iff"
+                    "theorem": "member_collect"
                 }
             ],
             "ty": "thm",
@@ -1564,6 +1564,507 @@
             "prop": "nat_interval m n = {p. less_eq m p & less_eq p n}",
             "ty": "def",
             "type": "nat => nat => nat set"
+        },
+        {
+            "name": "Union",
+            "prop": "Union S = {x. ?A. member x A & member A S}",
+            "ty": "def",
+            "type": "'a set set => 'a set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "member_Union",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, x ∈ {x. ∃A. x ∈ A ∧ A ∈ S} ⟷ (∃A. x ∈ A ∧ A ∈ S)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {x. ∃A. x ∈ A ∧ A ∈ S} ⟷ (∃A. x ∈ A ∧ A ∈ S)"
+                },
+                {
+                    "args": "Union_def, x ∈ Union S ⟷ (∃A. x ∈ A ∧ A ∈ S)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ Union S ⟷ (∃A. x ∈ A ∧ A ∈ S)"
+                }
+            ],
+            "prop": "member x (Union S) <--> (?A. member x A & member A S)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "Union_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "S": "'a set set",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "Inter",
+            "prop": "Inter S = {x. !A. member A S --> member x A}",
+            "ty": "def",
+            "type": "'a set set => 'a set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "member_Inter",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, x ∈ {x. ∀A. A ∈ S ⟶ x ∈ A} ⟷ (∀A. A ∈ S ⟶ x ∈ A)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {x. ∀A. A ∈ S ⟶ x ∈ A} ⟷ (∀A. A ∈ S ⟶ x ∈ A)"
+                },
+                {
+                    "args": "Inter_def, x ∈ Inter S ⟷ (∀A. A ∈ S ⟶ x ∈ A)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ Inter S ⟷ (∀A. A ∈ S ⟶ x ∈ A)"
+                }
+            ],
+            "prop": "member x (Inter S) <--> (!A. member A S --> member x A)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "Inter_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "S": "'a set set",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "Union_empty",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x::'a. x ∈ Union ∅ ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃A. x ∈ A ∧ A ∈ ∅) ⟶ x ∈ ∅"
+                },
+                {
+                    "args": "∃A. x ∈ A ∧ A ∈ ∅",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃A. x ∈ A ∧ A ∈ ∅ ⊢ ∃A. x ∈ A ∧ A ∈ ∅"
+                },
+                {
+                    "args": "A, 'a set",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR A"
+                },
+                {
+                    "args": "x ∈ A ∧ A ∈ ∅",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ A ∧ A ∈ ∅ ⊢ x ∈ A ∧ A ∈ ∅"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ A ∧ A ∈ ∅ ⊢ A ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∃A. x ∈ A ∧ A ∈ ∅, x ∈ A ∧ A ∈ ∅ ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "∃A. x ∈ A ∧ A ∈ ∅",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.2",
+                        "0.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃A. x ∈ A ∧ A ∈ ∅) ⟶ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ ∅ ⟶ (∃A. x ∈ A ∧ A ∈ ∅)"
+                },
+                {
+                    "args": "x ∈ ∅",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ ∅ ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "x ∈ ∅ ⊢ ∃A. x ∈ A ∧ A ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ ∅ ⟶ (∃A. x ∈ A ∧ A ∈ ∅)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃A. x ∈ A ∧ A ∈ ∅) ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "member_Union, x ∈ Union ∅ ⟷ x ∈ ∅",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ Union ∅ ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x::'a. x ∈ Union ∅ ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ Union ∅ = (∅::'a set)"
+                }
+            ],
+            "prop": "Union (empty_set::'a set set) = empty_set",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_Union"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "exists_elim",
+                    "names": "A"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2"
+                    ],
+                    "goal_id": "0.1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction",
+                    "names": ""
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "Inter_empty",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x::'a. x ∈ Inter ∅ ⟷ x ∈ univ"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀A. A ∈ ∅ ⟶ x ∈ A) ⟶ x ∈ univ"
+                },
+                {
+                    "args": "∀A. A ∈ ∅ ⟶ x ∈ A",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀A. A ∈ ∅ ⟶ x ∈ A ⊢ ∀A. A ∈ ∅ ⟶ x ∈ A"
+                },
+                {
+                    "args": "member_univ, {a: 'a}, {x: x}",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀A. A ∈ ∅ ⟶ x ∈ A) ⟶ x ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ univ ⟶ (∀A. A ∈ ∅ ⟶ x ∈ A)"
+                },
+                {
+                    "args": "x ∈ univ",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ univ ⊢ x ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "x ∈ univ ⊢ ∀A. A ∈ ∅ ⟶ x ∈ A"
+                },
+                {
+                    "args": "A, 'a set",
+                    "id": "0.2.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR A"
+                },
+                {
+                    "args": "A ∈ ∅",
+                    "id": "0.2.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "A ∈ ∅ ⊢ A ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "x ∈ univ, A ∈ ∅ ⊢ x ∈ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.1.3",
+                    "prevs": [
+                        "0.2.1.0",
+                        "0.2.1.1",
+                        "0.2.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "x ∈ univ ⊢ ∀A. A ∈ ∅ ⟶ x ∈ A"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ univ ⟶ (∀A. A ∈ ∅ ⟶ x ∈ A)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∀A. A ∈ ∅ ⟶ x ∈ A) ⟷ x ∈ univ"
+                },
+                {
+                    "args": "member_Inter, x ∈ Inter ∅ ⟷ x ∈ univ",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ Inter ∅ ⟷ x ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x::'a. x ∈ Inter ∅ ⟷ x ∈ univ"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ Inter ∅ = (univ::'a set)"
+                }
+            ],
+            "prop": "Inter (empty_set::'a set set) = univ",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_Inter"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_univ"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "introduction",
+                    "names": "A"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "Union_union",
+            "ty": "thm",
+            "prop": "Union (union A B) = union (Union A) (Union B)",
+            "vars": {
+                "A": "'a set set",
+                "B": "'a set set"
+            }
         }
     ],
     "description": "Basic results about sets.",
