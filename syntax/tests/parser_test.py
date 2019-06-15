@@ -233,18 +233,21 @@ class ParserTest(unittest.TestCase):
             "A": set.setT(Ta),
             "B": set.setT(Ta),
             "P": TFun(Ta, boolT),
+            "S": set.setT(set.setT(Ta)),
         }}
         test_data = [
             ("({}::'a set)", "(∅::'a set)", "'a set"),
-            ("x MEM A", "x ∈ A", "bool"),
-            ("A SUB B", "A ⊆ B", "bool"),
-            ("A INTER B", "A ∩ B", "'a set"),
-            ("A UNION B", "A ∪ B", "'a set"),
+            ("x Mem A", "x ∈ A", "bool"),
+            ("A Sub B", "A ⊆ B", "bool"),
+            ("A Int B", "A ∩ B", "'a set"),
+            ("A Un B", "A ∪ B", "'a set"),
             ("{x}", "{x}", "'a set"),
             ("{x, y}", "{x, y}", "'a set"),
             ("insert x A", "insert x A", "'a set"),
             ("{x. P x}", "{x. P x}", "'a set"),
             ("collect P", "collect P", "'a set"),
+            ("UN S", "⋃S", "'a set"),
+            ("INT S", "⋂S", "'a set"),
         ]
 
         for s1, s2, Ts in test_data:

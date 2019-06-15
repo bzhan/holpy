@@ -49,9 +49,13 @@ grammar = r"""
 
     ?comb: comb atom | atom
 
-    ?times: times "*" comb | comb       // Multiplication: priority 70
+    ?big_inter: ("INT"|"⋂") big_inter -> big_inter | comb         // Intersection: priority 90
 
-    ?inter: inter ("INTER"|"∩") times | times     // Intersection: priority 70
+    ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
+
+    ?times: times "*" big_union | big_union     // Multiplication: priority 70
+
+    ?inter: inter ("Int"|"∩") times | times     // Intersection: priority 70
 
     ?plus: plus "+" inter | inter       // Addition: priority 65
 
@@ -59,13 +63,13 @@ grammar = r"""
 
     ?cons: append "#" cons | append     // Cons: priority 65
 
-    ?union: union ("UNION"|"∪") cons | cons       // Union: priority 65
+    ?union: union ("Un"|"∪") cons | cons       // Union: priority 65
 
     ?eq: eq "=" union | union           // Equality: priority 50
 
-    ?mem: mem ("MEM"|"∈") mem | eq              // Membership: priority 50
+    ?mem: mem ("Mem"|"∈") mem | eq              // Membership: priority 50
 
-    ?subset: subset ("SUB"|"⊆") subset | mem    // Subset: priority 50
+    ?subset: subset ("Sub"|"⊆") subset | mem    // Subset: priority 50
 
     ?less_eq: less_eq ("<="|"≤") less_eq | subset  // Less-equal: priority 50
 
@@ -258,6 +262,12 @@ class HOLTransformer(Transformer):
 
     def union(self, A, B):
         return Const("union", None)(A, B)
+
+    def big_inter(self, t):
+        return Const("Inter", None)(t)
+
+    def big_union(self, t):
+        return Const("Union", None)(t)
 
     def nat_interval(self, m, n):
         from data import interval

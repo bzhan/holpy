@@ -29,6 +29,12 @@ def inter(T):
 def union(T):
     return Const("union", TFun(setT(T), setT(T), setT(T)))
 
+def Inter(T):
+    return Const("Inter", TFun(setT(setT(T)), setT(T)))
+
+def Union(T):
+    return Const("Union", TFun(setT(setT(T)), setT(T)))
+
 def mk_mem(x, A):
     return mem(x.get_type())(x, A)
 
@@ -43,6 +49,12 @@ def mk_inter(A, B):
 
 def mk_union(A, B):
     return union(A.get_type().args[0])(A, B)
+
+def mk_Inter(t):
+    return Inter(t.get_type().args[0].args[0])(t)
+
+def mk_Union(t):
+    return Union(t.get_type().args[0].args[0])(t)
 
 def insert(T):
     if T is None:
