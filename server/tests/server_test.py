@@ -337,6 +337,14 @@ class ServerTest(unittest.TestCase):
         """Proof of k <= m --> m <= n --> k <= n."""
         testMethods(self, 'nat', 'less_eq_trans')
 
+    def testDrinker(self):
+        """Proof of ?x. P x --> (!x. P x)."""
+        testMethods(self, 'logic', 'drinker')
+
+    def testCantor(self):
+        """Proof of ?a. !x. ~f x = a."""
+        testMethods(self, 'set', 'cantor')
+
 
 if __name__ == "__main__":
     unittest.main()

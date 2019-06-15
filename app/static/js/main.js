@@ -240,6 +240,10 @@
             apply_method('apply_backward_step');
         });
 
+        $('#apply-forward-step').on("click", function () {
+            apply_method('apply_forward_step');
+        });
+
         $('#apply-induction').on("click", function () {
             apply_method('induction');
         });
