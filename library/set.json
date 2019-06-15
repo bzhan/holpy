@@ -629,6 +629,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "subset_trans",
             "num_gaps": 0,
             "proof": [
@@ -3523,7 +3527,7 @@
         },
         {
             "name": "lfp_unfold",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "bnd_mono h",
@@ -3533,56 +3537,8 @@
                     "th": "bnd_mono h ⊢ bnd_mono h"
                 },
                 {
-                    "args": "",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "bnd_mono h ⊢ ∀X. h X ⊆ X ⟶ h (lfp h) ⊆ X"
-                },
-                {
-                    "args": "X, 'a set",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR X"
-                },
-                {
-                    "args": "h X ⊆ X",
-                    "id": "1.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "h X ⊆ X ⊢ h X ⊆ X"
-                },
-                {
-                    "args": "",
-                    "id": "1.2",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "bnd_mono h, h X ⊆ X ⊢ h (lfp h) ⊆ X"
-                },
-                {
-                    "args": "",
-                    "id": "1.3",
-                    "prevs": [
-                        "1.0",
-                        "1.1",
-                        "1.2"
-                    ],
-                    "rule": "intros",
-                    "th": "bnd_mono h ⊢ ∀X. h X ⊆ X ⟶ h (lfp h) ⊆ X"
-                },
-                {
-                    "args": "lfp_greatest",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "bnd_mono h ⊢ h (lfp h) ⊆ lfp h"
-                },
-                {
                     "args": "bnd_mono_def",
-                    "id": "3",
+                    "id": "1",
                     "prevs": [
                         "0"
                     ],
@@ -3591,10 +3547,80 @@
                 },
                 {
                     "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "bnd_mono h ⊢ ∀X. h X ⊆ X ⟶ h (lfp h) ⊆ X"
+                },
+                {
+                    "args": "X, 'a set",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR X"
+                },
+                {
+                    "args": "h X ⊆ X",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "h X ⊆ X ⊢ h X ⊆ X"
+                },
+                {
+                    "args": "lfp_lowerbound, {a: 'a}, {A: X, h: h}",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "h X ⊆ X ⊢ lfp h ⊆ X"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "1",
+                        "2.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "bnd_mono h, h X ⊆ X ⊢ h (lfp h) ⊆ h X"
+                },
+                {
+                    "args": "subset_trans",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3",
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "bnd_mono h, h X ⊆ X ⊢ h (lfp h) ⊆ X"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "bnd_mono h ⊢ ∀X. h X ⊆ X ⟶ h (lfp h) ⊆ X"
+                },
+                {
+                    "args": "lfp_greatest",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "bnd_mono h ⊢ h (lfp h) ⊆ lfp h"
+                },
+                {
+                    "args": "",
                     "id": "4",
                     "prevs": [
-                        "3",
-                        "2"
+                        "1",
+                        "3"
                     ],
                     "rule": "apply_fact",
                     "th": "bnd_mono h ⊢ h (h (lfp h)) ⊆ h (lfp h)"
@@ -3612,7 +3638,7 @@
                     "args": "subset_antisym",
                     "id": "6",
                     "prevs": [
-                        "2",
+                        "3",
                         "5"
                     ],
                     "rule": "apply_theorem",
@@ -3632,39 +3658,67 @@
             "prop": "bnd_mono h --> h (lfp h) = lfp h",
             "steps": [
                 {
+                    "fact_ids": [
+                        "0"
+                    ],
                     "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "bnd_mono_def"
+                },
+                {
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "subset_antisym"
                 },
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "lfp_greatest"
                 },
                 {
-                    "goal_id": "3",
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "X"
+                },
+                {
+                    "goal": "subset (h (lfp h)) (h X)",
+                    "goal_id": "2.2",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
                     "method_name": "apply_backward_step",
                     "theorem": "lfp_lowerbound"
                 },
                 {
                     "fact_ids": [
-                        "0"
+                        "2.3"
                     ],
-                    "goal_id": "3",
-                    "method_name": "rewrite_fact",
-                    "theorem": "bnd_mono_def"
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_trans"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "lfp_lowerbound"
                 },
                 {
                     "fact_ids": [
-                        "3"
+                        "1"
                     ],
                     "goal_id": "4",
                     "method_name": "apply_prev"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "introduction",
-                    "names": "X"
                 }
             ],
             "ty": "thm",

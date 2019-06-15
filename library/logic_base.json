@@ -293,6 +293,10 @@
             "ty": "macro"
         },
         {
+            "name": "cut",
+            "ty": "method"
+        },
+        {
             "name": "cases",
             "ty": "method"
         },

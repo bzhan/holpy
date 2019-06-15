@@ -34,6 +34,28 @@ def display_facts(state, data):
     facts = [printer.print_term(state.thy, t) for t in data['_fact']]
     return printer.N("have ") + printer.commas_join(facts)
 
+
+class cut_method(Method):
+    """Insert intermediate goal."""
+    def __init__(self):
+        self.sig = ['goal']
+
+    def search(self, state, id, prevs):
+        return []
+
+    @settings.with_settings
+    def display_step(self, state, id, data, prevs):
+        return printer.N("have ") + data['goal']
+
+    def apply(self, state, id, data, prevs):
+        cur_item = state.get_proof_item(id)
+        hyps = cur_item.th.hyps
+
+        goal = parser.parse_term(state.thy, state.get_ctxt(id), data['goal'])
+
+        state.add_line_before(id, 1)
+        state.set_line(id, 'sorry', th=Thm(hyps, goal))
+
 class cases_method(Method):
     """Case analysis."""
     def __init__(self):
@@ -585,6 +607,7 @@ def display_method(state, step):
 
 
 global_methods.update({
+    "cut": cut_method(),
     "cases": cases_method(),
     "apply_prev": apply_prev_method(),
     "rewrite_goal_with_prev": rewrite_goal_with_prev_method(),

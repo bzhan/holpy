@@ -213,23 +213,27 @@
         $('#introduction').on("click", introduction);
 
         $('#new-var').on("click", function () {
-            apply_method('new_var')
+            apply_method('new_var');
+        });
+
+        $('#apply-cut').on("click", function () {
+            apply_method('cut');
         });
 
         $('#apply-cases').on("click", function () {
-            apply_method('cases')
+            apply_method('cases');
         });
 
         $('#apply-forall-elim').on("click", function () {
-            apply_method('forall_elim')
+            apply_method('forall_elim');
         });
 
         $('#rewrite-goal-with-prev').on("click", function () {
-            apply_method('rewrite_goal_with_prev')
+            apply_method('rewrite_goal_with_prev');
         });
 
         $('#apply-prev').on('click', function () {
-            apply_method('apply_prev')
+            apply_method('apply_prev');
         });
 
         $('#add-line-after').on("click", function () {

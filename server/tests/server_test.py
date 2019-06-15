@@ -351,7 +351,7 @@ class ServerTest(unittest.TestCase):
 
     def testFixpoint(self):
         """Proof of bnd_mono h --> h (lfp h) = lfp h."""
-        testMethods(self, 'set', 'lfp_unfold', no_gaps=False)
+        testMethods(self, 'set', 'lfp_unfold')
 
 
 if __name__ == "__main__":
