@@ -1,10 +1,13 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type
+from kernel import term
 from kernel.term import Var, Term
 from kernel.thm import Thm, InvalidDerivationException
 from logic.proofterm import ProofTerm, refl
 from logic import matcher
+from util import name
+
 
 class ConvException(Exception):
     pass
@@ -119,7 +122,9 @@ class abs_conv(Conv):
             raise ConvException()
 
         # Find a new variable x and substitute for body
-        v = Var(t.var_name, t.var_T)
+        var_names = [v.name for v in term.get_vars(t.body)]
+        nm = name.get_new_name(t.var_name, var_names)
+        v = Var(nm, t.var_T)
         t2 = t.subst_bound(v)
         return ProofTerm.abstraction(self.cv.get_proof_term(thy, t2), v)
 

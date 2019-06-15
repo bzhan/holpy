@@ -345,6 +345,10 @@ class ServerTest(unittest.TestCase):
         """Proof of ?a. !x. ~f x = a."""
         testMethods(self, 'set', 'cantor')
 
+    def testUnionUnion(self):
+        """Proof of UN (A Un B) = (UN A) Un (UN B)."""
+        testMethods(self, 'set', 'Union_union')
+
 
 if __name__ == "__main__":
     unittest.main()
