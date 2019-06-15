@@ -375,6 +375,10 @@ class Term():
         else:
             return False
 
+    def is_VAR(self):
+        """Whether self is of the form _VAR v."""
+        return self.is_comb() and self.fun.is_const_name("_VAR") and self.arg.is_var()
+
     @property
     def lhs(self):
         assert self.is_equals(), "lhs: not an equality."

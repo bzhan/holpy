@@ -39,8 +39,8 @@ class intros_macro(ProofTermMacro):
         assert len(prevs) >= 2, "intros_macro"
         pt, intros = prevs[-1], prevs[:-1]        
         for intro in reversed(intros):
-            if intro.th.is_reflexive():  # variable case
-                pt = ProofTerm.forall_intr(intro.prop.rhs, pt)
+            if intro.th.prop.is_VAR():  # variable case
+                pt = ProofTerm.forall_intr(intro.prop.arg, pt)
             elif len(intro.th.hyps) == 1 and intro.th.hyps[0] == intro.th.prop:  # assume case
                 pt = ProofTerm.implies_intr(intro.prop, pt)
             else:

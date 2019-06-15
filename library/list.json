@@ -119,14 +119,14 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "xs @ [] = xs",
@@ -205,14 +205,14 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "(xs @ ys) @ zs = xs @ ys @ zs",
@@ -322,14 +322,14 @@
                     "id": "3.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "3.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "length (xs @ ys) = length xs + length ys",
@@ -446,14 +446,14 @@
                     "id": "3.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "3.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "rev (xs @ ys) = rev ys @ rev xs",
@@ -568,14 +568,14 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "rev (rev xs) = xs",
@@ -726,14 +726,14 @@
                     "id": "3.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "3.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "length (rev xs) = length xs",

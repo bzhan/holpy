@@ -1093,7 +1093,7 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ a = a"
+                    "th": "⊢ _VAR a"
                 },
                 {
                     "args": "A a ∧ B a",
@@ -1262,7 +1262,7 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "x",
@@ -1304,7 +1304,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "x",
@@ -2587,7 +2587,7 @@
                     "id": "1.1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "",
@@ -2720,7 +2720,7 @@
                     "id": "0.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "",
@@ -2800,7 +2800,7 @@
                     "id": "1.2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "¬P x",

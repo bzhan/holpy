@@ -323,7 +323,7 @@
                     "id": "0.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "member x empty_set",
@@ -382,7 +382,7 @@
                     "id": "0.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "member x A",
@@ -441,7 +441,7 @@
                     "id": "0.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "member x A",
@@ -507,7 +507,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "",
@@ -655,7 +655,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "member x A",
@@ -840,7 +840,7 @@
                     "id": "0.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "member x A",
@@ -911,7 +911,7 @@
                     "id": "0.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "x ∈ A ∩ B",
@@ -982,7 +982,7 @@
                     "id": "0.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "",

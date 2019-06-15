@@ -140,7 +140,7 @@
                     "id": "0.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "",

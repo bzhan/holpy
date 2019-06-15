@@ -2,8 +2,8 @@
 
 from collections import OrderedDict
 
-from kernel.type import Type, boolT
-from kernel.term import Term, Var, TermSubstitutionException, TypeCheckException
+from kernel.type import Type, TFun, boolT
+from kernel.term import Term, Var, Const, TermSubstitutionException, TypeCheckException
 from kernel import macro
 
 
@@ -329,6 +329,14 @@ class Thm():
                 return Thm(th.hyps, th.prop.arg.subst_bound(s))
         else:
             raise InvalidDerivationException("forall_elim")
+
+    @staticmethod
+    def mk_VAR(v):
+        """Construct the internal proposition _VAR(v)."""
+        if not v.is_var():
+            raise InvalidDerivationException("mk_VAR")
+        return Thm([], Const("_VAR", TFun(v.T, boolT))(v))
+
 
 # Table of primitive derivations
 primitive_deriv = {

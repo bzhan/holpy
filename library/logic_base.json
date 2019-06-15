@@ -1,6 +1,11 @@
 {
     "content": [
         {
+            "depth": 0,
+            "name": "Basic operators in logic",
+            "ty": "header"
+        },
+        {
             "ascii_op": "&",
             "name": "conj",
             "ty": "def.ax",
@@ -230,6 +235,16 @@
             }
         },
         {
+            "depth": 0,
+            "name": "Definitions for internal use",
+            "ty": "header"
+        },
+        {
+            "name": "_VAR",
+            "ty": "def.ax",
+            "type": "'a => bool"
+        },
+        {
             "name": "beta_norm",
             "ty": "macro"
         },
@@ -336,6 +351,11 @@
         {
             "name": "new_var",
             "ty": "method"
+        },
+        {
+            "depth": 0,
+            "name": "Some simple results",
+            "ty": "header"
         },
         {
             "name": "classical_cases",

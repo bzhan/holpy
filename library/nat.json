@@ -86,7 +86,7 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n + 0 = n",
@@ -221,7 +221,7 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n + 1 = Suc n",
@@ -299,7 +299,7 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n + Suc y = Suc (n + y)",
@@ -387,7 +387,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n + y = y + n",
@@ -474,7 +474,7 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n + y + z = n + (y + z)",
@@ -566,7 +566,7 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n * 0 = 0",
@@ -708,7 +708,7 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n * 1 = n",
@@ -813,7 +813,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n * Suc y = n + n * y",
@@ -918,7 +918,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n * (y + z) = n * y + n * z",
@@ -1015,7 +1015,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "(x + y) * n = x * n + y * n",
@@ -1112,7 +1112,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n * y * z = n * (y * z)",
@@ -1210,7 +1210,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "n * y = y * n",
@@ -1882,7 +1882,7 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ n = n"
+                    "th": "⊢ _VAR n"
                 },
                 {
                     "args": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n",
@@ -2058,7 +2058,7 @@
                     "id": "4",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ p = p"
+                    "th": "⊢ _VAR p"
                 },
                 {
                     "args": "m = k + p",
@@ -2072,7 +2072,7 @@
                     "id": "6",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ q = q"
+                    "th": "⊢ _VAR q"
                 },
                 {
                     "args": "n = m + q",
