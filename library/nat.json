@@ -1958,6 +1958,318 @@
             "prop": "less m n = (less_eq m n & ~(m = n))",
             "ty": "def",
             "type": "nat => nat => bool"
+        },
+        {
+            "attributes": [],
+            "name": "less_eq_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "add_0_right, n = n + 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ n = n + 0"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λp. n = n + p, a: 0}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a. n = n + a"
+                },
+                {
+                    "args": "less_eq_def, n ≤ n",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ n ≤ n"
+                }
+            ],
+            "prop": "n <= n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "less_eq_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "0"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "add_0_right"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "less_eq_trans",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "k ≤ m",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "k ≤ m ⊢ k ≤ m"
+                },
+                {
+                    "args": "m ≤ n",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "less_eq_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "k ≤ m ⊢ ∃p. m = k + p"
+                },
+                {
+                    "args": "less_eq_def",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "m ≤ n ⊢ ∃p. n = m + p"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "k ≤ m, m ≤ n ⊢ ∀a. m = k + a ⟶ (∃p. n = k + p)"
+                },
+                {
+                    "args": "p, nat",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ p = p"
+                },
+                {
+                    "args": "m = k + p",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m = k + p ⊢ m = k + p"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "k ≤ m, m ≤ n, m = k + p ⊢ ∀a. n = m + a ⟶ (∃p. n = k + p)"
+                },
+                {
+                    "args": "q, nat",
+                    "id": "4.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ q = q"
+                },
+                {
+                    "args": "n = m + q",
+                    "id": "4.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = m + q ⊢ n = m + q"
+                },
+                {
+                    "args": "k + p + q = k + (p + q)",
+                    "id": "4.2.2",
+                    "prevs": [],
+                    "rule": "nat_norm",
+                    "th": "⊢ k + p + q = k + (p + q)"
+                },
+                {
+                    "args": "m + q = k + (p + q)",
+                    "id": "4.2.3",
+                    "prevs": [
+                        "4.1",
+                        "4.2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "m = k + p, k ≤ m, m ≤ n, n = m + q ⊢ m + q = k + (p + q)"
+                },
+                {
+                    "args": "n = k + (p + q)",
+                    "id": "4.2.4",
+                    "prevs": [
+                        "4.2.1",
+                        "4.2.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = m + q, k ≤ m, m ≤ n, m = k + p ⊢ n = k + (p + q)"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λp. n = k + p, a: p + q}",
+                    "id": "4.2.5",
+                    "prevs": [
+                        "4.2.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "k ≤ m, m ≤ n, m = k + p, n = m + q ⊢ ∃a. n = k + a"
+                },
+                {
+                    "args": "",
+                    "id": "4.2.6",
+                    "prevs": [
+                        "4.2.0",
+                        "4.2.1",
+                        "4.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "k ≤ m, m ≤ n, m = k + p ⊢ ∀q. n = m + q ⟶ (∃p. n = k + p)"
+                },
+                {
+                    "args": "exE",
+                    "id": "4.3",
+                    "prevs": [
+                        "3",
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "m ≤ n, k ≤ m, m = k + p ⊢ ∃p. n = k + p"
+                },
+                {
+                    "args": "",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.3"
+                    ],
+                    "rule": "intros",
+                    "th": "k ≤ m, m ≤ n ⊢ ∀p. m = k + p ⟶ (∃p. n = k + p)"
+                },
+                {
+                    "args": "exE",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "k ≤ m, m ≤ n ⊢ ∃p. n = k + p"
+                },
+                {
+                    "args": "less_eq_def, k ≤ n",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "k ≤ m, m ≤ n ⊢ k ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ k ≤ m ⟶ m ≤ n ⟶ k ≤ n"
+                }
+            ],
+            "prop": "k <= m --> m <= n --> k <= n",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "less_eq_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "less_eq_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "less_eq_def"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exE"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "p"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exE"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "introduction",
+                    "names": "q"
+                },
+                {
+                    "goal_id": "4.2.2",
+                    "method_name": "inst_exists_goal",
+                    "s": "p + q"
+                },
+                {
+                    "fact_ids": [
+                        "4.2.1"
+                    ],
+                    "goal_id": "4.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4.1"
+                    ],
+                    "goal_id": "4.2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.2.2",
+                    "method_name": "nat_norm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "nat",
+                "m": "nat",
+                "n": "nat"
+            }
         }
     ],
     "description": "Natural numbers",

@@ -1210,6 +1210,203 @@
             }
         },
         {
+            "attributes": [],
+            "name": "member_singleton",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ y ∈ {x} ⟶ y = x"
+                },
+                {
+                    "args": "y ∈ {x}",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ {x} ⊢ y ∈ {x}"
+                },
+                {
+                    "args": "member_insert",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "y ∈ {x} ⊢ y = x ∨ y ∈ ∅"
+                },
+                {
+                    "args": "y = x ⟶ y = x",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ y = x ⟶ y = x"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "y ∈ {x} ⊢ y ∈ ∅ ⟶ y = x"
+                },
+                {
+                    "args": "y ∈ ∅",
+                    "id": "0.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ ∅ ⊢ y ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.3.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "y ∈ {x}, y ∈ ∅ ⊢ y = x"
+                },
+                {
+                    "args": "",
+                    "id": "0.3.2",
+                    "prevs": [
+                        "0.3.0",
+                        "0.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "y ∈ {x} ⊢ y ∈ ∅ ⟶ y = x"
+                },
+                {
+                    "args": "disjE",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.1",
+                        "0.2",
+                        "0.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y ∈ {x} ⊢ y = x"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ y ∈ {x} ⟶ y = x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ y = x ⟶ y ∈ {x}"
+                },
+                {
+                    "args": "y = x",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y = x ⊢ y = x"
+                },
+                {
+                    "args": "disjI1, {}, {A: y = x, B: y ∈ ∅}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "y = x ⊢ y = x ∨ y ∈ ∅"
+                },
+                {
+                    "args": "member_insert, y ∈ {x}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "y = x ⊢ y ∈ {x}"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ y = x ⟶ y ∈ {x}"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ y ∈ {x} ⟷ y = x"
+                }
+            ],
+            "prop": "member y {x} <--> y = x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "member_insert"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_insert"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "'a"
+            }
+        },
+        {
             "name": "set_diff",
             "prop": "set_diff A B = {x. member x A & ~ member x B}",
             "ty": "def",
@@ -1278,10 +1475,10 @@
             }
         },
         {
-            "ty": "def",
             "name": "nat_interval",
-            "type": "nat => nat => nat set",
-            "prop": "nat_interval m n = {p. less_eq m p & less_eq p n}"
+            "prop": "nat_interval m n = {p. less_eq m p & less_eq p n}",
+            "ty": "def",
+            "type": "nat => nat => nat set"
         }
     ],
     "description": "Basic results about sets.",
