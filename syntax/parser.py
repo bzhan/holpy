@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from typing import Tuple
+from typing import Tuple, List
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import HOLType, TVar, Type, TFun, boolT
@@ -103,6 +103,8 @@ grammar = r"""
     ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types
 
     named_thm: CNAME ":" term | term  // named theorem
+
+    term_list: term*   // list of terms
 
     %import common.CNAME
     %import common.WS
@@ -295,6 +297,9 @@ class HOLTransformer(Transformer):
     def named_thm(self, *args):
         return tuple(args)
 
+    def term_list(self, *args):
+        return args
+
 
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
@@ -308,6 +313,7 @@ named_thm_parser = get_parser_for("named_thm")
 instsp_parser = get_parser_for("instsp")
 var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
+term_list_parser = get_parser_for("term_list")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -367,6 +373,16 @@ def parse_var_decl(thy, s):
     parser_setting['thy'] = thy
     return var_decl_parser.parse(s)
 
+def parse_term_list(thy, ctxt, s):
+    """Parse a list of terms."""
+    if s == "":
+        return []
+    parser_settings['thy'] = thy
+    ts = term_list_parser.parse(s)
+    for i in range(len(ts)):
+        ts[i] = infertype.type_infer(thy, ctxt, ts[i])
+    return ts
+
 def parse_args(thy, ctxt, sig, args):
     """Parse the argument according to the signature."""
     try:
@@ -391,6 +407,8 @@ def parse_args(thy, ctxt, sig, args):
             s1, s2 = args.split(",", 1)
             tyinst, inst = parse_instsp(thy, ctxt, s2)
             return s1, tyinst, inst
+        elif sig == List[Term]:
+            return parse_term_list(thy, ctxt, args)
         else:
             raise TypeError()
     except exceptions.UnexpectedToken as e:

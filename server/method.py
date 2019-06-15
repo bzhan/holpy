@@ -402,6 +402,10 @@ class exists_elim(Method):
                 raise AssertionError("exists_elim: cannot find intros at the end")
             else:
                 if item.rule == 'intros':
+                    if item.args is None:
+                        item.args = [exists_prop]
+                    else:
+                        item.args = [exists_prop] + item.args
                     item.prevs = item.prevs[:-1] + new_intros + [item.prevs[-1]]
                     break
                 else:

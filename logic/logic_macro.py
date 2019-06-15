@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from typing import Tuple
+from typing import Tuple, List
 
 from kernel import term
 from kernel.term import Term
@@ -33,19 +33,24 @@ class intros_macro(ProofTermMacro):
     """Introduce assumptions and variables."""
     def __init__(self):
         self.level = 1
-        self.sig = None
+        self.sig = List[Term]
 
     def get_proof_term(self, thy, args, prevs):
         assert len(prevs) >= 2, "intros_macro"
+        if args is None:
+            args = []
         pt, intros = prevs[-1], prevs[:-1]        
         for intro in reversed(intros):
             if intro.th.prop.is_VAR():  # variable case
                 pt = ProofTerm.forall_intr(intro.prop.arg, pt)
-            elif len(intro.th.hyps) == 1 and intro.th.hyps[0] == intro.th.prop:  # assume case
-                pt = ProofTerm.implies_intr(intro.prop, pt)
-            else:
+            elif len(args) > 0 and intro.th.prop == args[0]:  # exists case
                 assert logic.is_exists(intro.prop), "intros_macro"
                 pt = apply_theorem(thy, 'exE', intro, pt)
+                args = args[1:]
+            else:  # assume case
+                assert len(intro.th.hyps) == 1 and intro.th.hyps[0] == intro.th.prop, \
+                    "intros_macro"
+                pt = ProofTerm.implies_intr(intro.prop, pt)
         return pt
 
 class apply_theorem_macro(ProofTermMacro):

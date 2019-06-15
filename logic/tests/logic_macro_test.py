@@ -69,13 +69,14 @@ class LogicMacroTest(unittest.TestCase):
         x = Var('x', Ta)
         P = Var('P', TFun(Ta, boolT))
         C = Var('C', boolT)
-        pt1 = ProofTerm.sorry(Thm([], logic.mk_exists(x, P(x))))
+        ex_P = logic.mk_exists(x, P(x))
+        pt1 = ProofTerm.assume(ex_P)
         pt2 = ProofTerm.variable('x', Ta)
         pt3 = ProofTerm.assume(P(x))
         pt4 = ProofTerm.sorry(Thm([P(x)], C))
-        pt4 = ProofTermDeriv('intros', thy, None, [pt1, pt2, pt3, pt4])
+        pt4 = ProofTermDeriv('intros', thy, args=[ex_P], prevs=[pt1, pt2, pt3, pt4])
         prf = pt4.export()
-        self.assertEqual(thy.check_proof(prf), Thm([], C))
+        self.assertEqual(thy.check_proof(prf), Thm([ex_P], C))
 
     def testRewriteGoal(self):
         thy = basic.load_theory('nat')

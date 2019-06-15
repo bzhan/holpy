@@ -2127,7 +2127,7 @@
                     "th": "k ≤ m, m ≤ n, m = k + p, n = m + q ⊢ k ≤ n"
                 },
                 {
-                    "args": "",
+                    "args": "∃p. n = m + p, ∃p. m = k + p",
                     "id": "13",
                     "prevs": [
                         "0",

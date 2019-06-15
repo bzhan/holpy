@@ -340,7 +340,7 @@ def print_str_args(thy, rule, args, prop):
     if rule == 'variable' and settings.highlight():
         return N(args[0] + ' :: ') + str_val(args[1])
 
-    if isinstance(args, tuple):
+    if isinstance(args, tuple) or isinstance(args, list):
         return commas_join(str_val(val) for val in args)
     elif args:
         return str_val(args)
