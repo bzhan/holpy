@@ -349,6 +349,10 @@ class ServerTest(unittest.TestCase):
         """Proof of UN (A Un B) = (UN A) Un (UN B)."""
         testMethods(self, 'set', 'Union_union')
 
+    def testFixpoint(self):
+        """Proof of bnd_mono h --> h (lfp h) = lfp h."""
+        testMethods(self, 'set', 'lfp_unfold', no_gaps=False)
+
 
 if __name__ == "__main__":
     unittest.main()
