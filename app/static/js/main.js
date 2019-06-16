@@ -679,6 +679,8 @@
                     form.hint_forward.checked = true;
                 if (item.attributes && item.attributes.includes('hint_rewrite'))
                     form.hint_rewrite.checked = true;
+                if (item.attributes && item.attributes.includes('hint_resolve'))
+                    form.hint_resolve.checked = true;
             }
             else {
                 form['number-thm'].value = -1;
@@ -771,6 +773,8 @@
                 item.attributes.push('hint_forward');
             if (form.hint_rewrite.checked === true)
                 item.attributes.push('hint_rewrite');
+            if (form.hint_resolve.checked === true)
+                item.attributes.push('hint_resolve');
         }
         if (ty === 'type.ind') {
             item.data_name = form.data_name_type.value.trim();
