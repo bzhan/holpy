@@ -248,6 +248,24 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(state.check_proof(), Thm([], Term.mk_equals(nat.plus(n, nat.zero), n)))
         self.assertEqual(len(state.prf.items), 3)
 
+    def testRewriteGoalThms(self):
+        thy = basic.load_theory('nat')
+        n = Var("n", nat.natT)
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
+        search_res = state.apply_search(0, method.rewrite_goal())
+        self.assertEqual([res['theorem'] for res in search_res], ["plus_def_1"])
+
+    def testRewriteGoalWithAssum(self):
+        Ta = TVar("a")
+        a = Var("a", Ta)
+        b = Var("b", Ta)
+        eq_a = Term.mk_equals(a, a)
+        if_t = logic.mk_if(eq_a, b, a)
+        state = ProofState.init_state(thy, [a, b], [], Term.mk_equals(if_t, b))
+        state.rewrite_goal(0, "if_P")
+        state.set_line(0, "reflexive", args=a)
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
+
     def testConjComm(self):
         """Proof of A & B --> B & A."""
         testMethods(self, 'logic', 'conj_comm')
@@ -280,43 +298,9 @@ class ServerTest(unittest.TestCase):
         """Proof of xs @ [] = xs by induction."""
         testMethods(self, 'list', 'append_right_neutral')
 
-    def testRewriteGoalThms(self):
-        thy = basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
-        search_res = state.apply_search(0, method.rewrite_goal())
-        self.assertEqual([res['theorem'] for res in search_res], ["plus_def_1"])
-
-    def testRewriteGoalWithAssum(self):
-        Ta = TVar("a")
-        a = Var("a", Ta)
-        b = Var("b", Ta)
-        eq_a = Term.mk_equals(a, a)
-        if_t = logic.mk_if(eq_a, b, a)
-        state = ProofState.init_state(thy, [a, b], [], Term.mk_equals(if_t, b))
-        state.rewrite_goal(0, "if_P")
-        state.set_line(0, "reflexive", args=a)
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
-
     def testFunUpdTriv(self):
-        thy = basic.load_theory('function')
-        Ta = TVar("a")
-        Tb = TVar("b")
-        f = Var("f", TFun(Ta, Tb))
-        a = Var("a", Ta)
-        x = Var("x", Ta)
-        prop = Term.mk_equals(function.mk_fun_upd(f, a, f(a)), f)
-        state = ProofState.init_state(thy, [f, a], [], prop)
-        state.apply_backward_step(0, "extension")
-        state.introduction(0, names=["x"])
-        state.rewrite_goal((0, 1), "fun_upd_def")
-        state.apply_cases((0, 1), Term.mk_equals(x, a))
-        state.introduction((0, 1))
-        state.rewrite_goal((0, 1, 1), "if_P")
-        state.rewrite_goal_with_prev((0, 1, 1), (0, 1, 0))
-        state.introduction((0, 2))
-        state.rewrite_goal((0, 2, 1), "if_not_P")
-        self.assertEqual(state.check_proof(no_gaps=True), Thm([], prop))
+        """Proof of (f)(a := f a) = f."""
+        testMethods(self, 'function', 'fun_upd_triv')
 
     def testAVal1(self):
         """Proof of aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12."""
