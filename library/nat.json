@@ -1275,6 +1275,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "add_cancel_left",
             "prop": "x + y = x + z --> y = z",
             "ty": "thm",
@@ -1285,8 +1288,67 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "add_cancel_right",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x + z = y + z",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x + z = y + z ⊢ x + z = y + z"
+                },
+                {
+                    "args": "add_comm",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x + z = y + z ⊢ z + x = z + y"
+                },
+                {
+                    "args": "add_cancel_left",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x + z = y + z ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + z = y + z ⟶ x = y"
+                }
+            ],
             "prop": "x + z = y + z --> x = y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "add_comm"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "add_cancel_left"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -1295,8 +1357,69 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "add_right_eq_zero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x + y = x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x + y = x ⊢ x + y = x"
+                },
+                {
+                    "args": "add_0_right, x + y = x + 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x + y = x ⊢ x + y = x + 0"
+                },
+                {
+                    "args": "add_cancel_left",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x + y = x ⊢ y = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + y = x ⟶ y = 0"
+                }
+            ],
             "prop": "x + y = x --> y = 0",
+            "steps": [
+                {
+                    "goal": "x + y = x + 0",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "add_cancel_left"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -1304,8 +1427,69 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "add_left_eq_zero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x + y = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x + y = y ⊢ x + y = y"
+                },
+                {
+                    "args": "plus_def_1, x + y = 0 + y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x + y = y ⊢ x + y = 0 + y"
+                },
+                {
+                    "args": "add_cancel_right",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x + y = y ⊢ x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + y = y ⟶ x = 0"
+                }
+            ],
             "prop": "x + y = y --> x = 0",
+            "steps": [
+                {
+                    "goal": "x + y = 0 + y",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "plus_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "add_cancel_right"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "nat",

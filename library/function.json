@@ -12,7 +12,9 @@
             "type": "('a => 'b) => 'a => 'b => 'a => 'b"
         },
         {
-            "attributes": ["hint_rewrite"],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "fun_upd_eval",
             "prop": "fun_upd f a b x = (if x = a then b else f x)",
             "ty": "thm",
@@ -24,6 +26,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "fun_upd_same",
             "num_gaps": 0,
             "proof": [
@@ -70,6 +75,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "fun_upd_other",
             "num_gaps": 0,
             "proof": [
@@ -266,7 +274,186 @@
         },
         {
             "name": "fun_upd_upd",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. (f)(a := b, a := c) x = (f)(a := c) x"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x = a ⟶ (f)(a := b, a := c) x = (f)(a := c) x"
+                },
+                {
+                    "args": "x = a",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = a ⊢ x = a"
+                },
+                {
+                    "args": "fun_upd_same, (f)(a := b, a := c) a = (f)(a := c) a",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (f)(a := b, a := c) a = (f)(a := c) a"
+                },
+                {
+                    "args": "(f)(a := b, a := c) x = (f)(a := c) x",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = a ⊢ (f)(a := b, a := c) x = (f)(a := c) x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x = a ⟶ (f)(a := b, a := c) x = (f)(a := c) x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬x = a ⟶ (f)(a := b, a := c) x = (f)(a := c) x"
+                },
+                {
+                    "args": "¬x = a",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x = a ⊢ ¬x = a"
+                },
+                {
+                    "args": "fun_upd_other, (f)(a := b) x = f x",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬x = a ⊢ (f)(a := b) x = f x"
+                },
+                {
+                    "args": "fun_upd_other, (f)(a := b, a := c) x = (f)(a := c) x",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.1",
+                        "0.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬x = a ⊢ (f)(a := b, a := c) x = (f)(a := c) x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬x = a ⟶ (f)(a := b, a := c) x = (f)(a := c) x"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (f)(a := b, a := c) x = (f)(a := c) x"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. (f)(a := b, a := c) x = (f)(a := c) x"
+                },
+                {
+                    "args": "extension",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (f)(a := b, a := c) = (f)(a := c)"
+                }
+            ],
             "prop": "fun_upd (fun_upd f a b) a c = fun_upd f a c",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "extension"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "case": "x = a",
+                    "goal_id": "0.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_same"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_other"
+                },
+                {
+                    "goal_id": "0.2.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_other"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "a": "'a",
@@ -277,7 +464,379 @@
         },
         {
             "name": "fun_upd_twist",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬c = a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬c = a ⊢ ¬c = a"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬c = a ⊢ ∀x. (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬c = a ⊢ x = a ⟶ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "x = a",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = a ⊢ x = a"
+                },
+                {
+                    "args": "fun_upd_same, (f)(a := b) a = b",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (f)(a := b) a = b"
+                },
+                {
+                    "args": "ineq_sym",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬c = a, x = a ⊢ ¬a = c"
+                },
+                {
+                    "args": "fun_upd_other, (f)(a := b, c := d) a = b",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬c = a, x = a ⊢ (f)(a := b, c := d) a = b"
+                },
+                {
+                    "args": "fun_upd_same, (f)(a := b, c := d) a = (f)(c := d, a := b) a",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬c = a, x = a ⊢ (f)(a := b, c := d) a = (f)(c := d, a := b) a"
+                },
+                {
+                    "args": "(f)(a := b, c := d) x = (f)(c := d, a := b) x",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = a, ¬c = a ⊢ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "¬c = a ⊢ x = a ⟶ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬c = a ⊢ ¬x = a ⟶ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "¬x = a",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x = a ⊢ ¬x = a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬c = a, ¬x = a ⊢ x = c ⟶ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "x = c",
+                    "id": "1.2.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = c ⊢ x = c"
+                },
+                {
+                    "args": "fun_upd_same, d = (f)(c := d) c",
+                    "id": "1.2.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ d = (f)(c := d) c"
+                },
+                {
+                    "args": "fun_upd_other, d = (f)(c := d, a := b) c",
+                    "id": "1.2.1.2",
+                    "prevs": [
+                        "1.2.1.1",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬x = a, x = c, ¬c = a ⊢ d = (f)(c := d, a := b) c"
+                },
+                {
+                    "args": "fun_upd_same, (f)(a := b, c := d) c = (f)(c := d, a := b) c",
+                    "id": "1.2.1.3",
+                    "prevs": [
+                        "1.2.1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬c = a, ¬x = a, x = c ⊢ (f)(a := b, c := d) c = (f)(c := d, a := b) c"
+                },
+                {
+                    "args": "(f)(a := b, c := d) x = (f)(c := d, a := b) x",
+                    "id": "1.2.1.4",
+                    "prevs": [
+                        "1.2.1.0",
+                        "1.2.1.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x = c, ¬c = a, ¬x = a ⊢ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1.5",
+                    "prevs": [
+                        "1.2.1.0",
+                        "1.2.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "¬c = a, ¬x = a ⊢ x = c ⟶ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬c = a, ¬x = a ⊢ ¬x = c ⟶ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "¬x = c",
+                    "id": "1.2.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x = c ⊢ ¬x = c"
+                },
+                {
+                    "args": "fun_upd_other, (f)(a := b) x = (f)(c := d) x",
+                    "id": "1.2.2.1",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬c = a, ¬x = a, ¬x = c ⊢ (f)(a := b) x = (f)(c := d) x"
+                },
+                {
+                    "args": "fun_upd_other, (f)(a := b, c := d) x = (f)(c := d, a := b) x",
+                    "id": "1.2.2.2",
+                    "prevs": [
+                        "1.2.2.1",
+                        "1.2.2.0",
+                        "1.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬c = a, ¬x = c, ¬x = a ⊢ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2.3",
+                    "prevs": [
+                        "1.2.2.0",
+                        "1.2.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "¬c = a, ¬x = a ⊢ ¬x = c ⟶ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.1",
+                        "1.2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬c = a, ¬x = a ⊢ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬c = a ⊢ ¬x = a ⟶ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬c = a ⊢ (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬c = a ⊢ ∀x. (f)(a := b, c := d) x = (f)(c := d, a := b) x"
+                },
+                {
+                    "args": "extension",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬c = a ⊢ (f)(a := b, c := d) = (f)(c := d, a := b)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬c = a ⟶ (f)(a := b, c := d) = (f)(c := d, a := b)"
+                }
+            ],
             "prop": "~c = a --> fun_upd (fun_upd f a b) c d = fun_upd (fun_upd f c d) a b",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "extension"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "case": "x = a",
+                    "goal_id": "1.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "1.1.0"
+                    ],
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_same"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_other"
+                },
+                {
+                    "goal_id": "1.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_same"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "ineq_sym"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "case": "x = c",
+                    "goal_id": "1.2.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.2.1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "1.2.1.0"
+                    ],
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_same"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_other"
+                },
+                {
+                    "goal_id": "1.2.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_same"
+                },
+                {
+                    "goal_id": "1.2.2",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_other"
+                },
+                {
+                    "goal_id": "1.2.2.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_other"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "a": "'a",
