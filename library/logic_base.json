@@ -269,6 +269,10 @@
             "ty": "macro"
         },
         {
+            "name": "apply_fact_for",
+            "ty": "macro"
+        },
+        {
             "name": "rewrite_goal",
             "ty": "macro"
         },

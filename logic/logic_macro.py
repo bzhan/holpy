@@ -116,24 +116,35 @@ class apply_theorem_macro(ProofTermMacro):
         return pt
 
 class apply_fact_macro(ProofTermMacro):
-    """Apply a given fact to a list of facts."""
-    def __init__(self):
+    """Apply a given fact to a list of facts. The first input fact is
+    in the forall-implies form. Apply this fact to the remaining
+    input facts. If with_inst is set, use the given sequence of terms
+    as the instantiation.
+    
+    """
+    def __init__(self, *, with_inst=False):
         self.level = 1
-        self.sig = None
+        self.with_inst = with_inst
+        self.sig = List[Term] if with_inst else None
 
     def get_proof_term(self, thy, args, pts):
         pt, pt_prevs = pts[0], pts[1:]
 
         # First, obtain the patterns
-        vars = term.get_vars(pt.prop)
-        new_names = logic.get_forall_names(pt.prop)
-        assert {v.name for v in vars}.isdisjoint(set(new_names)), "apply_fact: name conflict"
+        vars = term.get_vars([pt_prev.prop for pt_prev in pts])
+        old_names = [v.name for v in vars]
+        new_names = logic.get_forall_names(pt.prop, old_names)
+
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(pt_prevs) <= len(As), "apply_fact: too many prevs"
 
-        tyinst, inst = dict(), {v.name: v for v in vars}
-        for idx, pt_prev in enumerate(pt_prevs):
-            matcher.first_order_match_incr(As[idx], pt_prev.prop, (tyinst, inst))
+        if self.with_inst:
+            assert len(args) == len(new_names), "apply_fact_macro: wrong number of args."
+            tyinst, inst = {}, {nm: v for nm, v in zip(new_names, args)}
+        else:
+            tyinst, inst = dict(), {v.name: v for v in vars}
+            for idx, pt_prev in enumerate(pt_prevs):
+                matcher.first_order_match_incr(As[idx], pt_prev.prop, (tyinst, inst))
 
         if tyinst:
             pt = ProofTerm.subst_type(tyinst, pt)
@@ -383,6 +394,7 @@ macro.global_macros.update({
     "apply_theorem_for": apply_theorem_macro(with_inst=True),
     "resolve_theorem": resolve_theorem_macro(),
     "apply_fact": apply_fact_macro(),
+    "apply_fact_for": apply_fact_macro(with_inst=True),
     "rewrite_goal": rewrite_goal_macro(),
     "rewrite_back_goal": rewrite_goal_macro(backward=True),
     "rewrite_goal_with_prev": rewrite_goal_with_prev_macro(),

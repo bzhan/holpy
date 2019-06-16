@@ -70,7 +70,7 @@ class LogicTest(unittest.TestCase):
         ]
 
         for t, res in test_data:
-            self.assertEqual(logic.get_forall_names(t), res)
+            self.assertEqual(logic.get_forall_names(t, []), res)
 
     def testNormBoolExpr(self):
         neg, true, false = logic.neg, logic.true, logic.false

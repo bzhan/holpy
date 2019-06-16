@@ -1165,7 +1165,62 @@
                 "hint_backward"
             ],
             "name": "surjectiveD",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "surjective f",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "surjective f ⊢ surjective f"
+                },
+                {
+                    "args": "surjective_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "surjective f ⊢ ∀y. ∃x. f x = y"
+                },
+                {
+                    "args": "y",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "surjective f ⊢ ∃x. f x = y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ surjective f ⟶ (∃x. f x = y)"
+                }
+            ],
             "prop": "surjective f --> ?x. f x = y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "surjective_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => 'b"

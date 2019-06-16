@@ -175,9 +175,10 @@ class apply_prev(Tactic):
         pt, prev_pts = prevs[0], prevs[1:]
 
         # First, obtain the patterns
-        vars = term.get_vars(pt.prop)
-        new_names = logic.get_forall_names(pt.prop)
-        assert {v.name for v in vars}.isdisjoint(set(new_names)), "apply_prev: name conflict"
+        vars = term.get_vars([prev.prop for prev in prevs])
+        old_names = [v.name for v in vars]
+        new_names = logic.get_forall_names(pt.prop, old_names)
+
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
 
@@ -195,8 +196,9 @@ class apply_prev(Tactic):
             pt = ProofTerm.forall_elim(inst[new_name], pt)
         As, C = pt.prop.strip_implies()
         
+        inst_arg = [inst[new_name] for new_name in new_names]
         new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(prev_pts):]]
-        return ProofTermDeriv('apply_fact', thy, args=None, prevs=prevs + new_goals)
+        return ProofTermDeriv('apply_fact_for', thy, args=inst_arg, prevs=prevs + new_goals)
 
 class cases(Tactic):
     """Case checking on an expression."""

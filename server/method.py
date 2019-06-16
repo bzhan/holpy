@@ -594,9 +594,10 @@ class apply_fact(Method):
         th, prev_ths = prev_ths[0], prev_ths[1:]
 
         # First, obtain the patterns
-        vars = term.get_vars(th.prop)
-        new_names = logic.get_forall_names(th.prop)
-        assert {v.name for v in vars}.isdisjoint(set(new_names)), "apply_fact: name conflict"
+        vars = term.get_vars([prev_th.prop for prev_th in prev_ths])
+        old_names = [v.name for v in vars]
+        new_names = logic.get_forall_names(th.prop, old_names)
+
         new_vars, As, C = logic.strip_all_implies(th.prop, new_names)
         if len(prev_ths) > len(As):
             return []

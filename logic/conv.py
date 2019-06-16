@@ -123,7 +123,7 @@ class abs_conv(Conv):
 
         # Find a new variable x and substitute for body
         var_names = [v.name for v in term.get_vars(t.body)]
-        nm = name.get_new_name(t.var_name, var_names)
+        nm = name.get_variant_name(t.var_name, var_names)
         v = Var(nm, t.var_T)
         t2 = t.subst_bound(v)
         return ProofTerm.abstraction(self.cv.get_proof_term(thy, t2), v)

@@ -346,6 +346,10 @@ class ServerTest(unittest.TestCase):
         """Proof of injective f --> injective g --> injective (g o f)."""
         testMethods(self, 'function', 'injective_comp_fun')
 
+    def testSurjectiveD(self):
+        """Proof of surjective f --> (?x. f x = y)."""
+        testMethods(self, 'function', 'surjectiveD')
+
 
 if __name__ == "__main__":
     unittest.main()
