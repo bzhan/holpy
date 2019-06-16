@@ -1351,7 +1351,7 @@
         },
         {
             "name": "injective_comp_fun",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "injective f",
@@ -1372,7 +1372,7 @@
                     "id": "2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "injective f, injective g ⊢ ∀x. ∀y. comp_fun g f x = comp_fun g f y ⟶ x = y"
+                    "th": "injective f, injective g ⊢ ∀x. ∀y. (g ∘ f) x = (g ∘ f) y ⟶ x = y"
                 },
                 {
                     "args": "x, 'a",
@@ -1389,11 +1389,11 @@
                     "th": "⊢ _VAR y"
                 },
                 {
-                    "args": "comp_fun g f x = comp_fun g f y",
+                    "args": "(g ∘ f) x = (g ∘ f) y",
                     "id": "2.2",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "comp_fun g f x = comp_fun g f y ⊢ comp_fun g f x = comp_fun g f y"
+                    "th": "(g ∘ f) x = (g ∘ f) y ⊢ (g ∘ f) x = (g ∘ f) y"
                 },
                 {
                     "args": "comp_fun_eval",
@@ -1402,7 +1402,7 @@
                         "2.2"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "comp_fun g f x = comp_fun g f y ⊢ g (f x) = g (f y)"
+                    "th": "(g ∘ f) x = (g ∘ f) y ⊢ g (f x) = g (f y)"
                 },
                 {
                     "args": "injectiveD",
@@ -1412,14 +1412,17 @@
                         "2.3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "injective g, comp_fun g f x = comp_fun g f y ⊢ f x = f y"
+                    "th": "injective g, (g ∘ f) x = (g ∘ f) y ⊢ f x = f y"
                 },
                 {
-                    "args": "",
+                    "args": "injectiveD",
                     "id": "2.5",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "injective f, injective g, comp_fun g f x = comp_fun g f y ⊢ x = y"
+                    "prevs": [
+                        "0",
+                        "2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "injective f, injective g, (g ∘ f) x = (g ∘ f) y ⊢ x = y"
                 },
                 {
                     "args": "",
@@ -1431,7 +1434,7 @@
                         "2.5"
                     ],
                     "rule": "intros",
-                    "th": "injective f, injective g ⊢ ∀x. ∀y. comp_fun g f x = comp_fun g f y ⟶ x = y"
+                    "th": "injective f, injective g ⊢ ∀x. ∀y. (g ∘ f) x = (g ∘ f) y ⟶ x = y"
                 },
                 {
                     "args": "injectiveI",
@@ -1440,7 +1443,7 @@
                         "2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "injective f, injective g ⊢ injective (comp_fun g f)"
+                    "th": "injective f, injective g ⊢ injective (g ∘ f)"
                 },
                 {
                     "args": "",
@@ -1451,7 +1454,7 @@
                         "3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ injective f ⟶ injective g ⟶ injective (comp_fun g f)"
+                    "th": "⊢ injective f ⟶ injective g ⟶ injective (g ∘ f)"
                 }
             ],
             "prop": "injective f --> injective g --> injective (comp_fun g f)",
@@ -1464,7 +1467,7 @@
                 {
                     "goal_id": "2",
                     "method_name": "introduction",
-                    "names": "x,y"
+                    "names": "x, y"
                 },
                 {
                     "fact_ids": [
@@ -1480,6 +1483,15 @@
                         "2.3"
                     ],
                     "goal_id": "2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "injectiveD"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2.4"
+                    ],
+                    "goal_id": "2.5",
                     "method_name": "apply_forward_step",
                     "theorem": "injectiveD"
                 }

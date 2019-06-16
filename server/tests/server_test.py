@@ -332,7 +332,7 @@ class ServerTest(unittest.TestCase):
 
     def testSubsetEmpty(self):
         """Proof of subset empty A."""
-        testMethods(self, 'set', 'subset_empty', no_gaps=False, print_proof=True, print_search=True)
+        testMethods(self, 'set', 'subset_empty')
 
     def testUnionUnion(self):
         """Proof of UN (A Un B) = (UN A) Un (UN B)."""
@@ -341,6 +341,10 @@ class ServerTest(unittest.TestCase):
     def testFixpoint(self):
         """Proof of bnd_mono h --> h (lfp h) = lfp h."""
         testMethods(self, 'set', 'lfp_unfold')
+
+    def testInjectiveCompFun(self):
+        """Proof of injective f --> injective g --> injective (g o f)."""
+        testMethods(self, 'function', 'injective_comp_fun')
 
 
 if __name__ == "__main__":

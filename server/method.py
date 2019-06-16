@@ -278,6 +278,11 @@ class apply_forward_step(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
 
+        id2 = incr_id(id, 1)
+        new_id = state.find_goal(state.get_proof_item(id2).th, id2)
+        if new_id is not None:
+            state.replace_id(id2, new_id)
+
 class apply_backward_step(Method):
     """Apply theorem in the backward direction."""
     def __init__(self):
