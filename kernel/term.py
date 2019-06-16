@@ -311,7 +311,7 @@ class Term():
 
     def is_binop(self):
         """Whether self is of the form f t1 t2."""
-        return self.is_comb() and self.fun.is_comb()
+        return len(self.args) == 2
 
     @property
     def arg1(self):

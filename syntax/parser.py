@@ -63,9 +63,11 @@ grammar = r"""
 
     ?cons: append "#" cons | append     // Cons: priority 65
 
-    ?union: union ("Un"|"∪") cons | cons       // Union: priority 65
+    ?union: union ("Un"|"∪") cons | cons        // Union: priority 65
 
-    ?eq: eq "=" union | union           // Equality: priority 50
+    ?comp_fun: union ("O"|"∘") comp_fun | union // Function composition: priority 60
+
+    ?eq: eq "=" comp_fun | comp_fun             // Equality: priority 50
 
     ?mem: mem ("Mem"|"∈") mem | eq              // Membership: priority 50
 
@@ -268,6 +270,9 @@ class HOLTransformer(Transformer):
 
     def big_union(self, t):
         return Const("Union", None)(t)
+
+    def comp_fun(self, f, g):
+        return Const("comp_fun", None)(f, g)
 
     def nat_interval(self, m, n):
         from data import interval

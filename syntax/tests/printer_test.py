@@ -25,7 +25,6 @@ b = Var("b", Ta)
 P = Var("P", TFun(Ta, boolT))
 Q = Var("Q", TFun(Ta, boolT))
 R = Var("R", TFun(Ta, Ta, boolT))
-f = Var("f", TFun(Ta, Ta))
 nn = Var("n", TFun(boolT, boolT))
 m = Var("m", nat.natT)
 n = Var("n", nat.natT)
@@ -217,9 +216,16 @@ class PrinterTest(unittest.TestCase):
             self.assertEqual(printer.print_term(thy, t), s)
 
     def testPrintFunction(self):
+        f = Var("f", TFun(Ta, Ta))
+        Tb = TVar('b')
+        Tc = TVar('c')
+        g = Var('g', TFun(Tb, Tc))
+        h = Var('h', TFun(Ta, Tb))
         test_data = [
             (function.mk_fun_upd(f, a, b), "(f)(a := b)"),
             (function.mk_fun_upd(f, a, b, b, a), "(f)(a := b, b := a)"),
+            (function.mk_comp(g, h), "g O h"),
+            (function.mk_comp(g, h)(a), "(g O h) a"),
         ]
 
         thy = basic.load_theory('function')

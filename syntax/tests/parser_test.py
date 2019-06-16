@@ -214,9 +214,20 @@ class ParserTest(unittest.TestCase):
 
     def testParseFunction(self):
         thy = basic.load_theory('function')
+        Tb = TVar('b')
+        Tc = TVar('c')
+        ctxt = {'vars': {
+            'a': Ta,
+            'b': Ta,
+            'f': TFun(Ta, Ta),
+            'g': TFun(Tb, Tc),
+            'h': TFun(Ta, Tb),
+        }}
         test_data = [
             ("(f)(a := b)", "'a => 'a"),
             ("(f)(a := b, b := a)", "'a => 'a"),
+            ("g O h", "'a => 'c"),
+            ("(g O h) a", "'c"),
         ]
 
         for s, Ts in test_data:

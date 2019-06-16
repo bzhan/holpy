@@ -48,6 +48,7 @@ class OperatorTable():
             OperatorData("empty_set", 0, arity=OperatorData.CONST, ascii_op="{}", unicode_op="∅"),
             OperatorData("Union", 90, arity=OperatorData.UNARY, ascii_op="UN ", unicode_op="⋃"),
             OperatorData("Inter", 90, arity=OperatorData.UNARY, ascii_op="INT ", unicode_op="⋂"),
+            OperatorData("comp_fun", 60, assoc=RIGHT, ascii_op="O", unicode_op="∘"),
         ]
 
     def get_info_for_fun(self, t):
