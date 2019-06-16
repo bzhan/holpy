@@ -897,6 +897,783 @@
             ],
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "id_fun",
+            "prop": "id_fun = (λx::'a. x)",
+            "ty": "def",
+            "type": "'a => 'a"
+        },
+        {
+            "name": "comp_fun",
+            "prop": "comp_fun f g = (%x. f (g x))",
+            "ty": "def",
+            "type": "('b => 'c) => ('a => 'b) => 'a => 'c"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "comp_fun_eval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "comp_fun_def, comp_fun f g x = f (g x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ comp_fun f g x = f (g x)"
+                }
+            ],
+            "prop": "comp_fun f g x = f (g x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "comp_fun_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b => 'c",
+                "g": "'a => 'b",
+                "x": "'a"
+            }
+        },
+        {
+            "name": "injective",
+            "prop": "injective f = (!x. !y. f x = f y --> x = y)",
+            "ty": "def",
+            "type": "('a => 'b) => bool"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "injectiveI",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. ∀y. f x = f y ⟶ x = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. ∀y. f x = f y ⟶ x = y ⊢ ∀x. ∀y. f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "injective_def, injective f",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. ∀y. f x = f y ⟶ x = y ⊢ injective f"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. ∀y. f x = f y ⟶ x = y) ⟶ injective f"
+                }
+            ],
+            "prop": "(!x. !y. f x = f y --> x = y) --> injective f",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "injective_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b"
+            }
+        },
+        {
+            "attributes": [
+                "hint_forward"
+            ],
+            "name": "injectiveD",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "injective f",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "injective f ⊢ injective f"
+                },
+                {
+                    "args": "f x = f y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f x = f y ⊢ f x = f y"
+                },
+                {
+                    "args": "injective_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "injective f ⊢ ∀x. ∀y. f x = f y ⟶ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "injective f, f x = f y ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ injective f ⟶ f x = f y ⟶ x = y"
+                }
+            ],
+            "prop": "injective f --> f x = f y --> x = y",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "injective_def"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b",
+                "x": "'a",
+                "y": "'a"
+            }
+        },
+        {
+            "name": "surjective",
+            "prop": "surjective f = (!y. ?x. f x = y)",
+            "ty": "def",
+            "type": "('a => 'b) => bool"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "surjectiveI",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀y. ∃x. f x = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀y. ∃x. f x = y ⊢ ∀y. ∃x. f x = y"
+                },
+                {
+                    "args": "surjective_def, surjective f",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀y. ∃x. f x = y ⊢ surjective f"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀y. ∃x. f x = y) ⟶ surjective f"
+                }
+            ],
+            "prop": "(!y. ?x. f x = y) --> surjective f",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "surjective_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "surjectiveD",
+            "prop": "surjective f --> ?x. f x = y",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b"
+            }
+        },
+        {
+            "name": "injective_id_fun",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x::'a. ∀y. x = y ⟶ x = y"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, 'a",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "x = y",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x = y ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x::'a. ∀y. x = y ⟶ x = y"
+                },
+                {
+                    "args": "injectiveI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ injective (λy::'a. y)"
+                },
+                {
+                    "args": "id_fun_def, injective (id_fun::'a ⇒ 'a)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ injective (id_fun::'a ⇒ 'a)"
+                }
+            ],
+            "prop": "injective (id_fun::'a => 'a)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "id_fun_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "injectiveI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "surjective_id_fun",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀y::'a. ∃x. x = y"
+                },
+                {
+                    "args": "y, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "eq_refl, {a: 'a}, {x: y}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ y = y"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx. x = y, a: y}",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a. a = y"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀y::'a. ∃x. x = y"
+                },
+                {
+                    "args": "surjectiveI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ surjective (λx::'a. x)"
+                },
+                {
+                    "args": "id_fun_def, surjective (id_fun::'a ⇒ 'a)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ surjective (id_fun::'a ⇒ 'a)"
+                }
+            ],
+            "prop": "surjective (id_fun::'a => 'a)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "id_fun_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "surjectiveI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "y"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "name": "injective_comp_fun",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "injective f",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "injective f ⊢ injective f"
+                },
+                {
+                    "args": "injective g",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "injective g ⊢ injective g"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "injective f, injective g ⊢ ∀x. ∀y. comp_fun g f x = comp_fun g f y ⟶ x = y"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, 'a",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "comp_fun g f x = comp_fun g f y",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "comp_fun g f x = comp_fun g f y ⊢ comp_fun g f x = comp_fun g f y"
+                },
+                {
+                    "args": "comp_fun_eval",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "comp_fun g f x = comp_fun g f y ⊢ g (f x) = g (f y)"
+                },
+                {
+                    "args": "injectiveD",
+                    "id": "2.4",
+                    "prevs": [
+                        "1",
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "injective g, comp_fun g f x = comp_fun g f y ⊢ f x = f y"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "injective f, injective g, comp_fun g f x = comp_fun g f y ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "injective f, injective g ⊢ ∀x. ∀y. comp_fun g f x = comp_fun g f y ⟶ x = y"
+                },
+                {
+                    "args": "injectiveI",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "injective f, injective g ⊢ injective (comp_fun g f)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ injective f ⟶ injective g ⟶ injective (comp_fun g f)"
+                }
+            ],
+            "prop": "injective f --> injective g --> injective (comp_fun g f)",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "injectiveI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "comp_fun_eval"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "injectiveD"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b",
+                "g": "'b => 'c"
+            }
+        },
+        {
+            "name": "surjective_comp_fun",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "surjective f",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "surjective f ⊢ surjective f"
+                },
+                {
+                    "args": "surjective g",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "surjective g ⊢ surjective g"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "surjective f, surjective g ⊢ ∀y. ∃x. comp_fun g f x = y"
+                },
+                {
+                    "args": "y, 'c",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "surjectiveD, {a: 'b, b: 'c}, {f: g, y: y}",
+                    "id": "2.1",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "surjective g ⊢ ∃x. g x = y"
+                },
+                {
+                    "args": "z, 'b",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR z"
+                },
+                {
+                    "args": "g z = y",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "g z = y ⊢ g z = y"
+                },
+                {
+                    "args": "surjectiveD, {a: 'a, b: 'b}, {f: f, y: z}",
+                    "id": "2.4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "surjective f, surjective g, g z = y ⊢ ∃x. f x = z"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "f x = z",
+                    "id": "2.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "f x = z ⊢ f x = z"
+                },
+                {
+                    "args": "g (f x) = y",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.6",
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "f x = z, surjective f, surjective g, g z = y ⊢ g (f x) = y"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: λx. g (f x) = y, a: x}",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "surjective f, surjective g, g z = y, f x = z ⊢ ∃a. g (f a) = y"
+                },
+                {
+                    "args": "comp_fun_eval, ∃x. comp_fun g f x = y",
+                    "id": "2.9",
+                    "prevs": [
+                        "2.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "surjective f, surjective g, g z = y, f x = z ⊢ ∃x. comp_fun g f x = y"
+                },
+                {
+                    "args": "∃x. f x = z, ∃x. g x = y",
+                    "id": "2.10",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.3",
+                        "2.4",
+                        "2.5",
+                        "2.6",
+                        "2.9"
+                    ],
+                    "rule": "intros",
+                    "th": "surjective f, surjective g ⊢ ∀y. ∃x. comp_fun g f x = y"
+                },
+                {
+                    "args": "surjectiveI",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "surjective f, surjective g ⊢ surjective (comp_fun g f)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ surjective f ⟶ surjective g ⟶ surjective (comp_fun g f)"
+                }
+            ],
+            "prop": "surjective f --> surjective g --> surjective (comp_fun g f)",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "surjectiveI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "y"
+                },
+                {
+                    "goal": "?z. g z = y",
+                    "goal_id": "2.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "surjectiveD"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "comp_fun_eval"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "exists_elim",
+                    "names": "z"
+                },
+                {
+                    "goal": "?x. f x = z",
+                    "goal_id": "2.4",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "surjectiveD"
+                },
+                {
+                    "fact_ids": [
+                        "2.4"
+                    ],
+                    "goal_id": "2.5",
+                    "method_name": "exists_elim",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "2.7",
+                    "method_name": "inst_exists_goal",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2.6"
+                    ],
+                    "goal_id": "2.7",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => 'b",
+                "g": "'b => 'c"
+            }
         }
     ],
     "description": "Functions",
