@@ -48,6 +48,7 @@ def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, pr
             method.apply_method(state, step)
         self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
         if print_proof:
+            print("Final state:")
             print(printer.print_proof(thy, state.prf))
         
     thy = basic.load_theory(thy_name, limit=('thm', thm_name))
@@ -344,6 +345,10 @@ class ServerTest(unittest.TestCase):
     def testCantor(self):
         """Proof of ?a. !x. ~f x = a."""
         testMethods(self, 'set', 'cantor')
+
+    def testSubsetEmpty(self):
+        """Proof of subset empty A."""
+        testMethods(self, 'set', 'subset_empty', no_gaps=False, print_proof=True, print_search=True)
 
     def testUnionUnion(self):
         """Proof of UN (A Un B) = (UN A) Un (UN B)."""

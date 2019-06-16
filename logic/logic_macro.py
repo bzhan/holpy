@@ -282,6 +282,27 @@ class trivial_macro(ProofTermMacro):
             pt = ProofTerm.implies_intr(A, pt)
         return pt
 
+class resolve_theorem_macro(ProofTermMacro):
+    """Given a theorem of the form ~A, and a fact A, prove any goal."""
+    def __init__(self):
+        self.level = 1
+        self.sig = Tuple[str, Term]
+
+    def get_proof_term(self, thy, args, pts):
+        th_name, goal = args
+        pt = ProofTerm.theorem(thy, th_name)
+        assert logic.is_neg(pt.prop), "resolve_theorem_macro"
+
+        # Match for variables in pt.
+        tyinst, inst = matcher.first_order_match(pt.prop.arg, pts[0].prop)
+        if tyinst:
+            pt = ProofTerm.subst_type(tyinst, pt)
+        if inst:
+            pt = ProofTerm.substitution(inst, pt)
+
+        pt = apply_theorem(thy, 'negE', pt, pts[0])  # false
+        return apply_theorem(thy, 'falseE', pt, concl=goal)
+
 
 def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
     """Wrapper for apply_theorem and apply_theorem_for macros.
@@ -360,6 +381,7 @@ macro.global_macros.update({
     "intros": intros_macro(),
     "apply_theorem": apply_theorem_macro(),
     "apply_theorem_for": apply_theorem_macro(with_inst=True),
+    "resolve_theorem": resolve_theorem_macro(),
     "apply_fact": apply_fact_macro(),
     "rewrite_goal": rewrite_goal_macro(),
     "rewrite_back_goal": rewrite_goal_macro(backward=True),

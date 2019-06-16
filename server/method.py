@@ -332,6 +332,40 @@ class apply_backward_step(Method):
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
 
+class apply_resolve_step(Method):
+    """Resolve using a theorem ~A and a fact A."""
+    def __init__(self):
+        self.sig = ["theorem"]
+
+    def search(self, state, id, prevs):
+        prev_ths = [state.get_proof_item(prev).th for prev in prevs]
+        if len(prev_ths) != 1:
+            return []
+
+        thy = state.thy
+
+        results = []
+        for name, th in thy.get_data("theorems").items():
+            if 'hint_resolve' not in thy.get_attributes(name):
+                continue
+
+            assert logic.is_neg(th.prop), "apply_resolve_step"
+
+            try:
+                matcher.first_order_match(th.prop.arg, prev_ths[0].prop)
+            except matcher.MatchException:
+                continue
+
+            results.append({"theorem": name, "_goal": []})
+        return sorted(results, key=lambda d: d['theorem'])
+
+    @settings.with_settings
+    def display_step(self, state, id, data, prevs):
+        return printer.N("Resolve using " + data['theorem'])
+
+    def apply(self, state, id, data, prevs):
+        state.apply_tactic(id, tactic.resolve(), args=data['theorem'], prevs=prevs)
+
 class introduction(Method):
     """Introducing variables and assumptions."""
     def __init__(self):
@@ -616,6 +650,7 @@ global_methods.update({
     "rewrite_fact_with_prev": rewrite_fact_with_prev(),
     "apply_forward_step": apply_forward_step(),
     "apply_backward_step": apply_backward_step(),
+    "apply_resolve_step": apply_resolve_step(),
     "apply_fact": apply_fact(),
     "introduction": introduction(),
     "forall_elim": forall_elim(),

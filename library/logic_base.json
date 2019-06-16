@@ -261,6 +261,10 @@
             "ty": "macro"
         },
         {
+            "name": "resolve_theorem",
+            "ty": "macro"
+        },
+        {
             "name": "apply_fact",
             "ty": "macro"
         },
@@ -326,6 +330,10 @@
         },
         {
             "name": "apply_backward_step",
+            "ty": "method"
+        },
+        {
+            "name": "apply_resolve_step",
             "ty": "method"
         },
         {

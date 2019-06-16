@@ -88,6 +88,15 @@ class rule(Tactic):
         else:
             return apply_theorem(thy, th_name, *pts)
 
+class resolve(Tactic):
+    """Given any goal, a theorem of the form ~A, and an existing fact A,
+    solve the goal.
+    
+    """
+    def get_proof_term(self, thy, goal, args, prevs):
+        assert isinstance(args, str) and len(prevs) == 1, "resolve"
+        return ProofTermDeriv('resolve_theorem', thy, (args, goal.prop), prevs)
+
 class intros(Tactic):
     """Given a goal of form !x_1 ... x_n. A_1 --> ... --> A_n --> C,
     introduce variables for x_1, ..., x_n and assumptions for A_1, ..., A_n.

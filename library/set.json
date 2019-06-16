@@ -43,7 +43,8 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_resolve"
             ],
             "name": "member_empty",
             "num_gaps": 0,
@@ -309,14 +310,14 @@
         },
         {
             "name": "subset_empty",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x. member x empty_set ⟶ member x A"
+                    "th": "⊢ ∀x. x ∈ ∅ ⟶ x ∈ A"
                 },
                 {
                     "args": "x, 'a",
@@ -326,18 +327,20 @@
                     "th": "⊢ _VAR x"
                 },
                 {
-                    "args": "member x empty_set",
+                    "args": "x ∈ ∅",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "member x empty_set ⊢ member x empty_set"
+                    "th": "x ∈ ∅ ⊢ x ∈ ∅"
                 },
                 {
-                    "args": "",
+                    "args": "member_empty, x ∈ A",
                     "id": "0.2",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "member x empty_set ⊢ member x A"
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "x ∈ ∅ ⊢ x ∈ A"
                 },
                 {
                     "args": "",
@@ -348,7 +351,7 @@
                         "0.2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x. member x empty_set ⟶ member x A"
+                    "th": "⊢ ∀x. x ∈ ∅ ⟶ x ∈ A"
                 },
                 {
                     "args": "subsetI",
@@ -357,10 +360,30 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ subset empty_set A"
+                    "th": "⊢ ∅ ⊆ A"
                 }
             ],
             "prop": "subset empty_set A",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "'a set"
@@ -1304,7 +1327,7 @@
         {
             "attributes": [],
             "name": "member_singleton",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -1351,11 +1374,13 @@
                     "th": "y ∈ ∅ ⊢ y ∈ ∅"
                 },
                 {
-                    "args": "",
+                    "args": "member_empty, y = x",
                     "id": "0.3.1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "y ∈ {x}, y ∈ ∅ ⊢ y = x"
+                    "prevs": [
+                        "0.3.0"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "y ∈ ∅ ⊢ y = x"
                 },
                 {
                     "args": "",
@@ -1491,6 +1516,14 @@
                     "goal_id": "1.1",
                     "method_name": "apply_backward_step",
                     "theorem": "disjI1"
+                },
+                {
+                    "fact_ids": [
+                        "0.3.0"
+                    ],
+                    "goal_id": "0.3.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
                 }
             ],
             "ty": "thm",
@@ -1672,14 +1705,14 @@
         },
         {
             "name": "Union_empty",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x::'a. x ∈ Union ∅ ⟷ x ∈ ∅"
+                    "th": "⊢ ∀x::'a. x ∈ ⋃∅ ⟷ x ∈ ∅"
                 },
                 {
                     "args": "x, 'a",
@@ -1726,11 +1759,13 @@
                     "th": "x ∈ A ∧ A ∈ ∅ ⊢ A ∈ ∅"
                 },
                 {
-                    "args": "",
+                    "args": "member_empty, x ∈ ∅",
                     "id": "0.1.4",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "∃A. x ∈ A ∧ A ∈ ∅, x ∈ A ∧ A ∈ ∅ ⊢ x ∈ ∅"
+                    "prevs": [
+                        "0.1.3"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "x ∈ A ∧ A ∈ ∅ ⊢ x ∈ ∅"
                 },
                 {
                     "args": "∃A. x ∈ A ∧ A ∈ ∅",
@@ -1760,10 +1795,12 @@
                     "th": "x ∈ ∅ ⊢ x ∈ ∅"
                 },
                 {
-                    "args": "",
+                    "args": "member_empty, ∃A. x ∈ A ∧ A ∈ ∅",
                     "id": "0.2.1",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "resolve_theorem",
                     "th": "x ∈ ∅ ⊢ ∃A. x ∈ A ∧ A ∈ ∅"
                 },
                 {
@@ -1787,13 +1824,13 @@
                     "th": "⊢ (∃A. x ∈ A ∧ A ∈ ∅) ⟷ x ∈ ∅"
                 },
                 {
-                    "args": "member_Union, x ∈ Union ∅ ⟷ x ∈ ∅",
+                    "args": "member_Union, x ∈ ⋃∅ ⟷ x ∈ ∅",
                     "id": "0.4",
                     "prevs": [
                         "0.3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ x ∈ Union ∅ ⟷ x ∈ ∅"
+                    "th": "⊢ x ∈ ⋃∅ ⟷ x ∈ ∅"
                 },
                 {
                     "args": "",
@@ -1803,7 +1840,7 @@
                         "0.4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x::'a. x ∈ Union ∅ ⟷ x ∈ ∅"
+                    "th": "⊢ ∀x::'a. x ∈ ⋃∅ ⟷ x ∈ ∅"
                 },
                 {
                     "args": "member_ext",
@@ -1812,7 +1849,7 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ Union ∅ = (∅::'a set)"
+                    "th": "⊢ ⋃∅ = (∅::'a set)"
                 }
             ],
             "prop": "Union (empty_set::'a set set) = empty_set",
@@ -1862,6 +1899,22 @@
                     "goal_id": "0.2",
                     "method_name": "introduction",
                     "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "0.1.3"
+                    ],
+                    "goal_id": "0.1.4",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
                 }
             ],
             "ty": "thm",
@@ -1869,14 +1922,14 @@
         },
         {
             "name": "Inter_empty",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x::'a. x ∈ Inter ∅ ⟷ x ∈ univ"
+                    "th": "⊢ ∀x::'a. x ∈ ⋂∅ ⟷ x ∈ univ"
                 },
                 {
                     "args": "x, 'a",
@@ -1952,11 +2005,13 @@
                     "th": "A ∈ ∅ ⊢ A ∈ ∅"
                 },
                 {
-                    "args": "",
+                    "args": "member_empty, x ∈ A",
                     "id": "0.2.1.2",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "x ∈ univ, A ∈ ∅ ⊢ x ∈ A"
+                    "prevs": [
+                        "0.2.1.1"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "A ∈ ∅ ⊢ x ∈ A"
                 },
                 {
                     "args": "",
@@ -1990,13 +2045,13 @@
                     "th": "⊢ (∀A. A ∈ ∅ ⟶ x ∈ A) ⟷ x ∈ univ"
                 },
                 {
-                    "args": "member_Inter, x ∈ Inter ∅ ⟷ x ∈ univ",
+                    "args": "member_Inter, x ∈ ⋂∅ ⟷ x ∈ univ",
                     "id": "0.4",
                     "prevs": [
                         "0.3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ x ∈ Inter ∅ ⟷ x ∈ univ"
+                    "th": "⊢ x ∈ ⋂∅ ⟷ x ∈ univ"
                 },
                 {
                     "args": "",
@@ -2006,7 +2061,7 @@
                         "0.4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x::'a. x ∈ Inter ∅ ⟷ x ∈ univ"
+                    "th": "⊢ ∀x::'a. x ∈ ⋂∅ ⟷ x ∈ univ"
                 },
                 {
                     "args": "member_ext",
@@ -2015,7 +2070,7 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ Inter ∅ = (univ::'a set)"
+                    "th": "⊢ ⋂∅ = (univ::'a set)"
                 }
             ],
             "prop": "Inter (empty_set::'a set set) = univ",
@@ -2059,6 +2114,14 @@
                     "goal_id": "0.2.1",
                     "method_name": "introduction",
                     "names": "A"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.1.1"
+                    ],
+                    "goal_id": "0.2.1.2",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
                 }
             ],
             "ty": "thm",
