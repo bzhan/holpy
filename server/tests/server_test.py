@@ -309,7 +309,7 @@ class ServerTest(unittest.TestCase):
         state = ProofState.init_state(thy, [f, a], [], prop)
         state.apply_backward_step(0, "extension")
         state.introduction(0, names=["x"])
-        state.rewrite_goal((0, 1), "fun_upd_eval")
+        state.rewrite_goal((0, 1), "fun_upd_def")
         state.apply_cases((0, 1), Term.mk_equals(x, a))
         state.introduction((0, 1))
         state.rewrite_goal((0, 1, 1), "if_P")
