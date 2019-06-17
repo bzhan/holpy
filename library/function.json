@@ -977,6 +977,91 @@
             }
         },
         {
+            "attributes": [],
+            "name": "comp_fun_assoc",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. ((f ∘ g) ∘ h) x = (f ∘ g ∘ h) x"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "comp_fun_eval, (f ∘ g) (h x) = f (g (h x))",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (f ∘ g) (h x) = f (g (h x))"
+                },
+                {
+                    "args": "comp_fun_eval, ((f ∘ g) ∘ h) x = (f ∘ g ∘ h) x",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ((f ∘ g) ∘ h) x = (f ∘ g ∘ h) x"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. ((f ∘ g) ∘ h) x = (f ∘ g ∘ h) x"
+                },
+                {
+                    "args": "extension",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (f ∘ g) ∘ h = f ∘ g ∘ h"
+                }
+            ],
+            "prop": "comp_fun (comp_fun f g) h = comp_fun f (comp_fun g h)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "extension"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "comp_fun_eval"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "comp_fun_eval"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'c => 'd",
+                "g": "'b => 'c",
+                "h": "'a => 'b"
+            }
+        },
+        {
             "name": "injective",
             "prop": "injective f = (!x. !y. f x = f y --> x = y)",
             "ty": "def",

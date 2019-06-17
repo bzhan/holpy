@@ -31,25 +31,53 @@ imp = Term.mk_implies
 neg = logic.neg
 exists = logic.mk_exists
 
-def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, print_search=False):
+def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
+                print_stat=False, print_search=False):
     """Test list of steps for the given theorem."""
     def test_val(thy, val):
         state = ProofState.parse_init_state(thy, val)
         goal = state.prf.items[-1].th
+        num_found = 0
+        if print_stat and 'steps' not in val:
+            print("%20s %s" % (val['name'], "No steps found"))
+            return
+
         for i, step in enumerate(val['steps']):
-            if print_search:
-                print('Step ' + str(i))
+            if print_search or print_stat:
                 if 'fact_ids' not in step:
                     step['fact_ids'] = []
-                res = state.search_method(step['goal_id'], step['fact_ids'])
-                for r in res:
-                    m = global_methods[r['_method_name']]
-                    print(m.display_step(state, step['goal_id'], r, step['fact_ids']))
+                select_ids = "goal " + step['goal_id']
+                if print_search:
+                    if step['fact_ids']:
+                        select_ids += ", fact " + ", ".join(step['fact_ids'])
+                    print('Step ' + str(i) + " (" + select_ids + ")")
+                search_res = state.search_method(step['goal_id'], step['fact_ids'])
+                found = 0
+                for res in search_res:
+                    m = global_methods[res['_method_name']]
+                    if res['_method_name'] == step['method_name'] and \
+                       all(sig not in res or res[sig] == step[sig] for sig in m.sig):
+                        if print_search:
+                            print('* ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                        found += 1
+                    else:
+                        if print_search:
+                            print('  ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                assert found <= 1, "test_val: multiple found"
+                if found == 0:
+                    if print_search:
+                        m = global_methods[step['method_name']]
+                        print('- ' + m.display_step(state, step['goal_id'], step, step['fact_ids']))
+                else:
+                    num_found += 1
             method.apply_method(state, step)
         self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
         if print_proof:
             print("Final state:")
             print(printer.print_proof(thy, state.prf))
+        if print_stat:
+            total = len(val['steps'])
+            print("%20s %5d %5d %5d" % (val['name'], total, num_found, total - num_found))
         
     thy = basic.load_theory(thy_name, limit=('thm', thm_name))
     with open('./library/' + thy_name + '.json', 'r', encoding='utf-8') as f:

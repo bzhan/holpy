@@ -508,25 +508,25 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "subset A B",
+                    "args": "A ⊆ B",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "subset A B ⊢ subset A B"
+                    "th": "A ⊆ B ⊢ A ⊆ B"
                 },
                 {
-                    "args": "subset B A",
+                    "args": "B ⊆ A",
                     "id": "1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "subset B A ⊢ subset B A"
+                    "th": "B ⊆ A ⊢ B ⊆ A"
                 },
                 {
                     "args": "",
                     "id": "2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "subset A B, subset B A ⊢ ∀x. member x A = member x B"
+                    "th": "A ⊆ B, B ⊆ A ⊢ ∀x. x ∈ A ⟷ x ∈ B"
                 },
                 {
                     "args": "x, 'a",
@@ -540,14 +540,14 @@
                     "id": "2.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "subset A B, subset B A ⊢ member x A ⟶ member x B"
+                    "th": "A ⊆ B, B ⊆ A ⊢ x ∈ A ⟶ x ∈ B"
                 },
                 {
-                    "args": "member x A",
+                    "args": "x ∈ A",
                     "id": "2.1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "member x A ⊢ member x A"
+                    "th": "x ∈ A ⊢ x ∈ A"
                 },
                 {
                     "args": "subsetE",
@@ -557,7 +557,7 @@
                         "2.1.0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "subset A B, member x A ⊢ member x B"
+                    "th": "A ⊆ B, B ⊆ A, x ∈ A ⊢ x ∈ B"
                 },
                 {
                     "args": "",
@@ -567,21 +567,21 @@
                         "2.1.1"
                     ],
                     "rule": "intros",
-                    "th": "subset A B, subset B A ⊢ member x A ⟶ member x B"
+                    "th": "A ⊆ B, B ⊆ A ⊢ x ∈ A ⟶ x ∈ B"
                 },
                 {
                     "args": "",
                     "id": "2.2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "subset A B, subset B A ⊢ member x B ⟶ member x A"
+                    "th": "A ⊆ B, B ⊆ A ⊢ x ∈ B ⟶ x ∈ A"
                 },
                 {
-                    "args": "member x B",
+                    "args": "x ∈ B",
                     "id": "2.2.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "member x B ⊢ member x B"
+                    "th": "x ∈ B ⊢ x ∈ B"
                 },
                 {
                     "args": "subsetE",
@@ -591,7 +591,7 @@
                         "2.2.0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "subset B A, subset A B, member x B ⊢ member x A"
+                    "th": "B ⊆ A, A ⊆ B, x ∈ B ⊢ x ∈ A"
                 },
                 {
                     "args": "",
@@ -601,7 +601,7 @@
                         "2.2.1"
                     ],
                     "rule": "intros",
-                    "th": "subset A B, subset B A ⊢ member x B ⟶ member x A"
+                    "th": "A ⊆ B, B ⊆ A ⊢ x ∈ B ⟶ x ∈ A"
                 },
                 {
                     "args": "iffI",
@@ -611,7 +611,7 @@
                         "2.2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "subset A B, subset B A ⊢ member x A = member x B"
+                    "th": "A ⊆ B, B ⊆ A ⊢ x ∈ A ⟷ x ∈ B"
                 },
                 {
                     "args": "",
@@ -621,7 +621,7 @@
                         "2.3"
                     ],
                     "rule": "intros",
-                    "th": "subset A B, subset B A ⊢ ∀x. member x A = member x B"
+                    "th": "A ⊆ B, B ⊆ A ⊢ ∀x. x ∈ A ⟷ x ∈ B"
                 },
                 {
                     "args": "member_ext",
@@ -630,7 +630,7 @@
                         "2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "subset A B, subset B A ⊢ A = B"
+                    "th": "A ⊆ B, B ⊆ A ⊢ A = B"
                 },
                 {
                     "args": "",
@@ -641,10 +641,53 @@
                         "3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ subset A B ⟶ subset B A ⟶ A = B"
+                    "th": "⊢ A ⊆ B ⟶ B ⊆ A ⟶ A = B"
                 }
             ],
             "prop": "subset A B --> subset B A --> A = B",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetE"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetE"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "'a set",
@@ -660,25 +703,25 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "subset A B",
+                    "args": "A ⊆ B",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "subset A B ⊢ subset A B"
+                    "th": "A ⊆ B ⊢ A ⊆ B"
                 },
                 {
-                    "args": "subset B C",
+                    "args": "B ⊆ C",
                     "id": "1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "subset B C ⊢ subset B C"
+                    "th": "B ⊆ C ⊢ B ⊆ C"
                 },
                 {
                     "args": "",
                     "id": "2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "subset A B, subset B C ⊢ ∀x. member x A ⟶ member x C"
+                    "th": "A ⊆ B, B ⊆ C ⊢ ∀x. x ∈ A ⟶ x ∈ C"
                 },
                 {
                     "args": "x, 'a",
@@ -688,11 +731,11 @@
                     "th": "⊢ _VAR x"
                 },
                 {
-                    "args": "member x A",
+                    "args": "x ∈ A",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "member x A ⊢ member x A"
+                    "th": "x ∈ A ⊢ x ∈ A"
                 },
                 {
                     "args": "subsetE",
@@ -702,7 +745,7 @@
                         "2.1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "subset A B, subset B C, member x A ⊢ member x B"
+                    "th": "A ⊆ B, B ⊆ C, x ∈ A ⊢ x ∈ B"
                 },
                 {
                     "args": "subsetE",
@@ -712,7 +755,7 @@
                         "2.2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "subset B C, subset A B, member x A ⊢ member x C"
+                    "th": "B ⊆ C, A ⊆ B, x ∈ A ⊢ x ∈ C"
                 },
                 {
                     "args": "",
@@ -723,7 +766,7 @@
                         "2.3"
                     ],
                     "rule": "intros",
-                    "th": "subset A B, subset B C ⊢ ∀x. member x A ⟶ member x C"
+                    "th": "A ⊆ B, B ⊆ C ⊢ ∀x. x ∈ A ⟶ x ∈ C"
                 },
                 {
                     "args": "subsetI",
@@ -732,7 +775,7 @@
                         "2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "subset A B, subset B C ⊢ subset A C"
+                    "th": "A ⊆ B, B ⊆ C ⊢ A ⊆ C"
                 },
                 {
                     "args": "",
@@ -743,10 +786,38 @@
                         "3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ subset A B ⟶ subset B C ⟶ subset A C"
+                    "th": "⊢ A ⊆ B ⟶ B ⊆ C ⟶ A ⊆ C"
                 }
             ],
             "prop": "subset A B --> subset B C --> subset A C",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetE"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetE"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "'a set",
