@@ -640,8 +640,8 @@ def display_method(state, step):
     search_res = method.search(state, goal_id, fact_ids)
     for res in search_res:
         if all(sig not in res or res[sig] == step[sig] for sig in method.sig):
-            return method.display_step(state, goal_id, res, fact_ids)
-    return "Not found"
+            return method.display_step(state, goal_id, res, fact_ids, unicode=True, highlight=True)
+    return [("Not found", 0)] 
 
 
 global_methods.update({
