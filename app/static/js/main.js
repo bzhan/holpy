@@ -213,23 +213,27 @@
         $('#introduction').on("click", introduction);
 
         $('#new-var').on("click", function () {
-            apply_method('new_var')
+            apply_method('new_var');
+        });
+
+        $('#apply-cut').on("click", function () {
+            apply_method('cut');
         });
 
         $('#apply-cases').on("click", function () {
-            apply_method('cases')
+            apply_method('cases');
         });
 
         $('#apply-forall-elim').on("click", function () {
-            apply_method('forall_elim')
+            apply_method('forall_elim');
         });
 
         $('#rewrite-goal-with-prev').on("click", function () {
-            apply_method('rewrite_goal_with_prev')
+            apply_method('rewrite_goal_with_prev');
         });
 
         $('#apply-prev').on('click', function () {
-            apply_method('apply_prev')
+            apply_method('apply_prev');
         });
 
         $('#add-line-after').on("click", function () {
@@ -238,6 +242,10 @@
 
         $('#apply-backward-step').on("click", function () {
             apply_method('apply_backward_step');
+        });
+
+        $('#apply-forward-step').on("click", function () {
+            apply_method('apply_forward_step');
         });
 
         $('#apply-induction').on("click", function () {
@@ -671,6 +679,8 @@
                     form.hint_forward.checked = true;
                 if (item.attributes && item.attributes.includes('hint_rewrite'))
                     form.hint_rewrite.checked = true;
+                if (item.attributes && item.attributes.includes('hint_resolve'))
+                    form.hint_resolve.checked = true;
             }
             else {
                 form['number-thm'].value = -1;
@@ -763,6 +773,8 @@
                 item.attributes.push('hint_forward');
             if (form.hint_rewrite.checked === true)
                 item.attributes.push('hint_rewrite');
+            if (form.hint_resolve.checked === true)
+                item.attributes.push('hint_resolve');
         }
         if (ty === 'type.ind') {
             item.data_name = form.data_name_type.value.trim();

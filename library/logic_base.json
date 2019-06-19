@@ -1,6 +1,11 @@
 {
     "content": [
         {
+            "depth": 0,
+            "name": "Basic operators in logic",
+            "ty": "header"
+        },
+        {
             "ascii_op": "&",
             "name": "conj",
             "ty": "def.ax",
@@ -173,9 +178,7 @@
             }
         },
         {
-            "attributes": [
-                "hint_backward"
-            ],
+            "attributes": [],
             "name": "exE",
             "prop": "(?a. P a) --> (!a. P a --> C) --> C",
             "ty": "thm.ax",
@@ -232,6 +235,16 @@
             }
         },
         {
+            "depth": 0,
+            "name": "Definitions for internal use",
+            "ty": "header"
+        },
+        {
+            "name": "_VAR",
+            "ty": "def.ax",
+            "type": "'a => bool"
+        },
+        {
             "name": "beta_norm",
             "ty": "macro"
         },
@@ -248,7 +261,15 @@
             "ty": "macro"
         },
         {
+            "name": "resolve_theorem",
+            "ty": "macro"
+        },
+        {
             "name": "apply_fact",
+            "ty": "macro"
+        },
+        {
+            "name": "apply_fact_for",
             "ty": "macro"
         },
         {
@@ -278,6 +299,10 @@
         {
             "name": "trivial",
             "ty": "macro"
+        },
+        {
+            "name": "cut",
+            "ty": "method"
         },
         {
             "name": "cases",
@@ -312,6 +337,10 @@
             "ty": "method"
         },
         {
+            "name": "apply_resolve_step",
+            "ty": "method"
+        },
+        {
             "name": "apply_fact",
             "ty": "method"
         },
@@ -328,12 +357,43 @@
             "ty": "method"
         },
         {
+            "name": "exists_elim",
+            "ty": "method"
+        },
+        {
             "name": "induction",
             "ty": "method"
         },
         {
             "name": "new_var",
             "ty": "method"
+        },
+        {
+            "depth": 0,
+            "name": "Some simple results",
+            "ty": "header"
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "eq_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "reflexive",
+                    "th": "⊢ x = x"
+                }
+            ],
+            "prop": "x = x",
+            "steps": [],
+            "ty": "thm",
+            "vars": {
+                "x": "'a"
+            }
         },
         {
             "name": "classical_cases",
@@ -497,6 +557,131 @@
             "vars": {
                 "A": "bool",
                 "B": "bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "ineq_sym",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬x = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x = y ⊢ ¬x = y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬x = y ⊢ y = x ⟶ false"
+                },
+                {
+                    "args": "y = x",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y = x ⊢ y = x"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0",
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "y = x, ¬x = y ⊢ ¬x = x"
+                },
+                {
+                    "args": "eq_refl, {a: 'a}, {x: x}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x = x"
+                },
+                {
+                    "args": "negE",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y = x, ¬x = y ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬x = y ⊢ y = x ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬x = y ⊢ ¬y = x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬x = y ⟶ ¬y = x"
+                }
+            ],
+            "prop": "~(x = y) --> ~(y = x)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "'a",
+                "y": "'a"
             }
         }
     ],

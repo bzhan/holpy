@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from typing import Tuple
+from typing import Tuple, List
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import HOLType, TVar, Type, TFun, boolT
@@ -49,9 +49,13 @@ grammar = r"""
 
     ?comb: comb atom | atom
 
-    ?times: times "*" comb | comb       // Multiplication: priority 70
+    ?big_inter: ("INT"|"⋂") big_inter -> big_inter | comb         // Intersection: priority 90
 
-    ?inter: inter ("INTER"|"∩") times | times     // Intersection: priority 70
+    ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
+
+    ?times: times "*" big_union | big_union     // Multiplication: priority 70
+
+    ?inter: inter ("Int"|"∩") times | times     // Intersection: priority 70
 
     ?plus: plus "+" inter | inter       // Addition: priority 65
 
@@ -59,13 +63,15 @@ grammar = r"""
 
     ?cons: append "#" cons | append     // Cons: priority 65
 
-    ?union: union ("UNION"|"∪") cons | cons       // Union: priority 65
+    ?union: union ("Un"|"∪") cons | cons        // Union: priority 65
 
-    ?eq: eq "=" union | union           // Equality: priority 50
+    ?comp_fun: union ("O"|"∘") comp_fun | union // Function composition: priority 60
 
-    ?mem: mem ("MEM"|"∈") mem | eq              // Membership: priority 50
+    ?eq: eq "=" comp_fun | comp_fun             // Equality: priority 50
 
-    ?subset: subset ("SUB"|"⊆") subset | mem    // Subset: priority 50
+    ?mem: mem ("Mem"|"∈") mem | eq              // Membership: priority 50
+
+    ?subset: subset ("Sub"|"⊆") subset | mem    // Subset: priority 50
 
     ?less_eq: less_eq ("<="|"≤") less_eq | subset  // Less-equal: priority 50
 
@@ -103,6 +109,8 @@ grammar = r"""
     ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types
 
     named_thm: CNAME ":" term | term  // named theorem
+
+    term_list: term*   // list of terms
 
     %import common.CNAME
     %import common.WS
@@ -257,6 +265,15 @@ class HOLTransformer(Transformer):
     def union(self, A, B):
         return Const("union", None)(A, B)
 
+    def big_inter(self, t):
+        return Const("Inter", None)(t)
+
+    def big_union(self, t):
+        return Const("Union", None)(t)
+
+    def comp_fun(self, f, g):
+        return Const("comp_fun", None)(f, g)
+
     def nat_interval(self, m, n):
         from data import interval
         return interval.mk_interval(m, n)
@@ -295,6 +312,9 @@ class HOLTransformer(Transformer):
     def named_thm(self, *args):
         return tuple(args)
 
+    def term_list(self, *args):
+        return args
+
 
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
@@ -308,6 +328,7 @@ named_thm_parser = get_parser_for("named_thm")
 instsp_parser = get_parser_for("instsp")
 var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
+term_list_parser = get_parser_for("term_list")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -367,6 +388,16 @@ def parse_var_decl(thy, s):
     parser_setting['thy'] = thy
     return var_decl_parser.parse(s)
 
+def parse_term_list(thy, ctxt, s):
+    """Parse a list of terms."""
+    if s == "":
+        return []
+    parser_settings['thy'] = thy
+    ts = term_list_parser.parse(s)
+    for i in range(len(ts)):
+        ts[i] = infertype.type_infer(thy, ctxt, ts[i])
+    return ts
+
 def parse_args(thy, ctxt, sig, args):
     """Parse the argument according to the signature."""
     try:
@@ -391,6 +422,8 @@ def parse_args(thy, ctxt, sig, args):
             s1, s2 = args.split(",", 1)
             tyinst, inst = parse_instsp(thy, ctxt, s2)
             return s1, tyinst, inst
+        elif sig == List[Term]:
+            return parse_term_list(thy, ctxt, args)
         else:
             raise TypeError()
     except exceptions.UnexpectedToken as e:
@@ -459,12 +492,9 @@ def parse_extension(thy, data):
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Theorem(data['name'], Thm([], prop)))
-        if 'attributes' in data and 'hint_backward' in data['attributes']:
-            ext.add_extension(extension.Attribute(data['name'], 'hint_backward'))
-        if 'attributes' in data and 'hint_rewrite' in data['attributes']:
-            ext.add_extension(extension.Attribute(data['name'], 'hint_rewrite'))
-        if 'attributes' in data and 'hint_forward' in data['attributes']:
-            ext.add_extension(extension.Attribute(data['name'], 'hint_forward'))
+        if 'attributes' in data:
+            for attr in data['attributes']:
+                ext.add_extension(extension.Attribute(data['name'], attr))
 
     elif data['ty'] == 'type.ind':
         constrs = []

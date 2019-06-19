@@ -76,7 +76,7 @@ function display_checked_proof(result) {
 function display_instructions() {
     var id = get_selected_id();
     var instr_output = document.querySelector('.rbottom .selected .output #instruction');
-    instr_output.innerHTML = cells[id].instructions[cells[id].index];
+    instr_output.innerHTML = highlight_html(cells[id].instructions[cells[id].index]);
     var instr_no_output = document.querySelector('.rbottom .selected .output #instruction-number');
     instr_no_output.innerHTML = (cells[id].index + 1) + '/' + cells[id].instructions.length;
 }

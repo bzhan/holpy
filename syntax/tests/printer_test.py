@@ -25,7 +25,6 @@ b = Var("b", Ta)
 P = Var("P", TFun(Ta, boolT))
 Q = Var("Q", TFun(Ta, boolT))
 R = Var("R", TFun(Ta, Ta, boolT))
-f = Var("f", TFun(Ta, Ta))
 nn = Var("n", TFun(boolT, boolT))
 m = Var("m", nat.natT)
 n = Var("n", nat.natT)
@@ -185,17 +184,20 @@ class PrinterTest(unittest.TestCase):
         x = Var("x", Ta)
         y = Var("y", Ta)
         P = Var("P", TFun(Ta, boolT))
+        S = Var("S", set.setT(set.setT(Ta)))
         test_data = [
             (set.empty_set(Ta), "({}::'a set)", "(∅::'a set)"),
-            (set.mk_mem(x, A), "x MEM A", "x ∈ A"),
-            (set.mk_subset(A, B), "A SUB B", "A ⊆ B"),
-            (set.mk_inter(A, B), "A INTER B", "A ∩ B"),
-            (set.mk_union(A, B), "A UNION B", "A ∪ B"),
+            (set.mk_mem(x, A), "x Mem A", "x ∈ A"),
+            (set.mk_subset(A, B), "A Sub B", "A ⊆ B"),
+            (set.mk_inter(A, B), "A Int B", "A ∩ B"),
+            (set.mk_union(A, B), "A Un B", "A ∪ B"),
             (set.mk_insert(x, set.empty_set(Ta)), "{x}", "{x}"),
             (set.mk_insert(x, set.mk_insert(y, set.empty_set(Ta))), "{x, y}", "{x, y}"),
             (set.mk_insert(x, A), "insert x A", "insert x A"),
             (set.mk_collect(x, P(x)), "{x. P x}", "{x. P x}"),
             (set.collect(Ta)(P), "collect P", "collect P"),
+            (set.mk_Union(S), "UN S", "⋃S"),
+            (set.mk_Inter(S), "INT S", "⋂S"),
         ]
 
         for t, s1, s2 in test_data:
@@ -214,9 +216,16 @@ class PrinterTest(unittest.TestCase):
             self.assertEqual(printer.print_term(thy, t), s)
 
     def testPrintFunction(self):
+        f = Var("f", TFun(Ta, Ta))
+        Tb = TVar('b')
+        Tc = TVar('c')
+        g = Var('g', TFun(Tb, Tc))
+        h = Var('h', TFun(Ta, Tb))
         test_data = [
             (function.mk_fun_upd(f, a, b), "(f)(a := b)"),
             (function.mk_fun_upd(f, a, b, b, a), "(f)(a := b, b := a)"),
+            (function.mk_comp(g, h), "g O h"),
+            (function.mk_comp(g, h)(a), "(g O h) a"),
         ]
 
         thy = basic.load_theory('function')

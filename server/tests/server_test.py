@@ -31,28 +31,60 @@ imp = Term.mk_implies
 neg = logic.neg
 exists = logic.mk_exists
 
-def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, print_search=False):
+def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
+                print_stat=False, print_search=False):
     """Test list of steps for the given theorem."""
+    def test_val(thy, val):
+        state = ProofState.parse_init_state(thy, val)
+        goal = state.prf.items[-1].th
+        num_found = 0
+        if print_stat and 'steps' not in val:
+            print("%20s %s" % (val['name'], "No steps found"))
+            return
+
+        for i, step in enumerate(val['steps']):
+            if print_search or print_stat:
+                if 'fact_ids' not in step:
+                    step['fact_ids'] = []
+                select_ids = "goal " + step['goal_id']
+                if print_search:
+                    if step['fact_ids']:
+                        select_ids += ", fact " + ", ".join(step['fact_ids'])
+                    print('Step ' + str(i) + " (" + select_ids + ")")
+                search_res = state.search_method(step['goal_id'], step['fact_ids'])
+                found = 0
+                for res in search_res:
+                    m = global_methods[res['_method_name']]
+                    if res['_method_name'] == step['method_name'] and \
+                       all(sig not in res or res[sig] == step[sig] for sig in m.sig):
+                        if print_search:
+                            print('* ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                        found += 1
+                    else:
+                        if print_search:
+                            print('  ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                assert found <= 1, "test_val: multiple found"
+                if found == 0:
+                    if print_search:
+                        m = global_methods[step['method_name']]
+                        print('- ' + m.display_step(state, step['goal_id'], step, step['fact_ids']))
+                else:
+                    num_found += 1
+            method.apply_method(state, step)
+        self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
+        if print_proof:
+            print("Final state:")
+            print(printer.print_proof(thy, state.prf))
+        if print_stat:
+            total = len(val['steps'])
+            print("%20s %5d %5d %5d" % (val['name'], total, num_found, total - num_found))
+        
     thy = basic.load_theory(thy_name, limit=('thm', thm_name))
     with open('./library/' + thy_name + '.json', 'r', encoding='utf-8') as f:
         f_data = json.load(f)
         for val in f_data['content']:
             if val['ty'] == 'thm' and val['name'] == thm_name:
-                state = ProofState.parse_init_state(thy, val)
-                goal = state.prf.items[-1].th
-                for i, step in enumerate(val['steps']):
-                    if print_search:
-                        print('Step ' + str(i))
-                        if 'fact_ids' not in step:
-                            step['fact_ids'] = []
-                        res = state.search_method(step['goal_id'], step['fact_ids'])
-                        for r in res:
-                            m = global_methods[r['_method_name']]
-                            print(m.display_step(state, step['goal_id'], r, step['fact_ids']))
-                    method.apply_method(state, step)
-                self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
-                if print_proof:
-                    print(printer.print_proof(thy, state.prf))
+                test_val(thy, val)
 
 
 class ServerTest(unittest.TestCase):
@@ -244,6 +276,24 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(state.check_proof(), Thm([], Term.mk_equals(nat.plus(n, nat.zero), n)))
         self.assertEqual(len(state.prf.items), 3)
 
+    def testRewriteGoalThms(self):
+        thy = basic.load_theory('nat')
+        n = Var("n", nat.natT)
+        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
+        search_res = state.apply_search(0, method.rewrite_goal())
+        self.assertEqual([res['theorem'] for res in search_res], ["plus_def_1"])
+
+    def testRewriteGoalWithAssum(self):
+        Ta = TVar("a")
+        a = Var("a", Ta)
+        b = Var("b", Ta)
+        eq_a = Term.mk_equals(a, a)
+        if_t = logic.mk_if(eq_a, b, a)
+        state = ProofState.init_state(thy, [a, b], [], Term.mk_equals(if_t, b))
+        state.rewrite_goal(0, "if_P")
+        state.set_line(0, "reflexive", args=a)
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
+
     def testConjComm(self):
         """Proof of A & B --> B & A."""
         testMethods(self, 'logic', 'conj_comm')
@@ -276,43 +326,9 @@ class ServerTest(unittest.TestCase):
         """Proof of xs @ [] = xs by induction."""
         testMethods(self, 'list', 'append_right_neutral')
 
-    def testRewriteGoalThms(self):
-        thy = basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
-        search_res = state.apply_search(0, method.rewrite_goal())
-        self.assertEqual([res['theorem'] for res in search_res], ["plus_def_1"])
-
-    def testRewriteGoalWithAssum(self):
-        Ta = TVar("a")
-        a = Var("a", Ta)
-        b = Var("b", Ta)
-        eq_a = Term.mk_equals(a, a)
-        if_t = logic.mk_if(eq_a, b, a)
-        state = ProofState.init_state(thy, [a, b], [], Term.mk_equals(if_t, b))
-        state.rewrite_goal(0, "if_P")
-        state.set_line(0, "reflexive", args=a)
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
-
     def testFunUpdTriv(self):
-        thy = basic.load_theory('function')
-        Ta = TVar("a")
-        Tb = TVar("b")
-        f = Var("f", TFun(Ta, Tb))
-        a = Var("a", Ta)
-        x = Var("x", Ta)
-        prop = Term.mk_equals(function.mk_fun_upd(f, a, f(a)), f)
-        state = ProofState.init_state(thy, [f, a], [], prop)
-        state.apply_backward_step(0, "extension")
-        state.introduction(0, names=["x"])
-        state.rewrite_goal((0, 1), "fun_upd_eval")
-        state.apply_cases((0, 1), Term.mk_equals(x, a))
-        state.introduction((0, 1))
-        state.rewrite_goal((0, 1, 1), "if_P")
-        state.rewrite_goal_with_prev((0, 1, 1), (0, 1, 0))
-        state.introduction((0, 2))
-        state.rewrite_goal((0, 2, 1), "if_not_P")
-        self.assertEqual(state.check_proof(no_gaps=True), Thm([], prop))
+        """Proof of (f)(a := f a) = f."""
+        testMethods(self, 'function', 'fun_upd_triv')
 
     def testAVal1(self):
         """Proof of aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12."""
@@ -329,6 +345,38 @@ class ServerTest(unittest.TestCase):
     def testHoarePreRule(self):
         """Proof of Entail P Q --> Valid Q c R --> Valid P c R."""
         testMethods(self, 'hoare', 'pre_rule')
+
+    def testNatLessEqTrans(self):
+        """Proof of k <= m --> m <= n --> k <= n."""
+        testMethods(self, 'nat', 'less_eq_trans')
+
+    def testDrinker(self):
+        """Proof of ?x. P x --> (!x. P x)."""
+        testMethods(self, 'logic', 'drinker')
+
+    def testCantor(self):
+        """Proof of ?a. !x. ~f x = a."""
+        testMethods(self, 'set', 'cantor')
+
+    def testSubsetEmpty(self):
+        """Proof of subset empty A."""
+        testMethods(self, 'set', 'subset_empty')
+
+    def testUnionUnion(self):
+        """Proof of UN (A Un B) = (UN A) Un (UN B)."""
+        testMethods(self, 'set', 'Union_union')
+
+    def testFixpoint(self):
+        """Proof of bnd_mono h --> h (lfp h) = lfp h."""
+        testMethods(self, 'set', 'lfp_unfold')
+
+    def testInjectiveCompFun(self):
+        """Proof of injective f --> injective g --> injective (g o f)."""
+        testMethods(self, 'function', 'injective_comp_fun')
+
+    def testSurjectiveD(self):
+        """Proof of surjective f --> (?x. f x = y)."""
+        testMethods(self, 'function', 'surjectiveD')
 
 
 if __name__ == "__main__":

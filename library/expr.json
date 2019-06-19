@@ -91,7 +91,7 @@
                     "th": "⊢ (if 1 = 1 then 7 else 0) + 5 = 12"
                 },
                 {
-                    "args": "fun_upd_eval, (λx. 0)(1 := 7) 1 + 5 = 12",
+                    "args": "fun_upd_def, (λx. 0)(1 := 7) 1 + 5 = 12",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -147,7 +147,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "fun_upd_eval"
+                    "theorem": "fun_upd_def"
                 },
                 {
                     "goal_id": "0",
@@ -195,7 +195,7 @@
                     "th": "⊢ (if 0 = 1 then 7 else 0) + 5 = 5"
                 },
                 {
-                    "args": "fun_upd_eval, (λx. 0)(1 := 7) 0 + 5 = 5",
+                    "args": "fun_upd_def, (λx. 0)(1 := 7) 0 + 5 = 5",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -251,7 +251,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "fun_upd_eval"
+                    "theorem": "fun_upd_def"
                 },
                 {
                     "goal_id": "0",

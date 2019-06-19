@@ -345,8 +345,7 @@ class Theory():
         elif seq.rule == "variable":
             # Declares a variable. Skip check.
             nm, T = seq.args
-            v = Var(nm, T)
-            res_th = Thm.mk_equals(v, v)
+            res_th = Thm.mk_VAR(Var(nm, T))
         elif seq.rule == "subproof":
             for s in seq.subproof.items:
                 self._check_proof_item(prf, s, rpt, no_gaps, compute_only, check_level)

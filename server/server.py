@@ -13,6 +13,7 @@ from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
 from syntax import parser, printer
 from server import tactic
 from server import method
+from server.method import incr_id
 
 class TacticException(Exception):
     pass
@@ -64,10 +65,6 @@ def decr_proof_item(item, id_remove):
     if item.subproof:
         for subitem in item.subproof.items:
             decr_proof_item(subitem, id_remove)
-
-def incr_id(id, n):
-    """Increment the last number in id by n."""
-    return id[:-1] + (id[-1] + n,)
 
 
 class ProofState():

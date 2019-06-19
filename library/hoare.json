@@ -319,14 +319,14 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ s = s"
+                    "th": "⊢ _VAR s"
                 },
                 {
                     "args": "s2, 'a",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ s2 = s2"
+                    "th": "⊢ _VAR s2"
                 },
                 {
                     "args": "P s",
@@ -484,14 +484,14 @@
                     "id": "0.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ s = s"
+                    "th": "⊢ _VAR s"
                 },
                 {
                     "args": "s2, 'a ⇒ 'b",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ s2 = s2"
+                    "th": "⊢ _VAR s2"
                 },
                 {
                     "args": "P ((s)(a := b s))",
@@ -614,14 +614,14 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ s = s"
+                    "th": "⊢ _VAR s"
                 },
                 {
                     "args": "s2, 'a",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ s2 = s2"
+                    "th": "⊢ _VAR s2"
                 },
                 {
                     "args": "P s",
@@ -658,7 +658,7 @@
                     "id": "2.5.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ s3 = s3"
+                    "th": "⊢ _VAR s3"
                 },
                 {
                     "args": "Sem c1 s s3 ∧ Sem c2 s3 s2",

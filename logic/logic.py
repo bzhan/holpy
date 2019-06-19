@@ -4,6 +4,7 @@ from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const, Abs
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv
 from logic.proofterm import ProofTerm, refl
+from util import name
 
 """Utility functions for logic."""
 
@@ -102,7 +103,7 @@ def mk_if(P, x, y):
     """Obtain the term if P then x else y."""
     return if_t(x.get_type())(P, x, y)
 
-def get_forall_names(t):
+def get_forall_names(t, prevs):
     """Given a term of the form
 
     !x_1 ... x_k. A_1 --> ... --> A_n --> C.
@@ -110,10 +111,12 @@ def get_forall_names(t):
     return the names x_1, ... x_k.
 
     """
-    if Term.is_all(t):
-        return [t.arg.var_name] + get_forall_names(t.arg.body)
-    else:
-        return []
+    def helper(t):
+        if Term.is_all(t):
+            return [t.arg.var_name] + helper(t.arg.body)
+        else:
+            return []
+    return name.get_variant_names(helper(t), prevs)
 
 def strip_all_implies(t, names):
     """Given a term of the form
@@ -137,6 +140,23 @@ def strip_all_implies(t, names):
         As, C = t.strip_implies()
         return ([], As, C)
 
+def strip_exists(t, names):
+    """Given a term of the form
+
+    ?x_1 ... x_k. C
+
+    Return the pair ([v_1, ..., v_k], C), where C is the body of the
+    input term, with bound variables substituted for v_1, ..., v_k.
+
+    """
+    if is_exists(t):
+        assert len(names) > 0, "strip_exists: not enough names input."
+        assert isinstance(names[0], str), "strip_exists: names must be strings."
+        v = Var(names[0], t.arg.var_T)
+        vars, body = strip_exists(t.arg.subst_bound(v), names[1:])
+        return ([v] + vars, body)
+    else:
+        return ([], t)
 
 """Normalization rules for logic."""
 

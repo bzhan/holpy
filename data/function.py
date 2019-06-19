@@ -121,6 +121,10 @@ class fun_upd_norm_conv(Conv):
         else:
             return pt
 
+def mk_comp(f, g):
+    T2, T3 = f.get_type().args
+    _, T1 = g.get_type().args
+    return Const("comp_fun", TFun(TFun(T2, T3), TFun(T1, T2), T1, T3))(f, g)
 
 global_macros.update({
     "fun_upd_eval": fun_upd_eval_macro(),

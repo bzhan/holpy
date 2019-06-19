@@ -65,10 +65,9 @@ class rule(Tactic):
         th = thy.get_theorem(th_name)
         As, C = th.assums, th.concl
 
-        assert set(term.get_vars(As[:len(prevs)] + [C])) == set(term.get_vars(As + [C])), \
-            "rule: cannot match all variables."
-
         if instsp is None:
+            assert set(term.get_vars(As[:len(prevs)] + [C])) == set(term.get_vars(As + [C])), \
+                "rule: cannot match all variables."
             instsp = (dict(), dict())
             if matcher.is_pattern(C, []):
                 matcher.first_order_match_incr(C, goal.prop, instsp)
@@ -88,6 +87,15 @@ class rule(Tactic):
             return apply_theorem(thy, th_name, *pts, tyinst=tyinst, inst=inst)
         else:
             return apply_theorem(thy, th_name, *pts)
+
+class resolve(Tactic):
+    """Given any goal, a theorem of the form ~A, and an existing fact A,
+    solve the goal.
+    
+    """
+    def get_proof_term(self, thy, goal, args, prevs):
+        assert isinstance(args, str) and len(prevs) == 1, "resolve"
+        return ProofTermDeriv('resolve_theorem', thy, (args, goal.prop), prevs)
 
 class intros(Tactic):
     """Given a goal of form !x_1 ... x_n. A_1 --> ... --> A_n --> C,
@@ -167,9 +175,10 @@ class apply_prev(Tactic):
         pt, prev_pts = prevs[0], prevs[1:]
 
         # First, obtain the patterns
-        vars = term.get_vars(pt.prop)
-        new_names = logic.get_forall_names(pt.prop)
-        assert {v.name for v in vars}.isdisjoint(set(new_names)), "apply_prev: name conflict"
+        vars = term.get_vars([prev.prop for prev in prevs])
+        old_names = [v.name for v in vars]
+        new_names = logic.get_forall_names(pt.prop, old_names)
+
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
 
@@ -187,8 +196,9 @@ class apply_prev(Tactic):
             pt = ProofTerm.forall_elim(inst[new_name], pt)
         As, C = pt.prop.strip_implies()
         
+        inst_arg = [inst[new_name] for new_name in new_names]
         new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(prev_pts):]]
-        return ProofTermDeriv('apply_fact', thy, args=None, prevs=prevs + new_goals)
+        return ProofTermDeriv('apply_fact_for', thy, args=inst_arg, prevs=prevs + new_goals)
 
 class cases(Tactic):
     """Case checking on an expression."""

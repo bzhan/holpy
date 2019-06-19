@@ -240,8 +240,7 @@ class ProofTermDeriv(ProofTerm):
             self.th = th
         elif rule == 'variable':
             nm, T = args
-            v = Var(nm, T)
-            self.th = Thm([], Term.mk_equals(v, v))
+            self.th = Thm.mk_VAR(Var(nm, T))
         elif rule == 'theorem':
             self.th = thy.get_theorem(args)
         elif rule in primitive_deriv:

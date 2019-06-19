@@ -31,34 +31,33 @@
 <script type="text/template" id='template-content-type-ax'>
     <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <font color="#006000"><span name="type"><b>type </b></span></font>
-        <tt><span name="name"><%= ext.name %></span></tt>
+        <span name="name"><tt><%= ext.name %></tt></span>
     </div>
 </script>
 
 <script type="text/template" id='template-content-def-ax'>
     <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <font color="#006000"><span name="constant"><b>constant </b></span></font>
-        <tt><span name="name"><%= ext.name %></span> ::
-            <span name="content"><%= highlight_html(ext.type_hl) %></span></tt>&nbsp;&nbsp;&nbsp;
+        <span name="name"><tt><%= ext.name %></tt></span> ::
+            <span name="content"><%= highlight_html(ext.type_hl) %></span>&nbsp;&nbsp;&nbsp;
     </div>
 </script>
 
 <script type="text/template" id='template-content-thm-ax'>
     <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <span name="theorem"><font color="#006000"><b>axiom</b></font></span>
-        <span id="thm_name" name="name"><tt><%= ext.name %></tt></span>&nbsp;&nbsp;
-        <br>&nbsp;&nbsp;
+        <span id="thm_name" name="name"><tt><%= ext.name %></tt></span>:&nbsp;&nbsp;
+        <br>&nbsp;&nbsp;&nbsp;
         <span name="content"><%= highlight_html(ext.prop_hl) %></span>
     </div>
 </script>
 
 <script type="text/template" id='template-content-thm'>
     <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
-        <span style="float:left;width: 12px; height: 12px; background: <%= get_status_color(ext) %>;">&nbsp;</span>
         <span name="theorem"><font color="#006000"><b>theorem</b></font></span>
         <span name="name"><tt><%= ext.name %></tt></span>:&nbsp;
-        <a href="#" name="proof">&nbsp;proof</a>&nbsp;&nbsp;
-        <br>&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span>
+        <a href="#" name="proof" style="font-style:italic;color:<%= get_status_color(ext) %>">&nbsp;proof</a>&nbsp;&nbsp;
+        <br>&nbsp;&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span>
     </div>
 </script>
 
@@ -77,7 +76,7 @@
             <%
                 $.each(ext.constr_output_hl, function(i, v) {
             %>
-                    <br>&nbsp;&nbsp;  <%= highlight_html(v) %>
+                    <br>&nbsp;&nbsp;&nbsp;<%= highlight_html(v) %>
             <%
                 });
             %>
@@ -88,8 +87,8 @@
 <script type="text/template" id="template-content-def">
     <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <span name="fun"><font color="#006000"><b>definition</b></font></span>
-        <span name="name"><%= ext.name %> :: <%= highlight_html(ext.type_hl) %></span><font color="#006000"><b> where</b>
-        <br>&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span></font>
+        <span name="name"><tt><%= ext.name %></tt> :: <%= highlight_html(ext.type_hl) %></span><font color="#006000"><b> where</b>
+        <br>&nbsp;&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span></font>
         &nbsp;&nbsp;&nbsp;
     </div>
 </script>
@@ -97,13 +96,13 @@
 <script type="text/template" id="template-content-def-ind">
     <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <span name="fun"><font color="#006000"><b>fun</b></font></span>
-        <span name="name"><%= ext.name %> :: <%= highlight_html(ext.type_hl) %></span>
+        <span name="name"><tt><%= ext.name %></tt> :: <%= highlight_html(ext.type_hl) %></span>
         <font color="#006000"><b> where</b></font>
         <span name="content">
             <%
                 $.each(ext.rules, function(i, v) {
             %>
-                    <br>&nbsp;&nbsp; <%= highlight_html(v.prop_hl) %>
+                    <br>&nbsp;&nbsp;&nbsp;<%= highlight_html(v.prop_hl) %>
             <%
                 });
             %>
@@ -114,13 +113,13 @@
 <script type="text/template" id="template-content-def-pred">
     <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
         <span name="fun"><font color="#006000"><b>inductive</b></font></span>
-        <span name="name"><%= ext.name %> :: <%= highlight_html(ext.type_hl) %></span>
+        <span name="name"><tt><%= ext.name %></tt> :: <%= highlight_html(ext.type_hl) %></span>
         <font color="#006000"><b> where</b></font>
         <span name="content">
             <%
                 $.each(ext.rules, function(i, v) {
             %>
-                    <br>&nbsp;&nbsp; <%= highlight_html(v.prop_hl) %>
+                    <br>&nbsp;&nbsp;&nbsp;<%= highlight_html(v.prop_hl) %>
             <%
                 });
             %>
@@ -137,13 +136,13 @@
 <script type="text/template" id="template-content-macro">
     <div item_id="<%=num%>" class="<%=class_item%>">
         <span name="macro"><font color="#006000"><b>macro</b></font></span>
-        <span name="name"><%= ext.name %></span>
+        <span name="name"><tt><%= ext.name %></tt></span>
     </div>
 </script>
 
 <script type="text/template" id="template-content-method">
     <div item_id="<%=num%>" class="<%=class_item%>">
         <span name="method"><font color="#006000"><b>method</b></font></span>
-        <span name="name"><%= ext.name %></span>
+        <span name="name"><tt><%= ext.name %></tt></span>
     </div>
 </script>
