@@ -1257,6 +1257,15 @@
             }
         },
         {
+            "name": "in_sing",        
+            "prop": "member x {y} = (x = y)",
+            "ty":"thm",
+            "vars": {
+                "x":"'a",
+                "y":"'a"
+            }
+        },
+        {
             "name": "finite",
             "ty": "def.ax",
             "type": "'a set => bool"
