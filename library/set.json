@@ -4002,6 +4002,24 @@
             "vars": {
                 "h": "'a set => 'a set"
             }
+        },
+        {
+            "name": "finite_subset",
+            "prop": "finite t & subset s t --> finite s",
+            "ty": "thm",
+            "vars": {
+                "t": "'a set",
+                "s": "'a set"
+            }
+        }, 
+        {
+            "name": "finite_restrict",
+            "prop": "finite s --> finite {x. (member x s) & P x}",
+            "ty": "thm",
+            "vars": {
+                "s": "'a set",
+                "P": "'a => bool"
+            }
         }
     ],
     "description": "Basic results about sets.",
