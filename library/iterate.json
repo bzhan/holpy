@@ -1,6 +1,12 @@
 {
     "content": [
         {
+            "name": "nat_interval",
+            "prop": "nat_interval m n = {p. less_eq m p & less_eq p n}",
+            "ty": "def",
+            "type": "nat => nat => nat set"
+        },
+        {
             "name": "finite_numseg",
             "prop": "finite {m..n}",
             "ty": "thm",
