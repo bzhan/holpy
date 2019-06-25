@@ -25,7 +25,11 @@ grammar = r"""
 
     ?cond: expr "==" expr -> eq_cond
         | expr "!=" expr -> ineq_cond
+        | expr "<=" expr -> less_eq_cond
+        | expr "<" expr -> less_cond
         | cond "&" cond -> conj_cond
+        | cond "|" cond -> disj_cond
+        | "true" -> true_cond
 
     ?cmd: "skip" -> skip_cmd
         | CNAME ":=" expr -> assign_cmd
@@ -78,6 +82,18 @@ class HoareTransformer(Transformer):
 
     def conj_cond(self, b1, b2):
         return logic.conj(b1, b2)
+
+    def disj_cond(self, b1, b2):
+        return logic.disj(b1, b2)
+
+    def true_cond(self):
+        return logic.true
+
+    def less_eq_cond(self, e1, e2):
+        return nat.less_eq(e1, e2)
+
+    def less_cond(self, e1, e2):
+        return nat.less(e1, e2)
 
     def skip_cmd(self):
         return imp.Skip(natFunT)
