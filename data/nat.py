@@ -52,6 +52,12 @@ def is_plus(t):
 def is_times(t):
     return t.is_binop() and t.head == times
 
+def is_less_eq(t):
+    return t.is_binop() and t.head == less_eq
+
+def is_less(t):
+    return t.is_binop() and t.head == less
+
 # Arithmetic on binary numbers
 
 bit0 = Const("bit0", TFun(natT, natT))
@@ -572,11 +578,6 @@ class nat_const_ineq_macro(ProofTermMacro):
         self.level = 10
         self.sig = Term
 
-    def eval(self, thy, goal, pts):
-        # Simply produce the goal.
-        assert len(pts) == 0, "nat_const_ineq_macro"
-        return Thm([], goal)
-
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "nat_const_ineq_macro"
         if not (logic.is_neg(goal) and goal.arg.is_equals()):
@@ -585,15 +586,16 @@ class nat_const_ineq_macro(ProofTermMacro):
         m, n = goal.arg.args
         return is_binary(m) and is_binary(n) and from_binary(m) != from_binary(n)
 
+    def eval(self, thy, goal, pts):
+        assert len(pts) == 0 and self.can_eval(thy, goal), "nat_const_ineq_macro"
+
+        # Simply produce the goal.
+        return Thm([], goal)
+
     def get_proof_term(self, thy, goal, pts):
-        assert len(pts) == 0, "nat_const_ineq_macro"
-        assert logic.is_neg(goal) and goal.arg.is_equals(), \
-               "nat_ineq_macro: goal is not an inequality."
+        assert len(pts) == 0 and self.can_eval(thy, goal), "nat_const_ineq_macro"
 
         m, n = goal.arg.args
-        assert is_binary(m) and is_binary(n), "nat_ineq_macro: m and n are not in binary form."
-        assert from_binary(m) != from_binary(n), "nat_ineq_macro: m and n are equal."
-
         return ineq_proof_term(thy, from_binary(m), from_binary(n))
 
 def nat_const_ineq(thy, a, b):
@@ -623,6 +625,37 @@ class nat_const_ineq_method(Method):
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "nat_const_ineq_method"
         state.apply_tactic(id, MacroTactic('nat_const_ineq'))
+
+class nat_const_less_eq_macro(ProofTermMacro):
+    """Given m and n, with m <= n, return the less-equal theorem."""
+    def __init__(self):
+        self.level = 10
+        self.term = Term
+
+    def can_eval(self, thy, goal):
+        assert isinstance(goal, Term), "nat_const_less_eq_macro"
+        if not is_less_eq(goal):
+            return False
+
+        m, n = goal.args
+        return is_binary(m) and is_binary(n) and from_binary(m) <= from_binary(n)
+
+    def eval(self, thy, goal, pts):
+        assert len(pts) == 0 and self.can_eval(thy, goal), "nat_const_ineq_macro"
+
+        # Simply produce the goal.
+        return Thm([], goal)
+
+    def get_proof_term(self, thy, goal, pts):
+        assert len(pts) == 0 and self.can_eval(thy, goal), "nat_const_ineq_macro"
+
+        m, n = goal.args
+        assert from_binary(m) <= from_binary(n)
+        p = to_binary(from_binary(n) - from_binary(m))
+        eq = ProofTerm.symmetric(norm_full().get_proof_term(thy, plus(m, p)))
+        goal2 = rewr_conv('less_eq_def').eval(thy, goal).prop.rhs
+        ex_eq = apply_theorem(thy, 'exI', eq, concl=goal2)
+        return ex_eq.on_prop(thy, rewr_conv('less_eq_def', sym=True))
 
 
 class nat_eq_conv(Conv):
