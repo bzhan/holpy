@@ -212,6 +212,7 @@ class PrinterTest(unittest.TestCase):
             (interval.mk_interval(nat.one, m), "{1..m}"),
         ]
 
+        thy = basic.load_theory('iterate')
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
 

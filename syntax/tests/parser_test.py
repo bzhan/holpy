@@ -275,7 +275,7 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(print_term(thy, t2, unicode=True), s2)
 
     def testParseInterval(self):
-        thy = basic.load_theory('set')
+        thy = basic.load_theory('iterate')
         ctxt = {'vars': {
             "m": nat.natT,
             "n": nat.natT
