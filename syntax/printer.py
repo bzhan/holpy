@@ -321,13 +321,13 @@ def print_extensions(thy, exts):
     return "\n".join(print_extension(thy, ext) for ext in exts.data)
 
 @settings.with_settings
-def print_str_args(thy, rule, args, prop):
+def print_str_args(thy, rule, args, th):
     def str_val(val):
         if isinstance(val, dict):
             items = sorted(val.items(), key = lambda pair: pair[0])
             return N('{') + commas_join(N(key + ': ') + str_val(val) for key, val in items) + N('}')
         elif isinstance(val, Term):
-            if val == prop and rule != 'assume' and settings.highlight():
+            if th and val == th.prop and rule != 'assume' and settings.highlight():
                 return Gray("⟨goal⟩")
             else:
                 return print_term(thy, val)
@@ -351,12 +351,12 @@ def print_str_args(thy, rule, args, prop):
 def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
     str_th = print_term(thy, item.th.prop) if item.th else ""
-    str_args = print_str_args(thy, item.rule, item.args, item.th.prop)
+    str_args = print_str_args(thy, item.rule, item.args, item.th)
     res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
            'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}
     if settings.highlight():
         res['th_raw'] = print_thm(thy, item.th, highlight=False) if item.th else ""
-        res['args_raw'] = print_str_args(thy, item.rule, item.args, item.th.prop, highlight=False)
+        res['args_raw'] = print_str_args(thy, item.rule, item.args, item.th, highlight=False)
     if item.subproof:
         return [res] + sum([export_proof_item(thy, i) for i in item.subproof.items], [])
     else:
@@ -366,7 +366,7 @@ def export_proof_item(thy, item):
 def print_proof_item(thy, item):
     """Print the given proof item."""
     str_id = proof.print_id(item.id)
-    str_args = " " + print_str_args(thy, item.rule, item.args, item.th.prop) if item.args else ""
+    str_args = " " + print_str_args(thy, item.rule, item.args, item.th) if item.args else ""
     str_prevs = " from " + ", ".join(proof.print_id(prev) for prev in item.prevs) if item.prevs else ""
     str_th = print_thm(thy, item.th) + " by " if item.th else ""
     cur_line = str_id + ": " + str_th + item.rule + str_args + str_prevs

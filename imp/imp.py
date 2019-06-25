@@ -115,11 +115,15 @@ class eval_Sem_macro(ProofTermMacro):
 
 def compute_wp(thy, T, c, Q):
     """Compute the weakest precondition for the given command
-    and postcondition. The computation is by case analysis on
-    the form of c. Returns the validity theorem.
+    and postcondition. Here c is the program and Q is the postcondition.
+    The computation is by case analysis on the form of c. The function
+    returns a proof term showing [...] |- Valid P c Q, where P is the
+    computed precondition, and [...] contains the additional subgoals.
 
     """
-    if c.head.is_const_name("Assign"):  # Assign a b
+    if c.head.is_const_name("Skip"):  # Skip
+        return apply_theorem(thy, "skip_rule", concl=Valid(T)(Q, c, Q))
+    elif c.head.is_const_name("Assign"):  # Assign a b
         a, b = c.args
         s = Var("s", T)
         P2 = Term.mk_abs(s, Q(function.mk_fun_upd(s, a, b(s).beta_conv())))
@@ -129,6 +133,13 @@ def compute_wp(thy, T, c, Q):
         wp1 = compute_wp(thy, T, c2, Q)  # Valid Q' c2 Q
         wp2 = compute_wp(thy, T, c1, wp1.prop.args[0])  # Valid Q'' c1 Q'
         return apply_theorem(thy, "seq_rule", wp2, wp1)
+    elif c.head.is_const_name("Cond"):  # Cond b c1 c2
+        b, c1, c2 = c.args
+        wp1 = compute_wp(thy, T, c1, Q)
+        from syntax import printer
+        wp2 = compute_wp(thy, T, c2, Q)
+        res = apply_theorem(thy, "if_rule", wp1, wp2, inst={"b": b})
+        return res
     elif c.head.is_const_name("While"):  # While b I c
         _, I, _ = c.args
         pt = apply_theorem(thy, "while_rule", concl=Valid(T)(I, c, Q))
@@ -139,7 +150,11 @@ def compute_wp(thy, T, c, Q):
         raise NotImplementedError
 
 def vcg(thy, T, goal):
-    """Compute the verification conditions for the goal."""
+    """Compute the verification conditions for the goal. Here the
+    goal is of the form Valid P c Q. The function returns a proof term
+    showing [] |- Valid P c Q.
+    
+    """
     P, c, Q = goal.args
     pt = compute_wp(thy, T, c, Q)
     entail_P = ProofTerm.assume(Entail(T)(P, pt.prop.args[0]))

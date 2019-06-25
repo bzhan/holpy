@@ -127,6 +127,16 @@ class HoareTest(unittest.TestCase):
         prf = imp.vcg_solve(thy, goal).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
+    def testVCGIf(self):
+        ctxt = {'vars': {"A": natT}}
+        c = parser.parse_term(thy, ctxt, \
+            "Cond (%s. s 0 = A) Skip (Assign 0 (%s. A))")
+        P = parser.parse_term(thy, ctxt, "%s::nat=>nat. true")
+        Q = parser.parse_term(thy, ctxt, "%s. s 0 = A")
+        goal = Valid(P, c, Q)
+        prf = imp.vcg_solve(thy, goal).export()
+        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+
 
 if __name__ == "__main__":
     unittest.main()

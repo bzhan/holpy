@@ -469,6 +469,15 @@
             }
         },
         {
+            "attributes": [],
+            "name": "skip_rule",
+            "prop": "Valid P Skip P",
+            "ty": "thm",
+            "vars": {
+                "P": "'a => bool"
+            }
+        },
+        {
             "name": "assign_rule",
             "num_gaps": 0,
             "proof": [
@@ -864,6 +873,18 @@
                     "method_name": "apply_prev"
                 }
             ],
+            "ty": "thm",
+            "vars": {
+                "P": "'a => bool",
+                "Q": "'a => bool",
+                "R": "'a => bool",
+                "c1": "'a com",
+                "c2": "'a com"
+            }
+        },
+        {
+            "name": "if_rule",
+            "prop": "Valid P c1 R --> Valid Q c2 R --> Valid (%s. if b s then P s else Q s) (Cond b c1 c2) R",
             "ty": "thm",
             "vars": {
                 "P": "'a => bool",

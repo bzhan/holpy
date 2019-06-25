@@ -132,7 +132,7 @@ class Thm():
             if A == th2.prop:
                 return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), B)
             else:
-                raise InvalidDerivationException("implies_elim: " + str(A) + " ~= " + str(th2.prop))
+                raise InvalidDerivationException("implies_elim: " + str(A) + " != " + str(th2.prop))
         else:
             raise InvalidDerivationException("implies_elim")
 

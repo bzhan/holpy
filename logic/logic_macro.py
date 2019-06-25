@@ -336,6 +336,8 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
             inst = dict()
         if concl is not None:
             matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
+        for i, prev in enumerate(pts):
+            matcher.first_order_match_incr(pt.assums[i], prev.prop, (tyinst, inst))
         return ProofTermDeriv("apply_theorem_for", thy, (th_name, tyinst, inst), pts)
 
 

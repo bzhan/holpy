@@ -9,7 +9,9 @@ class OpenTermException(Exception):
     pass
 
 class TermSubstitutionException(Exception):
-    pass
+    def __init__(self, str=""):
+        self.str = str
+
 
 class TypeCheckException(Exception):
     pass
@@ -277,7 +279,7 @@ class Term():
                 if t.get_type() == self.T:
                     return inst[self.name]
                 else:
-                    raise TermSubstitutionException()
+                    raise TermSubstitutionException("Type " + str(t.get_type()) + " != " + str(self.T))
             else:
                 return self
         elif self.is_const():
