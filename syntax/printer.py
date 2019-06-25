@@ -378,6 +378,7 @@ def print_proof_item(thy, item):
 @settings.with_settings
 def print_proof(thy, prf):
     """Print the given proof."""
+    assert isinstance(prf, proof.Proof), "print_proof"
     return '\n'.join(print_proof_item(thy, item) for item in prf.items)
 
 @settings.with_settings

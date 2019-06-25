@@ -113,6 +113,9 @@ class HoareTest(unittest.TestCase):
         for c in test_data:
             goal = Valid(P, c, Q)
             prf = imp.vcg(thy, natFunT, goal).export()
+            self.assertEqual(thy.check_proof(prf).concl, goal)
+
+            prf = imp.vcg_tactic().get_proof_term(thy, Thm([], goal), None, []).export()
             self.assertEqual(thy.check_proof(prf).prop, goal)
 
     def testVCGWhile(self):

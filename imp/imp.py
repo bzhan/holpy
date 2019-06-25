@@ -2,6 +2,7 @@
 
 from kernel.type import Type, TFun, boolT
 from kernel.term import Term, Var, Const
+from kernel.thm import Thm
 from kernel.macro import global_macros
 from data import nat
 from data import function
@@ -10,6 +11,7 @@ from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic_macro import apply_theorem
+from server.tactic import Tactic
 from prover import z3wrapper
 
 
@@ -136,7 +138,6 @@ def compute_wp(thy, T, c, Q):
     elif c.head.is_const_name("Cond"):  # Cond b c1 c2
         b, c1, c2 = c.args
         wp1 = compute_wp(thy, T, c1, Q)
-        from syntax import printer
         wp2 = compute_wp(thy, T, c2, Q)
         res = apply_theorem(thy, "if_rule", wp1, wp2, inst={"b": b})
         return res
@@ -160,9 +161,28 @@ def vcg(thy, T, goal):
     entail_P = ProofTerm.assume(Entail(T)(P, pt.prop.args[0]))
     return apply_theorem(thy, "pre_rule", entail_P, pt)
 
+def vcg_norm(thy, T, goal):
+    """Compute vcg, then normalize the result into the form
+
+    A_1 --> A_2 --> ... --> A_n --> Valid P c Q,
+
+    where A_i are the normalized verification conditions.
+
+    """
+    pt = vcg(thy, T, goal)
+    for A in reversed(pt.hyps):
+        pt = ProofTerm.implies_intr(A, pt)
+
+    # Normalize each of the assumptions
+    return pt.on_assums(thy, rewr_conv("Entail_def"), top_conv(beta_conv()),
+                        top_conv(function.fun_upd_eval_conv()))
+
 class vcg_macro(ProofTermMacro):
-    """Compute the verification conditions for a hoare triple, then
-    normalizes the verification conditions.
+    """Macro wrapper for verification condition generation.
+    
+    Compute the verification conditions for a hoare triple, then
+    normalizes the verification conditions, finally uses the previous
+    facts to discharge the verification conditions.
     
     """
     def __init__(self):
@@ -171,21 +191,42 @@ class vcg_macro(ProofTermMacro):
 
     def get_proof_term(self, thy, goal, pts):
         f, (P, c, Q) = goal.strip_comb()
+        assert f.is_const_name("Valid"), "vcg_macro"
+
+        # Obtain the theorem [...] |- Valid P c Q
         T = Q.get_type().domain_type()
-        pt = vcg(thy, T, goal)
-        for A in reversed(pt.hyps):
-            pt = ProofTerm.implies_intr(A, pt)
-        return pt.on_assums(thy, rewr_conv("Entail_def"), top_conv(beta_conv()),
-                                 top_conv(function.fun_upd_eval_conv()))
+        pt = vcg_norm(thy, T, goal)
+
+        # Discharge the assumptions using the previous facts
+        return ProofTerm.implies_elim(pt, *pts)
+
+class vcg_tactic(Tactic):
+    """Tactic corresponding to VCG macro."""
+    def get_proof_term(self, thy, goal, args, prevs):
+        assert len(goal.hyps) == 0, "vcg_tactic"
+        f, (P, c, Q) = goal.prop.strip_comb()
+        assert f.is_const_name("Valid"), "vcg_tactic"
+
+        # Obtain the theorem [...] |- Valid P c Q
+        T = Q.get_type().domain_type()
+        pt = vcg_norm(thy, T, goal.prop)
+
+        ptAs = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in pt.assums]
+        return ProofTermDeriv("vcg", thy, goal.prop, ptAs)
+
 
 def vcg_solve(thy, goal):
     """Compute the verification conditions for a hoare triple, then
     solves the verification conditions using SMT.
     
     """
-    pt = ProofTermDeriv("vcg", thy, goal, [])
+    f, (P, c, Q) = goal.strip_comb()
+    assert f.is_const_name("Valid"), "vcg_solve"
+
+    T = Q.get_type().domain_type()
+    pt = vcg_norm(thy, T, goal)
     vc_pt = [ProofTermDeriv("z3", thy, vc, []) for vc in pt.assums]
-    return ProofTerm.implies_elim(pt, *vc_pt)
+    return ProofTermDeriv("vcg", thy, goal, vc_pt)
 
 
 global_macros.update({
