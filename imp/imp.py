@@ -4,6 +4,7 @@ from kernel.type import Type, TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from kernel.macro import global_macros
+from kernel.theory import Method, global_methods
 from data import nat
 from data import function
 from logic import logic
@@ -11,6 +12,7 @@ from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic_macro import apply_theorem
+from syntax import printer, settings
 from server.tactic import Tactic
 from prover import z3wrapper
 
@@ -228,8 +230,31 @@ def vcg_solve(thy, goal):
     vc_pt = [ProofTermDeriv("z3", thy, vc, []) for vc in pt.assums]
     return ProofTermDeriv("vcg", thy, goal, vc_pt)
 
+class vcg_method(Method):
+    """Method corresponding to VCG."""
+    def __init__(self):
+        self.sig = []
+
+    def search(self, state, id, prevs):
+        cur_th = state.get_proof_item(id).th
+        if len(cur_th.hyps) == 0 and cur_th.prop.head.is_const_name("Valid"):
+            return [{}]
+        else:
+            return []
+
+    @settings.with_settings
+    def display_step(self, state, id, data, prevs):
+        return printer.N("Apply VCG")
+
+    def apply(self, state, id, data, prevs):
+        state.apply_tactic(id, vcg_tactic(), prevs=prevs)
+
 
 global_macros.update({
     "eval_Sem": eval_Sem_macro(),
     "vcg": vcg_macro(),
+})
+
+global_methods.update({
+    "vcg": vcg_method(),
 })

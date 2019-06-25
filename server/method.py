@@ -79,10 +79,8 @@ class apply_prev_method(Method):
 
     def search(self, state, id, prevs):
         try:
-            id = id_force_tuple(id)
-            prevs = [id_force_tuple(prev) for prev in prevs] if prevs else []
-            prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
             cur_item = state.get_proof_item(id)
+            prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
             pt = tactic.apply_prev().get_proof_term(state.thy, cur_item.th, args=None, prevs=prevs)
         except (AssertionError, matcher.MatchException):
             return []
