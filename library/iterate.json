@@ -1,0 +1,50 @@
+{
+    "content": [
+        {
+            "name": "nat_interval",
+            "prop": "nat_interval m n = {p. less_eq m p & less_eq p n}",
+            "ty": "def",
+            "type": "nat => nat => nat set"
+        },
+        {
+            "name": "finite_numseg",
+            "prop": "finite {m..n}",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "numseg_empty",
+            "prop": "({m..n} = empty_set) = (n < m)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "numseg_sing",
+            "prop": "{n..n} = {n}",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "numseg_lrec",
+            "prop": "m <= n --> insert m {(m + 1)..n} = {m..n}",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        }
+    ],
+    "description": "Basic results about iterate.",
+    "imports": [
+        "set"
+    ],
+    "name": "iterate"
+}

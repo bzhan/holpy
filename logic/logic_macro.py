@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from typing import Tuple
+from typing import Tuple, List
 
 from kernel import term
 from kernel.term import Term
@@ -33,15 +33,23 @@ class intros_macro(ProofTermMacro):
     """Introduce assumptions and variables."""
     def __init__(self):
         self.level = 1
-        self.sig = None
+        self.sig = List[Term]
 
     def get_proof_term(self, thy, args, prevs):
         assert len(prevs) >= 2, "intros_macro"
+        if args is None:
+            args = []
         pt, intros = prevs[-1], prevs[:-1]        
         for intro in reversed(intros):
-            if intro.th.is_reflexive():
-                pt = ProofTerm.forall_intr(intro.prop.rhs, pt)
-            else:
+            if intro.th.prop.is_VAR():  # variable case
+                pt = ProofTerm.forall_intr(intro.prop.arg, pt)
+            elif len(args) > 0 and intro.th.prop == args[0]:  # exists case
+                assert logic.is_exists(intro.prop), "intros_macro"
+                pt = apply_theorem(thy, 'exE', intro, pt)
+                args = args[1:]
+            else:  # assume case
+                assert len(intro.th.hyps) == 1 and intro.th.hyps[0] == intro.th.prop, \
+                    "intros_macro"
                 pt = ProofTerm.implies_intr(intro.prop, pt)
         return pt
 
@@ -108,25 +116,38 @@ class apply_theorem_macro(ProofTermMacro):
         return pt
 
 class apply_fact_macro(ProofTermMacro):
-    """Apply a given fact to a list of facts."""
-    def __init__(self):
+    """Apply a given fact to a list of facts. The first input fact is
+    in the forall-implies form. Apply this fact to the remaining
+    input facts. If with_inst is set, use the given sequence of terms
+    as the instantiation.
+    
+    """
+    def __init__(self, *, with_inst=False):
         self.level = 1
-        self.sig = None
+        self.with_inst = with_inst
+        self.sig = List[Term] if with_inst else None
 
     def get_proof_term(self, thy, args, pts):
         pt, pt_prevs = pts[0], pts[1:]
 
         # First, obtain the patterns
-        vars = term.get_vars(pt.prop)
-        new_names = logic.get_forall_names(pt.prop)
-        assert {v.name for v in vars}.isdisjoint(set(new_names)), "apply_fact: name conflict"
+        vars = term.get_vars([pt_prev.prop for pt_prev in pts])
+        old_names = [v.name for v in vars]
+        new_names = logic.get_forall_names(pt.prop, old_names)
+
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(pt_prevs) <= len(As), "apply_fact: too many prevs"
 
-        tyinst, inst = dict(), {v.name: v for v in vars}
-        for idx, pt_prev in enumerate(pt_prevs):
-            matcher.first_order_match_incr(As[idx], pt_prev.prop, (tyinst, inst))
+        if self.with_inst:
+            assert len(args) == len(new_names), "apply_fact_macro: wrong number of args."
+            tyinst, inst = {}, {nm: v for nm, v in zip(new_names, args)}
+        else:
+            tyinst, inst = dict(), {v.name: v for v in vars}
+            for idx, pt_prev in enumerate(pt_prevs):
+                matcher.first_order_match_incr(As[idx], pt_prev.prop, (tyinst, inst))
 
+        if tyinst:
+            pt = ProofTerm.subst_type(tyinst, pt)
         for new_name in new_names:
             pt = ProofTerm.forall_elim(inst[new_name], pt)
         if pt.prop.beta_norm() != pt.prop:
@@ -272,6 +293,27 @@ class trivial_macro(ProofTermMacro):
             pt = ProofTerm.implies_intr(A, pt)
         return pt
 
+class resolve_theorem_macro(ProofTermMacro):
+    """Given a theorem of the form ~A, and a fact A, prove any goal."""
+    def __init__(self):
+        self.level = 1
+        self.sig = Tuple[str, Term]
+
+    def get_proof_term(self, thy, args, pts):
+        th_name, goal = args
+        pt = ProofTerm.theorem(thy, th_name)
+        assert logic.is_neg(pt.prop), "resolve_theorem_macro"
+
+        # Match for variables in pt.
+        tyinst, inst = matcher.first_order_match(pt.prop.arg, pts[0].prop)
+        if tyinst:
+            pt = ProofTerm.subst_type(tyinst, pt)
+        if inst:
+            pt = ProofTerm.substitution(inst, pt)
+
+        pt = apply_theorem(thy, 'negE', pt, pts[0])  # false
+        return apply_theorem(thy, 'falseE', pt, concl=goal)
+
 
 def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
     """Wrapper for apply_theorem and apply_theorem_for macros.
@@ -281,6 +323,8 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
     matched next. Finally, the assumptions are matched.
 
     """
+    assert isinstance(pts, tuple) and all(isinstance(pt, ProofTerm) for pt in pts), \
+        "apply_theorem: *pts must be a list of theorems."
     if concl is None and tyinst is None and inst is None:
         # Normal case, can use apply_theorem
         return ProofTermDeriv("apply_theorem", thy, th_name, pts)
@@ -292,6 +336,8 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
             inst = dict()
         if concl is not None:
             matcher.first_order_match_incr(pt.concl, concl, (tyinst, inst))
+        for i, prev in enumerate(pts):
+            matcher.first_order_match_incr(pt.assums[i], prev.prop, (tyinst, inst))
         return ProofTermDeriv("apply_theorem_for", thy, (th_name, tyinst, inst), pts)
 
 
@@ -348,7 +394,9 @@ macro.global_macros.update({
     "intros": intros_macro(),
     "apply_theorem": apply_theorem_macro(),
     "apply_theorem_for": apply_theorem_macro(with_inst=True),
+    "resolve_theorem": resolve_theorem_macro(),
     "apply_fact": apply_fact_macro(),
+    "apply_fact_for": apply_fact_macro(with_inst=True),
     "rewrite_goal": rewrite_goal_macro(),
     "rewrite_back_goal": rewrite_goal_macro(backward=True),
     "rewrite_goal_with_prev": rewrite_goal_with_prev_macro(),

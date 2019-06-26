@@ -68,14 +68,8 @@
             "type": "'a list => 'a list"
         },
         {
-            "hint_rewrite": "true",
-            "instructions": [
-                "Select 0 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-                "Select 0 as goal, use Ctrl+R with append_def_1.",
-                "Set sorry on 0 to reflexive ([]::'a list]).",
-                "Select 2 as goal, use Ctrl+I with x,xs as variable name.",
-                "Select 2.3 as goal, use Ctrl+R with append_def_2.",
-                "Set sorry on 2.3 to arg_combination cons x from 2.2."
+            "attributes": [
+                "hint_rewrite"
             ],
             "name": "append_right_neutral",
             "num_gaps": 0,
@@ -99,14 +93,14 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "xs @ [] = xs",
@@ -157,21 +151,42 @@
                 }
             ],
             "prop": "xs @ nil = xs",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "list_induct",
+                    "var": "xs"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x, xs"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "xs": "'a list"
             }
         },
         {
-            "instructions": [
-                "Select 0 as goal, choose 'apply induction' from menu, then enter 'list_induct,xs'.",
-                "Select 0 as goal, use Ctrl+R with append_def_1.",
-                "Set sorry on 0 to reflexive ys @ zs.",
-                "Select 2 as goal, use Ctrl+I with x,xs as variable name.",
-                "Select 2.3 as goal, use Ctrl+R with append_def_2.",
-                "Select 2.3 as goal, use Ctrl+R with append_def_2.",
-                "Set sorry on 2.3 to arg_combination cons x from 2.2."
-            ],
             "name": "append_assoc",
             "num_gaps": 0,
             "proof": [
@@ -194,14 +209,14 @@
                     "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "(xs @ ys) @ zs = xs @ ys @ zs",
@@ -261,6 +276,41 @@
                 }
             ],
             "prop": "(xs @ ys) @ zs = xs @ ys @ zs",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "list_induct",
+                    "var": "xs"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x,xs"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_2"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "'a",
@@ -270,7 +320,9 @@
             }
         },
         {
-            "hint_rewrite": "true",
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "length_append",
             "num_gaps": 0,
             "proof": [
@@ -311,14 +363,14 @@
                     "id": "3.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "3.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "length (xs @ ys) = length xs + length ys",
@@ -328,21 +380,20 @@
                     "th": "length (xs @ ys) = length xs + length ys ⊢ length (xs @ ys) = length xs + length ys"
                 },
                 {
-                    "args": "Suc (length (xs @ ys)) = Suc (length xs + length ys)",
+                    "args": "plus_def_2, Suc (length xs + length ys) = Suc (length xs) + length ys",
                     "id": "3.3",
-                    "prevs": [
-                        "3.2"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "length (xs @ ys) = length xs + length ys ⊢ Suc (length (xs @ ys)) = Suc (length xs + length ys)"
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc (length xs + length ys) = Suc (length xs) + length ys"
                 },
                 {
-                    "args": "plus_def_2, Suc (length (xs @ ys)) = Suc (length xs) + length ys",
+                    "args": "Suc (length (xs @ ys)) = Suc (length xs) + length ys",
                     "id": "3.4",
                     "prevs": [
+                        "3.2",
                         "3.3"
                     ],
-                    "rule": "rewrite_goal",
+                    "rule": "rewrite_goal_with_prev",
                     "th": "length (xs @ ys) = length xs + length ys ⊢ Suc (length (xs @ ys)) = Suc (length xs) + length ys"
                 },
                 {
@@ -387,6 +438,56 @@
                 }
             ],
             "prop": "length (xs @ ys) = length xs + length ys",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "list_induct",
+                    "var": "xs"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "length_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "plus_def_1"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "x,xs"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_2"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "length_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "plus_def_2"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "xs": "'a list",
@@ -394,7 +495,9 @@
             }
         },
         {
-            "hint_rewrite": "true",
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "rev_append",
             "num_gaps": 0,
             "proof": [
@@ -406,16 +509,16 @@
                     "th": "⊢ rev ys = rev ys @ []"
                 },
                 {
-                    "args": "append_def_1, rev ([] @ ys) = rev ys @ []",
+                    "args": "rev_def_1, rev ys = rev ys @ rev []",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ rev ([] @ ys) = rev ys @ []"
+                    "th": "⊢ rev ys = rev ys @ rev []"
                 },
                 {
-                    "args": "rev_def_1, rev ([] @ ys) = rev ys @ rev []",
+                    "args": "append_def_1, rev ([] @ ys) = rev ys @ rev []",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -435,14 +538,14 @@
                     "id": "3.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "3.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "rev (xs @ ys) = rev ys @ rev xs",
@@ -469,40 +572,31 @@
                     "th": "rev (xs @ ys) = rev ys @ rev xs ⊢ rev (xs @ ys) @ [x] = rev ys @ rev xs @ [x]"
                 },
                 {
-                    "args": "rev_def_2, rev (x # xs @ ys) = rev ys @ rev xs @ [x]",
+                    "args": "rev_def_2, rev (x # xs @ ys) = rev ys @ rev (x # xs)",
                     "id": "3.5",
                     "prevs": [
                         "3.4"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "rev (xs @ ys) = rev ys @ rev xs ⊢ rev (x # xs @ ys) = rev ys @ rev xs @ [x]"
+                    "th": "rev (xs @ ys) = rev ys @ rev xs ⊢ rev (x # xs @ ys) = rev ys @ rev (x # xs)"
                 },
                 {
-                    "args": "append_def_2, rev ((x # xs) @ ys) = rev ys @ rev xs @ [x]",
+                    "args": "append_def_2, rev ((x # xs) @ ys) = rev ys @ rev (x # xs)",
                     "id": "3.6",
                     "prevs": [
                         "3.5"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "rev (xs @ ys) = rev ys @ rev xs ⊢ rev ((x # xs) @ ys) = rev ys @ rev xs @ [x]"
-                },
-                {
-                    "args": "rev_def_2, rev ((x # xs) @ ys) = rev ys @ rev (x # xs)",
-                    "id": "3.7",
-                    "prevs": [
-                        "3.6"
                     ],
                     "rule": "rewrite_goal",
                     "th": "rev (xs @ ys) = rev ys @ rev xs ⊢ rev ((x # xs) @ ys) = rev ys @ rev (x # xs)"
                 },
                 {
                     "args": "",
-                    "id": "3.8",
+                    "id": "3.7",
                     "prevs": [
                         "3.0",
                         "3.1",
                         "3.2",
-                        "3.7"
+                        "3.6"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀x. ∀xs. rev (xs @ ys) = rev ys @ rev xs ⟶ rev ((x # xs) @ ys) = rev ys @ rev (x # xs)"
@@ -519,6 +613,56 @@
                 }
             ],
             "prop": "rev (xs @ ys) = rev ys @ rev xs",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "list_induct",
+                    "var": "xs"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_right_neutral"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "x,xs"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_2"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_assoc"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "xs": "'a list",
@@ -557,14 +701,14 @@
                     "id": "2.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "rev (rev xs) = xs",
@@ -669,6 +813,71 @@
                 }
             ],
             "prop": "rev (rev xs) = xs",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "list_induct",
+                    "var": "xs"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_def_1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x,xs"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_def_2"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_append"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_def_2"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_def_1"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_1"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_2"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "append_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "xs": "'a list"
@@ -679,144 +888,180 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "length_def_1, length ([]::'a list) = 0",
+                    "args": "rev_def_1, length (rev ([]::'a list)) = length ([]::'a list)",
                     "id": "0",
                     "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ length ([]::'a list) = 0"
-                },
-                {
-                    "args": "rev_def_1, length (rev ([]::'a list)) = 0",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ length (rev ([]::'a list)) = 0"
-                },
-                {
-                    "args": "length_def_1, length (rev ([]::'a list)) = length ([]::'a list)",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
                     "rule": "rewrite_goal",
                     "th": "⊢ length (rev ([]::'a list)) = length ([]::'a list)"
                 },
                 {
                     "args": "",
-                    "id": "3",
+                    "id": "1",
                     "prevs": [],
                     "rule": "subproof",
                     "th": "⊢ ∀x::'a. ∀xs. length (rev xs) = length xs ⟶ length (rev (x # xs)) = length (x # xs)"
                 },
                 {
                     "args": "x, 'a",
-                    "id": "3.0",
+                    "id": "1.0",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ x = x"
+                    "th": "⊢ _VAR x"
                 },
                 {
                     "args": "xs, 'a list",
-                    "id": "3.1",
+                    "id": "1.1",
                     "prevs": [],
                     "rule": "variable",
-                    "th": "⊢ xs = xs"
+                    "th": "⊢ _VAR xs"
                 },
                 {
                     "args": "length (rev xs) = length xs",
-                    "id": "3.2",
+                    "id": "1.2",
                     "prevs": [],
                     "rule": "assume",
                     "th": "length (rev xs) = length xs ⊢ length (rev xs) = length xs"
                 },
                 {
                     "args": "length xs + 1 = Suc (length xs)",
-                    "id": "3.3",
+                    "id": "1.3",
                     "prevs": [],
                     "rule": "nat_norm",
                     "th": "⊢ length xs + 1 = Suc (length xs)"
                 },
                 {
                     "args": "length (rev xs) + 1 = Suc (length xs)",
-                    "id": "3.4",
+                    "id": "1.4",
                     "prevs": [
-                        "3.2",
-                        "3.3"
+                        "1.2",
+                        "1.3"
                     ],
                     "rule": "rewrite_goal_with_prev",
                     "th": "length (rev xs) = length xs ⊢ length (rev xs) + 1 = Suc (length xs)"
                 },
                 {
                     "args": "length_def_1, length (rev xs) + Suc (length ([]::'a list)) = Suc (length xs)",
-                    "id": "3.5",
+                    "id": "1.5",
                     "prevs": [
-                        "3.4"
+                        "1.4"
                     ],
                     "rule": "rewrite_goal",
                     "th": "length (rev xs) = length xs ⊢ length (rev xs) + Suc (length ([]::'a list)) = Suc (length xs)"
                 },
                 {
                     "args": "length_def_2, length (rev xs) + length [x] = Suc (length xs)",
-                    "id": "3.6",
+                    "id": "1.6",
                     "prevs": [
-                        "3.5"
+                        "1.5"
                     ],
                     "rule": "rewrite_goal",
                     "th": "length (rev xs) = length xs ⊢ length (rev xs) + length [x] = Suc (length xs)"
                 },
                 {
                     "args": "length_append, length (rev xs @ [x]) = Suc (length xs)",
-                    "id": "3.7",
+                    "id": "1.7",
                     "prevs": [
-                        "3.6"
+                        "1.6"
                     ],
                     "rule": "rewrite_goal",
                     "th": "length (rev xs) = length xs ⊢ length (rev xs @ [x]) = Suc (length xs)"
                 },
                 {
                     "args": "rev_def_2, length (rev (x # xs)) = Suc (length xs)",
-                    "id": "3.8",
+                    "id": "1.8",
                     "prevs": [
-                        "3.7"
+                        "1.7"
                     ],
                     "rule": "rewrite_goal",
                     "th": "length (rev xs) = length xs ⊢ length (rev (x # xs)) = Suc (length xs)"
                 },
                 {
                     "args": "length_def_2, length (rev (x # xs)) = length (x # xs)",
-                    "id": "3.9",
+                    "id": "1.9",
                     "prevs": [
-                        "3.8"
+                        "1.8"
                     ],
                     "rule": "rewrite_goal",
                     "th": "length (rev xs) = length xs ⊢ length (rev (x # xs)) = length (x # xs)"
                 },
                 {
                     "args": "",
-                    "id": "3.10",
+                    "id": "1.10",
                     "prevs": [
-                        "3.0",
-                        "3.1",
-                        "3.2",
-                        "3.9"
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.9"
                     ],
                     "rule": "intros",
                     "th": "⊢ ∀x::'a. ∀xs. length (rev xs) = length xs ⟶ length (rev (x # xs)) = length (x # xs)"
                 },
                 {
                     "args": "list_induct, {}, {P: λxs::'a list. length (rev xs) = length xs, x: xs}",
-                    "id": "4",
+                    "id": "2",
                     "prevs": [
-                        "2",
-                        "3"
+                        "0",
+                        "1"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "⊢ length (rev xs) = length xs"
                 }
             ],
             "prop": "length (rev xs) = length xs",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "list_induct",
+                    "var": "xs"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x,xs"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "length_def_2"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "rev_def_2"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "length_append"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "length_def_2"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "length_def_1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "nat_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "xs": "'a list"

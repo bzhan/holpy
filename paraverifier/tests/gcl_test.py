@@ -5,9 +5,9 @@ import unittest
 from kernel.type import TFun, boolT
 from kernel.term import Var, Term
 from logic import basic
-from logic.nat import natT, to_binary, zero, one
+from data.nat import natT, to_binary, zero, one
 from logic import logic
-from logic import function
+from data import function
 from paraverifier import gcl
 from paraverifier.gcl import Para, Ident, NatV, BoolV
 from syntax import printer

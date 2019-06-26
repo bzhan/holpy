@@ -76,7 +76,7 @@ function display_checked_proof(result) {
 function display_instructions() {
     var id = get_selected_id();
     var instr_output = document.querySelector('.rbottom .selected .output #instruction');
-    instr_output.innerHTML = cells[id].instructions[cells[id].index];
+    instr_output.innerHTML = highlight_html(cells[id].instructions[cells[id].index]);
     var instr_no_output = document.querySelector('.rbottom .selected .output #instruction-number');
     instr_no_output.innerHTML = (cells[id].index + 1) + '/' + cells[id].instructions.length;
 }
@@ -152,6 +152,25 @@ function introduction() {
     }
 }
 
+// Make ajax call to apply-method with the given input.
+// On success, record the step and display the updated proof.
+function apply_method_ajax(input) {
+    $.ajax({
+        url: "/api/apply-method",
+        type: "POST",
+        data: JSON.stringify(input),
+        success: function(result) {
+            steps = cells[input.id].steps;
+            delete input.id;
+            delete input.line;
+            if (input.fact_ids.length == 0)
+                delete input.fact_ids;
+            steps.push(input);
+            display_checked_proof(result);
+        }
+    })
+}
+
 // Apply method with the given name and initial set of arguments
 function apply_method(method_name, args) {
     var count = 0;
@@ -191,21 +210,11 @@ function apply_method(method_name, args) {
             }
         }).then(function (isConfirm) {
             if (isConfirm.value) {
-                $.ajax({
-                    url: "/api/apply-method",
-                    type: "POST",
-                    data: JSON.stringify(input),
-                    success: display_checked_proof
-                })
+                apply_method_ajax(input);
             }
         });
     } else {
-        $.ajax({
-            url: "/api/apply-method",
-            type: "POST",
-            data: JSON.stringify(input),
-            success: display_checked_proof
-        })
+        apply_method_ajax(input);
     }
 }
 

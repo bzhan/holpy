@@ -9,7 +9,9 @@ class OpenTermException(Exception):
     pass
 
 class TermSubstitutionException(Exception):
-    pass
+    def __init__(self, str=""):
+        self.str = str
+
 
 class TypeCheckException(Exception):
     pass
@@ -277,7 +279,7 @@ class Term():
                 if t.get_type() == self.T:
                     return inst[self.name]
                 else:
-                    raise TermSubstitutionException()
+                    raise TermSubstitutionException("Type " + str(t.get_type()) + " != " + str(self.T))
             else:
                 return self
         elif self.is_const():
@@ -311,7 +313,7 @@ class Term():
 
     def is_binop(self):
         """Whether self is of the form f t1 t2."""
-        return self.is_comb() and self.fun.is_comb()
+        return len(self.args) == 2
 
     @property
     def arg1(self):
@@ -374,6 +376,10 @@ class Term():
             return self.head.is_const_name("equals")
         else:
             return False
+
+    def is_VAR(self):
+        """Whether self is of the form _VAR v."""
+        return self.is_comb() and self.fun.is_const_name("_VAR") and self.arg.is_var()
 
     @property
     def lhs(self):

@@ -4,7 +4,7 @@ from kernel.type import TFun
 from kernel.term import Term, Const, Abs
 from kernel.macro import global_macros
 from logic import logic_macro
-from logic import nat
+from data import nat
 from logic import logic
 from logic.conv import Conv, rewr_conv, then_conv, arg_conv, argn_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, refl
@@ -121,6 +121,10 @@ class fun_upd_norm_conv(Conv):
         else:
             return pt
 
+def mk_comp(f, g):
+    T2, T3 = f.get_type().args
+    _, T1 = g.get_type().args
+    return Const("comp_fun", TFun(TFun(T2, T3), TFun(T1, T2), T1, T3))(f, g)
 
 global_macros.update({
     "fun_upd_eval": fun_upd_eval_macro(),

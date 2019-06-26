@@ -5,8 +5,8 @@ import unittest
 from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const, Abs, Bound
 from logic import logic, matcher
-from logic import nat
-from logic import list
+from data import nat
+from data import list
 
 natT = nat.natT
 listT = list.listT

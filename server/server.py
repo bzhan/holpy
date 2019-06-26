@@ -13,6 +13,7 @@ from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
 from syntax import parser, printer
 from server import tactic
 from server import method
+from server.method import incr_id
 
 class TacticException(Exception):
     pass
@@ -64,10 +65,6 @@ def decr_proof_item(item, id_remove):
     if item.subproof:
         for subitem in item.subproof.items:
             decr_proof_item(subitem, id_remove)
-
-def incr_id(id, n):
-    """Increment the last number in id by n."""
-    return id[:-1] + (id[-1] + n,)
 
 
 class ProofState():
@@ -142,12 +139,8 @@ class ProofState():
         data['prop']: proposition to be proved. In the form A1 --> ... --> An --> C.
 
         """
-        ctxt = {'vars': {}}
-        vars = []
-        for name, str_T in data['vars'].items():
-            T = parser.parse_type(thy, str_T)
-            vars.append(Var(name, T))
-            ctxt['vars'][name] = T
+        ctxt = parser.parse_vars(thy, data['vars'])
+        vars = [Var(name, T) for name, T in ctxt['vars'].items()]
         prop = parser.parse_term(thy, ctxt, data['prop'])
         assums, concl = prop.strip_implies()
 
@@ -163,30 +156,39 @@ class ProofState():
     def json_data(self):
         """Export proof in json format."""
         self.check_proof()
-        return {
+        res = {
             "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
             "proof": sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
                           for item in self.prf.items], []),
             "report": self.rpt.json_data(),
-            "method_sig": self.get_method_sig()
+            "method_sig": self.get_method_sig(),
         }
+        if hasattr(self, 'steps'):
+            res['steps'] = self.steps
+            res['steps_output'] = self.steps_output
+        return res
 
     @staticmethod
     def parse_proof(thy, data):
         """Obtain proof from json format."""
-        ctxt = {'vars': {}}
-        state = ProofState(thy)
-        for name, str_T in data['vars'].items():
-            T = parser.parse_type(thy, str_T)
-            state.vars.append(Var(name, T))
-            ctxt['vars'][name] = T
-        state.prf = Proof()
-        for line in data['proof']:
-            if line['rule'] == "variable":
-                nm, str_T = line['args'].split(',', 1)
-                ctxt['vars'][nm] = parser.parse_type(thy, str_T.strip())
-            item = parser.parse_proof_rule(thy, ctxt, line)
-            state.prf.insert_item(item)
+        if 'steps' in data:
+            state = ProofState.parse_init_state(thy, data)
+            state.steps = data['steps']
+            state.steps_output = []
+            for step in data['steps']:
+                state.steps_output.append(method.display_method(state, step))
+                method.apply_method(state, step)
+        else:
+            ctxt = parser.parse_vars(thy, data['vars'])
+            state = ProofState(thy)
+            state.vars = [Var(name, T) for name, T in ctxt['vars'].items()]
+            state.prf = Proof()
+            for line in data['proof']:
+                if line['rule'] == "variable":
+                    nm, str_T = line['args'].split(',', 1)
+                    ctxt['vars'][nm] = parser.parse_type(thy, str_T.strip())
+                item = parser.parse_proof_rule(thy, ctxt, line)
+                state.prf.insert_item(item)
 
         state.check_proof(compute_only=True)
         return state

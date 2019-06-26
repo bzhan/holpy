@@ -66,6 +66,8 @@ class rule(Tactic):
         As, C = th.assums, th.concl
 
         if instsp is None:
+            assert set(term.get_vars(As[:len(prevs)] + [C])) == set(term.get_vars(As + [C])), \
+                "rule: cannot match all variables."
             instsp = (dict(), dict())
             if matcher.is_pattern(C, []):
                 matcher.first_order_match_incr(C, goal.prop, instsp)
@@ -85,6 +87,15 @@ class rule(Tactic):
             return apply_theorem(thy, th_name, *pts, tyinst=tyinst, inst=inst)
         else:
             return apply_theorem(thy, th_name, *pts)
+
+class resolve(Tactic):
+    """Given any goal, a theorem of the form ~A, and an existing fact A,
+    solve the goal.
+    
+    """
+    def get_proof_term(self, thy, goal, args, prevs):
+        assert isinstance(args, str) and len(prevs) == 1, "resolve"
+        return ProofTermDeriv('resolve_theorem', thy, (args, goal.prop), prevs)
 
 class intros(Tactic):
     """Given a goal of form !x_1 ... x_n. A_1 --> ... --> A_n --> C,
@@ -158,13 +169,36 @@ class rewrite_goal_with_prev(Tactic):
             return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[pt, new_goal_pts] + new_As_pts)
 
 class apply_prev(Tactic):
+    """Applies an existing fact in the backward direction."""
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):
-        assert isinstance(prevs, list) and len(prevs) == 1, "apply_prev"
-        pt = prevs[0]
+        assert isinstance(prevs, list) and len(prevs) >= 1, "apply_prev"
+        pt, prev_pts = prevs[0], prevs[1:]
 
-        assert pt.concl == goal.prop, "apply_prev"
-        As_pts = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in pt.assums]
-        return ProofTerm.implies_elim(pt, *As_pts)
+        # First, obtain the patterns
+        vars = term.get_vars([prev.prop for prev in prevs])
+        old_names = [v.name for v in vars]
+        new_names = logic.get_forall_names(pt.prop, old_names)
+
+        new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
+        assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
+
+        instsp = dict(), {v.name: v for v in vars}
+        assert set(new_names).issubset({v.name for v in term.get_vars(As[:len(prev_pts)] + [C])}), \
+            "apply_prev: cannot match all variables"
+        matcher.first_order_match_incr(C, goal.prop, instsp)
+        for idx, prev_pt in enumerate(prev_pts):
+            matcher.first_order_match_incr(As[idx], prev_pt.prop, instsp)
+
+        tyinst, inst = instsp
+        if tyinst:
+            pt = ProofTerm.subst_type(tyinst, pt)
+        for new_name in new_names:
+            pt = ProofTerm.forall_elim(inst[new_name], pt)
+        As, C = pt.prop.strip_implies()
+        
+        inst_arg = [inst[new_name] for new_name in new_names]
+        new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(prev_pts):]]
+        return ProofTermDeriv('apply_fact_for', thy, args=inst_arg, prevs=prevs + new_goals)
 
 class cases(Tactic):
     """Case checking on an expression."""

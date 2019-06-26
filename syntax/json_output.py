@@ -19,7 +19,7 @@ class JSONTheory():
 
     def export_proof_json(self, item):
         str_th = printer.print_thm(self.thy, item.th) if item.th else ""
-        str_args = printer.print_str_args(self.thy, item.rule, item.args, item.th.prop)
+        str_args = printer.print_str_args(self.thy, item.rule, item.args, item.th)
         res = {
             'id': proof.print_id(item.id),
             'th': str_th,

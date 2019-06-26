@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from typing import Tuple
+from typing import Tuple, List
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import HOLType, TVar, Type, TFun, boolT
@@ -10,15 +10,7 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem, id_force_tuple
 from kernel import extension
 from logic import induct
-from logic import logic
-from logic import nat
-from logic import list
-from logic import function
-from logic import set
 from syntax import infertype
-
-# import sys,io
-# sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 
 class ParserException(Exception):
@@ -45,17 +37,25 @@ grammar = r"""
         | ("?"|"∃") CNAME ". " term           -> exists_notype
         | "[]"                     -> literal_list  // Empty list
         | "[" term ("," term)* "]" -> literal_list  // List
-        | ("{}"|"∅")               -> empty_set     // Empty set
+        | ("{}"|"∅")               -> literal_set   // Empty set
+        | "{" term ("," term)* "}" -> literal_set   // Set
+        | "{" CNAME "::" type "." term "}" -> collect_set
+        | "{" CNAME ". " term "}"          -> collect_set_notype
         | "if" term "then" term "else" term  -> if_expr // if expression
         | "(" term ")(" term ":=" term ("," term ":=" term)* ")"   -> fun_upd // function update
+        | "{" term ".." term "}"   -> nat_interval
         | "(" term ")"                    // Parenthesis
         | "(" term "::" type ")"   -> typed_term    // Term with specified type
 
     ?comb: comb atom | atom
 
-    ?times: times "*" comb | comb       // Multiplication: priority 70
+    ?big_inter: ("INT"|"⋂") big_inter -> big_inter | comb         // Intersection: priority 90
 
-    ?inter: inter ("INTER"|"∩") times | times     // Intersection: priority 70
+    ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
+
+    ?times: times "*" big_union | big_union     // Multiplication: priority 70
+
+    ?inter: inter ("Int"|"∩") times | times     // Intersection: priority 70
 
     ?plus: plus "+" inter | inter       // Addition: priority 65
 
@@ -63,15 +63,21 @@ grammar = r"""
 
     ?cons: append "#" cons | append     // Cons: priority 65
 
-    ?union: union ("UNION"|"∪") cons | cons       // Union: priority 65
+    ?union: union ("Un"|"∪") cons | cons        // Union: priority 65
 
-    ?eq: eq "=" union | union           // Equality: priority 50
+    ?comp_fun: union ("O"|"∘") comp_fun | union // Function composition: priority 60
 
-    ?mem: mem ("MEM"|"∈") mem | eq              // Membership: priority 50
+    ?eq: eq "=" comp_fun | comp_fun             // Equality: priority 50
 
-    ?subset: subset ("SUB"|"⊆") subset | mem    // Subset: priority 50
+    ?mem: mem ("Mem"|"∈") mem | eq              // Membership: priority 50
 
-    ?neg: ("~"|"¬") neg -> neg | subset // Negation: priority 40
+    ?subset: subset ("Sub"|"⊆") subset | mem    // Subset: priority 50
+
+    ?less_eq: less_eq ("<="|"≤") less_eq | subset  // Less-equal: priority 50
+
+    ?less: less "<" less | less_eq      // Less: priority 50
+
+    ?neg: ("~"|"¬") neg -> neg | less   // Negation: priority 40
 
     ?conj: neg ("&"|"∧") conj | neg     // Conjunction: priority 35
 
@@ -79,7 +85,9 @@ grammar = r"""
 
     ?imp: disj ("-->"|"⟶") imp | disj  // Implies: priority 25
 
-    ?term: imp
+    ?iff: imp ("<-->"|"⟷") iff | imp   // Iff: priority 25
+
+    ?term: iff
 
     thm: ("|-"|"⊢") term
         | term ("," term)* ("|-"|"⊢") term
@@ -101,6 +109,8 @@ grammar = r"""
     ind_constr: CNAME ("(" CNAME "::" type ")")*  // constructor for inductive types
 
     named_thm: CNAME ":" term | term  // named theorem
+
+    term_list: term*   // list of terms
 
     %import common.CNAME
     %import common.WS
@@ -142,9 +152,11 @@ class HOLTransformer(Transformer):
         return t
 
     def number(self, n):
+        from data import nat
         return nat.to_binary(int(n))
 
     def literal_list(self, *args):
+        from data import list
         return list.mk_literal_list(args, None)
 
     def if_expr(self, P, x, y):
@@ -165,32 +177,50 @@ class HOLTransformer(Transformer):
         return Comb(fun, arg)
 
     def abs(self, var_name, T, body):
-        return Abs(var_name, T, body.abstract_over(Var(var_name, None)))
+        return Abs(str(var_name), T, body.abstract_over(Var(var_name, None)))
 
     def abs_notype(self, var_name, body):
-        return Abs(var_name, None, body.abstract_over(Var(var_name, None)))
+        return Abs(str(var_name), None, body.abstract_over(Var(var_name, None)))
 
     def all(self, var_name, T, body):
         all_t = Const("all", None)
-        return all_t(Abs(var_name, T, body.abstract_over(Var(var_name, None))))
+        return all_t(Abs(str(var_name), T, body.abstract_over(Var(var_name, None))))
 
     def all_notype(self, var_name, body):
         all_t = Const("all", None)
-        return all_t(Abs(var_name, None, body.abstract_over(Var(var_name, None))))
+        return all_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
     def exists(self, var_name, T, body):
         exists_t = Const("exists", None)
-        return exists_t(Abs(var_name, T, body.abstract_over(Var(var_name, None))))
+        return exists_t(Abs(str(var_name), T, body.abstract_over(Var(var_name, None))))
 
     def exists_notype(self, var_name, body):
         exists_t = Const("exists", None)
-        return exists_t(Abs(var_name, None, body.abstract_over(Var(var_name, None))))
+        return exists_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
+
+    def collect_set(self, var_name, T, body):
+        from data import set
+        return set.collect(T)(Abs(str(var_name), T, body.abstract_over(Var(var_name, None))))
+
+    def collect_set_notype(self, var_name, body):
+        from data import set
+        return set.collect(None)(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
     def times(self, lhs, rhs):
+        from data import nat
         return nat.times(lhs, rhs)
 
     def plus(self, lhs, rhs):
+        from data import nat
         return nat.plus(lhs, rhs)
+
+    def less_eq(self, lhs, rhs):
+        from data import nat
+        return nat.less_eq(lhs, rhs)
+
+    def less(self, lhs, rhs):
+        from data import nat
+        return nat.less(lhs, rhs)
 
     def append(self, lhs, rhs):
         return Const("append", None)(lhs, rhs)
@@ -202,19 +232,26 @@ class HOLTransformer(Transformer):
         return Const("equals", None)(lhs, rhs)
 
     def neg(self, t):
+        from logic import logic
         return logic.neg(t)
 
     def conj(self, s, t):
+        from logic import logic
         return logic.mk_conj(s, t)
 
     def disj(self, s, t):
+        from logic import logic
         return logic.mk_disj(s, t)
 
     def imp(self, s, t):
         return Term.mk_implies(s, t)
 
-    def empty_set(self):
-        return set.empty_set(None)
+    def iff(self, s, t):
+        return Const("equals", None)(s, t)
+
+    def literal_set(self, *args):
+        from data import set
+        return set.mk_literal_set(args, None)
 
     def mem(self, x, A):
         return Const("member", None)(x, A)
@@ -227,6 +264,19 @@ class HOLTransformer(Transformer):
 
     def union(self, A, B):
         return Const("union", None)(A, B)
+
+    def big_inter(self, t):
+        return Const("Inter", None)(t)
+
+    def big_union(self, t):
+        return Const("Union", None)(t)
+
+    def comp_fun(self, f, g):
+        return Const("comp_fun", None)(f, g)
+
+    def nat_interval(self, m, n):
+        from data import interval
+        return interval.mk_interval(m, n)
 
     def thm(self, *args):
         return Thm(args[:-1], args[-1])
@@ -262,6 +312,9 @@ class HOLTransformer(Transformer):
     def named_thm(self, *args):
         return tuple(args)
 
+    def term_list(self, *args):
+        return args
+
 
 def get_parser_for(start):
     return Lark(grammar, start=start, parser="lalr", transformer=HOLTransformer())
@@ -275,6 +328,7 @@ named_thm_parser = get_parser_for("named_thm")
 instsp_parser = get_parser_for("instsp")
 var_decl_parser = get_parser_for("var_decl")
 ind_constr_parser = get_parser_for("ind_constr")
+term_list_parser = get_parser_for("term_list")
 
 def parse_type(thy, s):
     """Parse a type."""
@@ -334,6 +388,16 @@ def parse_var_decl(thy, s):
     parser_setting['thy'] = thy
     return var_decl_parser.parse(s)
 
+def parse_term_list(thy, ctxt, s):
+    """Parse a list of terms."""
+    if s == "":
+        return []
+    parser_settings['thy'] = thy
+    ts = term_list_parser.parse(s)
+    for i in range(len(ts)):
+        ts[i] = infertype.type_infer(thy, ctxt, ts[i])
+    return ts
+
 def parse_args(thy, ctxt, sig, args):
     """Parse the argument according to the signature."""
     try:
@@ -358,6 +422,8 @@ def parse_args(thy, ctxt, sig, args):
             s1, s2 = args.split(",", 1)
             tyinst, inst = parse_instsp(thy, ctxt, s2)
             return s1, tyinst, inst
+        elif sig == List[Term]:
+            return parse_term_list(thy, ctxt, args)
         else:
             raise TypeError()
     except exceptions.UnexpectedToken as e:
@@ -418,19 +484,17 @@ def parse_extension(thy, data):
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
         ext.add_extension(extension.Theorem(data['name'] + "_def", Thm([], prop)))
-        ext.add_extension(extension.Attribute(data['name'] + "_def", 'hint_rewrite'))
+        if 'attributes' in data and 'hint_rewrite' in data['attributes']:
+            ext.add_extension(extension.Attribute(data['name'] + "_def", 'hint_rewrite'))
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parse_vars(thy, data['vars'])
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Theorem(data['name'], Thm([], prop)))
-        if 'hint_backward' in data and data['hint_backward'] == "true":
-            ext.add_extension(extension.Attribute(data['name'], 'hint_backward'))
-        if 'hint_rewrite' in data and data['hint_rewrite'] == "true":
-            ext.add_extension(extension.Attribute(data['name'], 'hint_rewrite'))
-        if 'hint_forward' in data and data['hint_forward'] == 'true':
-            ext.add_extension(extension.Attribute(data['name'], 'hint_forward'))
+        if 'attributes' in data:
+            for attr in data['attributes']:
+                ext.add_extension(extension.Attribute(data['name'], attr))
 
     elif data['ty'] == 'type.ind':
         constrs = []

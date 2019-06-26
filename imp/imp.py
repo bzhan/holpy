@@ -2,14 +2,18 @@
 
 from kernel.type import Type, TFun, boolT
 from kernel.term import Term, Var, Const
+from kernel.thm import Thm
 from kernel.macro import global_macros
-from logic import nat
-from logic import function
+from kernel.theory import Method, global_methods
+from data import nat
+from data import function
 from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic_macro import apply_theorem
+from syntax import printer, settings
+from server.tactic import Tactic
 from prover import z3wrapper
 
 
@@ -115,11 +119,15 @@ class eval_Sem_macro(ProofTermMacro):
 
 def compute_wp(thy, T, c, Q):
     """Compute the weakest precondition for the given command
-    and postcondition. The computation is by case analysis on
-    the form of c. Returns the validity theorem.
+    and postcondition. Here c is the program and Q is the postcondition.
+    The computation is by case analysis on the form of c. The function
+    returns a proof term showing [...] |- Valid P c Q, where P is the
+    computed precondition, and [...] contains the additional subgoals.
 
     """
-    if c.head.is_const_name("Assign"):  # Assign a b
+    if c.head.is_const_name("Skip"):  # Skip
+        return apply_theorem(thy, "skip_rule", concl=Valid(T)(Q, c, Q))
+    elif c.head.is_const_name("Assign"):  # Assign a b
         a, b = c.args
         s = Var("s", T)
         P2 = Term.mk_abs(s, Q(function.mk_fun_upd(s, a, b(s).beta_conv())))
@@ -129,6 +137,12 @@ def compute_wp(thy, T, c, Q):
         wp1 = compute_wp(thy, T, c2, Q)  # Valid Q' c2 Q
         wp2 = compute_wp(thy, T, c1, wp1.prop.args[0])  # Valid Q'' c1 Q'
         return apply_theorem(thy, "seq_rule", wp2, wp1)
+    elif c.head.is_const_name("Cond"):  # Cond b c1 c2
+        b, c1, c2 = c.args
+        wp1 = compute_wp(thy, T, c1, Q)
+        wp2 = compute_wp(thy, T, c2, Q)
+        res = apply_theorem(thy, "if_rule", wp1, wp2, inst={"b": b})
+        return res
     elif c.head.is_const_name("While"):  # While b I c
         _, I, _ = c.args
         pt = apply_theorem(thy, "while_rule", concl=Valid(T)(I, c, Q))
@@ -139,15 +153,38 @@ def compute_wp(thy, T, c, Q):
         raise NotImplementedError
 
 def vcg(thy, T, goal):
-    """Compute the verification conditions for the goal."""
+    """Compute the verification conditions for the goal. Here the
+    goal is of the form Valid P c Q. The function returns a proof term
+    showing [] |- Valid P c Q.
+    
+    """
     P, c, Q = goal.args
     pt = compute_wp(thy, T, c, Q)
     entail_P = ProofTerm.assume(Entail(T)(P, pt.prop.args[0]))
     return apply_theorem(thy, "pre_rule", entail_P, pt)
 
+def vcg_norm(thy, T, goal):
+    """Compute vcg, then normalize the result into the form
+
+    A_1 --> A_2 --> ... --> A_n --> Valid P c Q,
+
+    where A_i are the normalized verification conditions.
+
+    """
+    pt = vcg(thy, T, goal)
+    for A in reversed(pt.hyps):
+        pt = ProofTerm.implies_intr(A, pt)
+
+    # Normalize each of the assumptions
+    return pt.on_assums(thy, rewr_conv("Entail_def"), top_conv(beta_conv()),
+                        top_conv(function.fun_upd_eval_conv()))
+
 class vcg_macro(ProofTermMacro):
-    """Compute the verification conditions for a hoare triple, then
-    normalizes the verification conditions.
+    """Macro wrapper for verification condition generation.
+    
+    Compute the verification conditions for a hoare triple, then
+    normalizes the verification conditions, finally uses the previous
+    facts to discharge the verification conditions.
     
     """
     def __init__(self):
@@ -156,24 +193,68 @@ class vcg_macro(ProofTermMacro):
 
     def get_proof_term(self, thy, goal, pts):
         f, (P, c, Q) = goal.strip_comb()
+        assert f.is_const_name("Valid"), "vcg_macro"
+
+        # Obtain the theorem [...] |- Valid P c Q
         T = Q.get_type().domain_type()
-        pt = vcg(thy, T, goal)
-        for A in reversed(pt.hyps):
-            pt = ProofTerm.implies_intr(A, pt)
-        return pt.on_assums(thy, rewr_conv("Entail_def"), top_conv(beta_conv()),
-                                 top_conv(function.fun_upd_eval_conv()))
+        pt = vcg_norm(thy, T, goal)
+
+        # Discharge the assumptions using the previous facts
+        return ProofTerm.implies_elim(pt, *pts)
+
+class vcg_tactic(Tactic):
+    """Tactic corresponding to VCG macro."""
+    def get_proof_term(self, thy, goal, args, prevs):
+        assert len(goal.hyps) == 0, "vcg_tactic"
+        f, (P, c, Q) = goal.prop.strip_comb()
+        assert f.is_const_name("Valid"), "vcg_tactic"
+
+        # Obtain the theorem [...] |- Valid P c Q
+        T = Q.get_type().domain_type()
+        pt = vcg_norm(thy, T, goal.prop)
+
+        ptAs = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in pt.assums]
+        return ProofTermDeriv("vcg", thy, goal.prop, ptAs)
+
 
 def vcg_solve(thy, goal):
     """Compute the verification conditions for a hoare triple, then
     solves the verification conditions using SMT.
     
     """
-    pt = ProofTermDeriv("vcg", thy, goal, [])
+    f, (P, c, Q) = goal.strip_comb()
+    assert f.is_const_name("Valid"), "vcg_solve"
+
+    T = Q.get_type().domain_type()
+    pt = vcg_norm(thy, T, goal)
     vc_pt = [ProofTermDeriv("z3", thy, vc, []) for vc in pt.assums]
-    return ProofTerm.implies_elim(pt, *vc_pt)
+    return ProofTermDeriv("vcg", thy, goal, vc_pt)
+
+class vcg_method(Method):
+    """Method corresponding to VCG."""
+    def __init__(self):
+        self.sig = []
+
+    def search(self, state, id, prevs):
+        cur_th = state.get_proof_item(id).th
+        if len(cur_th.hyps) == 0 and cur_th.prop.head.is_const_name("Valid"):
+            return [{}]
+        else:
+            return []
+
+    @settings.with_settings
+    def display_step(self, state, id, data, prevs):
+        return printer.N("Apply VCG")
+
+    def apply(self, state, id, data, prevs):
+        state.apply_tactic(id, vcg_tactic(), prevs=prevs)
 
 
 global_macros.update({
     "eval_Sem": eval_Sem_macro(),
     "vcg": vcg_macro(),
+})
+
+global_methods.update({
+    "vcg": vcg_method(),
 })

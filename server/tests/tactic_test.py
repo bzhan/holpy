@@ -9,7 +9,7 @@ from kernel.proof import ProofItem
 from logic.proofterm import ProofTerm, ProofTermAtom
 from logic import basic
 from logic.logic import conj, disj, mk_if
-from logic.nat import natT, plus, zero
+from data.nat import natT, plus, zero
 from server import tactic
 from syntax import printer
 

@@ -36,7 +36,7 @@
             <font color="#006000">
                 <div class="dropdown-box<%=page_num%>">
                     <select id="dropdown_datatype<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;" name="<%=page_num%>">
-                        <option value="thm"><b>Theroem</b></option>
+                        <option value="thm"><b>Theorem</b></option>
                         <option value="def.ax"><b>Constant</b></option>
                         <option value="type.ind"><b>Datatype</b></option>
                         <option value="def.ind"><b>Function</b></option>
@@ -108,6 +108,13 @@
                             <label class="form-check-label" for="rewrite-check<%= page_num %>">Rewrite</label>
                         </div>
                     </div>
+                    <div class="form-check-inline">
+                        <div class="col-auto">
+                            <input class="form-check-input" type="checkbox" id="resolve-check<%= page_num %>"
+                                   name="hint_resolve">
+                            <label class="form-check-label" for="resolve-check<%= page_num %>">Resolve</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -152,13 +159,22 @@
                            style="margin-left:3%;margin-bottom:3%;float:left;width:50%;background:transparent" name="data_name_def">
                     </div>
                 </div>
-                <br><br><br>
+                <br><br>
                 <div class="form-group">
                     <div class="col-auto" >
                         <textarea spellcheck="false" class="form-control adjust-rows"
                                   id="data-content<%=page_num%>" name="content" style="float:left;"></textarea>
                     </div>
-                </div><br>
+                </div><br><br>
+                <div class="form-group">
+                    <div class="form-check-inline">
+                        <div class="col-auto">
+                            <input class="form-check-input" type="checkbox" id="rewrite-check-def<%= page_num %>"
+                                   name="hint_rewrite_def">
+                            <label class="form-check-label" for="rewrite-check-def<%= page_num %>">Rewrite</label>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <div class="col-auto">
                         <label style="float:right;height:20%;width:100%;background:transparent">

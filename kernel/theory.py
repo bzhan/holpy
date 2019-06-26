@@ -6,7 +6,7 @@ from typing import Tuple
 from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
-from kernel.proof import ProofException
+from kernel.proof import Proof, ProofException
 from kernel.macro import ProofMacro, global_macros
 from kernel.extension import Extension
 from kernel.report import ExtensionReport
@@ -345,8 +345,7 @@ class Theory():
         elif seq.rule == "variable":
             # Declares a variable. Skip check.
             nm, T = seq.args
-            v = Var(nm, T)
-            res_th = Thm.mk_equals(v, v)
+            res_th = Thm.mk_VAR(Var(nm, T))
         elif seq.rule == "subproof":
             for s in seq.subproof.items:
                 self._check_proof_item(prf, s, rpt, no_gaps, compute_only, check_level)
@@ -422,6 +421,7 @@ class Theory():
         rpt -- report for proof-checking. Modified by the function.
         
         """
+        assert isinstance(prf, Proof), "check_proof"
         for seq in prf.items:
             self._check_proof_item(prf, seq, rpt, no_gaps, compute_only, check_level)
 

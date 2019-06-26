@@ -5,12 +5,13 @@ import unittest
 from kernel.type import TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel.thm import Thm
-from logic import logic
-from logic import nat
-from logic import list
-from logic import set
 from logic import basic
-from logic import function
+from logic import logic
+from data import nat
+from data import list
+from data import set
+from data import function
+from data import interval
 from syntax import printer
 
 thy = basic.load_theory('list')
@@ -24,7 +25,6 @@ b = Var("b", Ta)
 P = Var("P", TFun(Ta, boolT))
 Q = Var("Q", TFun(Ta, boolT))
 R = Var("R", TFun(Ta, Ta, boolT))
-f = Var("f", TFun(Ta, Ta))
 nn = Var("n", TFun(boolT, boolT))
 m = Var("m", nat.natT)
 n = Var("n", nat.natT)
@@ -51,9 +51,9 @@ class PrinterTest(unittest.TestCase):
             (imp(A, B, C), "A --> B --> C"),
             (imp(imp(A, B), C), "(A --> B) --> C"),
             (imp(A, eq(a, b)), "A --> a = b"),
-            (eq(imp(A, B), imp(B, C)), "(A --> B) = (B --> C)"),
-            (eq(A, eq(B, C)), "A = (B = C)"),
-            (eq(eq(A, B), C), "A = B = C"),
+            (eq(imp(A, B), imp(B, C)), "(A --> B) <--> B --> C"),
+            (eq(A, eq(B, C)), "A <--> B <--> C"),
+            (eq(eq(A, B), C), "(A <--> B) <--> C"),
 
             # Conjunction and disjunction
             (conj(A, B), "A & B"),
@@ -84,9 +84,9 @@ class PrinterTest(unittest.TestCase):
             (disj(imp(A, B), C), "(A --> B) | C"),
             (neg(conj(A, B)), "~(A & B)"),
             (neg(imp(A, B)), "~(A --> B)"),
-            (neg(eq(A, B)), "~A = B"),
-            (eq(neg(A), B), "(~A) = B"),
-            (eq(neg(A), neg(B)), "(~A) = (~B)"),
+            (neg(eq(A, B)), "~(A <--> B)"),
+            (eq(neg(A), B), "~A <--> B"),
+            (eq(neg(A), neg(B)), "~A <--> ~B"),
 
             # Abstraction
             (abs(a, conj(P(a),Q(a))), "%a. P a & Q a"),
@@ -100,7 +100,7 @@ class PrinterTest(unittest.TestCase):
             (imp(all(a, P(a)), Q(a)), "(!a. P a) --> Q a"),
             (imp(all(a, P(a)), all(a, Q(a))), "(!a. P a) --> (!a. Q a)"),
             (imp(exists(a, P(a)), exists(a, Q(a))), "(?a. P a) --> (?a. Q a)"),
-            (eq(A, all(a, P(a))), "A = (!a. P a)"),
+            (eq(A, all(a, P(a))), "A <--> (!a. P a)"),
             (exists(a, P(a)), "?a. P a"),
             (exists(a, all(b, R(a, b))), "?a. !b. R a b"),
             (all(a, exists(b, R(a, b))), "!a. ?b. R a b"),
@@ -139,6 +139,9 @@ class PrinterTest(unittest.TestCase):
             (nat.zero, "0"),
             (nat.plus(nat.zero, nat.zero), "0 + 0"),
             (nat.times(m, nat.zero), "m * 0"),
+            (nat.less_eq(m, n), "m <= n"),
+            (nat.less(m, n), "m < n"),
+            (nat.less_eq(nat.plus(m, n), p), "m + n <= p"),
         ]
 
         for t, s in test_data:
@@ -179,22 +182,51 @@ class PrinterTest(unittest.TestCase):
         A = Var("A", set.setT(Ta))
         B = Var("B", set.setT(Ta))
         x = Var("x", Ta)
+        y = Var("y", Ta)
+        P = Var("P", TFun(Ta, boolT))
+        S = Var("S", set.setT(set.setT(Ta)))
         test_data = [
             (set.empty_set(Ta), "({}::'a set)", "(∅::'a set)"),
-            (set.mk_mem(x, A), "x MEM A", "x ∈ A"),
-            (set.mk_subset(A, B), "A SUB B", "A ⊆ B"),
-            (set.mk_inter(A, B), "A INTER B", "A ∩ B"),
-            (set.mk_union(A, B), "A UNION B", "A ∪ B"),
+            (set.mk_mem(x, A), "x Mem A", "x ∈ A"),
+            (set.mk_subset(A, B), "A Sub B", "A ⊆ B"),
+            (set.mk_inter(A, B), "A Int B", "A ∩ B"),
+            (set.mk_union(A, B), "A Un B", "A ∪ B"),
+            (set.mk_insert(x, set.empty_set(Ta)), "{x}", "{x}"),
+            (set.mk_insert(x, set.mk_insert(y, set.empty_set(Ta))), "{x, y}", "{x, y}"),
+            (set.mk_insert(x, A), "insert x A", "insert x A"),
+            (set.mk_collect(x, P(x)), "{x. P x}", "{x. P x}"),
+            (set.collect(Ta)(P), "collect P", "collect P"),
+            (set.mk_Union(S), "UN S", "⋃S"),
+            (set.mk_Inter(S), "INT S", "⋂S"),
         ]
 
         for t, s1, s2 in test_data:
             self.assertEqual(printer.print_term(thy, t), s1)
             self.assertEqual(printer.print_term(thy, t, unicode=True), s2)
 
+    def testPrintInterval(self):
+        m = Var("m", nat.natT)
+        n = Var("n", nat.natT)
+        test_data = [
+            (interval.mk_interval(m, n), "{m..n}"),
+            (interval.mk_interval(nat.one, m), "{1..m}"),
+        ]
+
+        thy = basic.load_theory('iterate')
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
+
     def testPrintFunction(self):
+        f = Var("f", TFun(Ta, Ta))
+        Tb = TVar('b')
+        Tc = TVar('c')
+        g = Var('g', TFun(Tb, Tc))
+        h = Var('h', TFun(Ta, Tb))
         test_data = [
             (function.mk_fun_upd(f, a, b), "(f)(a := b)"),
             (function.mk_fun_upd(f, a, b, b, a), "(f)(a := b, b := a)"),
+            (function.mk_comp(g, h), "g O h"),
+            (function.mk_comp(g, h)(a), "(g O h) a"),
         ]
 
         thy = basic.load_theory('function')

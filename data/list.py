@@ -57,9 +57,14 @@ def dest_literal_list(t):
         return []
     elif is_cons(t):
         return [t.arg1] + dest_literal_list(t.arg)
+    else:
+        raise AssertionError("dest_literal_list")
 
 def mk_literal_list(ts, T):
-    """Given terms x_1, ..., x_n, return the term [x_1, ..., x_n]."""
+    """Given terms x_1, ..., x_n of type T, return the term
+    [x_1, ..., x_n].
+    
+    """
     if ts:
         return cons(T)(ts[0], mk_literal_list(ts[1:], T))
     else:

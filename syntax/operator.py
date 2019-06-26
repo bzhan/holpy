@@ -1,5 +1,6 @@
 # Author: Bohua Zhan
 
+from kernel.type import boolT
 from kernel.term import Term
 
 class OperatorData():
@@ -28,20 +29,26 @@ class OperatorTable():
         LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
         self.data = [
             OperatorData("equals", 50, assoc=LEFT, ascii_op="="),
+            OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷"),
             OperatorData("implies", 25, assoc=RIGHT, ascii_op="-->", unicode_op="⟶"),
             OperatorData("conj", 35, assoc=RIGHT, ascii_op="&", unicode_op="∧"),
             OperatorData("disj", 30, assoc=RIGHT, ascii_op="|", unicode_op="∨"),
             OperatorData("neg", 40, arity=OperatorData.UNARY, ascii_op="~", unicode_op="¬"),
             OperatorData("plus", 65, assoc=LEFT, ascii_op="+"),
             OperatorData("times", 70, assoc=LEFT, ascii_op="*"),
+            OperatorData("less_eq", 50, assoc=LEFT, ascii_op="<=", unicode_op="≤"),
+            OperatorData("less", 50, assoc=LEFT, ascii_op="<"),
             OperatorData("zero", 0, arity=OperatorData.CONST, ascii_op="0"),
             OperatorData("append", 65, assoc=RIGHT, ascii_op="@"),
             OperatorData("cons", 65, assoc=RIGHT, ascii_op="#"),
-            OperatorData("member", 50, assoc=LEFT, ascii_op="MEM", unicode_op="∈"),
-            OperatorData("subset", 50, assoc=LEFT, ascii_op="SUB", unicode_op="⊆"),
-            OperatorData("inter", 70, assoc=LEFT, ascii_op="INTER", unicode_op="∩"),
-            OperatorData("union", 65, assoc=LEFT, ascii_op="UNION", unicode_op="∪"),
+            OperatorData("member", 50, assoc=LEFT, ascii_op="Mem", unicode_op="∈"),
+            OperatorData("subset", 50, assoc=LEFT, ascii_op="Sub", unicode_op="⊆"),
+            OperatorData("inter", 70, assoc=LEFT, ascii_op="Int", unicode_op="∩"),
+            OperatorData("union", 65, assoc=LEFT, ascii_op="Un", unicode_op="∪"),
             OperatorData("empty_set", 0, arity=OperatorData.CONST, ascii_op="{}", unicode_op="∅"),
+            OperatorData("Union", 90, arity=OperatorData.UNARY, ascii_op="UN ", unicode_op="⋃"),
+            OperatorData("Inter", 90, arity=OperatorData.UNARY, ascii_op="INT ", unicode_op="⋂"),
+            OperatorData("comp_fun", 60, assoc=RIGHT, ascii_op="O", unicode_op="∘"),
         ]
 
     def get_info_for_fun(self, t):
@@ -49,9 +56,17 @@ class OperatorTable():
         if the function is not found.
 
         """
+        LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
         if t.is_const():
-            for d in self.data:
-                if d.fun_name == t.name:
-                    return d
+            if t.name == 'equals':
+                Targs, _ = t.T.strip_type()
+                if Targs[0] == boolT:
+                    return OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷")
+                else:
+                    return OperatorData("equals", 50, assoc=LEFT, ascii_op="=")
+            else:
+                for d in self.data:
+                    if d.fun_name == t.name:
+                        return d
 
         return None

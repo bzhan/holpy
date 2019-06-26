@@ -6,12 +6,7 @@ from kernel.type import HOLType
 from kernel.term import Term, OpenTermException
 from kernel.extension import Extension
 from kernel import proof
-from logic.operator import OperatorData
-from logic import logic
-from logic import nat
-from logic import list as hol_list
-from logic import set
-from logic import function
+from syntax.operator import OperatorData
 from syntax import settings
 from syntax import infertype
 
@@ -72,6 +67,7 @@ def commas_join(strs):
 
 @settings.with_settings
 def print_type(thy, T):
+    assert isinstance(T, HOLType), "print_type: input is not a type."
     def helper(T):
         if T.ty == HOLType.TVAR:
             return TV("'" + T.name)
@@ -110,11 +106,20 @@ def print_term(thy, t):
     Note we do not yet handle name collisions in lambda terms.
 
     """
+    assert isinstance(t, Term), "print_term: input is not a term."
+    # Import modules for custom parsed data
+    from logic import logic
+    from data import nat
+    from data import list
+    from data import set
+    from data import function
+    from data import interval
+    
     def get_info_for_operator(t):
         return thy.get_data("operator").get_info_for_fun(t.head)
 
     def get_priority(t):
-        if nat.is_binary(t) or hol_list.is_literal_list(t):
+        if nat.is_binary(t) or list.is_literal_list(t):
             return 100  # Nat atom case
         elif t.is_comb():
             op_data = get_info_for_operator(t)
@@ -137,8 +142,8 @@ def print_term(thy, t):
         if nat.is_binary(t):
             return N(str(nat.from_binary(t)))
 
-        if hol_list.is_literal_list(t):
-            items = hol_list.dest_literal_list(t)
+        if list.is_literal_list(t):
+            items = list.dest_literal_list(t)
             res = N('[') + commas_join(helper(item, bd_vars) for item in items) + N(']')
             if hasattr(t, "print_type"):
                 return N("(") + res + N("::") + print_type(thy, t.T) + N(")")
@@ -146,11 +151,22 @@ def print_term(thy, t):
                 return res
 
         if set.is_literal_set(t):
-            empty_set = "∅" if settings.unicode() else "{}"
-            if hasattr(t, "print_type"):
-                return N("(") + N(empty_set) + N("::") + print_type(thy, t.T) + N(")")
+            items = set.dest_literal_set(t)
+            if set.is_empty_set(t):
+                res = N('∅') if settings.unicode() else N('{}')
             else:
-                return N(empty_set)
+                res = N('{') + commas_join(helper(item, bd_vars) for item in items) + N('}')
+            if hasattr(t, "print_type"):
+                return N("(") + res + N("::") + print_type(thy, t.T) + N(")")
+            else:
+                return res
+
+        if interval.is_interval(t):
+            return N("{") + helper(t.arg1, bd_vars) + N("..") + helper(t.arg, bd_vars) + N("}")
+
+        if t.is_comb() and t.fun.is_const_name('collect') and t.arg.is_abs():
+            body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
+            return N("{") + B(t.arg.var_name) + N(". ") + body_repr + N("}")
 
         if logic.is_if(t):
             P, x, y = t.args
@@ -305,13 +321,13 @@ def print_extensions(thy, exts):
     return "\n".join(print_extension(thy, ext) for ext in exts.data)
 
 @settings.with_settings
-def print_str_args(thy, rule, args, prop):
+def print_str_args(thy, rule, args, th):
     def str_val(val):
         if isinstance(val, dict):
             items = sorted(val.items(), key = lambda pair: pair[0])
             return N('{') + commas_join(N(key + ': ') + str_val(val) for key, val in items) + N('}')
         elif isinstance(val, Term):
-            if val == prop and rule != 'assume' and settings.highlight():
+            if th and val == th.prop and rule != 'assume' and settings.highlight():
                 return Gray("⟨goal⟩")
             else:
                 return print_term(thy, val)
@@ -324,7 +340,7 @@ def print_str_args(thy, rule, args, prop):
     if rule == 'variable' and settings.highlight():
         return N(args[0] + ' :: ') + str_val(args[1])
 
-    if isinstance(args, tuple):
+    if isinstance(args, tuple) or isinstance(args, list):
         return commas_join(str_val(val) for val in args)
     elif args:
         return str_val(args)
@@ -335,12 +351,12 @@ def print_str_args(thy, rule, args, prop):
 def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
     str_th = print_term(thy, item.th.prop) if item.th else ""
-    str_args = print_str_args(thy, item.rule, item.args, item.th.prop)
+    str_args = print_str_args(thy, item.rule, item.args, item.th)
     res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
            'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}
     if settings.highlight():
         res['th_raw'] = print_thm(thy, item.th, highlight=False) if item.th else ""
-        res['args_raw'] = print_str_args(thy, item.rule, item.args, item.th.prop, highlight=False)
+        res['args_raw'] = print_str_args(thy, item.rule, item.args, item.th, highlight=False)
     if item.subproof:
         return [res] + sum([export_proof_item(thy, i) for i in item.subproof.items], [])
     else:
@@ -350,7 +366,7 @@ def export_proof_item(thy, item):
 def print_proof_item(thy, item):
     """Print the given proof item."""
     str_id = proof.print_id(item.id)
-    str_args = " " + print_str_args(thy, item.rule, item.args, item.th.prop) if item.args else ""
+    str_args = " " + print_str_args(thy, item.rule, item.args, item.th) if item.args else ""
     str_prevs = " from " + ", ".join(proof.print_id(prev) for prev in item.prevs) if item.prevs else ""
     str_th = print_thm(thy, item.th) + " by " if item.th else ""
     cur_line = str_id + ": " + str_th + item.rule + str_args + str_prevs
@@ -362,6 +378,7 @@ def print_proof_item(thy, item):
 @settings.with_settings
 def print_proof(thy, prf):
     """Print the given proof."""
+    assert isinstance(prf, proof.Proof), "print_proof"
     return '\n'.join(print_proof_item(thy, item) for item in prf.items)
 
 @settings.with_settings

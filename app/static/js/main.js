@@ -162,6 +162,7 @@
             });
             json_files[filename].content[item_id].proof = output_proof;
             json_files[filename].content[item_id].num_gaps = cells[editor_id].num_gaps;
+            json_files[filename].content[item_id].steps = cells[editor_id].steps;
             if (cur_theory_name === filename) {
                 display_theory_items();
             }
@@ -212,23 +213,27 @@
         $('#introduction').on("click", introduction);
 
         $('#new-var').on("click", function () {
-            apply_method('new_var')
+            apply_method('new_var');
+        });
+
+        $('#apply-cut').on("click", function () {
+            apply_method('cut');
         });
 
         $('#apply-cases').on("click", function () {
-            apply_method('cases')
+            apply_method('cases');
         });
 
         $('#apply-forall-elim').on("click", function () {
-            apply_method('forall_elim')
+            apply_method('forall_elim');
         });
 
         $('#rewrite-goal-with-prev').on("click", function () {
-            apply_method('rewrite_goal_with_prev')
+            apply_method('rewrite_goal_with_prev');
         });
 
         $('#apply-prev').on('click', function () {
-            apply_method('apply_prev')
+            apply_method('apply_prev');
         });
 
         $('#add-line-after').on("click", function () {
@@ -236,15 +241,23 @@
         });
 
         $('#apply-backward-step').on("click", function () {
-            apply_method('apply_backward_step')
+            apply_method('apply_backward_step');
+        });
+
+        $('#apply-forward-step').on("click", function () {
+            apply_method('apply_forward_step');
         });
 
         $('#apply-induction').on("click", function () {
-            apply_method('induction')
+            apply_method('induction');
         });
 
         $('#rewrite-goal').on("click", function () {
-            apply_method('rewrite_goal')
+            apply_method('rewrite_goal');
+        });
+
+        $('#rewrite-fact').on("click", function () {
+            apply_method('rewrite_fact');
         });
 
         // Initialize proof after clicking 'proof' link on the left side.
@@ -353,9 +366,6 @@
                             json_files[theory_name].content[add_num] = item;
                         } else {
                             item = json_files[theory_name].content[number]
-                            delete item.hint_forward;
-                            delete item.hint_backward;
-                            delete item.hint_rewrite;
                             for (var key in res.content) {
                                 item[key] = res.content[key];
                             }
@@ -598,7 +608,7 @@
     function save_json_file(filename) {
         var content = [];
         $.each(json_files[filename].content, function (i, item) {
-            content.push($.extend(true, {}, item));  // perform deep copy//////
+            content.push($.extend(true, {}, item));  // perform deep copy
             item_to_output(content[i]);
         });
         var data = {
@@ -663,12 +673,14 @@
                 vars_lines = item['vars_lines']
                 form.vars.rows = vars_lines.length;
                 form.vars.value = vars_lines.join('\n');
-                if (item['hint_backward'] === 'true')
+                if (item.attributes && item.attributes.includes('hint_backward'))
                     form.hint_backward.checked = true;
-                if (item['hint_forward'] === 'true')
+                if (item.attributes && item.attributes.includes('hint_forward'))
                     form.hint_forward.checked = true;
-                if (item['hint_rewrite'] === 'true')
+                if (item.attributes && item.attributes.includes('hint_rewrite'))
                     form.hint_rewrite.checked = true;
+                if (item.attributes && item.attributes.includes('hint_resolve'))
+                    form.hint_resolve.checked = true;
             }
             else {
                 form['number-thm'].value = -1;
@@ -713,6 +725,8 @@
                 if (data_type === 'def') {
                     form.content.textContent = item.edit_content;
                     form.content.rows = 1;
+                    if (item.attributes && item.attributes.includes('hint_rewrite'))
+                        form.hint_rewrite_def.checked = true;
                 } else {
                     form.content.textContent = item.edit_content.join('\n');
                     form.content.rows = item.edit_content.length;    
@@ -752,12 +766,15 @@
             item.name = form.name.value;
             item.prop = form.prop.value;
             item.vars = form.vars.value.trim().split('\n');
+            item.attributes = [];
             if (form.hint_backward.checked === true)
-                item.hint_backward = 'true';
+                item.attributes.push('hint_backward');
             if (form.hint_forward.checked === true)
-                item.hint_forward = 'true';
+                item.attributes.push('hint_forward');
             if (form.hint_rewrite.checked === true)
-                item.hint_rewrite = 'true';
+                item.attributes.push('hint_rewrite');
+            if (form.hint_resolve.checked === true)
+                item.attributes.push('hint_resolve');
         }
         if (ty === 'type.ind') {
             item.data_name = form.data_name_type.value.trim();
@@ -770,6 +787,9 @@
             item.type = form.data_name_def.value.split('::')[1].trim();
             if (ty === 'def')
                 item.prop = form.content.value.trim();
+                item.attributes = [];
+                if (form.hint_rewrite_def.checked == true)
+                    item.attributes.push('hint_rewrite');
             else
                 item.data_content = form.content.value.trim().split('\n');
         }
@@ -854,6 +874,7 @@
                 display_checked_proof(result);
                 cells[id].instructions = item.instructions;
                 cells[id].index = 0;
+                cells[id].steps = [];
                 if (cells[id].instructions !== undefined)
                     display_instructions();
             }
@@ -866,9 +887,11 @@
         var data = {
             'id': get_selected_id(),
             'vars': item.vars,
+            'prop': item.prop,
             'proof': item.proof,
             'theory_name': file_name,
-            'thm_name': item.name
+            'thm_name': item.name,
+            'steps': item.steps
         };
         display_running();
         $.ajax({
@@ -880,7 +903,8 @@
                 cells[id].goal = -1;
                 cells[id].method_sig = result.method_sig;
                 display_checked_proof(result);
-                cells[id].instructions = item.instructions;
+                cells[id].steps = result.steps;
+                cells[id].instructions = result.steps_output;
                 cells[id].index = 0;
                 if (cells[id].instructions !== undefined)
                     display_instructions();
@@ -1035,10 +1059,14 @@
         }
     }
 
+    // Select goal or fact
     function mark_text(cm) {
         var line_num = cm.getCursor().line;
         var line = cm.getLineHandle(line_num).text;
         var id = get_selected_id();
+        if (line_num >= cells[id].proof.length) {
+            return;
+        }
         if (line.indexOf('sorry') !== -1) {
             // Choose a new goal
             cells[id].goal = line_num;

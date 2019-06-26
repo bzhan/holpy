@@ -13,7 +13,7 @@ from kernel.term import Term, Var, boolT
 from kernel.thm import Thm
 from kernel.macro import ProofMacro, global_macros
 from logic import logic
-from logic import nat
+from data import nat
 from syntax import printer
 
 
@@ -47,12 +47,19 @@ def convert(t):
         return z3.And(convert(t.arg1), convert(t.arg))
     elif logic.is_disj(t):
         return z3.Or(convert(t.arg1), convert(t.arg))
+    elif logic.is_if(t):
+        b, t1, t2 = t.args
+        return z3.If(convert(b), convert(t1), convert(t2))
     elif logic.is_neg(t):
         return z3.Not(convert(t.arg))
     elif nat.is_plus(t):
         return convert(t.arg1) + convert(t.arg)
     elif nat.is_times(t):
         return convert(t.arg1) * convert(t.arg)
+    elif nat.is_less_eq(t):
+        return convert(t.arg1) <= convert(t.arg)
+    elif nat.is_less(t):
+        return convert(t.arg1) < convert(t.arg)
     elif nat.is_binary(t):
         return nat.from_binary(t)
     elif t.is_comb():

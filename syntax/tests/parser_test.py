@@ -7,9 +7,9 @@ from kernel.term import Var, Term
 from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
-from logic import nat
+from data import nat
 from logic import basic
-from logic import set
+from data import set
 from syntax.printer import print_term, print_type
 import syntax.parser as parser
 
@@ -112,10 +112,10 @@ class ParserTest(unittest.TestCase):
             ("A --> B --> C", "bool"),
             ("(A --> B) --> C", "bool"),
             ("a = b --> C", "bool"),
-            ("A = (B --> C)", "bool"),
+            ("A <--> B --> C", "bool"),
             ("P a --> Q b", "bool"),
-            ("A = B = C", "bool"),
-            ("A = (B = C)", "bool"),
+            ("(A <--> B) <--> C", "bool"),
+            ("A <--> B <--> C", "bool"),
 
             # Conjunction and disjunction
             ("A & B", "bool"),
@@ -142,9 +142,9 @@ class ParserTest(unittest.TestCase):
             ("A | (B --> C)", "bool"),
             ("~A & B", "bool"),
             ("~(A & B)", "bool"),
-            ("~A = B", "bool"),
-            ("(~A) = B", "bool"),
-            ("(~A) = (~B)", "bool"),
+            ("~(A <--> B)", "bool"),
+            ("~A <--> B", "bool"),
+            ("~A <--> ~B", "bool"),
             ("nn (A & B)", "bool"),
             ("nn A & B", "bool"),
 
@@ -155,7 +155,7 @@ class ParserTest(unittest.TestCase):
             ("(!x. P x) & Q a", "bool"),
             ("!x. P x --> Q x", "bool"),
             ("(!x. P x) --> Q a", "bool"),
-            ("A = (!x. P x)", "bool"),
+            ("A <--> (!x. P x)", "bool"),
             ("?x. P x", "bool"),
             ("?x. !y. R x y", "bool"),
             ("!x. ?y. R x y", "bool"),
@@ -175,6 +175,11 @@ class ParserTest(unittest.TestCase):
             ("0", "nat"),
             ("0 + 0", "nat"),
             ("m * 0", "nat"),
+
+            # Ordering on natural numbers
+            ("m <= n", "bool"),
+            ("m < n", "bool"),
+            ("m + n <= p", "bool"),
 
             # Binary numbers
             ("1", "nat"),
@@ -209,9 +214,20 @@ class ParserTest(unittest.TestCase):
 
     def testParseFunction(self):
         thy = basic.load_theory('function')
+        Tb = TVar('b')
+        Tc = TVar('c')
+        ctxt = {'vars': {
+            'a': Ta,
+            'b': Ta,
+            'f': TFun(Ta, Ta),
+            'g': TFun(Tb, Tc),
+            'h': TFun(Ta, Tb),
+        }}
         test_data = [
             ("(f)(a := b)", "'a => 'a"),
             ("(f)(a := b, b := a)", "'a => 'a"),
+            ("g O h", "'a => 'c"),
+            ("(g O h) a", "'c"),
         ]
 
         for s, Ts in test_data:
@@ -223,16 +239,26 @@ class ParserTest(unittest.TestCase):
 
     def testParseSet(self):
         ctxt = {'vars': {
-            "x" : Ta,
-            "A" : set.setT(Ta),
-            "B" : set.setT(Ta),
+            "x": Ta,
+            "y": Ta,
+            "A": set.setT(Ta),
+            "B": set.setT(Ta),
+            "P": TFun(Ta, boolT),
+            "S": set.setT(set.setT(Ta)),
         }}
         test_data = [
             ("({}::'a set)", "(∅::'a set)", "'a set"),
-            ("x MEM A", "x ∈ A", "bool"),
-            ("A SUB B", "A ⊆ B", "bool"),
-            ("A INTER B", "A ∩ B", "'a set"),
-            ("A UNION B", "A ∪ B", "'a set"),
+            ("x Mem A", "x ∈ A", "bool"),
+            ("A Sub B", "A ⊆ B", "bool"),
+            ("A Int B", "A ∩ B", "'a set"),
+            ("A Un B", "A ∪ B", "'a set"),
+            ("{x}", "{x}", "'a set"),
+            ("{x, y}", "{x, y}", "'a set"),
+            ("insert x A", "insert x A", "'a set"),
+            ("{x. P x}", "{x. P x}", "'a set"),
+            ("collect P", "collect P", "'a set"),
+            ("UN S", "⋃S", "'a set"),
+            ("INT S", "⋂S", "'a set"),
         ]
 
         for s1, s2, Ts in test_data:
@@ -247,6 +273,25 @@ class ParserTest(unittest.TestCase):
             self.assertIsInstance(t2, Term)
             self.assertEqual(t2.checked_get_type(), T)
             self.assertEqual(print_term(thy, t2, unicode=True), s2)
+
+    def testParseInterval(self):
+        thy = basic.load_theory('iterate')
+        ctxt = {'vars': {
+            "m": nat.natT,
+            "n": nat.natT
+        }}
+        test_data = [
+            ("{m..n}", "nat set"),
+            ("{1..m}", "nat set"),
+        ]
+
+        for s, Ts in test_data:
+            T = parser.parse_type(thy, Ts)
+
+            t = parser.parse_term(thy, ctxt, s)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(t.checked_get_type(), T)
+            self.assertEqual(print_term(thy, t), s)
 
     def testInferType2(self):
         thy = basic.load_theory('function')
@@ -269,7 +314,7 @@ class ParserTest(unittest.TestCase):
             ("(!x. P x) & Q a", "bool"),
             ("!x. P x --> Q x", "bool"),
             ("(!x. P x) --> Q a", "bool"),
-            ("A = (!x. P x)", "bool"),
+            ("A <--> (!x. P x)", "bool"),
             ("?x. P x", "bool"),
             ("?x. !y. R x y", "bool"),
             ("!x. ?y. R x y", "bool"),

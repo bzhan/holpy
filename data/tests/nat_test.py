@@ -4,10 +4,10 @@ import unittest
 
 from kernel.term import Term
 from kernel.thm import Thm
-from logic import nat
+from data import nat
 from logic import basic
 from logic import logic
-from logic.nat import zero, one, bit0, bit1
+from data.nat import zero, one, bit0, bit1
 from syntax import parser
 
 thy = basic.load_theory('nat')
@@ -241,6 +241,18 @@ class NatTest(unittest.TestCase):
             prf = cv.get_proof_term(thy, t).export()
             res_th = Thm.mk_equals(t, res)
             self.assertEqual(thy.check_proof(prf), res_th)
+
+    def testNatLessEqMacro(self):
+        test_data = [
+            (3, 5),
+        ]
+
+        macro = nat.nat_const_less_eq_macro()
+        for m, n in test_data:
+            goal = nat.less_eq(nat.to_binary(m), nat.to_binary(n))
+            pt = macro.get_proof_term(thy, goal, [])
+            prf = pt.export()
+            self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
 
 if __name__ == "__main__":

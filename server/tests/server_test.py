@@ -2,21 +2,24 @@
 
 import unittest
 import io
+import json
 
 from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from kernel.proof import Proof
+from kernel.theory import global_methods
 from kernel.report import ProofReport
 from logic import logic
 from logic import basic
-from logic import nat
-from logic import list
-from logic import function
+from data import nat
+from data import list
+from data import function
 from syntax import printer
 from server import server
 from server import method
 from server.server import ProofState
+from imp import imp
 
 thy = basic.load_theory('logic_base')
 
@@ -27,6 +30,61 @@ disj = logic.mk_disj
 imp = Term.mk_implies
 neg = logic.neg
 exists = logic.mk_exists
+
+def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
+                print_stat=False, print_search=False):
+    """Test list of steps for the given theorem."""
+    def test_val(thy, val):
+        state = ProofState.parse_init_state(thy, val)
+        goal = state.prf.items[-1].th
+        num_found = 0
+        if print_stat and 'steps' not in val:
+            print("%20s %s" % (val['name'], "No steps found"))
+            return
+
+        for i, step in enumerate(val['steps']):
+            if print_search or print_stat:
+                if 'fact_ids' not in step:
+                    step['fact_ids'] = []
+                select_ids = "goal " + step['goal_id']
+                if print_search:
+                    if step['fact_ids']:
+                        select_ids += ", fact " + ", ".join(step['fact_ids'])
+                    print('Step ' + str(i) + " (" + select_ids + ")")
+                search_res = state.search_method(step['goal_id'], step['fact_ids'])
+                found = 0
+                for res in search_res:
+                    m = global_methods[res['_method_name']]
+                    if res['_method_name'] == step['method_name'] and \
+                       all(sig not in res or res[sig] == step[sig] for sig in m.sig):
+                        if print_search:
+                            print('* ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                        found += 1
+                    else:
+                        if print_search:
+                            print('  ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                assert found <= 1, "test_val: multiple found"
+                if found == 0:
+                    if print_search:
+                        m = global_methods[step['method_name']]
+                        print('- ' + m.display_step(state, step['goal_id'], step, step['fact_ids']))
+                else:
+                    num_found += 1
+            method.apply_method(state, step)
+        self.assertEqual(state.check_proof(no_gaps=no_gaps), goal)
+        if print_proof:
+            print("Final state:")
+            print(printer.print_proof(thy, state.prf))
+        if print_stat:
+            total = len(val['steps'])
+            print("%20s %5d %5d %5d" % (val['name'], total, num_found, total - num_found))
+        
+    thy = basic.load_theory(thy_name, limit=('thm', thm_name))
+    with open('./library/' + thy_name + '.json', 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+        for val in f_data['content']:
+            if val['ty'] == 'thm' and val['name'] == thm_name:
+                test_val(thy, val)
 
 
 class ServerTest(unittest.TestCase):
@@ -218,89 +276,6 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(state.check_proof(), Thm([], Term.mk_equals(nat.plus(n, nat.zero), n)))
         self.assertEqual(len(state.prf.items), 3)
 
-    def testConjComm(self):
-        """Proof of A & B --> B & A."""
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        state.apply_backward_step(1, "conjI")
-        state.apply_backward_step(1, "conjD2", prevs=[0])
-        state.apply_backward_step(2, "conjD1", prevs=[0])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(conj(A, B), conj(B, A)))
-
-    def testDisjComm(self):
-        """Proof of A | B --> B | A."""
-        state = ProofState.init_state(thy, [A, B], [disj(A, B)], disj(B, A))
-        state.apply_backward_step(1, "disjE", prevs=[0])
-        state.introduction(1)
-        state.apply_backward_step((1, 1), "disjI2", prevs=[(1, 0)])
-        state.introduction(2)
-        state.apply_backward_step((2, 1), "disjI1", prevs=[(2, 0)])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(disj(A, B), disj(B, A)))
-
-    def testDoubleNegInv(self):
-        """Proof of ~~A --> A."""
-        state = ProofState.init_state(thy, [A], [neg(neg(A))], A)
-        state.apply_cases(1, A)
-        state.introduction(2)
-        state.apply_backward_step((2, 1), "negE_gen", prevs=[0])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(neg(neg(A)), A))
-
-    def testExistsConj(self):
-        """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
-        Ta = TVar("a")
-        A = Var("A", TFun(Ta, boolT))
-        B = Var("B", TFun(Ta, boolT))
-        x = Var("x", Ta)
-        ex_conj = exists(x, conj(A(x), B(x)))
-        conj_ex = conj(exists(x, A(x)), exists(x, B(x)))
-        state = ProofState.init_state(thy, [A, B], [ex_conj], conj_ex)
-        state.apply_backward_step(1, "exE", prevs=[0])
-        state.introduction(1, names=["x"])
-        state.apply_backward_step((1, 2), "conjI")
-        state.apply_forward_step((1, 2), "conjD1", prevs=[(1, 1)])
-        state.apply_backward_step((1, 3), "exI", prevs=[(1, 2)])
-        state.apply_forward_step((1, 4), "conjD2", prevs=[(1, 1)])
-        state.apply_backward_step((1, 5), "exI", prevs=[(1, 4)])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(ex_conj, conj_ex))
-
-    def testAddZeroRight(self):
-        """Proof of n + 0 = n by induction."""
-        thy = basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(n, nat.zero), n))
-        state.apply_induction(0, "nat_induct", "n")
-        state.rewrite_goal(0, "plus_def_1")
-        state.introduction(1, names=["n"])
-        state.rewrite_goal((1, 2), "plus_def_2")
-        state.rewrite_goal_with_prev((1, 2), (1, 1))
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.plus(n, nat.zero), n))
-
-    def testMultZeroRight(self):
-        """Proof of n * 0 = 0 by induction."""
-        thy = basic.load_theory('nat')
-        n = Var("n", nat.natT)
-        state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.times(n, nat.zero), nat.zero))
-        state.apply_induction(0, "nat_induct", "n")
-        state.rewrite_goal(0, "times_def_1")
-        state.introduction(1, names=["n"])
-        state.rewrite_goal((1, 2), "times_def_2")
-        state.rewrite_goal((1, 2), "plus_def_1")
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(nat.times(n, nat.zero), nat.zero))
-
-    def testAppendNil(self):
-        """Proof of xs @ [] = xs by induction."""
-        thy = basic.load_theory('list')
-        Ta = TVar("a")
-        xs = Var("xs", list.listT(Ta))
-        nil = list.nil(Ta)
-        state = ProofState.init_state(thy, [xs], [], Term.mk_equals(list.mk_append(xs, nil), xs))
-        state.apply_induction(0, "list_induct", "xs")
-        state.apply_backward_step(0, "append_def_1")
-        state.introduction(1, names=["x", "xs"])
-        state.rewrite_goal((1, 3), "append_def_2")
-        self.assertEqual(state.get_ctxt((1, 3)), {'vars': {'x': Ta, 'xs': list.listT(Ta)}})
-        state.rewrite_goal_with_prev((1, 3), (1, 2))
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(list.mk_append(xs, nil), xs))
-
     def testRewriteGoalThms(self):
         thy = basic.load_theory('nat')
         n = Var("n", nat.natT)
@@ -319,48 +294,89 @@ class ServerTest(unittest.TestCase):
         state.set_line(0, "reflexive", args=a)
         self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
 
-    def testFunUpdTriv(self):
-        thy = basic.load_theory('function')
-        Ta = TVar("a")
-        Tb = TVar("b")
-        f = Var("f", TFun(Ta, Tb))
-        a = Var("a", Ta)
-        x = Var("x", Ta)
-        prop = Term.mk_equals(function.mk_fun_upd(f, a, f(a)), f)
-        state = ProofState.init_state(thy, [f, a], [], prop)
-        state.apply_backward_step(0, "extension")
-        state.introduction(0, names=["x"])
-        state.rewrite_goal((0, 1), "fun_upd_eval")
-        state.apply_cases((0, 1), Term.mk_equals(x, a))
-        state.introduction((0, 1))
-        state.rewrite_goal((0, 1, 1), "if_P")
-        state.rewrite_goal_with_prev((0, 1, 1), (0, 1, 0))
-        state.introduction((0, 2))
-        state.rewrite_goal((0, 2, 1), "if_not_P")
-        self.assertEqual(state.check_proof(no_gaps=True), Thm([], prop))
+    def testConjComm(self):
+        """Proof of A & B --> B & A."""
+        testMethods(self, 'logic', 'conj_comm')
 
-    def testAVal(self):
-        thy = basic.load_theory('expr')
-        th = thy.get_theorem('aval_test2')
-        state = ProofState.init_state(thy, [], [], th.prop)
-        state.rewrite_goal(0, "aval_def_3")
-        state.rewrite_goal(0, "aval_def_2")
-        state.rewrite_goal(0, "aval_def_1")
-        state.rewrite_goal(0, "fun_upd_def")
-        state.rewrite_goal(0, "if_not_P")
-        state.set_line(0, "nat_norm", args=Term.mk_equals(nat.plus(nat.zero, nat.to_binary(5)), nat.to_binary(5)))
-        state.apply_backward_step(1, "nat_zero_Suc_neq")
-        self.assertEqual(state.check_proof(no_gaps=True), th)
+    def testDisjComm(self):
+        """Proof of A | B --> B | A."""
+        testMethods(self, 'logic', 'disj_comm')
+
+    def testDoubleNegInv(self):
+        """Proof of ~~A = A."""
+        testMethods(self, 'logic', 'double_neg')
+
+    def testExistsConj(self):
+        """Proof of (?x. A x & B x) --> (?x. A x) & (?x. B x)."""
+        testMethods(self, 'logic', 'ex_conj_distrib')
+
+    def testForallConj(self):
+        """Proof of (!x. A x & B x) --> (!x. A x) & (!x. B x)."""
+        testMethods(self, 'logic', 'all_conj_distrib')
+
+    def testAddZeroRight(self):
+        """Proof of n + 0 = n by induction."""
+        testMethods(self, 'nat', 'add_0_right')
+
+    def testMultZeroRight(self):
+        """Proof of n * 0 = 0 by induction."""
+        testMethods(self, 'nat', 'mult_0_right')
+
+    def testAppendNil(self):
+        """Proof of xs @ [] = xs by induction."""
+        testMethods(self, 'list', 'append_right_neutral')
+
+    def testFunUpdTriv(self):
+        """Proof of (f)(a := f a) = f."""
+        testMethods(self, 'function', 'fun_upd_triv')
+
+    def testAVal1(self):
+        """Proof of aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12."""
+        testMethods(self, 'expr', 'aval_test1')
+
+    def testAVal2(self):
+        """Proof of aval (Plus (V 0) (N 5)) ((%x. 0)(1 := 7)) = 5."""
+        testMethods(self, 'expr', 'aval_test2')
 
     def testPierce(self):
-        thy = basic.load_theory('logic_base')
-        state = ProofState.init_state(thy, [A, B], [imp(imp(A, B), A)], A)
-        state.apply_cases(1, A)
-        state.introduction(2)
-        state.apply_prev((2, 1), 0)
-        state.introduction((2, 1))
-        state.apply_backward_step((2, 1, 1), 'negE_gen', prevs=[(2, 0)])
-        self.assertEqual(state.check_proof(no_gaps=True), Thm([], imp(imp(imp(A, B), A), A)))
+        """Proof of ((A --> B) --> A) --> A."""
+        testMethods(self, 'logic', 'pierce')
+
+    def testHoarePreRule(self):
+        """Proof of Entail P Q --> Valid Q c R --> Valid P c R."""
+        testMethods(self, 'hoare', 'pre_rule')
+
+    def testNatLessEqTrans(self):
+        """Proof of k <= m --> m <= n --> k <= n."""
+        testMethods(self, 'nat', 'less_eq_trans')
+
+    def testDrinker(self):
+        """Proof of ?x. P x --> (!x. P x)."""
+        testMethods(self, 'logic', 'drinker')
+
+    def testCantor(self):
+        """Proof of ?a. !x. ~f x = a."""
+        testMethods(self, 'set', 'cantor')
+
+    def testSubsetEmpty(self):
+        """Proof of subset empty A."""
+        testMethods(self, 'set', 'subset_empty')
+
+    def testUnionUnion(self):
+        """Proof of UN (A Un B) = (UN A) Un (UN B)."""
+        testMethods(self, 'set', 'Union_union')
+
+    def testFixpoint(self):
+        """Proof of bnd_mono h --> h (lfp h) = lfp h."""
+        testMethods(self, 'set', 'lfp_unfold')
+
+    def testInjectiveCompFun(self):
+        """Proof of injective f --> injective g --> injective (g o f)."""
+        testMethods(self, 'function', 'injective_comp_fun')
+
+    def testSurjectiveD(self):
+        """Proof of surjective f --> (?x. f x = y)."""
+        testMethods(self, 'function', 'surjectiveD')
 
 
 if __name__ == "__main__":

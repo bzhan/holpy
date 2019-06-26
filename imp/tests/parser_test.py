@@ -3,8 +3,8 @@
 import unittest
 
 from logic import basic
-from logic import hoare
-from logic.hoare_parser import parse_hoare, process_file
+from imp import imp
+from imp.parser import parse_com, process_file
 from syntax import parser
 from syntax import printer
 
@@ -22,7 +22,7 @@ class HoareParserTest(unittest.TestCase):
         ]
 
         for s, res in test_data:
-            t = parse_hoare(s)
+            t = parse_com(s)
             t_res = parser.parse_term(thy, {}, res)
             self.assertEqual(t, t_res)
 

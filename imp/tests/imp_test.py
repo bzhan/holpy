@@ -6,10 +6,10 @@ from kernel.type import TFun, boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.report import ProofReport
-from logic import nat
-from logic import hoare
+from data import nat
+from imp import imp
 from logic import logic
-from logic.function import mk_const_fun, mk_fun_upd
+from data.function import mk_const_fun, mk_fun_upd
 from logic import basic
 from syntax import parser
 from syntax import printer
@@ -18,13 +18,13 @@ thy = basic.load_theory('hoare')
 
 natT = nat.natT
 natFunT = TFun(natT, natT)
-Sem = hoare.Sem(natFunT)
-Skip = hoare.Skip(natFunT)
-Assign = hoare.Assign(natT, natT)
-Seq = hoare.Seq(natFunT)
-Cond = hoare.Cond(natFunT)
-While = hoare.While(natFunT)
-Valid = hoare.Valid(natFunT)
+Sem = imp.Sem(natFunT)
+Skip = imp.Skip(natFunT)
+Assign = imp.Assign(natT, natT)
+Seq = imp.Seq(natFunT)
+Cond = imp.Cond(natFunT)
+While = imp.While(natFunT)
+Valid = imp.Valid(natFunT)
 zero = nat.zero
 one = nat.one
 
@@ -43,7 +43,7 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1, 1, 2)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
+        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem2(self):
@@ -51,7 +51,7 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 2)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
+        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem3(self):
@@ -59,11 +59,11 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
+        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
         goal = Sem(com, st2, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
+        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem4(self):
@@ -71,11 +71,11 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
+        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
         goal = Sem(com, st2, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
+        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem5(self):
@@ -83,7 +83,7 @@ class HoareTest(unittest.TestCase):
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 3)
         goal = Sem(com, st, st2)
-        prf = hoare.eval_Sem_macro().get_proof_term(thy, goal, []).export()
+        prf = imp.eval_Sem_macro().get_proof_term(thy, goal, []).export()
         rpt = ProofReport()
         self.assertEqual(thy.check_proof(prf, rpt), Thm([], goal))
 
@@ -98,7 +98,7 @@ class HoareTest(unittest.TestCase):
         ]
 
         for c, P in test_data:
-            prf = hoare.compute_wp(thy, natFunT, c, Q).export()
+            prf = imp.compute_wp(thy, natFunT, c, Q).export()
             self.assertEqual(thy.check_proof(prf), Thm([], Valid(P, c, Q)))
 
     def testVCG(self):
@@ -112,7 +112,10 @@ class HoareTest(unittest.TestCase):
 
         for c in test_data:
             goal = Valid(P, c, Q)
-            prf = hoare.vcg(thy, natFunT, goal).export()
+            prf = imp.vcg(thy, natFunT, goal).export()
+            self.assertEqual(thy.check_proof(prf).concl, goal)
+
+            prf = imp.vcg_tactic().get_proof_term(thy, Thm([], goal), None, []).export()
             self.assertEqual(thy.check_proof(prf).prop, goal)
 
     def testVCGWhile(self):
@@ -124,7 +127,17 @@ class HoareTest(unittest.TestCase):
         P = parser.parse_term(thy, ctxt, "%s. s 0 = 0 & s 1 = 0")
         Q = parser.parse_term(thy, ctxt, "%s. s 1 = A * B")
         goal = Valid(P, c, Q)
-        prf = hoare.vcg_solve(thy, goal).export()
+        prf = imp.vcg_solve(thy, goal).export()
+        self.assertEqual(thy.check_proof(prf), Thm([], goal))
+
+    def testVCGIf(self):
+        ctxt = {'vars': {"A": natT}}
+        c = parser.parse_term(thy, ctxt, \
+            "Cond (%s. s 0 = A) Skip (Assign 0 (%s. A))")
+        P = parser.parse_term(thy, ctxt, "%s::nat=>nat. true")
+        Q = parser.parse_term(thy, ctxt, "%s. s 0 = A")
+        goal = Valid(P, c, Q)
+        prf = imp.vcg_solve(thy, goal).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
 

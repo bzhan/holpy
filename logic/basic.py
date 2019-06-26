@@ -6,12 +6,11 @@ import inspect
 import json
 
 from kernel.theory import Theory
-from logic.operator import OperatorTable
 from logic import logic_macro  # Load all defined macros
-from logic import expr
-from logic import hoare
+from data import expr
 from syntax import parser
-from server import method
+from syntax import operator
+from server import method  # Load all defined methods
 
 """Global record of loaded theories."""
 loaded_theories = dict()
@@ -26,11 +25,11 @@ def get_init_theory():
     thy = Theory.EmptyTheory()
 
     # Operators
-    thy.add_data_type("operator", OperatorTable())
+    thy.add_data_type("operator", operator.OperatorTable())
 
     return thy
 
-def load_imported_theory(imports, user=""):
+def load_imported_theory(imports, user="master"):
     """Load imported theory according to the imports field in data."""
     if imports:
         # Has at least one import
@@ -41,7 +40,7 @@ def load_imported_theory(imports, user=""):
     else:
         return get_init_theory()
 
-def load_theory(theory_name, *, limit=None, user=""):
+def load_theory(theory_name, *, limit=None, user="master"):
     """Load the theory with the given theory name. Optional limit is
     a pair (ty, name) specifying the first item that should not
     be loaded.
@@ -52,7 +51,7 @@ def load_theory(theory_name, *, limit=None, user=""):
         return loaded_theories[(theory_name, user)]
 
     # Otherwise, open the corresponding file.
-    if user == "":
+    if user == "master":
         dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
         with open(dir + '/../library/' + theory_name + '.json', encoding='utf-8') as a:
             data = json.load(a)
@@ -79,7 +78,7 @@ def load_theory(theory_name, *, limit=None, user=""):
 
     return thy
 
-def clear_cache(user=""):
+def clear_cache(user="master"):
     """Clear cached theories for the given user."""
     global loaded_theories
     loaded_theories = {k: v for k, v in loaded_theories.items() if k[1] != user}
