@@ -47,7 +47,6 @@ def edit_area_template():
 def proof_area_template():
     return render_template('proof_area.html')
 
-
 # Program-verify home-page
 @app.route('/program', methods = ['POST', 'GET'])
 def index_():

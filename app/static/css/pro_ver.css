@@ -33,10 +33,12 @@ div.total{
     border: 1px solid;
     border-radius: 5px;
     font-size: 20px;
+    font-family: Consolas;
 }
 
 .con{
     font-size: 20px;
+    font-family: Consolas;
     display: block;
     width: 90%;
     border: 1px solid;
