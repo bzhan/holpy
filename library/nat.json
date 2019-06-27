@@ -3128,6 +3128,181 @@
             "vars": {
                 "x": "nat"
             }
+        },
+        {
+            "name": "plus_minus",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "minus_def_1, minus x 0 = x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ minus x 0 = x"
+                },
+                {
+                    "args": "add_0_right, minus x 0 = x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ minus x 0 = x"
+                },
+                {
+                    "args": "add_0_right, minus (x + 0) 0 = x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ minus (x + 0) 0 = x"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. minus (x + n) n = x ⟶ minus (x + Suc n) (Suc n) = x"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "minus (x + n) n = x",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "minus (x + n) n = x ⊢ minus (x + n) n = x"
+                },
+                {
+                    "args": "minus_suc, minus (Suc (x + n)) (Suc n) = x",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "minus (x + n) n = x ⊢ minus (Suc (x + n)) (Suc n) = x"
+                },
+                {
+                    "args": "add_Suc_right, minus (x + Suc n) (Suc n) = x",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "minus (x + n) n = x ⊢ minus (x + Suc n) (Suc n) = x"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. minus (x + n) n = x ⟶ minus (x + Suc n) (Suc n) = x"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λy. minus (x + y) y = x, x: y}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ minus (x + y) y = x"
+                }
+            ],
+            "prop": "minus (x + y) y = x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "y"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "minus_def_1"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "add_Suc_right"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "minus_suc"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "plus_minus2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "plus_minus, minus (y + x) x = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ minus (y + x) x = y"
+                },
+                {
+                    "args": "add_comm, minus (x + y) x = y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ minus (x + y) x = y"
+                }
+            ],
+            "prop": "minus (x + y) x = y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "add_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "plus_minus"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
         }
     ],
     "description": "Natural numbers",
