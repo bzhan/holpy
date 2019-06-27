@@ -1,5 +1,7 @@
-//
-//new vm = Vue({
-//    el: '#pro-ver',
-//
-//})
+var vm = new Vue({
+    el: 'div.right',
+    data: {
+        text: 'this is a test'
+        },
+    methods: {}
+})

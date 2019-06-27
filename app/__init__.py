@@ -35,39 +35,49 @@ user_info = {
 }
 
 # Templates
-@app.route('/display_results.html', methods=['GET'])
+@app.route('/display_results.html', methods = ['GET'])
 def display_results_template():
     return render_template('display_results.html')
 
-@app.route('/edit_area.html', methods=['GET'])
+@app.route('/edit_area.html', methods = ['GET'])
 def edit_area_template():
     return render_template('edit_area.html')
 
-@app.route('/proof_area.html', methods=['GET'])
+@app.route('/proof_area.html', methods = ['GET'])
 def proof_area_template():
     return render_template('proof_area.html')
 
 
+# Program-verify home-page
+@app.route('/program', methods = ['POST', 'GET'])
+def index_():
+    return render_template('progm_verify.html')
+
+# Data processing
+@app.route('/program_verify', methods = ['POST', 'GET'])
+def verify():
+    return 'hello'
+
 # Login page
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods = ['GET', 'POST'])
 def index():
     return render_template('login.html')
 
 # Sign out
-@app.route('/sign-out', methods=['get'])
+@app.route('/sign-out', methods = ['get'])
 def sign_out():
     user_info['is_signed_in'] = False
     return redirect('/')
 
 # Register page
-@app.route('/register', methods=['GET'])
+@app.route('/register', methods = ['GET'])
 def register():
     return render_template('register.html')
 
 # Error for user already exists
-@app.route('/register-error', methods=['GET'])
+@app.route('/register-error', methods = ['GET'])
 def register_error():
-    return render_template('register.html', info='User already exists')
+    return render_template('register.html', info = 'User already exists')
 
 # Error for incorrect username or password
 @app.route('/login-error', methods=['GET', 'POST'])

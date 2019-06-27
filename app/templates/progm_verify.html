@@ -2,24 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script type="text/javascript" src="../static/js/vue.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link href="../static/css/pro_ver.css" rel="stylesheet">
     <title>P-V</title>
 </head>
 <body>
     <div id="wrap">
         <div id="pro-ver" class="total left">
-            <form id="program-ver">
-                <span class="title">pre-condition:</span><input name="pre-con" class="con">
+            <form id="program-ver" action="program_verify">
+                <span class="title">pre-condition:</span><input name="pre-condition" class="con">
                 <textarea class="code-content con"></textarea>
                 <span class="title">post-condition:</span><input name="post-condition" class="con">
                 <button name="check" type="submit" class="but">Check</button>
             </form>
         </div>
+        {% raw %}
         <div id="ver-display" class="right">
-            <textarea class="display-con" name="display-area" readonly="readonly"></textarea>
+            <textarea class="display-con" name="display-area" readonly="readonly">{{ text }}</textarea>
         </div>
+        {% endraw %}
     </div>
-    <script src="../static/js/pro_v.js"></script>
+<script type='text/javascript' src="../static/js/pro_v.js"></script>
 </body>
 </html>
