@@ -21,14 +21,19 @@ from syntax import printer, settings
 natT = Type("nat")
 zero = Const("zero", natT)
 Suc = Const("Suc", TFun(natT, natT))
+Pre = Const("Pre", TFun(natT, natT))
 one = Suc(zero)
 plus = Const("plus", TFun(natT, natT, natT))
+minus = Const("minus", TFun(natT, natT, natT))
 times = Const("times", TFun(natT, natT, natT))
 less_eq = Const("less_eq", TFun(natT, natT, boolT))
 less = Const("less", TFun(natT, natT, boolT))
 
 def is_Suc(t):
     return t.is_comb() and t.fun == Suc
+
+def is_Pre(t):
+    return t.is_comb() and t.fun == Pre
 
 def mk_plus(*args):
     if not args:

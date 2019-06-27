@@ -1,0 +1,143 @@
+{
+    "content": [
+        {
+            "name": "finite_numseg",
+            "prop": "finite(m..n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "numseg_empty",
+            "prop": "(m..n = empty_set) = n < m",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "numseg_sing",
+            "num_gaps": 0,
+            "proof": [
+            ],
+            "prop": "n..n = {n}",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "numseg_lrec",
+            "prop": "m <= n --> (m INSERT ((m + 1)..n) = m..n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "neutral",
+            "ty": "def.ax",
+            "type": "('a => 'a => 'a) => 'a"
+        },
+        {
+            "hint_backward": "true",
+            "name": "neutral",
+            "prop": "neutral op = @x. !y. (op x y = y) & (op y x = y)",
+            "ty": "thm.ax",
+            "vars": {
+                "op": "'a => 'a => 'a"
+            }
+        },      
+        {
+            "name": "monoidal",
+            "ty": "def.ax",
+            "type": "('a => 'a => 'a) => bool"
+        },
+        {
+            "hint_backward": "true",
+            "name": "monoidal",
+            "prop": ["monoidal op = (!x y. (op x y = op y x) &",
+                                   "(!x y z. op x (op y z) = op (op x y) z) &",
+                                   "(!x:'a. op (neutral op) x = x"],
+            "ty": "thm.ax",
+            "vars": {
+                "op": "'a => 'a => 'a"
+            }
+        },      
+        {
+            "name": "monoidal_ac",
+            "num_gaps": 0,
+            "proof": [
+             ],
+            "prop": ["monoidal op",
+                          "--> (!a. op (neutral op) a = a) &",
+                              "(!a. op a (neutral op) = a) &",
+                              "(!a b. op a b = op b a) &",
+                              "(!a b c. op (op a b) c = op a (op b c)) &",
+                              "(!a b c. op a (op b c) = op b (op a c))"],
+            "ty": "thm",
+            "vars": {
+                "op": "'a => 'a => 'a"
+            }
+        },
+        {
+            "name": "support",
+            "ty": "def.ax",
+            "type": "('b => 'b => 'b) => ('a => 'b) => 'a set => 'a set"
+        },
+        {
+            "hint_backward": "true",
+            "name": "support",
+            "prop": "support op f s = {x | member x s and ~(f x = neutral op)}",
+            "ty": "thm.ax",
+            "vars": {
+                "op": "'b => 'b => 'b",
+                "f": "'a => 'b",
+                "s": "'a set"
+            }
+        },
+        {
+            "name": "iterate",
+            "ty": "def.ax",
+            "type": "('b => 'b => 'b) => 'a set => ('a => 'b) => 'b"
+        }, 
+        {
+            "hint_backward": "true",
+            "name": "iterate",
+            "prop": ["iterate op s f =", 
+                         "if finite (finite(support op f s)",
+                         "then ITSET (%x a. op (f x) a) (support op f s) (neutral op)",
+                         "else neutral op"],
+            "ty": "thm.ax",
+            "vars": {
+                "op": "'b => 'b => 'b",
+                "f": "'a => 'b",
+                "s": "'a set"
+            }
+        },
+        {
+            "name": "nsum",
+            "ty": "def.ax",
+            "type": "'a set => ('a => nat) => nat"
+        },
+        {
+            "hint_backward": "true",
+            "name": "nsum",
+            "prop": "nsum = iterate (+)",
+            "ty": "thm.ax",
+            "vars": {
+                "f": "'a => nat",
+                "s": "'a set"
+            }
+        }
+    ],
+    "description": "Basic results about iterate.",
+    "imports": [
+        "set"
+    ],
+    "name": "iterate"
+}
