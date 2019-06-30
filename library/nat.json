@@ -25,6 +25,26 @@
             "ty": "type.ind"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "not_Suc",
+            "prop": "~(Suc n = 0)",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "Suc_inj",
+            "prop": "(Suc m = Suc n) = (m = n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
             "name": "Pre",
             "rules": [
                 {
@@ -2340,19 +2360,63 @@
             }
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "less_eq",
-            "prop": "m ≤ n ⟷ (∃p. n = m + p)",
-            "ty": "def",
+            "rules": [
+                {
+                    "prop": "(m <= 0) ⟷ (m = 0)"
+                },
+                {
+                    "prop": "(m <= (Suc n)) ⟷ ((m = (Suc n)) | (m <= n))"
+                }
+            ],
+            "ty": "def.ind",
             "type": "nat => nat => bool"
         },
         {
             "name": "less",
-            "prop": "less m n = (less_eq m n & ~(m = n))",
-            "ty": "def",
+            "rules": [
+                {
+                    "prop": "m < 0 ⟷ false"
+                },
+                {
+                    "prop": "m < Suc n ⟷ m = n | m < n"
+                }
+            ],
+            "ty": "def.ind",
             "type": "nat => nat => bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "lesseq_Suc_less",
+            "prop": "Suc m ≤ n ⟷ m < n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }   
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "less_eq_exist",
+            "prop": "m ≤ n ⟷ (∃p. n = m + p)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }   
+        },
+        {
+            "name": "less_lesseq",
+            "prop": "less m n = (less_eq m n & ~(m = n))",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }   
         },
         {
             "attributes": [],
@@ -3298,6 +3362,24 @@
                     "theorem": "plus_minus"
                 }
             ],
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "sub_eq_0",
+            "prop": "(minus x y = 0) = (x <= y)",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_subr2",
+            "prop": "minus x (x + y) = 0",
             "ty": "thm",
             "vars": {
                 "x": "nat",
