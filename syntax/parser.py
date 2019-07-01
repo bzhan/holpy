@@ -53,7 +53,9 @@ grammar = r"""
 
     ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
 
-    ?times: times "*" big_union | big_union     // Multiplication: priority 70
+    ?uminus: "-" uminus -> uminus | big_union   // Unary minus: priority 80
+
+    ?times: times "*" big_union | uminus        // Multiplication: priority 70
 
     ?inter: inter ("Int"|"∩") times | times     // Intersection: priority 70
 
@@ -216,6 +218,9 @@ class HOLTransformer(Transformer):
 
     def minus(self, lhs, rhs):
         return Const("minus", None)(lhs, rhs)
+
+    def uminus(self, x):
+        return Const("uminus", None)(x)
 
     def less_eq(self, lhs, rhs):
         from data import nat

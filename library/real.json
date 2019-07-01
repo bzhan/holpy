@@ -12,14 +12,22 @@
             "overload": "plus"
         },
         {
+            "ascii_op": "-",
             "name": "uminus",
             "ty": "def.ax",
-            "type": "real => real"
+            "type": "'a => 'a"
         },
         {
-            "name": "rminus",
+            "name": "real_uminus",
             "ty": "def.ax",
-            "type": "real => real => real"
+            "type": "real => real",
+            "overload": "uminus"
+        },
+        {
+            "name": "real_minus",
+            "ty": "def.ax",
+            "type": "real => real => real",
+            "overload": "minus"
         },
         {
             "name": "real_times",

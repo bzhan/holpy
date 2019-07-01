@@ -222,6 +222,11 @@ class ParserTest(unittest.TestCase):
         test_data = [
             ("x + y", "real"),
             ("x * y", "real"),
+            ("x - y", "real"),
+            ("-x", "real"),
+            ("x - -y", "real"),
+            ("--x", "real"),
+            ("-(x - y)", "real"),
         ]
 
         for s, Ts in test_data:
