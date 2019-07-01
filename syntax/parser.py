@@ -59,7 +59,9 @@ grammar = r"""
 
     ?plus: plus "+" inter | inter       // Addition: priority 65
 
-    ?append: plus "@" append | plus     // Append: priority 65
+    ?minus: minus "-" plus | plus       // Subtraction: priority 65
+
+    ?append: minus "@" append | minus     // Append: priority 65
 
     ?cons: append "#" cons | append     // Cons: priority 65
 
@@ -211,6 +213,9 @@ class HOLTransformer(Transformer):
 
     def plus(self, lhs, rhs):
         return Const("plus", None)(lhs, rhs)
+
+    def minus(self, lhs, rhs):
+        return Const("minus", None)(lhs, rhs)
 
     def less_eq(self, lhs, rhs):
         from data import nat
