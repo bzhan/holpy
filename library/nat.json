@@ -25,9 +25,6 @@
             "ty": "type.ind"
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "not_Suc",
             "prop": "~(Suc n = 0)",
             "ty": "thm",
@@ -2363,10 +2360,10 @@
             "name": "less_eq",
             "rules": [
                 {
-                    "prop": "(m <= 0) ⟷ (m = 0)"
+                    "prop": "m <= 0 ⟷ m = 0"
                 },
                 {
-                    "prop": "(m <= (Suc n)) ⟷ ((m = (Suc n)) | (m <= n))"
+                    "prop": "m <= Suc n ⟷ m = Suc n | m <= n"
                 }
             ],
             "ty": "def.ind",
@@ -2395,7 +2392,7 @@
             "vars": {
                 "m": "nat",
                 "n": "nat"
-            }   
+            }
         },
         {
             "attributes": [
@@ -2407,7 +2404,7 @@
             "vars": {
                 "m": "nat",
                 "n": "nat"
-            }   
+            }
         },
         {
             "name": "less_lesseq",
@@ -2416,7 +2413,7 @@
             "vars": {
                 "m": "nat",
                 "n": "nat"
-            }   
+            }
         },
         {
             "attributes": [],
@@ -2440,7 +2437,7 @@
                     "th": "⊢ ∃a. n = n + a"
                 },
                 {
-                    "args": "less_eq_def, n ≤ n",
+                    "args": "less_eq_exist, n ≤ n",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -2454,7 +2451,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "less_eq_def"
+                    "theorem": "less_eq_exist"
                 },
                 {
                     "goal_id": "0",
@@ -2492,7 +2489,7 @@
                     "th": "m ≤ n ⊢ m ≤ n"
                 },
                 {
-                    "args": "less_eq_def",
+                    "args": "less_eq_exist",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -2501,7 +2498,7 @@
                     "th": "k ≤ m ⊢ ∃p. m = k + p"
                 },
                 {
-                    "args": "less_eq_def",
+                    "args": "less_eq_exist",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -2574,7 +2571,7 @@
                     "th": "k ≤ m, m ≤ n, m = k + p, n = m + q ⊢ ∃a. n = k + a"
                 },
                 {
-                    "args": "less_eq_def, k ≤ n",
+                    "args": "less_eq_exist, k ≤ n",
                     "id": "12",
                     "prevs": [
                         "11"
@@ -2603,17 +2600,12 @@
             "prop": "k <= m --> m <= n --> k <= n",
             "steps": [
                 {
-                    "goal_id": "2",
-                    "method_name": "rewrite_goal",
-                    "theorem": "less_eq_def"
-                },
-                {
                     "fact_ids": [
                         "0"
                     ],
                     "goal_id": "2",
                     "method_name": "rewrite_fact",
-                    "theorem": "less_eq_def"
+                    "theorem": "less_eq_exist"
                 },
                 {
                     "fact_ids": [
@@ -2621,7 +2613,7 @@
                     ],
                     "goal_id": "3",
                     "method_name": "rewrite_fact",
-                    "theorem": "less_eq_def"
+                    "theorem": "less_eq_exist"
                 },
                 {
                     "fact_ids": [
@@ -2638,6 +2630,11 @@
                     "goal_id": "6",
                     "method_name": "exists_elim",
                     "names": "q"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "theorem": "less_eq_exist"
                 },
                 {
                     "goal_id": "8",

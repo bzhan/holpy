@@ -658,9 +658,9 @@ class nat_const_less_eq_macro(ProofTermMacro):
         assert from_binary(m) <= from_binary(n)
         p = to_binary(from_binary(n) - from_binary(m))
         eq = ProofTerm.symmetric(norm_full().get_proof_term(thy, plus(m, p)))
-        goal2 = rewr_conv('less_eq_def').eval(thy, goal).prop.rhs
+        goal2 = rewr_conv('less_eq_exist').eval(thy, goal).prop.rhs
         ex_eq = apply_theorem(thy, 'exI', eq, concl=goal2)
-        return ex_eq.on_prop(thy, rewr_conv('less_eq_def', sym=True))
+        return ex_eq.on_prop(thy, rewr_conv('less_eq_exist', sym=True))
 
 
 class nat_eq_conv(Conv):
