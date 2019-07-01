@@ -25,6 +25,23 @@
             "ty": "type.ind"
         },
         {
+            "name": "not_Suc",
+            "prop": "~(Suc n = 0)",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "name": "Suc_inj",
+            "prop": "(Suc m = Suc n) = (m = n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
             "name": "Pre",
             "rules": [
                 {
@@ -40,6 +57,11 @@
         {
             "ascii_op": "+",
             "name": "plus",
+            "ty": "def.ax",
+            "type": "'a => 'a => 'a"
+        },
+        {
+            "name": "nat_plus",
             "rules": [
                 {
                     "prop": "0 + n = n"
@@ -49,7 +71,8 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => nat"
+            "type": "nat => nat => nat",
+            "overload": "plus"
         },
         {
             "ascii_op": "*",
@@ -81,7 +104,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "plus_def_1, 0 + 0 = 0",
+                    "args": "nat_plus_def_1, 0 + 0 = 0",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -118,7 +141,7 @@
                     "th": "n + 0 = n ⊢ Suc (n + 0) = Suc n"
                 },
                 {
-                    "args": "plus_def_2, Suc n + 0 = Suc n",
+                    "args": "nat_plus_def_2, Suc n + 0 = Suc n",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
@@ -159,7 +182,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_1"
+                    "theorem": "nat_plus_def_1"
                 },
                 {
                     "goal_id": "1",
@@ -169,7 +192,7 @@
                 {
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_2"
+                    "theorem": "nat_plus_def_2"
                 },
                 {
                     "fact_ids": [
@@ -189,14 +212,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "plus_def_1, Suc (0 + x) = Suc x",
+                    "args": "nat_plus_def_1, Suc (0 + x) = Suc x",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
                     "th": "⊢ Suc (0 + x) = Suc x"
                 },
                 {
-                    "args": "plus_def_2, 1 + x = Suc x",
+                    "args": "nat_plus_def_2, 1 + x = Suc x",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -216,7 +239,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "plus_def_1, 0 + 1 = 1",
+                    "args": "nat_plus_def_1, 0 + 1 = 1",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -253,7 +276,7 @@
                     "th": "n + 1 = Suc n ⊢ Suc (n + 1) = Suc (Suc n)"
                 },
                 {
-                    "args": "plus_def_2, Suc n + 1 = Suc (Suc n)",
+                    "args": "nat_plus_def_2, Suc n + 1 = Suc (Suc n)",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
@@ -294,7 +317,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "plus_def_1, 0 + Suc y = Suc (0 + y)",
+                    "args": "nat_plus_def_1, 0 + Suc y = Suc (0 + y)",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -331,7 +354,7 @@
                     "th": "n + Suc y = Suc (n + y) ⊢ Suc (n + Suc y) = Suc (Suc (n + y))"
                 },
                 {
-                    "args": "plus_def_2, Suc n + Suc y = Suc (Suc n + y)",
+                    "args": "nat_plus_def_2, Suc n + Suc y = Suc (Suc n + y)",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
@@ -373,7 +396,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "plus_def_1, 0 + y = y",
+                    "args": "nat_plus_def_1, 0 + y = y",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -428,7 +451,7 @@
                     "th": "x + y = y + x ⊢ Suc (x + y) = y + Suc x"
                 },
                 {
-                    "args": "plus_def_2, Suc x + y = y + Suc x",
+                    "args": "nat_plus_def_2, Suc x + y = y + Suc x",
                     "id": "2.4",
                     "prevs": [
                         "2.3"
@@ -474,7 +497,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_1"
+                    "theorem": "nat_plus_def_1"
                 },
                 {
                     "goal_id": "2",
@@ -484,7 +507,7 @@
                 {
                     "goal_id": "2.2",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_2"
+                    "theorem": "nat_plus_def_2"
                 },
                 {
                     "goal_id": "2.2",
@@ -510,7 +533,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "plus_def_1, 0 + y + z = 0 + (y + z)",
+                    "args": "nat_plus_def_1, 0 + y + z = 0 + (y + z)",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -547,7 +570,7 @@
                     "th": "x + y + z = x + (y + z) ⊢ Suc (x + y + z) = Suc (x + (y + z))"
                 },
                 {
-                    "args": "plus_def_2, Suc (x + y) + z = Suc (x + (y + z))",
+                    "args": "nat_plus_def_2, Suc (x + y) + z = Suc (x + (y + z))",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
@@ -556,7 +579,7 @@
                     "th": "x + y + z = x + (y + z) ⊢ Suc (x + y) + z = Suc (x + (y + z))"
                 },
                 {
-                    "args": "plus_def_2, Suc x + y + z = Suc x + (y + z)",
+                    "args": "nat_plus_def_2, Suc x + y + z = Suc x + (y + z)",
                     "id": "1.4",
                     "prevs": [
                         "1.3"
@@ -597,7 +620,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_1"
+                    "theorem": "nat_plus_def_1"
                 },
                 {
                     "goal_id": "1",
@@ -607,12 +630,12 @@
                 {
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_2"
+                    "theorem": "nat_plus_def_2"
                 },
                 {
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_2"
+                    "theorem": "nat_plus_def_2"
                 },
                 {
                     "fact_ids": [
@@ -665,7 +688,7 @@
                     "th": "n * 0 = 0 ⊢ n * 0 = 0"
                 },
                 {
-                    "args": "plus_def_1, 0 + n * 0 = 0",
+                    "args": "nat_plus_def_1, 0 + n * 0 = 0",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
@@ -730,7 +753,7 @@
                 {
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_1"
+                    "theorem": "nat_plus_def_1"
                 }
             ],
             "ty": "thm",
@@ -816,7 +839,7 @@
                     "th": "n * 1 = n ⊢ Suc (n * 1) = Suc n"
                 },
                 {
-                    "args": "plus_def_1, Suc (0 + n * 1) = Suc n",
+                    "args": "nat_plus_def_1, Suc (0 + n * 1) = Suc n",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
@@ -825,7 +848,7 @@
                     "th": "n * 1 = n ⊢ Suc (0 + n * 1) = Suc n"
                 },
                 {
-                    "args": "plus_def_2, 1 + n * 1 = Suc n",
+                    "args": "nat_plus_def_2, 1 + n * 1 = Suc n",
                     "id": "1.4",
                     "prevs": [
                         "1.3"
@@ -882,7 +905,7 @@
                     "th": "⊢ 0 * Suc y = 0 * y"
                 },
                 {
-                    "args": "plus_def_1, 0 * Suc y = 0 + 0 * y",
+                    "args": "nat_plus_def_1, 0 * Suc y = 0 + 0 * y",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -929,7 +952,7 @@
                     "th": "n * Suc y = n + n * y ⊢ Suc (y + n * Suc y) = Suc (n + (y + n * y))"
                 },
                 {
-                    "args": "plus_def_2, Suc y + n * Suc y = Suc n + (y + n * y)",
+                    "args": "nat_plus_def_2, Suc y + n * Suc y = Suc n + (y + n * y)",
                     "id": "2.4",
                     "prevs": [
                         "2.3"
@@ -1649,7 +1672,7 @@
                     "th": "x + y = y ⊢ x + y = y"
                 },
                 {
-                    "args": "plus_def_1, x + y = 0 + y",
+                    "args": "nat_plus_def_1, x + y = 0 + y",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -1687,7 +1710,7 @@
                 {
                     "goal_id": "1",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_1"
+                    "theorem": "nat_plus_def_1"
                 },
                 {
                     "fact_ids": [
@@ -2247,7 +2270,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "plus_def_1, 0 = 0 + 0",
+                    "args": "nat_plus_def_1, 0 = 0 + 0",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -2340,19 +2363,63 @@
             }
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "less_eq",
-            "prop": "m ≤ n ⟷ (∃p. n = m + p)",
-            "ty": "def",
+            "rules": [
+                {
+                    "prop": "m <= 0 ⟷ m = 0"
+                },
+                {
+                    "prop": "m <= Suc n ⟷ m = Suc n | m <= n"
+                }
+            ],
+            "ty": "def.ind",
             "type": "nat => nat => bool"
         },
         {
             "name": "less",
-            "prop": "less m n = (less_eq m n & ~(m = n))",
-            "ty": "def",
+            "rules": [
+                {
+                    "prop": "m < 0 ⟷ false"
+                },
+                {
+                    "prop": "m < Suc n ⟷ m = n | m < n"
+                }
+            ],
+            "ty": "def.ind",
             "type": "nat => nat => bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "lesseq_Suc_less",
+            "prop": "Suc m ≤ n ⟷ m < n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "less_eq_exist",
+            "prop": "m ≤ n ⟷ (∃p. n = m + p)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "less_lesseq",
+            "prop": "less m n = (less_eq m n & ~(m = n))",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
         },
         {
             "attributes": [],
@@ -2376,7 +2443,7 @@
                     "th": "⊢ ∃a. n = n + a"
                 },
                 {
-                    "args": "less_eq_def, n ≤ n",
+                    "args": "less_eq_exist, n ≤ n",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -2390,7 +2457,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "less_eq_def"
+                    "theorem": "less_eq_exist"
                 },
                 {
                     "goal_id": "0",
@@ -2428,7 +2495,7 @@
                     "th": "m ≤ n ⊢ m ≤ n"
                 },
                 {
-                    "args": "less_eq_def",
+                    "args": "less_eq_exist",
                     "id": "2",
                     "prevs": [
                         "0"
@@ -2437,7 +2504,7 @@
                     "th": "k ≤ m ⊢ ∃p. m = k + p"
                 },
                 {
-                    "args": "less_eq_def",
+                    "args": "less_eq_exist",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -2510,7 +2577,7 @@
                     "th": "k ≤ m, m ≤ n, m = k + p, n = m + q ⊢ ∃a. n = k + a"
                 },
                 {
-                    "args": "less_eq_def, k ≤ n",
+                    "args": "less_eq_exist, k ≤ n",
                     "id": "12",
                     "prevs": [
                         "11"
@@ -2539,17 +2606,12 @@
             "prop": "k <= m --> m <= n --> k <= n",
             "steps": [
                 {
-                    "goal_id": "2",
-                    "method_name": "rewrite_goal",
-                    "theorem": "less_eq_def"
-                },
-                {
                     "fact_ids": [
                         "0"
                     ],
                     "goal_id": "2",
                     "method_name": "rewrite_fact",
-                    "theorem": "less_eq_def"
+                    "theorem": "less_eq_exist"
                 },
                 {
                     "fact_ids": [
@@ -2557,7 +2619,7 @@
                     ],
                     "goal_id": "3",
                     "method_name": "rewrite_fact",
-                    "theorem": "less_eq_def"
+                    "theorem": "less_eq_exist"
                 },
                 {
                     "fact_ids": [
@@ -2574,6 +2636,11 @@
                     "goal_id": "6",
                     "method_name": "exists_elim",
                     "names": "q"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "rewrite_goal",
+                    "theorem": "less_eq_exist"
                 },
                 {
                     "goal_id": "8",
@@ -3298,6 +3365,24 @@
                     "theorem": "plus_minus"
                 }
             ],
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "sub_eq_0",
+            "prop": "(minus x y = 0) = (x <= y)",
+            "ty": "thm",
+            "vars": {
+                "x": "nat",
+                "y": "nat"
+            }
+        },
+        {
+            "name": "add_subr2",
+            "prop": "minus x (x + y) = 0",
             "ty": "thm",
             "vars": {
                 "x": "nat",

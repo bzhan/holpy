@@ -43,6 +43,21 @@ def unify(uf, T1, T2):
     else:
         raise TypeInferenceException("Unable to unify " + str(T1) + " with " + str(T2))
 
+def replace_overload(thy, t):
+    """Replace overloaded constants with actual ones."""
+    def replace(t):
+        if t.is_const():
+            if thy.is_overload_const(t.name):
+                name_T = thy.get_overload_const(t.name, t.T)
+                t.name = name_T
+        elif t.is_comb():
+            replace(t.fun)
+            replace(t.arg)
+        elif t.is_abs():
+            replace(t.body)
+    
+    replace(t)
+
 def type_infer(thy, ctxt, t, *, forbid_internal=True):
     """Perform type inference on the given term. The input term
     has all types marked None, except those subterms whose type is
@@ -150,6 +165,8 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
     for k, v in tyinst.items():
         if forbid_internal and is_internal_type(v):
             raise TypeInferenceException("Unspecified type\n" + repr(t))
+
+    replace_overload(thy, t)
 
     return t
 

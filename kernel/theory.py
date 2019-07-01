@@ -240,6 +240,48 @@ class Theory():
         
         return data[name]
 
+    def add_overload_const(self, name, T, name_T):
+        """Add overloading for the given name and type T, translating
+        the name to name_T.
+
+        """
+        data = self.get_data("overload")
+        if name not in data:
+            data[name] = list()
+        data[name].append((T, name_T))
+
+    def is_overload_const(self, name):
+        """Whether the given name is an overloaded constant."""
+        data = self.get_data("overload")
+        return name in data
+
+    def get_overload_const(self, name, T):
+        """Returns the overloaded constant with given overloaded name
+        and type.
+
+        """
+        data = self.get_data("overload")
+        if name not in data:
+            raise TheoryException("Overload constant " + name + " not found")
+        for T2, name_T in data[name]:
+            if T == T2:
+                return name_T
+
+        raise TheoryException("Constant " + name + " is not overloaded for type " + str(T))
+
+    def lookup_overload_const(self, name_T):
+        """Given the more concrete constant name, return the general
+        name of the constant. If no name is found, return the original name.
+
+        """
+        data = self.get_data("overload")
+        for name, lst in data.items():
+            for _, name_T2 in lst:
+                if name_T == name_T2:
+                    return name
+
+        return name_T
+
     @staticmethod
     def EmptyTheory():
         """Empty theory, with the absolute minimum setup."""
@@ -252,6 +294,7 @@ class Theory():
         thy.add_data_type("proof_macro")
         thy.add_data_type("method")
         thy.add_data_type("attributes")
+        thy.add_data_type("overload")
 
         # Fundamental types.
         thy.add_type_sig("bool", 0)
@@ -471,6 +514,12 @@ class Theory():
 
         self.add_attribute(ext.name, ext.attribute)
 
+    def extend_overload(self, ext):
+        """Extend the theory by adding an overloading."""
+        assert ext.ty == Extension.OVERLOAD, "extend_overload"
+
+        self.add_overload_const(ext.name, ext.T, ext.name_T)
+
     def unchecked_extend(self, thy_ext):
         """Perform the given theory extension without proof checking."""
         for ext in thy_ext.get_extensions():
@@ -488,6 +537,8 @@ class Theory():
                 self.add_global_proof_macro(ext.name)
             elif ext.ty == Extension.METHOD:
                 self.add_global_method(ext.name)
+            elif ext.ty == Extension.OVERLOAD:
+                self.extend_overload(ext)
             else:
                 raise TypeError()
 
@@ -517,6 +568,8 @@ class Theory():
                 self.add_global_proof_macro(ext.name)
             elif ext.ty == Extension.METHOD:
                 self.add_global_method(ext.name)
+            elif ext.ty == Extension.OVERLOAD:
+                self.extend_overload(ext)
             else:
                 raise TypeError()
 

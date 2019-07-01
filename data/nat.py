@@ -127,7 +127,7 @@ class add_conv(Conv):
             raise ConvException
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            cv = rewr_conv("plus_def_1")
+            cv = rewr_conv("nat_plus_def_1")
         elif n2 == zero:
             cv = rewr_conv("add_0_right")
         elif n1 == one:
@@ -243,7 +243,7 @@ class norm_add_atom_1(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
     def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv("plus_def_1")
+            cv = rewr_conv("nat_plus_def_1")
         elif t.arg == zero:
             cv = rewr_conv("add_0_right")
         elif is_plus(t.arg1):
@@ -388,7 +388,7 @@ class norm_add_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
     def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv("plus_def_1")
+            cv = rewr_conv("nat_plus_def_1")
         elif t.arg == zero:
             cv = rewr_conv("add_0_right")
         elif is_plus(t.arg1):
@@ -658,9 +658,9 @@ class nat_const_less_eq_macro(ProofTermMacro):
         assert from_binary(m) <= from_binary(n)
         p = to_binary(from_binary(n) - from_binary(m))
         eq = ProofTerm.symmetric(norm_full().get_proof_term(thy, plus(m, p)))
-        goal2 = rewr_conv('less_eq_def').eval(thy, goal).prop.rhs
+        goal2 = rewr_conv('less_eq_exist').eval(thy, goal).prop.rhs
         ex_eq = apply_theorem(thy, 'exI', eq, concl=goal2)
-        return ex_eq.on_prop(thy, rewr_conv('less_eq_def', sym=True))
+        return ex_eq.on_prop(thy, rewr_conv('less_eq_exist', sym=True))
 
 
 class nat_eq_conv(Conv):
