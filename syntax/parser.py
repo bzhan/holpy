@@ -512,6 +512,8 @@ def parse_extension(thy, data):
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
+        if 'overload' in data:
+            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
 
     elif data['ty'] == 'def.pred':
         T = parse_type(thy, data['type'])

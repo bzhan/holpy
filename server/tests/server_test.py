@@ -281,7 +281,7 @@ class ServerTest(unittest.TestCase):
         n = Var("n", nat.natT)
         state = ProofState.init_state(thy, [n], [], Term.mk_equals(nat.plus(nat.zero, n), n))
         search_res = state.apply_search(0, method.rewrite_goal())
-        self.assertEqual([res['theorem'] for res in search_res], ["plus_def_1"])
+        self.assertEqual([res['theorem'] for res in search_res], ["nat_plus_def_1"])
 
     def testRewriteGoalWithAssum(self):
         Ta = TVar("a")

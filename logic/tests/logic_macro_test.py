@@ -86,7 +86,7 @@ class LogicMacroTest(unittest.TestCase):
         zero = nat.zero
         plus = nat.mk_plus
         prf = Proof()
-        prf.add_item(0, "rewrite_goal", args=("plus_def_1", eq(plus(zero,zero),zero)))
+        prf.add_item(0, "rewrite_goal", args=("nat_plus_def_1", eq(plus(zero,zero),zero)))
 
         th = Thm([], eq(plus(zero,zero),zero))
         rpt = ProofReport()

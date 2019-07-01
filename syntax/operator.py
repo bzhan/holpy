@@ -51,22 +51,25 @@ class OperatorTable():
             OperatorData("comp_fun", 60, assoc=RIGHT, ascii_op="O", unicode_op="∘"),
         ]
 
-    def get_info_for_fun(self, t):
-        """Returns data associated to a function term. The result is None
-        if the function is not found.
 
-        """
-        LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
-        if t.is_const():
-            if t.name == 'equals':
-                Targs, _ = t.T.strip_type()
-                if Targs[0] == boolT:
-                    return OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷")
-                else:
-                    return OperatorData("equals", 50, assoc=LEFT, ascii_op="=")
+def get_info_for_fun(thy, t):
+    """Returns data associated to a function term. The result is None
+    if the function is not found.
+
+    """
+    LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
+    if t.is_const():
+        if t.name == 'equals':
+            Targs, _ = t.T.strip_type()
+            if Targs[0] == boolT:
+                return OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷")
             else:
-                for d in self.data:
-                    if d.fun_name == t.name:
-                        return d
+                return OperatorData("equals", 50, assoc=LEFT, ascii_op="=")
+        else:
+            # First attempt to translate to general name
+            name_lookup = thy.lookup_overload_const(t.name)
+            for d in thy.get_data("operator").data:
+                if d.fun_name == name_lookup:
+                    return d
 
-        return None
+    return None

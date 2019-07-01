@@ -73,7 +73,7 @@ class TacticTest(unittest.TestCase):
         n = Var('n', natT)
         goal = Thm.mk_equals(plus(zero, n), n)
         rewrite_tac = tactic.rewrite()
-        pt = rewrite_tac.get_proof_term(thy, ProofTerm.sorry(goal), args='plus_def_1')
+        pt = rewrite_tac.get_proof_term(thy, ProofTerm.sorry(goal), args='nat_plus_def_1')
         prf = pt.export()
         self.assertEqual(thy.check_proof(prf), goal)
 

@@ -171,7 +171,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "plus_def_1, 0 + 5 = 5",
+                    "args": "nat_plus_def_1, 0 + 5 = 5",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -261,7 +261,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_1"
+                    "theorem": "nat_plus_def_1"
                 },
                 {
                     "goal_id": "1",

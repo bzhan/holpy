@@ -327,7 +327,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "plus_def_1, length ys = 0 + length ys",
+                    "args": "nat_plus_def_1, length ys = 0 + length ys",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -380,7 +380,7 @@
                     "th": "length (xs @ ys) = length xs + length ys ⊢ length (xs @ ys) = length xs + length ys"
                 },
                 {
-                    "args": "plus_def_2, Suc (length xs + length ys) = Suc (length xs) + length ys",
+                    "args": "nat_plus_def_2, Suc (length xs + length ys) = Suc (length xs) + length ys",
                     "id": "3.3",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -458,7 +458,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_1"
+                    "theorem": "nat_plus_def_1"
                 },
                 {
                     "goal_id": "3",
@@ -485,7 +485,7 @@
                 {
                     "goal_id": "3.3",
                     "method_name": "rewrite_goal",
-                    "theorem": "plus_def_2"
+                    "theorem": "nat_plus_def_2"
                 }
             ],
             "ty": "thm",

@@ -127,7 +127,7 @@ class add_conv(Conv):
             raise ConvException
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            cv = rewr_conv("plus_def_1")
+            cv = rewr_conv("nat_plus_def_1")
         elif n2 == zero:
             cv = rewr_conv("add_0_right")
         elif n1 == one:
@@ -243,7 +243,7 @@ class norm_add_atom_1(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
     def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv("plus_def_1")
+            cv = rewr_conv("nat_plus_def_1")
         elif t.arg == zero:
             cv = rewr_conv("add_0_right")
         elif is_plus(t.arg1):
@@ -388,7 +388,7 @@ class norm_add_monomial(Conv):
     """Normalize expression of the form (a_1 + ... + a_n) + a."""
     def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv("plus_def_1")
+            cv = rewr_conv("nat_plus_def_1")
         elif t.arg == zero:
             cv = rewr_conv("add_0_right")
         elif is_plus(t.arg1):
