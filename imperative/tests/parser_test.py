@@ -3,8 +3,8 @@
 import unittest
 
 from logic import basic
-from imp import imp
-from imp.parser import parse_com, process_file
+from imperative import imp
+from imperative.parser import parse_com, process_file
 from syntax import parser
 from syntax import printer
 

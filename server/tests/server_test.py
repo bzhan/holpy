@@ -19,7 +19,7 @@ from syntax import printer
 from server import server
 from server import method
 from server.server import ProofState
-from imp import imp
+from imperative import imp
 
 thy = basic.load_theory('logic_base')
 

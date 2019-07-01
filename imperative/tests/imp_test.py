@@ -7,7 +7,7 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.report import ProofReport
 from data import nat
-from imp import imp
+from imperative import imp
 from logic import logic
 from data.function import mk_const_fun, mk_fun_upd
 from logic import basic

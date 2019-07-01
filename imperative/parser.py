@@ -10,7 +10,7 @@ from logic import basic
 from logic import logic
 from data import nat
 from data.function import mk_const_fun, mk_fun_upd
-from imp import imp
+from imperative import imp
 from logic.proofterm import ProofTermDeriv
 from syntax import printer
 from syntax import json_output

@@ -12,7 +12,7 @@ from syntax import parser, printer, settings
 from server import server, method
 from logic import basic
 from logic import induct
-from imp import imp
+from imperative import imp
 
 
 app = Flask(__name__, static_url_path='/static')
