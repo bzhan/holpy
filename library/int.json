@@ -18,6 +18,11 @@
             "type": "'a => 'a"
         },
         {
+            "name": "abs",
+            "ty": "def.ax",
+            "type": "'a => 'a"
+        },
+        {
             "name": "int_uminus",
             "ty": "def.ax",
             "type": "int => int",
@@ -34,6 +39,30 @@
             "ty": "def.ax",
             "type": "int => int => int",
             "overload": "times"
+        },
+        {
+            "name": "int_less_eq",
+            "ty": "def.ax",
+            "type": "int => int => bool",
+            "overload": "less_eq"
+        },
+        {
+            "name": "int_less",
+            "ty": "def.ax",
+            "type": "int => int => bool",
+            "overload": "less"
+        },
+        {
+            "name": "int_zero",
+            "ty": "def.ax",
+            "type": "int"
+        },
+        {
+            "name": "int_abs",
+            "ty": "def",
+            "type": "int => int",
+            "prop": "int_abs n = (if int_zero <= n then n else -n)",
+            "overload": "abs"
         },
         {
             "name": "int_add_assoc",

@@ -81,6 +81,30 @@
                 "x": "real",
                 "y": "real"
             }
+        },
+        {
+            "name": "real_less_eq",
+            "ty": "def.ax",
+            "type": "real => real => bool",
+            "overload": "less_eq"
+        },
+        {
+            "name": "real_less",
+            "ty": "def.ax",
+            "type": "real => real => bool",
+            "overload": "less"
+        },
+        {
+            "name": "real_zero",
+            "ty": "def.ax",
+            "type": "real"
+        },
+        {
+            "name": "real_abs",
+            "ty": "def",
+            "type": "real => real",
+            "prop": "real_abs n = (if real_zero <= n then n else -n)",
+            "overload": "abs"
         }
     ],
     "description": "real numbers",

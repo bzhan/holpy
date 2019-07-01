@@ -1,0 +1,25 @@
+{
+    "content": [
+        {
+            "ty": "def",
+            "type": "(nat => real) => real => bool",
+            "name": "has_limit",
+            "prop": "has_limit f x <--> (!e. real_zero < e --> (?N. !n. N <= n --> real_abs (f n - x) < e))"
+        },
+        {
+            "ty": "thm",
+            "prop": "has_limit f x --> has_limit f y --> x = y",
+            "name": "has_limit_unique",
+            "vars": {
+                "f": "nat => real",
+                "x": "real",
+                "y": "real"
+            }
+        }
+    ],
+    "description": "limits",
+    "imports": [
+        "real"
+    ],
+    "name": "limits"
+}

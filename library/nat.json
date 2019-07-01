@@ -2376,7 +2376,19 @@
             }
         },
         {
+            "ascii_op": "<=",
             "name": "less_eq",
+            "ty": "def.ax",
+            "type": "'a => 'a => bool"
+        },
+        {
+            "ascii_op": "<",
+            "name": "less",
+            "ty": "def.ax",
+            "type": "'a => 'a => bool"
+        },
+        {
+            "name": "nat_less_eq",
             "rules": [
                 {
                     "prop": "m <= 0 ⟷ m = 0"
@@ -2386,10 +2398,11 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => bool"
+            "type": "nat => nat => bool",
+            "overload": "less_eq"
         },
         {
-            "name": "less",
+            "name": "nat_less",
             "rules": [
                 {
                     "prop": "m < 0 ⟷ false"
@@ -2399,7 +2412,8 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => bool"
+            "type": "nat => nat => bool",
+            "overload": "less"
         },
         {
             "attributes": [

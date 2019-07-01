@@ -223,12 +223,10 @@ class HOLTransformer(Transformer):
         return Const("uminus", None)(x)
 
     def less_eq(self, lhs, rhs):
-        from data import nat
-        return nat.less_eq(lhs, rhs)
+        return Const("less_eq", None)(lhs, rhs)
 
     def less(self, lhs, rhs):
-        from data import nat
-        return nat.less(lhs, rhs)
+        return Const("less", None)(lhs, rhs)
 
     def append(self, lhs, rhs):
         return Const("append", None)(lhs, rhs)

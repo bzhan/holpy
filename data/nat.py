@@ -26,8 +26,8 @@ one = Suc(zero)
 plus = Const("nat_plus", TFun(natT, natT, natT))
 minus = Const("nat_minus", TFun(natT, natT, natT))
 times = Const("nat_times", TFun(natT, natT, natT))
-less_eq = Const("less_eq", TFun(natT, natT, boolT))
-less = Const("less", TFun(natT, natT, boolT))
+less_eq = Const("nat_less_eq", TFun(natT, natT, boolT))
+less = Const("nat_less", TFun(natT, natT, boolT))
 
 def is_Suc(t):
     return t.is_comb() and t.fun == Suc
