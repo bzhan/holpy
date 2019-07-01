@@ -12,9 +12,10 @@ from kernel.type import TFun
 from kernel.term import Term, Var, boolT
 from kernel.thm import Thm
 from kernel.macro import ProofMacro, global_macros
+from kernel.theory import Method, global_methods
 from logic import logic
 from data import nat
-from syntax import printer
+from syntax import printer, settings
 
 
 def convert(t):
@@ -103,7 +104,29 @@ class Z3Macro(ProofMacro):
     def expand(self, prefix, thy, args, prevs):
         raise NotImplementedError
 
+class Z3Method(Method):
+    """Method invoking SMT solver Z3."""
+    def __init__(self):
+        self.sig = []
+
+    def search(self, state, id, prevs):
+        return [{}]
+
+    @settings.with_settings
+    def display_step(self, state, id, data, prevs):
+        return printer.N("Apply Z3")
+
+    def apply(self, state, id, data, prevs):
+        assert z3_loaded, "Z3 method: not installed"
+        goal = state.get_proof_item(id).th.prop
+        assert solve(goal), "Z3 method: not solved"
+        state.set_line(id, 'z3', args=goal, prevs=[])
+
 
 global_macros.update({
     "z3": Z3Macro(),
+})
+
+global_methods.update({
+    "z3": Z3Method(),
 })
