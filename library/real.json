@@ -6,9 +6,10 @@
             "ty": "type.ax"
         },
         {
-            "name": "rplus",
+            "name": "real_plus",
             "ty": "def.ax",
-            "type": "real => real => real"
+            "type": "real => real => real",
+            "overload": "plus"
         },
         {
             "name": "uminus",
@@ -21,9 +22,10 @@
             "type": "real => real => real"
         },
         {
-            "name": "rtimes",
+            "name": "real_times",
             "ty": "def.ax",
-            "type": "real => real => real"
+            "type": "real => real => real",
+            "overload": "times"
         },
         {
             "name": "rinverse",
@@ -41,8 +43,8 @@
             "type": "nat => real"
         },
         {
-            "name": "radd_assoc",
-            "prop": "rplus x (rplus y z) = rplus (rplus x y) z",
+            "name": "real_add_assoc",
+            "prop": "x + (y + z) = (x + y) + z",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -51,8 +53,8 @@
             }
         },
         {
-            "name": "radd_comm",
-            "prop": "rplus x y = rplus y x",
+            "name": "real_add_comm",
+            "prop": "x + y = y + x",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -60,8 +62,8 @@
             }
         },
         {
-            "name": "rmult_assoc",
-            "prop": "rtimes x (rtimes y z) = rtimes (rtimes x y) z",
+            "name": "real_mult_assoc",
+            "prop": "x * (y * z) = (x * y) * z",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -70,8 +72,8 @@
             }
         },
         {
-            "name": "rmult_comm",
-            "prop": "rtimes x y = rtimes y x",
+            "name": "real_mult_comm",
+            "prop": "x * y = y * x",
             "ty": "thm",
             "vars": {
                 "x": "real",
