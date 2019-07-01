@@ -12,12 +12,6 @@
             "overload": "plus"
         },
         {
-            "ascii_op": "-",
-            "name": "uminus",
-            "ty": "def.ax",
-            "type": "'a => 'a"
-        },
-        {
             "name": "real_uminus",
             "ty": "def.ax",
             "type": "real => real",
@@ -36,17 +30,17 @@
             "overload": "times"
         },
         {
-            "name": "rinverse",
+            "name": "real_inverse",
             "ty": "def.ax",
             "type": "real => real => real"
         },
         {
-            "name": "rdivide",
+            "name": "real_divide",
             "ty": "def.ax",
             "type": "real => real => real"
         },
         {
-            "name": "of_nat",
+            "name": "real_of_nat",
             "ty": "def.ax",
             "type": "nat => real"
         },
@@ -91,7 +85,7 @@
     ],
     "description": "real numbers",
     "imports": [
-        "nat"
+        "rat"
     ],
     "name": "real"
 }

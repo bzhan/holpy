@@ -1,0 +1,76 @@
+{
+    "content": [
+        {
+            "args": [],
+            "name": "rat",
+            "ty": "type.ax"
+        },
+        {
+            "name": "rat_plus",
+            "ty": "def.ax",
+            "type": "rat => rat => rat",
+            "overload": "plus"
+        },
+        {
+            "name": "rat_uminus",
+            "ty": "def.ax",
+            "type": "rat => rat",
+            "overload": "uminus"
+        },
+        {
+            "name": "rat_minus",
+            "ty": "def.ax",
+            "type": "rat => rat => rat",
+            "overload": "minus"
+        },
+        {
+            "name": "rat_times",
+            "ty": "def.ax",
+            "type": "rat => rat => rat",
+            "overload": "times"
+        },
+        {
+            "name": "rat_add_assoc",
+            "prop": "x + (y + z) = (x + y) + z",
+            "ty": "thm",
+            "vars": {
+                "x": "rat",
+                "y": "rat",
+                "z": "rat"
+            }
+        },
+        {
+            "name": "rat_add_comm",
+            "prop": "x + y = y + x",
+            "ty": "thm",
+            "vars": {
+                "x": "rat",
+                "y": "rat"
+            }
+        },
+        {
+            "name": "rat_mult_assoc",
+            "prop": "x * (y * z) = (x * y) * z",
+            "ty": "thm",
+            "vars": {
+                "x": "rat",
+                "y": "rat",
+                "z": "rat"
+            }
+        },
+        {
+            "name": "rat_mult_comm",
+            "prop": "x * y = y * x",
+            "ty": "thm",
+            "vars": {
+                "x": "rat",
+                "y": "rat"
+            }
+        }
+    ],
+    "description": "rational numbers",
+    "imports": [
+        "int"
+    ],
+    "name": "rat"
+}
