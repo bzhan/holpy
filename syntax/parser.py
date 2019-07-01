@@ -207,12 +207,10 @@ class HOLTransformer(Transformer):
         return set.collect(None)(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
     def times(self, lhs, rhs):
-        from data import nat
-        return nat.times(lhs, rhs)
+        return Const("times", None)(lhs, rhs)
 
     def plus(self, lhs, rhs):
-        from data import nat
-        return nat.plus(lhs, rhs)
+        return Const("plus", None)(lhs, rhs)
 
     def less_eq(self, lhs, rhs):
         from data import nat
@@ -475,6 +473,8 @@ def parse_extension(thy, data):
         T = parse_type(thy, data['type'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
+        if 'overload' in data:
+            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
 
     elif data['ty'] == 'def':
         T = parse_type(thy, data['type'])
@@ -486,6 +486,8 @@ def parse_extension(thy, data):
         ext.add_extension(extension.Theorem(data['name'] + "_def", Thm([], prop)))
         if 'attributes' in data and 'hint_rewrite' in data['attributes']:
             ext.add_extension(extension.Attribute(data['name'] + "_def", 'hint_rewrite'))
+        if 'overload' in data:
+            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parse_vars(thy, data['vars'])
@@ -506,6 +508,8 @@ def parse_extension(thy, data):
     elif data['ty'] == 'def.ind':
         T = parse_type(thy, data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
+        if 'overload' in data:
+            thy.add_overload_const(data['overload'], T, data['name'])
         rules = []
         for rule in data['rules']:
             ctxt = {'vars': {}, 'consts': {data['name']: T}}
@@ -524,6 +528,8 @@ def parse_extension(thy, data):
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append((rule['name'], prop))
         ext = induct.add_induct_predicate(data['name'], T, rules)
+        if 'overload' in data:
+            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
 
     elif data['ty'] == 'macro':
         ext = extension.TheoryExtension()

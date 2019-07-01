@@ -23,9 +23,9 @@ zero = Const("zero", natT)
 Suc = Const("Suc", TFun(natT, natT))
 Pre = Const("Pre", TFun(natT, natT))
 one = Suc(zero)
-plus = Const("plus", TFun(natT, natT, natT))
+plus = Const("nat_plus", TFun(natT, natT, natT))
 minus = Const("minus", TFun(natT, natT, natT))
-times = Const("times", TFun(natT, natT, natT))
+times = Const("nat_times", TFun(natT, natT, natT))
 less_eq = Const("less_eq", TFun(natT, natT, boolT))
 less = Const("less", TFun(natT, natT, boolT))
 
@@ -155,7 +155,7 @@ class mult_conv(Conv):
     def get_proof_term(self, thy, t):
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            cv = rewr_conv("times_def_1")
+            cv = rewr_conv("nat_times_def_1")
         elif n2 == zero:
             cv = rewr_conv("mult_0_right")
         elif n1 == one:
@@ -295,7 +295,7 @@ class norm_mult_atom(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * a."""
     def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv("times_def_1")
+            cv = rewr_conv("nat_times_def_1")
         elif t.arg == zero:
             cv = rewr_conv("mult_0_right")
         elif t.arg1 == one:
