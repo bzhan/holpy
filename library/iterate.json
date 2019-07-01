@@ -17,7 +17,7 @@
         },
         {
             "name": "numseg_combione_r",
-            "prop": "m <= p + 1 & p <= n --> (union (m..p) ((p+1)..n) = m..n)",
+            "prop": "m <= p + 1 & p <= n --> (union {m..p} {(p+1)..n} = {m..n})",
             "ty": "thm",
             "vars": {
                 "m": "nat",
