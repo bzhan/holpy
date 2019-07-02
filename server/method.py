@@ -264,45 +264,19 @@ class apply_backward_step(Method):
         self.sig = ['theorem']
 
     def search(self, state, id, prevs):
-        goal_th = state.get_proof_item(id).th
-        prev_ths = [state.get_proof_item(prev).th for prev in prevs]
+        cur_item = state.get_proof_item(id)
+        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+
         thy = state.thy
-
         results = []
-        for name, th in thy.get_data("theorems").items():
-            if 'hint_backward' not in thy.get_attributes(name):
-                continue
+        for th_name, th in thy.get_data("theorems").items():
+            if 'hint_backward' in thy.get_attributes(th_name):
+                try:
+                    pt = tactic.rule().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                    results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+                except (AssertionError, matcher.MatchException):
+                    pass
 
-            instsp = (dict(), dict())
-            As, C = th.assums, th.concl
-            # Only process those theorems where C and the matched As
-            # contain all of the variables.
-            if set(term.get_vars(As[:len(prevs)] + [C])) != set(term.get_vars(As + [C])):
-                continue
-
-            # When there is no assumptions to match, only process those
-            # theorems where C contains at least a constant (skip falseE,
-            # induction theorems, etc).
-            if len(prevs) == 0 and term.get_consts(C) == []:
-                continue
-
-            try:
-                if matcher.is_pattern(C, []):
-                    matcher.first_order_match_incr(C, goal_th.prop, instsp)
-                    for pat, prev in zip(As, prev_ths):
-                        matcher.first_order_match_incr(pat, prev.prop, instsp)
-                else:
-                    for pat, prev in zip(As, prev_ths):
-                        matcher.first_order_match_incr(pat, prev.prop, instsp)
-                    matcher.first_order_match_incr(C, goal_th.prop, instsp)
-            except matcher.MatchException:
-                continue
-
-            # All matches succeed
-            t = logic.subst_norm(th.prop, instsp)
-            As, C = t.strip_implies()
-
-            results.append({"theorem": name, "_goal": As[len(prevs):]})
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
@@ -318,25 +292,19 @@ class apply_resolve_step(Method):
         self.sig = ["theorem"]
 
     def search(self, state, id, prevs):
-        prev_ths = [state.get_proof_item(prev).th for prev in prevs]
-        if len(prev_ths) != 1:
-            return []
+        cur_item = state.get_proof_item(id)
+        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         thy = state.thy
-
         results = []
-        for name, th in thy.get_data("theorems").items():
-            if 'hint_resolve' not in thy.get_attributes(name):
-                continue
+        for th_name, th in thy.get_data("theorems").items():
+            if 'hint_resolve' in thy.get_attributes(th_name):
+                try:
+                    pt = tactic.resolve().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                    results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+                except (AssertionError, matcher.MatchException):
+                    pass
 
-            assert logic.is_neg(th.prop), "apply_resolve_step"
-
-            try:
-                matcher.first_order_match(th.prop.arg, prev_ths[0].prop)
-            except matcher.MatchException:
-                continue
-
-            results.append({"theorem": name, "_goal": []})
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
