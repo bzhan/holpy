@@ -267,7 +267,7 @@ class Theory():
             if T == T2:
                 return name_T
 
-        raise TheoryException("Constant " + name + " is not overloaded for type " + str(T))
+        return name
 
     def lookup_overload_const(self, name_T):
         """Given the more concrete constant name, return the general
