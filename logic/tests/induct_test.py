@@ -40,23 +40,23 @@ class InductTest(unittest.TestCase):
 
     def testInductAdd(self):
         nat = Type("nat")
-        plus = Const("plus", TFun(nat, nat, nat))
+        plus = Const("nat_plus", TFun(nat, nat, nat))
         zero = Const("zero", nat)
         S = Const("Suc", TFun(nat, nat))
         m = Var("m", nat)
         n = Var("n", nat)
 
         ext = induct.add_induct_def(
-            'plus', TFun(nat, nat, nat), [
+            'nat_plus', TFun(nat, nat, nat), [
                 eq(plus(zero, n), n),
                 eq(plus(S(m), n), S(plus(m, n)))])
         
         res = [
-            AxConstant("plus", TFun(nat, nat, nat)),
-            Theorem("plus_def_1", Thm([], eq(plus(zero, n), n))),
-            Attribute("plus_def_1", "hint_rewrite"),
-            Theorem("plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n))))),
-            Attribute("plus_def_2", "hint_rewrite"),
+            AxConstant("nat_plus", TFun(nat, nat, nat)),
+            Theorem("nat_plus_def_1", Thm([], eq(plus(zero, n), n))),
+            Attribute("nat_plus_def_1", "hint_rewrite"),
+            Theorem("nat_plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n))))),
+            Attribute("nat_plus_def_2", "hint_rewrite"),
         ]
         self.assertEqual(ext.data, res)
 

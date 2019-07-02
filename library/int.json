@@ -1,0 +1,111 @@
+{
+    "content": [
+        {
+            "args": [],
+            "name": "int",
+            "ty": "type.ax"
+        },
+        {
+            "name": "int_plus",
+            "ty": "def.ax",
+            "type": "int => int => int",
+            "overload": "plus"
+        },
+        {
+            "ascii_op": "-",
+            "name": "uminus",
+            "ty": "def.ax",
+            "type": "'a => 'a"
+        },
+        {
+            "name": "abs",
+            "ty": "def.ax",
+            "type": "'a => 'a"
+        },
+        {
+            "name": "int_uminus",
+            "ty": "def.ax",
+            "type": "int => int",
+            "overload": "uminus"
+        },
+        {
+            "name": "int_minus",
+            "ty": "def.ax",
+            "type": "int => int => int",
+            "overload": "minus"
+        },
+        {
+            "name": "int_times",
+            "ty": "def.ax",
+            "type": "int => int => int",
+            "overload": "times"
+        },
+        {
+            "name": "int_less_eq",
+            "ty": "def.ax",
+            "type": "int => int => bool",
+            "overload": "less_eq"
+        },
+        {
+            "name": "int_less",
+            "ty": "def.ax",
+            "type": "int => int => bool",
+            "overload": "less"
+        },
+        {
+            "name": "int_zero",
+            "ty": "def.ax",
+            "type": "int"
+        },
+        {
+            "name": "int_abs",
+            "ty": "def",
+            "type": "int => int",
+            "prop": "int_abs n = (if int_zero <= n then n else -n)",
+            "overload": "abs"
+        },
+        {
+            "name": "int_add_assoc",
+            "prop": "x + (y + z) = (x + y) + z",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "int_add_comm",
+            "prop": "x + y = y + x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        },
+        {
+            "name": "int_mult_assoc",
+            "prop": "x * (y * z) = (x * y) * z",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int",
+                "z": "int"
+            }
+        },
+        {
+            "name": "int_mult_comm",
+            "prop": "x * y = y * x",
+            "ty": "thm",
+            "vars": {
+                "x": "int",
+                "y": "int"
+            }
+        }
+    ],
+    "description": "integers",
+    "imports": [
+        "nat"
+    ],
+    "name": "int"
+}

@@ -6,7 +6,7 @@ from kernel.type import HOLType
 from kernel.term import Term, OpenTermException
 from kernel.extension import Extension
 from kernel import proof
-from syntax.operator import OperatorData
+from syntax.operator import OperatorData, get_info_for_fun
 from syntax import settings
 from syntax import infertype
 
@@ -116,7 +116,7 @@ def print_term(thy, t):
     from data import interval
     
     def get_info_for_operator(t):
-        return thy.get_data("operator").get_info_for_fun(t.head)
+        return get_info_for_fun(thy, t.head)
 
     def get_priority(t):
         if nat.is_binary(t) or list.is_literal_list(t):

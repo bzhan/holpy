@@ -53,13 +53,17 @@ grammar = r"""
 
     ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
 
-    ?times: times "*" big_union | big_union     // Multiplication: priority 70
+    ?uminus: "-" uminus -> uminus | big_union   // Unary minus: priority 80
+
+    ?times: times "*" big_union | uminus        // Multiplication: priority 70
 
     ?inter: inter ("Int"|"∩") times | times     // Intersection: priority 70
 
     ?plus: plus "+" inter | inter       // Addition: priority 65
 
-    ?append: plus "@" append | plus     // Append: priority 65
+    ?minus: minus "-" plus | plus       // Subtraction: priority 65
+
+    ?append: minus "@" append | minus     // Append: priority 65
 
     ?cons: append "#" cons | append     // Cons: priority 65
 
@@ -207,20 +211,22 @@ class HOLTransformer(Transformer):
         return set.collect(None)(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
     def times(self, lhs, rhs):
-        from data import nat
-        return nat.times(lhs, rhs)
+        return Const("times", None)(lhs, rhs)
 
     def plus(self, lhs, rhs):
-        from data import nat
-        return nat.plus(lhs, rhs)
+        return Const("plus", None)(lhs, rhs)
+
+    def minus(self, lhs, rhs):
+        return Const("minus", None)(lhs, rhs)
+
+    def uminus(self, x):
+        return Const("uminus", None)(x)
 
     def less_eq(self, lhs, rhs):
-        from data import nat
-        return nat.less_eq(lhs, rhs)
+        return Const("less_eq", None)(lhs, rhs)
 
     def less(self, lhs, rhs):
-        from data import nat
-        return nat.less(lhs, rhs)
+        return Const("less", None)(lhs, rhs)
 
     def append(self, lhs, rhs):
         return Const("append", None)(lhs, rhs)
@@ -475,6 +481,8 @@ def parse_extension(thy, data):
         T = parse_type(thy, data['type'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
+        if 'overload' in data:
+            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
 
     elif data['ty'] == 'def':
         T = parse_type(thy, data['type'])
@@ -486,6 +494,8 @@ def parse_extension(thy, data):
         ext.add_extension(extension.Theorem(data['name'] + "_def", Thm([], prop)))
         if 'attributes' in data and 'hint_rewrite' in data['attributes']:
             ext.add_extension(extension.Attribute(data['name'] + "_def", 'hint_rewrite'))
+        if 'overload' in data:
+            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parse_vars(thy, data['vars'])
@@ -506,12 +516,16 @@ def parse_extension(thy, data):
     elif data['ty'] == 'def.ind':
         T = parse_type(thy, data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
+        if 'overload' in data:
+            thy.add_overload_const(data['overload'], T, data['name'])
         rules = []
         for rule in data['rules']:
             ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
+        if 'overload' in data:
+            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
 
     elif data['ty'] == 'def.pred':
         T = parse_type(thy, data['type'])
@@ -522,6 +536,8 @@ def parse_extension(thy, data):
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append((rule['name'], prop))
         ext = induct.add_induct_predicate(data['name'], T, rules)
+        if 'overload' in data:
+            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
 
     elif data['ty'] == 'macro':
         ext = extension.TheoryExtension()
