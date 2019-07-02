@@ -100,29 +100,14 @@ class rewrite_goal_with_prev_method(Method):
         self.sig = []
 
     def search(self, state, id, prevs):
-        if len(prevs) != 1:
+        try:
+            cur_item = state.get_proof_item(id)
+            prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+            pt = tactic.rewrite_goal_with_prev().get_proof_term(state.thy, cur_item.th, args=None, prevs=prevs)
+        except (AssertionError, matcher.MatchException):
             return []
-        
-        prev_th = state.get_proof_item(prevs[0]).th
-        cur_th = state.get_proof_item(id).th
-
-        if not prev_th.prop.is_equals():
-            return []
-
-        pt = ProofTermAtom(prevs[0], prev_th)
-        cv = then_conv(top_sweep_conv(rewr_conv(pt, match_vars=False)),
-                       top_conv(beta_conv()))
-        eq_th = cv.eval(state.thy, cur_th.prop)
-        new_goal = eq_th.prop.rhs
-
-        new_As = list(set(eq_th.hyps) - set(cur_th.hyps))
-        if cur_th.prop != new_goal:
-            if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-                return [{"_goal": new_As}]
-            else:
-                return [{"_goal": [new_goal] + new_As}]
         else:
-            return []
+            return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]        
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
@@ -138,24 +123,16 @@ class rewrite_goal(Method):
 
     def search(self, state, id, prevs):
         cur_th = state.get_proof_item(id).th
-        if cur_th.prop.is_all():
-            return []
 
         thy = state.thy
         results = []
         for th_name, th in thy.get_data("theorems").items():
-            if 'hint_rewrite' not in thy.get_attributes(th_name):
-                continue
-
-            cv = top_conv(rewr_conv(th_name))
-            th = cv.eval(thy, cur_th.prop)
-            new_goal = th.prop.rhs
-            new_As = list(th.hyps)
-            if cur_th.prop != new_goal:
-                if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-                    results.append({"theorem": th_name, "_goal": new_As})
-                else:
-                    results.append({"theorem": th_name, "_goal": [new_goal] + new_As})
+            if 'hint_rewrite' in thy.get_attributes(th_name):
+                try:
+                    pt = tactic.rewrite().get_proof_term(thy, cur_th, args=th_name, prevs=[])
+                    results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+                except (AssertionError, matcher.MatchException):
+                    pass
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -208,7 +185,7 @@ class rewrite_fact_with_prev(Method):
             return []
 
         eq_th, prev_th = [state.get_proof_item(prev).th for prev in prevs]
-        if not eq_th.prop.is_equals():
+        if not eq_th.is_equals():
             return []
 
         cv = top_sweep_conv(rewr_conv(ProofTermAtom(prevs[0], eq_th), match_vars=False))

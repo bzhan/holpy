@@ -129,44 +129,56 @@ class var_induct(Tactic):
 
 class rewrite(Tactic):
     """Rewrite the goal using a theorem."""
-    def get_proof_term(self, thy, goal, args=None, prevs=None):
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
         th_name = args
-
-        init_As = goal.hyps
         C = goal.prop
+
+        # Do not perform rewrite on forall-imply goals
+        assert not (goal.prop.is_implies() or goal.prop.is_all()), "rewrite"
+
+        # Check whether rewriting using the theorem has an effect
+        assert not top_conv(rewr_conv(th_name)).eval(thy, C).is_reflexive(), "rewrite"
+
         cv = then_conv(top_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
 
-        new_As = list(eq_th.hyps)
-        new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
+        side_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in eq_th.hyps]
         if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=new_As_pts)
+            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=side_goals)
         else:
-            new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
-            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=[new_goal_pts] + new_As_pts)
+            new_goal = ProofTerm.sorry(Thm(goal.hyps, new_goal))
+            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=[new_goal] + side_goals)
 
 class rewrite_goal_with_prev(Tactic):
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):
         assert isinstance(prevs, list) and len(prevs) == 1, "rewrite_goal_with_prev"
         pt = prevs[0]
-
-        init_As = goal.hyps
         C = goal.prop
+
+        # Fact used must be an equality
+        assert pt.th.is_equals(), "rewrite_goal_with_prev"
+
+        # Do not perform rewrite on forall-imply goals
+        assert not (goal.prop.is_implies() or goal.prop.is_all()), \
+               "rewrite_goal_with_prev"
+
+        # Check whether rewriting using the theorem has an effect
+        assert not top_sweep_conv(rewr_conv(pt, match_vars=False)).eval(thy, C).is_reflexive(), \
+               "rewrite_goal_with_prev"
+
         cv = then_conv(top_sweep_conv(rewr_conv(pt, match_vars=False)),
                        top_conv(beta_conv()))
-        
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
 
-        new_As = list(set(eq_th.hyps) - set(init_As))
-        new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
-        if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[pt] + new_As_pts)
+        prevs = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in eq_th.hyps]
+        if not new_goal.is_reflexive():
+            prevs = [pt, ProofTerm.sorry(Thm(goal.hyps, new_goal))] + prevs
         else:
-            new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
-            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[pt, new_goal_pts] + new_As_pts)
+            prevs = [pt] + prevs
+        return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=prevs)
 
 class apply_prev(Tactic):
     """Applies an existing fact in the backward direction."""
