@@ -279,21 +279,24 @@ function set_line(cm) {
 function match_thm() {
     var id = get_selected_id();
     var input = current_state();
-    if (input === undefined)
-        return;
-
-    $.ajax({
-        url: "/api/search-method",
-        type: "POST",
-        data: JSON.stringify(input),
-        success: function (result) {
-            var templ_variable = _.template($('#template-variable').html());
-            $('div#panel-proof').html(templ_variable({ctxt: result.ctxt}));
-
-            cells[id].search_res = result.search_res;
-            display_match_thm();
-        }
-    });
+    if (input === undefined) {
+        cells[id].search_res = [];
+        display_match_thm();
+    }
+    else {
+        $.ajax({
+            url: "/api/search-method",
+            type: "POST",
+            data: JSON.stringify(input),
+            success: function (result) {
+                var templ_variable = _.template($('#template-variable').html());
+                $('div#panel-proof').html(templ_variable({ctxt: result.ctxt}));
+    
+                cells[id].search_res = result.search_res;
+                display_match_thm();
+            }
+        });    
+    }
 }
 
 // Print string without highlight at given line_no and ch. Return the new value of ch.
