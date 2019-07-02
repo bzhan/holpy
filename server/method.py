@@ -9,6 +9,7 @@ from logic.conv import top_conv, rewr_conv, beta_conv, then_conv, top_sweep_conv
 from logic.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic
+from logic import logic_macro
 from syntax import parser, printer, settings
 from server import tactic
 
@@ -78,14 +79,13 @@ class apply_prev_method(Method):
         self.sig = []
 
     def search(self, state, id, prevs):
+        cur_item = state.get_proof_item(id)
+        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
-            cur_item = state.get_proof_item(id)
-            prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
             pt = tactic.apply_prev().get_proof_term(state.thy, cur_item.th, args=None, prevs=prevs)
+            return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]
         except (AssertionError, matcher.MatchException):
             return []
-        else:
-            return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
@@ -122,14 +122,14 @@ class rewrite_goal(Method):
         self.sig = ['theorem']
 
     def search(self, state, id, prevs):
-        cur_th = state.get_proof_item(id).th
+        cur_item = state.get_proof_item(id)
 
         thy = state.thy
         results = []
         for th_name, th in thy.get_data("theorems").items():
             if 'hint_rewrite' in thy.get_attributes(th_name):
                 try:
-                    pt = tactic.rewrite().get_proof_term(thy, cur_th, args=th_name, prevs=[])
+                    pt = tactic.rewrite().get_proof_term(thy, cur_item.th, args=th_name, prevs=[])
                     results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
                 except (AssertionError, matcher.MatchException):
                     pass
@@ -149,21 +149,18 @@ class rewrite_fact(Method):
         self.sig = ['theorem']
 
     def search(self, state, id, prevs):
-        if len(prevs) != 1:
-            return []
+        cur_item = state.get_proof_item(id)
+        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
-        prev_th = state.get_proof_item(prevs[0]).th
         thy = state.thy
         results = []
         for th_name, th in thy.get_data("theorems").items():
-            if 'hint_rewrite' not in thy.get_attributes(th_name):
-                continue
-
-            cv = top_sweep_conv(rewr_conv(th_name))
-            th = cv.eval(thy, prev_th.prop)
-            new_fact = th.prop.rhs
-            if prev_th.prop != new_fact:
-                results.append({"theorem": th_name, "_fact": [new_fact]})
+            if 'hint_rewrite' in thy.get_attributes(th_name):
+                try:
+                    pt = logic_macro.rewrite_fact_macro().get_proof_term(thy, th_name, prevs)
+                    results.append({"theorem": th_name, "_fact": [pt.prop]})
+                except (AssertionError, matcher.MatchException):
+                    pass
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -181,19 +178,12 @@ class rewrite_fact_with_prev(Method):
         self.sig = []
 
     def search(self, state, id, prevs):
-        if len(prevs) != 2:
-            return []
-
-        eq_th, prev_th = [state.get_proof_item(prev).th for prev in prevs]
-        if not eq_th.is_equals():
-            return []
-
-        cv = top_sweep_conv(rewr_conv(ProofTermAtom(prevs[0], eq_th), match_vars=False))
-        th = cv.eval(state.thy, prev_th.prop)
-        new_fact = th.prop.rhs
-        if prev_th.prop != new_fact:
-            return [{}]
-        else:
+        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
+        try:
+            macro = logic_macro.rewrite_fact_with_prev_macro()
+            pt = macro.get_proof_term(state.thy, args=None, pts=prevs)
+            return [{"_fact": [pt.prop]}]
+        except (AssertionError, matcher.MatchException):
             return []
 
     @settings.with_settings
@@ -211,37 +201,18 @@ class apply_forward_step(Method):
 
     def search(self, state, id, prevs):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
-        thy = state.thy
-        if len(prevs) == 0:
-            return []
 
+        thy = state.thy
         results = []
         for name, th in thy.get_data("theorems").items():
-            if 'hint_forward' not in thy.get_attributes(name):
-                continue
+            if 'hint_forward' in thy.get_attributes(name):
+                try:
+                    macro = logic_macro.apply_theorem_macro()
+                    th = macro.eval(thy, name, prev_ths)
+                    results.append({"theorem": name, "_fact": [th.prop]})
+                except (AssertionError, matcher.MatchException):
+                    pass
 
-            instsp = (dict(), dict())
-            As, C = th.prop.strip_implies()
-
-            if len(prevs) != len(As):
-                continue
-
-            if set(term.get_vars(As)) != set(term.get_vars(As + [C])):
-                continue
-
-            if not term.get_consts(As):
-                continue
-
-            try:
-                for pat, prev in zip(As, prev_ths):
-                    matcher.first_order_match_incr(pat, prev.concl, instsp)
-            except matcher.MatchException:
-                continue
-
-            # All matches succeed
-            t = logic.subst_norm(th.prop, instsp)
-            _, new_fact = t.strip_implies()
-            results.append({"theorem": name, "_fact": [new_fact]})
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
@@ -249,7 +220,6 @@ class apply_forward_step(Method):
         return printer.N(data['theorem'] + " (f): ") + display_facts(state, data)
 
     def apply(self, state, id, data, prevs):
-        assert prevs, "apply_forward_step: prevs is not empty"
         state.add_line_before(id, 1)
         state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
 
@@ -369,10 +339,8 @@ class exists_elim(Method):
             prev_th = state.get_proof_item(prevs[0]).th
             if logic.is_exists(prev_th.prop):
                 return [{}]
-            else:
-                return []
-        else:
-            return []
+
+        return []
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
@@ -428,10 +396,8 @@ class forall_elim(Method):
             prev_th = state.get_proof_item(prevs[0]).th
             if prev_th.prop.is_all():
                 return [{}]
-            else:
-                return []
-        else:
-            return []
+
+        return []
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
@@ -531,33 +497,18 @@ class apply_fact(Method):
     def search(self, state, id, prevs):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
         thy = state.thy
-        if len(prevs) < 2:
-            return []
 
-        th, prev_ths = prev_ths[0], prev_ths[1:]
-
-        # First, obtain the patterns
-        vars = term.get_vars([prev_th.prop for prev_th in prev_ths])
-        old_names = [v.name for v in vars]
-        new_names = logic.get_forall_names(th.prop, old_names)
-
-        new_vars, As, C = logic.strip_all_implies(th.prop, new_names)
-        if len(prev_ths) > len(As):
-            return []
-
-        instsp = dict(), {v.name: v for v in vars}
         try:
-            for idx, prev_th in enumerate(prev_ths):
-                matcher.first_order_match_incr(As[idx], prev_th.prop, instsp)
-        except matcher.MatchException:
+            macro = logic_macro.apply_fact_macro()
+            pt = macro.eval(thy, args=None, prevs=prev_ths)
+            return [{"_fact": [pt.prop]}]
+        except (AssertionError, matcher.MatchException):
             return []
-
-        return [{}]
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
         return printer.N("Apply fact (f) " + print_id(prevs[0]) + " onto " + \
-            ", ".join(print_id(id) for id in prevs[1:]))
+                         ", ".join(print_id(id) for id in prevs[1:]))
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
