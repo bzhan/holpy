@@ -153,22 +153,6 @@ class ServerTest(unittest.TestCase):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         self.assertEqual(state.get_ctxt(0), {'vars': {'A': boolT, 'B': boolT}})
 
-    def testAddLineAfter(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-
-        state.add_line_after(0)
-        self.assertEqual(len(state.prf.items), 4)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
-        self.assertEqual(state.prf.items[1].rule, "")
-
-    def testAddLineAfter2(self):
-        state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-
-        state.add_line_after(1)
-        self.assertEqual(len(state.prf.items), 4)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
-        self.assertEqual(state.prf.items[2].rule, "")
-
     def testAddLineBefore(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
 
@@ -182,14 +166,14 @@ class ServerTest(unittest.TestCase):
 
     def testRemoveLine(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        state.add_line_after(1)
+        state.add_line_before(2, 1)
         state.remove_line(2)
         self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
     def testSetLine(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        state.add_line_after(1)
+        state.add_line_before(2, 1)
         state.set_line(2, "theorem", args="conjD1")
         self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))

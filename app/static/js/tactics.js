@@ -81,51 +81,6 @@ function display_instructions() {
     instr_no_output.innerHTML = (cells[id].index + 1) + '/' + cells[id].instructions.length;
 }
 
-function add_line_after(cm) {
-    $(document).ready(function () {
-        var id = get_selected_id();
-        var line_no = cm.getCursor().line;
-        var input = {
-            "id": id,
-            "line_id": cells[id]['proof'][line_no]['id'],
-        };
-        var data = JSON.stringify(input);
-        display_running();
-
-        $.ajax({
-            url: "/api/add-line-after",
-            type: "POST",
-            data: data,
-            success: function (result) {
-                display_checked_proof(result);
-            }
-        })
-    })
-}
-
-function remove_line(cm) {
-    $(document).ready(function () {
-        var id = get_selected_id();
-        var line_no = cm.getCursor().line;
-        var input = {
-            "id": id,
-            "line_id": cells[id]['proof'][line_no]['id'],
-        };
-        var data = JSON.stringify(input);
-        display_running();
-
-        $.ajax({
-            url: "/api/remove-line",
-            type: "POST",
-            data: data,
-            success: function (result) {
-                display_checked_proof(result);
-                cm.setCursor(line_no - 1, Number.MAX_SAFE_INTEGER);
-            }
-        })
-    })
-}
-
 function current_state() {
     var id = get_selected_id();
     var goal_no = cells[id].goal;

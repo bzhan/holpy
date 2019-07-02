@@ -236,10 +236,6 @@
             apply_method('apply_prev');
         });
 
-        $('#add-line-after').on("click", function () {
-            add_line_after(get_selected_editor());
-        });
-
         $('#apply-backward-step').on("click", function () {
             apply_method('apply_backward_step');
         });
@@ -979,17 +975,10 @@
                 event.preventDefault();
                 if (cells[id].edit_line_number !== -1) {
                     set_line(cm);
-                } else {
-                    add_line_after(cm);
                 }
             } else if (event.code === 'Tab') {
                 event.preventDefault();
                 unicode_replace(cm);
-            } else if (event.code === 'Backspace') {
-                if (line.trim() === '') {
-                    event.preventDefault();
-                    remove_line(cm);
-                }
             } else if (event.code === 'Escape') {
                 event.preventDefault();
                 if (cells[id].edit_line_number !== -1) {
