@@ -158,6 +158,14 @@ def login():
     return redirect('login-error')
 
 
+# Directly sign in as master (TURN OFF WHEN DEPLOY SERVER)
+@app.route('/master', methods=['GET'])
+def master():
+    user_info['is_signed_in'] = True
+    user_info['username'] = 'master'
+    return redirect('/load')
+
+
 # Replace user data with library data
 @app.route('/api/refresh-files', methods=['POST'])
 def refresh_files():
