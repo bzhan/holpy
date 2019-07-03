@@ -50,13 +50,17 @@ class MacroTactic(Tactic):
         return ProofTermDeriv(self.macro, thy, args, prevs)
 
 class rule(Tactic):
-    """Apply a theorem in the backward direction."""
+    """Apply a theorem in the backward direction.
+    
+    args is either a pair of theorem name and instantiation, or the
+    theorem name alone.
+
+    """
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):
         if isinstance(args, tuple):
             th_name, instsp = args
         else:
-            th_name = args
-            instsp = None
+            th_name, instsp = args, None
         assert isinstance(th_name, str), "rule: theorem name must be a string"
 
         if prevs is None:
@@ -66,9 +70,18 @@ class rule(Tactic):
         As, C = th.assums, th.concl
 
         if instsp is None:
+            # Length of prevs is at most length of As
+            assert len(prevs) <= len(As), "rule: too many previous facts"
+
+            # Every variable appearing in the theorem must appear in the
+            # matched parts: the first few As and C.
             assert set(term.get_vars(As[:len(prevs)] + [C])) == set(term.get_vars(As + [C])), \
-                "rule: cannot match all variables."
+                   "rule: cannot match all variables."
+
             instsp = (dict(), dict())
+
+            # Match the conclusion and assumptions. Either the conclusion
+            # or the list of assumptions must be a first-order pattern.
             if matcher.is_pattern(C, []):
                 matcher.first_order_match_incr(C, goal.prop, instsp)
                 for pat, prev in zip(As, prevs):
@@ -78,9 +91,12 @@ class rule(Tactic):
                     matcher.first_order_match_incr(pat, prev.prop, instsp)
                 matcher.first_order_match_incr(C, goal.prop, instsp)
 
+        # Substitute and normalize
         As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
         pts = prevs + [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(prevs):]]
 
+        # Determine whether it is necessary to provide instantiation
+        # to apply_theorem.
         if set(term.get_vars(th.assums)) != set(term.get_vars(th.prop)) or \
            not matcher.is_pattern_list(th.assums, []):
             tyinst, inst = instsp
@@ -95,6 +111,12 @@ class resolve(Tactic):
     """
     def get_proof_term(self, thy, goal, args, prevs):
         assert isinstance(args, str) and len(prevs) == 1, "resolve"
+        th_name = args
+        th = thy.get_theorem(th_name)
+
+        assert logic.is_neg(th.prop), "resolve"
+
+        # Checking that the theorem matches the fact is done here.
         return ProofTermDeriv('resolve_theorem', thy, (args, goal.prop), prevs)
 
 class intros(Tactic):
@@ -129,44 +151,56 @@ class var_induct(Tactic):
 
 class rewrite(Tactic):
     """Rewrite the goal using a theorem."""
-    def get_proof_term(self, thy, goal, args=None, prevs=None):
+    def get_proof_term(self, thy, goal, *, args=None, prevs=None):
         th_name = args
-
-        init_As = goal.hyps
         C = goal.prop
+
+        # Do not perform rewrite on forall-imply goals
+        assert not (goal.prop.is_implies() or goal.prop.is_all()), "rewrite"
+
+        # Check whether rewriting using the theorem has an effect
+        assert not top_conv(rewr_conv(th_name)).eval(thy, C).is_reflexive(), "rewrite"
+
         cv = then_conv(top_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
 
-        new_As = list(eq_th.hyps)
-        new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
+        side_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in eq_th.hyps]
         if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=new_As_pts)
+            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=side_goals)
         else:
-            new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
-            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=[new_goal_pts] + new_As_pts)
+            new_goal = ProofTerm.sorry(Thm(goal.hyps, new_goal))
+            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=[new_goal] + side_goals)
 
 class rewrite_goal_with_prev(Tactic):
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):
         assert isinstance(prevs, list) and len(prevs) == 1, "rewrite_goal_with_prev"
         pt = prevs[0]
-
-        init_As = goal.hyps
         C = goal.prop
+
+        # Fact used must be an equality
+        assert pt.th.is_equals(), "rewrite_goal_with_prev"
+
+        # Do not perform rewrite on forall-imply goals
+        assert not (goal.prop.is_implies() or goal.prop.is_all()), \
+               "rewrite_goal_with_prev"
+
+        # Check whether rewriting using the theorem has an effect
+        assert not top_sweep_conv(rewr_conv(pt, match_vars=False)).eval(thy, C).is_reflexive(), \
+               "rewrite_goal_with_prev"
+
         cv = then_conv(top_sweep_conv(rewr_conv(pt, match_vars=False)),
                        top_conv(beta_conv()))
-        
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
 
-        new_As = list(set(eq_th.hyps) - set(init_As))
-        new_As_pts = [ProofTerm.sorry(Thm(init_As, A)) for A in new_As]
-        if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[pt] + new_As_pts)
+        prevs = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in eq_th.hyps]
+        if not new_goal.is_reflexive():
+            prevs = [pt, ProofTerm.sorry(Thm(goal.hyps, new_goal))] + prevs
         else:
-            new_goal_pts = ProofTerm.sorry(Thm(init_As, new_goal))
-            return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=[pt, new_goal_pts] + new_As_pts)
+            prevs = [pt] + prevs
+        return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=prevs)
 
 class apply_prev(Tactic):
     """Applies an existing fact in the backward direction."""

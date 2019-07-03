@@ -200,26 +200,6 @@ def init_saved_proof():
     return jsonify({})
 
 
-@app.route('/api/add-line-after', methods=['POST'])
-def add_line_after():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        cell.add_line_after(data['line_id'])
-        return jsonify(cell.json_data())
-    return jsonify({})
-
-
-@app.route('/api/remove-line', methods=['POST'])
-def remove_line():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        cell.remove_line(data['line_id'])
-        return jsonify(cell.json_data())
-    return jsonify({})
-
-
 @app.route('/api/set-line', methods=['POST'])
 def set_line():
     data = json.loads(request.get_data().decode("utf-8"))

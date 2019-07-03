@@ -216,7 +216,7 @@ class BasicTest(unittest.TestCase):
         prf.add_item(2, "assume", args=A)
         prf.add_item(3, "assume", args=neg(A))
         prf.add_item(4, "apply_theorem", args="negE", prevs=[0, 3])
-        prf.add_item(5, "apply_theorem", args="falseE", prevs=[4])
+        prf.add_item(5, "apply_theorem_for", args=("falseE", {}, {'A': A}), prevs=[4])
         prf.add_item(6, "implies_intr", args=A, prevs=[2])
         prf.add_item(7, "implies_intr", args=neg(A), prevs=[5])
         prf.add_item(8, "apply_theorem", args="disjE", prevs=[1, 6, 7])

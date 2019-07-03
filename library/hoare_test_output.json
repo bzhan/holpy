@@ -106,23 +106,33 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "!s. true --> (if s 12 <= s 13 then s 13 = s 12 | s 13 = s 13 else s 12 = s 12 | s 12 = s 13)",
+                    "args": "∀s::nat ⇒ nat. true ⟶ (if s 12 ≤ s 13 then s 13 = s 12 ∨ s 13 = s 13 else s 12 = s 12 ∨ s 12 = s 13)",
                     "id": "0",
                     "prevs": [],
                     "rule": "z3",
-                    "th": "|- !s. true --> (if s 12 <= s 13 then s 13 = s 12 | s 13 = s 13 else s 12 = s 12 | s 12 = s 13)"
+                    "th": "⊢ ∀s::nat ⇒ nat. true ⟶ (if s 12 ≤ s 13 then s 13 = s 12 ∨ s 13 = s 13 else s 12 = s 12 ∨ s 12 = s 13)"
                 },
                 {
-                    "args": "Valid (%s. true) (Cond (%s. s 12 <= s 13) (Assign 2 (%s. s 13)) (Assign 2 (%s. s 12))) (%s. s 2 = s 12 | s 2 = s 13)",
+                    "args": "Valid (λs::nat ⇒ nat. true) (Cond (λs. s 12 ≤ s 13) (Assign 2 (λs. s 13)) (Assign 2 (λs. s 12))) (λs. s 2 = s 12 ∨ s 2 = s 13)",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "vcg",
-                    "th": "|- Valid (%s. true) (Cond (%s. s 12 <= s 13) (Assign 2 (%s. s 13)) (Assign 2 (%s. s 12))) (%s. s 2 = s 12 | s 2 = s 13)"
+                    "th": "⊢ Valid (λs::nat ⇒ nat. true) (Cond (λs. s 12 ≤ s 13) (Assign 2 (λs. s 13)) (Assign 2 (λs. s 12))) (λs. s 2 = s 12 ∨ s 2 = s 13)"
                 }
             ],
-            "prop": "Valid (%s. true) (Cond (%s. s 12 <= s 13) (Assign 2 (%s. s 13)) (Assign 2 (%s. s 12))) (%s. s 2 = s 12 | s 2 = s 13)",
+            "prop": "Valid (%s::nat => nat. true) (Cond (%s. s 12 <= s 13) (Assign 2 (%s. s 13)) (Assign 2 (%s. s 12))) (%s. s 2 = s 12 | s 2 = s 13)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "vcg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         }

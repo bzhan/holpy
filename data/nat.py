@@ -550,7 +550,7 @@ def ineq_one_proof_term(thy, n):
     """Returns the inequality n ~= 1."""
     assert n != 1, "ineq_one_proof_term: n = 1"
     if n == 0:
-        return apply_theorem(thy, "ineq_symmetric", ProofTerm.theorem(thy, "one_nonzero"))
+        return apply_theorem(thy, "ineq_sym", ProofTerm.theorem(thy, "one_nonzero"))
     elif n % 2 == 0:
         return apply_theorem(thy, "bit0_neq_one", inst={"m": to_binary(n // 2)})
     else:
@@ -564,9 +564,9 @@ def ineq_proof_term(thy, m, n):
     elif n == 1:
         return ineq_one_proof_term(thy, m)
     elif m == 0:
-        return apply_theorem(thy, "ineq_symmetric", ineq_zero_proof_term(thy, n))
+        return apply_theorem(thy, "ineq_sym", ineq_zero_proof_term(thy, n))
     elif m == 1:
-        return apply_theorem(thy, "ineq_symmetric", ineq_one_proof_term(thy, n))
+        return apply_theorem(thy, "ineq_sym", ineq_one_proof_term(thy, n))
     elif m % 2 == 0 and n % 2 == 0:
         return apply_theorem(thy, "bit0_neq", ineq_proof_term(thy, m // 2, n // 2))
     elif m % 2 == 1 and n % 2 == 1:
@@ -574,7 +574,7 @@ def ineq_proof_term(thy, m, n):
     elif m % 2 == 0 and n % 2 == 1:
         return apply_theorem(thy, "bit0_bit1_neq", inst={"m": to_binary(m // 2), "n": to_binary(n // 2)})
     else:
-        return apply_theorem(thy, "ineq_symmetric", ineq_proof_term(thy, n, m))
+        return apply_theorem(thy, "ineq_sym", ineq_proof_term(thy, n, m))
 
 class nat_const_ineq_macro(ProofTermMacro):
     """Given m and n, with m ~= n, return the inequality theorem."""

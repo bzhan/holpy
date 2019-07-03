@@ -155,9 +155,6 @@
             "vars": {}
         },
         {
-            "attributes": [
-                "hint_backward"
-            ],
             "name": "falseE",
             "prop": "false --> A",
             "ty": "thm.ax",

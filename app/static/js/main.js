@@ -151,23 +151,32 @@
             var filename = $(this).attr('theory_name');
             var item_id = $(this).attr('item_id');
             var editor_id = get_selected_id();
-            var proof = cells[editor_id].proof;
-            var output_proof = [];
-            $.each(proof, function (i, prf) {
-                output_proof.push($.extend(true, {}, prf));  // perform deep copy
-                output_proof[i].th = output_proof[i].th_raw;
-                delete output_proof[i].th_raw;
-                output_proof[i].args = output_proof[i].args_raw;
-                delete output_proof[i].args_raw;
-            });
-            json_files[filename].content[item_id].proof = output_proof;
-            json_files[filename].content[item_id].num_gaps = cells[editor_id].num_gaps;
-            json_files[filename].content[item_id].steps = cells[editor_id].steps;
+            var json_content = json_files[filename].content[item_id];
+            if (cells[editor_id].steps.length === 0) {
+                // Empty proof
+                delete json_content.proof;
+                delete json_content.num_gaps;
+                delete json_content.steps;
+            } else {
+                var proof = cells[editor_id].proof;
+                var output_proof = [];
+                $.each(proof, function (i, prf) {
+                    output_proof.push($.extend(true, {}, prf));  // perform deep copy
+                    output_proof[i].th = output_proof[i].th_raw;
+                    delete output_proof[i].th_raw;
+                    output_proof[i].args = output_proof[i].args_raw;
+                    delete output_proof[i].args_raw;
+                });
+                json_content.proof = output_proof;
+                json_content.num_gaps = cells[editor_id].num_gaps;
+                json_content.steps = cells[editor_id].steps;
+            }
             if (cur_theory_name === filename) {
+                // Refresh status of item if the current theory is being displayed
                 display_theory_items();
             }
             save_json_file(filename);
-            alert('Saved ' + json_files[filename].content[item_id].name + '.');
+            alert('Saved ' + json_content.name + '.');
         });
 
         // Reset proof to original status.
@@ -234,10 +243,6 @@
 
         $('#apply-prev').on('click', function () {
             apply_method('apply_prev');
-        });
-
-        $('#add-line-after').on("click", function () {
-            add_line_after(get_selected_editor());
         });
 
         $('#apply-backward-step').on("click", function () {
@@ -835,8 +840,10 @@
     // Display list of files.
     function display_file_list() {
         $(function () {
-            var templ = _.template($("#template-file-list").html());
-            $('#panel-files').html(templ({file_list: file_list}));    
+            setTimeout(function () {
+                var templ = _.template($("#template-file-list").html());
+                $('#panel-files').html(templ({file_list: file_list})); 
+            }, 100)   
         });
     }
 
@@ -973,23 +980,14 @@
             edit_line_number: -1,
         };
         editor.on("keydown", function (cm, event) {
-            let line_no = cm.getCursor().line;
-            let line = cm.getLine(line_no);
             if (event.code === 'Enter') {
                 event.preventDefault();
                 if (cells[id].edit_line_number !== -1) {
                     set_line(cm);
-                } else {
-                    add_line_after(cm);
                 }
             } else if (event.code === 'Tab') {
                 event.preventDefault();
                 unicode_replace(cm);
-            } else if (event.code === 'Backspace') {
-                if (line.trim() === '') {
-                    event.preventDefault();
-                    remove_line(cm);
-                }
             } else if (event.code === 'Escape') {
                 event.preventDefault();
                 if (cells[id].edit_line_number !== -1) {

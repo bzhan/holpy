@@ -198,18 +198,6 @@ class ProofState():
         self.rpt = report.ProofReport()
         return self.thy.check_proof(self.prf, rpt=self.rpt, no_gaps=no_gaps, compute_only=compute_only)
 
-    def add_line_after(self, id):
-        """Add given line after the given id."""
-        id = id_force_tuple(id)
-        prf = self.prf.get_parent_proof(id)
-        new_id = incr_id(id, 1)
-        split = new_id[-1]
-        prf.items = prf.items[:split] + [ProofItem(new_id, "")] + prf.items[split:]
-        for item in prf.items[split+1:]:
-            incr_proof_item(item, new_id, 1)
-
-        self.check_proof(compute_only=True)
-
     def add_line_before(self, id, n):
         """Add n lines before the given id."""
         id = id_force_tuple(id)

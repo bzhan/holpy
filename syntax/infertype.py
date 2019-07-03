@@ -185,6 +185,7 @@ def infer_printed_type(thy, t):
         if t.is_const() and not hasattr(t, "print_type"):
             t.backupT = t.T
             t.T = None
+            t.name = thy.lookup_overload_const(t.name)
         elif t.is_comb():
             clear_const_type(t.fun)
             clear_const_type(t.arg)

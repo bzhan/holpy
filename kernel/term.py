@@ -377,6 +377,10 @@ class Term():
         else:
             return False
 
+    def is_reflexive(self):
+        """Whether self is of the form A = A."""
+        return self.is_equals() and self.arg1 == self.arg
+
     def is_VAR(self):
         """Whether self is of the form _VAR v."""
         return self.is_comb() and self.fun.is_const_name("_VAR") and self.arg.is_var()
