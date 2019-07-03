@@ -4,7 +4,7 @@
             "ty": "def",
             "type": "(nat => real) => real => bool",
             "name": "has_limit",
-            "prop": "has_limit f x <--> (!e. real_zero < e --> (?N. !n. N <= n --> real_abs (f n - x) < e))"
+            "prop": "has_limit f x <--> (!e. 0 < e --> (?N. !n. N <= n --> real_abs (f n - x) < e))"
         },
         {
             "ty": "thm",

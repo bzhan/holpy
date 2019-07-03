@@ -6,6 +6,12 @@
             "ty": "type.ax"
         },
         {
+            "name": "rat_of_nat",
+            "ty": "def.ax",
+            "type": "nat => rat",
+            "overload": "of_nat"
+        },
+        {
             "name": "rat_plus",
             "ty": "def.ax",
             "type": "rat => rat => rat",

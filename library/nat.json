@@ -73,6 +73,18 @@
             "type": "'a => 'a => 'a"
         },
         {
+            "name": "of_nat",
+            "ty": "def.ax",
+            "type": "nat => 'a"
+        },
+        {
+            "name": "nat_of_nat",
+            "prop": "of_nat n = n",
+            "ty": "def",
+            "type": "nat => nat",
+            "overload": "of_nat"
+        },
+        {
             "name": "nat_plus",
             "overload": "plus",
             "rules": [

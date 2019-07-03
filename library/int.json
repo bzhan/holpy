@@ -6,6 +6,12 @@
             "ty": "type.ax"
         },
         {
+            "name": "int_of_nat",
+            "ty": "def.ax",
+            "type": "nat => int",
+            "overload": "of_nat"
+        },
+        {
             "name": "int_plus",
             "ty": "def.ax",
             "type": "int => int => int",

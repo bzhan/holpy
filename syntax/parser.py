@@ -157,7 +157,7 @@ class HOLTransformer(Transformer):
 
     def number(self, n):
         from data import nat
-        return nat.to_binary(int(n))
+        return Const("of_nat",None)(nat.to_binary(int(n)))
 
     def literal_list(self, *args):
         from data import list
