@@ -840,8 +840,10 @@
     // Display list of files.
     function display_file_list() {
         $(function () {
-            var templ = _.template($("#template-file-list").html());
-            $('#panel-files').html(templ({file_list: file_list}));    
+            setTimeout(function () {
+                var templ = _.template($("#template-file-list").html());
+                $('#panel-files').html(templ({file_list: file_list})); 
+            }, 100)   
         });
     }
 
