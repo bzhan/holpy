@@ -12,6 +12,7 @@ from syntax import parser, printer, settings
 from server import server, method
 from logic import basic
 from logic import induct
+from imperative import parser2
 from imperative import imp
 
 
@@ -51,13 +52,16 @@ def proof_area_template():
 @app.route('/program', methods = ['POST', 'GET'])
 def index_():
     name = 'test'
+    thy = basic.load_theory('nat')
     PATH = os.getcwd() + '/imperative/examples/' + name + '.json'
     with open(PATH, 'r+', encoding = 'utf-8') as f:
         file_data = json.load(f)
         f.close()
     data = file_data['content'][2]
+    com = parser2.com_parser.parse(data['com'])
+    com_body = com.print_com(thy)
 
-    return render_template('progm_verify.html', pre = data['pre'], post = data['post'])
+    return render_template('progm_verify.html', pre = data['pre'], body = com_body, post = data['post'])
 
 # Data processing
 @app.route('/program_verify', methods = ['POST', 'GET'])
