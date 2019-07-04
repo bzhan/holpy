@@ -35,7 +35,7 @@ class Seq(Com):
         self.c2 = c2
 
     def print_com(self, thy):
-        return self.c1.print_com(thy) + ";\n  " + self.c2.print_com(thy) + ';'
+        return self.c1.print_com(thy) + ";\n" + self.c2.print_com(thy)
 
 class Cond(Com):
     """Conditional program."""
@@ -58,5 +58,10 @@ class While(Com):
         self.c = c
 
     def print_com(self, thy):
+        cmd = self.c.print_com(thy).split('\n')
+        for i, c in enumerate(cmd):
+            if ';' not in c:
+                cmd[i] += ';'
+        cmd = '\n  '.join(cmd)
         return "while (%s) {\n  [%s]\n  %s\n}" % (
-            printer.print_term(thy, self.b), printer.print_term(thy, self.inv), self.c.print_com(thy))
+            printer.print_term(thy, self.b), printer.print_term(thy, self.inv), cmd )
