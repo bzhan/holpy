@@ -50,7 +50,14 @@ def proof_area_template():
 # Program-verify home-page
 @app.route('/program', methods = ['POST', 'GET'])
 def index_():
-    return render_template('progm_verify.html')
+    name = 'test'
+    PATH = os.getcwd() + '/imperative/examples/' + name + '.json'
+    with open(PATH, 'r+', encoding = 'utf-8') as f:
+        file_data = json.load(f)
+        f.close()
+    data = file_data['content'][2]
+
+    return render_template('progm_verify.html', pre = data['pre'], post = data['post'])
 
 # Data processing
 @app.route('/program_verify', methods = ['POST', 'GET'])

@@ -3,5 +3,11 @@ var vm = new Vue({
     data: {
         text: 'this is a test'
         },
-    methods: {}
+    methods: {
+        process: function() {
+            axios.post({
+
+            })
+        }
+    }
 })

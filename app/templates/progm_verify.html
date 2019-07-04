@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script type="text/javascript" src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script type="text/javascript" src="../static/js/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link href="../static/css/pro_ver.css" rel="stylesheet">
     <title>P-V</title>
@@ -11,9 +11,9 @@
     <div id="wrap">
         <div id="pro-ver" class="total left">
             <form id="program-ver" action="program_verify">
-                <span class="title">pre-condition:</span><input name="pre-condition" class="con">
-                <textarea class="code-content con"></textarea>
-                <span class="title">post-condition:</span><input name="post-condition" class="con">
+                <span class="title">pre-condition:</span><input name="pre-condition" class="con" value='{{ pre }}'>
+                <textarea class="code-content con">{{ body }}</textarea>
+                <span class="title">post-condition:</span><input name="post-condition" class="con" value='{{ post }}'>
                 <button name="check" type="submit" class="but">Check</button>
             </form>
         </div>
