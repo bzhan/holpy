@@ -62,12 +62,12 @@ class prove_avalI_macro(ProofTermMacro):
         """
         def helper(t):
             if t.head == N:
-                return nat.from_binary(t.args[0])
+                return nat.from_binary_nat(t.args[0])
             elif t.head == V:
                 x, = t.args
                 res = function.fun_upd_eval_conv().eval(thy, s(x)).prop.rhs
-                assert nat.is_binary(res), "get_avalI"
-                return nat.from_binary(res)
+                assert nat.is_binary_nat(res), "get_avalI"
+                return nat.from_binary_nat(res)
             elif t.head == Plus:
                 a1, a2 = t.args
                 return helper(a1) + helper(a2)
@@ -82,7 +82,7 @@ class prove_avalI_macro(ProofTermMacro):
         assert len(ths) == 0, "prove_avalI_macro"
         s, t, n = goal.args
         res = self.get_avalI(thy, s, t)
-        assert n == nat.to_binary(res), "prove_avalI_macro: wrong result"
+        assert n == nat.to_binary_nat(res), "prove_avalI_macro: wrong result"
         return Thm([], goal)
 
     def can_eval(self, thy, goal):
@@ -95,7 +95,7 @@ class prove_avalI_macro(ProofTermMacro):
         except AssertionError:
             return False
 
-        return n == nat.to_binary(res)
+        return n == nat.to_binary_nat(res)
 
     def get_proof_term(self, thy, goal, pts):
         assert isinstance(goal, Term), "prove_avalI_macro"

@@ -121,18 +121,18 @@ class NatTest(unittest.TestCase):
 
     def testNatConv(self):
         test_data = [
-            ("2 + 3", 5),
+            ("(2::nat) + 3", 5),
             ("Suc (2 + 3)", 6),
             ("Suc (Suc (Suc 0))", 3),
-            ("5 + 2 * 3", 11),
-            ("(5 + 2) * 3", 21),
+            ("(5::nat) + 2 * 3", 11),
+            ("((5::nat) + 2) * 3", 21),
             ("5 * Suc (2 + 5)", 40),
         ]
 
         cv = nat.nat_conv()
         for expr, n in test_data:
             t = parser.parse_term(thy, {}, expr)
-            res_th = Thm.mk_equals(t, nat.to_binary(n))
+            res_th = Thm.mk_equals(t, nat.to_binary_nat(n))
             self.assertEqual(cv.eval(thy, t), res_th)
             prf = cv.get_proof_term(thy, t).export()
             self.assertEqual(thy.check_proof(prf), res_th)
@@ -147,7 +147,7 @@ class NatTest(unittest.TestCase):
             ("x + 2 + y + 3", "x + y + 5"),
             ("3 * x * 5 * x", "x * x * 15"),
             ("(x + 2 * y) * (y + 2 * x)", "x * x * 2 + x * y * 5 + y * y * 2"),
-            ("3 + 5 * 2", "13"),
+            ("(3::nat) + 5 * 2", "(13::nat)"),
             ("x + Suc y", "x + y + 1"),
             ("Suc (x + Suc y)", "x + y + 2"),
             ("x * Suc y", "x + x * y"),
@@ -224,20 +224,20 @@ class NatTest(unittest.TestCase):
 
         macro = nat.nat_const_ineq_macro()
         for m, n in test_data:
-            goal = logic.neg(Term.mk_equals(nat.to_binary(m), nat.to_binary(n)))
+            goal = logic.neg(Term.mk_equals(nat.to_binary_nat(m), nat.to_binary_nat(n)))
             prf = macro.get_proof_term(thy, goal, []).export()
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testNatEqConv(self):
         test_data = [
-            ((zero, zero), logic.true),
-            ((one, one), logic.true),
-            ((zero, one), logic.false),
+            ((0, 0), logic.true),
+            ((1, 1), logic.true),
+            ((0, 1), logic.false),
         ]
 
         cv = nat.nat_eq_conv()
         for (a, b), res in test_data:
-            t = Term.mk_equals(a, b)
+            t = Term.mk_equals(nat.to_binary_nat(a), nat.to_binary_nat(b))
             prf = cv.get_proof_term(thy, t).export()
             res_th = Thm.mk_equals(t, res)
             self.assertEqual(thy.check_proof(prf), res_th)
@@ -249,7 +249,7 @@ class NatTest(unittest.TestCase):
 
         macro = nat.nat_const_less_eq_macro()
         for m, n in test_data:
-            goal = nat.less_eq(nat.to_binary(m), nat.to_binary(n))
+            goal = nat.less_eq(nat.to_binary_nat(m), nat.to_binary_nat(n))
             pt = macro.get_proof_term(thy, goal, [])
             prf = pt.export()
             self.assertEqual(thy.check_proof(prf), Thm([], goal))

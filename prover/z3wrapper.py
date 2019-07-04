@@ -61,8 +61,8 @@ def convert(t):
         return convert(t.arg1) <= convert(t.arg)
     elif nat.is_less(t):
         return convert(t.arg1) < convert(t.arg)
-    elif nat.is_binary(t):
-        return nat.from_binary(t)
+    elif nat.is_binary_nat(t):
+        return nat.from_binary_nat(t)
     elif t.is_comb():
         return convert(t.fun)(convert(t.arg))
     elif t.is_const():

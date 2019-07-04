@@ -298,7 +298,10 @@ def file_data_to_output(thy, data):
         rules = []
         data['edit_content'] = []
         for rule in data['rules']:
-            ctxt = {'vars': {}, 'consts': {data['name']: T}}
+            parse_name = data['name']
+            if 'overload' in data:
+                parse_name = data['overload']
+            ctxt = {'vars': {}, 'consts': {parse_name: T}}
             prop = parser.parse_term(thy, ctxt, rule['prop'])
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
             content = printer.print_term(thy, prop, unicode=True, highlight=False)

@@ -300,11 +300,11 @@ class ServerTest(unittest.TestCase):
 
     def testAddZeroRight(self):
         """Proof of n + 0 = n by induction."""
-        testMethods(self, 'nat', 'add_0_right')
+        testMethods(self, 'nat', 'add_zero_right')
 
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
-        testMethods(self, 'nat', 'mult_0_right')
+        testMethods(self, 'nat', 'mult_zero_right')
 
     def testAppendNil(self):
         """Proof of xs @ [] = xs by induction."""

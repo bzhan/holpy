@@ -139,8 +139,11 @@ def print_term(thy, t):
 
         # Some special cases:
         # Natural numbers:
-        if nat.is_binary(t):
-            return N(str(nat.from_binary(t)))
+        if t.is_comb() and t.fun.is_const_name("of_nat") and nat.is_binary(t.arg):
+            if hasattr(t.fun, "print_type"):
+                return N("(" + str(nat.from_binary(t.arg)) + "::" + "nat" + ")")
+            else:
+                return N(str(nat.from_binary(t.arg)))
 
         if list.is_literal_list(t):
             items = list.dest_literal_list(t)
@@ -282,6 +285,7 @@ def print_term(thy, t):
             raise TypeError()
 
     t = copy(t)  # make copy here, because infer_printed_type may change t.
+    infertype.get_overload(thy, t)
     infertype.infer_printed_type(thy, t)
 
     res = helper(t, [])

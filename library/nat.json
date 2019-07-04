@@ -25,8 +25,20 @@
             "ty": "type.ind"
         },
         {
+            "name": "of_nat",
+            "ty": "def.ax",
+            "type": "nat => 'a"
+        },
+        {
+            "name": "nat_of_nat",
+            "overload": "of_nat",
+            "prop": "nat_of_nat n = n",
+            "ty": "def",
+            "type": "nat => nat"
+        },
+        {
             "name": "not_Suc",
-            "prop": "~(Suc n = 0)",
+            "prop": "~(Suc n = zero)",
             "ty": "thm",
             "vars": {
                 "n": "nat"
@@ -45,7 +57,7 @@
             "name": "Pre",
             "rules": [
                 {
-                    "prop": "Pre 0 = 0"
+                    "prop": "Pre zero = zero"
                 },
                 {
                     "prop": "Pre (Suc n) = n"
@@ -73,23 +85,11 @@
             "type": "'a => 'a => 'a"
         },
         {
-            "name": "of_nat",
-            "ty": "def.ax",
-            "type": "nat => 'a"
-        },
-        {
-            "name": "nat_of_nat",
-            "prop": "of_nat n = n",
-            "ty": "def",
-            "type": "nat => nat",
-            "overload": "of_nat"
-        },
-        {
             "name": "nat_plus",
             "overload": "plus",
             "rules": [
                 {
-                    "prop": "0 + n = n"
+                    "prop": "zero + n = (n::nat)"
                 },
                 {
                     "prop": "Suc m + n = Suc (m + n)"
@@ -104,7 +104,7 @@
             "overload": "times",
             "rules": [
                 {
-                    "prop": "0 * n = 0"
+                    "prop": "zero * (n::nat) = zero"
                 },
                 {
                     "prop": "Suc m * n = n + m * n"
@@ -125,22 +125,22 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "add_0_right",
+            "name": "add_zero_right",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_plus_def_1, 0 + 0 = 0",
+                    "args": "nat_plus_def_1, zero + zero = zero",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ 0 + 0 = 0"
+                    "th": "⊢ zero + zero = zero"
                 },
                 {
                     "args": "",
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. n + 0 = n ⟶ Suc n + 0 = Suc n"
+                    "th": "⊢ ∀n. n + zero = n ⟶ Suc n + zero = Suc n"
                 },
                 {
                     "args": "n, nat",
@@ -150,29 +150,30 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "n + 0 = n",
+                    "args": "n + zero = n",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "n + 0 = n ⊢ n + 0 = n"
+                    "th": "n + zero = n ⊢ n + zero = n"
                 },
                 {
-                    "args": "Suc (n + 0) = Suc n",
+                    "args": "Suc (n + zero) = Suc n",
                     "id": "1.2",
                     "prevs": [
+                        "1.1",
                         "1.1"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "n + 0 = n ⊢ Suc (n + 0) = Suc n"
+                    "th": "n + zero = n ⊢ Suc (n + zero) = Suc n"
                 },
                 {
-                    "args": "nat_plus_def_2, Suc n + 0 = Suc n",
+                    "args": "nat_plus_def_2, Suc n + zero = Suc n",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "n + 0 = n ⊢ Suc n + 0 = Suc n"
+                    "th": "n + zero = n ⊢ Suc n + zero = Suc n"
                 },
                 {
                     "args": "",
@@ -183,20 +184,20 @@
                         "1.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. n + 0 = n ⟶ Suc n + 0 = Suc n"
+                    "th": "⊢ ∀n. n + zero = n ⟶ Suc n + zero = Suc n"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x + 0 = x, x: x}",
+                    "args": "nat_induct, {}, {P: λx. x + zero = x, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ x + 0 = x"
+                    "th": "⊢ x + zero = x"
                 }
             ],
-            "prop": "x + 0 = x",
+            "prop": "x + zero = x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -233,26 +234,31 @@
             }
         },
         {
+            "name": "add_0_left",
+            "prop": "0 + x = x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "add_0_right",
+            "prop": "x + 0 = x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "add_one_left",
+            "prop": "Suc zero + x = Suc x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
             "name": "add_1_left",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "nat_plus_def_1, Suc (0 + x) = Suc x",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ Suc (0 + x) = Suc x"
-                },
-                {
-                    "args": "nat_plus_def_2, 1 + x = Suc x",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 1 + x = Suc x"
-                }
-            ],
             "prop": "1 + x = Suc x",
             "ty": "thm",
             "vars": {
@@ -260,77 +266,15 @@
             }
         },
         {
+            "name": "add_one_right",
+            "prop": "x + Suc zero = Suc x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
             "name": "add_1_right",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "nat_plus_def_1, 0 + 1 = 1",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 0 + 1 = 1"
-                },
-                {
-                    "args": "",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "⊢ ∀n. n + 1 = Suc n ⟶ Suc n + 1 = Suc (Suc n)"
-                },
-                {
-                    "args": "n, nat",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR n"
-                },
-                {
-                    "args": "n + 1 = Suc n",
-                    "id": "1.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "n + 1 = Suc n ⊢ n + 1 = Suc n"
-                },
-                {
-                    "args": "Suc (n + 1) = Suc (Suc n)",
-                    "id": "1.2",
-                    "prevs": [
-                        "1.1"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "n + 1 = Suc n ⊢ Suc (n + 1) = Suc (Suc n)"
-                },
-                {
-                    "args": "nat_plus_def_2, Suc n + 1 = Suc (Suc n)",
-                    "id": "1.3",
-                    "prevs": [
-                        "1.2"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "n + 1 = Suc n ⊢ Suc n + 1 = Suc (Suc n)"
-                },
-                {
-                    "args": "",
-                    "id": "1.4",
-                    "prevs": [
-                        "1.0",
-                        "1.1",
-                        "1.3"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ ∀n. n + 1 = Suc n ⟶ Suc n + 1 = Suc (Suc n)"
-                },
-                {
-                    "args": "nat_induct, {}, {P: λx. x + 1 = Suc x, x: x}",
-                    "id": "2",
-                    "prevs": [
-                        "0",
-                        "1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ x + 1 = Suc x"
-                }
-            ],
             "prop": "x + 1 = Suc x",
             "ty": "thm",
             "vars": {
@@ -678,25 +622,33 @@
             }
         },
         {
+            "name": "mult_0_left",
+            "prop": "0 * x = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "mult_0_right",
+            "name": "mult_zero_right",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_times_def_1, 0 * 0 = 0",
+                    "args": "nat_times_def_1, zero * zero = zero",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ 0 * 0 = 0"
+                    "th": "⊢ zero * zero = zero"
                 },
                 {
                     "args": "",
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. n * 0 = 0 ⟶ Suc n * 0 = 0"
+                    "th": "⊢ ∀n. n * zero = zero ⟶ Suc n * zero = zero"
                 },
                 {
                     "args": "n, nat",
@@ -706,29 +658,29 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "n * 0 = 0",
+                    "args": "n * zero = zero",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "n * 0 = 0 ⊢ n * 0 = 0"
+                    "th": "n * zero = zero ⊢ n * zero = zero"
                 },
                 {
-                    "args": "nat_plus_def_1, 0 + n * 0 = 0",
+                    "args": "nat_plus_def_1, zero + n * zero = zero",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "n * 0 = 0 ⊢ 0 + n * 0 = 0"
+                    "th": "n * zero = zero ⊢ zero + n * zero = zero"
                 },
                 {
-                    "args": "nat_times_def_2, Suc n * 0 = 0",
+                    "args": "nat_times_def_2, Suc n * zero = zero",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "n * 0 = 0 ⊢ Suc n * 0 = 0"
+                    "th": "n * zero = zero ⊢ Suc n * zero = zero"
                 },
                 {
                     "args": "",
@@ -739,20 +691,20 @@
                         "1.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. n * 0 = 0 ⟶ Suc n * 0 = 0"
+                    "th": "⊢ ∀n. n * zero = zero ⟶ Suc n * zero = zero"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. x * 0 = 0, x: x}",
+                    "args": "nat_induct, {}, {P: λx. x * zero = zero, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ x * 0 = 0"
+                    "th": "⊢ x * zero = zero"
                 }
             ],
-            "prop": "x * 0 = 0",
+            "prop": "x * zero = zero",
             "steps": [
                 {
                     "goal_id": "0",
@@ -787,35 +739,23 @@
             }
         },
         {
+            "name": "mult_0_right",
+            "prop": "x * 0 = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
+            "name": "mult_one_left",
+            "prop": "Suc zero * x = x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
             "name": "mult_1_left",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "add_0_right, x + 0 = x",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ x + 0 = x"
-                },
-                {
-                    "args": "nat_times_def_1, x + 0 * x = x",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ x + 0 * x = x"
-                },
-                {
-                    "args": "nat_times_def_2, 1 * x = x",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 1 * x = x"
-                }
-            ],
             "prop": "1 * x = x",
             "ty": "thm",
             "vars": {
@@ -823,95 +763,15 @@
             }
         },
         {
+            "name": "mult_one_right",
+            "prop": "x * Suc zero = x",
+            "ty": "thm",
+            "vars": {
+                "x": "nat"
+            }
+        },
+        {
             "name": "mult_1_right",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "nat_times_def_1, 0 * 1 = 0",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 0 * 1 = 0"
-                },
-                {
-                    "args": "",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "⊢ ∀n. n * 1 = n ⟶ Suc n * 1 = Suc n"
-                },
-                {
-                    "args": "n, nat",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR n"
-                },
-                {
-                    "args": "n * 1 = n",
-                    "id": "1.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "n * 1 = n ⊢ n * 1 = n"
-                },
-                {
-                    "args": "Suc (n * 1) = Suc n",
-                    "id": "1.2",
-                    "prevs": [
-                        "1.1"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "n * 1 = n ⊢ Suc (n * 1) = Suc n"
-                },
-                {
-                    "args": "nat_plus_def_1, Suc (0 + n * 1) = Suc n",
-                    "id": "1.3",
-                    "prevs": [
-                        "1.2"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "n * 1 = n ⊢ Suc (0 + n * 1) = Suc n"
-                },
-                {
-                    "args": "nat_plus_def_2, 1 + n * 1 = Suc n",
-                    "id": "1.4",
-                    "prevs": [
-                        "1.3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "n * 1 = n ⊢ 1 + n * 1 = Suc n"
-                },
-                {
-                    "args": "nat_times_def_2, Suc n * 1 = Suc n",
-                    "id": "1.5",
-                    "prevs": [
-                        "1.4"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "n * 1 = n ⊢ Suc n * 1 = Suc n"
-                },
-                {
-                    "args": "",
-                    "id": "1.6",
-                    "prevs": [
-                        "1.0",
-                        "1.1",
-                        "1.5"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ ∀n. n * 1 = n ⟶ Suc n * 1 = Suc n"
-                },
-                {
-                    "args": "nat_induct, {}, {P: λx. x * 1 = x, x: x}",
-                    "id": "2",
-                    "prevs": [
-                        "0",
-                        "1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ x * 1 = x"
-                }
-            ],
             "prop": "x * 1 = x",
             "ty": "thm",
             "vars": {
@@ -1784,7 +1644,7 @@
         },
         {
             "name": "bit1",
-            "prop": "bit1 n = n + n + 1",
+            "prop": "bit1 n = n + n + Suc zero",
             "ty": "def",
             "type": "nat => nat"
         },
@@ -1809,7 +1669,7 @@
                     "th": "⊢ Suc 1 = 2"
                 }
             ],
-            "prop": "Suc 1 = bit0 1",
+            "prop": "Suc (Suc zero) = bit0 (Suc zero)",
             "ty": "thm",
             "vars": {}
         },
@@ -2165,7 +2025,7 @@
         },
         {
             "name": "bit0_nonzero",
-            "prop": "~ m = 0 --> ~ (bit0 m = 0)",
+            "prop": "~ m = zero --> ~ (bit0 m = zero)",
             "ty": "thm",
             "vars": {
                 "m": "nat"
@@ -2173,7 +2033,7 @@
         },
         {
             "name": "bit1_nonzero",
-            "prop": "~ bit1 m = 0",
+            "prop": "~ bit1 m = zero",
             "ty": "thm",
             "vars": {
                 "m": "nat"
@@ -2181,7 +2041,7 @@
         },
         {
             "name": "one_nonzero",
-            "prop": "~ 1 = 0",
+            "prop": "~ Suc zero = zero",
             "ty": "thm",
             "vars": {}
         },
@@ -2214,7 +2074,7 @@
         },
         {
             "name": "bit0_neq_one",
-            "prop": "~ bit0 m = 1",
+            "prop": "~ bit0 m = Suc zero",
             "ty": "thm",
             "vars": {
                 "m": "nat"
@@ -2222,7 +2082,7 @@
         },
         {
             "name": "bit1_neq_one",
-            "prop": "~ m = 0 --> ~ bit1 m = 1",
+            "prop": "~ m = zero --> ~ bit1 m = Suc zero",
             "ty": "thm",
             "vars": {
                 "m": "nat"
@@ -2273,7 +2133,7 @@
                     "th": "⊢ ¬12 = 13"
                 }
             ],
-            "prop": "~ 12 = 13",
+            "prop": "~ (12::nat) = 13",
             "ty": "thm",
             "vars": {}
         },
@@ -2401,6 +2261,7 @@
         },
         {
             "name": "nat_less_eq",
+            "overload": "less_eq",
             "rules": [
                 {
                     "prop": "m <= 0 ⟷ m = 0"
@@ -2410,11 +2271,11 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => bool",
-            "overload": "less_eq"
+            "type": "nat => nat => bool"
         },
         {
             "name": "nat_less",
+            "overload": "less",
             "rules": [
                 {
                     "prop": "m < 0 ⟷ false"
@@ -2424,8 +2285,7 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => bool",
-            "overload": "less"
+            "type": "nat => nat => bool"
         },
         {
             "attributes": [
