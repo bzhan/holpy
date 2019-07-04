@@ -59,9 +59,6 @@ class While(Com):
 
     def print_com(self, thy):
         cmd = self.c.print_com(thy).split('\n')
-        for i, c in enumerate(cmd):
-            if ';' not in c:
-                cmd[i] += ';'
         cmd = '\n  '.join(cmd)
         return "while (%s) {\n  [%s]\n  %s\n}" % (
             printer.print_term(thy, self.b), printer.print_term(thy, self.inv), cmd )
