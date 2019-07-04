@@ -174,6 +174,14 @@ def login():
     return redirect('login-error')
 
 
+# Directly sign in as master (TURN OFF WHEN DEPLOY SERVER)
+@app.route('/master', methods=['GET'])
+def master():
+    user_info['is_signed_in'] = True
+    user_info['username'] = 'master'
+    return redirect('/load')
+
+
 # Replace user data with library data
 @app.route('/api/refresh-files', methods=['POST'])
 def refresh_files():
@@ -213,26 +221,6 @@ def init_saved_proof():
                 "message": str(e)
             }
         return jsonify(error)
-    return jsonify({})
-
-
-@app.route('/api/add-line-after', methods=['POST'])
-def add_line_after():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        cell.add_line_after(data['line_id'])
-        return jsonify(cell.json_data())
-    return jsonify({})
-
-
-@app.route('/api/remove-line', methods=['POST'])
-def remove_line():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        cell.remove_line(data['line_id'])
-        return jsonify(cell.json_data())
     return jsonify({})
 
 

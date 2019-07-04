@@ -23,11 +23,11 @@ zero = Const("zero", natT)
 Suc = Const("Suc", TFun(natT, natT))
 Pre = Const("Pre", TFun(natT, natT))
 one = Suc(zero)
-plus = Const("plus", TFun(natT, natT, natT))
-minus = Const("minus", TFun(natT, natT, natT))
-times = Const("times", TFun(natT, natT, natT))
-less_eq = Const("less_eq", TFun(natT, natT, boolT))
-less = Const("less", TFun(natT, natT, boolT))
+plus = Const("nat_plus", TFun(natT, natT, natT))
+minus = Const("nat_minus", TFun(natT, natT, natT))
+times = Const("nat_times", TFun(natT, natT, natT))
+less_eq = Const("nat_less_eq", TFun(natT, natT, boolT))
+less = Const("nat_less", TFun(natT, natT, boolT))
 
 def is_Suc(t):
     return t.is_comb() and t.fun == Suc
@@ -155,7 +155,7 @@ class mult_conv(Conv):
     def get_proof_term(self, thy, t):
         n1, n2 = t.arg1, t.arg  # two summands
         if n1 == zero:
-            cv = rewr_conv("times_def_1")
+            cv = rewr_conv("nat_times_def_1")
         elif n2 == zero:
             cv = rewr_conv("mult_0_right")
         elif n1 == one:
@@ -295,7 +295,7 @@ class norm_mult_atom(Conv):
     """Normalize expression of the form (a_1 * ... * a_n) * a."""
     def get_proof_term(self, thy, t):
         if t.arg1 == zero:
-            cv = rewr_conv("times_def_1")
+            cv = rewr_conv("nat_times_def_1")
         elif t.arg == zero:
             cv = rewr_conv("mult_0_right")
         elif t.arg1 == one:
@@ -550,7 +550,7 @@ def ineq_one_proof_term(thy, n):
     """Returns the inequality n ~= 1."""
     assert n != 1, "ineq_one_proof_term: n = 1"
     if n == 0:
-        return apply_theorem(thy, "ineq_symmetric", ProofTerm.theorem(thy, "one_nonzero"))
+        return apply_theorem(thy, "ineq_sym", ProofTerm.theorem(thy, "one_nonzero"))
     elif n % 2 == 0:
         return apply_theorem(thy, "bit0_neq_one", inst={"m": to_binary(n // 2)})
     else:
@@ -564,9 +564,9 @@ def ineq_proof_term(thy, m, n):
     elif n == 1:
         return ineq_one_proof_term(thy, m)
     elif m == 0:
-        return apply_theorem(thy, "ineq_symmetric", ineq_zero_proof_term(thy, n))
+        return apply_theorem(thy, "ineq_sym", ineq_zero_proof_term(thy, n))
     elif m == 1:
-        return apply_theorem(thy, "ineq_symmetric", ineq_one_proof_term(thy, n))
+        return apply_theorem(thy, "ineq_sym", ineq_one_proof_term(thy, n))
     elif m % 2 == 0 and n % 2 == 0:
         return apply_theorem(thy, "bit0_neq", ineq_proof_term(thy, m // 2, n // 2))
     elif m % 2 == 1 and n % 2 == 1:
@@ -574,7 +574,7 @@ def ineq_proof_term(thy, m, n):
     elif m % 2 == 0 and n % 2 == 1:
         return apply_theorem(thy, "bit0_bit1_neq", inst={"m": to_binary(m // 2), "n": to_binary(n // 2)})
     else:
-        return apply_theorem(thy, "ineq_symmetric", ineq_proof_term(thy, n, m))
+        return apply_theorem(thy, "ineq_sym", ineq_proof_term(thy, n, m))
 
 class nat_const_ineq_macro(ProofTermMacro):
     """Given m and n, with m ~= n, return the inequality theorem."""

@@ -8,6 +8,7 @@ from kernel.thm import Thm
 from logic import basic
 from logic import logic
 from data import nat
+from data import real
 from data import list
 from data import set
 from data import function
@@ -142,6 +143,23 @@ class PrinterTest(unittest.TestCase):
             (nat.less_eq(m, n), "m <= n"),
             (nat.less(m, n), "m < n"),
             (nat.less_eq(nat.plus(m, n), p), "m + n <= p"),
+        ]
+
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
+
+    def testReal(self):
+        thy = basic.load_theory('real')
+        x = Var('x', real.realT)
+        y = Var('y', real.realT)
+        test_data = [
+            (real.plus(x, y), "x + y"),
+            (real.times(x, y), "x * y"),
+            (real.minus(x, y), "x - y"),
+            (real.uminus(x), "-x"),
+            (real.minus(x, real.uminus(y)), "x - -y"),
+            (real.uminus(real.uminus(x)), "--x"),
+            (real.uminus(real.minus(x, y)), "-(x - y)"),
         ]
 
         for t, s in test_data:

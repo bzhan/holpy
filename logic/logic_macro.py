@@ -79,8 +79,14 @@ class apply_theorem_macro(ProofTermMacro):
         th = thy.get_theorem(name)
 
         if not self.with_inst:
-            As = th.assums
-            assert len(prevs) <= len(As), "apply_theorem_macro: too many prevs."
+            As, C = th.prop.strip_implies()
+            assert len(prevs) > 0, "apply_theorem: no prevs"
+            assert len(prevs) <= len(As), "apply_theorem: too many prevs."
+
+            # Make sure all variables are matched
+            assert set(term.get_vars(As[:len(prevs)])) == set(term.get_vars(As + [C])), \
+                   "apply_theorem: cannot match all variables"
+
             for idx, prev_th in enumerate(prevs):
                 matcher.first_order_match_incr(As[idx], prev_th.prop, (tyinst, inst))
 
@@ -99,7 +105,14 @@ class apply_theorem_macro(ProofTermMacro):
         th = thy.get_theorem(name)
 
         if not self.with_inst:
-            As = th.assums
+            As, C = th.prop.strip_implies()
+            assert len(pts) > 0, "apply_theorem: no prevs"
+            assert len(pts) <= len(As), "apply_theorem: too many prevs."
+
+            # Make sure all variables are matched
+            assert set(term.get_vars(As[:len(pts)])) == set(term.get_vars(As + [C])), \
+                   "apply_theorem: cannot match all variables"
+
             for idx, pt in enumerate(pts):
                 matcher.first_order_match_incr(As[idx], pt.prop, (tyinst, inst))
 
@@ -128,6 +141,9 @@ class apply_fact_macro(ProofTermMacro):
         self.sig = List[Term] if with_inst else None
 
     def get_proof_term(self, thy, args, pts):
+        if not self.with_inst:
+            assert len(pts) >= 2, "apply fact: too few prevs"
+
         pt, pt_prevs = pts[0], pts[1:]
 
         # First, obtain the patterns
@@ -208,6 +224,7 @@ class rewrite_goal_macro(ProofTermMacro):
         return pt
 
 class rewrite_fact_macro(ProofTermMacro):
+    """Rewrite a fact in the proof using a theorem."""
     def __init__(self):
         self.level = 1
         self.sig = str
@@ -217,7 +234,15 @@ class rewrite_fact_macro(ProofTermMacro):
 
         th_name = args
         eq_pt = ProofTerm.theorem(thy, th_name)
-        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt)), top_conv(beta_conv()))
+
+        # eq_pt should be an equality
+        assert eq_pt.prop.is_equals(), "rewrite_fact: theorem is not an equality"
+
+        # Check rewriting using the theorem has an effect
+        assert not top_conv(rewr_conv(th_name)).eval(thy, pts[0].prop).is_reflexive(), "rewrite_fact"
+
+        cv = then_conv(top_conv(rewr_conv(eq_pt)),
+                       top_conv(beta_conv()))
         return pts[0].on_prop(thy, cv)
 
 class rewrite_goal_with_prev_macro(ProofTermMacro):
@@ -244,7 +269,7 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
                        top_conv(beta_conv()))
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
-        if Term.is_equals(pt.prop.lhs) and pt.prop.lhs.lhs == pt.prop.lhs.rhs:
+        if pt.prop.lhs.is_reflexive():
             pt = ProofTerm.equal_elim(pt, ProofTerm.reflexive(pt.prop.lhs.rhs))
         else:
             pt = ProofTerm.equal_elim(pt, pts[0])
@@ -265,11 +290,17 @@ class rewrite_fact_with_prev_macro(ProofTermMacro):
         self.sig = None
 
     def get_proof_term(self, thy, args, pts):
-        eq_pt, pt = pts
-        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, match_vars=False)),
-                       top_conv(beta_conv()))
-        return pt.on_prop(thy, cv)
+        assert len(pts) == 2, "rewrite_fact_with_prev"
 
+        eq_pt, pt = pts
+        assert eq_pt.prop.is_equals, "rewrite_fact_with_prev"
+
+        # Check rewriting using eq_pt has an effect
+        cv1 = top_sweep_conv(rewr_conv(eq_pt, match_vars=False))
+        assert not cv1.eval(thy, pt.prop).is_reflexive(), "rewrite_fact_with_prev"
+
+        cv = then_conv(cv1, top_conv(beta_conv()))
+        return pt.on_prop(thy, cv)
 
 class trivial_macro(ProofTermMacro):
     """Prove a proposition of the form A_1 --> ... --> A_n --> B, where

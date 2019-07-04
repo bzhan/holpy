@@ -24,7 +24,7 @@ function get_status_color(ext) {
     if (ext.proof === undefined) {
         return 'red';
     } else if (ext.num_gaps > 0) {
-        return 'yellow';
+        return 'chocolate';
     } else {
         return 'green';
     }

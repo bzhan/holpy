@@ -17,12 +17,49 @@
         },
         {
             "name": "numseg_combione_r",
-            "prop": "m <= p + 1 & p <= n --> (union {m..p} {(p+1)..n} = {m..n})",
+            "prop": "m <= p + 1 & p <= n --> (union {m..p} {(p + 1)..n} = {m..n})",
             "ty": "thm",
             "vars": {
                 "m": "nat",
                 "n": "nat",
                 "p": "nat"
+            }
+        },
+        {
+            "name": "numseg_combione_l",
+            "prop": "m <= p & p <= n + 1 --> (union {m..(minus p 1)} {p..n} = {m..n})",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "name": "numseg_lrec",
+            "prop": "m <= n --> (insert m {(m+1)..n} = {m..n})",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "numseg_rrec",
+            "prop": "m <= n + 1 --> (insert (n + 1) {m..n} = {m..(n + 1)})",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "numseg_rec",
+            "prop": "m <= Suc n --> ({m..(Suc n)} = insert (Suc n) {m..n})",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
             }
         },
         {
@@ -39,15 +76,6 @@
             "prop": "{n..n} = {n}",
             "ty": "thm",
             "vars": {
-                "n": "nat"
-            }
-        },
-        {
-            "name": "numseg_lrec",
-            "prop": "m <= n --> insert m {(m + 1)..n} = {m..n}",
-            "ty": "thm",
-            "vars": {
-                "m": "nat",
                 "n": "nat"
             }
         }

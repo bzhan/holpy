@@ -6,43 +6,47 @@
             "ty": "type.ax"
         },
         {
-            "name": "rplus",
+            "name": "real_plus",
+            "ty": "def.ax",
+            "type": "real => real => real",
+            "overload": "plus"
+        },
+        {
+            "name": "real_uminus",
+            "ty": "def.ax",
+            "type": "real => real",
+            "overload": "uminus"
+        },
+        {
+            "name": "real_minus",
+            "ty": "def.ax",
+            "type": "real => real => real",
+            "overload": "minus"
+        },
+        {
+            "name": "real_times",
+            "ty": "def.ax",
+            "type": "real => real => real",
+            "overload": "times"
+        },
+        {
+            "name": "real_inverse",
             "ty": "def.ax",
             "type": "real => real => real"
         },
         {
-            "name": "uminus",
-            "ty": "def.ax",
-            "type": "real => real"
-        },
-        {
-            "name": "rminus",
+            "name": "real_divide",
             "ty": "def.ax",
             "type": "real => real => real"
         },
         {
-            "name": "rtimes",
-            "ty": "def.ax",
-            "type": "real => real => real"
-        },
-        {
-            "name": "rinverse",
-            "ty": "def.ax",
-            "type": "real => real => real"
-        },
-        {
-            "name": "rdivide",
-            "ty": "def.ax",
-            "type": "real => real => real"
-        },
-        {
-            "name": "of_nat",
+            "name": "real_of_nat",
             "ty": "def.ax",
             "type": "nat => real"
         },
         {
-            "name": "radd_assoc",
-            "prop": "rplus x (rplus y z) = rplus (rplus x y) z",
+            "name": "real_add_assoc",
+            "prop": "x + (y + z) = (x + y) + z",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -51,8 +55,8 @@
             }
         },
         {
-            "name": "radd_comm",
-            "prop": "rplus x y = rplus y x",
+            "name": "real_add_comm",
+            "prop": "x + y = y + x",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -60,8 +64,8 @@
             }
         },
         {
-            "name": "rmult_assoc",
-            "prop": "rtimes x (rtimes y z) = rtimes (rtimes x y) z",
+            "name": "real_mult_assoc",
+            "prop": "x * (y * z) = (x * y) * z",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -70,18 +74,42 @@
             }
         },
         {
-            "name": "rmult_comm",
-            "prop": "rtimes x y = rtimes y x",
+            "name": "real_mult_comm",
+            "prop": "x * y = y * x",
             "ty": "thm",
             "vars": {
                 "x": "real",
                 "y": "real"
             }
+        },
+        {
+            "name": "real_less_eq",
+            "ty": "def.ax",
+            "type": "real => real => bool",
+            "overload": "less_eq"
+        },
+        {
+            "name": "real_less",
+            "ty": "def.ax",
+            "type": "real => real => bool",
+            "overload": "less"
+        },
+        {
+            "name": "real_zero",
+            "ty": "def.ax",
+            "type": "real"
+        },
+        {
+            "name": "real_abs",
+            "ty": "def",
+            "type": "real => real",
+            "prop": "real_abs n = (if real_zero <= n then n else -n)",
+            "overload": "abs"
         }
     ],
     "description": "real numbers",
     "imports": [
-        "nat"
+        "rat"
     ],
     "name": "real"
 }

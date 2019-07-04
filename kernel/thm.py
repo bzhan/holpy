@@ -91,9 +91,13 @@ class Thm():
         """Returns the theorem x = y."""
         return Thm([], Term.mk_equals(x, y))
 
-    def is_reflexive(self):
+    def is_equals(self):
         """Check whether the proposition of the theorem is of the form x = y."""
-        return self.prop.is_equals() and self.prop.arg1 == self.prop.arg
+        return self.prop.is_equals()
+
+    def is_reflexive(self):
+        """Check whether the proposition of the theorem is of the form x = x."""
+        return self.prop.is_reflexive()
 
     def can_prove(self, target):
         """Determine whether self is sufficient to prove target."""
@@ -152,7 +156,7 @@ class Thm():
         ------------
         |- y = x
         """
-        if th.prop.is_equals():
+        if th.is_equals():
             x, y = th.prop.args
             return Thm(th.hyps, Term.mk_equals(y, x))
         else:
@@ -167,7 +171,7 @@ class Thm():
         ------------
         |- x = z
         """
-        if th1.prop.is_equals() and th2.prop.is_equals():
+        if th1.is_equals() and th2.is_equals():
             x, y1 = th1.prop.args
             y2, z = th2.prop.args
             if y1 == y2:
@@ -186,7 +190,7 @@ class Thm():
         ------------
         |- f x = g y
         """
-        if th1.prop.is_equals() and th2.prop.is_equals():
+        if th1.is_equals() and th2.is_equals():
             f, g = th1.prop.args
             x, y = th2.prop.args
             Tf = f.get_type()
@@ -225,7 +229,7 @@ class Thm():
         ------------
         |- B
         """
-        if th1.prop.is_equals():
+        if th1.is_equals():
             A, B = th1.prop.args
             if A == th2.prop:
                 return Thm(list(OrderedDict.fromkeys(th1.hyps + th2.hyps)), B)
@@ -289,7 +293,7 @@ class Thm():
         """
         if any(hyp.occurs_var(x) for hyp in th.hyps):
             raise InvalidDerivationException("abstraction")
-        elif th.prop.is_equals():
+        elif th.is_equals():
             t1, t2 = th.prop.args
             try:
                 t1_new, t2_new = (Term.mk_abs(x, t1), Term.mk_abs(x, t2))

@@ -22,40 +22,49 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "b",
+                    "args": "eq_refl, {a: 'a}, {x: a}",
                     "id": "0",
                     "prevs": [],
-                    "rule": "reflexive",
-                    "th": "⊢ b = b"
-                },
-                {
-                    "args": "a",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "reflexive",
+                    "rule": "apply_theorem_for",
                     "th": "⊢ a = a"
                 },
                 {
                     "args": "if_P, (if a = a then b else f a) = b",
-                    "id": "2",
+                    "id": "1",
                     "prevs": [
-                        "0",
-                        "1"
+                        "0"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ (if a = a then b else f a) = b"
                 },
                 {
-                    "args": "fun_upd_def, fun_upd f a b a = b",
-                    "id": "3",
+                    "args": "fun_upd_def, (f)(a := b) a = b",
+                    "id": "2",
                     "prevs": [
-                        "2"
+                        "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ fun_upd f a b a = b"
+                    "th": "⊢ (f)(a := b) a = b"
                 }
             ],
             "prop": "fun_upd f a b a = b",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "a": "'a",
@@ -78,41 +87,47 @@
                     "th": "¬c = a ⊢ ¬c = a"
                 },
                 {
-                    "args": "f c",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "reflexive",
-                    "th": "⊢ f c = f c"
-                },
-                {
                     "args": "if_not_P, (if c = a then b else f c) = f c",
-                    "id": "2",
+                    "id": "1",
                     "prevs": [
-                        "1"
+                        "0"
                     ],
                     "rule": "rewrite_goal",
                     "th": "¬c = a ⊢ (if c = a then b else f c) = f c"
                 },
                 {
-                    "args": "fun_upd_def, fun_upd f a b c = f c",
-                    "id": "3",
+                    "args": "fun_upd_def, (f)(a := b) c = f c",
+                    "id": "2",
                     "prevs": [
-                        "2"
+                        "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬c = a ⊢ fun_upd f a b c = f c"
+                    "th": "¬c = a ⊢ (f)(a := b) c = f c"
                 },
                 {
-                    "args": "¬c = a",
-                    "id": "4",
+                    "args": "",
+                    "id": "3",
                     "prevs": [
-                        "3"
+                        "0",
+                        "2"
                     ],
-                    "rule": "implies_intr",
-                    "th": "⊢ ¬c = a ⟶ fun_upd f a b c = f c"
+                    "rule": "intros",
+                    "th": "⊢ ¬c = a ⟶ (f)(a := b) c = f c"
                 }
             ],
             "prop": "~(c = a) --> fun_upd f a b c = f c",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "fun_upd_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_not_P"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "a": "'a",
