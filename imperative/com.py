@@ -35,7 +35,7 @@ class Seq(Com):
         self.c2 = c2
 
     def print_com(self, thy):
-        return self.c1.print_com(thy) + ";\n" + self.c2.print_com(thy)
+        return self.c1.print_com(thy) + ";\n  " + self.c2.print_com(thy)
 
 class Cond(Com):
     """Conditional program."""
