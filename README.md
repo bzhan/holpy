@@ -10,11 +10,15 @@ Required packages are listed in requirements.txt. To install required packages, 
 
 ```python -m pip install -r requirements.txt```
 
-Unit tests for the backend are all located in files of the form ```*/tests/*_test.py```.
-
-To start the frontend, use:
+To start the web interface, use:
 
 ```python app.py```
+
+To see statistics for the search functionality on a collection of lemmas, use:
+
+```python -m unittest server.tests.collect_stat```
+
+Unit tests for the backend are located in files of the form ```*/tests/*_test.py```.
 
 ### Directory structure:
 
@@ -32,20 +36,28 @@ To start the frontend, use:
   * [`matcher`](logic/matcher.py): matching of terms.
   * [`proofterm`](logic/proofterm.py): tree-like representation of a proof. Used for convenient construction of proofs, and can be transformed to the linear representation.
   * [`conv`](logic/conv.py): conversions.
-  * [`operator`](logic/operator.py): data for unary and binary operators.
   * [`logic`](logic/logic.py): utilities for logic.
-  * [`nat`](logic/nat.py): utilities for natural numbers.
   * [`induct`](logic/induct.py): definition of types and constants by induction.
   * [`logic_macro`](logic/logic_macro.py): definition of standard macros in logic.
-  * [`basic`](logic/basic.py): definition of base logic.
+  * [`basic`](logic/basic.py): functions for loading theories.
+
+* [`data`](data/): common data types.
+  * [`nat`](data/nat.py): natural numbers.
+  * [`function`](data/function.py): functions.
+  * [`list`](data/list.py): lists.
+  * [`set`](data/set.py): sets.
+  * [`real`](data/real.py): real numbers.
 
 * [`syntax`](syntax/): parsing and printing.
+  * [`operator`](syntax/operator.py): data for unary and binary operators.
+  * [`infertype`](syntax/infertype.py): type inference.
   * [`printer`](syntax/printer.py): printing functions.
   * [`parser`](syntax/parser.py): parsing functions, built using Lark parser.
 
 * [`server`](server/): toplevel functions.
-  * [`server`](server/server.py): definition of proof state and standard operations on proof states.
+  * [`server`](server/server.py): definition and standard operations for proof states.
   * [`tactic`](server/tactic.py): definition of tactics.
+  * [`method`](server/method.py): definition of methods.
 
 * [`app`](app/): web application.
   * [`static/js/main.js`](app/static/js/main.js): main javascript file.
