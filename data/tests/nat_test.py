@@ -49,7 +49,8 @@ class NatTest(unittest.TestCase):
     def testIsBinary(self):
         test_data = [
             (zero, True),
-            (nat.Suc(zero), True),
+            (nat.Suc(zero), False),
+            (one, True),
             (nat.Suc(one), False),
             (bit0(one), True),
             (bit0(nat.Suc(bit0(one))), False),

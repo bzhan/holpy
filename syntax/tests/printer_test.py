@@ -243,10 +243,10 @@ class PrinterTest(unittest.TestCase):
         g = Var('g', TFun(Tb, Tc))
         h = Var('h', TFun(Ta, Tb))
         test_data = [
-            # (function.mk_fun_upd(f, a, b), "(f)(a := b)"),
-            # (function.mk_fun_upd(f, a, b, b, a), "(f)(a := b, b := a)"),
-            # (function.mk_comp(g, h), "g O h"),
-            # (function.mk_comp(g, h)(a), "(g O h) a"),
+            (function.mk_fun_upd(f, a, b), "(f)(a := b)"),
+            (function.mk_fun_upd(f, a, b, b, a), "(f)(a := b, b := a)"),
+            (function.mk_comp(g, h), "g O h"),
+            (function.mk_comp(g, h)(a), "(g O h) a"),
             (function.mk_const_fun(nat.natT, nat.to_binary_nat(0)), "%x::nat. (0::nat)"),
         ]
 

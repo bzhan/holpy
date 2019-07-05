@@ -139,11 +139,12 @@ def print_term(thy, t):
 
         # Some special cases:
         # Natural numbers:
-        if t.is_comb() and t.fun.is_const_name("of_nat") and nat.is_binary(t.arg):
-            if hasattr(t.fun, "print_type"):
-                return N("(" + str(nat.from_binary(t.arg)) + "::" + "nat" + ")")
+        if nat.is_binary_nat(t):
+            if ((t.is_const_name("zero") or t.is_const_name("one")) and hasattr(t, "print_type")) or \
+               (not (t.is_const_name("zero") or t.is_const_name("one")) and hasattr(t.fun, "print_type")):
+                return N("(" + str(nat.from_binary_nat(t)) + "::" + "nat" + ")")
             else:
-                return N(str(nat.from_binary(t.arg)))
+                return N(str(nat.from_binary_nat(t)))
 
         if list.is_literal_list(t):
             items = list.dest_literal_list(t)
