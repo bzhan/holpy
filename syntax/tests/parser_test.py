@@ -173,8 +173,8 @@ class ParserTest(unittest.TestCase):
             ("m + (n + p)", "nat"),
             ("m + n * p", "nat"),
             ("m * (n + p)", "nat"),
-            ("0", "nat"),
-            ("0 + 0", "nat"),
+            ("(0::nat)", "nat"),
+            ("(0::nat) + 0", "nat"),
             ("m * 0", "nat"),
 
             # Ordering on natural numbers
@@ -183,13 +183,13 @@ class ParserTest(unittest.TestCase):
             ("m + n <= p", "bool"),
 
             # Binary numbers
-            ("1", "nat"),
-            ("2", "nat"),
-            ("3", "nat"),
-            ("4", "nat"),
-            ("5", "nat"),
-            ("101", "nat"),
-            ("101 + 102", "nat"),
+            ("(1::nat)", "nat"),
+            ("(2::nat)", "nat"),
+            ("(3::nat)", "nat"),
+            ("(4::nat)", "nat"),
+            ("(5::nat)", "nat"),
+            ("(101::nat)", "nat"),
+            ("(101::nat) + 102", "nat"),
             ("bit0", "nat => nat"),
             ("bit1", "nat => nat"),
 
@@ -311,7 +311,6 @@ class ParserTest(unittest.TestCase):
 
         for s, Ts in test_data:
             T = parser.parse_type(thy, Ts)
-
             t = parser.parse_term(thy, ctxt, s)
             self.assertIsInstance(t, Term)
             self.assertEqual(t.checked_get_type(), T)
@@ -320,7 +319,8 @@ class ParserTest(unittest.TestCase):
     def testInferType2(self):
         thy = basic.load_theory('function')
         test_data = [
-            ("(%x. 0)(1 := 7)", "nat => nat")
+            ("%x::nat. (0::nat)", "nat => nat"),
+            ("(%x::nat. (0::nat))(1 := 7)", "nat => nat")
         ]
 
         for s, Ts in test_data:

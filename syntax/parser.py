@@ -152,12 +152,21 @@ class HOLTransformer(Transformer):
             return Var(s, None)
 
     def typed_term(self, t, T):
-        t.T = T
+        from data import nat
+        if t.is_comb() and t.fun.is_const_name("of_nat") and nat.is_binary(t.arg):
+            t.fun.T = TFun(nat.natT, T)
+        else:
+            t.T = T
         return t
 
     def number(self, n):
         from data import nat
-        return nat.to_binary(int(n))
+        if int(n) == 0:
+            return Const("zero", None)
+        elif int(n) == 1:
+            return Const("one", None)
+        else:
+            return Const("of_nat", None)(nat.to_binary(int(n)))
 
     def literal_list(self, *args):
         from data import list
@@ -487,7 +496,11 @@ def parse_extension(thy, data):
     elif data['ty'] == 'def':
         T = parse_type(thy, data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
-        ctxt = {'vars': {}, 'consts': {data['name']: T}}
+        parse_name = data['name']
+        if 'overload' in data:
+            thy.add_overload_const(data['overload'], T, data['name'])
+            parse_name = data['overload']
+        ctxt = {'vars': {}, 'consts': {parse_name: T}}
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
@@ -508,19 +521,26 @@ def parse_extension(thy, data):
 
     elif data['ty'] == 'type.ind':
         constrs = []
+        overloads = []
         for constr in data['constrs']:
             T = parse_type(thy, constr['type'])
             constrs.append((constr['name'], T, constr['args']))
+            if 'overload' in constr:
+                overloads.append(extension.Overload(constr['overload'], T, constr['name']))
         ext = induct.add_induct_type(data['name'], data['args'], constrs)
+        for overload in overloads:
+            ext.add_extension(overload)
 
     elif data['ty'] == 'def.ind':
         T = parse_type(thy, data['type'])
         thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
+        parse_name = data['name']
         if 'overload' in data:
             thy.add_overload_const(data['overload'], T, data['name'])
+            parse_name = data['overload']
         rules = []
         for rule in data['rules']:
-            ctxt = {'vars': {}, 'consts': {data['name']: T}}
+            ctxt = {'vars': {}, 'consts': {parse_name: T}}
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)

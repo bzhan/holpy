@@ -27,6 +27,7 @@ While = imp.While(natFunT)
 Valid = imp.Valid(natFunT)
 zero = nat.zero
 one = nat.one
+to_binary = nat.to_binary_nat
 
 eq = Term.mk_equals
 abs = Term.mk_abs
@@ -35,11 +36,11 @@ assn_true = abs(s, logic.true)
 incr_one = Assign(zero, abs(s, nat.plus(s(zero), one)))
 
 def fun_upd_of_seq(*ns):
-    return mk_fun_upd(mk_const_fun(natT, zero), *[nat.to_binary(n) for n in ns])
+    return mk_fun_upd(mk_const_fun(natT, zero), *[to_binary(n) for n in ns])
 
 class HoareTest(unittest.TestCase):
     def testEvalSem(self):
-        com = Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, nat.to_binary(2))))
+        com = Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, to_binary(2))))
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 1, 1, 2)
         goal = Sem(com, st, st2)
@@ -79,7 +80,7 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testEvalSem5(self):
-        com = While(abs(s, logic.neg(eq(s(zero), nat.to_binary(3)))), assn_true, incr_one)
+        com = While(abs(s, logic.neg(eq(s(zero), to_binary(3)))), assn_true, incr_one)
         st = mk_const_fun(natT, zero)
         st2 = fun_upd_of_seq(0, 3)
         goal = Sem(com, st, st2)
@@ -93,8 +94,8 @@ class HoareTest(unittest.TestCase):
         test_data = [
             (Assign(zero, abs(s, one)),
              abs(s, Q(mk_fun_upd(s, zero, one)))),
-            (Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, nat.to_binary(2)))),
-             abs(s, Q(mk_fun_upd(s, zero, one, one, nat.to_binary(2))))),
+            (Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, to_binary(2)))),
+             abs(s, Q(mk_fun_upd(s, zero, one, one, to_binary(2))))),
         ]
 
         for c, P in test_data:
@@ -107,7 +108,7 @@ class HoareTest(unittest.TestCase):
 
         test_data = [
             Assign(zero, abs(s, one)),
-            Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, nat.to_binary(2)))),
+            Seq(Assign(zero, abs(s, one)), Assign(one, abs(s, to_binary(2)))),
         ]
 
         for c in test_data:
@@ -123,9 +124,9 @@ class HoareTest(unittest.TestCase):
         B = Var("B", natT)
         ctxt = {'vars': {"A": natT, "B": natT}}
         c = parser.parse_term(thy, ctxt, \
-            "While (%s. ~s 0 = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))")
-        P = parser.parse_term(thy, ctxt, "%s. s 0 = 0 & s 1 = 0")
-        Q = parser.parse_term(thy, ctxt, "%s. s 1 = A * B")
+            "While (%s. ~s (0::nat) = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))")
+        P = parser.parse_term(thy, ctxt, "%s. s (0::nat) = (0::nat) & s 1 = 0")
+        Q = parser.parse_term(thy, ctxt, "%s. s (1::nat) = A * B")
         goal = Valid(P, c, Q)
         prf = imp.vcg_solve(thy, goal).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
@@ -133,9 +134,9 @@ class HoareTest(unittest.TestCase):
     def testVCGIf(self):
         ctxt = {'vars': {"A": natT}}
         c = parser.parse_term(thy, ctxt, \
-            "Cond (%s. s 0 = A) Skip (Assign 0 (%s. A))")
+            "Cond (%s. s (0::nat) = A) Skip (Assign 0 (%s. A))")
         P = parser.parse_term(thy, ctxt, "%s::nat=>nat. true")
-        Q = parser.parse_term(thy, ctxt, "%s. s 0 = A")
+        Q = parser.parse_term(thy, ctxt, "%s. s (0::nat) = A")
         goal = Valid(P, c, Q)
         prf = imp.vcg_solve(thy, goal).export()
         self.assertEqual(thy.check_proof(prf), Thm([], goal))

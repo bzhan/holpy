@@ -6,6 +6,12 @@
             "ty": "type.ax"
         },
         {
+            "name": "real_of_nat",
+            "ty": "def.ax",
+            "type": "nat => real",
+            "overload": "of_nat"
+        },
+        {
             "name": "real_plus",
             "ty": "def.ax",
             "type": "real => real => real",

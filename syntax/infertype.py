@@ -44,7 +44,7 @@ def unify(uf, T1, T2):
         raise TypeInferenceException("Unable to unify " + str(T1) + " with " + str(T2))
 
 def replace_overload(thy, t):
-    """Replace overloaded constants with actual ones."""
+    """Replace overloaded constants with concrete constants."""
     def replace(t):
         if t.is_const():
             if thy.is_overload_const(t.name):
@@ -58,10 +58,21 @@ def replace_overload(thy, t):
     
     replace(t)
 
-def type_infer(thy, ctxt, t, *, forbid_internal=True):
+def get_overload(thy, t):
+    """Replace concrete constants with overloaded constants."""
+    if t.is_const():
+        t.name = thy.lookup_overload_const(t.name)
+    elif t.is_comb():
+        get_overload(thy, t.fun)
+        get_overload(thy, t.arg)
+    elif t.is_abs():
+        get_overload(thy, t.body)
+
+def type_infer_raw(thy, ctxt, t, *, forbid_internal=True):
     """Perform type inference on the given term. The input term
     has all types marked None, except those subterms whose type is
-    explicitly given.
+    explicitly given. This function works on terms with overloaded
+    constants.
     
     """
     uf = unionfind.UnionFind()
@@ -134,7 +145,7 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
         elif t.is_abs():
             if t.var_T is None:
                 t.var_T = new_type()
-                add_type(t.var_T)
+            add_type(t.var_T)
             bodyT = infer(t.body, [t.var_T] + bd_vars)
             resT = TFun(t.var_T, bodyT)
             add_type(resT)
@@ -166,8 +177,11 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
         if forbid_internal and is_internal_type(v):
             raise TypeInferenceException("Unspecified type\n" + repr(t))
 
-    replace_overload(thy, t)
+    return t
 
+def type_infer(thy, ctxt, t):
+    t = type_infer_raw(thy, ctxt, t)
+    replace_overload(thy, t)
     return t
 
 def infer_printed_type(thy, t):
@@ -185,13 +199,13 @@ def infer_printed_type(thy, t):
         if t.is_const() and not hasattr(t, "print_type"):
             t.backupT = t.T
             t.T = None
-            t.name = thy.lookup_overload_const(t.name)
         elif t.is_comb():
             clear_const_type(t.fun)
             clear_const_type(t.arg)
-        elif t.is_abs() and not hasattr(t, "print_type"):
-            t.backup_var_T = t.var_T
-            t.var_T = None
+        elif t.is_abs():
+            if not hasattr(t, "print_type"):
+                t.backup_var_T = t.var_T
+                t.var_T = None
             clear_const_type(t.body)
 
     def recover_const_type(t):
@@ -206,7 +220,7 @@ def infer_printed_type(thy, t):
 
     for i in range(100):
         clear_const_type(t)
-        type_infer(thy, dict(), t, forbid_internal=False)
+        type_infer_raw(thy, dict(), t, forbid_internal=False)
 
         def has_internalT(T):
             return any(is_internal_type(subT) for subT in T.get_tsubs())
@@ -218,10 +232,11 @@ def infer_printed_type(thy, t):
                 if to_replace is None or len(str(t.T)) < len(str(to_replaceT)):
                     to_replace = t
                     to_replaceT = t.T
-            elif t.is_abs() and has_internalT(t.var_T):
-                if to_replace is None or len(str(t.var_T)) < len(str(to_replaceT)):
-                    to_replace = t
-                    to_replaceT = t.var_T
+            elif t.is_abs():
+                if has_internalT(t.var_T):
+                    if to_replace is None or len(str(t.var_T)) < len(str(to_replaceT)):
+                        to_replace = t
+                        to_replaceT = t.var_T
                 find_to_replace(t.body)
             elif t.is_comb():
                 find_to_replace(t.fun)

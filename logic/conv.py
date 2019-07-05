@@ -10,7 +10,8 @@ from util import name
 
 
 class ConvException(Exception):
-    pass
+    def __init__(self, str=""):
+        self.str = str
 
 class Conv():
     """A conversion is a function for rewriting a term.
@@ -29,14 +30,27 @@ class Conv():
     def apply_to_pt(self, thy, pt, pos=None):
         """Apply to the given proof term."""
 
-        # First, handle some position instructions
+        # Rewriting the right side of an equality is handled
+        # in a special way.
+        if pos == "rhs":
+            eq_pt = self.get_proof_term(thy, pt.prop.rhs)
+            if eq_pt.prop.is_reflexive():
+                return pt
+            elif pt.prop.is_reflexive():
+                return eq_pt
+            else:
+                return ProofTerm.transitive(pt, eq_pt)
+
         if pos == "arg":
             return arg_conv(self).apply_to_pt(thy, pt)
         elif pos == "assums":
             return assums_conv(self).apply_to_pt(thy, pt)
 
         eq_pt = self.get_proof_term(thy, pt.prop)
-        return ProofTerm.equal_elim(eq_pt, pt)
+        if eq_pt.prop.is_reflexive():
+            return pt
+        else:
+            return ProofTerm.equal_elim(eq_pt, pt)
 
 class all_conv(Conv):
     """Returns the trivial equality t = t."""
@@ -46,7 +60,7 @@ class all_conv(Conv):
 class no_conv(Conv):
     """Always fails."""
     def get_proof_term(self, thy, t):
-        raise ConvException()
+        raise ConvException("no_conv")
 
 class combination_conv(Conv):
     """Apply cv1 to the function and cv2 to the argument."""
@@ -57,7 +71,7 @@ class combination_conv(Conv):
 
     def get_proof_term(self, thy, t):
         if t.ty != Term.COMB:
-            raise ConvException()
+            raise ConvException("combination_conv: not a combination")
         pt1 = self.cv1.get_proof_term(thy, t.fun)
         pt2 = self.cv2.get_proof_term(thy, t.arg)
 
@@ -106,7 +120,7 @@ class beta_conv(Conv):
         try:
             return ProofTerm.beta_conv(t)
         except InvalidDerivationException:
-            raise ConvException()
+            raise ConvException("beta_conv")
 
 def beta_norm(thy, t):
     return top_conv(beta_conv()).eval(thy, t).prop.arg
@@ -119,7 +133,7 @@ class abs_conv(Conv):
 
     def get_proof_term(self, thy, t):
         if t.ty != Term.ABS:
-            raise ConvException()
+            raise ConvException("abs_conv: not an abstraction")
 
         # Find a new variable x and substitute for body
         var_names = [v.name for v in term.get_vars(t.body)]
@@ -251,9 +265,9 @@ class rewr_conv(Conv):
             try:
                 matcher.first_order_match_incr(C.lhs, t, (tyinst, inst))
             except matcher.MatchException:
-                raise ConvException()
+                raise ConvException("rewr_conv: cannot match %s with %s" % (str(C.lhs), str(t)))
         elif C.lhs != t:
-            raise ConvException()
+            raise ConvException("rewr_conv: %s ~= %s" % (str(C.lhs), str(t)))
 
         pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, self.pt))
         if self.conds is not None:

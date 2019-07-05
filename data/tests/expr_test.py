@@ -18,10 +18,10 @@ thy = basic.load_theory('expr')
 natT = nat.natT
 zero = nat.zero
 one = nat.one
-to_binary = nat.to_binary
+to_binary = nat.to_binary_nat
 
 def fun_upd_of_seq(*ns):
-    return function.mk_fun_upd(function.mk_const_fun(natT, zero), *[nat.to_binary(n) for n in ns])
+    return function.mk_fun_upd(function.mk_const_fun(natT, zero), *[to_binary(n) for n in ns])
 
 class ExprTest(unittest.TestCase):
     def testProveAvalI(self):

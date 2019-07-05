@@ -24,9 +24,10 @@ thy = basic.load_theory('function')
 natT = nat.natT
 zero = nat.zero
 one = nat.one
+to_binary = nat.to_binary_nat
 
 def fun_upd_of_seq(*ns):
-    return mk_fun_upd(function.mk_const_fun(natT, zero), *[nat.to_binary(n) for n in ns])
+    return mk_fun_upd(function.mk_const_fun(natT, zero), *[to_binary(n) for n in ns])
 
 
 class FunctionTest(unittest.TestCase):
@@ -43,7 +44,7 @@ class FunctionTest(unittest.TestCase):
         f = fun_upd_of_seq(1, 5)
         cv = function.fun_upd_eval_conv()
         prf = cv.get_proof_term(thy, f(one)).export()
-        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(one), nat.to_binary(5)))
+        self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(one), to_binary(5)))
         prf = cv.get_proof_term(thy, f(zero)).export()
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(f(zero), zero))
 

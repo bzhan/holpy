@@ -15,10 +15,10 @@ class HoareParserTest(unittest.TestCase):
     def testHoareParser(self):
         test_data = [
             ("while (a != 5) { b := b + 7; a := a + 1 }",
-             "While (%s. ~s 0 = 5) (%s. true) (Seq (Assign 1 (%s. s 1 + 7)) (Assign 0 (%s. s 0 + 1)))"),
+             "While (%s. ~s (0::nat) = (5::nat)) (%s. true) (Seq (Assign 1 (%s. s 1 + 7)) (Assign 0 (%s. s 0 + 1)))"),
 
             ("if (a == 0) then a := a + 1 else skip",
-             "Cond (%s. s 0 = 0) (Assign 0 (%s. s 0 + 1)) Skip")
+             "Cond (%s. s (0::nat) = (0::nat)) (Assign 0 (%s. s 0 + 1)) Skip")
         ]
 
         for s, res in test_data:

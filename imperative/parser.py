@@ -59,14 +59,14 @@ class HoareTransformer(Transformer):
 
     def var_expr(self, s):
         if ord(s) >= ord('a') and ord(s) <= ord('z'):
-            return st(nat.to_binary(str_to_nat(s)))
+            return st(nat.to_binary_nat(str_to_nat(s)))
         elif ord(s) >= ord('A') and ord(s) <= ord('Z'):
             return Var(s, nat.natT)
         else:
             raise NotImplementedError
 
     def num_expr(self, n):
-        return nat.to_binary(int(n))
+        return nat.to_binary_nat(int(n))
 
     def plus_expr(self, e1, e2):
         return nat.plus(e1, e2)
@@ -100,7 +100,7 @@ class HoareTransformer(Transformer):
 
     def assign_cmd(self, v, e):
         Assign = imp.Assign(nat.natT, nat.natT)
-        return Assign(nat.to_binary(str_to_nat(v)), Term.mk_abs(st, e))
+        return Assign(nat.to_binary_nat(str_to_nat(v)), Term.mk_abs(st, e))
 
     def if_cmd(self, b, c1, c2):
         Cond = imp.Cond(natFunT)
@@ -143,10 +143,10 @@ def process_file(input, output):
             com = parse_com(run['com'])
             st1 = mk_const_fun(nat.natT, nat.zero)
             for k, v in sorted(run['init'].items()):
-                st1 = mk_fun_upd(st1, nat.to_binary(str_to_nat(k)), nat.to_binary(v))
+                st1 = mk_fun_upd(st1, nat.to_binary_nat(str_to_nat(k)), nat.to_binary_nat(v))
             st2 = mk_const_fun(nat.natT, nat.zero)
             for k, v in sorted(run['final'].items()):
-                st2 = mk_fun_upd(st2, nat.to_binary(str_to_nat(k)), nat.to_binary(v))
+                st2 = mk_fun_upd(st2, nat.to_binary_nat(str_to_nat(k)), nat.to_binary_nat(v))
             Sem = imp.Sem(natFunT)
             goal = Sem(com, st1, st2)
             prf = ProofTermDeriv("eval_Sem", thy, goal, []).export()

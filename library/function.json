@@ -908,7 +908,7 @@
                     "th": "⊢ (λx. 0)(1 := 5) 0 = 0"
                 }
             ],
-            "prop": "fun_upd (%x. 0) 1 5 0 = 0",
+            "prop": "fun_upd (%x::nat. (0::nat)) 1 5 0 = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -935,7 +935,7 @@
                     "th": "⊢ (λx. 0)(1 := 5) 1 = 5"
                 }
             ],
-            "prop": "fun_upd (%x. 0) 1 5 1 = 5",
+            "prop": "fun_upd (%x::nat. (0::nat)) 1 5 1 = 5",
             "steps": [
                 {
                     "goal_id": "0",

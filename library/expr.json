@@ -171,64 +171,55 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_plus_def_1, 0 + 5 = 5",
+                    "args": "(0::nat) + 5 = 5",
                     "id": "0",
                     "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 0 + 5 = 5"
+                    "rule": "nat_norm",
+                    "th": "⊢ (0::nat) + 5 = 5"
                 },
                 {
-                    "args": "¬0 = 1",
+                    "args": "¬(0::nat) = 1",
                     "id": "1",
                     "prevs": [],
                     "rule": "nat_const_ineq",
-                    "th": "⊢ ¬0 = 1"
+                    "th": "⊢ ¬(0::nat) = 1"
                 },
                 {
-                    "args": "if_not_P, (if 0 = 1 then 7 else 0) + 5 = 5",
+                    "args": "fun_upd_other, (λx::nat. (0::nat))(1 := 7) (0) + 5 = 5",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (if 0 = 1 then 7 else 0) + 5 = 5"
+                    "th": "⊢ (λx::nat. (0::nat))(1 := 7) (0) + 5 = 5"
                 },
                 {
-                    "args": "fun_upd_def, (λx. 0)(1 := 7) 0 + 5 = 5",
+                    "args": "aval_def_2, aval (V (0)) ((λx. 0)(1 := 7)) + 5 = 5",
                     "id": "3",
                     "prevs": [
                         "2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (λx. 0)(1 := 7) 0 + 5 = 5"
+                    "th": "⊢ aval (V (0)) ((λx. 0)(1 := 7)) + 5 = 5"
                 },
                 {
-                    "args": "aval_def_2, aval (V 0) ((λx. 0)(1 := 7)) + 5 = 5",
+                    "args": "aval_def_1, aval (V (0)) ((λx. 0)(1 := 7)) + aval (N (5)) ((λx. 0)(1 := 7)) = 5",
                     "id": "4",
                     "prevs": [
                         "3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ aval (V 0) ((λx. 0)(1 := 7)) + 5 = 5"
+                    "th": "⊢ aval (V (0)) ((λx. 0)(1 := 7)) + aval (N (5)) ((λx. 0)(1 := 7)) = 5"
                 },
                 {
-                    "args": "aval_def_1, aval (V 0) ((λx. 0)(1 := 7)) + aval (N 5) ((λx. 0)(1 := 7)) = 5",
+                    "args": "aval_def_3, aval (Plus (V (0)) (N (5))) ((λx. 0)(1 := 7)) = 5",
                     "id": "5",
                     "prevs": [
                         "4"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ aval (V 0) ((λx. 0)(1 := 7)) + aval (N 5) ((λx. 0)(1 := 7)) = 5"
-                },
-                {
-                    "args": "aval_def_3, aval (Plus (V 0) (N 5)) ((λx. 0)(1 := 7)) = 5",
-                    "id": "6",
-                    "prevs": [
-                        "5"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ aval (Plus (V 0) (N 5)) ((λx. 0)(1 := 7)) = 5"
+                    "th": "⊢ aval (Plus (V (0)) (N (5))) ((λx. 0)(1 := 7)) = 5"
                 }
             ],
             "prop": "aval (Plus (V 0) (N 5)) (fun_upd (%x. 0) 1 7) = 5",
@@ -251,17 +242,11 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "fun_upd_def"
+                    "theorem": "fun_upd_other"
                 },
                 {
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_not_P"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "nat_plus_def_1"
+                    "method_name": "nat_norm"
                 },
                 {
                     "goal_id": "1",
