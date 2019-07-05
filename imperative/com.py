@@ -3,7 +3,32 @@
 """Basic data structure for programs."""
 
 from kernel.term import Term
-from syntax import printer
+from logic import logic
+from data import nat
+
+def print_term(t):
+    """A simple function for printing terms in the imp format."""
+    def rec(t):
+        if t.is_equals():
+            return rec(t.arg1) + " == " + rec(t.arg)
+        elif logic.is_neg(t) and t.arg.is_equals():
+            return rec(t.arg.arg1) + " != " + rec(t.arg.arg)
+        elif nat.is_less_eq(t):
+            return rec(t.arg1) + " <= " + rec(t.arg)
+        elif nat.is_less(t):
+            return rec(t.arg1) + " < " + rec(t.arg)
+        elif nat.is_plus(t):
+            return rec(t.arg1) + " + " + rec(t.arg)
+        elif nat.is_times(t):
+            return rec(t.arg1) + " * " + rec(t.arg)
+        elif nat.is_binary_nat(t):
+            return str(nat.from_binary_nat(t))
+        elif t.is_var() or t.is_const:
+            return t.name
+        else:
+            raise NotImplementedError
+
+    return rec(t)
 
 class Com():
     """Base class for programs."""
@@ -25,7 +50,7 @@ class Assign(Com):
         self.e = e
 
     def print_com(self, thy):
-        return self.v + " := " + printer.print_term(thy, self.e)
+        return self.v + " := " + print_term(self.e)
 
 class Seq(Com):
     """Sequence program."""
@@ -47,7 +72,7 @@ class Cond(Com):
 
     def print_com(self, thy):
         return "if (%s) then\n  %s\nelse\n  %s" % (
-            printer.print_term(thy, self.b), self.c1.print_com(thy), self.c2.print_com(thy))
+            print_term(self.b), self.c1.print_com(thy), self.c2.print_com(thy))
 
 class While(Com):
     """While program."""
@@ -59,4 +84,4 @@ class While(Com):
 
     def print_com(self, thy):
         return "while (%s) {\n  [%s]\n  %s\n}" % (
-            printer.print_term(thy, self.b), printer.print_term(thy, self.inv), self.c.print_com(thy))
+            print_term(self.b), print_term(self.inv), self.c.print_com(thy))

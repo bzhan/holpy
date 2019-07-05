@@ -39,13 +39,6 @@ grammar = r"""
     %ignore WS
 """
 
-natFunT = TFun(nat.natT, nat.natT)
-st = Var("s", natFunT)
-
-def str_to_nat(s):
-    """Convert string to natural number."""
-    return ord(s) - ord("a")
-
 @v_args(inline=True)
 class HoareTransformer(Transformer):
     def __init__(self):
