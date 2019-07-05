@@ -25,8 +25,8 @@ Seq = imp.Seq(natFunT)
 Cond = imp.Cond(natFunT)
 While = imp.While(natFunT)
 Valid = imp.Valid(natFunT)
-zero = nat.to_binary_nat(0)
-one = nat.to_binary_nat(1)
+zero = nat.zero
+one = nat.one
 to_binary = nat.to_binary_nat
 
 eq = Term.mk_equals

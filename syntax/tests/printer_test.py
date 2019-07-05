@@ -138,9 +138,9 @@ class PrinterTest(unittest.TestCase):
             (nat.times(m, nat.times(n, p)), "m * (n * p)"),
             (nat.plus(m, nat.times(n, p)), "m + n * p"),
             (nat.times(m, nat.plus(n, p)), "m * (n + p)"),
-            (nat.to_binary_nat(0), "(0::nat)"),
-            (nat.plus(nat.to_binary_nat(0), nat.to_binary_nat(0)), "(0::nat) + 0"),
-            (nat.times(m, nat.to_binary_nat(0)), "m * 0"),
+            (nat.zero, "(0::nat)"),
+            (nat.plus(nat.zero, nat.zero), "(0::nat) + 0"),
+            (nat.times(m, nat.zero), "m * 0"),
             (nat.less_eq(m, n), "m <= n"),
             (nat.less(m, n), "m < n"),
             (nat.less_eq(nat.plus(m, n), p), "m + n <= p"),
@@ -169,10 +169,10 @@ class PrinterTest(unittest.TestCase):
     def testBinary(self):
         m = Var("m", nat.natT)
         test_data = [
-            (nat.to_binary_nat(1), "(1::nat)"),
+            (nat.one, "(1::nat)"),
             (nat.to_binary_nat(2), "(2::nat)"),
             (nat.to_binary_nat(3), "(3::nat)"),
-            (nat.plus(m, nat.to_binary_nat(1)), "m + 1"),
+            (nat.plus(m, nat.one), "m + 1"),
         ]
 
         for t, s in test_data:
@@ -229,7 +229,7 @@ class PrinterTest(unittest.TestCase):
         n = Var("n", nat.natT)
         test_data = [
             (interval.mk_interval(m, n), "{m..n}"),
-            (interval.mk_interval(nat.to_binary_nat(1), m), "{1..m}"),
+            (interval.mk_interval(nat.one, m), "{1..m}"),
         ]
 
         thy = basic.load_theory('iterate')
@@ -247,7 +247,7 @@ class PrinterTest(unittest.TestCase):
             (function.mk_fun_upd(f, a, b, b, a), "(f)(a := b, b := a)"),
             (function.mk_comp(g, h), "g O h"),
             (function.mk_comp(g, h)(a), "(g O h) a"),
-            (function.mk_const_fun(nat.natT, nat.to_binary_nat(0)), "%x::nat. (0::nat)"),
+            (function.mk_const_fun(nat.natT, nat.zero), "%x::nat. (0::nat)"),
         ]
 
         thy = basic.load_theory('function')

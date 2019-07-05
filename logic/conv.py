@@ -30,14 +30,27 @@ class Conv():
     def apply_to_pt(self, thy, pt, pos=None):
         """Apply to the given proof term."""
 
-        # First, handle some position instructions
+        # Rewriting the right side of an equality is handled
+        # in a special way.
+        if pos == "rhs":
+            eq_pt = self.get_proof_term(thy, pt.prop.rhs)
+            if eq_pt.prop.is_reflexive():
+                return pt
+            elif pt.prop.is_reflexive():
+                return eq_pt
+            else:
+                return ProofTerm.transitive(pt, eq_pt)
+
         if pos == "arg":
             return arg_conv(self).apply_to_pt(thy, pt)
         elif pos == "assums":
             return assums_conv(self).apply_to_pt(thy, pt)
 
         eq_pt = self.get_proof_term(thy, pt.prop)
-        return ProofTerm.equal_elim(eq_pt, pt)
+        if eq_pt.prop.is_reflexive():
+            return pt
+        else:
+            return ProofTerm.equal_elim(eq_pt, pt)
 
 class all_conv(Conv):
     """Returns the trivial equality t = t."""

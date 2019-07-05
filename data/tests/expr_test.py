@@ -16,8 +16,8 @@ from server.server import ProofState
 thy = basic.load_theory('expr')
 
 natT = nat.natT
-zero = nat.to_binary_nat(0)
-one = nat.to_binary_nat(1)
+zero = nat.zero
+one = nat.one
 to_binary = nat.to_binary_nat
 
 def fun_upd_of_seq(*ns):

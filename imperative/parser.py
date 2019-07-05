@@ -141,10 +141,10 @@ def process_file(input, output):
     for run in content:
         if run['ty'] == 'eval':
             com = parse_com(run['com'])
-            st1 = mk_const_fun(nat.natT, nat.to_binary_nat(0))
+            st1 = mk_const_fun(nat.natT, nat.zero)
             for k, v in sorted(run['init'].items()):
                 st1 = mk_fun_upd(st1, nat.to_binary_nat(str_to_nat(k)), nat.to_binary_nat(v))
-            st2 = mk_const_fun(nat.natT, nat.to_binary_nat(0))
+            st2 = mk_const_fun(nat.natT, nat.zero)
             for k, v in sorted(run['final'].items()):
                 st2 = mk_fun_upd(st2, nat.to_binary_nat(str_to_nat(k)), nat.to_binary_nat(v))
             Sem = imp.Sem(natFunT)

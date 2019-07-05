@@ -201,7 +201,10 @@ class ProofTerm():
         """Same as on_arg, except check the current theorem is an equality."""
         assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
         assert self.prop.is_equals(), "on_rhs: theorem is not an equality."
-        return self.on_arg(thy, *cvs)
+        pt = self
+        for cv in cvs:
+            pt = cv.apply_to_pt(thy, pt, pos="rhs")
+        return pt
 
     def on_assums(self, thy, *cvs):
         """Apply the given conversion to the assumptions."""

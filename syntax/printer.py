@@ -140,8 +140,8 @@ def print_term(thy, t):
         # Some special cases:
         # Natural numbers:
         if nat.is_binary_nat(t):
-            if ((t.is_const_name("zero") or t.is_const_name("one")) and hasattr(t, "print_type")) or \
-               (not (t.is_const_name("zero") or t.is_const_name("one")) and hasattr(t.fun, "print_type")):
+            if (t.is_const() and hasattr(t, "print_type")) or \
+               (t.is_comb() and hasattr(t.fun, "print_type")):
                 return N("(" + str(nat.from_binary_nat(t)) + "::" + "nat" + ")")
             else:
                 return N(str(nat.from_binary_nat(t)))
