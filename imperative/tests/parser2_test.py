@@ -14,7 +14,7 @@ class Parser2Test(unittest.TestCase):
              "while (~a = A) {\n  [b = a * B]\n  b := b + B;\na := a + 1\n}"),
 
             ("if (a != 0) then a := 0 else skip",
-             "if (~a = 0) then\n  a := 0\nelse\n  skip"),
+             "if (~a = 0) then\n  a := (0::nat)\nelse\n  skip"),
 
             ("if (m <= n) then c := n else c := m",
              "if (m <= n) then\n  c := n\nelse\n  c := m")
