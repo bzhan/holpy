@@ -83,5 +83,7 @@ class While(Com):
         self.c = c
 
     def print_com(self, thy):
+        cmd = self.c.print_com(thy).split('\n')
+        cmd = '\n  '.join(cmd)
         return "while (%s) {\n  [%s]\n  %s\n}" % (
-            print_term(self.b), print_term(self.inv), self.c.print_com(thy))
+            print_term(self.b), print_term(self.inv), cmd)

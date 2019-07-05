@@ -46,7 +46,7 @@
                 $('div.rtop').css('z-index', '-100');
         })
 
-        $('div#right').click(()=> {
+        $('div#right,div.dropdown-menu>a').click(()=> {
             if ($('div.rtop').css('z-index') === '-100')
                 $('div.rtop').css('z-index', '0');
         })

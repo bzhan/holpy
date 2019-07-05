@@ -11,7 +11,7 @@ class Parser2Test(unittest.TestCase):
     def testParsePrint(self):
         test_case = [
             ("while (a != A) [b == a * B] {b := b + B; a := a + 1}",
-             "while (a != A) {\n  [b == a * B]\n  b := b + B;\na := a + 1\n}"),
+             "while (a != A) {\n  [b == a * B]\n  b := b + B;\n  a := a + 1\n}"),
 
             ("if (a != 0) then a := 0 else skip",
              "if (a != 0) then\n  a := 0\nelse\n  skip"),

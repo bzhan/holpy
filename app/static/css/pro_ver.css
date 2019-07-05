@@ -1,0 +1,70 @@
+body {
+    background: #F8F8F8;
+}
+
+div.total{
+    margin-top: 1%;
+    margin-left:1%;
+}
+
+.left{
+    height: 100vh;
+    width: 50%;
+    background: none;
+}
+
+.right{
+    width: 50%;
+    position: absolute;
+    left: 50%;
+    right:0;
+    top:0;
+    background: none;
+    height:100vh;
+
+}
+
+.display-con{
+    position:relative;
+    width: 90%;
+    top: 4%;
+    left: 3%;
+    height:60vh;
+    border: 1px solid;
+    border-radius: 5px;
+    font-size: 20px;
+    font-family: Consolas, monospace;
+}
+
+.con{
+    font-size: 20px;
+    font-family: Consolas, monospace;
+    display: block;
+    width: 90%;
+    border: 1px solid;
+    height:6vh;
+    border-radius: 5px;
+}
+
+.code-content{
+    margin-top:2%;
+    margin-bottom:2%;
+    height:20vh;
+    resize: none;
+}
+
+.but{
+    background: #00FF99;
+    width: 30%;
+    margin-top: 10%;
+    margin-left:27%;
+    height:7vh;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 10px;
+}
+
+span.title{
+    font-weight: bold;
+    color:
+}
