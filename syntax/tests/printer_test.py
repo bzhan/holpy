@@ -166,13 +166,28 @@ class PrinterTest(unittest.TestCase):
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
 
-    def testBinary(self):
+    def testPrintBinary(self):
         m = Var("m", nat.natT)
         test_data = [
             (nat.one, "(1::nat)"),
             (nat.to_binary_nat(2), "(2::nat)"),
             (nat.to_binary_nat(3), "(3::nat)"),
             (nat.plus(m, nat.one), "m + 1"),
+        ]
+
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
+
+    def testPrintReal(self):
+        thy = basic.load_theory('real')
+        m = Var("m", real.realT)
+        test_data = [
+            (real.zero, "(0::real)"),
+            (real.one, "(1::real)"),
+            (real.to_binary_real(2), "(2::real)"),
+            (real.to_binary_real(3), "(3::real)"),
+            (real.plus(m, real.one), "m + 1"),
+            (real.plus(real.one, real.to_binary_real(2)), "(1::real) + 2"),
         ]
 
         for t, s in test_data:

@@ -227,6 +227,11 @@ class ParserTest(unittest.TestCase):
             ("x - -y", "real"),
             ("--x", "real"),
             ("-(x - y)", "real"),
+            ("(0::real)", "real"),
+            ("(1::real)", "real"),
+            ("(2::real)", "real"),
+            ("x + 1", "real"),
+            ("(1::real) + 2", "real"),
         ]
 
         for s, Ts in test_data:

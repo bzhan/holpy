@@ -102,10 +102,8 @@ def is_binary(t):
         return False
 
 def is_binary_nat(t):
-    return t == zero or t.is_const_name("zero") or \
-           t == one or t.is_const_name("one") or \
-           (t.is_comb() and (t.fun.is_const_name("nat_of_nat") or \
-                             t.fun.is_const_name("of_nat")) and is_binary(t.arg))
+    return t == zero or t == one or \
+           (t.is_comb() and t.fun.is_const_name("nat_of_nat") and is_binary(t.arg))
 
 def from_binary(t):
     """Convert binary form to integer."""
@@ -121,9 +119,9 @@ def from_binary(t):
 
 def from_binary_nat(t):
     assert is_binary_nat(t), "from_binary_nat"
-    if t == zero or t.is_const_name("zero"):
+    if t == zero:
         return 0
-    elif t == one or t.is_const_name("one"):
+    elif t == one:
         return 1
     else:
         return from_binary(t.arg)
