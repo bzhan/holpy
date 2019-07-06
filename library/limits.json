@@ -1,17 +1,433 @@
 {
     "content": [
         {
-            "ty": "def",
-            "type": "(nat => real) => real => bool",
             "name": "has_limit",
-            "prop": "has_limit f x <--> (!e. 0 < e --> (?N. !n. N <= n --> real_abs (f n - x) < e))"
+            "prop": "has_limit f x <--> (!e. 0 < e --> (?N. !n. N <= n --> real_abs (f n - x) < e))",
+            "ty": "def",
+            "type": "(nat => real) => real => bool"
         },
         {
+            "attributes": [
+                "hint_forward"
+            ],
+            "name": "has_limit_D1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_limit f x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limit f x ⊢ has_limit f x"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "has_limit_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_limit f x ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e)"
+                },
+                {
+                    "args": "e",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "has_limit f x, 0 < e ⊢ ∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_limit f x ⟶ 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e)"
+                }
+            ],
+            "prop": "has_limit f x --> 0 < e --> (?N. !n. N <= n --> real_abs (f n - x) < e)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_limit_def"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
-            "prop": "has_limit f x --> has_limit f y --> x = y",
+            "vars": {
+                "e": "real",
+                "f": "nat => real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "has_limit_D2",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "has_limit f x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limit f x ⊢ has_limit f x"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "has_limit_D1",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limit f x, 0 < e ⊢ ∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "∀n. n ≤ n ⟶ abs (f n - x) < e",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀n. n ≤ n ⟶ abs (f n - x) < e ⊢ ∀n. n ≤ n ⟶ abs (f n - x) < e"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_limit f x, 0 < e, ∀n. n ≤ n ⟶ abs (f n - x) < e ⊢ n ≤ n"
+                },
+                {
+                    "args": "n",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. n ≤ n ⟶ abs (f n - x) < e, has_limit f x, 0 < e ⊢ abs (f n - x) < e"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λn. abs (f n - x) < e, a: n}",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_limit f x, 0 < e, ∀n. n ≤ n ⟶ abs (f n - x) < e ⊢ ∃a. abs (f a - x) < e"
+                },
+                {
+                    "args": "∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_limit f x ⟶ 0 < e ⟶ (∃n. abs (f n - x) < e)"
+                }
+            ],
+            "prop": "has_limit f x --> 0 < e --> ?n. real_abs (f n - x) < e",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "has_limit_D1"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "inst_exists_goal",
+                    "s": "n"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "e": "real",
+                "f": "nat => real",
+                "x": "real"
+            }
+        },
+        {
             "name": "has_limit_unique",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "has_limit f x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limit f x ⊢ has_limit f x"
+                },
+                {
+                    "args": "has_limit f y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limit f y ⊢ has_limit f y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limit f x, has_limit f y ⊢ x < y ⟶ false"
+                },
+                {
+                    "args": "x < y",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x < y ⊢ x < y"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_limit f x, has_limit f y, x < y ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limit f x, has_limit f y ⊢ x < y ⟶ false"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limit f x, has_limit f y ⊢ y < x ⟶ false"
+                },
+                {
+                    "args": "y < x",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y < x ⊢ y < x"
+                },
+                {
+                    "args": "",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_limit f x, has_limit f y, y < x ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limit f x, has_limit f y ⊢ y < x ⟶ false"
+                },
+                {
+                    "args": "real_eqI_from_lt_gt",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_limit f x, has_limit f y ⊢ x = y"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_limit f x ⟶ has_limit f y ⟶ x = y"
+                }
+            ],
+            "prop": "has_limit f x --> has_limit f y --> x = y",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_eqI_from_lt_gt"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": ""
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": ""
+                }
+            ],
+            "ty": "thm",
             "vars": {
                 "f": "nat => real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "name": "has_limit_add",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "has_limit f x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limit f x ⊢ has_limit f x"
+                },
+                {
+                    "args": "has_limit g y",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_limit g y ⊢ has_limit g y"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_limit f x, has_limit g y ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n + g n - (x + y)) < e)"
+                },
+                {
+                    "args": "e, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_limit f x, has_limit g y, 0 < e ⊢ ∃N. ∀n. N ≤ n ⟶ abs (f n + g n - (x + y)) < e"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "has_limit f x, has_limit g y ⊢ ∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n + g n - (x + y)) < e)"
+                },
+                {
+                    "args": "has_limit_def, has_limit (λn. f n + g n) (x + y)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_limit f x, has_limit g y ⊢ has_limit (λn. f n + g n) (x + y)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_limit f x ⟶ has_limit g y ⟶ has_limit (λn. f n + g n) (x + y)"
+                }
+            ],
+            "prop": "has_limit f x --> has_limit g y --> has_limit (%n. f n + g n) (x + y)",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_limit_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "e"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real",
+                "g": "nat => real",
                 "x": "real",
                 "y": "real"
             }
