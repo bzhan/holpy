@@ -12,6 +12,20 @@
             "overload": "of_nat"
         },
         {
+            "name": "int_zero",
+            "ty": "def",
+            "type": "int",
+            "prop": "int_zero = of_nat nat_zero",
+            "overload": "zero"
+        },
+        {
+            "name": "int_one",
+            "ty": "def",
+            "type": "int",
+            "prop": "int_one = of_nat nat_one",
+            "overload": "one"
+        },
+        {
             "name": "int_plus",
             "ty": "def.ax",
             "type": "int => int => int",

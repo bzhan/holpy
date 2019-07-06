@@ -8,6 +8,7 @@ from kernel.thm import Thm
 from kernel.proof import ProofItem
 from logic import logic
 from data import nat
+from data import int
 from data import real
 from logic import basic
 from data import set
@@ -204,6 +205,34 @@ class ParserTest(unittest.TestCase):
             ("a # xs @ ys", "'a list"),
             ("(a # xs) @ ys", "'a list"),
             ("[[], [a]]", "'a list list"),
+        ]
+
+        for s, Ts in test_data:
+            t = parser.parse_term(thy, ctxt, s)
+            T = parser.parse_type(thy, Ts)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(t.checked_get_type(), T)
+            self.assertEqual(print_term(thy, t), s)
+
+    def testParseInt(self):
+        thy = basic.load_theory('int')
+        ctxt = {'vars': {
+            'x': int.intT,
+            'y': int.intT
+        }}
+        test_data = [
+            ("x + y", "int"),
+            ("x * y", "int"),
+            ("x - y", "int"),
+            ("-x", "int"),
+            ("x - -y", "int"),
+            ("--x", "int"),
+            ("-(x - y)", "int"),
+            ("(0::int)", "int"),
+            ("(1::int)", "int"),
+            ("(2::int)", "int"),
+            ("x + 1", "int"),
+            ("(1::int) + 2", "int"),
         ]
 
         for s, Ts in test_data:

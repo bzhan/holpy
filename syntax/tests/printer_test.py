@@ -8,6 +8,7 @@ from kernel.thm import Thm
 from logic import basic
 from logic import logic
 from data import nat
+from data import int
 from data import real
 from data import list
 from data import set
@@ -173,6 +174,21 @@ class PrinterTest(unittest.TestCase):
             (nat.to_binary_nat(2), "(2::nat)"),
             (nat.to_binary_nat(3), "(3::nat)"),
             (nat.plus(m, nat.one), "m + 1"),
+        ]
+
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
+
+    def testPrintInt(self):
+        thy = basic.load_theory('int')
+        m = Var("m", int.intT)
+        test_data = [
+            (int.zero, "(0::int)"),
+            (int.one, "(1::int)"),
+            (int.to_binary_int(2), "(2::int)"),
+            (int.to_binary_int(3), "(3::int)"),
+            (int.plus(m, int.one), "m + 1"),
+            (int.plus(int.one, int.to_binary_int(2)), "(1::int) + 2"),
         ]
 
         for t, s in test_data:
