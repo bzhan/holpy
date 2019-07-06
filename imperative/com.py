@@ -4,7 +4,7 @@
 
 from kernel.term import Term
 from logic import logic
-from data import nat
+from data import int
 
 def print_term(t):
     """A simple function for printing terms in the imp format."""
@@ -13,16 +13,16 @@ def print_term(t):
             return rec(t.arg1) + " == " + rec(t.arg)
         elif logic.is_neg(t) and t.arg.is_equals():
             return rec(t.arg.arg1) + " != " + rec(t.arg.arg)
-        elif nat.is_less_eq(t):
+        elif int.is_less_eq(t):
             return rec(t.arg1) + " <= " + rec(t.arg)
-        elif nat.is_less(t):
+        elif int.is_less(t):
             return rec(t.arg1) + " < " + rec(t.arg)
-        elif nat.is_plus(t):
+        elif int.is_plus(t):
             return rec(t.arg1) + " + " + rec(t.arg)
-        elif nat.is_times(t):
+        elif int.is_times(t):
             return rec(t.arg1) + " * " + rec(t.arg)
-        elif nat.is_binary_nat(t):
-            return str(nat.from_binary_nat(t))
+        elif int.is_binary_int(t):
+            return str(int.from_binary_int(t))
         elif t.is_var() or t.is_const:
             return t.name
         else:

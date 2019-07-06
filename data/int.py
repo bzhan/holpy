@@ -52,3 +52,16 @@ def to_binary_int(n):
         return one
     else:
         return of_nat(nat.to_binary(n))
+
+def is_binary_int(t):
+    return t == zero or t == one or \
+           (t.is_comb() and t.fun.is_const_name("int_of_nat") and nat.is_binary(t.arg))
+
+def from_binary_int(t):
+    assert is_binary_int(t), "from_binary_int"
+    if t == zero:
+        return 0
+    elif t == one:
+        return 1
+    else:
+        return nat.from_binary(t.arg)

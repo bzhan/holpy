@@ -5,7 +5,7 @@ import unittest
 from logic import basic
 from imperative import parser2
 
-thy = basic.load_theory('nat')
+thy = basic.load_theory('int')
 
 class Parser2Test(unittest.TestCase):
     def testParsePrint(self):

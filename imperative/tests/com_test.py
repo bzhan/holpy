@@ -5,15 +5,15 @@ import unittest
 from kernel.term import Var, Term
 from logic import basic
 from logic import logic
-from data.nat import plus, one, natT
+from data.int import plus, one, intT
 from imperative.com import Skip, Assign, Seq, Cond, While
 
-thy = basic.load_theory('nat')
+thy = basic.load_theory('int')
 eq = Term.mk_equals
 
 class ComTest(unittest.TestCase):
     def testPrintCom(self):
-        x = Var('x', natT)
+        x = Var('x', intT)
         test_data = [
             (Skip(), "skip"),
             (Assign("x", plus(x,one)), "x := x + 1"),

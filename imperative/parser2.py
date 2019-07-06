@@ -7,7 +7,7 @@ from lark import Lark, Transformer, v_args, exceptions
 from kernel.type import TFun
 from kernel.term import Term, Var
 from logic import logic
-from data import nat
+from data import int as hol_int
 from imperative import com
 
 
@@ -45,16 +45,16 @@ class HoareTransformer(Transformer):
         pass
 
     def var_expr(self, s):
-        return Var(s, nat.natT)
+        return Var(s, hol_int.intT)
 
     def num_expr(self, n):
-        return nat.to_binary(int(n))
+        return hol_int.to_binary_int(int(n))
 
     def plus_expr(self, e1, e2):
-        return nat.plus(e1, e2)
+        return hol_int.plus(e1, e2)
 
     def times_expr(self, e1, e2):
-        return nat.times(e1, e2)
+        return hol_int.times(e1, e2)
 
     def eq_cond(self, e1, e2):
         return Term.mk_equals(e1, e2)
@@ -72,10 +72,10 @@ class HoareTransformer(Transformer):
         return logic.true
 
     def less_eq_cond(self, e1, e2):
-        return nat.less_eq(e1, e2)
+        return hol_int.less_eq(e1, e2)
 
     def less_cond(self, e1, e2):
-        return nat.less(e1, e2)
+        return hol_int.less(e1, e2)
 
     def skip_cmd(self):
         return com.Skip()
