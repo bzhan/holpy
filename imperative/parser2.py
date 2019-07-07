@@ -24,6 +24,7 @@ grammar = r"""
         | expr "<" expr -> less_cond
         | cond "&" cond -> conj_cond
         | cond "|" cond -> disj_cond
+        | cond "-->" cond -> imp_cond
         | "true" -> true_cond
 
     ?cmd: "skip" -> skip_cmd
@@ -71,6 +72,9 @@ class HoareTransformer(Transformer):
 
     def disj_cond(self, b1, b2):
         return logic.disj(b1, b2)
+
+    def imp_cond(self, b1, b2):
+        return Term.mk_implies(b1, b2)
 
     def true_cond(self):
         return logic.true
