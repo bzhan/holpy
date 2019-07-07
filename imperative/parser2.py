@@ -15,6 +15,7 @@ grammar = r"""
     ?expr: CNAME -> var_expr
         | INT -> num_expr
         | expr "+" expr -> plus_expr
+        | expr "-" expr -> minus_expr
         | expr "*" expr -> times_expr
 
     ?cond: expr "==" expr -> eq_cond
@@ -52,6 +53,9 @@ class HoareTransformer(Transformer):
 
     def plus_expr(self, e1, e2):
         return hol_int.plus(e1, e2)
+
+    def minus_expr(self, e1, e2):
+        return hol_int.minus(e1, e2)
 
     def times_expr(self, e1, e2):
         return hol_int.times(e1, e2)

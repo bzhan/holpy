@@ -19,11 +19,13 @@ def print_term(t):
             return rec(t.arg1) + " < " + rec(t.arg)
         elif int.is_plus(t):
             return rec(t.arg1) + " + " + rec(t.arg)
+        elif int.is_minus(t):
+            return rec(t.arg1) + " - " + rec(t.arg)
         elif int.is_times(t):
             return rec(t.arg1) + " * " + rec(t.arg)
         elif int.is_binary_int(t):
             return str(int.from_binary_int(t))
-        elif t.is_var() or t.is_const:
+        elif t.is_var() or t.is_const():
             return t.name
         else:
             raise NotImplementedError

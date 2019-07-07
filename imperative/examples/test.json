@@ -30,6 +30,12 @@
             "com": "if (m <= n) then c := n else c := m",
             "pre": "true",
             "post": "c == m | c == n"
+        },
+        {
+            "ty": "vcg",
+            "com": "m := a + b; n := a - b",
+            "pre": "b >= 0",
+            "post": "m >= a & n <= a"
         }
     ]
 }

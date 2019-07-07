@@ -17,7 +17,10 @@ class Parser2Test(unittest.TestCase):
              "if (a != 0) then\n  a := 0\nelse\n  skip"),
 
             ("if (m <= n) then c := n else c := m",
-             "if (m <= n) then\n  c := n\nelse\n  c := m")
+             "if (m <= n) then\n  c := n\nelse\n  c := m"),
+
+            ("m := a + b; n := a - b",
+             "m := a + b;\nn := a - b"),
         ]
 
         for s, res in test_case:

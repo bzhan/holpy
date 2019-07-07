@@ -138,7 +138,7 @@ def process_file(input, output):
     content = data['content']
     eval_count = 0
     vcg_count = 0
-    for run in content:
+    for run in content[:5]:
         if run['ty'] == 'eval':
             com = parse_com(run['com'])
             st1 = mk_const_fun(nat.natT, nat.zero)
