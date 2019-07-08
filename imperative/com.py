@@ -68,7 +68,7 @@ class Com():
     def print_vc_post(self):
         res = ""
         for t in self.get_vc_post():
-            res = res + "<" + print_term(t) + ">\n"
+            res = res + "\n<" + print_term(t) + ">"
         return res
 
 class Skip(Com):
