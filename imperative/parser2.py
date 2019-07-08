@@ -17,15 +17,24 @@ grammar = r"""
         | expr "+" expr -> plus_expr
         | expr "-" expr -> minus_expr
         | expr "*" expr -> times_expr
+        | "(" expr ")"
 
-    ?cond: expr "==" expr -> eq_cond
+    ?atom_cond: expr "==" expr -> eq_cond
         | expr "!=" expr -> ineq_cond
         | expr "<=" expr -> less_eq_cond
         | expr "<" expr -> less_cond
-        | cond "&" cond -> conj_cond
-        | cond "|" cond -> disj_cond
-        | cond "-->" cond -> imp_cond
         | "true" -> true_cond
+        | "(" cond ")"
+
+    ?neg: "~" atom_cond -> neg | atom_cond  // Negation: priority 40
+    
+    ?conj: neg "&" conj | neg     // Conjunction: priority 35
+
+    ?disj: conj "|" disj | conj   // Disjunction: priority 30
+
+    ?imp: disj "-->" imp | disj  // Implies: priority 25
+
+    ?cond: imp
 
     ?cmd: "skip" -> skip_cmd
         | CNAME ":=" expr -> assign_cmd
@@ -67,14 +76,17 @@ class HoareTransformer(Transformer):
     def ineq_cond(self, e1, e2):
         return logic.neg(Term.mk_equals(e1, e2))
 
-    def conj_cond(self, b1, b2):
+    def conj(self, b1, b2):
         return logic.conj(b1, b2)
 
-    def disj_cond(self, b1, b2):
+    def disj(self, b1, b2):
         return logic.disj(b1, b2)
 
-    def imp_cond(self, b1, b2):
+    def imp(self, b1, b2):
         return Term.mk_implies(b1, b2)
+
+    def neg(self, b):
+        return logic.neg(b)
 
     def true_cond(self):
         return logic.true

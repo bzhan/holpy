@@ -19,6 +19,8 @@ def print_term(t):
             return rec(t.arg1) + " & " + rec(t.arg)
         elif logic.is_disj(t):
             return rec(t.arg1) + " | " + rec(t.arg)
+        elif logic.is_neg(t):
+            return "~" + rec(t.arg)
         elif int.is_less_eq(t):
             return rec(t.arg1) + " <= " + rec(t.arg)
         elif int.is_less(t):
@@ -41,6 +43,10 @@ def print_term(t):
 
 class Com():
     """Base class for programs."""
+    def __init__(self):
+        self.pre = []
+        self.post = []
+
     def get_vc_pre(self):
         res = []
         for i in range(len(self.pre) - 1):
@@ -53,10 +59,22 @@ class Com():
             res = res + "<" + print_term(t) + ">\n"
         return res
 
+    def get_vc_post(self):
+        res = []
+        for i in range(len(self.post) - 1):
+            res.append(Term.mk_implies(self.post[i], self.post[i+1]))
+        return res
+
+    def print_vc_post(self):
+        res = ""
+        for t in self.get_vc_post():
+            res = res + "<" + print_term(t) + ">\n"
+        return res
+
 class Skip(Com):
     """Skip program."""
     def __init__(self):
-        self.pre = []
+        super().__init__()
 
     def print_com(self, thy):
         return self.print_vc_pre() + "skip"
@@ -65,7 +83,7 @@ class Skip(Com):
         return self.get_vc_pre()
 
     def compute_wp(self, post):
-        self.post = post
+        self.post = [post]
         self.pre.append(post)
         return self.pre[-1]
 
@@ -73,9 +91,9 @@ class Assign(Com):
     """Assign program."""
     def __init__(self, v, e):
         assert isinstance(v, str) and isinstance(e, Term), "Assign"
+        super().__init__()
         self.v = v
         self.e = e
-        self.pre = []
 
     def print_com(self, thy):
         return self.print_vc_pre() + \
@@ -85,7 +103,7 @@ class Assign(Com):
         return self.get_vc_pre()
 
     def compute_wp(self, post):
-        self.post = post
+        self.post = [post]
         self.pre.append(post.subst({self.v: self.e}))
         return self.pre[-1]
 
@@ -93,9 +111,9 @@ class Seq(Com):
     """Sequence program."""
     def __init__(self, c1, c2):
         assert isinstance(c1, Com) and isinstance(c2, Com), "Seq"
+        super().__init__()
         self.c1 = c1
         self.c2 = c2
-        self.pre = []
 
     def print_com(self, thy):
         return self.print_vc_pre() + \
@@ -105,7 +123,7 @@ class Seq(Com):
         return self.get_vc_pre() + self.c1.get_vc() + self.c2.get_vc()
 
     def compute_wp(self, post):
-        self.post = post
+        self.post = [post]
         mid = self.c2.compute_wp(post)
         self.pre.append(self.c1.compute_wp(mid))
         return self.pre[-1]
@@ -114,10 +132,10 @@ class Cond(Com):
     """Conditional program."""
     def __init__(self, b, c1, c2):
         assert isinstance(b, Term) and isinstance(c1, Com) and isinstance(c2, Com), "Cond"
+        super().__init__()
         self.b = b
         self.c1 = c1
         self.c2 = c2
-        self.pre = []
 
     def print_com(self, thy):
         return self.print_vc_pre() + \
@@ -128,13 +146,24 @@ class While(Com):
     """While program."""
     def __init__(self, b, inv, c):
         assert isinstance(b, Term) and isinstance(inv, Term) and isinstance(c, Com), "While"
+        super().__init__()
         self.b = b
         self.inv = inv
         self.c = c
-        self.pre = []
+
+    def compute_wp(self, post):
+        self.pre.append(self.inv)
+        self.c.pre = [logic.mk_conj(self.inv, self.b)] + self.c.pre
+        self.c.compute_wp(self.inv)
+        self.post = [logic.mk_conj(self.inv, logic.neg(self.b)), post]
+        return self.pre[-1]
+
+    def get_vc(self):
+        return self.get_vc_pre() + self.c.get_vc() + self.get_vc_post()
 
     def print_com(self, thy):
         cmd = self.c.print_com(thy).split('\n')
         cmd = '\n  '.join(cmd)
-        return "while (%s) {\n  [%s]\n  %s\n}" % (
-            print_term(self.b), print_term(self.inv), cmd)
+        return self.print_vc_pre() + "while (%s) {\n  [%s]\n  %s\n}" % (
+            print_term(self.b), print_term(self.inv), cmd) + \
+            self.print_vc_post()
