@@ -21,6 +21,9 @@ def print_term(t):
             return rec(t.arg1) + " | " + rec(t.arg)
         elif logic.is_neg(t):
             return "~" + rec(t.arg)
+        elif logic.is_if(t):
+            b, b1, b2 = t.args
+            return "if " + rec(b) + " then " + rec(b1) + " else " + rec(b2)
         elif int.is_less_eq(t):
             return rec(t.arg1) + " <= " + rec(t.arg)
         elif int.is_less(t):
@@ -136,6 +139,16 @@ class Cond(Com):
         self.b = b
         self.c1 = c1
         self.c2 = c2
+
+    def compute_wp(self, post):
+        self.post = [post]
+        pre_c1 = self.c1.compute_wp(post)
+        pre_c2 = self.c2.compute_wp(post)
+        self.pre.append(logic.mk_if(self.b, pre_c1, pre_c2))
+        return self.pre[-1]
+
+    def get_vc(self):
+        return self.get_vc_pre() + self.c1.get_vc() + self.c2.get_vc()
 
     def print_com(self, thy):
         return self.print_vc_pre() + \

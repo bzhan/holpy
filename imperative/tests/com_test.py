@@ -65,6 +65,10 @@ class ComTest(unittest.TestCase):
              ["a == 0 & b == 0 --> b == a * B",
               "b == a * B & a != A --> b + B == (a + 1) * B",
               "b == a * B & ~a != A --> b == A * B"]),
+
+            (Cond(neg(eq(a,zero)), Assign('a',zero), Skip()),
+             "true", "a == 0",
+             ["true --> if a != 0 then 0 == 0 else a == 0"]),
         ]
 
         for c, pre, post, vcs in test_data:
