@@ -36,7 +36,7 @@ class ComTest(unittest.TestCase):
             (Skip(), "a <= m", "a <= m"),
             (Assign("m", plus(a,b)), "a <= m", "a <= a + b"),
             (Seq(Assign("m", plus(a,b)), Assign("n", minus(a,b))),
-             "a <= m & n <= a", "a <= a + b & a - b <= a"),
+             "a <= m & n <= a", "a  <= a + b & a - b <= a"),
         ]
 
         for c, post, pre in test_data:
