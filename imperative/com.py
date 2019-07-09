@@ -74,6 +74,13 @@ class Com():
             res = res + "\n<" + print_term(t) + ">"
         return res
 
+    def compute_wp(self, post):
+        """Given post-condition for a command, find the pre-condition
+        and verification conditions.
+
+        """
+        raise NotImplementedError
+
 class Skip(Com):
     """Skip program."""
     def __init__(self):
@@ -88,7 +95,7 @@ class Skip(Com):
     def compute_wp(self, post):
         self.post = [post]
         self.pre.append(post)
-        return self.pre[-1]
+        return self.pre[0]
 
 class Assign(Com):
     """Assign program."""
@@ -108,7 +115,7 @@ class Assign(Com):
     def compute_wp(self, post):
         self.post = [post]
         self.pre.append(post.subst({self.v: self.e}))
-        return self.pre[-1]
+        return self.pre[0]
 
 class Seq(Com):
     """Sequence program."""
@@ -128,8 +135,9 @@ class Seq(Com):
     def compute_wp(self, post):
         self.post = [post]
         mid = self.c2.compute_wp(post)
-        self.pre.append(self.c1.compute_wp(mid))
-        return self.pre[-1]
+        pre = self.c1.compute_wp(mid)
+        self.pre.append(pre)
+        return self.pre[0]
 
 class Cond(Com):
     """Conditional program."""
@@ -145,7 +153,7 @@ class Cond(Com):
         pre_c1 = self.c1.compute_wp(post)
         pre_c2 = self.c2.compute_wp(post)
         self.pre.append(logic.mk_if(self.b, pre_c1, pre_c2))
-        return self.pre[-1]
+        return self.pre[0]
 
     def get_vc(self):
         return self.get_vc_pre() + self.c1.get_vc() + self.c2.get_vc()
@@ -169,7 +177,7 @@ class While(Com):
         self.c.pre = [logic.mk_conj(self.inv, self.b)] + self.c.pre
         self.c.compute_wp(self.inv)
         self.post = [logic.mk_conj(self.inv, logic.neg(self.b)), post]
-        return self.pre[-1]
+        return self.pre[0]
 
     def get_vc(self):
         return self.get_vc_pre() + self.c.get_vc() + self.get_vc_post()
