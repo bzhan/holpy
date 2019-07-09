@@ -24,6 +24,7 @@ grammar = r"""
         | expr "<=" expr -> less_eq_cond
         | expr "<" expr -> less_cond
         | "true" -> true_cond
+        | "if" cond "then" cond "else" cond -> if_cond
         | "(" cond ")"
 
     ?neg: "~" atom_cond -> neg | atom_cond  // Negation: priority 40
@@ -75,6 +76,9 @@ class HoareTransformer(Transformer):
 
     def ineq_cond(self, e1, e2):
         return logic.neg(Term.mk_equals(e1, e2))
+
+    def if_cond(self, b, b1, b2):
+        return logic.mk_if(b, b1, b2)
 
     def conj(self, b1, b2):
         return logic.conj(b1, b2)
