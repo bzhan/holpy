@@ -2606,6 +2606,16 @@
         },
         {
             "attributes": [],
+            "name": "less_lesseqI",
+            "prop": "m <= n --> ~m = n --> m < n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
             "name": "less_eq_refl",
             "num_gaps": 0,
             "proof": [
@@ -3572,6 +3582,18 @@
                 "x": "nat",
                 "y": "nat"
             }
+        },
+        {
+            "name": "max",
+            "prop": "max m n = if m <= n then n else m",
+            "ty": "def",
+            "type":"nat => nat => nat"
+        },
+        {
+            "name": "min",
+            "prop": "min m n = if m <= n then m else n",
+            "ty": "def",
+            "type":"nat => nat => nat"
         }
     ],
     "description": "Natural numbers",

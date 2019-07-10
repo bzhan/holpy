@@ -78,6 +78,7 @@ class ComTest(unittest.TestCase):
             c.pre = [pre]
             c.compute_wp(post)
             self.assertEqual(c.get_vc(), vcs)
+
             print(c.print_com(thy))
 
 

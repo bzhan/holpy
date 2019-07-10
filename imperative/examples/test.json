@@ -15,7 +15,7 @@
         },
         {
             "ty": "vcg",
-            "com": "while (a != A) [b == a * B] {b := b + B; a := a + 1}",
+            "com": "while (a != A) {[b == a * B] b := b + B; a := a + 1}",
             "pre": "a == 0 & b == 0",
             "post": "b == A * B"
         },
