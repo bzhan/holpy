@@ -246,11 +246,25 @@ class NatTest(unittest.TestCase):
     def testNatLessEqMacro(self):
         test_data = [
             (3, 5),
+            (4, 4),
         ]
 
         macro = nat.nat_const_less_eq_macro()
         for m, n in test_data:
             goal = nat.less_eq(nat.to_binary_nat(m), nat.to_binary_nat(n))
+            pt = macro.get_proof_term(thy, goal, [])
+            prf = pt.export()
+            self.assertEqual(thy.check_proof(prf), Thm([], goal))
+
+    def testNatLessMacro(self):
+        test_data = [
+            (0, 1),
+            (3, 5),
+        ]
+
+        macro = nat.nat_const_less_macro()
+        for m, n in test_data:
+            goal = nat.less(nat.to_binary_nat(m), nat.to_binary_nat(n))
             pt = macro.get_proof_term(thy, goal, [])
             prf = pt.export()
             self.assertEqual(thy.check_proof(prf), Thm([], goal))

@@ -36,8 +36,9 @@
             }
         },
         {
+            "attributes": [],
             "name": "numseg_lrec",
-            "prop": "m <= n --> (insert m {(m+1)..n} = {m..n})",
+            "prop": "m <= n --> {m..n} = insert m {(m+1)..n}",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -65,6 +66,16 @@
         {
             "name": "numseg_empty",
             "prop": "({m..n} = empty_set) = (n < m)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "numseg_emptyI",
+            "prop": "n < m --> {m..n} = empty_set",
             "ty": "thm",
             "vars": {
                 "m": "nat",

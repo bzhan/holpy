@@ -670,7 +670,7 @@ class nat_const_less_eq_macro(ProofTermMacro):
     """Given m and n, with m <= n, return the less-equal theorem."""
     def __init__(self):
         self.level = 10
-        self.term = Term
+        self.sig = Term
 
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "nat_const_less_eq_macro"
@@ -681,13 +681,13 @@ class nat_const_less_eq_macro(ProofTermMacro):
         return is_binary_nat(m) and is_binary_nat(n) and from_binary_nat(m) <= from_binary_nat(n)
 
     def eval(self, thy, goal, pts):
-        assert len(pts) == 0 and self.can_eval(thy, goal), "nat_const_ineq_macro"
+        assert len(pts) == 0 and self.can_eval(thy, goal), "nat_const_less_eq_macro"
 
         # Simply produce the goal.
         return Thm([], goal)
 
     def get_proof_term(self, thy, goal, pts):
-        assert len(pts) == 0 and self.can_eval(thy, goal), "nat_const_ineq_macro"
+        assert len(pts) == 0 and self.can_eval(thy, goal), "nat_const_less_eq_macro"
 
         m, n = goal.args
         assert from_binary_nat(m) <= from_binary_nat(n)
@@ -697,6 +697,22 @@ class nat_const_less_eq_macro(ProofTermMacro):
         ex_eq = apply_theorem(thy, 'exI', eq, concl=goal2)
         return ex_eq.on_prop(thy, rewr_conv('less_eq_exist', sym=True))
 
+class nat_const_less_macro(ProofTermMacro):
+    """Given m and n, with m < n, return the less-than theorem."""
+    def __init__(self):
+        self.level = 10
+        self.sig = Term
+
+    def get_proof_term(self, thy, goal, pts):
+        assert isinstance(goal, Term)
+        assert len(pts) == 0, "nat_const_less_macro"
+        m, n = goal.args
+        assert from_binary_nat(m) < from_binary_nat(n)
+        less_eq_goal = less_eq(m, n)
+        less_eq_pt = nat_const_less_eq_macro().get_proof_term(thy, less_eq_goal, [])
+        ineq_goal = logic.neg(Term.mk_equals(m, n))
+        ineq_pt = nat_const_ineq_macro().get_proof_term(thy, ineq_goal, [])
+        return apply_theorem(thy, "less_lesseqI", less_eq_pt, ineq_pt)
 
 class nat_eq_conv(Conv):
     """Simplify equality a = b to either True or False."""

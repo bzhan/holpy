@@ -2606,6 +2606,16 @@
         },
         {
             "attributes": [],
+            "name": "less_lesseqI",
+            "prop": "m <= n --> ~m = n --> m < n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
             "name": "less_eq_refl",
             "num_gaps": 0,
             "proof": [
