@@ -41,7 +41,7 @@ grammar = r"""
         | CNAME ":=" expr -> assign_cmd
         | "if" "(" cond ")" "then" cmd "else" cmd -> if_cmd
         | "while" "(" cond ")" "{" cmd "}" -> while_cmd
-        | "while" "(" cond ")" "[" cond "]" "{" cmd "}" -> while_cmd_inv
+        | "while" "(" cond ")" "{" "[" cond "]" cmd "}" -> while_cmd_inv
         | cmd ";" cmd -> seq_cmd
 
     %import common.CNAME
