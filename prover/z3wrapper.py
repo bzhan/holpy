@@ -14,7 +14,7 @@ from kernel.thm import Thm
 from kernel.macro import ProofMacro, global_macros
 from kernel.theory import Method, global_methods
 from logic import logic
-from data import nat
+from data import nat, int
 from syntax import printer, settings
 
 
@@ -22,7 +22,7 @@ def convert(t):
     """Convert term t to Z3 input."""
     if t.is_var():
         T = t.get_type()
-        if T == nat.natT:
+        if T == nat.natT or T == int.intT:
             return z3.Int(t.name)
         elif T == TFun(nat.natT, nat.natT):
             return z3.Function(t.name, z3.IntSort(), z3.IntSort())
@@ -40,6 +40,8 @@ def convert(t):
             return z3.ForAll([z3_v], convert(t.arg.subst_bound(v)))
         else:
             raise NotImplementedError
+    elif int.is_binary_int(t):
+        return int.from_binary_int(t)
     elif t.is_implies():
         return z3.Implies(convert(t.arg1), convert(t.arg))
     elif t.is_equals():
@@ -63,6 +65,16 @@ def convert(t):
         return convert(t.arg1) < convert(t.arg)
     elif nat.is_binary_nat(t):
         return nat.from_binary_nat(t)
+    elif int.is_plus(t):
+        return convert(t.arg1) + convert(t.arg)
+    elif int.is_minus(t):
+        return convert(t.arg1) - convert(t.arg)
+    elif int.is_times(t):
+        return convert(t.arg1) * convert(t.arg)
+    elif int.is_less_eq(t):
+        return convert(t.arg1) <= convert(t.arg)
+    elif int.is_less(t):
+        return convert(t.arg1) < convert(t.arg)
     elif t.is_comb():
         return convert(t.fun)(convert(t.arg))
     elif t.is_const():

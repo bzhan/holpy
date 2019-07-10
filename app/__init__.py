@@ -78,17 +78,24 @@ def get():
 # Data processing
 @app.route('/program_verify', methods = ['POST', 'GET'])
 def verify():
+    proof_suc, proof_failure = 0, 0
     data = json.loads(request.get_data().decode("utf-8"))
     thy = basic.load_theory('int')
-    pre, post, com = data['pre'], data['post'], data['com']
-    pre = cond_parser.parse(pre)
-    post = cond_parser.parse(post)
-    com = com_parser.parse(com.replace('\n', ''))
+    pre = cond_parser.parse(data['pre'])
+    post = cond_parser.parse(data['post'])
+    com = com_parser.parse(data['com'].replace('\n', ''))
     com.pre = [pre]
     com.compute_wp(post)
+    vcs = com.get_vc()
+    for vc in vcs:
+        if z3wrapper.solve(vc):
+            proof_suc += 1
+        else:
+            proof_failure += 1
+    proof_very = 'Proof ok : success :' + str(proof_suc) + ' and failure :' + str(proof_failure)
     very = com.print_com(thy)
 
-    return jsonify({'very': very})
+    return jsonify({'very': very, 'proof_very': proof_very})
 
 
 # Login page

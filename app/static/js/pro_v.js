@@ -4,7 +4,8 @@ var vm = new Vue({
         text: '',
         com: '',
         pre: '',
-        post: ''
+        post: '',
+        proof_very: ''
         },
     methods: {
         get_data: function() {
@@ -29,7 +30,7 @@ var vm = new Vue({
                 }
             }).then(function(res) {
                 vm.text = res.data['very'];
-                alert(res.data['very']);
+                vm.proof_very = res.data['proof_very'];
             })
        }
     }
