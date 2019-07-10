@@ -14,6 +14,8 @@ from logic import basic
 from logic import induct
 from imperative import parser2
 from imperative import imp
+from prover import z3wrapper
+from imperative.parser2 import cond_parser, com_parser
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -51,22 +53,43 @@ def proof_area_template():
 # Program-verify home-page
 @app.route('/program', methods = ['POST', 'GET'])
 def index_():
+
+    return render_template('progm_verify.html')
+
+@app.route('/get_data', methods = ['POST', 'GET'])
+def get():
     name = 'test'
     thy = basic.load_theory('nat')
     PATH = os.getcwd() + '/imperative/examples/' + name + '.json'
-    with open(PATH, 'r+', encoding = 'utf-8') as f:
+    with open(PATH, 'r+', encoding='utf-8') as f:
         file_data = json.load(f)
         f.close()
     data = file_data['content'][2]
     com = parser2.com_parser.parse(data['com'])
     com_body = com.print_com(thy)
+    output = {
+        'pre': data['pre'],
+        'post': data['post'],
+        'com': com_body
+    }
 
-    return render_template('progm_verify.html', pre = data['pre'], body = com_body, post = data['post'])
+    return jsonify(output)
 
 # Data processing
 @app.route('/program_verify', methods = ['POST', 'GET'])
 def verify():
-    return 'hello'
+    data = json.loads(request.get_data().decode("utf-8"))
+    thy = basic.load_theory('int')
+    pre, post, com = data['pre'], data['post'], data['com']
+    pre = cond_parser.parse(pre)
+    post = cond_parser.parse(post)
+    com = com_parser.parse(com.replace('\n', ''))
+    com.pre = [pre]
+    com.compute_wp(post)
+    very = com.print_com(thy)
+
+    return jsonify({'very': very})
+
 
 # Login page
 @app.route('/', methods = ['GET', 'POST'])

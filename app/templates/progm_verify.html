@@ -10,18 +10,17 @@
 <body>
     <div id="wrap">
         <div id="pro-ver" class="total left">
-            <form id="program-ver" action="program_verify">
-                <span class="title">pre-condition:</span><input name="pre-condition" class="con" value='{{ pre }}'>
-                <textarea class="code-content con">{{ body }}</textarea>
-                <span class="title">post-condition:</span><input name="post-condition" class="con" value='{{ post }}'>
-                <button name="check" type="submit" class="but">Check</button>
+            <button name="get" @click="get_data">get</button>
+            <form id="program-ver" action="#">
+                <span class="title">pre-condition:</span><input name="pre-condition" class="con" v-model="pre">
+                <textarea class="code-content con" name="com" v-model="com"></textarea>
+                <span class="title">post-condition:</span><input name="post-condition" class="con" v-model="post">
+                <button name="check" type="submit" @click="process" class="but">Check</button>
             </form>
         </div>
-        {% raw %}
         <div id="ver-display" class="right">
             <textarea class="display-con" name="display-area" readonly="readonly">{{ text }}</textarea>
         </div>
-        {% endraw %}
     </div>
 <script type='text/javascript' src="../static/js/pro_v.js"></script>
 </body>
