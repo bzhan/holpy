@@ -64,6 +64,25 @@
             }
         },
         {
+            "name": "member_numseg",
+            "prop": "member p {m..n} = (m <= p & p <= n)",
+            "ty": "thm",
+            "vars": {
+                "p": "nat",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "name": "member_numseg_0",
+            "prop": "member p {0..n} = (p <= n)",
+            "ty": "thm",
+            "vars": {
+                "p": "nat",
+                "n": "nat"
+            }
+        },
+        {
             "name": "numseg_empty",
             "prop": "({m..n} = empty_set) = (n < m)",
             "ty": "thm",
@@ -89,7 +108,35 @@
             "vars": {
                 "n": "nat"
             }
-        }
+        },
+        {
+            "name": "inter_numseg",
+            "prop": "inter {m..n} {p..q} = {(max m p)..(min n q)}",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat",
+                "q": "nat"
+            }
+        },
+        {
+            "name": "numseg_add_split",
+            "prop": "m <= n + 1 --> {m..(n + p)} = union {m..n} {(n + 1)..(p + 1)}",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+            }
+        },
+        {
+            "hint_backward": "true",
+            "name": "neutral",
+            "prop": "neutral op x = (!y. (op x y = y) & (op y x = y))",
+            "ty": "def",
+            "type": "('a => 'a => 'a) => 'a => bool"
+        }           
     ],
     "description": "Basic results about iterate.",
     "imports": [
