@@ -98,15 +98,6 @@ function current_state() {
     }
 }
 
-function introduction() {
-    var input = current_state();
-    if (input.line.indexOf("⊢ ∀") !== -1) {
-        apply_method('introduction');
-    } else {
-        apply_method('introduction', {names: ''});
-    }
-}
-
 // Make ajax call to apply-method with the given input.
 // On success, record the step and display the updated proof.
 function apply_method_ajax(input) {
@@ -115,13 +106,22 @@ function apply_method_ajax(input) {
         type: "POST",
         data: JSON.stringify(input),
         success: function(result) {
-            steps = cells[input.id].steps;
-            delete input.id;
-            delete input.line;
-            if (input.fact_ids.length == 0)
-                delete input.fact_ids;
-            steps.push(input);
-            display_checked_proof(result);
+            if ("query" in result) {
+                // Query for more parameters
+                result.query.forEach(param =>
+                    input[param] = prompt(param)
+                );
+                apply_method_ajax(input);
+            } else {
+                // Success
+                steps = cells[input.id].steps;
+                delete input.id;
+                delete input.line;
+                if (input.fact_ids.length == 0)
+                    delete input.fact_ids;
+                steps.push(input);
+                display_checked_proof(result);
+            }
         }
     })
 }

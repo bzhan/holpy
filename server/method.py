@@ -13,6 +13,19 @@ from logic import logic_macro
 from syntax import parser, printer, settings
 from server import tactic
 
+
+class ParameterQueryException(Exception):
+    """Represents an exception that is raised when a method need
+    to ask for additional parameters. The list of parameters is
+    contained in the list params.
+
+    """
+    def __init__(self, params):
+        assert isinstance(params, list) and all(isinstance(param, str) for param in params), \
+            "ParameterQueryException"
+        self.params = params
+
+
 def incr_id(id, n):
     """Increment the last number in id by n."""
     return id[:-1] + (id[-1] + n,)
@@ -287,7 +300,7 @@ class apply_resolve_step(Method):
 class introduction(Method):
     """Introducing variables and assumptions."""
     def __init__(self):
-        self.sig = ["names"]
+        self.sig = []
 
     def search(self, state, id, prevs):
         goal_th = state.get_proof_item(id).th
@@ -311,6 +324,9 @@ class introduction(Method):
 
         prop = cur_item.th.prop
         assert prop.is_implies() or prop.is_all(), "introduction"
+
+        if prop.is_all() and 'names' not in data:
+            raise ParameterQueryException(['names'])
 
         intros_tac = tactic.intros()
         if 'names' in data and data['names'] != '':
