@@ -56,25 +56,6 @@ def index_():
 
     return render_template('progm_verify.html')
 
-@app.route('/get_data', methods = ['POST', 'GET'])
-def get():
-    name = 'test'
-    thy = basic.load_theory('nat')
-    PATH = os.getcwd() + '/imperative/examples/' + name + '.json'
-    with open(PATH, 'r+', encoding='utf-8') as f:
-        file_data = json.load(f)
-        f.close()
-    data = file_data['content'][2]
-    com = parser2.com_parser.parse(data['com'])
-    com_body = com.print_com(thy)
-    output = {
-        'pre': data['pre'],
-        'post': data['post'],
-        'com': com_body
-    }
-
-    return jsonify(output)
-
 # Data processing
 @app.route('/program_verify', methods = ['POST', 'GET'])
 def verify():
@@ -92,7 +73,7 @@ def verify():
             proof_suc += 1
         else:
             proof_failure += 1
-    proof_very = 'Proof ok : success :' + str(proof_suc) + ' and failure :' + str(proof_failure)
+    proof_very = 'Proof Finished : success :' + str(proof_suc) + ' and failure :' + str(proof_failure) + '.'
     very = com.print_com(thy)
 
     return jsonify({'very': very, 'proof_very': proof_very})
@@ -213,7 +194,24 @@ def login():
 def master():
     user_info['is_signed_in'] = True
     user_info['username'] = 'master'
+
     return redirect('/load')
+
+
+@app.route('/api/get_file', methods = ['POST', 'GET'])
+def get_file():
+    file_name = json.loads(request.get_data().decode("utf-8"))['file_name']
+    thy = basic.load_theory('nat')
+    PATH = os.getcwd() + '/imperative/examples/' + file_name
+    with open(PATH, 'r', encoding = 'utf-8') as f:
+        file_data = json.load(f)
+        f.close()
+    filter_data = list(filter(lambda d: d['ty'] == 'vcg', file_data['content']))
+    for i, vcg in enumerate(filter_data):
+        filter_data[i]['num'] = i
+        filter_data[i]['com'] = parser2.com_parser.parse(vcg['com']).print_com(thy)
+
+    return jsonify({'file_data': filter_data})
 
 
 # Replace user data with library data

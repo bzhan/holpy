@@ -1,5 +1,6 @@
 body {
     background: #F8F8F8;
+    overflow: hidden;
 }
 
 div.total{
@@ -7,16 +8,27 @@ div.total{
     margin-left:1%;
 }
 
+div#progeam-ver {
+
+}
+
+div.program-ver {
+    margin-top: 7%;
+}
+
 .left{
     height: 100vh;
-    width: 50%;
+    width: 30%;
     background: none;
+    border-right: solid 1px;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .right{
-    width: 50%;
+    width: 70%;
     position: absolute;
-    left: 50%;
+    left: 30%;
     right:0;
     top:0;
     background: none;
@@ -25,20 +37,41 @@ div.total{
 }
 
 .display-con{
-    margin-left: 3%;
+    margin-left: 5%;
     margin-top: 5%;
     font-size: 20px;
     font-family: Consolas, monospace;
 }
 
+#set_file{
+    position: relative;
+    top: 4%;
+    font-size: 25px;
+    background: #F0F0F0;
+    color: black;
+    border: solid 1px;
+    border-radius: 4px;
+    width: 8%;
+}
+
+#files {
+    display: none;
+}
+
+.display-res {
+    margin-left: 5%;
+}
+
 .con{
+    background: #F8F8F8;
     font-size: 20px;
     font-family: Consolas, monospace;
     display: block;
-    width: 90%;
+    width: 95%;
     border: 1px solid;
-    height:6vh;
+    height:5vh;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .code-content{

@@ -9,21 +9,23 @@
 </head>
 <body>
     <div id="wrap">
-        <div id="pro-ver" class="total left">
-            <button name="get" @click="get_data">get</button>
-            <div id="program-ver">
-                <span class="title">pre-condition:</span><input name="pre-condition" class="con" v-model="pre">
-                <textarea class="code-content con" name="com" v-model="com"></textarea>
-                <span class="title">post-condition:</span><input name="post-condition" class="con" v-model="post">
-                <button name="check" type="submit" @click="process" class="but">Check</button>
+        <div id="left-con" class="left-con">
+            <div id="pro-ver" class="total left">
+                <label for="files" id="set_file" :style="style_file" @mouseover="button_change" @mouseout="button_recover">请选择文件</label>
+                <input type="file" id="files" @change="get_file($event)">
+                <div id="program-ver" class="program-ver">
+                    <div v-for="vcg in file_data" @click="data_process($event)">
+                        <textarea readonly="readonly" class="code-content con" :name="vcg.num">{{ vcg.com }}</textarea>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div id="ver-display" class="right">
-            <br>
-            <pre class="display-con">{{ text }}</pre><br>
-            <pre>{{ proof_very }}</pre>
-            <div></div>
-<!--            <textarea class="display-con" name="display-area" readonly="readonly">{{ text }}</textarea>-->
+            <div id="ver-display" class="right">
+                <br>
+                <pre class="display-con">{{ text }}</pre><br>
+                <pre class="display-res">{{ proof_very }}</pre>
+                <div></div>
+    <!--            <textarea class="display-con" name="display-area" readonly="readonly">{{ text }}</textarea>-->
+            </div>
         </div>
     </div>
 <script type='text/javascript' src="../static/js/pro_v.js"></script>
