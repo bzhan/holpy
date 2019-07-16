@@ -50,11 +50,10 @@ def edit_area_template():
 def proof_area_template():
     return render_template('proof_area.html')
 
-# Program-verify home-page
+# Program verification homepage
 @app.route('/program', methods = ['POST', 'GET'])
-def index_():
-
-    return render_template('progm_verify.html')
+def index_program():
+    return render_template('prog_verify.html')
 
 # Data processing
 @app.route('/program_verify', methods = ['POST', 'GET'])
