@@ -324,6 +324,15 @@
                     "goal_id": "3",
                     "method_name": "introduction",
                     "names": ""
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "theorem": "has_limit_D2",
+                    "param_e": "y - x"
                 }
             ],
             "ty": "thm",

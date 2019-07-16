@@ -386,6 +386,10 @@ class ServerTest(unittest.TestCase):
         """Proof of surjective f --> (?x. f x = y)."""
         testMethods(self, 'function', 'surjectiveD')
 
+    def testHasLimitUnique(self):
+        """Proof of has_limit f x --> has_limit f y --> x = y."""
+        testMethods(self, 'limits', 'has_limit_unique', no_gaps=False, print_proof=True)
+
 
 if __name__ == "__main__":
     unittest.main()

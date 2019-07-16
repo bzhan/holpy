@@ -221,7 +221,10 @@ class apply_forward_step(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N(data['theorem'] + " (f): ") + display_facts(state, data)
+        if "_fact" in data:
+            return printer.N(data['theorem'] + " (f): ") + display_facts(state, data)
+        else:
+            return printer.N(data['theorem'] + " (f)")
 
     def apply(self, state, id, data, prevs):
         inst = dict()
@@ -233,15 +236,23 @@ class apply_forward_step(Method):
         # First test apply_theorem
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
         macro = logic_macro.apply_theorem_macro(with_inst=True)
-        macro.eval(state.thy, (data['theorem'], dict(), inst), prev_ths)
+        res_th = macro.eval(state.thy, (data['theorem'], dict(), inst), prev_ths)
 
-        state.add_line_before(id, 1)
+        As, C = res_th.prop.strip_implies()
+        cur_item = state.get_proof_item(id)
+        cur_hyps = cur_item.th.hyps
+        state.add_line_before(id, len(As) + 1)
+        for i in range(len(As)):
+            state.set_line(incr_id(id, i), 'sorry', th=Thm(cur_hyps, As[i]))
+            prevs.append(incr_id(id, i))
         if inst:
-            state.set_line(id, 'apply_theorem_for', args=(data['theorem'], dict(), inst), prevs=prevs)
+            state.set_line(incr_id(id, len(As)), 'apply_theorem_for',
+                           args=(data['theorem'], dict(), inst), prevs=prevs)
         else:
-            state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
+            state.set_line(incr_id(id, len(As)), 'apply_theorem', args=data['theorem'],
+                           prevs=prevs)
 
-        id2 = incr_id(id, 1)
+        id2 = incr_id(id, len(As)+1)
         new_id = state.find_goal(state.get_proof_item(id2).th, id2)
         if new_id is not None:
             state.replace_id(id2, new_id)
@@ -276,7 +287,7 @@ class apply_backward_step(Method):
         if "_goal" in data:
             return printer.N(data['theorem'] + " (b): ") + display_goals(state, data)
         else:
-            return printer.N(data['theorem'] + " (b): ")
+            return printer.N(data['theorem'] + " (b)")
 
     def apply(self, state, id, data, prevs):
         inst = dict()
