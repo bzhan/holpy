@@ -7,6 +7,7 @@ from kernel.term import Term
 from kernel import macro
 from kernel.proof import Proof
 from kernel.thm import Thm
+from kernel import theory
 from logic import logic, matcher
 from logic.conv import then_conv, beta_conv, top_conv, rewr_conv, top_sweep_conv
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv, refl
@@ -78,17 +79,19 @@ class apply_theorem_macro(ProofTermMacro):
             name = args
         th = thy.get_theorem(name)
 
+        As, C = th.prop.strip_implies()
+
         if not self.with_inst:
-            As, C = th.prop.strip_implies()
             assert len(prevs) > 0, "apply_theorem: no prevs"
             assert len(prevs) <= len(As), "apply_theorem: too many prevs."
 
-            # Make sure all variables are matched
-            assert set(term.get_vars(As[:len(prevs)])) == set(term.get_vars(As + [C])), \
-                   "apply_theorem: cannot match all variables"
+        for idx, prev_th in enumerate(prevs):
+            matcher.first_order_match_incr(As[idx], prev_th.prop, (tyinst, inst))
 
-            for idx, prev_th in enumerate(prevs):
-                matcher.first_order_match_incr(As[idx], prev_th.prop, (tyinst, inst))
+        # Check that every variable in the theorem has an instantiation
+        unmatched_vars = [v.name for v in term.get_vars(As + [C]) if v.name not in inst]
+        if unmatched_vars:
+            raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
         As, C = logic.subst_norm(th.prop, (tyinst, inst)).strip_implies()
         new_prop = Term.mk_implies(*(As[len(prevs):] + [C]))
@@ -104,17 +107,19 @@ class apply_theorem_macro(ProofTermMacro):
             name = args
         th = thy.get_theorem(name)
 
+        As, C = th.prop.strip_implies()
+
         if not self.with_inst:
-            As, C = th.prop.strip_implies()
             assert len(pts) > 0, "apply_theorem: no prevs"
             assert len(pts) <= len(As), "apply_theorem: too many prevs."
 
-            # Make sure all variables are matched
-            assert set(term.get_vars(As[:len(pts)])) == set(term.get_vars(As + [C])), \
-                   "apply_theorem: cannot match all variables"
+        for idx, pt in enumerate(pts):
+            matcher.first_order_match_incr(As[idx], pt.prop, (tyinst, inst))
 
-            for idx, pt in enumerate(pts):
-                matcher.first_order_match_incr(As[idx], pt.prop, (tyinst, inst))
+        # Check that every variable in the theorem has an instantiation
+        unmatched_vars = [v.name for v in term.get_vars(As + [C]) if v.name not in inst]
+        if unmatched_vars:
+            raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
         pt = ProofTerm.theorem(thy, name)
         if tyinst:

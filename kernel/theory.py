@@ -31,6 +31,17 @@ class CheckProofException(Exception):
     def __init__(self, str):
         self.str = str
 
+class ParameterQueryException(Exception):
+    """Represents an exception that is raised when a method need
+    to ask for additional parameters. The list of parameters is
+    contained in the list params.
+
+    """
+    def __init__(self, params):
+        assert isinstance(params, list) and all(isinstance(param, str) for param in params), \
+            "ParameterQueryException: input is not a list of strings"
+        self.params = params
+
 class Theory():
     """Represents the current state of the theory.
 

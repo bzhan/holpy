@@ -7,9 +7,9 @@ from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 
 from kernel.type import HOLType, TVar, Type, TFun
-from kernel import extension
+from kernel import extension, theory
 from syntax import parser, printer, settings
-from server import server, method, tactic
+from server import server, method
 from logic import basic
 from logic import induct
 from imperative import parser2
@@ -255,7 +255,7 @@ def apply_method():
         method.apply_method(cell, data)
         return jsonify(cell.json_data())
     except Exception as e:
-        if isinstance(e, tactic.ParameterQueryException):
+        if isinstance(e, theory.ParameterQueryException):
             return jsonify({
                 "query": e.params
             })

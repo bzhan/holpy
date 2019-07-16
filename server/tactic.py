@@ -3,24 +3,13 @@
 from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
+from kernel import theory
 from logic import logic
 from logic import matcher
 from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, top_sweep_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic_macro import apply_theorem
 from syntax import printer
-
-
-class ParameterQueryException(Exception):
-    """Represents an exception that is raised when a method need
-    to ask for additional parameters. The list of parameters is
-    contained in the list params.
-
-    """
-    def __init__(self, params):
-        assert isinstance(params, list) and all(isinstance(param, str) for param in params), \
-            "ParameterQueryException: input is not a list of strings"
-        self.params = params
 
 
 class Tactic:
@@ -98,12 +87,11 @@ class rule(Tactic):
                 matcher.first_order_match_incr(pat, prev.prop, instsp)
             matcher.first_order_match_incr(C, goal.prop, instsp)
 
-        # Every variable appearing in the theorem must appear in the
-        # matched parts: the first few As and C.
+        # Check that every variable in the theorem has an instantiation.
         tyinst, inst = instsp
         unmatched_vars = [v.name for v in term.get_vars(As + [C]) if v.name not in inst]
         if unmatched_vars:
-            raise ParameterQueryException(list("param_" + name for name in unmatched_vars))
+            raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
         # Substitute and normalize
         As, _ = logic.subst_norm(th.prop, instsp).strip_implies()

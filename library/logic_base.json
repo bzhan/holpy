@@ -86,8 +86,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
-                "hint_forward"
+                "hint_backward"
             ],
             "name": "disjI1",
             "prop": "A --> A | B",
@@ -99,8 +98,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
-                "hint_forward"
+                "hint_backward"
             ],
             "name": "disjI2",
             "prop": "B --> A | B",
