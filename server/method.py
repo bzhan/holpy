@@ -4,7 +4,8 @@ from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import id_force_tuple, print_id, Proof, ProofException
-from kernel.theory import Method, global_methods
+from kernel.theory import Method
+from kernel import theory
 from logic.conv import top_conv, rewr_conv, beta_conv, then_conv, top_sweep_conv
 from logic.proofterm import ProofTermAtom
 from logic import matcher
@@ -12,6 +13,7 @@ from logic import logic
 from logic import logic_macro
 from syntax import parser, printer, settings
 from server import tactic
+
 
 def incr_id(id, n):
     """Increment the last number in id by n."""
@@ -210,6 +212,8 @@ class apply_forward_step(Method):
                     macro = logic_macro.apply_theorem_macro()
                     th = macro.eval(thy, name, prev_ths)
                     results.append({"theorem": name, "_fact": [th.prop]})
+                except theory.ParameterQueryException:
+                    results.append({"theorem": name})
                 except (AssertionError, matcher.MatchException):
                     pass
 
@@ -220,8 +224,22 @@ class apply_forward_step(Method):
         return printer.N(data['theorem'] + " (f): ") + display_facts(state, data)
 
     def apply(self, state, id, data, prevs):
+        inst = dict()
+        ctxt = state.get_ctxt(id)
+        for key, val in data.items():
+            if key.startswith("param_"):
+                inst[key[6:]] = parser.parse_term(state.thy, ctxt, val)
+
+        # First test apply_theorem
+        prev_ths = [state.get_proof_item(prev).th for prev in prevs]
+        macro = logic_macro.apply_theorem_macro(with_inst=True)
+        macro.eval(state.thy, (data['theorem'], dict(), inst), prev_ths)
+
         state.add_line_before(id, 1)
-        state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
+        if inst:
+            state.set_line(id, 'apply_theorem_for', args=(data['theorem'], dict(), inst), prevs=prevs)
+        else:
+            state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
 
         id2 = incr_id(id, 1)
         new_id = state.find_goal(state.get_proof_item(id2).th, id2)
@@ -240,10 +258,14 @@ class apply_backward_step(Method):
         thy = state.thy
         results = []
         for th_name, th in thy.get_data("theorems").items():
-            if 'hint_backward' in thy.get_attributes(th_name):
+            if 'hint_backward' in thy.get_attributes(th_name) or \
+               ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
                 try:
                     pt = tactic.rule().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
                     results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+                except theory.ParameterQueryException:
+                    # In this case, still suggest the result
+                    results.append({"theorem": th_name})
                 except (AssertionError, matcher.MatchException):
                     pass
 
@@ -251,10 +273,21 @@ class apply_backward_step(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N(data['theorem'] + " (b): ") + display_goals(state, data)
+        if "_goal" in data:
+            return printer.N(data['theorem'] + " (b): ") + display_goals(state, data)
+        else:
+            return printer.N(data['theorem'] + " (b): ")
 
     def apply(self, state, id, data, prevs):
-        state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
+        inst = dict()
+        ctxt = state.get_ctxt(id)
+        for key, val in data.items():
+            if key.startswith("param_"):
+                inst[key[6:]] = parser.parse_term(state.thy, ctxt, val)
+        if inst:
+            state.apply_tactic(id, tactic.rule(), args=(data['theorem'], (dict(), inst)), prevs=prevs)
+        else:
+            state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
 
 class apply_resolve_step(Method):
     """Resolve using a theorem ~A and a fact A."""
@@ -287,7 +320,7 @@ class apply_resolve_step(Method):
 class introduction(Method):
     """Introducing variables and assumptions."""
     def __init__(self):
-        self.sig = ["names"]
+        self.sig = []
 
     def search(self, state, id, prevs):
         goal_th = state.get_proof_item(id).th
@@ -311,6 +344,9 @@ class introduction(Method):
 
         prop = cur_item.th.prop
         assert prop.is_implies() or prop.is_all(), "introduction"
+
+        if prop.is_all() and 'names' not in data:
+            raise theory.ParameterQueryException(['names'])
 
         intros_tac = tactic.intros()
         if 'names' in data and data['names'] != '':
@@ -527,7 +563,7 @@ def apply_method(state, data):
     return method.apply(state, goal_id, data, fact_ids)
 
 def display_method(state, step):
-    method = global_methods[step['method_name']]
+    method = theory.global_methods[step['method_name']]
     goal_id = id_force_tuple(step['goal_id'])
     fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
         if 'fact_ids' in step and step['fact_ids'] else []
@@ -538,7 +574,7 @@ def display_method(state, step):
     return [("Not found", 0)] 
 
 
-global_methods.update({
+theory.global_methods.update({
     "cut": cut_method(),
     "cases": cases_method(),
     "apply_prev": apply_prev_method(),

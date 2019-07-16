@@ -60,7 +60,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
+                "hint_backward1",
                 "hint_forward"
             ],
             "name": "conjD1",
@@ -73,7 +73,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
+                "hint_backward1",
                 "hint_forward"
             ],
             "name": "conjD2",
@@ -86,8 +86,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
-                "hint_forward"
+                "hint_backward"
             ],
             "name": "disjI1",
             "prop": "A --> A | B",
@@ -99,8 +98,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
-                "hint_forward"
+                "hint_backward"
             ],
             "name": "disjI2",
             "prop": "B --> A | B",
@@ -112,7 +110,7 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward1"
             ],
             "name": "disjE",
             "prop": "A | B --> (A --> C) --> (B --> C) --> C",
@@ -449,7 +447,7 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward1"
             ],
             "name": "negE_gen",
             "num_gaps": 0,

@@ -219,7 +219,9 @@
             $('div.rbottom div:eq(0)').show().siblings().hide();
         });
 
-        $('#introduction').on("click", introduction);
+        $('#introduction').on("click", function () {
+            apply_method('introduction');
+        });
 
         $('#new-var').on("click", function () {
             apply_method('new_var');
@@ -680,6 +682,8 @@
                 form.vars.value = vars_lines.join('\n');
                 if (item.attributes && item.attributes.includes('hint_backward'))
                     form.hint_backward.checked = true;
+                if (item.attributes && item.attributes.includes('hint_backward1'))
+                    form.hint_backward1.checked = true;
                 if (item.attributes && item.attributes.includes('hint_forward'))
                     form.hint_forward.checked = true;
                 if (item.attributes && item.attributes.includes('hint_rewrite'))
@@ -774,6 +778,8 @@
             item.attributes = [];
             if (form.hint_backward.checked === true)
                 item.attributes.push('hint_backward');
+            if (form.hint_backward1.checked === true)
+                item.attributes.push('hint_backward1');
             if (form.hint_forward.checked === true)
                 item.attributes.push('hint_forward');
             if (form.hint_rewrite.checked === true)
@@ -953,7 +959,9 @@
             scrollbarStyle: "overlay",
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
             extraKeys: {
-                "Ctrl-I": introduction,
+                "Ctrl-I": function () {
+                    apply_method('introduction')
+                },
                 "Ctrl-B": function () {
                     apply_method('apply_backward_step')
                 },

@@ -7,7 +7,7 @@ from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 
 from kernel.type import HOLType, TVar, Type, TFun
-from kernel import extension
+from kernel import extension, theory
 from syntax import parser, printer, settings
 from server import server, method
 from logic import basic
@@ -283,11 +283,15 @@ def apply_method():
         method.apply_method(cell, data)
         return jsonify(cell.json_data())
     except Exception as e:
-        error = {
-            "failed": e.__class__.__name__,
-            "message": str(e)
-        }
-        return jsonify(error)
+        if isinstance(e, theory.ParameterQueryException):
+            return jsonify({
+                "query": e.params
+            })
+        else:
+            return jsonify({
+                "failed": e.__class__.__name__,
+                "message": str(e)
+            })
 
 def str_of_extension(thy, exts):
     """Print given extension for display in the edit area."""

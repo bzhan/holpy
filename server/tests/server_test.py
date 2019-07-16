@@ -8,7 +8,7 @@ from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
 from kernel.proof import Proof
-from kernel.theory import global_methods
+from kernel import theory
 from kernel.report import ProofReport
 from logic import logic
 from logic import basic
@@ -16,8 +16,7 @@ from data import nat
 from data import list
 from data import function
 from syntax import printer
-from server import server
-from server import method
+from server import tactic, method, server
 from server.server import ProofState
 from imperative import imp
 
@@ -54,7 +53,7 @@ def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 search_res = state.search_method(step['goal_id'], step['fact_ids'])
                 found = 0
                 for res in search_res:
-                    m = global_methods[res['_method_name']]
+                    m = theory.global_methods[res['_method_name']]
                     if res['_method_name'] == step['method_name'] and \
                        all(sig not in res or res[sig] == step[sig] for sig in m.sig):
                         if print_search:
@@ -66,7 +65,7 @@ def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 assert found <= 1, "test_val: multiple found"
                 if found == 0:
                     if print_search:
-                        m = global_methods[step['method_name']]
+                        m = theory.global_methods[step['method_name']]
                         print('- ' + m.display_step(state, step['goal_id'], step, step['fact_ids']))
                 else:
                     num_found += 1
@@ -207,6 +206,17 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(state.check_proof(), Thm.mk_implies(disj(A, B), disj(B, A)))
         self.assertEqual(len(state.rpt.gaps), 2)
 
+    def testApplyBackwardStep3(self):
+        """Test handling of additional instantiations."""
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], A)
+        state.apply_backward_step(1, "conjD1", instsp=(dict(), {'B': B}))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(conj(A, B), A))
+
+    def testApplyBackwardStep4(self):
+        """Test when additional instantiation is not provided."""
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], A)
+        self.assertRaises(theory.ParameterQueryException, state.apply_backward_step, 1, "conjD1")
+
     def testApplyForwardStep1(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         state.apply_forward_step(1, "conjD1", prevs=[0])
@@ -220,6 +230,20 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
         item = state.get_proof_item((1,))
         self.assertEqual(item.th.concl, B)
+
+    def testApplyForwardStep3(self):
+        state = ProofState.init_state(thy, [A, B], [A], disj(A, B))
+        method.apply_method(state, {
+            'method_name': 'apply_forward_step',
+            'goal_id': "1", 'fact_ids': ["0"], 'theorem': 'disjI1',
+            'param_B': "B"})
+        self.assertEqual(state.check_proof(), Thm.mk_implies(A, disj(A, B)))
+
+    def testApplyForwardStep4(self):
+        state = ProofState.init_state(thy, [A, B], [A], disj(A, B))
+        self.assertRaises(theory.ParameterQueryException, method.apply_method,
+            state, {'method_name': 'apply_forward_step',
+                    'goal_id': "1", 'fact_ids': ["0"], 'theorem': 'disjI1'})
 
     def testApplyForwardStepThms1(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))

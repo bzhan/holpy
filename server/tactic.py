@@ -3,12 +3,14 @@
 from kernel import term
 from kernel.term import Term
 from kernel.thm import Thm
+from kernel import theory
 from logic import logic
 from logic import matcher
 from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, top_sweep_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic_macro import apply_theorem
 from syntax import printer
+
 
 class Tactic:
     """Represents a tactic function.
@@ -72,24 +74,24 @@ class rule(Tactic):
         if instsp is None:
             # Length of prevs is at most length of As
             assert len(prevs) <= len(As), "rule: too many previous facts"
-
-            # Every variable appearing in the theorem must appear in the
-            # matched parts: the first few As and C.
-            assert set(term.get_vars(As[:len(prevs)] + [C])) == set(term.get_vars(As + [C])), \
-                   "rule: cannot match all variables."
-
             instsp = (dict(), dict())
 
-            # Match the conclusion and assumptions. Either the conclusion
-            # or the list of assumptions must be a first-order pattern.
-            if matcher.is_pattern(C, []):
-                matcher.first_order_match_incr(C, goal.prop, instsp)
-                for pat, prev in zip(As, prevs):
-                    matcher.first_order_match_incr(pat, prev.prop, instsp)
-            else:
-                for pat, prev in zip(As, prevs):
-                    matcher.first_order_match_incr(pat, prev.prop, instsp)
-                matcher.first_order_match_incr(C, goal.prop, instsp)
+        # Match the conclusion and assumptions. Either the conclusion
+        # or the list of assumptions must be a first-order pattern.
+        if matcher.is_pattern(C, []):
+            matcher.first_order_match_incr(C, goal.prop, instsp)
+            for pat, prev in zip(As, prevs):
+                matcher.first_order_match_incr(pat, prev.prop, instsp)
+        else:
+            for pat, prev in zip(As, prevs):
+                matcher.first_order_match_incr(pat, prev.prop, instsp)
+            matcher.first_order_match_incr(C, goal.prop, instsp)
+
+        # Check that every variable in the theorem has an instantiation.
+        tyinst, inst = instsp
+        unmatched_vars = [v.name for v in term.get_vars(As + [C]) if v.name not in inst]
+        if unmatched_vars:
+            raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
         # Substitute and normalize
         As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
@@ -99,7 +101,6 @@ class rule(Tactic):
         # to apply_theorem.
         if set(term.get_vars(th.assums)) != set(term.get_vars(th.prop)) or \
            not matcher.is_pattern_list(th.assums, []):
-            tyinst, inst = instsp
             return apply_theorem(thy, th_name, *pts, tyinst=tyinst, inst=inst)
         else:
             return apply_theorem(thy, th_name, *pts)
