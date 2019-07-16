@@ -682,6 +682,8 @@
                 form.vars.value = vars_lines.join('\n');
                 if (item.attributes && item.attributes.includes('hint_backward'))
                     form.hint_backward.checked = true;
+                if (item.attributes && item.attributes.includes('hint_backward1'))
+                    form.hint_backward1.checked = true;
                 if (item.attributes && item.attributes.includes('hint_forward'))
                     form.hint_forward.checked = true;
                 if (item.attributes && item.attributes.includes('hint_rewrite'))
@@ -776,6 +778,8 @@
             item.attributes = [];
             if (form.hint_backward.checked === true)
                 item.attributes.push('hint_backward');
+            if (form.hint_backward1.checked === true)
+                item.attributes.push('hint_backward1');
             if (form.hint_forward.checked === true)
                 item.attributes.push('hint_forward');
             if (form.hint_rewrite.checked === true)

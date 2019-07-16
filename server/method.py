@@ -14,18 +14,6 @@ from syntax import parser, printer, settings
 from server import tactic
 
 
-class ParameterQueryException(Exception):
-    """Represents an exception that is raised when a method need
-    to ask for additional parameters. The list of parameters is
-    contained in the list params.
-
-    """
-    def __init__(self, params):
-        assert isinstance(params, list) and all(isinstance(param, str) for param in params), \
-            "ParameterQueryException"
-        self.params = params
-
-
 def incr_id(id, n):
     """Increment the last number in id by n."""
     return id[:-1] + (id[-1] + n,)
@@ -253,10 +241,14 @@ class apply_backward_step(Method):
         thy = state.thy
         results = []
         for th_name, th in thy.get_data("theorems").items():
-            if 'hint_backward' in thy.get_attributes(th_name):
+            if 'hint_backward' in thy.get_attributes(th_name) or \
+               ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
                 try:
                     pt = tactic.rule().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
                     results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+                except tactic.ParameterQueryException:
+                    # In this case, still suggest the result
+                    results.append({"theorem": th_name})
                 except (AssertionError, matcher.MatchException):
                     pass
 
@@ -264,10 +256,21 @@ class apply_backward_step(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N(data['theorem'] + " (b): ") + display_goals(state, data)
+        if "_goal" in data:
+            return printer.N(data['theorem'] + " (b): ") + display_goals(state, data)
+        else:
+            return printer.N(data['theorem'] + " (b): ")
 
     def apply(self, state, id, data, prevs):
-        state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
+        inst = dict()
+        ctxt = state.get_ctxt(id)
+        for key, val in data.items():
+            if key.startswith("param_"):
+                inst[key[6:]] = parser.parse_term(state.thy, ctxt, val)
+        if inst:
+            state.apply_tactic(id, tactic.rule(), args=(data['theorem'], (dict(), inst)), prevs=prevs)
+        else:
+            state.apply_tactic(id, tactic.rule(), args=data['theorem'], prevs=prevs)
 
 class apply_resolve_step(Method):
     """Resolve using a theorem ~A and a fact A."""
@@ -326,7 +329,7 @@ class introduction(Method):
         assert prop.is_implies() or prop.is_all(), "introduction"
 
         if prop.is_all() and 'names' not in data:
-            raise ParameterQueryException(['names'])
+            raise tactic.ParameterQueryException(['names'])
 
         intros_tac = tactic.intros()
         if 'names' in data and data['names'] != '':

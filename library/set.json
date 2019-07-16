@@ -3808,6 +3808,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "finite_subset",
             "prop": "finite t & subset s t --> finite s",
             "ty": "thm",

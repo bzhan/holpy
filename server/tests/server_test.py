@@ -16,8 +16,7 @@ from data import nat
 from data import list
 from data import function
 from syntax import printer
-from server import server
-from server import method
+from server import tactic, method, server
 from server.server import ProofState
 from imperative import imp
 
@@ -206,6 +205,17 @@ class ServerTest(unittest.TestCase):
         state.apply_backward_step(1, "disjE", prevs=[0])
         self.assertEqual(state.check_proof(), Thm.mk_implies(disj(A, B), disj(B, A)))
         self.assertEqual(len(state.rpt.gaps), 2)
+
+    def testApplyBackwardStep3(self):
+        """Test handling of additional instantiations."""
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], A)
+        state.apply_backward_step(1, "conjD1", instsp=(dict(), {'B': B}))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_implies(conj(A, B), A))
+
+    def testApplyBackwardStep4(self):
+        """Test when additional instantiation is not provided."""
+        state = ProofState.init_state(thy, [A, B], [conj(A, B)], A)
+        self.assertRaises(tactic.ParameterQueryException, state.apply_backward_step, 1, "conjD1")
 
     def testApplyForwardStep1(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
