@@ -5,13 +5,13 @@
     <script type="text/javascript" src="../static/js/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link href="../static/css/prog_verify.css" rel="stylesheet">
-    <title>P-V</title>
+    <title>Program Verification</title>
 </head>
 <body>
     <div id="wrap">
         <div id="left-con" class="left-con">
             <div id="pro-ver" class="total left">
-                <label for="files" id="set_file" :style="style_file" @mouseover="button_change" @mouseout="button_recover">请选择文件</label>
+                <label for="files" id="set_file" :style="style_file" @mouseover="button_change" @mouseout="button_recover">Please choose a file</label>
                 <input type="file" id="files" @change="get_file($event)">
                 <div id="program-ver" class="program-ver">
                     <div v-for="vcg in file_data" @click="data_process($event)">
@@ -20,11 +20,10 @@
                 </div>
             </div>
             <div id="ver-display" class="right">
-                <br>
-                <pre class="display-con">{{ text }}</pre><br>
-                <pre class="display-res">{{ proof_very }}</pre>
+                <br><pre class="display-con">{{ program }}</pre>
+                <br><pre class="display-res">{{ proof_stat }}</pre>
                 <div></div>
-    <!--            <textarea class="display-con" name="display-area" readonly="readonly">{{ text }}</textarea>-->
+                <!-- <textarea class="display-con" name="display-area" readonly="readonly">{{ text }}</textarea> -->
             </div>
         </div>
     </div>

@@ -38,27 +38,27 @@ user_info = {
 }
 
 # Templates
-@app.route('/display_results.html', methods = ['GET'])
+@app.route('/display_results.html', methods=['GET'])
 def display_results_template():
     return render_template('display_results.html')
 
-@app.route('/edit_area.html', methods = ['GET'])
+@app.route('/edit_area.html', methods=['GET'])
 def edit_area_template():
     return render_template('edit_area.html')
 
-@app.route('/proof_area.html', methods = ['GET'])
+@app.route('/proof_area.html', methods=['GET'])
 def proof_area_template():
     return render_template('proof_area.html')
 
 # Program verification homepage
-@app.route('/program', methods = ['POST', 'GET'])
+@app.route('/program', methods=['POST', 'GET'])
 def index_program():
     return render_template('prog_verify.html')
 
-# Data processing
-@app.route('/program_verify', methods = ['POST', 'GET'])
+# Verifying a program
+@app.route('/program_verify', methods=['POST', 'GET'])
 def verify():
-    proof_suc, proof_failure = 0, 0
+    proof_success, proof_failure = 0, 0
     data = json.loads(request.get_data().decode("utf-8"))
     thy = basic.load_theory('int')
     pre = cond_parser.parse(data['pre'])
@@ -69,33 +69,33 @@ def verify():
     vcs = com.get_vc()
     for vc in vcs:
         if z3wrapper.solve(vc):
-            proof_suc += 1
+            proof_success += 1
         else:
             proof_failure += 1
-    proof_very = 'Proof Finished. Success: ' + str(proof_suc) + '  Failure: ' + str(proof_failure) + '.'
-    very = com.print_com(thy)
+    proof_stat = 'Proof Finished. Success: ' + str(proof_success) + '  Failure: ' + str(proof_failure) + '.'
+    program = com.print_com(thy)
 
-    return jsonify({'very': very, 'proof_very': proof_very})
+    return jsonify({'program': program, 'proof_stat': proof_stat})
 
 
 # Login page
-@app.route('/', methods = ['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('login.html')
 
 # Sign out
-@app.route('/sign-out', methods = ['get'])
+@app.route('/sign-out', methods=['GET'])
 def sign_out():
     user_info['is_signed_in'] = False
     return redirect('/')
 
 # Register page
-@app.route('/register', methods = ['GET'])
+@app.route('/register', methods=['GET'])
 def register():
     return render_template('register.html')
 
 # Error for user already exists
-@app.route('/register-error', methods = ['GET'])
+@app.route('/register-error', methods=['GET'])
 def register_error():
     return render_template('register.html', info = 'User already exists')
 

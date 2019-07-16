@@ -1,12 +1,13 @@
+// Interface for program verification.
 
 var vm = new Vue({
     el: 'div#wrap',
     data: {
-        text: '', com: '', style_file: {background: '#F0F0F0'},
-        pre: '', post: '', proof_very: '', file_data: []
-        },
+        program: '', com: '', style_file: {background: '#F0F0F0'},
+        pre: '', post: '', proof_stat: '', file_data: []
+    },
     methods: {
-        get_data: function() {
+        get_data: function () {
             axios({
                 method: 'get',
                 url: '/get_data',
@@ -17,7 +18,7 @@ var vm = new Vue({
                 vm.com = res.data['com'];
             })
         },
-       data_process: function(e) {
+        data_process: function (e) {
             var num = e.currentTarget.children[0].name;
             num = Number(num);
             var data_relate = this.file_data[num];
@@ -29,24 +30,24 @@ var vm = new Vue({
                     'pre': data_relate['pre'],
                     'post': data_relate['post']
                 }
-            }).then(function(res) {
-                vm.text = res.data['very'];
-                vm.proof_very = res.data['proof_very'];
+            }).then(function (res) {
+                vm.program = res.data['program'];
+                vm.proof_stat = res.data['proof_stat'];
             })
        },
-       button_change: function() {
+       button_change: function () {
             this.style_file.background = 'white';
        },
-       button_recover: function() {
+       button_recover: function () {
             this.style_file.background = '#F0F0F0';
        },
-       get_file: function(e) {
+       get_file: function (e) {
             var file_name = e.target.files[0].name;
             axios({
                 method: 'post',
                 url: '/api/get_file',
                 data: {'file_name' : file_name}
-            }).then(function(res) {
+            }).then(function (res) {
                 vm.file_data = res.data['file_data'];
             })
        }
