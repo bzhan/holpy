@@ -34,8 +34,8 @@
         {
             "ty": "vcg",
             "com": "m := a + b; n := a - b",
-            "pre": "b >= 0",
-            "post": "m >= a & n <= a"
+            "pre": "0 <= b",
+            "post": "a <= m & n <= a"
         }
     ]
 }

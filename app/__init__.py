@@ -64,7 +64,7 @@ def verify():
     thy = basic.load_theory('int')
     pre = cond_parser.parse(data['pre'])
     post = cond_parser.parse(data['post'])
-    com = com_parser.parse(data['com'].replace('\n', ''))
+    com = com_parser.parse(data['com'])
     com.pre = [pre]
     com.compute_wp(post)
     vcs = com.get_vc()
@@ -73,7 +73,7 @@ def verify():
             proof_suc += 1
         else:
             proof_failure += 1
-    proof_very = 'Proof Finished : success :' + str(proof_suc) + ' and failure :' + str(proof_failure) + '.'
+    proof_very = 'Proof Finished. Success: ' + str(proof_suc) + '  Failure: ' + str(proof_failure) + '.'
     very = com.print_com(thy)
 
     return jsonify({'very': very, 'proof_very': proof_very})
