@@ -10,7 +10,6 @@ from logic.conv import top_conv, rewr_conv, beta_conv, then_conv, top_sweep_conv
 from logic.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic
-from logic import logic_macro
 from syntax import parser, printer, settings
 from server import tactic
 
@@ -159,7 +158,7 @@ class rewrite_fact(Method):
         for th_name, th in thy.get_data("theorems").items():
             if 'hint_rewrite' in thy.get_attributes(th_name):
                 try:
-                    pt = logic_macro.rewrite_fact_macro().get_proof_term(thy, th_name, prevs)
+                    pt = logic.rewrite_fact_macro().get_proof_term(thy, th_name, prevs)
                     results.append({"theorem": th_name, "_fact": [pt.prop]})
                 except (AssertionError, matcher.MatchException):
                     pass
@@ -182,7 +181,7 @@ class rewrite_fact_with_prev(Method):
     def search(self, state, id, prevs):
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
-            macro = logic_macro.rewrite_fact_with_prev_macro()
+            macro = logic.rewrite_fact_with_prev_macro()
             pt = macro.get_proof_term(state.thy, args=None, pts=prevs)
             return [{"_fact": [pt.prop]}]
         except (AssertionError, matcher.MatchException):
@@ -209,7 +208,7 @@ class apply_forward_step(Method):
         for name, th in thy.get_data("theorems").items():
             if 'hint_forward' in thy.get_attributes(name):
                 try:
-                    macro = logic_macro.apply_theorem_macro()
+                    macro = logic.apply_theorem_macro()
                     th = macro.eval(thy, name, prev_ths)
                     results.append({"theorem": name, "_fact": [th.prop]})
                 except theory.ParameterQueryException:
@@ -235,7 +234,7 @@ class apply_forward_step(Method):
 
         # First test apply_theorem
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
-        macro = logic_macro.apply_theorem_macro(with_inst=True)
+        macro = logic.apply_theorem_macro(with_inst=True)
         res_th = macro.eval(state.thy, (data['theorem'], dict(), inst), prev_ths)
 
         As, C = res_th.prop.strip_implies()
@@ -546,7 +545,7 @@ class apply_fact(Method):
         thy = state.thy
 
         try:
-            macro = logic_macro.apply_fact_macro()
+            macro = logic.apply_fact_macro()
             pt = macro.eval(thy, args=None, prevs=prev_ths)
             return [{"_fact": [pt.prop]}]
         except (AssertionError, matcher.MatchException):

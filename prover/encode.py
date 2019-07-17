@@ -10,7 +10,6 @@ from kernel.thm import Thm
 from logic import basic
 from logic import logic
 from logic.proofterm import ProofTerm
-from logic import logic_macro
 from logic.conv import rewr_conv, every_conv, top_conv
 
 thy = basic.load_theory('sat')
@@ -101,7 +100,7 @@ def get_encode_proof(th):
 
     pt = pts[0]
     for pt2 in pts[1:]:
-        pt = logic_macro.apply_theorem(thy, 'conjI', pt, pt2)
+        pt = logic.apply_theorem(thy, 'conjI', pt, pt2)
 
     return pt.on_prop(thy, logic.norm_conj_assoc())
 

@@ -11,7 +11,6 @@ from logic import basic
 from logic import logic
 from data import nat
 from data import set
-from logic import logic_macro
 from syntax import printer
 
 

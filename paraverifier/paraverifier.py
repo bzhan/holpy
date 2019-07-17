@@ -9,11 +9,11 @@ from kernel.thm import Thm
 from kernel import extension
 from logic import basic
 from logic import logic
+from logic.logic import apply_theorem
 from logic import induct
 from data.nat import natT, to_binary
 from logic.conv import rewr_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
-from logic.logic_macro import apply_theorem
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
