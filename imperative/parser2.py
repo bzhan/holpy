@@ -83,6 +83,8 @@ class HoareTransformer(Transformer):
         T = hol_int.intT
         for arg in args:
             T = TFun(hol_int.intT, T)
+        if fname == "abs":
+            fname = "int_abs"
         return Const(fname, T)(*args)
 
     def eq_cond(self, e1, e2):
