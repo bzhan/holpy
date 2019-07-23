@@ -308,8 +308,7 @@
         // Use tab key to insert unicode characters.
         $('#codeTabContent').on('keydown', '.unicode-replace', function (e) {
             var content = $(this).val().trim();
-            var id = $(this).attr('id');
-            var pos = document.getElementById(id).selectionStart;
+            var pos = this.selectionStart;
             if (pos !== 0 && e.keyCode === 9) {
                 var len = '';
                 for (var key in replace_obj) {
@@ -795,8 +794,8 @@
         }
         if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
             item.ty = ty;
-            item.name = form.data_name_def.value.split('::')[0].trim();
-            item.type = form.data_name_def.value.split('::')[1].trim();
+            item.name = form.data_name_def.value.trim();
+            item.type = form.data_type_def.value.trim();
             if (ty === 'def')
                 item.prop = form.content.value.trim();
                 item.attributes = [];
