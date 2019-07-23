@@ -98,8 +98,11 @@ def solve(t):
     # First strip foralls from t.
     while Term.is_all(t):
         t = t.arg.subst_bound(Var(t.arg.var_name, t.arg.var_T))
-    s.add(z3.Not(convert(t)))
-    return str(s.check()) == 'unsat'
+    try:
+        s.add(z3.Not(convert(t)))
+        return str(s.check()) == 'unsat'
+    except NotImplementedError:
+        return False
 
 class Z3Macro(ProofMacro):
     """Macro invoking SMT solver Z3."""
