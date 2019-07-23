@@ -7,6 +7,10 @@ body {
     overflow: hidden;
 }
 
+textarea {
+    font-family: Consolas, monospace;
+}
+
 a, a:visited, a:link, .quasilink {
     color: #A21313;
 }
