@@ -6,7 +6,7 @@ import os, json
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import TFun
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Const
 from logic import logic
 from logic import basic
 from imperative import imp
@@ -21,6 +21,7 @@ grammar = r"""
         | "-" expr -> uminus_expr
         | expr "-" expr -> minus_expr
         | expr "*" expr -> times_expr
+        | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
 
     ?atom_cond: expr "==" expr -> eq_cond
@@ -77,6 +78,12 @@ class HoareTransformer(Transformer):
 
     def times_expr(self, e1, e2):
         return hol_int.times(e1, e2)
+
+    def fun_expr(self, fname, *args):
+        T = hol_int.intT
+        for arg in args:
+            T = TFun(hol_int.intT, T)
+        return Const(fname, T)(*args)
 
     def eq_cond(self, e1, e2):
         return Term.mk_equals(e1, e2)

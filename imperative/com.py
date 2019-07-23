@@ -38,6 +38,8 @@ def print_term(t):
             return rec(t.arg1) + " * " + rec(t.arg)
         elif int.is_binary_int(t):
             return str(int.from_binary_int(t))
+        elif t.is_comb() and t.head.is_const():
+            return t.head.name + "(" + ", ".join(rec(arg) for arg in t.args) + ")"
         elif t.is_var() or t.is_const():
             return t.name
         else:
