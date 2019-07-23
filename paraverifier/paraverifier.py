@@ -11,7 +11,7 @@ from logic import basic
 from logic import logic
 from logic.logic import apply_theorem
 from logic import induct
-from data.nat import natT, to_binary
+from data.nat import natT, to_binary_nat
 from logic.conv import rewr_conv
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from prover import z3wrapper
@@ -81,7 +81,7 @@ class ParaSystem():
     def replace_states(self, t):
         """Replace states by their corresponding numbers."""
         if t in self.states:
-            return to_binary(self.state_map[t])
+            return to_binary_nat(self.state_map[t])
         elif t.is_comb():
             return self.replace_states(t.fun)(self.replace_states(t.arg))
         else:
@@ -202,7 +202,7 @@ class ParaSystem():
         trans_pt = ProofTerm.assume(transC(s1,s2))
         # print(printer.print_thm(self.thy, trans_pt.th))
         P = Term.mk_implies(invC(s1), invC(s2))
-        ind_pt = apply_theorem(self.thy, "trans_cases", inst={"a1": s1, "a2": s2, "P": P})
+        ind_pt = apply_theorem(self.thy, "trans_cases", inst={"_a1": s1, "_a2": s2, "P": P})
         # print(printer.print_thm(self.thy, ind_pt.th))
 
         ind_As, ind_C = ind_pt.prop.strip_implies()
@@ -240,7 +240,7 @@ def load_system(filename):
 
     for i, nm in enumerate(data['states']):
         thy.add_term_sig(nm, natT)
-        thy.add_theorem(nm + "_def", Thm.mk_equals(Const(nm, natT), to_binary(i)))
+        thy.add_theorem(nm + "_def", Thm.mk_equals(Const(nm, natT), to_binary_nat(i)))
 
     states = [Const(nm, natT) for nm in data['states']]
 
