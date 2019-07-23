@@ -144,9 +144,9 @@ class Term():
         suggested names in lambda terms.
 
         """
-        if not isinstance(other, Term):
-            return False
-        elif self.ty != other.ty:
+        assert isinstance(other, Term), "cannot compare Term with %s" % str(type(other))
+
+        if self.ty != other.ty:
             return False
         elif self.is_var() or self.is_const():
             return self.name == other.name and self.T == other.T

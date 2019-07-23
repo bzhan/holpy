@@ -85,6 +85,8 @@ class HoareTransformer(Transformer):
             T = TFun(hol_int.intT, T)
         if fname == "abs":
             fname = "int_abs"
+        elif fname == "max":
+            fname = "int_max"
         return Const(fname, T)(*args)
 
     def eq_cond(self, e1, e2):

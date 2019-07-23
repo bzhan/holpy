@@ -117,8 +117,10 @@ class HOLType():
         return self._hash_val
     
     def __eq__(self, other):
-        if not isinstance(other, HOLType):
+        if other is None:
             return False
+        assert isinstance(other, HOLType), "cannot compare HOLType with %s" % str(type(other))
+
         if self.ty != other.ty:
             return False
         elif self.ty == HOLType.TVAR:

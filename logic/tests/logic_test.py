@@ -233,7 +233,7 @@ class LogicTest(unittest.TestCase):
         for t, res in test_data:
             if res:
                 pt = macro.get_proof_term(thy, t, [])
-                self.assertEqual(pt, Thm([], t))
+                self.assertEqual(pt.th, Thm([], t))
                 prf = pt.export()
                 thy.check_proof(prf)
             else:

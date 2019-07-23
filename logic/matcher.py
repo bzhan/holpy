@@ -60,7 +60,7 @@ def is_pattern(t, matched_vars):
         return is_pattern(t.body, matched_vars)
     else:
         if t.head.is_var():
-            if t.head in matched_vars:
+            if t.head.name in matched_vars:
                 return is_pattern_list(t.args, matched_vars)
             else:
                 return all(arg.is_bound() for arg in t.args) and \
@@ -76,10 +76,10 @@ def is_pattern_list(ts, matched_vars):
         return is_pattern(ts[0], matched_vars)
     else:
         if is_pattern(ts[0], matched_vars):
-            all_vars = list(set(matched_vars + term.get_vars(ts[0])))
+            all_vars = list(set(matched_vars + [v.name for v in term.get_vars(ts[0])]))
             return is_pattern_list(ts[1:], all_vars)
         elif is_pattern_list(ts[1:], matched_vars):
-            all_vars = list(set(matched_vars + term.get_vars(ts[1:])))
+            all_vars = list(set(matched_vars + [v.name for v in term.get_vars(ts[1:])]))
             return is_pattern(ts[0], all_vars)
         else:
             return False
