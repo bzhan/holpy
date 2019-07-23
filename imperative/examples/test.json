@@ -36,6 +36,12 @@
             "com": "m := a + b; n := a - b",
             "pre": "0 <= b",
             "post": "a <= m & n <= a"
+        },
+        {
+            "ty": "vcg",
+            "com": "if (0 <= a) then c := a else c := -a",
+            "pre": "true",
+            "post": "0 <= c"
         }
     ]
 }

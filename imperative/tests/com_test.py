@@ -79,8 +79,6 @@ class ComTest(unittest.TestCase):
             c.compute_wp(post)
             self.assertEqual(c.get_vc(), vcs)
 
-            print(c.print_com(thy))
-
 
 if __name__ == "__main__":
     unittest.main()

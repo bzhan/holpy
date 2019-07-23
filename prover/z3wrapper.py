@@ -69,6 +69,8 @@ def convert(t):
         return convert(t.arg1) + convert(t.arg)
     elif int.is_minus(t):
         return convert(t.arg1) - convert(t.arg)
+    elif int.is_uminus(t):
+        return -convert(t.arg)
     elif int.is_times(t):
         return convert(t.arg1) * convert(t.arg)
     elif int.is_less_eq(t):

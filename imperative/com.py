@@ -30,6 +30,8 @@ def print_term(t):
             return rec(t.arg1) + " < " + rec(t.arg)
         elif int.is_plus(t):
             return rec(t.arg1) + " + " + rec(t.arg)
+        elif int.is_uminus(t):
+            return "- " + rec(t.arg)
         elif int.is_minus(t):
             return rec(t.arg1) + " - " + rec(t.arg)
         elif int.is_times(t):
