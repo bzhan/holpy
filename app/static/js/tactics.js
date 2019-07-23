@@ -29,7 +29,7 @@ function display_checked_proof(result) {
     var id = get_selected_id();
 
     if ("failed" in result) {
-        display_status(result["failed"] + ": " + result["message"], 'red');
+        display_status(result.failed + ": " + result.message, 'red');
     } else {
         cells[id].edit_line_number = -1;
         cells[id].proof = result.proof;
@@ -39,8 +39,8 @@ function display_checked_proof(result) {
         display(id);
         edit_flag = false;
         editor.endOperation();
-        var num_gaps = result["report"]["num_gaps"];
-        cells[id]['num_gaps'] = num_gaps;
+        var num_gaps = result.report.num_gaps;
+        cells[id].num_gaps = num_gaps;
         if (num_gaps > 0) {
             display_status("OK. " + num_gaps + " gap(s) remaining.");
         } else {
@@ -76,9 +76,14 @@ function display_checked_proof(result) {
 function display_instructions() {
     var id = get_selected_id();
     var instr_output = document.querySelector('.rbottom .selected .output #instruction');
-    instr_output.innerHTML = highlight_html(cells[id].instructions[cells[id].index]);
     var instr_no_output = document.querySelector('.rbottom .selected .output #instruction-number');
-    instr_no_output.innerHTML = (cells[id].index + 1) + '/' + cells[id].instructions.length;
+    var h_id = cells[id].index;
+    instr_output.innerHTML = highlight_html(cells[id].history[h_id].steps_output);
+    instr_no_output.innerHTML = h_id + '/' + (cells[id].history.length-1);
+    display_checked_proof({
+        proof: cells[id].history[h_id].proof,
+        report: cells[id].history[h_id].report
+    });
 }
 
 function current_state() {
@@ -114,12 +119,11 @@ function apply_method_ajax(input) {
                 apply_method_ajax(input);
             } else {
                 // Success
-                steps = cells[input.id].steps;
                 delete input.id;
                 delete input.line;
                 if (input.fact_ids.length == 0)
                     delete input.fact_ids;
-                steps.push(input);
+                cells[input.id].steps.push(input);
                 display_checked_proof(result);
             }
         }

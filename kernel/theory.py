@@ -373,13 +373,7 @@ class Theory():
         if seq.rule == "":
             # Empty line in the proof
             return None
-        if compute_only and seq.th is not None:
-            # In compute_only mode, skip when a theorem exists. However,
-            # subproofs still need to be checked.
-            if seq.rule == "subproof":
-                for s in seq.subproof.items:
-                    self._check_proof_item(prf, s, rpt, no_gaps, compute_only, check_level)
-            return None
+
         if seq.rule == "sorry":
             # Gap in the proof
             assert seq.th is not None, "sorry must have explicit statement."
@@ -388,7 +382,16 @@ class Theory():
             if rpt is not None:
                 rpt.add_gap(seq.th)
             return None
-        elif seq.rule == "theorem":
+
+        if compute_only and seq.th is not None:
+            # In compute_only mode, skip when a theorem exists. However,
+            # subproofs still need to be checked.
+            if seq.rule == "subproof":
+                for s in seq.subproof.items:
+                    self._check_proof_item(prf, s, rpt, no_gaps, compute_only, check_level)
+            return None
+
+        if seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
                 res_th = self.get_theorem(seq.args)

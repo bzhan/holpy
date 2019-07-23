@@ -32,7 +32,7 @@
 
         $('#right').on('click', '#link-forward', function () {
             var cell = cells[get_selected_id()];
-            if (cell.index < cell.instructions.length - 1) {
+            if (cell.index < cell.history.length-1) {
                 cell.index++;
                 display_instructions();
             }
@@ -885,11 +885,9 @@
                 cells[id].goal = -1;
                 cells[id].method_sig = result.method_sig;
                 display_checked_proof(result);
-                cells[id].instructions = item.instructions;
-                cells[id].index = 0;
                 cells[id].steps = [];
-                if (cells[id].instructions !== undefined)
-                    display_instructions();
+                cells[id].history = [];
+                cells[id].index = 0;
             }
         });
     }
@@ -915,11 +913,10 @@
                 var id = get_selected_id();
                 cells[id].goal = -1;
                 cells[id].method_sig = result.method_sig;
-                display_checked_proof(result);
                 cells[id].steps = result.steps;
-                cells[id].instructions = result.steps_output;
+                cells[id].history = result.history;
                 cells[id].index = 0;
-                if (cells[id].instructions !== undefined)
+                if (cells[id].history !== undefined)
                     display_instructions();
             }
         })
