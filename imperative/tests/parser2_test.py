@@ -27,5 +27,9 @@ class Parser2Test(unittest.TestCase):
             com = parser2.com_parser.parse(s)
             self.assertEqual(com.print_com(thy), res)
 
+    def testParseFile(self):
+        parser2.process_file("test")
+
+
 if __name__ == "__main__":
     unittest.main()

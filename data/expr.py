@@ -6,12 +6,12 @@ from kernel.thm import Thm
 from kernel.macro import global_macros
 from kernel.theory import Method, global_methods
 from logic import logic
+from logic.logic import apply_theorem
 from data import nat
 from data import function
 from data.nat import natT
 from logic.conv import arg_conv
 from logic.proofterm import ProofTermMacro, ProofTerm
-from logic.logic_macro import apply_theorem
 from server.tactic import MacroTactic
 from syntax import printer, settings
 

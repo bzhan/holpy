@@ -7,7 +7,7 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, id_force_tuple
 from kernel import report
-from logic import logic, matcher, logic_macro
+from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
 from syntax import parser, printer
@@ -317,7 +317,7 @@ class ProofState():
         # Resolve trivial subgoals
         for item in new_prf.items:
             if item.rule == 'sorry':
-                if logic_macro.trivial_macro().can_eval(self.thy, item.th.prop):
+                if logic.trivial_macro().can_eval(self.thy, item.th.prop):
                     self.set_line(item.id, 'trivial', args=item.th.prop)
 
     def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):

@@ -36,6 +36,18 @@
             "com": "m := a + b; n := a - b",
             "pre": "0 <= b",
             "post": "a <= m & n <= a"
+        },
+        {
+            "ty": "vcg",
+            "com": "if (0 <= a) then c := a else c := -a",
+            "pre": "true",
+            "post": "c == abs(a)"
+        },
+        {
+            "ty": "vcg",
+            "com": "if (m <= n) then c := n else c := m",
+            "pre": "true",
+            "post": "c == max(m, n)"
         }
     ]
 }

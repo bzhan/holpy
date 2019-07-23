@@ -36,9 +36,8 @@ Unit tests for the backend are located in files of the form ```*/tests/*_test.py
   * [`matcher`](logic/matcher.py): matching of terms.
   * [`proofterm`](logic/proofterm.py): tree-like representation of a proof. Used for convenient construction of proofs, and can be transformed to the linear representation.
   * [`conv`](logic/conv.py): conversions.
-  * [`logic`](logic/logic.py): utilities for logic.
+  * [`logic`](logic/logic.py): utilities and definition of standard macros for logic.
   * [`induct`](logic/induct.py): definition of types and constants by induction.
-  * [`logic_macro`](logic/logic_macro.py): definition of standard macros in logic.
   * [`basic`](logic/basic.py): functions for loading theories.
 
 * [`data`](data/): common data types.

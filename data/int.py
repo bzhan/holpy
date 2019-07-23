@@ -36,6 +36,9 @@ def mk_times(*args):
 def is_plus(t):
     return t.is_binop() and t.head == plus
 
+def is_uminus(t):
+    return t.is_comb() and t.head == uminus
+
 def is_minus(t):
     return t.is_binop() and t.head == minus
 

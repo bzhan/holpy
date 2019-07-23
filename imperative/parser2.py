@@ -2,11 +2,14 @@
 
 """Parsing imperative programs into Com objects."""
 
+import os, json
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import TFun
-from kernel.term import Term, Var
+from kernel.term import Term, Var, Const
 from logic import logic
+from logic import basic
+from imperative import imp
 from data import int as hol_int
 from imperative import com
 
@@ -15,8 +18,10 @@ grammar = r"""
     ?expr: CNAME -> var_expr
         | INT -> num_expr
         | expr "+" expr -> plus_expr
+        | "-" expr -> uminus_expr
         | expr "-" expr -> minus_expr
         | expr "*" expr -> times_expr
+        | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
 
     ?atom_cond: expr "==" expr -> eq_cond
@@ -65,11 +70,22 @@ class HoareTransformer(Transformer):
     def plus_expr(self, e1, e2):
         return hol_int.plus(e1, e2)
 
+    def uminus_expr(self, e):
+        return hol_int.uminus(e)
+
     def minus_expr(self, e1, e2):
         return hol_int.minus(e1, e2)
 
     def times_expr(self, e1, e2):
         return hol_int.times(e1, e2)
+
+    def fun_expr(self, fname, *args):
+        T = hol_int.intT
+        for arg in args:
+            T = TFun(hol_int.intT, T)
+        if fname == "abs":
+            fname = "int_abs"
+        return Const(fname, T)(*args)
 
     def eq_cond(self, e1, e2):
         return Term.mk_equals(e1, e2)
@@ -121,3 +137,21 @@ class HoareTransformer(Transformer):
 
 cond_parser = Lark(grammar, start="cond", parser="lalr", transformer=HoareTransformer())
 com_parser = Lark(grammar, start="cmd", parser="lalr", transformer=HoareTransformer())
+
+def process_file(input):
+    thy = basic.load_theory('hoare')
+
+    dn = os.path.dirname(os.path.realpath(__file__))
+    with open(os.path.join(dn, 'examples/' + input + '.json'), encoding='utf-8') as a:
+        data = json.load(a)
+
+    content = data['content']
+
+    for run in content:
+        if run['ty'] == 'vcg':
+            c = com_parser.parse(run['com'])
+            pre = cond_parser.parse(run['pre'])
+            post = cond_parser.parse(run['post'])
+            c.pre = [pre]
+            c.compute_wp(post)
+            print(c.print_com(thy))

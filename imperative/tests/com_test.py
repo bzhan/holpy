@@ -2,14 +2,18 @@
 
 import unittest
 
-from kernel.term import Var, Term
+from kernel.term import Var, Term, get_vars
+from kernel.thm import Thm
 from logic import basic
 from logic.logic import neg, true
-from data.int import plus, minus, times, zero, one, intT, less_eq, less
-from imperative.com import Skip, Assign, Seq, Cond, While
+from data.int import plus, minus, uminus, times, zero, one, intT, less_eq, less
+from imperative.com import Skip, Assign, Seq, Cond, While, print_term
 from imperative.parser2 import cond_parser
+from server.server import ProofState
+from server import method
+from syntax import printer
 
-thy = basic.load_theory('int')
+thy = basic.load_theory('hoare')
 eq = Term.mk_equals
 
 class ComTest(unittest.TestCase):
@@ -79,7 +83,24 @@ class ComTest(unittest.TestCase):
             c.compute_wp(post)
             self.assertEqual(c.get_vc(), vcs)
 
-            print(c.print_com(thy))
+    def testVerify(self):
+        a = Var('a', intT)
+        c = Cond(less_eq(zero,a), Assign('c',a), Assign('c', uminus(a)))
+        pre = cond_parser.parse("true")
+        post = cond_parser.parse("c == abs(a)")
+        c.pre = [pre]
+        c.compute_wp(post)
+
+        vc = c.get_vc()[0]
+        self.assertEqual(vc, cond_parser.parse("true --> if 0 <= a then a == abs(a) else -a == abs(a)"))
+
+        As, C = vc.strip_implies()
+        state = ProofState.init_state(thy, get_vars(vc), As, C)
+        state.rewrite_goal(1, "int_abs_def")
+        method.apply_method(state, {
+            'method_name': 'z3',
+            'goal_id': "1"})
+        self.assertEqual(state.check_proof(no_gaps=True), Thm([], vc))
 
 
 if __name__ == "__main__":

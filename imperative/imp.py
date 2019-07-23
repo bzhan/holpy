@@ -11,7 +11,7 @@ from logic import logic
 from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
-from logic.logic_macro import apply_theorem
+from logic.logic import apply_theorem
 from syntax import printer, settings
 from server.tactic import Tactic
 from prover import z3wrapper

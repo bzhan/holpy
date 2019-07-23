@@ -70,6 +70,7 @@ class Thm():
         equality.
 
         """
+        assert isinstance(other, Thm), "cannot compare Thm with %s" % str(type(other))
         return set(self.hyps) == set(other.hyps) and self.prop == other.prop
 
     def check_thm_type(self):
