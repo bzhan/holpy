@@ -121,6 +121,18 @@
                 "x": "int",
                 "y": "int"
             }
+        },
+        {
+            "name": "max",
+            "ty": "def.ax",
+            "type": "'a => 'a => 'a"
+        },
+        {
+            "name": "int_max",
+            "ty": "def",
+            "type": "int => int => int",
+            "prop": "int_max m n = (if m <= n then n else m)",
+            "overload": "max"
         }
     ],
     "description": "integers",

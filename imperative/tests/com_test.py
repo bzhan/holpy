@@ -102,6 +102,26 @@ class ComTest(unittest.TestCase):
             'goal_id': "1"})
         self.assertEqual(state.check_proof(no_gaps=True), Thm([], vc))
 
+    def testVerify2(self):
+        m = Var('m', intT)
+        n = Var('n', intT)
+        c = Cond(less_eq(m,n), Assign('c',n), Assign('c',m))
+        pre = cond_parser.parse("true")
+        post = cond_parser.parse("c == max(m,n)")
+        c.pre = [pre]
+        c.compute_wp(post)
+
+        vc = c.get_vc()[0]
+        self.assertEqual(vc, cond_parser.parse("true --> if m <= n then n == int_max(m,n) else m == int_max(m,n)"))
+
+        As, C = vc.strip_implies()
+        state = ProofState.init_state(thy, get_vars(vc), As, C)
+        state.rewrite_goal(1, "int_max_def")
+        method.apply_method(state, {
+            'method_name': 'z3',
+            'goal_id': "1"})
+        self.assertEqual(state.check_proof(no_gaps=True), Thm([], vc))
+
 
 if __name__ == "__main__":
     unittest.main()
