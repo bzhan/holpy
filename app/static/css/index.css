@@ -9,6 +9,7 @@ body {
 
 textarea {
     font-family: Consolas, monospace;
+    font-weight: bold;
 }
 
 a, a:visited, a:link, .quasilink {

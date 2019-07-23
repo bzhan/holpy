@@ -162,14 +162,16 @@
                                 <font color="#006000"><b><%= type_name %></b></font>
                             </label>
                         </div>
-                        <input spellcheck="false" class="form-control" id="data-name<%=page_num%>"
-                           style="margin-left:3%;margin-bottom:3%;float:left;width:50%;background:transparent" name="data_name_def">
-                    </div>
+                        <div><input spellcheck="false" class="form-control" id="data-name<%=page_num%>"
+                               style="margin-left:3%;margin-bottom:3%;margin-right:1%;float:left;width:20%;background:transparent" name="data_name_def">
+                        <span style="float:left;">&nbsp;: :&nbsp;</span><input spellcheck="false" class="form-control" id="data-name<%=page_num%>"
+                           style="margin-left:1%;margin-bottom:3%;float:left;width:30%;background:transparent" name="data_type_def">
+                        </div></div>
                 </div>
                 <br><br>
                 <div class="form-group">
                     <div class="col-auto" >
-                        <textarea spellcheck="false" class="form-control adjust-rows"
+                        <textarea spellcheck="false" class="form-control adjust-rows unicode-replace"
                                   id="data-content<%=page_num%>" name="content" style="float:left;"></textarea>
                     </div>
                 </div><br><br>

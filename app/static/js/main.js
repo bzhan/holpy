@@ -741,7 +741,8 @@
                     form.content.rows = item.edit_content.length;    
                 }
                 form['number-def'].value = number;
-                form.data_name_def.value = item.name + ' :: ' + item.type;
+                form.data_name_def.value = item.name;
+                form.data_type_def.value = item.type;
             } else {
                 init_editor("data-content" + page_num, cur_theory_name, content = '', flag=false);
                 form['number-def'].value = -1;
