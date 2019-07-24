@@ -5,8 +5,8 @@
     var json_files = {};  // All loaded theory data.
     var file_list = [];  // List of all files for the current user.
     var items_selected = [];  // List of selected items in the displayed theory.
-    var click_count = 0;
-    var add_tab_number = ''; //add new data tab's page_num;
+
+    var is_mousedown = false;  // Used to manage mouse click.
 
     $(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -983,35 +983,13 @@
         cells[id] = {
             theory_name: theory_name,
             facts: new Set(),
-            goal: -1,
-            edit_line_number: -1,
+            goal: -1
         };
+
         editor.on("keydown", function (cm, event) {
-            if (event.code === 'Enter') {
-                event.preventDefault();
-                if (cells[id].edit_line_number !== -1) {
-                    set_line(cm);
-                }
-            } else if (event.code === 'Tab') {
+            if (event.code === 'Tab') {
                 event.preventDefault();
                 unicode_replace(cm);
-            } else if (event.code === 'Escape') {
-                event.preventDefault();
-                if (cells[id].edit_line_number !== -1) {
-                    cm.getAllMarks().forEach(e => {
-                        if (e.readOnly !== undefined) {
-                            if (e.readOnly) {
-                                e.clear();
-                            }
-                        }
-                    });
-                    var origin_line = display_line(cells[id]['proof'][cells[id].edit_line_number]);
-                    cm.replaceRange(origin_line, {line: cells[id].edit_line_number, ch: 0}, {
-                        line: cells[id].edit_line_number,
-                        ch: Number.MAX_SAFE_INTEGER
-                    });
-                    cells[id].edit_line_number = -1;
-                }
             }
         });
 
@@ -1019,7 +997,13 @@
             $(cm.getTextArea().parentNode).addClass('selected').siblings().removeClass('selected');
         });
 
-        editor.on("cursorActivity", function (cm) {
+        editor.on('beforeChange', function (cm, change) {
+            if (!edit_flag) {
+                change.cancel();
+            }
+        });
+
+        editor.on('cursorActivity', function (cm) {
             if (is_mousedown) {
                 mark_text(cm);
                 match_thm();
@@ -1027,41 +1011,9 @@
             }
         });
 
-        editor.on('beforeChange', function (cm, change) {
-            if (!edit_flag &&
-                cells[get_selected_id()].edit_line_number !== change.from.line) {
-                change.cancel();
-            }
-        });
-
-        editor.on('mousedown', function (cm, event) {
-            var timer = 0;
+        editor.on('mousedown', function (cm) {
             is_mousedown = true;
-            click_count++;
-            if (click_count === 1) {
-                timer = setTimeout(function () {
-                    if (click_count > 1) {
-                        clearTimeout(timer);
-                        set_read_only(cm);
-                    }
-                    click_count = 0;
-                }, 300)
-            }
         });
-    }
-
-    function set_read_only(cm) {
-        cm.setCursor(cm.getCursor().line, Number.MAX_SAFE_INTEGER);
-        var line_num = cm.getCursor().line;
-        var ch = cm.getCursor().ch;
-        var line = cm.getLineHandle(line_num).text;
-        var id = get_selected_id();
-        if (line.indexOf('sorry') !== -1) {
-            cm.addSelection({line: line_num, ch: ch - 5}, {line: line_num, ch: ch});
-            cells[id].edit_line_number = line_num;
-        } else if (line.trim() === '') {
-            cells[id].edit_line_number = line_num;
-        }
     }
 
     // Select goal or fact

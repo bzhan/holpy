@@ -1,5 +1,4 @@
 var edit_flag = false;
-var is_mousedown = false;
 var cells = {};
 
 function get_selected_id() {
@@ -31,7 +30,6 @@ function display_checked_proof(result) {
     if ("failed" in result) {
         display_status(result.failed + ": " + result.message, 'red');
     } else {
-        cells[id].edit_line_number = -1;
         cells[id].proof = result.proof;
         var editor = get_selected_editor();
         editor.startOperation();
@@ -189,63 +187,6 @@ function apply_method(method_name, args) {
     } else {
         apply_method_ajax(input);
     }
-}
-
-// Split off the first token according to the delimiter.
-function split_one(s, delimiter) {
-    arr = s.split(delimiter);
-    return [arr[0], arr.slice(1).join(delimiter)];
-}
-
-// Produce proof item from id and user-input string.
-function split_line(id, s) {
-    var item = {};
-    item.id = id
-    if (s.indexOf(" by ") > 0) {
-        rest = split_one(s, " by ")[1];
-    } else {
-        rest = s.trim()
-    }
-    item.th = "";
-
-    if (rest.indexOf(" ") >= 0)
-        [item.rule, rest] = split_one(rest, ' ');  // split off name of rule
-    else
-        [item.rule, rest] = rest, "";
-    item.rule = item.rule.trim();
-
-    if (rest.indexOf("from") >= 0) {
-        [item.args, item.prevs] = split_one(rest, 'from');
-        item.args = item.args.trim();
-        item.prevs = item.prevs.split(',');
-        return item;
-    } else {
-        item.args = rest.trim();
-        item.prevs = [];
-        return item;
-    }
-}
-
-function set_line(cm) {
-    $(document).ready(function () {
-        var id = get_selected_id();
-        var line_no = cells[id].edit_line_number;
-        var input = {
-            'id': get_selected_id(),
-            'item': split_line(cells[id].proof[line_no].id, cm.getLine(line_no))
-        };
-        var data = JSON.stringify(input);
-        display_running();
-
-        $.ajax({
-            url: "/api/set-line",
-            type: "POST",
-            data: data,
-            success: function (result) {
-                display_checked_proof(result);
-            }
-        })
-    })
 }
 
 // Query the server to match theorems for each parameterized tactic
