@@ -3,12 +3,14 @@
 from copy import copy
 
 from kernel.type import HOLType
+from kernel import term
 from kernel.term import Term, OpenTermException
 from kernel.extension import Extension
 from kernel import proof
 from syntax.operator import OperatorData, get_info_for_fun
 from syntax import settings
 from syntax import infertype
+from util import name
 
 # 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
 def N(s):
@@ -240,21 +242,25 @@ def print_term(thy, t):
             # Next, the case of binders
             elif t.is_all():
                 all_str = "!" if not settings.unicode() else "∀"
+                var_names = [v.name for v in term.get_vars(t.arg.body)]
+                nm = name.get_variant_name(t.arg.var_name, var_names)
                 if hasattr(t.arg, "print_type"):
-                    var_str = B(t.arg.var_name) + N("::") + print_type(thy, t.arg.var_T)
+                    var_str = B(nm) + N("::") + print_type(thy, t.arg.var_T)
                 else:
-                    var_str = B(t.arg.var_name)
-                body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
+                    var_str = B(nm)
+                body_repr = helper(t.arg.body, [nm] + bd_vars)
 
                 return N(all_str) + var_str + N(". ") + body_repr
 
             elif logic.is_exists(t):
                 exists_str = "?" if not settings.unicode() else "∃"
+                var_names = [v.name for v in term.get_vars(t.arg.body)]
+                nm = name.get_variant_name(t.arg.var_name, var_names)
                 if hasattr(t.arg, "print_type"):
-                    var_str = B(t.arg.var_name) + N("::") + print_type(thy, t.arg.var_T)
+                    var_str = B(nm) + N("::") + print_type(thy, t.arg.var_T)
                 else:
-                    var_str = B(t.arg.var_name)
-                body_repr = helper(t.arg.body, [t.arg.var_name] + bd_vars)
+                    var_str = B(nm)
+                body_repr = helper(t.arg.body, [nm] + bd_vars)
 
                 return N(exists_str) + var_str + N(". ") + body_repr
 
@@ -278,11 +284,13 @@ def print_term(thy, t):
 
         elif t.is_abs():
             lambda_str = "%" if not settings.unicode() else "λ"
+            var_names = [v.name for v in term.get_vars(t.body)]
+            nm = name.get_variant_name(t.var_name, var_names)
             if hasattr(t, "print_type"):
-                var_str = B(t.var_name) + N("::") + print_type(thy, t.var_T)
+                var_str = B(nm) + N("::") + print_type(thy, t.var_T)
             else:
-                var_str = B(t.var_name)
-            body_repr = helper(t.body, [t.var_name] + bd_vars)
+                var_str = B(nm)
+            body_repr = helper(t.body, [nm] + bd_vars)
             return N(lambda_str) + var_str + N(". ") + body_repr
 
         elif t.is_bound():
