@@ -496,31 +496,24 @@
             }
         });
 
-        // Add new item from menu.
-        $('button#additional_option_additem').on('click', function () {
-            if (selected_tab === 'content') {
-                var ty = 'thm';
-                init_edit_area('', ty);
-            }
-        });
 
-        $('div.code-pan').on('change' ,'select', function() {
+        $('div.code-pan').on('change', 'select', function () {
             var page_n = $(this).attr('name');
             var ty = $(this).find('option:selected').val();
-            $('div.total'+ page_n).each(function() {
+            $('div.total' + page_n).each(function() {
                 if ($(this).attr('class').indexOf('hidden-ele') < 0) {
                     $(this).addClass('hidden-ele');
                 }
-            if (ty === 'def.ax')
-                $('div[name="constant-'+ page_n+ '"]').removeClass('hidden-ele');
-            if (ty === 'thm' || ty === 'thm.ax')
-                $('div[name="thm-'+ page_n+ '"]').removeClass('hidden-ele');
-            if (ty === 'type.ind')
-                $('div[name="type-'+page_n+'"]').removeClass('hidden-ele');
-            if (ty === 'def' || ty === 'def.ind' || ty === 'def.pred')
-                $('div[name="def-'+page_n+'"]').removeClass('hidden-ele');
+                if (ty === 'def.ax')
+                    $('div[name="constant-' + page_n + '"]').removeClass('hidden-ele');
+                if (ty === 'thm' || ty === 'thm.ax')
+                    $('div[name="thm-' + page_n + '"]').removeClass('hidden-ele');
+                if (ty === 'type.ind')
+                    $('div[name="type-' + page_n + '"]').removeClass('hidden-ele');
+                if (ty === 'def' || ty === 'def.ind' || ty === 'def.pred')
+                    $('div[name="def-' + page_n + '"]').removeClass('hidden-ele');
             })
-            $('div.rbottom button#'+ page_n).attr('data_type', ty);
+            $('div.rbottom button#' + page_n).attr('data_type', ty);
         })
 
         // On loading page, obtain list of theories.
@@ -646,10 +639,8 @@
             var templ_edit = _.template($("#template-edit-thm").html());
             $('#codeTabContent').append(templ_edit({page_num: page_num, ext_output: ext_output, type_name: ''}));
             var form = document.getElementById('edit-thm-form' + page_num);
-            if (!number) {
-                form['number-constant'].value = -1;
-            }
-            else {
+            
+            if (number) {
                 form.data_name.value = item['name'];
                 form.data_content_constant.value = item['type'];
                 form['number-constant'].value = number;
@@ -688,9 +679,6 @@
                 if (item.attributes && item.attributes.includes('hint_resolve'))
                     form.hint_resolve.checked = true;
             }
-            else {
-                form['number-thm'].value = -1;
-            }
             $('div[name="thm-'+ page_num +'"]').removeClass('hidden-ele');
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         }
@@ -709,11 +697,6 @@
                 form.data_content_type.textContent = item.constr_output.join('\n');
                 form.data_content_type.rows = item.constr_output.length;
                 form['number-type'].value = number
-            } else {
-                $('#codeTab').find('span#' + page_num).text('datatype');
-
-                var form = document.getElementById('edit-thm-form' + page_num);
-                form['number-type'].value = -1;
             }
             $('div[name="type-'+ page_num +'"]').removeClass('hidden-ele');
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
@@ -740,10 +723,6 @@
                 form['number-def'].value = number;
                 form.data_name_def.value = item.name;
                 form.data_type_def.value = item.type;
-            } else {
-                init_editor("data-content" + page_num, cur_theory_name, content = '', flag=false);
-                form['number-def'].value = -1;
-                $('#codeTab').find('span#' + page_num).text('function');
             }
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('div[name="def-'+ page_num +'"]').removeClass('hidden-ele');
@@ -944,7 +923,7 @@
         });
     }
 
-    function init_editor(id, theory_name, content='', flag=true) {
+    function init_editor(id, theory_name) {
         var editor = CodeMirror.fromTextArea(document.getElementById(id), {
             mode: "text/x-python",
             lineNumbers: true,
@@ -977,8 +956,7 @@
         });
         editor.setValue('');
         $(editor.getTextArea().parentNode).addClass('selected').siblings().removeClass('selected');
-        if (flag)
-            resize_editor();
+        resize_editor();
 
         cells[id] = {
             theory_name: theory_name,
