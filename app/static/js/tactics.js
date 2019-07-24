@@ -97,7 +97,6 @@ function current_state() {
         'id': id,
         'goal_id': cells[id].proof[goal_no].id,
         'fact_ids': fact_ids,
-        'line': cells[id].proof[goal_no].th,
         'theory_name': cells[id].theory_name,
         'thm_name': cells[id].thm_name,
         'vars': cells[id].vars,
@@ -115,9 +114,7 @@ function apply_method_ajax(input) {
         success: function(result) {
             if ("query" in result) {
                 // Query for more parameters
-                result.query.forEach(param =>
-                    input[param] = prompt(param)
-                );
+                result.query.forEach(param => input[param] = prompt(param));
                 apply_method_ajax(input);
             } else {
                 // Success
@@ -125,10 +122,13 @@ function apply_method_ajax(input) {
                 var h_id = cells[id].index;
                 cells[id].steps[h_id] = input;
                 cells[id].steps.length = h_id+1;
-                cells[id].history[h_id+1] = result;
+                cells[id].history[h_id+1] = {
+                    'steps_output': [['current_state', 0]],
+                    'proof': result.proof,
+                    'report': result.report
+                };
                 cells[id].history.length = h_id+2;
                 delete input.id;
-                delete input.line;
                 if (input.fact_ids.length == 0)
                     delete input.fact_ids;
                 delete input.theory_name;

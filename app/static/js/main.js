@@ -895,10 +895,11 @@
                 cells[id].vars = result.vars;
                 cells[id].thm_name = item.name;
                 cells[id].steps = result.steps;
-                cells[id].history = result.history;
-                cells[id].index = 0;
-                if (cells[id].history !== undefined)
+                if (result.history !== undefined) {
+                    cells[id].history = result.history;
+                    cells[id].index = result.history.length-1;
                     display_instructions();
+                }
             }
         })
     }
