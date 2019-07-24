@@ -363,13 +363,13 @@ def print_str_args(thy, rule, args, th):
 @settings.with_settings
 def export_proof_item(thy, item):
     """Export the given proof item as a dictionary."""
-    str_th = print_term(thy, item.th.prop) if item.th else ""
-    str_args = print_str_args(thy, item.rule, item.args, item.th)
+    str_th = print_thm(thy, item.th, highlight=False) if item.th else ""
+    str_args = print_str_args(thy, item.rule, item.args, item.th, highlight=False)
     res = {'id': proof.print_id(item.id), 'th': str_th, 'rule': item.rule,
            'args': str_args, 'prevs': [proof.print_id(prev) for prev in item.prevs]}
     if settings.highlight():
-        res['th_raw'] = print_thm(thy, item.th, highlight=False) if item.th else ""
-        res['args_raw'] = print_str_args(thy, item.rule, item.args, item.th, highlight=False)
+        res['th_hl'] = print_term(thy, item.th.prop) if item.th else ""
+        res['args_hl'] = print_str_args(thy, item.rule, item.args, item.th)
     if item.subproof:
         return [res] + sum([export_proof_item(thy, i) for i in item.subproof.items], [])
     else:

@@ -86,6 +86,7 @@ function display_instructions() {
     });
 }
 
+// Obtain the current state of proof
 function current_state() {
     var id = get_selected_id();
     var goal_no = cells[id].goal;
@@ -93,13 +94,16 @@ function current_state() {
         return undefined;
 
     var fact_ids = [];
-    cells[id].facts.forEach(v =>
-        fact_ids.push(cells[id]['proof'][v]['id']));
+    cells[id].facts.forEach(v => fact_ids.push(cells[id].proof[v].id));
     return {
         'id': id,
-        'goal_id': cells[id]['proof'][goal_no]['id'],
+        'goal_id': cells[id].proof[goal_no].id,
         'fact_ids': fact_ids,
-        'line': cells[id]['proof'][goal_no]['th_raw']
+        'line': cells[id].proof[goal_no].th,
+        'theory_name': cells[id].theory_name,
+        'thm_name': cells[id].thm_name,
+        'vars': cells[id].vars,
+        'proof': cells[id].proof
     }
 }
 
@@ -119,12 +123,22 @@ function apply_method_ajax(input) {
                 apply_method_ajax(input);
             } else {
                 // Success
+                var id = input.id;
+                var h_id = cells[id].index;
+                cells[id].steps[h_id] = input;
+                cells[id].steps.length = h_id+1;
+                cells[id].history[h_id+1] = result;
+                cells[id].history.length = h_id+2;
                 delete input.id;
                 delete input.line;
                 if (input.fact_ids.length == 0)
                     delete input.fact_ids;
-                cells[input.id].steps.push(input);
-                display_checked_proof(result);
+                delete input.theory_name;
+                delete input.thm_name;
+                delete input.vars;
+                delete input.proof;
+                cells[id].index += 1;
+                display_instructions();
             }
         }
     })
@@ -327,27 +341,27 @@ function display_line(id, line_no) {
 
     if (line.rule === 'assume') {
         ch = display_str(editor, 'assume ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
-        ch = display_highlight_strs(editor, line.args, line_no, ch);
+        ch = display_highlight_strs(editor, line.args_hl, line_no, ch);
     } else if (line.rule === 'variable') {
         ch = display_str(editor, 'fix ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
-        ch = display_highlight_strs(editor, line.args, line_no, ch);
+        ch = display_highlight_strs(editor, line.args_hl, line_no, ch);
     } else if (line.rule === 'subproof') {
         ch = display_have_prompt(editor, id, line_no, ch);
-        ch = display_highlight_strs(editor, line.th, line_no, ch);
+        ch = display_highlight_strs(editor, line.th_hl, line_no, ch);
         ch = display_str(editor, ' with', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
     } else {
         // Display theorem with highlight
-        if (line.th.length > 0) {
+        if (line.th_hl.length > 0) {
             ch = display_have_prompt(editor, id, line_no, ch);
-            ch = display_highlight_strs(editor, line.th, line_no, ch);
+            ch = display_highlight_strs(editor, line.th_hl, line_no, ch);
             ch = display_str(editor, ' by ', line_no, ch, {css: 'font-weight: bold'});
         }
         // Display rule name
         ch = display_str(editor, line.rule, line_no, ch);
         // Display args with highlight
-        if (line.args.length > 0) {
+        if (line.args_hl.length > 0) {
             ch = display_str(editor, ' ', line_no, ch);
-            ch = display_highlight_strs(editor, line.args, line_no, ch);
+            ch = display_highlight_strs(editor, line.args_hl, line_no, ch);
         }
         if (line.prevs.length > 0) {
             ch = display_str(editor, ' from ', line_no, ch, {css: 'font-weight: bold'});

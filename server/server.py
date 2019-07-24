@@ -161,7 +161,7 @@ class ProofState():
         """Export proof in json format."""
         self.check_proof()
         res = {
-            "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
+            "vars": {v.name: str(v.T) for v in self.vars},
             "proof": self.export_proof(self.prf),
             "report": self.rpt.json_data(),
             "method_sig": self.get_method_sig(),

@@ -162,10 +162,8 @@
                 var output_proof = [];
                 $.each(proof, function (i, prf) {
                     output_proof.push($.extend(true, {}, prf));  // perform deep copy
-                    output_proof[i].th = output_proof[i].th_raw;
-                    delete output_proof[i].th_raw;
-                    output_proof[i].args = output_proof[i].args_raw;
-                    delete output_proof[i].args_raw;
+                    delete output_proof[i].th_hl;
+                    delete output_proof[i].args_hl;
                 });
                 json_content.proof = output_proof;
                 json_content.num_gaps = cells[editor_id].num_gaps;
@@ -884,6 +882,8 @@
                 var id = get_selected_id();
                 cells[id].goal = -1;
                 cells[id].method_sig = result.method_sig;
+                cells[id].vars = result.vars;
+                cells[id].thm_name = item.name;
                 display_checked_proof(result);
                 cells[id].steps = [];
                 cells[id].history = [];
@@ -913,6 +913,8 @@
                 var id = get_selected_id();
                 cells[id].goal = -1;
                 cells[id].method_sig = result.method_sig;
+                cells[id].vars = result.vars;
+                cells[id].thm_name = item.name;
                 cells[id].steps = result.steps;
                 cells[id].history = result.history;
                 cells[id].index = 0;

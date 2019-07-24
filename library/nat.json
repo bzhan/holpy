@@ -3587,13 +3587,13 @@
             "name": "max",
             "prop": "max m n = if m <= n then n else m",
             "ty": "def",
-            "type":"nat => nat => nat"
+            "type": "nat => nat => nat"
         },
         {
             "name": "min",
             "prop": "min m n = if m <= n then m else n",
             "ty": "def",
-            "type":"nat => nat => nat"
+            "type": "nat => nat => nat"
         }
     ],
     "description": "Natural numbers",
