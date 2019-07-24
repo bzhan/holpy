@@ -45,30 +45,48 @@ function display_checked_proof(result) {
             display_status("OK. Proof complete!");
         }
 
-        var line_count = editor.lineCount();
-        var new_line_no = -1;
-        var pre_line_no = 0;
-        if (cells[id].goal !== -1)
-            pre_line_no = cells[id].goal;
-        for (var i = pre_line_no; i < line_count; i++) {
-            if (editor.getLine(i).indexOf('sorry') !== -1) {
-                new_line_no = i;
-                break
+        if ('goal' in result) {
+            // Looking at a previous step, already has goal_id and fact_id
+            cells[id].goal = result.goal;
+            cells[id].facts = [];
+            if ('facts' in result) {
+                cells[id].facts = result.facts;
             }
-        }
-        if (new_line_no === -1) {
-            editor.setCursor(0, 0);
-            cells[id].facts.clear();
-            cells[id].goal = -1;
         } else {
-            editor.setCursor(new_line_no, 0);
-            cells[id].facts.clear();
-            cells[id].goal = new_line_no;    
+            var line_count = editor.lineCount();
+            var new_line_no = -1;
+            var pre_line_no = 0;
+            if (cells[id].goal !== -1)
+                pre_line_no = cells[id].goal;
+            for (var i = pre_line_no; i < line_count; i++) {
+                if (editor.getLine(i).indexOf('sorry') !== -1) {
+                    new_line_no = i;
+                    break
+                }
+            }
+            if (new_line_no === -1) {
+                editor.setCursor(0, 0);
+                cells[id].facts = [];
+                cells[id].goal = -1;
+            } else {
+                editor.setCursor(new_line_no, 0);
+                cells[id].facts = [];
+                cells[id].goal = new_line_no;    
+            }    
         }
         display_facts_and_goal(editor);
         match_thm();
         editor.focus();
     }
+}
+
+function get_line_no_from_id(id, proof) {
+    var found = -1;
+    $.each(proof, function (i, v) {
+        if (v.id === id)
+            found = i;
+    });
+    return found;
 }
 
 function display_instructions() {
@@ -78,10 +96,19 @@ function display_instructions() {
     var h_id = cells[id].index;
     instr_output.innerHTML = highlight_html(cells[id].history[h_id].steps_output);
     instr_no_output.innerHTML = h_id + '/' + (cells[id].history.length-1);
-    display_checked_proof({
+    var proof_info = {
         proof: cells[id].history[h_id].proof,
         report: cells[id].history[h_id].report
-    });
+    };
+    if (h_id < cells[id].steps.length) {
+        // Find line number corresponding to ids
+        proof_info.goal = get_line_no_from_id(cells[id].steps[h_id].goal_id, proof_info.proof);
+        proof_info.facts = [];
+        cells[id].steps[h_id].fact_ids.forEach(
+            v => proof_info.facts.push(get_line_no_from_id(v, proof_info.proof))
+        );
+    }
+    display_checked_proof(proof_info);
 }
 
 // Obtain the current state of proof
