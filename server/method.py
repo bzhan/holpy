@@ -42,12 +42,16 @@ class cut_method(Method):
     def __init__(self):
         self.sig = ['goal']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         return []
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("have ") + data['goal']
+        goal = parser.parse_term(state.thy, state.get_ctxt(id), data['goal'])
+        return printer.N("have ") + printer.print_term(state.thy, goal)
 
     def apply(self, state, id, data, prevs):
         cur_item = state.get_proof_item(id)
@@ -63,12 +67,16 @@ class cases_method(Method):
     def __init__(self):
         self.sig = ['case']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         return []
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("case ") + data['case']
+        A = parser.parse_term(state.thy, state.get_ctxt(id), data['case'])
+        return printer.N("case ") + printer.print_term(state.thy, A)
 
     def apply(self, state, id, data, prevs):
         A = parser.parse_term(state.thy, state.get_ctxt(id), data['case'])
@@ -79,7 +87,7 @@ class apply_prev_method(Method):
     def __init__(self):
         self.sig = []
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
@@ -100,7 +108,7 @@ class rewrite_goal_with_prev_method(Method):
     def __init__(self):
         self.sig = []
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
         try:
             cur_item = state.get_proof_item(id)
             prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
@@ -122,18 +130,25 @@ class rewrite_goal(Method):
     def __init__(self):
         self.sig = ['theorem']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
 
         thy = state.thy
         results = []
-        for th_name, th in thy.get_data("theorems").items():
-            if 'hint_rewrite' in thy.get_attributes(th_name):
-                try:
-                    pt = tactic.rewrite().get_proof_term(thy, cur_item.th, args=th_name, prevs=[])
-                    results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
-                except (AssertionError, matcher.MatchException):
-                    pass
+
+        def search_thm(th_name, th):
+            try:
+                pt = tactic.rewrite().get_proof_term(thy, cur_item.th, args=th_name, prevs=[])
+                results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+            except (AssertionError, matcher.MatchException):
+                pass
+
+        if data:
+            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+        else:
+            for th_name, th in thy.get_data("theorems").items():
+                if 'hint_rewrite' in thy.get_attributes(th_name):
+                    search_thm(th_name, th)
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -149,19 +164,26 @@ class rewrite_fact(Method):
     def __init__(self):
         self.sig = ['theorem']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         thy = state.thy
         results = []
-        for th_name, th in thy.get_data("theorems").items():
-            if 'hint_rewrite' in thy.get_attributes(th_name):
-                try:
-                    pt = logic.rewrite_fact_macro().get_proof_term(thy, th_name, prevs)
-                    results.append({"theorem": th_name, "_fact": [pt.prop]})
-                except (AssertionError, matcher.MatchException):
-                    pass
+
+        def search_thm(th_name, th):
+            try:
+                pt = logic.rewrite_fact_macro().get_proof_term(thy, th_name, prevs)
+                results.append({"theorem": th_name, "_fact": [pt.prop]})
+            except (AssertionError, matcher.MatchException):
+                pass
+
+        if data:
+            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+        else:
+            for th_name, th in thy.get_data("theorems").items():
+                if 'hint_rewrite' in thy.get_attributes(th_name):
+                    search_thm(th_name, th)
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -178,7 +200,7 @@ class rewrite_fact_with_prev(Method):
     def __init__(self):
         self.sig = []
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
         try:
             macro = logic.rewrite_fact_with_prev_macro()
@@ -200,21 +222,28 @@ class apply_forward_step(Method):
     def __init__(self):
         self.sig = ['theorem']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
 
         thy = state.thy
         results = []
-        for name, th in thy.get_data("theorems").items():
-            if 'hint_forward' in thy.get_attributes(name):
-                try:
-                    macro = logic.apply_theorem_macro()
-                    th = macro.eval(thy, name, prev_ths)
-                    results.append({"theorem": name, "_fact": [th.prop]})
-                except theory.ParameterQueryException:
-                    results.append({"theorem": name})
-                except (AssertionError, matcher.MatchException):
-                    pass
+
+        def search_thm(th_name, th):
+            try:
+                macro = logic.apply_theorem_macro()
+                res_th = macro.eval(thy, th_name, prev_ths)
+                results.append({"theorem": th_name, "_fact": [res_th.prop]})
+            except theory.ParameterQueryException:
+                results.append({"theorem": th_name})
+            except (AssertionError, matcher.MatchException):
+                pass
+
+        if data:
+            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+        else:
+            for th_name, th in thy.get_data("theorems").items():
+                if 'hint_forward' in thy.get_attributes(th_name):
+                    search_thm(th_name, th)
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -261,23 +290,30 @@ class apply_backward_step(Method):
     def __init__(self):
         self.sig = ['theorem']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         thy = state.thy
         results = []
-        for th_name, th in thy.get_data("theorems").items():
-            if 'hint_backward' in thy.get_attributes(th_name) or \
-               ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
-                try:
-                    pt = tactic.rule().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
-                    results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
-                except theory.ParameterQueryException:
-                    # In this case, still suggest the result
-                    results.append({"theorem": th_name})
-                except (AssertionError, matcher.MatchException):
-                    pass
+
+        def search_thm(th_name, th):
+            try:
+                pt = tactic.rule().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+            except theory.ParameterQueryException:
+                # In this case, still suggest the result
+                results.append({"theorem": th_name})
+            except (AssertionError, matcher.MatchException):
+                pass
+
+        if data:
+            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+        else:
+            for th_name, th in thy.get_data("theorems").items():
+                if 'hint_backward' in thy.get_attributes(th_name) or \
+                ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
+                    search_thm(th_name, th)
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -304,19 +340,26 @@ class apply_resolve_step(Method):
     def __init__(self):
         self.sig = ["theorem"]
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         thy = state.thy
         results = []
-        for th_name, th in thy.get_data("theorems").items():
-            if 'hint_resolve' in thy.get_attributes(th_name):
-                try:
-                    pt = tactic.resolve().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
-                    results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
-                except (AssertionError, matcher.MatchException):
-                    pass
+
+        def search_thm(th_name, th):
+            try:
+                pt = tactic.resolve().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
+            except (AssertionError, matcher.MatchException):
+                pass
+
+        if data:
+            search_thm(data['theorem'], thy.theorem(data['theorem']))
+        else:
+            for th_name, th in thy.get_data("theorems").items():
+                if 'hint_resolve' in thy.get_attributes(th_name):
+                    search_thm(th_name, th)
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -332,7 +375,10 @@ class introduction(Method):
     def __init__(self):
         self.sig = []
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         goal_th = state.get_proof_item(id).th
         if goal_th.prop.is_all():
             return [{}]
@@ -380,7 +426,10 @@ class exists_elim(Method):
     def __init__(self):
         self.sig = ['names']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         if len(prevs) == 1:
             prev_th = state.get_proof_item(prevs[0]).th
             if logic.is_exists(prev_th.prop):
@@ -437,7 +486,10 @@ class forall_elim(Method):
     def __init__(self):
         self.sig = ['s']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         if len(prevs) == 1:
             prev_th = state.get_proof_item(prevs[0]).th
             if prev_th.prop.is_all():
@@ -459,7 +511,10 @@ class inst_exists_goal(Method):
     def __init__(self):
         self.sig = ['s']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         if len(prevs) > 0:
             return []
 
@@ -482,7 +537,10 @@ class induction(Method):
     def __init__(self):
         self.sig = ['theorem', 'var']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         cur_th = state.get_proof_item(id).th
         if len(cur_th.hyps) > 0:
             return []
@@ -520,12 +578,15 @@ class new_var(Method):
     def __init__(self):
         self.sig = ['name', 'type']
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         return []
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("variable " + data['name'] + " :: ") + printer.print_type(state.thy, data['type'])
+        return printer.N("variable " + data['name'] + " :: ") + data['type']
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
@@ -540,7 +601,7 @@ class apply_fact(Method):
     def __init__(self):
         self.sig = []
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
         thy = state.thy
 
@@ -572,16 +633,15 @@ def apply_method(state, data):
         if 'fact_ids' in data and data['fact_ids'] else []
     return method.apply(state, goal_id, data, fact_ids)
 
+@settings.with_settings
 def display_method(state, step):
     method = theory.global_methods[step['method_name']]
     goal_id = id_force_tuple(step['goal_id'])
     fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
-        if 'fact_ids' in step and step['fact_ids'] else []
-    search_res = method.search(state, goal_id, fact_ids)
-    for res in search_res:
-        if all(sig not in res or res[sig] == step[sig] for sig in method.sig):
-            return method.display_step(state, goal_id, res, fact_ids, unicode=True, highlight=True)
-    return [("Not found", 0)] 
+                if 'fact_ids' in step and step['fact_ids'] else []
+    search_res = method.search(state, goal_id, fact_ids, data=step)
+    assert len(search_res) == 1, "display_method: %s" % step['method_name']
+    return method.display_step(state, goal_id, search_res[0], fact_ids)
 
 
 theory.global_methods.update({

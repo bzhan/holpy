@@ -114,7 +114,7 @@ grammar = r"""
 
     named_thm: CNAME ":" term | term  // named theorem
 
-    term_list: term*   // list of terms
+    term_list: term ("," term)*   // list of terms
 
     %import common.CNAME
     %import common.WS
@@ -328,7 +328,7 @@ class HOLTransformer(Transformer):
         return tuple(args)
 
     def term_list(self, *args):
-        return args
+        return list(args)
 
 
 def get_parser_for(start):
@@ -407,7 +407,7 @@ def parse_term_list(thy, ctxt, s):
     """Parse a list of terms."""
     if s == "":
         return []
-    parser_settings['thy'] = thy
+    parser_setting['thy'] = thy
     ts = term_list_parser.parse(s)
     for i in range(len(ts)):
         ts[i] = infertype.type_infer(thy, ctxt, ts[i])

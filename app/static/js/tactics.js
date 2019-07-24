@@ -104,9 +104,11 @@ function display_instructions() {
         // Find line number corresponding to ids
         proof_info.goal = get_line_no_from_id(cells[id].steps[h_id].goal_id, proof_info.proof);
         proof_info.facts = [];
-        cells[id].steps[h_id].fact_ids.forEach(
-            v => proof_info.facts.push(get_line_no_from_id(v, proof_info.proof))
-        );
+        if (cells[id].steps[h_id].fact_ids !== undefined) {
+            cells[id].steps[h_id].fact_ids.forEach(
+                v => proof_info.facts.push(get_line_no_from_id(v, proof_info.proof))
+            );
+        }
     }
     display_checked_proof(proof_info);
 }

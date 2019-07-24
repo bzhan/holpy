@@ -889,16 +889,20 @@
             type: 'POST',
             data: JSON.stringify(data),
             success: function (result) {
-                var id = get_selected_id();
-                cells[id].goal = -1;
-                cells[id].method_sig = result.method_sig;
-                cells[id].vars = result.vars;
-                cells[id].thm_name = item.name;
-                cells[id].steps = result.steps;
-                if (result.history !== undefined) {
-                    cells[id].history = result.history;
-                    cells[id].index = result.history.length-1;
-                    display_instructions();
+                if ("failed" in result) {
+                    display_status(result.failed + ": " + result.message, 'red');
+                } else {
+                    var id = get_selected_id();
+                    cells[id].goal = -1;
+                    cells[id].method_sig = result.method_sig;
+                    cells[id].vars = result.vars;
+                    cells[id].thm_name = item.name;
+                    cells[id].steps = result.steps;
+                    if (result.history !== undefined) {
+                        cells[id].history = result.history;
+                        cells[id].index = result.history.length-1;
+                        display_instructions();
+                    }
                 }
             }
         })

@@ -551,7 +551,10 @@ class nat_norm_method(Method):
     def __init__(self):
         self.sig = []
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         if len(prevs) != 0:
             return []
 
@@ -648,7 +651,10 @@ class nat_const_ineq_method(Method):
     def __init__(self):
         self.sig = []
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         if len(prevs) != 0:
             return []
 

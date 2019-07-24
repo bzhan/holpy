@@ -182,7 +182,7 @@ class ProofState():
             state.history = []
             for step in data['steps']:
                 state.history.append({
-                    'steps_output': method.display_method(state, step),
+                    'steps_output': method.display_method(state, step, unicode=True, highlight=True),
                     'proof': state.export_proof(state.prf),
                     'report': state.rpt.json_data()
                 })

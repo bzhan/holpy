@@ -126,7 +126,10 @@ class Z3Method(Method):
     def __init__(self):
         self.sig = []
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         return [{}]
 
     @settings.with_settings
