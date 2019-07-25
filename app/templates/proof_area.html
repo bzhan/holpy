@@ -28,24 +28,27 @@
         </button>
         <div class="output-wrapper">
             <div class="output">
-                <div class="output-area">
-                    <pre></pre>
-                </div>
+                <pre></pre>
                 <div class="match-thm">
                 </div>
             </div>
         </div>
         <div class="output-wrapper">
-            <div class="output">
-                <div class="output-area" style="margin-top:10pt">
-                    <a href="#" id="link-backward" style="float:left;margin-left:20pt"><</a>
-                    <span id="instruction-number" style="float:left;display:inline-block;width:30pt;text-align:center"></span>
-                    <a href="#" id="link-forward" style="float:left;">></a>
-                    <span id="instruction" style="float:left;margin-left:10pt"></span>
-                </div>
+            <div id="output-instr" style="margin-top:10pt">
             </div>
         </div>
     </div>
+</script>
+
+<script type="text/template" id="template-instruction">
+    <a href="#" id="link-backward" style="float:left;margin-left:20pt"><</a>
+    <span id="instruction-number" style="float:left;display:inline-block;width:30pt;text-align:center">
+        <%= instr_no %>
+    </span>
+    <a href="#" id="link-forward" style="float:left;">></a>
+    <span id="instruction" style="float:left;margin-left:10pt">
+        <%= instr %>
+    </span>
 </script>
 
 <script type="text/template" id="template-metadata-rbottom">

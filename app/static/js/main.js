@@ -918,6 +918,8 @@
                         cells[id].history = result.history;
                         cells[id].index = result.history.length-1;
                         display_instructions();
+                    } else {
+                        display_checked_proof(result);
                     }
                 }
             }

@@ -92,11 +92,12 @@ function get_line_no_from_id(id, proof) {
 
 function display_instructions() {
     var id = get_selected_id();
-    var instr_output = document.querySelector('.rbottom .selected .output #instruction');
-    var instr_no_output = document.querySelector('.rbottom .selected .output #instruction-number');
     var h_id = cells[id].index;
-    instr_output.innerHTML = highlight_html(cells[id].history[h_id].steps_output);
-    instr_no_output.innerHTML = h_id + '/' + (cells[id].history.length-1);
+    var templ_instr = _.template($('#template-instruction').html());
+    $('.rbottom .selected div#output-instr').html(templ_instr({
+        instr_no: h_id + '/' + (cells[id].history.length-1),
+        instr: highlight_html(cells[id].history[h_id].steps_output)
+    }));
     var proof_info = {
         proof: cells[id].history[h_id].proof,
         report: cells[id].history[h_id].report
