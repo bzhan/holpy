@@ -158,7 +158,14 @@
                 delete json_content.num_gaps;
                 delete json_content.steps;
             } else {
-                var proof = cells[editor_id].proof;
+                if (cells[editor_id].history !== undefined) {
+                    var len = cells[editor_id].history.length;
+                    var proof = cells[editor_id].history[len-1].proof;
+                    json_content.num_gaps = cells[editor_id].history[len-1].report.num_gaps;
+                } else {
+                    var proof = cells[editor_id].proof;
+                    json_content.num_gaps = cells[editor_id].num_gaps;
+                }
                 var output_proof = [];
                 $.each(proof, function (i, prf) {
                     output_proof.push($.extend(true, {}, prf));  // perform deep copy
@@ -166,7 +173,6 @@
                     delete output_proof[i].args_hl;
                 });
                 json_content.proof = output_proof;
-                json_content.num_gaps = cells[editor_id].num_gaps;
                 json_content.steps = cells[editor_id].steps;
             }
             if (cur_theory_name === filename) {
@@ -863,10 +869,14 @@
                 cells[id].method_sig = result.method_sig;
                 cells[id].vars = result.vars;
                 cells[id].thm_name = item.name;
-                display_checked_proof(result);
                 cells[id].steps = [];
-                cells[id].history = [];
+                cells[id].history = [{
+                    'steps_output': [['Current state', 0]],
+                    'proof': result.proof,
+                    'report': result.report
+                }];
                 cells[id].index = 0;
+                display_instructions();
             }
         });
     }
@@ -1013,10 +1023,11 @@
         }
         else if (cells[id].goal !== -1) {
             // Choose or unchoose a fact
-            if (cells[id].facts.has(line_num))
-                cells[id].facts.delete(line_num)
+            i = cells[id].facts.indexOf(line_num);
+            if (i === -1)
+                cells[id].facts.push(line_num);
             else
-                cells[id].facts.add(line_num)
+                cells[id].facts.splice(i, 1);
         }
         display_facts_and_goal(cm);
     }

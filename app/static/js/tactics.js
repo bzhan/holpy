@@ -48,6 +48,7 @@ function display_checked_proof(result) {
         if ('goal' in result) {
             // Looking at a previous step, already has goal_id and fact_id
             cells[id].goal = result.goal;
+            editor.setCursor(result.goal, 0);
             cells[id].facts = [];
             if ('facts' in result) {
                 cells[id].facts = result.facts;
@@ -152,7 +153,7 @@ function apply_method_ajax(input) {
                 cells[id].steps[h_id] = input;
                 cells[id].steps.length = h_id+1;
                 cells[id].history[h_id+1] = {
-                    'steps_output': [['current_state', 0]],
+                    'steps_output': [['Current state', 0]],
                     'proof': result.proof,
                     'report': result.report
                 };
