@@ -239,18 +239,6 @@
             apply_method('cases');
         });
 
-        $('#apply-forall-elim').on("click", function () {
-            apply_method('forall_elim');
-        });
-
-        $('#rewrite-goal-with-prev').on("click", function () {
-            apply_method('rewrite_goal_with_prev');
-        });
-
-        $('#apply-prev').on('click', function () {
-            apply_method('apply_prev');
-        });
-
         $('#apply-backward-step').on("click", function () {
             apply_method('apply_backward_step');
         });
@@ -301,9 +289,9 @@
                 }
             }
             if (cur_theory_name && $(this).attr('id') === 'add_end') {
-                    json_files[cur_theory_name].content.push({'ty':'pre-data'});
-                    num = json_files[cur_theory_name].content.length - 1;
-                }
+                json_files[cur_theory_name].content.push({'ty':'pre-data'});
+                num = json_files[cur_theory_name].content.length - 1;
+            }
             display_theory_items();
             init_edit_area('', 'thm', add_mode = true, pos=num);
             save_json_file(cur_theory_name);
@@ -436,7 +424,7 @@
         }
 
         // Delete an item from menu.
-        $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
+        $('div.dropdown-menu a#delete_item').on('click',function() {
             theory = json_files[cur_theory_name];
             $.each(items_selected, function (i, v) {
                 theory.content[v] = '';
@@ -468,6 +456,18 @@
                 }
                 save_json_file(cur_theory_name);
                 display_theory_items();
+            } else if (e.keyCode === 65 && e.ctrlKey) {  // Ctrl+A
+                e.preventDefault();
+                $('a#add_after').click();
+            } else if (e.keyCode === 66 && e.ctrlKey) {  // Ctrl+B
+                e.preventDefault();
+                $('a#add_before').click();
+            } else if (e.keyCode === 68 && e.ctrlKey) {  // Ctrl+D
+                e.preventDefault();
+                $('a#delete_item').click();
+            } else if (e.keyCode === 69 && e.ctrlKey) {  // Ctrl+E
+                e.preventDefault();
+                $('a#edit_item').click();
             }
         })
 
@@ -501,7 +501,6 @@
                 open_json_file(name);
             }
         });
-
 
         $('div.code-pan').on('change', 'select', function () {
             var page_n = $(this).attr('name');
@@ -978,13 +977,6 @@
             facts: new Set(),
             goal: -1
         };
-
-        editor.on("keydown", function (cm, event) {
-            if (event.code === 'Tab') {
-                event.preventDefault();
-                unicode_replace(cm);
-            }
-        });
 
         editor.on("focus", function (cm) {
             $(cm.getTextArea().parentNode).addClass('selected').siblings().removeClass('selected');

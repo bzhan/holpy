@@ -97,6 +97,8 @@ a, a:visited, a:link, .quasilink {
 
 a.dropdown-item {
     color: black;
+    padding: .3rem .9rem;
+    font-size: 13px;
 }
 
 .input-box {
