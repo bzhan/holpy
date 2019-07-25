@@ -3,8 +3,8 @@
 var vm = new Vue({
     el: 'div#wrap',
     data: {
-        program: '', com: '', style_file: {background: '#F0F0F0'},
-        pre: '', post: '', proof_stat: '', file_data: []
+        program: '', com: '', style_file: {background: '#F0F0F0'}, proof_content: '',
+        pre: '', post: '', proof_stat: '', file_data: [], proof_process: false
     },
     methods: {
         get_data: function () {
@@ -32,7 +32,14 @@ var vm = new Vue({
                 }
             }).then(function (res) {
                 vm.program = res.data['program'];
-                vm.proof_stat = res.data['proof_stat'];
+                vm.proof_stat = res.data['proof_stat'][0];
+                var failure_num = Number(res.data['proof_stat'][1]);
+                if (failure_num != 0) {
+                    vm.proof_process = true;
+                }
+                else {
+                    vm.proof_process = false;
+                }
             })
        },
        button_change: function () {

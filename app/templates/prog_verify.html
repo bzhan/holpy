@@ -22,11 +22,14 @@
             <div id="ver-display" class="right">
                 <br><pre class="display-con">{{ program }}</pre>
                 <br><pre class="display-res">{{ proof_stat }}</pre>
-                <div></div>
+                <div v-show="proof_process">
+                    <textarea spellcheck="false" class="proof_process"></textarea>
+                </div>
                 <!-- <textarea class="display-con" name="display-area" readonly="readonly">{{ text }}</textarea> -->
             </div>
         </div>
     </div>
+
 <script type='text/javascript' src="../static/js/prog_verify.js"></script>
 </body>
 </html>

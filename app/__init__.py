@@ -72,7 +72,7 @@ def verify():
     proof_stat = 'Proof Finished. Success: ' + str(proof_success) + '  Failure: ' + str(proof_failure) + '.'
     program = com.print_com(thy)
 
-    return jsonify({'program': program, 'proof_stat': proof_stat})
+    return jsonify({'program': program, 'proof_stat': (proof_stat, proof_failure)})
 
 
 # Login page
