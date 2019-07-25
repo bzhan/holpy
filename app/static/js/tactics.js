@@ -163,8 +163,25 @@ function apply_method_ajax(input) {
         success: function(result) {
             if ("query" in result) {
                 // Query for more parameters
-                result.query.forEach(param => input[param] = prompt(param));
-                apply_method_ajax(input);
+                var templ_query = _.template($('#template-query').html());
+                var sig_list = result.query.map(s => s.slice(6));  // get rid of 'param_'
+                var input_html = templ_query({sig_list: sig_list}); 
+                swal({
+                    title: "Query for parameters",
+                    html: input_html,
+                    showCancelButton: true,
+                    confirmButtonText: "Confirm",
+                    cancelButtonText: "Cancel",
+                    preConfirm: () => {
+                        for (let i = 0; i < sig_list.length; i++) {
+                            input["param_"+sig_list[i]] = document.getElementById('sig-input' + (i+1)).value;
+                        }
+                    }
+                }).then(function (isConfirm) {
+                    if (isConfirm.value) {
+                        apply_method_ajax(input);
+                    }
+                });
             } else {
                 // Success
                 var id = input.id;
@@ -213,11 +230,8 @@ function apply_method(method_name, args) {
     display_running();
 
     if (count > 0) {
-        var input_html = '';
-        for (let i = 1; i <= count; i++) {
-            input_html += '<label style="text-align:right;width:15%">' + sig_list[i-1] +
-                          ':</label>&nbsp;<input id="sig-input' + i + '" style="width:70%;"><br>';
-        }
+        var templ_query = _.template($('#template-query').html());
+        var input_html = templ_query({sig_list: sig_list});
         swal({
             title: "Method " + method_name,
             html: input_html,

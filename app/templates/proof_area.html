@@ -97,3 +97,15 @@
         %>
     </div>
 </script>
+
+<script type="text/template" id="template-query">
+    <%
+    $.each(sig_list, function (i, val) {
+    %>
+        <label style="text-align:right;width:15%"><%= val %>:</label>
+        &nbsp;
+        <input id="sig-input<%= i+1 %>" style="width:70%;"><br>
+    <%
+    });
+    %>
+</script>
