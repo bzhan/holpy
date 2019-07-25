@@ -152,6 +152,7 @@ function apply_method_ajax(input) {
                 var h_id = cells[id].index;
                 cells[id].steps[h_id] = input;
                 cells[id].steps.length = h_id+1;
+                cells[id].history[h_id].steps_output = result.steps_output;
                 cells[id].history[h_id+1] = {
                     'steps_output': [['Current state', 0]],
                     'proof': result.proof,
