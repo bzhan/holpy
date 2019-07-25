@@ -1,3 +1,4 @@
+
 var edit_flag = false;
 var is_mousedown = false;
 var cells = {};
@@ -149,8 +150,8 @@ function apply_method(method_name, args) {
     if (count > 0) {
         var input_html = '';
         for (let i = 1; i <= count; i++) {
-            input_html += '<label style="text-align:right;width:15%">' + sig_list[i-1] +
-                          ':</label>&nbsp;<input id="sig-input' + i + '" style="width:70%;"><br>';
+            input_html += '<label style="text-align:right;width:15%;margin-right:2%;">' + sig_list[i-1] +
+                          ':</label>&nbsp;<input id="sig-input' + i + '" style="width:70%;" class="unicode-replace"><br>';
         }
         swal({
             title: "Method " + method_name,
@@ -172,6 +173,31 @@ function apply_method(method_name, args) {
         apply_method_ajax(input);
     }
 }
+
+//function unicode_replace(event) {
+//    var content = this.value;
+//    var pos = this.selectionStart;
+//    if (pos !== 0 && event.keyCode === 9) {
+//        var len = '';
+//        for (var key in replace_obj) {
+//            var l = key.length;
+//            if (content.substring(pos - l, pos) === key) {
+//                if (e && e.preventDefault) {
+//                    e.preventDefault();
+//                } else {
+//                    window.event.returnValue = false;
+//                };
+//                len = l;
+//                content = content.slice(0, pos - len) + replace_obj[key] + content.slice(pos,);
+//            }
+//        }
+//        if (len) {
+//            this.value = content;
+//            document.getElementById(id).setSelectionRange(pos - len + 1, pos - len + 1);
+//        }
+//    }
+//
+//}
 
 // Split off the first token according to the delimiter.
 function split_one(s, delimiter) {

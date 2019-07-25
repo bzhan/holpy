@@ -306,7 +306,7 @@
         })
 
         // Use tab key to insert unicode characters.
-        $('#codeTabContent').on('keydown', '.unicode-replace', function (e) {
+        $('body').on('keydown', '.unicode-replace', function (e) {
             var content = $(this).val().trim();
             var pos = this.selectionStart;
             if (pos !== 0 && e.keyCode === 9) {
@@ -388,7 +388,7 @@
         $('#panel-content').on('click','div[name="theories"]', function (e) {
             var item_id = Number($(this).attr('item_id'));
             if(e.shiftKey) {
-                preventD(e);
+//                preventD(e);
                 add_selected_items(item_id, items_selected[items_selected.length - 1]);
                 display_theory_items();
             }
