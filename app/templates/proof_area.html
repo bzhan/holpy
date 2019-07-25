@@ -102,9 +102,9 @@
     <%
     $.each(sig_list, function (i, val) {
     %>
-        <label style="text-align:right;width:15%"><%= val %>:</label>
+        <label style="text-align:right;width:15%;margin-right:2%;"><%= val %>:</label>
         &nbsp;
-        <input id="sig-input<%= i+1 %>" style="width:70%;"><br>
+        <input id="sig-input<%= i+1 %>" style="width:70%;" class="unicode-replace"><br>
     <%
     });
     %>

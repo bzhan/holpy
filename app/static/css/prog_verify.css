@@ -29,7 +29,8 @@ div.program-ver {
     top:0;
     background: none;
     height:100vh;
-
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .display-con{
@@ -74,6 +75,17 @@ div.program-ver {
     margin-top:2%;
     margin-bottom:2%;
     height:20vh;
+    resize: none;
+}
+
+.proof_process {
+    margin-left: 5%;
+    background: none;
+    width: 80%;
+    height: 350px;
+    font-size: 20px;
+    font-family: Consolas, monospace;
+    outline: none;
     resize: none;
 }
 
