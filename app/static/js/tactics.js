@@ -170,6 +170,8 @@ function apply_method_ajax(input) {
                     title: "Query for parameters",
                     html: input_html,
                     showCancelButton: true,
+                    stopKeydownPropagation: false,
+                    focusConfirm: false,
                     confirmButtonText: "Confirm",
                     cancelButtonText: "Cancel",
                     preConfirm: () => {
@@ -238,6 +240,8 @@ function apply_method(method_name, args) {
             showCancelButton: true,
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
+            stopKeydownPropagation: false,
+            focusConfirm: false,
             preConfirm: () => {
                 for (let i = 1; i <= count; i++) {
                     input[sig_list[i-1]] = document.getElementById('sig-input' + i).value;
