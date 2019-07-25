@@ -3741,7 +3741,7 @@
                     "names": "X"
                 },
                 {
-                    "goal": "subset (h (lfp h)) (h X)",
+                    "goal": "h (lfp h) ⊆ h X",
                     "goal_id": "2.2",
                     "method_name": "cut"
                 },
@@ -3762,7 +3762,8 @@
                 },
                 {
                     "fact_ids": [
-                        "2.3"
+                        "2.3",
+                        "2.1"
                     ],
                     "goal_id": "2.4",
                     "method_name": "apply_backward_step",
@@ -3775,7 +3776,8 @@
                 },
                 {
                     "fact_ids": [
-                        "1"
+                        "1",
+                        "3"
                     ],
                     "goal_id": "4",
                     "method_name": "apply_prev"
