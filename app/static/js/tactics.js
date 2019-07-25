@@ -114,6 +114,24 @@ function display_instructions() {
     display_checked_proof(proof_info);
 }
 
+function undo_move() {
+    var id = get_selected_id();
+    var h_id = cells[id].index;
+    if (h_id < cells[id].steps.length) {
+        // Perform undo only when at end
+        return;
+    }
+
+    cells[id].history.length -= 1;
+    cells[id].history[h_id-1].steps_output = [["Current state", 0]]
+    cells[id].index = h_id - 1;
+    display_instructions();
+
+    // Remove last step after display_instructions, so goal and fact_no can
+    // be used during display.
+    cells[id].steps.length -= 1;
+}
+
 // Obtain the current state of proof
 function current_state() {
     var id = get_selected_id();

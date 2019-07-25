@@ -223,6 +223,10 @@
             $('div.rbottom div:eq(0)').show().siblings().hide();
         });
 
+        $('#undo-move').on("click", function () {
+            undo_move();
+        });
+
         $('#introduction').on("click", function () {
             apply_method('introduction');
         });
@@ -468,6 +472,9 @@
             } else if (e.keyCode === 69 && e.ctrlKey) {  // Ctrl+E
                 e.preventDefault();
                 $('a#edit_item').click();
+            } else if (e.keyCode === 90 && e.ctrlKey) {  // Ctrl+Z
+                e.preventDefault();
+                undo_move();
             }
         })
 
