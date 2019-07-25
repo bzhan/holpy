@@ -23,9 +23,6 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config.from_object('config')
 
-# Dictionary from id to ProofState
-cells = dict()
-
 user_info = {
     # Whether there is an user signed in
     'is_signed_in': False,
@@ -228,56 +225,32 @@ def refresh_files():
 def init_empty_proof():
     """Initialize empty proof."""
     data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
-        cell = server.ProofState.parse_init_state(thy, data)
-        cells[data['id']] = cell
-        return jsonify(cell.json_data())
-    return jsonify({})
+    thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+    cell = server.ProofState.parse_init_state(thy, data)
+    return jsonify(cell.json_data())
 
 
 @app.route('/api/init-saved-proof', methods=['POST'])
 def init_saved_proof():
     """Load saved proof."""
     data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        try:
-            thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
-            cell = server.ProofState.parse_proof(thy, data)
-            cells[data['id']] = cell
-            return jsonify(cell.json_data())
-        except Exception as e:
-            error = {
-                "failed": e.__class__.__name__,
-                "message": str(e)
-            }
-        return jsonify(error)
-    return jsonify({})
-
-
-@app.route('/api/set-line', methods=['POST'])
-def set_line():
-    data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        cell = cells[data['id']]
-        line_id = data['item']['id']
-        try:
-            item = parser.parse_proof_rule(cell.thy, cell.get_ctxt(line_id), data['item'])
-            cell.set_line(item.id, item.rule, args=item.args, prevs=item.prevs, th=item.th)
-            return jsonify(cell.json_data())
-        except Exception as e:
-            error = {
-                "failed": e.__class__.__name__,
-                "message": str(e)
-            }
-            return jsonify(error)
-    return jsonify({})
+    try:
+        thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+        cell = server.ProofState.parse_proof(thy, data)
+        return jsonify(cell.json_data())
+    except Exception as e:
+        error = {
+            "failed": e.__class__.__name__,
+            "message": str(e)
+        }
+    return jsonify(error)
 
 
 @app.route('/api/apply-method', methods=['POST'])
 def apply_method():
     data = json.loads(request.get_data().decode("utf-8"))
-    cell = cells[data['id']]
+    thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+    cell = server.ProofState.parse_proof(thy, data)
     try:
         method.apply_method(cell, data)
         return jsonify(cell.json_data())
@@ -436,8 +409,8 @@ def search_method():
     """Match for applicable methods and their arguments."""
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        cell = cells[data['id']]
-        thy = cell.thy
+        thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+        cell = server.ProofState.parse_proof(thy, data)
         fact_ids = data['fact_ids']
         goal_id = data['goal_id']
         search_res = cell.search_method(goal_id, fact_ids)

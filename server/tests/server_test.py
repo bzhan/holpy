@@ -31,7 +31,7 @@ neg = logic.neg
 exists = logic.mk_exists
 
 def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
-                print_stat=False, print_search=False):
+                print_stat=False, print_search=False, print_steps=False):
     """Test list of steps for the given theorem."""
     def test_val(thy, val):
         state = ProofState.parse_init_state(thy, val)
@@ -45,8 +45,10 @@ def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
             if print_search or print_stat:
                 if 'fact_ids' not in step:
                     step['fact_ids'] = []
-                select_ids = "goal " + step['goal_id']
+                if print_steps:
+                    print(method.display_method(state, step))
                 if print_search:
+                    select_ids = "goal " + step['goal_id']
                     if step['fact_ids']:
                         select_ids += ", fact " + ", ".join(step['fact_ids'])
                     print('Step ' + str(i) + " (" + select_ids + ")")

@@ -153,19 +153,24 @@ class ProofState():
             sig[name] = method.sig
         return sig
 
+    def export_proof(self, prf):
+        return sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
+                    for item in prf.items], [])
+
     def json_data(self):
         """Export proof in json format."""
         self.check_proof()
         res = {
-            "vars": [{'name': v.name, 'T': str(v.T)} for v in self.vars],
-            "proof": sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
-                          for item in self.prf.items], []),
+            "vars": {v.name: str(v.T) for v in self.vars},
+            "proof": self.export_proof(self.prf),
             "report": self.rpt.json_data(),
             "method_sig": self.get_method_sig(),
         }
         if hasattr(self, 'steps'):
             res['steps'] = self.steps
-            res['steps_output'] = self.steps_output
+        if hasattr(self, 'history'):
+            res['history'] = self.history
+
         return res
 
     @staticmethod
@@ -174,10 +179,19 @@ class ProofState():
         if 'steps' in data:
             state = ProofState.parse_init_state(thy, data)
             state.steps = data['steps']
-            state.steps_output = []
+            state.history = []
             for step in data['steps']:
-                state.steps_output.append(method.display_method(state, step))
+                state.history.append({
+                    'steps_output': method.display_method(state, step, unicode=True, highlight=True),
+                    'proof': state.export_proof(state.prf),
+                    'report': state.rpt.json_data()
+                })
                 method.apply_method(state, step)
+            state.history.append({
+                'steps_output': [("Current state", 0)],
+                'proof': state.export_proof(state.prf),
+                'report': state.rpt.json_data()
+            })
         else:
             ctxt = parser.parse_vars(thy, data['vars'])
             state = ProofState(thy)

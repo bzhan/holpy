@@ -55,23 +55,6 @@
             "type": "nat => nat"
         },
         {
-            "name": "not_Suc",
-            "prop": "~(Suc n = 0)",
-            "ty": "thm",
-            "vars": {
-                "n": "nat"
-            }
-        },
-        {
-            "name": "Suc_inj",
-            "prop": "(Suc m = Suc n) = (m = n)",
-            "ty": "thm",
-            "vars": {
-                "m": "nat",
-                "n": "nat"
-            }
-        },
-        {
             "name": "Pre",
             "rules": [
                 {
@@ -3587,13 +3570,13 @@
             "name": "max",
             "prop": "max m n = if m <= n then n else m",
             "ty": "def",
-            "type":"nat => nat => nat"
+            "type": "nat => nat => nat"
         },
         {
             "name": "min",
             "prop": "min m n = if m <= n then m else n",
             "ty": "def",
-            "type":"nat => nat => nat"
+            "type": "nat => nat => nat"
         }
     ],
     "description": "Natural numbers",

@@ -235,7 +235,10 @@ class vcg_method(Method):
     def __init__(self):
         self.sig = []
 
-    def search(self, state, id, prevs):
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
         cur_th = state.get_proof_item(id).th
         if len(cur_th.hyps) == 0 and cur_th.prop.head.is_const_name("Valid"):
             return [{}]

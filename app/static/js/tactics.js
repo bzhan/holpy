@@ -1,6 +1,5 @@
 
 var edit_flag = false;
-var is_mousedown = false;
 var cells = {};
 
 function get_selected_id() {
@@ -30,9 +29,8 @@ function display_checked_proof(result) {
     var id = get_selected_id();
 
     if ("failed" in result) {
-        display_status(result["failed"] + ": " + result["message"], 'red');
+        display_status(result.failed + ": " + result.message, 'red');
     } else {
-        cells[id].edit_line_number = -1;
         cells[id].proof = result.proof;
         var editor = get_selected_editor();
         editor.startOperation();
@@ -40,33 +38,43 @@ function display_checked_proof(result) {
         display(id);
         edit_flag = false;
         editor.endOperation();
-        var num_gaps = result["report"]["num_gaps"];
-        cells[id]['num_gaps'] = num_gaps;
+        var num_gaps = result.report.num_gaps;
+        cells[id].num_gaps = num_gaps;
         if (num_gaps > 0) {
             display_status("OK. " + num_gaps + " gap(s) remaining.");
         } else {
             display_status("OK. Proof complete!");
         }
 
-        var line_count = editor.lineCount();
-        var new_line_no = -1;
-        var pre_line_no = 0;
-        if (cells[id].goal !== -1)
-            pre_line_no = cells[id].goal;
-        for (var i = pre_line_no; i < line_count; i++) {
-            if (editor.getLine(i).indexOf('sorry') !== -1) {
-                new_line_no = i;
-                break
+        if ('goal' in result) {
+            // Looking at a previous step, already has goal_id and fact_id
+            cells[id].goal = result.goal;
+            editor.setCursor(result.goal, 0);
+            cells[id].facts = [];
+            if ('facts' in result) {
+                cells[id].facts = result.facts;
             }
-        }
-        if (new_line_no === -1) {
-            editor.setCursor(0, 0);
-            cells[id].facts.clear();
-            cells[id].goal = -1;
         } else {
-            editor.setCursor(new_line_no, 0);
-            cells[id].facts.clear();
-            cells[id].goal = new_line_no;    
+            var line_count = editor.lineCount();
+            var new_line_no = -1;
+            var pre_line_no = 0;
+            if (cells[id].goal !== -1)
+                pre_line_no = cells[id].goal;
+            for (var i = pre_line_no; i < line_count; i++) {
+                if (editor.getLine(i).indexOf('sorry') !== -1) {
+                    new_line_no = i;
+                    break
+                }
+            }
+            if (new_line_no === -1) {
+                editor.setCursor(0, 0);
+                cells[id].facts = [];
+                cells[id].goal = -1;
+            } else {
+                editor.setCursor(new_line_no, 0);
+                cells[id].facts = [];
+                cells[id].goal = new_line_no;    
+            }    
         }
         display_facts_and_goal(editor);
         match_thm();
@@ -74,14 +82,40 @@ function display_checked_proof(result) {
     }
 }
 
+function get_line_no_from_id(id, proof) {
+    var found = -1;
+    $.each(proof, function (i, v) {
+        if (v.id === id)
+            found = i;
+    });
+    return found;
+}
+
 function display_instructions() {
     var id = get_selected_id();
     var instr_output = document.querySelector('.rbottom .selected .output #instruction');
-    instr_output.innerHTML = highlight_html(cells[id].instructions[cells[id].index]);
     var instr_no_output = document.querySelector('.rbottom .selected .output #instruction-number');
-    instr_no_output.innerHTML = (cells[id].index + 1) + '/' + cells[id].instructions.length;
+    var h_id = cells[id].index;
+    instr_output.innerHTML = highlight_html(cells[id].history[h_id].steps_output);
+    instr_no_output.innerHTML = h_id + '/' + (cells[id].history.length-1);
+    var proof_info = {
+        proof: cells[id].history[h_id].proof,
+        report: cells[id].history[h_id].report
+    };
+    if (h_id < cells[id].steps.length) {
+        // Find line number corresponding to ids
+        proof_info.goal = get_line_no_from_id(cells[id].steps[h_id].goal_id, proof_info.proof);
+        proof_info.facts = [];
+        if (cells[id].steps[h_id].fact_ids !== undefined) {
+            cells[id].steps[h_id].fact_ids.forEach(
+                v => proof_info.facts.push(get_line_no_from_id(v, proof_info.proof))
+            );
+        }
+    }
+    display_checked_proof(proof_info);
 }
 
+// Obtain the current state of proof
 function current_state() {
     var id = get_selected_id();
     var goal_no = cells[id].goal;
@@ -89,13 +123,15 @@ function current_state() {
         return undefined;
 
     var fact_ids = [];
-    cells[id].facts.forEach(v =>
-        fact_ids.push(cells[id]['proof'][v]['id']));
+    cells[id].facts.forEach(v => fact_ids.push(cells[id].proof[v].id));
     return {
         'id': id,
-        'goal_id': cells[id]['proof'][goal_no]['id'],
+        'goal_id': cells[id].proof[goal_no].id,
         'fact_ids': fact_ids,
-        'line': cells[id]['proof'][goal_no]['th_raw']
+        'theory_name': cells[id].theory_name,
+        'thm_name': cells[id].thm_name,
+        'vars': cells[id].vars,
+        'proof': cells[id].proof
     }
 }
 
@@ -109,19 +145,29 @@ function apply_method_ajax(input) {
         success: function(result) {
             if ("query" in result) {
                 // Query for more parameters
-                result.query.forEach(param =>
-                    input[param] = prompt(param)
-                );
+                result.query.forEach(param => input[param] = prompt(param));
                 apply_method_ajax(input);
             } else {
                 // Success
-                steps = cells[input.id].steps;
+                var id = input.id;
+                var h_id = cells[id].index;
+                cells[id].steps[h_id] = input;
+                cells[id].steps.length = h_id+1;
+                cells[id].history[h_id+1] = {
+                    'steps_output': [['Current state', 0]],
+                    'proof': result.proof,
+                    'report': result.report
+                };
+                cells[id].history.length = h_id+2;
                 delete input.id;
-                delete input.line;
                 if (input.fact_ids.length == 0)
                     delete input.fact_ids;
-                steps.push(input);
-                display_checked_proof(result);
+                delete input.theory_name;
+                delete input.thm_name;
+                delete input.vars;
+                delete input.proof;
+                cells[id].index += 1;
+                display_instructions();
             }
         }
     })
@@ -172,88 +218,6 @@ function apply_method(method_name, args) {
     } else {
         apply_method_ajax(input);
     }
-}
-
-//function unicode_replace(event) {
-//    var content = this.value;
-//    var pos = this.selectionStart;
-//    if (pos !== 0 && event.keyCode === 9) {
-//        var len = '';
-//        for (var key in replace_obj) {
-//            var l = key.length;
-//            if (content.substring(pos - l, pos) === key) {
-//                if (e && e.preventDefault) {
-//                    e.preventDefault();
-//                } else {
-//                    window.event.returnValue = false;
-//                };
-//                len = l;
-//                content = content.slice(0, pos - len) + replace_obj[key] + content.slice(pos,);
-//            }
-//        }
-//        if (len) {
-//            this.value = content;
-//            document.getElementById(id).setSelectionRange(pos - len + 1, pos - len + 1);
-//        }
-//    }
-//
-//}
-
-// Split off the first token according to the delimiter.
-function split_one(s, delimiter) {
-    arr = s.split(delimiter);
-    return [arr[0], arr.slice(1).join(delimiter)];
-}
-
-// Produce proof item from id and user-input string.
-function split_line(id, s) {
-    var item = {};
-    item.id = id
-    if (s.indexOf(" by ") > 0) {
-        rest = split_one(s, " by ")[1];
-    } else {
-        rest = s.trim()
-    }
-    item.th = "";
-
-    if (rest.indexOf(" ") >= 0)
-        [item.rule, rest] = split_one(rest, ' ');  // split off name of rule
-    else
-        [item.rule, rest] = rest, "";
-    item.rule = item.rule.trim();
-
-    if (rest.indexOf("from") >= 0) {
-        [item.args, item.prevs] = split_one(rest, 'from');
-        item.args = item.args.trim();
-        item.prevs = item.prevs.split(',');
-        return item;
-    } else {
-        item.args = rest.trim();
-        item.prevs = [];
-        return item;
-    }
-}
-
-function set_line(cm) {
-    $(document).ready(function () {
-        var id = get_selected_id();
-        var line_no = cells[id].edit_line_number;
-        var input = {
-            'id': get_selected_id(),
-            'item': split_line(cells[id].proof[line_no].id, cm.getLine(line_no))
-        };
-        var data = JSON.stringify(input);
-        display_running();
-
-        $.ajax({
-            url: "/api/set-line",
-            type: "POST",
-            data: data,
-            success: function (result) {
-                display_checked_proof(result);
-            }
-        })
-    })
 }
 
 // Query the server to match theorems for each parameterized tactic
@@ -349,27 +313,27 @@ function display_line(id, line_no) {
 
     if (line.rule === 'assume') {
         ch = display_str(editor, 'assume ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
-        ch = display_highlight_strs(editor, line.args, line_no, ch);
+        ch = display_highlight_strs(editor, line.args_hl, line_no, ch);
     } else if (line.rule === 'variable') {
         ch = display_str(editor, 'fix ', line_no, ch, {css: 'color: darkcyan; font-weight: bold'});
-        ch = display_highlight_strs(editor, line.args, line_no, ch);
+        ch = display_highlight_strs(editor, line.args_hl, line_no, ch);
     } else if (line.rule === 'subproof') {
         ch = display_have_prompt(editor, id, line_no, ch);
-        ch = display_highlight_strs(editor, line.th, line_no, ch);
+        ch = display_highlight_strs(editor, line.th_hl, line_no, ch);
         ch = display_str(editor, ' with', line_no, ch, {css: 'color: darkblue; font-weight: bold'});
     } else {
         // Display theorem with highlight
-        if (line.th.length > 0) {
+        if (line.th_hl.length > 0) {
             ch = display_have_prompt(editor, id, line_no, ch);
-            ch = display_highlight_strs(editor, line.th, line_no, ch);
+            ch = display_highlight_strs(editor, line.th_hl, line_no, ch);
             ch = display_str(editor, ' by ', line_no, ch, {css: 'font-weight: bold'});
         }
         // Display rule name
         ch = display_str(editor, line.rule, line_no, ch);
         // Display args with highlight
-        if (line.args.length > 0) {
+        if (line.args_hl.length > 0) {
             ch = display_str(editor, ' ', line_no, ch);
-            ch = display_highlight_strs(editor, line.args, line_no, ch);
+            ch = display_highlight_strs(editor, line.args_hl, line_no, ch);
         }
         if (line.prevs.length > 0) {
             ch = display_str(editor, ' from ', line_no, ch, {css: 'font-weight: bold'});

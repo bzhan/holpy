@@ -116,6 +116,16 @@ class PrinterTest(unittest.TestCase):
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
 
+    def testPrintRename(self):
+        test_data = [
+            (Const("exists", TFun(TFun(nat.natT, boolT), boolT))(
+                Abs("x", nat.natT, nat.less(Bound(0), Var("x", boolT)))), "?x1. x1 < x"),
+            (Abs("x", nat.natT, nat.less(Bound(0), Var("x", boolT))), "%x1. x1 < x"),
+        ]
+
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
+
     def testPrintComb(self):
         f = Var("f", TFun(Ta, Ta))
         test_data = [

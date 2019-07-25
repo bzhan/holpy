@@ -210,30 +210,36 @@ class apply_prev(Tactic):
         pt, prev_pts = prevs[0], prevs[1:]
 
         # First, obtain the patterns
-        vars = term.get_vars([prev.prop for prev in prevs])
-        old_names = [v.name for v in vars]
+        old_vars = term.get_vars([prev.prop for prev in prevs])
+        old_names = [v.name for v in old_vars]
         new_names = logic.get_forall_names(pt.prop, old_names)
 
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
 
-        instsp = dict(), {v.name: v for v in vars}
-        assert set(new_names).issubset({v.name for v in term.get_vars(As[:len(prev_pts)] + [C])}), \
-            "apply_prev: cannot match all variables"
+        instsp = dict(), {v.name: v for v in old_vars}
         matcher.first_order_match_incr(C, goal.prop, instsp)
         for idx, prev_pt in enumerate(prev_pts):
             matcher.first_order_match_incr(As[idx], prev_pt.prop, instsp)
 
         tyinst, inst = instsp
+        unmatched_vars = [v for v in new_names if v not in inst]
+        if unmatched_vars:
+            raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
+
         if tyinst:
             pt = ProofTerm.subst_type(tyinst, pt)
         for new_name in new_names:
             pt = ProofTerm.forall_elim(inst[new_name], pt)
-        As, C = pt.prop.strip_implies()
+        inst_As, inst_C = pt.prop.strip_implies()
         
         inst_arg = [inst[new_name] for new_name in new_names]
-        new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(prev_pts):]]
-        return ProofTermDeriv('apply_fact_for', thy, args=inst_arg, prevs=prevs + new_goals)
+        new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in inst_As[len(prev_pts):]]
+        if set(new_names).issubset({v.name for v in term.get_vars(As)}) and \
+           matcher.is_pattern_list(As, [v.name for v in old_vars]):
+            return ProofTermDeriv('apply_fact', thy, args=None, prevs=prevs + new_goals)
+        else:
+            return ProofTermDeriv('apply_fact_for', thy, args=inst_arg, prevs=prevs + new_goals)
 
 class cases(Tactic):
     """Case checking on an expression."""

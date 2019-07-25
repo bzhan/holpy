@@ -30,6 +30,7 @@ function get_status_color(ext) {
     }
 }
 
+// Display selected facts (in yellow) and goal (in red).
 function display_facts_and_goal(cm) {
     var id = get_selected_id();
     cm.getAllMarks().forEach(e => {
@@ -44,9 +45,9 @@ function display_facts_and_goal(cm) {
                     {line: goal_no, ch: goal_line.length},
                     {css: 'background: red'});    
     }
-    for (let fact_no of cells[id].facts) {
+    cells[id].facts.forEach(fact_no => {
         fact_line = cm.getLineHandle(fact_no).text;
         cm.markText({line: fact_no, ch: 0}, {line: fact_no, ch: fact_line.length},
                     {css: 'background: yellow'});
-    }
+    });
 }

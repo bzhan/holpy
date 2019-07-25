@@ -5,8 +5,8 @@
     var json_files = {};  // All loaded theory data.
     var file_list = [];  // List of all files for the current user.
     var items_selected = [];  // List of selected items in the displayed theory.
-    var click_count = 0;
-    var add_tab_number = ''; //add new data tab's page_num;
+
+    var is_mousedown = false;  // Used to manage mouse click.
 
     $(function () {
         document.getElementById('left').style.height = (window.innerHeight - 40) + 'px';
@@ -32,7 +32,7 @@
 
         $('#right').on('click', '#link-forward', function () {
             var cell = cells[get_selected_id()];
-            if (cell.index < cell.instructions.length - 1) {
+            if (cell.index < cell.history.length-1) {
                 cell.index++;
                 display_instructions();
             }
@@ -158,17 +158,21 @@
                 delete json_content.num_gaps;
                 delete json_content.steps;
             } else {
-                var proof = cells[editor_id].proof;
+                if (cells[editor_id].history !== undefined) {
+                    var len = cells[editor_id].history.length;
+                    var proof = cells[editor_id].history[len-1].proof;
+                    json_content.num_gaps = cells[editor_id].history[len-1].report.num_gaps;
+                } else {
+                    var proof = cells[editor_id].proof;
+                    json_content.num_gaps = cells[editor_id].num_gaps;
+                }
                 var output_proof = [];
                 $.each(proof, function (i, prf) {
                     output_proof.push($.extend(true, {}, prf));  // perform deep copy
-                    output_proof[i].th = output_proof[i].th_raw;
-                    delete output_proof[i].th_raw;
-                    output_proof[i].args = output_proof[i].args_raw;
-                    delete output_proof[i].args_raw;
+                    delete output_proof[i].th_hl;
+                    delete output_proof[i].args_hl;
                 });
                 json_content.proof = output_proof;
-                json_content.num_gaps = cells[editor_id].num_gaps;
                 json_content.steps = cells[editor_id].steps;
             }
             if (cur_theory_name === filename) {
@@ -235,18 +239,6 @@
             apply_method('cases');
         });
 
-        $('#apply-forall-elim').on("click", function () {
-            apply_method('forall_elim');
-        });
-
-        $('#rewrite-goal-with-prev').on("click", function () {
-            apply_method('rewrite_goal_with_prev');
-        });
-
-        $('#apply-prev').on('click', function () {
-            apply_method('apply_prev');
-        });
-
         $('#apply-backward-step').on("click", function () {
             apply_method('apply_backward_step');
         });
@@ -297,9 +289,9 @@
                 }
             }
             if (cur_theory_name && $(this).attr('id') === 'add_end') {
-                    json_files[cur_theory_name].content.push({'ty':'pre-data'});
-                    num = json_files[cur_theory_name].content.length - 1;
-                }
+                json_files[cur_theory_name].content.push({'ty':'pre-data'});
+                num = json_files[cur_theory_name].content.length - 1;
+            }
             display_theory_items();
             init_edit_area('', 'thm', add_mode = true, pos=num);
             save_json_file(cur_theory_name);
@@ -432,7 +424,7 @@
         }
 
         // Delete an item from menu.
-        $('div.dropdown-menu.Ctrl a[name="del"]').on('click',function(){
+        $('div.dropdown-menu a#delete_item').on('click',function() {
             theory = json_files[cur_theory_name];
             $.each(items_selected, function (i, v) {
                 theory.content[v] = '';
@@ -464,6 +456,18 @@
                 }
                 save_json_file(cur_theory_name);
                 display_theory_items();
+            } else if (e.keyCode === 65 && e.ctrlKey) {  // Ctrl+A
+                e.preventDefault();
+                $('a#add_after').click();
+            } else if (e.keyCode === 66 && e.ctrlKey) {  // Ctrl+B
+                e.preventDefault();
+                $('a#add_before').click();
+            } else if (e.keyCode === 68 && e.ctrlKey) {  // Ctrl+D
+                e.preventDefault();
+                $('a#delete_item').click();
+            } else if (e.keyCode === 69 && e.ctrlKey) {  // Ctrl+E
+                e.preventDefault();
+                $('a#edit_item').click();
             }
         })
 
@@ -498,31 +502,23 @@
             }
         });
 
-        // Add new item from menu.
-        $('button#additional_option_additem').on('click', function () {
-            if (selected_tab === 'content') {
-                var ty = 'thm';
-                init_edit_area('', ty);
-            }
-        });
-
-        $('div.code-pan').on('change' ,'select', function() {
+        $('div.code-pan').on('change', 'select', function () {
             var page_n = $(this).attr('name');
             var ty = $(this).find('option:selected').val();
-            $('div.total'+ page_n).each(function() {
+            $('div.total' + page_n).each(function() {
                 if ($(this).attr('class').indexOf('hidden-ele') < 0) {
                     $(this).addClass('hidden-ele');
                 }
-            if (ty === 'def.ax')
-                $('div[name="constant-'+ page_n+ '"]').removeClass('hidden-ele');
-            if (ty === 'thm' || ty === 'thm.ax')
-                $('div[name="thm-'+ page_n+ '"]').removeClass('hidden-ele');
-            if (ty === 'type.ind')
-                $('div[name="type-'+page_n+'"]').removeClass('hidden-ele');
-            if (ty === 'def' || ty === 'def.ind' || ty === 'def.pred')
-                $('div[name="def-'+page_n+'"]').removeClass('hidden-ele');
+                if (ty === 'def.ax')
+                    $('div[name="constant-' + page_n + '"]').removeClass('hidden-ele');
+                if (ty === 'thm' || ty === 'thm.ax')
+                    $('div[name="thm-' + page_n + '"]').removeClass('hidden-ele');
+                if (ty === 'type.ind')
+                    $('div[name="type-' + page_n + '"]').removeClass('hidden-ele');
+                if (ty === 'def' || ty === 'def.ind' || ty === 'def.pred')
+                    $('div[name="def-' + page_n + '"]').removeClass('hidden-ele');
             })
-            $('div.rbottom button#'+ page_n).attr('data_type', ty);
+            $('div.rbottom button#' + page_n).attr('data_type', ty);
         })
 
         // On loading page, obtain list of theories.
@@ -648,10 +644,8 @@
             var templ_edit = _.template($("#template-edit-thm").html());
             $('#codeTabContent').append(templ_edit({page_num: page_num, ext_output: ext_output, type_name: ''}));
             var form = document.getElementById('edit-thm-form' + page_num);
-            if (!number) {
-                form['number-constant'].value = -1;
-            }
-            else {
+            
+            if (number) {
                 form.data_name.value = item['name'];
                 form.data_content_constant.value = item['type'];
                 form['number-constant'].value = number;
@@ -690,9 +684,6 @@
                 if (item.attributes && item.attributes.includes('hint_resolve'))
                     form.hint_resolve.checked = true;
             }
-            else {
-                form['number-thm'].value = -1;
-            }
             $('div[name="thm-'+ page_num +'"]').removeClass('hidden-ele');
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         }
@@ -711,11 +702,6 @@
                 form.data_content_type.textContent = item.constr_output.join('\n');
                 form.data_content_type.rows = item.constr_output.length;
                 form['number-type'].value = number
-            } else {
-                $('#codeTab').find('span#' + page_num).text('datatype');
-
-                var form = document.getElementById('edit-thm-form' + page_num);
-                form['number-type'].value = -1;
             }
             $('div[name="type-'+ page_num +'"]').removeClass('hidden-ele');
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
@@ -742,10 +728,6 @@
                 form['number-def'].value = number;
                 form.data_name_def.value = item.name;
                 form.data_type_def.value = item.type;
-            } else {
-                init_editor("data-content" + page_num, cur_theory_name, content = '', flag=false);
-                form['number-def'].value = -1;
-                $('#codeTab').find('span#' + page_num).text('function');
             }
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('div[name="def-'+ page_num +'"]').removeClass('hidden-ele');
@@ -884,12 +866,16 @@
                 var id = get_selected_id();
                 cells[id].goal = -1;
                 cells[id].method_sig = result.method_sig;
-                display_checked_proof(result);
-                cells[id].instructions = item.instructions;
-                cells[id].index = 0;
+                cells[id].vars = result.vars;
+                cells[id].thm_name = item.name;
                 cells[id].steps = [];
-                if (cells[id].instructions !== undefined)
-                    display_instructions();
+                cells[id].history = [{
+                    'steps_output': [['Current state', 0]],
+                    'proof': result.proof,
+                    'report': result.report
+                }];
+                cells[id].index = 0;
+                display_instructions();
             }
         });
     }
@@ -912,15 +898,21 @@
             type: 'POST',
             data: JSON.stringify(data),
             success: function (result) {
-                var id = get_selected_id();
-                cells[id].goal = -1;
-                cells[id].method_sig = result.method_sig;
-                display_checked_proof(result);
-                cells[id].steps = result.steps;
-                cells[id].instructions = result.steps_output;
-                cells[id].index = 0;
-                if (cells[id].instructions !== undefined)
-                    display_instructions();
+                if ("failed" in result) {
+                    display_status(result.failed + ": " + result.message, 'red');
+                } else {
+                    var id = get_selected_id();
+                    cells[id].goal = -1;
+                    cells[id].method_sig = result.method_sig;
+                    cells[id].vars = result.vars;
+                    cells[id].thm_name = item.name;
+                    cells[id].steps = result.steps;
+                    if (result.history !== undefined) {
+                        cells[id].history = result.history;
+                        cells[id].index = result.history.length-1;
+                        display_instructions();
+                    }
+                }
             }
         })
     }
@@ -945,7 +937,7 @@
         });
     }
 
-    function init_editor(id, theory_name, content='', flag=true) {
+    function init_editor(id, theory_name) {
         var editor = CodeMirror.fromTextArea(document.getElementById(id), {
             mode: "text/x-python",
             lineNumbers: true,
@@ -978,49 +970,25 @@
         });
         editor.setValue('');
         $(editor.getTextArea().parentNode).addClass('selected').siblings().removeClass('selected');
-        if (flag)
-            resize_editor();
+        resize_editor();
 
         cells[id] = {
             theory_name: theory_name,
             facts: new Set(),
-            goal: -1,
-            edit_line_number: -1,
+            goal: -1
         };
-        editor.on("keydown", function (cm, event) {
-            if (event.code === 'Enter') {
-                event.preventDefault();
-                if (cells[id].edit_line_number !== -1) {
-                    set_line(cm);
-                }
-            } else if (event.code === 'Tab') {
-                event.preventDefault();
-                unicode_replace(cm);
-            } else if (event.code === 'Escape') {
-                event.preventDefault();
-                if (cells[id].edit_line_number !== -1) {
-                    cm.getAllMarks().forEach(e => {
-                        if (e.readOnly !== undefined) {
-                            if (e.readOnly) {
-                                e.clear();
-                            }
-                        }
-                    });
-                    var origin_line = display_line(cells[id]['proof'][cells[id].edit_line_number]);
-                    cm.replaceRange(origin_line, {line: cells[id].edit_line_number, ch: 0}, {
-                        line: cells[id].edit_line_number,
-                        ch: Number.MAX_SAFE_INTEGER
-                    });
-                    cells[id].edit_line_number = -1;
-                }
-            }
-        });
 
         editor.on("focus", function (cm) {
             $(cm.getTextArea().parentNode).addClass('selected').siblings().removeClass('selected');
         });
 
-        editor.on("cursorActivity", function (cm) {
+        editor.on('beforeChange', function (cm, change) {
+            if (!edit_flag) {
+                change.cancel();
+            }
+        });
+
+        editor.on('cursorActivity', function (cm) {
             if (is_mousedown) {
                 mark_text(cm);
                 match_thm();
@@ -1028,41 +996,9 @@
             }
         });
 
-        editor.on('beforeChange', function (cm, change) {
-            if (!edit_flag &&
-                cells[get_selected_id()].edit_line_number !== change.from.line) {
-                change.cancel();
-            }
-        });
-
-        editor.on('mousedown', function (cm, event) {
-            var timer = 0;
+        editor.on('mousedown', function (cm) {
             is_mousedown = true;
-            click_count++;
-            if (click_count === 1) {
-                timer = setTimeout(function () {
-                    if (click_count > 1) {
-                        clearTimeout(timer);
-                        set_read_only(cm);
-                    }
-                    click_count = 0;
-                }, 300)
-            }
         });
-    }
-
-    function set_read_only(cm) {
-        cm.setCursor(cm.getCursor().line, Number.MAX_SAFE_INTEGER);
-        var line_num = cm.getCursor().line;
-        var ch = cm.getCursor().ch;
-        var line = cm.getLineHandle(line_num).text;
-        var id = get_selected_id();
-        if (line.indexOf('sorry') !== -1) {
-            cm.addSelection({line: line_num, ch: ch - 5}, {line: line_num, ch: ch});
-            cells[id].edit_line_number = line_num;
-        } else if (line.trim() === '') {
-            cells[id].edit_line_number = line_num;
-        }
     }
 
     // Select goal or fact
@@ -1079,10 +1015,11 @@
         }
         else if (cells[id].goal !== -1) {
             // Choose or unchoose a fact
-            if (cells[id].facts.has(line_num))
-                cells[id].facts.delete(line_num)
+            i = cells[id].facts.indexOf(line_num);
+            if (i === -1)
+                cells[id].facts.push(line_num);
             else
-                cells[id].facts.add(line_num)
+                cells[id].facts.splice(i, 1);
         }
         display_facts_and_goal(cm);
     }
