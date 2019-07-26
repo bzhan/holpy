@@ -48,6 +48,39 @@ def print_term(t):
 
     return rec(t)
 
+class Identifier():
+    """Base class for identifiers: variables, entries of arrays, etc."""
+    pass
+
+class VariableId(Identifier):
+    """Variables, specified by name."""
+    def __init__(self, name):
+        assert isinstance(name, str), "VariableId"
+        self.name = name
+
+    def __str__(self):
+        return self.name
+
+class ArrayId(Identifier):
+    """Array identifier: an identifier followed by integer index."""
+    def __init__(self, a, n):
+        assert isinstance(a, Identifier) and isinstance(n, Term), "ArrayId"
+        self.a = a
+        self.n = n
+
+    def __str__(self):
+        return str(self.a) + "[" + print_term(self.n) + "]"
+
+class FieldId(Identifier):
+    """Field identifier: an identifier followed by a field name."""
+    def __init__(self, a, fname):
+        assert isinstance(a, Identifier) and isinstance(fname, str), "FieldId"
+        self.a = a
+        self.fname = fname
+
+    def __str__(self):
+        return str(self.a) + "." + self.fname
+
 class Com():
     """Base class for programs."""
     def __init__(self):
@@ -104,22 +137,27 @@ class Skip(Com):
 class Assign(Com):
     """Assign program."""
     def __init__(self, v, e):
-        assert isinstance(v, str) and isinstance(e, Term), "Assign"
+        if isinstance(v, str):
+            v = VariableId(v)
+        assert isinstance(v, Identifier) and isinstance(e, Term), "Assign"
         super().__init__()
         self.v = v
         self.e = e
 
     def print_com(self, thy):
         return self.print_vc_pre() + \
-            self.v + " := " + print_term(self.e)
+            str(self.v) + " := " + print_term(self.e)
 
     def get_vc(self):
         return self.get_vc_pre()
 
     def compute_wp(self, post):
-        self.post = [post]
-        self.pre.append(post.subst({self.v: self.e}))
-        return self.pre[0]
+        if isinstance(self.v, VariableId):
+            self.post = [post]
+            self.pre.append(post.subst({self.v.name: self.e}))
+            return self.pre[0]
+        else:
+            raise NotImplementedError
 
 class Seq(Com):
     """Sequence program."""

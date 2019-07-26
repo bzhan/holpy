@@ -17,37 +17,66 @@
             "ty": "vcg",
             "com": "while (a != A) {[b == a * B] b := b + B; a := a + 1}",
             "pre": "a == 0 & b == 0",
-            "post": "b == A * B"
+            "post": "b == A * B",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "A": "int",
+                "B": "int"
+            }
         },
         {
             "ty": "vcg",
             "com": "if (a != 0) then a := 0 else skip",
             "pre": "true",
-            "post": "a == 0"
+            "post": "a == 0",
+            "vars": {
+                "a": "int"
+            }
         },
         {
             "ty": "vcg",
             "com": "if (m <= n) then c := n else c := m",
             "pre": "true",
-            "post": "c == m | c == n"
+            "post": "c == m | c == n",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
         },
         {
             "ty": "vcg",
             "com": "m := a + b; n := a - b",
             "pre": "0 <= b",
-            "post": "a <= m & n <= a"
+            "post": "a <= m & n <= a",
+            "vars": {
+                "a": "int",
+                "b": "int",
+                "m": "int",
+                "n": "int"
+            }
         },
         {
             "ty": "vcg",
             "com": "if (0 <= a) then c := a else c := -a",
             "pre": "true",
-            "post": "c == abs(a)"
+            "post": "c == abs(a)",
+            "vars": {
+                "a": "int",
+                "c": "int"
+            }
         },
         {
             "ty": "vcg",
             "com": "if (m <= n) then c := n else c := m",
             "pre": "true",
-            "post": "c == max(m, n)"
+            "post": "c == max(m, n)",
+            "vars": {
+                "c": "int",
+                "m": "int",
+                "n": "int"
+            }
         }
     ]
 }
