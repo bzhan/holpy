@@ -265,7 +265,7 @@
         });
 
         // Initialize proof after clicking 'proof' link on the left side.
-        $('#panel-content').on('click', 'a[name="proof"]', function (e) {
+        $('#panel-content').on('mousedown', 'a[name="proof"]', function (e) {
             e.stopPropagation();
             var item_id = $(this).parents().attr('item_id');
             init_proof_tab(cur_theory_name, item_id);
