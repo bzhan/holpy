@@ -6,6 +6,7 @@ from lark import Lark, Transformer, v_args, exceptions
 from kernel.type import HOLType, TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel import macro
+from kernel import term
 from kernel.thm import Thm
 from kernel.proof import ProofItem, id_force_tuple
 from kernel import extension
@@ -513,6 +514,10 @@ def parse_extension(thy, data):
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parse_vars(thy, data['vars'])
         prop = parse_term(thy, ctxt, data['prop'])
+        prop_vars = set(v.name for v in term.get_vars(prop))
+        assert prop_vars.issubset(set(data['vars'].keys())), \
+            "parse_extension on %s: extra variables in prop: %s" % (
+                data['name'], ", ".join(v for v in prop_vars - set(data['vars'].keys())))
         ext = extension.TheoryExtension()
         ext.add_extension(extension.Theorem(data['name'], Thm([], prop)))
         if 'attributes' in data:
