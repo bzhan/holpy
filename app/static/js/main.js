@@ -5,6 +5,7 @@
     var json_files = {};  // All loaded theory data.
     var file_list = [];  // List of all files for the current user.
     var items_selected = [];  // List of selected items in the displayed theory.
+    var drag = false;
 
     var is_mousedown = false;  // Used to manage mouse click.
 
@@ -380,25 +381,35 @@
             });
         });
 
+        $('#panel-content').on('mousedown', 'div[name="theories"]', function (e) {
+            drag = false;
+        });
+
+        $('#panel-content').on('mousemove', 'div[name="theories"]', function (e) {
+            drag = true;
+        });
+
         // Select / unselect an item by left click.
-        $('#panel-content').on('click','div[name="theories"]', function (e) {
-            var item_id = Number($(this).attr('item_id'));
-            if(e.shiftKey) {
-                add_selected_items(item_id, items_selected[items_selected.length - 1]);
-                display_theory_items();
-            }
-            else {
-                if (items_selected.indexOf(item_id) >= 0) {
-                    items_selected.length = 0;
+        $('#panel-content').on('mouseup','div[name="theories"]', function (e) {
+            if (!drag) {
+                var item_id = Number($(this).attr('item_id'));
+                if(e.shiftKey) {
+                    add_selected_items(item_id, items_selected[items_selected.length - 1]);
+                    display_theory_items();
                 }
                 else {
-                    items_selected.length = 0;
-                    items_selected.push(item_id);
+                    if (items_selected.indexOf(item_id) >= 0) {
+                        items_selected.length = 0;
+                    }
+                    else {
+                        items_selected.length = 0;
+                        items_selected.push(item_id);
+                    }
+                    items_selected.sort();
+                    display_theory_items();
                 }
-                items_selected.sort();
-                display_theory_items();
             }
-        })
+        });
 
         function add_selected_items (id1, id2) {
             if (id1 > id2) {
