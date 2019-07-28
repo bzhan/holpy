@@ -1,3 +1,29 @@
+// Mapping for unicode-replace
+var replace_obj = {
+    "\\lambda": "λ",
+    "%": "λ",
+    "\\forall": "∀",
+    "\\exists": "∃",
+    "\\and": "∧",
+    "&": "∧",
+    "\\or": "∨",
+    "|": "∨",
+    "-->": "⟶",
+    "<-->": "⟷",
+    "~": "¬",
+    "\\not": "¬",
+    "=>": "⇒",
+    "\\empty": "∅",
+    "\\Inter": "⋂",
+    "\\inter": "∩",
+    "\\Union": "⋃",
+    "\\union": "∪",
+    "\\circ": "∘",
+    "\\in": "∈",
+    "\\subset": "⊆",
+    "<=": "≤",
+};
+
 // Mapping of colors.
 function rp(x) {
     if (x === 0)

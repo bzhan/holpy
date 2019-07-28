@@ -16,7 +16,8 @@
             }
         },
         {
-            "name": "numseg_combione_r",
+            "attributes": [],
+            "name": "numseg_combine_r",
             "prop": "m <= p + 1 & p <= n --> (union {m..p} {(p + 1)..n} = {m..n})",
             "ty": "thm",
             "vars": {
@@ -26,7 +27,8 @@
             }
         },
         {
-            "name": "numseg_combione_l",
+            "attributes": [],
+            "name": "numseg_combine_l",
             "prop": "m <= p & p <= n + 1 --> (union {m..(minus p 1)} {p..n} = {m..n})",
             "ty": "thm",
             "vars": {
@@ -68,9 +70,9 @@
             "prop": "member p {m..n} = (m <= p & p <= n)",
             "ty": "thm",
             "vars": {
-                "p": "nat",
                 "m": "nat",
-                "n": "nat"
+                "n": "nat",
+                "p": "nat"
             }
         },
         {
@@ -78,8 +80,8 @@
             "prop": "member p {0..n} = (p <= n)",
             "ty": "thm",
             "vars": {
-                "p": "nat",
-                "n": "nat"
+                "n": "nat",
+                "p": "nat"
             }
         },
         {
@@ -136,7 +138,7 @@
             "prop": "neutral op x = (!y. (op x y = y) & (op y x = y))",
             "ty": "def",
             "type": "('a => 'a => 'a) => 'a => bool"
-        }           
+        }
     ],
     "description": "Basic results about iterate.",
     "imports": [

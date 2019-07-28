@@ -391,7 +391,11 @@ class introduction(Method):
     def display_step(self, state, id, data, prevs):
         res = "introduction on " + print_id(id)
         if 'names' in data and data['names'] != "":
-            res += " with names " + data['names']
+            names = [name.strip() for name in data['names'].split(',')]
+            if len(names) > 1:
+                res += " with names " + ", ".join(names)
+            else:
+                res += " with name " + ", ".join(names)
         return printer.N(res)
 
     def apply(self, state, id, data, prevs):
@@ -622,19 +626,20 @@ class apply_fact(Method):
         state.set_line(id, 'apply_fact', prevs=prevs)
 
 
-def apply_method(state, data):
+def apply_method(state, step):
     """Apply a method to the state. Here data is a dictionary containing
     all necessary information.
 
     """
-    method = state.thy.get_method(data['method_name'])
-    goal_id = id_force_tuple(data['goal_id'])
-    fact_ids = [id_force_tuple(fact_id) for fact_id in data['fact_ids']] \
-        if 'fact_ids' in data and data['fact_ids'] else []
-    return method.apply(state, goal_id, data, fact_ids)
+    method = state.thy.get_method(step['method_name'])
+    goal_id = id_force_tuple(step['goal_id'])
+    fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
+        if 'fact_ids' in step and step['fact_ids'] else []
+    return method.apply(state, goal_id, step, fact_ids)
 
 @settings.with_settings
 def display_method(state, step):
+    """Obtain the string explaining the step in the user interface."""
     method = theory.global_methods[step['method_name']]
     goal_id = id_force_tuple(step['goal_id'])
     fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \

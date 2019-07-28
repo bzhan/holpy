@@ -7,29 +7,29 @@
         },
         {
             "name": "int_of_nat",
+            "overload": "of_nat",
             "ty": "def.ax",
-            "type": "nat => int",
-            "overload": "of_nat"
+            "type": "nat => int"
         },
         {
             "name": "int_zero",
-            "ty": "def",
-            "type": "int",
+            "overload": "zero",
             "prop": "int_zero = of_nat nat_zero",
-            "overload": "zero"
+            "ty": "def",
+            "type": "int"
         },
         {
             "name": "int_one",
-            "ty": "def",
-            "type": "int",
+            "overload": "one",
             "prop": "int_one = of_nat nat_one",
-            "overload": "one"
+            "ty": "def",
+            "type": "int"
         },
         {
             "name": "int_plus",
+            "overload": "plus",
             "ty": "def.ax",
-            "type": "int => int => int",
-            "overload": "plus"
+            "type": "int => int => int"
         },
         {
             "ascii_op": "-",
@@ -44,33 +44,33 @@
         },
         {
             "name": "int_uminus",
+            "overload": "uminus",
             "ty": "def.ax",
-            "type": "int => int",
-            "overload": "uminus"
+            "type": "int => int"
         },
         {
             "name": "int_minus",
+            "overload": "minus",
             "ty": "def.ax",
-            "type": "int => int => int",
-            "overload": "minus"
+            "type": "int => int => int"
         },
         {
             "name": "int_times",
+            "overload": "times",
             "ty": "def.ax",
-            "type": "int => int => int",
-            "overload": "times"
+            "type": "int => int => int"
         },
         {
             "name": "int_less_eq",
+            "overload": "less_eq",
             "ty": "def.ax",
-            "type": "int => int => bool",
-            "overload": "less_eq"
+            "type": "int => int => bool"
         },
         {
             "name": "int_less",
+            "overload": "less",
             "ty": "def.ax",
-            "type": "int => int => bool",
-            "overload": "less"
+            "type": "int => int => bool"
         },
         {
             "name": "int_zero",
@@ -79,10 +79,10 @@
         },
         {
             "name": "int_abs",
-            "ty": "def",
-            "type": "int => int",
+            "overload": "abs",
             "prop": "int_abs n = (if int_zero <= n then n else -n)",
-            "overload": "abs"
+            "ty": "def",
+            "type": "int => int"
         },
         {
             "name": "int_add_assoc",
@@ -129,10 +129,10 @@
         },
         {
             "name": "int_max",
-            "ty": "def",
-            "type": "int => int => int",
+            "overload": "max",
             "prop": "int_max m n = (if m <= n then n else m)",
-            "overload": "max"
+            "ty": "def",
+            "type": "int => int => int"
         }
     ],
     "description": "integers",

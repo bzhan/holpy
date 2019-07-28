@@ -1,4 +1,3 @@
-
 var edit_flag = false;
 var cells = {};
 
@@ -93,11 +92,12 @@ function get_line_no_from_id(id, proof) {
 
 function display_instructions() {
     var id = get_selected_id();
-    var instr_output = document.querySelector('.rbottom .selected .output #instruction');
-    var instr_no_output = document.querySelector('.rbottom .selected .output #instruction-number');
     var h_id = cells[id].index;
-    instr_output.innerHTML = highlight_html(cells[id].history[h_id].steps_output);
-    instr_no_output.innerHTML = h_id + '/' + (cells[id].history.length-1);
+    var templ_instr = _.template($('#template-instruction').html());
+    $('.rbottom .selected div#output-instr').html(templ_instr({
+        instr_no: h_id + '/' + (cells[id].history.length-1),
+        instr: highlight_html(cells[id].history[h_id].steps_output)
+    }));
     var proof_info = {
         proof: cells[id].history[h_id].proof,
         report: cells[id].history[h_id].report
@@ -113,6 +113,24 @@ function display_instructions() {
         }
     }
     display_checked_proof(proof_info);
+}
+
+function undo_move() {
+    var id = get_selected_id();
+    var h_id = cells[id].index;
+    if (h_id < cells[id].steps.length) {
+        // Perform undo only when at end
+        return;
+    }
+
+    cells[id].history.length -= 1;
+    cells[id].history[h_id-1].steps_output = [["Current state", 0]]
+    cells[id].index = h_id - 1;
+    display_instructions();
+
+    // Remove last step after display_instructions, so goal and fact_no can
+    // be used during display.
+    cells[id].steps.length -= 1;
 }
 
 // Obtain the current state of proof
@@ -145,14 +163,34 @@ function apply_method_ajax(input) {
         success: function(result) {
             if ("query" in result) {
                 // Query for more parameters
-                result.query.forEach(param => input[param] = prompt(param));
-                apply_method_ajax(input);
+                var templ_query = _.template($('#template-query').html());
+                var sig_list = result.query.map(s => s.slice(6));  // get rid of 'param_'
+                var input_html = templ_query({sig_list: sig_list}); 
+                swal({
+                    title: "Query for parameters",
+                    html: input_html,
+                    showCancelButton: true,
+                    stopKeydownPropagation: false,
+                    focusConfirm: false,
+                    confirmButtonText: "Confirm",
+                    cancelButtonText: "Cancel",
+                    preConfirm: () => {
+                        for (let i = 0; i < sig_list.length; i++) {
+                            input["param_"+sig_list[i]] = document.getElementById('sig-input' + (i+1)).value;
+                        }
+                    }
+                }).then(function (isConfirm) {
+                    if (isConfirm.value) {
+                        apply_method_ajax(input);
+                    }
+                });
             } else {
                 // Success
                 var id = input.id;
                 var h_id = cells[id].index;
                 cells[id].steps[h_id] = input;
                 cells[id].steps.length = h_id+1;
+                cells[id].history[h_id].steps_output = result.steps_output;
                 cells[id].history[h_id+1] = {
                     'steps_output': [['Current state', 0]],
                     'proof': result.proof,
@@ -194,17 +232,16 @@ function apply_method(method_name, args) {
     display_running();
 
     if (count > 0) {
-        var input_html = '';
-        for (let i = 1; i <= count; i++) {
-            input_html += '<label style="text-align:right;width:15%;margin-right:2%;">' + sig_list[i-1] +
-                          ':</label>&nbsp;<input id="sig-input' + i + '" style="width:70%;" class="unicode-replace"><br>';
-        }
+        var templ_query = _.template($('#template-query').html());
+        var input_html = templ_query({sig_list: sig_list});
         swal({
             title: "Method " + method_name,
             html: input_html,
             showCancelButton: true,
             confirmButtonText: "Confirm",
             cancelButtonText: "Cancel",
+            stopKeydownPropagation: false,
+            focusConfirm: false,
             preConfirm: () => {
                 for (let i = 1; i <= count; i++) {
                     input[sig_list[i-1]] = document.getElementById('sig-input' + i).value;

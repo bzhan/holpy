@@ -223,6 +223,10 @@
             $('div.rbottom div:eq(0)').show().siblings().hide();
         });
 
+        $('#undo-move').on("click", function () {
+            undo_move();
+        });
+
         $('#introduction').on("click", function () {
             apply_method('introduction');
         });
@@ -298,10 +302,10 @@
         })
 
         // Use tab key to insert unicode characters.
-        $('body').on('keydown', '.unicode-replace', function (e) {
+        $(document).on('keydown', '.unicode-replace', function (e) {
             var content = $(this).val().trim();
             var pos = this.selectionStart;
-            if (pos !== 0 && e.keyCode === 9) {
+            if (pos !== 0 && e.keyCode === 13) {  // Enter
                 var len = '';
                 for (var key in replace_obj) {
                     var l = key.length;
@@ -317,7 +321,7 @@
                 }
                 if (len) {
                     $(this).val(content);
-                    document.getElementById(id).setSelectionRange(pos - len + 1, pos - len + 1);
+                    this.setSelectionRange(pos - len + 1, pos - len + 1);
                 }
             }
         });
@@ -380,7 +384,6 @@
         $('#panel-content').on('click','div[name="theories"]', function (e) {
             var item_id = Number($(this).attr('item_id'));
             if(e.shiftKey) {
-//                preventD(e);
                 add_selected_items(item_id, items_selected[items_selected.length - 1]);
                 display_theory_items();
             }
@@ -412,15 +415,6 @@
                 }
                 items_selected.sort();
             }
-        }
-
-        function preventD (e) {
-            if (e && e.preventDefault) {
-                e.preventDefault();
-            }
-            else {
-                window.event.returnValue = false;
-            };
         }
 
         // Delete an item from menu.
@@ -468,6 +462,9 @@
             } else if (e.keyCode === 69 && e.ctrlKey) {  // Ctrl+E
                 e.preventDefault();
                 $('a#edit_item').click();
+            } else if (e.keyCode === 90 && e.ctrlKey) {  // Ctrl+Z
+                e.preventDefault();
+                undo_move();
             }
         })
 
@@ -911,6 +908,8 @@
                         cells[id].history = result.history;
                         cells[id].index = result.history.length-1;
                         display_instructions();
+                    } else {
+                        display_checked_proof(result);
                     }
                 }
             }
