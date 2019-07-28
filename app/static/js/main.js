@@ -5,7 +5,10 @@
     var json_files = {};  // All loaded theory data.
     var file_list = [];  // List of all files for the current user.
     var items_selected = [];  // List of selected items in the displayed theory.
+
+    // Used to distinguish between click and drag
     var drag = false;
+    var startingPos;
 
     var is_mousedown = false;  // Used to manage mouse click.
 
@@ -383,17 +386,23 @@
 
         $('#panel-content').on('mousedown', 'div[name="theories"]', function (e) {
             drag = false;
+            startingPos = [e.pageX, e.pageY];
+            if (e.shiftKey) {
+                e.preventDefault();
+            }
         });
 
         $('#panel-content').on('mousemove', 'div[name="theories"]', function (e) {
-            drag = true;
+            if (!(e.pageX === startingPos[0] && e.pageY === startingPos[1])) {
+                drag = true;
+            }
         });
 
         // Select / unselect an item by left click.
         $('#panel-content').on('mouseup','div[name="theories"]', function (e) {
             if (!drag) {
                 var item_id = Number($(this).attr('item_id'));
-                if(e.shiftKey) {
+                if (e.shiftKey) {
                     add_selected_items(item_id, items_selected[items_selected.length - 1]);
                     display_theory_items();
                 }
@@ -411,7 +420,7 @@
             }
         });
 
-        function add_selected_items (id1, id2) {
+        function add_selected_items(id1, id2) {
             if (id1 > id2) {
                 for (let i = id2; i <= id1; i++) {
                     if (items_selected.indexOf(i) === -1)
