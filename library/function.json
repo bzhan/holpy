@@ -1878,7 +1878,7 @@
     ],
     "description": "Functions",
     "imports": [
-        "int"
+        "nat"
     ],
     "name": "function"
 }

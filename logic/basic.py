@@ -29,16 +29,44 @@ def get_init_theory():
 
     return thy
 
+def load_json_data(theory_name, *, user="master"):
+    """Load json data for the given theory name and user."""
+    if user == "master":
+        dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+        with open(dir + '/../library/' + theory_name + '.json', encoding='utf-8') as a:
+            return json.load(a)
+    else:
+        with open('users/' + user + '/' + theory_name + '.json', encoding='utf-8') as a:
+            return json.load(a)
+
 def load_imported_theory(imports, user="master"):
     """Load imported theory according to the imports field in data."""
-    if imports:
-        # Has at least one import
-        if len(imports) > 1:
-            raise NotImplementedError
 
-        return copy(load_theory(imports[0], user=user))
-    else:
-        return get_init_theory()
+    imports = tuple(imports)
+    assert isinstance(imports, tuple) and all(isinstance(imp, str) for imp in imports), \
+        "load_imported_theory"
+
+    if (imports, user) in loaded_theories:
+        return copy(loaded_theories[(imports, user)])
+
+    thy = get_init_theory()
+    finished = []
+
+    def rec(theory_name):
+        data = load_json_data(theory_name, user=user)
+        for imp in data['imports']:
+            if imp not in finished:
+                rec(imp)
+
+        parser.parse_extensions(thy, data['content'])
+        finished.append(theory_name)
+
+    for imp in imports:
+        rec(imp)
+
+    loaded_theories[(imports, user)] = thy
+
+    return copy(thy)
 
 def load_theory(theory_name, *, limit=None, user="master"):
     """Load the theory with the given theory name. Optional limit is
@@ -46,19 +74,10 @@ def load_theory(theory_name, *, limit=None, user="master"):
     be loaded.
     
     """
-    # If the theory is already loaded, return the theory.
-    if limit is None and (theory_name, user) in loaded_theories:
-        return loaded_theories[(theory_name, user)]
+    data = load_json_data(theory_name, user=user)
+    thy = load_imported_theory(data['imports'], user=user)
 
-    # Otherwise, open the corresponding file.
-    if user == "master":
-        dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-        with open(dir + '/../library/' + theory_name + '.json', encoding='utf-8') as a:
-            data = json.load(a)
-    else:
-        with open('users/' + user + '/' + theory_name + '.json', encoding='utf-8') as a:
-            data = json.load(a)
-
+    # Take the portion of content up to (and not including) limit
     content = data['content']
     limit_i = -1
     if limit:
@@ -70,11 +89,8 @@ def load_theory(theory_name, *, limit=None, user="master"):
         assert limit_i != -1, "Limit not found"
         content = content[:limit_i]
 
-    thy = load_imported_theory(data['imports'], user=user)
+    # Read data into theory
     parser.parse_extensions(thy, content)
-
-    if limit is None:
-        loaded_theories[(theory_name, user)] = thy
 
     return thy
 

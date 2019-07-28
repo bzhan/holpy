@@ -924,7 +924,8 @@
     ],
     "description": "Hoare logic",
     "imports": [
-        "function"
+        "function",
+        "int"
     ],
     "name": "hoare"
 }
