@@ -77,6 +77,17 @@
                 "m": "int",
                 "n": "int"
             }
+        },
+        {
+            "ty": "vcg",
+            "com": "index := 0; while (index < a.length & a[index] != key) {[0 <= index & index <= a.length & forall k. (0 <= k & k < index) --> a[k] != key] index := index + 1}; if (index == a.length) then index := -1 else skip",
+            "pre": "true",
+            "post": "(0 <= index --> index < a.length & a[index] == key) & (index < 0 --> forall k. (0 <= k & k < a.length) --> a[k] != key)",
+            "vars": {
+                "index": "int",
+                "key": "int",
+                "a": "int array"
+            }
         }
     ]
 }

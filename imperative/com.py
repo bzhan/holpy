@@ -2,7 +2,7 @@
 
 """Basic data structure for programs."""
 
-from kernel.term import Term
+from kernel.term import Term, Var
 from logic import logic
 from data import int
 
@@ -28,6 +28,8 @@ def print_term(t):
             return rec(t.arg1) + " <= " + rec(t.arg)
         elif int.is_less(t):
             return rec(t.arg1) + " < " + rec(t.arg)
+        elif int.is_binary_int(t):
+            return str(int.from_binary_int(t))
         elif int.is_plus(t):
             return rec(t.arg1) + " + " + rec(t.arg)
         elif int.is_uminus(t):
@@ -36,8 +38,14 @@ def print_term(t):
             return rec(t.arg1) + " - " + rec(t.arg)
         elif int.is_times(t):
             return rec(t.arg1) + " * " + rec(t.arg)
-        elif int.is_binary_int(t):
-            return str(int.from_binary_int(t))
+        elif t.is_all():
+            return "forall " + t.arg.var_name + ". " + rec(t.arg.subst_bound(Var(t.arg.var_name, int.intT)))
+        elif t.head.is_const_name("length"):
+            assert t.arg.is_var()
+            return t.arg.name + ".length"
+        elif t.head.is_const_name("nth"):
+            assert t.arg1.is_var()
+            return t.arg1.name + "[" + rec(t.arg) + "]"
         elif t.is_comb() and t.head.is_const():
             return t.head.name + "(" + ", ".join(rec(arg) for arg in t.args) + ")"
         elif t.is_var() or t.is_const():

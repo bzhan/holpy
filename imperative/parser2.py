@@ -5,17 +5,20 @@
 import os, json
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import TFun
-from kernel.term import Term, Var, Const
+from kernel.type import TFun, boolT
+from kernel.term import Term, Var, Const, Abs
 from logic import logic
 from logic import basic
 from imperative import imp
 from data import int as hol_int
+from data import list
 from imperative import com
 
 
 grammar = r"""
     ?expr: CNAME -> var_expr
+        | CNAME "." CNAME -> field_expr
+        | CNAME "[" expr "]" -> array_expr
         | INT -> num_expr
         | expr "+" expr -> plus_expr
         | "-" expr -> uminus_expr
@@ -30,6 +33,7 @@ grammar = r"""
         | expr "<" expr -> less_cond
         | "true" -> true_cond
         | "if" cond "then" cond "else" cond -> if_cond
+        | "forall" CNAME "." cond -> forall_cond
         | "(" cond ")"
 
     ?neg: "~" atom_cond -> neg | atom_cond  // Negation: priority 40
@@ -63,6 +67,13 @@ class HoareTransformer(Transformer):
 
     def var_expr(self, s):
         return Var(s, hol_int.intT)
+
+    def field_expr(self, s, fname):
+        assert fname == "length"
+        return list.length(Var(s, list.listT(hol_int.intT)))
+
+    def array_expr(self, s, e):
+        return list.nth(Var(s, list.listT(hol_int.intT)), e)
 
     def num_expr(self, n):
         return hol_int.to_binary_int(int(n))
@@ -118,6 +129,10 @@ class HoareTransformer(Transformer):
 
     def less_cond(self, e1, e2):
         return hol_int.less(e1, e2)
+
+    def forall_cond(self, var_name, body):
+        all_t = Const("all", TFun(TFun(hol_int.intT, boolT), boolT))
+        return all_t(Abs(str(var_name), hol_int.intT, body.abstract_over(Var(var_name, hol_int.intT))))
 
     def skip_cmd(self):
         return com.Skip()
