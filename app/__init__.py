@@ -6,6 +6,7 @@ import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 
+from kernel.term import get_vars
 from kernel.type import HOLType, TVar, Type, TFun
 from kernel import extension, theory
 from syntax import parser, printer, settings
@@ -15,6 +16,7 @@ from logic import induct
 from imperative import parser2
 from imperative import imp
 from prover import z3wrapper
+from server.server import ProofState
 from imperative.parser2 import cond_parser, com_parser
 
 
@@ -225,8 +227,20 @@ def refresh_files():
 def init_empty_proof():
     """Initialize empty proof."""
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
-    cell = server.ProofState.parse_init_state(thy, data)
+    if data['prog_verify'] == 'true':
+        thy = basic.load_theory('hoare')
+        pre = cond_parser.parse(data['pre'])
+        post = cond_parser.parse(data['post'])
+        com = com_parser.parse(data['com'])
+        com.pre = [pre]
+        com.compute_wp(post)
+
+        vc = com.get_vc()[0]
+        As, C = vc.strip_implies()
+        cell = ProofState.init_state(thy, get_vars(vc), As, C)
+    else:
+        thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+        cell = server.ProofState.parse_init_state(thy, data)
     return jsonify(cell.json_data())
 
 
