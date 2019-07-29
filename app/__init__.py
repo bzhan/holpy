@@ -460,42 +460,7 @@ def parse_var_decls(thy, var_decls):
 def check_modify():
     """Check a modified item for validity."""
     data = json.loads(request.get_data().decode("utf-8"))
-    error = {}
     item = data['content']
-    thy = basic.load_theory('list')
-    if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
-        item['vars'] = parse_var_decls(thy, item['vars'])
-
-    if item['ty'] == 'type.ind':
-        T = parser.parse_type(thy, item['data_name'])
-        assert T.ty == HOLType.TYPE and all(argT.ty == HOLType.TVAR for argT in T.args), \
-            "invalid input type."
-        item['name'] = T.name
-        item['args'] = [argT.name for argT in T.args]
-
-        item['constrs'] = []
-        for constr in item['data_content']:
-            if constr:
-                constr = parser.parse_ind_constr(thy, constr)
-                constr['type'] = str(TFun(*(constr['type'] + [T])))
-                item['constrs'].append(constr)
-
-    if item['ty'] == 'def':
-        pass
-
-    if item['ty'] == 'def.ind':
-        item['rules'] = []
-        for prop in item['data_content']:
-            item['rules'].append({'prop': prop})
-
-    if item['ty'] == 'def.pred':
-        T = parser.parse_type(thy, item['type'])
-        item['rules'] = []
-        for content in item['data_content']:
-            thy.add_term_sig(item['name'], T)  # Add this first, for parsing later.
-            ctxt = {'vars': {}, 'consts': {item['name']: T}}
-            name, prop = parser.parse_named_thm(thy, ctxt, content)
-            item['rules'].append({'name': name, 'prop': printer.print_term(thy, prop)})
 
     with open(user_file(data['file_name']), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
@@ -503,6 +468,41 @@ def check_modify():
         thy = basic.load_imported_theory(f_data['imports'], user_info['username'])
         for d in data['prev_list']:
             parser.parse_extension(thy, d)
+
+        if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
+            item['vars'] = parse_var_decls(thy, item['vars'])
+
+        if item['ty'] == 'type.ind':
+            T = parser.parse_type(thy, item['data_name'])
+            assert T.ty == HOLType.TYPE and all(argT.ty == HOLType.TVAR for argT in T.args), \
+                "invalid input type."
+            item['name'] = T.name
+            item['args'] = [argT.name for argT in T.args]
+
+            item['constrs'] = []
+            for constr in item['data_content']:
+                if constr:
+                    constr = parser.parse_ind_constr(thy, constr)
+                    constr['type'] = str(TFun(*(constr['type'] + [T])))
+                    item['constrs'].append(constr)
+
+        if item['ty'] == 'def':
+            pass
+
+        if item['ty'] == 'def.ind':
+            item['rules'] = []
+            for prop in item['data_content']:
+                item['rules'].append({'prop': prop})
+
+        if item['ty'] == 'def.pred':
+            T = parser.parse_type(thy, item['type'])
+            item['rules'] = []
+            for content in item['data_content']:
+                thy.add_term_sig(item['name'], T)  # Add this first, for parsing later.
+                ctxt = {'vars': {}, 'consts': {item['name']: T}}
+                name, prop = parser.parse_named_thm(thy, ctxt, content)
+                item['rules'].append({'name': name, 'prop': printer.print_term(thy, prop)})
+
         file_data_to_output(thy, item)
     except Exception as e:
         exc_detailed = traceback2.format_exc()
@@ -512,7 +512,7 @@ def check_modify():
             "detail_content": exc_detailed
         })
 
-    return jsonify({'content': item, 'error': error})
+    return jsonify({'content': item})
 
 
 @app.route('/api/find-files', methods=['GET'])
