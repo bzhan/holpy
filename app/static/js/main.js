@@ -342,14 +342,6 @@
             var error_id = $(this).next().attr('id');
             var add_num = $(this).attr('name');
             var ty = $(this).attr('data_type');
-            if (ty === 'def.ax')
-                var data_type = 'constant';
-            else if (ty === 'thm' || ty === 'thm.ax')
-                var data_type = 'thm';
-            else if (ty === 'type.ind')
-                var data_type = 'type';
-            else
-                var data_type = 'def';
             var theory_name = $(this).attr('theory_name');
             var number = $(this).attr('name');
             var data = {};
@@ -665,7 +657,6 @@
             if (number) {
                 form.data_name.value = item['name'];
                 form.data_content_constant.value = item['type'];
-                form['number-constant'].value = number;
             }
             $('div[name="constant-' + page_num +'"]').removeClass('hidden-ele');
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
@@ -684,7 +675,6 @@
             else
                 $('label#thm--'+ page_num).text('Axiom');
             if (number) {
-                form['number-thm'].value = number;
                 form.name.value = item['name'];
                 form.prop.value = item['prop'];
                 vars_lines = item['vars_lines']
@@ -718,7 +708,6 @@
                 form.data_name_type.value = item.edit_type;
                 form.data_content_type.textContent = item.constr_output.join('\n');
                 form.data_content_type.rows = item.constr_output.length;
-                form['number-type'].value = number
             }
             $('div[name="type-'+ page_num +'"]').removeClass('hidden-ele');
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
@@ -742,7 +731,6 @@
                     form.content.textContent = item.edit_content.join('\n');
                     form.content.rows = item.edit_content.length;    
                 }
-                form['number-def'].value = number;
                 form.data_name_def.value = item.name;
                 form.data_type_def.value = item.type;
             }
