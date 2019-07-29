@@ -891,7 +891,8 @@
                 "Q": "'a => bool",
                 "R": "'a => bool",
                 "c1": "'a com",
-                "c2": "'a com"
+                "c2": "'a com",
+                "b": "'a => bool"
             }
         },
         {
@@ -924,7 +925,8 @@
     ],
     "description": "Hoare logic",
     "imports": [
-        "function"
+        "function",
+        "int"
     ],
     "name": "hoare"
 }

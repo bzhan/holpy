@@ -41,6 +41,19 @@
             "type": "'a list => nat"
         },
         {
+            "name": "nth",
+            "rules": [
+                {
+                    "prop": "nth (cons x xs) 0 = x"
+                },
+                {
+                    "prop": "nth (cons x xs) (Suc n) = nth xs n"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "'a list => nat => 'a"
+        },
+        {
             "ascii_op": "@",
             "name": "append",
             "rules": [

@@ -1323,7 +1323,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b"
+                "f": "'a => 'b",
+                "y": "'b"
             }
         },
         {
@@ -1878,7 +1879,7 @@
     ],
     "description": "Functions",
     "imports": [
-        "int"
+        "nat"
     ],
     "name": "function"
 }

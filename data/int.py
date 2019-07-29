@@ -52,6 +52,8 @@ def is_less(t):
     return t.is_binop() and t.head == less
 
 def to_binary_int(n):
+    if n < 0:
+        return uminus(to_binary_int(-n))
     if n == 0:
         return zero
     elif n == 1:
@@ -60,11 +62,16 @@ def to_binary_int(n):
         return of_nat(nat.to_binary(n))
 
 def is_binary_int(t):
-    return t == zero or t == one or \
-           (t.is_comb() and t.fun.is_const_name("int_of_nat") and nat.is_binary(t.arg))
+    if t.is_comb() and t.fun.is_const_name("int_uminus"):
+        return is_binary_int(t.arg)
+    else:
+        return t == zero or t == one or \
+               (t.is_comb() and t.fun.is_const_name("int_of_nat") and nat.is_binary(t.arg))
 
 def from_binary_int(t):
     assert is_binary_int(t), "from_binary_int"
+    if t.is_comb() and t.fun.is_const_name("int_uminus"):
+        return -from_binary_int(t.arg)
     if t == zero:
         return 0
     elif t == one:

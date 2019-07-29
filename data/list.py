@@ -2,6 +2,7 @@
 
 from kernel.type import TVar, Type, TFun
 from kernel.term import Term, Const
+from data.nat import natT
 
 """Utility functions for lists."""
 
@@ -69,3 +70,13 @@ def mk_literal_list(ts, T):
         return cons(T)(ts[0], mk_literal_list(ts[1:], T))
     else:
         return nil(T)
+
+def length(xs):
+    """Returns the term length xs."""
+    T = xs.get_type().args[0]
+    return Const("length", TFun(listT(T), natT))(xs)
+
+def nth(xs, n):
+    """Returns the term nth xs n."""
+    T = xs.get_type().args[0]
+    return Const("nth", TFun(listT(T), natT, T))(xs, n)
