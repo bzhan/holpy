@@ -227,7 +227,7 @@ def refresh_files():
 def init_empty_proof():
     """Initialize empty proof."""
     data = json.loads(request.get_data().decode("utf-8"))
-    if data['prog_verify'] == 'true':
+    if 'prog_verify' in data and data['prog_verify'] == 'true':
         thy = basic.load_theory('hoare')
         pre = cond_parser.parse(data['pre'])
         post = cond_parser.parse(data['post'])
