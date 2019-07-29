@@ -8,7 +8,7 @@
 
     // Used to distinguish between click and drag
     var drag = false;
-    var startingPos;
+    var startingPos = [0, 0];
 
     var is_mousedown = false;  // Used to manage mouse click.
 
@@ -351,10 +351,10 @@
             else
                 var data_type = 'def';
             var theory_name = $(this).attr('theory_name');
-            var number = form['number-'+ data_type].value;
+            var number = $(this).attr('name');
             var data = {};
             data.file_name = theory_name;
-            data.prev_list = json_files[theory_name].content.slice(0, number);
+            data.prev_list = json_files[theory_name].content.slice(0, Number(number));
             data.content = make_data(form, ty);
             $.ajax({
                 url: '/api/check-modify',
@@ -371,7 +371,7 @@
                         if (number === '' || number === '-1') {
                             json_files[theory_name].content[add_num] = item;
                         } else {
-                            item = json_files[theory_name].content[number]
+                            item = json_files[theory_name].content[number];
                             for (var key in res.content) {
                                 item[key] = res.content[key];
                             }
