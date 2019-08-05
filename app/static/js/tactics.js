@@ -164,7 +164,7 @@ function apply_method_ajax(input) {
             if ("query" in result) {
                 // Query for more parameters
                 var templ_query = _.template($('#template-query').html());
-                var sig_list = result.query.map(s => s.slice(6));  // get rid of 'param_'
+                var sig_list = result.query.map(s => s === 'names' ? s : s.slice(6));  // get rid of 'param_'
                 var input_html = templ_query({sig_list: sig_list}); 
                 swal({
                     title: "Query for parameters",
@@ -176,7 +176,8 @@ function apply_method_ajax(input) {
                     cancelButtonText: "Cancel",
                     preConfirm: () => {
                         for (let i = 0; i < sig_list.length; i++) {
-                            input["param_"+sig_list[i]] = document.getElementById('sig-input' + (i+1)).value;
+                            sig = sig_list[i] === 'names' ? sig_list[i] : 'param_' + sig_list[i];
+                            input[sig] = document.getElementById('sig-input' + (i+1)).value;
                         }
                     }
                 }).then(function (isConfirm) {
