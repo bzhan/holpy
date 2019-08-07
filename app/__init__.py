@@ -18,9 +18,11 @@ from imperative import imp
 from prover import z3wrapper
 from server.server import ProofState
 from imperative.parser2 import cond_parser, com_parser
+from flask_cors import CORS
 
 
 app = Flask(__name__, static_url_path='/static')
+CORS(app)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config.from_object('config')
@@ -52,7 +54,8 @@ def proof_area_template():
 # Program verification homepage
 @app.route('/program', methods=['POST', 'GET'])
 def index_program():
-    return render_template('prog_verify.html')
+    # return render_template('prog_verify.html')
+    return redirect('http://localhost:8080')
 
 # Verifying a program
 @app.route('/program_verify', methods=['POST', 'GET'])

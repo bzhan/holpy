@@ -1,7 +1,5 @@
 // Interface for program verification.
 
-var cells = {}
-
 var vm = new Vue({
     el: 'div#wrap',
     data: {
