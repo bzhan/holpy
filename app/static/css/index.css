@@ -7,9 +7,8 @@ body {
     overflow: hidden;
 }
 
-textarea {
-    font-family: Consolas, monospace;
-    font-weight: bold;
+input, textarea {
+    font-family: monospace;
 }
 
 a, a:visited, a:link, .quasilink {
@@ -261,7 +260,6 @@ textarea.form-control.content {
 
 textarea {
     overflow-x: none;
-    font-family: monospace;
 }
 
 #variables {
