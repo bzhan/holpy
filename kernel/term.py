@@ -349,8 +349,7 @@ class Term():
         all to be in abstraction form.
         
         """
-        return self.is_comb() and self.fun.is_const() and \
-            self.fun.name == "all" and self.arg.is_abs()
+        return self.is_comb() and self.fun.is_const_name("all") and self.arg.is_abs()
 
     def mk_all(x, body):
         """Given a variable x and a term t possibly depending on x, return

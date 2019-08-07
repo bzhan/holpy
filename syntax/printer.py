@@ -7,7 +7,7 @@ from kernel import term
 from kernel.term import Term, OpenTermException
 from kernel.extension import Extension
 from kernel import proof
-from syntax.operator import OperatorData, get_info_for_fun
+from syntax import operator
 from syntax import settings
 from syntax import infertype
 from util import name
@@ -116,18 +116,17 @@ def print_term(thy, t):
     from data import set
     from data import function
     from data import interval
-    
-    def get_info_for_operator(t):
-        return get_info_for_fun(thy, t.head)
 
     def get_priority(t):
         if nat.is_binary(t) or list.is_literal_list(t):
             return 100  # Nat atom case
         elif t.is_comb():
-            op_data = get_info_for_operator(t)
+            op_data = operator.get_info_for_fun(thy, t.head)
+            binder_data = operator.get_binder_info_for_fun(thy, t.head)
+
             if op_data is not None:
                 return op_data.priority
-            elif t.is_all() or logic.is_exists(t) or logic.is_if(t):
+            elif binder_data is not None or logic.is_if(t):
                 return 10
             else:
                 return 95  # Function application
@@ -137,8 +136,6 @@ def print_term(thy, t):
             return 100  # Atom case
 
     def helper(t, bd_vars):
-        LEFT, RIGHT = OperatorData.LEFT_ASSOC, OperatorData.RIGHT_ASSOC
-
         # Some special cases:
         # Natural numbers:
         if t.is_const_name("zero") or t.is_const_name("one") or \
@@ -197,15 +194,17 @@ def print_term(thy, t):
                 return N(t.name)
 
         elif t.is_comb():
-            op_data = get_info_for_operator(t)
+            op_data = operator.get_info_for_fun(thy, t.head)
+            binder_data = operator.get_binder_info_for_fun(thy, t.head)
+
             # First, we take care of the case of operators
-            if op_data and op_data.arity == OperatorData.BINARY and t.is_binop():
+            if op_data and op_data.arity == operator.BINARY and t.is_binop():
                 arg1, arg2 = t.args
 
                 # Obtain output for first argument, enclose in parenthesis
                 # if necessary.
-                if (op_data.assoc == LEFT and get_priority(arg1) < op_data.priority or
-                    op_data.assoc == RIGHT and get_priority(arg1) <= op_data.priority):
+                if (op_data.assoc == operator.LEFT and get_priority(arg1) < op_data.priority or
+                    op_data.assoc == operator.RIGHT and get_priority(arg1) <= op_data.priority):
                     str_arg1 = N("(") + helper(arg1, bd_vars) + N(")")
                 else:
                     str_arg1 = helper(arg1, bd_vars)
@@ -217,8 +216,8 @@ def print_term(thy, t):
 
                 # Obtain output for second argument, enclose in parenthesis
                 # if necessary.
-                if (op_data.assoc == LEFT and get_priority(arg2) <= op_data.priority or
-                    op_data.assoc == RIGHT and get_priority(arg2) < op_data.priority):
+                if (op_data.assoc == operator.LEFT and get_priority(arg2) <= op_data.priority or
+                    op_data.assoc == operator.RIGHT and get_priority(arg2) < op_data.priority):
                     str_arg2 = N("(") + helper(arg2, bd_vars) + N(")")
                 else:
                     str_arg2 = helper(arg2, bd_vars)
@@ -226,7 +225,7 @@ def print_term(thy, t):
                 return str_arg1 + str_op + str_arg2
 
             # Unary case
-            elif op_data and op_data.arity == OperatorData.UNARY:
+            elif op_data and op_data.arity == operator.UNARY:
                 if settings.unicode() and op_data.unicode_op:
                     str_op = N(op_data.unicode_op)
                 else:
@@ -240,8 +239,12 @@ def print_term(thy, t):
                 return str_op + str_arg
 
             # Next, the case of binders
-            elif t.is_all():
-                all_str = "!" if not settings.unicode() else "∀"
+            elif binder_data and t.arg.is_abs():
+                if settings.unicode() and binder_data.unicode_op:
+                    binder_str = binder_data.unicode_op
+                else:
+                    binder_str = binder_data.ascii_op
+
                 var_names = [v.name for v in term.get_vars(t.arg.body)]
                 nm = name.get_variant_name(t.arg.var_name, var_names)
                 if hasattr(t.arg, "print_type"):
@@ -250,43 +253,7 @@ def print_term(thy, t):
                     var_str = B(nm)
                 body_repr = helper(t.arg.body, [nm] + bd_vars)
 
-                return N(all_str) + var_str + N(". ") + body_repr
-
-            elif logic.is_exists(t):
-                exists_str = "?" if not settings.unicode() else "∃"
-                var_names = [v.name for v in term.get_vars(t.arg.body)]
-                nm = name.get_variant_name(t.arg.var_name, var_names)
-                if hasattr(t.arg, "print_type"):
-                    var_str = B(nm) + N("::") + print_type(thy, t.arg.var_T)
-                else:
-                    var_str = B(nm)
-                body_repr = helper(t.arg.body, [nm] + bd_vars)
-
-                return N(exists_str) + var_str + N(". ") + body_repr
-
-            elif logic.is_exists1(t):
-                exists1_str = "?!" if not settings.unicode() else "∃!"
-                var_names = [v.name for v in term.get_vars(t.arg.body)]
-                nm = name.get_variant_name(t.arg.var_name, var_names)
-                if hasattr(t.arg, "print_type"):
-                    var_str = B(nm) + N("::") + print_type(thy, t.arg.var_T)
-                else:
-                    var_str = B(nm)
-                body_repr = helper(t.arg.body, [nm] + bd_vars)
-
-                return N(exists1_str) + var_str + N(". ") + body_repr
-
-            elif logic.is_the(t):
-                the_str = "THE "
-                var_names = [v.name for v in term.get_vars(t.arg.body)]
-                nm = name.get_variant_name(t.arg.var_name, var_names)
-                if hasattr(t.arg, "print_type"):
-                    var_str = B(nm) + N("::") + print_type(thy, t.arg.var_T)
-                else:
-                    var_str = B(nm)
-                body_repr = helper(t.arg.body, [nm] + bd_vars)
-
-                return N(the_str) + var_str + N(". ") + body_repr    
+                return N(binder_str) + var_str + N(". ") + body_repr
 
             # Function update
             elif function.is_fun_upd(t):
