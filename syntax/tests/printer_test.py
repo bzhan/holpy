@@ -105,6 +105,8 @@ class PrinterTest(unittest.TestCase):
             (eq(A, all(a, P(a))), "A <--> (!a. P a)"),
             (exists(a, P(a)), "?a. P a"),
             (exists(a, all(b, R(a, b))), "?a. !b. R a b"),
+            (logic.mk_exists1(a, P(a)), "?!a. P a"),
+            (logic.mk_the(a, P(a)), "THE a. P a"),
             (all(a, exists(b, R(a, b))), "!a. ?b. R a b"),
 
             # If

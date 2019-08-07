@@ -264,6 +264,30 @@ def print_term(thy, t):
 
                 return N(exists_str) + var_str + N(". ") + body_repr
 
+            elif logic.is_exists1(t):
+                exists1_str = "?!" if not settings.unicode() else "∃!"
+                var_names = [v.name for v in term.get_vars(t.arg.body)]
+                nm = name.get_variant_name(t.arg.var_name, var_names)
+                if hasattr(t.arg, "print_type"):
+                    var_str = B(nm) + N("::") + print_type(thy, t.arg.var_T)
+                else:
+                    var_str = B(nm)
+                body_repr = helper(t.arg.body, [nm] + bd_vars)
+
+                return N(exists1_str) + var_str + N(". ") + body_repr
+
+            elif logic.is_the(t):
+                the_str = "THE "
+                var_names = [v.name for v in term.get_vars(t.arg.body)]
+                nm = name.get_variant_name(t.arg.var_name, var_names)
+                if hasattr(t.arg, "print_type"):
+                    var_str = B(nm) + N("::") + print_type(thy, t.arg.var_T)
+                else:
+                    var_str = B(nm)
+                body_repr = helper(t.arg.body, [nm] + bd_vars)
+
+                return N(the_str) + var_str + N(". ") + body_repr    
+
             # Function update
             elif function.is_fun_upd(t):
                 f, upds = function.strip_fun_upd(t)

@@ -162,6 +162,8 @@ class ParserTest(unittest.TestCase):
             ("?x. !y. R x y", "bool"),
             ("!x. ?y. R x y", "bool"),
             ("!a. P a", "bool"),
+            ("?!a. P a", "bool"),
+            ("THE a. P a", "'a"),
 
             # If expression
             ("if A then a else b", "'a"),

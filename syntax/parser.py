@@ -36,6 +36,10 @@ grammar = r"""
         | ("!"|"∀") CNAME ". " term           -> all_notype
         | ("?"|"∃") CNAME "::" type ". " term -> exists  // Exists quantification
         | ("?"|"∃") CNAME ". " term           -> exists_notype
+        | ("?!"|"∃!") CNAME "::" type ". " term -> exists1   // Exists unique
+        | ("?!"|"∃!") CNAME ". " term         -> exists1_notype
+        | "THE" CNAME "::" type ". " term -> the         // THE operator
+        | "THE" CNAME ". " term -> the_notype
         | "[]"                     -> literal_list  // Empty list
         | "[" term ("," term)* "]" -> literal_list  // List
         | ("{}"|"∅")               -> literal_set   // Empty set
@@ -211,6 +215,22 @@ class HOLTransformer(Transformer):
     def exists_notype(self, var_name, body):
         exists_t = Const("exists", None)
         return exists_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
+
+    def exists1(self, var_name, T, body):
+        exists1_t = Const("exists1", None)
+        return exists1_t(Abs(str(var_name), T, body.abstract_over(Var(var_name, None))))
+
+    def exists1_notype(self, var_name, body):
+        exists1_t = Const("exists1", None)
+        return exists1_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
+
+    def the(self, var_name, T, body):
+        the_t = Const("The", None)
+        return the_t(Abs(str(var_name), T, body.abstract_over(Var(var_name, None))))
+
+    def the_notype(self, var_name, body):
+        the_t = Const("The", None)
+        return the_t(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
     def collect_set(self, var_name, T, body):
         from data import set
