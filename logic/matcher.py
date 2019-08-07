@@ -78,9 +78,6 @@ def is_pattern_list(ts, matched_vars):
         if is_pattern(ts[0], matched_vars):
             all_vars = list(set(matched_vars + [v.name for v in term.get_vars(ts[0])]))
             return is_pattern_list(ts[1:], all_vars)
-        elif is_pattern_list(ts[1:], matched_vars):
-            all_vars = list(set(matched_vars + [v.name for v in term.get_vars(ts[1:])]))
-            return is_pattern(ts[0], all_vars)
         else:
             return False
 
@@ -96,7 +93,7 @@ def first_order_match_incr(pat, t, instsp):
 
     def match(pat, t, instsp, bd_vars):
         tyinst, inst = instsp
-        # print("Match", pat, "with", t)
+        # print("Match", pat, "with", t, "inst", inst)
         if pat.head.is_var() and pat.head.name.startswith('_'):
             # Case where the head of the function is a variable.
             if pat.head.name not in inst:
