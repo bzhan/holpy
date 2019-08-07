@@ -47,6 +47,18 @@
             "type": "bool => 'a => 'a => 'a"
         },
         {
+            "name": "The",
+            "ty": "def.ax",
+            "type": "('a => bool) => 'a"
+        },
+        {
+            "attributes": [],
+            "name": "exists1",
+            "prop": "exists1 P <--> (∃x. P x ∧ ∀y. P y ⟶ y = x)",
+            "ty": "def",
+            "type": "('a => bool) => bool"
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
@@ -227,6 +239,16 @@
                 "P": "bool",
                 "x": "'a",
                 "y": "'a"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "the_equality",
+            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ The (λx. P x) = a",
+            "ty": "thm.ax",
+            "vars": {
+                "P": "'a => bool",
+                "a": "'a"
             }
         },
         {
@@ -677,6 +699,25 @@
             "vars": {
                 "x": "'a",
                 "y": "'a"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "theI",
+            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ P (The (λx. P x))",
+            "ty": "thm",
+            "vars": {
+                "P": "'a => bool",
+                "a": "'a"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "theI'",
+            "prop": "∃!x. P x ⟶ P (THE x. P x)",
+            "ty": "thm",
+            "vars": {
+                "P": "'a => bool"
             }
         }
     ],

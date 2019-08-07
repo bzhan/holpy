@@ -78,8 +78,7 @@ def is_neg(t):
 
 def is_exists(t):
     """Whether t is of the form ?x. P x."""
-    return t.is_comb() and t.fun.is_const() and \
-        t.fun.name == "exists" and t.arg.is_abs()
+    return t.is_comb() and t.fun.is_const_name("exists") and t.arg.is_abs()
 
 def mk_exists(x, body):
     """Given a variable x and a term P possibly depending on x, return
@@ -89,6 +88,32 @@ def mk_exists(x, body):
     assert x.is_var(), "mk_exists"
     exists_t = Const("exists", TFun(TFun(x.T, boolT), boolT))
     return exists_t(Term.mk_abs(x, body))
+
+def is_exists1(t):
+    """Whether t is of the form ?!x. P x."""
+    return t.is_comb() and t.fun.is_const_name("exists1") and t.arg.is_abs()
+
+def mk_exists1(x, body):
+    """Given a variable x and a term P possibly depending on x, return
+    the term ?!x. P.
+
+    """
+    assert x.is_var(), "mk_exists1"
+    exists1_t = Const("exists1", TFun(TFun(x.T, boolT), boolT))
+    return exists1_t(Term.mk_abs(x, body))
+
+def is_the(t):
+    """Whether t is of the form THE x. P x."""
+    return t.is_comb() and t.fun.is_const_name("The") and t.arg.is_abs()
+
+def mk_the(x, body):
+    """Given a variable x and a term P possibly depending on x, return
+    the term THE x. P.
+
+    """
+    assert x.is_var(), "mk_the"
+    the_t = Const("The", TFun(TFun(x.T, boolT), x.T))
+    return the_t(Term.mk_abs(x, body))
 
 def subst_norm(t, instsp):
     """Substitute using the given instantiation, then normalize with
