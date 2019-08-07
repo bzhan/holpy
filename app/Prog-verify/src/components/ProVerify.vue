@@ -14,9 +14,8 @@
         <br><pre class="display-con">{{ program }}</pre>
         <br><pre class="display-res">{{ proof_stat }}</pre>
         <div v-show="proof_process">
-          <textarea spellcheck="false" class="proof_process" v-model="proof_init_stat"></textarea>
+          <ProofArea page_num="1" text="hello" :proof="proof"/>
         </div>
-        <!-- <textarea class="display-con" name="display-area" readonly="readonly">{{ text }}</textarea> -->
       </div>
     </div>
   </div>
@@ -24,12 +23,23 @@
 
 <script>
 import axios from 'axios'
+import ProofArea from '@/components/ProofArea'
 
 export default {
   name: 'ProVerify',
+  components: {
+    ProofArea
+  },
   data () {
     return {
-      program: '', style_file: {background: '#F0F0F0'}, proof_content: '', proof_stat: '', file_data: [], proof_process: false, proof_init_stat: 'upcoming'
+      program: '',
+      style_file: {background: '#F0F0F0'},
+      proof_content: '',
+      proof_stat: '',
+      file_data: [],
+      proof_process: false,
+      proof_init_stat: 'upcoming',
+      proof: 'sample proof',
     }
   },
   methods: {
@@ -44,8 +54,8 @@ export default {
           'prog_verify': 'true'
         }
       }).then(function (res) {
-        let proof = res.data['proof']
-        alert(proof)
+        this.proof = res.data['proof'];
+        alert("here");
       })
     },
     data_process: function (e) {
