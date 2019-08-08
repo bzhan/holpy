@@ -645,7 +645,8 @@ def display_method(state, step):
     fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
                 if 'fact_ids' in step and step['fact_ids'] else []
     search_res = method.search(state, goal_id, fact_ids, data=step)
-    assert len(search_res) == 1, "display_method: %s" % step['method_name']
+    assert len(search_res) == 1, "display_method: %s, %d result found." % (
+        step['method_name'], len(search_res))
     return method.display_step(state, goal_id, search_res[0], fact_ids)
 
 

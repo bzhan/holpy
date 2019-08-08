@@ -392,6 +392,10 @@ class ServerTest(unittest.TestCase):
         """Proof of has_limit f x --> has_limit f y --> x = y."""
         testMethods(self, 'limits', 'has_limit_unique', no_gaps=False, print_proof=True)
 
+    def testTheI(self):
+        """Proof of P a --> (!x. P x --> x = a) --> P (THE x. P x)."""
+        testMethods(self, 'logic_base', 'theI', no_gaps=False, print_proof=True)
+
 
 if __name__ == "__main__":
     unittest.main()

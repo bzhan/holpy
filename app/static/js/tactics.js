@@ -185,6 +185,8 @@ function apply_method_ajax(input) {
                         apply_method_ajax(input);
                     }
                 });
+            } else if ("failed" in result) {
+                display_status(result.failed + ": " + result.message, 'red');
             } else {
                 // Success
                 var id = input.id;

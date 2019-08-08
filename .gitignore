@@ -121,3 +121,6 @@ dmypy.json
 
 # Users directory
 users/*
+
+# node_modules
+node_modules/
