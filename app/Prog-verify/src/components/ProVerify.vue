@@ -5,7 +5,7 @@
         <label for="files" id="set_file" :style="style_file" @mouseover="button_change" @mouseout="button_recover">Please choose a file</label>
         <input type="file" id="files" @change="get_file($event)">
         <div id="program-ver" class="program-ver">
-          <div v-for="vcg in file_data" :key="vcg" @click="data_process($event)">
+          <div v-for="(vcg, index) in file_data" :key="index" @click="data_process($event)">
             <textarea readonly="readonly" class="code-content con" :name="vcg.num" v-model="vcg.com"></textarea>
           </div>
         </div>
