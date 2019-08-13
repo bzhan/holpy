@@ -13,8 +13,9 @@
       <div id="ver-display" class="right">
         <br><pre class="display-con">{{ program }}</pre>
         <br><pre class="display-res">{{ proof_stat }}</pre>
-        <div v-show="proof_process">
-          <ProofArea page_num="1" text="hello" :proof="proof"/>
+        <div v-show="proof_process" class="proofArea">
+          {{proof_init_stat}}<br/>
+          <proof-area page_num="1" :proof="proof"/>
         </div>
       </div>
     </div>
@@ -23,27 +24,26 @@
 
 <script>
 import axios from 'axios'
-import ProofArea from '@/components/ProofArea'
+import proofArea from '@/components/ProofArea'
 
 export default {
   name: 'ProVerify',
   components: {
-    ProofArea
+    proofArea
   },
-  data () {
+  data: () => {
     return {
       program: '',
       style_file: {background: '#F0F0F0'},
-      proof_content: '',
       proof_stat: '',
       file_data: [],
       proof_process: false,
-      proof_init_stat: 'upcoming',
-      proof: 'sample proof',
+      proof_init_stat: 'ProofArea',
+      proof: 'sample proof'
     }
   },
   methods: {
-    proof_init: function (dataRelate) {
+    proof_init: function (dataRelate, that) {
       axios({
         method: 'post',
         url: 'http://127.0.0.1:5000/api/init-empty-proof',
@@ -53,9 +53,8 @@ export default {
           'post': dataRelate['post'],
           'prog_verify': 'true'
         }
-      }).then(function (res) {
-        this.proof = res.data['proof'];
-        alert("here");
+      }).then((res) => {
+        that.proof = res.data.proof
       })
     },
     data_process: function (e) {
@@ -75,8 +74,9 @@ export default {
         this.proof_stat = res.data['proof_stat'][0]
         let failureNum = Number(res.data['proof_stat'][1])
         if (failureNum !== 0) {
+          let that = this
           this.proof_process = true
-          this.methods.proof_init(dataRelate)
+          this.$options.methods.proof_init(dataRelate, that)
         } else {
           this.proof_process = false
         }
@@ -114,6 +114,12 @@ export default {
 
   div.program-ver {
     margin-top: 10%;
+  }
+
+  div.proofArea {
+    width: 80%;
+    margin-left: 4%;
+    margin-top: 3%;
   }
 
   .left{
