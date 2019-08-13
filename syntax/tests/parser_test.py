@@ -263,6 +263,10 @@ class ParserTest(unittest.TestCase):
             ("(2::real)", "real"),
             ("x + 1", "real"),
             ("(1::real) + 2", "real"),
+            ("(2::real) + 1", "real"),
+            ("[(2::real), 3]", "real list"),
+            ("{(2::real), 3}", "real set"),
+            ("{(2::real), 3} Un {4, 5}", "real set"),
         ]
 
         for s, Ts in test_data:

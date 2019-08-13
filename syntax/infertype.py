@@ -5,6 +5,7 @@
 from kernel.type import HOLType, TVar, TFun
 from kernel.term import Term
 from kernel import term
+from data import nat
 from util import unionfind
 
 
@@ -228,7 +229,16 @@ def infer_printed_type(thy, t):
         to_replace, to_replaceT = None, None
         def find_to_replace(t):
             nonlocal to_replace, to_replaceT
-            if t.is_const() and has_internalT(t.T):
+            if (t.is_const_name("zero") or t.is_const_name("one") or \
+                (t.is_comb() and t.fun.is_const_name("of_nat") and nat.is_binary(t.arg))) and \
+                has_internalT(t.get_type()):
+                replT = t.get_type()
+                if t.is_comb():
+                    t = t.fun
+                if to_replace is None or len(str(replT)) < len(str(to_replaceT)):
+                    to_replace = t
+                    to_replaceT = replT
+            elif t.is_const() and has_internalT(t.T):
                 if to_replace is None or len(str(t.T)) < len(str(to_replaceT)):
                     to_replace = t
                     to_replaceT = t.T
