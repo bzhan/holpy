@@ -27,17 +27,23 @@ export default {
       }
       return proof[lineNo + 1].rule === 'intros'
     },
-    display_have_prompt(editor, proof, lineNo, ch) {
-      if (this.$options.methods.is_last_id(proof, lineNo)) {
-        return this.$options.methods.display_str(editor, 'show ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
+    display_have_prompt(editor, proof, lineNo, ch, that) {
+      if (that.$options.methods.is_last_id(proof, lineNo)) {
+        return that.$options.methods.display_str(editor, 'show ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
       } else {
-        return this.$options.methods.display_str(editor, 'have ', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
+        return that.$options.methods.display_str(editor, 'have ', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
       }
     },
-    display_highlight_strs(editor, p, lineNo, ch, that) {
+    display_highlight_str(editor, p, lineNo, ch, that) {
       let color
       if (p[1] === 0) { color = 'color: black' } else if (p[1] === 1) { color = 'color: green' } else if (p[1] === 2) { color = 'color: blue' } else if (p[1] === 3) { color = 'color: purple' } else if (p[1] === 4) { color = 'color: silver' }
       return that.$options.methods.display_str(editor, p[0], lineNo, ch, {css: color})
+    },
+    display_highlight_strs(editor, ps, line_no, ch, that) {
+      for (let i = 0; i < ps.length; i++) {
+          ch = that.$options.methods.display_highlight_str(editor, ps[i], line_no, ch, that);
+      }
+      return ch;
     },
     display_str(editor, str, lineNo, ch, mark) {
       let len = str.length
@@ -65,13 +71,13 @@ export default {
         ch = that.$options.methods.display_str(editor, 'fix ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
         ch = that.$options.methods.display_highlight_strs(editor, line.args_hl, lineNo, ch, that)
       } else if (line.rule === 'subproof') {
-        ch = that.$options.methods.display_have_prompt(editor, proof, lineNo, ch)
+        ch = that.$options.methods.display_have_prompt(editor, proof, lineNo, ch, that)
         ch = that.$options.methods.display_highlight_strs(editor, line.th_hl, lineNo, ch, that)
         ch = that.$options.methods.display_str(editor, ' with', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
       } else {
         // Display theorem with highlight
         if (line.th_hl.length > 0) {
-          ch = that.$options.methods.display_have_prompt(editor, proof, lineNo, ch)
+          ch = that.$options.methods.display_have_prompt(editor, proof, lineNo, ch, that)
           ch = that.$options.methods.display_highlight_strs(editor, line.th_hl, lineNo, ch, that)
           ch = that.$options.methods.display_str(editor, ' by ', lineNo, ch, {css: 'font-weight: bold'})
         }
@@ -143,6 +149,6 @@ export default {
 <style scoped>
   .proofArea {
     width: 100%;
-    hight: 2vh;
+    height: 2vh;
   }
 </style>
