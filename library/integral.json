@@ -1,0 +1,358 @@
+{
+    "content": [
+        {
+            "name": "real_closed_interval",
+            "prop": "real_closed_interval a b = {p. real_less_eq a p & real_less_eq p b}",
+            "ty": "def",
+            "type": "real => real => real set"
+        },
+        {
+            "name": "has_integral",
+            "ty": "def.ax",
+            "type": "(real => real) => real => real set => bool"
+        },
+        {
+            "name": "integrable_on",
+            "prop": "integrable_on f i = ?y. has_integral f y i",
+            "ty": "def",
+            "type": "(real => real) => real set => bool"
+        },
+        {
+            "name": "integral",
+            "prop": "(integral i f = y) = has_integral f y i",
+            "ty": "def",
+            "type": "real set => (real => real) => real"
+        },
+        {
+            "name": "integrable_integral",
+            "prop": "integrable_on f i --> has_integral f (integral i f) i",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real set"
+            }
+        },
+        {
+            "name": "has_integral_integrable",
+            "prop": "has_integral f i s --> integrable_on f s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "has_integral_integral",
+            "prop": "integrable_on f s = has_integral f (integral s f) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "has_integral_unique",
+            "prop": "has_integral f k1 i & has_integral f k2 i --> k1 = k2",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real set",
+                "k1": "real",
+                "k2": "real"
+            }   
+        },
+        {
+            "name": "integral_unique",
+            "prop": "has_integral f y k --> integral k f = y",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "k": "real set",
+                "y": "real"
+            }   
+        },
+        {
+            "name": "has_integral_integrable_integral",
+            "prop": "has_integral f i s = (integrable_on f s & integral s f = i)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "i": "real"
+            }   
+        },
+        {
+            "name": "integral_eq_has_integral",
+            "prop": "integrable_on f s --> ((integral s f = y) = has_integral f y s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "y": "real"
+            }   
+        },
+        {
+            "name": "has_integral_is_0",
+            "prop": "(!x. member x s --> f x = 0) --> has_integral f 0 s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "has_integral_0",
+            "prop": "has_integral (%x. 0) 0 s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "has_integral_0_eq",
+            "prop": "has_integral (%x. 0) i s = (i = 0)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "i": "real"
+            }   
+        },
+        {
+            "name": "has_integral_cmul",
+            "prop": "has_integral f k s --> has_integral (%x. c * f x) (c * k) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "k": "real",
+                "c": "real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "has_integral_neg",
+            "prop": "has_integral f k s --> has_integral (%x. -(f x)) (-k) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "k": "real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "has_integral_add",
+            "prop": "has_integral f k s & has_integral g l s --> has_integral (%x. f x + g x) (k + l) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "k": "real",
+                "l": "real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "has_integral_sub",
+            "prop": "has_integral f k s & has_integral g l s --> has_integral (%x. f x - g x) (k - l) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "k": "real",
+                "l": "real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integral_0",
+            "prop": "integral s (%x. 0) = 0",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integral_add",
+            "prop": "integrable_on f s & integrable_on g s --> integral s (%x. f x + g x) = integral s f + integral s g",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integral_cmul",
+            "prop": "integrable_on f s --> integral s (%x. c * (f x)) = c * integral s f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "c": "real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integral_neg",
+            "prop": "integrable_on f s --> integral s (%x. -(f x)) = - integral s f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                 "s": "real set"
+            }   
+        },
+        {
+            "name": "integral_sub",
+            "prop": "integrable_on f s & integrable_on g s --> integral s (%x. f x - g x) = integral s f - integral s g",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integrable_0",
+            "prop": "integrable_on (%x. 0) s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integrable_add",
+            "prop": "integrable_on f s & integrable_on g s --> integrable_on (%x. f x + g x) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integrable_cmul",
+            "prop": "integrable_on f s --> integrable_on (%x. c * (f x)) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "c": "real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integrable_cmul_eq",
+            "prop": "integrable_on (%x. c * (f x)) s = ((c = 0) | integrable_on f s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "c": "real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integrable_neg",
+            "prop": "integrable_on f s --> integrable_on (%x. -(f x)) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                 "s": "real set"
+            }   
+        },
+        {
+            "name": "integrable_neg_eq",
+            "prop": "integrable_on (%x. -(f x)) s = integrable_on f s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                 "s": "real set"
+            }   
+        },
+        {
+            "name": "integrable_sub",
+            "prop": "integrable_on f s & integrable_on g s --> integrable_on (%x. f x - g x) s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "has_integral_eq",
+            "prop": "(!x. member x s --> f x = g x) & has_integral f k s --> has_integral g k s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "k": "real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "integrable_eq",
+            "prop": "(!x. member x s --> f x = g x) & integrable_on f s --> integrable_on g s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "has_integral_eq_eq",
+            "prop": "(!x. member x s --> f x = g x) --> (has_integral f k s = has_integral g k s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "k": "real",
+                "s": "real set"
+            }   
+        },
+        {
+            "name": "has_integral_null",
+            "prop": "(a = b) --> has_integral f 0 (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "has_integral_null_eq",
+            "prop": "(a = b) --> (has_integral f i (real_closed_interval a b) = (i = 0))",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "integral_null",
+            "prop": "(a = b) --> integral (real_closed_interval a b) f = 0",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "integrable_on_null",
+            "prop": "(a = b) --> integrable_on f (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        }
+        ],
+        "description": "Basic results about integral.",
+        "imports": [
+            "real"
+        ],
+        "name": "integral"
+    }
