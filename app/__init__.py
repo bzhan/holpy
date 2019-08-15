@@ -379,7 +379,10 @@ def file_data_to_output(thy, data):
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
-        ctxt = {'vars': {}, 'consts': {data['name']: T}}
+        parse_name = data['name']
+        if 'overload' in data:
+            parse_name = data['overload']
+        ctxt = {'vars': {}, 'consts': {parse_name: T}}
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
         data['edit_content'] = printer.print_term(thy, prop, unicode=True, highlight=False)
