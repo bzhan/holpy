@@ -348,6 +348,76 @@
                 "a": "real",
                 "b": "real"
             }
+        },
+        {
+            "name": "has_integral_empty",
+            "prop": "has_integral f 0 (empty_set:: real set)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real"
+            }
+        },
+        {
+            "name": "has_integral_empty_eq",
+            "prop": "has_integral f i (empty_set:: real set) = (i = 0)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real"
+            }
+        },
+        {
+            "name": "integrable_on_empty",
+            "prop": "integrable_on f (empty_set:: real set)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real"
+            }
+        },
+        {
+            "name": "integral_empty",
+            "prop": "integral (empty_set:: real set) f = 0 ",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real"
+            }
+        },
+        {
+            "name": "has_integral_refl",
+            "prop": "has_integral f 0 (real_closed_interval a a)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real"
+            }
+        },
+        {
+            "name": "integrable_on_refl",
+            "prop": "integrable_on f (real_closed_interval a a)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real"
+            }
+        },
+        {
+            "name": "integral_refl",
+            "prop": "integral (real_closed_interval a a) f = 0",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real"
+            }
+        },
+        {
+            "name": "interval_split_l",
+            "prop": "(real_closed_interval a b) inter {x. x real_less_eq c} = real_clolsed_interval a (min b c)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
         }
         ],
         "description": "Basic results about integral.",

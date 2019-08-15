@@ -132,6 +132,25 @@
                 "x": "real",
                 "y": "real"
             }
+        },
+        {
+            "name": "real_max",
+            "overload": "max",
+            "prop": "max m n = if m <= n then n else m",
+            "ty": "def",
+            "type": "real => real => real"
+        },
+        {
+            "name": "min",
+            "ty": "def.ax",
+            "type": "'a => 'a => 'a"
+        },
+        {
+            "name": "real_min",
+            "overload": "min",
+            "prop": "min m n = if m <= n then m else n",
+            "ty": "def",
+            "type": "real => real => real"
         }
     ],
     "description": "real numbers",

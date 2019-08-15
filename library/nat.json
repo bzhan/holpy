@@ -3568,12 +3568,24 @@
         },
         {
             "name": "max",
+            "ty": "def.ax",
+            "type": "'a => 'a => 'a"
+        },
+        {
+            "name": "nat_max",
+            "overload": "max",
             "prop": "max m n = if m <= n then n else m",
             "ty": "def",
             "type": "nat => nat => nat"
         },
         {
             "name": "min",
+            "ty": "def.ax",
+            "type": "'a => 'a => 'a"
+        },
+        {
+            "name": "nat_min",
+            "overload": "min",
             "prop": "min m n = if m <= n then m else n",
             "ty": "def",
             "type": "nat => nat => nat"
