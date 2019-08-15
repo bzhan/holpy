@@ -411,7 +411,7 @@
         },
         {
             "name": "interval_split_l",
-            "prop": "(real_closed_interval a b) inter {x. x real_less_eq c} = real_clolsed_interval a (min b c)",
+            "prop": "inter (real_closed_interval a b) {x. x <= c} = real_closed_interval a (min b c)",
             "ty": "thm",
             "vars": {
                 "a": "real",

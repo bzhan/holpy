@@ -375,6 +375,7 @@ def parse_term(thy, ctxt, s):
     """Parse a term."""
     parser_setting['thy'] = thy
     t = term_parser.parse(s)
+    print("parsing: ", s)
     return infertype.type_infer(thy, ctxt, t)
 
 def parse_thm(thy, ctxt, s):
