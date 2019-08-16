@@ -9,16 +9,14 @@ from kernel.type import TFun, boolT
 from kernel.term import Term, Var, Const, Abs
 from logic import logic
 from logic import basic
-from imperative import imp
-from data import int as hol_int
-from data import list
+from imperative import expr
 from imperative import com
 
 
 grammar = r"""
     ?expr: CNAME -> var_expr
-        | CNAME "." CNAME -> field_expr
-        | CNAME "[" expr "]" -> array_expr
+        | expr "." CNAME -> field_expr
+        | expr "[" expr "]" -> array_expr
         | INT -> num_expr
         | expr "+" expr -> plus_expr
         | "-" expr -> uminus_expr
@@ -66,79 +64,71 @@ class HoareTransformer(Transformer):
         pass
 
     def var_expr(self, s):
-        return Var(s, hol_int.intT)
+        return expr.Var(str(s))
 
-    def field_expr(self, s, fname):
-        assert fname == "length"
-        return list.length(Var(s, list.listT(hol_int.intT)))
+    def field_expr(self, ident, fieldname):
+        return expr.Field(ident, fieldname)
 
-    def array_expr(self, s, e):
-        return list.nth(Var(s, list.listT(hol_int.intT)), e)
+    def array_expr(self, ident, idx):
+        return expr.ArrayElt(ident, idx)
 
     def num_expr(self, n):
-        return hol_int.to_binary_int(int(n))
+        return expr.Const(int(n))
 
     def plus_expr(self, e1, e2):
-        return hol_int.plus(e1, e2)
+        return expr.Op("+", e1, e2)
 
     def uminus_expr(self, e):
-        return hol_int.uminus(e)
+        return expr.Op("-", e)
 
     def minus_expr(self, e1, e2):
-        return hol_int.minus(e1, e2)
+        return expr.Op("-", e1, e2)
 
     def times_expr(self, e1, e2):
-        return hol_int.times(e1, e2)
+        return expr.Op("*", e1, e2)
 
     def fun_expr(self, fname, *args):
-        T = hol_int.intT
-        for arg in args:
-            T = TFun(hol_int.intT, T)
-        if fname == "abs":
-            fname = "int_abs"
-        elif fname == "max":
-            fname = "int_max"
-        return Const(fname, T)(*args)
+        assert fname in expr.global_fnames, "Function %s not found" % fname
+        return expr.Fun(fname, *args)
 
     def eq_cond(self, e1, e2):
-        return Term.mk_equals(e1, e2)
+        return expr.Op("==", e1, e2)
 
     def ineq_cond(self, e1, e2):
-        return logic.neg(Term.mk_equals(e1, e2))
+        return expr.Op("!=", e1, e2)
 
-    def if_cond(self, b, b1, b2):
-        return logic.mk_if(b, b1, b2)
+    def if_cond(self, cond, e1, e2):
+        return expr.ITE(cond, e1, e2)
 
     def conj(self, b1, b2):
-        return logic.conj(b1, b2)
+        return expr.Op("&", b1, b2)
 
     def disj(self, b1, b2):
-        return logic.disj(b1, b2)
+        return expr.Op("|", b1, b2)
 
     def imp(self, b1, b2):
-        return Term.mk_implies(b1, b2)
+        return expr.Op("-->", b1, b2)
 
     def neg(self, b):
-        return logic.neg(b)
+        return expr.Op("~", b)
 
     def true_cond(self):
-        return logic.true
+        return expr.Const(True)
 
     def less_eq_cond(self, e1, e2):
-        return hol_int.less_eq(e1, e2)
+        return expr.Op("<=", e1, e2)
 
     def less_cond(self, e1, e2):
-        return hol_int.less(e1, e2)
+        return expr.Op("<", e1, e2)
 
     def forall_cond(self, var_name, body):
-        all_t = Const("all", TFun(TFun(hol_int.intT, boolT), boolT))
-        return all_t(Abs(str(var_name), hol_int.intT, body.abstract_over(Var(var_name, hol_int.intT))))
+        return expr.Forall(expr.Var(var_name), body)
 
     def skip_cmd(self):
         return com.Skip()
 
     def assign_cmd(self, v, e):
-        return com.Assign(v, e)
+        return com.Assign(expr.Var(str(v)), e)
 
     def if_cmd(self, b, c1, c2):
         return com.Cond(b, c1, c2)
@@ -171,4 +161,4 @@ def process_file(input):
             post = cond_parser.parse(run['post'])
             c.pre = [pre]
             c.compute_wp(post)
-            print(c.print_com(thy))
+            # print(c.print_com(thy))

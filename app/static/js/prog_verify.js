@@ -32,7 +32,8 @@ var vm = new Vue({
                 data: {
                     'com': data_relate['com'],
                     'pre': data_relate['pre'],
-                    'post': data_relate['post']
+                    'post': data_relate['post'],
+                    'vars': data_relate['vars']
                 }
             }).then(function (res) {
                 vm.program = res.data['program'];

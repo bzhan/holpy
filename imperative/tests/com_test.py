@@ -5,20 +5,19 @@ import unittest
 from kernel.term import Var, Term, get_vars
 from kernel.thm import Thm
 from logic import basic
-from logic.logic import neg, true
-from data.int import plus, minus, uminus, times, zero, one, intT, less_eq, less
-from imperative.com import Skip, Assign, Seq, Cond, While, print_term
+from imperative.expr import Var, true, eq, neq, neg, plus, minus, uminus, times, less, less_eq, zero, one
+from imperative.com import Skip, Assign, Seq, Cond, While
 from imperative.parser2 import cond_parser
+from imperative import imp
 from server.server import ProofState
 from server import method
 from syntax import printer
 
 thy = basic.load_theory('hoare')
-eq = Term.mk_equals
 
 class ComTest(unittest.TestCase):
     def testPrintCom(self):
-        x = Var('x', intT)
+        x = Var('x')
         test_data = [
             (Skip(), "skip"),
             (Assign("x", plus(x,one)), "x := x + 1"),
@@ -34,8 +33,8 @@ class ComTest(unittest.TestCase):
             self.assertEqual(com.print_com(thy), s)
 
     def testComputeWP(self):
-        a = Var('a', intT)
-        b = Var('b', intT)
+        a = Var('a')
+        b = Var('b')
         test_data = [
             (Skip(), "a <= m", "a <= m"),
             (Assign("m", plus(a,b)), "a <= m", "a <= a + b"),
@@ -49,10 +48,10 @@ class ComTest(unittest.TestCase):
             self.assertEqual(c.compute_wp(post), pre)
 
     def testVCG(self):
-        a = Var('a', intT)
-        b = Var('b', intT)
-        A = Var('A' ,intT)
-        B = Var('B', intT)
+        a = Var('a')
+        b = Var('b')
+        A = Var('A')
+        B = Var('B')
         test_data = [
             (Seq(Assign("m", plus(a,b)), Assign("n", minus(a,b))),
              "0 <= b", "a <= m & n <= a",
@@ -64,13 +63,13 @@ class ComTest(unittest.TestCase):
               "0 <= a & 0 < a --> 0 <= a - 1",
               "0 <= a & ~0 < a --> a == 0"]),
 
-            (While(neg(eq(a,A)), eq(b,times(a,B)), Seq(Assign('b',plus(b,B)), Assign('a',plus(a,one)))),
+            (While(neq(a,A), eq(b,times(a,B)), Seq(Assign('b',plus(b,B)), Assign('a',plus(a,one)))),
              "a == 0 & b == 0", "b == A * B",
              ["a == 0 & b == 0 --> b == a * B",
               "b == a * B & a != A --> b + B == (a + 1) * B",
               "b == a * B & ~a != A --> b == A * B"]),
 
-            (Cond(neg(eq(a,zero)), Assign('a',zero), Skip()),
+            (Cond(neq(a,zero), Assign('a',zero), Skip()),
              "true", "a == 0",
              ["true --> if a != 0 then 0 == 0 else a == 0"]),
         ]
@@ -84,7 +83,7 @@ class ComTest(unittest.TestCase):
             self.assertEqual(c.get_vc(), vcs)
 
     def testVerify(self):
-        a = Var('a', intT)
+        a = Var('a')
         c = Cond(less_eq(zero,a), Assign('c',a), Assign('c', uminus(a)))
         pre = cond_parser.parse("true")
         post = cond_parser.parse("c == abs(a)")
@@ -94,17 +93,18 @@ class ComTest(unittest.TestCase):
         vc = c.get_vc()[0]
         self.assertEqual(vc, cond_parser.parse("true --> if 0 <= a then a == abs(a) else -a == abs(a)"))
 
-        As, C = vc.strip_implies()
-        state = ProofState.init_state(thy, get_vars(vc), As, C)
+        goal = vc.convert_hol({"a": "int"})
+        As, C = goal.strip_implies()
+        state = ProofState.init_state(thy, get_vars(goal), As, C)
         state.rewrite_goal(1, "int_abs_def")
         method.apply_method(state, {
             'method_name': 'z3',
             'goal_id': "1"})
-        self.assertEqual(state.check_proof(no_gaps=True), Thm([], vc))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm([], goal))
 
     def testVerify2(self):
-        m = Var('m', intT)
-        n = Var('n', intT)
+        m = Var('m')
+        n = Var('n')
         c = Cond(less_eq(m,n), Assign('c',n), Assign('c',m))
         pre = cond_parser.parse("true")
         post = cond_parser.parse("c == max(m,n)")
@@ -112,17 +112,17 @@ class ComTest(unittest.TestCase):
         c.compute_wp(post)
 
         vc = c.get_vc()[0]
-        self.assertEqual(vc, cond_parser.parse("true --> if m <= n then n == int_max(m,n) else m == int_max(m,n)"))
+        self.assertEqual(vc, cond_parser.parse("true --> if m <= n then n == max(m,n) else m == max(m,n)"))
 
-        As, C = vc.strip_implies()
-        state = ProofState.init_state(thy, get_vars(vc), As, C)
+        goal = vc.convert_hol({"m": "int", "n": "int"})
+        As, C = goal.strip_implies()
+        state = ProofState.init_state(thy, get_vars(goal), As, C)
         state.rewrite_goal(1, "int_max_def")
         method.apply_method(state, {
             'method_name': 'z3',
             'goal_id': "1"})
-        self.assertEqual(state.check_proof(no_gaps=True), Thm([], vc))
+        self.assertEqual(state.check_proof(no_gaps=True), Thm([], goal))
 
 
 if __name__ == "__main__":
-    # unittest.main()
-    ComTest.testVerify()
+    unittest.main()
