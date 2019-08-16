@@ -76,7 +76,7 @@ a, a:visited, a:link, .quasilink {
 
 .input {
     display: flex;
-    font-family: monospace;
+    font-family: Consolas, monospace;
     margin-top: 20px;
 }
 
