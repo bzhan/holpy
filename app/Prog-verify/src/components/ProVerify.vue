@@ -51,6 +51,7 @@ export default {
           'com': dataRelate['com'],
           'pre': dataRelate['pre'],
           'post': dataRelate['post'],
+          'vars': dataRelate['vars'],
           'prog_verify': 'true'
         }
       }).then((res) => {
@@ -67,7 +68,8 @@ export default {
         data: {
           'com': dataRelate['com'],
           'pre': dataRelate['pre'],
-          'post': dataRelate['post']
+          'post': dataRelate['post'],
+          'vars': dataRelate['vars']
         }
       }).then((res) => {
         this.program = res.data['program']

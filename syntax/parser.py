@@ -86,7 +86,11 @@ grammar = r"""
 
     ?less: less "<" less | less_eq      // Less: priority 50
 
-    ?neg: ("~"|"¬") neg -> neg | less   // Negation: priority 40
+    ?greater_eq: greater_eq (">="|"≥") greater_eq | less   // greater-equal: priority 50
+
+    ?greater: greater ">" greater | greater_eq     // greater: priority 50
+
+    ?neg: ("~"|"¬") neg -> neg | greater   // Negation: priority 40
 
     ?conj: neg ("&"|"∧") conj | neg     // Conjunction: priority 35
 
@@ -257,6 +261,12 @@ class HOLTransformer(Transformer):
 
     def less(self, lhs, rhs):
         return Const("less", None)(lhs, rhs)
+
+    def greater_eq(self, lhs, rhs):
+        return Const("greater_eq", None)(lhs, rhs)
+
+    def greater(self, lhs, rhs):
+        return Const("greater", None)(lhs, rhs)
 
     def append(self, lhs, rhs):
         return Const("append", None)(lhs, rhs)

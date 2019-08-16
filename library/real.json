@@ -111,7 +111,22 @@
         {
             "name": "real_less",
             "overload": "less",
-            "ty": "def.ax",
+            "prop": "less x y = neg(less_eq y x)",
+            "ty": "def",
+            "type": "real => real => bool"
+        },
+        {
+            "name": "real_greater_eq",
+            "overload": "greater_eq",
+            "prop": "greater_eq m n = less_eq n m",
+            "ty": "def",
+            "type": "real => real => bool"
+        },
+        {
+            "name": "real_greater",
+            "overload": "greater",
+            "prop": "greater m n = less n m",
+            "ty": "def",
             "type": "real => real => bool"
         },
         {
@@ -132,6 +147,25 @@
                 "x": "real",
                 "y": "real"
             }
+        },
+        {
+            "name": "real_max",
+            "overload": "max",
+            "prop": "max m n = if m <= n then n else m",
+            "ty": "def",
+            "type": "real => real => real"
+        },
+        {
+            "name": "min",
+            "ty": "def.ax",
+            "type": "'a => 'a => 'a"
+        },
+        {
+            "name": "real_min",
+            "overload": "min",
+            "prop": "min m n = if m <= n then m else n",
+            "ty": "def",
+            "type": "real => real => real"
         }
     ],
     "description": "real numbers",
