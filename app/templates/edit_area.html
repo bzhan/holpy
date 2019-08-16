@@ -36,18 +36,18 @@
             <font color="#006000">
                 <div class="dropdown-box<%=page_num%>">
                     <select id="dropdown_datatype<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;" name="<%=page_num%>">
-                        <option value="thm"><b>Theorem</b></option>
-                        <option value="def.ax"><b>Constant</b></option>
-                        <option value="type.ind"><b>Datatype</b></option>
-                        <option value="def.ind"><b>Function</b></option>
-                        <option value="thm.ax">Axiom</option>
-                        <option value="def.pred">Inductive</option>
-                        <option value="def">Definition</option>
+                        <option value="thm"><b>theorem</b></option>
+                        <option value="def.ax"><b>constant</b></option>
+                        <option value="type.ind"><b>datatype</b></option>
+                        <option value="def.ind"><b>fun</b></option>
+                        <option value="thm.ax">axiom</option>
+                        <option value="def.pred">inductive</option>
+                        <option value="def">definition</option>
                     </select>
                 </div>
             </font>
 
-            <div class="form-group hidden-ele total<%=page_num%>" name="constant-<%=page_num%>">
+            <div name="constant-<%=page_num%>" class="form-group hidden-ele total<%=page_num%>">
                 <div class="col-auto">
                     <div class="data-title<%=page_num%>">
                         <label id="constant--<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;background:transparent;">Constant</label>
@@ -127,7 +127,7 @@
                 <div class="form-group">
                     <div class="col-auto">
                         <div class="data-title<%=page_num%>">
-                            <label id="datatype--<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;background:transparent;">Datatype</label>
+                            <label id="datatype--<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;background:transparent;">datatype</label>
                         </div>
                         <input spellcheck="false" name="data_name_type" id="data-name<%=page_num%>"
                                style="width:30%;background:transparent" class="form-control">
@@ -143,8 +143,8 @@
                 </div>
                 <div class="form-group">
                     <div class="col-auto">
-                        <label style="float:right;height:20%;width:100%;background:transparent">
-                        <pre><%= ext_output %></pre>
+                        <label id="type--ext<%=page_num%>"
+                               style="float:right;height:20%;width:100%;background:transparent">
                         </label>
                     </div>
                 </div>
@@ -153,10 +153,8 @@
             <div name="def-<%=page_num%>" class="hidden-ele total<%=page_num%>" style="position:relative;">
                 <div class="form-group">
                     <div class="col-auto">
-                        <div class="data-tittle">
-                            <label name="<%=page_num%>" for="data-name<%=page_num%>" style="float:left;">
-                                <font color="#006000"><b><%= type_name %></b></font>
-                            </label>
+                        <div class="data-title<%=page_num%>">
+                            <label id="def--<%=page_num%>" style="border:none;font-weight:bold;margin-bottom:5px;color:#006000;background:transparent;">Datatype</label>
                         </div>
                         <div><input spellcheck="false" class="form-control" id="data-name<%=page_num%>"
                                style="margin-left:3%;margin-bottom:3%;margin-right:1%;float:left;width:20%;background:transparent" name="data_name_def">
@@ -182,8 +180,8 @@
                 </div>
                 <div class="form-group">
                     <div class="col-auto">
-                        <label style="float:right;height:20%;width:100%;background:transparent">
-                            <pre><%= ext_output %></pre>
+                        <label id="def--ext<%=page_num%>"
+                               style="float:right;height:20%;width:100%;background:transparent">
                         </label>
                     </div>
                 </div>

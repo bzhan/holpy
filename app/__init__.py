@@ -372,12 +372,6 @@ def file_data_to_output(thy, data):
         # Obtain items added by the extension
         data['ext_output'] = str_of_extension(thy, exts)
 
-        # Type of the item (for display)
-        if data['ty'] == 'def.ind':
-            data['type_name'] = 'fun'
-        else:  # data['ty'] == 'def.pred':
-            data['type_name'] = 'inductive'
-
     elif data['ty'] == 'def':
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
@@ -389,7 +383,6 @@ def file_data_to_output(thy, data):
         prop = parser.parse_term(thy, ctxt, data['prop'])
         data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
         data['edit_content'] = printer.print_term(thy, prop, unicode=True, highlight=False)
-        data['type_name'] = 'definition'
 
     # Ignore other types of information.
     else:
