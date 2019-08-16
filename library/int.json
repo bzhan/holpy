@@ -78,6 +78,9 @@
             "type": "int"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "int_abs",
             "overload": "abs",
             "prop": "int_abs n = (if int_zero <= n then n else -n)",

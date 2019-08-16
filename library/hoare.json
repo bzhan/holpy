@@ -890,9 +890,9 @@
                 "P": "'a => bool",
                 "Q": "'a => bool",
                 "R": "'a => bool",
+                "b": "'a => bool",
                 "c1": "'a com",
-                "c2": "'a com",
-                "b": "'a => bool"
+                "c2": "'a com"
             }
         },
         {
@@ -921,6 +921,62 @@
         {
             "name": "vcg",
             "ty": "method"
+        },
+        {
+            "attributes": [],
+            "name": "abs_test",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "true",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "true ⊢ true"
+                },
+                {
+                    "args": "if 0 ≤ a then a = (if 0 ≤ a then a else -a) else -a = (if 0 ≤ a then a else -a)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ if 0 ≤ a then a = (if 0 ≤ a then a else -a) else -a = (if 0 ≤ a then a else -a)"
+                },
+                {
+                    "args": "int_abs_def, if 0 ≤ a then a = abs a else -a = abs a",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "true ⊢ if 0 ≤ a then a = abs a else -a = abs a"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ true ⟶ (if 0 ≤ a then a = abs a else -a = abs a)"
+                }
+            ],
+            "prop": "true ⟶ if 0 ≤ a then a = abs a else -a = abs a",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "int_abs_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "int"
+            }
         }
     ],
     "description": "Hoare logic",
