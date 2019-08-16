@@ -4,6 +4,7 @@ import unittest
 
 from logic import basic
 from imperative import parser2
+from imperative import imp
 
 thy = basic.load_theory('int')
 

@@ -70,7 +70,7 @@ def verify():
     com.compute_wp(post)
     vcs = com.get_vc()
     for vc in vcs:
-        if z3wrapper.solve(vc):
+        if z3wrapper.solve(vc.convert_hol(data['vars'])):
             proof_success += 1
         else:
             proof_failure += 1
@@ -238,7 +238,7 @@ def init_empty_proof():
         com.pre = [pre]
         com.compute_wp(post)
 
-        vc = com.get_vc()[0]
+        vc = com.get_vc()[0].convert_hol(data['vars'])
         As, C = vc.strip_implies()
         cell = ProofState.init_state(thy, get_vars(vc), As, C)
     else:

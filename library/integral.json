@@ -1,7 +1,7 @@
 {
     "content": [
         {
-            "attribute": [
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "real_closed_interval",
@@ -15,7 +15,7 @@
             "type": "(real => real) => real => real set => bool"
         },
         {
-            "attribute": [
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "integrable_on",
@@ -24,7 +24,7 @@
             "type": "(real => real) => real set => bool"
         },
         {
-            "attribute": [
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "integral",
@@ -33,8 +33,8 @@
             "type": "real set => (real => real) => real"
         },
         {
-            "attribute": [
-                "hint_rewrite"
+            "attributes": [
+                "hint_backward"
             ],
             "name": "integrable_integral",
             "prop": "integrable_on f i --> has_integral f (integral i f) i",
@@ -45,8 +45,8 @@
             }
         },
         {
-            "attribute": [
-                "hint_rewrite"
+            "attributes": [
+                "hint_forward"
             ],
             "name": "has_integral_integrable",
             "num_gaps": 0,
@@ -109,7 +109,129 @@
         },
         {
             "name": "has_integral_integral",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ integrable_on f s ⟶ has_integral f (integral s f) s"
+                },
+                {
+                    "args": "integrable_on f s",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "integrable_on f s ⊢ integrable_on f s"
+                },
+                {
+                    "args": "integrable_integral",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "integrable_on f s ⊢ has_integral f (integral s f) s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ integrable_on f s ⟶ has_integral f (integral s f) s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ has_integral f (integral s f) s ⟶ integrable_on f s"
+                },
+                {
+                    "args": "has_integral f (integral s f) s",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_integral f (integral s f) s ⊢ has_integral f (integral s f) s"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λa. has_integral f a s, a: integral s f}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_integral f (integral s f) s ⊢ ∃a. has_integral f a s"
+                },
+                {
+                    "args": "integrable_on_def, integrable_on f s",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_integral f (integral s f) s ⊢ integrable_on f s"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_integral f (integral s f) s ⟶ integrable_on f s"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ integrable_on f s ⟷ has_integral f (integral s f) s"
+                }
+            ],
             "prop": "integrable_on f s = has_integral f (integral s f) s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "integrable_integral"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "integrable_on_def"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "param_a": "integral s f",
+                    "theorem": "exI"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "real => real",
