@@ -493,6 +493,19 @@
                 "b": "real",
                 "c": "real"
             }
+        },
+        {
+            "name": "has_ingegral_split",
+            "prop": "has_integral f i (inter (real_closed_interval a b) {x. x <= c}) & has_integral f j (inter (real_closed_interval a b) {x. x >= c}) --> has_integral f (i + j) (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "j": "real",
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
         }
     ],
     "description": "Basic results about integral.",
