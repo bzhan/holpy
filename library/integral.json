@@ -1,6 +1,9 @@
 {
     "content": [
         {
+            "attribute": [
+                "hint_rewrite"
+            ],
             "name": "real_closed_interval",
             "prop": "real_closed_interval a b = {p. real_less_eq a p & real_less_eq p b}",
             "ty": "def",
@@ -12,18 +15,27 @@
             "type": "(real => real) => real => real set => bool"
         },
         {
+            "attribute": [
+                "hint_rewrite"
+            ],
             "name": "integrable_on",
             "prop": "integrable_on f i = ?y. has_integral f y i",
             "ty": "def",
             "type": "(real => real) => real set => bool"
         },
         {
+            "attribute": [
+                "hint_rewrite"
+            ],
             "name": "integral",
-            "prop": "(integral i f = y) = has_integral f y i",
+            "prop": "integral i f = THE y. has_integral f y i",
             "ty": "def",
             "type": "real set => (real => real) => real"
         },
         {
+            "attribute": [
+                "hint_rewrite"
+            ],
             "name": "integrable_integral",
             "prop": "integrable_on f i --> has_integral f (integral i f) i",
             "ty": "thm",
@@ -33,8 +45,61 @@
             }
         },
         {
+            "attribute": [
+                "hint_rewrite"
+            ],
             "name": "has_integral_integrable",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_integral f i s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_integral f i s ⊢ has_integral f i s"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λy. has_integral f y s, a: i}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_integral f i s ⊢ ∃a. has_integral f a s"
+                },
+                {
+                    "args": "integrable_on_def, integrable_on f s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_integral f i s ⊢ integrable_on f s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_integral f i s ⟶ integrable_on f s"
+                }
+            ],
             "prop": "has_integral f i s --> integrable_on f s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "integrable_on_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "inst_exists_goal",
+                    "s": "i"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "real => real",
@@ -60,7 +125,7 @@
                 "i": "real set",
                 "k1": "real",
                 "k2": "real"
-            }   
+            }
         },
         {
             "name": "integral_unique",
@@ -70,7 +135,7 @@
                 "f": "real => real",
                 "k": "real set",
                 "y": "real"
-            }   
+            }
         },
         {
             "name": "has_integral_integrable_integral",
@@ -78,9 +143,9 @@
             "ty": "thm",
             "vars": {
                 "f": "real => real",
-                "s": "real set",
-                "i": "real"
-            }   
+                "i": "real",
+                "s": "real set"
+            }
         },
         {
             "name": "integral_eq_has_integral",
@@ -90,7 +155,7 @@
                 "f": "real => real",
                 "s": "real set",
                 "y": "real"
-            }   
+            }
         },
         {
             "name": "has_integral_is_0",
@@ -99,7 +164,7 @@
             "vars": {
                 "f": "real => real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "has_integral_0",
@@ -107,27 +172,27 @@
             "ty": "thm",
             "vars": {
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "has_integral_0_eq",
             "prop": "has_integral (%x. 0) i s = (i = 0)",
             "ty": "thm",
             "vars": {
-                "s": "real set",
-                "i": "real"
-            }   
+                "i": "real",
+                "s": "real set"
+            }
         },
         {
             "name": "has_integral_cmul",
             "prop": "has_integral f k s --> has_integral (%x. c * f x) (c * k) s",
             "ty": "thm",
             "vars": {
+                "c": "real",
                 "f": "real => real",
                 "k": "real",
-                "c": "real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "has_integral_neg",
@@ -137,7 +202,7 @@
                 "f": "real => real",
                 "k": "real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "has_integral_add",
@@ -149,7 +214,7 @@
                 "k": "real",
                 "l": "real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "has_integral_sub",
@@ -161,7 +226,7 @@
                 "k": "real",
                 "l": "real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integral_0",
@@ -169,7 +234,7 @@
             "ty": "thm",
             "vars": {
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integral_add",
@@ -179,17 +244,17 @@
                 "f": "real => real",
                 "g": "real => real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integral_cmul",
             "prop": "integrable_on f s --> integral s (%x. c * (f x)) = c * integral s f",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
                 "c": "real",
+                "f": "real => real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integral_neg",
@@ -197,8 +262,8 @@
             "ty": "thm",
             "vars": {
                 "f": "real => real",
-                 "s": "real set"
-            }   
+                "s": "real set"
+            }
         },
         {
             "name": "integral_sub",
@@ -208,7 +273,7 @@
                 "f": "real => real",
                 "g": "real => real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integrable_0",
@@ -216,7 +281,7 @@
             "ty": "thm",
             "vars": {
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integrable_add",
@@ -226,27 +291,27 @@
                 "f": "real => real",
                 "g": "real => real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integrable_cmul",
             "prop": "integrable_on f s --> integrable_on (%x. c * (f x)) s",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
                 "c": "real",
+                "f": "real => real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integrable_cmul_eq",
             "prop": "integrable_on (%x. c * (f x)) s = ((c = 0) | integrable_on f s)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
                 "c": "real",
+                "f": "real => real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integrable_neg",
@@ -254,8 +319,8 @@
             "ty": "thm",
             "vars": {
                 "f": "real => real",
-                 "s": "real set"
-            }   
+                "s": "real set"
+            }
         },
         {
             "name": "integrable_neg_eq",
@@ -263,8 +328,8 @@
             "ty": "thm",
             "vars": {
                 "f": "real => real",
-                 "s": "real set"
-            }   
+                "s": "real set"
+            }
         },
         {
             "name": "integrable_sub",
@@ -274,7 +339,7 @@
                 "f": "real => real",
                 "g": "real => real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "has_integral_eq",
@@ -285,7 +350,7 @@
                 "g": "real => real",
                 "k": "real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "integrable_eq",
@@ -295,7 +360,7 @@
                 "f": "real => real",
                 "g": "real => real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "has_integral_eq_eq",
@@ -306,16 +371,16 @@
                 "g": "real => real",
                 "k": "real",
                 "s": "real set"
-            }   
+            }
         },
         {
             "name": "has_integral_null",
             "prop": "(a = b) --> has_integral f 0 (real_closed_interval a b)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
                 "a": "real",
-                "b": "real"
+                "b": "real",
+                "f": "real => real"
             }
         },
         {
@@ -323,10 +388,10 @@
             "prop": "(a = b) --> (has_integral f i (real_closed_interval a b) = (i = 0))",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "i": "real",
                 "a": "real",
-                "b": "real"
+                "b": "real",
+                "f": "real => real",
+                "i": "real"
             }
         },
         {
@@ -334,9 +399,9 @@
             "prop": "(a = b) --> integral (real_closed_interval a b) f = 0",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
                 "a": "real",
-                "b": "real"
+                "b": "real",
+                "f": "real => real"
             }
         },
         {
@@ -344,9 +409,9 @@
             "prop": "(a = b) --> integrable_on f (real_closed_interval a b)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
                 "a": "real",
-                "b": "real"
+                "b": "real",
+                "f": "real => real"
             }
         },
         {
@@ -387,8 +452,8 @@
             "prop": "has_integral f 0 (real_closed_interval a a)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "a": "real"
+                "a": "real",
+                "f": "real => real"
             }
         },
         {
@@ -396,8 +461,8 @@
             "prop": "integrable_on f (real_closed_interval a a)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "a": "real"
+                "a": "real",
+                "f": "real => real"
             }
         },
         {
@@ -405,8 +470,8 @@
             "prop": "integral (real_closed_interval a a) f = 0",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "a": "real"
+                "a": "real",
+                "f": "real => real"
             }
         },
         {
@@ -418,11 +483,21 @@
                 "b": "real",
                 "c": "real"
             }
+        },
+        {
+            "name": "interval_split_r",
+            "prop": "inter (real_closed_interval a b) {x. x >= c} = real_closed_interval (max a c) b",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
         }
-        ],
-        "description": "Basic results about integral.",
-        "imports": [
-            "real"
-        ],
-        "name": "integral"
-    }
+    ],
+    "description": "Basic results about integral.",
+    "imports": [
+        "real"
+    ],
+    "name": "integral"
+}

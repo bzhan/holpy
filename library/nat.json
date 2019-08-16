@@ -2527,6 +2527,18 @@
             "type": "'a => 'a => bool"
         },
         {
+            "ascii_op": ">=",
+            "name": "greater_eq",
+            "ty": "def.ax",
+            "type": "'a => 'a => bool"
+        },
+        {
+            "ascii_op": ">",
+            "name": "greater",
+            "ty": "def.ax",
+            "type": "'a => 'a => bool"
+        },
+        {
             "name": "nat_less_eq",
             "overload": "less_eq",
             "rules": [
@@ -2552,6 +2564,20 @@
                 }
             ],
             "ty": "def.ind",
+            "type": "nat => nat => bool"
+        },
+        {
+            "name": "nat_greater_eq",
+            "overload": "greater_eq",
+            "prop": "greater_eq m n = less_eq n m",
+            "ty": "def",
+            "type": "nat => nat => bool"
+        },
+        {
+            "name": "nat_greater",
+            "overload": "greater",
+            "prop": "greater m n = less n m",
+            "ty": "def",
             "type": "nat => nat => bool"
         },
         {
