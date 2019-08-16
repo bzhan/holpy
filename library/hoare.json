@@ -977,6 +977,63 @@
             "vars": {
                 "a": "int"
             }
+        },
+        {
+            "attributes": [],
+            "name": "max_test",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "true",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "true ⊢ true"
+                },
+                {
+                    "args": "if m ≤ n then n = (if m ≤ n then n else m) else m = (if m ≤ n then n else m)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ if m ≤ n then n = (if m ≤ n then n else m) else m = (if m ≤ n then n else m)"
+                },
+                {
+                    "args": "int_max_def, if m ≤ n then n = max m n else m = max m n",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "true ⊢ if m ≤ n then n = max m n else m = max m n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ true ⟶ (if m ≤ n then n = max m n else m = max m n)"
+                }
+            ],
+            "prop": "true ⟶ if m ≤ n then n = max m n else m = max m n",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "int_max_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "int",
+                "n": "int"
+            }
         }
     ],
     "description": "Hoare logic",

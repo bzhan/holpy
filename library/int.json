@@ -131,6 +131,9 @@
             "type": "'a => 'a => 'a"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "int_max",
             "overload": "max",
             "prop": "int_max m n = (if m <= n then n else m)",

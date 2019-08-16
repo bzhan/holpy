@@ -733,6 +733,9 @@
                 }
                 form.data_name_def.value = item.name;
                 form.data_type_def.value = item.type;
+                if (data_type == 'def' && 'overload' in item) {
+                    form.overload = item.overload;
+                }
             }
             $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
             $('div[name="def-'+ page_num +'"]').removeClass('hidden-ele');
@@ -788,6 +791,8 @@
                 item.attributes = [];
                 if (form.hint_rewrite_def.checked == true)
                     item.attributes.push('hint_rewrite');
+                if ('overload' in form)
+                    item.overload = form.overload;
             else
                 item.data_content = form.content.value.trim().split('\n');
         }
