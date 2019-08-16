@@ -418,6 +418,16 @@
                 "b": "real",
                 "c": "real"
             }
+        },
+        {
+            "name": "interval_split_r",
+            "prop": "inter (real_closed_interval a b) {x. x >= c} = real_closed_interval (max a c) b",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
         }
         ],
         "description": "Basic results about integral.",
