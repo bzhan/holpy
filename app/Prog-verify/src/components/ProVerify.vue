@@ -198,5 +198,4 @@ export default {
     outline: none;
     resize: none;
   }
-
 </style>
