@@ -339,14 +339,12 @@
         $('div.rbottom').on('click', 'button.save-edit', function () {
             var form = get_selected_edit_form('edit-form');
             var error_id = $(this).next().attr('id');
-            var add_num = $(this).attr('name');
-            var ty = $(this).attr('data_type');
-            var theory_name = $(this).attr('theory_name');
-            var number = $(this).attr('name');
+            var theory_name = form.info.theory_name;
+            var number = form.info.number;
             var data = {};
             data.file_name = theory_name;
             data.prev_list = json_files[theory_name].content.slice(0, Number(number));
-            data.content = make_data(form, ty);
+            data.content = make_data(form);
             $.ajax({
                 url: '/api/check-modify',
                 type: 'POST',
@@ -355,18 +353,11 @@
                     if ('failed' in res) {
                         $('div#' + error_id).find('pre').text(res.detail_content);
                     } else {
-                        item = res.content;
-                        delete item.data_content;
-                        delete item.names_list;
-                        delete item.data_name;
-                        if (number === '' || number === '-1') {
-                            json_files[theory_name].content[add_num] = item;
-                        } else {
-                            item = json_files[theory_name].content[number];
-                            for (var key in res.content) {
-                                item[key] = res.content[key];
-                            }
-                        }
+                        delete res.content.data_content;
+                        delete res.content.data_name;
+                        item = json_files[theory_name].content[number];
+                        $.extend(true, item, res.content);
+
                         save_json_file(theory_name);
                         display_theory_items();
                         alert('Saved ' + item.name);
@@ -661,6 +652,11 @@
         var form = document.getElementById('edit-thm-form' + page_num);
         $('select#dropdown_datatype' + page_num).val(data_type);
 
+        form.info = {};
+        form.info.data_type = data_type;
+        form.info.theory_name = cur_theory_name;
+        form.info.number = number;
+
         if (data_type === 'def.ax') {
             form.data_name.value = item['name'];
             form.data_content_constant.value = item['type'];
@@ -732,16 +728,16 @@
 
         // Add SAVE button
         var templ_rbottom = _.template($('#template-edit-rbottom').html());
-        $('div.rbottom').append(templ_rbottom({
-            page_num: page_num, data_type: data_type, theory_name: cur_theory_name, pos: number}));
+        $('div.rbottom').append(templ_rbottom({page_num: page_num}));
         $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
         $('div#prf' + page_num).show().siblings().hide();
     }
 
     // Read data from the form into item.
-    function make_data(form, ty) {
+    function make_data(form) {
         var item = {};
+        var ty = form.info.data_type;
         if (ty === 'def.ax') {
             item.ty = 'def.ax';
             item.name = form.data_name.value.trim();
