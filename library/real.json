@@ -117,13 +117,14 @@
         },
         {
             "name": "real_greater_eq",
-            "“overload": "greater_eq",
+            "overload": "greater_eq",
             "prop": "greater_eq m n = less_eq n m",
             "ty": "def",
             "type": "real => real => bool"
         },
         {
             "name": "real_greater",
+            "overload": "greater",
             "prop": "greater m n = less n m",
             "ty": "def",
             "type": "real => real => bool"
