@@ -329,10 +329,8 @@
             }
         });
 
-        // Auto-adjust number of rows for a textarea.
-        $('#codeTabContent').on('input', 'textarea.adjust-rows', function () {
-            var rows = $(this).val().split('\n').length;
-            $(this).attr('rows', rows);
+        $('#codeTabContent').on('input', '.form-element', function () {
+            adjust_input_size(this);
         });
 
         // Save information for an item.
@@ -501,6 +499,7 @@
             }
         });
 
+        // Show appropriate form content on changing type of item.
         $('div.code-pan').on('change', 'select', function () {
             var page_n = $(this).attr('name');
             var ty = $(this).find('option:selected').val();
@@ -551,6 +550,19 @@
                 }
             });
         }
+    }
+
+    // Auto-adjust size of input and textarea.
+    function adjust_input_size(input) {
+        var text = $(input).val();
+        var test_width = $(input).closest('form').find('pre.test-width');
+        test_width.text(text);
+        var min_width = $(input).attr('min-width');
+        $(input).css('width', test_width.css('width'));
+        if (min_width !== undefined && $(input).width() < Number(min_width)) {
+            $(input).css('width', min_width + 'px');
+        }
+        $(input).attr('rows', text.split('\n').length);
     }
 
     // Initialize form for editing metadata.
@@ -658,22 +670,22 @@
         form.info.number = number;
 
         if (data_type === 'def.ax') {
-            form.data_name.value = item['name'];
-            form.data_content_constant.value = item['type'];
-            $('div[name="constant-' + page_num +'"]').removeClass('hidden-ele');
+            form.const_name.value = item.name;
+            form.const_type.value = item.type;
+            adjust_input_size(document.getElementById('const-name' + page_num));
+            adjust_input_size(document.getElementById('const-type' + page_num));
+            $('span#const-head' + page_num).removeClass('hidden-ele');
         }
 
         if (data_type === 'thm' || data_type === 'thm.ax') {
             if (data_type === 'thm')
-                $('label#thm--'+ page_num).text('theorem');
+                $('label#thm-label'+ page_num).text('theorem');
             else
-                $('label#thm--'+ page_num).text('axiom');
+                $('label#thm-label'+ page_num).text('axiom');
             if (!new_data) {
-                form.name.value = item['name'];
-                form.prop.value = item['prop'];
-                vars_lines = item['vars_lines']
-                form.vars.rows = vars_lines.length;
-                form.vars.value = vars_lines.join('\n');
+                form.name.value = item.name;
+                form.prop.value = item.prop;
+                form.vars.value = item.vars_lines.join('\n');
                 if (item.attributes && item.attributes.includes('hint_backward'))
                     form.hint_backward.checked = true;
                 if (item.attributes && item.attributes.includes('hint_backward1'))
@@ -685,50 +697,65 @@
                 if (item.attributes && item.attributes.includes('hint_resolve'))
                     form.hint_resolve.checked = true;
             }
-            $('div[name="thm-'+ page_num +'"]').removeClass('hidden-ele');
+            adjust_input_size(document.getElementById('thm-name' + page_num));
+            adjust_input_size(document.getElementById('thm-vars' + page_num));
+            adjust_input_size(document.getElementById('thm-prop' + page_num));
+            $('span#thm-head' + page_num).removeClass('hidden-ele');
+            $('div#thm'+ page_num).removeClass('hidden-ele');
         }
 
         if (data_type === 'type.ind') {
-            $('label#type--ext'+ page_num).html("<pre>" + item.ext_output + "</pre>");
-            form.data_name_type.value = item.edit_type;
-            form.data_content_type.textContent = item.constr_output.join('\n');
-            form.data_content_type.rows = item.constr_output.length;
-            $('div[name="type-'+ page_num +'"]').removeClass('hidden-ele');
+            form.type_edit_name.value = item.edit_type;
+            form.type_constrs.textContent = item.constr_output.join('\n');
+            adjust_input_size(document.getElementById('type-edit-name' + page_num));
+            adjust_input_size(document.getElementById('type-constrs' + page_num));
+
+            $('pre#type-ext'+ page_num).html(item.ext_output);
+            $('span#type-head' + page_num).removeClass('hidden-ele');
+            $('div#type'+ page_num).removeClass('hidden-ele');
         }
 
         if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
             if (data_type === 'def')
-                $('label#def--'+ page_num).text('definition');
+                $('label#def-label' + page_num).text('definition');
             else if (data_type == 'def.pred')
-                $('label#def--'+ page_num).text('inductive');
+                $('label#def-label' + page_num).text('inductive');
             else
-                $('label#def--'+ page_num).text('fun');
+                $('label#def-label' + page_num).text('fun');
 
-            if (data_type === 'def') {
-                form.content.textContent = item.edit_content;
-                form.content.rows = 1;
-                if (item.attributes && item.attributes.includes('hint_rewrite'))
-                    form.hint_rewrite_def.checked = true;
-            } else {
-                form.content.textContent = item.edit_content.join('\n');
-                form.content.rows = item.edit_content.length;    
-                $('label#def--ext'+ page_num).html("<pre>" + item.ext_output + "</pre>");
-            }
-            form.data_name_def.value = item.name;
-            form.data_type_def.value = item.type;
+            form.def_name.value = item.name;
+            form.def_type.value = item.type;
+            adjust_input_size(document.getElementById('def-name' + page_num));
+            adjust_input_size(document.getElementById('def-type' + page_num));
+            
             if (data_type == 'def' && 'overload' in item) {
                 form.overload = item.overload;
             }
-            $('div[name="def-'+ page_num +'"]').removeClass('hidden-ele');
+            if (data_type === 'def') {
+                form.def_content.textContent = item.edit_content;
+                if (item.attributes && item.attributes.includes('hint_rewrite'))
+                    form.hint_rewrite_def.checked = true;
+            } else {
+                form.def_content.textContent = item.edit_content.join('\n');
+                $('pre#def-ext'+ page_num).html(item.ext_output);
+            }
+            adjust_input_size(document.getElementById('def-content' + page_num));
+
+            $('span#def-head' + page_num).removeClass('hidden-ele');
+            $('div#def' + page_num).removeClass('hidden-ele');
         }
+
+        // Display type of item as label or dropdown box depending on new_data.
         if (new_data)
             $('div.data-title'+ page_num).hide();
         else
-            $('div.dropdown-box'+ page_num).hide();
+            $('select#dropdown-datatype'+ page_num).hide();
 
-        // Add SAVE button
+        // Add SAVE button.
         var templ_rbottom = _.template($('#template-edit-rbottom').html());
         $('div.rbottom').append(templ_rbottom({page_num: page_num}));
+
+        // Adjust visibility and selected tabs.
         $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
         $('div#prf' + page_num).show().siblings().hide();
@@ -738,13 +765,12 @@
     function make_data(form) {
         var item = {};
         var ty = form.info.data_type;
+        item.ty = ty;
         if (ty === 'def.ax') {
-            item.ty = 'def.ax';
-            item.name = form.data_name.value.trim();
-            item.type = form.data_content_constant.value.trim();
+            item.name = form.const_name.value.trim();
+            item.type = form.const_type.value.trim();
         }
         if (ty === 'thm' || ty === 'thm.ax') {
-            item.ty = ty;
             item.name = form.name.value;
             item.prop = form.prop.value;
             item.vars = form.vars.value.trim().split('\n');
@@ -761,23 +787,21 @@
                 item.attributes.push('hint_resolve');
         }
         if (ty === 'type.ind') {
-            item.data_name = form.data_name_type.value.trim();
-            item.data_content = form.data_content_type.value.trim().split('\n');
-            item.ty = 'type.ind';
+            item.data_name = form.type_edit_name.value.trim();
+            item.data_content = form.type_constrs.value.trim().split('\n');
         }
         if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
-            item.ty = ty;
-            item.name = form.data_name_def.value.trim();
-            item.type = form.data_type_def.value.trim();
+            item.name = form.def_name.value.trim();
+            item.type = form.def_type.value.trim();
             if (ty === 'def')
-                item.prop = form.content.value.trim();
+                item.prop = form.def_content.value.trim();
                 item.attributes = [];
                 if (form.hint_rewrite_def.checked == true)
                     item.attributes.push('hint_rewrite');
                 if ('overload' in form)
                     item.overload = form.overload;
             else
-                item.data_content = form.content.value.trim().split('\n');
+                item.data_content = form.def_content.value.trim().split('\n');
         }
         return item;
     }
