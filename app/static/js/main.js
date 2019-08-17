@@ -281,7 +281,7 @@
         // Create editing area after clicking 'edit' link.
         $('a#edit_item').click(function() {
             if (items_selected.length === 1) {
-                init_edit_area(items_selected[0]);
+                init_edit_area(items_selected[0], false);
             }
         });
 
@@ -289,22 +289,22 @@
             var num = 0;
             if (cur_theory_name && items_selected.length === 1) {
                 if ($(this).attr('id') === 'add_before') {
-                    json_files[cur_theory_name].content.splice(items_selected[0], 0, {'ty': 'pre-data'});
+                    json_files[cur_theory_name].content.splice(items_selected[0], 0, {'ty': 'thm'});
                     num = items_selected[0];
                     items_selected[0] += 1;
                 }
-                else if($(this).attr('id') === 'add_after') {
+                else if ($(this).attr('id') === 'add_after') {
                     var item_id = items_selected[0];
-                    json_files[cur_theory_name].content.splice(item_id+1, 0, {'ty':'pre-data'});
+                    json_files[cur_theory_name].content.splice(item_id+1, 0, {'ty': 'thm'});
                     num = item_id + 1;
                 }
             }
             if (cur_theory_name && $(this).attr('id') === 'add_end') {
-                json_files[cur_theory_name].content.push({'ty':'pre-data'});
+                json_files[cur_theory_name].content.push({'ty': 'thm'});
                 num = json_files[cur_theory_name].content.length - 1;
             }
             display_theory_items();
-            init_edit_area(num);
+            init_edit_area(num, true);
             save_json_file(cur_theory_name);
         })
 
@@ -505,22 +505,9 @@
 
         // Show appropriate form content on changing type of item.
         $('div.code-pan').on('change', 'select', function () {
-            var page_n = $(this).attr('name');
             var ty = $(this).find('option:selected').val();
-            $('div.total' + page_n).each(function() {
-                if ($(this).attr('class').indexOf('hidden-ele') < 0) {
-                    $(this).addClass('hidden-ele');
-                }
-                if (ty === 'def.ax')
-                    $('div[name="constant-' + page_n + '"]').removeClass('hidden-ele');
-                if (ty === 'thm' || ty === 'thm.ax')
-                    $('div[name="thm-' + page_n + '"]').removeClass('hidden-ele');
-                if (ty === 'type.ind')
-                    $('div[name="type-' + page_n + '"]').removeClass('hidden-ele');
-                if (ty === 'def' || ty === 'def.ind' || ty === 'def.pred')
-                    $('div[name="def-' + page_n + '"]').removeClass('hidden-ele');
-            })
-            $('div.rbottom button#' + page_n).attr('data_type', ty);
+            var form = document.getElementById('edit-thm-form' + page_num);
+            load_item(form, {'ty': ty});
         })
 
         // On loading page, obtain list of theories.
@@ -623,8 +610,12 @@
     function save_json_file(filename) {
         var content = [];
         $.each(json_files[filename].content, function (i, item) {
-            content.push($.extend(true, {}, item));  // perform deep copy
-            item_to_output(content[i]);
+            if ('name' in item) {
+                var item_copy = {};
+                $.extend(true, item_copy, item);
+                content.push(item_copy);  // perform deep copy
+                item_to_output(item_copy);    
+            }
         });
         var data = {
             name: filename,
@@ -639,22 +630,123 @@
         });
     }
 
+    function load_item(form, item) {
+        var data_type = item.ty;
+        $('select#dropdown_datatype' + page_num).val(data_type);
+        form.info.data_type = data_type;
+
+        $('span.type-form-header').addClass('hidden-ele');
+        $('div.type-form-body').addClass('hidden-ele');
+
+        if (data_type === 'def.ax') {
+            if ('name' in item)
+                form.const_name.value = item.name;
+            if ('type' in item)
+                form.const_type.value = item.type;
+            adjust_input_size(document.getElementById('const-name' + page_num));
+            adjust_input_size(document.getElementById('const-type' + page_num));
+            $('span#const-head' + page_num).removeClass('hidden-ele');
+        }
+
+        if (data_type === 'thm' || data_type === 'thm.ax') {
+            if (data_type === 'thm')
+                $('label#thm-label' + page_num).text('theorem');
+            else
+                $('label#thm-label' + page_num).text('axiom');
+
+            if ('name' in item)
+                form.name.value = item.name;
+            if ('prop' in item)
+                form.prop.value = item.prop;
+            if ('vars_lines' in item)
+                form.vars.value = item.vars_lines.join('\n');
+            if (item.attributes && item.attributes.includes('hint_backward'))
+                form.hint_backward.checked = true;
+            if (item.attributes && item.attributes.includes('hint_backward1'))
+                form.hint_backward1.checked = true;
+            if (item.attributes && item.attributes.includes('hint_forward'))
+                form.hint_forward.checked = true;
+            if (item.attributes && item.attributes.includes('hint_rewrite'))
+                form.hint_rewrite.checked = true;
+            if (item.attributes && item.attributes.includes('hint_resolve'))
+                form.hint_resolve.checked = true;
+
+            adjust_input_size(document.getElementById('thm-name' + page_num));
+            adjust_input_size(document.getElementById('thm-vars' + page_num));
+            adjust_input_size(document.getElementById('thm-prop' + page_num));
+            $('span#thm-head' + page_num).removeClass('hidden-ele');
+            $('div#thm'+ page_num).removeClass('hidden-ele');
+        }
+
+        if (data_type === 'type.ind') {
+            if ('edit_type' in item)
+                form.type_edit_name.value = item.edit_type;
+            if ('constr_output' in item)
+                form.type_constrs.textContent = item.constr_output.join('\n');
+            adjust_input_size(document.getElementById('type-edit-name' + page_num));
+            adjust_input_size(document.getElementById('type-constrs' + page_num));
+
+            $('pre#type-ext' + page_num).html(item.ext_output);
+            $('span#type-head' + page_num).removeClass('hidden-ele');
+            $('div#type' + page_num).removeClass('hidden-ele');
+        }
+
+        if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
+            if (data_type === 'def')
+                $('label#def-label' + page_num).text('definition');
+            else if (data_type === 'def.pred')
+                $('label#def-label' + page_num).text('inductive');
+            else
+                $('label#def-label' + page_num).text('fun');
+
+            if ('name' in item)
+                form.def_name.value = item.name;
+            if ('type' in item)
+                form.def_type.value = item.type;
+            adjust_input_size(document.getElementById('def-name' + page_num));
+            adjust_input_size(document.getElementById('def-type' + page_num));
+            
+            if (data_type === 'def' && 'overload' in item) {
+                form.overload = item.overload;
+            }
+            if ('edit_content' in item) {
+                if (data_type === 'def') {
+                    form.def_content.textContent = item.edit_content;
+                    if (item.attributes && item.attributes.includes('hint_rewrite'))
+                        form.hint_rewrite_def.checked = true;
+                } else {
+                    form.def_content.textContent = item.edit_content.join('\n');
+                    $('pre#def-ext'+ page_num).html(item.ext_output);
+                }
+            }
+            adjust_input_size(document.getElementById('def-content' + page_num));
+
+            $('span#def-head' + page_num).removeClass('hidden-ele');
+            $('div#def' + page_num).removeClass('hidden-ele');
+        }
+
+        // Display type of item as label or dropdown box depending on new_data.
+        if (form.info.new_data) {
+            $('label.data-title').hide();
+            $('input.form-element').css('border', '0.5px solid lightgrey');
+            $('textarea.form-element').css('border', '0.5px solid lightgrey');
+        } else {
+            $('select#dropdown-datatype' + page_num).hide();
+        }
+    }
+
     // Initialize area for editing an item.
     // 
     // number: id of the item being edited. This may be a new item
     // (indicated by item.ty = 'pre-data') or an existing item.
-    function init_edit_area(number) {
+    function init_edit_area(number, new_data) {
         page_num++;
 
         // Get item to be edited, determine whether it is new item
         // from its type.
         var item = json_files[cur_theory_name].content[number];
-        var data_type = item.ty;
-        var new_data = false;
         var tab_name = item.name;
-        if (data_type == 'pre-data') {
-            data_type = 'thm';
-            new_data = true;
+        if (tab_name === undefined) {
             tab_name = "(new item)";
         }
 
@@ -666,94 +758,13 @@
         var templ_edit = _.template($("#template-edit-thm").html());
         $('#codeTabContent').append(templ_edit({page_num: page_num}));
         var form = document.getElementById('edit-thm-form' + page_num);
-        $('select#dropdown_datatype' + page_num).val(data_type);
 
         form.info = {};
-        form.info.data_type = data_type;
+        form.info.new_data = new_data;
         form.info.theory_name = cur_theory_name;
         form.info.number = number;
 
-        if (data_type === 'def.ax') {
-            form.const_name.value = item.name;
-            form.const_type.value = item.type;
-            adjust_input_size(document.getElementById('const-name' + page_num));
-            adjust_input_size(document.getElementById('const-type' + page_num));
-            $('span#const-head' + page_num).removeClass('hidden-ele');
-        }
-
-        if (data_type === 'thm' || data_type === 'thm.ax') {
-            if (data_type === 'thm')
-                $('label#thm-label'+ page_num).text('theorem');
-            else
-                $('label#thm-label'+ page_num).text('axiom');
-            if (!new_data) {
-                form.name.value = item.name;
-                form.prop.value = item.prop;
-                form.vars.value = item.vars_lines.join('\n');
-                if (item.attributes && item.attributes.includes('hint_backward'))
-                    form.hint_backward.checked = true;
-                if (item.attributes && item.attributes.includes('hint_backward1'))
-                    form.hint_backward1.checked = true;
-                if (item.attributes && item.attributes.includes('hint_forward'))
-                    form.hint_forward.checked = true;
-                if (item.attributes && item.attributes.includes('hint_rewrite'))
-                    form.hint_rewrite.checked = true;
-                if (item.attributes && item.attributes.includes('hint_resolve'))
-                    form.hint_resolve.checked = true;
-            }
-            adjust_input_size(document.getElementById('thm-name' + page_num));
-            adjust_input_size(document.getElementById('thm-vars' + page_num));
-            adjust_input_size(document.getElementById('thm-prop' + page_num));
-            $('span#thm-head' + page_num).removeClass('hidden-ele');
-            $('div#thm'+ page_num).removeClass('hidden-ele');
-        }
-
-        if (data_type === 'type.ind') {
-            form.type_edit_name.value = item.edit_type;
-            form.type_constrs.textContent = item.constr_output.join('\n');
-            adjust_input_size(document.getElementById('type-edit-name' + page_num));
-            adjust_input_size(document.getElementById('type-constrs' + page_num));
-
-            $('pre#type-ext'+ page_num).html(item.ext_output);
-            $('span#type-head' + page_num).removeClass('hidden-ele');
-            $('div#type'+ page_num).removeClass('hidden-ele');
-        }
-
-        if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
-            if (data_type === 'def')
-                $('label#def-label' + page_num).text('definition');
-            else if (data_type == 'def.pred')
-                $('label#def-label' + page_num).text('inductive');
-            else
-                $('label#def-label' + page_num).text('fun');
-
-            form.def_name.value = item.name;
-            form.def_type.value = item.type;
-            adjust_input_size(document.getElementById('def-name' + page_num));
-            adjust_input_size(document.getElementById('def-type' + page_num));
-            
-            if (data_type == 'def' && 'overload' in item) {
-                form.overload = item.overload;
-            }
-            if (data_type === 'def') {
-                form.def_content.textContent = item.edit_content;
-                if (item.attributes && item.attributes.includes('hint_rewrite'))
-                    form.hint_rewrite_def.checked = true;
-            } else {
-                form.def_content.textContent = item.edit_content.join('\n');
-                $('pre#def-ext'+ page_num).html(item.ext_output);
-            }
-            adjust_input_size(document.getElementById('def-content' + page_num));
-
-            $('span#def-head' + page_num).removeClass('hidden-ele');
-            $('div#def' + page_num).removeClass('hidden-ele');
-        }
-
-        // Display type of item as label or dropdown box depending on new_data.
-        if (new_data)
-            $('div.data-title'+ page_num).hide();
-        else
-            $('select#dropdown-datatype'+ page_num).hide();
+        load_item(form, item);
 
         // Add SAVE button.
         var templ_rbottom = _.template($('#template-edit-rbottom').html());

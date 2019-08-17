@@ -33,7 +33,8 @@
         <form id="edit-thm-form<%=page_num%>" name="edit-form">
             <pre class="test-width"></pre>
             <div>
-                <select id="dropdown-datatype<%=page_num%>" name="<%=page_num%>">
+                <select id="dropdown-datatype<%=page_num%>" name="<%=page_num%>"
+                        class="keyword" style="border:none">
                     <option value="thm">theorem</option>
                     <option value="def.ax">constant</option>
                     <option value="type.ind">datatype</option>
@@ -43,8 +44,8 @@
                     <option value="def">definition</option>
                 </select>
 
-                <span id="const-head<%=page_num%>" class="hidden-ele">
-                    <label id="const-label<%=page_num%>" class="keyword">constant</label>
+                <span id="const-head<%=page_num%>" class="hidden-ele type-form-header">
+                    <label id="const-label<%=page_num%>" class="keyword data-title">constant</label>
                     <input spellcheck="false" class="form-element" id="const-name<%=page_num%>"
                            min-width="50" name="const_name">
                     <span class="form-element">::</span>
@@ -52,22 +53,22 @@
                            id="const-type<%=page_num%>" min-width="100" name="const_type">
                 </span>
 
-                <span id="thm-head<%=page_num%>" class="hidden-ele">
-                    <label id="thm-label<%=page_num%>" class="keyword">theorem</label>
+                <span id="thm-head<%=page_num%>" class="hidden-ele type-form-header">
+                    <label id="thm-label<%=page_num%>" class="keyword data-title">theorem</label>
                     <input spellcheck="false" class="form-element" id="thm-name<%=page_num%>"
                            min-width="100" name="name">
                     <span>:</span>
                 </span>
 
-                <span id="type-head<%=page_num%>" class="hidden-ele">
-                    <label id="datatype-label<%=page_num%>" class="keyword">datatype</label>
+                <span id="type-head<%=page_num%>" class="hidden-ele type-form-header">
+                    <label id="datatype-label<%=page_num%>" class="keyword data-title">datatype</label>
                     <input spellcheck="false" class="form-element" id="type-edit-name<%=page_num%>"
                            min-width="50" name="type_edit_name">
                     <span class="form-element">=</span>
                 </span>
 
-                <span id="def-head<%=page_num%>" class="hidden-ele">
-                    <label id="def-label<%=page_num%>" class="keyword">definition</label>
+                <span id="def-head<%=page_num%>" class="hidden-ele type-form-header">
+                    <label id="def-label<%=page_num%>" class="keyword data-title">definition</label>
                     <input spellcheck="false" class="form-element" name="def_name"
                            min-width="50" id="def-name<%=page_num%>">
                     <span class="form-element">::</span>
@@ -77,13 +78,13 @@
                 </span>
             </div>
 
-            <div id="thm<%=page_num%>" class="hidden-ele" style="text-indent:0.5em">
-                <div style="margin-top:7px">
+            <div id="thm<%=page_num%>" class="hidden-ele type-form-body" style="text-indent:0.5em">
+                <div style="margin-top:5px">
                     <label for="thm-vars<%=page_num%>" class="keyword">fixes</label>
                     <textarea spellcheck="false" name="vars" class="form-element unicode-replace"
                               min-width="100" id="thm-vars<%=page_num%>"></textarea>
                 </div>
-                <div style="margin-top:7px">
+                <div style="margin-top:5px">
                     <label for="thm-prop<%=page_num%>" class="keyword">shows</label>
                     <input type="text" name="prop" class="form-element unicode-replace"
                            spellcheck="false" min-width="200" id="thm-prop<%=page_num%>">
@@ -112,11 +113,10 @@
                 </div>
             </div>
 
-            <div id="type<%=page_num%>" class="hidden-ele" style="text-indent:0.5em">
+            <div id="type<%=page_num%>" class="hidden-ele type-form-body" style="text-indent:0.5em">
                 <div style="margin-top:5px">
                     <textarea spellcheck="false" name="type_constrs" id="type-constrs<%=page_num%>"
-                              min-width="200" class="form-element unicode-replace">
-                    </textarea>
+                              min-width="200" class="form-element unicode-replace"></textarea>
                 </div>
                 <div style="margin-top:7px">
                     <pre id="type-ext<%=page_num%>"
@@ -124,11 +124,10 @@
                 </div>
             </div>
 
-            <div id="def<%=page_num%>" class="hidden-ele" style="text-indent:0.5em">
-                <div style="margin-top:5px">
+            <div id="def<%=page_num%>" class="hidden-ele type-form-body" style="text-indent:0.5em">
+                <div style="margin-top:3px">
                     <textarea spellcheck="false" name="def_content" id="def-content<%=page_num%>"
-                              min-width="200" class="form-element unicode-replace">
-                    </textarea>
+                              min-width="200" class="form-element unicode-replace"></textarea>
                 </div>
                 <div style="margin-top:10px">
                     <span class="hint-element">
