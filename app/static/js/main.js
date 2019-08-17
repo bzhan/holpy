@@ -368,7 +368,7 @@
             });
         });
 
-        $('#panel-content').on('mousedown', 'div[name="theories"]', function (e) {
+        $('#panel-content').on('mousedown', 'div.theory-item', function (e) {
             drag = false;
             startingPos = [e.pageX, e.pageY];
             if (e.shiftKey) {
@@ -376,14 +376,14 @@
             }
         });
 
-        $('#panel-content').on('mousemove', 'div[name="theories"]', function (e) {
+        $('#panel-content').on('mousemove', 'div.theory-item', function (e) {
             if (!(e.pageX === startingPos[0] && e.pageY === startingPos[1])) {
                 drag = true;
             }
         });
 
         // Select / unselect an item by left click.
-        $('#panel-content').on('mouseup','div[name="theories"]', function (e) {
+        $('#panel-content').on('mouseup','div.theory-item', function (e) {
             if (!drag) {
                 var item_id = Number($(this).attr('item_id'));
                 if (e.shiftKey) {
@@ -433,27 +433,33 @@
             display_theory_items();
         })
 
-        // Move up an item or sequence of items.
-        function item_exchange_up() {
-            $.each(items_selected, function (i, v) {
-                items_selected[i] = v - 1;
-                [content[v-1], content[v]] = [content[v], content[v-1]]
-            });
-        }
-
         $(document).keydown(function (e) {
-            if (e.keyCode === 38 && e.ctrlKey) {
+            if (e.keyCode === 38 && e.ctrlKey) {  // Move up a sequence of items
                 content = json_files[cur_theory_name].content;
                 if (items_selected[0] === 0)
                     return;
-                if ($('div[item_id="0"]').attr('name') && items_selected[0] !== 0) {
-                    item_exchange_up();
-                }
-                else if (items_selected[0] !== 1) {
-                    item_exchange_up();
-                }
+
+                $.each(items_selected, function (i, v) {
+                    items_selected[i] = v - 1;
+                    [content[v-1], content[v]] = [content[v], content[v-1]]
+                });
+
                 save_json_file(cur_theory_name);
                 display_theory_items();
+            } else if (e.keyCode === 40 && e.ctrlKey) {  // Move down a sequence of items
+                content = json_files[cur_theory_name].content;
+                if (items_selected[items_selected.length-1] >= content.length-1)
+                    return;
+
+                items_selected.reverse();
+                $.each(items_selected, function (i, v) {
+                    items_selected[i] = v + 1;
+                    [content[v], content[v+1]] = [content[v+1], content[v]]
+                });
+                items_selected.reverse();
+
+                save_json_file(cur_theory_name);
+                display_theory_items();    
             } else if (e.keyCode === 65 && e.ctrlKey) {  // Ctrl+A
                 e.preventDefault();
                 $('a#add_after').click();
@@ -469,24 +475,6 @@
             } else if (e.keyCode === 90 && e.ctrlKey) {  // Ctrl+Z
                 e.preventDefault();
                 undo_move();
-            }
-        })
-
-        // Move down an item or sequence of items.
-        $(document).keydown(function (e) {
-            if (e.ctrlKey && e.keyCode === 40 &&
-                items_selected[items_selected.length-1] < json_files[cur_theory_name].content.length-1) {
-                content = json_files[cur_theory_name].content;
-                items_selected.reverse();
-                if (items_selected[0] === content.length - 1)
-                    return;
-                $.each(items_selected, function (i, v) {
-                    items_selected[i] = v + 1;
-                    [content[v], content[v+1]] = [content[v+1], content[v]]
-                });
-                items_selected.reverse();
-                save_json_file(cur_theory_name);
-                display_theory_items();
             }
         })
 
@@ -954,15 +942,16 @@
     // Display items for the current theory on the left side of the page.
     function display_theory_items() {
         var theory = json_files[cur_theory_name];
-        var templ = _.template($("#template-content-theory_desc").html());
+        var templ = _.template($("#template-content-theory-header").html());
         $('#panel-content').html(templ({
+            theory_name: cur_theory_name,
             theory_desc: theory.description,
             import_str: theory.imports.join(' ')
         }));
         $.each(theory.content, function(num, ext) {
-            var class_item = 'theory_item';
+            var class_item = 'theory-item';
             if (items_selected.indexOf(num) >= 0) {
-                class_item = 'theory_item selected_item';
+                class_item = 'theory-item selected_item';
             }
             var templ = _.template($("#template-content-" + ext.ty.replace(".", "-")).html());
             $('#panel-content').append(templ({

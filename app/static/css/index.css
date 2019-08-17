@@ -7,7 +7,7 @@ body {
     overflow: hidden;
 }
 
-input, textarea {
+input, textarea, .item-text {
     font-family: monospace;
 }
 
@@ -264,7 +264,7 @@ p.login-user {
     width: 50px;
 }
 
-.theory_item {
+.theory-item {
     margin-bottom: 15px;
 }
 
@@ -293,4 +293,16 @@ textarea.form-element {
 .hint-element {
     margin-left: 0.7em;
     margin-right: 0.7em;
+}
+
+.comment {
+    color: green;
+}
+
+.header-item {
+    font-size: 14pt;
+}
+
+.indented-text {
+    margin-left: 0.8em;
 }

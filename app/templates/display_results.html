@@ -19,130 +19,124 @@
 
 <!--Templates for displaying content of a theory file.-->
 
-<script type="text/template" id='template-content-theory_desc'>
-    <div id="description"><p>
-        <font color="#0000FF"><span name="description">
-        <font color="006633"><%= theory_desc %></font></span><br>
-            <font color="#006000"><span name="imports"><font
-                    color="0000FF"><b>imports </b></font><%= import_str %></span></font></font>
-    </p></div>
+<script type="text/template" id='template-content-theory-header'>
+    <div id="description">
+        <span class="keyword">theory</span>&nbsp;<%=theory_name%>
+        <br>
+        <span class="keyword">imports</span>&nbsp;<%=import_str%>
+        <br><br>
+        <span class="comment"><%=theory_desc%></span>
+        <br><br>
+    </div>
 </script>
 
 <script type="text/template" id='template-content-type-ax'>
-    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
-        <font color="#006000"><span name="type"><b>type </b></span></font>
-        <span name="name"><tt><%= ext.name %></tt></span>
+    <div item_id="<%=num%>" class="<%=class_item%>">
+        <span class="keyword">type</span>
+        <span class="item-text"><%= ext.name %></span>
     </div>
 </script>
 
 <script type="text/template" id='template-content-def-ax'>
-    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
-        <font color="#006000"><span name="constant"><b>constant </b></span></font>
-        <span name="name"><tt><%= ext.name %></tt></span> ::
-            <span name="content"><%= highlight_html(ext.type_hl) %></span>&nbsp;&nbsp;&nbsp;
+    <div item_id="<%=num%>" class="<%=class_item%>">
+        <span class="keyword">constant</span>
+        <span class="item-text"><%= ext.name %></span> ::
+        <span class="item-text"><%= highlight_html(ext.type_hl) %></span>
     </div>
 </script>
 
 <script type="text/template" id='template-content-thm-ax'>
-    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
-        <span name="theorem"><font color="#006000"><b>axiom</b></font></span>
-        <span id="thm_name" name="name"><tt><%= ext.name %></tt></span>:&nbsp;&nbsp;
-        <br>&nbsp;&nbsp;&nbsp;
-        <span name="content"><%= highlight_html(ext.prop_hl) %></span>
+    <div item_id="<%=num%>" class="<%=class_item%>">
+        <span class="keyword">axiom</span>
+        <span class="item-text"><%= ext.name %></span>:
+        <br>
+        <span class="item-text indented-text"><%= highlight_html(ext.prop_hl) %></span>
     </div>
 </script>
 
 <script type="text/template" id='template-content-thm'>
-    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
-        <span name="theorem"><font color="#006000"><b>theorem</b></font></span>
-        <span name="name"><tt><%= ext.name %></tt></span>:&nbsp;
-        <a href="#" name="proof" style="font-style:italic;color:<%= get_status_color(ext) %>">&nbsp;proof</a>&nbsp;&nbsp;
-        <br>&nbsp;&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span>
+    <div item_id="<%=num%>" class="<%=class_item%>">
+        <span class="keyword">theorem</span>
+        <span class="item-text"><%= ext.name %></span>:&nbsp;&nbsp;
+        <a href="#" name="proof" style="font-style:italic;color:<%= get_status_color(ext) %>">proof</a>
+        <br>
+        <span class="item-text indented-text"><%= highlight_html(ext.prop_hl) %></span>
     </div>
-</script>
-
-<script type="text/template" id="template-content-pre-data">
-    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
-        <p><pre>        </pre></p>
-    </div>
-
 </script>
 
 <script type="text/template" id='template-content-type-ind'>
-    <div name="theories" item_id="<%=num%>" class="<%=class_item%>" style="margin-bottom:10pt">
-        <span name="datatype"><font color="#006000"><b>datatype</b></font></span>
-        <span name="name"><%= highlight_html(ext.type_hl) %></span> =
-        <span name="content">
-            <%
-                $.each(ext.constr_output_hl, function(i, v) {
-            %>
-                    <br>&nbsp;&nbsp;&nbsp;<%= highlight_html(v) %>
-            <%
-                });
-            %>
-        </span>&nbsp;&nbsp;&nbsp;
+    <div item_id="<%=num%>" class="<%=class_item%>">
+        <span class="keyword">datatype</span>
+        <span class="item-text"><%= highlight_html(ext.type_hl) %></span> =
+        <%
+        $.each(ext.constr_output_hl, function(i, v) {
+        %>
+            <br><span class="item-text indented-text"><%= highlight_html(v) %></span>
+        <%
+        });
+        %>
     </div>
 </script>
 
 <script type="text/template" id="template-content-def">
-    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
-        <span name="fun"><font color="#006000"><b>definition</b></font></span>
-        <span name="name"><tt><%= ext.name %></tt> :: <%= highlight_html(ext.type_hl) %></span><font color="#006000"><b> where</b>
-        <br>&nbsp;&nbsp;&nbsp;<span name="content"><%= highlight_html(ext.prop_hl) %></span></font>
-        &nbsp;&nbsp;&nbsp;
+    <div item_id="<%=num%>" class="<%=class_item%>">
+        <span class="keyword">definition</span>
+        <span class="item-text"><%= ext.name %></span> ::
+        <span class="item-text"><%= highlight_html(ext.type_hl) %></span>
+        <span class="keyword">where</span>
+        <br>
+        <span class="item-text indented-text"><%= highlight_html(ext.prop_hl) %></span>
     </div>
 </script>
 
 <script type="text/template" id="template-content-def-ind">
-    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
-        <span name="fun"><font color="#006000"><b>fun</b></font></span>
-        <span name="name"><tt><%= ext.name %></tt> :: <%= highlight_html(ext.type_hl) %></span>
-        <font color="#006000"><b> where</b></font>
-        <span name="content">
-            <%
-                $.each(ext.rules, function(i, v) {
-            %>
-                    <br>&nbsp;&nbsp;&nbsp;<%= highlight_html(v.prop_hl) %>
-            <%
-                });
-            %>
-        </span>&nbsp;&nbsp;&nbsp;
+    <div item_id="<%=num%>" class="<%=class_item%>">
+        <span class="keyword">fun</span>
+        <span class="item-text"><%= ext.name %></span> ::
+        <span class="item-text"><%= highlight_html(ext.type_hl) %></span>
+        <span class="keyword">where</span>
+        <%
+        $.each(ext.rules, function(i, v) {
+        %>
+            <br><span class="item-text indented-text"><%= highlight_html(v.prop_hl) %></span>
+        <%
+        });
+        %>
     </div>
 </script>
 
 <script type="text/template" id="template-content-def-pred">
-    <div name="theories" item_id="<%=num%>" class="<%=class_item%>">
-        <span name="fun"><font color="#006000"><b>inductive</b></font></span>
-        <span name="name"><tt><%= ext.name %></tt> :: <%= highlight_html(ext.type_hl) %></span>
-        <font color="#006000"><b> where</b></font>
-        <span name="content">
-            <%
-                $.each(ext.rules, function(i, v) {
-            %>
-                    <br>&nbsp;&nbsp;&nbsp;<%= highlight_html(v.prop_hl) %>
-            <%
-                });
-            %>
-        </span>&nbsp;&nbsp;&nbsp;
+    <div item_id="<%=num%>" class="<%=class_item%>">
+        <span class="keyword">inductive</span>
+        <span class="item-text"><%= ext.name %></span> :: 
+        <span class="item-text"><%= highlight_html(ext.type_hl) %></span>
+        <span class="keyword">where</span>
+        <%
+        $.each(ext.rules, function(i, v) {
+        %>
+            <br><span class="item-text indented-text"><%= highlight_html(v.prop_hl) %></span>
+        <%
+        });
+        %>
     </div>
 </script>
 
 <script type="text/template" id="template-content-header">
     <div item_id="<%=num%>" class="<%=class_item%>">
-        <span id="head_name" name="name"><%= ext.name %></span>&nbsp;&nbsp;
+        <span class="header-item"><%= ext.name %></span>
     </div>
 </script>
 
 <script type="text/template" id="template-content-macro">
     <div item_id="<%=num%>" class="<%=class_item%>">
-        <span name="macro"><font color="#006000"><b>macro</b></font></span>
-        <span name="name"><tt><%= ext.name %></tt></span>
+        <span class="keyword">macro</span>
+        <span class="item-text"><%= ext.name %></span>
     </div>
 </script>
 
 <script type="text/template" id="template-content-method">
     <div item_id="<%=num%>" class="<%=class_item%>">
-        <span name="method"><font color="#006000"><b>method</b></font></span>
-        <span name="name"><tt><%= ext.name %></tt></span>
+        <span class="keyword">method</span>
+        <span class="item-text"><%= ext.name %></span>
     </div>
 </script>
