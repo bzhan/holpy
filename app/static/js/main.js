@@ -124,7 +124,9 @@
                 form.fname.value = data.name;
                 form.imports.value = data.imports.join(',');
                 form.description.textContent = data.description;
-                form.description.rows = 5;
+                adjust_input_size(document.getElementById('fname' + page_num));
+                adjust_input_size(document.getElementById('imports' + page_num));
+                adjust_input_size(document.getElementById('desc' + page_num));
             } else {
                 $.ajax({
                     url: '/api/load-json-file',
@@ -136,7 +138,9 @@
                         form.fname.value = res.name;
                         form.imports.value = res.imports.join(',');
                         form.description.textContent = res.description;
-                        form.description.rows = 5;
+                        adjust_input_size(document.getElementById('fname' + page_num));
+                        adjust_input_size(document.getElementById('imports' + page_num));
+                        adjust_input_size(document.getElementById('desc' + page_num));
                     }
                 })    
             }

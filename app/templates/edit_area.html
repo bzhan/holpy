@@ -3,26 +3,24 @@
 <script type="text/template" id='template-file-metadata'>
     <div style="margin-left:20px;margin-top:20px;"
          class="tab-pane fade active code-cell"
-         id="code<%=page_num%>-pan" >
+         id="code<%=page_num%>-pan">
         <form id="edit-metadata-form<%=page_num%>" name="edit-form">
+            <pre class="test-width"></pre>
             <input type="hidden" name="prev_name">
-            <div class="form-group">
-                <div class="col-auto">
-                    <label for="fname<%=page_num%>">File name:</label>
-                    <input name="fname" class="form-control" id="fname<%=page_num%>" spellcheck="false">
-                </div>
+            <div>
+                <label for="fname<%=page_num%>" class="keyword">theory</label>
+                <input name="fname" class="form-element" id="fname<%=page_num%>"
+                       min-width="100" spellcheck="false">
             </div>
-            <div class="form-group">
-                <div class="col-auto">
-                    <label for="imports<%=page_num%>">Imports:</label>
-                    <input spellcheck="false" class="form-control" name="imports" id="imports<%=page_num%>">
-                </div>
+            <div style="margin-top:5px">
+                <label for="imports<%=page_num%>" class="keyword">imports</label>
+                <input spellcheck="false" class="form-element" name="imports"
+                       min-width="100" id="imports<%=page_num%>">
             </div>
-            <div class="form-group">
-                <div class="col-auto">
-                    <label for="desc<%=page_num%>">Description:</label>
-                    <textarea spellcheck="false" class="form-control monospace" name="description" id="desc<%=page_num%>"></textarea>
-                </div>
+            <div style="margin-top:5px">
+                <label for="desc<%=page_num%>" class="keyword">description:</label>
+                <textarea spellcheck="false" class="form-element" name="description"
+                          min-width="200" id="desc<%=page_num%>"></textarea>
             </div>
         </form>
     </div>
@@ -30,7 +28,7 @@
 
 <script type="text/template" id='template-edit-thm'>
     <div style="margin-left:20px;margin-top:20px;"
-         class="tab-pane fade active code-cell edit-data"
+         class="tab-pane fade active code-cell"
          id="code<%=page_num%>-pan">
         <form id="edit-thm-form<%=page_num%>" name="edit-form">
             <pre class="test-width"></pre>
