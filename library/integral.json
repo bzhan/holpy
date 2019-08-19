@@ -788,6 +788,62 @@
                 "i": "real",
                 "s": "real set"
             }
+        },
+        {
+            "name": "has_integral_lbound",
+            "prop": "has_integral f i (real_closed_interval a b) & (!x. member x (real_closed_interval a b) --> B <= f x) --> B * (b - a) <= i",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "a": "real",
+                "b": "real",
+                "B": "real"
+            }
+        },
+        {
+            "name": "has_integral_ubound",
+            "prop": "has_integral f i (real_closed_interval a b) & (!x. member x (real_closed_interval a b) --> f x <= B) --> i <= B * (b - a) ",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "a": "real",
+                "b": "real",
+                "B": "real"
+            }
+        },
+        {
+            "name": "integral_lbound",
+            "prop": "integrable_on f (real_closed_interval a b) & (!x. member x (real_closed_interval a b) --> B <= f x) --> B * (b - a) <= integral (real_closed_interval a b) f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "B": "real"
+            }
+        },
+        {
+            "name": "integral_ubound",
+            "prop": "integrable_on f (real_closed_interval a b) & (!x. member x (real_closed_interval a b) --> f x <= B) --> integral (real_closed_interval a b) f <= B * (b - a)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "B": "real"
+            }
+        },
+        {
+            "name": "integrable_uniform_limit",
+            "prop": "(!e. 0 < e --> ?g. (!x. member x (real_closed_interval a b) --> abs(f x - g x) <= e) & integrable_on g (real_closed_interval a b)) --> integrable_on f (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
         }
     ],
     "description": "Basic results about integral.",
