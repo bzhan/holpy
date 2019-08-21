@@ -788,7 +788,169 @@
                 "i": "real",
                 "s": "real set"
             }
-        }
+        },
+        {
+            "name": "has_integral_lbound",
+            "prop": "has_integral f i (real_closed_interval a b) & (!x. member x (real_closed_interval a b) --> B <= f x) --> B * (b - a) <= i",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "a": "real",
+                "b": "real",
+                "B": "real"
+            }
+        },
+        {
+            "name": "has_integral_ubound",
+            "prop": "has_integral f i (real_closed_interval a b) & (!x. member x (real_closed_interval a b) --> f x <= B) --> i <= B * (b - a) ",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "a": "real",
+                "b": "real",
+                "B": "real"
+            }
+        },
+        {
+            "name": "integral_lbound",
+            "prop": "integrable_on f (real_closed_interval a b) & (!x. member x (real_closed_interval a b) --> B <= f x) --> B * (b - a) <= integral (real_closed_interval a b) f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "B": "real"
+            }
+        },
+        {
+            "name": "integral_ubound",
+            "prop": "integrable_on f (real_closed_interval a b) & (!x. member x (real_closed_interval a b) --> f x <= B) --> integral (real_closed_interval a b) f <= B * (b - a)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "B": "real"
+            }
+        },
+        {
+            "name": "integrable_uniform_limit",
+            "prop": "(!e. 0 < e --> ?g. (!x. member x (real_closed_interval a b) --> abs(f x - g x) <= e) & integrable_on g (real_closed_interval a b)) --> integrable_on f (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "indicator",
+            "prop": "indicator s = %x. if (member x s) then 1 else 0",
+            "ty": "def",
+            "type": "real set => real => real"
+        },
+        {
+            "name": "negligible",
+            "prop": "negligible s = !a. !b. has_integral (indicator s) 0 (real_closed_interval a b)",
+            "ty": "def",
+            "type": "real set => bool"
+        },
+        {
+            "name": "has_integral_negligible",
+            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = 0) --> has_integral f 0 t",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "has_integral_on_negligible",
+            "prop": "negligible s --> has_integral f 0 s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "integrable_on_negligible",
+            "prop": "negligible s --> integrable_on f s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "integral_on_negligible",
+            "prop": "negligible s --> integral s f = 0",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "has_integral_spike",
+            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) & has_integral f y t --> has_integral g y t",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "t": "real set",
+                "y": "real"
+            }
+        },
+        {
+            "name": "has_integral_spike_eq",
+            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) --> (has_integral f y t = has_integral g y t)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "t": "real set",
+                "y": "real"
+            }
+        },
+        {
+            "name": "integrable_spike",
+            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) & integrable_on f t --> integrable_on g t",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integrable_spike_eq",
+            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) --> (integrable_on f t = integrable_on g t)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integral_spike",
+            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) --> (integral t f = integral t g)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        }                              
     ],
     "description": "Basic results about integral.",
     "imports": [
