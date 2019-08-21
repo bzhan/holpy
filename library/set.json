@@ -3790,6 +3790,12 @@
             }
         },
         {
+            "name": "diff",
+            "prop": "diff s t = {x. member x s & neg(member x t)}",
+            "ty": "def",
+            "type": "'a set => 'a set => 'a set"
+        },
+        {
             "name": "finite",
             "ty": "def.ax",
             "type": "'a set => bool"

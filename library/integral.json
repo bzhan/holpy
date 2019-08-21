@@ -859,7 +859,7 @@
         },
         {
             "name": "has_integral_negligible",
-            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = 0) --> has_integral f 0 t",
+            "prop": "negligible s & (!x. member x (diff t s) --> f x = 0) --> has_integral f 0 t",
             "ty": "thm",
             "vars": {
                 "f": "real => real",
@@ -896,7 +896,7 @@
         },
         {
             "name": "has_integral_spike",
-            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) & has_integral f y t --> has_integral g y t",
+            "prop": "negligible s & (!x. member x (diff t s) --> f x = g x) & has_integral f y t --> has_integral g y t",
             "ty": "thm",
             "vars": {
                 "f": "real => real",
@@ -908,7 +908,7 @@
         },
         {
             "name": "has_integral_spike_eq",
-            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) --> (has_integral f y t = has_integral g y t)",
+            "prop": "negligible s & (!x. member x (diff t s) --> f x = g x) --> (has_integral f y t = has_integral g y t)",
             "ty": "thm",
             "vars": {
                 "f": "real => real",
@@ -920,7 +920,7 @@
         },
         {
             "name": "integrable_spike",
-            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) & integrable_on f t --> integrable_on g t",
+            "prop": "negligible s & (!x. member x (diff t s) --> f x = g x) & integrable_on f t --> integrable_on g t",
             "ty": "thm",
             "vars": {
                 "f": "real => real",
@@ -931,7 +931,7 @@
         },
         {
             "name": "integrable_spike_eq",
-            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) --> (integrable_on f t = integrable_on g t)",
+            "prop": "negligible s & (!x. member x (diff t s) --> f x = g x) --> (integrable_on f t = integrable_on g t)",
             "ty": "thm",
             "vars": {
                 "f": "real => real",
@@ -942,7 +942,7 @@
         },
         {
             "name": "integral_spike",
-            "prop": "negligible s & (!x. member x t & neg (member x s) --> f x = g x) --> (integral t f = integral t g)",
+            "prop": "negligible s & (!x. member x (diff t s) --> f x = g x) --> (integral t f = integral t g)",
             "ty": "thm",
             "vars": {
                 "f": "real => real",
@@ -950,7 +950,101 @@
                 "s": "real set",
                 "t": "real set"
             }
-        }                              
+        },
+        {
+            "name": "negligible_subset",
+            "prop": "negligible s & subset t s --> negligible t",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "negligible_diff",
+            "prop": "negligible s --> negligible (diff s t)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "negligible_inter",
+            "prop": "negligible s | negligible t  --> negligible (inter s t)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "negligible_union",
+            "prop": "negligible s & negligible t  --> negligible (union s t)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "negligible_union_eq",
+            "prop": "negligible (union s t) = negligible s & negligible t",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "negligible_sing",
+            "prop": "negligible {a}",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+            }
+        },
+        {
+            "name": "negligible_insert",
+            "prop": "negligible (insert a s) = negligible s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "a": "real"
+            }
+        },
+        {
+            "name": "negligible_empty",
+            "prop": "negligible empty_set",
+            "ty": "thm",
+            "vars": {
+                }
+        },
+        {
+            "name": "negligible_finite",
+            "prop": "finite s --> negligible s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "a": "real"
+            }
+        },
+        {
+            "name": "negligible_Union",
+            "prop": "finite s & (!t. member t s --> negligible t) --> negligible (Union s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set set"
+            }
+        },
+        {
+            "name": "NEGLIGIBLE",
+            "prop": "negligible s = !t. has_integral (indicator s) 0 t",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        }                                                    
     ],
     "description": "Basic results about integral.",
     "imports": [
