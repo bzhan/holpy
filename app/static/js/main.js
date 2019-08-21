@@ -124,7 +124,9 @@
                 form.fname.value = data.name;
                 form.imports.value = data.imports.join(',');
                 form.description.textContent = data.description;
-                form.description.rows = 5;
+                adjust_input_size(document.getElementById('fname' + page_num));
+                adjust_input_size(document.getElementById('imports' + page_num));
+                adjust_input_size(document.getElementById('desc' + page_num));
             } else {
                 $.ajax({
                     url: '/api/load-json-file',
@@ -136,7 +138,9 @@
                         form.fname.value = res.name;
                         form.imports.value = res.imports.join(',');
                         form.description.textContent = res.description;
-                        form.description.rows = 5;
+                        adjust_input_size(document.getElementById('fname' + page_num));
+                        adjust_input_size(document.getElementById('imports' + page_num));
+                        adjust_input_size(document.getElementById('desc' + page_num));
                     }
                 })    
             }
@@ -277,8 +281,7 @@
         // Create editing area after clicking 'edit' link.
         $('a#edit_item').click(function() {
             if (items_selected.length === 1) {
-                var item_id = items_selected[0];
-                init_edit_area(String(item_id));
+                init_edit_area(items_selected[0], false);
             }
         });
 
@@ -286,22 +289,22 @@
             var num = 0;
             if (cur_theory_name && items_selected.length === 1) {
                 if ($(this).attr('id') === 'add_before') {
-                    json_files[cur_theory_name].content.splice(items_selected[0], 0, {'ty': 'pre-data'});
+                    json_files[cur_theory_name].content.splice(items_selected[0], 0, {'ty': 'thm'});
                     num = items_selected[0];
                     items_selected[0] += 1;
                 }
-                else if($(this).attr('id') === 'add_after') {
+                else if ($(this).attr('id') === 'add_after') {
                     var item_id = items_selected[0];
-                    json_files[cur_theory_name].content.splice(item_id+1, 0, {'ty':'pre-data'});
+                    json_files[cur_theory_name].content.splice(item_id+1, 0, {'ty': 'thm'});
                     num = item_id + 1;
                 }
             }
             if (cur_theory_name && $(this).attr('id') === 'add_end') {
-                json_files[cur_theory_name].content.push({'ty':'pre-data'});
+                json_files[cur_theory_name].content.push({'ty': 'thm'});
                 num = json_files[cur_theory_name].content.length - 1;
             }
             display_theory_items();
-            init_edit_area('', 'thm', add_mode = true, pos=num);
+            init_edit_area(num, true);
             save_json_file(cur_theory_name);
         })
 
@@ -330,24 +333,20 @@
             }
         });
 
-        // Auto-adjust number of rows for a textarea.
-        $('#codeTabContent').on('input', 'textarea.adjust-rows', function () {
-            var rows = $(this).val().split('\n').length;
-            $(this).attr('rows', rows);
+        $('#codeTabContent').on('input', '.form-element', function () {
+            adjust_input_size(this);
         });
 
         // Save information for an item.
         $('div.rbottom').on('click', 'button.save-edit', function () {
             var form = get_selected_edit_form('edit-form');
             var error_id = $(this).next().attr('id');
-            var add_num = $(this).attr('name');
-            var ty = $(this).attr('data_type');
-            var theory_name = $(this).attr('theory_name');
-            var number = $(this).attr('name');
+            var theory_name = form.info.theory_name;
+            var number = form.info.number;
             var data = {};
             data.file_name = theory_name;
             data.prev_list = json_files[theory_name].content.slice(0, Number(number));
-            data.content = make_data(form, ty);
+            data.content = make_data(form);
             $.ajax({
                 url: '/api/check-modify',
                 type: 'POST',
@@ -356,18 +355,11 @@
                     if ('failed' in res) {
                         $('div#' + error_id).find('pre').text(res.detail_content);
                     } else {
-                        item = res.content;
-                        delete item.data_content;
-                        delete item.names_list;
-                        delete item.data_name;
-                        if (number === '' || number === '-1') {
-                            json_files[theory_name].content[add_num] = item;
-                        } else {
-                            item = json_files[theory_name].content[number];
-                            for (var key in res.content) {
-                                item[key] = res.content[key];
-                            }
-                        }
+                        delete res.content.data_content;
+                        delete res.content.data_name;
+                        item = json_files[theory_name].content[number];
+                        $.extend(true, item, res.content);
+
                         save_json_file(theory_name);
                         display_theory_items();
                         alert('Saved ' + item.name);
@@ -376,7 +368,7 @@
             });
         });
 
-        $('#panel-content').on('mousedown', 'div[name="theories"]', function (e) {
+        $('#panel-content').on('mousedown', 'div.theory-item', function (e) {
             drag = false;
             startingPos = [e.pageX, e.pageY];
             if (e.shiftKey) {
@@ -384,14 +376,14 @@
             }
         });
 
-        $('#panel-content').on('mousemove', 'div[name="theories"]', function (e) {
+        $('#panel-content').on('mousemove', 'div.theory-item', function (e) {
             if (!(e.pageX === startingPos[0] && e.pageY === startingPos[1])) {
                 drag = true;
             }
         });
 
         // Select / unselect an item by left click.
-        $('#panel-content').on('mouseup','div[name="theories"]', function (e) {
+        $('#panel-content').on('mouseup','div.theory-item', function (e) {
             if (!drag) {
                 var item_id = Number($(this).attr('item_id'));
                 if (e.shiftKey) {
@@ -441,27 +433,33 @@
             display_theory_items();
         })
 
-        // Move up an item or sequence of items.
-        function item_exchange_up() {
-            $.each(items_selected, function (i, v) {
-                items_selected[i] = v - 1;
-                [content[v-1], content[v]] = [content[v], content[v-1]]
-            });
-        }
-
         $(document).keydown(function (e) {
-            if (e.keyCode === 38 && e.ctrlKey) {
+            if (e.keyCode === 38 && e.ctrlKey) {  // Move up a sequence of items
                 content = json_files[cur_theory_name].content;
                 if (items_selected[0] === 0)
                     return;
-                if ($('div[item_id="0"]').attr('name') && items_selected[0] !== 0) {
-                    item_exchange_up();
-                }
-                else if (items_selected[0] !== 1) {
-                    item_exchange_up();
-                }
+
+                $.each(items_selected, function (i, v) {
+                    items_selected[i] = v - 1;
+                    [content[v-1], content[v]] = [content[v], content[v-1]]
+                });
+
                 save_json_file(cur_theory_name);
                 display_theory_items();
+            } else if (e.keyCode === 40 && e.ctrlKey) {  // Move down a sequence of items
+                content = json_files[cur_theory_name].content;
+                if (items_selected[items_selected.length-1] >= content.length-1)
+                    return;
+
+                items_selected.reverse();
+                $.each(items_selected, function (i, v) {
+                    items_selected[i] = v + 1;
+                    [content[v], content[v+1]] = [content[v+1], content[v]]
+                });
+                items_selected.reverse();
+
+                save_json_file(cur_theory_name);
+                display_theory_items();    
             } else if (e.keyCode === 65 && e.ctrlKey) {  // Ctrl+A
                 e.preventDefault();
                 $('a#add_after').click();
@@ -480,24 +478,6 @@
             }
         })
 
-        // Move down an item or sequence of items.
-        $(document).keydown(function (e) {
-            if (e.ctrlKey && e.keyCode === 40 &&
-                items_selected[items_selected.length-1] < json_files[cur_theory_name].content.length-1) {
-                content = json_files[cur_theory_name].content;
-                items_selected.reverse();
-                if (items_selected[0] === content.length - 1)
-                    return;
-                $.each(items_selected, function (i, v) {
-                    items_selected[i] = v + 1;
-                    [content[v], content[v+1]] = [content[v+1], content[v]]
-                });
-                items_selected.reverse();
-                save_json_file(cur_theory_name);
-                display_theory_items();
-            }
-        })
-
         // Open json file from links in the 'Files' tab.
         $('#panel-files').on('click', 'a[name="file"]', function () {
             open_json_file($(this).text().trim());
@@ -511,23 +491,11 @@
             }
         });
 
+        // Show appropriate form content on changing type of item.
         $('div.code-pan').on('change', 'select', function () {
-            var page_n = $(this).attr('name');
             var ty = $(this).find('option:selected').val();
-            $('div.total' + page_n).each(function() {
-                if ($(this).attr('class').indexOf('hidden-ele') < 0) {
-                    $(this).addClass('hidden-ele');
-                }
-                if (ty === 'def.ax')
-                    $('div[name="constant-' + page_n + '"]').removeClass('hidden-ele');
-                if (ty === 'thm' || ty === 'thm.ax')
-                    $('div[name="thm-' + page_n + '"]').removeClass('hidden-ele');
-                if (ty === 'type.ind')
-                    $('div[name="type-' + page_n + '"]').removeClass('hidden-ele');
-                if (ty === 'def' || ty === 'def.ind' || ty === 'def.pred')
-                    $('div[name="def-' + page_n + '"]').removeClass('hidden-ele');
-            })
-            $('div.rbottom button#' + page_n).attr('data_type', ty);
+            var form = document.getElementById('edit-thm-form' + page_num);
+            load_item(form, {'ty': ty});
         })
 
         // On loading page, obtain list of theories.
@@ -561,6 +529,19 @@
                 }
             });
         }
+    }
+
+    // Auto-adjust size of input and textarea.
+    function adjust_input_size(input) {
+        var text = $(input).val();
+        var test_width = $(input).closest('form').find('pre.test-width');
+        test_width.text(text);
+        var min_width = $(input).attr('min-width');
+        $(input).css('width', test_width.css('width'));
+        if (min_width !== undefined && $(input).width() < Number(min_width)) {
+            $(input).css('width', min_width + 'px');
+        }
+        $(input).attr('rows', text.split('\n').length);
     }
 
     // Initialize form for editing metadata.
@@ -602,12 +583,10 @@
             delete data.type_hl;
             delete data.prop_hl;
             delete data.edit_content;
-            delete data.type_name;
         } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
             delete data.type_hl;
             delete data.ext;
             delete data.edit_content;
-            delete data.type_name;
             delete data.ext_output;
             for (var i in data.rules) {
                 delete data.rules[i].prop_hl;
@@ -619,8 +598,12 @@
     function save_json_file(filename) {
         var content = [];
         $.each(json_files[filename].content, function (i, item) {
-            content.push($.extend(true, {}, item));  // perform deep copy
-            item_to_output(content[i]);
+            if ('name' in item) {
+                var item_copy = {};
+                $.extend(true, item_copy, item);
+                content.push(item_copy);  // perform deep copy
+                item_to_output(item_copy);    
+            }
         });
         var data = {
             name: filename,
@@ -635,133 +618,162 @@
         });
     }
 
-    // Initialize edit area, for both editing an existing item and
-    // creating a new item.
-    // 
-    // number: if editing an existing item, id of the current item.
-    // data_type: if adding a new item, type of the new item.
-    function init_edit_area(number = '', data_type = '', add_mode = false, pos = '') {
-        page_num++;
-        var ext_output = '';
-        var templ_tab = _.template($("#template-tab").html());
-        if (number) {
-            var item = json_files[cur_theory_name].content[number];
-            var data_type = item.ty;
-        }
-        $('#codeTab').append(templ_tab({page_num: page_num, label: data_type}));
+    function load_item(form, item) {
+        var data_type = item.ty;
+        $('select#dropdown_datatype' + page_num).val(data_type);
+        form.info.data_type = data_type;
+
+        $('span.type-form-header').addClass('hidden-ele');
+        $('div.type-form-body').addClass('hidden-ele');
+
         if (data_type === 'def.ax') {
-            var templ_edit = _.template($("#template-edit-thm").html());
-            $('#codeTabContent').append(templ_edit({page_num: page_num, ext_output: ext_output, type_name: ''}));
-            var form = document.getElementById('edit-thm-form' + page_num);
-            
-            if (number) {
-                form.data_name.value = item['name'];
-                form.data_content_constant.value = item['type'];
-            }
-            $('div[name="constant-' + page_num +'"]').removeClass('hidden-ele');
-            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+            if ('name' in item)
+                form.const_name.value = item.name;
+            if ('type' in item)
+                form.const_type.value = item.type;
+            adjust_input_size(document.getElementById('const-name' + page_num));
+            adjust_input_size(document.getElementById('const-type' + page_num));
+            $('span#const-head' + page_num).removeClass('hidden-ele');
         }
 
         if (data_type === 'thm' || data_type === 'thm.ax') {
-            if (add_mode) {
-                add_tab_number = page_num;
-                $('ul#codeTab li[name="code'+ page_num +'"] a span').text('New-data');
-            }
-            var templ_edit = _.template($('#template-edit-thm').html());
-            $('#codeTabContent').append(templ_edit({page_num: page_num, ext_output: ext_output, type_name: ''}));
-            var form = document.getElementById('edit-thm-form' + page_num);
             if (data_type === 'thm')
-                $('label#thm--'+ page_num).text('Theorem');
+                $('label#thm-label' + page_num).text('theorem');
             else
-                $('label#thm--'+ page_num).text('Axiom');
-            if (number) {
-                form.name.value = item['name'];
-                form.prop.value = item['prop'];
-                vars_lines = item['vars_lines']
-                form.vars.rows = vars_lines.length;
-                form.vars.value = vars_lines.join('\n');
-                if (item.attributes && item.attributes.includes('hint_backward'))
-                    form.hint_backward.checked = true;
-                if (item.attributes && item.attributes.includes('hint_backward1'))
-                    form.hint_backward1.checked = true;
-                if (item.attributes && item.attributes.includes('hint_forward'))
-                    form.hint_forward.checked = true;
-                if (item.attributes && item.attributes.includes('hint_rewrite'))
-                    form.hint_rewrite.checked = true;
-                if (item.attributes && item.attributes.includes('hint_resolve'))
-                    form.hint_resolve.checked = true;
-            }
-            $('div[name="thm-'+ page_num +'"]').removeClass('hidden-ele');
-            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+                $('label#thm-label' + page_num).text('axiom');
+
+            if ('name' in item)
+                form.name.value = item.name;
+            if ('prop' in item)
+                form.prop.value = item.prop;
+            if ('vars_lines' in item)
+                form.vars.value = item.vars_lines.join('\n');
+            if (item.attributes && item.attributes.includes('hint_backward'))
+                form.hint_backward.checked = true;
+            if (item.attributes && item.attributes.includes('hint_backward1'))
+                form.hint_backward1.checked = true;
+            if (item.attributes && item.attributes.includes('hint_forward'))
+                form.hint_forward.checked = true;
+            if (item.attributes && item.attributes.includes('hint_rewrite'))
+                form.hint_rewrite.checked = true;
+            if (item.attributes && item.attributes.includes('hint_resolve'))
+                form.hint_resolve.checked = true;
+
+            adjust_input_size(document.getElementById('thm-name' + page_num));
+            adjust_input_size(document.getElementById('thm-vars' + page_num));
+            adjust_input_size(document.getElementById('thm-prop' + page_num));
+            $('span#thm-head' + page_num).removeClass('hidden-ele');
+            $('div#thm'+ page_num).removeClass('hidden-ele');
         }
 
         if (data_type === 'type.ind') {
-            var templ_edit = _.template($('#template-edit-thm').html());
+            if ('edit_type' in item)
+                form.type_edit_name.value = item.edit_type;
+            if ('constr_output' in item)
+                form.type_constrs.textContent = item.constr_output.join('\n');
+            adjust_input_size(document.getElementById('type-edit-name' + page_num));
+            adjust_input_size(document.getElementById('type-constrs' + page_num));
 
-            if (number) {
-                $('#codeTabContent').append(templ_edit({
-                    page_num: page_num, ext_output: item.ext_output, type_name: ''
-                }));
-                $('#codeTab').find('span#' + page_num).text(item.name);
-
-                var form = document.getElementById('edit-thm-form' + page_num);
-                form.data_name_type.value = item.edit_type;
-                form.data_content_type.textContent = item.constr_output.join('\n');
-                form.data_content_type.rows = item.constr_output.length;
-            }
-            $('div[name="type-'+ page_num +'"]').removeClass('hidden-ele');
-            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
+            $('pre#type-ext' + page_num).html(item.ext_output);
+            $('span#type-head' + page_num).removeClass('hidden-ele');
+            $('div#type' + page_num).removeClass('hidden-ele');
         }
 
         if (data_type === 'def.ind' || data_type === 'def.pred' || data_type === 'def') {
-            var templ_edit = _.template($('#template-edit-thm').html());
-            if (number) {
-                $('#codeTabContent').append(templ_edit({
-                    page_num: page_num, ext_output: item.ext_output, type_name: item.type_name
-                }));
-                $('#codeTab').find('span#' + page_num).text(item.name);
+            if (data_type === 'def')
+                $('label#def-label' + page_num).text('definition');
+            else if (data_type === 'def.pred')
+                $('label#def-label' + page_num).text('inductive');
+            else
+                $('label#def-label' + page_num).text('fun');
 
-                var form = document.getElementById('edit-thm-form' + page_num);
+            if ('name' in item)
+                form.def_name.value = item.name;
+            if ('type' in item)
+                form.def_type.value = item.type;
+            adjust_input_size(document.getElementById('def-name' + page_num));
+            adjust_input_size(document.getElementById('def-type' + page_num));
+            
+            if (data_type === 'def' && 'overload' in item) {
+                form.overload = item.overload;
+            }
+            if ('edit_content' in item) {
                 if (data_type === 'def') {
-                    form.content.textContent = item.edit_content;
-                    form.content.rows = 1;
+                    form.def_content.textContent = item.edit_content;
                     if (item.attributes && item.attributes.includes('hint_rewrite'))
                         form.hint_rewrite_def.checked = true;
                 } else {
-                    form.content.textContent = item.edit_content.join('\n');
-                    form.content.rows = item.edit_content.length;    
-                }
-                form.data_name_def.value = item.name;
-                form.data_type_def.value = item.type;
-                if (data_type == 'def' && 'overload' in item) {
-                    form.overload = item.overload;
+                    form.def_content.textContent = item.edit_content.join('\n');
+                    $('pre#def-ext'+ page_num).html(item.ext_output);
                 }
             }
-            $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
-            $('div[name="def-'+ page_num +'"]').removeClass('hidden-ele');
+            adjust_input_size(document.getElementById('def-content' + page_num));
+
+            $('span#def-head' + page_num).removeClass('hidden-ele');
+            $('div#def' + page_num).removeClass('hidden-ele');
         }
-        if (number)
-            $('div.dropdown-box'+ page_num).hide();
-        else
-            $('div.data-title'+ page_num).hide();
+
+        // Display type of item as label or dropdown box depending on new_data.
+        if (form.info.new_data) {
+            $('label.data-title').hide();
+            $('input.form-element').css('border', '0.5px solid lightgrey');
+            $('textarea.form-element').css('border', '0.5px solid lightgrey');
+        } else {
+            $('select#dropdown-datatype' + page_num).hide();
+        }
+    }
+
+    // Initialize area for editing an item.
+    // 
+    // number: id of the item being edited. This may be a new item
+    // (indicated by item.ty = 'pre-data') or an existing item.
+    function init_edit_area(number, new_data) {
+        page_num++;
+
+        // Get item to be edited, determine whether it is new item
+        // from its type.
+        var item = json_files[cur_theory_name].content[number];
+        var tab_name = item.name;
+        if (tab_name === undefined) {
+            tab_name = "(new item)";
+        }
+
+        // Add tab
+        var templ_tab = _.template($("#template-tab").html());
+        $('#codeTab').append(templ_tab({page_num: page_num, label: tab_name}));
+
+        // Add edit form
+        var templ_edit = _.template($("#template-edit-thm").html());
+        $('#codeTabContent').append(templ_edit({page_num: page_num}));
+        var form = document.getElementById('edit-thm-form' + page_num);
+
+        form.info = {};
+        form.info.new_data = new_data;
+        form.info.theory_name = cur_theory_name;
+        form.info.number = number;
+
+        load_item(form, item);
+
+        // Add SAVE button.
         var templ_rbottom = _.template($('#template-edit-rbottom').html());
-        $('div.rbottom').append(templ_rbottom({
-            page_num: page_num, data_type: data_type, theory_name: cur_theory_name, pos: pos}));
-        $('select#dropdown_datatype' + page_num).val(data_type);
+        $('div.rbottom').append(templ_rbottom({page_num: page_num}));
+
+        // Adjust visibility and selected tabs.
+        $('#codeTab a[href="#code' + page_num + '-pan"]').tab('show');
         $('div#prf' + page_num).addClass('selected').siblings().removeClass('selected');
         $('div#prf' + page_num).show().siblings().hide();
     }
 
     // Read data from the form into item.
-    function make_data(form, ty) {
+    function make_data(form) {
         var item = {};
+        var ty = form.info.data_type;
+        item.ty = ty;
         if (ty === 'def.ax') {
-            item.ty = 'def.ax';
-            item.name = form.data_name.value.trim();
-            item.type = form.data_content_constant.value.trim();
+            item.name = form.const_name.value.trim();
+            item.type = form.const_type.value.trim();
         }
         if (ty === 'thm' || ty === 'thm.ax') {
-            item.ty = ty;
             item.name = form.name.value;
             item.prop = form.prop.value;
             item.vars = form.vars.value.trim().split('\n');
@@ -778,23 +790,21 @@
                 item.attributes.push('hint_resolve');
         }
         if (ty === 'type.ind') {
-            item.data_name = form.data_name_type.value.trim();
-            item.data_content = form.data_content_type.value.trim().split('\n');
-            item.ty = 'type.ind';
+            item.data_name = form.type_edit_name.value.trim();
+            item.data_content = form.type_constrs.value.trim().split('\n');
         }
         if (ty === 'def.ind' || ty === 'def' || ty === 'def.pred') {
-            item.ty = ty;
-            item.name = form.data_name_def.value.trim();
-            item.type = form.data_type_def.value.trim();
+            item.name = form.def_name.value.trim();
+            item.type = form.def_type.value.trim();
             if (ty === 'def')
-                item.prop = form.content.value.trim();
+                item.prop = form.def_content.value.trim();
                 item.attributes = [];
                 if (form.hint_rewrite_def.checked == true)
                     item.attributes.push('hint_rewrite');
                 if ('overload' in form)
                     item.overload = form.overload;
             else
-                item.data_content = form.content.value.trim().split('\n');
+                item.data_content = form.def_content.value.trim().split('\n');
         }
         return item;
     }
@@ -932,15 +942,16 @@
     // Display items for the current theory on the left side of the page.
     function display_theory_items() {
         var theory = json_files[cur_theory_name];
-        var templ = _.template($("#template-content-theory_desc").html());
+        var templ = _.template($("#template-content-theory-header").html());
         $('#panel-content').html(templ({
+            theory_name: cur_theory_name,
             theory_desc: theory.description,
             import_str: theory.imports.join(' ')
         }));
         $.each(theory.content, function(num, ext) {
-            var class_item = 'theory_item';
+            var class_item = 'theory-item';
             if (items_selected.indexOf(num) >= 0) {
-                class_item = 'theory_item selected_item';
+                class_item = 'theory-item selected_item';
             }
             var templ = _.template($("#template-content-" + ext.ty.replace(".", "-")).html());
             $('#panel-content').append(templ({
