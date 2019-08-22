@@ -10,6 +10,15 @@
             "type": "real => real => real set"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_open_interval",
+            "prop": "real_open_interval a b = {p. real_less a p & real_less p b}",
+            "ty": "def",
+            "type": "real => real => real set"
+        },
+        {
             "name": "has_integral",
             "ty": "def.ax",
             "type": "(real => real) => real => real set => bool"
@@ -1044,7 +1053,105 @@
             "vars": {
                 "s": "real set"
             }
-        }                                                    
+        },
+        {
+            "name": "has_integral_spike_finite",
+            "prop": "finite s & (!x. member x (diff t s) --> g x = f x) & has_integral f y t --> has_integral g y t",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "t": "real set",
+                "y": "real"
+            }
+        },  
+        {
+            "name": "has_integral_spike_finite_eq",
+            "prop": "finite s & (!x. member x (diff t s) --> g x = f x) --> (has_integral f y t = has_integral g y t)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "t": "real set",
+                "y": "real"
+            }
+        },
+        {
+            "name": "integrable_spike_finite",
+            "prop": "finite s & (!x. member x (diff t s) --> g x = f x) & integrable_on f t --> integrable_on g t",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integral_eq",
+            "prop": "(!x. member x s --> g x = f x) --> (integral s f = integral s g)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "integral_eq_0",
+            "prop": "(!x. member x s --> f x = 0) --> (integral s f = 0)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "negligible_frontier_interval",
+            "prop": "negligible (diff (real_closed_interval a b) (real_open_interval a b))",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "has_integral_spike_interior",
+            "prop": "(!x. member x (real_open_interval a b) --> g x = f x) & has_integral f y (real_closed_interval a b) --> has_integral g y (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "y": "real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "has_integral_spike_interior_eq",
+            "prop": "(!x. member x (real_open_interval a b) --> g x = f x) --> has_integral f y (real_closed_interval a b) = has_integral g y (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "y": "real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "integrable_spike_interior",
+            "prop": "(!x. member x (real_open_interval a b) --> g x = f x) --> integrable_on f (real_closed_interval a b) --> integrable_on g (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        }                                                  
     ],
     "description": "Basic results about integral.",
     "imports": [
