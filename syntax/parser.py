@@ -384,8 +384,12 @@ def parse_type(thy, s):
 def parse_term(thy, ctxt, s):
     """Parse a term."""
     parser_setting['thy'] = thy
-    t = term_parser.parse(s)
-    return infertype.type_infer(thy, ctxt, t)
+    try:
+        t = term_parser.parse(s)
+        return infertype.type_infer(thy, ctxt, t)
+    except (exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+        print("When parsing:", s)
+        raise e
 
 def parse_thm(thy, ctxt, s):
     """Parse a theorem (sequent)."""
