@@ -60,7 +60,7 @@ grammar = r"""
 
     ?uminus: "-" uminus -> uminus | big_union   // Unary minus: priority 80
 
-    ?times: times "*" big_union | uminus        // Multiplication: priority 70
+    ?times: times "*" uminus | uminus        // Multiplication: priority 70
 
     ?inter: inter ("Int"|"∩") times | times     // Intersection: priority 70
 

@@ -7,19 +7,25 @@ from integral import expr
 
 
 grammar = r"""
-    ?expr: CNAME -> var_expr
+    ?atom: CNAME -> var_expr
         | INT -> int_expr
         | DECIMAL -> decimal_expr
-        | expr "+" expr -> plus_expr
-        | expr "-" expr -> minus_expr
-        | expr "*" expr -> times_expr
-        | expr "/" expr -> divides_expr
-        | expr "^" expr -> pow_expr
-        | "-" expr -> uminus_expr
         | "D" CNAME "." expr -> deriv_expr
         | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
+
+    ?uminus: "-" uminus -> uminus_expr | atom
+
+    ?pow: pow "^" uminus -> pow_expr | uminus
+
+    ?times: times "*" pow -> times_expr
+        | times "/" pow -> divides_expr | pow
+
+    ?plus: plus "+" times -> plus_expr
+        | plus "-" times -> minus_expr | times
+
+    ?expr: plus
 
     %import common.CNAME
     %import common.WS

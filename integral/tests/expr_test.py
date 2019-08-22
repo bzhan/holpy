@@ -9,40 +9,56 @@ from integral.parser import parse_expr
 
 class ExprTest(unittest.TestCase):
     def testPrintExpr(self):
+        x, y, z = Var("x"), Var("y"), Var("z")
         test_data = [
-            (Var("x"), "x"),
+            (x, "x"),
             (Const(1), "1"),
             (Const(Decimal("1.1")), "1.1"),
             (Const(-1), "-1"),
-            (Var("x") + Var("y"), "x + y"),
-            (Var("x") - Var("y"), "x - y"),
-            (-Var("x"), "-x"),
-            (Var("x") * Var("y"), "x * y"),
-            (Var("x") / Var("y"), "x / y"),
-            (Var("x") ^ Var("y"), "x ^ y"),
-            (sin(Var("x")), "sin(x)"),
-            (cos(Var("x")), "cos(x)"),
-            (log(Var("x")), "log(x)"),
-            (Deriv("x", Const(3) * Var("x")), "D x. 3 * x"),
-            (Integral("x", Const(1), Const(2), Const(3) * Var("x")), "INT x:[1,2]. 3 * x"),
+            (x + y, "x + y"),
+            (x - y, "x - y"),
+            (-x, "-x"),
+            (x * y, "x * y"),
+            (x / y, "x / y"),
+            (x ^ y, "x ^ y"),
+            ((x + y) * z, "(x + y) * z"),
+            (x + (y * z), "x + y * z"),
+            (x * y + z, "x * y + z"),
+            (x * (y + z), "x * (y + z)"),
+            (x + y + z, "x + y + z"),
+            (x + (y + z), "x + (y + z)"),
+            (x * (y ^ Const(2)), "x * y ^ 2"),
+            ((x * y) ^ Const(2), "(x * y) ^ 2"),
+            (-(x + y), "-(x + y)"),
+            (-x + y, "-x + y"),
+            (sin(x), "sin(x)"),
+            (cos(x), "cos(x)"),
+            (log(x), "log(x)"),
+            (sin(x ^ Const(2)), "sin(x ^ 2)"),
+            (sin(x) * cos(x), "sin(x) * cos(x)"),
+            (Deriv("x", Const(3) * x), "D x. 3 * x"),
+            (Integral("x", Const(1), Const(2), Const(3) * x), "INT x:[1,2]. 3 * x"),
+            (Deriv("x", Const(3) * x) * x, "(D x. 3 * x) * x"),
+            (Integral("x", Const(1), Const(2), Const(3) * x) * x, "(INT x:[1,2]. 3 * x) * x"),
         ]
 
         for e, s in test_data:
             self.assertEqual(str(e), s)
 
     def testCompareExpr(self):
+        x, y, z = Var("x"), Var("y"), Var("z")
         test_data = [
-            (Var("x"), Var("y")),
-            (Var("x"), Const(3)),
+            (x, y),
+            (x, Const(3)),
             (Const(3), Const(4)),
-            (Const(4), Var("x") * Var("y")),
-            (Var("x") * Var("y"), Var("x") + Var("y")),
-            (Var("x") * Var("y"), Var("x") * Var("z")),
-            (Var("x") * Var("y"), Var("z") * Var("y")),
-            (sin(Var("x")), Var("x") * Var("y")),
-            (Var("x") * Var("y"), sin(sin(Var("x")))),
-            (sin(Var("x")), Deriv("x", Var("x"))),
-            (Deriv("x", Var("x")), Integral("x", Const(1), Const(2), Var("x"))),
+            (Const(4), x * y),
+            (x * y, x + y),
+            (x * y, x * z),
+            (x * y, z * y),
+            (sin(x), x * y),
+            (x * y, sin(sin(x))),
+            (sin(x), Deriv("x", x)),
+            (Deriv("x", x), Integral("x", Const(1), Const(2), x)),
         ]
 
         for s, t in test_data:
@@ -55,7 +71,7 @@ class ExprTest(unittest.TestCase):
         test_data = [
             ("2 + 3", "5"),
             ("2 * 3", "6"),
-            ("2 + (3*x) + 4", "6 + 3 * x")
+            ("2 + 3 * x + 4", "6 + 3 * x")
         ]
 
         for s, res in test_data:

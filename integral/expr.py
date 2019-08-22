@@ -6,6 +6,10 @@ import functools, operator
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL = range(6)
 
+op_priority = {
+    "+": 65, "-": 65, "*": 70, "/": 70, "^": 75
+}
+
 class Expr:
     """Expressions."""
     def __add__(self, other):
@@ -60,6 +64,21 @@ class Expr:
                 (other.body, other.lower, other.upper, other.var)
         else:
             raise NotImplementedError
+
+    def priority(self):
+        if self.ty == VAR or self.ty == CONST:
+            return 100
+        elif self.ty == OP:
+            if len(self.args) == 1:
+                return 80
+            elif self.op in op_priority:
+                return op_priority[self.op]
+            else:
+                raise NotImplementedError
+        elif self.ty == FUN:
+            return 95
+        elif self.ty == DERIV or self.ty == INTEGRAL:
+            return 10
 
     def __lt__(self, other):
         return self <= other and self != other
@@ -171,9 +190,19 @@ class Op(Expr):
 
     def __str__(self):
         if len(self.args) == 1:
-            return "%s%s" % (self.op, str(self.args[0]))
+            a, = self.args
+            s = str(a)
+            if a.priority() < 80:
+                s = "(%s)" % s
+            return "%s%s" % (self.op, s)
         elif len(self.args) == 2:
-            return "%s %s %s" % (str(self.args[0]), self.op, str(self.args[1]))
+            a, b = self.args
+            s1, s2 = str(a), str(b)
+            if a.priority() < op_priority[self.op]:
+                s1 = "(%s)" % s1
+            if b.priority() <= op_priority[self.op]:
+                s2 = "(%s)" % s2
+            return "%s %s %s" % (s1, self.op, s2)
         else:
             raise NotImplementedError
 
