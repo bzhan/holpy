@@ -66,7 +66,10 @@ class ExprTransformer(Transformer):
         return a ^ b
 
     def uminus_expr(self, a):
-        return -a
+        if a.ty == expr.CONST:
+            return expr.Const(-a.val)
+        else:
+            return -a
 
     def fun_expr(self, func_name, *args):
         return expr.Fun(func_name, *args)

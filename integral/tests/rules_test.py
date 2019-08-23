@@ -26,6 +26,9 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. x", "[x ^ 2 / 2]_x=a,b"),
             ("INT x:[a,b]. x ^ 2", "[x ^ 3 / 3]_x=a,b"),
             ("INT x:[a,b]. x ^ 3", "[x ^ 4 / 4]_x=a,b"),
+            ("INT x:[a,b]. x ^ -1", "[log(x)]_x=a,b"),
+            ("INT x:[a,b]. sin(x)", "[-cos(x)]_x=a,b"),
+            ("INT x:[a,b]. cos(x)", "[sin(x)]_x=a,b"),
         ]
 
         rule = rules.CommonIntegral()

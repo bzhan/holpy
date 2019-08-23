@@ -53,7 +53,7 @@ class CommonIntegral(Rule):
     """Applies common integrals:
 
     INT c = c * x,
-    INT x^n = x^(n+1) / (n+1),  (where n > 0)
+    INT x^n = x^(n+1) / (n+1),  (where n != -1)
     INT sin(x) = -cos(x),
     INT cos(x) = sin(x),
     INT 1/x = log(x),  (where the range is positive)
@@ -76,13 +76,23 @@ class CommonIntegral(Rule):
             return EvalAt(e.var, e.lower, e.upper, integral)
         elif e.body.ty == expr.OP:
             if e.body.op == "^":
-                # Integral of x^n is x^(n+1)/(n+1)
                 a, b = e.body.args
-                if a == Var(e.var) and b.ty == expr.CONST:
+                if a == Var(e.var) and b.ty == expr.CONST and b.val != -1:
+                    # Integral of x^n is x^(n+1)/(n+1)
                     integral = (Var(e.var) ^ Const(b.val + 1)) / Const(b.val + 1)
                     return EvalAt(e.var, e.lower, e.upper, integral)
+                elif a == Var(e.var) and b.ty == expr.CONST and b.val == -1:
+                    # Integral of x^-1 is log(x)
+                    return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
                 else:
                     return e
+            else:
+                return e
+        elif e.body.ty == expr.FUN:
+            if e.body.func_name == "sin" and e.body.args[0] == Var(e.var):
+                return EvalAt(e.var, e.lower, e.upper, -expr.cos(Var(e.var)))
+            elif e.body.func_name == "cos" and e.body.args[0] == Var(e.var):
+                return EvalAt(e.var, e.lower, e.upper, expr.sin(Var(e.var)))
             else:
                 return e
         else:

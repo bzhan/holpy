@@ -2,6 +2,7 @@
 
 import unittest
 
+from integral.expr import Var, Const
 from integral.parser import parse_expr
 
 
@@ -22,6 +23,15 @@ class ParserTest(unittest.TestCase):
         for s in test_data:
             e = parse_expr(s)
             self.assertEqual(str(e), s)
+
+    def testParseTerm2(self):
+        test_data = [
+            ("-x", -Var("x")),
+            ("-2", Const(-2)),
+        ]
+
+        for s, e, in test_data:
+            self.assertEqual(parse_expr(s), e)
 
 
 if __name__ == "__main__":
