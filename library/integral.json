@@ -24,6 +24,11 @@
             "type": "(real => real) => real => real set => bool"
         },
         {
+            "name": "continuous_on",
+            "ty": "def.ax",
+            "type": "(real => real) => real set => bool"
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -1151,7 +1156,64 @@
                 "a": "real",
                 "b": "real"
             }
-        }                                                  
+        },
+        {
+            "name": "integrable_continuous",
+            "prop": "continuous_on f (real_closed_interval a b) --> integrable_on f (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "integrable_subinterval",
+            "prop": "integrable_on f (real_closed_interval a b) & subset (real_closed_interval c d) (real_closed_interval a b) --> integrable_on f (real_closed_interval c d)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real"
+            }
+        },
+        {
+            "name": "has_integral_combine",
+            "prop": "a <= c & c <= b & has_integral f i (real_closed_interval a c) & has_integral f j (real_closed_interval c b) --> has_integral f (i + j) (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "i": "real",
+                "j": "real"
+            }
+        },
+        {
+            "name": "integral_combine",
+            "prop": "a <= c & c <= b & integrable_on f (real_closed_interval a b) --> integral (real_closed_interval a c) f + integral (real_closed_interval c b) f = integral (real_closed_interval a b) f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
+        },
+        {
+            "name": "integrable_combine",
+            "prop": "a <= c & c <= b & integrable_on f (real_closed_interval a c) & integrable_on f (real_closed_interval c b) --> integrable_on f (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
+        }                                                   
     ],
     "description": "Basic results about integral.",
     "imports": [
