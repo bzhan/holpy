@@ -4,7 +4,7 @@ from decimal import Decimal
 from integral import poly
 import functools, operator
 
-VAR, CONST, OP, FUN, DERIV, INTEGRAL = range(6)
+VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
 
 op_priority = {
     "+": 65, "-": 65, "*": 70, "/": 70, "^": 75
@@ -37,7 +37,7 @@ class Expr:
             return 1 + sum(arg.size() for arg in self.args)
         elif self.ty == DERIV:
             return 1 + self.body.size()
-        elif self.ty == INTEGRAL:
+        elif self.ty in (INTEGRAL, EVAL_AT):
             return 1 + self.lower.size() + self.upper.size() + self.body.size()
         else:
             raise NotImplementedError
@@ -59,14 +59,14 @@ class Expr:
             return (self.func_name, self.args) <= (other.func_name, other.args)
         elif self.ty == DERIV:
             return (self.body, self.var) <= (other.body, other.var)
-        elif self.ty == INTEGRAL:
+        elif self.ty == INTEGRAL or self.ty == EVAL_AT:
             return (self.body, self.lower, self.upper, self.var) <= \
                 (other.body, other.lower, other.upper, other.var)
         else:
             raise NotImplementedError
 
     def priority(self):
-        if self.ty == VAR or self.ty == CONST:
+        if self.ty in (VAR, CONST):
             return 100
         elif self.ty == OP:
             if len(self.args) == 1:
@@ -77,7 +77,7 @@ class Expr:
                 raise NotImplementedError
         elif self.ty == FUN:
             return 95
-        elif self.ty == DERIV or self.ty == INTEGRAL:
+        elif self.ty in (DERIV, INTEGRAL, EVAL_AT):
             return 10
 
     def __lt__(self, other):
@@ -288,3 +288,28 @@ class Integral(Expr):
 
     def __repr__(self):
         return "Integral(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
+
+class EvalAt(Expr):
+    """Evaluation at upper and lower, then subtract."""
+    def __init__(self, var, lower, upper, body):
+        assert isinstance(var, str) and isinstance(lower, Expr) and \
+            isinstance(upper, Expr) and isinstance(body, Expr)
+
+        self.ty = EVAL_AT
+        self.var = var
+        self.lower = lower
+        self.upper = upper
+        self.body = body
+
+    def __hash__(self):
+        return hash((EVAL_AT, self.var, self.lower, self.upper, self.body))
+
+    def __eq__(self, other):
+        return other.ty == EVAL_AT and self.var == other.var and \
+            self.lower == other.lower and self.upper == other.upper and self.body == other.body
+
+    def __str__(self):
+        return "[%s]_%s=%s,%s" % (str(self.body), self.var, str(self.lower), str(self.upper))
+
+    def __repr__(self):
+        return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))

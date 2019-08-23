@@ -14,6 +14,7 @@ grammar = r"""
         | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
+        | "[" expr "]_" CNAME "=" expr "," expr -> eval_at_expr
 
     ?uminus: "-" uminus -> uminus_expr | atom
 
@@ -76,11 +77,14 @@ class ExprTransformer(Transformer):
     def integral_expr(self, var, lower, upper, body):
         return expr.Integral(var, lower, upper, body)
 
+    def eval_at_expr(self, body, var, lower, upper):
+        return expr.EvalAt(var, lower, upper, body)
+
 expr_parser = Lark(grammar, start="expr", parser="lalr", transformer=ExprTransformer())
 
 def parse_expr(s):
     try:
         return expr_parser.parse(s)
-    except exceptions.UnexpectedCharacters as e:
+    except (exceptions.UnexpectedCharacters, exceptions.UnexpectedToken) as e:
         print("When parsing:", s)
         raise e

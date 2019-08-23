@@ -4,7 +4,7 @@ import unittest
 from decimal import Decimal
 
 from integral import expr
-from integral.expr import Var, Const, Op, Fun, sin, cos, log, Deriv, Integral
+from integral.expr import Var, Const, Op, Fun, sin, cos, log, Deriv, Integral, EvalAt
 from integral.parser import parse_expr
 
 class ExprTest(unittest.TestCase):
@@ -40,6 +40,8 @@ class ExprTest(unittest.TestCase):
             (Integral("x", Const(1), Const(2), Const(3) * x), "INT x:[1,2]. 3 * x"),
             (Deriv("x", Const(3) * x) * x, "(D x. 3 * x) * x"),
             (Integral("x", Const(1), Const(2), Const(3) * x) * x, "(INT x:[1,2]. 3 * x) * x"),
+            (EvalAt("x", Const(1), Const(2), Const(3) * x), "[3 * x]_x=1,2"),
+            (EvalAt("x", Const(1), Const(2), Const(3) * x) * x, "([3 * x]_x=1,2) * x"),
         ]
 
         for e, s in test_data:
@@ -67,11 +69,13 @@ class ExprTest(unittest.TestCase):
             self.assertFalse(t <= s)
             self.assertFalse(t < s)
 
-    def testReduce(self):
+    def testNormalize(self):
         test_data = [
             ("2 + 3", "5"),
             ("2 * 3", "6"),
-            ("2 + 3 * x + 4", "6 + 3 * x")
+            ("2 + 3 * x + 4", "6 + 3 * x"),
+            ("2 + x / y + 2 * (x / y) + 3", "5 + 3 * (x / y)"),
+            ("(x + y) ^ 2", "(x + y) ^ 2"),
         ]
 
         for s, res in test_data:
