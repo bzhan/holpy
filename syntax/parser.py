@@ -60,7 +60,7 @@ grammar = r"""
 
     ?uminus: "-" uminus -> uminus | big_union   // Unary minus: priority 80
 
-    ?times: times "*" big_union | uminus        // Multiplication: priority 70
+    ?times: times "*" uminus | uminus        // Multiplication: priority 70
 
     ?inter: inter ("Int"|"∩") times | times     // Intersection: priority 70
 
@@ -384,8 +384,12 @@ def parse_type(thy, s):
 def parse_term(thy, ctxt, s):
     """Parse a term."""
     parser_setting['thy'] = thy
-    t = term_parser.parse(s)
-    return infertype.type_infer(thy, ctxt, t)
+    try:
+        t = term_parser.parse(s)
+        return infertype.type_infer(thy, ctxt, t)
+    except (exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+        print("When parsing:", s)
+        raise e
 
 def parse_thm(thy, ctxt, s):
     """Parse a theorem (sequent)."""
