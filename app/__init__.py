@@ -54,7 +54,6 @@ def proof_area_template():
 # Program verification homepage
 @app.route('/program', methods=['POST', 'GET'])
 def index_program():
-    # return render_template('prog_verify.html')
     return redirect('http://localhost:8080')
 
 # Verifying a program
