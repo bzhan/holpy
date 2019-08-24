@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" href="../static/css/integral.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Integrator web interface</title>
+</head>
+
+<body>
+
+    <!-- Menu -->
+    <div class="dropdown">
+        <button onclick="menu_file()" class="dropbtn">File</button>
+        <div id="menu-file" class="dropdown-content">
+            <a href="#" onclick="open_file()">Open</a>
+        </div>
+        <button onclick="menu_action()" class="dropbtn">Actions</button>
+        <div id="menu-action" class="dropdown-content" style="min-width:230px">
+            <a href="#" onclick="simplify()">Simplify</a>
+            <a href="#" onclick="linearity()">Apply linearity</a>
+            <a href="#" onclick="common_integral()">Apply common integrals</a>
+        </div>
+    </div>
+
+    <!-- Area for displaying content -->
+    <div id="content"></div>
+
+    <!-- Area for displaying problem -->
+    <div id="problem"></div>
+
+</body>
+
+<div data-include="templ"></div>
+<script src="../static/js/integral.js"></script>
+
+</html>
