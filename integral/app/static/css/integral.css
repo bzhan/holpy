@@ -46,3 +46,11 @@
 .show {
     display:block;
 }
+
+.calc-reason {
+    margin-left: 50px;
+}
+
+.calc-equation {
+    margin-left: 20px;
+}

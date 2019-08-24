@@ -3,12 +3,16 @@
 <script type="text/template" id='template-contents'>
     <div>
         <span><%=item.name%>:</span>
-        <a href="#" id="content<%=id%>" class="content-link"><%=item.problem%></a>
+        <a href="#" id="content<%=id%>" name="<%=item.problem%>" class="content-link">
+            \( <%=item._problem_latex%> \)
+        </a>
     </div>
 </script>
 
-<script type="text/template" id='template-problem'>
+<script type="text/template" id='template-calc'>
     <div>
-        <span><%=line%></span>
+        <span>Step <%=step_num%>:</span>
+        <span class="calc-equation">\( <%=latex%> \)</span>
+        <span class="calc-reason">(<%=reason%>)</span>
     </div>
 </script>
