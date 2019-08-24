@@ -16,3 +16,17 @@
         <span class="calc-reason">(<%=reason%>)</span>
     </div>
 </script>
+
+<script type="text/template" id="template-subst-dialog">
+    <div id="subst-dialog" style="text-align:center" title="Basic dialog">
+        <div>
+            <label>Substitute</label>
+            <input id="subst-var-name" name="var_name" class="form-element" style="width:25px">
+            <label>for</label>
+            <input id="subst-expr" name="expr" class="form-element" style="width:100px">
+        </div>
+        <div style="margin-top:10px">
+            <button id="subst-dialog-submit" onclick="do_substitution()">OK</button>
+        </div>
+    </div>
+</script>
