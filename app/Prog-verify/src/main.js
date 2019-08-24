@@ -5,7 +5,10 @@ import App from './App'
 import router from './router'
 import 'codemirror/lib/codemirror.css'
 
+// import VueSweetalert2 from './plugins/vue-sweetalert2'
+
 Vue.config.productionTip = false
+// Vue.use(VueSweetalert2)
 
 /* eslint-disable no-new */
 new Vue({

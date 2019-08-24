@@ -2,7 +2,7 @@
   <div id="wrap">
     <div id="left-con" class="left-con">
       <div id="pro-ver" class="total left">
-        <label for="files" id="set_file" :style="style_file" @mouseover="button_change" @mouseout="button_recover">Please choose a file</label>
+        <label for="files" id="set_file" :style="style_file" @mouseover="button_change" @mouseout="button_change">Please choose a file</label>
         <input type="file" id="files" @change="get_file($event)">
         <div id="program-ver" class="program-ver">
           <div v-for="vcg in file_data" :key="vcg" @click="data_process($event)">
@@ -19,6 +19,9 @@
         </div>
       </div>
     </div>
+    <div data-include="display_results"></div>
+    <div data-include="edit_area"></div>
+    <div data-include="proof_area"></div>
   </div>
 </template>
 
@@ -39,7 +42,8 @@ export default {
       file_data: [],
       proof_process: false,
       proof_init_stat: 'ProofArea',
-      proof: 'sample proof'
+      proof: 'sample proof',
+      cl: false
     }
   },
   methods: {
@@ -85,10 +89,8 @@ export default {
       })
     },
     button_change: function () {
-      this.style_file.background = 'white'
-    },
-    button_recover: function () {
-      this.style_file.background = '#F0F0F0'
+      this.cl = !this.cl
+      this.style_file.background = this.cl ? 'white' : '#F0F0F0'
     },
     get_file: function (e) {
       let fileName = e.target.files[0].name

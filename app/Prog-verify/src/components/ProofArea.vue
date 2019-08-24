@@ -3,23 +3,126 @@
     <label :for=page_num></label>
     <textarea :id=page_num v-model="proof" class="proofArea"></textarea>
     <br>
-    <label></label>
+    <info ref="info"/>
   </div>
 </template>
 
 <script>
 import 'codemirror/lib/codemirror.css'
+import info from '@/components/Info'
+import axios from 'axios'
 let CodeMirror = require('codemirror/lib/codemirror')
 
 export default {
   name: 'proofArea',
   props: ['page_num', 'proof'],
+  components: [info],
   data: function () {
     return {
-      editor: ''
+      editor: '',
+      textId: 0
     }
   },
   methods: {
+    get_selected_id: function() {
+      return this.textId
+    },
+    match_thm: function(proof) {
+      var id = this.get_selected_id()
+      var input = this.current_state()
+      if (input === undefined) {
+        cells[id].search_res = []
+        this.display_match_thm()
+      } else {
+        axios({
+          url: '/api/search-method',
+          type: 'POST',
+          data: JSON.stringify(input),
+          success: function (result) {
+            cells[id].search_res = result.search_res
+            this.display_match_thm()
+          }
+        })
+      }
+    },
+    apply_method: function(methodName, args) {
+      var count = 0
+      var sigList = []
+      var id = this.get_selected_id()
+      var sigs = cells[id].method_sig[methodName]
+      var input = this.current_state()
+      input.method_name = methodName
+      if (args === undefined) {
+        args = {}
+      }
+      sigs.forEach(function(sig, i) {
+        if (sig in args) {
+          input[sig] = args[sig]
+        } else {
+          sigList.push(sig)
+          count += 1
+        }
+      })
+      this.display_running()
+      this.apply_method_ajax(input)
+    },
+    apply_method_ajax: function (input) {
+      axios({
+        method: 'post',
+        url: 'http://127.0.0.1:5000/api/apply-method',
+        data: JSON.stringify(input),
+        success: function(result) {
+          if ('query' in result) {
+            // Query for more parameters
+            var templ_query = _.template($('#template-query').html())
+            var sig_list = result.query.map(s => s === 'names' ? s : s.slice(6)) // get rid of 'param_'
+            var input_html = templ_query({sig_list: sig_list})
+            this.$swal({
+              title: 'Query for parameters',
+              html: input_html,
+              showCancelButton: true,
+              stopKeydownPropagation: false,
+              focusConfirm: false,
+              confirmButtonText: 'Confirm',
+              cancelButtonText: 'Cancel',
+              preConfirm: () => {
+                for (let i = 0; i < sig_list.length; i++) {
+                  var sig = sig_list[i] === 'names' ? sig_list[i] : 'param_' + sig_list[i]
+                  input[sig] = document.getElementById('sig-input' + (i + 1)).value
+                }
+              }
+            }).then(function (isConfirm) {
+              if (isConfirm.value) {
+                this.options.methods.apply_method_ajax(input)
+              }
+            })
+          } else if ('failed' in result) {
+            display_status(result.failed + ': ' + result.message, 'red')
+          } else {
+            // Success
+            var id = input.id
+            var h_id = cells[id].index
+            cells[id].steps[h_id] = input
+            cells[id].steps.length = h_id + 1
+            cells[id].history[h_id].steps_output = result.steps_output
+            cells[id].history[h_id + 1] = {
+              'steps_output': [['Current state', 0]],
+              'proof': result.proof,
+              'report': result.report
+            }
+            cells[id].history.length = h_id + 2
+            delete input.id
+            if (input.fact_ids.length == 0) { delete input.fact_ids }
+            delete input.theory_name
+            delete input.thm_name
+            delete input.vars
+            delete input.proof
+            cells[id].index += 1
+            display_instructions()
+          }
+        }
+      })
+    },
     is_last_id(proof, lineNo) {
       if (proof.length - 1 === lineNo) {
         return true
@@ -126,6 +229,7 @@ export default {
     }
   },
   mounted() {
+    let that = this
     let editor = CodeMirror.fromTextArea(document.getElementById(this.page_num), {
       mode: 'text/x-python',
       lineNumbers: true,
@@ -137,7 +241,24 @@ export default {
       matchBrackets: true,
       viewportMargin: Infinity,
       // scrollbarStyle: 'overlay',
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+      extraKeys: {
+        'Ctrl-I': function () {
+          that.apply_method('introduction')
+        },
+        'Ctrl-B': function () {
+          that.apply_method('apply_backward_step')
+        },
+        'Ctrl-R': function () {
+          that.apply_method('rewrite_goal')
+        },
+        'Ctrl-F': function () {
+          that.apply_method('apply_forward_step')
+        },
+        'Ctrl-Q': function (cm) {
+          cm.foldCode(cm.getCursor())
+        }
+      }
     })
     this.editor = editor
   }
