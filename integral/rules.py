@@ -150,3 +150,24 @@ class Substitution(Rule):
         lower2 = self.var_subst.subst(e.var, e.lower).normalize()
         upper2 = self.var_subst.subst(e.var, e.upper).normalize()
         return expr.Integral(self.var_name, lower2, upper2, body2)
+
+class IntegrationByParts(Rule):
+    """Apply integration by parts."""
+    def __init__(self, u, v):
+        assert isinstance(u, expr.Expr) and isinstance(v, expr.Expr)
+        self.u = u
+        self.v = v
+
+    def eval(self, e):
+        if e.ty != expr.INTEGRAL:
+            return e
+
+        du = expr.deriv(e.var, self.u)
+        dv = expr.deriv(e.var, self.v)
+        udv = (self.u * dv).normalize()
+        if udv == e.body:
+            return expr.EvalAt(e.var, e.lower, e.upper, (self.u * self.v).normalize()) - \
+                   expr.Integral(e.var, e.lower, e.upper, (self.v * du).normalize())
+        else:
+            print("%s != %s" % (str(udv), str(e.body)))
+            raise NotImplementedError
