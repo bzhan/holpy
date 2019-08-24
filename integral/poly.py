@@ -70,9 +70,20 @@ class Monomial:
     def __mul__(self, other):
         return Monomial(self.coeff * other.coeff, self.factors + other.factors)
 
+    def scale(self, c):
+        if c == 1:
+            return self
+        else:
+            return Monomial(c * self.coeff, self.factors)
+
+    def __neg__(self):
+        return self.scale(-1)
+
 class Polynomial:
     """Represents a polynomial."""
     def __init__(self, monomials):
+        monomials = tuple(monomials)
+        assert all(isinstance(mono, Monomial) for mono in monomials)
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
         self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts)
 
@@ -90,6 +101,15 @@ class Polynomial:
 
     def __add__(self, other):
         return Polynomial(self.monomials + other.monomials)
+
+    def scale(self, c):
+        return Polynomial(mono.scale(c) for mono in self.monomials)
+
+    def __neg__(self):
+        return self.scale(-1)
+
+    def __sub__(self, other):
+        return self + (-other)
 
     def __mul__(self, other):
         return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)

@@ -97,3 +97,27 @@ class CommonIntegral(Rule):
                 return e
         else:
             return e
+
+class OnSubterm(Rule):
+    """Apply given rule on subterms."""
+    def __init__(self, rule):
+        self.rule = rule
+
+    def eval(self, e):
+        rule = self.rule
+        if e.ty in (expr.VAR, expr.CONST):
+            return rule.eval(e)
+        elif e.ty == expr.OP:
+            args = [self.eval(arg) for arg in e.args]
+            return rule.eval(expr.Op(e.op, *args))
+        elif e.ty == expr.FUN:
+            args = [self.eval(arg) for arg in e.args]
+            return rule.eval(expr.Fun(e.func_name, *args))
+        elif e.ty == expr.DERIV:
+            return rule.eval(expr.Deriv(e.var, self.eval(e.body)))
+        elif e.ty == expr.INTEGRAL:
+            return rule.eval(expr.Integral(e.var, self.eval(e.lower), self.eval(e.upper), self.eval(e.body)))
+        elif e.ty == expr.EVAL_AT:
+            return rule.eval(expr.EvalAt(e.var, self.eval(e.lower), self.eval(e.upper), self.eval(e.body)))
+        else:
+            raise NotImplementedError

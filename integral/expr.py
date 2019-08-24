@@ -1,6 +1,7 @@
 """Expressions."""
 
 from decimal import Decimal
+from fractions import Fraction
 from integral import poly
 import functools, operator
 
@@ -83,6 +84,23 @@ class Expr:
     def __lt__(self, other):
         return self <= other and self != other
 
+    def subst(self, var, e):
+        """Substitute occurrence of var for e in self."""
+        assert isinstance(self, Expr) and isinstance(var, str) and isinstance(e, Expr)
+        if self.ty == VAR:
+            if self.name == var:
+                return e
+            else:
+                return self
+        elif self.ty == CONST:
+            return self
+        elif self.ty == OP:
+            return Op(self.op, *[arg.subst(var, e) for arg in self.args])
+        elif self.ty == FUN:
+            return Fun(self.func_name, *[arg.subst(var, e) for arg in self.args])
+        else:
+            raise NotImplementedError
+
     def to_poly(self):
         """Convert expression to a polynomial."""
         if self.ty == VAR:
@@ -96,8 +114,27 @@ class Expr:
             elif self.op == "*":
                 x, y = self.args
                 return x.to_poly() * y.to_poly()
+            elif self.op == "-":
+                x, y = self.args
+                return x.to_poly() - y.to_poly()
+            elif self.op == "/":
+                x, y = self.args
+                if y.ty == CONST:
+                    return x.to_poly().scale(Fraction(1) / Fraction(y.val))
+                else:
+                    return poly.singleton(self)
+            elif self.op == "^":
+                x, y = self.args
+                if x.ty == CONST and y.ty == CONST:
+                    return poly.constant(x.val ** y.val)
+                else:
+                    return poly.singleton(self)
             else:
                 return poly.singleton(self)
+        elif self.ty == EVAL_AT:
+            upper = self.body.subst(self.var, self.upper)
+            lower = self.body.subst(self.var, self.lower)
+            return (upper - lower).to_poly()
         else:
             return poly.singleton(self)
 
@@ -151,7 +188,7 @@ class Var(Expr):
 class Const(Expr):
     """Constants."""
     def __init__(self, val):
-        assert isinstance(val, (int, Decimal))
+        assert isinstance(val, (int, Fraction, Decimal))
         self.ty = CONST
         self.val = val
 
@@ -180,7 +217,7 @@ class Op(Expr):
 
         self.ty = OP
         self.op = op
-        self.args = args
+        self.args = tuple(args)
 
     def __hash__(self):
         return hash((OP, self.op, self.args))
@@ -220,7 +257,7 @@ class Fun(Expr):
 
         self.ty = FUN
         self.func_name = func_name
-        self.args = args
+        self.args = tuple(args)
 
     def __hash__(self):
         return hash((FUN, self.func_name, self.args))
