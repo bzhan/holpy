@@ -1,6 +1,8 @@
 """Unit test for parsing."""
 
 import unittest
+from fractions import Fraction
+from decimal import Decimal
 
 from integral.expr import Var, Const
 from integral.parser import parse_expr
@@ -14,7 +16,7 @@ class ParserTest(unittest.TestCase):
             "x + y * z", "(x + y) * z",
             "x * y + z", "x * (y + z)",
             "x * y ^ 2", "(x * y) ^ 2",
-            "sin(x)", "cos(x)", "log(x)",
+            "sin(x)", "cos(x)", "log(x)", "exp(x)",
             "D x. 3 * x",
             "INT x:[1,2]. 3 * x",
             "[3 * x]_x=1,2",
@@ -28,6 +30,9 @@ class ParserTest(unittest.TestCase):
         test_data = [
             ("-x", -Var("x")),
             ("-2", Const(-2)),
+            ("1/2", Const(Fraction(1) / 2)),
+            ("-1/2", Const(Fraction(-1) / 2)),
+            ("0.5", Const(Decimal("0.5"))),
         ]
 
         for s, e, in test_data:

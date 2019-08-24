@@ -2,6 +2,7 @@
 
 from lark import Lark, Transformer, v_args, exceptions
 from decimal import Decimal
+from fractions import Fraction
 
 from integral import expr
 
@@ -60,7 +61,10 @@ class ExprTransformer(Transformer):
         return a * b
 
     def divides_expr(self, a, b):
-        return a / b
+        if a.ty == expr.CONST and b.ty == expr.CONST:
+            return expr.Const(Fraction(a.val) / Fraction(b.val))
+        else:
+            return a / b
 
     def pow_expr(self, a, b):
         return a ^ b

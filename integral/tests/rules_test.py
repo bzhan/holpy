@@ -66,6 +66,14 @@ class RulesTest(unittest.TestCase):
         e = rules.Simplify().eval(e)
         self.assertEqual(e, Const(Fraction("1/4")))
 
+    def testSubstitution2(self):
+        e = parser.parse_expr("INT x:[0,1]. exp(6*x)")
+        e = rules.Substitution("u", parser.parse_expr("6 * x")).eval(e)
+        e = rules.Linearity().eval(e)
+        e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
+        e = rules.Simplify().eval(e)
+        self.assertEqual(e, parser.parse_expr("-1/6 + 1/6 * exp(6)"))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -161,6 +161,11 @@ class Expr:
                     return poly.singleton(self)
             else:
                 return poly.singleton(self)
+        elif self.ty == FUN:
+            if self.func_name == "exp" and self.args[0] == Const(0):
+                return poly.constant(1)
+            else:
+                return poly.singleton(self)
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
@@ -245,6 +250,9 @@ def deriv(var, e):
         elif e.func_name == "log":
             x, = e.args
             return (deriv(var, x) / x).normalize()
+        elif e.func_name == "exp":
+            x, = e.args
+            return (exp(x) * deriv(var, x)).normalize()
         else:
             raise NotImplementedError
     else:
@@ -335,7 +343,7 @@ class Fun(Expr):
     def __init__(self, func_name, *args):
         assert isinstance(func_name, str) and all(isinstance(arg, Expr) for arg in args)
         if len(args) == 1:
-            assert func_name in ["sin", "cos", "log"]
+            assert func_name in ["sin", "cos", "log", "exp"]
         else:
             raise NotImplementedError
 
@@ -363,6 +371,9 @@ def cos(e):
 
 def log(e):
     return Fun("log", e)
+
+def exp(e):
+    return Fun("exp", e)
 
 class Deriv(Expr):
     """Derivative of an expression."""

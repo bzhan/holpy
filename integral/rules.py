@@ -93,6 +93,8 @@ class CommonIntegral(Rule):
                 return EvalAt(e.var, e.lower, e.upper, -expr.cos(Var(e.var)))
             elif e.body.func_name == "cos" and e.body.args[0] == Var(e.var):
                 return EvalAt(e.var, e.lower, e.upper, expr.sin(Var(e.var)))
+            elif e.body.func_name == "exp" and e.body.args[0] == Var(e.var):
+                return EvalAt(e.var, e.lower, e.upper, expr.exp(Var(e.var)))
             else:
                 return e
         else:

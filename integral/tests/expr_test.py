@@ -4,7 +4,7 @@ import unittest
 from decimal import Decimal
 
 from integral import expr
-from integral.expr import Var, Const, Op, Fun, sin, cos, log, Deriv, Integral, EvalAt
+from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt
 from integral.parser import parse_expr
 
 class ExprTest(unittest.TestCase):
@@ -34,6 +34,7 @@ class ExprTest(unittest.TestCase):
             (sin(x), "sin(x)"),
             (cos(x), "cos(x)"),
             (log(x), "log(x)"),
+            (exp(x), "exp(x)"),
             (sin(x ^ Const(2)), "sin(x ^ 2)"),
             (sin(x) * cos(x), "sin(x) * cos(x)"),
             (Deriv("x", Const(3) * x), "D x. 3 * x"),
@@ -117,6 +118,8 @@ class ExprTest(unittest.TestCase):
             ("cos(x^2)", "-2 * x * sin(x^2)"),
             ("log(x)", "1 / x"),
             ("x * log(x)", "x * (1 / x) + log(x)"),
+            ("exp(x)", "exp(x)"),
+            ("exp(x^2)", "2 * x * exp(x^2)"),
         ]
 
         for s, s2 in test_data:
