@@ -98,9 +98,19 @@ class CommonIntegral(Rule):
         else:
             return e
 
+class CommonDeriv(Rule):
+    """Common rules for evaluating a derivative."""
+
+    def eval(self, e):
+        if e.ty == expr.DERIV:
+            return expr.deriv(e.var, e.body)
+        else:
+            return e
+
 class OnSubterm(Rule):
     """Apply given rule on subterms."""
     def __init__(self, rule):
+        assert isinstance(rule, Rule)
         self.rule = rule
 
     def eval(self, e):
@@ -121,3 +131,20 @@ class OnSubterm(Rule):
             return rule.eval(expr.EvalAt(e.var, self.eval(e.lower), self.eval(e.upper), self.eval(e.body)))
         else:
             raise NotImplementedError
+
+class Substitution(Rule):
+    """Apply substitution."""
+    def __init__(self, var_name, var_subst):
+        assert isinstance(var_name, str) and isinstance(var_subst, expr.Expr)
+        self.var_name = var_name
+        self.var_subst = var_subst
+
+    def eval(self, e):
+        if e.ty != expr.INTEGRAL:
+            return e
+
+        d_subst = expr.deriv(e.var, self.var_subst)
+        body2 = e.body.replace(self.var_subst, expr.Var(self.var_name)) / d_subst
+        lower2 = self.var_subst.subst(e.var, e.lower).normalize()
+        upper2 = self.var_subst.subst(e.var, e.upper).normalize()
+        return expr.Integral(self.var_name, lower2, upper2, body2)

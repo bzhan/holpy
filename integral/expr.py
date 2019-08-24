@@ -86,7 +86,7 @@ class Expr:
 
     def subst(self, var, e):
         """Substitute occurrence of var for e in self."""
-        assert isinstance(self, Expr) and isinstance(var, str) and isinstance(e, Expr)
+        assert isinstance(var, str) and isinstance(e, Expr)
         if self.ty == VAR:
             if self.name == var:
                 return e
@@ -98,6 +98,28 @@ class Expr:
             return Op(self.op, *[arg.subst(var, e) for arg in self.args])
         elif self.ty == FUN:
             return Fun(self.func_name, *[arg.subst(var, e) for arg in self.args])
+        else:
+            raise NotImplementedError
+
+    def replace(self, e, repl_e):
+        """Replace occurrences of e with repl_e."""
+        assert isinstance(e, Expr) and isinstance(repl_e, Expr)
+        if self == e:
+            return repl_e
+        elif self.ty in (VAR, CONST):
+            return self
+        elif self.ty == OP:
+            return Op(self.op, *[arg.replace(e, repl_e) for arg in self.args])
+        elif self.ty == FUN:
+            return Fun(self.func_name, *[arg.replace(e, repl_e) for arg in self.args])
+        elif self.ty == DERIV:
+            return Deriv(self.var, self.body.replace(e, repl_e))
+        elif self.ty == INTEGRAL:
+            return Integral(self.var, self.lower.replace(e, repl_e), self.upper.replace(e, repl_e),
+                            self.body.replace(e, repl_e))
+        elif self.ty == EVAL_AT:
+            return EvalAt(self.var, self.lower.replace(e, repl_e), self.upper.replace(e, repl_e),
+                          self.body.replace(e, repl_e))
         else:
             raise NotImplementedError
 
@@ -114,9 +136,12 @@ class Expr:
             elif self.op == "*":
                 x, y = self.args
                 return x.to_poly() * y.to_poly()
-            elif self.op == "-":
+            elif self.op == "-" and len(self.args) == 2:
                 x, y = self.args
                 return x.to_poly() - y.to_poly()
+            elif self.op == "-" and len(self.args) == 1:
+                x, = self.args
+                return -(x.to_poly())
             elif self.op == "/":
                 x, y = self.args
                 if y.ty == CONST:
@@ -126,7 +151,12 @@ class Expr:
             elif self.op == "^":
                 x, y = self.args
                 if x.ty == CONST and y.ty == CONST:
-                    return poly.constant(x.val ** y.val)
+                    if y.val < 0:
+                        return poly.constant(Fraction(x.val) ** y.val)
+                    else:
+                        return poly.constant(x.val ** y.val)
+                elif y.ty == CONST and y.val == 1:
+                    return x.to_poly()
                 else:
                     return poly.singleton(self)
             else:
@@ -151,7 +181,7 @@ def from_mono(m):
         if pow == 1:
             factors.append(factor)
         else:
-            factors.append(factor ^ pow)
+            factors.append(factor ^ Const(pow))
 
     if len(factors) == 0:
         return Const(1)
@@ -165,6 +195,60 @@ def from_poly(p):
     else:
         monos = [from_mono(m) for m in p.monomials]
         return sum(monos[1:], monos[0])
+
+def deriv(var, e):
+    """Compute the derivative of e with respect to variable
+    name var.
+
+    """
+    if e.ty == VAR:
+        if e.name == var:
+            # dx. x = 1
+            return Const(1)
+        else:
+            # dx. y = 0
+            return Const(0)
+    elif e.ty == CONST:
+        # dx. c = 0
+        return Const(0)
+    elif e.ty == OP:
+        if e.op == "+":
+            x, y = e.args
+            return (deriv(var, x) + deriv(var, y)).normalize()
+        elif e.op == "-" and len(e.args) == 2:
+            x, y = e.args
+            return (deriv(var, x) - deriv(var, y)).normalize()
+        elif e.op == "-" and len(e.args) == 1:
+            x, = e.args
+            return (-(deriv(var, x))).normalize()
+        elif e.op == "*":
+            x, y = e.args
+            return (x * deriv(var, y) + deriv(var, x) * y).normalize()
+        elif e.op == "/":
+            x, y = e.args
+            return (deriv(var, x) * y - x * deriv(var, y)).normalize() / (y ^ Const(2))
+        elif e.op == "^":
+            x, y = e.args
+            if y.ty == CONST:
+                return (y * (x ^ Const(y.val - 1)) * deriv(var, x)).normalize()
+            else:
+                raise NotImplementedError
+        else:
+            raise NotImplementedError
+    elif e.ty == FUN:
+        if e.func_name == "sin":
+            x, = e.args
+            return (cos(x) * deriv(var, x)).normalize()
+        elif e.func_name == "cos":
+            x, = e.args
+            return (-(sin(x) * deriv(var, x))).normalize()
+        elif e.func_name == "log":
+            x, = e.args
+            return (deriv(var, x) / x).normalize()
+        else:
+            raise NotImplementedError
+    else:
+        raise NotImplementedError
 
 class Var(Expr):
     """Variable."""

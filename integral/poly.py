@@ -1,6 +1,7 @@
 """Polynomials."""
 
 from lark import Lark, Transformer, v_args, exceptions
+from fractions import Fraction
 from decimal import Decimal
 from collections.abc import Iterable
 
@@ -19,7 +20,7 @@ def collect_pairs(ps):
             res[v] += c
         else:
             res[v] = c
-    return tuple(sorted(res.items()))
+    return tuple(sorted((k, v) for k, v in res.items() if v != 0))
 
 class Monomial:
     """Represents a monomial."""
@@ -32,10 +33,11 @@ class Monomial:
         (2, ((x, 2), (y, 1))) -> 2 * x^2 * y
 
         """
-        self.coeff = coeff
+        assert isinstance(coeff, (int, Fraction, Decimal))
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
             isinstance(factor[1], int) for factor in factors), \
             "Unexpected argument for factors: %s" % str(factors)
+        self.coeff = coeff
         self.factors = collect_pairs(factors)
 
     def __eq__(self, other):
@@ -119,9 +121,10 @@ def singleton(s):
     """Polynomial for 1*s^1."""
     return Polynomial([Monomial(1, [(s, 1)])])
 
-def constant(n):
+def constant(c):
     """Polynomial for c (numerical constant)."""
-    return Polynomial([Monomial(n, tuple())])
+    assert isinstance(c, (int, Fraction, Decimal))
+    return Polynomial([Monomial(c, tuple())])
 
 # A simple parser for polynomials, where all variables are characters.
 grammar = r"""

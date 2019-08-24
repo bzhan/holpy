@@ -58,6 +58,14 @@ class RulesTest(unittest.TestCase):
         e = rules.Simplify().eval(e)
         self.assertEqual(e, Const(Fraction("34/3")))
 
+    def testSubstitution(self):
+        e = parser.parse_expr("INT x:[0,1]. (3 * x + 1) ^ (-2)")
+        e = rules.Substitution("u", parser.parse_expr("3 * x + 1")).eval(e)
+        e = rules.Linearity().eval(e)
+        e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
+        e = rules.Simplify().eval(e)
+        self.assertEqual(e, Const(Fraction("1/4")))
+
 
 if __name__ == "__main__":
     unittest.main()
