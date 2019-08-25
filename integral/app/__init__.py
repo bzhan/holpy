@@ -19,8 +19,8 @@ def templ():
 @app.route("/open_file", methods=['POST'])
 def open_file():
     data = json.loads(request.get_data().decode('utf-8'))
-    file_name = data['file_name']
-    with open("integral/examples/test.json", 'r', encoding='utf-8') as f:
+    file_name = "integral/examples/%s.json" % data['file_name']
+    with open(file_name, 'r', encoding='utf-8') as f:
         f_data = json.load(f)
 
     for item in f_data['content']:
@@ -116,6 +116,16 @@ def integrate_by_parts():
         )
     })
 
+@app.route("/save-file", methods=['POST'])
+def save_file():
+    data = json.loads(request.get_data().decode('utf-8'))
+    file_name = "integral/examples/%s.json" % data['file_name']
+    with open(file_name, 'w', encoding='utf-8') as f:
+        json.dump({"content": data['content']}, f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    return jsonify({
+        'status': 'success'
+    })
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, use_reloader=False, debug=True, threaded=True)
