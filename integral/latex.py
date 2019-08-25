@@ -37,7 +37,10 @@ def convert_expr(e):
     elif e.ty == expr.FUN:
         if len(e.args) == 1:
             x, = e.args
-            return "\\%s{%s}" % (e.func_name, convert_expr(x))
+            sx = convert_expr(x)
+            if len(sx) > 1:
+                sx = "(%s)" % sx
+            return "\\%s{%s}" % (e.func_name, sx)
         else:
             raise NotImplementedError
     elif e.ty == expr.INTEGRAL:

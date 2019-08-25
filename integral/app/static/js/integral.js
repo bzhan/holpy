@@ -101,8 +101,6 @@ function substitution() {
 async function do_substitution() {
     var var_name = document.getElementById('subst-var-name');
     var expr = document.getElementById('subst-expr');
-    console.log(var_name.value);
-    console.log(expr.value);
 
     const problem = cur_problem[cur_problem.length - 1].text;
     const response = await axios.post("/substitution", JSON.stringify({
@@ -112,6 +110,35 @@ async function do_substitution() {
     }));
 
     $("#subst-dialog").dialog("close");
+    cur_problem.push(response.data);
+    display_problem();
+}
+
+function integrate_by_parts() {
+    if (cur_problem.length == 0)
+        return;
+
+    var templ = _.template($('#template-parts-dialog').html());
+    $("#dialogs").html(templ({}));
+    $("#parts-dialog").dialog({
+        width: "400px"
+    });
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('#parts-dialog')]);
+
+}
+
+async function do_integrate_by_parts() {
+    var parts_u = document.getElementById('parts-u');
+    var parts_v = document.getElementById('parts-v');
+
+    const problem = cur_problem[cur_problem.length - 1].text;
+    const response = await axios.post("/integrate-by-parts", JSON.stringify({
+        problem: problem,
+        parts_u: parts_u.value,
+        parts_v: parts_v.value
+    }));
+
+    $("#parts-dialog").dialog("close");
     cur_problem.push(response.data);
     display_problem();
 }

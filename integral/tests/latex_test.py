@@ -9,6 +9,7 @@ class LatexTest(unittest.TestCase):
         test_data = [
             ("1/3", "\\frac{1}{3}"),
             ("x^-2", "x ^ {-2}"),
+            ("exp(-1)", "\\exp{(-1)}"),
             ("[3 * x]_x=1,2", "\\left. 3 x \\right\\vert_{x=1}^{2}"),
             ("INT x:[2,3]. 2 * x + x ^ 2", "\int_{x=2}^{3} 2 x + x ^ 2 \,\mathrm{dx}"),
             ("(3 * x + 1) ^ -2", "(3 x + 1) ^ {-2}"),

@@ -87,5 +87,19 @@ def substitution():
         'reason': "Substitution"
     })
 
+@app.route("/integrate-by-parts", methods=['POST'])
+def integrate_by_parts():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rule = rules.IntegrationByParts(
+        parser.parse_expr(data['parts_u']), parser.parse_expr(data['parts_v']))
+    problem = parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': latex.convert_expr(new_problem),
+        'reason': "Integrate by parts"
+    })
+
+
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, use_reloader=False, debug=True, threaded=True)
