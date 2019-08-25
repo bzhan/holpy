@@ -48,7 +48,11 @@ function display_problem() {
     var templ = _.template($('#template-calc').html());
     $('#calc').html('');
     $.each(cur_problem, function (i, line) {
-        $('#calc').append(templ({ step_num: i + 1, latex: line.latex, reason: line.reason }))
+        if ('_latex_reason' in line)
+            var reason = line._latex_reason;
+        else
+            var reason = line.reason;
+        $('#calc').append(templ({ step_num: i + 1, latex: line.latex, reason: reason }))
     });
     MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('calc')]);
 }

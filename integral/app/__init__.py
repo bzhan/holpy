@@ -78,26 +78,42 @@ def common_integral():
 @app.route("/substitution", methods=['POST'])
 def substitution():
     data = json.loads(request.get_data().decode('utf-8'))
-    rule = rules.Substitution(data['var_name'], parser.parse_expr(data['expr']))
+    expr = parser.parse_expr(data['expr'])
+    rule = rules.Substitution(data['var_name'], expr)
     problem = parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)
     return jsonify({
         'text': str(new_problem),
         'latex': latex.convert_expr(new_problem),
-        'reason': "Substitution"
+        'reason': "Substitution",
+        'params': {
+            'var_name': data['var_name'],
+            'expr': data['expr'],
+        },
+        '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
+            data['var_name'], latex.convert_expr(expr)
+        )
     })
 
 @app.route("/integrate-by-parts", methods=['POST'])
 def integrate_by_parts():
     data = json.loads(request.get_data().decode('utf-8'))
-    rule = rules.IntegrationByParts(
-        parser.parse_expr(data['parts_u']), parser.parse_expr(data['parts_v']))
+    parts_u = parser.parse_expr(data['parts_u'])
+    parts_v = parser.parse_expr(data['parts_v'])
+    rule = rules.IntegrationByParts(parts_u, parts_v)
     problem = parser.parse_expr(data['problem'])
     new_problem = rule.eval(problem)
     return jsonify({
         'text': str(new_problem),
         'latex': latex.convert_expr(new_problem),
-        'reason': "Integrate by parts"
+        'reason': "Integrate by parts",
+        'params': {
+            'parts_u': data['parts_u'],
+            'parts_v': data['parts_v'],
+        },
+        '_latex_reason': "Integrate by parts, \\(u = %s, v = %s\\)" % (
+            latex.convert_expr(parts_u), latex.convert_expr(parts_v)
+        )
     })
 
 
