@@ -43,11 +43,41 @@ class ExprTest(unittest.TestCase):
             else:
                 self.assertRaises(expr.MatchException, expr.match_expr, pat, f, inst)
 
-    def testApplyRule1(self):
-        fact = parser.parse_fact("coll(P,Q,R)")
-        rule = ruleset["D1"]
-        concl = parser.parse_fact("coll(P,R,Q)")
-        self.assertEqual(expr.apply_rule(rule, [fact]), concl)
+    def testApplyRule(self):
+        test_data = [
+            (ruleset["D1"], ["coll(E, F, G)", "coll(P, Q, R)"], "coll(E, G, F)"),
+        ]
+
+        for rule, facts, concl in test_data:
+            facts = [parser.parse_fact(fact) for fact in facts]
+            concl = parser.parse_fact(concl)
+            self.assertEqual(expr.apply_rule(rule, facts), concl)
+
+    def testApplyRuleHyps(self):
+        test_data = [
+            (ruleset["D3"], ["coll(E, F, G)", "coll(E, F, H)", "coll(P, Q, R)", "coll(P, Q, S)", "coll(A, B, C)"],
+             ["coll(G, H, E)", "coll(H, G, E)", "coll(R, S, P)", "coll(S, R, P)"]),
+        ]
+        for rule, hyps, concls in test_data:
+            hyps = [parser.parse_fact(fact) for fact in hyps]
+            concls = [parser.parse_fact(concl) for concl in concls]
+            new_facts = expr.apply_rule_hyps(rule, hyps)
+            self.assertEqual(len(new_facts), len(concls))
+            for i in range(len(new_facts)):
+                self.assertEqual(new_facts[i], concls[i])
+
+    def testApplyRulesetHyps(self):
+        test_data = [
+            (ruleset, ["coll(E, F, G)", "coll(E, F, H)"],
+             ["coll(E, G, F)", "coll(E, H, F)", "coll(F, E, G)", "coll(F, E, H)", "coll(G, H, E)", "coll(H, G, E)"]),
+        ]
+        for rules, hyps, concls, in test_data:
+            hyps = [parser.parse_fact(fact) for fact in hyps]
+            concls = [parser.parse_fact(concl) for concl in concls]
+            new_facts = expr.apply_ruleset_hyps(rules, hyps)
+            self.assertEqual(len(new_facts), len(concls))
+            for i in range(len(new_facts)):
+                self.assertEqual(new_facts[i], concls[i])
 
 
 if __name__ == "__main__":
