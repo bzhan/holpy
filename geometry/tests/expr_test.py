@@ -60,10 +60,9 @@ class ExprTest(unittest.TestCase):
         ]
         for facts, concls in test_data:
             facts = [parser.parse_fact(fact) for fact in facts]
-            facts = expr.make_line_facts(facts)
+            line_facts = expr.make_line_facts(facts)
             concls = [parser.parse_line(line) for line in concls]
-            different = [line for line in facts if line not in concls]
-            self.assertEqual(len(different), 0)
+            self.assertEqual(set(line_facts), set(concls))
 
     '''def testExtendLine(self):
         test_data = [
@@ -86,8 +85,7 @@ class ExprTest(unittest.TestCase):
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concls = [parser.parse_fact(concl) for concl in concls]
             new_facts = expr.apply_rule_hyps(rule, hyps)
-            different = [new_fact for new_fact in new_facts if new_fact not in concls]
-            self.assertEqual(len(different), 0)
+            self.assertEqual(set(new_facts), set(concls))
 
     def testApplyRulesetHyps(self):
         test_data = [
@@ -98,8 +96,7 @@ class ExprTest(unittest.TestCase):
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concls = [parser.parse_fact(concl) for concl in concls]
             new_facts = expr.apply_ruleset_hyps(rules, hyps)
-            different = [new_fact for new_fact in new_facts if new_fact not in concls]
-            self.assertEqual(len(different), 0)
+            self.assertEqual(set(new_facts), set(concls))
 
 
 if __name__ == "__main__":

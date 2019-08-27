@@ -26,9 +26,7 @@ class ParserTest(unittest.TestCase):
 
     def testParseLine(self):
         test_data = [
-            ("line(A, B, C)",
-             Line(["A", "B", "C"])
-             ),
+            ("line(A, B, C)", Line(["A", "B", "C"])),
         ]
 
         for s, l in test_data:

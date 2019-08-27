@@ -18,6 +18,9 @@ class Fact:
         self.lemma = lemma
         self.cond = cond
 
+    def __hash__(self):
+        return hash(("Fact", self.pred_name, tuple(self.args)))
+
     def __eq__(self, other):
         return isinstance(other, Fact) and self.pred_name == other.pred_name and \
             self.args == other.args
@@ -35,6 +38,9 @@ class Line:
         assert all(isinstance(arg, str) for arg in args)
         self.args = set(args)
         self.source = source
+
+    def __hash__(self):
+        return hash(("line", tuple(sorted(self.args))))
 
     def __eq__(self, other):
         return isinstance(other, Line) and self.args == other.args
@@ -133,12 +139,12 @@ def make_line_facts(facts):
 
 
 def extend_line(line, n):
-    """Return a list contains all line segments in the given line, in str form. """
-    assert isinstance(n, int)
-    assert n >= 2
+    """Return a list contains all line segments of length 2 to n+1
+    in the given line.
+    
+    """
+    assert isinstance(n, int) and n >= 2
     assert isinstance(line, Line)
-    assert isinstance(line.args, set)
-    assert all(isinstance(pt, str) for pt in line.args)
     segments = []
     for i in range(2, n + 1):
         for j in itertools.permutations(line.args, i):
@@ -149,6 +155,8 @@ def extend_line(line, n):
 def apply_rule(rule, facts, record=False, lemma=None):
     """Apply given rule to the list of facts, either return a new fact
     (on success) or raise MatchException.
+
+    record: whether to record application of the rule in the new fact.
 
     Example:
 
@@ -162,11 +170,11 @@ def apply_rule(rule, facts, record=False, lemma=None):
     assert isinstance(rule, Rule)
     assert isinstance(facts, list) and all(isinstance(fact, Fact) for fact in facts)
 
-    matched = {}
+    inst = {}
     for assume, fact in zip(rule.assums, facts):
-        match_expr(assume, fact, matched)
+        match_expr(assume, fact, inst)
 
-    args = [matched[i] for i in rule.concl.args]
+    args = [inst[i] for i in rule.concl.args]
 
     if record:
         return Fact(rule.concl.pred_name, args, updated=True, lemma=lemma, cond=facts)
@@ -204,12 +212,15 @@ def apply_rule_line(rule, facts, lines, record=False, lemma=None):
 
 
 def apply_rule_hyps(rule, hyps, only_updated=False):
-    """Try to apply given rule to one or more facts in a list, generate new facts (as many new facts as possible),
-    return a list of new facts.
+    """Try to apply given rule to one or more facts in a list, generate
+    new facts (as many new facts as possible), return a list of new facts.
+
     Repetitive facts as hypotheses apply to one rule is not allowed.
     Example:
 
-        apply_rule_hyps(Rule([coll(A, B, C)], coll(A, C, B)), [coll(D, E, F), coll(P, Q, R), para(A, B, D, C)]
+        apply_rule_hyps(
+            Rule([coll(A, B, C)], coll(A, C, B)),
+            [coll(D, E, F), coll(P, Q, R), para(A, B, D, C)]
         ) -> [coll(D, F, E), coll(P, R, Q)].
 
     """
@@ -237,8 +248,9 @@ def apply_rule_hyps(rule, hyps, only_updated=False):
 
 
 def apply_ruleset_hyps(ruleset, hyps, only_updated=False):
-    """Try to apply every rule in a ruleset to one or more facts in a list (as many as possible),
-    return a list of new facts.
+    """Try to apply every rule in a ruleset to one or more fact
+    in a list (as many as possible), return a list of new facts.
+
     Repetitive facts as hypotheses apply to one rule is not allowed.
     """
     assert isinstance(ruleset, dict)
@@ -247,9 +259,11 @@ def apply_ruleset_hyps(ruleset, hyps, only_updated=False):
     new_facts = []
     for _, rule in ruleset.items():
         if only_updated:
-            unique = [fact for fact in apply_rule_hyps(rule, hyps, only_updated=True) if fact not in new_facts]
+            unique = [fact for fact in apply_rule_hyps(rule, hyps, only_updated=True)
+                      if fact not in new_facts]
         else:
-            unique = [fact for fact in apply_rule_hyps(rule, hyps) if fact not in new_facts]
+            unique = [fact for fact in apply_rule_hyps(rule, hyps)
+                      if fact not in new_facts]
 
         new_facts.extend(unique)
 
@@ -257,10 +271,12 @@ def apply_ruleset_hyps(ruleset, hyps, only_updated=False):
 
 
 def search_fixpoint(ruleset, hyps, concl):
-    """Recursively apply given ruleset to a list of hypotheses to obtain new facts.
-    Recursion exits when a new fact is exactly the same as the given conclusion,
-    or when new fact is not able to be generated. """
-
+    """Recursively apply given ruleset to a list of hypotheses to
+    obtain new facts. Recursion exits when a new fact is exactly
+    the same as the given conclusion, or when new fact is not able
+    to be generated.
+    
+    """
     def union_hyps_and_facts(hyps, facts):
         unique = [fact for fact in facts if fact not in hyps]
         return hyps.extend(unique)
