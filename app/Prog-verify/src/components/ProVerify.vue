@@ -82,7 +82,7 @@ export default {
         if (failureNum !== 0) {
           let that = this
           this.proof_process = true
-          this.$options.methods.proof_init(dataRelate, that)
+          this.proof_init(dataRelate, that)
         } else {
           this.proof_process = false
         }

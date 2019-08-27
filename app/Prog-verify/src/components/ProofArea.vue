@@ -3,7 +3,7 @@
     <label :for=page_num></label>
     <textarea :id=page_num v-model="proof" class="proofArea"></textarea>
     <br>
-    <info ref="info"/>
+    <info :instr_no="cell.index + '/' + (cell.history.length - 1)" :instr="" ref="info"/>
   </div>
 </template>
 
@@ -20,18 +20,61 @@ export default {
   data: function () {
     return {
       editor: '',
-      textId: 0
+      textId: 0,
+      cell: {}
     }
   },
   methods: {
+    display_instructions: function() {
+      var id = this.get_selected_id()
+      var hId = cell.index
+      var templ_instr = _.template($('#template-instruction').html())
+      $('.rbottom .selected div#output-instr').html(templ_instr({
+        instr_no: hId + '/' + (cell.history.length - 1),
+        instr: highlight_html(cell.history[hId].steps_output)
+      }))
+      var proofInfo = {
+        proof: cell.history[hId].proof,
+        report: cell.history[hId].report
+      }
+      if (hId < cell.steps.length) {
+        // Find line number corresponding to ids
+        proofInfo.goal = get_line_no_from_id(cell.steps[hId].goal_id, proof_info.proof)
+        proofInfo.facts = []
+        if (cell.steps[hId].fact_ids !== undefined) {
+          cell.steps[hId].fact_ids.forEach(
+            v => proofInfo.facts.push(get_line_no_from_id(v, proof_info.proof))
+          )
+        }
+      }
+      this.display_checked_proof(proof_info)
+    },
+    current_state: function() {
+      var id = this.get_selected_id()
+      var goalNo = this.cell.goal
+      if (goalNo === -1) {
+        return undefined
+      }
+      var factIds = []
+      this.cell.facts.forEach(v => factIds.push(this.cell.proof[v].id))
+      return {
+        'id': id,
+        'goal_id': this.cell.proof[goalNo].id,
+        'fact_ids': factIds,
+        'theory_name': this.cell.theory_name,
+        'thm_name': this.cell.thm_name,
+        'vars': this.cell.vars,
+        'proof': this.cell.proof
+      }
+    },
     get_selected_id: function() {
       return this.textId
     },
-    match_thm: function(proof) {
+    match_thm: function(cell) {
       var id = this.get_selected_id()
       var input = this.current_state()
       if (input === undefined) {
-        cells[id].search_res = []
+        cell.search_res = []
         this.display_match_thm()
       } else {
         axios({
@@ -39,17 +82,16 @@ export default {
           type: 'POST',
           data: JSON.stringify(input),
           success: function (result) {
-            cells[id].search_res = result.search_res
+            cell.search_res = result.search_res
             this.display_match_thm()
           }
         })
       }
     },
     apply_method: function(methodName, args) {
-      var count = 0
       var sigList = []
       var id = this.get_selected_id()
-      var sigs = cells[id].method_sig[methodName]
+      var sigs = cell.method_sig[methodName]
       var input = this.current_state()
       input.method_name = methodName
       if (args === undefined) {
@@ -72,53 +114,29 @@ export default {
         url: 'http://127.0.0.1:5000/api/apply-method',
         data: JSON.stringify(input),
         success: function(result) {
-          if ('query' in result) {
-            // Query for more parameters
-            var templ_query = _.template($('#template-query').html())
-            var sig_list = result.query.map(s => s === 'names' ? s : s.slice(6)) // get rid of 'param_'
-            var input_html = templ_query({sig_list: sig_list})
-            this.$swal({
-              title: 'Query for parameters',
-              html: input_html,
-              showCancelButton: true,
-              stopKeydownPropagation: false,
-              focusConfirm: false,
-              confirmButtonText: 'Confirm',
-              cancelButtonText: 'Cancel',
-              preConfirm: () => {
-                for (let i = 0; i < sig_list.length; i++) {
-                  var sig = sig_list[i] === 'names' ? sig_list[i] : 'param_' + sig_list[i]
-                  input[sig] = document.getElementById('sig-input' + (i + 1)).value
-                }
-              }
-            }).then(function (isConfirm) {
-              if (isConfirm.value) {
-                this.options.methods.apply_method_ajax(input)
-              }
-            })
-          } else if ('failed' in result) {
-            display_status(result.failed + ': ' + result.message, 'red')
+          if ('failed' in result) {
+            this.display_status(result.failed + ': ' + result.message, 'red')
           } else {
             // Success
             var id = input.id
-            var h_id = cells[id].index
-            cells[id].steps[h_id] = input
-            cells[id].steps.length = h_id + 1
-            cells[id].history[h_id].steps_output = result.steps_output
-            cells[id].history[h_id + 1] = {
+            var h_id = cell.index
+            cell.steps[h_id] = input
+            cell.steps.length = h_id + 1
+            cell.history[h_id].steps_output = result.steps_output
+            cell.history[h_id + 1] = {
               'steps_output': [['Current state', 0]],
               'proof': result.proof,
               'report': result.report
             }
-            cells[id].history.length = h_id + 2
+            cell.history.length = h_id + 2
             delete input.id
-            if (input.fact_ids.length == 0) { delete input.fact_ids }
+            if (input.fact_ids.length === 0) { delete input.fact_ids }
             delete input.theory_name
             delete input.thm_name
             delete input.vars
             delete input.proof
-            cells[id].index += 1
-            display_instructions()
+            cell.index += 1
+            this.display_instructions()
           }
         }
       })
@@ -130,20 +148,20 @@ export default {
       return proof[lineNo + 1].rule === 'intros'
     },
     display_have_prompt(editor, proof, lineNo, ch, that) {
-      if (that.$options.methods.is_last_id(proof, lineNo)) {
-        return that.$options.methods.display_str(editor, 'show ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
+      if (that.is_last_id(proof, lineNo)) {
+        return that.display_str(editor, 'show ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
       } else {
-        return that.$options.methods.display_str(editor, 'have ', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
+        return that.display_str(editor, 'have ', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
       }
     },
     display_highlight_str(editor, p, lineNo, ch, that) {
       let color
       if (p[1] === 0) { color = 'color: black' } else if (p[1] === 1) { color = 'color: green' } else if (p[1] === 2) { color = 'color: blue' } else if (p[1] === 3) { color = 'color: purple' } else if (p[1] === 4) { color = 'color: silver' }
-      return that.$options.methods.display_str(editor, p[0], lineNo, ch, {css: color})
+      return that.display_str(editor, p[0], lineNo, ch, {css: color})
     },
     display_highlight_strs(editor, ps, lineNo, ch, that) {
       for (let i = 0; i < ps.length; i++) {
-        ch = that.$options.methods.display_highlight_str(editor, ps[i], lineNo, ch, that)
+        ch = that.display_highlight_str(editor, ps[i], lineNo, ch, that)
       }
       return ch
     },
