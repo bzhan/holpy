@@ -3,7 +3,7 @@
 import unittest
 
 from geometry import parser
-from geometry.expr import Fact, Rule
+from geometry.expr import Fact, Rule, Line
 
 class ParserTest(unittest.TestCase):
     def testParseFact(self):
@@ -23,6 +23,16 @@ class ParserTest(unittest.TestCase):
 
         for s, r in test_data:
             self.assertEqual(parser.parse_rule(s), r)
+
+    def testParseLine(self):
+        test_data = [
+            ("line(A, B, C)",
+             Line(["A", "B", "C"])
+             ),
+        ]
+
+        for s, l in test_data:
+            self.assertEqual(parser.parse_line(s), l)
 
 
 if __name__ == "__main__":

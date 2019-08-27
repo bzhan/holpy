@@ -2,12 +2,13 @@
 
 from lark import Lark, Transformer, v_args, exceptions
 
-from geometry.expr import Fact, Rule
+from geometry.expr import Fact, Rule, Line
 
 
 grammar = r"""
     ?fact: CNAME "(" CNAME ("," CNAME)* ")"
     ?rule: fact ":-" fact ("," fact)*
+    ?line: "line" "(" CNAME ("," CNAME)* ")"
 
     %import common.CNAME
     %import common.WS
@@ -28,12 +29,19 @@ class GeometryTransformer(Transformer):
     def rule(self, concl, *assums):
         return Rule(list(assums), concl)
 
+    def line(self, *args):
+        return Line(list(args))
+
 
 fact_parser = Lark(grammar, start="fact", parser="lalr", transformer=GeometryTransformer())
 rule_parser = Lark(grammar, start="rule", parser="lalr", transformer=GeometryTransformer())
+line_parser = Lark(grammar, start="line", parser="lalr", transformer=GeometryTransformer())
 
 def parse_fact(s):
     return fact_parser.parse(s)
 
 def parse_rule(s):
     return rule_parser.parse(s)
+
+def parse_line(s):
+    return line_parser.parse(s)

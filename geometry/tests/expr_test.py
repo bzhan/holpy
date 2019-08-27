@@ -53,6 +53,18 @@ class ExprTest(unittest.TestCase):
             concl = parser.parse_fact(concl)
             self.assertEqual(expr.apply_rule(rule, facts), concl)
 
+    def testExtendLine(self):
+        test_data = [
+            ("line(A, B, C)", ["coll(C, B)", "coll(C, A)", "coll(B, A)", "coll(B, C)", "coll(A, B)", "coll(A, C)",
+                               "coll(A, B, C)", "coll(A, C, B)", "coll(B, A, C)", "coll(B, C, A)", "coll(C, A, B)",
+                               "coll(C, B, A)"]),
+        ]
+        for line, concls in test_data:
+            lines = expr.extend_line(parser.parse_line(line))
+            concls = [parser.parse_fact(coll) for coll in concls]
+            different = [line for line in lines if line not in concls]
+            self.assertEqual(len(different), 0)
+
     def testApplyRuleHyps(self):
         test_data = [
             (ruleset["D3"], ["coll(E, F, G)", "coll(E, F, H)", "coll(P, Q, R)", "coll(P, Q, S)", "coll(A, B, C)"],
@@ -62,9 +74,8 @@ class ExprTest(unittest.TestCase):
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concls = [parser.parse_fact(concl) for concl in concls]
             new_facts = expr.apply_rule_hyps(rule, hyps)
-            self.assertEqual(len(new_facts), len(concls))
-            for i in range(len(new_facts)):
-                self.assertEqual(new_facts[i], concls[i])
+            different = [new_fact for new_fact in new_facts if new_fact not in concls]
+            self.assertEqual(len(different), 0)
 
     def testApplyRulesetHyps(self):
         test_data = [
@@ -75,9 +86,8 @@ class ExprTest(unittest.TestCase):
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concls = [parser.parse_fact(concl) for concl in concls]
             new_facts = expr.apply_ruleset_hyps(rules, hyps)
-            self.assertEqual(len(new_facts), len(concls))
-            for i in range(len(new_facts)):
-                self.assertEqual(new_facts[i], concls[i])
+            different = [new_fact for new_fact in new_facts if new_fact not in concls]
+            self.assertEqual(len(different), 0)
 
 
 if __name__ == "__main__":
