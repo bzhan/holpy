@@ -3,7 +3,7 @@
     <label :for=page_num></label>
     <textarea :id=page_num v-model="proof" class="proofArea"></textarea>
     <br>
-    <info :instr_no="cell.index + '/' + (cell.history.length - 1)" :instr="" ref="info"/>
+    <info :instr_no="cell.index + '/' + (cell.history.length - 1)" :instr="instr" ref="info"/>
   </div>
 </template>
 
@@ -21,18 +21,93 @@ export default {
     return {
       editor: '',
       textId: 0,
-      cell: {}
+      cell: {},
+      instr: '',
+      edit_flag: false
     }
   },
   methods: {
+    display_checked_proof: function(result) {
+      var cell = this.cell
+      if ('failed' in result) {
+        this.display_status(result.failed + ': ' + result.message, 'red')
+      } else {
+        cell.proof = result.proof
+        var editor = this.get_selected_editor()
+        editor.startOperation()
+        this.edit_flag = true
+        this.display(id)
+        this.edit_flag = false
+        editor.endOperation()
+        var num_gaps = result.report.num_gaps
+        cell.num_gaps = num_gaps
+        if (num_gaps > 0) {
+          display_status('OK. ' + num_gaps + ' gap(s) remaining.')
+        } else {
+          display_status('OK. Proof complete!')
+        }
+
+        if ('goal' in result) {
+          // Looking at a previous step, already has goal_id and fact_id
+          cell.goal = result.goal
+          editor.setCursor(result.goal, 0)
+          cell.facts = []
+          if ('facts' in result) {
+            cell.facts = result.facts
+          }
+        } else {
+          var lineCount = editor.lineCount()
+          var newLineNo = -1
+          var preLineNo = 0
+          if (cell.goal !== -1) { preLineNo = cell.goal }
+          for (var i = preLineNo; i < lineCount; i++) {
+            if (editor.getLine(i).indexOf('sorry') !== -1) {
+              newLineNo = i
+              break
+            }
+          }
+          if (newLineNo === -1) {
+            editor.setCursor(0, 0)
+            cell.facts = []
+            cell.goal = -1
+          } else {
+            editor.setCursor(newLineNo, 0)
+            cell.facts = []
+            cell.goal = newLineNo
+          }
+        }
+        this.display_facts_and_goal(editor)
+        this.match_thm()
+        editor.focus()
+      }
+    },
+    rp: function(x) {
+      if (x === 0) {
+        return 'normal'
+      } if (x === 1) {
+        return 'bound'
+      } if (x === 2) {
+        return 'var'
+      } if (x === 3) {
+        return 'tvar'
+      }
+    },
+    highlight_html: function(lst) {
+      var output = ''
+      lst.forEach(function (val, i) {
+        output = output + '<tt class="' + this.rp(val[1]) + '">' + val[0] + '</tt>'
+      })
+      return output
+    },
     display_instructions: function() {
       var id = this.get_selected_id()
       var hId = cell.index
       var templ_instr = _.template($('#template-instruction').html())
       $('.rbottom .selected div#output-instr').html(templ_instr({
         instr_no: hId + '/' + (cell.history.length - 1),
-        instr: highlight_html(cell.history[hId].steps_output)
+        instr: this.highlight_html(cell.history[hId].steps_output)
       }))
+      this.instr = this.highlight_html(cell.history[hId].steps_output)
       var proofInfo = {
         proof: cell.history[hId].proof,
         report: cell.history[hId].report
@@ -47,10 +122,9 @@ export default {
           )
         }
       }
-      this.display_checked_proof(proof_info)
+      this.display_checked_proof(proofInfo)
     },
     current_state: function() {
-      var id = this.get_selected_id()
       var goalNo = this.cell.goal
       if (goalNo === -1) {
         return undefined
@@ -67,11 +141,7 @@ export default {
         'proof': this.cell.proof
       }
     },
-    get_selected_id: function() {
-      return this.textId
-    },
     match_thm: function(cell) {
-      var id = this.get_selected_id()
       var input = this.current_state()
       if (input === undefined) {
         cell.search_res = []
@@ -89,8 +159,9 @@ export default {
       }
     },
     apply_method: function(methodName, args) {
+      var count = 0
+      var cell = this.cell
       var sigList = []
-      var id = this.get_selected_id()
       var sigs = cell.method_sig[methodName]
       var input = this.current_state()
       input.method_name = methodName
@@ -109,6 +180,7 @@ export default {
       this.apply_method_ajax(input)
     },
     apply_method_ajax: function (input) {
+      var cell = this.cell
       axios({
         method: 'post',
         url: 'http://127.0.0.1:5000/api/apply-method',
@@ -119,16 +191,16 @@ export default {
           } else {
             // Success
             var id = input.id
-            var h_id = cell.index
-            cell.steps[h_id] = input
-            cell.steps.length = h_id + 1
-            cell.history[h_id].steps_output = result.steps_output
-            cell.history[h_id + 1] = {
+            var hId = cell.index
+            cell.steps[hId] = input
+            cell.steps.length = hId + 1
+            cell.history[hId].steps_output = result.steps_output
+            cell.history[hId + 1] = {
               'steps_output': [['Current state', 0]],
               'proof': result.proof,
               'report': result.report
             }
-            cell.history.length = h_id + 2
+            cell.history.length = hId + 2
             delete input.id
             if (input.fact_ids.length === 0) { delete input.fact_ids }
             delete input.theory_name
