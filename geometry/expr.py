@@ -3,13 +3,24 @@
 import itertools
 
 
+POINT, LINE = range(2)
+
+def arg_type(s):
+    """Upper case means points, lower case means lines."""
+    if s.isupper():
+        return POINT
+    elif s.islower():
+        return LINE
+    else:
+        raise NotImplementedError
+
 class Fact:
     """Represent a fact in geometry prover, e.g.:
 
     coll(A, C, B) is Fact("coll", ["A", "C", "B"]).
 
     """
-    def __init__(self, pred_name, args, updated=False, lemma=None, cond=None):
+    def __init__(self, pred_name, args, *, updated=False, lemma=None, cond=None):
         assert isinstance(pred_name, str)
         assert isinstance(args, list) and all(isinstance(arg, str) for arg in args)
         self.pred_name = pred_name
@@ -28,6 +39,9 @@ class Fact:
     def __str__(self):
         return "%s(%s)" % (self.pred_name, ",".join(self.args))
 
+    def __repr__(self):
+        return str(self)
+
 
 class Line:
     """Represent a line contains more than one point.
@@ -44,6 +58,12 @@ class Line:
 
     def __eq__(self, other):
         return isinstance(other, Line) and self.args == other.args
+
+    def __str__(self):
+        return "Line(%s)" % (",".join(self.args))
+
+    def __repr__(self):
+        return str(self)
 
     def is_same_line(self, other):
         # Two lines are same if they have at least 2 identical points.
@@ -84,33 +104,80 @@ class MatchException(Exception):
     pass
 
 
-def match_expr(pat, f, inst):
+def get_line(lines, pair):
+    """Returns a line from lines containing the given pair of points, if
+    it exists. Otherwise return a line containing the pair.
+    
+    Examples:
+
+    get_line([Line(P,Q,R)], (P, Q)) -> Line(P,Q,R)
+    get_line([Line(P,Q,R)], (O, P)) -> Line(O,P)
+
+    """
+    assert isinstance(lines, list) and all(isinstance(line, Line) for line in lines)
+    assert isinstance(pair, tuple) and len(pair) == 2 and all(isinstance(p, str) for p in pair)
+
+    new_line = Line(list(pair))
+    for line in lines:
+        if line.is_same_line(new_line):
+            return line
+
+    return new_line
+
+def match_expr(pat, f, inst, *, lines=None):
     """Match pattern with f, record results in inst.
+
+    inst is a dictionary that assigns point variables to points,
+    and line variables to pairs of points.
+
+    lines: list of currently known lines.
 
     Example:
 
     match(coll(A, B, C), coll(P, Q, R), {}) -> {A: P, B: Q, C: R}.
-
     match(coll(A, B, C), coll(P, Q, R), {A: P}) -> {A: P, B: Q, C: R}.
-
     match(coll(A, B, C), coll(P, Q, R), {A: Q}) -> raise MatchException.
-
     match(coll(A, B, C), para(P, Q, R, S), {}) -> raise MatchException.
+
+    match(perp(l, m), perp(P, Q, R, S), {}) -> {l: (P, Q), m: (R, S)}
+    match(perp(l, m), perp(P, Q, R, S), {l: (Q, P)}) -> {l: (Q, P), m: (R, S)}
+    match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}, lines=[Line(O, P, Q)]) -> {l: (O, P), m: (R, S)}
+    match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}) -> raise MatchException.
 
     """
     assert isinstance(pat, Fact) and isinstance(f, Fact)
+    if lines is None:
+        lines = []
+    else:
+        assert isinstance(lines, list) and all(isinstance(line, Line) for line in lines)
+
     if pat.pred_name != f.pred_name:
         raise MatchException
 
-    if len(pat.args) != len(f.args):
-        raise MatchException
-
-    for p_arg, f_arg in zip(pat.args, f.args):
-        if p_arg in inst:
-            if f_arg != inst[p_arg]:
+    pos = 0
+    for p_arg in pat.args:
+        if arg_type(p_arg) == POINT:
+            if pos + 1 > len(f.args):
                 raise MatchException
+            if p_arg in inst:
+                if f.args[pos] != inst[p_arg]:
+                    raise MatchException
+            else:
+                inst[p_arg] = f.args[pos]
+            pos += 1
+        elif arg_type(p_arg) == LINE:
+            if pos + 2 > len(f.args):
+                raise MatchException
+            if p_arg in inst:
+                l1 = get_line(lines, inst[p_arg])
+                l2 = get_line(lines, (f.args[pos], f.args[pos+1]))
+                if l1 != l2:
+                    raise MatchException
+            else:
+                inst[p_arg] = (f.args[pos], f.args[pos+1])
+            pos += 2
         else:
-            inst[p_arg] = f_arg
+            raise NotImplementedError
 
 
 def make_line(coll):
@@ -138,21 +205,7 @@ def make_line_facts(facts):
     return lines
 
 
-def extend_line(line, n):
-    """Return a list contains all line segments of length 2 to n+1
-    in the given line.
-    
-    """
-    assert isinstance(n, int) and n >= 2
-    assert isinstance(line, Line)
-    segments = []
-    for i in range(2, n + 1):
-        for j in itertools.permutations(line.args, i):
-            segments.append(list(j))
-    return segments
-
-
-def apply_rule(rule, facts, record=False, lemma=None):
+def apply_rule(rule, facts, *, lines=None, record=False, lemma=None):
     """Apply given rule to the list of facts, either return a new fact
     (on success) or raise MatchException.
 
@@ -172,43 +225,21 @@ def apply_rule(rule, facts, record=False, lemma=None):
 
     inst = {}
     for assume, fact in zip(rule.assums, facts):
-        match_expr(assume, fact, inst)
+        match_expr(assume, fact, inst, lines=lines)
 
-    args = [inst[i] for i in rule.concl.args]
+    concl_args = []
+    for arg in rule.concl.args:
+        if arg_type(arg) == POINT:
+            concl_args.append(inst[arg])
+        elif arg_type(arg) == LINE:
+            concl_args.extend(inst[arg])
+        else:
+            raise NotImplementedError
 
     if record:
-        return Fact(rule.concl.pred_name, args, updated=True, lemma=lemma, cond=facts)
+        return Fact(rule.concl.pred_name, concl_args, updated=True, lemma=lemma, cond=facts)
     else:
-        return Fact(rule.concl.pred_name, args)
-
-
-def apply_rule_line(rule, facts, lines, record=False, lemma=None):
-    """
-    (unfinished)
-    Apply given rule to the list of facts.
-    If any fact in the list refers to lines in the given list of lines, then try to apply given rule to
-    all the combinations of dots on the lines.
-    Example:
-        apply_rule_line(Rule([perp(A, B, C, D), perp(C, D, E, F)], para(A, B, E, F)),
-                        [perp(P, Q, R, S), perp(R, S, U, V)],
-                        [line(P, Q, T), line(R, S), line(U, V)])
-        ->[para(P, Q, U, V), para(P, T, U, V), para(Q, T, U, V)]
-    """
-    assert isinstance(rule, Rule)
-    assert isinstance(facts, list)
-    assert isinstance(lines, list)
-
-    new_facts = []
-
-    for fact in facts:
-        name = fact.pred_name
-        if name == "perp":
-            n = 2
-
-        l = Line(fact.args)
-        same_line = [line for line in lines if l.is_same_line(line)]
-        assert len(same_line) == 1
-        extended = extend_line(same_line[0], n)
+        return Fact(rule.concl.pred_name, concl_args)
 
 
 def apply_rule_hyps(rule, hyps, only_updated=False):
@@ -228,6 +259,7 @@ def apply_rule_hyps(rule, hyps, only_updated=False):
     assert isinstance(hyps, list)
     assert all(isinstance(fact, Fact) for fact in hyps)
     new_facts = []
+    lines = make_line_facts(hyps)
     for seq in itertools.permutations(range(len(hyps)), len(rule.assums)):
         facts = []
         for num in list(seq):
@@ -236,9 +268,9 @@ def apply_rule_hyps(rule, hyps, only_updated=False):
             if only_updated:
                 updated = [fact for fact in facts if fact.updated]
                 if len(updated) > 0:
-                    new_fact = apply_rule(rule, facts, record=True, lemma=list(seq))
+                    new_fact = apply_rule(rule, facts, lines=lines, record=True, lemma=list(seq))
             else:
-                new_fact = apply_rule(rule, facts, record=True, lemma=list(seq))
+                new_fact = apply_rule(rule, facts, lines=lines, record=True, lemma=list(seq))
         except MatchException:
             pass
         else:

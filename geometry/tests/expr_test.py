@@ -43,6 +43,24 @@ class ExprTest(unittest.TestCase):
             else:
                 self.assertRaises(expr.MatchException, expr.match_expr, pat, f, inst)
 
+    def testMatchFactLines(self):
+        lines = [Line(["O", "P", "Q"])]
+        test_data = [
+            ("perp(l, m)", "perp(P, Q, R, S)", {}, {"l": ("P", "Q"), "m": ("R", "S")}),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, {"l": ("Q", "P"), "m": ("R", "S")}),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("O", "P")}, {"l": ("O", "P"), "m": ("R", "S")}),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("A", "P")}, None),
+        ]
+
+        for pat, f, inst, res in test_data:
+            pat = parser.parse_fact(pat)
+            f = parser.parse_fact(f)
+            if res is not None:
+                expr.match_expr(pat, f, inst, lines=lines)
+                self.assertEqual(inst, res)
+            else:
+                self.assertRaises(expr.MatchException, expr.match_expr, pat, f, inst, lines=lines)
+
     def testApplyRule(self):
         test_data = [
             (ruleset["D1"], ["coll(E, F, G)", "coll(P, Q, R)"], "coll(E, G, F)"),
@@ -55,8 +73,8 @@ class ExprTest(unittest.TestCase):
 
     def testMakeLineFacts(self):
         test_data = [
-            (["coll(A, B, C)", "coll(A, B, D)", "coll(P, Q)", "coll(Q, R)", "coll(Q, R, S)"],
-             ["line(A, B, C, D)", "line(P, Q)", "line(Q, R, S)"]),
+            (["coll(A, B, C)", "coll(A, B, D)", "coll(P, Q, R)", "coll(R, S, T)", "coll(Q, R, S)"],
+             ["line(A, B, C, D)", "line(P, Q, R, S, T)"]),
         ]
         for facts, concls in test_data:
             facts = [parser.parse_fact(fact) for fact in facts]
@@ -64,23 +82,18 @@ class ExprTest(unittest.TestCase):
             concls = [parser.parse_line(line) for line in concls]
             self.assertEqual(set(line_facts), set(concls))
 
-    '''def testExtendLine(self):
-        test_data = [
-            ("line(A, B, C)", ["coll(C, B)", "coll(C, A)", "coll(B, A)", "coll(B, C)", "coll(A, B)", "coll(A, C)",
-                               "coll(A, B, C)", "coll(A, C, B)", "coll(B, A, C)", "coll(B, C, A)", "coll(C, A, B)",
-                               "coll(C, B, A)"]),
-        ]
-        for line, concls in test_data:
-            colls = expr.extend_line(parser.parse_line(line))
-            concls = [parser.parse_fact(coll) for coll in concls]
-            different = [coll for coll in colls if coll not in concls]
-            self.assertEqual(len(different), 0)'''
-
     def testApplyRuleHyps(self):
         test_data = [
             (ruleset["D3"], ["coll(E, F, G)", "coll(E, F, H)", "coll(P, Q, R)", "coll(P, Q, S)", "coll(A, B, C)"],
              ["coll(G, H, E)", "coll(H, G, E)", "coll(R, S, P)", "coll(S, R, P)"]),
+
+            (ruleset["D5"], ["para(P, Q, R, S)"],
+             ["para(R, S, P, Q)"]),
+
+            (ruleset["D6"], ["para(P, Q, R, S)", "para(S, T, U, V)", "coll(R, S, T)"],
+             ["para(P, Q, U, V)"]),
         ]
+
         for rule, hyps, concls in test_data:
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concls = [parser.parse_fact(concl) for concl in concls]
