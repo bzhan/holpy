@@ -25,20 +25,22 @@
 <script>
 export default {
   name: 'Info',
-  props: ['instr_no', 'instr'],
+  props: ['instr_no', 'instr', 'status', 'color'],
   data: function() {
     return {
-      status: '',
       styleSta: {color: ''}
     }
   },
   methods: {
-    display_ststus: function (status, color = '') {
-      this.status = status
-      this.styleSta.color = color
-    },
     display_running() {
       this.display_ststus('Running')
+    }
+  },
+  watch: {
+    status: function (val) {
+      var statusOutput = document.querySelector('.rbottom .selected .output pre')
+      statusOutput.innerHTML = val
+      statusOutput.style.color = this.color
     }
   }
 }

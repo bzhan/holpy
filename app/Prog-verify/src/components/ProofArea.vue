@@ -3,7 +3,7 @@
     <label :for=page_num></label>
     <textarea :id=page_num v-model="proof" class="proofArea"></textarea>
     <br>
-    <info :instr_no="cell.index + '/' + (cell.history.length - 1)" :instr="instr" ref="info"/>
+    <info :status="status" :color="color" :instr_no="cell.index + '/' + (cell.history.length - 1)" :instr="instr" ref="info"/>
   </div>
 </template>
 
@@ -23,10 +23,16 @@ export default {
       textId: 0,
       cell: {},
       instr: '',
-      edit_flag: false
+      edit_flag: false,
+      status: '',
+      color: ''
     }
   },
   methods: {
+    display_status: function(status, color = '') {
+      this.status = status
+      this.color = color
+    },
     display_checked_proof: function(result) {
       var cell = this.cell
       if ('failed' in result) {
@@ -39,12 +45,12 @@ export default {
         this.display(id)
         this.edit_flag = false
         editor.endOperation()
-        var num_gaps = result.report.num_gaps
-        cell.num_gaps = num_gaps
-        if (num_gaps > 0) {
-          display_status('OK. ' + num_gaps + ' gap(s) remaining.')
+        var numGaps = result.report.num_gaps
+        cell.num_gaps = numGaps
+        if (numGaps > 0) {
+          this.display_status('OK. ' + numGaps + ' gap(s) remaining.')
         } else {
-          display_status('OK. Proof complete!')
+          this.display_status('OK. Proof complete!')
         }
 
         if ('goal' in result) {
