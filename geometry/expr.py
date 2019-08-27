@@ -29,11 +29,12 @@ class Fact:
 class Line:
     """Represent a line contains more than one point.
     """
-    def __init__(self, args):
+    def __init__(self, args, source=None):
         assert isinstance(args, list)
         assert len(args) > 1
         assert all(isinstance(arg, str) for arg in args)
         self.args = set(args)
+        self.source = source
 
     def __eq__(self, other):
         return isinstance(other, Line) and self.args == other.args
@@ -50,7 +51,7 @@ class Line:
 
     def extend_line(self, line):
         assert isinstance(line, Line)
-        self.args.union(line.args)
+        self.extend(line.args)
 
 
 class Rule:
@@ -106,6 +107,45 @@ def match_expr(pat, f, inst):
             inst[p_arg] = f_arg
 
 
+def make_line(coll):
+    """Construct a line from a collinear fact. """
+    assert isinstance(coll, Fact)
+    assert coll.pred_name == "coll"
+
+    return Line(coll.args)
+
+
+def make_line_facts(facts):
+    """Construct lines from a list of given facts. """
+    assert isinstance(facts, list)
+    assert all(isinstance(fact, Fact) for fact in facts)
+
+    lines = []
+    for fact in facts:
+        if fact.pred_name == "coll":
+            new_line = make_line(fact)
+            same = [inx for inx, _ in enumerate(lines) if new_line.is_same_line(lines[inx])]
+            if len(same) > 0:
+                lines[same[0]].extend_line(new_line)
+            else:
+                lines.append(new_line)
+    return lines
+
+
+def extend_line(line, n):
+    """Return a list contains all line segments in the given line, in str form. """
+    assert isinstance(n, int)
+    assert n >= 2
+    assert isinstance(line, Line)
+    assert isinstance(line.args, set)
+    assert all(isinstance(pt, str) for pt in line.args)
+    segments = []
+    for i in range(2, n + 1):
+        for j in itertools.permutations(line.args, i):
+            segments.append(list(j))
+    return segments
+
+
 def apply_rule(rule, facts, record=False, lemma=None):
     """Apply given rule to the list of facts, either return a new fact
     (on success) or raise MatchException.
@@ -134,41 +174,33 @@ def apply_rule(rule, facts, record=False, lemma=None):
         return Fact(rule.concl.pred_name, args)
 
 
-def make_line(coll):
-    """Construct a line from a collinear fact. """
-    assert isinstance(coll, Fact)
-    assert coll.pred_name == "coll"
-
-    return Line(coll.args)
-
-
-def make_line_facts(facts):
-    """Construct lines from a list of given facts. """
+def apply_rule_line(rule, facts, lines, record=False, lemma=None):
+    """
+    (unfinished)
+    Apply given rule to the list of facts.
+    If any fact in the list refers to lines in the given list of lines, then try to apply given rule to
+    all the combinations of dots on the lines.
+    Example:
+        apply_rule_line(Rule([perp(A, B, C, D), perp(C, D, E, F)], para(A, B, E, F)),
+                        [perp(P, Q, R, S), perp(R, S, U, V)],
+                        [line(P, Q, T), line(R, S), line(U, V)])
+        ->[para(P, Q, U, V), para(P, T, U, V), para(Q, T, U, V)]
+    """
+    assert isinstance(rule, Rule)
     assert isinstance(facts, list)
-    assert all(isinstance(fact, Fact) for fact in facts)
+    assert isinstance(lines, list)
 
-    lines = []
+    new_facts = []
+
     for fact in facts:
-        if fact.pred_name == "coll":
-            new_line = make_line(fact)
-            same = [inx for inx, _ in enumerate(lines) if new_line.is_same_line(lines[inx])]
-            if len(same) > 0:
-                lines[same[0]].extend_line(new_line)
-            else:
-                lines.append(new_line)
-    return lines
+        name = fact.pred_name
+        if name == "perp":
+            n = 2
 
-
-def extend_line(line):
-    """Return a list contains all line segments in the given line. """
-    assert isinstance(line, Line)
-    assert isinstance(line.args, set)
-    assert all(isinstance(pt, str) for pt in line.args)
-    segments = []
-    for i in range(2, len(line.args) + 1):
-        for j in itertools.permutations(line.args, i):
-            segments.append(Fact("coll", list(j)))
-    return segments
+        l = Line(fact.args)
+        same_line = [line for line in lines if l.is_same_line(line)]
+        assert len(same_line) == 1
+        extended = extend_line(same_line[0], n)
 
 
 def apply_rule_hyps(rule, hyps, only_updated=False):
@@ -251,49 +283,3 @@ def search_fixpoint(ruleset, hyps, concl):
         if new_facts == [] or is_in_new_facts(concl, new_facts):
             return facts
         facts = union_hyps_and_facts(hyps, new_facts)
-
-
-def apply_rule_hyps2(rule, hyps, only_updated=False):
-    """
-    (Obsoleted)
-    Try to apply given rule to one or more facts in a list, generate new facts (as many new facts as possible),
-    return a list of new facts.
-    Repetitive facts as hypotheses apply to one rule is not allowed.
-    Example:
-
-        apply_rule_hyps(Rule([coll(A, B, C)], coll(A, C, B)), [coll(D, E, F), coll(P, Q, R), para(A, B, D, C)]
-        ) -> [coll(D, F, E), coll(P, R, Q)].
-
-    """
-
-    assert isinstance(rule, Rule)
-    assert isinstance(hyps, list)
-    assert all(isinstance(fact, Fact) for fact in hyps)
-
-    new_facts = []
-
-    def traverse_hyps(len, n, seq):
-        if n == 0:
-            facts = []
-            for num in list(seq):
-                facts.append(hyps[int(num)])
-            try:
-                if only_updated:
-                    updated = [fact for fact in facts if fact.updated]
-                    if len(updated) > 0:
-                        new_fact = apply_rule(rule, facts, record=True, lemma=list(seq))
-                else:
-                    new_fact = apply_rule(rule, facts, record=True, lemma=list(seq))
-            except MatchException:
-                pass
-            else:
-                if new_fact not in new_facts:
-                    new_facts.append(new_fact)
-            finally:
-                return
-        for i in range(len):
-            if str(i) not in str(seq):
-                 traverse_hyps(len, n - 1, str(seq) + str(i))
-
-    traverse_hyps(len(hyps), len(rule.assums), "")
-    return new_facts

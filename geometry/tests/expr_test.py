@@ -3,7 +3,7 @@
 import unittest
 
 from geometry import expr
-from geometry.expr import Fact, Rule
+from geometry.expr import Fact, Rule, Line
 from geometry import parser
 from geometry.ruleset import ruleset
 
@@ -53,17 +53,29 @@ class ExprTest(unittest.TestCase):
             concl = parser.parse_fact(concl)
             self.assertEqual(expr.apply_rule(rule, facts), concl)
 
-    def testExtendLine(self):
+    def testMakeLineFacts(self):
+        test_data = [
+            (["coll(A, B, C)", "coll(A, B, D)", "coll(P, Q)", "coll(Q, R)", "coll(Q, R, S)"],
+             ["line(A, B, C, D)", "line(P, Q)", "line(Q, R, S)"]),
+        ]
+        for facts, concls in test_data:
+            facts = [parser.parse_fact(fact) for fact in facts]
+            facts = expr.make_line_facts(facts)
+            concls = [parser.parse_line(line) for line in concls]
+            different = [line for line in facts if line not in concls]
+            self.assertEqual(len(different), 0)
+
+    '''def testExtendLine(self):
         test_data = [
             ("line(A, B, C)", ["coll(C, B)", "coll(C, A)", "coll(B, A)", "coll(B, C)", "coll(A, B)", "coll(A, C)",
                                "coll(A, B, C)", "coll(A, C, B)", "coll(B, A, C)", "coll(B, C, A)", "coll(C, A, B)",
                                "coll(C, B, A)"]),
         ]
         for line, concls in test_data:
-            lines = expr.extend_line(parser.parse_line(line))
+            colls = expr.extend_line(parser.parse_line(line))
             concls = [parser.parse_fact(coll) for coll in concls]
-            different = [line for line in lines if line not in concls]
-            self.assertEqual(len(different), 0)
+            different = [coll for coll in colls if coll not in concls]
+            self.assertEqual(len(different), 0)'''
 
     def testApplyRuleHyps(self):
         test_data = [
