@@ -200,6 +200,7 @@ export default {
   },
   watch: {
     proof(val) {
+      alert(JSON.stringify(val))
       if (this.editor) {
         let that = this
         let editor = this.editor
