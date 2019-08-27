@@ -1213,7 +1213,167 @@
                 "b": "real",
                 "c": "real"
             }
-        }                                                   
+        },
+        {
+            "name": "integrable_combine",
+            "prop": "a <= c & c <= b & integrable_on f (real_closed_interval a c) & integrable_on f (real_closed_interval c b) --> integrable_on f (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
+        },
+        {
+            "name": "within",
+            "ty": "def.ax",
+            "type": "'a net => 'a set => 'a net"
+        },
+        {
+            "name": "at",
+            "ty": "def.ax",
+            "type": "real => real net"
+        },
+        {
+            "name": "has_v_derivative",
+            "ty": "def.ax",
+            "type": "(real => real) => real => real net => bool"
+        },
+        {
+            "name": "continuous",
+            "ty": "def.ax",
+            "type": "('a => real) => 'a net => bool"
+        },
+        {
+            "name": "integral_has_v_derivative_pointwise",
+            "prop": "integrable_on f (real_closed_interval a b) & member x (real_closed_interval a b) & continuous f (within (at x) (real_closed_interval a b)) --> has_v_derivative (%u. integral (real_closed_interval a u) f) (f x) (within (at x) (real_closed_interval a b))",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "integral_has_v_derivative",
+            "prop": "continuous_on f (real_closed_interval a b) --> !x. member x (real_closed_interval a b) --> has_v_derivative (%u. integral (real_closed_interval a u) f) (f x) (within (at x) (real_closed_interval a b))",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "antiderivative_continuous",
+            "prop": "continuous_on f (real_closed_interval a b) --> ?g. !x. member x (real_closed_interval a b) --> has_v_derivative g (f x) (within (at x) (real_closed_interval a b))",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "has_integral_restrict_open_subinterval",
+            "prop": "has_integral f i (real_closed_interval c d) & subset (real_closed_interval c d) (real_closed_interval a b) --> has_integral (%x. if member x (real_open_interval c d) then f x else 0) i (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "i": "real"
+            }
+        },
+        {
+            "name": "has_integral_restrict_closed_subinterval",
+            "prop": "has_integral f i (real_closed_interval c d) & subset (real_closed_interval c d) (real_closed_interval a b) --> has_integral (%x. if member x (real_closed_interval c d) then f x else 0) i (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "i": "real"
+            }
+        },
+        {
+            "name": "has_integral_restrict_closed_subinterval_eq",
+            "prop": "subset (real_closed_interval c d) (real_closed_interval a b) --> (has_integral (%x. if member x (real_closed_interval c d) then f x else 0) i (real_closed_interval a b) = has_integral f i (real_closed_interval c d))",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "i": "real"
+            }
+        },
+        {
+            "name": "has_integral_restrict",
+            "prop": "subset s t --> (has_integral (%x. if member x s then f x else 0) i t = has_integral f i s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set",
+                "i": "real"
+            }
+        },
+        {
+            "name": "integral_restrict",
+            "prop": "subset s t --> (integral t (%x. if member x s then f x else 0) = integral s f)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integrable_restrict",
+            "prop": "subset s t --> (integrable_on (%x. if member x s then f x else 0) t = integrable_on f s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "has_integral_restrict_univ",
+            "prop": "has_integral (%x. if member x s then f x else 0) i univ = has_integral f i s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "i": "real"
+            }
+        },
+        {
+            "name": "integral_restrict_univ",
+            "prop": "integral univ (%x. if member x s then f x else 0) = integral s f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "integrable_restrict_univ",
+            "prop": "integrable_on (%x. if member x s then f x else 0) univ = integrable_on f s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        }                                                         
     ],
     "description": "Basic results about integral.",
     "imports": [

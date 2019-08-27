@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" href="../static/css/integral.css">
+<link rel="stylesheet" href="../static/css/jquery-ui.css">
+
+<script src="../static/js/axios.min.js"></script>
+<script src="../static/js/underscore-min.js"></script>
+<script src="../static/js/vue.min.js"></script>
+<script src="../static/js/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+<script src="../static/js/jquery-ui.min.js"></script>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Integrator web interface</title>
+</head>
+
+<body>
+
+    <!-- Menu -->
+    <div class="dropdown">
+        <button onclick="menu_file()" class="dropbtn">File</button>
+        <div id="menu-file" class="dropdown-content">
+            <a href="#" onclick="open_file()">Open</a>
+        </div>
+        <button onclick="menu_calc()" class="dropbtn">Calc</button>
+        <div id="menu-calc" class="dropdown-content">
+            <a href="#" onclick="restart_calc()">Restart</a>
+            <a href="#" onclick="restore_calc()">Restore</a>
+            <a href="#" onclick="save_calc()">Save</a>
+        </div>
+        <button onclick="menu_action()" class="dropbtn">Actions</button>
+        <div id="menu-action" class="dropdown-content" style="min-width:230px">
+            <a href="#" onclick="simplify()">Simplify</a>
+            <a href="#" onclick="linearity()">Apply linearity</a>
+            <a href="#" onclick="common_integral()">Apply common integrals</a>
+            <a href="#" onclick="substitution()">Substitution</a>
+            <a href="#" onclick="integrate_by_parts()">Integrate by parts</a>
+        </div>
+    </div>
+
+    <h2>Content</h2>
+    <!-- Area for displaying content -->
+    <div id="content"></div>
+
+    <h2>Calculation</h2>
+    <!-- Area for displaying calculation -->
+    <div id="calc"></div>
+
+    <!-- Placeholder for dialog boxes -->
+    <div id="dialogs"></div>
+
+</body>
+
+<div data-include="templ"></div>
+<script src="../static/js/integral.js?v=1.3"></script>
+
+</html>
