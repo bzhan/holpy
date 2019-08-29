@@ -3836,6 +3836,12 @@
                 "P": "'a => bool",
                 "s": "'a set"
             }
+        },
+        {
+            "name": "image",
+            "prop": "image f s = {y. ?x. member x s & y = f x}",
+            "ty": "def",
+            "type": "('a => 'b) => 'a set => 'b set"
         }
     ],
     "description": "Basic results about sets.",
