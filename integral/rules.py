@@ -23,7 +23,7 @@ class Simplify(Rule):
 
     """
     def eval(self, e):
-        return expr.from_poly(e.to_poly())
+        return e.normalize()
 
 class Linearity(Rule):
     """Applies linearity rules:
