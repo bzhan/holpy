@@ -274,7 +274,7 @@ export default {
         ch = that.$options.methods.display_str(editor, ' with', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
       } else {
         // Display theorem with highlight
-        if (line.th_hl.length > 0) {
+        if (line['th_h1'].length > 0) {
           ch = that.$options.methods.display_have_prompt(editor, proof, lineNo, ch, that)
           ch = that.$options.methods.display_highlight_strs(editor, line.th_hl, lineNo, ch, that)
           ch = that.$options.methods.display_str(editor, ' by ', lineNo, ch, {css: 'font-weight: bold'})
@@ -296,7 +296,6 @@ export default {
   },
   watch: {
     proof(val) {
-      alert(JSON.stringify(val))
       if (this.editor) {
         let that = this
         let editor = this.editor

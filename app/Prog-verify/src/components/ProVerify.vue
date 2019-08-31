@@ -48,6 +48,13 @@ export default {
   },
   methods: {
     proof_init: function (dataRelate, that) {
+      alert(JSON.stringify({
+        'com': dataRelate['com'],
+        'pre': dataRelate['pre'],
+        'post': dataRelate['post'],
+        'vars': dataRelate['vars'],
+        'prog_verify': 'true'
+      }))
       axios({
         method: 'post',
         url: 'http://127.0.0.1:5000/api/init-empty-proof',
