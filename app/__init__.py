@@ -201,14 +201,12 @@ def master():
 @app.route('/api/get_file', methods = ['POST', 'GET'])
 def get_file():
     file_name = json.loads(request.get_data().decode("utf-8"))['file_name']
-    thy = basic.load_theory('nat')
-    PATH = os.getcwd() + '/imperative/examples/' + file_name
-    with open(PATH, 'r', encoding = 'utf-8') as f:
+    thy = basic.load_theory('hoare')
+    path = 'imperative/examples/' + file_name + '.json'
+    with open(path, 'r', encoding = 'utf-8') as f:
         file_data = json.load(f)
-        f.close()
     filter_data = list(filter(lambda d: d['ty'] == 'vcg', file_data['content']))
     for i, vcg in enumerate(filter_data):
-        filter_data[i]['num'] = i
         filter_data[i]['com'] = parser2.com_parser.parse(vcg['com']).print_com(thy)
 
     return jsonify({'file_data': filter_data})

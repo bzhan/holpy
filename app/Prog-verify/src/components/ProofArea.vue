@@ -458,6 +458,23 @@ export default {
         this.index = 0
         this.display_instructions()
       })
+    },
+
+    undo_move: function () {
+      var h_id = this.index;
+      if (h_id < this.steps.length) {
+          // Perform undo only when at end
+          return;
+      }
+
+      this.history.length -= 1;
+      this.history[h_id-1].steps_output = [["Current state", 0]]
+      this.index = h_id - 1;
+      this.display_instructions();
+
+      // Remove last step after display_instructions, so goal and fact_no can
+      // be used during display.
+      this.steps.length -= 1;
     }
   },
 
@@ -478,7 +495,6 @@ export default {
       smartIndent: false,
       matchBrackets: true,
       viewportMargin: Infinity,
-      // scrollbarStyle: 'overlay',
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Ctrl-I': function () {

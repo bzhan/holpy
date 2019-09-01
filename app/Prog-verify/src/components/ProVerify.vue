@@ -1,20 +1,29 @@
 <template>
-  <div id="wrap">
-    <div id="left-con" class="left-con">
-      <div id="pro-ver" class="total left">
-        <label for="files" class="choose-file">Please choose a file</label>
-        <input type="file" id="files" @change="get_file($event)">
-        <div id="program-ver" class="program-ver">
-          <div v-for="vcg in file_data" :key="vcg.num" @click="init_program($event)">
-            <textarea readonly="readonly" class="code-content con" :name="vcg.num" v-model="vcg.com"></textarea>
+  <div id="wrap" v-on:click="close_menu($event)">
+    <!-- Menu -->
+    <div class="dropdown" style="margin-top:5px;margin-left:5px">
+      <button v-on:click="menu_file()" class="dropbtn">File</button>
+      <div id="menu-file" class="dropdown-content">
+          <a href="#" v-on:click="open_file()">Open</a>
+      </div>
+      <button v-on:click="menu_action()" class="dropbtn">Action</button>
+      <div id="menu-action" class="dropdown-content">
+          <a href="#" v-on:click="undo_move()">Undo move</a>
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <div class="left">
+        <div class="program-ver">
+          <div v-for="(vcg,i) in file_data" :key="i" @click="init_program($event)">
+            <textarea readonly="readonly" class="code-content content" :name="i" v-model="vcg.com"></textarea>
           </div>
         </div>
       </div>
-      <div id="ver-display" class="right">
+      <div class="right">
         <br><pre class="display-con">{{ program }}</pre>
         <br><pre class="display-res">{{ proof_stat }}</pre>
         <div v-show="proof_process" class="proofArea">
-          <proof-area :proof_data="proof"/>
+          <proof-area :proof_data="proof" ref="proof"/>
         </div>
       </div>
     </div>
@@ -40,6 +49,46 @@ export default {
     }
   },
   methods: {
+    hide_menu: function () {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      for (let i = 0; i < dropdowns.length; i++) {
+        if (dropdowns[i].classList.contains('show')) {
+          dropdowns[i].classList.remove('show');
+        }
+      }
+    },
+
+    // toggle between hiding and showing the dropdown content
+    menu_file: function () {
+      this.hide_menu();
+      document.getElementById("menu-file").classList.toggle("show");
+    },
+    menu_action: function () {
+      this.hide_menu();
+      document.getElementById("menu-action").classList.toggle("show");
+    },
+
+    // Close the dropdown menu if the user clicks outside of it
+    close_menu: function (event) {
+      if (!event.target.matches('.dropbtn')) {
+        this.hide_menu();
+      }
+    },
+
+    open_file: async function () {
+      var file_name = prompt("Please enter file name", "test")
+      var res = await axios({
+        method: 'post',
+        url: 'http://127.0.0.1:5000/api/get_file',
+        data: {file_name: file_name}
+      })
+      this.file_data = res.data.file_data
+    },
+
+    undo_move: function() {
+      this.$refs.proof.undo_move()
+    },
+
     // Initialize program verification for a program
     init_program: function (e) {
       let num = Number(e.currentTarget.children[0].name)
@@ -58,17 +107,6 @@ export default {
           this.proof_process = false
         }
       })
-    },
-
-    get_file: function (e) {
-      let fileName = e.target.files[0].name
-      axios({
-        method: 'post',
-        url: 'http://127.0.0.1:5000/api/get_file',
-        data: {'file_name': fileName}
-      }).then((res) => {
-        this.file_data = res.data['file_data']
-      })
     }
   }
 }
@@ -78,10 +116,6 @@ export default {
 <style scoped>
   div#wrap{
     background: #F8F8F8;
-    /*overflow: hidden;*/
-  }
-  div.total{
-    margin-left:1%;
   }
 
   div.program-ver {
@@ -101,6 +135,7 @@ export default {
     border-right: solid 1px;
     overflow-y: scroll;
     overflow-x: hidden;
+    margin-left: 1%;
   }
 
   .right{
@@ -117,7 +152,7 @@ export default {
 
   .display-con{
     margin-left: 5%;
-    margin-top: 5%;
+    margin-top: 10px;
     font-size: 20px;
     font-family: Consolas, monospace;
   }
@@ -145,7 +180,7 @@ export default {
     margin-left: 5%;
   }
 
-  .con{
+  .content{
     background: #F8F8F8;
     font-size: 20px;
     font-family: Consolas, monospace;
@@ -174,4 +209,54 @@ export default {
     outline: none;
     resize: none;
   }
+
+  /* Dropdown Button */
+  .dropbtn {
+    background-color: #3498DB;
+    color: white;
+    padding: 5px 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Dropdown button on hover & focus */
+  .dropbtn:hover, .dropbtn:focus {
+    background-color: #2980B9;
+  }
+
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: black;
+    padding: 7px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {
+    background-color: #ddd
+  }
+
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .show {
+    display:block;
+  }
+
 </style>
