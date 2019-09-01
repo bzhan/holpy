@@ -57,27 +57,29 @@ def index_program():
     return redirect('http://localhost:8080')
 
 # Verifying a program
-@app.route('/program_verify', methods=['POST', 'GET'])
+@app.route('/api/program-verify', methods=['POST'])
 def verify():
-    proof_success, proof_failure = 0, 0
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.load_theory('int')
+    thy = basic.load_theory('hoare')
     pre = cond_parser.parse(data['pre'])
     post = cond_parser.parse(data['post'])
     com = com_parser.parse(data['com'])
     com.pre = [pre]
     com.compute_wp(post)
     vcs = com.get_vc()
+
+    proof_success, proof_failure = 0, 0
     for vc in vcs:
         if z3wrapper.solve(vc.convert_hol(data['vars'])):
             proof_success += 1
         else:
             proof_failure += 1
-    proof_stat = 'Proof Finished. Success: ' + str(proof_success) + '  Failure: ' + str(proof_failure) + '.'
-    program = com.print_com(thy)
 
-    return jsonify({'program': program, 'proof_stat': (proof_stat, proof_failure)})
-
+    return jsonify({
+        'program': com.print_com(thy),
+        'proof_success': proof_success,
+        'proof_failure': proof_failure
+    })
 
 # Login page
 @app.route('/', methods=['GET', 'POST'])
@@ -198,8 +200,8 @@ def master():
     return redirect('/load')
 
 
-@app.route('/api/get_file', methods = ['POST', 'GET'])
-def get_file():
+@app.route('/api/get-program-file', methods = ['POST', 'GET'])
+def get_program_file():
     file_name = json.loads(request.get_data().decode("utf-8"))['file_name']
     thy = basic.load_theory('hoare')
     path = 'imperative/examples/' + file_name + '.json'

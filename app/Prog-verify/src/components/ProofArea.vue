@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-pane fade active code-cell">
+  <div>
     <label for="proof-area"></label>
     <textarea id="proof-area" class="proofArea"></textarea>
     <br>
@@ -440,24 +440,24 @@ export default {
       this.display_facts_and_goal();
     },
 
-    update_proof_data: function () {
-      axios({
+    update_proof_data: async function () {
+      let res = await axios({
         method: 'post',
         url: 'http://127.0.0.1:5000/api/init-empty-proof',
         data: this.proof_data,
-      }).then((res) => {
-        this.goal = -1
-        this.method_sig = res.data.method_sig
-        this.vars = res.data.vars
-        this.steps = []
-        this.history = [{
-          steps_output: [['Current state', 0]],
-          proof: res.data.proof,
-          report: res.data.report
-        }]
-        this.index = 0
-        this.display_instructions()
       })
+      
+      this.goal = -1
+      this.method_sig = res.data.method_sig
+      this.vars = res.data.vars
+      this.steps = []
+      this.history = [{
+        steps_output: [['Current state', 0]],
+        proof: res.data.proof,
+        report: res.data.report
+      }]
+      this.index = 0
+      this.display_instructions()
     },
 
     undo_move: function () {
@@ -522,21 +522,21 @@ export default {
 
     let that = this
     editor.on('beforeChange', function (cm, change) {
-        if (!that.edit_flag) {
-            change.cancel();
-        }
+      if (!that.edit_flag) {
+        change.cancel();
+      }
     });
 
     editor.on('cursorActivity', function (cm) {
-        if (that.is_mousedown) {
-            that.mark_text(cm);
-            that.match_thm();
-            that.is_mousedown = false;
-        }
+      if (that.is_mousedown) {
+        that.mark_text(cm);
+        that.match_thm();
+        that.is_mousedown = false;
+      }
     });
 
     editor.on('mousedown', function (cm) {
-        that.is_mousedown = true;
+      that.is_mousedown = true;
     });
 
     this.editor = editor

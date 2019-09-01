@@ -14,7 +14,7 @@
     <div style="margin-top:10px">
       <div class="left">
         <div class="program-ver">
-          <div v-for="(vcg,i) in file_data" :key="i" @click="init_program($event)">
+          <div v-for="(vcg,i) in file_data" :key="i" @click="init_program(i)">
             <textarea readonly="readonly" class="code-content content" :name="i" v-model="vcg.com"></textarea>
           </div>
         </div>
@@ -39,15 +39,28 @@ export default {
   components: {
     proofArea
   },
+
   data: () => {
     return {
       file_data: [],          // Content of the file
       program: '',            // Current program
-      proof_stat: '',         // Statistics for the current program
+      proof_success: undefined,  // Number of successful proofs
+      proof_failure: undefined,  // Number of failed proofs
       proof_process: false,   // Whether conducting a proof
       proof: undefined,       // Data for the current proof
     }
   },
+
+  computed: {
+    proof_stat: function () {
+      if (this.proof_success !== undefined) {
+        return "Proof finished. Success: " + this.proof_success + "  Failure: " + this.proof_failure
+      } else {
+        return ""
+      }
+    }
+  },
+
   methods: {
     hide_menu: function () {
       var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -79,7 +92,7 @@ export default {
       var file_name = prompt("Please enter file name", "test")
       var res = await axios({
         method: 'post',
-        url: 'http://127.0.0.1:5000/api/get_file',
+        url: 'http://127.0.0.1:5000/api/get-program-file',
         data: {file_name: file_name}
       })
       this.file_data = res.data.file_data
@@ -90,23 +103,22 @@ export default {
     },
 
     // Initialize program verification for a program
-    init_program: function (e) {
-      let num = Number(e.currentTarget.children[0].name)
-      axios({
+    init_program: async function (num) {
+      let res = await axios({
         method: 'post',
-        url: 'http://127.0.0.1:5000/program_verify',
+        url: 'http://127.0.0.1:5000/api/program-verify',
         data: this.file_data[num]
-      }).then((res) => {
-        this.program = res.data['program']
-        this.proof_stat = res.data['proof_stat'][0]
-        let failureNum = Number(res.data['proof_stat'][1])
-        if (failureNum !== 0) {
-          this.proof_process = true
-          this.proof = this.file_data[num]
-        } else {
-          this.proof_process = false
-        }
       })
+      
+      this.program = res.data.program
+      this.proof_success = Number(res.data.proof_success)
+      this.proof_failure = Number(res.data.proof_failure)
+      if (this.proof_failure !== 0) {
+        this.proof_process = true
+        this.proof = this.file_data[num]
+      } else {
+        this.proof_process = false
+      }
     }
   }
 }
