@@ -3,7 +3,11 @@
     <label :for=page_num></label>
     <textarea :id=page_num v-model="proof" class="proofArea"></textarea>
     <br>
-    <info :status="status" :color="color" :instr_no="cell.index + '/' + (cell.history.length - 1)" :instr="instr" ref="info"/>
+    <info :status="status"
+          :color="color"
+          :instr_no="instr_no"
+          :instr="instr"
+          ref="info"/>
   </div>
 </template>
 
@@ -16,24 +20,39 @@ let CodeMirror = require('codemirror/lib/codemirror')
 export default {
   name: 'proofArea',
   props: ['page_num', 'proof'],
-  components: [info],
+
+  components: {
+    info
+  },
+
   data: function () {
     return {
-      editor: '',
-      textId: 0,
-      cell: {},
-      instr: '',
-      edit_flag: false,
-      status: '',
-      color: ''
+      editor: undefined,  // CodeMirror object
+      edit_flag: false,   // Edit flag for CodeMirror
+      cell: {},           // Information about the proof
+      instr: '',          // Display of current instruction
+      status: '',         // Display of status (text)
+      color: ''           // Display of status (color) 
     }
   },
+
+  computed: {
+    instr_no: function () {
+      if (this.cell.history) {
+        return this.cell.index + '/' + (this.cell.history.length - 1)
+      } else {
+        return ""
+      }
+    }
+  },
+
   methods: {
-    display_status: function(status, color = '') {
+    display_status: function (status, color = '') {
       this.status = status
       this.color = color
     },
-    display_checked_proof: function(result) {
+
+    display_checked_proof: function (result) {
       var cell = this.cell
       if ('failed' in result) {
         this.display_status(result.failed + ': ' + result.message, 'red')
@@ -87,6 +106,7 @@ export default {
         editor.focus()
       }
     },
+
     rp: function(x) {
       if (x === 0) {
         return 'normal'
@@ -98,14 +118,16 @@ export default {
         return 'tvar'
       }
     },
-    highlight_html: function(lst) {
+
+    highlight_html: function(lst ) {
       var output = ''
       lst.forEach(function (val, i) {
         output = output + '<tt class="' + this.rp(val[1]) + '">' + val[0] + '</tt>'
       })
       return output
     },
-    display_instructions: function() {
+
+    display_instructions: function () {
       var id = this.get_selected_id()
       var hId = cell.index
       var templ_instr = _.template($('#template-instruction').html())
@@ -130,7 +152,8 @@ export default {
       }
       this.display_checked_proof(proofInfo)
     },
-    current_state: function() {
+
+    current_state: function () {
       var goalNo = this.cell.goal
       if (goalNo === -1) {
         return undefined
@@ -147,7 +170,8 @@ export default {
         'proof': this.cell.proof
       }
     },
-    match_thm: function(cell) {
+
+    match_thm: function (cell) {
       var input = this.current_state()
       if (input === undefined) {
         cell.search_res = []
@@ -164,7 +188,8 @@ export default {
         })
       }
     },
-    apply_method: function(methodName, args) {
+
+    apply_method: function (methodName, args) {
       var count = 0
       var cell = this.cell
       var sigList = []
@@ -185,6 +210,7 @@ export default {
       this.display_running()
       this.apply_method_ajax(input)
     },
+
     apply_method_ajax: function (input) {
       var cell = this.cell
       axios({
@@ -219,31 +245,46 @@ export default {
         }
       })
     },
-    is_last_id(proof, lineNo) {
+
+    is_last_id: function (proof, lineNo) {
       if (proof.length - 1 === lineNo) {
         return true
       }
       return proof[lineNo + 1].rule === 'intros'
     },
-    display_have_prompt(editor, proof, lineNo, ch, that) {
-      if (that.is_last_id(proof, lineNo)) {
-        return that.display_str(editor, 'show ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
+
+    display_have_prompt: function (editor, proof, lineNo, ch) {
+      if (this.is_last_id(proof, lineNo)) {
+        return this.display_str(editor, 'show ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
       } else {
-        return that.display_str(editor, 'have ', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
+        return this.display_str(editor, 'have ', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
       }
     },
-    display_highlight_str(editor, p, lineNo, ch, that) {
+
+    display_highlight_str: function (editor, p, lineNo, ch) {
       let color
-      if (p[1] === 0) { color = 'color: black' } else if (p[1] === 1) { color = 'color: green' } else if (p[1] === 2) { color = 'color: blue' } else if (p[1] === 3) { color = 'color: purple' } else if (p[1] === 4) { color = 'color: silver' }
-      return that.display_str(editor, p[0], lineNo, ch, {css: color})
+      if (p[1] === 0) {
+        color = 'color: black'
+      } else if (p[1] === 1) {
+        color = 'color: green'
+      } else if (p[1] === 2) {
+        color = 'color: blue'
+      } else if (p[1] === 3) {
+        color = 'color: purple'
+      } else if (p[1] === 4) {
+        color = 'color: silver'
+      }
+      return this.display_str(editor, p[0], lineNo, ch, {css: color})
     },
-    display_highlight_strs(editor, ps, lineNo, ch, that) {
+
+    display_highlight_strs: function (editor, ps, lineNo, ch) {
       for (let i = 0; i < ps.length; i++) {
-        ch = that.display_highlight_str(editor, ps[i], lineNo, ch, that)
+        ch = this.display_highlight_str(editor, ps[i], lineNo, ch)
       }
       return ch
     },
-    display_str(editor, str, lineNo, ch, mark) {
+
+    display_str: function (editor, str, lineNo, ch, mark) {
       let len = str.length
       editor.replaceRange(str, {line: lineNo, ch: ch}, {line: lineNo, ch: ch + len})
       if (typeof mark !== 'undefined') {
@@ -251,8 +292,9 @@ export default {
       }
       return ch + len
     },
-    display_line(proof, lineNo, that) {
-      let editor = that.editor
+
+    display_line: function (proof, lineNo) {
+      let editor = this.editor
       let line = proof[lineNo]
       let ch = 0
       let strTemp = ''
@@ -261,43 +303,43 @@ export default {
           strTemp += '  '
         }
       }
-      ch = that.$options.methods.display_str(editor, strTemp, lineNo, ch, {css: 'font-weight: bold'})
+      ch = this.display_str(editor, strTemp, lineNo, ch, {css: 'font-weight: bold'})
       if (line.rule === 'assume') {
-        ch = that.$options.methods.display_str(editor, 'assume ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
-        ch = that.$options.methods.display_highlight_strs(editor, line.args_hl, lineNo, ch, that)
+        ch = this.display_str(editor, 'assume ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
+        ch = this.display_highlight_strs(editor, line.args_hl, lineNo, ch)
       } else if (line.rule === 'variable') {
-        ch = that.$options.methods.display_str(editor, 'fix ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
-        ch = that.$options.methods.display_highlight_strs(editor, line.args_hl, lineNo, ch, that)
+        ch = this.display_str(editor, 'fix ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
+        ch = this.display_highlight_strs(editor, line.args_hl, lineNo, ch)
       } else if (line.rule === 'subproof') {
-        ch = that.$options.methods.display_have_prompt(editor, proof, lineNo, ch, that)
-        ch = that.$options.methods.display_highlight_strs(editor, line.th_hl, lineNo, ch, that)
-        ch = that.$options.methods.display_str(editor, ' with', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
+        ch = this.display_have_prompt(editor, proof, lineNo, ch)
+        ch = this.display_highlight_strs(editor, line.th_hl, lineNo, ch)
+        ch = this.display_str(editor, ' with', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
       } else {
         // Display theorem with highlight
-        if (line['th_h1'].length > 0) {
-          ch = that.$options.methods.display_have_prompt(editor, proof, lineNo, ch, that)
-          ch = that.$options.methods.display_highlight_strs(editor, line.th_hl, lineNo, ch, that)
-          ch = that.$options.methods.display_str(editor, ' by ', lineNo, ch, {css: 'font-weight: bold'})
+        if (line.th_hl.length > 0) {
+          ch = this.display_have_prompt(editor, proof, lineNo, ch)
+          ch = this.display_highlight_strs(editor, line.th_hl, lineNo, ch)
+          ch = this.display_str(editor, ' by ', lineNo, ch, {css: 'font-weight: bold'})
         }
         // Display rule name
-        ch = that.$options.methods.display_str(editor, line.rule, lineNo, ch)
+        ch = this.display_str(editor, line.rule, lineNo, ch)
         // Display args with highlight
         if (line.args_hl.length > 0) {
-          ch = that.$options.methods.display_str(editor, ' ', lineNo, ch)
-          ch = that.$options.methods.display_highlight_strs(editor, line.args_hl, lineNo, ch, that)
+          ch = this.display_str(editor, ' ', lineNo, ch)
+          ch = this.display_highlight_strs(editor, line.args_hl, lineNo, ch)
         }
         if (line.prevs.length > 0) {
-          ch = that.$options.methods.display_str(editor, ' from ', lineNo, ch, {css: 'font-weight: bold'})
-          ch = that.$options.methods.display_str(editor, line.prevs.join(', '), lineNo, ch)
+          ch = this.display_str(editor, ' from ', lineNo, ch, {css: 'font-weight: bold'})
+          ch = this.display_str(editor, line.prevs.join(', '), lineNo, ch)
         }
       }
       editor.execCommand('goDocEnd')
     }
   },
+
   watch: {
-    proof(val) {
+    proof: function (val) {
       if (this.editor) {
-        let that = this
         let editor = this.editor
         let proof = val
         editor.setValue('')
@@ -309,23 +351,24 @@ export default {
           }
         })
         let maxIdLen = 0
-        proof.forEach(function(line, lineNo) {
+        for (let lineNo = 0; lineNo < proof.length; lineNo++) {
+          let line = proof[lineNo];
           let idLen = line.id.length
           if (idLen >= maxIdLen) {
             maxIdLen = idLen
           }
-          that.$options.methods.display_line(proof, lineNo, that)
+          this.display_line(proof, lineNo)
           let len = editor.getLineHandle(lineNo).text.length
           editor.replaceRange('\n', {line: lineNo, ch: len}, {line: lineNo, ch: len + 1})
           if (line.rule === 'intros') {
             editor.markText({line: lineNo, ch: 0}, {line: lineNo}, {inclusiveRight: true, inclusiveLeft: true, collapsed: 'true'})
           }
-        })
+        }
       }
     }
   },
+
   mounted() {
-    let that = this
     let editor = CodeMirror.fromTextArea(document.getElementById(this.page_num), {
       mode: 'text/x-python',
       lineNumbers: true,
@@ -340,16 +383,16 @@ export default {
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Ctrl-I': function () {
-          that.apply_method('introduction')
+          this.apply_method('introduction')
         },
         'Ctrl-B': function () {
-          that.apply_method('apply_backward_step')
+          this.apply_method('apply_backward_step')
         },
         'Ctrl-R': function () {
-          that.apply_method('rewrite_goal')
+          this.apply_method('rewrite_goal')
         },
         'Ctrl-F': function () {
-          that.apply_method('apply_forward_step')
+          this.apply_method('apply_forward_step')
         },
         'Ctrl-Q': function (cm) {
           cm.foldCode(cm.getCursor())

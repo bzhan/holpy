@@ -5,7 +5,7 @@
         <label for="files" id="set_file" :style="style_file" @mouseover="button_change" @mouseout="button_change">Please choose a file</label>
         <input type="file" id="files" @change="get_file($event)">
         <div id="program-ver" class="program-ver">
-          <div v-for="vcg in file_data" :key="vcg" @click="data_process($event)">
+          <div v-for="vcg in file_data" :key="vcg.num" @click="data_process($event)">
             <textarea readonly="readonly" class="code-content con" :name="vcg.num" v-model="vcg.com"></textarea>
           </div>
         </div>
@@ -47,14 +47,7 @@ export default {
     }
   },
   methods: {
-    proof_init: function (dataRelate, that) {
-      alert(JSON.stringify({
-        'com': dataRelate['com'],
-        'pre': dataRelate['pre'],
-        'post': dataRelate['post'],
-        'vars': dataRelate['vars'],
-        'prog_verify': 'true'
-      }))
+    proof_init: function (dataRelate) {
       axios({
         method: 'post',
         url: 'http://127.0.0.1:5000/api/init-empty-proof',
@@ -66,7 +59,7 @@ export default {
           'prog_verify': 'true'
         }
       }).then((res) => {
-        that.proof = res.data.proof
+        this.proof = res.data.proof
       })
     },
     data_process: function (e) {
@@ -87,9 +80,8 @@ export default {
         this.proof_stat = res.data['proof_stat'][0]
         let failureNum = Number(res.data['proof_stat'][1])
         if (failureNum !== 0) {
-          let that = this
           this.proof_process = true
-          this.proof_init(dataRelate, that)
+          this.proof_init(dataRelate)
         } else {
           this.proof_process = false
         }

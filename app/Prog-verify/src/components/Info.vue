@@ -3,7 +3,7 @@
       <div id="prf" name="addition" class="selected">
         <div class="output-wrapper">
           <div class="output">
-            <pre>{{ ststus }}</pre>
+            <pre>{{ status }}</pre>
             <div class="ouputwrapper">
               <div id="output-instr">
                 <a href="#" id="link-backward" style="float:left;margin-left:20pt">&lt;</a>
@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     display_running() {
-      this.display_ststus('Running')
+      this.display_status('Running')
     }
   },
   watch: {
