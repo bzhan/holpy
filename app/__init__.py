@@ -265,7 +265,9 @@ def init_saved_proof():
 @app.route('/api/apply-method', methods=['POST'])
 def apply_method():
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+    limit = ('thm', data['thm_name']) if 'thm_name' in data else None
+    user = user_info['username'] if user_info['username'] else 'master'
+    thy = basic.load_theory(data['theory_name'], limit=limit, user=user)
     cell = server.ProofState.parse_proof(thy, data)
     try:
         step_output = method.display_method(cell, data, unicode=True, highlight=True)

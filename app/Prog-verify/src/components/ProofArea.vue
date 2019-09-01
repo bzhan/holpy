@@ -5,7 +5,10 @@
     <br>
     <info :status="status" :color="color" :instr_no="instr_no" :instr="instr" ref="info"/>
     <div class="thm-content">
-      <pre v-for="res in search_res" :key="res.num" v-html="highlight_html(res.display)"></pre> 
+      <pre v-for="(res,i) in search_res"
+           :key="res.num"
+           v-on:click="apply_thm_tactic(i)"
+           v-html="highlight_html(res.display)"/> 
     </div>
   </div>
 </template>
@@ -210,6 +213,14 @@ export default {
       }
     },
 
+    apply_thm_tactic: function (res_id) {
+      var res = this.search_res[res_id];
+      if (res === undefined)
+          return;
+
+      this.apply_method(res._method_name, res);
+    },
+
     apply_method: function (methodName, args) {
       var count = 0
       var cell = this.cell
@@ -228,43 +239,40 @@ export default {
           count += 1
         }
       })
-      this.display_running()
+      this.display_status('Running')
       this.apply_method_ajax(input)
     },
 
-    apply_method_ajax: function (input) {
+    apply_method_ajax: async function (input) {
       var cell = this.cell
-      axios({
+      let result = await axios({
         method: 'post',
         url: 'http://127.0.0.1:5000/api/apply-method',
-        data: JSON.stringify(input),
-        success: function(result) {
-          if ('failed' in result) {
-            this.display_status(result.failed + ': ' + result.message, 'red')
-          } else {
-            // Success
-            var id = input.id
-            var hId = cell.index
-            cell.steps[hId] = input
-            cell.steps.length = hId + 1
-            cell.history[hId].steps_output = result.steps_output
-            cell.history[hId + 1] = {
-              'steps_output': [['Current state', 0]],
-              'proof': result.proof,
-              'report': result.report
-            }
-            cell.history.length = hId + 2
-            delete input.id
-            if (input.fact_ids.length === 0) { delete input.fact_ids }
-            delete input.theory_name
-            delete input.thm_name
-            delete input.vars
-            delete input.proof
-            cell.index += 1
-            this.display_instructions()
-          }
-        }
+        data: JSON.stringify(input)
       })
+
+      if ('failed' in result.data) {
+        this.display_status(result.data.failed + ': ' + result.data.message, 'red')
+      } else {
+        // Success
+        var hId = cell.index
+        cell.steps[hId] = input
+        cell.steps.length = hId + 1
+        cell.history[hId].steps_output = result.data.steps_output
+        cell.history[hId + 1] = {
+          'steps_output': [['Current state', 0]],
+          'proof': result.data.proof,
+          'report': result.data.report
+        }
+        cell.history.length = hId + 2
+        if (input.fact_ids.length === 0) { delete input.fact_ids }
+        delete input.theory_name
+        delete input.thm_name
+        delete input.vars
+        delete input.proof
+        cell.index += 1
+        this.display_instructions()
+      }
     },
 
     is_last_id: function (proof, lineNo) {
