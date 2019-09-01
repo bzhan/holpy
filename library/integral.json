@@ -1373,6 +1373,307 @@
                 "f": "real => real",
                 "s": "real set"
             }
+        },
+        {
+            "name": "has_integral_restrict_inter",
+            "prop": "has_integral (%x. if member x s then f x else 0) i t = has_integral f i (inter s t)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set",
+                "i": "real"
+            }
+        },
+        {
+            "name": "integral_restrict_inter",
+            "prop": "integral t (%x. if member x s then f x else 0) = integral (inter s t) f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integrable_restrict_inter",
+            "prop": "integrable_on (%x. if member x s then f x else 0) t = integrable_on f (inter s t)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "has_integral_on_superset",
+            "prop": "(!x. neg (member x s) --> f x = 0) & subset s t & has_integral f i s --> has_integral f i t",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set",
+                "i": "real"
+            }
+        },
+        {
+            "name": "integrable_on_superset",
+            "prop": "(!x. neg (member x s) --> f x = 0) & subset s t & integrable_on f s --> integrable_on f t",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "negligible_on_intervals",
+            "prop": "negligible s = !a. !b. negligible (inter s (real_closed_interval a b))",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "has_integral_reflect_lemma",
+            "prop": "has_integral f i (real_closed_interval a b) --> has_integral (%x. f (-x)) i (real_closed_interval (-b) (-a))",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "has_integral_reflect",
+            "prop": "has_integral (%x. f (-x)) i (real_closed_interval (-b) (-a)) = has_integral f i (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "integrable_reflect",
+            "prop": "integrable_on (%x. f (-x)) (real_closed_interval (-b) (-a)) = integrable_on f (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "integral_reflect",
+            "prop": "integral (real_closed_interval (-b) (-a)) (%x. f (-x)) = integral (real_closed_interval a b) f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "has_integral_translation",
+            "prop": "has_integral (%x. f (a + x)) i s = has_integral f i (image (%x. a + x) s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "s": "real set",
+                "a": "real"
+            }
+        },
+        {
+            "name": "integral_translation",
+            "prop": "integral s (%x. f (a + x)) = integral (image (%x. a + x) s) f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "a": "real"
+            }
+        },
+        {
+            "name": "integrable_translation",
+            "prop": "integrable_on (%x. f (a + x)) s = integrable_on f (image (%x. a + x) s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "a": "real"
+            }
+        },
+        {
+            "name": "has_integral_pos_ae",
+            "prop": "has_integral f i s & negligible t & (!x. member x (diff s t) --> 0 <= f x) --> 0 <= i",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integral_pos_ae",
+            "prop": "integrable_on f s & negligible t & (!x. member x (diff s t) --> 0 <= f x) --> 0 <= integral s f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "has_integral_subset_le",
+            "prop": "subset s t & has_integral f i s & has_integral f j t & (!x. member x t --> 0 <= f x) --> i <= j",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "j": "real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integral_subset_le",
+            "prop": "subset s t & integrable_on f s & integrable_on f t & (!x. member x t --> 0 <= f x) --> integral s f <= integral t f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integrable_on_subinterval",
+            "prop": "integrable_on f s & subset (real_closed_interval a b) s --> integrable_on f (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "integral_split",
+            "prop": "integrable_on f (real_closed_interval a b) --> integral (real_closed_interval a b) f = integral (real_closed_interval a (min b t)) f + integral (real_closed_interval (max a t) b) f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "t": "real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "integral_split_signed",
+            "prop": "a <= t & a <= b & integrable_on f (real_closed_interval a (max b t)) --> integral (real_closed_interval a b) f = integral (real_closed_interval a t) f + (if b < t then -1 else 1) * integral (real_closed_interval (min b t) (max b t)) f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "t": "real",
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "name": "integrable_reflect_gen",
+            "prop": "integrable_on (%x. f (-x)) s = integrable_on f (image uminus s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        }, 
+        {
+            "name": "integral_reflect_gen",
+            "prop": "integral s (%x. f (-x)) = integral (image uminus s) f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "has_integral_straddle_null",
+            "prop": "(!x. member x s --> 0 <= f x & f x <= g x) & has_integral g 0 s --> has_integral f 0 s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "has_integral_diff",
+            "prop": "has_integral f i s & has_integral f j t & negligible (diff t s) --> has_integral f (i - j) (diff s t)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real",
+                "j": "real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integral_diff",
+            "prop": "integrable_on f s & integrable_on f t & negligible (diff t s) --> integral (diff s t) f = integral s f - integral t f",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "integrable_diff",
+            "prop": "integrable_on f s & integrable_on f t & subset t s --> integrable_on f (diff s t)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "interval_image_affinity_interval",
+            "prop": "?u. ?v. image (%x. m * x + c) (real_closed_interval a b) = (real_closed_interval u v)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "m": "real",
+                "c": "real"
+            }
+        },
+        {
+            "name": "has_integral_subsitution",
+            "prop": ["integrable_on f (real_closed_interval c d) &",
+                     "continuous_on g (real_closed_interval a b) &",
+                     "subset (image g (real_closed_interval a b)) (real_closed_interval c d) &",
+                     "(!x. member x (real_closed_interval a b)",
+                          "--> has_v_derivative g (g2 x) (within (at x) (real_closed_interval a b)) &",
+                               "continuous f (within (at (g x)) (real_closed_interval c d))) &",
+                     "a <= b & c <= d & g a <= g b",
+                     "--> has_integral (%x. (g2 x) * f (g x)) (integral (real_closed_interval (g a) (g b)) f) (real_closed_interval a b)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "g2": "real => real",
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real"
+            } 
         }                                                         
     ],
     "description": "Basic results about integral.",

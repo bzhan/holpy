@@ -384,6 +384,9 @@ def parse_type(thy, s):
 def parse_term(thy, ctxt, s):
     """Parse a term."""
     parser_setting['thy'] = thy
+    # Permit parsing a list of strings by concatenating them.
+    if isinstance(s, list):
+        s = "".join(s)
     try:
         t = term_parser.parse(s)
         return infertype.type_infer(thy, ctxt, t)
