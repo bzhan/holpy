@@ -2,10 +2,10 @@
   <div id="wrap">
     <div id="left-con" class="left-con">
       <div id="pro-ver" class="total left">
-        <label for="files" id="set_file" :style="style_file" @mouseover="button_change" @mouseout="button_change">Please choose a file</label>
+        <label for="files" class="choose-file">Please choose a file</label>
         <input type="file" id="files" @change="get_file($event)">
         <div id="program-ver" class="program-ver">
-          <div v-for="vcg in file_data" :key="vcg.num" @click="data_process($event)">
+          <div v-for="vcg in file_data" :key="vcg.num" @click="init_program($event)">
             <textarea readonly="readonly" class="code-content con" :name="vcg.num" v-model="vcg.com"></textarea>
           </div>
         </div>
@@ -14,8 +14,7 @@
         <br><pre class="display-con">{{ program }}</pre>
         <br><pre class="display-res">{{ proof_stat }}</pre>
         <div v-show="proof_process" class="proofArea">
-          {{proof_init_stat}}<br/>
-          <proof-area page_num="1" :proof="proof"/>
+          <proof-area :proof_data="proof"/>
         </div>
       </div>
     </div>
@@ -36,61 +35,34 @@ export default {
   },
   data: () => {
     return {
-      program: '',
-      style_file: {background: '#F0F0F0'},
-      proof_stat: '',
-      file_data: [],
-      proof_process: false,
-      proof_init_stat: 'ProofArea',
-      proof: 'sample proof',
-      cl: false
+      file_data: [],          // Content of the file
+      program: '',            // Current program
+      proof_stat: '',         // Statistics for the current program
+      proof_process: false,   // Whether conducting a proof
+      proof: undefined,       // Data for the current proof
     }
   },
   methods: {
-    proof_init: function (dataRelate) {
-      axios({
-        method: 'post',
-        url: 'http://127.0.0.1:5000/api/init-empty-proof',
-        data: {
-          'com': dataRelate['com'],
-          'pre': dataRelate['pre'],
-          'post': dataRelate['post'],
-          'vars': dataRelate['vars'],
-          'prog_verify': 'true'
-        }
-      }).then((res) => {
-        this.proof = res.data.proof
-      })
-    },
-    data_process: function (e) {
-      let num = e.currentTarget.children[0].name
-      num = Number(num)
-      let dataRelate = this.file_data[num]
+    // Initialize program verification for a program
+    init_program: function (e) {
+      let num = Number(e.currentTarget.children[0].name)
       axios({
         method: 'post',
         url: 'http://127.0.0.1:5000/program_verify',
-        data: {
-          'com': dataRelate['com'],
-          'pre': dataRelate['pre'],
-          'post': dataRelate['post'],
-          'vars': dataRelate['vars']
-        }
+        data: this.file_data[num]
       }).then((res) => {
         this.program = res.data['program']
         this.proof_stat = res.data['proof_stat'][0]
         let failureNum = Number(res.data['proof_stat'][1])
         if (failureNum !== 0) {
           this.proof_process = true
-          this.proof_init(dataRelate)
+          this.proof = this.file_data[num]
         } else {
           this.proof_process = false
         }
       })
     },
-    button_change: function () {
-      this.cl = !this.cl
-      this.style_file.background = this.cl ? 'white' : '#F0F0F0'
-    },
+
     get_file: function (e) {
       let fileName = e.target.files[0].name
       axios({
@@ -153,7 +125,7 @@ export default {
     font-family: Consolas, monospace;
   }
 
-  #set_file{
+  label.choose-file{
     position: relative;
     top: 4%;
     font-size: 25px;
@@ -162,6 +134,10 @@ export default {
     border: solid 1px;
     border-radius: 4px;
     width: 8%;
+  }
+
+  label.choose-file:hover {
+    background-color: white
   }
 
   #files {

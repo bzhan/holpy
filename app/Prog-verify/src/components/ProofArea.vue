@@ -1,7 +1,7 @@
 <template>
   <div class="tab-pane fade active code-cell">
-    <label :for=page_num></label>
-    <textarea :id=page_num v-model="proof" class="proofArea"></textarea>
+    <label for="proof-area"></label>
+    <textarea id="proof-area" class="proofArea"></textarea>
     <br>
     <info :status="status"
           :color="color"
@@ -19,7 +19,7 @@ let CodeMirror = require('codemirror/lib/codemirror')
 
 export default {
   name: 'proofArea',
-  props: ['page_num', 'proof'],
+  props: ['proof_data'],
 
   components: {
     info
@@ -32,7 +32,8 @@ export default {
       cell: {},           // Information about the proof
       instr: '',          // Display of current instruction
       status: '',         // Display of status (text)
-      color: ''           // Display of status (color) 
+      color: '',          // Display of status (color)
+      proof: undefined,
     }
   },
 
@@ -52,16 +53,38 @@ export default {
       this.color = color
     },
 
+    // Display selected facts (in yellow) and goal (in red).
+    display_facts_and_goal: function () {
+      let editor = this.editor
+      editor.getAllMarks().forEach(e => {
+          if (e.css === 'background: red' || e.css == 'background: yellow') {
+              e.clear()
+          }
+      });
+      if (this.cell.goal !== -1) {
+          let goal_no = this.cell.goal;
+          let goal_line = editor.getLineHandle(goal_no).text;
+          editor.markText({line: goal_no, ch: goal_line.length - 5},
+                          {line: goal_no, ch: goal_line.length},
+                          {css: 'background: red'});    
+      }
+      this.cell.facts.forEach(fact_no => {
+          let fact_line = editor.getLineHandle(fact_no).text;
+          editor.markText({line: fact_no, ch: 0}, {line: fact_no, ch: fact_line.length},
+                          {css: 'background: yellow'});
+      })
+    },
+
     display_checked_proof: function (result) {
-      var cell = this.cell
+      let cell = this.cell
+      let editor = this.editor
       if ('failed' in result) {
         this.display_status(result.failed + ': ' + result.message, 'red')
       } else {
         cell.proof = result.proof
-        var editor = this.get_selected_editor()
         editor.startOperation()
         this.edit_flag = true
-        this.display(id)
+        this.display()
         this.edit_flag = false
         editor.endOperation()
         var numGaps = result.report.num_gaps
@@ -101,7 +124,7 @@ export default {
             cell.goal = newLineNo
           }
         }
-        this.display_facts_and_goal(editor)
+        this.display_facts_and_goal()
         this.match_thm()
         editor.focus()
       }
@@ -128,14 +151,14 @@ export default {
     },
 
     display_instructions: function () {
-      var id = this.get_selected_id()
+      let cell = this.cell;
       var hId = cell.index
-      var templ_instr = _.template($('#template-instruction').html())
-      $('.rbottom .selected div#output-instr').html(templ_instr({
-        instr_no: hId + '/' + (cell.history.length - 1),
-        instr: this.highlight_html(cell.history[hId].steps_output)
-      }))
-      this.instr = this.highlight_html(cell.history[hId].steps_output)
+      // var templ_instr = _.template($('#template-instruction').html())
+      // $('.rbottom .selected div#output-instr').html(templ_instr({
+      //   instr_no: hId + '/' + (cell.history.length - 1),
+      //   instr: this.highlight_html(cell.history[hId].steps_output)
+      // }))
+      // this.instr = this.highlight_html(cell.history[hId].steps_output)
       var proofInfo = {
         proof: cell.history[hId].proof,
         report: cell.history[hId].report
@@ -161,29 +184,28 @@ export default {
       var factIds = []
       this.cell.facts.forEach(v => factIds.push(this.cell.proof[v].id))
       return {
-        'id': id,
         'goal_id': this.cell.proof[goalNo].id,
         'fact_ids': factIds,
-        'theory_name': this.cell.theory_name,
-        'thm_name': this.cell.thm_name,
+        'theory_name': 'hoare',
+        'thm_name': undefined,
         'vars': this.cell.vars,
         'proof': this.cell.proof
       }
     },
 
-    match_thm: function (cell) {
+    match_thm: function () {
       var input = this.current_state()
       if (input === undefined) {
-        cell.search_res = []
-        this.display_match_thm()
+        this.cell.search_res = []
+        // this.display_match_thm()
       } else {
         axios({
-          url: '/api/search-method',
-          type: 'POST',
+          url: 'http://127.0.0.1:5000/api/search-method',
+          method: 'POST',
           data: JSON.stringify(input),
           success: function (result) {
-            cell.search_res = result.search_res
-            this.display_match_thm()
+            this.cell.search_res = result.search_res
+            // this.display_match_thm()
           }
         })
       }
@@ -334,14 +356,12 @@ export default {
         }
       }
       editor.execCommand('goDocEnd')
-    }
-  },
+    },
 
-  watch: {
-    proof: function (val) {
+    display: function () {
       if (this.editor) {
+        let proof = this.cell.proof
         let editor = this.editor
-        let proof = val
         editor.setValue('')
         editor.setOption('lineNumberFormatter', function(lineNo) {
           if (lineNo < proof.length) {
@@ -365,11 +385,37 @@ export default {
           }
         }
       }
+    },
+
+    update_proof_data: function () {
+      axios({
+        method: 'post',
+        url: 'http://127.0.0.1:5000/api/init-empty-proof',
+        data: this.proof_data,
+      }).then((res) => {
+        this.cell.goal = -1
+        this.cell.method_sig = res.data.method_sig
+        this.cell.vars = res.data.vars
+        this.cell.steps = []
+        this.cell.history = [{
+          steps_output: [['Current state', 0]],
+          proof: res.data.proof,
+          report: res.data.report
+        }]
+        this.cell.index = 0
+        this.display_instructions()
+      })
     }
   },
 
-  mounted() {
-    let editor = CodeMirror.fromTextArea(document.getElementById(this.page_num), {
+  watch: {
+    proof_data: function (val) {
+      this.update_proof_data()
+    }
+  },
+
+  async mounted() {
+    let editor = await CodeMirror.fromTextArea(document.getElementById("proof-area"), {
       mode: 'text/x-python',
       lineNumbers: true,
       firstLineNumber: 0,
@@ -400,6 +446,10 @@ export default {
       }
     })
     this.editor = editor
+
+    if (this.proof_data) {
+      this.update_proof_data()
+    }
   }
 }
 

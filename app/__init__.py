@@ -229,7 +229,7 @@ def refresh_files():
 def init_empty_proof():
     """Initialize empty proof."""
     data = json.loads(request.get_data().decode("utf-8"))
-    if 'prog_verify' in data and data['prog_verify'] == 'true':
+    if 'com' in data:
         thy = basic.load_theory('hoare')
         pre = cond_parser.parse(data['pre'])
         post = cond_parser.parse(data['post'])
@@ -424,7 +424,9 @@ def search_method():
     """Match for applicable methods and their arguments."""
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+        limit = ('thm', data['thm_name']) if 'thm_name' in data else None
+        user = user_info['username'] if user_info['username'] else 'master'
+        thy = basic.load_theory(data['theory_name'], limit=limit, user=user)
         cell = server.ProofState.parse_proof(thy, data)
         fact_ids = data['fact_ids']
         goal_id = data['goal_id']
