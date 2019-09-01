@@ -18,9 +18,6 @@
         </div>
       </div>
     </div>
-    <div data-include="display_results"></div>
-    <div data-include="edit_area"></div>
-    <div data-include="proof_area"></div>
   </div>
 </template>
 

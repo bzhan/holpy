@@ -3,11 +3,10 @@
     <label for="proof-area"></label>
     <textarea id="proof-area" class="proofArea"></textarea>
     <br>
-    <info :status="status"
-          :color="color"
-          :instr_no="instr_no"
-          :instr="instr"
-          ref="info"/>
+    <info :status="status" :color="color" :instr_no="instr_no" :instr="instr" ref="info"/>
+    <div class="thm-content">
+      <pre v-for="res in search_res" :key="res.num" v-html="highlight_html(res.display)"></pre> 
+    </div>
   </div>
 </template>
 
@@ -15,6 +14,7 @@
 import 'codemirror/lib/codemirror.css'
 import info from '@/components/Info'
 import axios from 'axios'
+import "./../../static/css/index.css"
 let CodeMirror = require('codemirror/lib/codemirror')
 
 export default {
@@ -33,7 +33,8 @@ export default {
       instr: '',          // Display of current instruction
       status: '',         // Display of status (text)
       color: '',          // Display of status (color)
-      proof: undefined,
+      is_mousedown: false,  // Used to manage clicks
+      search_res: [],     // List of search results
     }
   },
 
@@ -130,7 +131,7 @@ export default {
       }
     },
 
-    rp: function(x) {
+    rp: function (x) {
       if (x === 0) {
         return 'normal'
       } if (x === 1) {
@@ -142,11 +143,12 @@ export default {
       }
     },
 
-    highlight_html: function(lst ) {
+    highlight_html: function (lst) {
       var output = ''
-      lst.forEach(function (val, i) {
+      for (let i = 0; i < lst.length; i++) {
+        let val = lst[i]
         output = output + '<tt class="' + this.rp(val[1]) + '">' + val[0] + '</tt>'
-      })
+      }
       return output
     },
 
@@ -193,21 +195,18 @@ export default {
       }
     },
 
-    match_thm: function () {
+    match_thm: async function () {
       var input = this.current_state()
       if (input === undefined) {
-        this.cell.search_res = []
-        // this.display_match_thm()
+        this.search_res = []
       } else {
-        axios({
+        let result = await axios({
           url: 'http://127.0.0.1:5000/api/search-method',
           method: 'POST',
-          data: JSON.stringify(input),
-          success: function (result) {
-            this.cell.search_res = result.search_res
-            // this.display_match_thm()
-          }
+          data: JSON.stringify(input)
         })
+
+        this.search_res = result.data.search_res
       }
     },
 
@@ -387,6 +386,30 @@ export default {
       }
     },
 
+    // Select goal or fact
+    mark_text: function () {
+      let editor = this.editor;
+      let cell = this.cell;
+      var line_num = editor.getCursor().line;
+      var line = editor.getLineHandle(line_num).text;
+      if (line_num >= cell.proof.length) {
+        return;
+      }
+      if (line.indexOf('sorry') !== -1) {
+        // Choose a new goal
+        cell.goal = line_num;
+      }
+      else if (cell.goal !== -1) {
+        // Choose or unchoose a fact
+        let i = cell.facts.indexOf(line_num);
+        if (i === -1)
+          cell.facts.push(line_num);
+        else
+          cell.facts.splice(i, 1);
+      }
+      this.display_facts_and_goal();
+    },
+
     update_proof_data: function () {
       axios({
         method: 'post',
@@ -443,10 +466,34 @@ export default {
         'Ctrl-Q': function (cm) {
           cm.foldCode(cm.getCursor())
         }
+      },
+      beforeChange: function (cm, change) {
+        if (!this.edit_flag) {
+            change.cancel();
+        }        
       }
     })
-    this.editor = editor
 
+    let that = this
+    editor.on('beforeChange', function (cm, change) {
+        if (!that.edit_flag) {
+            change.cancel();
+        }
+    });
+
+    editor.on('cursorActivity', function (cm) {
+        if (that.is_mousedown) {
+            that.mark_text(cm);
+            that.match_thm();
+            that.is_mousedown = false;
+        }
+    });
+
+    editor.on('mousedown', function (cm) {
+        that.is_mousedown = true;
+    });
+
+    this.editor = editor
     if (this.proof_data) {
       this.update_proof_data()
     }
