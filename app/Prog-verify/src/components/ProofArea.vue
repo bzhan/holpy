@@ -3,7 +3,13 @@
     <label for="proof-area"></label>
     <textarea id="proof-area" class="proofArea"></textarea>
     <br>
-    <info :status="status" :color="color" :instr_no="instr_no" :instr="instr" ref="info"/>
+    <div><pre>{{ status }}</pre></div>
+    <div>
+      <a href="#" id="link-backward">&lt;</a>
+      <span id="instruction-number"> {{ instr_no }} </span>
+      <a href="#" id="link-forward">&gt;</a>
+      <span id="instruction" style="margin-left:10pt" v-html="instr"> </span>
+    </div>
     <div class="thm-content">
       <pre v-for="(res,i) in search_res"
            :key="res.num"
@@ -15,7 +21,6 @@
 
 <script>
 import 'codemirror/lib/codemirror.css'
-import info from '@/components/Info'
 import axios from 'axios'
 import "./../../static/css/index.css"
 let CodeMirror = require('codemirror/lib/codemirror')
@@ -24,27 +29,31 @@ export default {
   name: 'proofArea',
   props: ['proof_data'],
 
-  components: {
-    info
-  },
-
   data: function () {
     return {
       editor: undefined,  // CodeMirror object
       edit_flag: false,   // Edit flag for CodeMirror
-      cell: {},           // Information about the proof
       instr: '',          // Display of current instruction
       status: '',         // Display of status (text)
-      color: '',          // Display of status (color)
       is_mousedown: false,  // Used to manage clicks
       search_res: [],     // List of search results
+      method_sig: [],
+
+      // Information about the proof
+      index: 0,
+      history: [],
+      steps: [],
+      goal: -1,
+      facts: new Set(),
+      vars: [],
+      proof: undefined,
     }
   },
 
   computed: {
     instr_no: function () {
-      if (this.cell.history) {
-        return this.cell.index + '/' + (this.cell.history.length - 1)
+      if (this.history) {
+        return this.index + '/' + (this.history.length - 1)
       } else {
         return ""
       }
@@ -52,9 +61,8 @@ export default {
   },
 
   methods: {
-    display_status: function (status, color = '') {
+    display_status: function (status) {
       this.status = status
-      this.color = color
     },
 
     // Display selected facts (in yellow) and goal (in red).
@@ -65,14 +73,13 @@ export default {
               e.clear()
           }
       });
-      if (this.cell.goal !== -1) {
-          let goal_no = this.cell.goal;
-          let goal_line = editor.getLineHandle(goal_no).text;
-          editor.markText({line: goal_no, ch: goal_line.length - 5},
-                          {line: goal_no, ch: goal_line.length},
+      if (this.goal !== -1) {
+          let goal_line = editor.getLineHandle(this.goal).text;
+          editor.markText({line: this.goal, ch: goal_line.length - 5},
+                          {line: this.goal, ch: goal_line.length},
                           {css: 'background: red'});    
       }
-      this.cell.facts.forEach(fact_no => {
+      this.facts.forEach(fact_no => {
           let fact_line = editor.getLineHandle(fact_no).text;
           editor.markText({line: fact_no, ch: 0}, {line: fact_no, ch: fact_line.length},
                           {css: 'background: yellow'});
@@ -80,19 +87,18 @@ export default {
     },
 
     display_checked_proof: function (result) {
-      let cell = this.cell
       let editor = this.editor
       if ('failed' in result) {
         this.display_status(result.failed + ': ' + result.message, 'red')
       } else {
-        cell.proof = result.proof
+        this.proof = result.proof
         editor.startOperation()
         this.edit_flag = true
         this.display()
         this.edit_flag = false
         editor.endOperation()
         var numGaps = result.report.num_gaps
-        cell.num_gaps = numGaps
+        this.num_gaps = numGaps
         if (numGaps > 0) {
           this.display_status('OK. ' + numGaps + ' gap(s) remaining.')
         } else {
@@ -101,17 +107,19 @@ export default {
 
         if ('goal' in result) {
           // Looking at a previous step, already has goal_id and fact_id
-          cell.goal = result.goal
+          this.goal = result.goal
           editor.setCursor(result.goal, 0)
-          cell.facts = []
+          this.facts = []
           if ('facts' in result) {
-            cell.facts = result.facts
+            this.facts = result.facts
           }
         } else {
           var lineCount = editor.lineCount()
           var newLineNo = -1
           var preLineNo = 0
-          if (cell.goal !== -1) { preLineNo = cell.goal }
+          if (this.goal !== -1) {
+            preLineNo = this.goal
+          }
           for (var i = preLineNo; i < lineCount; i++) {
             if (editor.getLine(i).indexOf('sorry') !== -1) {
               newLineNo = i
@@ -120,12 +128,12 @@ export default {
           }
           if (newLineNo === -1) {
             editor.setCursor(0, 0)
-            cell.facts = []
-            cell.goal = -1
+            this.facts = []
+            this.goal = -1
           } else {
             editor.setCursor(newLineNo, 0)
-            cell.facts = []
-            cell.goal = newLineNo
+            this.facts = []
+            this.goal = newLineNo
           }
         }
         this.display_facts_and_goal()
@@ -156,24 +164,18 @@ export default {
     },
 
     display_instructions: function () {
-      let cell = this.cell;
-      var hId = cell.index
-      // var templ_instr = _.template($('#template-instruction').html())
-      // $('.rbottom .selected div#output-instr').html(templ_instr({
-      //   instr_no: hId + '/' + (cell.history.length - 1),
-      //   instr: this.highlight_html(cell.history[hId].steps_output)
-      // }))
-      // this.instr = this.highlight_html(cell.history[hId].steps_output)
+      var hId = this.index
+      this.instr = this.highlight_html(this.history[hId].steps_output)
       var proofInfo = {
-        proof: cell.history[hId].proof,
-        report: cell.history[hId].report
+        proof: this.history[hId].proof,
+        report: this.history[hId].report
       }
-      if (hId < cell.steps.length) {
+      if (hId < this.steps.length) {
         // Find line number corresponding to ids
-        proofInfo.goal = get_line_no_from_id(cell.steps[hId].goal_id, proof_info.proof)
+        proofInfo.goal = get_line_no_from_id(this.steps[hId].goal_id, proof_info.proof)
         proofInfo.facts = []
-        if (cell.steps[hId].fact_ids !== undefined) {
-          cell.steps[hId].fact_ids.forEach(
+        if (this.steps[hId].fact_ids !== undefined) {
+          this.steps[hId].fact_ids.forEach(
             v => proofInfo.facts.push(get_line_no_from_id(v, proof_info.proof))
           )
         }
@@ -182,19 +184,19 @@ export default {
     },
 
     current_state: function () {
-      var goalNo = this.cell.goal
+      var goalNo = this.goal
       if (goalNo === -1) {
         return undefined
       }
       var factIds = []
-      this.cell.facts.forEach(v => factIds.push(this.cell.proof[v].id))
+      this.facts.forEach(v => factIds.push(this.proof[v].id))
       return {
-        'goal_id': this.cell.proof[goalNo].id,
+        'goal_id': this.proof[goalNo].id,
         'fact_ids': factIds,
         'theory_name': 'hoare',
         'thm_name': undefined,
-        'vars': this.cell.vars,
-        'proof': this.cell.proof
+        'vars': this.vars,
+        'proof': this.proof
       }
     },
 
@@ -223,9 +225,8 @@ export default {
 
     apply_method: function (methodName, args) {
       var count = 0
-      var cell = this.cell
       var sigList = []
-      var sigs = cell.method_sig[methodName]
+      var sigs = this.method_sig[methodName]
       var input = this.current_state()
       input.method_name = methodName
       if (args === undefined) {
@@ -244,7 +245,6 @@ export default {
     },
 
     apply_method_ajax: async function (input) {
-      var cell = this.cell
       let result = await axios({
         method: 'post',
         url: 'http://127.0.0.1:5000/api/apply-method',
@@ -255,22 +255,22 @@ export default {
         this.display_status(result.data.failed + ': ' + result.data.message, 'red')
       } else {
         // Success
-        var hId = cell.index
-        cell.steps[hId] = input
-        cell.steps.length = hId + 1
-        cell.history[hId].steps_output = result.data.steps_output
-        cell.history[hId + 1] = {
+        var hId = this.index
+        this.steps[hId] = input
+        this.steps.length = hId + 1
+        this.history[hId].steps_output = result.data.steps_output
+        this.history[hId + 1] = {
           'steps_output': [['Current state', 0]],
           'proof': result.data.proof,
           'report': result.data.report
         }
-        cell.history.length = hId + 2
+        this.history.length = hId + 2
         if (input.fact_ids.length === 0) { delete input.fact_ids }
         delete input.theory_name
         delete input.thm_name
         delete input.vars
         delete input.proof
-        cell.index += 1
+        this.index += 1
         this.display_instructions()
       }
     },
@@ -367,8 +367,8 @@ export default {
 
     display: function () {
       if (this.editor) {
-        let proof = this.cell.proof
         let editor = this.editor
+        let proof = this.proof
         editor.setValue('')
         editor.setOption('lineNumberFormatter', function(lineNo) {
           if (lineNo < proof.length) {
@@ -378,13 +378,13 @@ export default {
           }
         })
         let maxIdLen = 0
-        for (let lineNo = 0; lineNo < proof.length; lineNo++) {
-          let line = proof[lineNo];
+        for (let lineNo = 0; lineNo < this.proof.length; lineNo++) {
+          let line = this.proof[lineNo];
           let idLen = line.id.length
           if (idLen >= maxIdLen) {
             maxIdLen = idLen
           }
-          this.display_line(proof, lineNo)
+          this.display_line(this.proof, lineNo)
           let len = editor.getLineHandle(lineNo).text.length
           editor.replaceRange('\n', {line: lineNo, ch: len}, {line: lineNo, ch: len + 1})
           if (line.rule === 'intros') {
@@ -397,23 +397,22 @@ export default {
     // Select goal or fact
     mark_text: function () {
       let editor = this.editor;
-      let cell = this.cell;
       var line_num = editor.getCursor().line;
       var line = editor.getLineHandle(line_num).text;
-      if (line_num >= cell.proof.length) {
+      if (line_num >= this.proof.length) {
         return;
       }
       if (line.indexOf('sorry') !== -1) {
         // Choose a new goal
-        cell.goal = line_num;
+        this.goal = line_num;
       }
-      else if (cell.goal !== -1) {
+      else if (this.goal !== -1) {
         // Choose or unchoose a fact
-        let i = cell.facts.indexOf(line_num);
+        let i = this.facts.indexOf(line_num);
         if (i === -1)
-          cell.facts.push(line_num);
+          this.facts.push(line_num);
         else
-          cell.facts.splice(i, 1);
+          this.facts.splice(i, 1);
       }
       this.display_facts_and_goal();
     },
@@ -424,16 +423,16 @@ export default {
         url: 'http://127.0.0.1:5000/api/init-empty-proof',
         data: this.proof_data,
       }).then((res) => {
-        this.cell.goal = -1
-        this.cell.method_sig = res.data.method_sig
-        this.cell.vars = res.data.vars
-        this.cell.steps = []
-        this.cell.history = [{
+        this.goal = -1
+        this.method_sig = res.data.method_sig
+        this.vars = res.data.vars
+        this.steps = []
+        this.history = [{
           steps_output: [['Current state', 0]],
           proof: res.data.proof,
           report: res.data.report
         }]
-        this.cell.index = 0
+        this.index = 0
         this.display_instructions()
       })
     }
