@@ -5,9 +5,9 @@
     <br>
     <div><pre>{{ status }}</pre></div>
     <div>
-      <a href="#" id="link-backward">&lt;</a>
+      <a href="#" id="link-backward" v-on:click="step_backward()">&lt;</a>
       <span id="instruction-number"> {{ instr_no }} </span>
-      <a href="#" id="link-forward">&gt;</a>
+      <a href="#" id="link-forward" v-on:click="step_forward()">&gt;</a>
       <span id="instruction" style="margin-left:10pt" v-html="instr"> </span>
     </div>
     <div class="thm-content">
@@ -61,6 +61,20 @@ export default {
   },
 
   methods: {
+    step_backward: function () {
+      if (this.index > 0) {
+        this.index--;
+        this.display_instructions();
+      }
+    },
+
+    step_forward: function () {
+      if (this.index < this.history.length-1) {
+        this.index++;
+        this.display_instructions();
+      }
+    },
+
     display_status: function (status) {
       this.status = status
     },
@@ -163,24 +177,33 @@ export default {
       return output
     },
 
+    get_line_no_from_id: function (id, proof) {
+      var found = -1;
+      for (let i = 0; i < this.proof.length; i++) {
+        if (this.proof[i].id === id)
+          found = i;
+      }
+      return found;
+    },
+
     display_instructions: function () {
       var hId = this.index
       this.instr = this.highlight_html(this.history[hId].steps_output)
-      var proofInfo = {
+      var proof_info = {
         proof: this.history[hId].proof,
         report: this.history[hId].report
       }
       if (hId < this.steps.length) {
         // Find line number corresponding to ids
-        proofInfo.goal = get_line_no_from_id(this.steps[hId].goal_id, proof_info.proof)
-        proofInfo.facts = []
+        proof_info.goal = this.get_line_no_from_id(this.steps[hId].goal_id, proof_info.proof)
+        proof_info.facts = []
         if (this.steps[hId].fact_ids !== undefined) {
           this.steps[hId].fact_ids.forEach(
-            v => proofInfo.facts.push(get_line_no_from_id(v, proof_info.proof))
+            v => proof_info.facts.push(this.get_line_no_from_id(v, proof_info.proof))
           )
         }
       }
-      this.display_checked_proof(proofInfo)
+      this.display_checked_proof(proof_info)
     },
 
     current_state: function () {
