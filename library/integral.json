@@ -1655,6 +1655,82 @@
             }
         },
         {
+            "name": "integration_by_parts",
+            "prop": ["a <= b &",
+                     "continuous_on (%x. (f x) * (g x)) (real_closed_interval a b) &",
+                     "(!x. member x (real_closed_interval a b)",
+                          "--> has_v_derivative f (f2 x) (at x) &",
+                              "has_v_derivative g (g2 x) (at x)) &",
+                     "has_integral (%x. (f x) * (g2 x)) ((f b) * (g b) - (f a) * (g a) - y) (real_closed_interval a b)",
+                     "--> has_integral (%x. (f2 x) * (g x)) y (real_closed_interval a b)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "f2": "real => real",
+                "g2": "real => real",
+                "a": "real",
+                "b": "real",
+                "y": "real"
+            } 
+        },
+        {
+            "name": "integration_by_parts_simple",
+            "prop": ["a <= b &",
+                     "continuous_on (%x. (f x) * (g x)) (real_closed_interval a b) &",
+                     "(!x. member x (real_closed_interval a b)",
+                          "--> has_v_derivative f (f2 x) (within (at x) (real_closed_interval a b)) &",
+                              "has_v_derivative g (g2 x) (within (at x) (real_closed_interval a b))) &",
+                     "has_integral (%x. (f x) * (g2 x)) ((f b) * (g b) - (f a) * (g a) - y) (real_closed_interval a b)",
+                     "--> has_integral (%x. (f2 x) * (g x)) y (real_closed_interval a b)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "f2": "real => real",
+                "g2": "real => real",
+                "a": "real",
+                "b": "real",
+                "y": "real"
+            } 
+        },
+        {
+            "name": "integrable_by_parts",
+            "prop": ["continuous_on (%x. (f x) * (g x)) (real_closed_interval a b) &",
+                     "(!x. member x (real_open_interval a b)",
+                          "--> has_v_derivative f (f2 x) (at x) &",
+                              "has_v_derivative g (g2 x) (at x)) &",
+                     "integrable_on (%x. (f x) * (g2 x)) (real_closed_interval a b)",
+                     "--> integrable_on (%x. (f2 x) * (g x)) (real_closed_interval a b)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "f2": "real => real",
+                "g2": "real => real",
+                "a": "real",
+                "b": "real"
+            } 
+        },
+        {
+            "name": "integrable_by_parts_eq",
+            "prop": ["continuous_on (%x. (f x) * (g x)) (real_closed_interval a b) &",
+                     "(!x. member x (real_open_interval a b)",
+                          "--> has_v_derivative f (f2 x) (at x) &",
+                              "has_v_derivative g (g2 x) (at x))",
+                     "--> integrable_on (%x. (f x) * (g2 x)) (real_closed_interval a b) = ",
+                         "integrable_on (%x. (f2 x) * (g x)) (real_closed_interval a b)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "f2": "real => real",
+                "g2": "real => real",
+                "a": "real",
+                "b": "real"
+            } 
+        },
+        {
             "name": "has_integral_subsitution",
             "prop": ["integrable_on f (real_closed_interval c d) &",
                      "continuous_on g (real_closed_interval a b) &",
@@ -1674,7 +1750,7 @@
                 "c": "real",
                 "d": "real"
             } 
-        }                                                         
+        }                                                          
     ],
     "description": "Basic results about integral.",
     "imports": [
