@@ -26,10 +26,17 @@ class ExprTest(unittest.TestCase):
         for r, s in test_data:
             self.assertEqual(str(r), s)
 
+    def testArgType(self):
+        test_data = [
+            ("l:{P, Q}", 2)
+        ]
+        for s, r in test_data:
+            self.assertEqual(expr.arg_type(s), 2)
+
     def testMatchFact(self):
         test_data = [
-            ("coll(A,B,C)", "coll(P,Q,R)", {}, {"A": "P", "B": "Q", "C": "R"}),
-            ("coll(A,B,C)", "coll(P,Q,R)", {"A": "P"}, {"A": "P", "B": "Q", "C": "R"}),
+            ("coll(A,B,C)", "coll(P,Q,R)", {}, [{"A": "P", "B": "Q", "C": "R"}]),
+            ("coll(A,B,C)", "coll(P,Q,R)", {"A": "P"}, [{"A": "P", "B": "Q", "C": "R"}]),
             ("coll(A,B,C)", "coll(P,Q,R)", {"A": "Q"}, None),
             ("coll(A,B,C)", "para(P,Q,R,S)", {}, None),
         ]
@@ -38,38 +45,63 @@ class ExprTest(unittest.TestCase):
             pat = parser.parse_fact(pat)
             f = parser.parse_fact(f)
             if res is not None:
-                expr.match_expr(pat, f, inst)
-                self.assertEqual(inst, res)
+                insts = expr.match_expr(pat, f, inst)
+                self.assertEqual(insts, res)
             else:
                 self.assertRaises(expr.MatchException, expr.match_expr, pat, f, inst)
 
     def testMatchFactLines(self):
-        lines = [Line(["O", "P", "Q"])]
         test_data = [
-            ("perp(l, m)", "perp(P, Q, R, S)", {}, {"l": ("P", "Q"), "m": ("R", "S")}),
-            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, {"l": ("Q", "P"), "m": ("R", "S")}),
-            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("O", "P")}, {"l": ("O", "P"), "m": ("R", "S")}),
-            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("A", "P")}, None),
+            ("perp(l, m)", "perp(P, Q, R, S)", {}, ["line(O, P, Q)"], [{"l": ("P", "Q"), "m": ("R", "S")}]),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, ["line(O, P, Q)"], [{"l": ("Q", "P"), "m": ("R", "S")}]),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, [], [{"l": ("Q", "P"), "m": ("R", "S")}]),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("A", "P")}, ["line(O, P, Q)"], None),
+            ("para(p, q)", "para(E, N, C, D)", {}, [], [{"p": ("E", "N"), "q": ("C", "D")}]),
+            ("para(l:{A, B}, m:{C, D})", "para(P, Q, R, S)", {"l": {'A': 'M', 'B': 'N'}}, [], None),
+            ("para(l:{A, B}, m:{C, D})", "para(P, Q, R, S)", {"l": {'A': 'M', 'B': 'N'}}, ["line(M, N, P, Q)"],
+             [{"l": {'A': 'M', 'B': 'N'}, 'm': {'C': 'R', 'D': 'S'}},
+              {"l": {'A': 'M', 'B': 'N'}, 'm': {'C': 'S', 'D': 'R'}}]),
+            ("para(l:{A, B}, C, D)", "para(P, Q, R, S)", {}, ["line(O, P, Q)"], [
+                {'C': 'R', 'D': 'S', 'l': {'A': 'P', 'B': 'Q'}},
+                {'C': 'R', 'D': 'S', 'l': {'A': 'P', 'B': 'O'}},
+                {'C': 'R', 'D': 'S', 'l': {'A': 'Q', 'B': 'P'}},
+                {'C': 'R', 'D': 'S', 'l': {'A': 'Q', 'B': 'O'}},
+                {'C': 'R', 'D': 'S', 'l': {'A': 'O', 'B': 'P'}},
+                {'C': 'R', 'D': 'S', 'l': {'A': 'O', 'B': 'Q'}}
+            ]),
+            ("para(l:{A, B}, m)", "para(P, Q, R, S)", {}, ["line(A, B)"], [{"l": {"A": "P", "B": "Q"}, "m": ("R", "S")},
+                                                                        {"l": {"A": "Q", "B": "P"}, "m": ("R", "S")}]),
+
         ]
 
-        for pat, f, inst, res in test_data:
+        for pat, f, inst, lines, res in test_data:
             pat = parser.parse_fact(pat)
             f = parser.parse_fact(f)
+            lines = [parser.parse_line(line) for line in lines]
             if res is not None:
-                expr.match_expr(pat, f, inst, lines=lines)
-                self.assertEqual(inst, res)
+                insts = expr.match_expr(pat, f, inst, lines=lines)
+                self.assertEqual(len(insts), len(res))
+                for inst in insts:
+                    identical = [r for r in res if r == inst]
+                    self.assertEqual(len(identical), 1)
             else:
                 self.assertRaises(expr.MatchException, expr.match_expr, pat, f, inst, lines=lines)
 
     def testApplyRule(self):
         test_data = [
-            (ruleset["D1"], ["coll(E, F, G)", "coll(P, Q, R)"], "coll(E, G, F)"),
+            #(ruleset["D1"], ["coll(E, F, G)"], [], "coll(E, G, F)"),
+            #(ruleset["D5"], ["para(E, F, G, H)"], [], "para(G, H, E, F)"),
+            #(ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"], "para(G, H, E, F)"),
+            #(ruleset["D44"], ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"], "para(P, Q, F, G)"),
+            (ruleset["D45"], ["midp(N, B, D)", "para(C, D, E, N)", "coll(E, B, C)"],
+                                ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"], "midp(E, B, C)")
         ]
 
-        for rule, facts, concl in test_data:
+        for rule, facts, lines, concl in test_data:
             facts = [parser.parse_fact(fact) for fact in facts]
             concl = parser.parse_fact(concl)
-            self.assertEqual(expr.apply_rule(rule, facts), concl)
+            lines = [parser.parse_line(line) for line in lines]
+            self.assertEqual(expr.apply_rule(rule, facts, lines=lines), concl)
 
     def testMakeLineFacts(self):
         test_data = [

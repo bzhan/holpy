@@ -1,18 +1,27 @@
 """Expressions in geometry prover."""
 
-import itertools
+import itertools, re, copy
+from functools import reduce
 
 
-POINT, LINE = range(2)
+POINT, LINE, PonL = range(3)
 
 def arg_type(s):
-    """Upper case means points, lower case means lines."""
-    if s.isupper():
-        return POINT
-    elif s.islower():
-        return LINE
+    """Upper case means points, lower case means lines.
+    The pattern [a-z]:{[A-Z](,[A-Z])*} represents a line with points on it need to be matched.
+    """
+    assert isinstance(s, str)
+    if len(s) == 1:
+        if s.isupper():
+            return POINT
+        elif s.islower():
+            return LINE
     else:
-        raise NotImplementedError
+        s = s.replace(" ", "")
+        if re.match(r'([a-z]):{([A-Z]),([A-Z])}', s):
+            return PonL
+        else:
+            raise NotImplementedError
 
 class Fact:
     """Represent a fact in geometry prover, e.g.:
@@ -125,12 +134,14 @@ def get_line(lines, pair):
     return new_line
 
 def match_expr(pat, f, inst, *, lines=None):
-    """Match pattern with f, record results in inst.
+    """Match pattern with f, return a list of result(s).
 
     inst is a dictionary that assigns point variables to points,
     and line variables to pairs of points.
 
     lines: list of currently known lines.
+
+    Multiple results will be generated if a line and two points on it need to be matched simultaneously.
 
     Example:
 
@@ -144,6 +155,7 @@ def match_expr(pat, f, inst, *, lines=None):
     match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}, lines=[Line(O, P, Q)]) -> {l: (O, P), m: (R, S)}
     match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}) -> raise MatchException.
 
+
     """
     assert isinstance(pat, Fact) and isinstance(f, Fact)
     if lines is None:
@@ -154,39 +166,123 @@ def match_expr(pat, f, inst, *, lines=None):
     if pat.pred_name != f.pred_name:
         raise MatchException
 
+    pts_on_line_all = []
     pos = 0
+    new_lines = []
     for p_arg in pat.args:
         if arg_type(p_arg) == POINT:
-            if pos + 1 > len(f.args):
-                raise MatchException
-            if p_arg in inst:
-                if f.args[pos] != inst[p_arg]:
-                    raise MatchException
-            else:
-                inst[p_arg] = f.args[pos]
             pos += 1
         elif arg_type(p_arg) == LINE:
+            pos += 2
+        elif arg_type(p_arg) == PonL:
             if pos + 2 > len(f.args):
                 raise MatchException
-            if p_arg in inst:
-                l1 = get_line(lines, inst[p_arg])
-                l2 = get_line(lines, (f.args[pos], f.args[pos+1]))
+            s = p_arg.replace(" ", "")
+            m = re.match(r'([a-z]):{([A-Z]),([A-Z])}', s)
+            l, A, B = m.group(1), m.group(2), m.group(3)
+            new_lines.append(l)
+
+            if l in inst:
+                l1 = get_line(lines, (inst[l][A], inst[l][B]))
+                l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
                 if l1 != l2:
                     raise MatchException
+                d = dict()
+                d[A], d[B] = inst[l][A], inst[l][B]
+                pts_on_line_one = [d]
             else:
-                inst[p_arg] = (f.args[pos], f.args[pos+1])
+                pts_on_line_one = []
+                ln = get_line(lines, (f.args[pos], f.args[pos + 1]))
+                pmts = list(itertools.permutations(list(ln.args), 2))
+                for pmt in pmts:
+                    d = dict()
+                    d[A], d[B] = pmt
+                    pts_on_line_one.append(d)
+            pts_on_line_all.append(pts_on_line_one)
             pos += 2
         else:
             raise NotImplementedError
 
+    if len(pts_on_line_all) > 0:
+        def combine(list):
+            l = copy.copy(list[0])
+            l.extend(list[1])
+            return l
 
-def make_line(coll):
-    """Construct a line from a collinear fact. """
-    assert isinstance(coll, Fact)
-    assert coll.pred_name == "coll"
+        def product(x, y):
+            products = itertools.product(x, y)
+            converted = [list(p) for p in products]
+            if isinstance(converted[0][0], list):
+                combined = [combine(l) for l in converted]
+                for comb in combined:
+                    d = dict()
+                    for i in range(len(new_lines)):
+                        d[new_lines[i]] = comb[i]
+            return converted
 
-    return Line(coll.args)
+        def lst_to_dct(inst):
+            d = dict()
+            if isinstance(inst, dict):
+                d[new_lines[0]] = inst
+            else:
+                for idx in range(len(inst)):
+                    d[new_lines[idx]] = inst[idx]
+            return d
 
+        insts = reduce(product, pts_on_line_all)
+        insts = [lst_to_dct(inst) for inst in insts]
+
+
+    else:
+        insts = [{}]
+
+    for i in insts:
+        i.update(inst)
+        pos = 0
+        for p_arg in pat.args:
+            if arg_type(p_arg) == POINT:
+                if pos + 1 > len(f.args):
+                    insts.remove(i)
+                    continue
+                if p_arg in i:
+                    if f.args[pos] != i[p_arg]:
+                        insts.remove(i)
+                        continue
+
+                ds = [arg for arg in i.values() if isinstance(arg, dict)]
+                for d in ds:
+                    if p_arg in d.keys():
+                        if f.args[pos] != d[p_arg]:
+                            insts.remove(i)
+                            continue
+                else:
+                    i[p_arg] = f.args[pos]
+                pos += 1
+            elif arg_type(p_arg) == LINE:
+                if pos + 2 > len(f.args):
+                    insts.remove(i)
+                    continue
+                if p_arg in i:
+                    if isinstance(i[p_arg], dict):
+                        l1 = get_line(lines, i[p_arg].values())
+                    else:
+                        l1 = get_line(lines, i[p_arg])
+                    l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
+                    if l1 != l2:
+                        insts.remove(i)
+                        continue
+                else:
+                    i[p_arg] = (f.args[pos], f.args[pos + 1])
+                pos += 2
+            elif arg_type(p_arg) == PonL:
+                pos += 2
+            else:
+                raise NotImplementedError
+
+    if len(insts) > 0:
+        return insts
+    else:
+        raise MatchException
 
 def make_line_facts(facts):
     """Construct lines from a list of given facts. """
@@ -196,12 +292,21 @@ def make_line_facts(facts):
     lines = []
     for fact in facts:
         if fact.pred_name == "coll":
-            new_line = make_line(fact)
+            new_line = Line(fact.args)
             same = [inx for inx, _ in enumerate(lines) if new_line.is_same_line(lines[inx])]
             if len(same) > 0:
                 lines[same[0]].extend_line(new_line)
             else:
                 lines.append(new_line)
+    length = 0
+    while length != len(lines):
+        length = len(lines)
+        for line in lines:
+            same = [inx for inx, _ in enumerate(lines) if line.is_same_line(lines[inx]) and line is not lines[inx]]
+            if len(same) > 0:
+                lines[same[0]].extend_line(line)
+                lines.remove(line)
+
     return lines
 
 
@@ -222,6 +327,7 @@ def apply_rule(rule, facts, *, lines=None, record=False, lemma=None):
 
     assert isinstance(rule, Rule)
     assert isinstance(facts, list) and all(isinstance(fact, Fact) for fact in facts)
+    assert len(facts) == len(rule.assums)
 
     inst = {}
     for assume, fact in zip(rule.assums, facts):

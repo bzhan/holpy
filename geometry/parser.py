@@ -4,15 +4,18 @@ from lark import Lark, Transformer, v_args, exceptions
 
 from geometry.expr import Fact, Rule, Line
 
-
 grammar = r"""
-    ?fact: CNAME "(" CNAME ("," CNAME)* ")"
+    
+    ?group: CNAME ":{" CNAME ("," CNAME)* "}"
+    ?arg: group | CNAME
+    ?fact: CNAME "(" arg ("," arg)* ")"
     ?rule: fact ":-" fact ("," fact)*
     ?line: "line" "(" CNAME ("," CNAME)* ")"
-
-    %import common.CNAME
+    
+    %import common.DIGIT
     %import common.WS
-
+    %import common.LETTER
+    %import common.CNAME
     %ignore WS
 """
 
@@ -20,6 +23,14 @@ grammar = r"""
 class GeometryTransformer(Transformer):
     def __init__(self):
         pass
+
+    def group(self, line_name, *pts):
+        s = line_name + ":{"
+        s = s + pts[0]
+        for pt in pts[1:]:
+            s = s + ", " + pt
+        s += "}"
+        return s
 
     def fact(self, pred_name, *args):
         pred_name = str(pred_name)
@@ -30,6 +41,7 @@ class GeometryTransformer(Transformer):
         return Rule(list(assums), concl)
 
     def line(self, *args):
+        args = list(str(arg) for arg in args)
         return Line(list(args))
 
 
