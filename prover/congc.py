@@ -7,6 +7,8 @@ by Robert Nieuwenhuis and Albert Oliveras.
 
 from queue import Queue
 
+from kernel import term
+from syntax import printer
 
 PENDING_CONST, PENDING_COMB = range(2)
 
@@ -166,3 +168,82 @@ class CongClosure:
         u1 = self.normalize(t1)
         u2 = self.normalize(t2)
         return u1 == u2
+
+
+class CongClosureHOL:
+    """Wrapper around congruence closure, for handling terms in
+    higher-order logic.
+
+    """
+    def __init__(self, thy):
+        """Initialization of an empty congruence closure for terms in
+        higher-order logic.
+
+        """
+        # Number of constants used.
+        self.num_consts = 0
+
+        # Mapping from constants (strings) to atomic terms.
+        self.index = {}
+
+        # Inverse mapping from atomic terms to constants.
+        self.rev_index = {}
+
+        # Core data structure
+        self.closure = CongClosure()
+
+        # Keep a theory for printing purposes
+        self.thy = thy
+
+    def __str__(self):
+        index = "\n".join("%s: %s" % (s, printer.print_term(self.thy, t))
+                          for s, t in self.index.items())
+        return "Index:\n" + index + "\nClosure:\n" + str(self.closure)
+
+    def add_const(self, t):
+        """Add a new constant representing t."""
+        assert t not in self.rev_index, "add_atomic_term: t already exists."
+        self.num_consts += 1
+        new_var = "s" + str(self.num_consts)
+        self.index[new_var] = t
+        self.rev_index[t] = new_var
+        self.closure.add_var(new_var)
+        return new_var
+
+    def add_term(self, t):
+        """Add the term to the congruence closure. If successful (the
+        term is not an open term), return the string representing the term.
+        Otherwise (if the term is open), return None.
+        
+        """
+        if t in self.rev_index:
+            return self.rev_index[t]
+
+        if t.ty == term.Term.VAR or t.ty == term.Term.CONST:
+            return self.add_const(t)
+        elif t.ty == term.Term.COMB:
+            fun_var = self.add_term(t.fun)
+            arg_var = self.add_term(t.arg)
+            if fun_var and arg_var:
+                t_var = self.add_const(t)
+                self.closure.merge((fun_var, arg_var), t_var)
+                return t_var
+            else:
+                return None
+        elif t.ty == term.Term.ABS:
+            self.add_term(t.body)
+            return self.add_const(t)
+        elif t.ty == term.Term.BOUND:
+            return None
+        else:
+            raise TypeError
+
+    def merge(self, s, t):
+        u1 = self.add_term(s)
+        u2 = self.add_term(t)
+        self.closure.merge(u1, u2)
+
+    def test(self, t1, t2):
+        u1 = self.add_term(t1)
+        u2 = self.add_term(t2)
+        return self.closure.test(u1, u2)
