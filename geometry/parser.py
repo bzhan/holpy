@@ -49,7 +49,11 @@ rule_parser = Lark(grammar, start="rule", parser="lalr", transformer=GeometryTra
 line_parser = Lark(grammar, start="line", parser="lalr", transformer=GeometryTransformer())
 
 def parse_fact(s):
-    return fact_parser.parse(s)
+    try:
+        return fact_parser.parse(s)
+    except TypeError as e:
+        print("When parsing:", s)
+        raise e
 
 def parse_rule(s):
     return rule_parser.parse(s)

@@ -28,7 +28,7 @@ class ExprTest(unittest.TestCase):
 
     def testArgType(self):
         test_data = [
-            ("l:{P, Q}", 2)
+            ("{P, Q}", expr.PonL)
         ]
         for s, r in test_data:
             self.assertEqual(expr.arg_type(s), 2)
@@ -37,45 +37,42 @@ class ExprTest(unittest.TestCase):
         test_data = [
             ("coll(A,B,C)", "coll(P,Q,R)", {}, [{"A": "P", "B": "Q", "C": "R"}]),
             ("coll(A,B,C)", "coll(P,Q,R)", {"A": "P"}, [{"A": "P", "B": "Q", "C": "R"}]),
-            ("coll(A,B,C)", "coll(P,Q,R)", {"A": "Q"}, None),
-            ("coll(A,B,C)", "para(P,Q,R,S)", {}, None),
+            ("coll(A,B,C)", "coll(P,Q,R)", {"A": "Q"}, []),
+            ("coll(A,B,C)", "para(P,Q,R,S)", {}, []),
         ]
 
         for pat, f, inst, res in test_data:
             pat = parser.parse_fact(pat)
             f = parser.parse_fact(f)
-            if res is not None:
-                insts = expr.match_expr(pat, f, inst)
-                self.assertEqual(insts, res)
-            else:
-                self.assertRaises(expr.MatchException, expr.match_expr, pat, f, inst)
+            insts = expr.match_expr(pat, f, inst)
+            self.assertEqual(insts, res)
 
     def testMatchFactLines(self):
         test_data = [
             ("perp(l, m)", "perp(P, Q, R, S)", {}, ["line(O, P, Q)"], [{"l": ("P", "Q"), "m": ("R", "S")}]),
             ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, ["line(O, P, Q)"], [{"l": ("Q", "P"), "m": ("R", "S")}]),
             ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, [], [{"l": ("Q", "P"), "m": ("R", "S")}]),
-            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("A", "P")}, ["line(O, P, Q)"], None),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("A", "P")}, ["line(O, P, Q)"], []),
             ("para(p, q)", "para(E, N, C, D)", {}, [], [{"p": ("E", "N"), "q": ("C", "D")}]),
 
             ("para({A, B}, {C, D})", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(M, N, P, Q)"],
              [{'A': 'M', 'B': 'N', 'C': 'R', 'D': 'S'}, {'A': 'M', 'B': 'N', 'C': 'S', 'D': 'R'}]),
 
-            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(E, F, G, H)"], None),
+            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(E, F, G, H)"], []),
 
             ("para(C, D, {A, B})", "para(R, S, P, Q)", {}, ["line(O, P, Q)"], [
-                {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'Q'}, {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'O'},
-                {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'O'},
-                {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'Q'}]),
+                {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'Q'},
+                {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'O'}, {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'Q'},
+                {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'O'}, {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'P'}]),
 
             ("para({A, B}, C, D)", "para(P, Q, R, S)", {}, ["line(O, P, Q)"], [
-                {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'Q'}, {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'O'},
-                {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'O'},
-                {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'Q'}]),
+                {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'Q'},
+                {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'O'}, {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'Q'},
+                {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'O'}, {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'P'}]),
 
-            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {}, ["line(P, Q)"],
-                [{"A": "P", "B": "Q", "C": "R", "D": "S"}, {"A": "Q", "B": "P", "C": "R", "D": "S"},
-                {"A": "P", "B": "Q", "C": "S", "D": "R"}, {"A": "Q", "B": "P", "C": "S", "D": "R"},]),
+            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {}, ["line(P, Q)"], [
+                {"A": "P", "B": "Q", "C": "R", "D": "S"}, {"A": "P", "B": "Q", "C": "S", "D": "R"},
+                {"A": "Q", "B": "P", "C": "R", "D": "S"}, {"A": "Q", "B": "P", "C": "S", "D": "R"}]),
 
             ("para({A, B}, C, D)", "para(P, Q, R, S)", {}, ["line(P, Q)"],
              [{"A": "P", "B": "Q", "C": "R", "D": "S"}, {"A": "Q", "B": "P", "C": "R", "D": "S"},]),
@@ -92,29 +89,27 @@ class ExprTest(unittest.TestCase):
             pat = parser.parse_fact(pat)
             f = parser.parse_fact(f)
             lines = [parser.parse_line(line) for line in lines]
-            if res is not None:
-                insts = expr.match_expr(pat, f, inst, lines=lines)
-                for inst in insts:
-                    identical = [r for r in res if r == inst]
-                    self.assertEqual(len(identical), 1)
-            else:
-                self.assertRaises(expr.MatchException, expr.match_expr, pat, f, inst, lines=lines)
+
+            insts = expr.match_expr(pat, f, inst, lines=lines)
+            self.assertEqual(insts, res)
 
     def testApplyRule(self):
         test_data = [
-            #(ruleset["D1"], ["coll(E, F, G)"], [], "coll(E, G, F)"),
-            #(ruleset["D5"], ["para(E, F, G, H)"], [], "para(G, H, E, F)"),
-            #(ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"], "para(G, H, E, F)"),
-            #(ruleset["D44"], ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"], "para(P, Q, F, G)"),
-            (ruleset["D45"], ["midp(N, B, D)", "para(C, D, E, N)", "coll(E, B, C)"],
-                                ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"], "midp(E, B, C)")
+            (ruleset["D1"], ["coll(E, F, G)"], [], ["coll(E, G, F)"]),
+            (ruleset["D5"], ["para(E, F, G, H)"], [], ["para(G, H, E, F)"]),
+            (ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"], ["para(G, H, E, F)"]),
+            (ruleset["D44"], ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"],
+             ["para(P, Q, F, G)"]),
+            (ruleset["D45"], ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
+                ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
+                ["midp(E, B, C)"])
         ]
 
-        for rule, facts, lines, concl in test_data:
+        for rule, facts, lines, concls in test_data:
             facts = [parser.parse_fact(fact) for fact in facts]
-            concl = parser.parse_fact(concl)
+            concls = [parser.parse_fact(concl) for concl in concls]
             lines = [parser.parse_line(line) for line in lines]
-            self.assertEqual(expr.apply_rule(rule, facts, lines=lines), concl)
+            self.assertEqual(expr.apply_rule(rule, facts, lines=lines), concls)
 
     def testMakeLineFacts(self):
         test_data = [
