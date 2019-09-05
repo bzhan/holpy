@@ -7,7 +7,7 @@ from kernel.type import TVar, TFun
 from logic import basic
 from syntax import parser
 
-MERGE, CHECK = range(2)
+MERGE, CHECK, EXPLAIN = range(3)
 
 class CongClosureTest(unittest.TestCase):
     def run_test(self, data, verbose=False):
@@ -18,9 +18,13 @@ class CongClosureTest(unittest.TestCase):
                 closure.merge(s, t)
                 if verbose:
                     print("Merge %s, %s\nAfter\n%s" % (s, t, closure))
-            else:
+            elif item[0] == CHECK:
                 _, s, t, b = item
                 self.assertEqual(closure.test(s, t), b)
+            else:
+                _, s, t, exp_length = item
+                explain = closure.explain(s, t)
+                self.assertEqual(sum(len(path) for _, path in explain.items()), exp_length)
 
     def test1(self):
         self.run_test([
@@ -29,6 +33,8 @@ class CongClosureTest(unittest.TestCase):
             (CHECK, "t2", "t4", False),
             (MERGE, "t1", "t3"),
             (CHECK, "t2", "t4", True),
+            (EXPLAIN, "t2", "t3", 2),
+            (EXPLAIN, "t2", "t4", 3),
         ])
 
     def test2(self):
@@ -39,6 +45,7 @@ class CongClosureTest(unittest.TestCase):
             (CHECK, "t3", "t6", False),
             (MERGE, "t2", "t5"),
             (CHECK, "t3", "t6", True),
+            (EXPLAIN, "t3", "t6", 3),
         ])
 
     def test3(self):
@@ -47,6 +54,7 @@ class CongClosureTest(unittest.TestCase):
             (MERGE, ("t1", "t4"), "t5"),
             (MERGE, "t2", "t4"),
             (CHECK, "t3", "t5", True),
+            (EXPLAIN, "t3", "t5", 2),
         ])
 
 

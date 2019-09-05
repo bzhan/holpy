@@ -45,6 +45,12 @@ class CongClosure:
         # input equation in which they appear in.
         self.lookup = {}
 
+        # Proof forest: represents a graph where each node points to
+        # its parent in the forest. If the node is a root, then
+        # proof_forest[node] is None. Otherwise it is the pair (p, label),
+        # where label is an element of PENDING that created the edge.
+        self.proof_forest = {}
+
     def __str__(self):
         def print_eq(eq):
             s, t = eq
@@ -70,9 +76,11 @@ class CongClosure:
                              for s, t in self.use_list.items() if len(t) > 0)
         lookup = "\n".join("%s, %s: %s" % (p[0], p[1], print_eq(eq))
                            for p, eq in self.lookup.items())
+        proof_forest = "\n".join("%s: %s, %s" % (s, p[0], print_pending(p[1]))
+                                 for s, p in self.proof_forest.items() if p is not None)
 
         return "Pending:\n" + pending + "\nrep:\n" + rep + "\nclass_list:\n" + class_list + \
-            "\nuse_list\n" + use_list + "\nlookup\n" + lookup
+            "\nuse_list\n" + use_list + "\nlookup\n" + lookup + "\nforest\n" + proof_forest
 
     def add_var(self, s):
         """Add new variable."""
@@ -81,6 +89,7 @@ class CongClosure:
             self.rep[s] = s
             self.class_list[s] = [s]
             self.use_list[s] = []
+            self.proof_forest[s] = None
 
     def merge(self, s, t):
         """Merge terms s and t. s must be either a string or a pair
@@ -92,7 +101,7 @@ class CongClosure:
         if isinstance(s, str):
             self.add_var(s)
             self.pending.put((PENDING_CONST, s, t))
-            self.propagate()
+            self._propagate()
         else:
             a1, a2 = s
             assert isinstance(a1, str) and isinstance(a2, str)
@@ -102,13 +111,38 @@ class CongClosure:
             if (rep_a1, rep_a2) in self.lookup:
                 eq2 = self.lookup[(rep_a1, rep_a2)]
                 self.pending.put((PENDING_COMB, (s, t), eq2))
-                self.propagate()
+                self._propagate()
             else:
                 self.lookup[(rep_a1, rep_a2)] = (s, t)
                 self.use_list[rep_a1].append((s, t))
                 self.use_list[rep_a2].append((s, t))
 
-    def propagate(self):
+    def _path_to_root(self, s):
+        """Find the path to root of s."""
+        path_to_root = [(s, None)]
+        while self.proof_forest[s] is not None:
+            ps, l = self.proof_forest[s]
+            path_to_root.append((ps, l))
+            s = ps
+        return path_to_root
+
+    def _add_edge_proof_forest(self, s1, s2, label):
+        """Add edge s1 to s2 to the proof forest. Note s1 and s2 does not
+        need to be roots.
+
+        Assume the tree for s2 is at least as large as that for s1. First
+        find the path to the root of s1. Then redirect s1 to s2, and
+        reverse all edges on the path.
+        
+        """
+        path_to_root = self._path_to_root(s1)
+        self.proof_forest[s1] = (s2, label)
+        for i in range(len(path_to_root) - 1):
+            ps, label = path_to_root[i+1]
+            s, _ = path_to_root[i]
+            self.proof_forest[ps] = (s, label)
+
+    def _propagate(self):
         """Propagation. Removes one equation from pending."""
         while not self.pending.empty():
             E = self.pending.get()
@@ -124,7 +158,11 @@ class CongClosure:
                 # Ensure the class_list for a is smaller or equal to
                 # class_list for b.
                 if len(self.class_list[rep_a]) > len(self.class_list[rep_b]):
+                    a, b = b, a
                     rep_a, rep_b = rep_b, rep_a
+
+                # Update the proof forest.
+                self._add_edge_proof_forest(a, b, E)
 
                 # Move class_list of a to b.
                 for c in self.class_list[rep_a]:
@@ -145,29 +183,63 @@ class CongClosure:
                         self.use_list[rep_b].append(eq)
                 del self.use_list[rep_a]
 
-    def normalize(self, t):
-        """Normalize a term t. This time, it can be in arbitrarily
-        nested form.
+    def explain(self, s, t, *, res=None):
+        """Explain the equality between two constants.
+        
+        This makes use of proof_forest. It first finds the common
+        ancestor of s and t in the forest, then add to the path from
+        s to t through the common ancestor into the explanation.
+
+        If on the path there are equations of form PENDING_COMB,
+        recursive calls to explain are made to explain equality
+        of the arguments.
 
         """
-        if isinstance(t, str):
-            return self.rep[t]
-        else:
-            t1, t2 = t
-            u1 = self.normalize(t1)
-            u2 = self.normalize(t2)
-            if isinstance(u1, str) and isinstance(u2, str):
-                if (u1, u2) in self.lookup:
-                    _, a = self.lookup[(u1, u2)]
-                    return self.rep[a]
-                else:
-                    return (u1, u2)
+        # res is the dictionary from pairs of points to a path between them.
+        if res is None:
+            res = dict()
+
+        # If s == t or res already contains the path, do nothing.
+        if s == t or (s, t) in res:
+            return res
+
+        s_path = self._path_to_root(s)
+        t_path = self._path_to_root(t)
+
+        assert s_path[-1][0] == t_path[-1][0], "explain: s and t are not in the same tree"
+
+        # Traverse back. pos is the number of nodes from the root.
+        pos = 1
+        len_s = len(s_path)
+        len_t = len(t_path)
+        while len_s >= pos + 1 and len_t >= pos + 1 and \
+              s_path[len_s-pos-1][0] == t_path[len_t-pos-1][0]:
+            pos += 1
+
+        # Now len_s-pos and len_t-pos are the same, and is the lowest
+        # common ancestor.
+        cur_path = []
+        for i in range(1, len_s-pos+1):
+            _, eq = s_path[i]
+            cur_path.append(eq)
+        for i in reversed(range(len_t-pos)):
+            _, eq = t_path[i+1]
+            cur_path.append(eq)
+
+        # Make recursive calls to explain for PENDING_COMB edges
+        for eq in cur_path:
+            if eq[0] == PENDING_COMB:
+                _, ((a1, a2), a), ((b1, b2), b) = eq
+                self.explain(a1, b1, res=res)
+                self.explain(a2, b2, res=res)
+
+        res[(s, t)] = cur_path
+        return res
 
     def test(self, t1, t2):
         """Test whether t1 is equal to t2."""
-        u1 = self.normalize(t1)
-        u2 = self.normalize(t2)
-        return u1 == u2
+        assert isinstance(t1, str) and isinstance(t2, str)
+        return self.rep[t1] == self.rep[t2]
 
 
 class CongClosureHOL:
