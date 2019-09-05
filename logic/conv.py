@@ -34,12 +34,7 @@ class Conv():
         # in a special way.
         if pos == "rhs":
             eq_pt = self.get_proof_term(thy, pt.prop.rhs)
-            if eq_pt.prop.is_reflexive():
-                return pt
-            elif pt.prop.is_reflexive():
-                return eq_pt
-            else:
-                return ProofTerm.transitive(pt, eq_pt)
+            return ProofTerm.transitive(pt, eq_pt)
 
         if pos == "arg":
             return arg_conv(self).apply_to_pt(thy, pt)
@@ -94,12 +89,7 @@ class then_conv(Conv):
         pt2 = self.cv2.get_proof_term(thy, t2)
         
         # Obtain some savings if one of pt1 and pt2 is reflexivity:
-        if pt1.th.is_reflexive():
-            return pt2
-        elif pt2.th.is_reflexive():
-            return pt1
-        else:
-            return ProofTerm.transitive(pt1, pt2)
+        return ProofTerm.transitive(pt1, pt2)
 
 class else_conv(Conv):
     """Applies cv1, if fails, apply cv2."""

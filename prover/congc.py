@@ -8,9 +8,11 @@ by Robert Nieuwenhuis and Albert Oliveras.
 from queue import Queue
 
 from kernel import term
+from kernel.thm import Thm
+from logic.proofterm import ProofTerm
 from syntax import printer
 
-PENDING_CONST, PENDING_COMB = range(2)
+EQ_CONST, EQ_COMB = range(2)
 
 class CongClosure:
     """Data structure for congruence closure."""
@@ -26,8 +28,8 @@ class CongClosure:
         # List of equations to be processed. Should be empty
         # after each run of merge.
         # Each element of pending is either
-        # (PENDING_CONST, a, b) or
-        # (PENDING_COMB, ((a1, a2), a), ((b1, b2), b))
+        # (EQ_CONST, a, b) or
+        # (EQ_COMB, ((a1, a2), a), ((b1, b2), b))
         self.pending = Queue()
 
         # Dictionary from constants to its current representative.
@@ -61,7 +63,7 @@ class CongClosure:
                 return "f(%s, %s) = %s" % (a1, a2, t)
 
         def print_pending(pending):
-            if pending[0] == PENDING_CONST:
+            if pending[0] == EQ_CONST:
                 _, a, b = pending
                 return "%s = %s" % (a, b)
             else:
@@ -100,7 +102,7 @@ class CongClosure:
         self.add_var(t)
         if isinstance(s, str):
             self.add_var(s)
-            self.pending.put((PENDING_CONST, s, t))
+            self.pending.put((EQ_CONST, s, t))
             self._propagate()
         else:
             a1, a2 = s
@@ -110,7 +112,7 @@ class CongClosure:
             rep_a1, rep_a2 = self.rep[a1], self.rep[a2]
             if (rep_a1, rep_a2) in self.lookup:
                 eq2 = self.lookup[(rep_a1, rep_a2)]
-                self.pending.put((PENDING_COMB, (s, t), eq2))
+                self.pending.put((EQ_COMB, (s, t), eq2))
                 self._propagate()
             else:
                 self.lookup[(rep_a1, rep_a2)] = (s, t)
@@ -148,7 +150,7 @@ class CongClosure:
             E = self.pending.get()
 
             # Extract the two elements being assigned equal
-            if E[0] == PENDING_CONST:
+            if E[0] == EQ_CONST:
                 _, a, b = E
             else:
                 _, (_, a), (_, b) = E
@@ -177,7 +179,7 @@ class CongClosure:
                     rep_c1, rep_c2 = self.rep[c1], self.rep[c2]
                     if (rep_c1, rep_c2) in self.lookup:
                         eq2 = self.lookup[(rep_c1, rep_c2)]
-                        self.pending.put((PENDING_COMB, eq, eq2))
+                        self.pending.put((EQ_COMB, eq, eq2))
                     else:
                         self.lookup[(rep_c1, rep_c2)] = eq
                         self.use_list[rep_b].append(eq)
@@ -190,7 +192,7 @@ class CongClosure:
         ancestor of s and t in the forest, then add to the path from
         s to t through the common ancestor into the explanation.
 
-        If on the path there are equations of form PENDING_COMB,
+        If on the path there are equations of form EQ_COMB,
         recursive calls to explain are made to explain equality
         of the arguments.
 
@@ -226,9 +228,9 @@ class CongClosure:
             _, eq = t_path[i+1]
             cur_path.append(eq)
 
-        # Make recursive calls to explain for PENDING_COMB edges
+        # Make recursive calls to explain for EQ_COMB edges
         for eq in cur_path:
-            if eq[0] == PENDING_COMB:
+            if eq[0] == EQ_COMB:
                 _, ((a1, a2), a), ((b1, b2), b) = eq
                 self.explain(a1, b1, res=res)
                 self.explain(a2, b2, res=res)
@@ -263,6 +265,9 @@ class CongClosureHOL:
 
         # Core data structure
         self.closure = CongClosure()
+
+        # Mapping from equality added to the closure to proof terms.
+        self.pts = {}
 
         # Keep a theory for printing purposes
         self.thy = thy
@@ -310,12 +315,67 @@ class CongClosureHOL:
         else:
             raise TypeError
 
-    def merge(self, s, t):
+    def merge(self, s, t, *, pt=None):
+        """Merge two terms s and t.
+        
+        pt is an optional argument specifying the proof term.
+        
+        """
         u1 = self.add_term(s)
         u2 = self.add_term(t)
         self.closure.merge(u1, u2)
+        if pt is not None:
+            self.pts[(u1, u2)] = pt
 
     def test(self, t1, t2):
+        """Test the equality between two terms s and t. This can potentially
+        modify the closure by adding new terms.
+
+        """
         u1 = self.add_term(t1)
         u2 = self.add_term(t2)
         return self.closure.test(u1, u2)
+
+    def explain(self, t1, t2):
+        """If s and t are known to be equal, return a proof of the
+        equality between them.
+        
+        """
+        u1 = self.add_term(t1)
+        u2 = self.add_term(t2)
+        explain = self.closure.explain(u1, u2)
+        
+        def get_proofterm(u, v):
+            """Get proof term corresponding to u = v."""
+            path = explain[(u, v)]
+            cur_pos = u
+            pt = ProofTerm.reflexive(self.index[u])
+            for eq in path:
+                # Form the proof term for eq, depending on the two cases.
+                if eq[0] == EQ_CONST:
+                    _, a, b = eq
+                    if (a, b) in self.pts:
+                        eq_pt = self.pts[(a, b)]
+                    else:
+                        eq_pt = ProofTerm.sorry(Thm.mk_equals(self.index[a], self.index[b]))
+                else:
+                    _, ((a1, a2), a), ((b1, b2), b) = eq
+                    # We already should have:
+                    # - a corresponds to Comb(a1, a2)
+                    # - b corresponds to Comb(b1, b2)
+                    eq_pt1 = get_proofterm(a1, b1) if a1 != b1 else ProofTerm.reflexive(self.index[a1])                    
+                    eq_pt2 = get_proofterm(a2, b2) if a2 != b2 else ProofTerm.reflexive(self.index[a2])
+                    eq_pt = ProofTerm.combination(eq_pt1, eq_pt2)
+
+                # Append the equality to the current chain.
+                if a == cur_pos:
+                    pt = ProofTerm.transitive(pt, eq_pt)
+                    cur_pos = b
+                else:
+                    assert b == cur_pos
+                    pt = ProofTerm.transitive(pt, ProofTerm.symmetric(eq_pt))
+                    cur_pos = a
+
+            return pt
+
+        return get_proofterm(u1, u2)

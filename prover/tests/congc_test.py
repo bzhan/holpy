@@ -4,8 +4,10 @@ import unittest
 
 from prover import congc
 from kernel.type import TVar, TFun
+from kernel.term import Term
+from kernel.thm import Thm
 from logic import basic
-from syntax import parser
+from syntax import parser, printer
 
 MERGE, CHECK, EXPLAIN = range(3)
 
@@ -80,11 +82,20 @@ class CongClosureHOLTest(unittest.TestCase):
                 closure.merge(s, t)
                 if verbose:
                     print("Merge %s, %s\nAfter\n%s" % (s, t, closure))
-            else:
+            elif item[0] == CHECK:
                 _, s, t, b = item
                 s = parser.parse_term(thy, ctxt, s)
                 t = parser.parse_term(thy, ctxt, t)
                 self.assertEqual(closure.test(s, t), b)
+            else:
+                _, s, t = item
+                s = parser.parse_term(thy, ctxt, s)
+                t = parser.parse_term(thy, ctxt, t)
+                prf = closure.explain(s, t).export()
+                self.assertEqual(thy.check_proof(prf), Thm.mk_equals(s, t))
+                if verbose:
+                    print("Proof of %s" % printer.print_term(thy, Term.mk_equals(s, t)))
+                    print(printer.print_proof(thy, prf))
 
     def test1(self):
         self.run_test([
@@ -92,6 +103,7 @@ class CongClosureHOLTest(unittest.TestCase):
             (MERGE, "c", "d"),
             (MERGE, "a", "c"),
             (CHECK, "b", "d", True),
+            (EXPLAIN, "b", "d"),
         ])
 
     def test2(self):
@@ -99,27 +111,32 @@ class CongClosureHOLTest(unittest.TestCase):
             (MERGE, "f a", "c"),
             (MERGE, "a", "b"),
             (CHECK, "f b", "c", True),
+            (EXPLAIN, "f b", "c"),
         ])
 
     def test3(self):
         self.run_test([
             (MERGE, "f a", "a"),
             (CHECK, "f (f (f a))", "a", True),
+            (EXPLAIN, "f (f (f a))", "a"),
         ])
 
     def test4(self):
         self.run_test([
             (MERGE, "a", "b"),
             (CHECK, "R (R (f a) (f a)) (f a)", "R (R (f b) (f a)) (f b)", True),
+            (EXPLAIN, "R (R (f a) (f a)) (f a)", "R (R (f b) (f a)) (f b)"),
             (CHECK, "R (f a) a", "R a (f a)", False),
             (MERGE, "f a", "a"),
             (CHECK, "R (f a) a", "R a (f a)", True),
+            (EXPLAIN, "R (f a) a", "R a (f a)"),
         ])
 
     def test5(self):
         self.run_test([
             (MERGE, "%x. f x", "%x. g x"),
             (CHECK, "%x. f x", "%x. g x", True),
+            (EXPLAIN, "%x. f x", "%x. g x"),
         ])
 
 if __name__ == "__main__":
