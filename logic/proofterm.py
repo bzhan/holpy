@@ -56,6 +56,10 @@ class ProofTerm():
 
     @staticmethod
     def transitive(pt1, pt2):
+        if pt1.prop.is_reflexive():
+            return pt2
+        if pt2.prop.is_reflexive():
+            return pt1
         return ProofTermDeriv("transitive", None, None, [pt1, pt2])
 
     @staticmethod

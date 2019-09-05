@@ -54,31 +54,32 @@ def proof_area_template():
 # Program verification homepage
 @app.route('/program', methods=['POST', 'GET'])
 def index_program():
-    # return render_template('prog_verify.html')
     return redirect('http://localhost:8080')
 
 # Verifying a program
-@app.route('/program_verify', methods=['POST', 'GET'])
+@app.route('/api/program-verify', methods=['POST'])
 def verify():
-    proof_success, proof_failure = 0, 0
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.load_theory('int')
+    thy = basic.load_theory('hoare')
     pre = cond_parser.parse(data['pre'])
     post = cond_parser.parse(data['post'])
     com = com_parser.parse(data['com'])
     com.pre = [pre]
     com.compute_wp(post)
     vcs = com.get_vc()
+
+    proof_success, proof_failure = 0, 0
     for vc in vcs:
         if z3wrapper.solve(vc.convert_hol(data['vars'])):
             proof_success += 1
         else:
             proof_failure += 1
-    proof_stat = 'Proof Finished. Success: ' + str(proof_success) + '  Failure: ' + str(proof_failure) + '.'
-    program = com.print_com(thy)
 
-    return jsonify({'program': program, 'proof_stat': (proof_stat, proof_failure)})
-
+    return jsonify({
+        'program': com.print_com(thy),
+        'proof_success': proof_success,
+        'proof_failure': proof_failure
+    })
 
 # Login page
 @app.route('/', methods=['GET', 'POST'])
@@ -199,17 +200,15 @@ def master():
     return redirect('/load')
 
 
-@app.route('/api/get_file', methods = ['POST', 'GET'])
-def get_file():
+@app.route('/api/get-program-file', methods = ['POST', 'GET'])
+def get_program_file():
     file_name = json.loads(request.get_data().decode("utf-8"))['file_name']
-    thy = basic.load_theory('nat')
-    PATH = os.getcwd() + '/imperative/examples/' + file_name
-    with open(PATH, 'r', encoding = 'utf-8') as f:
+    thy = basic.load_theory('hoare')
+    path = 'imperative/examples/' + file_name + '.json'
+    with open(path, 'r', encoding = 'utf-8') as f:
         file_data = json.load(f)
-        f.close()
     filter_data = list(filter(lambda d: d['ty'] == 'vcg', file_data['content']))
     for i, vcg in enumerate(filter_data):
-        filter_data[i]['num'] = i
         filter_data[i]['com'] = parser2.com_parser.parse(vcg['com']).print_com(thy)
 
     return jsonify({'file_data': filter_data})
@@ -230,7 +229,7 @@ def refresh_files():
 def init_empty_proof():
     """Initialize empty proof."""
     data = json.loads(request.get_data().decode("utf-8"))
-    if 'prog_verify' in data and data['prog_verify'] == 'true':
+    if 'com' in data:
         thy = basic.load_theory('hoare')
         pre = cond_parser.parse(data['pre'])
         post = cond_parser.parse(data['post'])
@@ -266,7 +265,9 @@ def init_saved_proof():
 @app.route('/api/apply-method', methods=['POST'])
 def apply_method():
     data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+    limit = ('thm', data['thm_name']) if 'thm_name' in data else None
+    user = user_info['username'] if user_info['username'] else 'master'
+    thy = basic.load_theory(data['theory_name'], limit=limit, user=user)
     cell = server.ProofState.parse_proof(thy, data)
     try:
         step_output = method.display_method(cell, data, unicode=True, highlight=True)
@@ -425,7 +426,9 @@ def search_method():
     """Match for applicable methods and their arguments."""
     data = json.loads(request.get_data().decode("utf-8"))
     if data:
-        thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+        limit = ('thm', data['thm_name']) if 'thm_name' in data else None
+        user = user_info['username'] if user_info['username'] else 'master'
+        thy = basic.load_theory(data['theory_name'], limit=limit, user=user)
         cell = server.ProofState.parse_proof(thy, data)
         fact_ids = data['fact_ids']
         goal_id = data['goal_id']

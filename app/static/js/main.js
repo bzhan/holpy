@@ -890,9 +890,9 @@
                 cells[id].thm_name = item.name;
                 cells[id].steps = [];
                 cells[id].history = [{
-                    'steps_output': [['Current state', 0]],
-                    'proof': result.proof,
-                    'report': result.report
+                    steps_output: [['Current state', 0]],
+                    proof: result.proof,
+                    report: result.report
                 }];
                 cells[id].index = 0;
                 display_instructions();
