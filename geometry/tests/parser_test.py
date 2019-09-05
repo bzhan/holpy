@@ -17,9 +17,9 @@ class ParserTest(unittest.TestCase):
 
     def testParseFactPtsOnLine(self):
         test_data = [
-            ("para(l:{A, B}, m:{C, D})", Fact("para", ["l:{A, B}", "m:{C, D}"])),
-            ("para(l:{A, B}, C, D)", Fact("para", ["l:{A, B}", "C", "D"])),
-            ("para(A, B, l:{C, D})", Fact("para", ["A", "B", "l:{C, D}"])),
+            ("para({A, B}, {C, D})", Fact("para", ["{A, B}", "{C, D}"])),
+            ("para({A, B}, C, D)", Fact("para", ["{A, B}", "C", "D"])),
+            ("para(A, B, {C, D})", Fact("para", ["A", "B", "{C, D}"])),
         ]
 
         for s, f in test_data:

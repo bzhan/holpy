@@ -57,20 +57,34 @@ class ExprTest(unittest.TestCase):
             ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, [], [{"l": ("Q", "P"), "m": ("R", "S")}]),
             ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("A", "P")}, ["line(O, P, Q)"], None),
             ("para(p, q)", "para(E, N, C, D)", {}, [], [{"p": ("E", "N"), "q": ("C", "D")}]),
-            ("para(l:{A, B}, m:{C, D})", "para(P, Q, R, S)", {"l": {'A': 'M', 'B': 'N'}}, [], None),
-            ("para(l:{A, B}, m:{C, D})", "para(P, Q, R, S)", {"l": {'A': 'M', 'B': 'N'}}, ["line(M, N, P, Q)"],
-             [{"l": {'A': 'M', 'B': 'N'}, 'm': {'C': 'R', 'D': 'S'}},
-              {"l": {'A': 'M', 'B': 'N'}, 'm': {'C': 'S', 'D': 'R'}}]),
-            ("para(l:{A, B}, C, D)", "para(P, Q, R, S)", {}, ["line(O, P, Q)"], [
-                {'C': 'R', 'D': 'S', 'l': {'A': 'P', 'B': 'Q'}},
-                {'C': 'R', 'D': 'S', 'l': {'A': 'P', 'B': 'O'}},
-                {'C': 'R', 'D': 'S', 'l': {'A': 'Q', 'B': 'P'}},
-                {'C': 'R', 'D': 'S', 'l': {'A': 'Q', 'B': 'O'}},
-                {'C': 'R', 'D': 'S', 'l': {'A': 'O', 'B': 'P'}},
-                {'C': 'R', 'D': 'S', 'l': {'A': 'O', 'B': 'Q'}}
-            ]),
-            ("para(l:{A, B}, m)", "para(P, Q, R, S)", {}, ["line(A, B)"], [{"l": {"A": "P", "B": "Q"}, "m": ("R", "S")},
-                                                                        {"l": {"A": "Q", "B": "P"}, "m": ("R", "S")}]),
+
+            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(M, N, P, Q)"],
+             [{'A': 'M', 'B': 'N', 'C': 'R', 'D': 'S'}, {'A': 'M', 'B': 'N', 'C': 'S', 'D': 'R'}]),
+
+            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(E, F, G, H)"], None),
+
+            ("para(C, D, {A, B})", "para(R, S, P, Q)", {}, ["line(O, P, Q)"], [
+                {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'Q'}, {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'O'},
+                {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'O'},
+                {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'Q'}]),
+
+            ("para({A, B}, C, D)", "para(P, Q, R, S)", {}, ["line(O, P, Q)"], [
+                {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'Q'}, {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'O'},
+                {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'O'},
+                {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'Q'}]),
+
+            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {}, ["line(P, Q)"],
+                [{"A": "P", "B": "Q", "C": "R", "D": "S"}, {"A": "Q", "B": "P", "C": "R", "D": "S"},
+                {"A": "P", "B": "Q", "C": "S", "D": "R"}, {"A": "Q", "B": "P", "C": "S", "D": "R"},]),
+
+            ("para({A, B}, C, D)", "para(P, Q, R, S)", {}, ["line(P, Q)"],
+             [{"A": "P", "B": "Q", "C": "R", "D": "S"}, {"A": "Q", "B": "P", "C": "R", "D": "S"},]),
+
+            ("para({A, B}, C, D)", "para(P, Q, R, S)", {"A": "Q"}, ["line(O, P, Q)"],
+             [{"A": "Q", "B": "O", "C": "R", "D": "S"}, {"A": "Q", "B": "P", "C": "R", "D": "S"},]),
+
+            ("para({A, B}, m)", "para(P, Q, R, S)", {"A": "Q"}, ["line(O, P, Q)"],
+             [{"A": "Q", "B": "O", "m": ("R", "S")}, {"A": "Q", "B": "P", "m": ("R", "S")}, ]),
 
         ]
 
@@ -80,7 +94,6 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             if res is not None:
                 insts = expr.match_expr(pat, f, inst, lines=lines)
-                self.assertEqual(len(insts), len(res))
                 for inst in insts:
                     identical = [r for r in res if r == inst]
                     self.assertEqual(len(identical), 1)

@@ -8,7 +8,7 @@ POINT, LINE, PonL = range(3)
 
 def arg_type(s):
     """Upper case means points, lower case means lines.
-    The pattern [a-z]:{[A-Z](,[A-Z])*} represents a line with points on it need to be matched.
+    The pattern {[A-Z](,[A-Z])*} represents a line with points on it need to be matched.
     """
     assert isinstance(s, str)
     if len(s) == 1:
@@ -17,8 +17,7 @@ def arg_type(s):
         elif s.islower():
             return LINE
     else:
-        s = s.replace(" ", "")
-        if re.match(r'([a-z]):{([A-Z]),([A-Z])}', s):
+        if re.match(r'{([A-Z])(, [A-Z])*}', s):
             return PonL
         else:
             raise NotImplementedError
@@ -133,30 +132,31 @@ def get_line(lines, pair):
 
     return new_line
 
+
 def match_expr(pat, f, inst, *, lines=None):
     """Match pattern with f, return a list of result(s).
 
-    inst is a dictionary that assigns point variables to points,
-    and line variables to pairs of points.
+        inst is a dictionary that assigns point variables to points,
+        and line variables to pairs of points.
 
-    lines: list of currently known lines.
+        lines: list of currently known lines.
 
-    Multiple results will be generated if a line and two points on it need to be matched simultaneously.
+        Multiple results will be generated if a line and two points on it need to be matched simultaneously.
 
-    Example:
+        Example:
 
-    match(coll(A, B, C), coll(P, Q, R), {}) -> {A: P, B: Q, C: R}.
-    match(coll(A, B, C), coll(P, Q, R), {A: P}) -> {A: P, B: Q, C: R}.
-    match(coll(A, B, C), coll(P, Q, R), {A: Q}) -> raise MatchException.
-    match(coll(A, B, C), para(P, Q, R, S), {}) -> raise MatchException.
+        match(coll(A, B, C), coll(P, Q, R), {}) -> {A: P, B: Q, C: R}.
+        match(coll(A, B, C), coll(P, Q, R), {A: P}) -> {A: P, B: Q, C: R}.
+        match(coll(A, B, C), coll(P, Q, R), {A: Q}) -> raise MatchException.
+        match(coll(A, B, C), para(P, Q, R, S), {}) -> raise MatchException.
 
-    match(perp(l, m), perp(P, Q, R, S), {}) -> {l: (P, Q), m: (R, S)}
-    match(perp(l, m), perp(P, Q, R, S), {l: (Q, P)}) -> {l: (Q, P), m: (R, S)}
-    match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}, lines=[Line(O, P, Q)]) -> {l: (O, P), m: (R, S)}
-    match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}) -> raise MatchException.
+        match(perp(l, m), perp(P, Q, R, S), {}) -> {l: (P, Q), m: (R, S)}
+        match(perp(l, m), perp(P, Q, R, S), {l: (Q, P)}) -> {l: (Q, P), m: (R, S)}
+        match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}, lines=[Line(O, P, Q)]) -> {l: (O, P), m: (R, S)}
+        match(perp(l, m), perp(P, Q, R, S), {l: (O, P)}) -> raise MatchException.
 
 
-    """
+        """
     assert isinstance(pat, Fact) and isinstance(f, Fact)
     if lines is None:
         lines = []
@@ -166,123 +166,81 @@ def match_expr(pat, f, inst, *, lines=None):
     if pat.pred_name != f.pred_name:
         raise MatchException
 
-    pts_on_line_all = []
     pos = 0
-    new_lines = []
+    new_insts = [inst]
+
     for p_arg in pat.args:
-        if arg_type(p_arg) == POINT:
-            pos += 1
-        elif arg_type(p_arg) == LINE:
-            pos += 2
-        elif arg_type(p_arg) == PonL:
-            if pos + 2 > len(f.args):
-                raise MatchException
-            s = p_arg.replace(" ", "")
-            m = re.match(r'([a-z]):{([A-Z]),([A-Z])}', s)
-            l, A, B = m.group(1), m.group(2), m.group(3)
-            new_lines.append(l)
-
-            if l in inst:
-                l1 = get_line(lines, (inst[l][A], inst[l][B]))
-                l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
-                if l1 != l2:
-                    raise MatchException
-                d = dict()
-                d[A], d[B] = inst[l][A], inst[l][B]
-                pts_on_line_one = [d]
-            else:
-                pts_on_line_one = []
-                ln = get_line(lines, (f.args[pos], f.args[pos + 1]))
-                pmts = list(itertools.permutations(list(ln.args), 2))
-                for pmt in pmts:
-                    d = dict()
-                    d[A], d[B] = pmt
-                    pts_on_line_one.append(d)
-            pts_on_line_all.append(pts_on_line_one)
-            pos += 2
-        else:
-            raise NotImplementedError
-
-    if len(pts_on_line_all) > 0:
-        def combine(list):
-            l = copy.copy(list[0])
-            l.extend(list[1])
-            return l
-
-        def product(x, y):
-            products = itertools.product(x, y)
-            converted = [list(p) for p in products]
-            if isinstance(converted[0][0], list):
-                combined = [combine(l) for l in converted]
-                for comb in combined:
-                    d = dict()
-                    for i in range(len(new_lines)):
-                        d[new_lines[i]] = comb[i]
-            return converted
-
-        def lst_to_dct(inst):
-            d = dict()
-            if isinstance(inst, dict):
-                d[new_lines[0]] = inst
-            else:
-                for idx in range(len(inst)):
-                    d[new_lines[idx]] = inst[idx]
-            return d
-
-        insts = reduce(product, pts_on_line_all)
-        insts = [lst_to_dct(inst) for inst in insts]
-
-
-    else:
-        insts = [{}]
-
-    for i in insts:
-        i.update(inst)
-        pos = 0
-        for p_arg in pat.args:
+        insts = new_insts
+        new_insts = []
+        for inst in insts:
             if arg_type(p_arg) == POINT:
                 if pos + 1 > len(f.args):
-                    insts.remove(i)
-                    continue
-                if p_arg in i:
-                    if f.args[pos] != i[p_arg]:
-                        insts.remove(i)
-                        continue
-
-                ds = [arg for arg in i.values() if isinstance(arg, dict)]
-                for d in ds:
-                    if p_arg in d.keys():
-                        if f.args[pos] != d[p_arg]:
-                            insts.remove(i)
-                            continue
+                    raise MatchException
+                if p_arg in inst:
+                    if f.args[pos] != inst[p_arg]:
+                        raise MatchException
                 else:
-                    i[p_arg] = f.args[pos]
-                pos += 1
+                    inst[p_arg] = f.args[pos]
             elif arg_type(p_arg) == LINE:
                 if pos + 2 > len(f.args):
-                    insts.remove(i)
-                    continue
-                if p_arg in i:
-                    if isinstance(i[p_arg], dict):
-                        l1 = get_line(lines, i[p_arg].values())
-                    else:
-                        l1 = get_line(lines, i[p_arg])
+                    raise MatchException
+                if p_arg in inst:
+                    l1 = get_line(lines, inst[p_arg])
                     l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
                     if l1 != l2:
-                        insts.remove(i)
-                        continue
+                        raise MatchException
                 else:
-                    i[p_arg] = (f.args[pos], f.args[pos + 1])
-                pos += 2
+                    inst[p_arg] = (f.args[pos], f.args[pos + 1])
             elif arg_type(p_arg) == PonL:
-                pos += 2
+                a, b = [], []
+                if pos + 2 > len(f.args):
+                    raise MatchException
+                groups = re.match(r'{([A-Z])(, [A-Z])*}', p_arg).groups()
+                points = [groups[0]] + [i[2:] for i in groups[1:]]
+                l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
+                pts_in_inst = [point for point in points if point in inst]
+
+                if len(pts_in_inst) == 2:
+                    l1 = get_line(lines, (inst[pts_in_inst[0]], inst[pts_in_inst[1]]))
+                    if l1 != l2:
+                        raise MatchException
+                    a, b = inst[points[0]], inst[points[1]]
+
+                elif len(pts_in_inst) == 1:
+                    pt_in_inst_pos = pos + groups.index(pts_in_inst[0])
+                    if f.args[pt_in_inst_pos] != inst[pts_in_inst[0]]:
+                        if len([point for point in points if point not in inst]) == 1:
+                            a, b = inst[pts_in_inst[0]], l2.args
+                    else:
+                        raise NotImplementedError
+
+                elif len(pts_in_inst) == 0:
+                    a, b = l2.args, l2.args
+
+                else:
+                    raise NotImplementedError
+
+                perms = [[x, y] for x in a for y in b if x != y]
+                ds = []
+                for perm in perms:
+                    d = inst
+                    for i in range(len(points)):
+                        d[points[i]] = perm[i]
+                    ds.append(copy.copy(d))
             else:
                 raise NotImplementedError
 
-    if len(insts) > 0:
-        return insts
-    else:
-        raise MatchException
+            if isinstance(inst, list):
+                new_insts.extend(ds)
+            else:
+                new_insts = insts
+
+        if arg_type(p_arg) == POINT:
+            pos += 1
+        elif arg_type(p_arg) == PonL or arg_type(p_arg) == LINE:
+            pos += 2
+
+    return insts
 
 def make_line_facts(facts):
     """Construct lines from a list of given facts. """
