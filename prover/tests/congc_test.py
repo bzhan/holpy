@@ -9,7 +9,7 @@ from kernel.thm import Thm
 from logic import basic
 from syntax import parser, printer
 
-MERGE, CHECK, EXPLAIN = range(3)
+MERGE, CHECK, EXPLAIN, MATCH = range(4)
 
 class CongClosureTest(unittest.TestCase):
     def run_test(self, data, verbose=False):
@@ -23,10 +23,16 @@ class CongClosureTest(unittest.TestCase):
             elif item[0] == CHECK:
                 _, s, t, b = item
                 self.assertEqual(closure.test(s, t), b)
-            else:
+            elif item[0] == EXPLAIN:
                 _, s, t, exp_length = item
                 explain = closure.explain(s, t)
                 self.assertEqual(sum(len(path) for _, path in explain.items()), exp_length)
+            elif item[0] == MATCH:
+                _, pat, t, res = item
+                closure.init_comb_class()
+                self.assertEqual(closure.ematch(pat, t), res)
+            else:
+                raise NotImplementedError
 
     def test1(self):
         self.run_test([
@@ -59,6 +65,17 @@ class CongClosureTest(unittest.TestCase):
             (EXPLAIN, "t3", "t5", 2),
         ])
 
+    def test4(self):
+        self.run_test([
+            (MERGE, ("t1", "t2"), "t3"),
+            (MATCH, ("t1", "?x1"), "t3", [{"?x1": "t2"}]),
+            (MERGE, ("t4", "t5"), "t3"),
+            (MATCH, ("?x1", "t5"), "t3", [{"?x1": "t4"}]),
+            (MERGE, "t1", "t4"),
+            (MERGE, "t2", "t5"),
+            (MATCH, ("?x1", "?x2"), "t3", [{"?x1": "t4", "?x2": "t5"}]),
+        ])
+
 
 class CongClosureHOLTest(unittest.TestCase):
     def run_test(self, data, verbose=False):
@@ -87,7 +104,7 @@ class CongClosureHOLTest(unittest.TestCase):
                 s = parser.parse_term(thy, ctxt, s)
                 t = parser.parse_term(thy, ctxt, t)
                 self.assertEqual(closure.test(s, t), b)
-            else:
+            elif item[0] == EXPLAIN:
                 _, s, t = item
                 s = parser.parse_term(thy, ctxt, s)
                 t = parser.parse_term(thy, ctxt, t)
@@ -96,6 +113,8 @@ class CongClosureHOLTest(unittest.TestCase):
                 if verbose:
                     print("Proof of %s" % printer.print_term(thy, Term.mk_equals(s, t)))
                     print(printer.print_proof(thy, prf))
+            else:
+                raise NotImplementedError
 
     def test1(self):
         self.run_test([

@@ -6,6 +6,7 @@ by Robert Nieuwenhuis and Albert Oliveras.
 """
 
 from queue import Queue
+from copy import copy
 
 from kernel import term
 from kernel.thm import Thm
@@ -52,6 +53,15 @@ class CongClosure:
         # proof_forest[node] is None. Otherwise it is the pair (p, label),
         # where label is an element of PENDING that created the edge.
         self.proof_forest = {}
+
+        # List of equations of the form f(a, b) = c entered into the
+        # data structure. Used for preparing comb_class_list.
+        self.comb_eqs = []
+
+        # Dictionary from representatives to list of combination terms
+        # in the class. This is produced by calling the init_comb_class
+        # function.
+        self.comb_class_list = {}
 
     def __str__(self):
         def print_eq(eq):
@@ -101,14 +111,18 @@ class CongClosure:
         assert isinstance(t, str)
         self.add_var(t)
         if isinstance(s, str):
+            # Merge two constants
             self.add_var(s)
             self.pending.put((EQ_CONST, s, t))
             self._propagate()
         else:
+            # Merge f(a1, a2) = t
             a1, a2 = s
             assert isinstance(a1, str) and isinstance(a2, str)
             self.add_var(a1)
             self.add_var(a2)
+            self.comb_eqs.append((s, t))
+
             rep_a1, rep_a2 = self.rep[a1], self.rep[a2]
             if (rep_a1, rep_a2) in self.lookup:
                 eq2 = self.lookup[(rep_a1, rep_a2)]
@@ -242,6 +256,71 @@ class CongClosure:
         """Test whether t1 is equal to t2."""
         assert isinstance(t1, str) and isinstance(t2, str)
         return self.rep[t1] == self.rep[t2]
+
+    def init_comb_class(self):
+        """Compute comb_class_list in preparation for E-matching."""
+        # Initialize an empty set for each representative.
+        self.comb_class_list = dict()
+        for t in self.class_list:
+            self.comb_class_list[t] = set()
+
+        # Compute by iterating over comb_eqs.
+        for (s1, s2), t in self.comb_eqs:
+            rep_t = self.rep[t]
+            rep_s1, rep_s2 = self.rep[s1], self.rep[s2]
+            self.comb_class_list[rep_t].add((rep_s1, rep_s2))
+
+    def ematch(self, pat, t, *, inst=None):
+        """Computes the E-matching of pattern pat with term t.
+
+        Assume t is a constant, and pat consisting of constants and
+        variables.
+        
+        If inst is provided, matching starts with the given inst.
+
+        We assume/assert the following condition on starting/returned
+        instantiations:
+
+        - It is a dictionary from variables in pat to constants.
+
+        - Each value is a representative.
+        
+        """
+        assert isinstance(t, str)
+        rep_t = self.rep[t]
+
+        if inst is None:
+            inst = dict()
+        else:
+            inst = copy(inst)
+
+        if isinstance(pat, str):
+            if pat.startswith("?"): 
+                # pat is a variable
+                if pat in inst:
+                    if inst[pat] == rep_t:
+                        return [inst]
+                    else:
+                        return []
+                else:
+                    inst[pat] = rep_t
+                    return [inst]
+            else: 
+                # pat is a constant
+                rep_pat = self.rep[pat]
+                if rep_pat == rep_t:
+                    return [inst]
+                else:
+                    return []
+        else:
+            pat1, pat2 = pat
+            all_insts = []
+            tlist = self.comb_class_list[rep_t]
+            for t1, t2 in tlist:
+                insts2 = self.ematch(pat1, t1, inst=inst)
+                for inst2 in insts2:
+                    all_insts.extend(self.ematch(pat2, t2, inst=inst2))
+            return all_insts
 
 
 class CongClosureHOL:
