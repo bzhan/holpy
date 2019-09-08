@@ -606,6 +606,21 @@ def get_vars(t):
     else:
         raise TypeError()
 
+def has_var(t):
+    """Whether the term contains variables."""
+    assert isinstance(t, Term), "has_var: input must be a Term."
+    def helper(t):
+        if t.is_var():
+            return True
+        elif t.is_comb():
+            return has_var(t.fun) or has_var(t.arg)
+        elif t.is_abs():
+            return has_var(t.body)
+        else:
+            return False
+
+    return helper(t)
+
 def get_consts(t):
     """Returns list of constants in a term or a list of terms."""
     def helper(t):

@@ -63,6 +63,11 @@ class CongClosure:
         # function.
         self.comb_class_list = {}
 
+        # Flag indicating whether comb_class_list is current. This
+        # is set to True after computing comb_class_list, and to False
+        # after adding new term or new equality.
+        self.comb_class_list_current = False
+
     def __str__(self):
         def print_eq(eq):
             s, t = eq
@@ -102,6 +107,7 @@ class CongClosure:
             self.class_list[s] = [s]
             self.use_list[s] = []
             self.proof_forest[s] = None
+            self.comb_class_list_current = False
 
     def merge(self, s, t):
         """Merge terms s and t. s must be either a string or a pair
@@ -110,6 +116,7 @@ class CongClosure:
         """
         assert isinstance(t, str)
         self.add_var(t)
+        self.comb_class_list_current = False
         if isinstance(s, str):
             # Merge two constants
             self.add_var(s)
@@ -257,7 +264,7 @@ class CongClosure:
         assert isinstance(t1, str) and isinstance(t2, str)
         return self.rep[t1] == self.rep[t2]
 
-    def init_comb_class(self):
+    def _compute_comb_class(self):
         """Compute comb_class_list in preparation for E-matching."""
         # Initialize an empty set for each representative.
         self.comb_class_list = dict()
@@ -270,11 +277,13 @@ class CongClosure:
             rep_s1, rep_s2 = self.rep[s1], self.rep[s2]
             self.comb_class_list[rep_t].add((rep_s1, rep_s2))
 
+        self.comb_class_list_current = True
+
     def ematch(self, pat, t, *, inst=None):
         """Computes the E-matching of pattern pat with term t.
 
         Assume t is a constant, and pat consisting of constants and
-        variables.
+        variables. Variables are marked by strings starting with '?'.
         
         If inst is provided, matching starts with the given inst.
 
@@ -287,6 +296,9 @@ class CongClosure:
         
         """
         assert isinstance(t, str)
+        if not self.comb_class_list_current:
+            self._compute_comb_class()
+
         rep_t = self.rep[t]
 
         if inst is None:
@@ -321,6 +333,10 @@ class CongClosure:
                 for inst2 in insts2:
                     all_insts.extend(self.ematch(pat2, t2, inst=inst2))
             return all_insts
+
+
+class ConvertPatternException(Exception):
+    pass
 
 
 class CongClosureHOL:
@@ -458,3 +474,44 @@ class CongClosureHOL:
             return pt
 
         return get_proofterm(u1, u2)
+
+    def _convert_pat(self, pat):
+        """Internal function: prepare pattern for matching. The
+        translation process is:
+        
+        Variables in pat becomes strings starting with '?'. Terms in
+        pat appearing in the index is replaced by the corresponding
+        string. If a term not containing variables does not appear
+        in the index, the conversion process fails
+        (raises ConvertPatternException).
+
+        """
+        if not term.has_var(pat):
+            if pat in self.rev_index:
+                return self.rev_index[pat]
+            else:
+                raise ConvertPatternException
+        
+        if pat.ty == term.Term.VAR:
+            return '?' + pat.name
+        elif pat.ty == term.Term.COMB:
+            return (self._convert_pat(pat.fun), self._convert_pat(pat.arg))
+        else:
+            raise ConvertPatternException
+
+    def ematch(self, pat, t):
+        """E-matching on HOL terms."""
+        u = self.add_term(t)
+        raw_pat = self._convert_pat(pat)
+        raw_insts = self.closure.ematch(raw_pat, u)
+
+        # Convert instantiation from raw form to real form.
+        def convert_raw_inst(raw_inst):
+            res = dict()
+            for k, v in raw_inst.items():
+                assert k.startswith('?') and v in self.index
+                res[k[1:]] = self.index[v]
+            return res
+
+        insts = [convert_raw_inst(raw_inst) for raw_inst in raw_insts]
+        return insts

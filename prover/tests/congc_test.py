@@ -7,6 +7,7 @@ from kernel.type import TVar, TFun
 from kernel.term import Term
 from kernel.thm import Thm
 from logic import basic
+from data.nat import natT
 from syntax import parser, printer
 
 MERGE, CHECK, EXPLAIN, MATCH = range(4)
@@ -29,7 +30,6 @@ class CongClosureTest(unittest.TestCase):
                 self.assertEqual(sum(len(path) for _, path in explain.items()), exp_length)
             elif item[0] == MATCH:
                 _, pat, t, res = item
-                closure.init_comb_class()
                 self.assertEqual(closure.ematch(pat, t), res)
             else:
                 raise NotImplementedError
@@ -79,7 +79,7 @@ class CongClosureTest(unittest.TestCase):
 
 class CongClosureHOLTest(unittest.TestCase):
     def run_test(self, data, verbose=False):
-        thy = basic.load_theory('logic_base')
+        thy = basic.load_theory('nat')
         Ta = TVar('a')
         ctxt = {'vars': {
             'a': Ta,
@@ -88,7 +88,14 @@ class CongClosureHOLTest(unittest.TestCase):
             'd': Ta,
             'f': TFun(Ta, Ta),
             'g': TFun(Ta, Ta),
-            "R": TFun(Ta, Ta, Ta),
+            'R': TFun(Ta, Ta, Ta),
+            'm': natT,
+            'n': natT,
+            'p': natT,
+            'q': natT,
+            'x': natT,
+            'y': natT,
+            'z': natT
         }}
         closure = congc.CongClosureHOL(thy)
         for item in data:
@@ -113,6 +120,15 @@ class CongClosureHOLTest(unittest.TestCase):
                 if verbose:
                     print("Proof of %s" % printer.print_term(thy, Term.mk_equals(s, t)))
                     print(printer.print_proof(thy, prf))
+            elif item[0] == MATCH:
+                _, pat, t, res = item
+                pat = parser.parse_term(thy, ctxt, pat)
+                t = parser.parse_term(thy, ctxt, t)
+                for res_inst in res:
+                    for k in res_inst:
+                        res_inst[k] = parser.parse_term(thy, ctxt, res_inst[k])
+                inst = closure.ematch(pat, t)
+                self.assertEqual(inst, res)
             else:
                 raise NotImplementedError
 
@@ -157,6 +173,14 @@ class CongClosureHOLTest(unittest.TestCase):
             (CHECK, "%x. f x", "%x. g x", True),
             (EXPLAIN, "%x. f x", "%x. g x"),
         ])
+
+    def test6(self):
+        self.run_test([
+            (MATCH, "(x + y) + z", "p + q", []),
+            (MERGE, "m + n", "p"),
+            (MATCH, "(x + y) + z", "p + q", [{'x': 'm', 'y': 'n', 'z': 'q'}]),
+        ])
+
 
 if __name__ == "__main__":
     unittest.main()
