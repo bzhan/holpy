@@ -79,13 +79,20 @@ class Line:
             return True
         return False
 
+    def combine(self, other):
+        # If the other line refers to the same line of this line,
+        # add the points of other line that are not in this line.
+        if self.is_same_line(other):
+            if self.args != other.args:
+                self.args = self.args.union(other.args)
+                return True
+            return False
+        return False
+
     def extend(self, args):
         assert all(isinstance(arg, str) for arg in args)
         self.args.update(args)
 
-    def extend_line(self, line):
-        assert isinstance(line, Line)
-        self.extend(line.args)
 
 
 class Rule:
@@ -239,30 +246,37 @@ def match_expr(pat, f, inst, *, lines=None):
 
     return insts
 
-def make_line_facts(facts):
-    """Construct lines from a list of given facts. """
+def make_new_lines(facts, lines):
+    """
+    Construct new lines from a list of given facts.
+    The arguments of collinear facts will be used to construct new lines.
+    Points in a new line will be merged into one of given lines,
+    if the new line and the given line is the same line.
+    The given list of lines will be updated.
+    """
     assert isinstance(facts, list)
     assert all(isinstance(fact, Fact) for fact in facts)
+    assert isinstance(lines, list)
+    assert all(isinstance(line, Line) for line in lines)
 
-    lines = []
     for fact in facts:
         if fact.pred_name == "coll":
             new_line = Line(fact.args)
             same = [inx for inx, _ in enumerate(lines) if new_line.is_same_line(lines[inx])]
-            if len(same) > 0:
-                lines[same[0]].extend_line(new_line)
-            else:
+            if len(same) >= 1:
+                lines[same[0]].combine(new_line)
+            elif len(same) == 0:
                 lines.append(new_line)
+
+    # Combine pairs of lines in the list that can be combined (if any).
     length = 0
     while length != len(lines):
         length = len(lines)
         for line in lines:
             same = [inx for inx, _ in enumerate(lines) if line.is_same_line(lines[inx]) and line is not lines[inx]]
             if len(same) > 0:
-                lines[same[0]].extend_line(line)
+                lines[same[0]].combine(line)
                 lines.remove(line)
-
-    return lines
 
 
 def apply_rule(rule, facts, *, lines=None, record=False, lemma=None):
@@ -316,10 +330,9 @@ def apply_rule(rule, facts, *, lines=None, record=False, lemma=None):
             facts.append(Fact(rule.concl.pred_name, concl_args, updated=True, lemma=lemma, cond=facts))
         else:
             facts.append(Fact(rule.concl.pred_name, concl_args))
-
     return facts
 
-def apply_rule_hyps(rule, hyps, only_updated=False):
+def apply_rule_hyps(rule, hyps, only_updated=False, lines=None):
     """Try to apply given rule to one or more facts in a list, generate
     new facts (as many new facts as possible), return a list of new facts.
 
@@ -336,7 +349,6 @@ def apply_rule_hyps(rule, hyps, only_updated=False):
     assert isinstance(hyps, list)
     assert all(isinstance(fact, Fact) for fact in hyps)
     new_facts = []
-    lines = make_line_facts(hyps)
     for seq in itertools.permutations(range(len(hyps)), len(rule.assums)):
         facts = []
         for num in list(seq):
@@ -348,11 +360,10 @@ def apply_rule_hyps(rule, hyps, only_updated=False):
                 new_facts.extend(apply_rule(rule, facts, lines=lines, record=True, lemma=list(seq)))
         else:
             new_facts.extend(apply_rule(rule, facts, lines=lines, record=True, lemma=list(seq)))
-
     return new_facts
 
 
-def apply_ruleset_hyps(ruleset, hyps, only_updated=False):
+def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None):
     """Try to apply every rule in a ruleset to one or more fact
     in a list (as many as possible), return a list of new facts.
 
@@ -360,48 +371,55 @@ def apply_ruleset_hyps(ruleset, hyps, only_updated=False):
 
     """
     assert isinstance(ruleset, dict)
-    assert all(isinstance(rule, Rule) for _, rule in ruleset.items())
+    assert all(isinstance(rule, Rule) and isinstance(name, str) for name, rule in ruleset.items())
 
     new_facts = []
     for _, rule in ruleset.items():
         if only_updated:
-            unique = [fact for fact in apply_rule_hyps(rule, hyps, only_updated=True)
+            unique = [fact for fact in apply_rule_hyps(rule, hyps, only_updated=True, lines=lines)
                       if fact not in new_facts]
         else:
-            unique = [fact for fact in apply_rule_hyps(rule, hyps)
+            unique = [fact for fact in apply_rule_hyps(rule, hyps, lines=lines)
                       if fact not in new_facts]
 
         new_facts.extend(unique)
 
     return new_facts
 
+def search_step(ruleset, hyps, only_updated=False, lines=None):
+    """
+    One step of searching fixpoint.
+    Apply given ruleset to a list of hypotheses to obtain new facts.
+    If collinear facts are included in hypotheses, new lines can be automatically generated,
+    these new lines might be used when applying rules to hypotheses.
+    """
+    # Update the list of lines.
+    make_new_lines(hyps, lines)
+    if only_updated:
+        new_facts = apply_ruleset_hyps(ruleset, hyps, only_updated=True, lines=lines)
+    else:
+        new_facts = apply_ruleset_hyps(ruleset, hyps, lines=lines)
 
-def search_fixpoint(ruleset, hyps, concl):
-    """Recursively apply given ruleset to a list of hypotheses to
+    # Update the list of facts.
+    for new_fact in new_facts:
+        if new_fact not in hyps:
+            hyps.append(new_fact)
+
+def search_fixpoint(ruleset, hyps, lines):
+    """
+    Recursively apply given ruleset to a list of hypotheses to
     obtain new facts. Recursion exits when a new fact is exactly
     the same as the given conclusion, or when new fact is not able
     to be generated.
-    
     """
-    def union_hyps_and_facts(hyps, facts):
-        unique = [fact for fact in facts if fact not in hyps]
-        return hyps.extend(unique)
+    # Any fact in original hypotheses might be used for the first step.
+    search_step(ruleset, hyps, lines=lines)
+    prev_hyps = []
+    prev_lines = []
 
-    def is_in_new_facts(concl, facts):
-        p = [Fact(fact.pred_name, fact.args) for fact in facts]
-        if concl in p:
-            return True
-        return False
+    while hyps != prev_hyps and lines != prev_lines:
+        search_step(ruleset, hyps, only_updated=True, lines=lines)
+        prev_hyps = hyps
+        prev_lines = lines
 
-    assert isinstance(concl, Fact)
-
-    new_facts = apply_ruleset_hyps(ruleset, hyps)
-    facts = union_hyps_and_facts(hyps, new_facts)
-    if is_in_new_facts(concl, new_facts):
-        return facts
-
-    while True:
-        new_facts = apply_ruleset_hyps(ruleset, facts, only_updated=True)
-        if new_facts == [] or is_in_new_facts(concl, new_facts):
-            return facts
-        facts = union_hyps_and_facts(hyps, new_facts)
+    return hyps

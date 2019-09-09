@@ -96,60 +96,100 @@ class ExprTest(unittest.TestCase):
     def testApplyRule(self):
         test_data = [
             (ruleset["D1"], ["coll(E, F, G)"], [], ["coll(E, G, F)"]),
-            (ruleset["D5"], ["para(E, F, G, H)"], [], ["para(G, H, E, F)"]),
-            (ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"], ["para(G, H, E, F)"]),
+            (ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"],
+             ["para(G, H, E, F)", "para(H, G, E, F)", "para(G, H, F, E)", "para(H, G, F, E)"]),
             (ruleset["D44"], ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"],
              ["para(P, Q, F, G)"]),
             (ruleset["D45"], ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
                 ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
-                ["midp(E, B, C)"])
+                ["midp(E, B, C)"]),
         ]
 
         for rule, facts, lines, concls in test_data:
             facts = [parser.parse_fact(fact) for fact in facts]
             concls = [parser.parse_fact(concl) for concl in concls]
             lines = [parser.parse_line(line) for line in lines]
-            self.assertEqual(expr.apply_rule(rule, facts, lines=lines), concls)
+            facts = expr.apply_rule(rule, facts, lines=lines)
+            self.assertEqual(facts, concls)
 
-    def testMakeLineFacts(self):
+    def testMakeNewLines(self):
         test_data = [
-            (["coll(A, B, C)", "coll(A, B, D)", "coll(P, Q, R)", "coll(R, S, T)", "coll(Q, R, S)"],
+            (["coll(A, B, C)", "coll(A, B, D)", "coll(P, Q, R)", "coll(R, S, T)", "coll(Q, R, S)"], [],
              ["line(A, B, C, D)", "line(P, Q, R, S, T)"]),
+
+            (["coll(A, B, C)"], ["line(B, C, D)"], ["line(A, B, C, D)"]),
+
+            (["coll(E, F)"], ["line(F, G, H)"], ["line(E, F)", "line(F, G, H)"]),
+
         ]
-        for facts, concls in test_data:
+        for facts, lines, concls in test_data:
             facts = [parser.parse_fact(fact) for fact in facts]
-            line_facts = expr.make_line_facts(facts)
-            concls = [parser.parse_line(line) for line in concls]
-            self.assertEqual(set(line_facts), set(concls))
+            lines = [parser.parse_line(line) for line in lines]
+            prev_lines = lines
+            expr.make_new_lines(facts, lines)
+            self.assertEqual(set(prev_lines), set(lines))
 
     def testApplyRuleHyps(self):
         test_data = [
             (ruleset["D3"], ["coll(E, F, G)", "coll(E, F, H)", "coll(P, Q, R)", "coll(P, Q, S)", "coll(A, B, C)"],
-             ["coll(G, H, E)", "coll(H, G, E)", "coll(R, S, P)", "coll(S, R, P)"]),
+             [], ["coll(G, H, E)", "coll(H, G, E)", "coll(R, S, P)", "coll(S, R, P)"]),
 
-            (ruleset["D5"], ["para(P, Q, R, S)"],
-             ["para(R, S, P, Q)"]),
+            (ruleset["D5"], ["para(P, Q, R, S)"], [],
+             ["para(R, S, P, Q)", "para(R, S, Q, P)", "para(S, R, P, Q)", "para(S, R, Q, P)"]),
 
-            (ruleset["D6"], ["para(P, Q, R, S)", "para(S, T, U, V)", "coll(R, S, T)"],
-             ["para(P, Q, U, V)"]),
+            (ruleset["D45"], ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
+             ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
+             ["midp(E, B, C)"]),
         ]
 
-        for rule, hyps, concls in test_data:
+        for rule, hyps, lines, concls in test_data:
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concls = [parser.parse_fact(concl) for concl in concls]
-            new_facts = expr.apply_rule_hyps(rule, hyps)
+            lines = [parser.parse_line(line) for line in lines]
+            new_facts = expr.apply_rule_hyps(rule, hyps, lines=lines)
             self.assertEqual(set(new_facts), set(concls))
 
     def testApplyRulesetHyps(self):
         test_data = [
-            (ruleset, ["coll(E, F, G)", "coll(E, F, H)"],
-             ["coll(E, G, F)", "coll(E, H, F)", "coll(F, E, G)", "coll(F, E, H)", "coll(G, H, E)", "coll(H, G, E)"]),
+            #(ruleset, ["coll(E, F, G)", "coll(E, F, H)"], [],
+             #["coll(E, G, F)", "coll(E, H, F)", "coll(F, E, G)", "coll(F, E, H)", "coll(G, H, E)", "coll(H, G, E)"]),
+
+            (ruleset, ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
+                ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
+                ["midp(E, B, C)", "para(C, D, E, N)", "coll(B, E, C)", "coll(E, C, B)"]),
         ]
-        for rules, hyps, concls, in test_data:
+        for rules, hyps, lines, concls, in test_data:
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concls = [parser.parse_fact(concl) for concl in concls]
-            new_facts = expr.apply_ruleset_hyps(rules, hyps)
+            lines = [parser.parse_line(line) for line in lines]
+            new_facts = expr.apply_ruleset_hyps(rules, hyps, lines=lines)
             self.assertEqual(set(new_facts), set(concls))
+
+    def testSearchStep(self):
+        test_data = [
+            (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)"],
+             ["line(A, C, B)", "line(A, G, E)", "line(B, F, E)", "line(D, C, E)"],
+            ["midp(E, B, C)", "para(C, D, E, N)", "coll(B, E, C)", "coll(E, C, B)"])
+        ]
+        for rules, hyps, lines, concls in test_data:
+            hyps = [parser.parse_fact(fact) for fact in hyps]
+            lines = [parser.parse_line(line) for line in lines]
+            concls = [parser.parse_fact(concl) for concl in concls]
+            expr.search_step(rules, hyps, lines=lines)
+            self.assertEqual(set(hyps), set(concls))
+
+    def testSearchFixpoint(self):
+        test_data = [
+            (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)"],
+             ["line(A, C, B)", "line(A, G, E)", "line(B, F, E)", "line(D, C, E)"],
+            "para(A, C, G, F)")
+        ]
+        for rules, hyps, lines, concl in test_data:
+            hyps = [parser.parse_fact(fact) for fact in hyps]
+            concl = parser.parse_fact(concl)
+            lines = [parser.parse_line(line) for line in lines]
+            expr.search_fixpoint(ruleset, hyps, lines=lines)
+            self.assertIn(concl, hyps)
 
 
 if __name__ == "__main__":

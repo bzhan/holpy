@@ -8,7 +8,7 @@ from geometry.expr import Fact, Rule, Line
 class ParserTest(unittest.TestCase):
     def testParseFact(self):
         test_data = [
-            ("coll(A, C, B)", Fact("coll", ["A", "C", "B"])),
+            ("coll(A0, C, B)", Fact("coll", ["A0", "C", "B"])),
             ("coll(A,C,B)", Fact("coll", ["A", "C", "B"])),
         ]
 
