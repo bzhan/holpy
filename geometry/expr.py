@@ -279,7 +279,7 @@ def make_new_lines(facts, lines):
                 lines.remove(line)
 
 
-def apply_rule(rule, facts, *, lines=None, record=False, lemma=None):
+def apply_rule(rule, facts, *, lines=None, record=False):
     """Apply given rule to the list of facts, returns a list of new
     facts that can be derived from the rule.
 
@@ -310,6 +310,7 @@ def apply_rule(rule, facts, *, lines=None, record=False, lemma=None):
             new_insts.extend(match_expr(assume, fact, inst, lines=lines))
         insts = new_insts
 
+    original_facts = facts
     facts = []
     for inst in insts:
         concl_args = []
@@ -327,7 +328,7 @@ def apply_rule(rule, facts, *, lines=None, record=False, lemma=None):
                 raise NotImplementedError
 
         if record:
-            facts.append(Fact(rule.concl.pred_name, concl_args, updated=True, lemma=lemma, cond=facts))
+            facts.append(Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=original_facts))
         else:
             facts.append(Fact(rule.concl.pred_name, concl_args))
     return facts
@@ -357,9 +358,9 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None):
         if only_updated:
             updated = [fact for fact in facts if fact.updated]
             if len(updated) > 0:
-                new_facts.extend(apply_rule(rule, facts, lines=lines, record=True, lemma=list(seq)))
+                new_facts.extend(apply_rule(rule, facts, lines=lines, record=True))
         else:
-            new_facts.extend(apply_rule(rule, facts, lines=lines, record=True, lemma=list(seq)))
+            new_facts.extend(apply_rule(rule, facts, lines=lines, record=True))
     return new_facts
 
 
@@ -405,12 +406,12 @@ def search_step(ruleset, hyps, only_updated=False, lines=None):
         if new_fact not in hyps:
             hyps.append(new_fact)
 
-def search_fixpoint(ruleset, hyps, lines):
+def search_fixpoint(ruleset, hyps, lines, concl):
     """
     Recursively apply given ruleset to a list of hypotheses to
-    obtain new facts. Recursion exits when a new fact is exactly
-    the same as the given conclusion, or when new fact is not able
-    to be generated.
+    obtain new facts. Recursion exits when new fact is not able
+    to be generated, or conclusion is in the list of facts.
+    Return a list of facts.
     """
     # Any fact in original hypotheses might be used for the first step.
     search_step(ruleset, hyps, lines=lines)
@@ -419,7 +420,30 @@ def search_fixpoint(ruleset, hyps, lines):
 
     while hyps != prev_hyps and lines != prev_lines:
         search_step(ruleset, hyps, only_updated=True, lines=lines)
+        if concl in hyps:
+            c = hyps[hyps.index(concl)]
+            break
         prev_hyps = hyps
         prev_lines = lines
-
     return hyps
+
+def print_search(ruleset, facts, concl):
+    """
+    Print the process of searching fixpoint.
+    The given list of facts must contains all the deduce procedures (as parameters of facts in the list).
+    Using a given ruleset to find out the name of rules used in deduce procedures.
+    """
+
+    def print_step(fact):
+        r = list(ruleset.keys())[list(ruleset.values()).index(fact.lemma)]
+        s = "(" + str(r) + ") " + str(fact) + " :- "
+        for sub_fact in fact.cond:
+            if sub_fact.updated:
+                s = s + str(sub_fact) + ", "
+                print_step(sub_fact)
+            else:
+                s = s + "(hyp)" + str(sub_fact) + ", "
+        print(s[:-2])
+
+    concl_in_facts = [fact for fact in facts if fact == concl][0]
+    print_step(concl_in_facts)

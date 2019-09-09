@@ -95,14 +95,14 @@ class ExprTest(unittest.TestCase):
 
     def testApplyRule(self):
         test_data = [
-            (ruleset["D1"], ["coll(E, F, G)"], [], ["coll(E, G, F)"]),
-            (ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"],
-             ["para(G, H, E, F)", "para(H, G, E, F)", "para(G, H, F, E)", "para(H, G, F, E)"]),
+            #(ruleset["D1"], ["coll(E, F, G)"], [], ["coll(E, G, F)"]),
+            #(ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"],
+            # ["para(G, H, E, F)", "para(H, G, E, F)", "para(G, H, F, E)", "para(H, G, F, E)"]),
             (ruleset["D44"], ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"],
              ["para(P, Q, F, G)"]),
-            (ruleset["D45"], ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
-                ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
-                ["midp(E, B, C)"]),
+            #(ruleset["D45"], ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
+            #    ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
+            #    ["midp(E, B, C)"]),
         ]
 
         for rule, facts, lines, concls in test_data:
@@ -151,8 +151,6 @@ class ExprTest(unittest.TestCase):
 
     def testApplyRulesetHyps(self):
         test_data = [
-            #(ruleset, ["coll(E, F, G)", "coll(E, F, H)"], [],
-             #["coll(E, G, F)", "coll(E, H, F)", "coll(F, E, G)", "coll(F, E, H)", "coll(G, H, E)", "coll(H, G, E)"]),
 
             (ruleset, ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
                 ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
@@ -167,9 +165,7 @@ class ExprTest(unittest.TestCase):
 
     def testSearchStep(self):
         test_data = [
-            (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)"],
-             ["line(A, C, B)", "line(A, G, E)", "line(B, F, E)", "line(D, C, E)"],
-            ["midp(E, B, C)", "para(C, D, E, N)", "coll(B, E, C)", "coll(E, C, B)"])
+
         ]
         for rules, hyps, lines, concls in test_data:
             hyps = [parser.parse_fact(fact) for fact in hyps]
@@ -188,9 +184,22 @@ class ExprTest(unittest.TestCase):
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concl = parser.parse_fact(concl)
             lines = [parser.parse_line(line) for line in lines]
-            expr.search_fixpoint(ruleset, hyps, lines=lines)
+            expr.search_fixpoint(ruleset, hyps, lines, concl)
             self.assertIn(concl, hyps)
 
+    def testPrintSearch(self):
+        test_data = [
+            (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)"],
+             ["line(A, C, B)", "line(A, G, E)", "line(B, F, E)", "line(D, C, E)"],
+             "para(A, C, G, F)")
+        ]
+        for rules, hyps, lines, concl in test_data:
+            hyps = [parser.parse_fact(fact) for fact in hyps]
+            concl = parser.parse_fact(concl)
+            lines = [parser.parse_line(line) for line in lines]
+            expr.search_fixpoint(ruleset, hyps, lines, concl)
+            self.assertIn(concl, hyps)
+            expr.print_search(ruleset, hyps, concl)
 
 if __name__ == "__main__":
     unittest.main()
