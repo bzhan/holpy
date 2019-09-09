@@ -427,6 +427,37 @@ def search_fixpoint(ruleset, hyps, lines, concl):
         prev_lines = lines
     return hyps
 
+def match_goal(fact, goal, lines):
+    """Given a fact and a goal, determine whether the fact directly
+    implies the goal.
+
+    """
+    if fact.pred_name != goal.pred_name:
+        return False
+
+    if fact.pred_name in ('para', 'perp'):
+        # For para and perp, it is only necessary for the lines
+        # containing the first two points and the last two points
+        # be the same.
+        A, B, C, D = fact.args
+        P, Q, R, S = goal.args
+        return get_line(lines, (A, B)) == get_line(lines, (P, Q)) and \
+               get_line(lines, (C, D)) == get_line(lines, (R, S))
+    else:
+        # TODO: make other cases more precise.
+        return fact.args == goal.args
+
+def find_goal(facts, goal, lines):
+    """Tries to find the goal among a list of facts. Return the
+    fact if it is found. Otherwise return None.
+
+    """
+    for fact in facts:
+        if match_goal(fact, goal, lines):
+            return fact
+
+    return None
+
 def print_search(ruleset, facts, concl):
     """
     Print the process of searching fixpoint.

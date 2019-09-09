@@ -95,14 +95,14 @@ class ExprTest(unittest.TestCase):
 
     def testApplyRule(self):
         test_data = [
-            #(ruleset["D1"], ["coll(E, F, G)"], [], ["coll(E, G, F)"]),
-            #(ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"],
-            # ["para(G, H, E, F)", "para(H, G, E, F)", "para(G, H, F, E)", "para(H, G, F, E)"]),
+            (ruleset["D1"], ["coll(E, F, G)"], [], ["coll(E, G, F)"]),
+            (ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"],
+             ["para(G, H, E, F)"]),
             (ruleset["D44"], ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"],
              ["para(P, Q, F, G)"]),
-            #(ruleset["D45"], ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
-            #    ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
-            #    ["midp(E, B, C)"]),
+            (ruleset["D45"], ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
+             ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
+             ["midp(E, B, C)"]),
         ]
 
         for rule, facts, lines, concls in test_data:
@@ -134,8 +134,7 @@ class ExprTest(unittest.TestCase):
             (ruleset["D3"], ["coll(E, F, G)", "coll(E, F, H)", "coll(P, Q, R)", "coll(P, Q, S)", "coll(A, B, C)"],
              [], ["coll(G, H, E)", "coll(H, G, E)", "coll(R, S, P)", "coll(S, R, P)"]),
 
-            (ruleset["D5"], ["para(P, Q, R, S)"], [],
-             ["para(R, S, P, Q)", "para(R, S, Q, P)", "para(S, R, P, Q)", "para(S, R, Q, P)"]),
+            (ruleset["D5"], ["para(P, Q, R, S)"], [], ["para(R, S, P, Q)"]),
 
             (ruleset["D45"], ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
              ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
@@ -185,7 +184,8 @@ class ExprTest(unittest.TestCase):
             concl = parser.parse_fact(concl)
             lines = [parser.parse_line(line) for line in lines]
             expr.search_fixpoint(ruleset, hyps, lines, concl)
-            self.assertIn(concl, hyps)
+            fact = expr.find_goal(hyps, concl, lines)
+            self.assertIsNotNone(fact)
 
     def testPrintSearch(self):
         test_data = [
@@ -198,8 +198,9 @@ class ExprTest(unittest.TestCase):
             concl = parser.parse_fact(concl)
             lines = [parser.parse_line(line) for line in lines]
             expr.search_fixpoint(ruleset, hyps, lines, concl)
-            self.assertIn(concl, hyps)
-            expr.print_search(ruleset, hyps, concl)
+            fact = expr.find_goal(hyps, concl, lines)
+            self.assertIsNotNone(fact)
+            expr.print_search(ruleset, hyps, fact)
 
 if __name__ == "__main__":
     unittest.main()
