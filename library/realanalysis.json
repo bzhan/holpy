@@ -1,0 +1,171 @@
+{
+    "content": [
+        {
+            "name": "eventually",
+            "ty": "def.ax",
+            "type": "('a => bool) => 'a net => bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "tendsto_real",
+            "prop": "tendsto_real f l net = !e. 0 < e --> eventualy (%x. abs (f x - l) < e) net",
+            "ty": "def",
+            "type": "(real => real) => real => real net => bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "reallim",
+            "prop": "reallim net f = THE l. tendsto_real f l net",
+            "ty": "def",
+            "type": "real net => (real => real) => real"   
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "trivial_lim",
+            "prop": "trivial_lim net = eventualy (%x::'a. false) net",
+            "ty": "def",
+            "type": "'a net => bool"   
+        },
+        {
+            "name": "reallim_trivial",
+            "prop": "trivial_lim net --> tendsto_real f l net",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "net": "real net"
+            }
+        },
+        {
+           "name": "reallim_unique",
+            "prop": "neg (trivial_lim net) & tendsto_real f l1 net & tendsto_real f l2 net --> l1 = l2",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l1": "real",
+                "l2": "real",
+                "net": "real net"
+            }
+        },
+        {
+            "name": "reallim_const",
+             "prop": "tendsto_real (%x. a) a net",
+             "ty": "thm",
+             "vars": {
+                 "a": "real",
+                 "net": "real net"
+             }
+         },
+         {
+            "name": "reallim_lmul",
+             "prop": "tendsto_real f l net --> tendsto_real (%x. c * f x) (c * l) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "c": "real",
+                 "l": "real",
+                 "net": "real net"
+             }
+         },
+         {
+            "name": "reallim_rmul",
+             "prop": "tendsto_real f l net --> tendsto_real (%x. (f x) * c) (l * c) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "c": "real",
+                 "l": "real",
+                 "net": "real net"
+             }
+         },
+         {
+            "name": "reallim_lmul_eq",
+             "prop": "neg (c = 0) --> tendsto_real (%x. c * f x) (c * l) net = tendsto_real f l net",
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "c": "real",
+                 "l": "real",
+                 "net": "real net"
+             }
+         },
+         {
+            "name": "reallim_rmul_eq",
+             "prop": "neg (c = 0) --> tendsto_real (%x. (f x) * c) (l * c) net = tendsto_real f l net",
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "c": "real",
+                 "l": "real",
+                 "net": "real net"
+             }
+         },
+         {
+            "name": "reallim_neg_eq",
+             "prop": "tendsto_real (%x. -(f x)) (-l) net = tendsto_real f l net ",
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "l": "real",
+                 "net": "real net"
+             }
+         },
+         {
+            "name": "reallim_add",
+             "prop": "tendsto_real f l net & tendsto_real g m net --> tendsto_real (%x. f x + g x) (l + m) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "l": "real",
+                 "g": "real => real",
+                 "m": "real",
+                 "net": "real net"
+             }
+         },
+         {
+            "name": "reallim_sub",
+             "prop": "tendsto_real f l net & tendsto_real g m net --> tendsto_real (%x. f x - g x) (l - m) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "l": "real",
+                 "g": "real => real",
+                 "m": "real",
+                 "net": "real net"
+             }
+         },
+         {
+            "name": "reallim_mul",
+             "prop": "tendsto_real f l net & tendsto_real g m net --> tendsto_real (%x. f x * g x) (l * m) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "l": "real",
+                 "g": "real => real",
+                 "m": "real",
+                 "net": "real net"
+             }
+         },
+         {
+            "name": "reallim_inverse",
+             "prop": "tendsto_real f l net & neg (l = 0) --> tendsto_real (%x. real_inverse (f x)) (real_inverse l) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "l": "real",
+                 "net": "real net"
+             }
+         }
+    ],
+    "description": "Some analytic concepts for real.",
+    "imports": [
+        "integral"
+    ],
+    "name": "realanalysis"
+}

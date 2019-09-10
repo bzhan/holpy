@@ -52,7 +52,7 @@
         {
             "name": "real_inverse",
             "ty": "def.ax",
-            "type": "real => real => real"
+            "type": "real => real"
         },
         {
             "name": "real_divide",
