@@ -86,6 +86,12 @@
             "type": "'a => 'a => 'a"
         },
         {
+            "ascii_op": "^",
+            "name": "power",
+            "ty": "def.ax",
+            "type": "'a => nat => 'a"
+        },
+        {
             "name": "nat_plus",
             "overload": "plus",
             "rules": [
@@ -109,6 +115,21 @@
                 },
                 {
                     "prop": "Suc m * n = n + m * n"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "nat => nat => nat"
+        },
+        {
+            "ascii_op": "^",
+            "name": "nat_power",
+            "overload": "power",
+            "rules": [
+                {
+                    "prop": "(n::nat) ^ 0 = 1"
+                },
+                {
+                    "prop": "n ^ Suc m = n * n ^ m"
                 }
             ],
             "ty": "def.ind",

@@ -65,6 +65,21 @@
             "type": "nat => real"
         },
         {
+            "ascii_op": "^",
+            "name": "real_power",
+            "overload": "power",
+            "rules": [
+                {
+                    "prop": "(x::real) ^ 0 = 1"
+                },
+                {
+                    "prop": "x ^ Suc m = x * x ^ m"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "real => nat => real"
+        },
+        {
             "name": "real_add_assoc",
             "prop": "x + (y + z) = (x + y) + z",
             "ty": "thm",

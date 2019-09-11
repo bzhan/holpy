@@ -58,11 +58,15 @@ grammar = r"""
 
     ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
 
-    ?uminus: "-" uminus -> uminus | big_union   // Unary minus: priority 80
+    ?power: power "^" big_union | big_union   // Power: priority 81
+
+    ?uminus: "-" uminus -> uminus | power   // Unary minus: priority 80
 
     ?times: times "*" uminus | uminus        // Multiplication: priority 70
 
-    ?inter: inter ("Int"|"∩") times | times     // Intersection: priority 70
+    ?real_divide: real_divide "/" times | times        // Division: priority 70
+
+    ?inter: inter ("Int"|"∩") real_divide | real_divide     // Intersection: priority 70
 
     ?plus: plus "+" inter | inter       // Addition: priority 65
 
@@ -244,8 +248,14 @@ class HOLTransformer(Transformer):
         from data import set
         return set.collect(None)(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
+    def power(self, lhs, rhs):
+        return Const("power", None)(lhs, rhs)
+
     def times(self, lhs, rhs):
         return Const("times", None)(lhs, rhs)
+
+    def real_divide(self, lhs, rhs):
+        return Const("real_divide", None)(lhs, rhs)
 
     def plus(self, lhs, rhs):
         return Const("plus", None)(lhs, rhs)
