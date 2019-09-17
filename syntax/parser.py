@@ -66,7 +66,11 @@ grammar = r"""
 
     ?real_divide: real_divide "/" times | times        // Division: priority 70
 
-    ?inter: inter ("Int"|"∩") real_divide | real_divide     // Intersection: priority 70
+    ?nat_divide: nat_divide "DIV" real_divide | real_divide        // Division: priority 70
+
+    ?nat_modulus: nat_modulus "MOD" nat_divide | nat_divide        // Modulus: priority 70
+
+    ?inter: inter ("Int"|"∩") nat_modulus | nat_modulus     // Intersection: priority 70
 
     ?plus: plus "+" inter | inter       // Addition: priority 65
 
@@ -256,6 +260,12 @@ class HOLTransformer(Transformer):
 
     def real_divide(self, lhs, rhs):
         return Const("real_divide", None)(lhs, rhs)
+
+    def nat_divide(self, lhs, rhs):
+        return Const("nat_divide", None)(lhs, rhs)
+
+    def nat_modulus(self, lhs, rhs):
+        return Const("nat_modulus", None)(lhs, rhs)
 
     def plus(self, lhs, rhs):
         return Const("plus", None)(lhs, rhs)

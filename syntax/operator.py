@@ -65,6 +65,8 @@ class OperatorTable():
             OperatorData("power", 81, assoc=LEFT, ascii_op="^"),
             OperatorData("times", 70, assoc=LEFT, ascii_op="*"),
             OperatorData("real_divide", 70, assoc=LEFT, ascii_op="/"),
+            OperatorData("nat_divide", 70, assoc=LEFT, ascii_op="DIV"),
+            OperatorData("nat_modulus", 70, assoc=LEFT, ascii_op="MOD"),
             OperatorData("less_eq", 50, assoc=LEFT, ascii_op="<=", unicode_op="≤"),
             OperatorData("less", 50, assoc=LEFT, ascii_op="<"),
             OperatorData("greater_eq", 50, assoc=LEFT, ascii_op=">=", unicode_op="≥"),

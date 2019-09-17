@@ -680,11 +680,517 @@
                  "l": "real",
                  "s": "nat set"
              }
-         }
+         },
+         {
+             "name": "real_sums",
+             "prop": "real_sums f l s = tendsto_real (%n. sum (inter s {0..n}) f) l sequentially",
+             "ty": "def",
+             "type": "(nat => real) => real => nat set => bool"  
+         },
+         {
+            "name": "real_infsum",
+            "prop": "real_infsum s f = THE l. real_sums f l s",
+            "ty": "def",
+            "type": "nat set => (nat => real) => real"  
+        },
+        {
+            "name": "real_summable",
+            "prop": "real_summable s f = ?l. real_sums f l s",
+            "ty": "def",
+            "type": "nat set => (nat => real) => bool"  
+        },
+        {
+            "name": "real_series_cauchy",
+             "prop": ["(?l. real_sums f l s) =",
+                      "!e. 0 < e",
+                           "--> ?N. !m. !n. m >= N --> abs (sum (inter s {m..n}) f) < e"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_cauchy",
+             "prop": ["real_summable s f =",
+                      "!e. 0 < e",
+                           "--> ?N. !m. !n. m >= N --> abs (sum (inter s {m..n}) f) < e"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_sums_summable",
+             "prop": "real_sums f l s --> real_summable s f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l": "real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_sums_infsum",
+             "prop": "real_sums f (real_infsum s f) s = real_summable s f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+             "name": "from",
+             "prop": "from n = {m. n <= m}",
+             "ty": "def",
+             "type": "nat => nat set"             
+         },
+         {
+            "name": "real_series_from",
+             "prop": "real_sums f l (from k) = tendsto_real (%n. sum {k..n} f) l sequentially",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l": "real",
+                 "k": "nat"
+             }
+         },
+         {
+            "name": "real_series_unique",
+             "prop": "real_sums f l1 s & real_sums f l2 s --> l1 = l2",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l1": "real",
+                 "l2": "real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_infsum_unique",
+             "prop": "real_sums f l s --> real_infsum s f = l",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l": "real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_series_finite",
+             "prop": "finite s --> real_sums f (sum s f) s",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_finite",
+             "prop": "finite s --> real_summable s f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_iff_eventually",
+             "prop": ["(?N. !n. N <= n & member n s --> f n = g n)",
+                      "--> real_summable s f = real_summable s g"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "g": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_eq_eventually",
+             "prop": ["(?N. !n. N <= n & member n s --> f n = g n) & real_summable s f",
+                      "--> real_summable s g"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "g": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_iff_cofinite",
+             "prop": ["finite (union (diff s t) (diff t s))",
+                      "--> real_summable s f = real_summable t f"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set",
+                 "t": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_eq_cofinite",
+             "prop": ["finite (union (diff s t) (diff t s)) & real_summable s f",
+                      "--> real_summable t f"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set",
+                 "t": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_from_elsewhere",
+             "prop": "real_summable (from m) f --> real_summable (from n) f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "m": "nat",
+                 "n": "nat"
+             }
+         },
+         {
+            "name": "real_summable_from_elsewhere_eq",
+             "prop": "real_summable (from m) f = real_summable (from n) f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "m": "nat",
+                 "n": "nat"
+             }
+         },
+         {
+            "name": "real_series_goestozero",
+             "prop": ["real_summable s f",
+                      "--> !e. 0 < e",
+                              "--> eventually (%n. member n s --> abs (f n) < e) sequentially"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_imp_tozero",
+             "prop": ["real_summable s f",
+                      "--> tendsto_real (%n. if member n s then f n else 0) 0 sequentially"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_imp__bounded",
+             "prop": "real_summable s f --> real_bounded (image f s)",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_imp_real_sums_bounded",
+             "prop": "real_summable (from k) f --> real_bounded {y. !n. y = sum {k..n} f}",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "k": "nat"
+             }
+         },         
+         {
+            "name": "real_series_0",
+             "prop": "real_sums (%n. 0) 0 s",
+             "ty": "thm",
+             "vars": {
+                 "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_add",
+             "prop": ["real_sums x x0 s & real_sums y y0 s",
+                      "--> real_sums (%n. x n + y n) (x0 + y0) s"],
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real",
+                "y": "nat => real", 
+                "y0": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_sub",
+             "prop": ["real_sums x x0 s & real_sums y y0 s",
+                      "--> real_sums (%n. x n - y n) (x0 - y0) s"],
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real",
+                "y": "nat => real", 
+                "y0": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_lmul",
+             "prop": "real_sums x x0 s --> real_sums (%n. c * x n) (c * x0) s",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real", 
+                "c": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_rmul",
+             "prop": "real_sums x x0 s --> real_sums (%n. x n * c) (x0 * c) s",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real", 
+                "c": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_neg",
+             "prop": "real_sums x x0 s --> real_sums (%n. -(x n)) (-x0) s",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_sums_iff",
+             "prop": ["(!x. member x s --> f x = g x)",
+                      "--> real_sums f l s = real_sums g l s"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "g": "nat => real", 
+                "l": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_sums_eq",
+             "prop": ["(!x. member x s --> f x = g x) & real_sums f l s",
+                      "--> real_sums g l s"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "g": "nat => real", 
+                "l": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_finite_support",
+             "prop": ["finite (inter s t) & (!x. neg (member x (inter s t)) --> f x = 0)",
+                      "--> real_sums f (sum (inter s t) f) t"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "t": "nat set",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_diffs",
+             "prop": ["tendsto_real f 0 sequentially",
+                      "--> real_sums (%n. f n - f (n + 1)) (f k) (from k)"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "k": "nat"
+             }
+         },         
+         {
+            "name": "real_series_trival",
+             "prop": "real_sums f 0 empty_set",
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real"
+             }
+         },         
+         {
+            "name": "real_series_restrict",
+             "prop": ["real_sums (%n. if member n s then f n else 0) l univ =",
+                      "real_sums f l s"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_sum",
+             "prop": ["finite s & subset s t & (!x. neg (member x s) --> f x = 0) & sum s f = l",
+                      "--> real_sums f l t"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "t": "nat set",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_reindex",
+             "prop": ["real_sums (%n. f (n + k)) l (from m) =",
+                      "real_sums f l (from (m + k))"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "l": "real", 
+                "m": "nat",
+                "k": "nat"
+             }
+         },         
+         {
+            "name": "real_series_even",
+             "prop": ["real_sums f l (from n) =",
+                      "real_sums (%i. if even i then f (i DIV 2) else 0) l (from (2 * n))"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "l": "real", 
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_series_odd",
+             "prop": ["real_sums f l (from n) =",
+                      "real_sums (%i. if odd i then f (i DIV 2) else 0) l (from (2 * n + 1))"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "l": "real", 
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_partial_sums_le_infsum",
+             "prop": ["(!i. member i s --> 0 <= f i) & real_summable s f",
+                      "--> sum (inter s {0..n}) f <= real_infsum s f"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "s": "nat set", 
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_partial_sums_le_infsum_gen",
+             "prop": ["finite t & subset t s &",
+                      "(!i. member i s --> 0 <= f i) & real_summable s f",
+                      "--> sum t f <= real_infsum s f"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "s": "nat set", 
+                "t": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_terms_tozero",
+             "prop": "real_sums f l (from n) --> tendsto_real f 0 sequentially",
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_series_le",
+             "prop": ["real_sums f y s & real_sums g z s &",
+                      "(!i. member i s --> f i <= g i)",
+                      "--> y <= z"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "g": "nat => real",
+                "s": "nat set", 
+                "y": "real",
+                "z": "real"
+             }
+         },
+         {
+            "name": "real_series_pos",
+            "prop": ["real_sums f y s & (!i. member i s --> 0 <= f i)",
+                     "--> 0 <= y"],
+            "ty": "thm",
+            "vars": {
+               "f": "nat => real",
+               "s": "nat set",
+               "y": "real"
+             }
+         },
+         {
+            "name": "real_series_bound",
+            "prop": ["real_sums f y s & real_sums g z s &",
+                     "(!i. member i s --> abs (f i) <= g i)",
+                     "--> abs y <= z"],
+            "ty": "thm",
+            "vars": {
+                 "f": "nat => real",
+                 "g": "nat => real",
+                 "s": "nat set",
+                 "y": "real",
+                 "z": "real"
+                }
+         },
+         {
+            "name": "real_series_comparison_bound",
+            "prop": ["real_sums g z s & (!i. member i s --> abs (f i) <= g i)",
+                     "--> ?y. real_sums f y s & abs y <= z"],
+            "ty": "thm",
+            "vars": {
+                  "f": "nat => real",
+                  "g": "nat => real",
+                  "s": "nat set",
+                  "z": "real"
+                 }
+         },
+         {
+            "name": "real_series_mul",
+            "prop": ["real_sums x a (from 0) & real_sums y b (from 0) &",
+                     "(real_summable (from 0) (%n. abs (x n)) |",
+                     "real_summable (from 0) (%n. abs (y n)))",
+                     "--> real_sums (%n. sum {0..n} (%i. x i * y (n - i))) (a * b) (from 0)"],
+            "ty": "thm",
+            "vars": {
+                 "x": "nat => real",
+                 "a": "real",
+                 "y": "nat => real",
+                 "b": "real"
+                  }
+         },
+         {
+             "name": "real_series_mul_unique",
+             "prop": ["real_sums x a (from 0) & real_sums y b (from 0) &",
+                      "real_sums (%n. sum {0..n} (%i. x i * y (n - i))) c (from 0)",
+                      "--> a * b = c"],
+             "ty": "thm",
+             "vars": {
+                  "x": "nat => real",
+                  "a": "real",
+                  "y": "nat => real",
+                  "b": "real",
+                  "c": "real"
+                 }
+     }
     ],
     "description": "Some analytic concepts for real.",
     "imports": [
-        "integral"
+        "integral",
+        "iterate"
     ],
     "name": "realanalysis"
 }

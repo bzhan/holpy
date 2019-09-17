@@ -3636,6 +3636,42 @@
             "prop": "min m n = if m <= n then m else n",
             "ty": "def",
             "type": "nat => nat => nat"
+        },
+        {
+            "name": "even",
+            "rules": [
+                {
+                    "prop": "even 0 = true"
+                },
+                {
+                    "prop": "even (Suc n) = neg (even n)"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "nat => bool"
+        },
+        {
+            "name": "odd",
+            "rules": [
+                {
+                    "prop": "odd 0 = false"
+                },
+                {
+                    "prop": "odd (Suc n) = neg (odd n)"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "nat => bool"
+        },
+        {
+            "name": "nat_divide",
+            "ty": "def.ax",
+            "type": "nat => nat => nat"
+        },
+        {
+            "name": "nat_modulus",
+            "ty": "def.ax",
+            "type": "nat => nat => nat"
         }
     ],
     "description": "Natural numbers",
