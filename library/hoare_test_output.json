@@ -21,14 +21,14 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem (While (%s. ~s (0::nat) = 3) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + (1::nat))))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))",
+                    "args": "Sem (While (%s. ~s (0::nat) = (3::nat)) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + 1)))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))",
                     "id": "0",
                     "prevs": [],
                     "rule": "eval_Sem",
-                    "th": "|- Sem (While (%s. ~s (0::nat) = 3) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + (1::nat))))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))"
+                    "th": "|- Sem (While (%s. ~s (0::nat) = (3::nat)) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + 1)))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))"
                 }
             ],
-            "prop": "Sem (While (%s. ~s (0::nat) = 3) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + (1::nat))))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))",
+            "prop": "Sem (While (%s. ~s (0::nat) = (3::nat)) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + 1)))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))",
             "ty": "thm",
             "vars": {}
         },

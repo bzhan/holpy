@@ -58,11 +58,19 @@ grammar = r"""
 
     ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
 
-    ?uminus: "-" uminus -> uminus | big_union   // Unary minus: priority 80
+    ?power: power "^" big_union | big_union   // Power: priority 81
+
+    ?uminus: "-" uminus -> uminus | power   // Unary minus: priority 80
 
     ?times: times "*" uminus | uminus        // Multiplication: priority 70
 
-    ?inter: inter ("Int"|"∩") times | times     // Intersection: priority 70
+    ?real_divide: real_divide "/" times | times        // Division: priority 70
+
+    ?nat_divide: nat_divide "DIV" real_divide | real_divide        // Division: priority 70
+
+    ?nat_modulus: nat_modulus "MOD" nat_divide | nat_divide        // Modulus: priority 70
+
+    ?inter: inter ("Int"|"∩") nat_modulus | nat_modulus     // Intersection: priority 70
 
     ?plus: plus "+" inter | inter       // Addition: priority 65
 
@@ -244,8 +252,20 @@ class HOLTransformer(Transformer):
         from data import set
         return set.collect(None)(Abs(str(var_name), None, body.abstract_over(Var(var_name, None))))
 
+    def power(self, lhs, rhs):
+        return Const("power", None)(lhs, rhs)
+
     def times(self, lhs, rhs):
         return Const("times", None)(lhs, rhs)
+
+    def real_divide(self, lhs, rhs):
+        return Const("real_divide", None)(lhs, rhs)
+
+    def nat_divide(self, lhs, rhs):
+        return Const("nat_divide", None)(lhs, rhs)
+
+    def nat_modulus(self, lhs, rhs):
+        return Const("nat_modulus", None)(lhs, rhs)
 
     def plus(self, lhs, rhs):
         return Const("plus", None)(lhs, rhs)
@@ -390,7 +410,7 @@ def parse_term(thy, ctxt, s):
     try:
         t = term_parser.parse(s)
         return infertype.type_infer(thy, ctxt, t)
-    except (exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+    except (exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
 

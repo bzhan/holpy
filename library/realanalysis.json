@@ -1,0 +1,1891 @@
+{
+    "content": [
+        {
+            "name": "sum",
+            "ty": "def.ax",
+            "type": "'a set => ('a => real) => real"
+        },
+        {
+            "name": "eventually",
+            "ty": "def.ax",
+            "type": "('a => bool) => 'a net => bool"
+        },
+        {
+            "name": "sequentially",
+            "ty": "def.ax",
+            "type": "nat net"
+        },
+        {
+            "name": "at_infinity",
+            "ty": "def.ax",
+            "type": "real net"
+        },
+        {
+            "name": "at_posinfinity",
+            "ty": "def.ax",
+            "type": "real net"
+        },
+        {
+            "name": "at_neginfinity",
+            "ty": "def.ax",
+            "type": "real net"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_bounded",
+            "prop": "real_bounded s = ?B. !x. member x s --> abs x <= B",
+            "ty": "def",
+            "type": "real set => bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_bounded_pos_lt",
+            "prop": "real_bounded s = ?b. 0 < b & !x. member x s --> abs x < b",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_bounded_subset",
+            "prop": "real_bounded t & subset t s --> real_bounded s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "real_bounded_union",
+            "prop": "real_bounded (union s t) = real_bounded s & real_bounded t",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "real_bounded_subset_open_interval_symetric",
+            "prop": "real_bounded s --> ?a. subset s (real_open_interval (-a) a)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_bounded_subset_open_interval",
+            "prop": "real_bounded s --> ?a. ?b. subset s (real_open_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_bounded_subset_closed_interval_symetric",
+            "prop": "real_bounded s --> ?a. subset s (real_closed_interval (-a) a)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_bounded_subset_closed_interval",
+            "prop": "real_bounded s --> ?a. ?b. subset s (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "tendsto_real",
+            "prop": "tendsto_real f l net = !e. 0 < e --> eventualy (%x. abs (f x - l) < e) net",
+            "ty": "def",
+            "type": "('a => real) => real => 'a net => bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "reallim",
+            "prop": "reallim net f = THE l. tendsto_real f l net",
+            "ty": "def",
+            "type": "'a net => ('a => real) => real"   
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "trivial_limit",
+            "prop": "trivial_limit net = eventualy (%x::'a. false) net",
+            "ty": "def",
+            "type": "'a net => bool"   
+        },
+        {
+            "name": "reallim_trivial",
+            "prop": "trivial_limit net --> tendsto_real f l net",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+           "name": "reallim_unique",
+            "prop": "neg (trivial_limit net) & tendsto_real f l1 net & tendsto_real f l2 net --> l1 = l2",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "l1": "real",
+                "l2": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "name": "reallim_const",
+             "prop": "tendsto_real (%x. a) a net",
+             "ty": "thm",
+             "vars": {
+                 "a": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_lmul",
+             "prop": "tendsto_real f l net --> tendsto_real (%x. c * f x) (c * l) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "c": "real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_rmul",
+             "prop": "tendsto_real f l net --> tendsto_real (%x. (f x) * c) (l * c) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "c": "real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_lmul_eq",
+             "prop": "neg (c = 0) --> tendsto_real (%x. c * f x) (c * l) net = tendsto_real f l net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "c": "real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_rmul_eq",
+             "prop": "neg (c = 0) --> tendsto_real (%x. (f x) * c) (l * c) net = tendsto_real f l net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "c": "real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_neg_eq",
+             "prop": "tendsto_real (%x. -(f x)) (-l) net = tendsto_real f l net ",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_add",
+             "prop": "tendsto_real f l net & tendsto_real g m net --> tendsto_real (%x. f x + g x) (l + m) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "g": "'a => real",
+                 "m": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_sub",
+             "prop": "tendsto_real f l net & tendsto_real g m net --> tendsto_real (%x. f x - g x) (l - m) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "g": "'a => real",
+                 "m": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_mul",
+             "prop": "tendsto_real f l net & tendsto_real g m net --> tendsto_real (%x. f x * g x) (l * m) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "g": "'a => real",
+                 "m": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_inverse",
+             "prop": "tendsto_real f l net & neg (l = 0) --> tendsto_real (%x. real_inverse (f x)) (real_inverse l) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_div",
+             "prop": ["tendsto_real f l net & tendsto_real g m net & neg (m = 0)",
+                      "--> tendsto_real (%x. (f x) / (g x)) (l / m) net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "g": "'a => real",
+                 "m": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_abs",
+             "prop": "tendsto_real f l net --> tendsto_real (%x. abs (f x)) (abs l) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_pow",
+             "prop": "tendsto_real f l net --> tendsto_real (%x. (f x) ^ n) (l ^ n) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "n": "nat",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_max",
+             "prop": ["tendsto_real f l net & tendsto_real g m net",
+                      "--> tendsto_real (%x. max (f x) (g x)) (max l m) net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "g": "'a => real",
+                 "m": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_min",
+             "prop": ["tendsto_real f l net & tendsto_real g m net",
+                      "--> tendsto_real (%x. min (f x) (g x)) (min l m) net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "g": "'a => real",
+                 "m": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null",
+             "prop": "tendsto_real f l net --> tendsto_real (%x. (f x) - l) 0 net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_add",
+             "prop": ["tendsto_real f 0 net & tendsto_real g 0 net",
+                      "--> tendsto_real (%x. (f x) + g x) 0 net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "g": "'a => real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_lmul",
+             "prop": "tendsto_real f 0 net --> tendsto_real (%x. c * f x) 0 net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "c": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_rmul",
+             "prop": "tendsto_real f 0 net --> tendsto_real (%x. (f x) * c) 0 net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "c": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_pow",
+             "prop": "tendsto_real f 0 net & neg (n = 0) --> tendsto_real (%x. (f x) ^ n) 0 net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "n": "nat",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_lmul_eq",
+             "prop": "neg (c = 0) --> tendsto_real (%x. c * f x) 0 net = tendsto_real f 0 net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "c": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_rmul_eq",
+             "prop": "neg (c = 0) --> tendsto_real (%x. f x * c) 0 net = tendsto_real f 0 net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "c": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_neg",
+             "prop": "tendsto_real (%x. -(f x)) 0 net = tendsto_real f 0 net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_sub",
+             "prop": ["tendsto_real f 0 net & tendsto_real g 0 net",
+                      "--> tendsto_real (%x. (f x) - g x) 0 net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "g": "'a => real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_transform_eventually",
+             "prop": ["eventually (%x. f x = g x) net & tendsto_real f l net",
+                      "--> tendsto_real g l net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "g": "'a => real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_transform",
+             "prop": ["tendsto_real (%x. f x - g x) 0 net & tendsto_real f l net",
+                      "--> tendsto_real g l net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "g": "'a => real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_transform_eq",
+             "prop": ["tendsto_real (%x. f x - g x) 0 net",
+                      "--> tendsto_real f l net = tendsto_real g l net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "g": "'a => real",
+                 "l": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "real_seq_offset",
+             "prop": ["tendsto_real f l sequentially",
+                      "--> tendsto_real (%i. f (i + k)) l sequentially"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l": "real",
+                 "k": "nat"
+             }
+         },
+         {
+            "name": "real_seq_offset_rev",
+             "prop": ["tendsto_real (%i. f (i + k)) l sequentially",
+                      "--> tendsto_real f l sequentially"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l": "real",
+                 "k": "nat"
+             }
+         },
+         {
+            "name": "reallim_transform_straddle",
+             "prop": ["eventually (%n. f n <= g n) net & tendsto_real f a net &",
+                      "eventually (%n. g n <= h n) net & tendsto_real h a net",
+                      "--> tendsto_real g a net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "g": "'a => real",
+                 "h": "'a => real",
+                 "a": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_abs",
+             "prop": "tendsto_real (%x. abs (f x)) 0 net = tendsto_real f 0 net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_within_le",
+             "prop": ["tendsto_real f l (within (at a) s) =",
+                      "!e. 0 < e",
+                           "--> ?d. 0 < d &",
+                                "!x. member x s & 0 < abs (x - a) & abs (x - a) <= d",
+                                "--> abs (f x - l) < e"],
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "l": "real",
+                 "a": "real",
+                 "s": "real set"
+             }
+         },
+         {
+            "name": "reallim_within",
+             "prop": ["tendsto_real f l (within (at a) s) =",
+                      "!e. 0 < e",
+                           "--> ?d. 0 < d &",
+                                "!x. member x s & 0 < abs (x - a) & abs (x - a) < d",
+                                "--> abs (f x - l) < e"],
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "l": "real",
+                 "a": "real",
+                 "s": "real set"
+             }
+         },
+         {
+            "name": "reallim_at",
+             "prop": ["tendsto_real f l (at a) =",
+                      "!e. 0 < e",
+                           "--> ?d. 0 < d & !x. 0 < abs (x - a) & abs (x - a) < d",
+                                "--> abs (f x - l) < e"],
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "l": "real",
+                 "a": "real"
+             }
+         },
+         {
+            "name": "reallim_at_infinity",
+             "prop": ["tendsto_real f l at_infinity =",
+                      "!e. 0 < e --> ?b. !x. abs x >= b --> abs (f x - l) < e"],
+             "ty": "thm",
+             "vars": {
+                 "f": "real => real",
+                 "l": "real"
+             }
+         },
+         {
+            "name": "reallim_sequentially",
+             "prop": ["tendsto_real s l sequentially =",
+                      "!e. 0 < e --> ?N. !n. N <= n --> abs (s n - l) < e"],
+             "ty": "thm",
+             "vars": {
+                 "s": "nat => real",
+                 "l": "real"
+             }
+         },
+         {
+            "name": "reallim_eventually",
+             "prop": "eventually (%x. f x = l) net --> tendsto_real f l net",
+             "ty": "thm",
+             "vars": {
+                "net": "'a net",
+                 "f": "'a => real",
+                 "l": "real"
+             }
+         },
+         {
+            "name": "reallim_ubound",
+             "prop": ["tendsto_real f l net &",
+                      "neg (trivial_limit net) &",
+                      "eventually (%x. f x <= b) net",
+                      "--> l <= b"],
+             "ty": "thm",
+             "vars": {
+                 "net": "'a net",
+                 "f": "'a => real",
+                 "l": "real",
+                 "b": "real"
+             }
+         },
+         {
+            "name": "reallim_lbound",
+             "prop": ["tendsto_real f l net &",
+                      "neg (trivial_limit net) &",
+                      "eventually (%x. b <= f x) net",
+                      "--> b <= l"],
+             "ty": "thm",
+             "vars": {
+                 "net": "'a net",
+                 "f": "'a => real",
+                 "l": "real",
+                 "b": "real"
+             }
+         },
+         {
+            "name": "reallim_le",
+             "prop": ["tendsto_real f l net & tendsto_real g m net &",
+                      "neg (trivial_limit net) &",
+                      "eventually (%x. f x <= g x) net",
+                      "--> l <= m"],
+             "ty": "thm",
+             "vars": {
+                 "net": "'a net",
+                 "f": "'a => real",
+                 "g": "'a => real",
+                 "l": "real",
+                 "m": "real"
+             }
+         },
+         {
+            "name": "reallim_const_eq",
+             "prop": "tendsto_real (%x. c) d net = trivial_limit net | c = d",
+             "ty": "thm",
+             "vars": {
+                 "net": "'a net",
+                 "c": "real",
+                 "d": "real"
+             }
+         },
+         {
+            "name": "reallim_sum",
+             "prop": ["finite s & (!i. member i s --> tendsto_real (f i) (l i) net)",
+                      "--> tendsto_real (%x. sum s (%i. f i x)) (sum s l) net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => 'b => real",
+                 "l": "'a => real",
+                 "s": "'a set",
+                 "net": "'b net"
+             }
+         },
+         {
+            "name": "reallim_null_sum",
+             "prop": ["finite s & (!a. member a s --> tendsto_real (%x. f x a) 0 net)",
+                      "--> tendsto_real (%x. sum s (f x)) 0 net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => 'b => real",
+                 "s": "'b set",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_null_comparison",
+             "prop": ["eventually (%x. abs (f x) <= g x) net & tendsto_real g 0 net",
+                      "--> tendsto_real f 0 net"],
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "g": "'a => real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "convergent_real_bounded_monotone",
+             "prop": ["real_bounded (image s univ) &",
+                      "((!n. s n <= s (Suc n)) | (!n. s (Suc n) <= s n))",
+                      "--> ?l. tendsto_real s l sequentially"],
+             "ty": "thm",
+             "vars": {
+                 "s": "nat => real"
+             }
+         },
+         {
+            "name": "reallim_eventually_ubound",
+             "prop": "tendsto_real f l net & l < c --> eventually (%x. f x < c) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "c": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_eventually_lbound",
+             "prop": "tendsto_real f l net & c < l --> eventually (%x. c < f x) net",
+             "ty": "thm",
+             "vars": {
+                 "f": "'a => real",
+                 "l": "real",
+                 "c": "real",
+                 "net": "'a net"
+             }
+         },
+         {
+            "name": "reallim_sequentially_within",
+             "prop": "tendsto_real f l sequentially --> tendsto_real f l (within sequentially s)",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l": "real",
+                 "s": "nat set"
+             }
+         },
+         {
+             "name": "real_sums",
+             "prop": "real_sums f l s = tendsto_real (%n. sum (inter s {0..n}) f) l sequentially",
+             "ty": "def",
+             "type": "(nat => real) => real => nat set => bool"  
+         },
+         {
+            "name": "real_infsum",
+            "prop": "real_infsum s f = THE l. real_sums f l s",
+            "ty": "def",
+            "type": "nat set => (nat => real) => real"  
+        },
+        {
+            "name": "real_summable",
+            "prop": "real_summable s f = ?l. real_sums f l s",
+            "ty": "def",
+            "type": "nat set => (nat => real) => bool"  
+        },
+        {
+            "name": "real_series_cauchy",
+             "prop": ["(?l. real_sums f l s) =",
+                      "!e. 0 < e",
+                           "--> ?N. !m. !n. m >= N --> abs (sum (inter s {m..n}) f) < e"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_cauchy",
+             "prop": ["real_summable s f =",
+                      "!e. 0 < e",
+                           "--> ?N. !m. !n. m >= N --> abs (sum (inter s {m..n}) f) < e"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_sums_summable",
+             "prop": "real_sums f l s --> real_summable s f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l": "real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_sums_infsum",
+             "prop": "real_sums f (real_infsum s f) s = real_summable s f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+             "name": "from",
+             "prop": "from n = {m. n <= m}",
+             "ty": "def",
+             "type": "nat => nat set"             
+         },
+         {
+            "name": "real_series_from",
+             "prop": "real_sums f l (from k) = tendsto_real (%n. sum {k..n} f) l sequentially",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l": "real",
+                 "k": "nat"
+             }
+         },
+         {
+            "name": "real_series_unique",
+             "prop": "real_sums f l1 s & real_sums f l2 s --> l1 = l2",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l1": "real",
+                 "l2": "real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_infsum_unique",
+             "prop": "real_sums f l s --> real_infsum s f = l",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "l": "real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_series_finite",
+             "prop": "finite s --> real_sums f (sum s f) s",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_finite",
+             "prop": "finite s --> real_summable s f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_iff_eventually",
+             "prop": ["(?N. !n. N <= n & member n s --> f n = g n)",
+                      "--> real_summable s f = real_summable s g"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "g": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_eq_eventually",
+             "prop": ["(?N. !n. N <= n & member n s --> f n = g n) & real_summable s f",
+                      "--> real_summable s g"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "g": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_iff_cofinite",
+             "prop": ["finite (union (diff s t) (diff t s))",
+                      "--> real_summable s f = real_summable t f"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set",
+                 "t": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_eq_cofinite",
+             "prop": ["finite (union (diff s t) (diff t s)) & real_summable s f",
+                      "--> real_summable t f"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set",
+                 "t": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_from_elsewhere",
+             "prop": "real_summable (from m) f --> real_summable (from n) f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "m": "nat",
+                 "n": "nat"
+             }
+         },
+         {
+            "name": "real_summable_from_elsewhere_eq",
+             "prop": "real_summable (from m) f = real_summable (from n) f",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "m": "nat",
+                 "n": "nat"
+             }
+         },
+         {
+            "name": "real_series_goestozero",
+             "prop": ["real_summable s f",
+                      "--> !e. 0 < e",
+                              "--> eventually (%n. member n s --> abs (f n) < e) sequentially"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },
+         {
+            "name": "real_summable_imp_tozero",
+             "prop": ["real_summable s f",
+                      "--> tendsto_real (%n. if member n s then f n else 0) 0 sequentially"],
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_imp__bounded",
+             "prop": "real_summable s f --> real_bounded (image f s)",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_imp_real_sums_bounded",
+             "prop": "real_summable (from k) f --> real_bounded {y. !n. y = sum {k..n} f}",
+             "ty": "thm",
+             "vars": {
+                 "f": "nat => real",
+                 "k": "nat"
+             }
+         },         
+         {
+            "name": "real_series_0",
+             "prop": "real_sums (%n. 0) 0 s",
+             "ty": "thm",
+             "vars": {
+                 "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_add",
+             "prop": ["real_sums x x0 s & real_sums y y0 s",
+                      "--> real_sums (%n. x n + y n) (x0 + y0) s"],
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real",
+                "y": "nat => real", 
+                "y0": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_sub",
+             "prop": ["real_sums x x0 s & real_sums y y0 s",
+                      "--> real_sums (%n. x n - y n) (x0 - y0) s"],
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real",
+                "y": "nat => real", 
+                "y0": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_lmul",
+             "prop": "real_sums x x0 s --> real_sums (%n. c * x n) (c * x0) s",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real", 
+                "c": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_rmul",
+             "prop": "real_sums x x0 s --> real_sums (%n. x n * c) (x0 * c) s",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real", 
+                "c": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_neg",
+             "prop": "real_sums x x0 s --> real_sums (%n. -(x n)) (-x0) s",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "x0": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_sums_iff",
+             "prop": ["(!x. member x s --> f x = g x)",
+                      "--> real_sums f l s = real_sums g l s"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "g": "nat => real", 
+                "l": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_sums_eq",
+             "prop": ["(!x. member x s --> f x = g x) & real_sums f l s",
+                      "--> real_sums g l s"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "g": "nat => real", 
+                "l": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_finite_support",
+             "prop": ["finite (inter s t) & (!x. neg (member x (inter s t)) --> f x = 0)",
+                      "--> real_sums f (sum (inter s t) f) t"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "t": "nat set",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_diffs",
+             "prop": ["tendsto_real f 0 sequentially",
+                      "--> real_sums (%n. f n - f (n + 1)) (f k) (from k)"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "k": "nat"
+             }
+         },         
+         {
+            "name": "real_series_trival",
+             "prop": "real_sums f 0 empty_set",
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real"
+             }
+         },         
+         {
+            "name": "real_series_restrict",
+             "prop": ["real_sums (%n. if member n s then f n else 0) l univ =",
+                      "real_sums f l s"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_sum",
+             "prop": ["finite s & subset s t & (!x. neg (member x s) --> f x = 0) & sum s f = l",
+                      "--> real_sums f l t"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "t": "nat set",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_reindex",
+             "prop": ["real_sums (%n. f (n + k)) l (from m) =",
+                      "real_sums f l (from (m + k))"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "l": "real", 
+                "m": "nat",
+                "k": "nat"
+             }
+         },         
+         {
+            "name": "real_series_even",
+             "prop": ["real_sums f l (from n) =",
+                      "real_sums (%i. if even i then f (i DIV 2) else 0) l (from (2 * n))"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "l": "real", 
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_series_odd",
+             "prop": ["real_sums f l (from n) =",
+                      "real_sums (%i. if odd i then f (i DIV 2) else 0) l (from (2 * n + 1))"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "l": "real", 
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_partial_sums_le_infsum",
+             "prop": ["(!i. member i s --> 0 <= f i) & real_summable s f",
+                      "--> sum (inter s {0..n}) f <= real_infsum s f"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "s": "nat set", 
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_partial_sums_le_infsum_gen",
+             "prop": ["finite t & subset t s &",
+                      "(!i. member i s --> 0 <= f i) & real_summable s f",
+                      "--> sum t f <= real_infsum s f"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "s": "nat set", 
+                "t": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_terms_tozero",
+             "prop": "real_sums f l (from n) --> tendsto_real f 0 sequentially",
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_series_le",
+             "prop": ["real_sums f y s & real_sums g z s &",
+                      "(!i. member i s --> f i <= g i)",
+                      "--> y <= z"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "g": "nat => real",
+                "s": "nat set", 
+                "y": "real",
+                "z": "real"
+             }
+         },
+         {
+            "name": "real_series_pos",
+            "prop": ["real_sums f y s & (!i. member i s --> 0 <= f i)",
+                     "--> 0 <= y"],
+            "ty": "thm",
+            "vars": {
+               "f": "nat => real",
+               "s": "nat set",
+               "y": "real"
+             }
+         },
+         {
+            "name": "real_series_bound",
+            "prop": ["real_sums f y s & real_sums g z s &",
+                     "(!i. member i s --> abs (f i) <= g i)",
+                     "--> abs y <= z"],
+            "ty": "thm",
+            "vars": {
+                 "f": "nat => real",
+                 "g": "nat => real",
+                 "s": "nat set",
+                 "y": "real",
+                 "z": "real"
+                }
+         },
+         {
+            "name": "real_series_comparison_bound",
+            "prop": ["real_sums g z s & (!i. member i s --> abs (f i) <= g i)",
+                     "--> ?y. real_sums f y s & abs y <= z"],
+            "ty": "thm",
+            "vars": {
+                  "f": "nat => real",
+                  "g": "nat => real",
+                  "s": "nat set",
+                  "z": "real"
+                 }
+         },
+         {
+            "name": "real_series_mul",
+            "prop": ["real_sums x a (from 0) & real_sums y b (from 0) &",
+                     "(real_summable (from 0) (%n. abs (x n)) |",
+                     "real_summable (from 0) (%n. abs (y n)))",
+                     "--> real_sums (%n. sum {0..n} (%i. x i * y (n - i))) (a * b) (from 0)"],
+            "ty": "thm",
+            "vars": {
+                 "x": "nat => real",
+                 "a": "real",
+                 "y": "nat => real",
+                 "b": "real"
+                  }
+         },
+         {
+             "name": "real_series_mul_unique",
+             "prop": ["real_sums x a (from 0) & real_sums y b (from 0) &",
+                      "real_sums (%n. sum {0..n} (%i. x i * y (n - i))) c (from 0)",
+                      "--> a * b = c"],
+             "ty": "thm",
+             "vars": {
+                  "x": "nat => real",
+                  "a": "real",
+                  "y": "nat => real",
+                  "b": "real",
+                  "c": "real"
+                 }
+         },         
+         {
+             "name": "real_summable_0",
+             "prop": "real_summable s (%n. 0)",
+             "ty": "thm",
+             "vars": {
+                 "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_add",
+             "prop": ["real_summable s x & real_summable s y",
+                      "--> real_summable s (%n. x n + y n)"],
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "y": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_sub",
+             "prop": ["real_summable s x & real_summable s y",
+                      "--> real_summable s (%n. x n - y n)"],
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "y": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_lmul",
+             "prop": "real_summable s x --> real_summable s (%n. c * x n)",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "c": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_rmul",
+             "prop": "real_summable s x --> real_summable s (%n. x n * c)",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "c": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_neg",
+             "prop": "real_summable s x --> real_summable s (%n. -(x n))",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_iff",
+             "prop": ["(!x. member x s --> f x = g x)",
+                      "--> real_summable s f = real_summable s g"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "g": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_eq",
+             "prop": ["(!x. member x s --> f x = g x) & real_summable s f",
+                      "--> real_summable s g"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "g": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_series_subset",
+             "prop": ["subset s t &",
+                      "real_sums (%i. if member i s then f i else 0) l t",
+                      "--> real_sums f l s"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "s": "nat set",
+                "t": "nat set"
+             }
+         },         
+         {
+            "name": "real_summable_subset",
+             "prop": ["subset s t &",
+                      "real_summable t (%i. if member i s then f i else 0)",
+                      "--> real_summable s f"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "s": "nat set",
+                "t": "nat set"
+             }
+         },         
+         {
+             "name": "real_summable_trivial",
+             "prop": "real_summable empty_set f",
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real"
+             }
+         },         
+         {
+            "name": "real_summable_restrict",
+             "prop": ["real_summable univ (%i. if member i s then f i else 0) =",
+                      "real_summable s f"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+             "name": "real_sums_finite_diff",
+             "prop": ["subset t s & finite t & real_sums f l s",
+                      "--> real_sums f (l - sum t f) (diff s t)"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "s": "nat set",
+                "t": "nat set"
+             }
+         },         
+         {
+             "name": "real_sums_finite_union",
+             "prop": ["finite t & real_sums f l s",
+                      "--> real_sums f (l + sum (diff t s) f) (union s t)"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "s": "nat set",
+                "t": "nat set"
+             }
+         },         
+         {
+             "name": "real_sums_offset",
+             "prop": ["real_sums f l (from m) & m < n",
+                      "--> real_sums f (l - sum {m..(n - 1)} f) (from n)"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "m": "nat",
+                "n": "nat"
+             }
+         },         
+         {
+             "name": "real_sums_offset_rev",
+             "prop": ["real_sums f l (from m) & n < m",
+                      "--> real_sums f (l + sum {n..(m - 1)} f) (from n)"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "l": "real",
+                "m": "nat",
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_summable_even",
+             "prop": ["real_summable (from n) f =",
+                      "real_summable (from (2 * n)) (%i. if even i then f (i DIV 2) else 0)"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_summable_odd",
+             "prop": ["real_summable (from n) f =",
+                      "real_summable (from (2 * n + 1)) (%i. if odd i then f (i DIV 2) else 0)"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "n": "nat"
+             }
+         },         
+         {
+             "name": "real_infsum_0",
+             "prop": "real_infsum s (%n. 0) = 0",
+             "ty": "thm",
+             "vars": {
+                 "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_infsum_add",
+             "prop": ["real_summable s x & real_summable s y",
+                      "--> real_infsum s (%n. x n + y n) = ",
+                          "real_infsum s x + real_infsum s y"],
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "y": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_infsum_sub",
+             "prop": ["real_summable s x & real_summable s y",
+                      "--> real_infsum s (%n. x n - y n) = ",
+                          "real_infsum s x - real_infsum s y"],
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "y": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_infsum_lmul",
+             "prop": "real_summable s x --> real_infsum s (%n. c * x n) = c * real_infsum s x",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "c": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_infsum_rmul",
+             "prop": "real_summable s x --> real_infsum s (%n. x n * c) = real_infsum s x * c",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real", 
+                "c": "real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_infsum_neg",
+             "prop": "real_summable s x --> real_infsum s (%n. -(x n)) = -(real_infsum s x)",
+             "ty": "thm",
+             "vars": {
+                "x": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_infsum_eq",
+             "prop": ["(!x. member x s --> f x = g x) & real_summable s f & real_summable s g",
+                      "--> real_infsum s f = real_infsum s g"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "g": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_infsum_restrict",
+             "prop": ["real_infsum univ (%i. if member i s then f i else 0) =",
+                      "real_infsum s f"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real",
+                "s": "nat set"
+             }
+         },         
+         {
+            "name": "real_infsum_even",
+             "prop": ["real_infsum (from n) f =",
+                      "real_infsum (from (2 * n)) (%i. if even i then f (i DIV 2) else 0)"],
+             "ty": "thm",
+             "vars": {
+                "f": "nat => real", 
+                "n": "nat"
+             }
+         },         
+         {
+            "name": "real_infsum_odd",
+            "prop": ["real_infsum (from n) f =",
+                     "real_infsum (from (2 * n + 1)) (%i. if odd i then f (i DIV 2) else 0)"],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real", 
+                "n": "nat"
+                 }
+         },         
+         {
+            "name": "rea_series_cauchy_uniform",
+            "prop": ["(?l. !e. 0 < e",
+                              "--> ?N. !n. !x. N <= n & P x",
+                                              "--> abs (sum (inter s {0..n}) (f x) - l x) < e) =",
+                     "(!e. 0 < e --> ?N. !m. !n. !x. N <= m & P x",
+                                                    "--> abs (sum (inter s {m..n}) (f x)) < e)"],
+            "ty": "thm",
+            "vars": {
+                "P": "'a => bool",
+                "f": "'a => nat => real", 
+                "s": "nat set"
+                }
+         },
+         {
+            "name": "real_series_comparison",
+            "prop": ["(?l. real_sums g l s) &",
+                     "(?N. !i. i >= N & member i s --> abs (f i) <= g i)",
+                     "--> ?l. real_sums f l s"],
+            "ty": "thm",
+            "vars": {
+                  "f": "nat => real",
+                  "g": "nat => real",
+                  "s": "nat set"
+                 }
+         },
+         {
+            "name": "real_summable_comparison",
+            "prop": ["real_summable s g &",
+                     "(?N. !i. i >= N & member i s --> abs (f i) <= g i)",
+                     "--> real_summable s f"],
+            "ty": "thm",
+            "vars": {
+                  "f": "nat => real",
+                  "g": "nat => real",
+                  "s": "nat set"
+                 }
+         },
+         {
+            "name": "real_series_comparison_uniform",
+            "prop": ["(?l. real_sums g l s) &",
+                     "(?N. !i. !x. N <= i & member i s & P x --> abs (f x i) <= g i)",
+                     "--> ?l. !e. 0 < e",
+                                 "--> ?N. !i. !x. N <= i & P x",
+                                                 "--> abs (sum (inter s {0..i}) (f x) - l x) < e"],
+            "ty": "thm",
+            "vars": {
+                  "P": "'a => bool",
+                  "f": "'a => nat => real", 
+                  "g": "nat => real",
+                  "s": "nat set"
+                 }
+         },
+         {
+            "name": "real_summable_pos_subset",
+            "prop": ["(!x. member x t --> 0 <= f x) & real_summable t f & subset s t",
+                     "--> real_summable s f"],
+            "ty": "thm",
+            "vars": {
+                  "f": "nat => real",
+                  "t": "nat set",
+                  "s": "nat set"
+                 }
+         },
+         {
+            "name": "real_series_ratio",
+            "prop": ["c < 1",
+                     "(!i. i >= N --> abs (f (Suc i)) <=  c * abs (f i))",
+                     "--> ?l. real_sums f l s"],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "nat => real",
+                "N": "nat",
+                "s": "nat set"
+                 }
+         },
+         {
+            "name": "bounded_partial_real_sums",
+            "prop": ["real_bounded {y. !n. y = sum {k..n} f}",
+                     "--> real_bounded {y. !m. !n. y = sum {m..n} f}"],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real",
+                "k": "nat"
+                 }
+         },
+         {
+            "name": "real_series_dirichlet",
+            "prop": ["real_bounded {y. !n. y = sum {m..n} f} &",
+                     "(!i. N <= i --> g (Suc i) <=  g i) &",
+                     "tendsto_real g 0 sequentially",
+                     "--> real_summable (from k) (%n. g n * f n)"],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real",
+                "g": "nat => real",
+                "N": "nat",
+                "k": "nat",
+                "m": "nat"
+                 }
+         },
+         {
+            "name": "real_series_absconv_imp_conv",
+            "prop": "real_summable s (%n. abs (f n)) --> real_summable s f",
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real",
+                "s": "nat set"
+                 }
+         },
+         {
+            "name": "real_sums_gp",
+            "prop": "abs x < 1 --> real_sums (%k. x ^ k) (x ^ n / (1 - x)) (from n)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "n": "nat"
+                 }
+         },
+         {
+            "name": "real_summable_gp",
+            "prop": "abs x < 1 --> real_summable s (%k. x ^ k)",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "s": "nat set"
+                 }
+         },
+         {
+            "name": "real_summable_zeta_integer",
+            "prop": "2 <= m --> real_summable (from n) (%k. real_inverse ((of_nat k) ^ m))",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+                 }
+         },
+         {
+            "name": "real_abel_lemma",
+            "prop": ["0 <= r & r <= r0 &",
+                     "(!n. member n s --> abs (a n) * r0 ^ n <= M)",
+                     "--> real_summable s (%k. abs (a k) * r ^ k)"],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "M": "real",
+                "s": "nat set",
+                "r": "real",
+                "r0": "real"
+                 }
+         },
+         {
+            "name": "real_power_series_conv_imp_absconv",
+            "prop": ["real_summable s (%k. abs (a k) * z ^ k ) & abs w <= abs z",
+                     "--> real_summable s (%k. abs ((a k) * w ^ k))"],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "s": "nat set",
+                "w": "real",
+                "z": "real"
+                 }
+         },
+         {
+            "name": "power_real_series_conv_imp_absconv_weak",
+            "prop": ["real_summable s (%k. abs (a k) * z ^ k ) & abs w <= abs z",
+                     "--> real_summable s (%k. abs (a k) * w ^ k)"],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "s": "nat set",
+                "w": "real",
+                "z": "real"
+                 }
+         },
+         {
+            "name": "real_summable_mul_left",
+            "prop": ["real_summable (from m) (%k. abs (x k)) &",
+                     "real_summable (from n) y",
+                     "--> real_summable (from p) (%k. (sum {0..k} (%i. x i * y (k - i))))"],
+            "ty": "thm",
+            "vars": {
+                "x": "nat => real",
+                "y": "nat => real",
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+                 }
+         },
+         {
+            "name": "real_summable_mul_right",
+            "prop": ["real_summable (from m) x &",
+                     "real_summable (from n) (%k. abs (y k))",
+                     "--> real_summable (from p) (%k. (sum {0..k} (%i. x i * y (k - i))))"],
+            "ty": "thm",
+            "vars": {
+                "x": "nat => real",
+                "y": "nat => real",
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+                 }
+         },
+         {
+             "name": "atreal",
+             "ty": "def.ax",
+             "type": "real => real net"
+         },
+         {
+            "name": "withinreal_univ",
+            "prop": "within (atreal x) univ = atreal x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+                 }
+         },
+         {
+            "name": "eventually_atreal",
+            "prop": ["eventually p (atreal a) =",
+                     "?d. 0 < d & !x. 0 < abs (x - a) & abs (x - a) < d --> p x"],
+            "ty": "thm",
+            "vars": {
+                "p": "real => bool",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "trivial_limit_atreal",
+            "prop": "neg (trivial_limit (atreal a))",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+                 }
+         },
+         {
+            "name": "eventually_withinreal",
+            "prop": ["eventually p (within (atreal a) s) =",
+                      "?d. 0 < d & !x. member x s & 0 < abs (x - a) & abs (x - a) < d --> p x"],
+            "ty": "thm",
+            "vars": {
+                "p": "real => bool",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "eventually_withinreal_le",
+            "prop": ["eventually p (within (atreal a) s) =",
+                       "?d. 0 < d &",
+                           "!x. member x s & 0 < abs (x - a) & abs (x - a) <= d --> p x"],
+            "ty": "thm",
+            "vars": {
+                "p": "real => bool",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_withinreal_le",
+            "prop": ["tendsto_real f l (within (atreal a) s) =",
+                         "!e. 0 < e --> ?d. 0 < d &",
+                                          "!x. member x s & 0 < abs (x - a) & abs (x - a) <= d",
+                                              "--> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_withinreal",
+            "prop": ["tendsto_real f l (within (atreal a) s) =",
+                         "!e. 0 < e",
+                             "--> ?d. 0 < d &",
+                                    "!x. member x s & 0 < abs (x - a) & abs (x - a) < d",
+                                        "--> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_atreal",
+            "prop": ["tendsto_real f l (atreal a) =",
+                         "!e. 0 < e",
+                             "--> ?d. 0 < d &",
+                                    "!x. member x s & 0 < abs (x - a) & abs (x - a) < d",
+                                        "--> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_at_posinfinity",
+            "prop": ["tendsto_real f l at_posinfinity =",
+                         "!e. 0 < e --> ?b. !x. x >= b --> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real"
+                 }
+         },
+         {
+            "name": "reallim_at_neginfinity",
+            "prop": ["tendsto_real f l at_neginfinity =",
+                         "!e. 0 < e --> ?b. !x. x <= b --> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real"
+                 }
+         },
+         {
+            "name": "reallim_atreal_withinreal",
+            "prop": "tendsto_real f l (atreal a) --> tendsto_real f l (within (atreal a) s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_withinreal_subset",
+            "prop": ["tendsto_real f l (within (atreal a) s) & subset t s",
+                     "--> tendsto_real f l (within (atreal a) t)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "t": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_atreal_id",
+            "prop": "tendsto_real (%x. x) a (atreal a)",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_withinreal_id",
+            "prop": "tendsto_real (%x. x) a (within (atreal a) s)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+                 }
+         },
+         {
+            "name": "reallim_transform_withinreal_set",
+            "prop": ["eventually (%x. member x s = member x t) (atreal a)",
+                     "--> tendsto_real f l (within (atreal a) s) = ",
+                         "tendsto_real f l (within (atreal a) t)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "t": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_transform_withinreal_set_imp",
+            "prop": ["eventually (%x. member x s = member x t) (atreal a) &",
+                     "tendsto_real f l (within (atreal a) s)",
+                     "--> tendsto_real f l (within (atreal a) t)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "t": "real set",
+                "a": "real"
+                 }
+         }
+    ],
+    "description": "Some analytic concepts for real.",
+    "imports": [
+        "integral",
+        "iterate"
+    ],
+    "name": "realanalysis"
+}

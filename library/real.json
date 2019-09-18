@@ -52,7 +52,7 @@
         {
             "name": "real_inverse",
             "ty": "def.ax",
-            "type": "real => real => real"
+            "type": "real => real"
         },
         {
             "name": "real_divide",
@@ -63,6 +63,21 @@
             "name": "real_of_nat",
             "ty": "def.ax",
             "type": "nat => real"
+        },
+        {
+            "ascii_op": "^",
+            "name": "real_power",
+            "overload": "power",
+            "rules": [
+                {
+                    "prop": "(x::real) ^ 0 = 1"
+                },
+                {
+                    "prop": "x ^ Suc m = x * x ^ m"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "real => nat => real"
         },
         {
             "name": "real_add_assoc",
