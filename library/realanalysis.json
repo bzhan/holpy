@@ -21,6 +21,16 @@
             "type": "real net"
         },
         {
+            "name": "at_posinfinity",
+            "ty": "def.ax",
+            "type": "real net"
+        },
+        {
+            "name": "at_neginfinity",
+            "ty": "def.ax",
+            "type": "real net"
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -1616,6 +1626,259 @@
             "vars": {
                 "m": "nat",
                 "n": "nat"
+                 }
+         },
+         {
+            "name": "real_abel_lemma",
+            "prop": ["0 <= r & r <= r0 &",
+                     "(!n. member n s --> abs (a n) * r0 ^ n <= M)",
+                     "--> real_summable s (%k. abs (a k) * r ^ k)"],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "M": "real",
+                "s": "nat set",
+                "r": "real",
+                "r0": "real"
+                 }
+         },
+         {
+            "name": "real_power_series_conv_imp_absconv",
+            "prop": ["real_summable s (%k. abs (a k) * z ^ k ) & abs w <= abs z",
+                     "--> real_summable s (%k. abs ((a k) * w ^ k))"],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "s": "nat set",
+                "w": "real",
+                "z": "real"
+                 }
+         },
+         {
+            "name": "power_real_series_conv_imp_absconv_weak",
+            "prop": ["real_summable s (%k. abs (a k) * z ^ k ) & abs w <= abs z",
+                     "--> real_summable s (%k. abs (a k) * w ^ k)"],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "s": "nat set",
+                "w": "real",
+                "z": "real"
+                 }
+         },
+         {
+            "name": "real_summable_mul_left",
+            "prop": ["real_summable (from m) (%k. abs (x k)) &",
+                     "real_summable (from n) y",
+                     "--> real_summable (from p) (%k. (sum {0..k} (%i. x i * y (k - i))))"],
+            "ty": "thm",
+            "vars": {
+                "x": "nat => real",
+                "y": "nat => real",
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+                 }
+         },
+         {
+            "name": "real_summable_mul_right",
+            "prop": ["real_summable (from m) x &",
+                     "real_summable (from n) (%k. abs (y k))",
+                     "--> real_summable (from p) (%k. (sum {0..k} (%i. x i * y (k - i))))"],
+            "ty": "thm",
+            "vars": {
+                "x": "nat => real",
+                "y": "nat => real",
+                "m": "nat",
+                "n": "nat",
+                "p": "nat"
+                 }
+         },
+         {
+             "name": "atreal",
+             "ty": "def.ax",
+             "type": "real => real net"
+         },
+         {
+            "name": "withinreal_univ",
+            "prop": "within (atreal x) univ = atreal x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+                 }
+         },
+         {
+            "name": "eventually_atreal",
+            "prop": ["eventually p (atreal a) =",
+                     "?d. 0 < d & !x. 0 < abs (x - a) & abs (x - a) < d --> p x"],
+            "ty": "thm",
+            "vars": {
+                "p": "real => bool",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "trivial_limit_atreal",
+            "prop": "neg (trivial_limit (atreal a))",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+                 }
+         },
+         {
+            "name": "eventually_withinreal",
+            "prop": ["eventually p (within (atreal a) s) =",
+                      "?d. 0 < d & !x. member x s & 0 < abs (x - a) & abs (x - a) < d --> p x"],
+            "ty": "thm",
+            "vars": {
+                "p": "real => bool",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "eventually_withinreal_le",
+            "prop": ["eventually p (within (atreal a) s) =",
+                       "?d. 0 < d &",
+                           "!x. member x s & 0 < abs (x - a) & abs (x - a) <= d --> p x"],
+            "ty": "thm",
+            "vars": {
+                "p": "real => bool",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_withinreal_le",
+            "prop": ["tendsto_real f l (within (atreal a) s) =",
+                         "!e. 0 < e --> ?d. 0 < d &",
+                                          "!x. member x s & 0 < abs (x - a) & abs (x - a) <= d",
+                                              "--> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_withinreal",
+            "prop": ["tendsto_real f l (within (atreal a) s) =",
+                         "!e. 0 < e",
+                             "--> ?d. 0 < d &",
+                                    "!x. member x s & 0 < abs (x - a) & abs (x - a) < d",
+                                        "--> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_atreal",
+            "prop": ["tendsto_real f l (atreal a) =",
+                         "!e. 0 < e",
+                             "--> ?d. 0 < d &",
+                                    "!x. member x s & 0 < abs (x - a) & abs (x - a) < d",
+                                        "--> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_at_posinfinity",
+            "prop": ["tendsto_real f l at_posinfinity =",
+                         "!e. 0 < e --> ?b. !x. x >= b --> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real"
+                 }
+         },
+         {
+            "name": "reallim_at_neginfinity",
+            "prop": ["tendsto_real f l at_neginfinity =",
+                         "!e. 0 < e --> ?b. !x. x <= b --> abs (f x - l) < e"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real"
+                 }
+         },
+         {
+            "name": "reallim_atreal_withinreal",
+            "prop": "tendsto_real f l (atreal a) --> tendsto_real f l (within (atreal a) s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_withinreal_subset",
+            "prop": ["tendsto_real f l (within (atreal a) s) & subset t s",
+                     "--> tendsto_real f l (within (atreal a) t)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "t": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_atreal_id",
+            "prop": "tendsto_real (%x. x) a (atreal a)",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_withinreal_id",
+            "prop": "tendsto_real (%x. x) a (within (atreal a) s)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+                 }
+         },
+         {
+            "name": "reallim_transform_withinreal_set",
+            "prop": ["eventually (%x. member x s = member x t) (atreal a)",
+                     "--> tendsto_real f l (within (atreal a) s) = ",
+                         "tendsto_real f l (within (atreal a) t)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "t": "real set",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_transform_withinreal_set_imp",
+            "prop": ["eventually (%x. member x s = member x t) (atreal a) &",
+                     "tendsto_real f l (within (atreal a) s)",
+                     "--> tendsto_real f l (within (atreal a) t)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "s": "real set",
+                "t": "real set",
+                "a": "real"
                  }
          }
     ],

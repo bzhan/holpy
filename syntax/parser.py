@@ -410,7 +410,7 @@ def parse_term(thy, ctxt, s):
     try:
         t = term_parser.parse(s)
         return infertype.type_infer(thy, ctxt, t)
-    except (exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+    except (exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
 
