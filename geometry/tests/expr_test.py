@@ -101,6 +101,7 @@ class ExprTest(unittest.TestCase):
             facts = [parser.parse_fact(fact) for fact in facts]
             concls = [parser.parse_fact(concl) for concl in concls]
             lines = [parser.parse_line(line) for line in lines]
+            print(rule)
             facts = expr.apply_rule(rule, facts, lines=lines)
             self.assertEqual(facts, concls)
 

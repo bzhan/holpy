@@ -276,16 +276,19 @@ def match_expr(pat, f, inst, *, lines=None):
                 elif pat_a in inst and pat_b not in inst:
                     if f.args[pos] == inst[pat_a]:
                         inst[pat_b] = f.args[pos + 1]
+                        new_insts.append(inst)
                     elif f.args[pos + 1] == inst[pat_a]:
                         inst[pat_b] = f.args[pos]
-                    new_insts.append(inst)
+                        new_insts.append(inst)
 
                 elif pat_b in inst and pat_a not in inst:
                     if f.args[pos + 1] == inst[pat_b]:
                         inst[pat_a] = f.args[pos]
+                        new_insts.append(inst)
                     elif f.args[pos] == inst[pat_b]:
                         inst[pat_a] = f.args[pos + 1]
-                    new_insts.append(inst)
+                        new_insts.append(inst)
+
 
                 else:
                     new_insts = insts
@@ -383,6 +386,8 @@ def apply_rule(rule, facts, *, lines=None, record=False):
     original_facts = facts
     facts = []
     types = get_arg_type_by_fact(rule.concl)
+    print(rule.concl.args)
+    print(insts)
     for inst in insts:
         concl_args = []
         for idx, arg in enumerate(rule.concl.args):
