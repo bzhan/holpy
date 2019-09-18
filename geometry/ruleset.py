@@ -13,8 +13,8 @@ ruleset_raw = {
     "D9": "para(l, n) :- perp(l, m), perp(m, n)",
     # "D42": "cyclic(A, B, P, Q) :- eqangle(P, A, P, B, Q, A, Q, B), coll(P, Q, A, B)",
     "D44": "para(E, F, B, C) :- midp(E, A, B), midp(F, A, C)",
-    "D45": "midp(F, A, C) :- midp(E, A, B), para({E, F}, {B, C}), coll(F, A, C)",
-    "D56": "perp({A, B}, {P, Q}) :- cong({A, P}, {B, P}), cong({A, Q}, {B, Q})",
+    "D45": "midp(F, A, C) :- midp(E, A, B), para(E, F, B, C), coll(F, A, C)",
+    "D56": "perp(A, B, P, Q) :- cong(A, P, B, P), cong(A, Q, B, Q)",
 }
 
 ruleset = dict()

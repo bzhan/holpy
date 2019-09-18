@@ -26,12 +26,15 @@ class ExprTest(unittest.TestCase):
         for r, s in test_data:
             self.assertEqual(str(r), s)
 
-    def testArgType(self):
+    def testGetArgTypeByFact(self):
         test_data = [
-            ("{P, Q}", expr.PonL)
+            ("coll(A, B, C)", [expr.POINT, expr.POINT, expr.POINT]),
+            ("perp(l, A, B)", [expr.LINE, expr.PonL, expr.EMPTY]),
+            ("cong(A, B, C, D)", [expr.SEG, expr.EMPTY, expr.SEG, expr.EMPTY]),
+            ("para(A, B, C, D)", [expr.PonL, expr.EMPTY, expr.PonL, expr.EMPTY]),
         ]
-        for s, r in test_data:
-            self.assertEqual(expr.arg_type(s), 2)
+        for fact, r in test_data:
+            self.assertEqual(expr.get_arg_type_by_fact(parser.parse_fact(fact)), r)
 
     def testMatchFact(self):
         test_data = [
@@ -55,41 +58,28 @@ class ExprTest(unittest.TestCase):
             ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("A", "P")}, ["line(O, P, Q)"], []),
             ("para(p, q)", "para(E, N, C, D)", {}, [], [{"p": ("E", "N"), "q": ("C", "D")}]),
 
-            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(M, N, P, Q)"],
+            ("para(A, B, C, D)", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(M, N, P, Q)"],
              [{'A': 'M', 'B': 'N', 'C': 'R', 'D': 'S'}, {'A': 'M', 'B': 'N', 'C': 'S', 'D': 'R'}]),
 
-            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(E, F, G, H)"], []),
+            ("para(A, B, C, D)", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(E, F, G, H)"], []),
 
-            ("para(C, D, {A, B})", "para(R, S, P, Q)", {}, ["line(O, P, Q)"], [
-                {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'Q'},
-                {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'O'}, {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'Q'},
-                {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'O'}, {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'P'}]),
-
-            ("para({A, B}, C, D)", "para(P, Q, R, S)", {}, ["line(O, P, Q)"], [
-                {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'P'}, {'C': 'R', 'D': 'S', 'A': 'O', 'B': 'Q'},
-                {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'O'}, {'C': 'R', 'D': 'S', 'A': 'P', 'B': 'Q'},
-                {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'O'}, {'C': 'R', 'D': 'S', 'A': 'Q', 'B': 'P'}]),
-
-            ("para({A, B}, {C, D})", "para(P, Q, R, S)", {}, ["line(P, Q)"], [
-                {"A": "P", "B": "Q", "C": "R", "D": "S"}, {"A": "P", "B": "Q", "C": "S", "D": "R"},
-                {"A": "Q", "B": "P", "C": "R", "D": "S"}, {"A": "Q", "B": "P", "C": "S", "D": "R"}]),
-
-            ("para({A, B}, C, D)", "para(P, Q, R, S)", {}, ["line(P, Q)"],
-             [{"A": "P", "B": "Q", "C": "R", "D": "S"}, {"A": "Q", "B": "P", "C": "R", "D": "S"},]),
-
-            ("para({A, B}, C, D)", "para(P, Q, R, S)", {"A": "Q"}, ["line(O, P, Q)"],
-             [{"A": "Q", "B": "O", "C": "R", "D": "S"}, {"A": "Q", "B": "P", "C": "R", "D": "S"},]),
-
-            ("para({A, B}, m)", "para(P, Q, R, S)", {"A": "Q"}, ["line(O, P, Q)"],
+            ("para(A, B, m)", "para(P, Q, R, S)", {"A": "Q"}, ["line(O, P, Q)"],
              [{"A": "Q", "B": "O", "m": ("R", "S")}, {"A": "Q", "B": "P", "m": ("R", "S")}, ]),
 
+            ("cong(A, B, C, D)", "cong(P, Q, R, S)", {}, [], [{"A": "P", "B": "Q", "C": "R", "D": "S"},
+                                                              {"A": "P", "B": "Q", "C": "S", "D": "R"},
+                                                              {"A": "Q", "B": "P", "C": "R", "D": "S"},
+                                                              {"A": "Q", "B": "P", "C": "S", "D": "R"},]),
+
+            ("perp(B, A, C, A)", "perp(P, Q, P, R)", {}, [], [{"A": "P", "B": "Q", "C": "R"}]),
+            
+            ("cong(E, A, E, B)", "cong(A, Q, B, Q)", {"A": "A", "B": "B", "D": "P"}, [], [{"A": "A", "B": "B", "D": "P", "E": "Q"}]),
         ]
 
         for pat, f, inst, lines, res in test_data:
             pat = parser.parse_fact(pat)
             f = parser.parse_fact(f)
             lines = [parser.parse_line(line) for line in lines]
-
             insts = expr.match_expr(pat, f, inst, lines=lines)
             self.assertEqual(insts, res)
 
@@ -103,6 +93,8 @@ class ExprTest(unittest.TestCase):
             (ruleset["D45"], ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
              ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
              ["midp(E, B, C)"]),
+            (ruleset["D56"], ["cong(D, A, D, B)", "cong(E, A, E, B)"],
+             [], ["perp(A, B, D, E)"]),
         ]
 
         for rule, facts, lines, concls in test_data:
@@ -164,7 +156,6 @@ class ExprTest(unittest.TestCase):
 
     def testSearchStep(self):
         test_data = [
-
         ]
         for rules, hyps, lines, concls in test_data:
             hyps = [parser.parse_fact(fact) for fact in hyps]

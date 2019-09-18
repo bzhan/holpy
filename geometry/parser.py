@@ -6,9 +6,7 @@ from geometry.expr import Fact, Rule, Line
 
 grammar = r"""
     
-    ?group: "{" CNAME ("," CNAME)* "}"
-    ?arg: group | CNAME
-    ?fact: CNAME "(" arg ("," arg)* ")"
+    ?fact: CNAME "(" CNAME ("," CNAME)* ")"
     ?rule: fact ":-" fact ("," fact)*
     ?line: "line" "(" CNAME ("," CNAME)* ")"
     
@@ -23,13 +21,6 @@ grammar = r"""
 class GeometryTransformer(Transformer):
     def __init__(self):
         pass
-
-    def group(self, *pts):
-        s = "{" + pts[0]
-        for pt in pts[1:]:
-            s = s + ", " + pt
-        s += "}"
-        return s
 
     def fact(self, pred_name, *args):
         pred_name = str(pred_name)

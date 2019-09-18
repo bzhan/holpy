@@ -4,23 +4,46 @@ import itertools, re, copy
 from functools import reduce
 
 
-POINT, LINE, PonL = range(3)
+POINT, LINE, PonL, SEG, TRI, CIRC, EMPTY = range(7)
 
-def arg_type(s):
-    """Upper case means points, lower case means lines.
-    The pattern {[A-Z](,[A-Z])*} represents a line with points on it need to be matched.
+
+def get_arg_type_by_fact(fact):
     """
-    assert isinstance(s, str)
-    if len(s) == 1:
-        if s.isupper():
-            return POINT
-        elif s.islower():
-            return LINE
+    Obtain the type of given argument by a given pred_name of a fact.
+    Return a list of types.
+    """
+    pred_name = fact.pred_name
+    arg_len = len(fact.args)
+
+    if pred_name == "para" or pred_name == "perp":
+        types = []
+        uppers = []
+        for idx, arg in enumerate(fact.args):
+            if arg.isupper():
+                if len(uppers) % 2 == 0:
+                    types.extend([PonL, EMPTY])
+                uppers.append(arg)
+            elif arg.islower():
+                types.append(LINE)
     else:
-        if re.match(r'{([A-Z])(, [A-Z])*}', s):
-            return PonL
+        assert all(arg.isupper() for arg in fact.args)
+        if pred_name == "coll":
+            types = [POINT for _ in range(arg_len)]
+        elif pred_name == "eqangle":
+            types = [PonL, EMPTY] * int(arg_len/2)
+        elif pred_name == "cong" or pred_name == "eqratio":
+            types = [SEG, EMPTY] * int(arg_len/2)
+        elif pred_name == "midp":
+            types = [POINT, SEG, EMPTY]
+        elif pred_name == "circle":
+            types = [CIRC] + [EMPTY for _ in range(arg_len-1)]
+        elif pred_name == "simtri":
+            types = [TRI, EMPTY, EMPTY] * int(arg_len/3)
         else:
             raise NotImplementedError
+
+    return types
+
 
 class Fact:
     """Represent a fact in geometry prover, e.g.:
@@ -92,7 +115,6 @@ class Line:
     def extend(self, args):
         assert all(isinstance(arg, str) for arg in args)
         self.args.update(args)
-
 
 
 class Rule:
@@ -175,11 +197,13 @@ def match_expr(pat, f, inst, *, lines=None):
 
     pos = 0
     insts = [inst]
+    # Get types of every argument.
+    types = get_arg_type_by_fact(pat)
 
-    for p_arg in pat.args:
+    for idx, p_arg in enumerate(pat.args):
         new_insts = []
         for inst in insts:
-            if arg_type(p_arg) == POINT:
+            if types[idx] == POINT:
                 if pos + 1 > len(f.args):
                     continue
                 if p_arg in inst:
@@ -189,7 +213,7 @@ def match_expr(pat, f, inst, *, lines=None):
                     inst[p_arg] = f.args[pos]
                     new_insts.append(inst)
 
-            elif arg_type(p_arg) == LINE:
+            elif types[idx] == LINE:
                 if pos + 2 > len(f.args):
                     continue
                 if p_arg in inst:
@@ -201,16 +225,14 @@ def match_expr(pat, f, inst, *, lines=None):
                     inst[p_arg] = (f.args[pos], f.args[pos + 1])
                     new_insts.append(inst)
 
-            elif arg_type(p_arg) == PonL:
+            elif types[idx] == PonL:
                 if pos + 2 > len(f.args):
                     continue
 
                 # Target line
                 l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
 
-                # List of points in pattern, and list of points already instantiated
-                groups = re.match(r'{([A-Z])(, [A-Z])*}', p_arg).groups()
-                pat_a, pat_b = [groups[0], groups[1][2]]
+                pat_a, pat_b = p_arg, pat.args[idx + 1]
 
                 # Obtain possible choices for a and b
                 if pat_a in inst:
@@ -235,13 +257,61 @@ def match_expr(pat, f, inst, *, lines=None):
                     inst[pat_a] = a
                     inst[pat_b] = b
                     new_insts.append(copy.copy(inst))
+
+            elif types[idx] == SEG:
+                # Two endpoints of a segment can be exchanged when matching.
+                if pos + 2 > len(f.args):
+                    continue
+
+                pat_a, pat_b = p_arg, pat.args[idx + 1]
+
+                if pat_a not in inst and pat_b not in inst:
+                    inst[pat_a] = f.args[pos]
+                    inst[pat_b] = f.args[pos + 1]
+                    new_insts.append(copy.copy(inst))
+                    inst[pat_a] = f.args[pos + 1]
+                    inst[pat_b] = f.args[pos]
+                    new_insts.append(copy.copy(inst))
+
+                elif pat_a in inst and pat_b not in inst:
+                    if f.args[pos] == inst[pat_a]:
+                        inst[pat_b] = f.args[pos + 1]
+                    elif f.args[pos + 1] == inst[pat_a]:
+                        inst[pat_b] = f.args[pos]
+                    new_insts.append(inst)
+
+                elif pat_b in inst and pat_a not in inst:
+                    if f.args[pos + 1] == inst[pat_b]:
+                        inst[pat_a] = f.args[pos]
+                    elif f.args[pos] == inst[pat_b]:
+                        inst[pat_a] = f.args[pos + 1]
+                    new_insts.append(inst)
+
+                else:
+                    new_insts = insts
+
+            # TODO: Support more types.
+            elif types[idx] == TRI:
+                pass
+
+            elif types[idx] == CIRC:
+                pass
+
+            elif types[idx] == EMPTY:
+                new_insts = insts
+
             else:
                 raise NotImplementedError
 
-        if arg_type(p_arg) == POINT:
+        if types[idx] == POINT:
             pos += 1
-        elif arg_type(p_arg) == PonL or arg_type(p_arg) == LINE:
+        elif types[idx] == PonL or types[idx] == LINE or types[idx] == SEG:
             pos += 2
+        elif types[idx] == TRI:
+            pos += 3
+        elif types[idx] == CIRC:
+            pos += len(pat.args)
+
         insts = new_insts
 
     return insts
@@ -312,20 +382,17 @@ def apply_rule(rule, facts, *, lines=None, record=False):
 
     original_facts = facts
     facts = []
+    types = get_arg_type_by_fact(rule.concl)
     for inst in insts:
         concl_args = []
-        for arg in rule.concl.args:
-            if arg_type(arg) == POINT:
+        for idx, arg in enumerate(rule.concl.args):
+            if types[idx] == POINT:
                 concl_args.append(inst[arg])
-            elif arg_type(arg) == LINE:
+            if types[idx] == LINE:
                 concl_args.extend(inst[arg])
-            elif arg_type(arg) == PonL:
-                groups = re.match(r'{([A-Z])(, [A-Z])*}', arg).groups()
-                pat_a, pat_b = [groups[0], groups[1][2]]
-                concl_args.append(inst[pat_a])
-                concl_args.append(inst[pat_b])
-            else:
-                raise NotImplementedError
+            elif types[idx] == PonL or types[idx] == SEG:
+                concl_args.extend([inst[arg], inst[rule.concl.args[idx+1]]])
+            # TODO: Support more types.
 
         if record:
             facts.append(Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=original_facts))
@@ -421,7 +488,6 @@ def search_fixpoint(ruleset, hyps, lines, concl):
     while hyps != prev_hyps and lines != prev_lines:
         search_step(ruleset, hyps, only_updated=True, lines=lines)
         if concl in hyps:
-            c = hyps[hyps.index(concl)]
             break
         prev_hyps = hyps
         prev_lines = lines

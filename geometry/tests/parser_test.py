@@ -15,17 +15,6 @@ class ParserTest(unittest.TestCase):
         for s, f in test_data:
             self.assertEqual(parser.parse_fact(s), f)
 
-    def testParseFactPtsOnLine(self):
-        test_data = [
-            ("para({A, B}, {C, D})", Fact("para", ["{A, B}", "{C, D}"])),
-            ("para({A, B}, C, D)", Fact("para", ["{A, B}", "C", "D"])),
-            ("para(A, B, {C, D})", Fact("para", ["A", "B", "{C, D}"])),
-        ]
-
-        for s, f in test_data:
-            self.assertEqual(parser.parse_fact(s), f)
-
-
     def testParseRule(self):
         test_data = [
             ("coll(A, C, B) :- coll(A, B, C)",
