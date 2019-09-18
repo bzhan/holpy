@@ -29,9 +29,9 @@ class ExprTest(unittest.TestCase):
     def testGetArgTypeByFact(self):
         test_data = [
             ("coll(A, B, C)", [expr.POINT, expr.POINT, expr.POINT]),
-            ("perp(l, A, B)", [expr.LINE, expr.PonL, expr.EMPTY]),
-            ("cong(A, B, C, D)", [expr.SEG, expr.EMPTY, expr.SEG, expr.EMPTY]),
-            ("para(A, B, C, D)", [expr.PonL, expr.EMPTY, expr.PonL, expr.EMPTY]),
+            ("perp(l, A, B)", [expr.LINE, expr.PonL]),
+            ("cong(A, B, C, D)", [expr.SEG, expr.SEG]),
+            ("para(A, B, C, D)", [expr.PonL, expr.PonL]),
         ]
         for fact, r in test_data:
             self.assertEqual(expr.get_arg_type_by_fact(parser.parse_fact(fact)), r)
@@ -101,7 +101,6 @@ class ExprTest(unittest.TestCase):
             facts = [parser.parse_fact(fact) for fact in facts]
             concls = [parser.parse_fact(concl) for concl in concls]
             lines = [parser.parse_line(line) for line in lines]
-            print(rule)
             facts = expr.apply_rule(rule, facts, lines=lines)
             self.assertEqual(facts, concls)
 
@@ -143,7 +142,6 @@ class ExprTest(unittest.TestCase):
 
     def testApplyRulesetHyps(self):
         test_data = [
-
             (ruleset, ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
                 ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"],
                 ["midp(E, B, C)", "para(C, D, E, N)", "coll(B, E, C)", "coll(E, C, B)"]),

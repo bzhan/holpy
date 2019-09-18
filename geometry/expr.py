@@ -1,44 +1,46 @@
 """Expressions in geometry prover."""
 
-import itertools, re, copy
-from functools import reduce
+import itertools, copy
 
 
-POINT, LINE, PonL, SEG, TRI, CIRC, EMPTY = range(7)
+POINT, LINE, PonL, SEG, TRI, CIRC = range(6)
 
 
 def get_arg_type_by_fact(fact):
-    """
-    Obtain the type of given argument by a given pred_name of a fact.
+    """Obtain the type of given argument by a given pred_name of a fact.
     Return a list of types.
+
     """
     pred_name = fact.pred_name
     arg_len = len(fact.args)
 
     if pred_name == "para" or pred_name == "perp":
         types = []
-        uppers = []
-        for idx, arg in enumerate(fact.args):
-            if arg.isupper():
-                if len(uppers) % 2 == 0:
-                    types.extend([PonL, EMPTY])
-                uppers.append(arg)
-            elif arg.islower():
+        idx = 0
+        while idx < len(fact.args):
+            if fact.args[idx].isupper():
+                assert fact.args[idx+1].isupper()
+                types.append(PonL)
+                idx += 2
+            elif fact.args[idx].islower():
+                idx += 1
                 types.append(LINE)
+            else:
+                raise NotImplementedError
     else:
         assert all(arg.isupper() for arg in fact.args)
         if pred_name == "coll":
             types = [POINT for _ in range(arg_len)]
         elif pred_name == "eqangle":
-            types = [PonL, EMPTY] * int(arg_len/2)
+            types = [PonL] * int(arg_len/2)
         elif pred_name == "cong" or pred_name == "eqratio":
-            types = [SEG, EMPTY] * int(arg_len/2)
+            types = [SEG] * int(arg_len/2)
         elif pred_name == "midp":
-            types = [POINT, SEG, EMPTY]
+            types = [POINT, POINT, POINT]
         elif pred_name == "circle":
             types = [CIRC] + [EMPTY for _ in range(arg_len-1)]
         elif pred_name == "simtri":
-            types = [TRI, EMPTY, EMPTY] * int(arg_len/3)
+            types = [TRI] * int(arg_len/3)
         else:
             raise NotImplementedError
 
@@ -195,17 +197,20 @@ def match_expr(pat, f, inst, *, lines=None):
     if pat.pred_name != f.pred_name:
         return []
 
-    pos = 0
+    pat_pos = 0  # Current position in pattern
+    pos = 0   # Current position in fact
+
     insts = [inst]
     # Get types of every argument.
-    types = get_arg_type_by_fact(pat)
+    arg_types = get_arg_type_by_fact(pat)
 
-    for idx, p_arg in enumerate(pat.args):
+    for arg_ty in arg_types:
         new_insts = []
         for inst in insts:
-            if types[idx] == POINT:
+            if arg_ty == POINT:
                 if pos + 1 > len(f.args):
                     continue
+                p_arg = pat.args[pat_pos]
                 if p_arg in inst:
                     if f.args[pos] == inst[p_arg]:
                         new_insts.append(inst)
@@ -213,9 +218,10 @@ def match_expr(pat, f, inst, *, lines=None):
                     inst[p_arg] = f.args[pos]
                     new_insts.append(inst)
 
-            elif types[idx] == LINE:
+            elif arg_ty == LINE:
                 if pos + 2 > len(f.args):
                     continue
+                p_arg = pat.args[pat_pos]
                 if p_arg in inst:
                     l1 = get_line(lines, inst[p_arg])
                     l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
@@ -225,14 +231,14 @@ def match_expr(pat, f, inst, *, lines=None):
                     inst[p_arg] = (f.args[pos], f.args[pos + 1])
                     new_insts.append(inst)
 
-            elif types[idx] == PonL:
+            elif arg_ty == PonL:
                 if pos + 2 > len(f.args):
                     continue
 
                 # Target line
                 l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
 
-                pat_a, pat_b = p_arg, pat.args[idx + 1]
+                pat_a, pat_b = pat.args[pat_pos:pat_pos+2]
 
                 # Obtain possible choices for a and b
                 if pat_a in inst:
@@ -258,74 +264,65 @@ def match_expr(pat, f, inst, *, lines=None):
                     inst[pat_b] = b
                     new_insts.append(copy.copy(inst))
 
-            elif types[idx] == SEG:
+            elif arg_ty == SEG:
                 # Two endpoints of a segment can be exchanged when matching.
                 if pos + 2 > len(f.args):
                     continue
 
-                pat_a, pat_b = p_arg, pat.args[idx + 1]
+                pat_a, pat_b = pat.args[pat_pos:pat_pos+2]
 
-                if pat_a not in inst and pat_b not in inst:
-                    inst[pat_a] = f.args[pos]
-                    inst[pat_b] = f.args[pos + 1]
-                    new_insts.append(copy.copy(inst))
-                    inst[pat_a] = f.args[pos + 1]
-                    inst[pat_b] = f.args[pos]
-                    new_insts.append(copy.copy(inst))
+                if (pat_a not in inst or inst[pat_a] == f.args[pos]) and \
+                   (pat_b not in inst or inst[pat_b] == f.args[pos + 1]):
+                    new_inst = copy.copy(inst)
+                    new_inst[pat_a] = f.args[pos]
+                    new_inst[pat_b] = f.args[pos + 1]
+                    new_insts.append(new_inst)
 
-                elif pat_a in inst and pat_b not in inst:
-                    if f.args[pos] == inst[pat_a]:
-                        inst[pat_b] = f.args[pos + 1]
-                        new_insts.append(inst)
-                    elif f.args[pos + 1] == inst[pat_a]:
-                        inst[pat_b] = f.args[pos]
-                        new_insts.append(inst)
-
-                elif pat_b in inst and pat_a not in inst:
-                    if f.args[pos + 1] == inst[pat_b]:
-                        inst[pat_a] = f.args[pos]
-                        new_insts.append(inst)
-                    elif f.args[pos] == inst[pat_b]:
-                        inst[pat_a] = f.args[pos + 1]
-                        new_insts.append(inst)
-
-
-                else:
-                    new_insts = insts
+                if (pat_a not in inst or inst[pat_a] == f.args[pos + 1]) and \
+                   (pat_b not in inst or inst[pat_b] == f.args[pos]):
+                    new_inst = copy.copy(inst)
+                    new_inst[pat_a] = f.args[pos + 1]
+                    new_inst[pat_b] = f.args[pos]
+                    new_insts.append(new_inst)
 
             # TODO: Support more types.
-            elif types[idx] == TRI:
-                pass
+            elif arg_ty == TRI:
+                raise NotImplementedError
 
-            elif types[idx] == CIRC:
-                pass
-
-            elif types[idx] == EMPTY:
-                new_insts = insts
+            elif arg_ty == CIRC:
+                raise NotImplementedError
 
             else:
                 raise NotImplementedError
 
-        if types[idx] == POINT:
+        if arg_ty == POINT:
             pos += 1
-        elif types[idx] == PonL or types[idx] == LINE or types[idx] == SEG:
+            pat_pos += 1
+        elif arg_ty == LINE:
             pos += 2
-        elif types[idx] == TRI:
+            pat_pos += 1
+        elif arg_ty == PonL or arg_ty == SEG:
+            pos += 2
+            pat_pos += 2
+        elif arg_ty == TRI:
             pos += 3
-        elif types[idx] == CIRC:
+            pat_pos += 1
+        elif arg_ty == CIRC:
             pos += len(pat.args)
+            pat_pos += 1
 
         insts = new_insts
 
     return insts
 
 def make_new_lines(facts, lines):
-    """
-    Construct new lines from a list of given facts.
+    """Construct new lines from a list of given facts.
+
     The arguments of collinear facts will be used to construct new lines.
     Points in a new line will be merged into one of given lines,
     if the new line and the given line is the same line.
     The given list of lines will be updated.
+
     """
     assert isinstance(facts, list)
     assert all(isinstance(fact, Fact) for fact in facts)
@@ -371,7 +368,6 @@ def apply_rule(rule, facts, *, lines=None, record=False):
     -> [].
 
     """
-
     assert isinstance(rule, Rule)
     assert isinstance(facts, list) and all(isinstance(fact, Fact) for fact in facts)
     assert len(facts) == len(rule.assums)
@@ -383,27 +379,33 @@ def apply_rule(rule, facts, *, lines=None, record=False):
             new_insts.extend(match_expr(assume, fact, inst, lines=lines))
         insts = new_insts
 
-    original_facts = facts
-    facts = []
-    types = get_arg_type_by_fact(rule.concl)
-    print(rule.concl.args)
-    print(insts)
+    new_facts = []
+    arg_types = get_arg_type_by_fact(rule.concl)
     for inst in insts:
         concl_args = []
-        for idx, arg in enumerate(rule.concl.args):
-            if types[idx] == POINT:
+        pat_pos = 0
+        for arg_type in arg_types:
+            if arg_type == POINT:
+                arg = rule.concl.args[pat_pos]
+                pat_pos += 1
                 concl_args.append(inst[arg])
-            if types[idx] == LINE:
+            elif arg_type == LINE:
+                arg = rule.concl.args[pat_pos]
+                pat_pos += 1
                 concl_args.extend(inst[arg])
-            elif types[idx] == PonL or types[idx] == SEG:
-                concl_args.extend([inst[arg], inst[rule.concl.args[idx+1]]])
-            # TODO: Support more types.
+            elif arg_type == PonL or arg_type == SEG:
+                arg1, arg2 = rule.concl.args[pat_pos:pat_pos+2]
+                pat_pos += 2
+                concl_args.extend([inst[arg1], inst[arg2]])
+            else:
+                # TODO: Support more types.
+                raise NotImplementedError
 
         if record:
-            facts.append(Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=original_facts))
+            new_facts.append(Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=facts))
         else:
-            facts.append(Fact(rule.concl.pred_name, concl_args))
-    return facts
+            new_facts.append(Fact(rule.concl.pred_name, concl_args))
+    return new_facts
 
 def apply_rule_hyps(rule, hyps, only_updated=False, lines=None):
     """Try to apply given rule to one or more facts in a list, generate
@@ -460,11 +462,13 @@ def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None):
     return new_facts
 
 def search_step(ruleset, hyps, only_updated=False, lines=None):
-    """
-    One step of searching fixpoint.
+    """One step of searching fixpoint.
+
     Apply given ruleset to a list of hypotheses to obtain new facts.
-    If collinear facts are included in hypotheses, new lines can be automatically generated,
-    these new lines might be used when applying rules to hypotheses.
+    If collinear facts are included in hypotheses, new lines can be
+    automatically generated, these new lines might be used when
+    applying rules to hypotheses.
+
     """
     # Update the list of lines.
     make_new_lines(hyps, lines)
@@ -479,11 +483,11 @@ def search_step(ruleset, hyps, only_updated=False, lines=None):
             hyps.append(new_fact)
 
 def search_fixpoint(ruleset, hyps, lines, concl):
-    """
-    Recursively apply given ruleset to a list of hypotheses to
+    """Recursively apply given ruleset to a list of hypotheses to
     obtain new facts. Recursion exits when new fact is not able
     to be generated, or conclusion is in the list of facts.
     Return a list of facts.
+
     """
     # Any fact in original hypotheses might be used for the first step.
     search_step(ruleset, hyps, lines=lines)
@@ -530,12 +534,13 @@ def find_goal(facts, goal, lines):
     return None
 
 def print_search(ruleset, facts, concl):
-    """
-    Print the process of searching fixpoint.
-    The given list of facts must contains all the deduce procedures (as parameters of facts in the list).
-    Using a given ruleset to find out the name of rules used in deduce procedures.
-    """
+    """Print the process of searching fixpoint.
 
+    The given list of facts must contains all the deduce procedures
+    (as parameters of facts in the list). Using a given ruleset to
+    find out the name of rules used in deduce procedures.
+    
+    """
     def print_step(fact):
         r = list(ruleset.keys())[list(ruleset.values()).index(fact.lemma)]
         s = "(" + str(r) + ") " + str(fact) + " :- "
