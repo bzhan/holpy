@@ -1,0 +1,15 @@
+tt.var {
+    color: blue;
+}
+
+tt.bound {
+    color: #006000;
+}
+
+tt.tvar {
+    color: purple;
+}
+
+tt.normal {
+    color: black;
+}

@@ -32,7 +32,7 @@ user_info = {
     'is_signed_in': False,
 
     # Name of the user signed in
-    'username': "",
+    'username': "master",
 
     # List of files in user's directory
     'file_list': []
