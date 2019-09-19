@@ -16,6 +16,7 @@ from logic import induct
 from imperative import parser2
 from imperative import imp
 from prover import z3wrapper
+from syntax import infertype
 from server.server import ProofState
 from imperative.parser2 import cond_parser, com_parser
 from flask_cors import CORS
@@ -315,15 +316,24 @@ def file_data_to_output(thy, data):
     Also modifies argument thy in parsing the item.
 
     """
-    parser.parse_extension(thy, data)
+    try:
+        parser.parse_extension(thy, data)
+    except infertype.TypeInferenceException as e:
+        pass
+
     if data['ty'] == 'def.ax':
         T = parser.parse_type(thy, data['type'])
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parser.parse_vars(thy, data['vars'])
-        prop = parser.parse_term(thy, ctxt, data['prop'])
-        data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+        try:
+            prop = parser.parse_term(thy, ctxt, data['prop'])
+        except infertype.TypeInferenceException as e:
+            data['err_type'] = "Type inference exception"
+            data['err_str'] = e.err
+        else:
+            data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
         data['vars_lines'] = [k + ' :: ' + v for k, v in data['vars'].items()]
 
     elif data['ty'] == 'type.ind':
