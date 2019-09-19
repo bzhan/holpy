@@ -31,6 +31,16 @@
             "type": "real net"
         },
         {
+            "name": "real_open",
+            "ty": "def.ax",
+            "type": "real set => bool"
+        },
+        {
+            "name": "real_closed",
+            "ty": "def.ax",
+            "type": "real set => bool"
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -1880,12 +1890,136 @@
                 "t": "real set",
                 "a": "real"
                  }
+         },
+         {
+            "name": "reallim_compose_within",
+            "prop": ["tendsto_real f y net &",
+                     "eventually (%w. member (f w) s & (f w = y --> g y = z)) net &",
+                     "tendsto_real g z (within (atreal y) s)",
+                     "--> tendsto_real (g O f) z net"],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "real => real",
+                "s": "real set",
+                "y": "real",
+                "z": "real",
+                "net": "'a net"
+                 }
+         },
+         {
+            "name": "reallim_compose_at",
+            "prop": ["tendsto_real f y net &",
+                     "eventually (%w. f w = y --> g y = z) net &",
+                     "tendsto_real g z (atreal y)",
+                     "--> tendsto_real (g O f) z net"],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "real => real",
+                "y": "real",
+                "z": "real",
+                "net": "'a net"
+                 }
+         },
+         {
+            "name": "alternating_sum_bounds",
+            "prop": ["(!n. abs (a (Suc n)) <= abs (a n)) &",
+                     "(!n. even n --> 0 <= a n) & (!n. odd n --> a n <= 0)",
+                     "--> !m. !n. (even m --> 0 <= sum {m..n} a & sum {m..n} a <= a m) &",
+                         "!m. !n. (odd m --> a m <= sum {m..n} a & sum {m..n} a <= 0)"],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real"
+                 }
+         },
+         {
+            "name": "alternating_sum_bound",
+            "prop": ["(!n. abs (a (Suc n)) <= abs (a n)) &",
+                     "(!n. even n --> 0 <= a n) & (!n. odd n --> a n <= 0)",
+                     "--> !m. !n. abs (sum {m..n} a) <= abs (a m)"],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real"
+                 }
+         },
+         {
+            "name": "real_summable_alternating_series",
+            "prop": ["(!n. abs (a (Suc n)) <= abs (a n)) &",
+                     "(!n. even n --> 0 <= a n) & (!n. odd n --> a n <= 0) &",
+                     "tendsto_real a 0 sequentially",
+                     "--> real_summable (from m) a"],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "m": "nat"
+                 }
+         },
+         {
+            "name": "reallim_within_real_open",
+            "prop": ["member a s & real_open s",
+                     "--> tendsto_real f l (within (atreal a) s) = tendsto_real f l (atreal a)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "a": "real",
+                "s": "real set"
+                 }
+         },
+         {
+            "name": "reallim_atreal_zero",
+            "prop": "tendsto_real f l (atreal a) = tendsto_real (%x. f (a + x)) l (atreal 0)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "reallim_cong_withinreal",
+            "prop": ["(!x. neg (x = a) --> f x = g x)",
+                     "--> tendsto_real f l (within (atreal a) s) = tendsto_real g l (within (atreal a) s)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "l": "real",
+                "a": "real",
+                "s": "real set"
+                 }
+         },
+         {
+            "name": "reallim_cong_atreal",
+            "prop": ["(!x. neg (x = a) --> f x = g x)",
+                     "--> tendsto_real f l (atreal a) = tendsto_real g l (atreal a)"],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "l": "real",
+                "a": "real"
+                 }
+         },
+         {
+            "name": "real_abel_limit_theorem",
+            "prop": ["real_summable s a",
+                     "--> (!r. abs r < 1 --> real_summable s (%i. a i * r ^ i)) &",
+                         "tendsto_real (%r. real_infsum s (%i. a i * r ^ i)) (ream_inf s a) ",
+                         "(within (atreal 1) {z. z <= (real_of_nat 1)})"],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "a": "nat => real"
+                 }
          }
     ],
     "description": "Some analytic concepts for real.",
     "imports": [
         "integral",
-        "iterate"
+        "iterate",
+        "function"
     ],
     "name": "realanalysis"
 }
