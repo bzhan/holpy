@@ -75,7 +75,18 @@
           <span class="item-text">{{item.name}}</span>:&nbsp;&nbsp;
           <a href="#" name="proof" style="font-style:italic" v-bind:style="{color:get_status_color(item)}">proof</a>
           <br>
-          <span class="item-text indented-text" v-html="highlight_html(item.prop_hl)"></span>
+          <span class="item-text indented-text" v-if="'prop_hl' in item" v-html="highlight_html(item.prop_hl)"></span>
+          <div v-if="'err_type' in item">
+            <div v-if="typeof(item.prop) === 'string'">
+              <span class="item-text indented-text">{{item.prop}}</span>
+            </div>
+            <div v-else>
+              <span class="item-text indented-text" v-for="(line, i) in item.prop" v-bind:key=i>
+                {{line}}<br>
+              </span>
+            </div>
+            <pre class="error-text indented-text">{{item.err_str}}</pre>
+          </div>
         </div>
         <div v-if="item.ty === 'thm.ax'">
           <span class="keyword">axiom</span>&nbsp;
@@ -185,4 +196,9 @@ input, textarea, .item-text {
 .indented-text {
     margin-left: 0.8em;
 }
+
+.error-text {
+  color: red;
+}
+
 </style>

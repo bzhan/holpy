@@ -11,7 +11,8 @@ from util import unionfind
 
 class TypeInferenceException(Exception):
     def __init__(self, err):
-        self.str = str
+        assert isinstance(err, str)
+        self.err = err
 
 
 def is_internal_type(T):
@@ -137,7 +138,13 @@ def type_infer_raw(thy, ctxt, t, *, forbid_internal=True):
             argT = infer(t.arg, bd_vars)
             resT = new_type()
             add_type(TFun(argT, resT))
-            unify(uf, funT, TFun(argT, resT))
+            try:
+                unify(uf, funT, TFun(argT, resT))
+            except TypeInferenceException as e:
+                err_str = "When infering type of " + str(t) + "\n"
+                err_str += "Type of %s: %s\n" % (t.fun, str(funT))
+                err_str += "Type of %s: %s\n" % (t.arg, str(argT))
+                raise TypeInferenceException(err_str)
             return resT
 
         # Abs case: if var_T is not known, make a new type. Recursively
