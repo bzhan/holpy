@@ -68,7 +68,7 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t in test_data:
-            self.assertRaisesRegex(TypeInferenceException, "Unable to unify", type_infer, thy, ctxt, t)
+            self.assertRaisesRegex(TypeInferenceException, "When infering type", type_infer, thy, ctxt, t)
 
     def testInferTypeFail2(self):
         test_data = [

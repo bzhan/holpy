@@ -9,7 +9,7 @@ CONST, UNARY, BINARY = range(3)
 class OperatorData():
     """Represents information for one operator."""
 
-    def __init__(self, fun_name, priority, *, assoc=None, arity=BINARY, ascii_op, unicode_op=None):
+    def __init__(self, fun_name, priority, *, assoc=None, arity=BINARY, ascii_op, unicode_op=None, key=None):
         """Instantiate data for an operator.
         
         fun_name: name of the corresponding function.
@@ -25,13 +25,20 @@ class OperatorData():
         self.assoc = assoc
         self.arity = arity
         self.ascii_op = ascii_op
-        self.unicode_op = unicode_op
+        if unicode_op is None:
+            self.unicode_op = ascii_op
+        else:
+            self.unicode_op = unicode_op
+        if key is None:
+            self.key = self.fun_name
+        else:
+            self.key = key
 
 
 class BinderData():
     """Represents information for one binder."""
 
-    def __init__(self, fun_name, *, ascii_op, unicode_op=None):
+    def __init__(self, fun_name, *, ascii_op, unicode_op=None, key=None):
         """Instantiate data for a binder.
 
         fun_name: name of the corresponding function.
@@ -41,7 +48,14 @@ class BinderData():
         """
         self.fun_name = fun_name
         self.ascii_op = ascii_op
-        self.unicode_op = unicode_op
+        if unicode_op is None:
+            self.unicode_op = ascii_op
+        else:
+            self.unicode_op = unicode_op
+        if key is None:
+            self.key = self.fun_name
+        else:
+            self.key = key
 
 
 class OperatorTable():
@@ -52,9 +66,9 @@ class OperatorTable():
     
     """
     def __init__(self):
-        self.data = [
+        op_data = [
             OperatorData("equals", 50, assoc=LEFT, ascii_op="="),
-            OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷"),
+            OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷", key="iff"),
             OperatorData("implies", 25, assoc=RIGHT, ascii_op="-->", unicode_op="⟶"),
             OperatorData("conj", 35, assoc=RIGHT, ascii_op="&", unicode_op="∧"),
             OperatorData("disj", 30, assoc=RIGHT, ascii_op="|", unicode_op="∨"),
@@ -84,12 +98,19 @@ class OperatorTable():
             OperatorData("comp_fun", 60, assoc=RIGHT, ascii_op="O", unicode_op="∘"),
         ]
 
-        self.binder_data = [
+        binder_data = [
             BinderData("all", ascii_op="!", unicode_op="∀"),
             BinderData("exists", ascii_op="?", unicode_op="∃"),
             BinderData("exists1", ascii_op="?!", unicode_op="∃!"),
             BinderData("The", ascii_op="THE "),
         ]
+
+        self.op_data = dict()
+        for entry in op_data:
+            self.op_data[entry.key] = entry
+        self.binder_data = dict()
+        for entry in binder_data:
+            self.binder_data[entry.key] = entry
 
 
 def get_info_for_fun(thy, t):
@@ -97,27 +118,28 @@ def get_info_for_fun(thy, t):
     if the function is not found.
 
     """
+    op_data = thy.get_data("operator").op_data
     if t.is_const():
         if t.name == 'equals':
             Targs, _ = t.T.strip_type()
             if Targs[0] == boolT:
-                return OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷")
+                return op_data['iff']
             else:
-                return OperatorData("equals", 50, assoc=LEFT, ascii_op="=")
+                return op_data['equals']
         else:
             # First attempt to translate to general name
             name_lookup = thy.lookup_overload_const(t.name)
-            for d in thy.get_data("operator").data:
-                if d.fun_name == name_lookup:
-                    return d
-
-    return None
+            if name_lookup in op_data:
+                return op_data[name_lookup]
+            else:
+                return None
+    else:
+        return None
 
 def get_binder_info_for_fun(thy, t):
     """Returns data associated to a binder."""
-    if t.is_const():
-        for d in thy.get_data("operator").binder_data:
-            if d.fun_name == t.name:
-                return d
-
-    return None
+    binder_data = thy.get_data("operator").binder_data
+    if t.is_const() and t.name in binder_data:
+        return binder_data[t.name]
+    else:
+        return None
