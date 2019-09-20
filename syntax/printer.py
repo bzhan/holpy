@@ -10,6 +10,7 @@ from kernel import proof
 from syntax import operator
 from syntax import settings
 from syntax import infertype
+from syntax import pprint
 from util import name
 
 # 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
@@ -109,6 +110,11 @@ def print_term(thy, t):
 
     """
     assert isinstance(t, Term), "print_term: input is not a term."
+
+    if not settings.highlight():
+        ast = pprint.get_ast(thy, t)
+        return pprint.print_ast(ast)
+
     # Import modules for custom parsed data
     from logic import logic
     from data import nat
