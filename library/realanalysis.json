@@ -2006,14 +2006,126 @@
             "name": "real_abel_limit_theorem",
             "prop": ["real_summable s a",
                      "--> (!r. abs r < 1 --> real_summable s (%i. a i * r ^ i)) &",
-                         "tendsto_real (%r. real_infsum s (%i. a i * r ^ i)) (ream_inf s a) ",
-                         "(within (atreal 1) {z. z <= (real_of_nat 1)})"],
+                         "tendsto_real (%r. real_infsum s (%i. a i * r ^ i)) (real_infsum s a) ",
+                         "(within (atreal 1) {z. z <= 1})"],
             "ty": "thm",
             "vars": {
-                "s": "real set",
+                "s": "nat set",
                 "a": "nat => real"
                  }
-         }
+         },
+         {
+            "name": "real_continuous",
+            "ty": "def.ax",
+            "type": "('a => real) => 'a net => bool"
+        },
+        {
+           "name": "real_continuous_trivial_limit",
+           "prop": "trivial_limit net --> real_continuous f net",
+           "ty": "thm",
+           "vars": {
+               "f": "'a => real",
+               "net": "'a net"
+                }
+        },
+        {
+           "name": "real_continuous_withinreal",
+           "prop": ["real_continuous f (within (atreal x) s) =",
+                    "tendsto_real f (f x) (within (atreal x) s)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "x": "real",
+               "s": "real set"
+                }
+        },
+        {
+           "name": "real_continuous_atreal",
+           "prop": ["real_continuous f (atreal x) =",
+                    "tendsto_real f (f x) (atreal x)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "x": "real"
+                }
+        },
+        {
+           "name": "real_continuous_withinreal1",
+           "prop": ["real_continuous f (within (atreal x) s) =",
+                      "!e. 0 < e",
+                          "--> ? d. 0 < d &",
+                                   "(!x1. member x1 s & abs (x1 - x) < d --> abs ( f x1 - f x) < e)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "x": "real",
+               "s": "real set"
+                }
+        },
+        {
+           "name": "real_continuous_atreal1",
+           "prop": ["real_continuous f (atreal x) =",
+                      "!e. 0 < e",
+                          "--> ? d. 0 < d &",
+                                   "(!x1. abs (x1 - x) < d --> abs ( f x1 - f x) < e)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "x": "real"
+                }
+        },
+        {
+           "name": "real_continuous_atreal_withinreal",
+           "prop": ["real_continuous f (atreal x)",
+                    "--> real_continuous f (within (atreal x) s)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "x": "real",
+               "s": "real set"
+                }
+        },
+        {
+           "name": "real_continuous_withinreal_subset",
+           "prop": ["real_continuous f (within (atreal x) s) & subset t s",
+                    "--> real_continuous f (within (atreal x) t)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "x": "real",
+               "s": "real set",
+               "t": "real set"
+                }
+        },
+        {
+           "name": "real_continuous_transform_withinreal",
+           "prop": ["0 < d & member x s &",
+                    "(!x1. member x1 s & abs (x1 - x) < d --> f x1 = g x1) &",
+                    "real_continuous f (within (atreal x) s)",
+                    "--> real_continuous g (within (atreal x) s)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "g": "real => real",
+               "x": "real",
+               "d": "real",
+               "s": "real set"
+                }
+        },
+        {
+           "name": "real_continuous_transform_atreal",
+           "prop": ["0 < d &",
+                    "(!x1. abs (x1 - x) < d --> f x1 = g x1) &",
+                    "real_continuous f (atreal x)",
+                    "--> real_continuous g (atreal x)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "g": "real => real",
+               "x": "real",
+               "d": "real"
+                }
+        }
     ],
     "description": "Some analytic concepts for real.",
     "imports": [
