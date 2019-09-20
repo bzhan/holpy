@@ -332,6 +332,7 @@ def file_data_to_output(thy, data):
         except infertype.TypeInferenceException as e:
             data['err_type'] = "Type inference exception"
             data['err_str'] = e.err
+            print(e.err)
         else:
             data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
         data['vars_lines'] = [k + ' :: ' + v for k, v in data['vars'].items()]
