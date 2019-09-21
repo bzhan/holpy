@@ -1,6 +1,6 @@
 <template>
   <div align=left>
-    <span>{{msg}}</span>
+    <pre v-bind:class="{'message-error': message.type === 'error'}">{{message.data}}</pre>
   </div>
 </template>
 
@@ -8,11 +8,15 @@
 export default {
   name: 'Message',
   props: [
-    "msg"
+    "message"
   ]
 }
 </script>
 
-<style scoped>
+<style>
+
+.message-error {
+  color: red
+}
 
 </style>

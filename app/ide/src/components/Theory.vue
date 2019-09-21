@@ -1,12 +1,20 @@
 <template>
-  <div align=left>
+  <div align=left v-if="theory !== undefined">
     <span class="keyword">theory</span>&nbsp;{{theory.name}}
     <br>
     <span class="keyword">imports</span>&nbsp;{{theory.imports.join(' ')}}
     <br><br>
     <span class="comment">{{theory.description}}</span>
     <br><br>
-    <div v-for="(item, index) in theory.content" v-bind:key=index v-bind:item_id=index class="theory-items">
+    <div v-for="(item, index) in theory.content"
+         v-bind:key=index
+         v-bind:item_id=index
+         class="theory-items"
+         v-on:click="selected = index"
+         v-bind:class="{
+           'item-selected': selected === index,
+           'item-error': 'err_type' in item
+         }">
       <div v-if="item.ty === 'header'">
         <span class="header-item">{{item.name}}</span>
       </div>
@@ -88,6 +96,36 @@ export default {
     "theory"
   ],
 
+  data: function () {
+    return {
+      selected: undefined
+    }
+  },
+
+  watch: {
+    selected: function (index) {
+      if (index !== undefined) {
+        const item = this.theory.content[index]
+        if ('err_type' in item) {
+          this.$emit('set-message', {
+            type: 'error',
+            data: item.err_str
+          })
+        } else {
+          this.$emit('set-message', {
+            type: 'OK',
+            data: 'No errors'
+          })
+        }
+      } else {
+        this.$emit('set-message', {
+          type: 'OK',
+          data: ""
+        })
+      }
+    }
+  },
+
   created() {
     this.Util = Util
   },
@@ -122,8 +160,13 @@ input, textarea, .item-text {
     margin-left: 0.8em;
 }
 
-.error-text {
-  color: red;
+.item-error {
+  background-color: rgb(255, 212, 212);
+}
+
+.item-selected {
+  border-style: solid;
+  border-width: thin;
 }
 
 </style>

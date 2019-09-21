@@ -11,13 +11,19 @@
     </b-navbar>
     <div id="theory-list">
       <Content v-if="filelist !== undefined"
-               v-bind:filelist="filelist" v-on:select-theory="onSelectTheory"/>
+               v-bind:filelist="filelist"
+               v-on:select-theory="onSelectTheory"
+               ref="content"/>
     </div>
     <div id="theory-content">
-      <Theory v-if="theory !== undefined" v-bind:theory="theory"/>
+      <Theory v-bind:theory="theory"
+              v-on:set-message="onSetMessage"
+              ref="theory"/>
     </div>
     <div id="message">
-      <Message v-if="message !== undefined" v-bind:msg="message"/>
+      <Message v-if="message !== undefined"
+               v-bind:message="message"
+               ref="message"/>
     </div>
   </div>
 </template>
@@ -69,6 +75,10 @@ export default {
       this.load_file()
     },
 
+    onSetMessage: function (message) {
+      this.message = message
+    },
+
     load_file: async function () {
       const data = JSON.stringify({
         filename: this.filename,
@@ -76,6 +86,11 @@ export default {
       })
       const response = await axios.post('http://127.0.0.1:5000/api/load-json-file', data)
       this.theory = response.data
+      this.message = {
+        type: 'OK',
+        data: 'No errors'
+      }
+      this.$refs.theory.selected = undefined
     }
   }
 }
@@ -110,6 +125,7 @@ export default {
 #message {
   display: inline-block;
   width: 75%;
+  height: 25%;
   left: 25%;
   position: fixed;
   top: 75%;

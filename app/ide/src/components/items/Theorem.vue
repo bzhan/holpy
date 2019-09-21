@@ -18,7 +18,6 @@
           {{line}}<br>
         </span>
       </div>
-      <pre class="error-text indented-text">{{item.err_str}}</pre>
     </div>
   </div>
 </template>

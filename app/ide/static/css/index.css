@@ -1,15 +1,15 @@
-tt.var {
+span.var {
     color: blue;
 }
 
-tt.bound {
+span.bound {
     color: #006000;
 }
 
-tt.tvar {
+span.tvar {
     color: purple;
 }
 
-tt.normal {
+span.normal {
     color: black;
 }
