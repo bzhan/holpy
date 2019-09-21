@@ -17,39 +17,39 @@
       <div v-if="item.ty === 'def.ax'">
         <span class="keyword">constant</span>&nbsp;
         <span class="item-text">{{item.name}}</span> ::
-        <span class="item-text" v-html="highlight_html(item.type_hl)"></span>
+        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>
       </div>
       <div v-if="item.ty === 'type.ind'">
         <span class="keyword">datatype</span>&nbsp;
-        <span class="item-text" v-html="highlight_html(item.type_hl)"></span> =
+        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span> =
         <span v-for="(v, i) in item.constr_output_hl" v-bind:key=i>
-          <br><span class="item-text indented-text" v-html="highlight_html(v)"></span>
+          <br><span class="item-text indented-text" v-html="Util.highlight_html(v)"></span>
         </span>
       </div>
       <div v-if="item.ty === 'def'">
         <span class="keyword">definition</span>&nbsp;
         <span class="item-text">{{item.name}}</span> ::
-        <span class="item-text" v-html="highlight_html(item.type_hl)"></span>&nbsp;
+        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>&nbsp;
         <span class="keyword">where</span>
         <br>
-        <span class="item-text indented-text" v-html="highlight_html(item.prop_hl)"></span>
+        <span class="item-text indented-text" v-html="Util.highlight_html(item.prop_hl)"></span>
       </div>
       <div v-if="item.ty === 'def.ind'">
         <span class="keyword">fun</span>&nbsp;
         <span class="item-text">{{item.name}}</span> ::
-        <span class="item-text" v-html="highlight_html(item.type_hl)"></span>&nbsp;
+        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>&nbsp;
         <span class="keyword">where</span>
         <span v-for="(v, i) in item.rules" v-bind:key=i>
-          <br><span class="item-text indented-text" v-html="highlight_html(v.prop_hl)"></span>
+          <br><span class="item-text indented-text" v-html="Util.highlight_html(v.prop_hl)"></span>
         </span>
       </div>
       <div v-if="item.ty === 'def.pred'">
         <span class="keyword">inductive</span>&nbsp;
         <span class="item-text">{{item.name}}</span> :: 
-        <span class="item-text" v-html="highlight_html(item.type_hl)"></span>&nbsp;
+        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>&nbsp;
         <span class="keyword">where</span>
         <span v-for="(v, i) in item.rules" v-bind:key=i>
-          <br><span class="item-text indented-text" v-html="highlight_html(v.prop_hl)"></span>
+          <br><span class="item-text indented-text" v-html="Util.highlight_html(v.prop_hl)"></span>
         </span>
       </div>
       <div v-if="item.ty === 'macro'">
@@ -63,11 +63,11 @@
       <div v-if="item.ty === 'thm'">
         <span class="keyword">theorem</span>&nbsp;
         <span class="item-text">{{item.name}}</span>:&nbsp;&nbsp;
-        <a href="#" name="proof" style="font-style:italic" v-bind:style="{color:get_status_color(item)}">proof</a>
+        <a href="#" name="proof" style="font-style:italic" v-bind:style="{color:Util.get_status_color(item)}">proof</a>
         <br>
         <span v-if="'prop_hl' in item">
           <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-            <span class="item-text indented-text" v-html="highlight_html(line)"></span><br>
+            <span class="item-text indented-text" v-html="Util.highlight_html(line)"></span><br>
           </span>
         </span>
         <div v-if="'err_type' in item">
@@ -88,7 +88,7 @@
         <br>
         <span v-if="'prop_hl' in item">
           <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-            <span class="item-text indented-text" v-html="highlight_html(line)"></span><br>
+            <span class="item-text indented-text" v-html="Util.highlight_html(line)"></span><br>
           </span>
         </span>
       </div>
@@ -97,44 +97,17 @@
 </template>
 
 <script>
+import Util from './../../static/js/util.js'
+
 export default {
   name: 'Theory',
   props: [
     "theory"
   ],
 
-  methods: {
-    // Mapping of colors.
-    rp: function (x) {
-      if (x === 0)
-        return 'normal';
-      if (x === 1)
-        return 'bound';
-      if (x === 2)
-        return 'var';
-      if (x === 3)
-        return 'tvar';
-    },
-
-    // Convert a list of (s, color) to html form.
-    highlight_html: function (lst) {
-      var output = '';
-      for (let i = 0; i < lst.length; i++) {
-        output = output + '<span class="' + this.rp(lst[i][1]) + '">' + lst[i][0].replace(/ /g, '&ensp;') + '</span>'
-      }
-      return output
-    },
-
-    get_status_color: function (item) {
-      if (item.proof === undefined) {
-        return 'red';
-      } else if (item.num_gaps > 0) {
-        return 'chocolate';
-      } else {
-        return 'green';
-      }
-    }
-  }
+  created() {
+    this.Util = Util
+  },
 }
 </script>
 
