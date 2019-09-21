@@ -9,11 +9,15 @@
         <span style="margin-left:10px;align-self:center">Opened file: {{ filename }}</span>
       </b-navbar-nav>
     </b-navbar>
-    <div v-if="filelist !== undefined" id="theory-list">
-      <Content v-bind:filelist="filelist" v-on:select-theory="onSelectTheory"/>
+    <div id="theory-list">
+      <Content v-if="filelist !== undefined"
+               v-bind:filelist="filelist" v-on:select-theory="onSelectTheory"/>
     </div>
-    <div v-if="theory !== undefined" id="theory-content">
-      <Theory v-bind:theory="theory"/>
+    <div id="theory-content">
+      <Theory v-if="theory !== undefined" v-bind:theory="theory"/>
+    </div>
+    <div id="message">
+      <Message v-if="message !== undefined" v-bind:msg="message"/>
     </div>
   </div>
 </template>
@@ -22,13 +26,15 @@
 import axios from 'axios'
 import Theory from './Theory.vue'
 import Content from './Content.vue'
+import Message from './Message.vue'
 import "./../../static/css/index.css"
 
 export default {
   name: 'Main',
   components: {
     Theory,
-    Content
+    Content,
+    Message
   },
 
   props: [
@@ -36,9 +42,10 @@ export default {
 
   data: function () {
     return {
-      filelist: ["here"],
+      filelist: [],
       filename: undefined,
-      theory: undefined
+      theory: undefined,
+      message: undefined,
     }
   },
 
@@ -93,11 +100,23 @@ export default {
   width: 75%;
   position: fixed;
   top: 56px;
-  bottom: 0px;
+  bottom: 25%;
   left: 25%;
   overflow-y: scroll;
   padding-left: 10px;
   padding-top: 10px;
+}
+
+#message {
+  display: inline-block;
+  width: 75%;
+  left: 25%;
+  position: fixed;
+  top: 75%;
+  bottom: 0px;
+  padding-left: 10px;
+  padding-top: 10px;
+  border-top-style: solid;
 }
 
 </style>
