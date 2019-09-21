@@ -60,28 +60,7 @@
         <span class="keyword">method</span>&nbsp;
         <span class="item-text">{{item.name}}</span>
       </div>
-      <div v-if="item.ty === 'thm'">
-        <span class="keyword">theorem</span>&nbsp;
-        <span class="item-text">{{item.name}}</span>:&nbsp;&nbsp;
-        <a href="#" name="proof" style="font-style:italic" v-bind:style="{color:Util.get_status_color(item)}">proof</a>
-        <br>
-        <span v-if="'prop_hl' in item">
-          <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-            <span class="item-text indented-text" v-html="Util.highlight_html(line)"></span><br>
-          </span>
-        </span>
-        <div v-if="'err_type' in item">
-          <div v-if="typeof(item.prop) === 'string'">
-            <span class="item-text indented-text">{{item.prop}}</span>
-          </div>
-          <div v-else>
-            <span class="item-text indented-text" v-for="(line, i) in item.prop" v-bind:key=i>
-              {{line}}<br>
-            </span>
-          </div>
-          <pre class="error-text indented-text">{{item.err_str}}</pre>
-        </div>
-      </div>
+      <Theorem v-if="item.ty === 'thm'" v-bind:item="item"/>
       <div v-if="item.ty === 'thm.ax'">
         <span class="keyword">axiom</span>&nbsp;
         <span class="item-text">{{item.name}}</span>:
@@ -98,9 +77,13 @@
 
 <script>
 import Util from './../../static/js/util.js'
+import Theorem from './items/Theorem'
 
 export default {
   name: 'Theory',
+  components: {
+    Theorem,
+  },
   props: [
     "theory"
   ],
@@ -111,7 +94,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 
 input, textarea, .item-text {
     font-family: monospace;
