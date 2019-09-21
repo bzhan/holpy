@@ -420,32 +420,41 @@ def print_type(thy, T):
         res = optimize_highlight(res)
     return res
 
+def print_length(res):
+    if settings.highlight():
+        return sum(len(s) for s, c in res)
+    else:
+        return len(res)
+
 @settings.with_settings
-def print_ast(thy, ast):
-    res = []
+def print_ast(thy, ast, *, line_length=None):
+    res = [[]]
+    cur_line = 0
+    indent = 0
 
     def add_normal(s):
-        if settings.highlight():
-            res.append((s, 0))
-        else:
-            res.append(s)
+        res[cur_line].append((s, 0) if settings.highlight() else s)
     
     def add_bound(s):
-        if settings.highlight():
-            res.append((s, 1))
-        else:
-            res.append(s)
+        res[cur_line].append((s, 1) if settings.highlight() else s)
 
     def add_var(s):
-        if settings.highlight():
-            res.append((s, 2))
-        else:
-            res.append(s)
+        res[cur_line].append((s, 2) if settings.highlight() else s)
+
+    def newline():
+        nonlocal cur_line
+        res.append([])
+        cur_line += 1
+        add_normal(' ' * indent)
 
     def rec(ast):
+        nonlocal indent
+
         if ast.ty == "bracket":
             add_normal('(')
+            indent += 1
             rec(ast.body)
+            indent -= 1
             add_normal(')')
         elif ast.ty == "show_type":
             rec(ast.body)
@@ -483,6 +492,8 @@ def print_ast(thy, ast):
             add_normal(" ")
             rec(ast.op)
             add_normal(" ")
+            if line_length and print_length(print_ast(thy, ast)) > line_length:
+                newline()
             rec(ast.arg2)
         elif ast.ty == "unary_op":
             rec(ast.op)
@@ -493,13 +504,23 @@ def print_ast(thy, ast):
             rec(ast.op)
             rec(ast.bind_var)
             add_normal('. ')
+            indent += 2
             rec(ast.body)
+            indent -= 2
         elif ast.ty == "bound":
             add_bound(ast.name)
         elif ast.ty == "fun_appl":
-            rec(ast.fun)
-            add_normal(' ')
-            rec(ast.arg)
+            if line_length and print_length(print_ast(thy, ast)) > line_length:
+                rec(ast.fun)
+                add_normal(' ')
+                indent += 2
+                newline()
+                rec(ast.arg)
+                indent -= 2
+            else:
+                rec(ast.fun)
+                add_normal(' ')
+                rec(ast.arg)
         elif ast.ty == "ite":
             add_normal('if ')
             rec(ast.cond)
@@ -537,7 +558,14 @@ def print_ast(thy, ast):
             raise TypeError
 
     rec(ast)
-    if settings.highlight():
-        return optimize_highlight(res)
-    else:
-        return ''.join(res)
+
+    for i in range(len(res)):
+        if settings.highlight():
+            res[i] = optimize_highlight(res[i])
+        else:
+            res[i] = ''.join(res[i])
+
+    if not line_length:
+        res = res[0]
+
+    return res

@@ -483,4 +483,4 @@ class ParserTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    ParserTest.testParseTypeInd()
+    unittest.main()
