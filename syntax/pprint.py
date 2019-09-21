@@ -133,14 +133,13 @@ class Bound(AST):
         return "Bound(%s,%s)" % (self.name, self.T)
 
 class FunAppl(AST):
-    def __init__(self, fun, arg, T):
+    def __init__(self, fun, arg):
         self.ty = "fun_appl"
         self.fun = fun
         self.arg = arg
-        self.T = T
 
     def __repr__(self):
-        return "FunAppl(%s,%s,%s)" % (self.fun, self.arg, self.T)
+        return "FunAppl(%s,%s)" % (self.fun, self.arg)
 
 class ITE(AST):
     def __init__(self, cond, a1, a2, T):
@@ -333,7 +332,7 @@ def get_ast(thy, t):
                 if get_priority(t.arg) <= 95:
                     arg_ast = Bracket(arg_ast)
 
-                return FunAppl(fun_ast, arg_ast, t.get_type())
+                return FunAppl(fun_ast, arg_ast)
 
         elif t.is_abs():
             op_ast = Binder("λ") if settings.unicode() else Binder("%")
@@ -362,44 +361,183 @@ def get_ast(thy, t):
 
     return helper(t, [])
 
-@settings.with_settings
-def print_ast(ast):
-    if ast.ty == "bracket":
-        return "(" + print_ast(ast.body) + ")"
-    elif ast.ty == "show_type":
-        return print_ast(ast.body) + "::" + str(ast.body.T)
-    elif ast.ty == "var_name":
-        return ast.name
-    elif ast.ty == "const_name":
-        return ast.name
-    elif ast.ty == "number":
-        return str(ast.n)
-    elif ast.ty == "list":
-        return "[" + ", ".join(print_ast(e) for e in ast.entries) + "]"
-    elif ast.ty == "set":
-        return "{" + ", ".join(print_ast(e) for e in ast.entries) + "}"
-    elif ast.ty == "operator":
-        return ast.symbol
-    elif ast.ty == "binary_op":
-        return "%s %s %s" % (print_ast(ast.arg1), print_ast(ast.op), print_ast(ast.arg2))
-    elif ast.ty == "unary_op":
-        return "%s%s" % (print_ast(ast.op), print_ast(ast.arg))
-    elif ast.ty == "binder":
-        return ast.symbol
-    elif ast.ty == "binder_appl":
-        return "%s%s. %s" % (print_ast(ast.op), print_ast(ast.bind_var), print_ast(ast.body))
-    elif ast.ty == "bound":
-        return ast.name
-    elif ast.ty == "fun_appl":
-        return "%s %s" % (print_ast(ast.fun), print_ast(ast.arg))
-    elif ast.ty == "ite":
-        return "if %s then %s else %s" % (print_ast(ast.cond), print_ast(ast.a1), print_ast(ast.a2))
-    elif ast.ty == "interval":
-        return "{%s..%s}" % (print_ast(ast.left), print_ast(ast.right))
-    elif ast.ty == "fun_upd":
-        upd_strs = ["%s := %s" % (print_ast(a), print_ast(b)) for a, b in ast.upds]
-        return "(%s)(%s)" % (print_ast(ast.f), ', '.join(upd_strs))
-    elif ast.ty == "collect":
-        return "{%s. %s}" % (print_ast(ast.bind_var), print_ast(ast.body))
+def optimize_highlight(lst):
+    """Optimize a highlight list (s1, n1), ... by combining parts that have
+    the same color.
+
+    """
+    if len(lst) == 0:
+        return lst
     else:
-        raise TypeError
+        prev = lst[0]
+        new_lst = []
+        for s, n in lst[1:]:
+            if s.strip() == "" or prev[1] == n:
+                # Combine with previous:
+                prev = (prev[0] + s, prev[1])
+            else:
+                new_lst.append(prev)
+                prev = (s, n)
+        new_lst.append(prev)
+    return new_lst
+
+def N(s):
+    return [(s, 0)] if settings.highlight() else s
+
+def TV(s):
+    return [(s, 3)] if settings.highlight() else s
+
+@settings.with_settings
+def print_type(thy, T):
+    assert isinstance(T, HOLType), "print_type: input is not a type."
+    def helper(T):
+        if T.ty == HOLType.TVAR:
+            return TV("'" + T.name)
+        elif T.ty == HOLType.TYPE:
+            if len(T.args) == 0:
+                return N(T.name)
+            elif len(T.args) == 1:
+                # Insert parenthesis if the single argument is a function.
+                if HOLType.is_fun(T.args[0]):
+                    return N("(") + helper(T.args[0]) + N(") " + T.name)
+                else:
+                    return helper(T.args[0]) + N(" " + T.name)
+            elif HOLType.is_fun(T):
+                # 'a => 'b => 'c associates to the right. So parenthesis is
+                # needed to express ('a => 'b) => 'c.
+                fun_str = N(" ⇒ ") if settings.unicode() else N(" => ")
+                if HOLType.is_fun(T.args[0]):
+                    return N("(") + helper(T.args[0]) + N(")") + fun_str + helper(T.args[1])
+                else:
+                    return helper(T.args[0]) + fun_str + helper(T.args[1])
+            else:
+                return N("(") + commas_join(helper(t) for t in T.args) + N(") " + T.name)
+        else:
+            raise TypeError()
+
+    res = helper(T)
+    if settings.highlight():
+        res = optimize_highlight(res)
+    return res
+
+@settings.with_settings
+def print_ast(thy, ast):
+    res = []
+
+    def add_normal(s):
+        if settings.highlight():
+            res.append((s, 0))
+        else:
+            res.append(s)
+    
+    def add_bound(s):
+        if settings.highlight():
+            res.append((s, 1))
+        else:
+            res.append(s)
+
+    def add_var(s):
+        if settings.highlight():
+            res.append((s, 2))
+        else:
+            res.append(s)
+
+    def rec(ast):
+        if ast.ty == "bracket":
+            add_normal('(')
+            rec(ast.body)
+            add_normal(')')
+        elif ast.ty == "show_type":
+            rec(ast.body)
+            add_normal('::')
+            if settings.highlight():
+                res.extend(print_type(thy, ast.body.T))
+            else:
+                res.append(print_type(thy, ast.body.T))
+        elif ast.ty == "var_name":
+            add_var(ast.name)
+        elif ast.ty == "const_name":
+            add_normal(ast.name)
+        elif ast.ty == "number":
+            add_normal(str(ast.n))
+        elif ast.ty == "list":
+            add_normal("[")
+            if len(ast.entries) > 0:
+                rec(ast.entries[0])
+            for e in ast.entries[1:]:
+                add_normal(", ")
+                rec(e)
+            add_normal("]")
+        elif ast.ty == "set":
+            add_normal("{")
+            if len(ast.entries) > 0:
+                rec(ast.entries[0])
+            for e in ast.entries[1:]:
+                add_normal(", ")
+                rec(e)
+            add_normal("}")
+        elif ast.ty == "operator":
+            add_normal(ast.symbol)
+        elif ast.ty == "binary_op":
+            rec(ast.arg1)
+            add_normal(" ")
+            rec(ast.op)
+            add_normal(" ")
+            rec(ast.arg2)
+        elif ast.ty == "unary_op":
+            rec(ast.op)
+            rec(ast.arg)
+        elif ast.ty == "binder":
+            add_normal(ast.symbol)
+        elif ast.ty == "binder_appl":
+            rec(ast.op)
+            rec(ast.bind_var)
+            add_normal('. ')
+            rec(ast.body)
+        elif ast.ty == "bound":
+            add_bound(ast.name)
+        elif ast.ty == "fun_appl":
+            rec(ast.fun)
+            add_normal(' ')
+            rec(ast.arg)
+        elif ast.ty == "ite":
+            add_normal('if ')
+            rec(ast.cond)
+            add_normal(' then ')
+            rec(ast.a1)
+            add_normal(' else ')
+            rec(ast.a2)
+        elif ast.ty == "interval":
+            add_normal('{')
+            rec(ast.left)
+            add_normal('..')
+            rec(ast.right)
+            add_normal('}')
+        elif ast.ty == "fun_upd":
+            add_normal('(')
+            rec(ast.f)
+            add_normal(')(')
+            assert len(ast.upds) > 0
+            rec(ast.upds[0][0])
+            add_normal(' := ')
+            rec(ast.upds[0][1])
+            for a, b in ast.upds[1:]:
+                add_normal(', ')
+                rec(a)
+                add_normal(' := ')
+                rec(b)
+            add_normal(')')
+        elif ast.ty == "collect":
+            add_normal('{')
+            rec(ast.bind_var)
+            add_normal('. ')
+            rec(ast.body)
+            add_normal('}')
+        else:
+            raise TypeError
+
+    rec(ast)
+    if settings.highlight():
+        return optimize_highlight(res)
+    else:
+        return ''.join(res)
