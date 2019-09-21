@@ -130,7 +130,9 @@
             } else {
                 $.ajax({
                     url: '/api/load-json-file',
-                    data: JSON.stringify(filename),
+                    data: JSON.stringify({
+                        filename: filename
+                    }),
                     type: 'POST',
                     success: function (res) {
                         json_files[res.name] = res
@@ -522,7 +524,9 @@
             $.ajax({
                 url: "/api/load-json-file",
                 type: "POST",
-                data: JSON.stringify(name),
+                data: JSON.stringify({
+                    filename: name
+                }),
                 success: function (result) {
                     json_files[cur_theory_name] = result;
                     display_theory_items();

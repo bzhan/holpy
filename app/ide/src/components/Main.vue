@@ -75,7 +75,11 @@
           <span class="item-text">{{item.name}}</span>:&nbsp;&nbsp;
           <a href="#" name="proof" style="font-style:italic" v-bind:style="{color:get_status_color(item)}">proof</a>
           <br>
-          <span class="item-text indented-text" v-if="'prop_hl' in item" v-html="highlight_html(item.prop_hl)"></span>
+          <span v-if="'prop_hl' in item">
+            <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
+              <span class="item-text indented-text" v-html="highlight_html(line)"></span><br>
+            </span>
+          </span>
           <div v-if="'err_type' in item">
             <div v-if="typeof(item.prop) === 'string'">
               <span class="item-text indented-text">{{item.prop}}</span>
@@ -92,7 +96,11 @@
           <span class="keyword">axiom</span>&nbsp;
           <span class="item-text">{{item.name}}</span>:
           <br>
-          <span class="item-text indented-text" v-html="highlight_html(item.prop_hl)"></span>
+          <span v-if="'prop_hl' in item">
+            <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
+              <span class="item-text indented-text" v-html="highlight_html(line)"></span><br>
+            </span>
+          </span>
         </div>
       </div>
     </div>
@@ -126,7 +134,11 @@ export default {
     },
 
     load_file: async function () {
-      const response = await axios.post('http://127.0.0.1:5000/api/load-json-file', JSON.stringify(this.filename))
+      const data = JSON.stringify({
+        filename: this.filename,
+        line_length: 80,
+      })
+      const response = await axios.post('http://127.0.0.1:5000/api/load-json-file', data)
       this.theory = response.data
     },
 
@@ -146,7 +158,7 @@ export default {
     highlight_html: function (lst) {
       var output = '';
       for (let i = 0; i < lst.length; i++) {
-          output = output + '<tt class="' + this.rp(lst[i][1]) + '">' + lst[i][0] + '</tt>'
+        output = output + '<span class="' + this.rp(lst[i][1]) + '">' + lst[i][0].replace(/ /g, '&ensp;') + '</span>'
       }
       return output
     },

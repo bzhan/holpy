@@ -50,7 +50,7 @@ def print_type(thy, T):
     return pprint.print_type(thy, T)
 
 @settings.with_settings
-def print_term(thy, t):
+def print_term(thy, t, *, line_length=None):
     """More sophisticated printing function for terms. Handles printing
     of operators.
     
@@ -60,7 +60,8 @@ def print_term(thy, t):
     assert isinstance(t, Term), "print_term: input is not a term."
 
     ast = pprint.get_ast(thy, t)
-    return pprint.print_ast(thy, ast)
+    res = pprint.print_ast(thy, ast, line_length=line_length)
+    return res
 
 @settings.with_settings
 def print_thm(thy, th):

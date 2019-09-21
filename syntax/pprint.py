@@ -445,7 +445,8 @@ def print_ast(thy, ast, *, line_length=None):
         nonlocal cur_line
         res.append([])
         cur_line += 1
-        add_normal(' ' * indent)
+        if indent > 0:
+            add_normal(' ' * indent)
 
     def rec(ast):
         nonlocal indent
@@ -460,9 +461,9 @@ def print_ast(thy, ast, *, line_length=None):
             rec(ast.body)
             add_normal('::')
             if settings.highlight():
-                res.extend(print_type(thy, ast.body.T))
+                res[cur_line].extend(print_type(thy, ast.body.T))
             else:
-                res.append(print_type(thy, ast.body.T))
+                res[cur_line].append(print_type(thy, ast.body.T))
         elif ast.ty == "var_name":
             add_var(ast.name)
         elif ast.ty == "const_name":

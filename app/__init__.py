@@ -310,7 +310,7 @@ def str_of_constr(thy, constr):
         res += printer.N(' (' + arg + ' :: ') + printer.print_type(thy, argsT[i]) + printer.N(')')
     return res
 
-def file_data_to_output(thy, data):
+def file_data_to_output(thy, data, *, line_length=None):
     """Convert items in the theory from json format for the file to
     json format for the web client. Modifies data in-place.
     Also modifies argument thy in parsing the item.
@@ -334,7 +334,7 @@ def file_data_to_output(thy, data):
             data['err_str'] = e.err
             print(e.err)
         else:
-            data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
+            data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True, line_length=line_length)
         data['vars_lines'] = [k + ' :: ' + v for k, v in data['vars'].items()]
 
     elif data['ty'] == 'type.ind':
@@ -404,13 +404,17 @@ def file_data_to_output(thy, data):
 # Loads json file for the given user and file name.
 @app.route('/api/load-json-file', methods=['POST'])
 def load_json_file():
-    filename = json.loads(request.get_data().decode("utf-8"))
+    data = json.loads(request.get_data().decode("utf-8"))
+    filename = data['filename']
+    line_length = None
+    if 'line_length' in data:
+        line_length = data['line_length']
     with open(user_file(filename), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     if 'content' in f_data:
         thy = basic.load_imported_theory(f_data['imports'], user=user_info['username'])
         for data in f_data['content']:
-            file_data_to_output(thy, data)
+            file_data_to_output(thy, data, line_length=line_length)
     else:
         f_data['content'] = []
     return jsonify(f_data)
