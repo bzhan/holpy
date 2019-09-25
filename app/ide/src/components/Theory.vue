@@ -170,6 +170,22 @@ export default {
       this.on_edit = undefined
     },
 
+    add_theorem: function () {
+      const len = this.theory.content.length
+      this.$set(this.theory.content, len, {'ty': 'thm'})
+      this.selected = len
+      this.on_edit = len
+    },
+
+    remove_selected: function () {
+      if (this.selected === undefined)
+        return
+
+      this.theory.content.splice(this.selected, 1)
+      this.$set(this.theory, 'content', this.theory.content)
+      this.save_json_file()
+    },
+
     // Convert items in the theory from json format for the web client
     // back to the json format for the file.
     item_to_output: function (data) {

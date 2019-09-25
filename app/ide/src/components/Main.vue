@@ -7,6 +7,10 @@
           <b-dropdown-item href="#" v-on:click='open_file'>Open</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='load_file'>Refresh</b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Items" left>
+          <b-dropdown-item href="#" v-on:click='remove_selected'>Remove selected</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='add_theorem'>Add theorem</b-dropdown-item>
+        </b-nav-item-dropdown>
         <span style="margin-left:10px;align-self:center">Opened file: {{ filename }}</span>
       </b-navbar-nav>
     </b-navbar>
@@ -100,6 +104,14 @@ export default {
         data: 'No errors'
       }
       this.$refs.theory.selected = undefined
+    },
+
+    remove_selected: function () {
+      this.$refs.theory.remove_selected()
+    },
+
+    add_theorem: function () {
+      this.$refs.theory.add_theorem()
     }
   }
 }
