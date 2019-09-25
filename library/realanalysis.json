@@ -2868,6 +2868,296 @@
                "g": "real => real",
                "s": "real set"
                 }
+        },
+        {
+            "name": "has_real_derivative",
+            "prop": ["has_real_derivative f f1 net =",
+                        "tendsto_real",
+                             "(%x. real_inverse (x - netlimit net) *",
+                                  "(f x - (f (netlimit net) + f1 * (x - netlimit net))))",
+                             "0 net"],
+            "ty": "def",
+            "type": "(real => real) => real => real net => bool"
+        },
+        {
+            "name": "real_differentiable",
+            "prop": "real_differentiable f net = ?f1. has_real_derivative f f1 net",
+            "ty": "def",
+            "type": "(real => real) => real net => bool"
+        },
+        {
+            "name": "real_derivative",
+            "prop": "real_derivative f x = THE f1. has_real_derivative f f1 (atreal x)",
+            "ty": "def",
+            "type": "(real => real) => real => real"
+        },
+        {
+            "name": "higher_real_derivative",
+            "rules": [
+                {
+                    "prop": "higher_real_derivative 0 f = f"
+                },
+                {
+                    "prop": ["higher_real_derivative (Suc n) f =",
+                                "real_derivative (higher_real_derivative n f)"]
+                }
+            ],
+            "ty": "def.ind",
+            "type": "nat => (real => real) => (real => real)"
+        },
+        {
+            "name": "real_differentiable_on",
+            "prop": ["real_differentiable_on f s =",
+                        "!x. member x s --> ?f1. has_real_derivative f f1 (within (atreal x) s)"],
+            "ty": "def",
+            "type": "(real => real) => real set => bool"
+        },
+        {
+           "name": "has_real_derivative_withinreal",
+           "prop": ["has_real_derivative f f1 (within (atreal a) s) =",
+                        "tendsto_real (%x. (f x - f a) / (x - a)) f1 (within (atreal a) s)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "f1": "real",
+               "a": "real",
+               "s": "real set"
+                }
+        },
+        {
+           "name": "has_real_derivative_atreal",
+           "prop": ["has_real_derivative f f1 (atreal a) =",
+                        "tendsto_real (%x. (f x - f a) / (x - a)) f1 (atreal a)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "f1": "real",
+               "a": "real"
+                }
+        },
+        {
+           "name": "real_differentiable_on_differentiable",
+           "prop": ["real_differentiable_on f s =",
+                        "!x. member x s --> real_differentiable f (within (atreal x) s)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "s": "real set"
+                }
+        },
+        {
+           "name": "real_differentiable_on_real_open",
+           "prop": ["real_open s",
+                    "--> real_differentiable_on f s =",
+                        "!x. member x s --> ?f1. has_real_derivative f f1 (atreal x)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "s": "real set"
+                }
+        },
+        {
+           "name": "real_differentiable_on_imp_differentiable_within",
+           "prop": ["real_differentiable_on f s & member x s",
+                    "--> real_differentiable f (within (atreal x) s)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "s": "real set",
+               "x": "real"
+                }
+        },
+        {
+           "name": "real_differentiable_on_imp_differentiable_atreal",
+           "prop": ["real_differentiable_on f s & real_open s & member x s",
+                    "--> real_differentiable f (atreal x)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "s": "real set",
+               "x": "real"
+                }
+        },
+        {
+           "name": "has_real_derivative_caratheodory_atreal",
+           "prop": ["has_real_derivative f f1 (atreal a) =",
+                        "?g. (!b. f b - f a = g b * (b - a)) &",
+                             "real_continuous g (atreal a) & g a = f1"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "f1": "real",
+               "a": "real"
+                }
+        },
+        {
+           "name": "has_real_derivative_caratheodory_withinreal",
+           "prop": ["has_real_derivative f f1 (within (atreal a) s) =",
+                        "?g. (!b. f b - f a = g b * (b - a)) &",
+                             "real_continuous g (within (atreal a) s) & g a = f1"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "f1": "real",
+               "s": "real set",
+               "a": "real"
+                }
+        },
+        {
+           "name": "real_differentiable_caratheodory_atreal",
+           "prop": ["real_differentiable f (atreal a) =",
+                        "?g. (!b. f b - f a = g b * (b - a)) & real_continuous g (atreal a)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "a": "real"
+                }
+        },
+        {
+           "name": "real_differentiable_caratheodory_withinreal",
+           "prop": ["real_differentiable f (within (atreal a) s) =",
+                        "?g. (!b. f b - f a = g b * (b - a)) &",
+                             "real_continuous g (within (atreal a) s)"],
+           "ty": "thm",
+           "vars": {
+               "f": "real => real",
+               "s": "real set",
+               "a": "real"
+                }
+        },
+        {
+           "name": "is_realinterval",
+           "prop": ["is_realinterval s =",
+                        "!a. !b. !c. member a s & member b s & a <= c & c <= b --> member c s"],
+           "ty": "def",
+           "type": "real set => bool"
+        },
+        {
+           "name": "trivial_limit_within_realinterval",
+           "prop": ["is_realinterval s & member x s",
+                    "--> trivial_limit (within (atreal x) s) = (s = {x})"],
+           "ty": "thm",
+           "vars": {
+               "s": "real set",
+               "x": "real"
+                }
+        },
+        {
+           "name": "is_real_interval_cases",
+           "prop": ["is_realinterval s =",
+                         "(s = empty_set |",
+                         "s = univ |",
+                         "?a. s = {x. a < x} |",
+                         "?a. s = {x. a <= x} |",
+                         "?b. s = {x. x < b} |",
+                         "?b. s = {x. x <= b} |",
+                         "?a. ?b. s = {x.  a < x & x < b} |",
+                         "?a. ?b. s = {x.  a < x & x <= b} |",
+                         "?a. ?b. s = {x.  a <= x & x < b} |",
+                         "?a. ?b. s = {x.  a <= x & x <= b})"],
+           "ty": "thm",
+           "vars": {
+               "s": "real set"
+                }
+        },
+        {
+           "name": "is_realinterval_clauses",
+           "prop": ["is_realinterval empty_set &",
+                    "is_realinterval univ &",
+                    "(!a. is_realinterval {x. a < x}) &",
+                    "(!a. is_realinterval {x. a <= x}) &",
+                    "(!b. is_realinterval {x. x < b}) &",
+                    "(!b. is_realinterval {x. x <= b}) &",
+                    "(!a. !b. is_realinterval {x.  a < x & x < b}) &",
+                    "(!a. !b. is_realinterval {x.  a < x & x <= b}) &",
+                    "(!a. !b. is_realinterval {x.  a <= x & x < b}) &",
+                    "(!a. !b. is_realinterval {x.  a <= x & x <= b})"],
+           "ty": "thm",
+           "vars": {
+                }
+        },
+        {
+           "name": "real_convex",
+           "prop": ["is_realinterval s =",
+                    "!x. !y. !u. !v. member x s & member y s & 0 <= u & 0 <= v & u + v = 1",
+                                    "--> member (u * x + v * y) s"],
+           "ty": "thm",
+           "vars": {
+               "s": "real set"
+                }
+        },
+        {
+           "name": "real_convex_alt",
+           "prop": ["is_realinterval s =",
+                    "!x. !y. !u. member x s & member y s & 0 <= u & u <= 1",
+                                "--> member ((1 - u) * x + u * y) s"],
+           "ty": "thm",
+           "vars": {
+               "s": "real set"
+                }
+        },
+        {
+           "name": "real_midpoint_in_convex",
+           "prop": "is_realinterval s & member x s & member y s --> member ((x + y) / 2) s",
+           "ty": "thm",
+           "vars": {
+               "s": "real set",
+               "x": "real",
+               "y": "real"
+                }
+        },
+        {
+           "name": "image_affinity_real_interval",
+           "prop": ["image (%x. m * x + c) (real_closed_interval a b) =",
+                    "(if ((real_closed_interval a b) = empty_set)",
+                     "then empty_set ",
+                     "else (if (0 <= m) ",
+                           "then (real_closed_interval (m * a + c) (m * b + c))",
+                           "else (real_closed_interval (m * b + c) (m * a + c))))"],
+           "ty": "thm",
+           "vars": {
+               "a": "real",
+               "b": "real",
+               "c": "real",
+               "m": "real"
+                }
+        },
+        {
+           "name": "image_stretch_real_interval",
+           "prop": ["image (%x. m * x) (real_closed_interval a b) =",
+                    "(if ((real_closed_interval a b) = empty_set)",
+                     "then empty_set ",
+                     "else (if (0 <= m) ",
+                           "then (real_closed_interval (m * a) (m * b))",
+                           "else (real_closed_interval (m * b) (m * a))))"],
+           "ty": "thm",
+           "vars": {
+               "a": "real",
+               "b": "real",
+               "m": "real"
+                }
+        },
+        {
+           "name": "real_closed_interval_translation",
+           "prop": ["real_closed_interval (c + a) (c + b) =",
+                    "image (%x. c + x) (real_closed_interval a b)"],
+           "ty": "thm",
+           "vars": {
+               "a": "real",
+               "b": "real",
+               "c": "real"
+                }
+        },
+        {
+           "name": "real_open_interval_translation",
+           "prop": ["real_open_interval (c + a) (c + b) =",
+                    "image (%x. c + x) (real_open_interval a b)"],
+           "ty": "thm",
+           "vars": {
+               "a": "real",
+               "b": "real",
+               "c": "real"
+                }
         }
     ],
     "description": "Some analytic concepts for real.",
