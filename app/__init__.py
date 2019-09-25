@@ -334,6 +334,7 @@ def file_data_to_output(thy, data, *, line_length=None):
             data['err_str'] = str(e)
             print(e)
         else:
+            data['prop_lines'] = '\n'.join(printer.print_term(thy, prop, unicode=True, highlight=False, line_length=line_length))
             data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True, line_length=line_length)
         data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
 
@@ -491,6 +492,9 @@ def check_modify():
 
         if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
             item['vars'] = parse_var_decls(thy, item['vars_lines'].split('\n'))
+            item['prop'] = item['prop_lines'].split('\n')
+            if len(item['prop']) == 1:
+                item['prop'] = item['prop'][0]
 
         if item['ty'] == 'type.ind':
             T = parser.parse_type(thy, item['data_name'])

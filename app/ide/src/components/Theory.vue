@@ -177,6 +177,7 @@ export default {
         delete data.type_hl;
       } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
         delete data.prop_hl;
+        delete data.prop_lines;
         delete data.vars_lines;
         delete data.err_type;
         delete data.err_str;
@@ -262,7 +263,7 @@ export default {
 
 <style>
 
-.theory-items + div {
+.theory-items {
     margin: 3px;
     padding: 5px;
 }

@@ -13,8 +13,8 @@
     </div>
     <div style="margin-top:5px">
       <label v-bind:for="'prop' + id" class="keyword">shows</label>
-      <input type="text" v-model="item.prop" class="form-element unicode-replace"
-             spellcheck="false" min-width="300" v-bind:id="'prop' + id" ref="prop">
+      <textarea spellcheck="false" v-model="item.prop_lines" class="form-element unicode-replace"
+                min-width="300" v-bind:id="'prop' + id" ref="prop"></textarea>
     </div>
     <div style="margin-top:10px">
       <span class="hint-element">
