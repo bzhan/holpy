@@ -318,7 +318,7 @@ def file_data_to_output(thy, data, *, line_length=None):
     """
     try:
         parser.parse_extension(thy, data)
-    except infertype.TypeInferenceException as e:
+    except Exception as e:
         pass
 
     if data['ty'] == 'def.ax':
@@ -329,10 +329,10 @@ def file_data_to_output(thy, data, *, line_length=None):
         ctxt = parser.parse_vars(thy, data['vars'])
         try:
             prop = parser.parse_term(thy, ctxt, data['prop'])
-        except infertype.TypeInferenceException as e:
-            data['err_type'] = "Type inference exception"
-            data['err_str'] = e.err
-            print(e.err)
+        except Exception as e:
+            data['err_type'] = str(e.__class__)
+            data['err_str'] = str(e)
+            print(e)
         else:
             data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True, line_length=line_length)
         data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
@@ -478,6 +478,9 @@ def check_modify():
     """Check a modified item for validity."""
     data = json.loads(request.get_data().decode("utf-8"))
     item = data['content']
+    line_length = None
+    if 'line_length' in data:
+        line_length = data['line_length']
 
     with open(user_file(data['file_name']), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
@@ -520,16 +523,15 @@ def check_modify():
                 name, prop = parser.parse_named_thm(thy, ctxt, content)
                 item['rules'].append({'name': name, 'prop': printer.print_term(thy, prop)})
 
-        file_data_to_output(thy, item)
+        file_data_to_output(thy, item, line_length=line_length)
     except Exception as e:
-        exc_detailed = traceback2.format_exc()
-        return jsonify({
-            "failed": e.__class__.__name__,
-            "message": str(e),
-            "detail_content": exc_detailed
-        })
+        item['err_type'] = e.__class__.__name__
+        item['err_str'] = str(e)
+        item['trace'] = traceback2.format_exc()
 
-    return jsonify({'content': item})
+    return jsonify({
+        'item': item
+    })
 
 
 @app.route('/api/find-files', methods=['GET'])

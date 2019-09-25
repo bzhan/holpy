@@ -122,18 +122,29 @@ export default {
       this.on_edit = index
     },
 
-    check_edit: async function () {
+    // Send an item to the server for parsing.
+    parse_item: async function () {
       const data = {
         file_name: this.theory.name,
         prev_list: this.theory.content.slice(0, Number(this.on_edit)),
+        line_length: 80,
         content: this.$refs.edit[0]._data.item
       }
+      delete data.content.err_type
+      delete data.content.err_str
+      delete data.content.trace
       const response = await axios.post('http://127.0.0.1:5000/api/check-modify', JSON.stringify(data))
-      if ('failed' in response.data) {
+      return response
+    },
+
+    check_edit: async function () {
+      const response = await this.parse_item()
+
+      if ('err_type' in response.data.item) {
         this.$emit('set-message', {
           type: 'error',
-          data: response.data.message,
-          trace: response.data.detail_content
+          data: response.data.item.err_str,
+          trace: response.data.item.trace
         })
       } else {
         this.$emit('set-message', {
@@ -143,12 +154,79 @@ export default {
       }
     },
 
-    save_edit: function () {
+    save_edit: async function () {
+      const response = await this.parse_item()
+      var item = this.theory.content[this.on_edit]
+      delete item.err_type
+      delete item.err_str
+      delete item.trace
+      $.extend(true, item, response.data.item)
+      this.$set(this.theory.content, this.on_edit, item)
+      this.save_json_file()
       this.on_edit = undefined
     },
 
     cancel_edit: function () {
       this.on_edit = undefined
+    },
+
+    // Convert items in the theory from json format for the web client
+    // back to the json format for the file.
+    item_to_output: function (data) {
+      if (data.ty === 'def.ax') {
+        delete data.type_hl;
+      } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
+        delete data.prop_hl;
+        delete data.vars_lines;
+        delete data.err_type;
+        delete data.err_str;
+        delete data.trace;
+      } else if (data.ty === 'type.ind') {
+        delete data.constr_output;
+        delete data.constr_output_hl;
+        delete data.type_hl;
+        delete data.edit_type;
+        delete data.ext_output;
+      } else if (data.ty === 'def') {
+        delete data.type_hl;
+        delete data.prop_hl;
+        delete data.edit_content;
+      } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
+        delete data.type_hl;
+        delete data.ext;
+        delete data.edit_content;
+        delete data.ext_output;
+        for (var i in data.rules) {
+          delete data.rules[i].prop_hl;
+        }
+      }
+    },
+
+    // Save all changed proof on the webpage to the json-file;
+    save_json_file: async function () {
+      var content = [];
+      for (let i = 0; i < this.theory.content.length; i++) {
+        const item = this.theory.content[i]
+        if ('name' in item) {
+          var item_copy = {};
+          $.extend(true, item_copy, item);
+          content.push(item_copy);  // perform deep copy
+          this.item_to_output(item_copy);    
+        }
+      }
+
+      const data = {
+        name: this.theory.name,
+        imports: this.theory.imports,
+        description: this.theory.description,
+        content: content
+      }
+
+      const response = await axios.post('http://127.0.0.1:5000/api/save-file', JSON.stringify(data))
+      this.$emit('set-message', {
+        type: 'OK',
+        data: 'Saved'
+      })
     }
   },
 

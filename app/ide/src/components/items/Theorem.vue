@@ -3,15 +3,15 @@
     <span class="keyword">theorem</span>&nbsp;
     <span class="item-text">{{item.name}}</span>:&nbsp;&nbsp;
     <a href="#" style="font-style:italic;color:brown"
-      v-on:click="$emit('edit')">edit</a>&nbsp;&nbsp;
+       v-on:click="$emit('edit')">edit</a>&nbsp;&nbsp;
     <a href="#" v-bind:style="{fontStyle:'italic', color:Util.get_status_color(item)}">proof</a>
     <br>
-    <span v-if="'prop_hl' in item">
+    <span v-if="!('err_type' in item)">
       <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
         <span class="item-text indented-text" v-html="Util.highlight_html(line)"></span><br>
       </span>
     </span>
-    <div v-if="'err_type' in item">
+    <div v-else>
       <div v-if="typeof(item.prop) === 'string'">
         <span class="item-text indented-text">{{item.prop}}</span>
       </div>
