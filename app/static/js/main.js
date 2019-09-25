@@ -651,7 +651,7 @@
             if ('prop' in item)
                 form.prop.value = item.prop;
             if ('vars_lines' in item)
-                form.vars.value = item.vars_lines.join('\n');
+                form.vars.value = item.vars_lines;
             if (item.attributes && item.attributes.includes('hint_backward'))
                 form.hint_backward.checked = true;
             if (item.attributes && item.attributes.includes('hint_backward1'))

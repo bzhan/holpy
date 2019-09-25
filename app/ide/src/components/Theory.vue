@@ -68,7 +68,14 @@
         <span class="keyword">method</span>&nbsp;
         <span class="item-text">{{item.name}}</span>
       </div>
-      <Theorem v-if="item.ty === 'thm'" v-bind:item="item"/>
+      <div v-if="item.ty == 'thm'">
+        <Theorem v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <div v-else>
+          <TheoremEdit v-bind:old_item="item"/>
+          <button style="margin:5px" v-on:click="save_edit">Save</button>
+          <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
+        </div>
+      </div>
       <div v-if="item.ty === 'thm.ax'">
         <span class="keyword">axiom</span>&nbsp;
         <span class="item-text">{{item.name}}</span>:
@@ -86,19 +93,40 @@
 <script>
 import Util from './../../static/js/util.js'
 import Theorem from './items/Theorem'
+import TheoremEdit from './items/TheoremEdit'
+
+
 
 export default {
   name: 'Theory',
+
   components: {
     Theorem,
+    TheoremEdit,
   },
+
   props: [
     "theory"
   ],
 
   data: function () {
     return {
-      selected: undefined
+      selected: undefined,
+      on_edit: undefined
+    }
+  },
+
+  methods: {
+    edit_item: function (index) {
+      this.on_edit = index
+    },
+
+    save_edit: function () {
+      this.on_edit = undefined
+    },
+
+    cancel_edit: function () {
+      this.on_edit = undefined
     }
   },
 
@@ -134,13 +162,9 @@ export default {
 
 <style>
 
-input, textarea, .item-text {
-    font-family: monospace;
-}
-
 .theory-items + div {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 3px;
+    padding: 5px;
 }
 
 .keyword {
