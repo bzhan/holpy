@@ -57,7 +57,7 @@ export default {
 
   data: function () {
     return {
-      item: this.old_item
+      item: $.extend(true, {}, this.old_item)
     }
   },
 

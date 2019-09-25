@@ -71,7 +71,8 @@
       <div v-if="item.ty == 'thm'">
         <Theorem v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
         <div v-else>
-          <TheoremEdit v-bind:old_item="item"/>
+          <TheoremEdit v-bind:old_item="item" ref="edit"/>
+          <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
         </div>
@@ -92,9 +93,9 @@
 
 <script>
 import Util from './../../static/js/util.js'
+import axios from 'axios'
 import Theorem from './items/Theorem'
 import TheoremEdit from './items/TheoremEdit'
-
 
 
 export default {
@@ -119,6 +120,27 @@ export default {
   methods: {
     edit_item: function (index) {
       this.on_edit = index
+    },
+
+    check_edit: async function () {
+      const data = {
+        file_name: this.theory.name,
+        prev_list: this.theory.content.slice(0, Number(this.on_edit)),
+        content: this.$refs.edit[0]._data.item
+      }
+      const response = await axios.post('http://127.0.0.1:5000/api/check-modify', JSON.stringify(data))
+      if ('failed' in response.data) {
+        this.$emit('set-message', {
+          type: 'error',
+          data: response.data.message,
+          trace: response.data.detail_content
+        })
+      } else {
+        this.$emit('set-message', {
+          type: 'OK',
+          data: 'No errors'
+        })
+      }
     },
 
     save_edit: function () {

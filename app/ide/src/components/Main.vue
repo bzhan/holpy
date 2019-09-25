@@ -133,6 +133,7 @@ export default {
   padding-left: 10px;
   padding-top: 10px;
   border-top-style: solid;
+  overflow-y: scroll;
 }
 
 </style>

@@ -780,7 +780,7 @@
         if (ty === 'thm' || ty === 'thm.ax') {
             item.name = form.name.value;
             item.prop = form.prop.value;
-            item.vars = form.vars.value.trim().split('\n');
+            item.vars = form.vars.value.trim();
             item.attributes = [];
             if (form.hint_backward.checked === true)
                 item.attributes.push('hint_backward');

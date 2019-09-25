@@ -487,7 +487,7 @@ def check_modify():
             parser.parse_extension(thy, d)
 
         if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
-            item['vars'] = parse_var_decls(thy, item['vars'])
+            item['vars'] = parse_var_decls(thy, item['vars_lines'].split('\n'))
 
         if item['ty'] == 'type.ind':
             T = parser.parse_type(thy, item['data_name'])
