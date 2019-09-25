@@ -5,6 +5,7 @@
       <b-navbar-nav>
         <b-nav-item-dropdown text="File" left>
           <b-dropdown-item href="#" v-on:click='open_file'>Open</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='load_file'>Refresh</b-dropdown-item>
         </b-nav-item-dropdown>
         <span style="margin-left:10px;align-self:center">Opened file: {{ filename }}</span>
       </b-navbar-nav>
@@ -66,7 +67,11 @@ export default {
     },
 
     open_file: function () {
-      this.filename = prompt("open file")
+      this.filename = prompt("Open file")
+      this.load_file()
+    },
+
+    refresh_file: function () {
       this.load_file()
     },
 
@@ -84,6 +89,10 @@ export default {
         filename: this.filename,
         line_length: 80,
       })
+      this.message = {
+        type: 'OK',
+        data: 'Loading...'
+      }
       const response = await axios.post('http://127.0.0.1:5000/api/load-json-file', data)
       this.theory = response.data
       this.message = {

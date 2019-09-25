@@ -9,7 +9,7 @@ from flask.json import jsonify
 from kernel.term import get_vars
 from kernel.type import HOLType, TVar, Type, TFun
 from kernel import extension, theory
-from syntax import parser, printer, settings
+from syntax import parser, printer, settings, pprint
 from server import server, method
 from logic import basic
 from logic import induct
@@ -334,8 +334,9 @@ def file_data_to_output(thy, data, *, line_length=None):
             data['err_str'] = str(e)
             print(e)
         else:
-            data['prop_lines'] = '\n'.join(printer.print_term(thy, prop, unicode=True, highlight=False, line_length=line_length))
-            data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True, line_length=line_length)
+            ast = pprint.get_ast(thy, prop, unicode=True)
+            data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
+            data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
         data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
 
     elif data['ty'] == 'type.ind':
