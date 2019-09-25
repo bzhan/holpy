@@ -2,7 +2,9 @@
   <div>
     <span class="keyword">theorem</span>&nbsp;
     <span class="item-text">{{item.name}}</span>:&nbsp;&nbsp;
-    <a href="#" name="proof" style="font-style:italic" v-bind:style="{color:Util.get_status_color(item)}">proof</a>
+    <a href="#" style="font-style:italic;color:brown"
+      v-on:click="$emit('edit')">edit</a>&nbsp;&nbsp;
+    <a href="#" v-bind:style="{fontStyle:'italic', color:Util.get_status_color(item)}">proof</a>
     <br>
     <span v-if="'prop_hl' in item">
       <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
@@ -27,9 +29,11 @@ import Util from './../../../static/js/util.js'
 
 export default {
   name: 'Theorem',
+
   props: [
     "item"
   ],
+
   created() {
     this.Util = Util
   }

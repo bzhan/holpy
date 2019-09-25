@@ -335,7 +335,7 @@ def file_data_to_output(thy, data, *, line_length=None):
             print(e.err)
         else:
             data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True, line_length=line_length)
-        data['vars_lines'] = [k + ' :: ' + v for k, v in data['vars'].items()]
+        data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
 
     elif data['ty'] == 'type.ind':
         constrs = []
