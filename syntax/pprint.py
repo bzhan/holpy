@@ -523,12 +523,30 @@ def print_ast(thy, ast, *, line_length=None):
                 add_normal(' ')
                 rec(ast.arg)
         elif ast.ty == "ite":
-            add_normal('if ')
-            rec(ast.cond)
-            add_normal(' then ')
-            rec(ast.a1)
-            add_normal(' else ')
-            rec(ast.a2)
+            if line_length and print_length(print_ast(thy, ast)) > line_length:
+                add_normal('if ')
+                rec(ast.cond)
+                add_normal(' then ')
+                indent += 2
+                newline()
+                rec(ast.a1)
+                indent -= 2
+                newline()
+                add_normal('else ')
+                if ast.a2.ty == 'ite':
+                    rec(ast.a2)
+                else:
+                    indent += 2
+                    newline()
+                    rec(ast.a2)
+                    indent -= 2
+            else:                    
+                add_normal('if ')
+                rec(ast.cond)
+                add_normal(' then ')
+                rec(ast.a1)
+                add_normal(' else ')
+                rec(ast.a2)
         elif ast.ty == "interval":
             add_normal('{')
             rec(ast.left)

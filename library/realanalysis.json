@@ -3480,14 +3480,17 @@
             }
         },
         {
+            "attributes": [],
             "name": "image_stretch_real_interval",
             "prop": [
-                "image (%x. m * x) (real_closed_interval a b) =",
-                "(if ((real_closed_interval a b) = empty_set)",
-                "then empty_set ",
-                "else (if (0 <= m) ",
-                "then (real_closed_interval (m * a) (m * b))",
-                "else (real_closed_interval (m * b) (m * a))))"
+                "image (λx. m * x) (real_closed_interval a b) = ",
+                "(if real_closed_interval a b = ∅ then ",
+                "   ∅",
+                " else ",
+                "if 0 ≤ m then ",
+                "   real_closed_interval (m * a) (m * b)",
+                " else ",
+                "   real_closed_interval (m * b) (m * a))"
             ],
             "ty": "thm",
             "vars": {
