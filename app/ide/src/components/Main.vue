@@ -66,8 +66,19 @@ export default {
 
   methods: {
     load_filelist: async function () {
-      const response = await axios.get('http://127.0.0.1:5000/api/find-files')
-      this.filelist = response.data.theories
+      var response = undefined;
+      try {
+        response = await axios.get('http://127.0.0.1:5000/api/find-files')
+      } catch (err) {
+        this.message = {
+          type: 'error',
+          data: 'Server error'
+        }
+      }
+      
+      if (response !== undefined) {
+        this.filelist = response.data.theories
+      }
     },
 
     open_file: function () {
@@ -97,13 +108,25 @@ export default {
         type: 'OK',
         data: 'Loading...'
       }
-      const response = await axios.post('http://127.0.0.1:5000/api/load-json-file', data)
-      this.theory = response.data
-      this.message = {
-        type: 'OK',
-        data: 'No errors'
+
+      var response = undefined;
+      try {
+        response = await axios.post('http://127.0.0.1:5000/api/load-json-file', data)
+      } catch (err) {
+        this.message = {
+          type: 'error',
+          data: 'Server error'
+        }
       }
-      this.$refs.theory.selected = undefined
+
+      if (response !== undefined) {
+        this.theory = response.data
+        this.message = {
+          type: 'OK',
+          data: 'No errors'
+        }
+        this.$refs.theory.selected = undefined
+      }
     },
 
     remove_selected: function () {
