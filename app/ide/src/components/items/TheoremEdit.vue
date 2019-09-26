@@ -56,9 +56,13 @@ export default {
   ],
 
   data: function () {
-    return {
+    var res = {
       item: $.extend(true, {}, this.old_item)
     }
+    if (!('attributes' in res.item)) {
+      res.item.attributes = []
+    }
+    return res
   },
 
   computed: {
