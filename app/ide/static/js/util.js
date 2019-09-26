@@ -41,7 +41,7 @@ var Util = {
     highlight_html: function (lst) {
         var output = '';
         for (let i = 0; i < lst.length; i++) {
-            output = output + '<span class="' + this.rp(lst[i][1]) + '">' + lst[i][0].replace(/ /g, '&ensp;') + '</span>'
+            output = output + '<span class="' + this.rp(lst[i][1]) + '">' + lst[i][0].replace(/ /g, '&nbsp;') + '</span>'
         }
         return output
     },
