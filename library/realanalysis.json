@@ -3518,6 +3518,91 @@
                 "b": "real",
                 "c": "real"
             }
+        },
+        {
+            "name": "real_differentiable_imp_continuous_withinreal",
+            "prop": [
+                "real_differentiable f (within (atreal x) s)",
+                "--> real_continuous f (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_imp_continuous_atreal",
+            "prop": "real_differentiable f (atreal x) ⟶ real_continuous f (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "has_real_derivative_imp_continuous_withinreal",
+            "prop": [
+                "has_real_derivative f f1 (within (atreal x) s) ⟶ ",
+                "real_continuous f (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "name": "has_real_derivative_imp_continuous_atreal",
+            "prop": "has_real_derivative f f1 (atreal x) ⟶ real_continuous f (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_differentiable_on_imp_real_continuous_on",
+            "prop": "real_differentiable_on f s ⟶ real_continuous_on f s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "name": "real_continuous_transform_withinreal_set_imp",
+            "prop": [
+                "eventually (λx. x ∈ t --> x ∈ s) (atreal a) &",
+                "real_continuous f (within (atreal a) s)",
+                "--> real_continuous f (within (atreal a) t)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "name": "has_real_derivative_within_subset",
+            "prop": [
+                "has_real_derivative f f1 (within (atreal x) s) & subset t s",
+                "--> has_real_derivative f f1 (within (atreal x) t)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set",
+                "t": "real set",
+                "x": "real"
+            }
         }
     ],
     "description": "Some analytic concepts for real.",
