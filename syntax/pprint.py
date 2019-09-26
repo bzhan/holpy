@@ -489,13 +489,27 @@ def print_ast(thy, ast, *, line_length=None):
         elif ast.ty == "operator":
             add_normal(ast.symbol)
         elif ast.ty == "binary_op":
-            rec(ast.arg1)
-            add_normal(" ")
-            rec(ast.op)
-            add_normal(" ")
             if line_length and print_length(print_ast(thy, ast)) > line_length:
-                newline()
-            rec(ast.arg2)
+                if ast.op.symbol in ("-->", "⟶"):
+                    rec(ast.arg1)
+                    add_normal(" ")
+                    newline()
+                    rec(ast.op)
+                    add_normal(" ")
+                    rec(ast.arg2)
+                else:
+                    rec(ast.arg1)
+                    add_normal(" ")
+                    rec(ast.op)
+                    add_normal(" ")
+                    newline()
+                    rec(ast.arg2)
+            else:
+                rec(ast.arg1)
+                add_normal(" ")
+                rec(ast.op)
+                add_normal(" ")
+                rec(ast.arg2)
         elif ast.ty == "unary_op":
             rec(ast.op)
             rec(ast.arg)
@@ -533,13 +547,10 @@ def print_ast(thy, ast, *, line_length=None):
                 indent -= 2
                 newline()
                 add_normal('else ')
-                if ast.a2.ty == 'ite':
-                    rec(ast.a2)
-                else:
-                    indent += 2
-                    newline()
-                    rec(ast.a2)
-                    indent -= 2
+                indent += 2
+                newline()
+                rec(ast.a2)
+                indent -= 2
             else:                    
                 add_normal('if ')
                 rec(ast.cond)
