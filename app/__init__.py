@@ -326,9 +326,10 @@ def file_data_to_output(thy, data, *, line_length=None):
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
-        ctxt = parser.parse_vars(thy, data['vars'])
         try:
+            ctxt = parser.parse_vars(thy, data['vars'])
             prop = parser.parse_term(thy, ctxt, data['prop'])
+            data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
         except Exception as e:
             data['err_type'] = str(e.__class__)
             data['err_str'] = str(e)
@@ -337,7 +338,6 @@ def file_data_to_output(thy, data, *, line_length=None):
             ast = pprint.get_ast(thy, prop, unicode=True)
             data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
             data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
-        data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
 
     elif data['ty'] == 'type.ind':
         constrs = []
@@ -489,8 +489,10 @@ def check_modify():
     try:
         thy = basic.load_imported_theory(f_data['imports'], user_info['username'])
         for d in data['prev_list']:
-            parser.parse_extension(thy, d)
-
+            try:
+                parser.parse_extension(thy, d)
+            except Exception:
+                pass
         if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
             item['vars'] = parse_var_decls(thy, item['vars_lines'].split('\n'))
             item['prop'] = item['prop_lines'].split('\n')
