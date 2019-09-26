@@ -333,6 +333,10 @@ def file_data_to_output(thy, data, *, line_length=None):
         except Exception as e:
             data['err_type'] = str(e.__class__)
             data['err_str'] = str(e)
+            if isinstance(data['prop'], str):
+                data['prop_lines'] = data['prop']
+            else:
+                data['prop_lines'] = '\n'.join(data['prop'])
             print(e)
         else:
             ast = pprint.get_ast(thy, prop, unicode=True)
