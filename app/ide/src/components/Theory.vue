@@ -133,6 +133,10 @@ export default {
       delete data.content.err_type
       delete data.content.err_str
       delete data.content.trace
+      this.$emit('set-message', {
+        type: 'OK',
+        data: 'Checking...'
+      })
       const response = await axios.post('http://127.0.0.1:5000/api/check-modify', JSON.stringify(data))
       return response
     },
