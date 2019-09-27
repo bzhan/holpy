@@ -80,7 +80,7 @@ var Util = {
                         e.preventDefault();
                     } else {
                         window.event.returnValue = false;
-                    };
+                    }
                     len = l;
                     content = content.slice(0, pos - len) + this.replace_obj[key] + content.slice(pos,);
                 }

@@ -35,12 +35,13 @@
         </span>
       </div>
       <div v-if="item.ty === 'def'">
-        <span class="keyword">definition</span>&nbsp;
-        <span class="item-text">{{item.name}}</span> ::
-        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>&nbsp;
-        <span class="keyword">where</span>
-        <br>
-        <span class="item-text indented-text" v-html="Util.highlight_html(item.prop_hl)"></span>
+        <Definition v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <div v-else>
+          <DefinitionEdit v-bind:old_item="item" ref="edit"/>
+          <button style="margin:5px" v-on:click="check_edit">Check</button>
+          <button style="margin:5px" v-on:click="save_edit">Save</button>
+          <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
+        </div>
       </div>
       <div v-if="item.ty === 'def.ind'">
         <span class="keyword">fun</span>&nbsp;
@@ -94,9 +95,11 @@
 <script>
 import Util from './../../static/js/util.js'
 import axios from 'axios'
+
+import Definition from './items/Definition'
+import DefinitionEdit from './items/DefinitionEdit'
 import Theorem from './items/Theorem'
 import TheoremEdit from './items/TheoremEdit'
-
 
 export default {
   name: 'Theory',
@@ -104,6 +107,8 @@ export default {
   components: {
     Theorem,
     TheoremEdit,
+    Definition,
+    DefinitionEdit,
   },
 
   props: [
@@ -211,7 +216,7 @@ export default {
       } else if (data.ty === 'def') {
         delete data.type_hl;
         delete data.prop_hl;
-        delete data.edit_content;
+        delete data.prop_lines;
       } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
         delete data.type_hl;
         delete data.ext;
