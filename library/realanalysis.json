@@ -3606,6 +3606,386 @@
                 "t": "real set",
                 "x": "real"
             }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_subset",
+            "prop": [
+                "real_differentiable_on f s ∧ t ⊆ s",
+                "-->real_differentiable_on f t"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_within_subset",
+            "prop": [
+                "real_differentiable f (within (atreal x) s) ∧ t ⊆ s",
+                "⟶ real_differentiable f (within (atreal x) t)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_atreal_within",
+            "prop": [
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ has_real_derivative f f1 (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_within_real_open",
+            "prop": [
+                "a ∈ s ∧ real_open s ",
+                "⟶ has_real_derivative f f1 (within (atreal a) s) = ",
+                "has_real_derivative f f1 (atreal a)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_atreal_within",
+            "prop": [
+                "real_differentiable f (atreal x)  ",
+                "⟶ real_differentiable f (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " has_real_derivative_transform_within",
+            "prop": [
+                "0 < d ∧ ",
+                "x ∈ s ∧ ",
+                "(∀x1. x1 ∈ s ∧ abs (x1 - x) < d ⟶ f x1 = g x1) ∧ ",
+                "has_real_derivative f f1 (within (atreal x) s) ",
+                "⟶ has_real_derivative g f1 (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "d": "real",
+                "f": "real => real",
+                "f1": "real",
+                "g": "real => real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " has_real_derivative_transform_atreal",
+            "prop": [
+                "0 < d ∧ ",
+                "(∀x1. x1 ∈ s ∧ abs (x1 - x) < d ⟶ f x1 = g x1) ∧ ",
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ has_real_derivative g f1 (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "d": "real",
+                "f": "real => real",
+                "f1": "real",
+                "g": "real => real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " has_real_derivative_zero_constant",
+            "prop": [
+                "is_realinterval s &",
+                "(!x. x∈s --> has_real_derivative f 0 (within (atreal x) s))",
+                "--> ?c. !x. x∈s --> f x = c"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_zero_unique",
+            "prop": [
+                "is_realinterval s ∧ a∈s & f a =c &",
+                "(∀x. x ∈ s ⟶ has_real_derivative f 0 (within (atreal x) s)) ",
+                "⟶ (∀x. x ∈ s ⟶ f x = c)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "c": "real",
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_diff_chain_within",
+            "prop": [
+                "has_real_derivative f f1 (within (atreal x) s) &",
+                "has_real_derivative g g1 (within (atreal (f x)) (image f s))",
+                "-->has_real_derivative (g O f) (g1 * f1) (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "g": "real => real",
+                "g1": "real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_diff_chain_atreal",
+            "prop": [
+                "has_real_derivative f f1 (atreal x) ∧ ",
+                "has_real_derivative g g1 (atreal (f x)) ",
+                "⟶ has_real_derivative (g ∘ f) (g1 * f1) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "g": "real => real",
+                "g1": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_chain",
+            "prop": [
+                "(!x. P x --> has_real_derivative g (g1 x) (atreal x)) ",
+                "-->(!x. !s. has_real_derivative f f1 (within (atreal x) s) & P (f x)",
+                "--> has_real_derivative (%x. g (f x)) (f1 * g1 (f x)) (within (atreal x) s)) & (!x. has_real_derivative f f1 (atreal x) & P (f x)",
+                "-->has_real_derivative (%x. g (f x)) (f1 * g1 (f x)) (atreal x))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "real => bool",
+                "f": "real => real",
+                "f1": "real",
+                "g": "real => real",
+                "g1": "real => real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_chain_univ",
+            "prop": [
+                "(∀x. has_real_derivative g (g1 x) (atreal x)) ",
+                "⟶ (∀x. ∀s. has_real_derivative f f1 (within (atreal x) s) ",
+                "     ⟶ has_real_derivative (λx. g (f x)) (f1 * g1 (f x)) (within (atreal x) s)) ∧ ",
+                "(∀x. has_real_derivative f f1 (atreal x)",
+                "   ⟶ has_real_derivative (λx. g (f x)) (f1 * g1 (f x)) (atreal x))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "g": "real => real",
+                "g1": "real => real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_derivative_unique_atreal",
+            "prop": [
+                "has_real_derivative f f1 (atreal x) &",
+                "has_real_derivative f f2 (atreal x)",
+                "--> f1 = f2"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "f2": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " has_real_derivative_derivative",
+            "prop": "has_real_derivative f f1 (atreal x)-->real_derivative f x = f1",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_differentiable",
+            "prop": [
+                "has_real_derivative f (real_derivative f x) (atreal x) =",
+                "real_differentiable f (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_lmul_within",
+            "prop": [
+                "has_real_derivative f f1 (within (atreal x) s) ",
+                "⟶ has_real_derivative (λx. c * f x) (c * f1) (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_rmul_within",
+            "prop": [
+                "has_real_derivative f f1 (within (atreal x) s) ",
+                "⟶ has_real_derivative (λx. f x * c) (f1 * c) (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_lmul_atreal",
+            "prop": [
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ has_real_derivative (λx. c * f x) (c * f1) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "f1": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_rmul_atreal",
+            "prop": [
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ has_real_derivative (λx. f x * c) (f1 * c) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "f1": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " has_real_derivative_cdiv_within",
+            "prop": [
+                "has_real_derivative f f1 (within (atreal x) s) ",
+                "⟶ has_real_derivative (λx. f x / c) (f1 / c) (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_cdiv_atreal",
+            "prop": [
+                "has_real_derivative f f1 (atreal x) ",
+                "⟶ has_real_derivative (λx. f x / c) (f1 / c) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " has_real_derivative_id",
+            "prop": "has_real_derivative (%x. x) 1 net",
+            "ty": "thm",
+            "vars": {
+                "net": "real net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_const",
+            "prop": "has_real_derivative (λx. c) 0 net",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "net": "real net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_neg",
+            "prop": [
+                "has_real_derivative f f1 net",
+                "--> has_real_derivative (%x. -(f x)) (-f1) net"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "net": "real net"
+            }
         }
     ],
     "description": "Some analytic concepts for real.",
