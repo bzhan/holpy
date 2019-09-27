@@ -399,8 +399,9 @@ def file_data_to_output(thy, data, *, line_length=None):
             parse_name = data['overload']
         ctxt = {'vars': {}, 'consts': {parse_name: T}}
         prop = parser.parse_term(thy, ctxt, data['prop'])
-        data['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
-        data['edit_content'] = printer.print_term(thy, prop, unicode=True, highlight=False)
+        ast = pprint.get_ast(thy, prop, unicode=True)
+        data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
+        data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
 
     # Ignore other types of information.
     else:
@@ -518,7 +519,9 @@ def check_modify():
                     item['constrs'].append(constr)
 
         if item['ty'] == 'def':
-            pass
+            item['prop'] = item['prop_lines'].split('\n')
+            if len(item['prop']) == 1:
+                item['prop'] = item['prop'][0]
 
         if item['ty'] == 'def.ind':
             item['rules'] = []
