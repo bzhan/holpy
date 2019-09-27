@@ -391,17 +391,26 @@ def file_data_to_output(thy, data, *, line_length=None):
         data['ext_output'] = str_of_extension(thy, exts)
 
     elif data['ty'] == 'def':
-        T = parser.parse_type(thy, data['type'])
-        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+        try:
+            T = parser.parse_type(thy, data['type'])
+            data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
-        parse_name = data['name']
-        if 'overload' in data:
-            parse_name = data['overload']
-        ctxt = {'vars': {}, 'consts': {parse_name: T}}
-        prop = parser.parse_term(thy, ctxt, data['prop'])
-        ast = pprint.get_ast(thy, prop, unicode=True)
-        data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
-        data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
+            parse_name = data['name']
+            if 'overload' in data:
+                parse_name = data['overload']
+            ctxt = {'vars': {}, 'consts': {parse_name: T}}
+            prop = parser.parse_term(thy, ctxt, data['prop'])
+            ast = pprint.get_ast(thy, prop, unicode=True)
+            data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
+            data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
+        except Exception as e:
+            data['err_type'] = str(e.__class__)
+            data['err_str'] = str(e)
+            if isinstance(data['prop'], str):
+                data['prop_lines'] = data['prop']
+            else:
+                data['prop_lines'] = '\n'.join(data['prop'])
+            print(e)
 
     # Ignore other types of information.
     else:

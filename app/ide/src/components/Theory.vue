@@ -142,12 +142,22 @@ export default {
         type: 'OK',
         data: 'Checking...'
       })
-      const response = await axios.post('http://127.0.0.1:5000/api/check-modify', JSON.stringify(data))
+      var response = undefined
+      try {
+        response = await axios.post('http://127.0.0.1:5000/api/check-modify', JSON.stringify(data))
+      } catch (err) {
+        this.$emit('set-message', {
+          type: 'error',
+          data: 'Server error'
+        })
+      }
       return response
     },
 
     check_edit: async function () {
       const response = await this.parse_item()
+      if (response === undefined)
+        return
 
       if ('err_type' in response.data.item) {
         this.$emit('set-message', {
@@ -165,11 +175,14 @@ export default {
 
     save_edit: async function () {
       const response = await this.parse_item()
+      if (response === undefined)
+        return
+
       var item = this.theory.content[this.on_edit]
       delete item.err_type
       delete item.err_str
       delete item.trace
-      $.extend(item, response.data.item)
+      $.extend(true, item, response.data.item)
       this.$set(this.theory.content, this.on_edit, item)
       this.save_json_file()
       this.on_edit = undefined
@@ -235,7 +248,7 @@ export default {
         const item = this.theory.content[i]
         if ('name' in item) {
           var item_copy = {};
-          $.extend(item_copy, item);
+          $.extend(true, item_copy, item);
           content.push(item_copy);  // perform deep copy
           this.item_to_output(item_copy);    
         }
@@ -248,11 +261,22 @@ export default {
         content: content
       }
 
-      const response = await axios.post('http://127.0.0.1:5000/api/save-file', JSON.stringify(data))
-      this.$emit('set-message', {
-        type: 'OK',
-        data: 'Saved'
-      })
+      var response = undefined
+      try {
+        response = await axios.post('http://127.0.0.1:5000/api/save-file', JSON.stringify(data))
+      } catch (err) {
+        this.$emit('set-message', {
+          type: 'error',
+          data: 'Server error'
+        })
+      }
+
+      if (response !== undefined) {
+        this.$emit('set-message', {
+          type: 'OK',
+          data: 'Saved'
+        })
+      }
     }
   },
 

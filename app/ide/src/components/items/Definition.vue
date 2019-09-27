@@ -12,6 +12,16 @@
         <span class="item-text indented-text" v-html="Util.highlight_html(line)"></span><br>
       </span>
     </span>
+    <div v-else>
+      <div v-if="typeof(item.prop) === 'string'">
+        <span class="item-text indented-text">{{item.prop}}</span>
+      </div>
+      <div v-else>
+        <span class="item-text indented-text" v-for="(line, i) in item.prop" v-bind:key=i>
+          {{line}}<br>
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
