@@ -1,6 +1,5 @@
 # Author: Chaozhu Xiang, Bohua Zhan
 
-from copy import copy
 import os, sqlite3, shutil
 import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
@@ -301,9 +300,8 @@ def str_of_extension(thy, exts):
 
 @settings.with_settings
 def str_of_constr(thy, constr):
-    """Print a given constructor."""
-    T = parser.parse_type(thy, constr['type'])
-    argsT, _ = T.strip_type()
+    """Print a given type constructor."""
+    argsT, _ = constr['type'].strip_type()
     assert len(argsT) == len(constr['args']), "file_data_to_output: unexpected number of args."
     res = printer.N(constr['name'])
     for i, arg in enumerate(constr['args']):
@@ -316,43 +314,35 @@ def file_data_to_output(thy, data, *, line_length=None):
     Also modifies argument thy in parsing the item.
 
     """
+    parsed_data = None
     try:
-        parser.parse_extension(thy, data)
+        parsed_data = parser.parse_item(thy, data)
+        ext = parser.get_extension(thy, parsed_data)
+        thy.unchecked_extend(ext)
     except Exception as e:
-        pass
+        data['err_type'] = str(e.__class__)
+        data['err_str'] = str(e)
 
+    if parsed_data is None:
+        return
+
+    # Now fill data with pretty-printed form of types and terms
     if data['ty'] == 'def.ax':
-        T = parser.parse_type(thy, data['type'])
-        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+        data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
-        try:
-            ctxt = parser.parse_vars(thy, data['vars'])
-            prop = parser.parse_term(thy, ctxt, data['prop'])
-            data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
-        except Exception as e:
-            data['err_type'] = str(e.__class__)
-            data['err_str'] = str(e)
-            if isinstance(data['prop'], str):
-                data['prop_lines'] = data['prop']
-            else:
-                data['prop_lines'] = '\n'.join(data['prop'])
-            print(e)
-        else:
-            ast = pprint.get_ast(thy, prop, unicode=True)
-            data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
-            data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
+        data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
+        ast = pprint.get_ast(thy, parsed_data['prop'], unicode=True)
+        data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
+        data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
 
     elif data['ty'] == 'type.ind':
         constrs = []
         data['constr_output'] = []
         data['constr_output_hl'] = []
-        for constr in data['constrs']:
-            T = parser.parse_type(thy, constr['type'])
-            constrs.append((constr['name'], T, constr['args']))
+        for constr in parsed_data['constrs']:
             data['constr_output'].append(str_of_constr(thy, constr, unicode=True, highlight=False))
             data['constr_output_hl'].append(str_of_constr(thy, constr, unicode=True, highlight=True))
-        exts = induct.add_induct_type(data['name'], data['args'], constrs)
 
         # Obtain type to be defined
         T = Type(data['name'], *(TVar(nm) for nm in data['args']))
@@ -360,16 +350,15 @@ def file_data_to_output(thy, data, *, line_length=None):
         data['edit_type'] = printer.print_type(thy, T, unicode=True, highlight=False)
 
         # Obtain items added by the extension
-        data['ext_output'] = str_of_extension(thy, exts)
+        data['ext_output'] = str_of_extension(thy, ext)
 
     elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
-        T = parser.parse_type(thy, data['type'])
-        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+        data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
+
         rules = []
         data['edit_content'] = []
-        for rule in data['rules']:
-            ctxt = {'vars': {}, 'consts': {data['name']: T}}
-            prop = parser.parse_term(thy, ctxt, rule['prop'])
+        for i, rule in enumerate(data['rules']):
+            prop = parsed_data['rules'][i]['prop']
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
             content = printer.print_term(thy, prop, unicode=True, highlight=False)
             if data['ty'] == 'def.pred':
@@ -379,32 +368,15 @@ def file_data_to_output(thy, data, *, line_length=None):
                 rules.append(prop)
             data['edit_content'].append(content)
 
-        if data['ty'] == 'def.ind':
-            exts = induct.add_induct_def(thy, data['name'], T, rules)
-        else:
-            exts = induct.add_induct_predicate(thy, data['name'], T, rules)
-
         # Obtain items added by the extension
-        data['ext_output'] = str_of_extension(thy, exts)
+        data['ext_output'] = str_of_extension(thy, ext)
 
     elif data['ty'] == 'def':
-        try:
-            T = parser.parse_type(thy, data['type'])
-            data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+        data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
 
-            ctxt = {'vars': {}, 'consts': {data['name']: T}}
-            prop = parser.parse_term(thy, ctxt, data['prop'])
-            ast = pprint.get_ast(thy, prop, unicode=True)
-            data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
-            data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
-        except Exception as e:
-            data['err_type'] = str(e.__class__)
-            data['err_str'] = str(e)
-            if isinstance(data['prop'], str):
-                data['prop_lines'] = data['prop']
-            else:
-                data['prop_lines'] = '\n'.join(data['prop'])
-            print(e)
+        ast = pprint.get_ast(thy, parsed_data['prop'], unicode=True)
+        data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
+        data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
 
     # Ignore other types of information.
     else:
@@ -496,11 +468,8 @@ def check_modify():
         f_data = json.load(f)
     try:
         thy = basic.load_imported_theory(f_data['imports'], user_info['username'])
-        for d in data['prev_list']:
-            try:
-                parser.parse_extension(thy, d)
-            except Exception:
-                pass
+        parser.parse_extensions(thy, data['prev_list'])
+
         if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
             item['vars'] = parse_var_decls(thy, item['vars_lines'].split('\n'))
             item['prop'] = item['prop_lines'].split('\n')
@@ -535,7 +504,7 @@ def check_modify():
             T = parser.parse_type(thy, item['type'])
             item['rules'] = []
             for content in item['data_content']:
-                thy.add_term_sig(item['name'], T)  # Add this first, for parsing later.
+                thy.add_term_sig(item['name'], item['type'])  # Add this first, for parsing later.
                 ctxt = {'vars': {}, 'consts': {item['name']: T}}
                 name, prop = parser.parse_named_thm(thy, ctxt, content)
                 item['rules'].append({'name': name, 'prop': printer.print_term(thy, prop)})
