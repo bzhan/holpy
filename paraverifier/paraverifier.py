@@ -187,7 +187,7 @@ class ParaSystem():
             t2 = gcl.mk_assign(self.var_map, s, assign)
             props.append(("trans_rule" + str(i), Term.mk_implies(t, transC(s, t2))))
 
-        exts = induct.add_induct_predicate("trans", TFun(gcl.stateT, gcl.stateT, boolT), props)
+        exts = induct.add_induct_predicate(self.thy, "trans", TFun(gcl.stateT, gcl.stateT, boolT), props)
         self.thy.unchecked_extend(exts)
         # print(printer.print_extensions(self.thy, exts))
 
