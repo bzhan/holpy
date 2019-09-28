@@ -6,34 +6,29 @@
             "ty": "type.ax"
         },
         {
-            "name": "rat_of_nat",
+            "name": "of_nat",
             "ty": "def.ax",
-            "type": "nat => rat",
-            "overload": "of_nat"
+            "type": "nat => rat"
         },
         {
-            "name": "rat_plus",
+            "name": "plus",
             "ty": "def.ax",
-            "type": "rat => rat => rat",
-            "overload": "plus"
+            "type": "rat => rat => rat"
         },
         {
-            "name": "rat_uminus",
+            "name": "uminus",
             "ty": "def.ax",
-            "type": "rat => rat",
-            "overload": "uminus"
+            "type": "rat => rat"
         },
         {
-            "name": "rat_minus",
+            "name": "minus",
             "ty": "def.ax",
-            "type": "rat => rat => rat",
-            "overload": "minus"
+            "type": "rat => rat => rat"
         },
         {
-            "name": "rat_times",
+            "name": "times",
             "ty": "def.ax",
-            "type": "rat => rat => rat",
-            "overload": "times"
+            "type": "rat => rat => rat"
         },
         {
             "name": "rat_add_assoc",

@@ -6,28 +6,24 @@
             "ty": "type.ax"
         },
         {
-            "name": "int_of_nat",
-            "overload": "of_nat",
+            "name": "of_nat",
             "ty": "def.ax",
             "type": "nat => int"
         },
         {
-            "name": "int_zero",
-            "overload": "zero",
-            "prop": "int_zero = of_nat nat_zero",
+            "name": "zero",
+            "prop": "zero = of_nat (zero::nat)",
             "ty": "def",
             "type": "int"
         },
         {
-            "name": "int_one",
-            "overload": "one",
-            "prop": "int_one = of_nat nat_one",
+            "name": "one",
+            "prop": "one = of_nat (one::nat)",
             "ty": "def",
             "type": "int"
         },
         {
-            "name": "int_plus",
-            "overload": "plus",
+            "name": "plus",
             "ty": "def.ax",
             "type": "int => int => int"
         },
@@ -40,50 +36,40 @@
         {
             "name": "abs",
             "ty": "def.ax",
-            "type": "'a => 'a"
+            "type": "'a => 'a",
+            "overloaded": true
         },
         {
-            "name": "int_uminus",
-            "overload": "uminus",
+            "name": "uminus",
             "ty": "def.ax",
             "type": "int => int"
         },
         {
-            "name": "int_minus",
-            "overload": "minus",
+            "name": "minus",
             "ty": "def.ax",
             "type": "int => int => int"
         },
         {
-            "name": "int_times",
-            "overload": "times",
+            "name": "times",
             "ty": "def.ax",
             "type": "int => int => int"
         },
         {
-            "name": "int_less_eq",
-            "overload": "less_eq",
+            "name": "less_eq",
             "ty": "def.ax",
             "type": "int => int => bool"
         },
         {
-            "name": "int_less",
-            "overload": "less",
+            "name": "less",
             "ty": "def.ax",
             "type": "int => int => bool"
-        },
-        {
-            "name": "int_zero",
-            "ty": "def.ax",
-            "type": "int"
         },
         {
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "int_abs",
-            "overload": "abs",
-            "prop": "int_abs n = (if int_zero <= n then n else -n)",
+            "name": "abs",
+            "prop": "abs n = (if zero <= n then n else -n)",
             "ty": "def",
             "type": "int => int"
         },
@@ -134,9 +120,8 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "int_max",
-            "overload": "max",
-            "prop": "int_max m n = (if m <= n then n else m)",
+            "name": "max",
+            "prop": "max m n = (if m <= n then n else m)",
             "ty": "def",
             "type": "int => int => int"
         }

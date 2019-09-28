@@ -7,15 +7,15 @@ from data import nat
 # Basic definitions
 
 intT = Type("int")
-zero = Const("int_zero", intT)
-one = Const("int_one", intT)
-of_nat = Const("int_of_nat", TFun(nat.natT, intT))
-plus = Const("int_plus", TFun(intT, intT, intT))
-minus = Const("int_minus", TFun(intT, intT, intT))
-uminus = Const("int_uminus", TFun(intT, intT))
-times = Const("int_times", TFun(intT, intT, intT))
-less_eq = Const("int_less_eq", TFun(intT, intT, boolT))
-less = Const("int_less", TFun(intT, intT, boolT))
+zero = Const("zero", intT)
+one = Const("one", intT)
+of_nat = Const("of_nat", TFun(nat.natT, intT))
+plus = Const("plus", TFun(intT, intT, intT))
+minus = Const("minus", TFun(intT, intT, intT))
+uminus = Const("uminus", TFun(intT, intT))
+times = Const("times", TFun(intT, intT, intT))
+less_eq = Const("less_eq", TFun(intT, intT, boolT))
+less = Const("less", TFun(intT, intT, boolT))
 
 def mk_plus(*args):
     if not args:
@@ -62,15 +62,15 @@ def to_binary_int(n):
         return of_nat(nat.to_binary(n))
 
 def is_binary_int(t):
-    if t.is_comb() and t.fun.is_const_name("int_uminus"):
+    if t.is_comb() and t.fun.is_const_name("uminus"):
         return is_binary_int(t.arg)
     else:
         return t == zero or t == one or \
-               (t.is_comb() and t.fun.is_const_name("int_of_nat") and nat.is_binary(t.arg))
+               (t.is_comb() and t.fun.is_const_name("of_nat") and nat.is_binary(t.arg))
 
 def from_binary_int(t):
     assert is_binary_int(t), "from_binary_int"
-    if t.is_comb() and t.fun.is_const_name("int_uminus"):
+    if t.is_comb() and t.fun.is_const_name("uminus"):
         return -from_binary_int(t.arg)
     if t == zero:
         return 0

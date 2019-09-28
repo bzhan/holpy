@@ -53,7 +53,7 @@ class Extension():
         elif self.ty == Extension.METHOD:
             return "Method " + self.name
         elif self.ty == Extension.OVERLOAD:
-            return "Overload " + self.name + " :: " + str(self.T) + " => " + self.name_T
+            return "Overload " + self.name
         else:
             raise TypeError()
 
@@ -78,7 +78,7 @@ class Extension():
         elif self.ty == Extension.METHOD:
             return self.name == other.name
         elif self.ty == Extension.OVERLOAD:
-            return self.name == other.name and self.T == other.T and self.name_T == other.name_T
+            return self.name == other.name
         else:
             raise TypeError()
 
@@ -176,18 +176,14 @@ class Method(Extension):
         self.name = name
 
 class Overload(Extension):
-    def __init__(self, name, T, name_T):
+    def __init__(self, name):
         """Extending the theory by adding an overloaded constant.
 
         name -- name of the overloaded constant.
-        T -- type of the constant that would invoke a translation.
-        name_T -- name of the more specific constant.
 
         """
         self.ty = Extension.OVERLOAD
         self.name = name
-        self.T = T
-        self.name_T = name_T
 
 class TheoryExtension():
     """A theory extension contains a list of extensions to a theory. These

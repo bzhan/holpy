@@ -329,6 +329,6 @@ zero = Const(0)
 one = Const(1)
 
 global_fnames = {
-    "abs": ("int_abs", TFun(intT, intT)),
-    "max": ("int_max", TFun(intT, intT, intT)),
+    "abs": ("abs", TFun(intT, intT)),
+    "max": ("max", TFun(intT, intT, intT)),
 }

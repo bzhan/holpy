@@ -8,20 +8,21 @@
         {
             "name": "zero",
             "ty": "def.ax",
-            "type": "'a"
+            "type": "'a",
+            "overloaded": true
         },
         {
             "name": "one",
             "ty": "def.ax",
-            "type": "'a"
+            "type": "'a",
+            "overloaded": true
         },
         {
             "args": [],
             "constrs": [
                 {
                     "args": [],
-                    "name": "nat_zero",
-                    "overload": "zero",
+                    "name": "zero",
                     "type": "nat"
                 },
                 {
@@ -36,8 +37,7 @@
             "ty": "type.ind"
         },
         {
-            "name": "nat_one",
-            "overload": "one",
+            "name": "one",
             "prop": "one = Suc zero",
             "ty": "def",
             "type": "nat"
@@ -45,12 +45,12 @@
         {
             "name": "of_nat",
             "ty": "def.ax",
-            "type": "nat => 'a"
+            "type": "nat => 'a",
+            "overloaded": true
         },
         {
-            "name": "nat_of_nat",
-            "overload": "of_nat",
-            "prop": "nat_of_nat n = n",
+            "name": "of_nat",
+            "prop": "of_nat n = n",
             "ty": "def",
             "type": "nat => nat"
         },
@@ -71,29 +71,32 @@
             "ascii_op": "+",
             "name": "plus",
             "ty": "def.ax",
-            "type": "'a => 'a => 'a"
+            "type": "'a => 'a => 'a",
+            "overloaded": true
         },
         {
             "ascii_op": "-",
             "name": "minus",
             "ty": "def.ax",
-            "type": "'a => 'a => 'a"
+            "type": "'a => 'a => 'a",
+            "overloaded": true
         },
         {
             "ascii_op": "*",
             "name": "times",
             "ty": "def.ax",
-            "type": "'a => 'a => 'a"
+            "type": "'a => 'a => 'a",
+            "overloaded": true
         },
         {
             "ascii_op": "^",
             "name": "power",
             "ty": "def.ax",
-            "type": "'a => nat => 'a"
+            "type": "'a => nat => 'a",
+            "overloaded": true
         },
         {
-            "name": "nat_plus",
-            "overload": "plus",
+            "name": "plus",
             "rules": [
                 {
                     "prop": "0 + n = (n::nat)"
@@ -107,8 +110,7 @@
         },
         {
             "ascii_op": "*",
-            "name": "nat_times",
-            "overload": "times",
+            "name": "times",
             "rules": [
                 {
                     "prop": "0 * (n::nat) = 0"
@@ -122,8 +124,7 @@
         },
         {
             "ascii_op": "^",
-            "name": "nat_power",
-            "overload": "power",
+            "name": "power",
             "rules": [
                 {
                     "prop": "(n::nat) ^ 0 = 1"
@@ -2539,29 +2540,32 @@
             "ascii_op": "<=",
             "name": "less_eq",
             "ty": "def.ax",
-            "type": "'a => 'a => bool"
+            "type": "'a => 'a => bool",
+            "overloaded": true
         },
         {
             "ascii_op": "<",
             "name": "less",
             "ty": "def.ax",
-            "type": "'a => 'a => bool"
+            "type": "'a => 'a => bool",
+            "overloaded": true
         },
         {
             "ascii_op": ">=",
             "name": "greater_eq",
             "ty": "def.ax",
-            "type": "'a => 'a => bool"
+            "type": "'a => 'a => bool",
+            "overloaded": true
         },
         {
             "ascii_op": ">",
             "name": "greater",
             "ty": "def.ax",
-            "type": "'a => 'a => bool"
+            "type": "'a => 'a => bool",
+            "overloaded": true
         },
         {
-            "name": "nat_less_eq",
-            "overload": "less_eq",
+            "name": "less_eq",
             "rules": [
                 {
                     "prop": "m <= 0 ⟷ m = 0"
@@ -2574,8 +2578,7 @@
             "type": "nat => nat => bool"
         },
         {
-            "name": "nat_less",
-            "overload": "less",
+            "name": "less",
             "rules": [
                 {
                     "prop": "m < 0 ⟷ false"
@@ -2588,15 +2591,13 @@
             "type": "nat => nat => bool"
         },
         {
-            "name": "nat_greater_eq",
-            "overload": "greater_eq",
+            "name": "greater_eq",
             "prop": "greater_eq m n = less_eq n m",
             "ty": "def",
             "type": "nat => nat => bool"
         },
         {
-            "name": "nat_greater",
-            "overload": "greater",
+            "name": "greater",
             "prop": "greater m n = less n m",
             "ty": "def",
             "type": "nat => nat => bool"
@@ -2897,8 +2898,7 @@
             }
         },
         {
-            "name": "nat_minus",
-            "overload": "minus",
+            "name": "minus",
             "rules": [
                 {
                     "prop": "n - 0 = n"
@@ -2915,18 +2915,18 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_minus_def_1, nat_minus 0 0 = 0",
+                    "args": "nat_minus_def_1, minus 0 0 = 0",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ nat_minus 0 0 = 0"
+                    "th": "⊢ minus 0 0 = 0"
                 },
                 {
                     "args": "",
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. nat_minus 0 n = 0 ⟶ nat_minus 0 (Suc n) = 0"
+                    "th": "⊢ ∀n. minus 0 n = 0 ⟶ minus 0 (Suc n) = 0"
                 },
                 {
                     "args": "n, nat",
@@ -2936,11 +2936,11 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "nat_minus 0 n = 0",
+                    "args": "minus 0 n = 0",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "nat_minus 0 n = 0 ⊢ nat_minus 0 n = 0"
+                    "th": "minus 0 n = 0 ⊢ minus 0 n = 0"
                 },
                 {
                     "args": "Pre_def_1, Pre 0 = 0",
@@ -2950,23 +2950,23 @@
                     "th": "⊢ Pre 0 = 0"
                 },
                 {
-                    "args": "Pre (nat_minus 0 n) = 0",
+                    "args": "Pre (minus 0 n) = 0",
                     "id": "1.3",
                     "prevs": [
                         "1.1",
                         "1.2"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "nat_minus 0 n = 0 ⊢ Pre (nat_minus 0 n) = 0"
+                    "th": "minus 0 n = 0 ⊢ Pre (minus 0 n) = 0"
                 },
                 {
-                    "args": "nat_minus_def_2, nat_minus 0 (Suc n) = 0",
+                    "args": "nat_minus_def_2, minus 0 (Suc n) = 0",
                     "id": "1.4",
                     "prevs": [
                         "1.3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "nat_minus 0 n = 0 ⊢ nat_minus 0 (Suc n) = 0"
+                    "th": "minus 0 n = 0 ⊢ minus 0 (Suc n) = 0"
                 },
                 {
                     "args": "",
@@ -2977,17 +2977,17 @@
                         "1.4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. nat_minus 0 n = 0 ⟶ nat_minus 0 (Suc n) = 0"
+                    "th": "⊢ ∀n. minus 0 n = 0 ⟶ minus 0 (Suc n) = 0"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. nat_minus 0 x = 0, x: x}",
+                    "args": "nat_induct, {}, {P: λx. minus 0 x = 0, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ nat_minus 0 x = 0"
+                    "th": "⊢ minus 0 x = 0"
                 },
                 {
                     "args": "eq_refl, {a: nat}, {x: x}",
@@ -3004,19 +3004,19 @@
                         "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ nat_minus 0 x = 0 ∧ x = x"
+                    "th": "⊢ minus 0 x = 0 ∧ x = x"
                 },
                 {
-                    "args": "nat_minus_def_1, nat_minus 0 x = 0 ∧ nat_minus x 0 = x",
+                    "args": "nat_minus_def_1, minus 0 x = 0 ∧ minus x 0 = x",
                     "id": "5",
                     "prevs": [
                         "4"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ nat_minus 0 x = 0 ∧ nat_minus x 0 = x"
+                    "th": "⊢ minus 0 x = 0 ∧ minus x 0 = x"
                 }
             ],
-            "prop": "nat_minus 0 x = 0 & nat_minus x 0 = x",
+            "prop": "minus 0 x = 0 & minus x 0 = x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3084,20 +3084,20 @@
                     "th": "⊢ Pre (Suc x) = x"
                 },
                 {
-                    "args": "nat_minus_def_1, Pre (nat_minus (Suc x) 0) = nat_minus x 0",
+                    "args": "nat_minus_def_1, Pre (minus (Suc x) 0) = minus x 0",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ Pre (nat_minus (Suc x) 0) = nat_minus x 0"
+                    "th": "⊢ Pre (minus (Suc x) 0) = minus x 0"
                 },
                 {
                     "args": "",
                     "id": "2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. Pre (nat_minus (Suc x) n) = nat_minus x n ⟶ Pre (nat_minus (Suc x) (Suc n)) = nat_minus x (Suc n)"
+                    "th": "⊢ ∀n. Pre (minus (Suc x) n) = minus x n ⟶ Pre (minus (Suc x) (Suc n)) = minus x (Suc n)"
                 },
                 {
                     "args": "n, nat",
@@ -3107,29 +3107,29 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "Pre (nat_minus (Suc x) n) = nat_minus x n",
+                    "args": "Pre (minus (Suc x) n) = minus x n",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "Pre (nat_minus (Suc x) n) = nat_minus x n ⊢ Pre (nat_minus (Suc x) n) = nat_minus x n"
+                    "th": "Pre (minus (Suc x) n) = minus x n ⊢ Pre (minus (Suc x) n) = minus x n"
                 },
                 {
-                    "args": "Pre (Pre (nat_minus (Suc x) n)) = Pre (nat_minus x n)",
+                    "args": "Pre (Pre (minus (Suc x) n)) = Pre (minus x n)",
                     "id": "2.2",
                     "prevs": [
                         "2.1"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "Pre (nat_minus (Suc x) n) = nat_minus x n ⊢ Pre (Pre (nat_minus (Suc x) n)) = Pre (nat_minus x n)"
+                    "th": "Pre (minus (Suc x) n) = minus x n ⊢ Pre (Pre (minus (Suc x) n)) = Pre (minus x n)"
                 },
                 {
-                    "args": "nat_minus_def_2, Pre (nat_minus (Suc x) (Suc n)) = nat_minus x (Suc n)",
+                    "args": "nat_minus_def_2, Pre (minus (Suc x) (Suc n)) = minus x (Suc n)",
                     "id": "2.3",
                     "prevs": [
                         "2.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "Pre (nat_minus (Suc x) n) = nat_minus x n ⊢ Pre (nat_minus (Suc x) (Suc n)) = nat_minus x (Suc n)"
+                    "th": "Pre (minus (Suc x) n) = minus x n ⊢ Pre (minus (Suc x) (Suc n)) = minus x (Suc n)"
                 },
                 {
                     "args": "",
@@ -3140,20 +3140,20 @@
                         "2.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. Pre (nat_minus (Suc x) n) = nat_minus x n ⟶ Pre (nat_minus (Suc x) (Suc n)) = nat_minus x (Suc n)"
+                    "th": "⊢ ∀n. Pre (minus (Suc x) n) = minus x n ⟶ Pre (minus (Suc x) (Suc n)) = minus x (Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λy. Pre (nat_minus (Suc x) y) = nat_minus x y, x: y}",
+                    "args": "nat_induct, {}, {P: λy. Pre (minus (Suc x) y) = minus x y, x: y}",
                     "id": "3",
                     "prevs": [
                         "1",
                         "2"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ Pre (nat_minus (Suc x) y) = nat_minus x y"
+                    "th": "⊢ Pre (minus (Suc x) y) = minus x y"
                 }
             ],
-            "prop": "Pre (nat_minus (Suc x) y) = nat_minus x y",
+            "prop": "Pre (minus (Suc x) y) = minus x y",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3207,29 +3207,29 @@
                     "th": "⊢ Pre (Suc x) = x"
                 },
                 {
-                    "args": "nat_minus_def_1, Pre (nat_minus (Suc x) 0) = nat_minus x 0",
+                    "args": "nat_minus_def_1, Pre (minus (Suc x) 0) = minus x 0",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ Pre (nat_minus (Suc x) 0) = nat_minus x 0"
+                    "th": "⊢ Pre (minus (Suc x) 0) = minus x 0"
                 },
                 {
-                    "args": "nat_minus_def_2, nat_minus (Suc x) 1 = nat_minus x 0",
+                    "args": "nat_minus_def_2, minus (Suc x) 1 = minus x 0",
                     "id": "2",
                     "prevs": [
                         "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ nat_minus (Suc x) 1 = nat_minus x 0"
+                    "th": "⊢ minus (Suc x) 1 = minus x 0"
                 },
                 {
                     "args": "",
                     "id": "3",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. nat_minus (Suc x) (Suc n) = nat_minus x n ⟶ nat_minus (Suc x) (Suc (Suc n)) = nat_minus x (Suc n)"
+                    "th": "⊢ ∀n. minus (Suc x) (Suc n) = minus x n ⟶ minus (Suc x) (Suc (Suc n)) = minus x (Suc n)"
                 },
                 {
                     "args": "n, nat",
@@ -3239,27 +3239,27 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "nat_minus (Suc x) (Suc n) = nat_minus x n",
+                    "args": "minus (Suc x) (Suc n) = minus x n",
                     "id": "3.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "nat_minus (Suc x) (Suc n) = nat_minus x n ⊢ nat_minus (Suc x) (Suc n) = nat_minus x n"
+                    "th": "minus (Suc x) (Suc n) = minus x n ⊢ minus (Suc x) (Suc n) = minus x n"
                 },
                 {
-                    "args": "nat_minus_presuc, Pre (Pre (nat_minus (Suc x) n)) = Pre (nat_minus x n)",
+                    "args": "nat_minus_presuc, Pre (Pre (minus (Suc x) n)) = Pre (minus x n)",
                     "id": "3.2",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ Pre (Pre (nat_minus (Suc x) n)) = Pre (nat_minus x n)"
+                    "th": "⊢ Pre (Pre (minus (Suc x) n)) = Pre (minus x n)"
                 },
                 {
-                    "args": "nat_minus_def_2, nat_minus (Suc x) (Suc (Suc n)) = nat_minus x (Suc n)",
+                    "args": "nat_minus_def_2, minus (Suc x) (Suc (Suc n)) = minus x (Suc n)",
                     "id": "3.3",
                     "prevs": [
                         "3.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "nat_minus (Suc x) (Suc n) = nat_minus x n ⊢ nat_minus (Suc x) (Suc (Suc n)) = nat_minus x (Suc n)"
+                    "th": "minus (Suc x) (Suc n) = minus x n ⊢ minus (Suc x) (Suc (Suc n)) = minus x (Suc n)"
                 },
                 {
                     "args": "",
@@ -3270,20 +3270,20 @@
                         "3.3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. nat_minus (Suc x) (Suc n) = nat_minus x n ⟶ nat_minus (Suc x) (Suc (Suc n)) = nat_minus x (Suc n)"
+                    "th": "⊢ ∀n. minus (Suc x) (Suc n) = minus x n ⟶ minus (Suc x) (Suc (Suc n)) = minus x (Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λy. nat_minus (Suc x) (Suc y) = nat_minus x y, x: y}",
+                    "args": "nat_induct, {}, {P: λy. minus (Suc x) (Suc y) = minus x y, x: y}",
                     "id": "4",
                     "prevs": [
                         "2",
                         "3"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ nat_minus (Suc x) (Suc y) = nat_minus x y"
+                    "th": "⊢ minus (Suc x) (Suc y) = minus x y"
                 }
             ],
-            "prop": "nat_minus (Suc x) (Suc y) = nat_minus x y",
+            "prop": "minus (Suc x) (Suc y) = minus x y",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3333,18 +3333,18 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_minus_def_1, nat_minus 0 0 = 0",
+                    "args": "nat_minus_def_1, minus 0 0 = 0",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ nat_minus 0 0 = 0"
+                    "th": "⊢ minus 0 0 = 0"
                 },
                 {
                     "args": "",
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. nat_minus n n = 0 ⟶ nat_minus (Suc n) (Suc n) = 0"
+                    "th": "⊢ ∀n. minus n n = 0 ⟶ minus (Suc n) (Suc n) = 0"
                 },
                 {
                     "args": "n, nat",
@@ -3354,20 +3354,20 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "nat_minus n n = 0",
+                    "args": "minus n n = 0",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "nat_minus n n = 0 ⊢ nat_minus n n = 0"
+                    "th": "minus n n = 0 ⊢ minus n n = 0"
                 },
                 {
-                    "args": "nat_minus_suc, nat_minus (Suc n) (Suc n) = 0",
+                    "args": "nat_minus_suc, minus (Suc n) (Suc n) = 0",
                     "id": "1.2",
                     "prevs": [
                         "1.1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "nat_minus n n = 0 ⊢ nat_minus (Suc n) (Suc n) = 0"
+                    "th": "minus n n = 0 ⊢ minus (Suc n) (Suc n) = 0"
                 },
                 {
                     "args": "",
@@ -3378,20 +3378,20 @@
                         "1.2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. nat_minus n n = 0 ⟶ nat_minus (Suc n) (Suc n) = 0"
+                    "th": "⊢ ∀n. minus n n = 0 ⟶ minus (Suc n) (Suc n) = 0"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. nat_minus x x = 0, x: x}",
+                    "args": "nat_induct, {}, {P: λx. minus x x = 0, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ nat_minus x x = 0"
+                    "th": "⊢ minus x x = 0"
                 }
             ],
-            "prop": "nat_minus x x = 0",
+            "prop": "minus x x = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3510,7 +3510,7 @@
                     "th": "⊢ x + y - y = x"
                 }
             ],
-            "prop": "nat_minus (x + y) y = x",
+            "prop": "minus (x + y) y = x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3560,23 +3560,23 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_plus_minus, nat_minus (y + x) x = y",
+                    "args": "nat_plus_minus, minus (y + x) x = y",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ nat_minus (y + x) x = y"
+                    "th": "⊢ minus (y + x) x = y"
                 },
                 {
-                    "args": "add_comm, nat_minus (x + y) x = y",
+                    "args": "add_comm, minus (x + y) x = y",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ nat_minus (x + y) x = y"
+                    "th": "⊢ minus (x + y) x = y"
                 }
             ],
-            "prop": "nat_minus (x + y) x = y",
+            "prop": "minus (x + y) x = y",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3597,7 +3597,7 @@
         },
         {
             "name": "sub_eq_0",
-            "prop": "(nat_minus x y = 0) = (x <= y)",
+            "prop": "(minus x y = 0) = (x <= y)",
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -3606,7 +3606,7 @@
         },
         {
             "name": "add_subr2",
-            "prop": "nat_minus x (x + y) = 0",
+            "prop": "minus x (x + y) = 0",
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -3616,11 +3616,11 @@
         {
             "name": "max",
             "ty": "def.ax",
-            "type": "'a => 'a => 'a"
+            "type": "'a => 'a => 'a",
+            "overloaded": true
         },
         {
-            "name": "nat_max",
-            "overload": "max",
+            "name": "max",
             "prop": "max m n = if m <= n then n else m",
             "ty": "def",
             "type": "nat => nat => nat"
@@ -3628,11 +3628,11 @@
         {
             "name": "min",
             "ty": "def.ax",
-            "type": "'a => 'a => 'a"
+            "type": "'a => 'a => 'a",
+            "overloaded": true
         },
         {
-            "name": "nat_min",
-            "overload": "min",
+            "name": "min",
             "prop": "min m n = if m <= n then m else n",
             "ty": "def",
             "type": "nat => nat => nat"

@@ -356,7 +356,6 @@ def get_ast(thy, t):
             raise TypeError()
 
     t = copy(t)  # make copy here, because infer_printed_type may change t.
-    infertype.get_overload(thy, t)
     infertype.infer_printed_type(thy, t)
 
     return helper(t, [])

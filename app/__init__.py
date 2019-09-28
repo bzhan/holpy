@@ -368,10 +368,7 @@ def file_data_to_output(thy, data, *, line_length=None):
         rules = []
         data['edit_content'] = []
         for rule in data['rules']:
-            parse_name = data['name']
-            if 'overload' in data:
-                parse_name = data['overload']
-            ctxt = {'vars': {}, 'consts': {parse_name: T}}
+            ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parser.parse_term(thy, ctxt, rule['prop'])
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
             content = printer.print_term(thy, prop, unicode=True, highlight=False)
@@ -383,9 +380,9 @@ def file_data_to_output(thy, data, *, line_length=None):
             data['edit_content'].append(content)
 
         if data['ty'] == 'def.ind':
-            exts = induct.add_induct_def(data['name'], T, rules)
+            exts = induct.add_induct_def(thy, data['name'], T, rules)
         else:
-            exts = induct.add_induct_predicate(data['name'], T, rules)
+            exts = induct.add_induct_predicate(thy, data['name'], T, rules)
 
         # Obtain items added by the extension
         data['ext_output'] = str_of_extension(thy, exts)
@@ -395,10 +392,7 @@ def file_data_to_output(thy, data, *, line_length=None):
             T = parser.parse_type(thy, data['type'])
             data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
 
-            parse_name = data['name']
-            if 'overload' in data:
-                parse_name = data['overload']
-            ctxt = {'vars': {}, 'consts': {parse_name: T}}
+            ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parser.parse_term(thy, ctxt, data['prop'])
             ast = pprint.get_ast(thy, prop, unicode=True)
             data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))

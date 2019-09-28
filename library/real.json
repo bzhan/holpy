@@ -6,46 +6,39 @@
             "ty": "type.ax"
         },
         {
-            "name": "real_of_nat",
-            "overload": "of_nat",
+            "name": "of_nat",
             "ty": "def.ax",
             "type": "nat => real"
         },
         {
-            "name": "real_zero",
-            "overload": "zero",
-            "prop": "real_zero = real_of_nat nat_zero",
+            "name": "zero",
+            "prop": "zero = of_nat (zero::nat)",
             "ty": "def",
             "type": "real"
         },
         {
-            "name": "real_one",
-            "overload": "one",
-            "prop": "real_one = real_of_nat nat_one",
+            "name": "one",
+            "prop": "one = of_nat (one::nat)",
             "ty": "def",
             "type": "real"
         },
         {
-            "name": "real_plus",
-            "overload": "plus",
+            "name": "plus",
             "ty": "def.ax",
             "type": "real => real => real"
         },
         {
-            "name": "real_uminus",
-            "overload": "uminus",
+            "name": "uminus",
             "ty": "def.ax",
             "type": "real => real"
         },
         {
-            "name": "real_minus",
-            "overload": "minus",
+            "name": "minus",
             "ty": "def.ax",
             "type": "real => real => real"
         },
         {
-            "name": "real_times",
-            "overload": "times",
+            "name": "times",
             "ty": "def.ax",
             "type": "real => real => real"
         },
@@ -66,8 +59,7 @@
         },
         {
             "ascii_op": "^",
-            "name": "real_power",
-            "overload": "power",
+            "name": "power",
             "rules": [
                 {
                     "prop": "(x::real) ^ 0 = 1"
@@ -118,36 +110,31 @@
             }
         },
         {
-            "name": "real_less_eq",
-            "overload": "less_eq",
+            "name": "less_eq",
             "ty": "def.ax",
             "type": "real => real => bool"
         },
         {
-            "name": "real_less",
-            "overload": "less",
+            "name": "less",
             "prop": "less x y = neg(less_eq y x)",
             "ty": "def",
             "type": "real => real => bool"
         },
         {
-            "name": "real_greater_eq",
-            "overload": "greater_eq",
+            "name": "greater_eq",
             "prop": "greater_eq m n = less_eq n m",
             "ty": "def",
             "type": "real => real => bool"
         },
         {
-            "name": "real_greater",
-            "overload": "greater",
+            "name": "greater",
             "prop": "greater m n = less n m",
             "ty": "def",
             "type": "real => real => bool"
         },
         {
-            "name": "real_abs",
-            "overload": "abs",
-            "prop": "real_abs n = (if 0 <= n then n else -n)",
+            "name": "abs",
+            "prop": "abs n = (if 0 <= n then n else -n)",
             "ty": "def",
             "type": "real => real"
         },
@@ -164,8 +151,7 @@
             }
         },
         {
-            "name": "real_max",
-            "overload": "max",
+            "name": "max",
             "prop": "max m n = if m <= n then n else m",
             "ty": "def",
             "type": "real => real => real"
@@ -176,8 +162,7 @@
             "type": "'a => 'a => 'a"
         },
         {
-            "name": "real_min",
-            "overload": "min",
+            "name": "min",
             "prop": "min m n = if m <= n then m else n",
             "ty": "def",
             "type": "real => real => real"

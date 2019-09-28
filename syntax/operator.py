@@ -127,10 +127,8 @@ def get_info_for_fun(thy, t):
             else:
                 return op_data['equals']
         else:
-            # First attempt to translate to general name
-            name_lookup = thy.lookup_overload_const(t.name)
-            if name_lookup in op_data:
-                return op_data[name_lookup]
+            if t.name in op_data:
+                return op_data[t.name]
             else:
                 return None
     else:

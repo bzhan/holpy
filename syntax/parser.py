@@ -554,24 +554,20 @@ def parse_extension(thy, data):
         T = parse_type(thy, data['type'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
-        if 'overload' in data:
-            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
+        if 'overloaded' in data:
+            ext.add_extension(extension.Overload(data['name']))
 
     elif data['ty'] == 'def':
         T = parse_type(thy, data['type'])
-        parse_name = data['name']
-        if 'overload' in data:
-            thy.add_overload_const(data['overload'], T, data['name'])
-            parse_name = data['overload']
-        ctxt = {'vars': {}, 'consts': {parse_name: T, data['name']: T}}
+        ctxt = {'vars': {}, 'consts': {data['name']: T}}
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
-        ext.add_extension(extension.Theorem(data['name'] + "_def", Thm([], prop)))
+
+        cname = thy.get_overload_const_name(data['name'], T)
+        ext.add_extension(extension.Theorem(cname + "_def", Thm([], prop)))
         if 'attributes' in data and 'hint_rewrite' in data['attributes']:
-            ext.add_extension(extension.Attribute(data['name'] + "_def", 'hint_rewrite'))
-        if 'overload' in data:
-            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
+            ext.add_extension(extension.Attribute(cname + "_def", 'hint_rewrite'))
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
         ctxt = parse_vars(thy, data['vars'])
@@ -588,30 +584,19 @@ def parse_extension(thy, data):
 
     elif data['ty'] == 'type.ind':
         constrs = []
-        overloads = []
         for constr in data['constrs']:
             T = parse_type(thy, constr['type'])
             constrs.append((constr['name'], T, constr['args']))
-            if 'overload' in constr:
-                overloads.append(extension.Overload(constr['overload'], T, constr['name']))
         ext = induct.add_induct_type(data['name'], data['args'], constrs)
-        for overload in overloads:
-            ext.add_extension(overload)
 
     elif data['ty'] == 'def.ind':
         T = parse_type(thy, data['type'])
-        parse_name = data['name']
-        if 'overload' in data:
-            thy.add_overload_const(data['overload'], T, data['name'])
-            parse_name = data['overload']
         rules = []
         for rule in data['rules']:
-            ctxt = {'vars': {}, 'consts': {parse_name: T, data['name']: T}}
+            ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
-        ext = induct.add_induct_def(data['name'], T, rules)
-        if 'overload' in data:
-            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
+        ext = induct.add_induct_def(thy, data['name'], T, rules)
 
     elif data['ty'] == 'def.pred':
         T = parse_type(thy, data['type'])
@@ -620,9 +605,7 @@ def parse_extension(thy, data):
             ctxt = {'vars': {}, 'consts': {data['name']: T}}
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append((rule['name'], prop))
-        ext = induct.add_induct_predicate(data['name'], T, rules)
-        if 'overload' in data:
-            ext.add_extension(extension.Overload(data['overload'], T, data['name']))
+        ext = induct.add_induct_predicate(thy, data['name'], T, rules)
 
     elif data['ty'] == 'macro':
         ext = extension.TheoryExtension()

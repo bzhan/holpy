@@ -7,15 +7,15 @@ from data import nat
 # Basic definitions
 
 realT = Type("real")
-zero = Const("real_zero", realT)
-one = Const("real_one", realT)
-of_nat = Const("real_of_nat", TFun(nat.natT, realT))
-plus = Const("real_plus", TFun(realT, realT, realT))
-minus = Const("real_minus", TFun(realT, realT, realT))
-uminus = Const("real_uminus", TFun(realT, realT))
-times = Const("real_times", TFun(realT, realT, realT))
-less_eq = Const("real_less_eq", TFun(realT, realT, boolT))
-less = Const("real_less", TFun(realT, realT, boolT))
+zero = Const("zero", realT)
+one = Const("one", realT)
+of_nat = Const("of_nat", TFun(nat.natT, realT))
+plus = Const("plus", TFun(realT, realT, realT))
+minus = Const("minus", TFun(realT, realT, realT))
+uminus = Const("uminus", TFun(realT, realT))
+times = Const("times", TFun(realT, realT, realT))
+less_eq = Const("less_eq", TFun(realT, realT, boolT))
+less = Const("less", TFun(realT, realT, boolT))
 
 def mk_plus(*args):
     if not args:

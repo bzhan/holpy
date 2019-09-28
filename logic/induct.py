@@ -107,7 +107,7 @@ def add_induct_type(name, targs, constrs):
 
     return exts
 
-def add_induct_def(name, T, eqs):
+def add_induct_def(thy, name, T, eqs):
     """Add the given inductive definition.
 
     The inductive definition is specified by the name and type of
@@ -124,15 +124,15 @@ def add_induct_def(name, T, eqs):
     """
     exts = TheoryExtension()
     exts.add_extension(AxConstant(name, T))
-
+    cname = thy.get_overload_const_name(name, T)
     for i, prop in enumerate(eqs):
-        th_name = name + "_def_" + str(i + 1)
+        th_name = cname + "_def_" + str(i + 1)
         exts.add_extension(Theorem(th_name, Thm([], prop)))
         exts.add_extension(Attribute(th_name, "hint_rewrite"))
 
     return exts
 
-def add_induct_predicate(name, T, props):
+def add_induct_predicate(thy, name, T, props):
     """Add the given inductive predicate.
 
     The inductive predicate is specified by the name and type of
@@ -167,7 +167,8 @@ def add_induct_predicate(name, T, props):
             assum = Term.mk_all(var, assum)
         assums.append(assum)
 
+    cname = thy.get_overload_const_name(name, T)
     prop = Term.mk_implies(*([assum0] + assums + [P]))
-    exts.add_extension(Theorem(name + "_cases", Thm([], prop)))
+    exts.add_extension(Theorem(cname + "_cases", Thm([], prop)))
 
     return exts

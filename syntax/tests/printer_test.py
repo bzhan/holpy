@@ -121,8 +121,8 @@ class PrinterTest(unittest.TestCase):
     def testPrintRename(self):
         test_data = [
             (Const("exists", TFun(TFun(nat.natT, boolT), boolT))(
-                Abs("x", nat.natT, nat.less(Bound(0), Var("x", boolT)))), "?x1. x1 < x"),
-            (Abs("x", nat.natT, nat.less(Bound(0), Var("x", boolT))), "%x1. x1 < x"),
+                Abs("x", nat.natT, nat.less(Bound(0), Var("x", nat.natT)))), "?x1. x1 < x"),
+            (Abs("x", nat.natT, nat.less(Bound(0), Var("x", nat.natT))), "%x1. x1 < x"),
         ]
 
         for t, s in test_data:

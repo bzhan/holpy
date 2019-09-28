@@ -2,7 +2,7 @@
     "content": [
         {
             "name": "has_limit",
-            "prop": "has_limit f x <--> (!e. 0 < e --> (?N. !n. N <= n --> real_abs (f n - x) < e))",
+            "prop": "has_limit f x <--> (!e. 0 < e --> (?N. !n. N <= n --> abs (f n - x) < e))",
             "ty": "def",
             "type": "(nat => real) => real => bool"
         },
@@ -58,7 +58,7 @@
                     "th": "⊢ has_limit f x ⟶ 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e)"
                 }
             ],
-            "prop": "has_limit f x --> 0 < e --> (?N. !n. N <= n --> real_abs (f n - x) < e)",
+            "prop": "has_limit f x --> 0 < e --> (?N. !n. N <= n --> abs (f n - x) < e)",
             "steps": [
                 {
                     "fact_ids": [
@@ -167,7 +167,7 @@
                     "th": "⊢ has_limit f x ⟶ 0 < e ⟶ (∃n. abs (f n - x) < e)"
                 }
             ],
-            "prop": "has_limit f x --> 0 < e --> ?n. real_abs (f n - x) < e",
+            "prop": "has_limit f x --> 0 < e --> ?n. abs (f n - x) < e",
             "steps": [
                 {
                     "fact_ids": [

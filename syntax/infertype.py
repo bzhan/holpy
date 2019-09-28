@@ -45,32 +45,7 @@ def unify(uf, T1, T2):
     else:
         raise TypeInferenceException("Unable to unify " + str(T1) + " with " + str(T2))
 
-def replace_overload(thy, t):
-    """Replace overloaded constants with concrete constants."""
-    def replace(t):
-        if t.is_const():
-            if thy.is_overload_const(t.name):
-                name_T = thy.get_overload_const(t.name, t.T)
-                t.name = name_T
-        elif t.is_comb():
-            replace(t.fun)
-            replace(t.arg)
-        elif t.is_abs():
-            replace(t.body)
-    
-    replace(t)
-
-def get_overload(thy, t):
-    """Replace concrete constants with overloaded constants."""
-    if t.is_const():
-        t.name = thy.lookup_overload_const(t.name)
-    elif t.is_comb():
-        get_overload(thy, t.fun)
-        get_overload(thy, t.arg)
-    elif t.is_abs():
-        get_overload(thy, t.body)
-
-def type_infer_raw(thy, ctxt, t, *, forbid_internal=True):
+def type_infer(thy, ctxt, t, *, forbid_internal=True):
     """Perform type inference on the given term. The input term
     has all types marked None, except those subterms whose type is
     explicitly given. This function works on terms with overloaded
@@ -187,11 +162,6 @@ def type_infer_raw(thy, ctxt, t, *, forbid_internal=True):
 
     return t
 
-def type_infer(thy, ctxt, t):
-    t = type_infer_raw(thy, ctxt, t)
-    replace_overload(thy, t)
-    return t
-
 def infer_printed_type(thy, t):
     """Infer the types that should be printed.
     
@@ -228,7 +198,7 @@ def infer_printed_type(thy, t):
 
     for i in range(100):
         clear_const_type(t)
-        type_infer_raw(thy, dict(), t, forbid_internal=False)
+        type_infer(thy, dict(), t, forbid_internal=False)
 
         def has_internalT(T):
             return any(is_internal_type(subT) for subT in T.get_tsubs())

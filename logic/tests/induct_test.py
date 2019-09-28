@@ -6,12 +6,14 @@ from kernel.type import TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 from kernel.extension import AxType, AxConstant, Theorem, Attribute
+from logic import basic
 from logic import logic, induct
 
 imp = Term.mk_implies
 eq = Term.mk_equals
 all = Term.mk_all
 conj = logic.mk_conj
+thy = basic.load_theory('logic_base')
 
 class InductTest(unittest.TestCase):
     def testInductNat(self):
@@ -47,7 +49,7 @@ class InductTest(unittest.TestCase):
         n = Var("n", nat)
 
         ext = induct.add_induct_def(
-            'nat_plus', TFun(nat, nat, nat), [
+            thy, 'nat_plus', TFun(nat, nat, nat), [
                 eq(plus(zero, n), n),
                 eq(plus(S(m), n), S(plus(m, n)))])
         
@@ -119,7 +121,7 @@ class InductTest(unittest.TestCase):
         prop_zero = even(zero)
         prop_Suc = Term.mk_implies(even(n), even(Suc(Suc(n))))
         data = [("even_zero", prop_zero), ("even_Suc", prop_Suc)]
-        even_ext = induct.add_induct_predicate("even", TFun(nat, boolT), data)
+        even_ext = induct.add_induct_predicate(thy, "even", TFun(nat, boolT), data)
         a1 = Var("_a1", nat)
         P = Var("P", boolT)
 

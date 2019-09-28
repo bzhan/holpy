@@ -19,16 +19,16 @@ from syntax import printer, settings
 # Basic definitions
 
 natT = Type("nat")
-zero = Const("nat_zero", natT)
+zero = Const("zero", natT)
 Suc = Const("Suc", TFun(natT, natT))
 Pre = Const("Pre", TFun(natT, natT))
-one = Const("nat_one", natT)
-of_nat = Const("nat_of_nat", TFun(natT, natT))
-plus = Const("nat_plus", TFun(natT, natT, natT))
-minus = Const("nat_minus", TFun(natT, natT, natT))
-times = Const("nat_times", TFun(natT, natT, natT))
-less_eq = Const("nat_less_eq", TFun(natT, natT, boolT))
-less = Const("nat_less", TFun(natT, natT, boolT))
+one = Const("one", natT)
+of_nat = Const("of_nat", TFun(natT, natT))
+plus = Const("plus", TFun(natT, natT, natT))
+minus = Const("minus", TFun(natT, natT, natT))
+times = Const("times", TFun(natT, natT, natT))
+less_eq = Const("less_eq", TFun(natT, natT, boolT))
+less = Const("less", TFun(natT, natT, boolT))
 
 def is_Suc(t):
     return t.is_comb() and t.fun == Suc
@@ -103,7 +103,7 @@ def is_binary(t):
 
 def is_binary_nat(t):
     return t == zero or t == one or \
-           (t.is_comb() and t.fun.is_const_name("nat_of_nat") and is_binary(t.arg))
+           (t.is_comb() and t.fun.is_const_name("of_nat") and is_binary(t.arg))
 
 def from_binary(t):
     """Convert binary form to integer."""
