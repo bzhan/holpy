@@ -324,13 +324,23 @@ def file_data_to_output(thy, data, *, line_length=None):
         data['err_str'] = str(e)
 
     if parsed_data is None:
+        if data['ty'] in ('thm', 'thm.ax'):
+            data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
+            data['prop_lines'] = data['prop']
+            if not isinstance(data['prop_lines'], str):
+                data['prop_lines'] = '\n'.join(data['prop_lines'])
+        elif data['ty'] == 'def':
+            data['prop_lines'] = data['prop']
+            if not isinstance(data['prop_lines'], str):
+                data['prop_lines'] = '\n'.join(data['prop_lines'])
+
         return
 
     # Now fill data with pretty-printed form of types and terms
     if data['ty'] == 'def.ax':
         data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
 
-    elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
+    elif data['ty'] in ('thm', 'thm.ax'):
         data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
         ast = pprint.get_ast(thy, parsed_data['prop'], unicode=True)
         data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
@@ -352,7 +362,7 @@ def file_data_to_output(thy, data, *, line_length=None):
         # Obtain items added by the extension
         data['ext_output'] = str_of_extension(thy, ext)
 
-    elif data['ty'] == 'def.ind' or data['ty'] == 'def.pred':
+    elif data['ty'] in ('def.ind', 'def.pred'):
         data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
 
         rules = []
