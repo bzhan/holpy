@@ -45,5 +45,6 @@ class ExtensionTest(unittest.TestCase):
 
         self.assertEqual(str(thy_ext), str_thy_ext)
 
+
 if __name__ == "__main__":
     unittest.main()

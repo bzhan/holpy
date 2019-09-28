@@ -104,7 +104,7 @@ class Term():
                 else:
                     return bd_vars[t.n]
             else:
-                raise TypeError()
+                raise TypeError
 
         return helper(self, [])
 
@@ -120,7 +120,7 @@ class Term():
         elif self.is_bound():
             return "Bound " + str(self.n)
         else:
-            raise TypeError()
+            raise TypeError
 
     def __hash__(self):
         if hasattr(self, "_hash_val"):
@@ -136,7 +136,7 @@ class Term():
         elif self.is_bound():
             self._hash_val = hash(("BOUND", self.n))
         else:
-            raise TypeError()
+            raise TypeError
         return self._hash_val
 
     def __eq__(self, other):
@@ -158,7 +158,7 @@ class Term():
         elif self.is_bound():
             return self.n == other.n
         else:
-            raise TypeError()
+            raise TypeError
 
     def __copy__(self):
         """Returns a copy of self. Types are shared, the rest of
@@ -176,7 +176,7 @@ class Term():
         elif self.is_bound():
             return Bound(self.n)
         else:
-            raise TypeError()
+            raise TypeError
 
     def __call__(self, *args):
         """Apply self (as a function) to a list of arguments."""
@@ -197,16 +197,16 @@ class Term():
             if type_fun.is_fun():
                 return type_fun.range_type()
             else:
-                raise TypeCheckException()
+                raise TypeCheckException
         elif self.is_abs():
             return TFun(self.var_T, self.body._get_type([self.var_T] + bd_vars))
         elif self.is_bound():
             if self.n >= len(bd_vars):
-                raise OpenTermException()
+                raise OpenTermException
             else:
                 return bd_vars[self.n]
         else:
-            raise TypeError()
+            raise TypeError
     
     def get_type(self):
         """Returns type of the term with minimal type-checking."""
@@ -223,7 +223,7 @@ class Term():
         elif self.is_bound():
             return self.n >= n
         else:
-            raise TypeError()
+            raise TypeError
 
     def is_open(self):
         """Whether t is an open term."""
@@ -242,7 +242,7 @@ class Term():
         elif self.is_bound():
             return self
         else:
-            raise TypeError()
+            raise TypeError
 
     def subst_type_inplace(self, tyinst):
         """Perform substitution on type variables."""
@@ -261,7 +261,7 @@ class Term():
         elif self.is_bound():
             pass
         else:
-            raise TypeError()
+            raise TypeError
 
     def subst(self, inst):
         """Perform substitution on term variables.
@@ -291,7 +291,7 @@ class Term():
         elif self.is_bound():
             return self
         else:
-            raise TypeError()
+            raise TypeError
 
     def strip_comb(self):
         """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
@@ -417,7 +417,7 @@ class Term():
             else:
                 return self
         else:
-            raise TypeError()
+            raise TypeError
 
     def subst_bound(self, t):
         """Given an Abs(x,T,body), substitute x for t in the body. t should
@@ -428,7 +428,7 @@ class Term():
             # Perform the substitution. Note t may be a bound variable itself.
             return self.body._subst_bound(t, 0)
         else:
-            raise TermSubstitutionException()
+            raise TermSubstitutionException
 
     def beta_conv(self):
         """Beta-conversion: given a term of the form (%x. t1) t2, return the
@@ -438,7 +438,7 @@ class Term():
         if self.is_comb():
             return self.fun.subst_bound(self.arg)
         else:
-            raise TermSubstitutionException()
+            raise TermSubstitutionException
 
     def beta_norm(self):
         """Normalize self using beta-conversion."""
@@ -454,7 +454,7 @@ class Term():
         elif self.is_abs():
             return Abs(self.var_name, self.var_T, self.body.beta_norm())
         else:
-            raise TypeError()
+            raise TypeError
 
     def occurs_var(self, t):
         """Whether the variable t occurs in self."""
@@ -469,7 +469,7 @@ class Term():
         elif self.is_bound():
             return False
         else:
-            raise TypeError()    
+            raise TypeError    
 
     def _abstract_over(self, t, n):
         """Helper function for abstract_over. Here self is an open term.
@@ -479,7 +479,7 @@ class Term():
         if self.is_var():
             if self.name == t.name:
                 if self.T != t.T:
-                    raise TermSubstitutionException()
+                    raise TermSubstitutionException
                 else:
                     return Bound(n)
             else:
@@ -493,7 +493,7 @@ class Term():
         elif self.is_bound():
             return self
         else:
-            raise TypeError()
+            raise TypeError
 
     def abstract_over(self, t):
         """Abstract over the variable t. The result is ready to become
@@ -503,13 +503,13 @@ class Term():
         if t.is_var():
             return self._abstract_over(t,0)
         else:
-            raise TermSubstitutionException()
+            raise TermSubstitutionException
 
     @staticmethod
     def mk_abs(t, body):
         """Given body in terms of t, return the term %t. body. """
         if t.ty != Term.VAR:
-            raise TermSubstitutionException()
+            raise TermSubstitutionException
         res = Abs(t.name, t.T, body.abstract_over(t))
         return res
 
@@ -526,17 +526,17 @@ class Term():
             if funT.is_fun() and funT.domain_type() == argT:
                 return funT.range_type()
             else:
-                raise TypeCheckException()
+                raise TypeCheckException
         elif self.is_abs():
             bodyT = self.body._checked_get_type([self.var_T] + bd_vars)
             return TFun(self.var_T, bodyT)
         elif self.is_bound():
             if self.n >= len(bd_vars):
-                raise OpenTermException()
+                raise OpenTermException
             else:
                 return bd_vars[self.n]
         else:
-            raise TypeError()
+            raise TypeError
 
     def checked_get_type(self):
         """Perform type-checking and return the type of self."""
@@ -571,7 +571,7 @@ class Abs(Term):
     """
     def __init__(self, *args):
         if len(args) < 3:
-            raise TypeError()
+            raise TypeError
         else:
             self.ty = Term.ABS
             self.var_name = args[0]
@@ -604,7 +604,7 @@ def get_vars(t):
     elif isinstance(t, list):
         return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
     else:
-        raise TypeError()
+        raise TypeError
 
 def has_var(t):
     """Whether the term contains variables."""
@@ -638,4 +638,4 @@ def get_consts(t):
     elif isinstance(t, list):
         return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
     else:
-        raise TypeError()
+        raise TypeError

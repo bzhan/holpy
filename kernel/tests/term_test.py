@@ -250,5 +250,6 @@ class TermTest(unittest.TestCase):
         for t, res in test_data:
             self.assertEqual(term.get_consts(t), res)
 
+
 if __name__ == "__main__":
     unittest.main()

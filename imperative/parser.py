@@ -166,6 +166,6 @@ def process_file(input, output):
             output.add_theorem("vcg" + str(vcg_count), th, prf)
             vcg_count += 1
         else:
-            raise TypeError()
+            raise TypeError
 
     output.export_json()

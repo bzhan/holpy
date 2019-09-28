@@ -346,5 +346,6 @@ class TheoryTest(unittest.TestCase):
         self.assertEqual(thy.get_term_sig("id"), TFun(Ta,Ta))
         self.assertEqual(ext_report.get_axioms(), [("nat", 0), ("id", TFun(Ta,Ta))])
 
+
 if __name__ == "__main__":
     unittest.main()

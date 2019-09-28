@@ -49,7 +49,7 @@ def fast_compare_typ(T1, T2):
         return compare_pair((T1.name, T1.args), (T2.name, T2.args),
                             compare, lambda l1, l2: compare_list(l1, l2, fast_compare_typ))
     else:
-        raise TypeError()
+        raise TypeError
 
 def fast_compare(t1, t2):
     """Fast ordering between t1 and t2."""
@@ -64,4 +64,4 @@ def fast_compare(t1, t2):
     elif t1.is_bound():
         return compare(t1.n, t2.n)
     else:
-        raise TypeError()
+        raise TypeError

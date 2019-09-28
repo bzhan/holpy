@@ -175,7 +175,7 @@ class Theory():
     def add_theorem(self, name, th):
         """Add the given theorem under the given name."""
         if not isinstance(th, Thm):
-            raise TypeError()
+            raise TypeError
 
         self.add_data("theorems", name, th)
 
@@ -327,7 +327,7 @@ class Theory():
                 for arg in T.args:
                     self.check_type(arg)
         else:
-            raise TypeError()
+            raise TypeError
 
     def check_term(self, t):
         """Check the well-formedness of the term t. This means checking
@@ -350,7 +350,7 @@ class Theory():
         elif t.is_bound():
             return None
         else:
-            raise TypeError()
+            raise TypeError
 
     def _check_proof_item(self, prf, seq, rpt, no_gaps, compute_only, check_level):
         """Check a single proof item.
@@ -542,7 +542,7 @@ class Theory():
             elif ext.ty == Extension.OVERLOAD:
                 self.add_overload_const(ext.name)
             else:
-                raise TypeError()
+                raise TypeError
 
     def checked_extend(self, thy_ext):
         """Perform the given theory extension with proof checking."""
@@ -573,6 +573,6 @@ class Theory():
             elif ext.ty == Extension.OVERLOAD:
                 self.add_overload_const(ext.name)
             else:
-                raise TypeError()
+                raise TypeError
 
         return ext_report

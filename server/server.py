@@ -93,7 +93,7 @@ class ProofState():
                 prf = prf.items[n].subproof
             return ctxt
         except (AttributeError, IndexError):
-            raise TacticException()
+            raise TacticException
 
     def __str__(self):
         vars = sorted(self.vars, key = lambda v: v.name)
@@ -277,7 +277,7 @@ class ProofState():
                         return item.id
                 prf = prf.items[n].subproof
         except (AttributeError, IndexError):
-            raise TacticException()
+            raise TacticException
 
     def apply_search(self, id, method, prevs=None):
         id = id_force_tuple(id)

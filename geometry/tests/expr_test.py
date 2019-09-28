@@ -192,5 +192,6 @@ class ExprTest(unittest.TestCase):
             self.assertIsNotNone(fact)
             expr.print_search(ruleset, hyps, fact)
 
+
 if __name__ == "__main__":
     unittest.main()

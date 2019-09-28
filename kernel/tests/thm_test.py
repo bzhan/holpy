@@ -241,5 +241,6 @@ class ThmTest(unittest.TestCase):
         th = Thm([], Term.mk_all(x, P(x)))
         self.assertRaises(InvalidDerivationException, Thm.forall_elim, A, th)
 
+
 if __name__ == "__main__":
     unittest.main()

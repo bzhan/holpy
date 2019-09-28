@@ -55,7 +55,7 @@ class Extension():
         elif self.ty == Extension.OVERLOAD:
             return "Overload " + self.name
         else:
-            raise TypeError()
+            raise TypeError
 
     def __repr__(self):
         return str(self)
@@ -80,7 +80,7 @@ class Extension():
         elif self.ty == Extension.OVERLOAD:
             return self.name == other.name
         else:
-            raise TypeError()
+            raise TypeError
 
     def get_const_term(self):
         """Return the term to be added in the Constant extension."""

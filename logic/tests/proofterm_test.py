@@ -52,5 +52,6 @@ class ProofTermTest(unittest.TestCase):
 
         self.assertEqual(thy.check_proof(prf), Thm.mk_equals(x,z))
 
+
 if __name__ == "__main__":
     unittest.main()

@@ -34,7 +34,7 @@ def mk_fun_upd(*args):
     elif len(args) > 3:
         return mk_fun_upd(mk_fun_upd(*args[:3]), *args[3:])
     else:
-        raise TypeError()
+        raise TypeError
 
 def strip_fun_upd(t):
     """Given t of the form (f)(a1 := b1, a2 := b2, ...), return

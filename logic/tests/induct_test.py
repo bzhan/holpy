@@ -135,5 +135,6 @@ class InductTest(unittest.TestCase):
         ]
         self.assertEqual(even_ext.data, res)
 
+
 if __name__ == "__main__":
     unittest.main()

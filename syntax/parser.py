@@ -201,7 +201,7 @@ class HOLTransformer(Transformer):
             elif len(args) > 3:
                 return helper(helper(*args[:3]), *args[3:])
             else:
-                raise TypeError()
+                raise TypeError
         return helper(*args)
 
     def comb(self, fun, arg):
@@ -504,7 +504,7 @@ def parse_args(thy, ctxt, sig, args):
         elif sig == List[Term]:
             return parse_term_list(thy, ctxt, args)
         else:
-            raise TypeError()
+            raise TypeError
     except exceptions.UnexpectedToken as e:
         raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
                               % (args, e.token, e.column))

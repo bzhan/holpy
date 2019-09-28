@@ -80,7 +80,7 @@ class Thm():
         """
         for t in list(self.hyps) + [self.prop]:
             if t.checked_get_type() != boolT:
-                raise TypeCheckException()
+                raise TypeCheckException
 
     @staticmethod
     def mk_implies(*args):

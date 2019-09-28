@@ -52,5 +52,6 @@ class ExtensionReportTest(unittest.TestCase):
 
         self.assertEqual(str(ext_report), str_ext_report)
 
+
 if __name__ == "__main__":
     unittest.main()

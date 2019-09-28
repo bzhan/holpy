@@ -353,7 +353,7 @@ def get_ast(thy, t):
             else:
                 return bd_vars[t.n]
         else:
-            raise TypeError()
+            raise TypeError
 
     t = copy(t)  # make copy here, because infer_printed_type may change t.
     infertype.infer_printed_type(thy, t)
@@ -412,7 +412,7 @@ def print_type(thy, T):
             else:
                 return N("(") + commas_join(helper(t) for t in T.args) + N(") " + T.name)
         else:
-            raise TypeError()
+            raise TypeError
 
     res = helper(T)
     if settings.highlight():

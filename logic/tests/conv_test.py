@@ -203,5 +203,6 @@ class ConvTest(unittest.TestCase):
         cv.get_proof_term(thy, f(x)).export(prf=prf)
         self.assertEqual(thy.check_proof(prf), eq(f(x), f(f(x))))
 
+
 if __name__ == "__main__":
     unittest.main()

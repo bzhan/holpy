@@ -51,7 +51,7 @@ class ProofMacro():
         the list of previous theorems.
 
         """
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def expand(self, prefix, thy, args, prevs):
         """Obtain the detailed proof of the derivation.
@@ -61,4 +61,4 @@ class ProofMacro():
         of previous theorems.
 
         """
-        raise NotImplementedError()
+        raise NotImplementedError

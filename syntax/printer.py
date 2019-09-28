@@ -88,7 +88,7 @@ def print_extension(thy, ext):
     elif ext.ty == Extension.MACRO:
         return "Macro " + ext.name
     else:
-        raise TypeError()
+        raise TypeError
 
 @settings.with_settings
 def print_extensions(thy, exts):

@@ -73,5 +73,6 @@ class PolynomialTest(unittest.TestCase):
             p3 = parse_poly(p3)
             self.assertEqual(p1 * p2, p3)
 
+
 if __name__ == "__main__":
     unittest.main()

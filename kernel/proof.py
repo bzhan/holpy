@@ -12,7 +12,7 @@ def id_force_tuple(id):
     elif isinstance(id, str):
         return tuple(int(s) for s in id.split("."))
     else:
-        raise TypeError()
+        raise TypeError
 
 def print_id(id):
     """Print id in n1.n2.n3 form."""
@@ -111,7 +111,7 @@ class Proof():
                 item = item.subproof.items[i]
             return item
         except (AttributeError, IndexError):
-            raise ProofException()
+            raise ProofException
 
     def get_parent_proof(self, id):
         """Traverse the proof to the subproof containing the given id."""
@@ -120,10 +120,10 @@ class Proof():
             for i in id[:-1]:
                 prf = prf.items[i].subproof
             if prf is None:
-                raise ProofException()
+                raise ProofException
             return prf
         except IndexError:
-            raise ProofException()
+            raise ProofException
 
     def insert_item(self, item):
         """Insert the item using the id in the item. This item should
@@ -137,7 +137,7 @@ class Proof():
                     prf.items[i].subproof = Proof()
                 prf = prf.items[i].subproof
             if item.id[-1] != len(prf.items):
-                raise ProofException()
+                raise ProofException
             prf.items.append(item)
         except IndexError:
-            raise ProofException()
+            raise ProofException

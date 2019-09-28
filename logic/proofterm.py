@@ -163,7 +163,7 @@ class ProofTerm():
                     prev._export(prefix, seq_to_id, prf, subproof)
                     ids.append(prf.items[-1].id)
             else:
-                raise TypeError()
+                raise TypeError
         
         if subproof:
             id = prefix + (len(prf.items),)
@@ -269,7 +269,7 @@ class ProofTermMacro(ProofMacro):
         return self.get_proof_term(thy, args, pts).th
 
     def get_proof_term(self, thy, args, prevs):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def expand(self, prefix, thy, args, prevs):
         pts = tuple([ProofTerm.atom(id, prev) for id, prev in prevs])

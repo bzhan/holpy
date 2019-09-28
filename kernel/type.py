@@ -97,7 +97,7 @@ class HOLType():
             else:
                 return "(" + ", ".join(str(t) for t in self.args) + ") " + self.name
         else:
-            raise TypeError()
+            raise TypeError
 
     def __repr__(self):
         if self.ty == HOLType.TVAR:
@@ -105,7 +105,7 @@ class HOLType():
         elif self.ty == HOLType.TYPE:
             return "Type(" + self.name + ", " + str(list(self.args)) + ")"
         else:
-            raise TypeError()
+            raise TypeError
 
     def __hash__(self):
         if hasattr(self, "_hash_val"):
@@ -128,7 +128,7 @@ class HOLType():
         elif self.ty == HOLType.TYPE:
             return self.name == other.name and self.args == other.args
         else:
-            raise TypeError()
+            raise TypeError
 
     def subst(self, tyinst):
         """Given a dictionary tyinst mapping from names to types,
@@ -145,7 +145,7 @@ class HOLType():
         elif self.ty == HOLType.TYPE:
             return Type(self.name, *(T.subst(tyinst) for T in self.args))
         else:
-            raise TypeError()
+            raise TypeError
 
     def match_incr(self, T, tyinst, internal_only=False):
         """Incremental match. Match self (as a pattern) with T. Here tyinst
@@ -155,20 +155,20 @@ class HOLType():
         if self.ty == HOLType.TVAR:
             if internal_only and not self.name.startswith('_'):
                 if self != T:
-                    raise TypeMatchException()
+                    raise TypeMatchException
             elif self.name in tyinst:
                 if T != tyinst[self.name]:
-                    raise TypeMatchException()
+                    raise TypeMatchException
             else:
                 tyinst[self.name] = T
         elif self.ty == HOLType.TYPE:
             if T.ty != HOLType.TYPE or T.name != self.name:
-                raise TypeMatchException()
+                raise TypeMatchException
             else:
                 for arg, argT in zip(self.args, T.args):
                     arg.match_incr(argT, tyinst, internal_only=internal_only)
         else:
-            raise TypeError()
+            raise TypeError
 
     def match(self, T, internal_only=False):
         """Match self (as a pattern) with T. Returns either a dictionary

@@ -139,7 +139,7 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
             return bd_vars[t.n]
 
         else:
-            raise TypeError()
+            raise TypeError
 
     infer(t, [])
 
