@@ -160,8 +160,9 @@ class HOLTransformer(Transformer):
 
     def vname(self, s):
         thy = parser_setting['thy']
+        ctxt = parser_setting['ctxt']
         s = str(s)
-        if thy.has_term_sig(s):
+        if thy.has_term_sig(s) or ('consts' in ctxt and s in ctxt['consts']):
             # s is the name of a constant in the theory
             return Const(s, None)
         else:
@@ -404,6 +405,7 @@ def parse_type(thy, s):
 def parse_term(thy, ctxt, s):
     """Parse a term."""
     parser_setting['thy'] = thy
+    parser_setting['ctxt'] = ctxt
     # Permit parsing a list of strings by concatenating them.
     if isinstance(s, list):
         s = " ".join(s)
@@ -417,6 +419,7 @@ def parse_term(thy, ctxt, s):
 def parse_thm(thy, ctxt, s):
     """Parse a theorem (sequent)."""
     parser_setting['thy'] = thy
+    parser_setting['ctxt'] = ctxt
     th = thm_parser.parse(s)
     th.hyps = tuple(infertype.type_infer(thy, ctxt, hyp) for hyp in th.hyps)
     th.prop = infertype.type_infer(thy, ctxt, th.prop)
@@ -425,6 +428,7 @@ def parse_thm(thy, ctxt, s):
 def parse_inst(thy, ctxt, s):
     """Parse a term instantiation."""
     parser_setting['thy'] = thy
+    parser_setting['ctxt'] = ctxt
     inst = inst_parser.parse(s)
     for k in inst:
         inst[k] = infertype.type_infer(thy, ctxt, inst[k])
@@ -446,6 +450,7 @@ def parse_named_thm(thy, ctxt, s):
 def parse_instsp(thy, ctxt, s):
     """Parse type and term instantiations."""
     parser_setting['thy'] = thy
+    parser_setting['ctxt'] = ctxt
     tyinst, inst = instsp_parser.parse(s)
     for k in inst:
         inst[k] = infertype.type_infer(thy, ctxt, inst[k])
@@ -466,6 +471,7 @@ def parse_term_list(thy, ctxt, s):
     if s == "":
         return []
     parser_setting['thy'] = thy
+    parser_setting['ctxt'] = ctxt
     ts = term_list_parser.parse(s)
     for i in range(len(ts)):
         ts[i] = infertype.type_infer(thy, ctxt, ts[i])
@@ -553,12 +559,11 @@ def parse_extension(thy, data):
 
     elif data['ty'] == 'def':
         T = parse_type(thy, data['type'])
-        thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         parse_name = data['name']
         if 'overload' in data:
             thy.add_overload_const(data['overload'], T, data['name'])
             parse_name = data['overload']
-        ctxt = {'vars': {}, 'consts': {parse_name: T}}
+        ctxt = {'vars': {}, 'consts': {parse_name: T, data['name']: T}}
         prop = parse_term(thy, ctxt, data['prop'])
         ext = extension.TheoryExtension()
         ext.add_extension(extension.AxConstant(data['name'], T))
@@ -595,14 +600,13 @@ def parse_extension(thy, data):
 
     elif data['ty'] == 'def.ind':
         T = parse_type(thy, data['type'])
-        thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         parse_name = data['name']
         if 'overload' in data:
             thy.add_overload_const(data['overload'], T, data['name'])
             parse_name = data['overload']
         rules = []
         for rule in data['rules']:
-            ctxt = {'vars': {}, 'consts': {parse_name: T}}
+            ctxt = {'vars': {}, 'consts': {parse_name: T, data['name']: T}}
             prop = parse_term(thy, ctxt, rule['prop'])
             rules.append(prop)
         ext = induct.add_induct_def(data['name'], T, rules)
@@ -611,7 +615,6 @@ def parse_extension(thy, data):
 
     elif data['ty'] == 'def.pred':
         T = parse_type(thy, data['type'])
-        thy.add_term_sig(data['name'], T)  # Add this first, for parsing later.
         rules = []
         for rule in data['rules']:
             ctxt = {'vars': {}, 'consts': {data['name']: T}}
