@@ -3716,7 +3716,8 @@
                 "f": "real => real",
                 "f1": "real",
                 "g": "real => real",
-                "x": "real"
+                "x": "real",
+                "s": "real set"
             }
         },
         {
