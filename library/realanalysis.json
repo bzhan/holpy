@@ -4303,11 +4303,11 @@
             "attributes": [],
             "name": "real_differentiable_transform_within",
             "prop": [
-                "0 < d &",
-                "member x s &",
-                "(!x1. member x1 s & abs (x1 - x) < d --> f x1 = g x1) &",
-                "real_differentiable f (within (atreal x) s)",
-                "--> real_differentiable g (within (atreal x) s)"
+                "0 < d ∧ ",
+                "x ∈ s ∧ ",
+                "(∀x1. x1 ∈ s ∧ abs (x1 - x) < d ⟶ f x1 = g x1) ∧ ",
+                "real_differentiable f (within (atreal x) s) ",
+                "⟶ real_differentiable g (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
@@ -4358,9 +4358,7 @@
             "ty": "thm",
             "vars": {
                 "f": "real => real",
-                "f1": "real",
                 "g": "real => real",
-                "g1": "real",
                 "s": "real set",
                 "x": "real"
             }
@@ -4379,6 +4377,227 @@
                 "f": "real => real",
                 "g": "real => real",
                 "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_transform",
+            "prop": [
+                "(∀x. x ∈ s --> f x = g x) ∧ ",
+                "real_differentiable_on f s ",
+                "⟶ real_differentiable_on g s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_eq",
+            "prop": [
+                "(∀x. x ∈ s ⟶ f x = g x) --> (real_differentiable_on f s ",
+                "= real_differentiable_on g s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_transform_atreal",
+            "prop": [
+                "0 < d ∧ ",
+                "(∀x1. abs (x1 - x) < d ⟶ f x1 = g x1) ∧ ",
+                "real_differentiable f (atreal x) ",
+                "⟶ real_differentiable g (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "d": "real",
+                "f": "real => real",
+                "g": "real => real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_compose_within",
+            "prop": [
+                "real_differentiable f (within (atreal x) s) ∧ ",
+                "real_differentiable g (within (atreal (f x)) (image f s))",
+                "⟶ real_differentiable (g ∘ f) (within (atreal x) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_compose_atreal",
+            "prop": [
+                "real_differentiable f (atreal x) ∧ ",
+                "real_differentiable g (atreal (f x))",
+                "⟶ real_differentiable (g ∘ f) (atreal x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_const",
+            "prop": "real_differentiable_on (λx. c) s",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_id",
+            "prop": "real_differentiable_on (λx. x) t",
+            "ty": "thm",
+            "vars": {
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_neg",
+            "prop": "real_differentiable_on f t ⟶ real_differentiable_on (λx. -f x) t",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_add",
+            "prop": [
+                "real_differentiable_on f t & real_differentiable_on g t",
+                "⟶ real_differentiable_on (λx. f x + g x) t"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_sub",
+            "prop": [
+                "real_differentiable_on f t ∧ real_differentiable_on g t ",
+                "⟶ real_differentiable_on (λx. f x - g x) t"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_mul",
+            "prop": [
+                "real_differentiable_on f s ∧ real_differentiable_on g s ",
+                "⟶ real_differentiable_on (λx. f x * g x) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_pow",
+            "prop": [
+                "real_differentiable_on f s ",
+                "⟶ real_differentiable_on (λx. f x ^ n) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "n": "nat",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_inv",
+            "prop": [
+                "real_differentiable_on f s & (!x. member x s --> ¬(f x = 0))",
+                "⟶ real_differentiable_on (λx. real_inverse (f x)) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_div",
+            "prop": [
+                "real_differentiable_on f s ∧ ",
+                "real_differentiable_on g s ∧ (!x. member x s --> ¬g x = 0) ",
+                "⟶ real_differentiable_on (λx. f x / g x) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_compose",
+            "prop": [
+                "real_differentiable_on f s ∧ ",
+                "real_differentiable_on g (image f s)",
+                "⟶ real_differentiable_on (g ∘ f) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_on_sum",
+            "prop": [
+                "finite s & (!a. a ∈ s --> real_differentiable_on (f a) t)",
+                "--> real_differentiable_on (%x. sum s (%a. f a x)) t"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real => real",
+                "f1": "'a => real",
+                "s": "'a set",
+                "t": "real set"
             }
         }
     ],
