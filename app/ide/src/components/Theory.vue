@@ -182,7 +182,7 @@ export default {
       delete item.err_type
       delete item.err_str
       delete item.trace
-      $.extend(true, item, response.data.item)
+      $.extend(item, response.data.item)
       this.$set(this.theory.content, this.on_edit, item)
       this.save_json_file()
       this.on_edit = undefined

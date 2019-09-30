@@ -495,7 +495,9 @@ def print_ast(thy, ast, *, line_length=None):
                     newline()
                     rec(ast.op)
                     add_normal(" ")
+                    indent += 3
                     rec(ast.arg2)
+                    indent -= 3
                 else:
                     rec(ast.arg1)
                     add_normal(" ")
