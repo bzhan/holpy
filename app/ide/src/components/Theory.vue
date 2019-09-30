@@ -199,6 +199,13 @@ export default {
       this.on_edit = len
     },
 
+    add_definition: function () {
+      const len = this.theory.content.length
+      this.$set(this.theory.content, len, {'ty': 'def'})
+      this.selected = len
+      this.on_edit = len
+    },
+
     remove_selected: function () {
       if (this.selected === undefined)
         return

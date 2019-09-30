@@ -10,6 +10,7 @@
         <b-nav-item-dropdown text="Items" left>
           <b-dropdown-item href="#" v-on:click='remove_selected'>Remove selected</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='add_theorem'>Add theorem</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='add_definition'>Add definition</b-dropdown-item>
         </b-nav-item-dropdown>
         <span style="margin-left:10px;align-self:center">Opened file: {{ filename }}</span>
       </b-navbar-nav>
@@ -135,6 +136,10 @@ export default {
 
     add_theorem: function () {
       this.$refs.theory.add_theorem()
+    },
+
+    add_definition: function () {
+      this.$refs.theory.add_definition()
     }
   }
 }
