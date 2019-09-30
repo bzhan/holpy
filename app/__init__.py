@@ -322,6 +322,7 @@ def file_data_to_output(thy, data, *, line_length=None):
     except Exception as e:
         data['err_type'] = str(e.__class__)
         data['err_str'] = str(e)
+        data['trace'] = traceback2.format_exc()
 
     if parsed_data is None:
         if data['ty'] in ('thm', 'thm.ax'):
@@ -366,7 +367,7 @@ def file_data_to_output(thy, data, *, line_length=None):
         data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
 
         rules = []
-        data['edit_content'] = []
+        data['prop_lines'] = []
         for i, rule in enumerate(data['rules']):
             prop = parsed_data['rules'][i]['prop']
             rule['prop_hl'] = printer.print_term(thy, prop, unicode=True, highlight=True)
@@ -376,8 +377,9 @@ def file_data_to_output(thy, data, *, line_length=None):
                 rules.append((rule['name'], prop))
             else:
                 rules.append(prop)
-            data['edit_content'].append(content)
+            data['prop_lines'].append(content)
 
+        data['prop_lines'] = '\n'.join(data['prop_lines'])
         # Obtain items added by the extension
         data['ext_output'] = str_of_extension(thy, ext)
 
@@ -507,17 +509,18 @@ def check_modify():
 
         if item['ty'] == 'def.ind':
             item['rules'] = []
-            for prop in item['data_content']:
-                item['rules'].append({'prop': prop})
+            for line in item['prop_lines'].split('\n'):
+                item['rules'].append({'prop': line})
 
         if item['ty'] == 'def.pred':
             T = parser.parse_type(thy, item['type'])
             item['rules'] = []
-            for content in item['data_content']:
-                thy.add_term_sig(item['name'], item['type'])  # Add this first, for parsing later.
-                ctxt = {'vars': {}, 'consts': {item['name']: T}}
-                name, prop = parser.parse_named_thm(thy, ctxt, content)
-                item['rules'].append({'name': name, 'prop': printer.print_term(thy, prop)})
+            for line in item['prop_lines'].split('\n'):
+                colon = line.find(':')
+                item['rules'].append({
+                    'name': line[0:colon].strip(),
+                    'prop': line[colon+1:].strip()
+                })
 
         file_data_to_output(thy, item, line_length=line_length)
     except Exception as e:

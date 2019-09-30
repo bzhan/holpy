@@ -2,7 +2,9 @@
   <form>
     <pre class="test-width"></pre>
     <span>
-      <label class="keyword">definition</label>
+      <label class="keyword">
+        {{item.ty === 'def' ? 'definition' : (item.ty === 'def.ind' ? 'fun' : 'inductive')}}
+      </label>
       <input spellcheck="false" v-model="item.name" class="form-element"
              min-width="50" ref="name">
       <span class="form-element">::</span>

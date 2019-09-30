@@ -48,22 +48,22 @@
         </div>
       </div>
       <div v-if="item.ty === 'def.ind'">
-        <span class="keyword">fun</span>&nbsp;
-        <span class="item-text">{{item.name}}</span> ::
-        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>&nbsp;
-        <span class="keyword">where</span>
-        <span v-for="(v, i) in item.rules" v-bind:key=i>
-          <br><span class="item-text indented-text" v-html="Util.highlight_html(v.prop_hl)"></span>
-        </span>
+        <Inductive v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <div v-else>
+          <DefinitionEdit v-bind:old_item="item" ref="edit"/>
+          <button style="margin:5px" v-on:click="check_edit">Check</button>
+          <button style="margin:5px" v-on:click="save_edit">Save</button>
+          <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
+        </div>
       </div>
       <div v-if="item.ty === 'def.pred'">
-        <span class="keyword">inductive</span>&nbsp;
-        <span class="item-text">{{item.name}}</span> :: 
-        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>&nbsp;
-        <span class="keyword">where</span>
-        <span v-for="(v, i) in item.rules" v-bind:key=i>
-          <br><span class="item-text indented-text" v-html="Util.highlight_html(v.prop_hl)"></span>
-        </span>
+        <Inductive v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <div v-else>
+          <DefinitionEdit v-bind:old_item="item" ref="edit"/>
+          <button style="margin:5px" v-on:click="check_edit">Check</button>
+          <button style="margin:5px" v-on:click="save_edit">Save</button>
+          <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
+        </div>
       </div>
       <div v-if="item.ty === 'macro'">
         <span class="keyword">macro</span>&nbsp;
@@ -106,6 +106,7 @@ import Definition from './items/Definition'
 import DefinitionEdit from './items/DefinitionEdit'
 import Theorem from './items/Theorem'
 import TheoremEdit from './items/TheoremEdit'
+import Inductive from './items/Inductive'
 
 export default {
   name: 'Theory',
@@ -118,6 +119,7 @@ export default {
     TheoremEdit,
     Definition,
     DefinitionEdit,
+    Inductive,
   },
 
   props: [
@@ -236,9 +238,6 @@ export default {
         delete data.prop_hl;
         delete data.prop_lines;
         delete data.vars_lines;
-        delete data.err_type;
-        delete data.err_str;
-        delete data.trace;
       } else if (data.ty === 'type.ind') {
         delete data.constr_output;
         delete data.constr_output_hl;
@@ -252,7 +251,7 @@ export default {
       } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
         delete data.type_hl;
         delete data.ext;
-        delete data.edit_content;
+        delete data.prop_lines;
         delete data.ext_output;
         for (var i in data.rules) {
           delete data.rules[i].prop_hl;
