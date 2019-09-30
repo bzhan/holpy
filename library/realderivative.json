@@ -1414,6 +1414,86 @@
                 "s": "'a set",
                 "t": "real set"
             }
+        },
+        {
+            "name": "exp",
+            "prop": "exp x = infsum (from 0) (%n. x ^ n / real_of_nat (fact n))",
+            "ty": "def",
+            "type": "real => real"
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_exp",
+            "prop": "has_real_derivative exp (exp x) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_at_exp",
+            "prop": "real_differentiable exp (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_within_exp",
+            "prop": "real_differentiable exp (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_at_exp",
+            "prop": "real_continuous exp (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_exp",
+            "prop": "real_continuous exp (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_on_exp",
+            "prop": "real_continuous_on exp s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "cos",
+            "prop": "cos x = infsum (from 0) (λn. if (even n) then (-1) ^ (n DIV 2) * x ^ n / real_of_nat (fact n) else 0)",
+            "ty": "def",
+            "type": "real => real"
+        },
+        {
+            "attributes": [],
+            "name": "sin",
+            "prop": [
+                "sin x = ",
+                "infsum (from 0) ",
+                "  (λn. if even n then 0 else (-1) ^ ((n - 1) DIV 2) * x ^ n / real_of_nat (fact n))"
+            ],
+            "ty": "def",
+            "type": " real ⇒ real"
         }
     ],
     "description": "Some analytic concepts for real.",

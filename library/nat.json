@@ -3672,6 +3672,19 @@
             "name": "nat_modulus",
             "ty": "def.ax",
             "type": "nat => nat => nat"
+        },
+        {
+            "name": "fact",
+            "rules": [
+                {
+                    "prop": "fact 0 = 1"
+                },
+                {
+                    "prop": "fact (Suc n) = (Suc n) * fact n"
+                }
+            ],
+            "ty": "def.ind",
+            "type": "nat => nat"
         }
     ],
     "description": "Natural numbers",
