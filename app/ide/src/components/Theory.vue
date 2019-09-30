@@ -32,11 +32,13 @@
         </div>
       </div>
       <div v-if="item.ty === 'type.ind'">
-        <span class="keyword">datatype</span>&nbsp;
-        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span> =
-        <span v-for="(v, i) in item.constr_output_hl" v-bind:key=i>
-          <br><span class="item-text indented-text" v-html="Util.highlight_html(v)"></span>
-        </span>
+        <Datatype v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <div v-else>
+          <DatatypeEdit v-bind:old_item="item" ref="edit"/>
+          <button style="margin:5px" v-on:click="check_edit">Check</button>
+          <button style="margin:5px" v-on:click="save_edit">Save</button>
+          <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
+        </div>
       </div>
       <div v-if="item.ty === 'def'">
         <Definition v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
@@ -102,11 +104,13 @@ import axios from 'axios'
 import Axiom from './items/Axiom'
 import Constant from './items/Constant'
 import ConstantEdit from './items/ConstantEdit'
+import Datatype from './items/Datatype'
+import DatatypeEdit from './items/DatatypeEdit'
 import Definition from './items/Definition'
 import DefinitionEdit from './items/DefinitionEdit'
+import Inductive from './items/Inductive'
 import Theorem from './items/Theorem'
 import TheoremEdit from './items/TheoremEdit'
-import Inductive from './items/Inductive'
 
 export default {
   name: 'Theory',
@@ -115,11 +119,13 @@ export default {
     Axiom,
     Constant,
     ConstantEdit,
-    Theorem,
-    TheoremEdit,
+    Datatype,
+    DatatypeEdit,
     Definition,
     DefinitionEdit,
     Inductive,
+    Theorem,
+    TheoremEdit,
   },
 
   props: [
@@ -239,8 +245,8 @@ export default {
         delete data.prop_lines;
         delete data.vars_lines;
       } else if (data.ty === 'type.ind') {
-        delete data.constr_output;
-        delete data.constr_output_hl;
+        delete data.constrs_hl;
+        delete data.constrs_lines;
         delete data.type_hl;
         delete data.edit_type;
         delete data.ext_output;

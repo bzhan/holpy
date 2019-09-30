@@ -349,11 +349,12 @@ def file_data_to_output(thy, data, *, line_length=None):
 
     elif data['ty'] == 'type.ind':
         constrs = []
-        data['constr_output'] = []
-        data['constr_output_hl'] = []
+        data['constrs_lines'] = []
+        data['constrs_hl'] = []
         for constr in parsed_data['constrs']:
-            data['constr_output'].append(str_of_constr(thy, constr, unicode=True, highlight=False))
-            data['constr_output_hl'].append(str_of_constr(thy, constr, unicode=True, highlight=True))
+            data['constrs_lines'].append(str_of_constr(thy, constr, unicode=True, highlight=False))
+            data['constrs_hl'].append(str_of_constr(thy, constr, unicode=True, highlight=True))
+        data['constrs_lines'] = '\n'.join(data['constrs_lines'])
 
         # Obtain type to be defined
         T = Type(data['name'], *(TVar(nm) for nm in data['args']))
@@ -489,14 +490,14 @@ def check_modify():
                 item['prop'] = item['prop'][0]
 
         if item['ty'] == 'type.ind':
-            T = parser.parse_type(thy, item['data_name'])
+            T = parser.parse_type(thy, item['edit_type'])
             assert T.ty == HOLType.TYPE and all(argT.ty == HOLType.TVAR for argT in T.args), \
                 "invalid input type."
             item['name'] = T.name
             item['args'] = [argT.name for argT in T.args]
 
             item['constrs'] = []
-            for constr in item['data_content']:
+            for constr in item['constrs_lines'].split('\n'):
                 if constr:
                     constr = parser.parse_ind_constr(thy, constr)
                     constr['type'] = str(TFun(*(constr['type'] + [T])))
