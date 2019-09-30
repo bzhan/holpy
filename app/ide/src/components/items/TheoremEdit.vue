@@ -2,7 +2,7 @@
   <form>
     <pre class="test-width"></pre>
     <span>
-      <label class="keyword">theorem</label>
+      <label class="keyword">{{item.ty === 'thm.ax' ? 'axiom' : 'theorem'}}</label>
       <input spellcheck="false" v-model="item.name" class="form-element"
              min-width="300" ref="name">
     </span>

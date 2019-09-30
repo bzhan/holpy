@@ -23,9 +23,13 @@
         <span class="item-text">{{item.name}}</span>
       </div>
       <div v-if="item.ty === 'def.ax'">
-        <span class="keyword">constant</span>&nbsp;
-        <span class="item-text">{{item.name}}</span> ::
-        <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>
+        <Constant v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <div v-else>
+          <ConstantEdit v-bind:old_item="item" ref="edit"/>
+          <button style="margin:5px" v-on:click="check_edit">Check</button>
+          <button style="margin:5px" v-on:click="save_edit">Save</button>
+          <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
+        </div>
       </div>
       <div v-if="item.ty === 'type.ind'">
         <span class="keyword">datatype</span>&nbsp;
@@ -79,14 +83,13 @@
         </div>
       </div>
       <div v-if="item.ty === 'thm.ax'">
-        <span class="keyword">axiom</span>&nbsp;
-        <span class="item-text">{{item.name}}</span>:
-        <br>
-        <span v-if="'prop_hl' in item">
-          <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-            <span class="item-text indented-text" v-html="Util.highlight_html(line)"></span><br>
-          </span>
-        </span>
+        <Axiom v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <div v-else>
+          <TheoremEdit v-bind:old_item="item" ref="edit"/>
+          <button style="margin:5px" v-on:click="check_edit">Check</button>
+          <button style="margin:5px" v-on:click="save_edit">Save</button>
+          <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
@@ -96,6 +99,9 @@
 import Util from './../../static/js/util.js'
 import axios from 'axios'
 
+import Axiom from './items/Axiom'
+import Constant from './items/Constant'
+import ConstantEdit from './items/ConstantEdit'
 import Definition from './items/Definition'
 import DefinitionEdit from './items/DefinitionEdit'
 import Theorem from './items/Theorem'
@@ -105,6 +111,9 @@ export default {
   name: 'Theory',
 
   components: {
+    Axiom,
+    Constant,
+    ConstantEdit,
     Theorem,
     TheoremEdit,
     Definition,
@@ -154,6 +163,7 @@ export default {
       return response
     },
 
+    // Check whether the current edit produces any errors.
     check_edit: async function () {
       const response = await this.parse_item()
       if (response === undefined)
@@ -173,6 +183,7 @@ export default {
       }
     },
 
+    // Save the current edit.
     save_edit: async function () {
       const response = await this.parse_item()
       if (response === undefined)
@@ -188,6 +199,7 @@ export default {
       this.on_edit = undefined
     },
 
+    // Cancel the current edit without saving.
     cancel_edit: function () {
       this.on_edit = undefined
     },
@@ -255,8 +267,8 @@ export default {
         const item = this.theory.content[i]
         if ('name' in item) {
           var item_copy = {};
-          $.extend(true, item_copy, item);
-          content.push(item_copy);  // perform deep copy
+          $.extend(true, item_copy, item);  // perform deep copy
+          content.push(item_copy);
           this.item_to_output(item_copy);    
         }
       }
