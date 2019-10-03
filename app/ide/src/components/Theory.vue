@@ -212,16 +212,9 @@ export default {
       this.on_edit = undefined
     },
 
-    add_theorem: function () {
+    add_item: function (ty) {
       const len = this.theory.content.length
-      this.$set(this.theory.content, len, {'ty': 'thm'})
-      this.selected = len
-      this.on_edit = len
-    },
-
-    add_definition: function () {
-      const len = this.theory.content.length
-      this.$set(this.theory.content, len, {'ty': 'def'})
+      this.$set(this.theory.content, len, {ty: ty})
       this.selected = len
       this.on_edit = len
     },

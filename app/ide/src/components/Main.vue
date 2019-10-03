@@ -9,8 +9,13 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Items" left>
           <b-dropdown-item href="#" v-on:click='remove_selected'>Remove selected</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='add_theorem'>Add theorem</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='add_definition'>Add definition</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="add_item('thm')">Add theorem</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="add_item('def')">Add definition</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="add_item('def.ax')">Add constant</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="add_item('def.ind')">Add inductive definition</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="add_item('def.pred')">Add inductive predicate</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="add_item('thm.ax')">Add axiom</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click="add_item('type.ind')">Add inductive datatype</b-dropdown-item>
         </b-nav-item-dropdown>
         <span style="margin-left:10px;align-self:center">Opened file: {{ filename }}</span>
       </b-navbar-nav>
@@ -134,12 +139,8 @@ export default {
       this.$refs.theory.remove_selected()
     },
 
-    add_theorem: function () {
-      this.$refs.theory.add_theorem()
-    },
-
-    add_definition: function () {
-      this.$refs.theory.add_definition()
+    add_item: function (ty) {
+      this.$refs.theory.add_item(ty)
     }
   }
 }
