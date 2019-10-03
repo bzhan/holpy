@@ -242,7 +242,7 @@ def init_empty_proof():
         cell = ProofState.init_state(thy, get_vars(vc), As, C)
     else:
         thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
-        cell = server.ProofState.parse_init_state(thy, data)
+        cell = server.ProofState.parse_init_state(thy, data['item'])
     return jsonify(cell.json_data())
 
 

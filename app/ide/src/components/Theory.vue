@@ -76,12 +76,18 @@
         <span class="item-text">{{item.name}}</span>
       </div>
       <div v-if="item.ty == 'thm'">
-        <Theorem v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <Theorem v-if="on_edit !== index" v-bind:item="item"
+                 v-on:edit="edit_item(index)" v-on:proof="init_proof(index)"/>
         <div v-else>
           <TheoremEdit v-bind:old_item="item" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
+        </div>
+        <div v-if="on_proof === index">
+          <ProofArea v-bind:item="item" v-bind:theory_name="theory.name" ref="proof"/>
+          <button style="margin:5px" v-on:click="save_proof">Save</button>
+          <button style="margin:5px" v-on:click="cancel_proof">Cancel</button>
         </div>
       </div>
       <div v-if="item.ty === 'thm.ax'">
@@ -111,6 +117,7 @@ import DefinitionEdit from './items/DefinitionEdit'
 import Inductive from './items/Inductive'
 import Theorem from './items/Theorem'
 import TheoremEdit from './items/TheoremEdit'
+import ProofArea from './ProofArea'
 
 export default {
   name: 'Theory',
@@ -126,6 +133,7 @@ export default {
     Inductive,
     Theorem,
     TheoremEdit,
+    ProofArea,
   },
 
   props: [
@@ -137,11 +145,14 @@ export default {
       // Index of the currently selected item
       selected: undefined,
 
-      // Index of the currently editting item
+      // Index of the currently editing item
       on_edit: undefined,
 
       // Whether we are currently adding an item
-      on_add: false
+      on_add: false,
+
+      // Index of the current proof
+      on_proof: undefined,
     }
   },
 
@@ -307,6 +318,18 @@ export default {
           data: 'Saved'
         })
       }
+    },
+
+    init_proof: function (index) {
+      this.on_proof = index
+    },
+
+    save_proof: function () {
+      
+    },
+
+    cancel_proof: function () {
+      this.on_proof = undefined
     }
   },
 
