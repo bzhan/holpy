@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Menu -->
     <b-navbar toggleable="lg" type="light" variant="info">
       <b-navbar-brand href="#">holpy</b-navbar-brand>
       <b-navbar-nav>

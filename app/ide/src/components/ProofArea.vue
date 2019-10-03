@@ -445,15 +445,18 @@ export default {
     },
 
     init_proof: async function () {
-      const data = {
-        theory_name: this.theory_name,
-        thm_name: this.item.name,
-        item: this.item
+      var data;
+      if ('com' in this.item) {
+        data = this.item
+      } else {
+        data = {
+          theory_name: this.theory_name,
+          thm_name: this.item.name,
+          item: this.item
+        }
       }
-      console.log(data)
 
       let res = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
-      console.log(res)
       
       this.goal = -1
       this.method_sig = res.data.method_sig
