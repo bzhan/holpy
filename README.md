@@ -10,9 +10,16 @@ Required packages are listed in requirements.txt. To install required packages, 
 
 ```python -m pip install -r requirements.txt```
 
+Implementation of a new user interface is in progress. To see a stable version
+of the old user interface, use:
+
+```git checkout icfem```
+
 To start the web interface, use:
 
 ```python app.py```
+
+then go to page ```http://127.0.0.1:5000/master```.
 
 To see statistics for the search functionality on a collection of lemmas, use:
 
