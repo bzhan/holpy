@@ -4,7 +4,8 @@
     <span class="item-text">{{item.name}}</span>:&nbsp;&nbsp;
     <a href="#" style="font-style:italic;color:brown"
        v-on:click="$emit('edit')">edit</a>&nbsp;&nbsp;
-    <a href="#" v-bind:style="{fontStyle:'italic', color:Util.get_status_color(item)}">proof</a>
+    <a href="#" v-bind:style="{fontStyle:'italic', color:Util.get_status_color(item)}"
+       v-on:click="$emit('proof')">proof</a>
     <br>
     <span v-if="!('err_type' in item)">
       <span v-for="(line, i) in item.prop_hl" v-bind:key=i>

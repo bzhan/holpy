@@ -76,12 +76,18 @@
         <span class="item-text">{{item.name}}</span>
       </div>
       <div v-if="item.ty == 'thm'">
-        <Theorem v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <Theorem v-if="on_edit !== index" v-bind:item="item"
+                 v-on:edit="edit_item(index)" v-on:proof="init_proof(index)"/>
         <div v-else>
           <TheoremEdit v-bind:old_item="item" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
           <button style="margin:5px" v-on:click="save_edit">Save</button>
           <button style="margin:5px" v-on:click="cancel_edit">Cancel</button>
+        </div>
+        <div v-if="on_proof === index">
+          <ProofArea v-bind:item="item" v-bind:theory_name="theory.name" ref="proof"/>
+          <button style="margin:5px" v-on:click="save_proof">Save</button>
+          <button style="margin:5px" v-on:click="cancel_proof">Cancel</button>
         </div>
       </div>
       <div v-if="item.ty === 'thm.ax'">
@@ -111,6 +117,7 @@ import DefinitionEdit from './items/DefinitionEdit'
 import Inductive from './items/Inductive'
 import Theorem from './items/Theorem'
 import TheoremEdit from './items/TheoremEdit'
+import ProofArea from './ProofArea'
 
 export default {
   name: 'Theory',
@@ -126,6 +133,7 @@ export default {
     Inductive,
     Theorem,
     TheoremEdit,
+    ProofArea,
   },
 
   props: [
@@ -134,14 +142,24 @@ export default {
 
   data: function () {
     return {
+      // Index of the currently selected item
       selected: undefined,
-      on_edit: undefined
+
+      // Index of the currently editing item
+      on_edit: undefined,
+
+      // Whether we are currently adding an item
+      on_add: false,
+
+      // Index of the current proof
+      on_proof: undefined,
     }
   },
 
   methods: {
     edit_item: function (index) {
       this.on_edit = index
+      this.on_add = false
     },
 
     // Send an item to the server for parsing.
@@ -205,25 +223,24 @@ export default {
       this.$set(this.theory.content, this.on_edit, item)
       this.save_json_file()
       this.on_edit = undefined
+      this.on_add = false
     },
 
     // Cancel the current edit without saving.
     cancel_edit: function () {
       this.on_edit = undefined
+      if (this.on_add === true) {
+        this.remove_selected()
+        this.on_add = false
+      }
     },
 
-    add_theorem: function () {
+    add_item: function (ty) {
       const len = this.theory.content.length
-      this.$set(this.theory.content, len, {'ty': 'thm'})
+      this.$set(this.theory.content, len, {ty: ty})
       this.selected = len
       this.on_edit = len
-    },
-
-    add_definition: function () {
-      const len = this.theory.content.length
-      this.$set(this.theory.content, len, {'ty': 'def'})
-      this.selected = len
-      this.on_edit = len
+      this.on_add = true
     },
 
     remove_selected: function () {
@@ -301,6 +318,18 @@ export default {
           data: 'Saved'
         })
       }
+    },
+
+    init_proof: function (index) {
+      this.on_proof = index
+    },
+
+    save_proof: function () {
+      
+    },
+
+    cancel_proof: function () {
+      this.on_proof = undefined
     }
   },
 

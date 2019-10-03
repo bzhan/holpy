@@ -1,7 +1,7 @@
 <template>
   <div>
     <label for="proof-area"></label>
-    <textarea id="proof-area" class="proofArea"></textarea>
+    <textarea id="proof-area"></textarea>
     <br>
     <div><pre>{{ status }}</pre></div>
     <div>
@@ -22,12 +22,16 @@
 <script>
 import 'codemirror/lib/codemirror.css'
 import axios from 'axios'
+import CodeMirror from 'codemirror'
 import "./../../static/css/index.css"
-let CodeMirror = require('codemirror/lib/codemirror')
+
 
 export default {
-  name: 'proofArea',
-  props: ['proof_data'],
+  name: 'ProofArea',
+  props: [
+    'theory_name',
+    'item'
+  ],
 
   data: function () {
     return {
@@ -440,12 +444,19 @@ export default {
       this.display_facts_and_goal();
     },
 
-    update_proof_data: async function () {
-      let res = await axios({
-        method: 'post',
-        url: 'http://127.0.0.1:5000/api/init-empty-proof',
-        data: this.proof_data,
-      })
+    init_proof: async function () {
+      var data;
+      if ('com' in this.item) {
+        data = this.item
+      } else {
+        data = {
+          theory_name: this.theory_name,
+          thm_name: this.item.name,
+          item: this.item
+        }
+      }
+
+      let res = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
       
       this.goal = -1
       this.method_sig = res.data.method_sig
@@ -475,12 +486,6 @@ export default {
       // Remove last step after display_instructions, so goal and fact_no can
       // be used during display.
       this.steps.length -= 1;
-    }
-  },
-
-  watch: {
-    proof_data: function (val) {
-      this.update_proof_data()
     }
   },
 
@@ -540,16 +545,14 @@ export default {
     });
 
     this.editor = editor
-    if (this.proof_data) {
-      this.update_proof_data()
-    }
+    this.init_proof()
   }
 }
 
 </script>
 
 <style scoped>
-  .proofArea {
+  #proof-area {
     width: 100%;
     height: 2vh;
   }
