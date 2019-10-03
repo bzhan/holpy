@@ -134,14 +134,21 @@ export default {
 
   data: function () {
     return {
+      // Index of the currently selected item
       selected: undefined,
-      on_edit: undefined
+
+      // Index of the currently editting item
+      on_edit: undefined,
+
+      // Whether we are currently adding an item
+      on_add: false
     }
   },
 
   methods: {
     edit_item: function (index) {
       this.on_edit = index
+      this.on_add = false
     },
 
     // Send an item to the server for parsing.
@@ -205,11 +212,16 @@ export default {
       this.$set(this.theory.content, this.on_edit, item)
       this.save_json_file()
       this.on_edit = undefined
+      this.on_add = false
     },
 
     // Cancel the current edit without saving.
     cancel_edit: function () {
       this.on_edit = undefined
+      if (this.on_add === true) {
+        this.remove_selected()
+        this.on_add = false
+      }
     },
 
     add_item: function (ty) {
@@ -217,6 +229,7 @@ export default {
       this.$set(this.theory.content, len, {ty: ty})
       this.selected = len
       this.on_edit = len
+      this.on_add = true
     },
 
     remove_selected: function () {
