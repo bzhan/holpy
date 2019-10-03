@@ -1,0 +1,69 @@
+{
+    "content": [
+        {
+            "name": "exp",
+            "prop": "exp x = infsum (from 0) (%n. x ^ n / real_of_nat (fact n))",
+            "ty": "def",
+            "type": "real => real"
+        },
+        {
+            "attributes": [],
+            "name": "cos",
+            "prop": "cos x = infsum (from 0) (λn. if (even n) then (-1) ^ (n DIV 2) * x ^ n / real_of_nat (fact n) else 0)",
+            "ty": "def",
+            "type": "real => real"
+        },
+        {
+            "attributes": [],
+            "name": "sin",
+            "prop": [
+                "sin x = ",
+                "infsum (from 0) ",
+                "  (λn. if even n then 0 else (-1) ^ ((n - 1) DIV 2) * x ^ n / real_of_nat (fact n))"
+            ],
+            "ty": "def",
+            "type": " real ⇒ real"
+        },
+        {
+            "attributes": [],
+            "name": "log",
+            "prop": "log y = THE y. exp x = y",
+            "ty": "def",
+            "type": "real=>real"
+        },
+        {
+            "attributes": [],
+            "name": "pi",
+            "prop": "pi = THE p. 0 < p & sin p = 0 & (!x. 0 <x & x < p --> neg (sin x = 0))",
+            "ty": "def",
+            "type": "real"
+        },
+        {
+            "attributes": [],
+            "name": "atn",
+            "prop": "atn y = THE x. -pi/2 < x & x < pi/2 & tan x =y",
+            "ty": "def",
+            "type": "real=>real"
+        },
+        {
+            "attributes": [],
+            "name": "asn",
+            "prop": "asn y = (THE x. -pi / 2 <= x ∧ x <= pi / 2 ∧ sin x = y)",
+            "ty": "def",
+            "type": "real=>real"
+        },
+        {
+            "attributes": [],
+            "name": "acs",
+            "prop": "acs y = (THE x. 0 ≤ x ∧ x ≤ pi ∧ cos x = y)",
+            "ty": "def",
+            "type": "real ⇒ real"
+        }
+    ],
+    "description": "Real transcendentals.",
+    "imports": [
+        "real",
+        "realanalysis"
+    ],
+    "name": "transcendentals"
+}

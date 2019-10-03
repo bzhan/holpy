@@ -166,6 +166,18 @@
             "prop": "min m n = if m <= n then m else n",
             "ty": "def",
             "type": "real => real => real"
+        },
+        {
+            "name": "real_sgn",
+            "prop": "real_sgn x = if 0 < x then 1 else if x <0 then -1 else 0",
+            "ty": "def",
+            "type": "real => real"
+        },
+        {
+            "name": "sqrt",
+            "prop": "sqrt x = THE y. real_sgn y =  real_sgn x & y ^ 2 = abs x",
+            "ty": "def",
+            "type": "real => real"
         }
     ],
     "description": "real numbers",

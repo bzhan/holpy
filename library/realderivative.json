@@ -1416,12 +1416,6 @@
             }
         },
         {
-            "name": "exp",
-            "prop": "exp x = infsum (from 0) (%n. x ^ n / real_of_nat (fact n))",
-            "ty": "def",
-            "type": "real => real"
-        },
-        {
             "attributes": [],
             "name": "has_real_derivative_exp",
             "prop": "has_real_derivative exp (exp x) (atreal x)",
@@ -1479,26 +1473,486 @@
         },
         {
             "attributes": [],
-            "name": "cos",
-            "prop": "cos x = infsum (from 0) (λn. if (even n) then (-1) ^ (n DIV 2) * x ^ n / real_of_nat (fact n) else 0)",
-            "ty": "def",
-            "type": "real => real"
+            "name": "has_real_derivative_sin",
+            "prop": "has_real_derivative sin (cos x) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         },
         {
             "attributes": [],
-            "name": "sin",
-            "prop": [
-                "sin x = ",
-                "infsum (from 0) ",
-                "  (λn. if even n then 0 else (-1) ^ ((n - 1) DIV 2) * x ^ n / real_of_nat (fact n))"
-            ],
+            "name": "real_differentiable_at_sin",
+            "prop": "real_differentiable sin (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " real_differentiable_within_sin",
+            "prop": "real_differentiable sin (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_at_sin",
+            "prop": "real_continuous sin (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_sin",
+            "prop": "real_continuous sin (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_on_sin",
+            "prop": "real_continuous_on sin s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_cos",
+            "prop": "has_real_derivative cos (-sin x) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_at_cos",
+            "prop": "real_differentiable cos (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_within_cos",
+            "prop": "real_differentiable cos (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_at_cos",
+            "prop": "real_continuous cos (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_cos",
+            "prop": "real_continuous cos (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_on_cos",
+            "prop": "real_continuous_on cos s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "tan",
+            "prop": "tan x = sin x / cos x",
             "ty": "def",
-            "type": " real ⇒ real"
+            "type": "real=>real"
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_tan",
+            "prop": "neg (cos x = 0) --> has_real_derivative tan (real_inverse ((cos x) ^ 2)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_at_tan",
+            "prop": "¬cos x = 0 ⟶ real_differentiable tan (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_within_tan",
+            "prop": "¬cos x = 0 ⟶ real_differentiable tan (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_at_tan",
+            "prop": "¬cos x = 0 ⟶ real_continuous tan (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_tan",
+            "prop": "¬cos x = 0 ⟶ real_continuous tan (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_on_tan",
+            "prop": "(!x. member x s --> ¬cos x = 0) --> real_continuous_on tan s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_log",
+            "prop": "0 < x --> has_real_derivative log (real_inverse x) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " real_differentiable_at_log",
+            "prop": "0 < x ⟶ real_differentiable log (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " real_differentiable_within_log",
+            "prop": "0 < x ⟶ real_differentiable log (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_at_log",
+            "prop": "0 < x ⟶ real_continuous log (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_log",
+            "prop": "0 < x ⟶ real_continuous log (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_on_log",
+            "prop": "(!x. member x s --> 0 < x) --> real_continuous_on log s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_sqrt",
+            "prop": "0 < x --> has_real_derivative sqrt (real_inverse (2 * sqrt x)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_at_sqrt",
+            "prop": "0 < x ⟶ real_differentiable sqrt (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_within_sqrt",
+            "prop": "0 < x ⟶ real_differentiable sqrt (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_at_sqrt",
+            "prop": "0 < x ⟶ real_continuous sqrt (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_sqrt",
+            "prop": "0 < x ⟶ real_continuous sqrt (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_withinreal_sqrt_compose",
+            "prop": "real_continuous f (within (atreal x) s) ⟶ real_continuous (%x. sqrt (f x)) (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_atreal_sqrt_compose",
+            "prop": "real_continuous f (atreal x) ⟶ real_continuous (%x. sqrt (f x)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_on_sqrt",
+            "prop": "(!x. member x s --> 0 < x) --> real_continuous_on sqrt s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_atn",
+            "prop": "has_real_derivative atn (real_inverse (1 + x ^ 2)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_at_atn",
+            "prop": "real_differentiable atn (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_within_atn",
+            "prop": "real_differentiable atn (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_at_atn",
+            "prop": "real_continuous atn (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_atn",
+            "prop": "real_continuous atn (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_on_atn",
+            "prop": "real_continuous_on atn s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_asn_cos",
+            "prop": "abs x < 1 --> has_real_derivative asn (real_inverse (cos (asn x))) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_asn",
+            "prop": "abs x < 1 ⟶ has_real_derivative asn (real_inverse (1 - x ^ 2)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_at_asn",
+            "prop": "abs x < 1 ⟶ real_differentiable asn (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_within_asn",
+            "prop": "abs x < 1 ⟶ real_differentiable asn (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_at_asn",
+            "prop": "abs x < 1 ⟶ real_continuous asn (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_asn",
+            "prop": "abs x < 1 ⟶ real_continuous asn (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_acs_sin",
+            "prop": "abs x < 1 --> has_real_derivative acs (-real_inverse (sin (acs x))) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_acs",
+            "prop": "abs x < 1 --> has_real_derivative acs (-real_inverse (1 - x ^ 2)) (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_at_acs",
+            "prop": "abs x < 1 ⟶ real_differentiable acs (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_within_acs",
+            "prop": "abs x < 1 ⟶ real_differentiable acs (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_at_acs",
+            "prop": "abs x < 1 ⟶ real_continuous acs (atreal x)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_acs",
+            "prop": "abs x < 1 ⟶ real_continuous acs (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
         }
     ],
     "description": "Some analytic concepts for real.",
     "imports": [
-        "realanalysis"
+        "realanalysis",
+        "transcendentals"
     ],
     "name": "realderivative"
 }
