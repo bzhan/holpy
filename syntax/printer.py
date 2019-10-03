@@ -3,8 +3,8 @@
 from copy import copy
 
 from kernel.type import HOLType
-from kernel import term
 from kernel.term import Term, OpenTermException
+from kernel.thm import Thm
 from kernel.extension import Extension
 from kernel import proof
 from syntax import operator
@@ -47,25 +47,28 @@ def commas_join(strs):
 
 @settings.with_settings
 def print_type(thy, T):
-    return pprint.print_type(thy, T)
+    """Pretty-print the given type."""
+    assert isinstance(T, HOLType), "print_type: input is not a type."
+
+    ast = pprint.get_ast_type(thy, T)
+    return pprint.print_ast(thy, ast)
 
 @settings.with_settings
 def print_term(thy, t, *, line_length=None):
     """More sophisticated printing function for terms. Handles printing
     of operators.
-    
-    Note we do not yet handle name collisions in lambda terms.
 
     """
     assert isinstance(t, Term), "print_term: input is not a term."
 
-    ast = pprint.get_ast(thy, t)
-    res = pprint.print_ast(thy, ast, line_length=line_length)
-    return res
+    ast = pprint.get_ast_term(thy, t)
+    return pprint.print_ast(thy, ast, line_length=line_length)
 
 @settings.with_settings
 def print_thm(thy, th):
     """Print the given theorem with highlight."""
+    assert isinstance(th, Thm), "print_thm: input is not a theorem."
+
     turnstile = N("⊢") if settings.unicode() else N("|-")
     if th.hyps:
         str_hyps = commas_join(print_term(thy, hyp) for hyp in th.hyps)

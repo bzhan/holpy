@@ -343,7 +343,7 @@ def file_data_to_output(thy, data, *, line_length=None):
 
     elif data['ty'] in ('thm', 'thm.ax'):
         data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
-        ast = pprint.get_ast(thy, parsed_data['prop'], unicode=True)
+        ast = pprint.get_ast_term(thy, parsed_data['prop'], unicode=True)
         data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
         data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
 
@@ -387,7 +387,7 @@ def file_data_to_output(thy, data, *, line_length=None):
     elif data['ty'] == 'def':
         data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
 
-        ast = pprint.get_ast(thy, parsed_data['prop'], unicode=True)
+        ast = pprint.get_ast_term(thy, parsed_data['prop'], unicode=True)
         data['prop_lines'] = '\n'.join(pprint.print_ast(thy, ast, highlight=False, line_length=line_length))
         data['prop_hl'] = pprint.print_ast(thy, ast, highlight=True, line_length=line_length)
 

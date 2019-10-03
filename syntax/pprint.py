@@ -22,12 +22,13 @@ class Bracket(AST):
         return "Bracket(%s)" % repr(self.body)
 
 class ShowType(AST):
-    def __init__(self, body):
+    def __init__(self, body, ast_T):
         self.ty = "show_type"
         self.body = body
+        self.ast_T = ast_T
 
     def __repr__(self):
-        return "ShowType(%s)" % repr(self.body)
+        return "ShowType(%s,%s)" % (repr(self.body), repr(self.ast_T))
 
 class VarName(AST):
     def __init__(self, name, T):
@@ -170,11 +171,62 @@ class Collect(AST):
         self.body = body
         self.T = T
 
+class TVarName(AST):
+    def __init__(self, name):
+        self.ty = 'tvar_name'
+        self.name = name
+
+class TypeConstr(AST):
+    def __init__(self, name, args):
+        self.ty = 'type_constr'
+        self.name = name
+        self.args = args
+
+class FunType(AST):
+    def __init__(self, arg1, fun_op, arg2):
+        self.ty = 'fun_type'
+        self.arg1 = arg1
+        self.fun_op = fun_op
+        self.arg2 = arg2
+
 
 @settings.with_settings
-def get_ast(thy, t):
-    """Print term possibly in multiple lines."""
-    assert isinstance(t, term.Term), "pprint_term: input is not a term."
+def get_ast_type(thy, T):
+    """Obtain the abstract syntax tree for a type."""
+    assert isinstance(T, HOLType), "get_ast_type: input is not a type."
+
+    def helper(T):
+        if T.ty == HOLType.TVAR:
+            return TVarName(T.name)
+        elif T.ty == HOLType.TYPE:
+            if len(T.args) == 0:
+                return TypeConstr(T.name, [])
+            elif len(T.args) == 1:
+                arg_ast = helper(T.args[0])
+                # Insert parenthesis if the single argument is a function.
+                if HOLType.is_fun(T.args[0]):
+                    arg_ast = Bracket(arg_ast)
+                return TypeConstr(T.name, [arg_ast])
+            elif HOLType.is_fun(T):
+                # 'a => 'b => 'c associates to the right. So parenthesis is
+                # needed to express ('a => 'b) => 'c.
+                fun_op = " ⇒ " if settings.unicode() else " => "
+                arg1_ast = helper(T.args[0])
+                if HOLType.is_fun(T.args[0]):
+                    arg1_ast = Bracket(arg1_ast)
+                arg2_ast = helper(T.args[1])
+                return FunType(arg1_ast, fun_op, arg2_ast)
+            else:
+                return TypeConstr(T.name, [helper(arg) for arg in T.args])
+        else:
+            raise TypeError
+
+    return helper(T)
+
+@settings.with_settings
+def get_ast_term(thy, t):
+    """Obtain the abstract syntax tree for a term."""
+    assert isinstance(t, term.Term), "get_ast_term: input is not a term."
 
     # Import modules for custom parsed data
     from logic import logic
@@ -185,6 +237,7 @@ def get_ast(thy, t):
     from data import interval
 
     def get_priority(t):
+        """Obtain the binding priority of the top-most operation of t."""
         if nat.is_binary(t) or list.is_literal_list(t):
             return 100  # Nat atom case
         elif t.is_comb():
@@ -203,6 +256,10 @@ def get_ast(thy, t):
             return 100  # Atom case
 
     def helper(t, bd_vars):
+        """Main recursive function. Here bd_vars is the list of bound
+        variables (represented by a list of AST Bound objects).
+        
+        """
         # Some special cases:
         # Natural numbers:
         if t.is_const_name("zero") or t.is_const_name("one") or \
@@ -217,14 +274,14 @@ def get_ast(thy, t):
             res = Number(n, t.get_type())
             if (t.is_const() and hasattr(t, "print_type")) or \
                (t.is_comb() and hasattr(t.fun, "print_type")):
-                res = Bracket(ShowType(res))
+                res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
             return res
 
         elif list.is_literal_list(t):
             items = list.dest_literal_list(t)
             res = List([helper(item, bd_vars) for item in items], t.get_type())
             if hasattr(t, "print_type"):
-                res = Bracket(ShowType(res))
+                res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
             return res
 
         elif set.is_literal_set(t):
@@ -232,7 +289,7 @@ def get_ast(thy, t):
             if set.is_empty_set(t):
                 res = Operator("∅", t.T) if settings.unicode() else Operator("{}", t.T)
                 if hasattr(t, "print_type"):
-                    res = Bracket(ShowType(res))
+                    res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
                 return res
             else:
                 return Set([helper(item, bd_vars) for item in items], t.get_type())
@@ -259,7 +316,7 @@ def get_ast(thy, t):
         elif t.is_const():
             res = ConstName(t.name, t.T)
             if hasattr(t, "print_type"):
-                res = Bracket(ShowType(res))
+                res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
             return res
 
         elif t.is_comb():
@@ -311,7 +368,7 @@ def get_ast(thy, t):
                 bind_var = Bound(nm, t.arg.var_T)
                 body_ast = helper(t.arg.body, [bind_var] + bd_vars)
                 if hasattr(t.arg, "print_type"):
-                    bind_var = ShowType(bind_var)
+                    bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
 
                 return BinderAppl(op_ast, bind_var, body_ast, t.get_type())
 
@@ -343,7 +400,7 @@ def get_ast(thy, t):
             bind_var = Bound(nm, t.var_T)
             body_ast = helper(t.body, [bind_var] + bd_vars)
             if hasattr(t, "print_type"):
-                bind_var = ShowType(bind_var)
+                bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
 
             return BinderAppl(op_ast, bind_var, body_ast, t.get_type())
 
@@ -380,45 +437,6 @@ def optimize_highlight(lst):
         new_lst.append(prev)
     return new_lst
 
-def N(s):
-    return [(s, 0)] if settings.highlight() else s
-
-def TV(s):
-    return [(s, 3)] if settings.highlight() else s
-
-@settings.with_settings
-def print_type(thy, T):
-    assert isinstance(T, HOLType), "print_type: input is not a type."
-    def helper(T):
-        if T.ty == HOLType.TVAR:
-            return TV("'" + T.name)
-        elif T.ty == HOLType.TYPE:
-            if len(T.args) == 0:
-                return N(T.name)
-            elif len(T.args) == 1:
-                # Insert parenthesis if the single argument is a function.
-                if HOLType.is_fun(T.args[0]):
-                    return N("(") + helper(T.args[0]) + N(") " + T.name)
-                else:
-                    return helper(T.args[0]) + N(" " + T.name)
-            elif HOLType.is_fun(T):
-                # 'a => 'b => 'c associates to the right. So parenthesis is
-                # needed to express ('a => 'b) => 'c.
-                fun_str = N(" ⇒ ") if settings.unicode() else N(" => ")
-                if HOLType.is_fun(T.args[0]):
-                    return N("(") + helper(T.args[0]) + N(")") + fun_str + helper(T.args[1])
-                else:
-                    return helper(T.args[0]) + fun_str + helper(T.args[1])
-            else:
-                return N("(") + commas_join(helper(t) for t in T.args) + N(") " + T.name)
-        else:
-            raise TypeError
-
-    res = helper(T)
-    if settings.highlight():
-        res = optimize_highlight(res)
-    return res
-
 def print_length(res):
     if settings.highlight():
         return sum(len(s) for s, c in res)
@@ -440,6 +458,9 @@ def print_ast(thy, ast, *, line_length=None):
     def add_var(s):
         res[cur_line].append((s, 2) if settings.highlight() else s)
 
+    def add_tvar(s):
+        res[cur_line].append((s, 3) if settings.highlight() else s)
+
     def newline():
         nonlocal cur_line
         res.append([])
@@ -459,10 +480,7 @@ def print_ast(thy, ast, *, line_length=None):
         elif ast.ty == "show_type":
             rec(ast.body)
             add_normal('::')
-            if settings.highlight():
-                res[cur_line].extend(print_type(thy, ast.body.T))
-            else:
-                res[cur_line].append(print_type(thy, ast.body.T))
+            rec(ast.ast_T)
         elif ast.ty == "var_name":
             add_var(ast.name)
         elif ast.ty == "const_name":
@@ -585,6 +603,27 @@ def print_ast(thy, ast, *, line_length=None):
             add_normal('. ')
             rec(ast.body)
             add_normal('}')
+        elif ast.ty == 'tvar_name':
+            add_tvar("'" + ast.name)
+        elif ast.ty == 'type_constr':
+            if len(ast.args) == 0:
+                add_normal(ast.name)
+            elif len(ast.args) == 1:
+                rec(ast.args[0])
+                add_normal(' ')
+                add_normal(ast.name)
+            else:
+                add_normal('(')
+                rec(ast.args[0])
+                for arg in ast.args[1:]:
+                    add_normal(', ')
+                    rec(arg)
+                add_normal(') ')
+                add_normal(ast.name)
+        elif ast.ty == 'fun_type':
+            rec(ast.arg1)
+            add_normal(ast.fun_op)
+            rec(ast.arg2)
         else:
             raise TypeError
 
