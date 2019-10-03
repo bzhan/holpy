@@ -1,4 +1,4 @@
-# ide
+# holpy
 
 ## Project setup
 ```
