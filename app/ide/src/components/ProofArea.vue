@@ -1,7 +1,7 @@
 <template>
   <div>
     <label for="proof-area"></label>
-    <textarea id="proof-area" class="proofArea"></textarea>
+    <textarea id="proof-area"></textarea>
     <br>
     <div><pre>{{ status }}</pre></div>
     <div>
@@ -552,7 +552,7 @@ export default {
 </script>
 
 <style scoped>
-  .proofArea {
+  #proof-area {
     width: 100%;
     height: 2vh;
   }

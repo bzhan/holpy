@@ -16,7 +16,7 @@
       <div class="left">
         <div class="program-ver">
           <div v-for="(vcg,i) in file_data" :key="i" @click="init_program(i)">
-            <textarea readonly="readonly" class="code-content content" :name="i" v-model="vcg.com"></textarea>
+            <pre class="code-content content" :name="i">{{vcg.com}}</pre>
           </div>
         </div>
       </div>
@@ -24,7 +24,7 @@
         <br><pre class="display-con">{{ program }}</pre>
         <br><pre class="display-res">{{ proof_stat }}</pre>
         <div v-if="proof_process" class="proofArea">
-          <proof-area :item="proof" ref="proof"/>
+          <ProofArea :item="proof" ref="proof"/>
         </div>
       </div>
     </div>
@@ -33,12 +33,12 @@
 
 <script>
 import axios from 'axios'
-import proofArea from '@/components/ProofArea'
+import ProofArea from '@/components/ProofArea'
 
 export default {
   name: 'ProVerify',
   components: {
-    proofArea
+    ProofArea
   },
 
   data: () => {
@@ -65,12 +65,11 @@ export default {
   methods: {
     open_file: async function () {
       var file_name = prompt("Please enter file name", "test")
-      var res = await axios({
-        method: 'post',
-        url: 'http://127.0.0.1:5000/api/get-program-file',
-        data: {file_name: file_name}
-      })
-      this.file_data = res.data.file_data
+      const data = {
+        file_name: file_name
+      }
+      var response = await axios.post('http://127.0.0.1:5000/api/get-program-file', JSON.stringify(data))
+      this.file_data = response.data.file_data
     },
 
     undo_move: function() {
@@ -79,19 +78,15 @@ export default {
 
     // Initialize program verification for a program
     init_program: async function (num) {
-      let res = await axios({
-        method: 'post',
-        url: 'http://127.0.0.1:5000/api/program-verify',
-        data: this.file_data[num]
-      })
+      const data = this.file_data[num]
+      let response = await axios.post('http://127.0.0.1:5000/api/program-verify', JSON.stringify(data))
       
-      this.program = res.data.program
-      this.proof_success = Number(res.data.proof_success)
-      this.proof_failure = Number(res.data.proof_failure)
+      this.program = response.data.program
+      this.proof_success = Number(response.data.proof_success)
+      this.proof_failure = Number(response.data.proof_failure)
       if (this.proof_failure !== 0) {
         this.proof_process = true
         this.proof = this.file_data[num]
-        console.log(this.proof)
       } else {
         this.proof_process = false
       }
@@ -151,7 +146,6 @@ export default {
     display: block;
     width: 95%;
     border: 1px solid;
-    height:5vh;
     border-radius: 5px;
     cursor: pointer;
   }
@@ -159,18 +153,7 @@ export default {
   .code-content{
     margin-top:2%;
     margin-bottom:2%;
-    height:20vh;
-    resize: none;
-  }
-
-  .proof_process {
-    margin-left: 5%;
-    background: none;
-    width: 80%;
-    height: 350px;
-    font-size: 20px;
-    font-family: Consolas, monospace;
-    outline: none;
+    height: auto;
     resize: none;
   }
 
