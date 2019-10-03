@@ -5,7 +5,7 @@
       <b-navbar-brand href="#">verification</b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item-dropdown text="File" left>
-          <b-dropdown-item href="#" v-on:click='open_file'>File</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='open_file'>Open file</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Action" left>
           <b-dropdown-item href="#" v-on:click='undo_move'>Undo move</b-dropdown-item>
@@ -23,8 +23,10 @@
       <div class="right">
         <br><pre class="display-con">{{ program }}</pre>
         <br><pre class="display-res">{{ proof_stat }}</pre>
-        <div v-if="proof_process" class="proofArea">
-          <ProofArea :item="proof" ref="proof"/>
+        <div v-show="proof_process" class="proof-area">
+          <ProofArea v-bind:vars="vars" v-bind:prop="prop"
+                     v-bind:theory_name="'hoare'" v-bind:thm_name="undefined"
+                     ref="proof"/>
         </div>
       </div>
     </div>
@@ -43,12 +45,23 @@ export default {
 
   data: () => {
     return {
-      file_data: [],          // Content of the file
-      program: '',            // Current program
-      proof_success: undefined,  // Number of successful proofs
-      proof_failure: undefined,  // Number of failed proofs
-      proof_process: false,   // Whether conducting a proof
-      proof: undefined,       // Data for the current proof
+      // Content of the file
+      file_data: [],
+
+      // Current program
+      program: '',            
+
+      // Number of successful proofs
+      proof_success: undefined,
+      
+      // Number of failed proofs
+      proof_failure: undefined,
+
+      // Whether conducting a proof
+      proof_process: false,   
+
+      // Data for the current proof
+      vars: undefined, prop: undefined
     }
   },
 
@@ -82,11 +95,13 @@ export default {
       let response = await axios.post('http://127.0.0.1:5000/api/program-verify', JSON.stringify(data))
       
       this.program = response.data.program
-      this.proof_success = Number(response.data.proof_success)
-      this.proof_failure = Number(response.data.proof_failure)
+
+      this.proof_success = response.data.proof_success
+      this.proof_failure = response.data.proof_failure
       if (this.proof_failure !== 0) {
         this.proof_process = true
-        this.proof = this.file_data[num]
+        this.vars = response.data.vars
+        this.prop = response.data.props[0]
       } else {
         this.proof_process = false
       }
@@ -102,7 +117,7 @@ export default {
     margin-top: 10%;
   }
 
-  div.proofArea {
+  div.proof-area {
     width: 80%;
     margin-left: 4%;
     margin-top: 3%;

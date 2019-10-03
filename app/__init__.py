@@ -69,16 +69,21 @@ def verify():
     vcs = com.get_vc()
 
     proof_success, proof_failure = 0, 0
+    props = []
     for vc in vcs:
-        if z3wrapper.solve(vc.convert_hol(data['vars'])):
+        vc_hol = vc.convert_hol(data['vars'])
+        if z3wrapper.solve(vc_hol):
             proof_success += 1
         else:
             proof_failure += 1
+            props.append(printer.print_term(thy, vc_hol))
 
     return jsonify({
         'program': com.print_com(thy),
+        'vars': data['vars'],
         'proof_success': proof_success,
-        'proof_failure': proof_failure
+        'proof_failure': proof_failure,
+        'props': props
     })
 
 # Login page
@@ -229,20 +234,9 @@ def refresh_files():
 def init_empty_proof():
     """Initialize empty proof."""
     data = json.loads(request.get_data().decode("utf-8"))
-    if 'com' in data:
-        thy = basic.load_theory('hoare')
-        pre = cond_parser.parse(data['pre'])
-        post = cond_parser.parse(data['post'])
-        com = com_parser.parse(data['com'])
-        com.pre = [pre]
-        com.compute_wp(post)
-
-        vc = com.get_vc()[0].convert_hol(data['vars'])
-        As, C = vc.strip_implies()
-        cell = ProofState.init_state(thy, get_vars(vc), As, C)
-    else:
-        thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
-        cell = server.ProofState.parse_init_state(thy, data['item'])
+    limit = ('thm', data['thm_name']) if 'thm_name' in data else None
+    thy = basic.load_theory(data['theory_name'], limit=limit, user=user_info['username'])
+    cell = server.ProofState.parse_init_state(thy, data)
     return jsonify(cell.json_data())
 
 
@@ -251,7 +245,8 @@ def init_saved_proof():
     """Load saved proof."""
     data = json.loads(request.get_data().decode("utf-8"))
     try:
-        thy = basic.load_theory(data['theory_name'], limit=('thm', data['thm_name']), user=user_info['username'])
+        limit = ('thm', data['thm_name']) if 'thm_name' in data else None
+        thy = basic.load_theory(data['theory_name'], limit=limit, user=user_info['username'])
         cell = server.ProofState.parse_proof(thy, data)
         return jsonify(cell.json_data())
     except Exception as e:

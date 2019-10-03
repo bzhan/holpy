@@ -14,12 +14,13 @@
       <pre v-for="(res,i) in search_res"
            :key="res.num"
            v-on:click="apply_thm_tactic(i)"
-           v-html="highlight_html(res.display)"/> 
+           v-html="Util.highlight_html(res.display)"/> 
     </div>
   </div>
 </template>
 
 <script>
+import Util from './../../static/js/util.js'
 import 'codemirror/lib/codemirror.css'
 import axios from 'axios'
 import CodeMirror from 'codemirror'
@@ -28,9 +29,27 @@ import "./../../static/css/index.css"
 
 export default {
   name: 'ProofArea',
+
   props: [
-    'theory_name',
-    'item'
+    // Input theory_name and thm_name specifies the position in the
+    // library at which the proof is carried out. All definitions
+    // and theorems up to the given theory and up to (but not including)
+    // the given theorem may be used in the proof.
+    //
+    // For example, if proving a theorem in the library, these should
+    // be the name of the theory the theorem is in, and the name of the
+    // theorem itself.
+    //
+    // If proving something depending on certain theory, these should
+    // be name of the theory and undefined (for requiring everything in
+    // the theory).
+    'theory_name', 'thm_name',
+
+    // Dictionary specifying variables. 
+    'vars',
+
+    // Statement of the theorem to be proved.
+    'prop'
   ],
 
   data: function () {
@@ -49,7 +68,6 @@ export default {
       steps: [],
       goal: -1,
       facts: new Set(),
-      vars: [],
       proof: undefined,
     }
   },
@@ -160,27 +178,6 @@ export default {
       }
     },
 
-    rp: function (x) {
-      if (x === 0) {
-        return 'normal'
-      } if (x === 1) {
-        return 'bound'
-      } if (x === 2) {
-        return 'var'
-      } if (x === 3) {
-        return 'tvar'
-      }
-    },
-
-    highlight_html: function (lst) {
-      var output = ''
-      for (let i = 0; i < lst.length; i++) {
-        let val = lst[i]
-        output = output + '<tt class="' + this.rp(val[1]) + '">' + val[0] + '</tt>'
-      }
-      return output
-    },
-
     get_line_no_from_id: function (id, proof) {
       var found = -1;
       for (let i = 0; i < this.proof.length; i++) {
@@ -192,7 +189,7 @@ export default {
 
     display_instructions: function () {
       var hId = this.index
-      this.instr = this.highlight_html(this.history[hId].steps_output)
+      this.instr = Util.highlight_html(this.history[hId].steps_output)
       var proof_info = {
         proof: this.history[hId].proof,
         report: this.history[hId].report
@@ -218,12 +215,12 @@ export default {
       var factIds = []
       this.facts.forEach(v => factIds.push(this.proof[v].id))
       return {
-        'goal_id': this.proof[goalNo].id,
-        'fact_ids': factIds,
-        'theory_name': 'hoare',
-        'thm_name': undefined,
-        'vars': this.vars,
-        'proof': this.proof
+        goal_id: this.proof[goalNo].id,
+        fact_ids: factIds,
+        theory_name: this.theory_name,
+        thm_name: this.thm_name,
+        vars: this.vars,
+        proof: this.proof
       }
     },
 
@@ -232,13 +229,9 @@ export default {
       if (input === undefined) {
         this.search_res = []
       } else {
-        let result = await axios({
-          url: 'http://127.0.0.1:5000/api/search-method',
-          method: 'POST',
-          data: JSON.stringify(input)
-        })
+        let response = await axios.post('http://127.0.0.1:5000/api/search-method', JSON.stringify(input))
 
-        this.search_res = result.data.search_res
+        this.search_res = response.data.search_res
       }
     },
 
@@ -445,27 +438,22 @@ export default {
     },
 
     init_proof: async function () {
-      var data;
-      if ('com' in this.item) {
-        data = this.item
-      } else {
-        data = {
-          theory_name: this.theory_name,
-          thm_name: this.item.name,
-          item: this.item
-        }
+      const data = {
+        theory_name: this.theory_name,
+        thm_name: this.thm_name,
+        vars: this.vars,
+        prop: this.prop
       }
 
-      let res = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
-      
+      let response = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
+
       this.goal = -1
-      this.method_sig = res.data.method_sig
-      this.vars = res.data.vars
+      this.method_sig = response.data.method_sig
       this.steps = []
       this.history = [{
         steps_output: [['Current state', 0]],
-        proof: res.data.proof,
-        report: res.data.report
+        proof: response.data.proof,
+        report: response.data.report
       }]
       this.index = 0
       this.display_instructions()
@@ -545,7 +533,20 @@ export default {
     });
 
     this.editor = editor
-    this.init_proof()
+
+    if (this.prop) {
+      this.init_proof()
+    }
+  },
+
+  watch: {
+    prop: function () {
+      this.init_proof()
+    }
+  },
+
+  created() {
+    this.Util = Util
   }
 }
 
