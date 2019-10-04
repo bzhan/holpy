@@ -161,4 +161,4 @@ def process_file(input):
             post = cond_parser.parse(run['post'])
             c.pre = [pre]
             c.compute_wp(post)
-            # print(c.print_com(thy))
+            # print(c.print_com())
