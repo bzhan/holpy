@@ -29,7 +29,7 @@ class Parser2Test(unittest.TestCase):
 
         for s, res in test_case:
             com = parser2.com_parser.parse(s)
-            self.assertEqual(com.print_com(thy), res)
+            self.assertEqual(com.print_com(), res)
 
     def testParseFile(self):
         parser2.process_file("test")

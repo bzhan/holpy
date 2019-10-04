@@ -19,18 +19,19 @@ class ComTest(unittest.TestCase):
     def testPrintCom(self):
         x = Var('x')
         test_data = [
-            (Skip(), "skip"),
-            (Assign("x", plus(x,one)), "x := x + 1"),
+            (Skip(), ["skip"]),
+            (Assign("x", plus(x,one)), ["x := x + 1"]),
             (Seq(Assign("x", plus(x,one)), Assign("x", plus(x,one))),
-             "x := x + 1;\nx := x + 1"),
+             ["x := x + 1;", "x := x + 1"]),
             (Cond(eq(x,one), Skip(), Assign("x", plus(x,one))),
-             "if (x == 1) then\n  skip\nelse\n  x := x + 1"),
+             ["if (x == 1) then", "  skip", "else", "  x := x + 1"]),
             (While(eq(x,one), true, Assign("x", plus(x,one))),
-             "while (x == 1) {\n  [true]\n  x := x + 1\n}")
+             ["while (x == 1) {", "  [true]", "  x := x + 1", "}"])
         ]
 
         for com, s in test_data:
-            self.assertEqual(com.print_com(thy), s)
+            lines, _ = com.print_com()
+            self.assertEqual(lines, s)
 
     def testComputeWP(self):
         a = Var('a')
@@ -74,13 +75,15 @@ class ComTest(unittest.TestCase):
              ["true --> if a != 0 then 0 == 0 else a == 0"]),
         ]
 
-        for c, pre, post, vcs in test_data:
+        for c, pre, post, expected_vcs in test_data:
             pre = cond_parser.parse(pre)
             post = cond_parser.parse(post)
-            vcs = [cond_parser.parse(vc) for vc in vcs]
+            expected_vcs = [cond_parser.parse(vc) for vc in expected_vcs]
             c.pre = [pre]
             c.compute_wp(post)
-            self.assertEqual(c.get_vc(), vcs)
+            _, vc_dct = c.print_com()
+            vcs = [v for k, v in sorted(vc_dct.items())]
+            self.assertEqual(vcs, expected_vcs)
 
     def testVerify(self):
         a = Var('a')
@@ -90,7 +93,8 @@ class ComTest(unittest.TestCase):
         c.pre = [pre]
         c.compute_wp(post)
 
-        vc = c.get_vc()[0]
+        _, vcs = c.print_com()
+        vc = vcs[0]
         self.assertEqual(vc, cond_parser.parse("true --> if 0 <= a then a == abs(a) else -a == abs(a)"))
 
         goal = vc.convert_hol({"a": "int"})
@@ -111,7 +115,8 @@ class ComTest(unittest.TestCase):
         c.pre = [pre]
         c.compute_wp(post)
 
-        vc = c.get_vc()[0]
+        _, vcs = c.print_com()
+        vc = vcs[0]
         self.assertEqual(vc, cond_parser.parse("true --> if m <= n then n == max(m,n) else m == max(m,n)"))
 
         goal = vc.convert_hol({"m": "int", "n": "int"})

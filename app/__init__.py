@@ -66,11 +66,11 @@ def verify():
     com = com_parser.parse(data['com'])
     com.pre = [pre]
     com.compute_wp(post)
-    vcs = com.get_vc()
+    program, vcs = com.print_com()
 
     proof_success, proof_failure = 0, 0
     props = []
-    for vc in vcs:
+    for _, vc in vcs.items():
         vc_hol = vc.convert_hol(data['vars'])
         if z3wrapper.solve(vc_hol):
             proof_success += 1
@@ -79,7 +79,7 @@ def verify():
             props.append(printer.print_term(thy, vc_hol))
 
     return jsonify({
-        'program': com.print_com(thy),
+        'program': '\n'.join(program),
         'vars': data['vars'],
         'proof_success': proof_success,
         'proof_failure': proof_failure,
@@ -214,7 +214,8 @@ def get_program_file():
         file_data = json.load(f)
     filter_data = list(filter(lambda d: d['ty'] == 'vcg', file_data['content']))
     for i, vcg in enumerate(filter_data):
-        filter_data[i]['com'] = parser2.com_parser.parse(vcg['com']).print_com(thy)
+        program, _ = parser2.com_parser.parse(vcg['com']).print_com()
+        filter_data[i]['com'] = '\n'.join(program)
 
     return jsonify({'file_data': filter_data})
 

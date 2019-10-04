@@ -28,52 +28,14 @@ class Com():
         self.pre = []
         self.post = []
 
-    def get_vc_pre(self):
-        """Return the verification conditions corresponding to the
-        preconditions.
-
-        """
-        res = []
-        for i in range(len(self.pre) - 1):
-            res.append(expr.implies(self.pre[i], self.pre[i+1]))
-        return res
-
-    def print_vc_pre(self):
-        """Print the verification conditions corresponding to the
-        preconditions.
-
-        """
-        res = ""
-        for t in self.get_vc_pre():
-            res = res + "<" + str(t) + ">\n"
-        return res
-
-    def get_vc_post(self):
-        """Return the verification conditions corresponding to the
-        postconditions.
-
-        """
-        res = []
-        for i in range(len(self.post) - 1):
-            res.append(expr.implies(self.post[i], self.post[i+1]))
-        return res
-
-    def print_vc_post(self):
-        """Print the verification conditions corresponding to the
-        postconditions.
-
-        """
-        res = ""
-        for t in self.get_vc_post():
-            res = res + "\n<" + str(t) + ">"
-        return res
-
     def compute_wp(self, post):
         """Given postcondition for a command, find the weakest
         precondition (wp) and verification conditions. Returns
         the weakest precondition for the command.
 
         """
+        assert isinstance(post, expr.Expr), "compute_wp"
+
         if isinstance(self, Skip):
             # <Q> Skip <Q>
             self.post = [post]
@@ -127,35 +89,78 @@ class Com():
 
         return self.pre[0]
 
-    def print_com(self, thy):
-        if isinstance(self, Skip):
-            return self.print_vc_pre() + "skip"
-        elif isinstance(self, Assign):
-            return self.print_vc_pre() + str(self.v) + " := " + str(self.e)
-        elif isinstance(self, Seq):
-            return self.print_vc_pre() + \
-                self.c1.print_com(thy) + ";\n" + self.c2.print_com(thy)
-        elif isinstance(self, Cond):
-            return self.print_vc_pre() + \
-                "if (%s) then\n  %s\nelse\n  %s" % (
-                str(self.b), self.c1.print_com(thy), self.c2.print_com(thy))
-        elif isinstance(self, While):
-            cmd = self.c.print_com(thy).split('\n')
-            cmd = '\n  '.join(cmd)
-            return self.print_vc_pre() + "while (%s) {\n  [%s]\n  %s\n}" % (
-                str(self.b), str(self.inv), cmd) + self.print_vc_post()
-        else:
-            raise TypeError
+    def print_com(self):
+        """Pretty-printing for the command.
+        
+        Also returns a mapping from line numbers to verification
+        conditions (of type Expr).
 
-    def get_vc(self):
-        if isinstance(self, (Skip, Assign)):
-            return self.get_vc_pre()
-        elif isinstance(self, (Seq, Cond)):
-            return self.get_vc_pre() + self.c1.get_vc() + self.c2.get_vc()
-        elif isinstance(self, While):
-            return self.get_vc_pre() + self.c.get_vc() + self.get_vc_post()
-        else:
-            raise TypeError
+        """
+        indent = 0
+        lines = []    # Printed lines
+        vcs = dict()  # Mapping from line number to vc
+
+        def add_vc_pre(cmd):
+            for i in range(len(cmd.pre) - 1):
+                vc = expr.implies(cmd.pre[i], cmd.pre[i+1])
+                vcs[len(lines)] = vc
+                lines.append(' ' * indent + '<' + str(vc) + '>')
+
+        def add_vc_post(cmd):
+            for i in range(len(cmd.post) - 1):
+                vc = expr.implies(cmd.post[i], cmd.post[i+1])
+                vcs[len(lines)] = vc
+                lines.append(' ' * indent + '<' + str(vc) + '>')
+
+        def add_line(line):
+            lines.append(' ' * indent + line)
+
+        def add_str(s):
+            lines[-1] += s
+
+        def rec(cmd):
+            nonlocal indent
+
+            if isinstance(cmd, Skip):
+                add_vc_pre(cmd)
+                add_line("skip")
+
+            elif isinstance(cmd, Assign):
+                add_vc_pre(cmd)
+                add_line(str(cmd.v) + " := " + str(cmd.e))
+
+            elif isinstance(cmd, Seq):
+                add_vc_pre(cmd)
+                rec(cmd.c1)
+                add_str(';')
+                rec(cmd.c2)
+
+            elif isinstance(cmd, Cond):
+                add_vc_pre(cmd)
+                add_line("if (%s) then" % str(cmd.b))
+                indent += 2
+                rec(cmd.c1)
+                indent -= 2
+                add_line("else")
+                indent += 2
+                rec(cmd.c2)
+                indent -= 2
+
+            elif isinstance(cmd, While):
+                add_vc_pre(cmd)
+                add_line("while (%s) {" % str(cmd.b))
+                indent += 2
+                add_line("[%s]" % str(cmd.inv))
+                rec(cmd.c)
+                indent -= 2
+                add_line("}")
+                add_vc_post(cmd)
+
+            else:
+                raise TypeError
+
+        rec(self)
+        return lines, vcs
 
 
 class Skip(Com):
