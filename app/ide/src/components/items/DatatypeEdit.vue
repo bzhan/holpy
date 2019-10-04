@@ -28,7 +28,10 @@ export default {
 
   data: function () {
     return {
-      item: $.extend(true, {}, this.old_item)
+      item: $.extend(true, {
+        edit_type: "",
+        constrs_lines: ""
+      }, this.old_item)
     }
   },
 

@@ -57,10 +57,12 @@ export default {
 
   data: function () {
     var res = {
-      item: $.extend(true, {}, this.old_item)
-    }
-    if (!('attributes' in res.item)) {
-      res.item.attributes = []
+      item: $.extend(true, {
+        attributes: [],
+        name: "",
+        vars_lines: "",
+        prop_lines: ""
+      }, this.old_item)
     }
     return res
   },
