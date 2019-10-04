@@ -1947,6 +1947,67 @@
                 "s": "real set",
                 "x": "real"
             }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_asn_strong",
+            "prop": "real_continuous asn (within (atreal x) ({t. abs t ≤ 1}))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_on_asn",
+            "prop": "(!x. x ∈s --> abs x <= 1) -->real_continuous_on asn s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_within_acs_strong",
+            "prop": "real_continuous acs (within (atreal x) ({t. abs t ≤ 1}))",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_on_acs",
+            "prop": "(∀x. x ∈ s ⟶ abs x ≤ 1) ⟶ real_continuous_on acs s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "reallim_1_over_n_offset",
+            "prop": "tendsto_real (%n. real_inverse (real_of_nat n + a)) 0 sequentially",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "reallim_1_over_n",
+            "prop": "tendsto_real (λn. real_inverse (real_of_nat n)) 0 sequentially",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [],
+            "name": "reallim_1_over_pow",
+            "prop": "1 <= k --> tendsto_real (λn. real_inverse (real_of_nat n ^ k)) 0 sequentially",
+            "ty": "thm",
+            "vars": {
+                "k": "nat"
+            }
         }
     ],
     "description": "Some analytic concepts for real.",
