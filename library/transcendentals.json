@@ -58,6 +58,19 @@
             "prop": "acs y = (THE x. 0 ≤ x ∧ x ≤ pi ∧ cos x = y)",
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [],
+            "ascii_op": "^",
+            "name": "power",
+            "prop": [
+                "x ^ y = if 0 < x then exp (y * log x)",
+                "else if x= 0 then if y =0 then 1 else 0",
+                "else if (?m. ?n. odd m & odd n & abs y = (real_of_nat m) / (real_of_nat n))",
+                "then -(exp (y * log (-x))) else exp (y * log (-x))"
+            ],
+            "ty": "def",
+            "type": "real=>real=>real"
         }
     ],
     "description": "Real transcendentals.",

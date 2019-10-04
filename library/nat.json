@@ -92,7 +92,7 @@
             "ascii_op": "^",
             "name": "power",
             "ty": "def.ax",
-            "type": "'a => nat => 'a",
+            "type": "'a => 'b => 'a",
             "overloaded": true
         },
         {

@@ -175,7 +175,7 @@
         },
         {
             "name": "sqrt",
-            "prop": "sqrt x = THE y. real_sgn y =  real_sgn x & y ^ 2 = abs x",
+            "prop": "sqrt x = THE y. real_sgn y =  real_sgn x & y ^ (2::nat) = abs x",
             "ty": "def",
             "type": "real => real"
         }

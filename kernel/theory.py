@@ -279,11 +279,13 @@ class Theory():
             except TypeMatchException:
                 raise TheoryException("Constant %s :: %s does not match overloaded type %s" % (name, T, aT))
 
-            assert len(inst.keys()) == 1
-            for k, v in inst.items():
-                baseT = v
-            assert baseT.ty == HOLType.TYPE
-            return baseT.name + "_" + name
+            baseT = []
+            for _, v in sorted(inst.items()):
+                assert v.ty == HOLType.TYPE
+                baseT.append(v)
+
+            T_name = "_".join(T.name for T in baseT)
+            return T_name + "_" + name
         else:
             return name
 

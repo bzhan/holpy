@@ -310,6 +310,7 @@ def file_data_to_output(thy, data, *, line_length=None):
 
     """
     parsed_data = None
+    ext = None
     try:
         parsed_data = parser.parse_item(thy, data)
         ext = parser.get_extension(thy, parsed_data)
@@ -357,7 +358,8 @@ def file_data_to_output(thy, data, *, line_length=None):
         data['edit_type'] = printer.print_type(thy, T, unicode=True, highlight=False)
 
         # Obtain items added by the extension
-        data['ext_output'] = str_of_extension(thy, ext)
+        if ext:
+            data['ext_output'] = str_of_extension(thy, ext)
 
     elif data['ty'] in ('def.ind', 'def.pred'):
         data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
@@ -377,7 +379,8 @@ def file_data_to_output(thy, data, *, line_length=None):
 
         data['prop_lines'] = '\n'.join(data['prop_lines'])
         # Obtain items added by the extension
-        data['ext_output'] = str_of_extension(thy, ext)
+        if ext:
+            data['ext_output'] = str_of_extension(thy, ext)
 
     elif data['ty'] == 'def':
         data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
