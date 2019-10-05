@@ -48,7 +48,7 @@ import Message from './Message.vue'
 import "./../../static/css/index.css"
 
 export default {
-  name: 'Main',
+  name: 'Editor',
   components: {
     Theory,
     Content,
