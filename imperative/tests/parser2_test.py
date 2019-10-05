@@ -22,14 +22,12 @@ class Parser2Test(unittest.TestCase):
 
             ("m := a + b; n := a - b",
              "m := a + b;\nn := a - b"),
-
-            ("index := 0; while (index < a.length & a[index] != key) {[0 <= index & index <= a.length & forall k. (0 <= k & k < index) --> a[k] != key] index := index + 1}; if (index == a.length) then index := -1 else skip",
-             "index := 0;\nwhile (index < a.length & a[index] != key) {\n  [0 <= index & index <= a.length & forall k. 0 <= k & k < index --> a[k] != key]\n  index := index + 1\n};\nif (index == a.length) then\n  index := -1\nelse\n  skip")
         ]
 
         for s, res in test_case:
             com = parser2.com_parser.parse(s)
-            self.assertEqual(com.print_com(), res)
+            lines = com.print_com({'a': 'int', 'b': 'int', 'A': 'int', 'B': 'int', 'm': 'int', 'n': 'int'})
+            self.assertEqual('\n'.join(lines), res)
 
     def testParseFile(self):
         parser2.process_file("test")

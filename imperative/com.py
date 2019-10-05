@@ -105,7 +105,7 @@ class Com():
 
             """
             for i in range(len(ls) - 1):
-                vc = expr.implies(ls[i], ls[i+1])
+                vc = ls[i+1] if ls[i] == expr.true else expr.implies(ls[i], ls[i+1])
                 vc_hol = vc.convert_hol(vars)
                 lines.append({
                     'ty': 'vc',
