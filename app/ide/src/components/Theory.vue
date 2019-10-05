@@ -87,6 +87,7 @@
         <div v-if="on_proof === index">
           <ProofArea v-bind:theory_name="theory.name" v-bind:thm_name="item.name"
                      v-bind:vars="item.vars" v-bind:prop="item.prop"
+                     v-bind:old_steps="item.steps" v-bind:old_proof="item.proof"
                      v-bind:ref_status="ref_status" ref="proof"/>
           <button style="margin:5px" v-on:click="save_proof">Save</button>
           <button style="margin:5px" v-on:click="cancel_proof">Cancel</button>

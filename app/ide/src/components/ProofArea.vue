@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <label for="proof-area"></label>
+  <div style="margin-top:8px">
     <textarea id="proof-area"></textarea>
   </div>
 </template>
@@ -37,8 +36,12 @@ export default {
     // Statement of the theorem to be proved.
     'prop',
 
+    // Initial value for steps and proof
+    'old_steps',
+    'old_proof',
+
     // Area for displaying status
-    'ref_status',
+    'ref_status'
   ],
 
   data: function () {
@@ -416,25 +419,56 @@ export default {
     },
 
     init_proof: async function () {
-      const data = {
-        theory_name: this.theory_name,
-        thm_name: this.thm_name,
-        vars: this.vars,
-        prop: this.prop
+      if (this.old_steps === undefined) {
+        // Start new proof
+        const data = {
+          theory_name: this.theory_name,
+          thm_name: this.thm_name,
+          vars: this.vars,
+          prop: this.prop
+        }
+
+        let response = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
+
+        this.goal = -1
+        this.method_sig = response.data.method_sig
+        this.steps = []
+        this.history = [{
+          steps_output: [['Current state', 0]],
+          proof: response.data.proof,
+          report: response.data.report
+        }]
+        this.index = 0
+        this.display_instructions()
+      } else {
+        // Has existing proof
+        const data = {
+          theory_name: this.theory_name,
+          thm_name: this.thm_name,
+          vars: this.vars,
+          prop: this.prop,
+          steps: this.old_steps,
+          proof: this.old_proof
+        }
+
+        let response = await axios.post('http://127.0.0.1:5000/api/init-saved-proof', JSON.stringify(data))
+
+        if ('failed' in response.data) {
+          this.display_status(response.data.failed + ': ' + response.data.message)
+        } else {
+          this.goal = -1
+          this.method_sig = response.data.method_sig
+          this.steps = response.data.steps
+          if (response.data.history !== undefined) {
+            this.history = response.data.history
+            this.index = response.data.history.length - 1
+            this.display_instructions()
+          } else {
+            this.proof = response.data.proof
+            this.display_checked_proof(response.data)
+          }
+        }
       }
-
-      let response = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
-
-      this.goal = -1
-      this.method_sig = response.data.method_sig
-      this.steps = []
-      this.history = [{
-        steps_output: [['Current state', 0]],
-        proof: response.data.proof,
-        report: response.data.report
-      }]
-      this.index = 0
-      this.display_instructions()
     },
 
     undo_move: function () {
