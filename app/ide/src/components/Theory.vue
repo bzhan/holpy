@@ -90,6 +90,7 @@
                      v-bind:old_steps="item.steps" v-bind:old_proof="item.proof"
                      v-bind:ref_status="ref_status" ref="proof"/>
           <button style="margin:5px" v-on:click="save_proof">Save</button>
+          <button style="margin:5px" v-on:click="reset_proof">Reset</button>
           <button style="margin:5px" v-on:click="cancel_proof">Cancel</button>
         </div>
       </div>
@@ -374,6 +375,10 @@ export default {
 
       this.save_json_file()
       this.on_proof = undefined
+    },
+
+    reset_proof: function () {
+      this.$refs.proof[0].init_empty_proof()
     },
 
     cancel_proof: function () {
