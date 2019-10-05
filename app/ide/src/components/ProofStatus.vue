@@ -1,16 +1,17 @@
 <template>
   <div>
-    <div><pre>{{ status }}</pre></div>
+    <div><span class="item-text">{{ status }}</span></div>
     <div>
       <span v-if="instr_no !== ''">
         <a href="#" id="link-backward" v-on:click="ref_proof.step_backward()">&lt;</a>
         <span id="instruction-number" v-html="instr_no"/>
         <a href="#" id="link-forward" v-on:click="ref_proof.step_forward()">&gt;</a>
       </span>
-      <span id="instruction" style="margin-left:10pt" v-html="instr"/>
+      <span id="instruction" class="item-text" style="margin-left:10pt" v-html="instr"/>
     </div>
     <div class="thm-content">
-      <pre v-for="(res,i) in search_res"
+      <div class="item-text"
+           v-for="(res,i) in search_res"
            :key="res.num"
            v-on:click="ref_proof.apply_thm_tactic(i)"
            v-html="Util.highlight_html(res.display)"/>
@@ -50,3 +51,19 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.thm-content {
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+.thm-content div {
+  margin: 5px;
+}
+
+.thm-content div:hover {
+  background-color: yellow;
+}
+
+</style>

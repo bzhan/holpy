@@ -557,6 +557,8 @@ def parse_item(thy, data):
 
     elif data['ty'] in ('thm', 'thm.ax'):
         ctxt = parse_vars(thy, data['vars'])
+        for nm in data['vars']:
+            data['vars'][nm] = parse_type(thy, data['vars'][nm])
         data['prop'] = parse_term(thy, ctxt, data['prop'])
         prop_vars = set(v.name for v in term.get_vars(data['prop']))
         assert prop_vars.issubset(set(data['vars'].keys())), \

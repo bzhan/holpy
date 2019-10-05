@@ -46,4 +46,7 @@ a.dropdown-item {
   padding: 0.2rem 1.0rem 0.2rem 0.5rem;
 }
 
+.CodeMirror {
+  height: 260px;
+}
 </style>
