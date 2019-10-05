@@ -138,11 +138,29 @@
             "prop": "neutral op x = (!y. (op x y = y) & (op y x = y))",
             "ty": "def",
             "type": "('a => 'a => 'a) => 'a => bool"
+        },
+        {
+            "name": "sum",
+            "ty": "def.ax",
+            "type": "'a set => ('a => real) => real"
+        },
+        {
+            "name": "product",
+            "ty": "def.ax",
+            "type": "'a set => ('a => real) => real"
+        },
+        {
+            "attributes": [],
+            "name": "polynomial_function",
+            "prop": "polynomial_function p ⟷ (∃m. ∃c. ∀x. p x = sum ({0..m}) (λi. c i * x ^ i))",
+            "ty": "def",
+            "type": "(real=>real)=>bool"
         }
     ],
     "description": "Basic results about iterate.",
     "imports": [
-        "set"
+        "set",
+        "real"
     ],
     "name": "iterate"
 }

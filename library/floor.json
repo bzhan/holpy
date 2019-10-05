@@ -1,0 +1,88 @@
+{
+    "content": [
+        {
+            "name": "integer",
+            "prop": "integer x = ?n. abs x = real_of_nat n",
+            "ty": "def",
+            "type": "real => bool"
+        },
+        {
+            "name": "rational",
+            "prop": "rational x = ?m. ?n. integer m & integer n & neg (n = 0) & x = m / n",
+            "ty": "def",
+            "type": "real => bool"
+        },
+        {
+            "attributes": [],
+            "name": "real_truncate_pos",
+            "prop": "0 <= x --> ?n. ?r. 0 <= r & r < 1 & (x = real_of_nat n + r)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_truncate",
+            "prop": "?n. ?r. integer n & 0 <= r & r < 1 & (x = n + r)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "floor",
+            "prop": "floor x = THE n. integer n & 0 <= x - n & x - n < 1",
+            "ty": "def",
+            "type": "real => real"
+        },
+        {
+            "name": "frac",
+            "prop": "frac x = THE r. integer (x - r) & 0 <= r & r < 1",
+            "ty": "def",
+            "type": "real => real"
+        },
+        {
+            "attributes": [],
+            "name": "floor_unique",
+            "prop": "(integer a & a <= x & x < a + 1) = (floor x = a)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "floor_eq_0",
+            "prop": "(floor x = 0) = (0 <= x & x < 1)",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "frac_floor",
+            "prop": "frac x = x - floor x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "floor_nat",
+            "prop": "floor (real_of_nat n) = (real_of_nat n)",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        }
+    ],
+    "description": "The integer/rational-value reals, and the 'floor' and 'frac' functions.",
+    "imports": [
+        "real"
+    ],
+    "name": "floor"
+}
