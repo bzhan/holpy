@@ -11,7 +11,7 @@
       <pre v-for="(res,i) in search_res"
            :key="res.num"
            v-on:click="ref_proof.apply_thm_tactic(i)"
-           v-html="Util.highlight_html(res.display)"/> 
+           v-html="Util.highlight_html(res.display)"/>
     </div>
   </div>
 </template>

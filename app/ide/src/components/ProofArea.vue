@@ -529,10 +529,3 @@ export default {
 }
 
 </script>
-
-<style scoped>
-  #proof-area {
-    width: 100%;
-    height: 2vh;
-  }
-</style>
