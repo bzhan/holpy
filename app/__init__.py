@@ -312,15 +312,21 @@ def file_data_to_output(thy, data, *, line_length=None):
     """
     parsed_data = None
     ext = None
+
+    # Attempt to parse the item, creating a parsed version (with
+    # strings replaced by types and terms) and the extension. If
+    # parsing succeeds, apply the extension to the theory. Otherwise,
+    # add exception information to the item.
     try:
         parsed_data = parser.parse_item(thy, data)
         ext = parser.get_extension(thy, parsed_data)
         thy.unchecked_extend(ext)
     except Exception as e:
-        data['err_type'] = str(e.__class__)
+        data['err_type'] = e.__class__.__name__
         data['err_str'] = str(e)
         data['trace'] = traceback2.format_exc()
 
+    # If parsing failed, still create strings for editing.
     if parsed_data is None:
         if data['ty'] in ('thm', 'thm.ax'):
             data['vars_lines'] = '\n'.join(k + ' :: ' + v for k, v in data['vars'].items())
@@ -334,7 +340,8 @@ def file_data_to_output(thy, data, *, line_length=None):
 
         return
 
-    # Now fill data with pretty-printed form of types and terms
+    # If parsing succeeds, fill data with pretty-printed form of
+    # types and terms
     if data['ty'] == 'def.ax':
         data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
 
@@ -400,17 +407,21 @@ def file_data_to_output(thy, data, *, line_length=None):
 def load_json_file():
     data = json.loads(request.get_data().decode("utf-8"))
     filename = data['filename']
-    line_length = None
-    if 'line_length' in data:
-        line_length = data['line_length']
+    line_length = data.get('line_length')
     with open(user_file(filename), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     if 'content' in f_data:
         thy = basic.load_imported_theory(f_data['imports'], user=user_info['username'])
+        errs = []
         for data in f_data['content']:
             file_data_to_output(thy, data, line_length=line_length)
+            if 'err_type' in data:
+                errs.append((data['ty'], data['name']))
     else:
         f_data['content'] = []
+
+    if errs:
+        f_data['errs'] = errs
     return jsonify(f_data)
 
 
@@ -472,9 +483,7 @@ def check_modify():
     """Check a modified item for validity."""
     data = json.loads(request.get_data().decode("utf-8"))
     item = data['content']
-    line_length = None
-    if 'line_length' in data:
-        line_length = data['line_length']
+    line_length = data.get('line_length')
 
     with open(user_file(data['file_name']), 'r', encoding='utf-8') as f:
         f_data = json.load(f)

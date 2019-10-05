@@ -2,7 +2,10 @@
   <div>
     <span class="keyword">definition</span>&nbsp;
     <span class="item-text">{{item.name}}</span> ::
-    <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>&nbsp;
+    <span v-if="!('err_type' in item)"
+          class="item-text" v-html="Util.highlight_html(item.type_hl)" />
+    <span v-else class="item-text">{{item.type}}</span>
+    &nbsp;
     <span class="keyword">where</span>&nbsp;&nbsp;
     <a href="#" style="font-style:italic;color:brown"
        v-on:click="$emit('edit')">edit</a>&nbsp;&nbsp;

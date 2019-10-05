@@ -10,7 +10,7 @@
          v-bind:key=index
          v-bind:item_id=index
          class="theory-items"
-         v-on:click="selected = index"
+         v-on:click="handle_select(index)"
          v-bind:class="{
            'item-selected': selected === index,
            'item-error': 'err_type' in item
@@ -190,17 +190,27 @@ export default {
       return response
     },
 
+    // Select (or un-select) an item
+    handle_select: function (index) {
+      if (this.selected === index) {
+        this.selected = undefined
+      } else {
+        this.selected = index
+      }
+    },
+
     // Check whether the current edit produces any errors.
     check_edit: async function () {
       const response = await this.parse_item()
       if (response === undefined)
         return
 
-      if ('err_type' in response.data.item) {
+      const item = response.data.item
+      if ('err_type' in item) {
         this.$emit('set-message', {
           type: 'error',
-          data: response.data.item.err_str,
-          trace: response.data.item.trace
+          data: item.err_type + '\n' + item.err_str,
+          trace: item.trace
         })
       } else {
         this.$emit('set-message', {
@@ -341,7 +351,7 @@ export default {
         if ('err_type' in item) {
           this.$emit('set-message', {
             type: 'error',
-            data: item.err_str
+            data: item.err_type + '\n' + item.err_str
           })
         } else {
           this.$emit('set-message', {
@@ -350,10 +360,17 @@ export default {
           })
         }
       } else {
-        this.$emit('set-message', {
-          type: 'OK',
-          data: ""
-        })
+        if ('errs' in this.theory) {
+          this.$emit('set-message', {
+            type: 'error',
+            data: 'Loaded ' + this.theory.name + ': ' + this.theory.errs.length + ' error(s)'
+          })
+        } else {
+          this.$emit('set-message', {
+            type: 'OK',
+            data: 'Loaded ' + this.theory.name + ': ' + 'OK '
+          })
+        }
       }
     }
   },
