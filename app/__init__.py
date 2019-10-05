@@ -404,16 +404,11 @@ def load_json_file():
         f_data = json.load(f)
     if 'content' in f_data:
         thy = basic.load_imported_theory(f_data['imports'], user=user_info['username'])
-        errs = []
         for data in f_data['content']:
             file_data_to_output(thy, data, line_length=line_length)
-            if 'err_type' in data:
-                errs.append((data['ty'], data['name']))
     else:
         f_data['content'] = []
 
-    if errs:
-        f_data['errs'] = errs
     return jsonify(f_data)
 
 

@@ -143,18 +143,6 @@ export default {
 
       if (response !== undefined) {
         this.theory = response.data
-        if ('errs' in this.theory) {
-          this.message = {
-            type: 'error',
-            data: 'Loaded ' + this.theory.name + ': ' + this.theory.errs.length + ' error(s)'
-          }
-        } else {
-          this.message = {
-            type: 'OK',
-            data: 'Loaded ' + this.theory.name + ': ' + 'OK '
-          }
-        }
-        this.$refs.theory.selected = undefined
       }
     },
 

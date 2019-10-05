@@ -5,7 +5,7 @@
                 "hint_rewrite"
             ],
             "name": "real_closed_interval",
-            "prop": "real_closed_interval a b = {p. real_less_eq a p & real_less_eq p b}",
+            "prop": "real_closed_interval a b = {p. less_eq a p & less_eq p b}",
             "ty": "def",
             "type": "real => real => real set"
         },
@@ -14,7 +14,7 @@
                 "hint_rewrite"
             ],
             "name": "real_open_interval",
-            "prop": "real_open_interval a b = {p. real_less a p & real_less p b}",
+            "prop": "real_open_interval a b = {p. less a p & less p b}",
             "ty": "def",
             "type": "real => real => real set"
         },
@@ -985,7 +985,7 @@
         },
         {
             "name": "negligible_inter",
-            "prop": "negligible s | negligible t  --> negligible (inter s t)",
+            "prop": "negligible s | negligible t --> negligible (inter s t)",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -994,7 +994,7 @@
         },
         {
             "name": "negligible_union",
-            "prop": "negligible s & negligible t  --> negligible (union s t)",
+            "prop": "negligible s & negligible t --> negligible (union s t)",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -1003,7 +1003,7 @@
         },
         {
             "name": "negligible_union_eq",
-            "prop": "negligible (union s t) = negligible s & negligible t",
+            "prop": "negligible (union s t) <--> negligible s & negligible t",
             "ty": "thm",
             "vars": {
                 "s": "real set",

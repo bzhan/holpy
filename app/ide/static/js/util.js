@@ -25,6 +25,16 @@ var Util = {
         "<=": "≤",
     },
 
+    keywords: {
+        'def': 'definition',
+        'def.ax': 'constant',
+        'thm': 'theorem',
+        'thm.ax': 'axiom',
+        'def.ind': 'fun',
+        'def.pred': 'inductive',
+        'type.ind': 'datatype'
+    },
+
     // Mapping of colors.
     rp: function (x) {
         if (x === 0)

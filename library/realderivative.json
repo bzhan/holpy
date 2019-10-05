@@ -905,7 +905,7 @@
             "name": "has_real_derivative_inv_basic",
             "prop": [
                 "neg (x = 0)",
-                "--> has_real_derivative (real_inverse) (-(real_inverse (x ^ 2))) (atreal x)"
+                "--> has_real_derivative (real_inverse) (-(real_inverse (x ^ (2::nat)))) (atreal x)"
             ],
             "ty": "thm",
             "vars": {
@@ -917,7 +917,7 @@
             "name": "has_real_derivative_inv_within",
             "prop": [
                 "has_real_derivative f f1 (within (atreal x) s) & ¬x = 0",
-                "⟶ has_real_derivative (λx. real_inverse (f x)) (-f1/f x ^2) ",
+                "⟶ has_real_derivative (λx. real_inverse (f x)) (-f1/f x ^ (2::nat)) ",
                 "  (within (atreal x) s)"
             ],
             "ty": "thm",
@@ -933,7 +933,7 @@
             "name": "has_real_derivative_inv_atreal",
             "prop": [
                 "has_real_derivative f f1 (atreal x) ∧ ¬x = 0 ",
-                "⟶ has_real_derivative (λx. real_inverse (f x)) (-f1 / f x ^ 2) ",
+                "⟶ has_real_derivative (λx. real_inverse (f x)) (-f1 / f x ^ (2::nat)) ",
                 "  (atreal x)"
             ],
             "ty": "thm",
@@ -949,7 +949,7 @@
             "prop": [
                 "has_real_derivative f f1 (within (atreal x) s) ∧ ",
                 "has_real_derivative g g1 (within (atreal x) s) ∧ ¬g x = 0 ",
-                "⟶ has_real_derivative (λx. f x / g x) ((f1 * g x - f x * g1) / g x ^ 2) (within (atreal x) s)"
+                "⟶ has_real_derivative (λx. f x / g x) ((f1 * g x - f x * g1) / g x ^ (2::nat)) (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
@@ -967,7 +967,7 @@
             "prop": [
                 "has_real_derivative f f1 (atreal x) ∧ ",
                 "has_real_derivative g g1 (atreal x) ∧ ¬g x = 0 ",
-                "⟶ has_real_derivative (λx. f x / g x) ((f1 * g x - f x * g1) / g x ^ 2) ",
+                "⟶ has_real_derivative (λx. f x / g x) ((f1 * g x - f x * g1) / g x ^ (2::nat)) ",
                 "  (atreal x)"
             ],
             "ty": "thm",
@@ -1593,7 +1593,7 @@
         {
             "attributes": [],
             "name": "has_real_derivative_tan",
-            "prop": "neg (cos x = 0) --> has_real_derivative tan (real_inverse ((cos x) ^ 2)) (atreal x)",
+            "prop": "neg (cos x = 0) --> has_real_derivative tan (real_inverse ((cos x) ^ (2::nat))) (atreal x)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -1783,7 +1783,7 @@
         {
             "attributes": [],
             "name": "has_real_derivative_atn",
-            "prop": "has_real_derivative atn (real_inverse (1 + x ^ 2)) (atreal x)",
+            "prop": "has_real_derivative atn (real_inverse (1 + x ^ (2::nat))) (atreal x)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -1848,7 +1848,7 @@
         {
             "attributes": [],
             "name": "has_real_derivative_asn",
-            "prop": "abs x < 1 ⟶ has_real_derivative asn (real_inverse (1 - x ^ 2)) (atreal x)",
+            "prop": "abs x < 1 ⟶ has_real_derivative asn (real_inverse (1 - x ^ (2::nat))) (atreal x)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -1904,7 +1904,7 @@
         {
             "attributes": [],
             "name": "has_real_derivative_acs",
-            "prop": "abs x < 1 --> has_real_derivative acs (-real_inverse (1 - x ^ 2)) (atreal x)",
+            "prop": "abs x < 1 --> has_real_derivative acs (-real_inverse (1 - x ^ (2::nat))) (atreal x)",
             "ty": "thm",
             "vars": {
                 "x": "real"

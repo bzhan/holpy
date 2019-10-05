@@ -10,7 +10,7 @@
          v-bind:key=index
          v-bind:item_id=index
          class="theory-items"
-         v-on:click="handle_select(index)"
+         v-on:click="handle_select(index, $event)"
          v-bind:class="{
            'item-selected': selected === index,
            'item-error': 'err_type' in item
@@ -165,6 +165,7 @@ export default {
 
   methods: {
     edit_item: function (index) {
+      this.selected = index
       this.on_edit = index
       this.on_add = false
     },
@@ -197,7 +198,17 @@ export default {
     },
 
     // Select (or un-select) an item
-    handle_select: function (index) {
+    handle_select: function (index, event) {
+      // Ignore if click on a link
+      if (event.target.tagName.toLowerCase() === 'a') {
+        return
+      }
+
+      // Ignore if currently editing or proving something
+      if (this.on_edit !== undefined || this.on_proof !== undefined) {
+        return
+      }
+
       if (this.selected === index) {
         this.selected = undefined
       } else {
@@ -383,29 +394,40 @@ export default {
 
     cancel_proof: function () {
       this.on_proof = undefined
-    }
-  },
+    },
 
-  watch: {
-    selected: function (index) {
+    selected_set_message: function (index) {
       if (index !== undefined) {
         const item = this.theory.content[index]
         if ('err_type' in item) {
+          // Selected item, which has an error
           this.$emit('set-message', {
             type: 'error',
             data: item.err_type + '\n' + item.err_str
           })
         } else {
+          // Selected item, with no errors
           this.$emit('set-message', {
             type: 'OK',
             data: 'No errors'
           })
         }
       } else {
-        if ('errs' in this.theory) {
+        // No item selected, determine whether there are errors
+        // in the file
+        var err_count = 0
+        var err_lines = ''
+        for (let i = 0; i < this.theory.content.length; i++) {
+          let item = this.theory.content[i]
+          if ('err_type' in item) {
+            err_count += 1
+            err_lines += ('\n' + Util.keywords[item.ty] + ' ' + item.name)
+          }
+        }
+        if (err_count !== 0) {
           this.$emit('set-message', {
             type: 'error',
-            data: 'Loaded ' + this.theory.name + ': ' + this.theory.errs.length + ' error(s)'
+            data: 'Loaded ' + this.theory.name + ': ' + err_count + ' error(s)' + err_lines
           })
         } else {
           this.$emit('set-message', {
@@ -414,6 +436,17 @@ export default {
           })
         }
       }
+    }
+  },
+
+  watch: {
+    selected: function (index) {
+      this.selected_set_message(index)
+    },
+
+    theory: function () {
+      this.selected = undefined
+      this.selected_set_message(undefined)
     }
   },
 
