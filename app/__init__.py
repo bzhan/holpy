@@ -66,24 +66,16 @@ def verify():
     com = com_parser.parse(data['com'])
     com.pre = [pre]
     com.compute_wp(post)
-    program, vcs = com.print_com()
+    lines = com.get_lines(data['vars'])
 
-    proof_success, proof_failure = 0, 0
-    props = []
-    for _, vc in vcs.items():
-        vc_hol = vc.convert_hol(data['vars'])
-        if z3wrapper.solve(vc_hol):
-            proof_success += 1
-        else:
-            proof_failure += 1
-            props.append(printer.print_term(thy, vc_hol))
+    for line in lines:
+        if line['ty'] == 'vc':
+            vc_hol = line['prop']
+            line['prop'] = printer.print_term(thy, line['prop'])
+            line['smt'] = z3wrapper.solve(vc_hol)
 
     return jsonify({
-        'program': '\n'.join(program),
-        'vars': data['vars'],
-        'proof_success': proof_success,
-        'proof_failure': proof_failure,
-        'props': props
+        'lines': lines,
     })
 
 # Login page
@@ -214,7 +206,7 @@ def get_program_file():
         file_data = json.load(f)
     filter_data = list(filter(lambda d: d['ty'] == 'vcg', file_data['content']))
     for i, vcg in enumerate(filter_data):
-        program, _ = parser2.com_parser.parse(vcg['com']).print_com()
+        program = parser2.com_parser.parse(vcg['com']).print_com(vcg['vars'])
         filter_data[i]['com'] = '\n'.join(program)
 
     return jsonify({'file_data': filter_data})

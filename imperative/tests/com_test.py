@@ -30,7 +30,7 @@ class ComTest(unittest.TestCase):
         ]
 
         for com, s in test_data:
-            lines, _ = com.print_com()
+            lines = com.print_com({'x': 'int'})
             self.assertEqual(lines, s)
 
     def testComputeWP(self):
@@ -78,11 +78,9 @@ class ComTest(unittest.TestCase):
         for c, pre, post, expected_vcs in test_data:
             pre = cond_parser.parse(pre)
             post = cond_parser.parse(post)
-            expected_vcs = [cond_parser.parse(vc) for vc in expected_vcs]
             c.pre = [pre]
             c.compute_wp(post)
-            _, vc_dct = c.print_com()
-            vcs = [v for k, v in sorted(vc_dct.items())]
+            vcs = c.get_vcs({'a': 'int', 'b': 'int', 'm': 'int', 'A': 'int', 'B': 'int'})
             self.assertEqual(vcs, expected_vcs)
 
     def testVerify(self):
@@ -93,9 +91,10 @@ class ComTest(unittest.TestCase):
         c.pre = [pre]
         c.compute_wp(post)
 
-        _, vcs = c.print_com()
+        vcs = c.get_vcs({'c': 'int', 'a': 'int'})
         vc = vcs[0]
-        self.assertEqual(vc, cond_parser.parse("true --> if 0 <= a then a == abs(a) else -a == abs(a)"))
+        self.assertEqual(vc, "true --> if 0 <= a then a == abs(a) else -a == abs(a)")
+        vc = cond_parser.parse(vc)
 
         goal = vc.convert_hol({"a": "int"})
         As, C = goal.strip_implies()
@@ -115,9 +114,10 @@ class ComTest(unittest.TestCase):
         c.pre = [pre]
         c.compute_wp(post)
 
-        _, vcs = c.print_com()
+        vcs = c.get_vcs({'c': 'int', 'm': 'int', 'n': 'int'})
         vc = vcs[0]
-        self.assertEqual(vc, cond_parser.parse("true --> if m <= n then n == max(m,n) else m == max(m,n)"))
+        self.assertEqual(vc, "true --> if m <= n then n == max(m,n) else m == max(m,n)")
+        vc = cond_parser.parse(vc)
 
         goal = vc.convert_hol({"m": "int", "n": "int"})
         As, C = goal.strip_implies()

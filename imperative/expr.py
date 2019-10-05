@@ -162,7 +162,13 @@ class Op(Expr):
         if len(self.args) == 1:
             return "%s%s" % (self.op, str(self.args[0]))
         elif len(self.args) == 2:
-            return "%s %s %s" % (str(self.args[0]), self.op, str(self.args[1]))
+            arg1 = str(self.args[0])
+            arg2 = str(self.args[1])
+            if self.op == '*' and isinstance(self.args[0], Op) and self.args[0].op in ('+', '-'):
+                arg1 = '(' + arg1 + ')'
+            if self.op == '*' and isinstance(self.args[1], Op) and self.args[1].op in ('+', '-'):
+                arg2 = '(' + arg2 + ')'
+            return "%s %s %s" % (arg1, self.op, arg2)
         else:
             raise NotImplementedError
 

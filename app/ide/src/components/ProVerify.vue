@@ -21,13 +21,7 @@
         </div>
       </div>
       <div class="right">
-        <br><pre class="display-con">{{ program }}</pre>
-        <br><pre class="display-res">{{ proof_stat }}</pre>
-        <div v-show="proof_process" class="proof-area">
-          <ProofArea v-bind:vars="vars" v-bind:prop="prop"
-                     v-bind:theory_name="'hoare'" v-bind:thm_name="undefined"
-                     ref="proof"/>
-        </div>
+        <Program v-bind:lines="lines" style="margin-top:20px;margin-left:10px" ref="program"/>
       </div>
     </div>
   </div>
@@ -35,12 +29,13 @@
 
 <script>
 import axios from 'axios'
-import ProofArea from '@/components/ProofArea'
+import Program from '@/components/Program'
 
 export default {
   name: 'ProVerify',
+
   components: {
-    ProofArea
+    Program
   },
 
   data: () => {
@@ -49,29 +44,7 @@ export default {
       file_data: [],
 
       // Current program
-      program: '',            
-
-      // Number of successful proofs
-      proof_success: undefined,
-      
-      // Number of failed proofs
-      proof_failure: undefined,
-
-      // Whether conducting a proof
-      proof_process: false,   
-
-      // Data for the current proof
-      vars: undefined, prop: undefined
-    }
-  },
-
-  computed: {
-    proof_stat: function () {
-      if (this.proof_success !== undefined) {
-        return "Proof finished. Success: " + this.proof_success + "  Failure: " + this.proof_failure
-      } else {
-        return ""
-      }
+      lines: '',            
     }
   },
 
@@ -86,7 +59,7 @@ export default {
     },
 
     undo_move: function() {
-      this.$refs.proof.undo_move()
+      this.$refs.program.undo_move()
     },
 
     // Initialize program verification for a program
@@ -94,17 +67,7 @@ export default {
       const data = this.file_data[num]
       let response = await axios.post('http://127.0.0.1:5000/api/program-verify', JSON.stringify(data))
       
-      this.program = response.data.program
-
-      this.proof_success = response.data.proof_success
-      this.proof_failure = response.data.proof_failure
-      if (this.proof_failure !== 0) {
-        this.proof_process = true
-        this.vars = response.data.vars
-        this.prop = response.data.props[0]
-      } else {
-        this.proof_process = false
-      }
+      this.lines = response.data.lines
     }
   }
 }
@@ -141,17 +104,6 @@ export default {
     left: 30%;
     bottom: 0%;
     overflow-y: scroll;
-  }
-
-  .display-con {
-    margin-left: 5%;
-    margin-top: 10px;
-    font-size: 20px;
-    font-family: Consolas, monospace;
-  }
-
-  .display-res {
-    margin-left: 5%;
   }
 
   .content{
