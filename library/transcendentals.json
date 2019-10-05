@@ -60,8 +60,8 @@
             "type": "real ⇒ real"
         },
         {
-            "attributes": [],
             "ascii_op": "^",
+            "attributes": [],
             "name": "power",
             "prop": [
                 "x ^ y = if 0 < x then exp (y * log x)",
@@ -71,6 +71,13 @@
             ],
             "ty": "def",
             "type": "real=>real=>real"
+        },
+        {
+            "attributes": [],
+            "name": "root",
+            "prop": "root n x = real_sgn x * exp (log (abs x) / (real_of_nat n))",
+            "ty": "def",
+            "type": "nat=>real=>real"
         }
     ],
     "description": "Real transcendentals.",

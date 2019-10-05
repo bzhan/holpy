@@ -1,16 +1,6 @@
 {
     "content": [
         {
-            "name": "sum",
-            "ty": "def.ax",
-            "type": "'a set => ('a => real) => real"
-        },
-        {
-            "name": "product",
-            "ty": "def.ax",
-            "type": "'a set => ('a => real) => real"
-        },
-        {
             "name": "eventually",
             "ty": "def.ax",
             "type": "('a => bool) => 'a net => bool"
