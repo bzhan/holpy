@@ -23,9 +23,7 @@
         <label v-bind:for="'rewrite-check' + id">Rewrite</label>
       </span>
     </div>
-    <div style="margin-top:7px">
-      <pre style="width:100%; background:transparent; text-indent:0">{{item.ext}}</pre>
-    </div>
+    <pre class="ext-output">{{item.ext}}</pre>
   </form>
 </template>
 

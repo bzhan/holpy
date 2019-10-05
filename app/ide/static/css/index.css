@@ -45,3 +45,8 @@ textarea.form-element {
     font-family: Consolas, monospace;
     font-size: 15px;
 }
+
+.ext-output {
+    margin-top: 7px;
+    margin-left: 10px;
+}

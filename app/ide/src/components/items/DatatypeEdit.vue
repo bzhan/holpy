@@ -11,9 +11,7 @@
       <textarea spellcheck="false" v-model="item.constrs_lines" class="form-element unicode-replace"
                 min-width="200" ref="constrs"></textarea>
     </div>
-    <div style="margin-top:7px">
-        <pre>{{item.ext_output}}</pre>
-    </div>
+    <pre class="ext-output">{{item.ext}}</pre>
   </form>
 </template>
 

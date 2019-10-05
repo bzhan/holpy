@@ -358,10 +358,6 @@ def file_data_to_output(thy, data, *, line_length=None):
         data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
         data['edit_type'] = printer.print_type(thy, T, unicode=True, highlight=False)
 
-        # Obtain items added by the extension
-        if ext:
-            data['ext_output'] = str_of_extension(thy, ext)
-
     elif data['ty'] in ('def.ind', 'def.pred'):
         data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
 
@@ -379,9 +375,6 @@ def file_data_to_output(thy, data, *, line_length=None):
             data['prop_lines'].append(content)
 
         data['prop_lines'] = '\n'.join(data['prop_lines'])
-        # Obtain items added by the extension
-        if ext:
-            data['ext_output'] = str_of_extension(thy, ext)
 
     elif data['ty'] == 'def':
         data['type'] = printer.print_type(thy, parsed_data['type'], unicode=True)
@@ -394,6 +387,10 @@ def file_data_to_output(thy, data, *, line_length=None):
     # Ignore other types of information.
     else:
         pass
+
+    # Obtain items added by the extension
+    if ext and data['ty'] in ('type.ind', 'def', 'def.ind', 'def.pred'):
+        data['ext'] = str_of_extension(thy, ext)
 
 
 # Loads json file for the given user and file name.
