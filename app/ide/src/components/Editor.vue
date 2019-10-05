@@ -179,20 +179,20 @@ export default {
   display: inline-block;
   width: 25%;
   position: fixed;
-  top: 56px;
+  top: 40px;
   bottom: 0px;
   left: 0px;
   overflow-y: scroll;
   padding-left: 10px;
-  padding-top: 10px;
+  padding-top: 5px;
 }
 
 #theory-content {
   display: inline-block;
   width: 75%;
   position: fixed;
-  top: 56px;
-  bottom: 25%;
+  top: 40px;
+  bottom: 30%;
   left: 25%;
   overflow-y: scroll;
   padding-left: 10px;
@@ -205,7 +205,7 @@ export default {
   height: 25%;
   left: 25%;
   position: fixed;
-  top: 75%;
+  top: 70%;
   bottom: 0px;
   padding-left: 10px;
   padding-top: 10px;

@@ -30,3 +30,20 @@ export default {
   }
 }
 </script>
+
+<style>
+
+.navbar {
+  padding: 0rem 1rem;
+}
+
+.dropdown-menu.show {
+  margin: 0px;
+  padding: 0px
+}
+
+a.dropdown-item {
+  padding: 0.2rem 1.0rem 0.2rem 0.5rem;
+}
+
+</style>

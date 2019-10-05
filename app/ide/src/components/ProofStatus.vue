@@ -2,9 +2,11 @@
   <div>
     <div><pre>{{ status }}</pre></div>
     <div>
-      <a href="#" id="link-backward" v-on:click="ref_proof.step_backward()">&lt;</a>
-      <span id="instruction-number" v-html="instr_no"/>
-      <a href="#" id="link-forward" v-on:click="ref_proof.step_forward()">&gt;</a>
+      <span v-if="instr_no !== ''">
+        <a href="#" id="link-backward" v-on:click="ref_proof.step_backward()">&lt;</a>
+        <span id="instruction-number" v-html="instr_no"/>
+        <a href="#" id="link-forward" v-on:click="ref_proof.step_forward()">&gt;</a>
+      </span>
       <span id="instruction" style="margin-left:10pt" v-html="instr"/>
     </div>
     <div class="thm-content">

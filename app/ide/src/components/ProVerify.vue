@@ -102,7 +102,7 @@ export default {
     display: inline-block;
     width: 30%;
     position: fixed;
-    top: 56px;
+    top: 40px;
     bottom: 0%;
     overflow-y: scroll;
     padding-top: 20px;
@@ -114,7 +114,7 @@ export default {
     width: 70%;
     position: fixed;
     left: 30%;
-    top: 56px;
+    top: 40px;
     bottom: 25%;
     overflow-y: scroll;
   }
