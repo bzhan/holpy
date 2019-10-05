@@ -118,25 +118,25 @@
             "name": "less",
             "prop": "less x y = neg(less_eq y x)",
             "ty": "def",
-            "type": "real => real => bool"
+            "type": "real ⇒ real ⇒ bool"
         },
         {
             "name": "greater_eq",
             "prop": "greater_eq m n = less_eq n m",
             "ty": "def",
-            "type": "real => real => bool"
+            "type": "real ⇒ real ⇒ bool"
         },
         {
             "name": "greater",
             "prop": "greater m n = less n m",
             "ty": "def",
-            "type": "real => real => bool"
+            "type": "real ⇒ real ⇒ bool"
         },
         {
             "name": "abs",
             "prop": "abs n = (if 0 <= n then n else -n)",
             "ty": "def",
-            "type": "real => real"
+            "type": "real ⇒ real"
         },
         {
             "attributes": [
@@ -154,30 +154,25 @@
             "name": "max",
             "prop": "max m n = if m <= n then n else m",
             "ty": "def",
-            "type": "real => real => real"
-        },
-        {
-            "name": "min",
-            "ty": "def.ax",
-            "type": "'a => 'a => 'a"
+            "type": "real ⇒ real ⇒ real"
         },
         {
             "name": "min",
             "prop": "min m n = if m <= n then m else n",
             "ty": "def",
-            "type": "real => real => real"
+            "type": "real ⇒ real ⇒ real"
         },
         {
             "name": "real_sgn",
             "prop": "real_sgn x = if 0 < x then 1 else if x <0 then -1 else 0",
             "ty": "def",
-            "type": "real => real"
+            "type": "real ⇒ real"
         },
         {
             "name": "sqrt",
             "prop": "sqrt x = THE y. real_sgn y =  real_sgn x & y ^ (2::nat) = abs x",
             "ty": "def",
-            "type": "real => real"
+            "type": "real ⇒ real"
         }
     ],
     "description": "real numbers",

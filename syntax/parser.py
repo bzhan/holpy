@@ -639,6 +639,9 @@ def get_extension(thy, data):
 def parse_extensions(thy, data):
     """Parse a list of extensions to thy in sequence."""
     for item in data:
-        item = parse_item(thy, item)
-        ext = get_extension(thy, item)
-        thy.unchecked_extend(ext)
+        try:
+            item = parse_item(thy, item)
+            ext = get_extension(thy, item)
+            thy.unchecked_extend(ext)
+        except Exception:
+            pass

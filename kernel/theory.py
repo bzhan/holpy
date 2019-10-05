@@ -151,14 +151,22 @@ class Theory():
 
         """
         if self.is_overload_const(name):
-            # Just assert the given type is an instance of the
-            # overloaded type
+            # Assert the given type is an instance of the overloaded type,
+            # and all instantiations are concrete types.
             aT = self.get_term_sig(name)
             try:
-                aT.match(T)
+                inst = aT.match(T)
             except TypeMatchException:
                 raise TheoryException("Constant %s :: %s does not match overloaded type %s" % (name, T, aT))
+
+            for _, v in sorted(inst.items()):
+                if v.ty != HOLType.TYPE:
+                    raise TheoryException("When overloading %s with %s: cannot instantiate to type variables" % (aT, T))
         else:
+            # Make sure this name does not already occur in the theory
+            if self.has_term_sig(name):
+                raise TheoryException("Constant %s already exists" % name)
+
             self.add_data("term_sig", name, T)
 
     def has_term_sig(self, name):

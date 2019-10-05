@@ -294,16 +294,17 @@ export default {
         delete data.constrs_lines;
         delete data.type_hl;
         delete data.edit_type;
-        delete data.ext_output;
+        delete data.ext;
       } else if (data.ty === 'def') {
         delete data.type_hl;
         delete data.prop_hl;
         delete data.prop_lines;
+        delete data.ext;
       } else if (data.ty === 'def.ind' || data.ty === 'def.pred') {
         delete data.type_hl;
         delete data.ext;
         delete data.prop_lines;
-        delete data.ext_output;
+        delete data.ext;
         for (var i in data.rules) {
           delete data.rules[i].prop_hl;
         }
