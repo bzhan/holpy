@@ -1,21 +1,6 @@
 <template>
-  <div>
-    <label for="proof-area"></label>
+  <div style="margin-top:8px">
     <textarea id="proof-area"></textarea>
-    <br>
-    <div><pre>{{ status }}</pre></div>
-    <div>
-      <a href="#" id="link-backward" v-on:click="step_backward()">&lt;</a>
-      <span id="instruction-number"> {{ instr_no }} </span>
-      <a href="#" id="link-forward" v-on:click="step_forward()">&gt;</a>
-      <span id="instruction" style="margin-left:10pt" v-html="instr"> </span>
-    </div>
-    <div class="thm-content">
-      <pre v-for="(res,i) in search_res"
-           :key="res.num"
-           v-on:click="apply_thm_tactic(i)"
-           v-html="Util.highlight_html(res.display)"/> 
-    </div>
   </div>
 </template>
 
@@ -49,18 +34,22 @@ export default {
     'vars',
 
     // Statement of the theorem to be proved.
-    'prop'
+    'prop',
+
+    // Initial value for steps and proof
+    'old_steps',
+    'old_proof',
+
+    // Area for displaying status
+    'ref_status'
   ],
 
   data: function () {
     return {
       editor: undefined,  // CodeMirror object
       edit_flag: false,   // Edit flag for CodeMirror
-      instr: '',          // Display of current instruction
-      status: '',         // Display of status (text)
       is_mousedown: false,  // Used to manage clicks
-      search_res: [],     // List of search results
-      method_sig: [],
+      method_sig: [],     // Method signature
 
       // Information about the proof
       index: 0,
@@ -69,16 +58,6 @@ export default {
       goal: -1,
       facts: new Set(),
       proof: undefined,
-    }
-  },
-
-  computed: {
-    instr_no: function () {
-      if (this.history) {
-        return this.index + '/' + (this.history.length - 1)
-      } else {
-        return ""
-      }
     }
   },
 
@@ -98,7 +77,7 @@ export default {
     },
 
     display_status: function (status) {
-      this.status = status
+      this.ref_status.status = status
     },
 
     // Display selected facts (in yellow) and goal (in red).
@@ -189,7 +168,9 @@ export default {
 
     display_instructions: function () {
       var hId = this.index
-      this.instr = Util.highlight_html(this.history[hId].steps_output)
+      this.ref_status.instr = Util.highlight_html(this.history[hId].steps_output)
+      this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
+
       var proof_info = {
         proof: this.history[hId].proof,
         report: this.history[hId].report
@@ -227,16 +208,16 @@ export default {
     match_thm: async function () {
       var input = this.current_state()
       if (input === undefined) {
-        this.search_res = []
+        this.ref_status.search_res = []
       } else {
         let response = await axios.post('http://127.0.0.1:5000/api/search-method', JSON.stringify(input))
 
-        this.search_res = response.data.search_res
+        this.ref_status.search_res = response.data.search_res
       }
     },
 
     apply_thm_tactic: function (res_id) {
-      var res = this.search_res[res_id];
+      var res = this.ref_status.search_res[res_id];
       if (res === undefined)
           return;
 
@@ -437,7 +418,8 @@ export default {
       this.display_facts_and_goal();
     },
 
-    init_proof: async function () {
+    init_empty_proof: async function () {
+      // Start new proof
       const data = {
         theory_name: this.theory_name,
         thm_name: this.thm_name,
@@ -457,6 +439,44 @@ export default {
       }]
       this.index = 0
       this.display_instructions()
+    },
+
+    init_saved_proof: async function () {
+      // Has existing proof
+      const data = {
+        theory_name: this.theory_name,
+        thm_name: this.thm_name,
+        vars: this.vars,
+        prop: this.prop,
+        steps: this.old_steps,
+        proof: this.old_proof
+      }
+
+      let response = await axios.post('http://127.0.0.1:5000/api/init-saved-proof', JSON.stringify(data))
+
+      if ('failed' in response.data) {
+        this.display_status(response.data.failed + ': ' + response.data.message)
+      } else {
+        this.goal = -1
+        this.method_sig = response.data.method_sig
+        this.steps = response.data.steps
+        if (response.data.history !== undefined) {
+          this.history = response.data.history
+          this.index = response.data.history.length - 1
+          this.display_instructions()
+        } else {
+          this.proof = response.data.proof
+          this.display_checked_proof(response.data)
+        }
+      }
+    },
+
+    init_proof: async function () {
+      if (this.old_steps === undefined) {
+        this.init_empty_proof()
+      } else {
+        this.init_saved_proof()
+      }
     },
 
     undo_move: function () {
@@ -551,10 +571,3 @@ export default {
 }
 
 </script>
-
-<style scoped>
-  #proof-area {
-    width: 100%;
-    height: 2vh;
-  }
-</style>

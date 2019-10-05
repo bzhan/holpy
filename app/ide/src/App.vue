@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Main from './components/Main.vue'
+import Editor from './components/Editor.vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -26,7 +26,7 @@ $(function () {
 export default {
   name: 'app',
   components: {
-    Main
+    Editor
   }
 }
 </script>

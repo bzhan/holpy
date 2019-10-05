@@ -3,11 +3,13 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-import Main from './components/Main.vue'
+import Index from './components/Index.vue'
+import Editor from './components/Editor.vue'
 import ProVerify from './components/ProVerify.vue'
 
 const routes = [
-    {path: '/ide', name: 'main', component: Main},
+    {path: '/', name: 'main', component: Index},
+    {path: '/ide', name: 'editor', component: Editor},
     {path: '/program', name: 'program', component: ProVerify}
 ]
 

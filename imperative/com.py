@@ -89,54 +89,69 @@ class Com():
 
         return self.pre[0]
 
-    def print_com(self):
-        """Pretty-printing for the command.
-        
-        Also returns a mapping from line numbers to verification
-        conditions (of type Expr).
+    def get_lines(self, vars):
+        """Obtain lines for pretty-printing of the command. Each line
+        is specified by its type (one of 'com', 'inv' and 'vc'), its
+        indentation level, and the text. Lines of type 'vc' contains both
+        the printed expression form and the printed HOL form.
 
         """
+        lines = []
         indent = 0
-        lines = []    # Printed lines
-        vcs = dict()  # Mapping from line number to vc
 
-        def add_vc_pre(cmd):
-            for i in range(len(cmd.pre) - 1):
-                vc = expr.implies(cmd.pre[i], cmd.pre[i+1])
-                vcs[len(lines)] = vc
-                lines.append(' ' * indent + '<' + str(vc) + '>')
+        def add_vc(ls):
+            """Add verification conditions for the specified list
+            (either pre or post).
 
-        def add_vc_post(cmd):
-            for i in range(len(cmd.post) - 1):
-                vc = expr.implies(cmd.post[i], cmd.post[i+1])
-                vcs[len(lines)] = vc
-                lines.append(' ' * indent + '<' + str(vc) + '>')
+            """
+            for i in range(len(ls) - 1):
+                vc = ls[i+1] if ls[i] == expr.true else expr.implies(ls[i], ls[i+1])
+                vc_hol = vc.convert_hol(vars)
+                lines.append({
+                    'ty': 'vc',
+                    'indent': indent,
+                    'str': str(vc),
+                    'vars': vars,
+                    'prop': vc_hol
+                })
 
         def add_line(line):
-            lines.append(' ' * indent + line)
+            lines.append({
+                'ty': 'com',
+                'indent': indent,
+                'str': line
+            })
+
+        def add_inv(line):
+            lines.append({
+                'ty': 'inv',
+                'indent': indent,
+                'str': line
+            })
 
         def add_str(s):
-            lines[-1] += s
+            assert len(lines) > 0
+            lines[-1]['str'] += ';'
 
         def rec(cmd):
             nonlocal indent
 
             if isinstance(cmd, Skip):
-                add_vc_pre(cmd)
+                add_vc(cmd.pre)
                 add_line("skip")
 
             elif isinstance(cmd, Assign):
-                add_vc_pre(cmd)
+                add_vc(cmd.pre)
                 add_line(str(cmd.v) + " := " + str(cmd.e))
 
             elif isinstance(cmd, Seq):
-                add_vc_pre(cmd)
+                add_vc(cmd.pre)
                 rec(cmd.c1)
                 add_str(';')
                 rec(cmd.c2)
 
             elif isinstance(cmd, Cond):
-                add_vc_pre(cmd)
+                add_vc(cmd.pre)
                 add_line("if (%s) then" % str(cmd.b))
                 indent += 2
                 rec(cmd.c1)
@@ -147,20 +162,30 @@ class Com():
                 indent -= 2
 
             elif isinstance(cmd, While):
-                add_vc_pre(cmd)
+                add_vc(cmd.pre)
                 add_line("while (%s) {" % str(cmd.b))
                 indent += 2
-                add_line("[%s]" % str(cmd.inv))
+                add_inv("[%s]" % str(cmd.inv))
                 rec(cmd.c)
                 indent -= 2
                 add_line("}")
-                add_vc_post(cmd)
+                add_vc(cmd.post)
 
             else:
                 raise TypeError
 
         rec(self)
-        return lines, vcs
+        return lines
+
+    def print_com(self, vars):
+        """Obtain the pretty-printed version of the command."""
+        lines = self.get_lines(vars)
+        return list(l['indent'] * ' ' + l['str'] for l in lines)
+
+    def get_vcs(self, vars):
+        """Obtain the verification conditions as a list."""
+        lines = self.get_lines(vars)
+        return list(l['str'] for l in lines if l['ty'] == 'vc')
 
 
 class Skip(Com):

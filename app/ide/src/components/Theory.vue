@@ -10,7 +10,7 @@
          v-bind:key=index
          v-bind:item_id=index
          class="theory-items"
-         v-on:click="selected = index"
+         v-on:click="handle_select(index)"
          v-bind:class="{
            'item-selected': selected === index,
            'item-error': 'err_type' in item
@@ -86,8 +86,11 @@
         </div>
         <div v-if="on_proof === index">
           <ProofArea v-bind:theory_name="theory.name" v-bind:thm_name="item.name"
-                     v-bind:vars="item.vars" v-bind:prop="item.prop" ref="proof"/>
+                     v-bind:vars="item.vars" v-bind:prop="item.prop"
+                     v-bind:old_steps="item.steps" v-bind:old_proof="item.proof"
+                     v-bind:ref_status="ref_status" ref="proof"/>
           <button style="margin:5px" v-on:click="save_proof">Save</button>
+          <button style="margin:5px" v-on:click="reset_proof">Reset</button>
           <button style="margin:5px" v-on:click="cancel_proof">Cancel</button>
         </div>
       </div>
@@ -138,7 +141,10 @@ export default {
   },
 
   props: [
-    "theory"
+    "theory",
+
+    // Reference to status panel
+    "ref_status"
   ],
 
   data: function () {
@@ -190,17 +196,27 @@ export default {
       return response
     },
 
+    // Select (or un-select) an item
+    handle_select: function (index) {
+      if (this.selected === index) {
+        this.selected = undefined
+      } else {
+        this.selected = index
+      }
+    },
+
     // Check whether the current edit produces any errors.
     check_edit: async function () {
       const response = await this.parse_item()
       if (response === undefined)
         return
 
-      if ('err_type' in response.data.item) {
+      const item = response.data.item
+      if ('err_type' in item) {
         this.$emit('set-message', {
           type: 'error',
-          data: response.data.item.err_str,
-          trace: response.data.item.trace
+          data: item.err_type + '\n' + item.err_str,
+          trace: item.trace
         })
       } else {
         this.$emit('set-message', {
@@ -326,7 +342,43 @@ export default {
     },
 
     save_proof: function () {
-      
+      const $proof = this.$refs.proof[0]
+      var item = this.theory.content[this.on_proof]
+
+      if ($proof.steps.length === 0) {
+        // Empty proof
+        delete item.proof
+        delete item.num_gaps
+        delete item.steps
+      } else {
+        var cur_proof = undefined
+        if ($proof.history !== undefined) {
+          const len = $proof.history.length
+          cur_proof = $proof.history[len-1].proof
+          item.num_gaps = $proof.history[len-1].report.num_gaps
+        } else {
+          cur_proof = $proof.proof
+          item.num_gaps = $proof.num_gaps
+        }
+
+        var output_proof = []
+        for (let i = 0; i < cur_proof.length; i++) {
+          output_proof.push($.extend(true, {}, cur_proof[i]))
+          delete output_proof[i].th_hl
+          delete output_proof[i].args_hl
+        }
+
+        // Force update
+        this.$set(this.theory.content[this.on_proof], 'proof', output_proof)
+        item.steps = $proof.steps
+      }
+
+      this.save_json_file()
+      this.on_proof = undefined
+    },
+
+    reset_proof: function () {
+      this.$refs.proof[0].init_empty_proof()
     },
 
     cancel_proof: function () {
@@ -341,7 +393,7 @@ export default {
         if ('err_type' in item) {
           this.$emit('set-message', {
             type: 'error',
-            data: item.err_str
+            data: item.err_type + '\n' + item.err_str
           })
         } else {
           this.$emit('set-message', {
@@ -350,17 +402,30 @@ export default {
           })
         }
       } else {
-        this.$emit('set-message', {
-          type: 'OK',
-          data: ""
-        })
+        if ('errs' in this.theory) {
+          this.$emit('set-message', {
+            type: 'error',
+            data: 'Loaded ' + this.theory.name + ': ' + this.theory.errs.length + ' error(s)'
+          })
+        } else {
+          this.$emit('set-message', {
+            type: 'OK',
+            data: 'Loaded ' + this.theory.name + ': ' + 'OK '
+          })
+        }
       }
+    }
+  },
+
+  updated() {
+    if ('proof' in this.$refs) {
+      this.$emit('set-proof', this.$refs.proof[0])
     }
   },
 
   created() {
     this.Util = Util
-  },
+  }
 }
 </script>
 

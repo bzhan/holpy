@@ -30,7 +30,7 @@ class ComTest(unittest.TestCase):
         ]
 
         for com, s in test_data:
-            lines, _ = com.print_com()
+            lines = com.print_com({'x': 'int'})
             self.assertEqual(lines, s)
 
     def testComputeWP(self):
@@ -72,17 +72,15 @@ class ComTest(unittest.TestCase):
 
             (Cond(neq(a,zero), Assign('a',zero), Skip()),
              "true", "a == 0",
-             ["true --> if a != 0 then 0 == 0 else a == 0"]),
+             ["if a != 0 then 0 == 0 else a == 0"]),
         ]
 
         for c, pre, post, expected_vcs in test_data:
             pre = cond_parser.parse(pre)
             post = cond_parser.parse(post)
-            expected_vcs = [cond_parser.parse(vc) for vc in expected_vcs]
             c.pre = [pre]
             c.compute_wp(post)
-            _, vc_dct = c.print_com()
-            vcs = [v for k, v in sorted(vc_dct.items())]
+            vcs = c.get_vcs({'a': 'int', 'b': 'int', 'm': 'int', 'A': 'int', 'B': 'int'})
             self.assertEqual(vcs, expected_vcs)
 
     def testVerify(self):
@@ -93,17 +91,18 @@ class ComTest(unittest.TestCase):
         c.pre = [pre]
         c.compute_wp(post)
 
-        _, vcs = c.print_com()
+        vcs = c.get_vcs({'c': 'int', 'a': 'int'})
         vc = vcs[0]
-        self.assertEqual(vc, cond_parser.parse("true --> if 0 <= a then a == abs(a) else -a == abs(a)"))
+        self.assertEqual(vc, "if 0 <= a then a == abs(a) else -a == abs(a)")
+        vc = cond_parser.parse(vc)
 
         goal = vc.convert_hol({"a": "int"})
         As, C = goal.strip_implies()
         state = ProofState.init_state(thy, get_vars(goal), As, C)
-        state.rewrite_goal(1, "int_abs_def")
+        state.rewrite_goal(0, "int_abs_def")
         method.apply_method(state, {
             'method_name': 'z3',
-            'goal_id': "1"})
+            'goal_id': "0"})
         self.assertEqual(state.check_proof(no_gaps=True), Thm([], goal))
 
     def testVerify2(self):
@@ -115,17 +114,18 @@ class ComTest(unittest.TestCase):
         c.pre = [pre]
         c.compute_wp(post)
 
-        _, vcs = c.print_com()
+        vcs = c.get_vcs({'c': 'int', 'm': 'int', 'n': 'int'})
         vc = vcs[0]
-        self.assertEqual(vc, cond_parser.parse("true --> if m <= n then n == max(m,n) else m == max(m,n)"))
+        self.assertEqual(vc, "if m <= n then n == max(m,n) else m == max(m,n)")
+        vc = cond_parser.parse(vc)
 
         goal = vc.convert_hol({"m": "int", "n": "int"})
         As, C = goal.strip_implies()
         state = ProofState.init_state(thy, get_vars(goal), As, C)
-        state.rewrite_goal(1, "int_max_def")
+        state.rewrite_goal(0, "int_max_def")
         method.apply_method(state, {
             'method_name': 'z3',
-            'goal_id': "1"})
+            'goal_id': "0"})
         self.assertEqual(state.check_proof(no_gaps=True), Thm([], goal))
 
 
