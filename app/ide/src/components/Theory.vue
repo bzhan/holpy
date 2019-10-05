@@ -340,7 +340,39 @@ export default {
     },
 
     save_proof: function () {
-      
+      const $proof = this.$refs.proof[0]
+      var item = this.theory.content[this.on_proof]
+
+      if ($proof.steps.length === 0) {
+        // Empty proof
+        delete item.proof
+        delete item.num_gaps
+        delete item.steps
+      } else {
+        var cur_proof = undefined
+        if ($proof.history !== undefined) {
+          const len = $proof.history.length
+          cur_proof = $proof.history[len-1].proof
+          item.num_gaps = $proof.history[len-1].report.num_gaps
+        } else {
+          cur_proof = $proof.proof
+          item.num_gaps = $proof.num_gaps
+        }
+
+        var output_proof = []
+        for (let i = 0; i < cur_proof.length; i++) {
+          output_proof.push($.extend(true, {}, cur_proof[i]))
+          delete output_proof[i].th_hl
+          delete output_proof[i].args_hl
+        }
+
+        // Force update
+        this.$set(this.theory.content[this.on_proof], 'proof', output_proof)
+        item.steps = $proof.steps
+      }
+
+      this.save_json_file()
+      this.on_proof = undefined
     },
 
     cancel_proof: function () {
