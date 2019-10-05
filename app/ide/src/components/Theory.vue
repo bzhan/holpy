@@ -86,7 +86,8 @@
         </div>
         <div v-if="on_proof === index">
           <ProofArea v-bind:theory_name="theory.name" v-bind:thm_name="item.name"
-                     v-bind:vars="item.vars" v-bind:prop="item.prop" ref="proof"/>
+                     v-bind:vars="item.vars" v-bind:prop="item.prop"
+                     v-bind:ref_status="ref_status" ref="proof"/>
           <button style="margin:5px" v-on:click="save_proof">Save</button>
           <button style="margin:5px" v-on:click="cancel_proof">Cancel</button>
         </div>
@@ -138,7 +139,10 @@ export default {
   },
 
   props: [
-    "theory"
+    "theory",
+
+    // Reference to status panel
+    "ref_status"
   ],
 
   data: function () {
@@ -375,9 +379,15 @@ export default {
     }
   },
 
+  updated() {
+    if ('proof' in this.$refs) {
+      this.$emit('set-proof', this.$refs.proof[0])
+    }
+  },
+
   created() {
     this.Util = Util
-  },
+  }
 }
 </script>
 

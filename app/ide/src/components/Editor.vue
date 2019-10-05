@@ -29,22 +29,28 @@
     </div>
     <div id="theory-content">
       <Theory v-bind:theory="theory"
+              v-bind:ref_status="ref_status"
               v-on:set-message="onSetMessage"
+              v-on:set-proof="handle_set_proof"
               ref="theory"/>
     </div>
-    <div id="message">
+    <div id="message" v-if="ref_proof === undefined">
       <Message v-if="message !== undefined"
                v-bind:message="message"
                ref="message"/>
+    </div>
+    <div id="status" v-else>
+      <ProofStatus v-bind:ref_proof="ref_proof" ref="status"/>
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import Theory from './Theory.vue'
-import Content from './Content.vue'
-import Message from './Message.vue'
+import Theory from './Theory'
+import Content from './Content'
+import Message from './Message'
+import ProofStatus from './ProofStatus'
 import "./../../static/css/index.css"
 
 export default {
@@ -52,7 +58,8 @@ export default {
   components: {
     Theory,
     Content,
-    Message
+    Message,
+    ProofStatus,
   },
 
   props: [
@@ -64,6 +71,10 @@ export default {
       filename: undefined,
       theory: undefined,
       message: undefined,
+
+      // References to the current proof area and proof status
+      ref_proof: undefined,
+      ref_status: undefined
     }
   },
 
@@ -72,6 +83,10 @@ export default {
   },
 
   methods: {
+    handle_set_proof: function (ref_proof) {
+      this.ref_proof = ref_proof
+    },
+
     load_filelist: async function () {
       var response = undefined;
       try {
@@ -150,6 +165,10 @@ export default {
     add_item: function (ty) {
       this.$refs.theory.add_item(ty)
     }
+  },
+
+  updated() {
+    this.ref_status = this.$refs.status
   }
 }
 </script>
@@ -180,7 +199,7 @@ export default {
   padding-top: 10px;
 }
 
-#message {
+#message, #status {
   display: inline-block;
   width: 75%;
   height: 25%;

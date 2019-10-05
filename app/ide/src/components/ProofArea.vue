@@ -2,20 +2,6 @@
   <div>
     <label for="proof-area"></label>
     <textarea id="proof-area"></textarea>
-    <br>
-    <div><pre>{{ status }}</pre></div>
-    <div>
-      <a href="#" id="link-backward" v-on:click="step_backward()">&lt;</a>
-      <span id="instruction-number"> {{ instr_no }} </span>
-      <a href="#" id="link-forward" v-on:click="step_forward()">&gt;</a>
-      <span id="instruction" style="margin-left:10pt" v-html="instr"> </span>
-    </div>
-    <div class="thm-content">
-      <pre v-for="(res,i) in search_res"
-           :key="res.num"
-           v-on:click="apply_thm_tactic(i)"
-           v-html="Util.highlight_html(res.display)"/> 
-    </div>
   </div>
 </template>
 
@@ -49,18 +35,18 @@ export default {
     'vars',
 
     // Statement of the theorem to be proved.
-    'prop'
+    'prop',
+
+    // Area for displaying status
+    'ref_status',
   ],
 
   data: function () {
     return {
       editor: undefined,  // CodeMirror object
       edit_flag: false,   // Edit flag for CodeMirror
-      instr: '',          // Display of current instruction
-      status: '',         // Display of status (text)
       is_mousedown: false,  // Used to manage clicks
-      search_res: [],     // List of search results
-      method_sig: [],
+      method_sig: [],     // Method signature
 
       // Information about the proof
       index: 0,
@@ -69,16 +55,6 @@ export default {
       goal: -1,
       facts: new Set(),
       proof: undefined,
-    }
-  },
-
-  computed: {
-    instr_no: function () {
-      if (this.history) {
-        return this.index + '/' + (this.history.length - 1)
-      } else {
-        return ""
-      }
     }
   },
 
@@ -98,7 +74,7 @@ export default {
     },
 
     display_status: function (status) {
-      this.status = status
+      this.ref_status.status = status
     },
 
     // Display selected facts (in yellow) and goal (in red).
@@ -189,7 +165,9 @@ export default {
 
     display_instructions: function () {
       var hId = this.index
-      this.instr = Util.highlight_html(this.history[hId].steps_output)
+      this.ref_status.instr = Util.highlight_html(this.history[hId].steps_output)
+      this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
+
       var proof_info = {
         proof: this.history[hId].proof,
         report: this.history[hId].report
@@ -227,16 +205,16 @@ export default {
     match_thm: async function () {
       var input = this.current_state()
       if (input === undefined) {
-        this.search_res = []
+        this.ref_status.search_res = []
       } else {
         let response = await axios.post('http://127.0.0.1:5000/api/search-method', JSON.stringify(input))
 
-        this.search_res = response.data.search_res
+        this.ref_status.search_res = response.data.search_res
       }
     },
 
     apply_thm_tactic: function (res_id) {
-      var res = this.search_res[res_id];
+      var res = this.ref_status.search_res[res_id];
       if (res === undefined)
           return;
 

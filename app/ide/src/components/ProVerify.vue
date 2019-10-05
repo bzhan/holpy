@@ -21,7 +21,11 @@
         </div>
       </div>
       <div class="right">
-        <Program v-bind:lines="lines" style="margin-top:20px;margin-left:10px" ref="program"/>
+        <Program v-bind:lines="lines" style="margin-top:20px;margin-left:10px" ref="program"
+                 v-bind:ref_status="ref_status" v-on:set-proof="handle_set_proof"/>
+      </div>
+      <div class="status">
+        <ProofStatus v-bind:ref_proof="ref_proof" ref="status"/>
       </div>
     </div>
   </div>
@@ -29,13 +33,15 @@
 
 <script>
 import axios from 'axios'
-import Program from '@/components/Program'
+import Program from './Program'
+import ProofStatus from './ProofStatus'
 
 export default {
   name: 'ProVerify',
 
   components: {
-    Program
+    Program,
+    ProofStatus
   },
 
   data: () => {
@@ -44,11 +50,19 @@ export default {
       file_data: [],
 
       // Current program
-      lines: '',            
+      lines: '',
+
+      // References to the current proof area and proof status
+      ref_proof: undefined,
+      ref_status: undefined
     }
   },
 
   methods: {
+    handle_set_proof: function (ref_proof) {
+      this.ref_proof = ref_proof
+    },
+
     open_file: async function () {
       var file_name = prompt("Please enter file name", "test")
       const data = {
@@ -59,7 +73,7 @@ export default {
     },
 
     undo_move: function() {
-      this.$refs.program.undo_move()
+      this.ref_proof.undo_move()
     },
 
     // Initialize program verification for a program
@@ -69,6 +83,10 @@ export default {
       
       this.lines = response.data.lines
     }
+  },
+
+  updated() {
+    this.ref_status = this.$refs.status
   }
 }
 </script>
@@ -100,8 +118,18 @@ export default {
     display: inline-block;
     width: 70%;
     position: fixed;
-    top: 56px;
     left: 30%;
+    top: 56px;
+    bottom: 25%;
+    overflow-y: scroll;
+  }
+
+  .status {
+    display: inline-block;
+    width: 70%;
+    position: fixed;
+    left: 30%;
+    top: 75%;
     bottom: 0%;
     overflow-y: scroll;
   }

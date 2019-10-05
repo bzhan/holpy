@@ -21,7 +21,8 @@
           Failed
         </span>
         <ProofArea v-if="!line.smt" v-bind:theory_name="'hoare'" v-bind:thm_name="undefined"
-                   v-bind:vars="line.vars" v-bind:prop="line.prop" ref="proof"/>
+                   v-bind:vars="line.vars" v-bind:prop="line.prop"
+                   v-bind:ref_status="ref_status" ref="proof"/>
       </div>
     </div> 
   </div>
@@ -34,16 +35,19 @@ export default {
   name: 'Program',
 
   props: [
-    "lines"
+    "lines",
+
+    // Reference to status panel
+    "ref_status",
   ],
 
   components: {
     ProofArea
   },
 
-  methods: {
-    undo_move: function () {
-      this.$refs.proof[0].undo_move()
+  updated() {
+    if ('proof' in this.$refs) {
+      this.$emit('set-proof', this.$refs.proof[0])
     }
   }
 }
