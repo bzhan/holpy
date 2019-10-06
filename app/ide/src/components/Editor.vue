@@ -17,6 +17,10 @@
           <b-form-select style="margin-left:10px" v-model='add_pos' :options="add_pos_options"/>
         </b-nav-form>
         <span style="margin-left:20px;align-self:center">Opened file: {{ filename }}</span>
+        <b-button style="margin-left:10px;align-self:center" variant="primary"
+                  v-on:click='load_file'>
+          <v-icon name="sync-alt"/>
+        </b-button>
       </b-navbar-nav>
     </b-navbar>
     <div id="theory-list">
@@ -130,10 +134,6 @@ export default {
       this.load_file()
     },
 
-    refresh_file: function () {
-      this.load_file()
-    },
-
     onSelectTheory: function (filename) {
       this.filename = filename
       this.load_file()
@@ -144,6 +144,9 @@ export default {
     },
 
     load_file: async function () {
+      if (this.filename === undefined) {
+        return
+      }
       const data = JSON.stringify({
         filename: this.filename,
         line_length: 80,
