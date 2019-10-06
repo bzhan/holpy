@@ -35,15 +35,19 @@
         </b-button>
       </b-navbar-nav>
     </b-navbar>
-    <div id="theory-list">
+    <div id="theory-list" v-show="ref_proof === undefined">
       <Content v-if="filelist !== undefined"
                v-bind:filelist="filelist"
                v-on:select-theory="onSelectTheory"
                ref="content"/>
     </div>
+    <div id="proof-context" v-show="ref_proof !== undefined">
+      <ProofContext v-bind:ctxt="ctxt" ref="context"/>
+    </div>
     <div id="theory-content">
       <Theory v-bind:theory="theory"
               v-bind:ref_status="ref_status"
+              v-bind:ref_context="ref_context"
               v-on:set-message="onSetMessage"
               v-on:set-proof="handle_set_proof"
               v-on:query="handle_query"
@@ -70,6 +74,7 @@ import Content from './Content'
 import Message from './Message'
 import ProofStatus from './ProofStatus'
 import ProofQuery from './ProofQuery'
+import ProofContext from './ProofContext'
 import "./../../static/css/index.css"
 
 export default {
@@ -79,7 +84,8 @@ export default {
     Content,
     Message,
     ProofStatus,
-    ProofQuery
+    ProofQuery,
+    ProofContext
   },
 
   props: [
@@ -92,9 +98,11 @@ export default {
       theory: undefined,
       message: undefined,
 
-      // References to the current proof area and proof status
+      // References to the current proof area, proof status, and
+      // proof context
       ref_proof: undefined,
       ref_status: undefined,
+      ref_context: undefined,
 
       // Query information
       query: undefined,
@@ -257,13 +265,14 @@ export default {
 
   updated() {
     this.ref_status = this.$refs.status
+    this.ref_context = this.$refs.context
   }
 }
 </script>
 
 <style scoped>
 
-#theory-list {
+#theory-list, #proof-context {
   display: inline-block;
   width: 25%;
   position: fixed;

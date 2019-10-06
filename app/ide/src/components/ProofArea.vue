@@ -9,7 +9,6 @@ import Util from './../../static/js/util.js'
 import 'codemirror/lib/codemirror.css'
 import axios from 'axios'
 import CodeMirror from 'codemirror'
-import "./../../static/css/index.css"
 
 
 export default {
@@ -40,8 +39,9 @@ export default {
     'old_steps',
     'old_proof',
 
-    // Area for displaying status
-    'ref_status'
+    // Area for displaying status and context
+    'ref_status',
+    'ref_context'
   ],
 
   data: function () {
@@ -209,10 +209,12 @@ export default {
       var input = this.current_state()
       if (input === undefined) {
         this.ref_status.search_res = []
+        this.ref_context.ctxt = {}
       } else {
         let response = await axios.post('http://127.0.0.1:5000/api/search-method', JSON.stringify(input))
 
         this.ref_status.search_res = response.data.search_res
+        this.ref_context.ctxt = response.data.ctxt
       }
     },
 
