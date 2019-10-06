@@ -34,16 +34,16 @@ export default {
 <style>
 
 .navbar {
-  padding: 0rem 1rem;
+  padding: 4px 1rem;
 }
 
 .dropdown-menu.show {
-  margin: 0px;
+  margin: 3px 0px;
   padding: 0px
 }
 
 a.dropdown-item {
-  padding: 0.2rem 1.0rem 0.2rem 0.5rem;
+  padding: 0.3rem 1.0rem 0.3rem 0.5rem;
 }
 
 .CodeMirror {

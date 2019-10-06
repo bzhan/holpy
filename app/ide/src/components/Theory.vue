@@ -263,11 +263,37 @@ export default {
       }
     },
 
-    add_item: function (ty) {
-      const len = this.theory.content.length
-      this.$set(this.theory.content, len, {ty: ty})
-      this.selected = len
-      this.on_edit = len
+    // Add a new item.
+    // ty specifies type of the new item. One of 'thm', 'def', etc.
+    // pos specifies where the item should be added. One of 'end', 'before' and 'after'.
+    add_item: function (ty, pos) {
+      if (this.on_add) {
+        // Already adding an item
+        return
+      }
+      if (this.theory === undefined) {
+        // Have not loaded any theory
+        return
+      }
+      if (pos == 'end') {
+        const len = this.theory.content.length
+        this.$set(this.theory.content, len, {ty: ty})
+        this.selected = len
+      } else if (pos == 'before') {
+        if (this.selected === undefined) {
+          return
+        }
+        this.theory.content.splice(this.selected, 0, {})
+        this.$set(this.theory.content, this.selected, {ty: ty})
+      } else if (pos == 'after') {
+        if (this.selected === undefined) {
+          return
+        }
+        this.theory.content.splice(this.selected+1, 0, {})
+        this.$set(this.theory.content, this.selected+1, {ty: ty})
+        this.selected += 1
+      }
+      this.on_edit = this.selected
       this.on_add = true
     },
 

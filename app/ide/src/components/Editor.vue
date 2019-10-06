@@ -10,15 +10,13 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Items" left>
           <b-dropdown-item href="#" v-on:click='remove_selected'>Remove selected</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="add_item('thm')">Add theorem</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="add_item('def')">Add definition</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="add_item('def.ax')">Add constant</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="add_item('def.ind')">Add inductive definition</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="add_item('def.pred')">Add inductive predicate</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="add_item('thm.ax')">Add axiom</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click="add_item('type.ind')">Add inductive datatype</b-dropdown-item>
         </b-nav-item-dropdown>
-        <span style="margin-left:10px;align-self:center">Opened file: {{ filename }}</span>
+        <b-nav-form>
+          <b-button style="margin-left:10px" variant="primary" v-on:click="add_item">New</b-button>
+          <b-form-select style="margin-left:10px" v-model='add_type' :options="add_type_options"/>
+          <b-form-select style="margin-left:10px" v-model='add_pos' :options="add_pos_options"/>
+        </b-nav-form>
+        <span style="margin-left:20px;align-self:center">Opened file: {{ filename }}</span>
       </b-navbar-nav>
     </b-navbar>
     <div id="theory-list">
@@ -74,7 +72,31 @@ export default {
 
       // References to the current proof area and proof status
       ref_proof: undefined,
-      ref_status: undefined
+      ref_status: undefined,
+
+      // Type of item to be added
+      add_type: 'thm',
+
+      // All possible types
+      add_type_options: [
+        {value: 'thm', text: "theorem"},
+        {value: 'def', text: "definition"},
+        {value: 'def.ax', text: "constant"},
+        {value: 'def.ind', text: "inductive definition"},
+        {value: 'def.pred', text: "inductive predicate"},
+        {value: 'thm.ax', text: "axiom"},
+        {value: 'type.ind', text: "inductive datatype"}
+      ],
+
+      // Location of the new item
+      add_pos: 'end',
+
+      // All possible locations
+      add_pos_options: [
+        {value: 'end', text: "at end"},
+        {value: 'before', text: 'before'},
+        {value: 'after', text: 'after'}
+      ]
     }
   },
 
@@ -150,8 +172,8 @@ export default {
       this.$refs.theory.remove_selected()
     },
 
-    add_item: function (ty) {
-      this.$refs.theory.add_item(ty)
+    add_item: function () {
+      this.$refs.theory.add_item(this.add_type, this.add_pos)
     }
   },
 
@@ -167,7 +189,7 @@ export default {
   display: inline-block;
   width: 25%;
   position: fixed;
-  top: 40px;
+  top: 48px;
   bottom: 0px;
   left: 0px;
   overflow-y: scroll;
@@ -179,7 +201,7 @@ export default {
   display: inline-block;
   width: 75%;
   position: fixed;
-  top: 40px;
+  top: 48px;
   bottom: 30%;
   left: 25%;
   overflow-y: scroll;
