@@ -12,6 +12,7 @@
           <b-dropdown-item href="#" v-on:click='remove_selected'>Remove selected</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
+          <b-dropdown-item href="#" v-on:click='undo_move'>Undo move</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_cut'>Insert goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_cases'>Apply cases</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_induction'>Apply induction</b-dropdown-item>
@@ -54,7 +55,7 @@
     <div id="status" v-show="ref_proof !== undefined && query === undefined">
       <ProofStatus v-bind:ref_proof="ref_proof" ref="status"/>
     </div>
-    <div id="query" v-show="ref_proof != undefined && query !== undefined">
+    <div id="query" v-show="ref_proof !== undefined && query !== undefined">
       <ProofQuery v-bind:query="query"
                   v-on:query-ok="handle_query_ok"
                   v-on:query-cancel="handle_query_cancel"/>
@@ -211,6 +212,10 @@ export default {
 
     add_item: function () {
       this.$refs.theory.add_item(this.add_type, this.add_pos)
+    },
+
+    undo_move: function() {
+      this.ref_proof.undo_move()
     },
 
     apply_cut: function () {

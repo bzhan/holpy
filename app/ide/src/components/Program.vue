@@ -22,7 +22,8 @@
         </span>
         <ProofArea v-if="!line.smt" v-bind:theory_name="'hoare'" v-bind:thm_name="undefined"
                    v-bind:vars="line.vars" v-bind:prop="line.prop"
-                   v-bind:ref_status="ref_status" ref="proof"/>
+                   v-bind:ref_status="ref_status" ref="proof"
+                   v-on:query="handle_query"/>
       </div>
     </div> 
   </div>
@@ -43,6 +44,12 @@ export default {
 
   components: {
     ProofArea
+  },
+
+  methods: {
+    handle_query: function (query) {
+      this.$emit('query', query)
+    }
   },
 
   updated() {
