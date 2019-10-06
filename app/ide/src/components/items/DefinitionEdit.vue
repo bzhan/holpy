@@ -37,18 +37,16 @@ export default {
   ],
 
   data: function () {
-    var res = {
-      item: $.extend(true, {
-        attributes: [],
-        name: "",
-        type: "",
-        prop_lines: ""
-      }, this.old_item)
+    return {
+      item: Object.assign(
+        {
+          attributes: [],
+          name: "",
+          type: "",
+          prop_lines: ""
+        },
+        JSON.parse(JSON.stringify(this.old_item)))
     }
-    if (!('attributes' in res.item)) {
-      res.item.attributes = []
-    }
-    return res
   },
 
   computed: {

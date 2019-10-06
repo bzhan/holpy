@@ -42,7 +42,7 @@
                ref="content"/>
     </div>
     <div id="proof-context" v-show="ref_proof !== undefined">
-      <ProofContext v-bind:ctxt="ctxt" ref="context"/>
+      <ProofContext ref="context"/>
     </div>
     <div id="theory-content">
       <Theory v-bind:theory="theory"

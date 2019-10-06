@@ -254,7 +254,7 @@ export default {
       delete item.err_type
       delete item.err_str
       delete item.trace
-      $.extend(item, response.data.item)
+      Object.assign(item, response.data.item)
       this.$set(this.theory.content, this.on_edit, item)
       this.save_json_file()
       this.on_edit = undefined
@@ -350,10 +350,9 @@ export default {
       for (let i = 0; i < this.theory.content.length; i++) {
         const item = this.theory.content[i]
         if ('name' in item) {
-          var item_copy = {};
-          $.extend(true, item_copy, item);  // perform deep copy
+          var item_copy = JSON.parse(JSON.stringify(item)) // deep copy
           content.push(item_copy);
-          this.item_to_output(item_copy);    
+          this.item_to_output(item_copy);
         }
       }
 
@@ -408,7 +407,7 @@ export default {
 
         var output_proof = []
         for (let i = 0; i < cur_proof.length; i++) {
-          output_proof.push($.extend(true, {}, cur_proof[i]))
+          output_proof.push(JSON.parse(JSON.stringify(cur_proof[i])))  // deep copy
           delete output_proof[i].th_hl
           delete output_proof[i].args_hl
         }

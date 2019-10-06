@@ -26,10 +26,12 @@ export default {
 
   data: function () {
     return {
-      item: $.extend(true, {
-        edit_type: "",
-        constrs_lines: ""
-      }, this.old_item)
+      item: Object.assign(
+        {
+          edit_type: "",
+          constrs_lines: ""
+        },
+        JSON.parse(JSON.stringify(this.old_item)))
     }
   },
 

@@ -23,10 +23,12 @@ export default {
 
   data: function () {
     return {
-      item: $.extend(true, {
-        name: "",
-        type: ""
-      }, this.old_item)
+      item: Object.assign(
+        {
+          name: "",
+          type: ""
+        },
+        JSON.parse(JSON.stringify(this.old_item)))
     }
   },
 

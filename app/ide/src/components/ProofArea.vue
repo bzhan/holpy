@@ -157,7 +157,7 @@ export default {
       }
     },
 
-    get_line_no_from_id: function (id, proof) {
+    get_line_no_from_id: function (id) {
       var found = -1;
       for (let i = 0; i < this.proof.length; i++) {
         if (this.proof[i].id === id)
@@ -177,11 +177,11 @@ export default {
       }
       if (hId < this.steps.length) {
         // Find line number corresponding to ids
-        proof_info.goal = this.get_line_no_from_id(this.steps[hId].goal_id, proof_info.proof)
+        proof_info.goal = this.get_line_no_from_id(this.steps[hId].goal_id)
         proof_info.facts = []
         if (this.steps[hId].fact_ids !== undefined) {
           this.steps[hId].fact_ids.forEach(
-            v => proof_info.facts.push(this.get_line_no_from_id(v, proof_info.proof))
+            v => proof_info.facts.push(this.get_line_no_from_id(v))
           )
         }
       }
@@ -235,14 +235,15 @@ export default {
       if (args === undefined) {
         args = {}
       }
-      sigs.forEach(function(sig, i) {
+      for (let i = 0; i < sigs.length; i++) {
+        let sig = sigs[i]
         if (sig in args) {
           input[sig] = args[sig]
         } else {
           sigList.push(sig)
           count += 1
         }
-      })
+      }
 
       if (count > 0) {
         let $vm = this
@@ -256,7 +257,7 @@ export default {
         })
 
       if (query_result !== undefined) {
-          $.extend(input, query_result)
+          Object.assign(input, query_result)
           this.display_status('Running')
           this.apply_method_ajax(input)
         }
@@ -281,7 +282,7 @@ export default {
         })
 
         if (query_result !== undefined) {
-          $.extend(input, query_result)
+          Object.assign(input, query_result)
           this.apply_method_ajax(input)
         }
       } else if ('failed' in result.data) {
@@ -580,7 +581,7 @@ export default {
       }
     });
 
-    editor.on('mousedown', function (cm) {
+    editor.on('mousedown', function () {
       that.is_mousedown = true;
     });
 
