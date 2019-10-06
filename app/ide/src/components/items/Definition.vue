@@ -6,9 +6,10 @@
           class="item-text" v-html="Util.highlight_html(item.type_hl)" />
     <span v-else class="item-text">{{item.type}}</span>
     &nbsp;
-    <span class="keyword">where</span>&nbsp;&nbsp;
-    <a href="#" style="font-style:italic;color:brown"
-       v-on:click="$emit('edit')">edit</a>&nbsp;&nbsp;
+    <span class="keyword">where</span>
+    <a href="#" title="edit" v-on:click="$emit('edit')" style="margin-left:10px">
+      <v-icon name="edit"/>
+    </a>
     <br>
     <span v-if="!('err_type' in item)">
       <span v-for="(line, i) in item.prop_hl" v-bind:key=i>

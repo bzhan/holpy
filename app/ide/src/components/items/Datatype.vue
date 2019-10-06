@@ -1,9 +1,10 @@
 <template>
   <div>
     <span class="keyword">datatype</span>&nbsp;
-    <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span> =&nbsp;&nbsp;
-    <a href="#" style="font-style:italic;color:brown"
-       v-on:click="$emit('edit')">edit</a>&nbsp;&nbsp;
+    <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span> =
+    <a href="#" title="edit" v-on:click="$emit('edit')" style="margin-left:10px">
+      <v-icon name="edit"/>
+    </a>
     <span v-for="(v, i) in item.constrs_hl" v-bind:key=i>
       <br><span class="item-text indented-text" v-html="Util.highlight_html(v)"></span>
     </span>

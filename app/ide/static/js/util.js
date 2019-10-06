@@ -56,16 +56,6 @@ var Util = {
         return output
     },
 
-    get_status_color: function (item) {
-        if (item.proof === undefined) {
-            return 'red';
-        } else if (item.num_gaps > 0) {
-            return 'chocolate';
-        } else {
-            return 'green';
-        }
-    },
-
     adjust_input_size: function (input) {
         var text = $(input).val();
         var test_width = $(input).closest('form').find('pre.test-width');
