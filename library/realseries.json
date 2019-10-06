@@ -1,0 +1,120 @@
+{
+    "content": [
+        {
+            "attributes": [],
+            "name": "has_limsup",
+            "prop": [
+                "has_limsup f l net ⟷ (trivial_limit net ∨ ",
+                "has_inf ({b. eventually (λx. f x ≤ b) net}) l)"
+            ],
+            "ty": "def",
+            "type": "('a ⇒ real) ⇒ real ⇒ 'a net ⇒ bool"
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf",
+            "prop": [
+                "has_liminf f l net ⟷ ",
+                "trivial_limit net ∨ has_inf ({b. eventually (λx. b <= f x) net}) l"
+            ],
+            "ty": "def",
+            "type": "('a ⇒ real) ⇒ real ⇒ 'a net ⇒ bool"
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_transform",
+            "prop": [
+                "eventually (%x::'a. f x = g x) net & has_limsup f l net",
+                "               --> has_limsup g l net"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_eventually_ubound",
+            "prop": "~(trivial_limit net) & has_limsup f l net & l < b ⟶ eventually (λx. f x < b) net",
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "reallim_imp_has_limsup",
+            "prop": "tendsto_real f l net --> has_limsup f l net",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_imp_ubound_le",
+            "prop": "has_limsup f l net --> ?b. eventually (λx. f x ≤ b) net",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_not_ubound",
+            "prop": "¬trivial_limit net ∧ has_limsup f l net ∧ c < l ⟶ ~eventually (λx. f x <= c) net",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup",
+            "prop": [
+                "has_limsup f l net =",
+                "(trivial_limit net |",
+                "(!c. l < c ⟶ eventually (λx. f x <= c) net) &",
+                "(!c. c < l ⟶ ~eventually (λx. f x <= c) net))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "limsup_exists",
+            "prop": [
+                "(∃l. has_limsup f l net) ⟷ ",
+                "trivial_limit net ∨ ",
+                "(∃b. eventually (λx. f x ≤ b) net) ∧ (∃c. ¬eventually (λx. f x ≤ c) net)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "net": "'a net"
+            }
+        }
+    ],
+    "description": "Some analytic concepts for real.",
+    "imports": [
+        "realderivative"
+    ],
+    "name": "realseries"
+}
