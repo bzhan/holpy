@@ -7,23 +7,38 @@
         <b-nav-item-dropdown text="File" left>
           <b-dropdown-item href="#" v-on:click='open_file_prompt'>Open file</b-dropdown-item>
         </b-nav-item-dropdown>
-        <b-nav-item-dropdown text="Action" left>
+        <b-nav-item-dropdown text="Proof" left>
           <b-dropdown-item href="#" v-on:click='undo_move'>Undo move</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='apply_cut'>Insert goal</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='apply_cases'>Apply cases</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='apply_induction'>Apply induction</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='introduction'>Introduction</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='new_var'>New variable</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='apply_backward_step'>Apply backward step</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='apply_forward_step'>Apply forward step</b-dropdown-item>          
+          <b-dropdown-item href="#" v-on:click='rewrite_goal'>Rewrite goal</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='rewrite_fact'>Rewrite fact</b-dropdown-item>          
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
     <div style="margin-top:10px">
-      <div class="left">
+      <div id="left">
         <div v-for="(vcg,i) in file_data" :key="i" @click="init_program(i)">
           <pre class="code-content" :name="i">{{vcg.com}}</pre>
         </div>
       </div>
-      <div class="right">
+      <div id="right">
         <Program v-bind:lines="lines" style="margin-top:20px" ref="program"
-                 v-bind:ref_status="ref_status" v-on:set-proof="handle_set_proof"/>
+                 v-bind:ref_status="ref_status" v-on:set-proof="handle_set_proof"
+                 v-on:query="handle_query"/>
       </div>
-      <div class="status">
+      <div id="status" v-show="ref_proof !== undefined && query === undefined">
         <ProofStatus v-bind:ref_proof="ref_proof" ref="status"/>
+      </div>
+      <div id="query" v-show="ref_proof !== undefined && query !== undefined">
+        <ProofQuery v-bind:query="query"
+                    v-on:query-ok="handle_query_ok"
+                    v-on:query-cancel="handle_query_cancel"/>
       </div>
     </div>
   </div>
@@ -33,13 +48,15 @@
 import axios from 'axios'
 import Program from './Program'
 import ProofStatus from './ProofStatus'
+import ProofQuery from './ProofQuery'
 
 export default {
   name: 'ProVerify',
 
   components: {
     Program,
-    ProofStatus
+    ProofStatus,
+    ProofQuery
   },
 
   data: () => {
@@ -52,7 +69,10 @@ export default {
 
       // References to the current proof area and proof status
       ref_proof: undefined,
-      ref_status: undefined
+      ref_status: undefined,
+
+      // Query information
+      query: undefined,
     }
   },
 
@@ -60,6 +80,21 @@ export default {
     handle_set_proof: function (ref_proof) {
       this.ref_proof = ref_proof
     },
+
+    handle_query: function (query) {
+      this.query = query
+    },
+
+    handle_query_ok: function (vals) {
+      this.query.resolve(vals)
+      this.query = undefined
+    },
+
+    handle_query_cancel: function () {
+      this.query.resolve(undefined)
+      this.query = undefined
+    },
+
 
     open_file_prompt: function () {
       this.open_file(prompt('Please enter file name', 'test'))
@@ -75,6 +110,42 @@ export default {
 
     undo_move: function() {
       this.ref_proof.undo_move()
+    },
+
+    apply_cut: function () {
+      this.ref_proof.apply_method('cut')
+    },
+
+    apply_cases: function () {
+      this.ref_proof.apply_method('cases')
+    },
+
+    apply_induction: function () {
+      this.ref_proof.apply_method('induction')
+    },
+
+    introduction: function () {
+      this.ref_proof.apply_method('introduction')
+    },
+
+    new_var: function () {
+      this.ref_proof.apply_method('new_var')
+    },
+
+    apply_backward_step: function () {
+      this.ref_proof.apply_method('apply_backward_step')
+    },
+
+    apply_forward_step: function () {
+      this.ref_proof.apply_method('apply_forward_step')
+    },
+
+    rewrite_goal: function () {
+      this.ref_proof.apply_method('rewrite_goal')
+    },
+
+    rewrite_fact: function () {
+      this.ref_proof.apply_method('rewrite_fact')
     },
 
     // Initialize program verification for a program
@@ -98,7 +169,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .left {
+  #left {
     display: inline-block;
     width: 30%;
     position: fixed;
@@ -109,7 +180,7 @@ export default {
     padding-left: 10px;
   }
 
-  .right {
+  #right {
     display: inline-block;
     width: 70%;
     position: fixed;
@@ -119,7 +190,7 @@ export default {
     overflow-y: scroll;
   }
 
-  .status {
+  #status, #query{
     display: inline-block;
     width: 70%;
     position: fixed;

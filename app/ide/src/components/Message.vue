@@ -1,5 +1,5 @@
 <template>
-  <div align=left>
+  <div align=left v-if="message !== undefined">
     <pre v-bind:class="{'message-error': message.type === 'error'}">{{message.data}}</pre>
     <a href="#" v-if="'trace' in message" v-on:click="show_trace = !show_trace">
       {{show_trace ? 'Hide stack trace' : 'Show stack trace'}}
