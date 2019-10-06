@@ -1,11 +1,22 @@
 <template>
   <div align=left v-if="theory !== undefined">
-    <span class="keyword">theory</span>&nbsp;{{theory.name}}
-    <br>
-    <span class="keyword">imports</span>&nbsp;{{theory.imports.join(' ')}}
-    <br><br>
-    <span class="comment">{{theory.description}}</span>
-    <br><br>
+    <div v-if="!edit_metadata">
+      <div>
+        <span class="keyword">theory</span>&nbsp;<span>{{theory.name}}</span>
+        <a href="#" v-on:click="edit_metadata = true" title="edit metadata" style="margin-left:10px">
+          <v-icon name="edit"/>
+        </a>
+      </div>
+      <span class="keyword">imports</span>&nbsp;{{theory.imports.join(' ')}}
+      <br><br>
+      <span class="comment">{{theory.description}}</span>
+      <br><br>
+    </div>
+    <div v-else>
+      <MetadataEdit v-bind:theory="theory" ref="meta_edit"/>
+      <button style="margin:5px" v-on:click="save_metadata">Save</button>
+      <button style="margin:5px" v-on:click="edit_metadata = false">Cancel</button>
+    </div>
     <div v-for="(item, index) in theory.content"
          v-bind:key=index
          v-bind:item_id=index
@@ -123,6 +134,7 @@ import DefinitionEdit from './items/DefinitionEdit'
 import Inductive from './items/Inductive'
 import Theorem from './items/Theorem'
 import TheoremEdit from './items/TheoremEdit'
+import MetadataEdit from './items/MetadataEdit'
 import ProofArea from './ProofArea'
 
 export default {
@@ -139,7 +151,8 @@ export default {
     Inductive,
     Theorem,
     TheoremEdit,
-    ProofArea,
+    MetadataEdit,
+    ProofArea
   },
 
   props: [
@@ -163,10 +176,20 @@ export default {
 
       // Index of the current proof
       on_proof: undefined,
+
+      // Whether editing the metadata
+      edit_metadata: false,
     }
   },
 
   methods: {
+    save_metadata: function () {
+      this.theory.imports = this.$refs.meta_edit.imports.split('\n')
+      this.theory.description = this.$refs.meta_edit.description
+      this.save_json_file()
+      this.edit_metadata = false
+    },
+
     handle_query: function (query) {
       this.$emit('query', query)
     },
@@ -498,25 +521,25 @@ export default {
 <style>
 
 .theory-items {
-    margin: 3px;
-    padding: 5px;
+  margin: 3px;
+  padding: 5px;
 }
 
 .keyword {
-    font-weight: bold;
-    color: #006000;
+  font-weight: bold;
+  color: #006000;
 }
 
 .comment {
-    color: green;
+  color: green;
 }
 
 .header-item {
-    font-size: 14pt;
+  font-size: 14pt;
 }
 
 .indented-text {
-    margin-left: 0.8em;
+  margin-left: 0.8em;
 }
 
 .item-error {
