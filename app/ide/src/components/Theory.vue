@@ -88,7 +88,8 @@
           <ProofArea v-bind:theory_name="theory.name" v-bind:thm_name="item.name"
                      v-bind:vars="item.vars" v-bind:prop="item.prop"
                      v-bind:old_steps="item.steps" v-bind:old_proof="item.proof"
-                     v-bind:ref_status="ref_status" ref="proof"/>
+                     v-bind:ref_status="ref_status" ref="proof"
+                     v-on:query="handle_query"/>
           <button style="margin:5px" v-on:click="save_proof">Save</button>
           <button style="margin:5px" v-on:click="reset_proof">Reset</button>
           <button style="margin:5px" v-on:click="cancel_proof">Cancel</button>
@@ -164,6 +165,10 @@ export default {
   },
 
   methods: {
+    handle_query: function (query) {
+      this.$emit('query', query)
+    },
+
     edit_item: function (index) {
       this.selected = index
       this.on_edit = index

@@ -224,7 +224,7 @@ export default {
       this.apply_method(res._method_name, res);
     },
 
-    apply_method: function (methodName, args) {
+    apply_method: async function (methodName, args) {
       var count = 0
       var sigList = []
       var sigs = this.method_sig[methodName]
@@ -241,18 +241,48 @@ export default {
           count += 1
         }
       })
-      this.display_status('Running')
-      this.apply_method_ajax(input)
+
+      if (count > 0) {
+        let $vm = this
+        const query_result = await new Promise(function (resolve, reject) {
+          $vm.$emit('query', {
+            title: 'Method ' + methodName,
+            fields: sigList,
+            resolve: resolve,
+            reject: reject
+          })
+        })
+
+      if (query_result !== undefined) {
+          $.extend(input, query_result)
+          this.display_status('Running')
+          this.apply_method_ajax(input)
+        }
+      } else {
+        this.display_status('Running')
+        this.apply_method_ajax(input)
+      }
     },
 
     apply_method_ajax: async function (input) {
-      let result = await axios({
-        method: 'post',
-        url: 'http://127.0.0.1:5000/api/apply-method',
-        data: JSON.stringify(input)
-      })
+      const result = await axios.post('http://127.0.0.1:5000/api/apply-method', JSON.stringify(input))
 
-      if ('failed' in result.data) {
+      if ('query' in result.data) {
+        let $vm = this
+        const query_result = await new Promise(function (resolve, reject) {
+          $vm.$emit('query', {
+            title: 'Query for parameters',
+            fields: result.data.query.map(s => s === 'names' ? s : s.slice(6)), // get rid of 'param_'
+            resolve: resolve,
+            reject: reject
+          })
+        })
+
+        if (query_result !== undefined) {
+          $.extend(input, query_result)
+          this.apply_method_ajax(input)
+        }
+      } else if ('failed' in result.data) {
         this.display_status(result.data.failed + ': ' + result.data.message, 'red')
       } else {
         // Success
@@ -261,9 +291,9 @@ export default {
         this.steps.length = hId + 1
         this.history[hId].steps_output = result.data.steps_output
         this.history[hId + 1] = {
-          'steps_output': [['Current state', 0]],
-          'proof': result.data.proof,
-          'report': result.data.report
+          steps_output: [['Current state', 0]],
+          proof: result.data.proof,
+          report: result.data.report
         }
         this.history.length = hId + 2
         if (input.fact_ids.length === 0) { delete input.fact_ids }

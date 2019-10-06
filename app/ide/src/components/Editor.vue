@@ -11,6 +11,17 @@
         <b-nav-item-dropdown text="Items" left>
           <b-dropdown-item href="#" v-on:click='remove_selected'>Remove selected</b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Proof" left>
+          <b-dropdown-item href="#" v-on:click='apply_cut'>Insert goal</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='apply_cases'>Apply cases</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='apply_induction'>Apply induction</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='introduction'>Introduction</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='new_var'>New variable</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='apply_backward_step'>Apply backward step</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='apply_forward_step'>Apply forward step</b-dropdown-item>          
+          <b-dropdown-item href="#" v-on:click='rewrite_goal'>Rewrite goal</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='rewrite_fact'>Rewrite fact</b-dropdown-item>          
+        </b-nav-item-dropdown>
         <b-nav-form>
           <b-button style="margin-left:10px" variant="primary" v-on:click="add_item">New</b-button>
           <b-form-select style="margin-left:10px" v-model='add_type' :options="add_type_options"/>
@@ -34,15 +45,19 @@
               v-bind:ref_status="ref_status"
               v-on:set-message="onSetMessage"
               v-on:set-proof="handle_set_proof"
+              v-on:query="handle_query"
               ref="theory"/>
     </div>
-    <div id="message" v-if="ref_proof === undefined">
-      <Message v-if="message !== undefined"
-               v-bind:message="message"
-               ref="message"/>
+    <div id="message" v-show="ref_proof === undefined">
+      <Message v-bind:message="message" ref="message"/>
     </div>
-    <div id="status" v-else>
+    <div id="status" v-show="ref_proof !== undefined && query === undefined">
       <ProofStatus v-bind:ref_proof="ref_proof" ref="status"/>
+    </div>
+    <div id="query" v-show="ref_proof != undefined && query !== undefined">
+      <ProofQuery v-bind:query="query"
+                  v-on:query-ok="handle_query_ok"
+                  v-on:query-cancel="handle_query_cancel"/>
     </div>
   </div>
 </template>
@@ -53,6 +68,7 @@ import Theory from './Theory'
 import Content from './Content'
 import Message from './Message'
 import ProofStatus from './ProofStatus'
+import ProofQuery from './ProofQuery'
 import "./../../static/css/index.css"
 
 export default {
@@ -62,6 +78,7 @@ export default {
     Content,
     Message,
     ProofStatus,
+    ProofQuery
   },
 
   props: [
@@ -77,6 +94,9 @@ export default {
       // References to the current proof area and proof status
       ref_proof: undefined,
       ref_status: undefined,
+
+      // Query information
+      query: undefined,
 
       // Type of item to be added
       add_type: 'thm',
@@ -111,6 +131,20 @@ export default {
   methods: {
     handle_set_proof: function (ref_proof) {
       this.ref_proof = ref_proof
+    },
+
+    handle_query: function (query) {
+      this.query = query
+    },
+
+    handle_query_ok: function (vals) {
+      this.query.resolve(vals)
+      this.query = undefined
+    },
+
+    handle_query_cancel: function () {
+      this.query.resolve(undefined)
+      this.query = undefined
     },
 
     load_filelist: async function () {
@@ -177,6 +211,42 @@ export default {
 
     add_item: function () {
       this.$refs.theory.add_item(this.add_type, this.add_pos)
+    },
+
+    apply_cut: function () {
+      this.ref_proof.apply_method('cut')
+    },
+
+    apply_cases: function () {
+      this.ref_proof.apply_method('cases')
+    },
+
+    apply_induction: function () {
+      this.ref_proof.apply_method('induction')
+    },
+
+    introduction: function () {
+      this.ref_proof.apply_method('introduction')
+    },
+
+    new_var: function () {
+      this.ref_proof.apply_method('new_var')
+    },
+
+    apply_backward_step: function () {
+      this.ref_proof.apply_method('apply_backward_step')
+    },
+
+    apply_forward_step: function () {
+      this.ref_proof.apply_method('apply_forward_step')
+    },
+
+    rewrite_goal: function () {
+      this.ref_proof.apply_method('rewrite_goal')
+    },
+
+    rewrite_fact: function () {
+      this.ref_proof.apply_method('rewrite_fact')
     }
   },
 
@@ -212,7 +282,7 @@ export default {
   padding-top: 10px;
 }
 
-#message, #status {
+#message, #status, #query {
   display: inline-block;
   width: 75%;
   height: 25%;
