@@ -389,8 +389,8 @@ export default {
       var item = this.theory.content[this.on_proof]
 
       if ($proof.steps.length === 0) {
-        // Empty proof
-        delete item.proof
+        // Force update
+        this.$delete(this.theory.content[this.on_proof], 'proof')
         delete item.num_gaps
         delete item.steps
       } else {
