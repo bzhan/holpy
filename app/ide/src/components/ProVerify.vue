@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Menu -->
-    <b-navbar toggleable="lg" type="light" variant="info">
+    <b-navbar type="light" variant="info">
       <b-navbar-brand href="#">verification</b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item-dropdown text="File" left>
