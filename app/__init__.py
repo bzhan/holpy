@@ -107,15 +107,17 @@ def login_error():
 # Register new user
 @app.route('/register_login', methods=['POST'])
 def register_login():
-    username = request.form.get('name')
-    password = request.form.get('password')
+    data = json.loads(request.get_data().decode('utf-8'))
+    username = data['name']
+    password = data['password']
     for k in get_users():
         if username == k[1]:
-            return redirect('register-error')
+            return jsonify({'result': 'failed'})
+
     if username and password:
         add_user(username, password)
 
-    return redirect('/')
+    return jsonify({'result': 'success'})
 
 # Load main page for the given user
 @app.route('/load', methods=['GET'])
@@ -171,10 +173,11 @@ def get_users():
 
 
 # Login for user
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    username = request.form.get('name')
-    password = request.form.get('password')
+    data = json.loads(request.get_data().decode('utf-8'))
+    username = data['name']
+    password = data['password']
     for k in get_users():
         if username == k[1] and password == str(k[2]):
             user_info['is_signed_in'] = True
@@ -183,9 +186,9 @@ def login():
             if username != 'master' and username not in user_list:
                 shutil.copytree('./library', user_dir())
 
-            return redirect('/load')
+            return jsonify({'result': 'success'})
 
-    return redirect('login-error')
+    return jsonify({'result': 'failed'})
 
 
 # Directly sign in as master (TURN OFF WHEN DEPLOY SERVER)

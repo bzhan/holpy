@@ -15,8 +15,14 @@ import router from './router'
 
 Vue.config.productionTip = false
 
-new Vue({
-  render: h => h(App),
+import state from './state'
 
+Object.defineProperty(Vue.prototype, '$state', {
+  get: () => state
+})
+
+new Vue({
+  data: state,
   router,
+  render: h => h(App),
 }).$mount('#app')
