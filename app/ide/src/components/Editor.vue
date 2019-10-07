@@ -10,8 +10,8 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Items" left>
           <b-dropdown-item href="#" v-on:click='remove_selected'>Remove selected</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='item_move_up'>Move up</b-dropdown-item>
-          <b-dropdown-item href="#" v-on:click='item_move_down'>Move down</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='item_move_up'>Move up<span style="float:right;color:dimgrey">Ctrl+↑</span></b-dropdown-item>
+          <b-dropdown-item href="#" style="width:170px" v-on:click='item_move_down'>Move down<span style="float:right;color:dimgrey">Ctrl+↓</span></b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
           <b-dropdown-item href="#" v-on:click='undo_move'>Undo move</b-dropdown-item>

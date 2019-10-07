@@ -189,6 +189,46 @@ export default {
   },
 
   methods: {
+    handle_keydown: function (event) {
+      if (event.keyCode === 38 && event.ctrlKey) {  // Ctrl+Up
+        this.item_move_up()
+      } else if (event.keyCode === 40 && event.ctrlKey) { // Ctrl+Down
+        this.item_move_down()
+      } else if (event.keyCode === 38 && event.shiftKey) {  // Shift+Up
+        if ('single' in this.selected && this.selected.single > 0) {
+          this.selected = {
+            start: this.selected.single,
+            end: this.selected.single-1
+          }
+        } else if ('start' in this.selected && this.selected.end > 0) {
+          if (this.selected.end === this.selected.start + 1) {
+            this.selected = {single: this.selected.start}
+          } else {
+            this.selected = {
+              start: this.selected.start,
+              end: this.selected.end-1
+            }
+          }
+        }
+      } else if (event.keyCode === 40 && event.shiftKey) {  // Shift+Down
+        if ('single' in this.selected && this.selected.single < this.theory.content.length-1) {
+          this.selected = {
+            start: this.selected.single,
+            end: this.selected.single+1
+          }
+        } else if ('start' in this.selected && this.selected.end < this.theory.content.length-1) {
+          if (this.selected.end === this.selected.start - 1) {
+            this.selected = {single: this.selected.start}
+          } else {
+            this.selected = {
+              start: this.selected.start,
+              end: this.selected.end+1
+            }
+          }
+        }
+      }
+    },
+
     handle_mousedown: function (event) {
       this.drag = false
       this.startingPos = [event.pageX, event.pageY];
@@ -637,6 +677,9 @@ export default {
   },
 
   created() {
+    window.addEventListener('keydown', (event) => {
+      this.handle_keydown(event)
+    })
     this.Util = Util
   }
 }
