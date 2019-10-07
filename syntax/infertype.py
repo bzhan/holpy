@@ -207,7 +207,8 @@ def infer_printed_type(thy, t):
         def find_to_replace(t):
             nonlocal to_replace, to_replaceT
             if (t.is_const_name("zero") or t.is_const_name("one") or \
-                (t.is_comb() and t.fun.is_const_name("of_nat") and nat.is_binary(t.arg))) and \
+                (t.is_comb() and t.fun.is_const_name("of_nat") and
+                 nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2)) and \
                 has_internalT(t.get_type()):
                 replT = t.get_type()
                 if t.is_comb():

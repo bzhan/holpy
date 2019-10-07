@@ -172,7 +172,8 @@ class HOLTransformer(Transformer):
 
     def typed_term(self, t, T):
         from data import nat
-        if t.is_comb() and t.fun.is_const_name("of_nat") and nat.is_binary(t.arg):
+        if t.is_comb() and t.fun.is_const_name("of_nat") and \
+           nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2:
             t.fun.T = TFun(nat.natT, T)
         else:
             t.T = T

@@ -263,7 +263,8 @@ def get_ast_term(thy, t):
         # Some special cases:
         # Natural numbers:
         if t.is_const_name("zero") or t.is_const_name("one") or \
-           (t.is_comb() and t.fun.is_const_name("of_nat") and nat.is_binary(t.arg)):
+           (t.is_comb() and t.fun.is_const_name("of_nat") and
+            nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2):
             # First find the number
             if t.is_const_name("zero"):
                 n = 0

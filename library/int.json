@@ -11,14 +11,16 @@
             "type": "nat => int"
         },
         {
+            "attributes": [],
             "name": "zero",
-            "prop": "zero = of_nat (zero::nat)",
+            "prop": "(0::int) = of_nat (0::nat)",
             "ty": "def",
             "type": "int"
         },
         {
+            "attributes": [],
             "name": "one",
-            "prop": "one = of_nat (one::nat)",
+            "prop": "(1::int) = of_nat (1::nat)",
             "ty": "def",
             "type": "int"
         },
