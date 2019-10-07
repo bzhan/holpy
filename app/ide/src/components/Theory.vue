@@ -25,7 +25,7 @@
          v-on:mousedown="handle_mousedown($event)"
          v-on:mousemove="handle_mousemove($event)"
          v-bind:class="{
-           'item-selected': selected === index,
+           'item-selected': is_selected(index),
            'item-error': 'err_type' in item
          }">
       <div v-if="item.ty === 'header'">
@@ -168,7 +168,7 @@ export default {
   data: function () {
     return {
       // Index of the currently selected item
-      selected: undefined,
+      selected: {},
 
       // Index of the currently editing item
       on_edit: undefined,
@@ -203,6 +203,16 @@ export default {
       }
     },
 
+    is_selected: function (index) {
+      if ('single' in this.selected) {
+        return this.selected.single === index
+      } else if (this.selected.start <= this.selected.end) {
+        return this.selected.start <= index && index <= this.selected.end
+      } else {
+        return this.selected.end <= index && index <= this.selected.start
+      }
+    },
+
     save_metadata: function () {
       this.theory.imports = this.$refs.meta_edit.imports.split('\n')
       this.theory.description = this.$refs.meta_edit.description
@@ -215,7 +225,7 @@ export default {
     },
 
     edit_item: function (index) {
-      this.selected = index
+      this.selected = {single: index}
       this.on_edit = index
       this.on_add = false
     },
@@ -264,10 +274,30 @@ export default {
         return
       }
 
-      if (this.selected === index) {
-        this.selected = undefined
+      if (event.shiftKey) {
+        // Multiple selection
+        if (!this.selected) {
+          this.selected = {single: index}
+        } else if ('single' in this.selected) {
+          this.selected = {
+            start: this.selected.single,
+            end: index
+          }
+        } else if (this.selected.start === index) {
+          this.selected = {single: index}
+        } else {
+          this.selected = {
+            start: this.selected.start,
+            end: index
+          }
+        }
       } else {
-        this.selected = index
+        // Single selection
+        if ('single' in this.selected && this.selected.single === index) {
+          this.selected = {}
+        } else {
+          this.selected = {single: index}
+        }
       }
     },
 
@@ -333,32 +363,31 @@ export default {
       if (pos == 'end') {
         const len = this.theory.content.length
         this.$set(this.theory.content, len, {ty: ty})
-        this.selected = len
+        this.selected = {single: len}
       } else if (pos == 'before') {
-        if (this.selected === undefined) {
+        if (!('single' in this.selected)) {
           return
         }
-        this.theory.content.splice(this.selected, 0, {})
-        this.$set(this.theory.content, this.selected, {ty: ty})
+        this.theory.content.splice(this.selected.single, 0, {})
+        this.$set(this.theory.content, this.selected.single, {ty: ty})
       } else if (pos == 'after') {
-        if (this.selected === undefined) {
+        if (!('single' in this.selected)) {
           return
         }
-        this.theory.content.splice(this.selected+1, 0, {})
-        this.$set(this.theory.content, this.selected+1, {ty: ty})
-        this.selected += 1
+        this.theory.content.splice(this.selected.single+1, 0, {})
+        this.$set(this.theory.content, this.selected.single+1, {ty: ty})
+        this.selected = {single: this.selected.single+1}
       }
-      this.on_edit = this.selected
+      this.on_edit = this.selected.single
       this.on_add = true
     },
 
     remove_selected: function () {
-      if (this.selected === undefined)
-        return
-
-      this.theory.content.splice(this.selected, 1)
-      this.$set(this.theory, 'content', this.theory.content)
-      this.save_json_file()
+      if ('single' in this.selected) {
+        this.theory.content.splice(this.selected.single, 1)
+        this.$set(this.theory, 'content', this.theory.content)
+        this.save_json_file()
+      }
     },
 
     // Convert items in the theory from json format for the web client
@@ -477,9 +506,9 @@ export default {
       this.on_proof = undefined
     },
 
-    selected_set_message: function (index) {
-      if (index !== undefined) {
-        const item = this.theory.content[index]
+    selected_set_message: function () {
+      if ('single' in this.selected) {
+        const item = this.theory.content[this.selected.single]
         if ('err_type' in item) {
           // Selected item, which has an error
           this.$emit('set-message', {
@@ -493,6 +522,17 @@ export default {
             data: 'No errors'
           })
         }
+      } else if ('start' in this.selected) {
+        var num_item
+        if (this.selected.start <= this.selected.end)
+          num_item = this.selected.end - this.selected.start + 1
+        else
+          num_item = this.selected.start - this.selected.end + 1
+
+        this.$emit('set-message', {
+          type: 'OK',
+          data: num_item + ' items selected'
+        })
       } else {
         // No item selected, determine whether there are errors
         // in the file
@@ -521,13 +561,13 @@ export default {
   },
 
   watch: {
-    selected: function (index) {
-      this.selected_set_message(index)
+    selected: function () {
+      this.selected_set_message()
     },
 
     theory: function () {
-      this.selected = undefined
-      this.selected_set_message(undefined)
+      this.selected = {}
+      this.selected_set_message()
     }
   },
 
