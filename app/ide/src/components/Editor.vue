@@ -10,6 +10,8 @@
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Items" left>
           <b-dropdown-item href="#" v-on:click='remove_selected'>Remove selected</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='item_move_up'>Move up</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='item_move_down'>Move down</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
           <b-dropdown-item href="#" v-on:click='undo_move'>Undo move</b-dropdown-item>
@@ -216,6 +218,14 @@ export default {
 
     remove_selected: function () {
       this.$refs.theory.remove_selected()
+    },
+
+    item_move_up: function () {
+      this.$refs.theory.item_move_up()
+    },
+
+    item_move_down: function () {
+      this.$refs.theory.item_move_down()
     },
 
     add_item: function () {

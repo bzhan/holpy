@@ -390,6 +390,48 @@ export default {
       }
     },
 
+    item_move_up: function () {
+      var start = this.select_start
+      var end = this.select_end
+      if (start !== undefined && start > 0) {
+        var swap = this.theory.content[start-1]
+        for (let i = start; i <= end; i++) {
+          this.$set(this.theory.content, i-1, this.theory.content[i])
+        }
+        this.$set(this.theory.content, end, swap)
+        this.save_json_file()
+        if ('single' in this.selected) {
+          this.selected = {single: this.selected.single-1}
+        } else {
+          this.selected = {
+            start: this.selected.start-1,
+            end: this.selected.end-1
+          }
+        }
+      }
+    },
+
+    item_move_down: function () {
+      var start = this.select_start
+      var end = this.select_end
+      if (end !== undefined && end < this.theory.content.length-1) {
+        var swap = this.theory.content[end+1]
+        for (let i = end; i >= start; i--) {
+          this.$set(this.theory.content, i+1, this.theory.content[i])
+        }
+        this.$set(this.theory.content, start, swap)
+        this.save_json_file()
+        if ('single' in this.selected) {
+          this.selected = {single: this.selected.single+1}
+        } else {
+          this.selected = {
+            start: this.selected.start+1,
+            end: this.selected.end+1
+          }
+        }
+      }
+    },
+
     // Convert items in the theory from json format for the web client
     // back to the json format for the file.
     item_to_output: function (data) {
@@ -523,12 +565,7 @@ export default {
           })
         }
       } else if ('start' in this.selected) {
-        var num_item
-        if (this.selected.start <= this.selected.end)
-          num_item = this.selected.end - this.selected.start + 1
-        else
-          num_item = this.selected.start - this.selected.end + 1
-
+        var num_item = this.select_end - this.select_start + 1
         this.$emit('set-message', {
           type: 'OK',
           data: num_item + ' items selected'
@@ -556,6 +593,28 @@ export default {
             data: 'Loaded ' + this.theory.name + ': ' + 'OK '
           })
         }
+      }
+    }
+  },
+
+  computed: {
+    select_start: function () {
+      if ('single' in this.selected) {
+        return this.selected.single
+      } else if ('start' in this.selected) {
+        return Math.min(this.selected.start, this.selected.end)
+      } else {
+        return undefined
+      }
+    },
+
+    select_end: function () {
+      if ('single' in this.selected) {
+        return this.selected.single
+      } else if ('start' in this.selected) {
+        return Math.max(this.selected.start, this.selected.end)
+      } else {
+        return undefined
       }
     }
   },
