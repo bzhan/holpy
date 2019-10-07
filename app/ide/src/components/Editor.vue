@@ -5,6 +5,7 @@
       <b-navbar-brand href="#">holpy</b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item-dropdown text="File" left>
+          <b-dropdown-item href="#" v-on:click='new_file'>New</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='open_file'>Open</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='load_file'>Refresh</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -172,6 +173,18 @@ export default {
       if (response !== undefined) {
         this.filelist = response.data.theories
       }
+    },
+
+    new_file: function () {
+      const filename = prompt("Name of the theory")
+      this.theory = {
+        name: filename,
+        imports: [],
+        description: '',
+        content: []
+      }
+      this.filelist.push(filename)
+      this.filelist.sort()
     },
 
     open_file: function () {
