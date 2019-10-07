@@ -10,16 +10,17 @@ Required packages are listed in requirements.txt. To install required packages, 
 
 ```python -m pip install -r requirements.txt```
 
-Implementation of a new user interface is in progress. To see a stable version
-of the old user interface, use:
+The current user interface is built using Vue, in the ./app folder. To start,
+change to ./app and use ```npm install``` followed by ```npm run serve```,
+then start the server (in the root directory) using ```python app.py```,
+and go to page ```localhost:8080```.
+
+To see a stable version of the old user interface, use:
 
 ```git checkout icfem```
 
-To start the web interface, use:
-
-```python app.py```
-
-then go to page ```http://127.0.0.1:5000/master```.
+Then start the server using ```python app.py```, and go to page
+```http://127.0.0.1:5000/master```.
 
 To see statistics for the search functionality on a collection of lemmas, use:
 
@@ -66,8 +67,6 @@ Unit tests for the backend are located in files of the form ```*/tests/*_test.py
   * [`method`](server/method.py): definition of methods.
 
 * [`app`](app/): web application.
-  * [`static/js/main.js`](app/static/js/main.js): main javascript file.
-  * [`templates/index.html`](app/templates/index.html): main HTML page.
   * [`__init__.py`](app/__init__.py): main server program.
 
 * [`library`](library/): main library of theories.
