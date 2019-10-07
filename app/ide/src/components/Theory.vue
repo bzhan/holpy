@@ -22,6 +22,8 @@
          v-bind:item_id=index
          class="theory-items"
          v-on:click="handle_select(index, $event)"
+         v-on:mousedown="handle_mousedown($event)"
+         v-on:mousemove="handle_mousemove($event)"
          v-bind:class="{
            'item-selected': selected === index,
            'item-error': 'err_type' in item
@@ -179,10 +181,28 @@ export default {
 
       // Whether editing the metadata
       edit_metadata: false,
+
+      // Information for keeping track of mouse movement
+      drag: false,
+      startingPos: undefined,
     }
   },
 
   methods: {
+    handle_mousedown: function (event) {
+      this.drag = false
+      this.startingPos = [event.pageX, event.pageY];
+      if (event.shiftKey) {
+        event.preventDefault()
+      }
+    },
+
+    handle_mousemove: function (event) {
+      if ([event.pageX, event.pageY] !== this.startingPos) {
+        this.drag = true
+      }
+    },
+
     save_metadata: function () {
       this.theory.imports = this.$refs.meta_edit.imports.split('\n')
       this.theory.description = this.$refs.meta_edit.description
@@ -236,6 +256,11 @@ export default {
 
       // Ignore if currently editing or proving something
       if (this.on_edit !== undefined || this.on_proof !== undefined) {
+        return
+      }
+
+      // Ignore if on drag
+      if (this.drag) {
         return
       }
 
