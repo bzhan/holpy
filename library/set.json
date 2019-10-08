@@ -179,7 +179,7 @@
             "name": "subset",
             "prop": "subset A B = (!x. member x A --> member x B)",
             "ty": "def",
-            "type": "'a set => 'a set => bool"
+            "type": "'a set ⇒ 'a set ⇒ bool"
         },
         {
             "attributes": [
@@ -829,13 +829,13 @@
             "name": "inter",
             "prop": "inter A B = {x. (member x A) & (member x B)}",
             "ty": "def",
-            "type": "'a set => 'a set => 'a set"
+            "type": "'a set ⇒ 'a set ⇒ 'a set"
         },
         {
             "name": "union",
             "prop": "union A B = {x. (member x A) | (member x B)}",
             "ty": "def",
-            "type": "'a set => 'a set => 'a set"
+            "type": "'a set ⇒ 'a set ⇒ 'a set"
         },
         {
             "attributes": [
@@ -1349,7 +1349,7 @@
             "name": "insert",
             "prop": "insert x A = {y. y = x | member y A}",
             "ty": "def",
-            "type": "'a => 'a set => 'a set"
+            "type": "'a ⇒ 'a set ⇒ 'a set"
         },
         {
             "attributes": [
@@ -1607,7 +1607,7 @@
             "name": "Union",
             "prop": "Union S = {x. ?A. member x A & member A S}",
             "ty": "def",
-            "type": "'a set set => 'a set"
+            "type": "'a set set ⇒ 'a set"
         },
         {
             "attributes": [
@@ -1656,7 +1656,7 @@
             "name": "Inter",
             "prop": "Inter S = {x. !A. member A S --> member x A}",
             "ty": "def",
-            "type": "'a set set => 'a set"
+            "type": "'a set set ⇒ 'a set"
         },
         {
             "attributes": [
@@ -3365,7 +3365,7 @@
             "name": "bnd_mono",
             "prop": "bnd_mono h ⟷ (∀W. ∀X. W ⊆ X ⟶ h W ⊆ h X)",
             "ty": "def",
-            "type": "('a set => 'a set) => bool"
+            "type": "('a set ⇒ 'a set) ⇒ bool"
         },
         {
             "attributes": [
@@ -3374,7 +3374,7 @@
             "name": "lfp",
             "prop": "lfp h = ⋂{X. h X ⊆ X}",
             "ty": "def",
-            "type": "('a set => 'a set) => 'a set"
+            "type": "('a set ⇒ 'a set) ⇒ 'a set"
         },
         {
             "attributes": [
@@ -3793,7 +3793,7 @@
             "name": "diff",
             "prop": "diff s t = {x. member x s & neg(member x t)}",
             "ty": "def",
-            "type": "'a set => 'a set => 'a set"
+            "type": "'a set ⇒ 'a set ⇒ 'a set"
         },
         {
             "name": "finite",
@@ -3841,7 +3841,24 @@
             "name": "image",
             "prop": "image f s = {y. ?x. member x s & y = f x}",
             "ty": "def",
-            "type": "('a => 'b) => 'a set => 'b set"
+            "type": "('a ⇒ 'b) ⇒ 'a set ⇒ 'b set"
+        },
+        {
+            "attributes": [],
+            "name": "sup",
+            "prop": [
+                "sup s = THE a. (!x. x ∈ s --> x <= a) &",
+                "!b. (!x. x ∈ s --> x <= b) --> a <= b"
+            ],
+            "ty": "def",
+            "type": "real set ⇒ real"
+        },
+        {
+            "attributes": [],
+            "name": "inf",
+            "prop": "inf s = (THE a. (∀x. x ∈ s ⟶ a ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ a))",
+            "ty": "def",
+            "type": "real set ⇒ real"
         }
     ],
     "description": "Basic results about sets.",

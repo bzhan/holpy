@@ -110,6 +110,333 @@
                 "f": "'a => real",
                 "net": "'a net"
             }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_le",
+            "prop": [
+                "has_limsup f l net &",
+                "has_limsup g m net &",
+                "¬trivial_limit net ∧",
+                "eventually (λx. f x ≤ g x) net",
+                "--> l <= m"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "l": "real",
+                "m": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_ubound",
+            "prop": [
+                "eventually (λx. f x ≤ b) net &",
+                "has_limsup f l net &",
+                "¬trivial_limit net",
+                "--> l <= b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " has_limsup_sequentially",
+            "prop": [
+                "has_limsup a l sequentially =",
+                "((!c. l <= c --> ?N. !n. N <= n --> a n <= c) &",
+                "(!c. c < l --> !N. ?n. N <= n & c < a n))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_sequentially_within",
+            "prop": [
+                "has_limsup a l (within sequentially k) ⟷ ",
+                "(finite k |",
+                "(∀c. l < c ⟶ (∃N. ∀n. n ∈ k & N ≤ n ⟶ a n ≤ c)) ∧ ",
+                "(∀c. c < l ⟶ (∀N. ∃n. n ∈ k & N ≤ n ∧ c < a n)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "k": "nat set",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_sequentially_imp_reallim_sup",
+            "prop": [
+                "has_limsup a l sequentially ",
+                "⟶ tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_sequentially_reallim_sup",
+            "prop": [
+                "has_limsup a l sequentially = ",
+                "((?b. !n. a n <= b) & tendsto_real (λn. sup (image a ({m. m ≥ n}))) l sequentially)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_mul_reallim_right",
+            "prop": [
+                "has_limsup f a net &",
+                "tendsto_real g b net &",
+                "eventually (%x. 0 <= f x) net &",
+                "eventually (%x. 0 <= g x) net",
+                "--> has_limsup (%x. f x * g x) (a * b) net "
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "'a => real",
+                "g": "'a => real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_mul_reallim_left",
+            "prop": [
+                "tendsto_real f a net ∧ ",
+                "has_limsup g b net ∧ ",
+                "eventually (λx. 0 ≤ f x) net ∧ eventually (λx. 0 ≤ g x) net ",
+                "⟶ has_limsup (λx. f x * g x) (a * b) net"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "'a => real",
+                "g": "'a => real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_limsup_sequentially_within_lbound_zero",
+            "prop": [
+                "has_limsup f b (within sequentially k) ∧",
+                "(!x. 0 <= f x) & ~(finite k)",
+                "--> 0 <= b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "f": "nat => real",
+                "k": "nat set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_transform",
+            "prop": [
+                "eventually (%x::'a. f x = g x) net & has_liminf f l net",
+                "               --> has_liminf g l net"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_eventually_lbound",
+            "prop": "~(trivial_limit net) & has_liminf f l net & b < l ⟶ eventually (λx. b < f x) net",
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "reallim_imp_has_liminf",
+            "prop": "tendsto_real f l net --> has_liminf f l net",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_imp_lbound_le",
+            "prop": "has_liminf f l net --> ?b. eventually (λx. b <= f x) net",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_not_lbound",
+            "prop": "¬trivial_limit net ∧ has_liminf f l net ∧ l < c ⟶ ~eventually (λx. c <= f x) net",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf",
+            "prop": [
+                "has_liminf f l net =",
+                "(trivial_limit net |",
+                "(!c. c < l ⟶ eventually (λx. c <= f x) net) &",
+                "(!c. l < c ⟶ ~eventually (λx. c <= f x) net))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "liminf_exists",
+            "prop": [
+                "(∃l. has_liminf f l net) ⟷ ",
+                "trivial_limit net ∨ ",
+                "(∃b. eventually (λx. b ≤ f x) net) ∧ (∃c. ¬eventually (λx. c <= f x) net)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_le",
+            "prop": [
+                "has_liminf f l net &",
+                "has_liminf g m net &",
+                "¬trivial_limit net ∧",
+                "eventually (λx. f x ≤ g x) net",
+                "--> l <= m"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "l": "real",
+                "m": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_lbound",
+            "prop": [
+                "eventually (λx. b <= f x) net &",
+                "has_liminf f l net &",
+                "¬trivial_limit net",
+                "--> b <= l"
+            ],
+            "ty": "thm",
+            "vars": {
+                "b": "real",
+                "f": "'a => real",
+                "l": "real",
+                "net": "'a net"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_sequentially",
+            "prop": [
+                "has_liminf a l sequentially =",
+                "((!c. c < l --> ?N. !n. N <= n --> c <= a n) &",
+                "(!c. l < c --> !N. ?n. N <= n & a n < c))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_sequentially_within",
+            "prop": [
+                "has_liminf a l (within sequentially k) ⟷ ",
+                "(finite k |",
+                "(∀c. c < l ⟶ (∃N. ∀n. n ∈ k & N ≤ n ⟶ c <= a n)) ∧ ",
+                "(∀c. l < c ⟶ (∀N. ∃n. n ∈ k & N ≤ n ∧ a n < c)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "k": "nat set",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_sequentially_imp_reallim_inf",
+            "prop": [
+                "has_liminf a l sequentially ",
+                "⟶ tendsto_real (λn. inf (image a ({m. m ≥ n}))) l sequentially"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_liminf_sequentially_reallim_inf",
+            "prop": [
+                "has_liminf a l sequentially = ",
+                "((?b. !n. b <= a n) & tendsto_real (λn. inf (image a ({m. m ≥ n}))) l sequentially)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "l": "real"
+            }
         }
     ],
     "description": "Some analytic concepts for real.",
