@@ -3,7 +3,7 @@
 import unittest
 
 from geometry import parser
-from geometry.expr import Fact, Rule, Line
+from geometry.expr import Fact, Rule, Line, Circle
 
 class ParserTest(unittest.TestCase):
     def testParseFact(self):
@@ -31,6 +31,15 @@ class ParserTest(unittest.TestCase):
 
         for s, l in test_data:
             self.assertEqual(parser.parse_line(s), l)
+
+    def testParseCircle(self):
+        test_data = [
+            ("circle(None, A, B, C)", Circle(["A", "B", "C"])),
+            ("circle(P, E, F, G, H)", Circle(["E", "F", "G", "H"], center="P"))
+        ]
+
+        for s, l in test_data:
+            self.assertEqual(parser.parse_circle(s), l)
 
 
 if __name__ == "__main__":
