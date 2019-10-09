@@ -7,14 +7,14 @@
         <span id="instruction-number" v-html="instr_no"/>
         <a href="#" id="link-forward" v-on:click="ref_proof.step_forward()">&gt;</a>
       </span>
-      <span id="instruction" class="item-text" style="margin-left:10pt" v-html="instr"/>
+      <Expression style="margin-left:10pt" v-bind:line="instr"/>
     </div>
     <div class="thm-content">
-      <div class="item-text"
-           v-for="(res,i) in search_res"
+      <div v-for="(res,i) in search_res"
            :key="res.num"
-           v-on:click="ref_proof.apply_thm_tactic(i)"
-           v-html="Util.highlight_html(res.display)"/>
+           v-on:click="ref_proof.apply_thm_tactic(i)">
+        <Expression v-bind:line="res.display"/>
+      </div>
     </div>
   </div>
 </template>
@@ -32,8 +32,8 @@ export default {
 
   data: function () {
     return {
-      // Display of current instruction
-      instr: '',
+      // Display of current instruction (as a highlighted line)
+      instr: [],
 
       // Display of instruction number
       instr_no: '',

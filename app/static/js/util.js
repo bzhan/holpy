@@ -35,27 +35,6 @@ var Util = {
         'type.ind': 'datatype'
     },
 
-    // Mapping of colors.
-    rp: function (x) {
-        if (x === 0)
-            return 'normal';
-        if (x === 1)
-            return 'bound';
-        if (x === 2)
-            return 'var';
-        if (x === 3)
-            return 'tvar';
-    },
-
-    // Convert a list of (s, color) to html form.
-    highlight_html: function (lst) {
-        var output = '';
-        for (let i = 0; i < lst.length; i++) {
-            output = output + '<span class="' + this.rp(lst[i][1]) + '">' + lst[i][0].replace(/ /g, '&nbsp;') + '</span>'
-        }
-        return output
-    },
-
     adjust_input_size: function (input) {
         var text = $(input).val();
         var test_width = $(input).closest('form').find('pre.test-width');

@@ -13,7 +13,7 @@
     <br>
     <span v-if="!('err_type' in item)">
       <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-        <span class="item-text indented-text" v-html="Util.highlight_html(line)"></span><br>
+        <Expression class="indented-text" v-bind:line="line"/><br>
       </span>
     </span>
     <div v-else>

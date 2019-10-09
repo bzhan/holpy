@@ -168,7 +168,7 @@ export default {
 
     display_instructions: function () {
       var hId = this.index
-      this.ref_status.instr = Util.highlight_html(this.history[hId].steps_output)
+      this.ref_status.instr = this.history[hId].steps_output
       this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
 
       var proof_info = {

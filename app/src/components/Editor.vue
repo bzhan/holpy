@@ -322,7 +322,7 @@ export default {
 #message, #status, #query {
   display: inline-block;
   width: 75%;
-  height: 25%;
+  height: 30%;
   left: 25%;
   position: fixed;
   top: 70%;

@@ -2,7 +2,7 @@
   <div>
     <span class="keyword">constant</span>&nbsp;
     <span class="item-text">{{item.name}}</span> ::
-    <span class="item-text" v-html="Util.highlight_html(item.type_hl)"></span>&nbsp;
+    <Expression v-bind:line="item.type_hl"/>&nbsp;
     <a href="#" title="edit" v-on:click="$emit('edit')" style="margin-left:10px">
       <v-icon name="edit"/>
     </a>
