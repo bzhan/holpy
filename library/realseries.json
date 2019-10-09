@@ -437,6 +437,337 @@
                 "a": "nat => real",
                 "l": "real"
             }
+        },
+        {
+            "attributes": [],
+            "name": "real_series_root_test",
+            "prop": [
+                "(!n. n ∈k --> 0 <= a n) & b <1 &",
+                "has_limsup (%n. root n (a n)) b (within sequentially k)",
+                "--> real_summable k a"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "b": "real",
+                "k": "nat set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_cauchy_hadamard_radius",
+            "prop": [
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) &",
+                "b * abs x < 1",
+                "--> real_summable k (λn. a n * x ^ n)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "b": "real",
+                "k": "nat set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_cauchy_hadamard_radius_absconv_derivative",
+            "prop": [
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
+                "⟶ real_summable k (λn. abs (real_of_nat n * a n * x ^ (n - 1)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "b": "real",
+                "k": "nat set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_cauchy_hadamard_radius_derivative",
+            "prop": [
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
+                "⟶ real_summable k (λn. real_of_nat n * a n * x ^ (n - 1))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "b": "real",
+                "k": "nat set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "  real_cauchy_hadamard_radius_uniform",
+            "prop": [
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ ",
+                "real_compact s & ",
+                "(!x. member x s --> b * abs x < 1) ",
+                "⟶ ?l. !e. 0 < e",
+                "--> ?N. !n. !x. N <= n & member x s",
+                "--> abs (sum (inter k {0..n}) (λi. a i * x ^ i) - l x) < e"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "b": "real",
+                "k": "nat set",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_cauchy_hadamard_radius_uniform_derivative",
+            "prop": [
+                "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ ",
+                "real_compact s ∧ (∀x. x ∈ s ⟶ b * abs x < 1) ",
+                "⟶ (∃l. ∀e. 0 < e ",
+                "        ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. real_of_nat i * a i * x ^ (i - 1)) - l x) < e))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "nat => real",
+                "b": "real",
+                "k": "nat set",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_sequence",
+            "prop": [
+                "is_realinterval s ∧ ",
+                "(∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ∧ ",
+                "(∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (f1 n x - g1 x) ≤ e)) ∧ ",
+                "(∃x. ∃l. x ∈ s ∧ tendsto_real (λn. f n x) l sequentially) ",
+                "⟶ (∃g. ∀x. x ∈ s ",
+                "        ⟶ tendsto_real (λn. f n x) (g x) sequentially ∧ ",
+                "           has_real_derivative g (g1 x) (within (atreal x) s))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real => real",
+                "f1": "nat => real => real",
+                "g1": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_series",
+            "prop": [
+                "is_realinterval s ∧ ",
+                "(∀n. ∀x. x ∈ s ⟶ has_real_derivative (f n) (f1 n x) (within (atreal x) s)) ∧ ",
+                "(∀e. 0 < e ⟶ (∃N. ∀n. ∀x. n ≥ N ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. f1 i x) - g1 x) < e)) ∧ ",
+                "(∃x. ∃l. x ∈ s ∧ real_sums (λn. f n x) l k) ",
+                "⟶ (∃g. ∀x. x ∈ s ",
+                "        ⟶ real_sums (λn. f n x) (g x) k ∧ ",
+                "           has_real_derivative g (g1 x) (within (atreal x) s))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real => real",
+                "f1": "nat => real => real",
+                "g1": "real => real",
+                "k": "nat set",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_differentiable_bound",
+            "prop": [
+                "is_realinterval s ∧ ",
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s) ∧",
+                "abs (f1 x) <= B)",
+                "--> !x. !y. x ∈ s & y ∈ s --> abs (f x - f y) <= B * abs (x - y)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "B": "real",
+                "f": "real => real",
+                "f1": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_taylor_mvt_pos",
+            "prop": [
+                "a < x &",
+                "(!i. !t. t ∈ (real_closed_interval a x) & i <= n",
+                "--> has_real_derivative (f i) (f (i + 1) t) (within (atreal t) (real_closed_interval a x)))",
+                "--> ?t. t ∈ (real_closed_interval a x) &",
+                "f 0 x = sum {0..n} (%i. f i a * (x - a) ^ i / (real_of_nat (fact i))) + f (n + 1) t * (x - a) ^ (n + 1) / (real_of_nat (fact (n + 1)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "f": "nat => real => real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_taylor_mvt_neg",
+            "prop": [
+                "x < a ∧ ",
+                "(∀i. ∀t. t ∈ real_closed_interval x a ∧ i ≤ n ",
+                "     ⟶ has_real_derivative (f i) (f (i + 1) t) ",
+                "          (within (atreal t) (real_closed_interval x a))) ",
+                "⟶ (∃t. t ∈ real_closed_interval x a ∧ ",
+                "      f 0 x = ",
+                "      sum ({0..n}) (λi. f i a * (x - a) ^ i / real_of_nat (fact i)) + ",
+                "      f (n + 1) t * (x - a) ^ (n + 1) / real_of_nat (fact (n + 1)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "f": "nat => real => real",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_taylor",
+            "prop": [
+                "is_realinterval s ∧ ",
+                "(∀i. ∀x. x ∈ s ∧ i ≤ n ",
+                "     ⟶ has_real_derivative (f i) (f (i + 1) x) ",
+                "          (within (atreal x) s)) &",
+                "(∀x. x ∈ s --> abs (f (n + 1) x) ≤ B)",
+                "⟶ (∀w. ∀z. w ∈ s ∧ z ∈ s ",
+                "⟶ abs (f 0 z - sum ({0..n}) (λi. f i w * (z - w) ^ i / real_of_nat (fact i))) ",
+                "≤ B * abs (z - w) ^ (n + 1) / real_of_nat (fact (n + 1)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "B": "real",
+                "f": "nat => real => real",
+                "n": "nat",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_sum_integral_ubound_increasing",
+            "prop": [
+                "m <= n &",
+                "(!x. x ∈ (real_closed_interval (real_of_nat m) (real_of_nat n + 1))",
+                "--> has_real_derivative g (f x) ",
+                "(within (atreal x) (real_closed_interval (real_of_nat m) (real_of_nat n + 1)))) &",
+                " (!x. !y. (real_of_nat m) <= x & x <= y & y <= (real_of_nat n + 1) --> f x <= f y)",
+                "--> sum ({m..n}) (%k. f (real_of_nat k)) <= g (real_of_nat n + 1) - g (real_of_nat m)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_sum_integral_ubound_decreasing",
+            "prop": [
+                "m ≤ n ∧ ",
+                "(∀x. x ∈ real_closed_interval (real_of_nat m - 1) (real_of_nat n) ",
+                "   ⟶ has_real_derivative g (f x) ",
+                "        (within (atreal x) (real_closed_interval (real_of_nat m - 1) (real_of_nat n)))) ∧ ",
+                "(∀x. ∀y. real_of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ real_of_nat n ⟶ f y ≤ f x) ",
+                "⟶ sum ({m..n}) (λk. f (real_of_nat k)) ≤ g (real_of_nat n) - g (real_of_nat m - 1)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_sum_integral_lbound_increasing",
+            "prop": [
+                "m ≤ n ∧ ",
+                "(∀x. x ∈ real_closed_interval (real_of_nat m - 1) (real_of_nat n) ",
+                "   ⟶ has_real_derivative g (f x) ",
+                "        (within (atreal x) (real_closed_interval (real_of_nat m - 1) (real_of_nat n)))) ∧ ",
+                "(∀x. ∀y. real_of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ real_of_nat n ⟶ f x ≤ f y) ",
+                "⟶ g (real_of_nat n) - g (real_of_nat m - 1) <= sum ({m..n}) (λk. f (real_of_nat k))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_sum_integral_lbound_decreasing",
+            "prop": [
+                "m ≤ n ∧ ",
+                "(∀x. x ∈ real_closed_interval (real_of_nat m) (real_of_nat n + 1) ",
+                "   ⟶ has_real_derivative g (f x) ",
+                "        (within (atreal x) (real_closed_interval (real_of_nat m) (real_of_nat n + 1)))) ∧ ",
+                "(∀x. ∀y. real_of_nat m ≤ x ∧ x ≤ y ∧ y ≤ real_of_nat n + 1 ⟶ f y ≤ f x) ",
+                "⟶ g (real_of_nat n + 1) - g (real_of_nat m) ≤ sum ({m..n}) (λk. f (real_of_nat k))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_sum_integral_bounds_increasing",
+            "prop": [
+                "m ≤ n ∧ ",
+                "(∀x. x ∈ real_closed_interval (real_of_nat m - 1) (real_of_nat n + 1) ",
+                "   ⟶ has_real_derivative g (f x) ",
+                "        (within (atreal x) (real_closed_interval (real_of_nat m - 1) (real_of_nat n + 1)))) ∧ ",
+                "(∀x. ∀y. real_of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ (real_of_nat n + 1) ⟶ f x ≤ f y) ",
+                "⟶ g (real_of_nat n) - g (real_of_nat m - 1) ≤ sum ({m..n}) (λk. f (real_of_nat k)) &",
+                "sum ({m..n}) (λk. f (real_of_nat k)) ≤ g (real_of_nat n + 1) - g (real_of_nat m)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
+            "name": " real_sum_integral_bounds_decreasing",
+            "prop": [
+                "m ≤ n ∧ ",
+                "(∀x. x ∈ real_closed_interval (real_of_nat m - 1) (real_of_nat n + 1) ",
+                "   ⟶ has_real_derivative g (f x) ",
+                "        (within (atreal x) (real_closed_interval (real_of_nat m - 1) (real_of_nat n + 1)))) ∧ ",
+                "(∀x. ∀y. real_of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ real_of_nat n + 1 ⟶ f y ≤ f x) ",
+                "⟶ g (real_of_nat n + 1) - g (real_of_nat m) ≤ sum ({m..n}) (λk. f (real_of_nat k)) ∧ ",
+                "   sum ({m..n}) (λk. f (real_of_nat k)) ≤ g (real_of_nat n) - g (real_of_nat m - 1)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "m": "nat",
+                "n": "nat"
+            }
         }
     ],
     "description": "Some analytic concepts for real.",
