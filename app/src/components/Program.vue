@@ -14,15 +14,13 @@
         <span class="display-con">{{'&nbsp;'.repeat(line.indent)}}</span>
         <span class="line-comment">vc:&nbsp;&nbsp;&nbsp;</span>
         <span class="display-con">{{line.str}}</span>
-        <span v-if="line.smt" style="margin-left:30px;color:green">
-          OK
-        </span>
-        <span v-else style="margin-left:30px;color:red">
-          Failed
-        </span>
+        <span v-if="line.smt" style="margin-left:30px;color:green">OK</span>
+        <span v-else style="margin-left:30px;color:red">Failed</span>
         <ProofArea v-if="!line.smt" v-bind:theory_name="'hoare'" v-bind:thm_name="undefined"
                    v-bind:vars="line.vars" v-bind:prop="line.prop"
-                   v-bind:ref_status="ref_status" ref="proof"
+                   v-bind:ref_status="ref_status"
+                   v-bind:ref_context="ref_context"
+                   ref="proof"
                    v-on:query="handle_query"/>
       </div>
     </div> 
@@ -38,8 +36,9 @@ export default {
   props: [
     "lines",
 
-    // Reference to status panel
+    // Reference to status panel and context panel
     "ref_status",
+    "ref_context",
   ],
 
   components: {
