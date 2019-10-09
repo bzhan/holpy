@@ -23,8 +23,9 @@
     </b-navbar>
     <div style="margin-top:10px">
       <div id="content" v-show="ref_proof === undefined">
-        <div v-for="(vcg,i) in file_data" :key="i" @click="init_program(i)">
-          <pre class="code-content" :name="i">{{vcg.com}}</pre>
+        <div v-for="(item, index) in file_data" :key="index">
+          <pre v-if="item.ty === 'vcg'" class="code-content" :name="index"
+               @click="init_program(index)" v-html="item.com"/>
         </div>
       </div>
       <div id="proof-context" v-show="ref_proof !== undefined">
@@ -34,7 +35,8 @@
         <Program v-bind:lines="lines" style="margin-top:20px" ref="program"
                  v-bind:ref_status="ref_status" v-bind:ref_context="ref_context"
                  v-on:set-proof="handle_set_proof"
-                 v-on:query="handle_query"/>
+                 v-on:query="handle_query"
+                 v-on:save-proof="handle_save_proof"/>
       </div>
       <div id="status" v-show="ref_proof !== undefined && query === undefined">
         <ProofStatus v-bind:ref_proof="ref_proof" ref="status"/>
@@ -67,10 +69,14 @@ export default {
 
   data: function () {
     return {
+      // Name of the file
+      file_name: '',
+
       // Content of the file
       file_data: [],
 
       // Current program
+      cur_index: undefined,
       lines: '',
 
       // References to the current proof area and proof status
@@ -88,6 +94,16 @@ export default {
       this.ref_proof = ref_proof
     },
 
+    handle_save_proof: async function (proof) {
+      const data = {
+        file_name: this.file_name,
+        index: this.cur_index,
+        proof: proof
+      }
+      const response = await axios.post('http://127.0.0.1:5000/api/save-program-proof', JSON.stringify(data))
+      console.log(response)
+    },
+
     handle_query: function (query) {
       this.query = query
     },
@@ -102,12 +118,12 @@ export default {
       this.query = undefined
     },
 
-
     open_file_prompt: function () {
       this.open_file(prompt('Please enter file name', 'test'))
     },
 
     open_file: async function (file_name) {
+      this.file_name = file_name
       const data = {
         file_name: file_name
       }
@@ -156,10 +172,11 @@ export default {
     },
 
     // Initialize program verification for a program
-    init_program: async function (num) {
-      const data = this.file_data[num]
+    init_program: async function (index) {
+      const data = this.file_data[index]
       let response = await axios.post('http://127.0.0.1:5000/api/program-verify', JSON.stringify(data))
       
+      this.cur_index = index
       this.lines = response.data.lines
     }
   },

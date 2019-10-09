@@ -122,14 +122,15 @@ def get_program_file():
     file_name = json.loads(request.get_data().decode("utf-8"))['file_name']
     thy = basic.load_theory('hoare')
     path = 'imperative/examples/' + file_name + '.json'
-    with open(path, 'r', encoding = 'utf-8') as f:
+    with open(path, 'r', encoding='utf-8') as f:
         file_data = json.load(f)
-    filter_data = list(filter(lambda d: d['ty'] == 'vcg', file_data['content']))
-    for i, vcg in enumerate(filter_data):
-        program = parser2.com_parser.parse(vcg['com']).print_com(vcg['vars'])
-        filter_data[i]['com'] = '\n'.join(program)
 
-    return jsonify({'file_data': filter_data})
+    for i, item in enumerate(file_data['content']):
+        if item['ty'] == 'vcg':
+            program = parser2.com_parser.parse(item['com']).print_com(item['vars'])
+            item['com'] = '\n'.join(program)
+
+    return jsonify({'file_data': file_data['content']})
 
 # Verifying a program
 @app.route('/api/program-verify', methods=['POST'])
@@ -152,6 +153,25 @@ def verify():
     return jsonify({
         'lines': lines,
     })
+
+# Saving a proof for program verification
+@app.route('/api/save-program-proof', methods=['POST'])
+def save_program_proof():
+    data = json.loads(request.get_data().decode("utf-8"))
+
+    file_name = data['file_name']
+    path = 'imperative/examples/' + file_name + '.json'
+    with open(path, 'r', encoding='utf-8') as f:
+        file_data = json.load(f)
+
+    cur_index = data['index']
+    proof = data['proof']
+    file_data['content'][cur_index]['proof'] = proof
+
+    with open(path, 'w', encoding='utf-8') as f:
+        json.dump(file_data, f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    return jsonify({})
 
 # Replace user data with library data
 @app.route('/api/refresh-files', methods=['POST'])

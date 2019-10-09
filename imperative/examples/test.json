@@ -1,44 +1,49 @@
 {
-    "name": "test",
     "content": [
         {
-            "ty": "eval",
             "com": "a := 1; b := 2",
+            "final": {
+                "a": 1,
+                "b": 2
+            },
             "init": {},
-            "final": {"a": 1, "b": 2}
+            "ty": "eval"
         },
         {
-            "ty": "eval",
             "com": "while (a != 3) {b := b + 5; a := a + 1}",
+            "final": {
+                "a": 3,
+                "b": 15
+            },
             "init": {},
-            "final": {"a": 3, "b": 15}
+            "ty": "eval"
         },
         {
-            "ty": "vcg",
             "com": "while (a != A) {[b == a * B] b := b + B; a := a + 1}",
-            "pre": "a == 0 & b == 0",
             "post": "b == A * B",
+            "pre": "a == 0 & b == 0",
+            "ty": "vcg",
             "vars": {
-                "a": "int",
-                "b": "int",
                 "A": "int",
-                "B": "int"
+                "B": "int",
+                "a": "int",
+                "b": "int"
             }
         },
         {
-            "ty": "vcg",
             "com": "if (a != 0) then a := 0 else skip",
-            "pre": "true",
             "post": "a == 0",
+            "pre": "true",
+            "ty": "vcg",
             "vars": {
                 "a": "int"
             }
         },
         {
-            "ty": "vcg",
             "com": "if (m <= n) then c := n else c := m",
-            "pre": "true",
             "post": "c == m | c == n",
+            "pre": "true",
+            "ty": "vcg",
             "vars": {
                 "c": "int",
                 "m": "int",
@@ -46,10 +51,10 @@
             }
         },
         {
-            "ty": "vcg",
             "com": "m := a + b; n := a - b",
-            "pre": "0 <= b",
             "post": "a <= m & n <= a",
+            "pre": "0 <= b",
+            "ty": "vcg",
             "vars": {
                 "a": "int",
                 "b": "int",
@@ -58,20 +63,38 @@
             }
         },
         {
-            "ty": "vcg",
             "com": "if (0 <= a) then c := a else c := -a",
-            "pre": "true",
             "post": "c == abs(a)",
+            "pre": "true",
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ if 0 ≤ a then a = (if 0 ≤ a then a else -a) else -a = (if 0 ≤ a then a else -a)"
+                },
+                {
+                    "args": "int_abs_def, if 0 ≤ a then a = abs a else -a = abs a",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ if 0 ≤ a then a = abs a else -a = abs a"
+                }
+            ],
+            "ty": "vcg",
             "vars": {
                 "a": "int",
                 "c": "int"
             }
         },
         {
-            "ty": "vcg",
             "com": "if (m <= n) then c := n else c := m",
-            "pre": "true",
             "post": "c == max(m, n)",
+            "pre": "true",
+            "ty": "vcg",
             "vars": {
                 "c": "int",
                 "m": "int",
@@ -79,15 +102,16 @@
             }
         },
         {
-            "ty": "vcg",
             "com": "index := 0; while (index < a.length & a[index] != key) {[0 <= index & index <= a.length & forall k. (0 <= k & k < index) --> a[k] != key] index := index + 1}; if (index == a.length) then index := -1 else skip",
-            "pre": "true",
             "post": "(0 <= index --> index < a.length & a[index] == key) & (index < 0 --> forall k. (0 <= k & k < a.length) --> a[k] != key)",
+            "pre": "true",
+            "ty": "vcg",
             "vars": {
+                "a": "int array",
                 "index": "int",
-                "key": "int",
-                "a": "int array"
+                "key": "int"
             }
         }
-    ]
+    ],
+    "name": "test"
 }
