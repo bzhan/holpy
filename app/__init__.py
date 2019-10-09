@@ -38,74 +38,26 @@ user_info = {
     'file_list': []
 }
 
-# Templates
-@app.route('/display_results.html', methods=['GET'])
-def display_results_template():
-    return render_template('display_results.html')
+# Login for user
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = json.loads(request.get_data().decode('utf-8'))
+    username = data['name']
+    password = data['password']
+    for k in get_users():
+        if username == k[1] and password == str(k[2]):
+            user_info['is_signed_in'] = True
+            user_info['username'] = username
+            user_list = os.listdir('./users')
+            if username != 'master' and username not in user_list:
+                shutil.copytree('./library', user_dir())
 
-@app.route('/edit_area.html', methods=['GET'])
-def edit_area_template():
-    return render_template('edit_area.html')
+            return jsonify({'result': 'success'})
 
-@app.route('/proof_area.html', methods=['GET'])
-def proof_area_template():
-    return render_template('proof_area.html')
-
-# Program verification homepage
-@app.route('/program', methods=['POST', 'GET'])
-def index_program():
-    return redirect('http://localhost:8080')
-
-# Verifying a program
-@app.route('/api/program-verify', methods=['POST'])
-def verify():
-    data = json.loads(request.get_data().decode("utf-8"))
-    thy = basic.load_theory('hoare')
-    pre = cond_parser.parse(data['pre'])
-    post = cond_parser.parse(data['post'])
-    com = com_parser.parse(data['com'])
-    com.pre = [pre]
-    com.compute_wp(post)
-    lines = com.get_lines(data['vars'])
-
-    for line in lines:
-        if line['ty'] == 'vc':
-            vc_hol = line['prop']
-            line['prop'] = printer.print_term(thy, line['prop'])
-            line['smt'] = z3wrapper.solve(vc_hol)
-
-    return jsonify({
-        'lines': lines,
-    })
-
-# Login page
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template('login.html')
-
-# Sign out
-@app.route('/sign-out', methods=['GET'])
-def sign_out():
-    user_info['is_signed_in'] = False
-    return redirect('/')
-
-# Register page
-@app.route('/register', methods=['GET'])
-def register():
-    return render_template('register.html')
-
-# Error for user already exists
-@app.route('/register-error', methods=['GET'])
-def register_error():
-    return render_template('register.html', info = 'User already exists')
-
-# Error for incorrect username or password
-@app.route('/login-error', methods=['GET', 'POST'])
-def login_error():
-    return render_template('login.html', info='Incorrect username or password')
+    return jsonify({'result': 'failed'})
 
 # Register new user
-@app.route('/register_login', methods=['POST'])
+@app.route('/api/register_login', methods=['POST'])
 def register_login():
     data = json.loads(request.get_data().decode('utf-8'))
     username = data['name']
@@ -119,13 +71,6 @@ def register_login():
 
     return jsonify({'result': 'success'})
 
-# Load main page for the given user
-@app.route('/load', methods=['GET'])
-def load():
-    if not user_info['is_signed_in']:
-        return redirect('/')
-
-    return render_template('index.html', user=user_info['username'])
 
 DATABASE = os.getcwd() + '/users/user.db'
 
@@ -171,35 +116,7 @@ def get_users():
         conn.commit()
     return results
 
-
-# Login for user
-@app.route('/login', methods=['POST'])
-def login():
-    data = json.loads(request.get_data().decode('utf-8'))
-    username = data['name']
-    password = data['password']
-    for k in get_users():
-        if username == k[1] and password == str(k[2]):
-            user_info['is_signed_in'] = True
-            user_info['username'] = username
-            user_list = os.listdir('./users')
-            if username != 'master' and username not in user_list:
-                shutil.copytree('./library', user_dir())
-
-            return jsonify({'result': 'success'})
-
-    return jsonify({'result': 'failed'})
-
-
-# Directly sign in as master (TURN OFF WHEN DEPLOY SERVER)
-@app.route('/master', methods=['GET'])
-def master():
-    user_info['is_signed_in'] = True
-    user_info['username'] = 'master'
-
-    return redirect('/load')
-
-
+# Load a file containing programs
 @app.route('/api/get-program-file', methods = ['POST', 'GET'])
 def get_program_file():
     file_name = json.loads(request.get_data().decode("utf-8"))['file_name']
@@ -214,6 +131,27 @@ def get_program_file():
 
     return jsonify({'file_data': filter_data})
 
+# Verifying a program
+@app.route('/api/program-verify', methods=['POST'])
+def verify():
+    data = json.loads(request.get_data().decode("utf-8"))
+    thy = basic.load_theory('hoare')
+    pre = cond_parser.parse(data['pre'])
+    post = cond_parser.parse(data['post'])
+    com = com_parser.parse(data['com'])
+    com.pre = [pre]
+    com.compute_wp(post)
+    lines = com.get_lines(data['vars'])
+
+    for line in lines:
+        if line['ty'] == 'vc':
+            vc_hol = line['prop']
+            line['prop'] = printer.print_term(thy, line['prop'])
+            line['smt'] = z3wrapper.solve(vc_hol)
+
+    return jsonify({
+        'lines': lines,
+    })
 
 # Replace user data with library data
 @app.route('/api/refresh-files', methods=['POST'])
