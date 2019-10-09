@@ -34,7 +34,7 @@ export default {
         name: this.name,
         password: this.password
       }
-      const response = await axios.post('http://127.0.0.1:5000/login', JSON.stringify(data))
+      const response = await axios.post('http://127.0.0.1:5000/api/login', JSON.stringify(data))
 
       if (response.data.result === 'success') {
         this.info = ''

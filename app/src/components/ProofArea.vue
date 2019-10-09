@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import Util from './../../static/js/util.js'
 import 'codemirror/lib/codemirror.css'
 import axios from 'axios'
 import CodeMirror from 'codemirror'
@@ -168,7 +167,7 @@ export default {
 
     display_instructions: function () {
       var hId = this.index
-      this.ref_status.instr = Util.highlight_html(this.history[hId].steps_output)
+      this.ref_status.instr = this.history[hId].steps_output
       this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
 
       var proof_info = {
@@ -597,10 +596,6 @@ export default {
       this.init_proof()
     }
   },
-
-  created() {
-    this.Util = Util
-  }
 }
 
 </script>

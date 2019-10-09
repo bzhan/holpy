@@ -123,7 +123,6 @@
 </template>
 
 <script>
-import Util from './../../static/js/util.js'
 import axios from 'axios'
 
 import Axiom from './items/Axiom'
@@ -185,6 +184,17 @@ export default {
       // Information for keeping track of mouse movement
       drag: false,
       startingPos: undefined,
+
+      // Keyword translator
+      keywords: {
+        'def': 'definition',
+        'def.ax': 'constant',
+        'thm': 'theorem',
+        'thm.ax': 'axiom',
+        'def.ind': 'fun',
+        'def.pred': 'inductive',
+        'type.ind': 'datatype'
+      },
     }
   },
 
@@ -619,7 +629,7 @@ export default {
           let item = this.theory.content[i]
           if ('err_type' in item) {
             err_count += 1
-            err_lines += ('\n' + Util.keywords[item.ty] + ' ' + item.name)
+            err_lines += ('\n' + this.keywords[item.ty] + ' ' + item.name)
           }
         }
         if (err_count !== 0) {
@@ -680,21 +690,15 @@ export default {
     window.addEventListener('keydown', (event) => {
       this.handle_keydown(event)
     })
-    this.Util = Util
   }
 }
 </script>
 
-<style>
+<style scoped>
 
 .theory-items {
   margin: 3px;
   padding: 5px;
-}
-
-.keyword {
-  font-weight: bold;
-  color: #006000;
 }
 
 .comment {
@@ -703,10 +707,6 @@ export default {
 
 .header-item {
   font-size: 14pt;
-}
-
-.indented-text {
-  margin-left: 0.8em;
 }
 
 .item-error {

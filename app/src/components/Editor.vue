@@ -78,7 +78,6 @@ import Message from './Message'
 import ProofStatus from './ProofStatus'
 import ProofQuery from './ProofQuery'
 import ProofContext from './ProofContext'
-import "./../../static/css/index.css"
 
 export default {
   name: 'Editor',
@@ -322,7 +321,7 @@ export default {
 #message, #status, #query {
   display: inline-block;
   width: 75%;
-  height: 25%;
+  height: 30%;
   left: 25%;
   position: fixed;
   top: 70%;

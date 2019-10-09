@@ -1,20 +1,16 @@
 <template>
   <form>
-    <pre class="test-width"></pre>
     <span>
       <label class="keyword">{{item.ty === 'thm.ax' ? 'axiom' : 'theorem'}}</label>
-      <input spellcheck="false" v-model="item.name" class="form-element"
-             min-width="300" ref="name">
+      <ExpressionEdit v-model="item.name" single-line/>
     </span>
     <div style="margin-top:5px">
-      <label v-bind:for="'vars' + id" class="keyword">fixes</label>
-      <textarea spellcheck="false" v-model="item.vars_lines" class="form-element unicode-replace"
-                min-width="300" v-bind:id="'vars' + id" ref="vars"></textarea>
+      <label class="keyword">fixes</label>
+      <ExpressionEdit v-model="item.vars_lines"/>
     </div>
     <div style="margin-top:5px">
-      <label v-bind:for="'prop' + id" class="keyword">shows</label>
-      <textarea spellcheck="false" v-model="item.prop_lines" class="form-element unicode-replace"
-                min-width="300" v-bind:id="'prop' + id" ref="prop"></textarea>
+      <label class="keyword">shows</label>
+      <ExpressionEdit v-model="item.prop_lines"/>
     </div>
     <div style="margin-top:10px">
       <span class="hint-element">
@@ -47,8 +43,6 @@
 </template>
 
 <script>
-import Util from './../../../static/js/util.js'
-
 export default {
   name: 'TheoremEdit',
   props: [
@@ -72,16 +66,6 @@ export default {
     id: function () {
       return this.old_item.ty + '.' + this.old_item.name
     }
-  },
-
-  mounted() {
-    Util.adjust_input_size(this.$refs.name)
-    Util.adjust_input_size(this.$refs.vars)
-    Util.adjust_input_size(this.$refs.prop)
-  },
-
-  created() {
-    this.Util = Util
   }
 }
 </script>

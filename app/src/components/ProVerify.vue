@@ -22,14 +22,18 @@
       </b-navbar-nav>
     </b-navbar>
     <div style="margin-top:10px">
-      <div id="left">
+      <div id="content" v-show="ref_proof === undefined">
         <div v-for="(vcg,i) in file_data" :key="i" @click="init_program(i)">
           <pre class="code-content" :name="i">{{vcg.com}}</pre>
         </div>
       </div>
-      <div id="right">
+      <div id="proof-context" v-show="ref_proof !== undefined">
+        <ProofContext ref="context"/>
+      </div>
+      <div id="program">
         <Program v-bind:lines="lines" style="margin-top:20px" ref="program"
-                 v-bind:ref_status="ref_status" v-on:set-proof="handle_set_proof"
+                 v-bind:ref_status="ref_status" v-bind:ref_context="ref_context"
+                 v-on:set-proof="handle_set_proof"
                  v-on:query="handle_query"/>
       </div>
       <div id="status" v-show="ref_proof !== undefined && query === undefined">
@@ -49,6 +53,7 @@ import axios from 'axios'
 import Program from './Program'
 import ProofStatus from './ProofStatus'
 import ProofQuery from './ProofQuery'
+import ProofContext from './ProofContext'
 
 export default {
   name: 'ProVerify',
@@ -56,10 +61,11 @@ export default {
   components: {
     Program,
     ProofStatus,
-    ProofQuery
+    ProofQuery,
+    ProofContext
   },
 
-  data: () => {
+  data: function () {
     return {
       // Content of the file
       file_data: [],
@@ -70,6 +76,7 @@ export default {
       // References to the current proof area and proof status
       ref_proof: undefined,
       ref_status: undefined,
+      ref_context: undefined,
 
       // Query information
       query: undefined,
@@ -163,13 +170,14 @@ export default {
 
   updated() {
     this.ref_status = this.$refs.status
+    this.ref_context = this.$refs.context
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  #left {
+  #content {
     display: inline-block;
     width: 30%;
     position: fixed;
@@ -180,7 +188,7 @@ export default {
     padding-left: 10px;
   }
 
-  #right {
+  #program {
     display: inline-block;
     width: 70%;
     position: fixed;

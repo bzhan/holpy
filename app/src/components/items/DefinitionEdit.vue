@@ -1,20 +1,16 @@
 <template>
   <form>
-    <pre class="test-width"></pre>
     <span>
       <label class="keyword">
         {{item.ty === 'def' ? 'definition' : (item.ty === 'def.ind' ? 'fun' : 'inductive')}}
       </label>
-      <input spellcheck="false" v-model="item.name" class="form-element"
-             min-width="50" ref="name">
+      <ExpressionEdit v-model="item.name" min-width="50" single-line/>
       <span class="form-element">::</span>
-      <input spellcheck="false" v-model="item.type" class="form-element"
-             min-width="50" ref="type">
-      <label class="keyword">where</label>
+      <ExpressionEdit v-model="item.type" min-width="50" single-line/>
+      <label class="keyword" style="margin-left:10px">where</label>
     </span>
     <div style="margin-top:3px">
-      <textarea spellcheck="false" v-model="item.prop_lines" class="form-element unicode-replace"
-                min-width="200" ref="prop"></textarea>
+      <ExpressionEdit v-model="item.prop_lines"/>
     </div>
     <div style="margin-top:10px">
       <span class="hint-element">
@@ -28,8 +24,6 @@
 </template>
 
 <script>
-import Util from './../../../static/js/util.js'
-
 export default {
   name: 'DefinitionEdit',
   props: [
@@ -53,16 +47,6 @@ export default {
     id: function () {
       return this.old_item.ty + '.' + this.old_item.name
     }
-  },
-
-  mounted() {
-    Util.adjust_input_size(this.$refs.name)
-    Util.adjust_input_size(this.$refs.type)
-    Util.adjust_input_size(this.$refs.prop)
-  },
-
-  created() {
-    this.Util = Util
   }
 }
 </script>

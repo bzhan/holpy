@@ -2,8 +2,7 @@
   <div>
     <span class="keyword">definition</span>&nbsp;
     <span class="item-text">{{item.name}}</span> ::
-    <span v-if="!('err_type' in item)"
-          class="item-text" v-html="Util.highlight_html(item.type_hl)" />
+    <Expression v-if="!('err_type' in item)" v-bind:line="item.type_hl"/>
     <span v-else class="item-text">{{item.type}}</span>
     &nbsp;
     <span class="keyword">where</span>
@@ -13,7 +12,7 @@
     <br>
     <span v-if="!('err_type' in item)">
       <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-        <span class="item-text indented-text" v-html="Util.highlight_html(line)"></span><br>
+        <Expression class="indented-text" v-bind:line="line"/><br>
       </span>
     </span>
     <div v-else>
@@ -30,7 +29,6 @@
 </template>
 
 <script>
-import Util from './../../../static/js/util.js'
 
 export default {
   name: 'Definition',
@@ -38,9 +36,5 @@ export default {
   props: [
     "item"
   ],
-
-  created() {
-    this.Util = Util
-  }
 }
 </script>
