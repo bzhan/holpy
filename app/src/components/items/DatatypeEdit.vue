@@ -1,6 +1,5 @@
 <template>
   <form>
-    <pre class="test-width"></pre>
     <span>
       <label class="keyword">datatype</label>
       <ExpressionEdit v-model="item.edit_type" min-width="50" single-line/>

@@ -1,6 +1,5 @@
 <template>
   <form>
-    <pre class="test-width"/>
     <div>
       <label class="keyword">theory</label>
       <ExpressionEdit v-model="name" single-line/>

@@ -1,6 +1,5 @@
 <template>
   <form>
-    <pre class="test-width"></pre>
     <span>
       <label class="keyword">{{item.ty === 'thm.ax' ? 'axiom' : 'theorem'}}</label>
       <ExpressionEdit v-model="item.name" single-line/>

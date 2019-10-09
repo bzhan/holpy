@@ -78,7 +78,6 @@ import Message from './Message'
 import ProofStatus from './ProofStatus'
 import ProofQuery from './ProofQuery'
 import ProofContext from './ProofContext'
-import "./../../static/css/index.css"
 
 export default {
   name: 'Editor',

@@ -1,6 +1,5 @@
 <template>
   <form>
-    <pre class="test-width"></pre>
     <span>
       <label class="keyword">constant</label>
       <ExpressionEdit v-model="item.name" min-width="50" single-line/>

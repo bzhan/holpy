@@ -2,7 +2,6 @@
   <div v-if="query !== undefined">
     <div>{{query.title}}</div>
     <form>
-      <pre class="test-width"></pre>
       <div style="margin-top:5px" v-for="(key, index) in query.fields" v-bind:key=index>
         <label>{{key}}:</label>
         <ExpressionEdit min-width="200" style="margin-left:10px" v-model="vals[key]"/>

@@ -694,16 +694,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .theory-items {
   margin: 3px;
   padding: 5px;
-}
-
-.keyword {
-  font-weight: bold;
-  color: #006000;
 }
 
 .comment {
@@ -712,10 +707,6 @@ export default {
 
 .header-item {
   font-size: 14pt;
-}
-
-.indented-text {
-  margin-left: 0.8em;
 }
 
 .item-error {

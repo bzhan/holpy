@@ -1,6 +1,5 @@
 <template>
   <form>
-    <pre class="test-width"></pre>
     <span>
       <label class="keyword">
         {{item.ty === 'def' ? 'definition' : (item.ty === 'def.ind' ? 'fun' : 'inductive')}}

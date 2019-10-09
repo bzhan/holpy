@@ -108,3 +108,14 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+.test-width {
+    display: none;
+    padding: 10px;
+    font-family: Consolas, monospace;
+    font-size: 15px;
+}
+
+</style>
