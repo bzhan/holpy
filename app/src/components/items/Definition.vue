@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import Util from './../../../static/js/util.js'
 
 export default {
   name: 'Definition',
@@ -37,9 +36,5 @@ export default {
   props: [
     "item"
   ],
-
-  created() {
-    this.Util = Util
-  }
 }
 </script>

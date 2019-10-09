@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import Util from './../../static/js/util.js'
 
 export default {
   name: 'ProofContext',
@@ -21,9 +20,5 @@ export default {
       ctxt: undefined
     }
   },
-
-  created() {
-    this.Util = Util
-  }
 }
 </script>

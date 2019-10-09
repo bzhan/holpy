@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import Util from './../../../static/js/util.js'
 
 export default {
   name: 'Axiom',
@@ -24,8 +23,5 @@ export default {
     "item"
   ],
 
-  created() {
-    this.Util = Util
-  }
 }
 </script>

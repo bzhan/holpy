@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import Util from './../../../static/js/util.js'
 
 export default {
   name: 'Inductive',
@@ -20,9 +19,5 @@ export default {
   props: [
     "item"
   ],
-
-  created() {
-    this.Util = Util
-  }
 }
 </script>

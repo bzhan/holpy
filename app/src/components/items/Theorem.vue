@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import Util from './../../../static/js/util.js'
 
 export default {
   name: 'Theorem',
@@ -38,9 +37,5 @@ export default {
   props: [
     "item"
   ],
-
-  created() {
-    this.Util = Util
-  }
 }
 </script>

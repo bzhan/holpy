@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import Util from './../../static/js/util.js'
 
 export default {
   name: 'ProofStatus',
@@ -45,10 +44,6 @@ export default {
       search_res: [],
     }
   },
-
-  created() {
-    this.Util = Util
-  }
 }
 </script>
 

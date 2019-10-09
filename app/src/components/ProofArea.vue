@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import Util from './../../static/js/util.js'
 import 'codemirror/lib/codemirror.css'
 import axios from 'axios'
 import CodeMirror from 'codemirror'
@@ -597,10 +596,6 @@ export default {
       this.init_proof()
     }
   },
-
-  created() {
-    this.Util = Util
-  }
 }
 
 </script>
