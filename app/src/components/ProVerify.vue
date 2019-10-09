@@ -65,7 +65,7 @@ export default {
     ProofContext
   },
 
-  data: () => {
+  data: function () {
     return {
       // Content of the file
       file_data: [],
