@@ -6,23 +6,17 @@
       <v-icon name="edit"/>
     </a>
     <span v-for="(v, i) in item.constrs_hl" v-bind:key=i>
-      <br><Expression class="indented-text" v-bind:line="v"/></span>
+      <br><Expression class="indented-text" v-bind:line="v"/>
     </span>
   </div>  
 </template>
 
 <script>
-import Util from './../../../static/js/util.js'
-
 export default {
   name: 'Datatype',
   
   props: [
     "item"
   ],
-
-  created() {
-    this.Util = Util
-  }
 }
 </script>

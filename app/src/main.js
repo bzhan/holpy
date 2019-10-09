@@ -12,6 +12,8 @@ Vue.component('v-icon', Icon)
 
 import Expression from './components/Expression'
 Vue.component('Expression', Expression)
+import ExpressionEdit from './components/ExpressionEdit'
+Vue.component('ExpressionEdit', ExpressionEdit)
 
 import router from './router'
 

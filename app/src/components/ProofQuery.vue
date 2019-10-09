@@ -5,8 +5,7 @@
       <pre class="test-width"></pre>
       <div style="margin-top:5px" v-for="(key, index) in query.fields" v-bind:key=index>
         <label>{{key}}:</label>
-        <input style="margin-left:10px;width:200px" min-width="200"
-               class="form-element unicode-replace" v-model="vals[key]" refs="input"/>
+        <ExpressionEdit min-width="200" style="margin-left:10px" v-model="vals[key]"/>
       </div>
     </form>
     <button style="margin:5px" v-on:click="handle_ok">OK</button>

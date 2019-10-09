@@ -35,18 +35,6 @@ var Util = {
         'type.ind': 'datatype'
     },
 
-    adjust_input_size: function (input) {
-        var text = $(input).val();
-        var test_width = $(input).closest('form').find('pre.test-width');
-        test_width.text(text);
-        var min_width = $(input).attr('min-width');
-        $(input).css('width', test_width.css('width'));
-        if (min_width !== undefined && $(input).width() < Number(min_width)) {
-            $(input).css('width', min_width + 'px');
-        }
-        $(input).attr('rows', text.split('\n').length);
-    },
-
     replace_unicode: function (input, e) {
         var content = $(input).val().trim();
         var pos = input.selectionStart;

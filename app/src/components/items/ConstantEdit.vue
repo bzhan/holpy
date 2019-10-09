@@ -3,18 +3,14 @@
     <pre class="test-width"></pre>
     <span>
       <label class="keyword">constant</label>
-      <input spellcheck="false" v-model="item.name" class="form-element"
-             min-width="50" ref="name">
+      <ExpressionEdit v-model="item.name" min-width="50" single-line/>
       <span class="form-element">::</span>
-      <input spellcheck="false" v-model="item.type" class="form-element"
-             min-width="100" ref="type">
+      <ExpressionEdit v-model="item.type" min-width="100" single-line/>
     </span>
   </form>
 </template>
 
 <script>
-import Util from './../../../static/js/util.js'
-
 export default {
   name: 'ConstantEdit',
   props: [
@@ -30,15 +26,6 @@ export default {
         },
         JSON.parse(JSON.stringify(this.old_item)))
     }
-  },
-
-  mounted() {
-    Util.adjust_input_size(this.$refs.name)
-    Util.adjust_input_size(this.$refs.type)
-  },
-
-  created() {
-    this.Util = Util
   }
 }
 </script>
