@@ -768,6 +768,151 @@
                 "m": "nat",
                 "n": "nat"
             }
+        },
+        {
+            "attributes": [],
+            "name": "reallim_posinfinity_sequentially",
+            "prop": "tendsto_real f l at_posinfinity = tendsto_real (%n. f (real_of_nat n)) l sequentially",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "reallim_zero_posinfinity",
+            "prop": [
+                "tendsto_real (%x. f (1 / x)) l (atreal 0)",
+                "-->tendsto_real f l at_posinfinity"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "reallim_zero_neginfinity",
+            "prop": "tendsto_real (λx. f (1 / x)) l (atreal 0) ⟶ tendsto_real f l at_neginfinity",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "l": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "closed_real_segment",
+            "prop": "closed_real_segment a b = {x. x = (1 - u) * a + u * b & 0 <= u & u <= 1}",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real set"
+        },
+        {
+            "attributes": [],
+            "name": "open_real_segment",
+            "prop": "open_real_segment a b = diff (closed_real_segment a b) {a,b}",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real set"
+        },
+        {
+            "attributes": [],
+            "name": "real_segment_interval",
+            "prop": [
+                "(!a. !b. closed_real_segment a b = if a <= b then real_closed_interval a b else real_closed_interval b a) &",
+                "(!a. !b. open_real_segment a b = if a <= b then real_open_interval a b else real_open_interval b a)"
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [],
+            "name": "real_interval_subset_real_segment",
+            "prop": [
+                "(∀a. ∀b. subset (real_closed_interval a b) (closed_real_segment a b)) ∧ ",
+                "(∀a. ∀b. subset (real_open_interval a b) (open_real_segment a b))"
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_injective_iff_monotonic",
+            "prop": [
+                "real_continuous_on f s ∧ is_realinterval s ",
+                "⟶ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ f x = f y ⟶ x = y) ⟷ ",
+                "   (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ x < y ⟶ f x < f y) ∨ ",
+                "   (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ x < y ⟶ f y < f x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "ends_in_real_segment",
+            "prop": [
+                "a ∈ closed_real_segment a b &",
+                "b ∈ closed_real_segment a b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "is_real_interval_contains_segment",
+            "prop": [
+                "is_realinterval s =",
+                "!a. !b. a ∈ s & b ∈ s --> subset (closed_real_segment a b) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "is_realinterval_contains_segment_eq",
+            "prop": "is_realinterval s ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "is_realinterval_contains_segment_imp",
+            "prop": "is_realinterval s ⟶ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "is_realinterval_segment",
+            "prop": [
+                "(∀a. ∀b. is_realinterval (closed_real_segment a b)) &",
+                "(∀a. ∀b. is_realinterval (open_real_segment a b))"
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [],
+            "name": "is_real_segment",
+            "prop": [
+                "(∀a. ∀b. !x. x ∈ (closed_real_segment a b) <--> a <= x & x <= b | b <= x & x <= a) ∧ ",
+                "(∀a. ∀b. !x. x ∈ (open_real_segment a b) <--> a < x & x < b | b < x & x < a)"
+            ],
+            "ty": "thm",
+            "vars": {}
         }
     ],
     "description": "Some analytic concepts for real.",
