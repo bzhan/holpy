@@ -53,7 +53,7 @@ class PrinterTest(unittest.TestCase):
             (imp(A, B, C), "A --> B --> C"),
             (imp(imp(A, B), C), "(A --> B) --> C"),
             (imp(A, eq(a, b)), "A --> a = b"),
-            (eq(imp(A, B), imp(B, C)), "(A --> B) <--> B --> C"),
+            (eq(imp(A, B), imp(B, C)), "(A --> B) <--> (B --> C)"),
             (eq(A, eq(B, C)), "A <--> B <--> C"),
             (eq(eq(A, B), C), "(A <--> B) <--> C"),
 
@@ -89,6 +89,8 @@ class PrinterTest(unittest.TestCase):
             (neg(eq(A, B)), "~(A <--> B)"),
             (eq(neg(A), B), "~A <--> B"),
             (eq(neg(A), neg(B)), "~A <--> ~B"),
+            (imp(A, eq(B, C)), "A --> B <--> C"),
+            (eq(imp(A, B), C), "(A --> B) <--> C"),
 
             # Abstraction
             (abs(a, conj(P(a),Q(a))), "%a. P a & Q a"),

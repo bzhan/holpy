@@ -69,7 +69,7 @@ class OperatorTable():
         op_data = [
             OperatorData("equals", 50, assoc=LEFT, ascii_op="="),
             OperatorData("equals", 25, assoc=RIGHT, ascii_op="<-->", unicode_op="⟷", key="iff"),
-            OperatorData("implies", 25, assoc=RIGHT, ascii_op="-->", unicode_op="⟶"),
+            OperatorData("implies", 20, assoc=RIGHT, ascii_op="-->", unicode_op="⟶"),
             OperatorData("conj", 35, assoc=RIGHT, ascii_op="&", unicode_op="∧"),
             OperatorData("disj", 30, assoc=RIGHT, ascii_op="|", unicode_op="∨"),
             OperatorData("neg", 40, arity=UNARY, ascii_op="~", unicode_op="¬"),

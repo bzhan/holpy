@@ -105,11 +105,11 @@ grammar = r"""
 
     ?disj: conj ("|"|"∨") disj | conj   // Disjunction: priority 30
 
-    ?imp: disj ("-->"|"⟶") imp | disj  // Implies: priority 25
+    ?iff: disj ("<-->"|"⟷") iff | disj // Iff: priority 25
 
-    ?iff: imp ("<-->"|"⟷") iff | imp   // Iff: priority 25
+    ?imp: iff ("-->"|"⟶") imp | iff    // Implies: priority 20
 
-    ?term: iff
+    ?term: imp
 
     thm: ("|-"|"⊢") term
         | term ("," term)* ("|-"|"⊢") term
