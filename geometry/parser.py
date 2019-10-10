@@ -2,13 +2,14 @@
 
 from lark import Lark, Transformer, v_args, exceptions
 
-from geometry.expr import Fact, Rule, Line
+from geometry.expr import Fact, Rule, Line, Circle
 
 grammar = r"""
     
     ?fact: CNAME "(" CNAME ("," CNAME)* ")"
     ?rule: fact ":-" fact ("," fact)*
     ?line: "line" "(" CNAME ("," CNAME)* ")"
+    ?circle: "circle" "(" CNAME ("," CNAME)* ")"
     
     %import common.DIGIT
     %import common.WS
@@ -34,10 +35,18 @@ class GeometryTransformer(Transformer):
         args = list(str(arg) for arg in args)
         return Line(list(args))
 
+    def circle(self, center, *args):
+        args = list(str(arg) for arg in args)
+        if center == "None":
+            return Circle(list(args))
+        else:
+            return Circle(list(args), center=str(center))
+
 
 fact_parser = Lark(grammar, start="fact", parser="lalr", transformer=GeometryTransformer())
 rule_parser = Lark(grammar, start="rule", parser="lalr", transformer=GeometryTransformer())
 line_parser = Lark(grammar, start="line", parser="lalr", transformer=GeometryTransformer())
+circle_parser = Lark(grammar, start="circle", parser="lalr", transformer=GeometryTransformer())
 
 def parse_fact(s):
     try:
@@ -51,3 +60,6 @@ def parse_rule(s):
 
 def parse_line(s):
     return line_parser.parse(s)
+
+def parse_circle(s):
+    return circle_parser.parse(s)
