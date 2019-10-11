@@ -449,6 +449,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_resolve",
+                "hint_backward"
+            ],
             "name": "subset_refl",
             "num_gaps": 0,
             "proof": [
@@ -494,7 +498,7 @@
                     "th": "⊢ subset A A"
                 }
             ],
-            "prop": "subset A A",
+            "prop": "A ⊆ A",
             "ty": "thm",
             "vars": {
                 "A": "'a set"

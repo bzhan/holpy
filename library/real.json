@@ -101,6 +101,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_mult_comm",
             "prop": "x * y = y * x",
             "ty": "thm",

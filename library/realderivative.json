@@ -183,11 +183,11 @@
             }
         },
         {
-            "name": "is_realinterval",
-            "prop": [
-                "is_realinterval s =",
-                "!a. !b. !c. member a s & member b s & a <= c & c <= b --> member c s"
+            "attributes": [
+                "hint_rewrite"
             ],
+            "name": "is_realinterval",
+            "prop": "is_realinterval s ⟷ (∀a. ∀b. ∀c. a ∈ s ∧ b ∈ s ∧ a ≤ c ∧ c ≤ b ⟶ c ∈ s)",
             "ty": "def",
             "type": "real set ⇒ bool"
         },

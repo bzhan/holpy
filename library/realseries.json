@@ -817,24 +817,321 @@
             "type": "real ⇒ real ⇒ real set"
         },
         {
-            "attributes": [],
-            "name": "real_segment_interval",
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "open_real_segment_interval",
             "prop": [
-                "(!a. !b. closed_real_segment a b = if a <= b then real_closed_interval a b else real_closed_interval b a) &",
-                "(!a. !b. open_real_segment a b = if a <= b then real_open_interval a b else real_open_interval b a)"
+                "open_real_segment a b = ",
+                "(if a ≤ b then real_open_interval a b else real_open_interval b a)"
             ],
             "ty": "thm",
-            "vars": {}
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "closed_real_segment_interval",
+            "prop": [
+                "closed_real_segment a b = ",
+                "(if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
         },
         {
             "attributes": [],
-            "name": "real_interval_subset_real_segment",
-            "prop": [
-                "(∀a. ∀b. subset (real_closed_interval a b) (closed_real_segment a b)) ∧ ",
-                "(∀a. ∀b. subset (real_open_interval a b) (open_real_segment a b))"
+            "name": "closed_real_interval_subset_real_segment",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ a ≤ b ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "a ≤ b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ b ⊢ a ≤ b"
+                },
+                {
+                    "args": "subset_refl, {a: real}, {A: real_closed_interval a b}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_closed_interval a b ⊆ real_closed_interval a b"
+                },
+                {
+                    "args": "if_P, real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b ⊢ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a ≤ b ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬a ≤ b ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "¬a ≤ b",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬a ≤ b ⊢ ¬a ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬a ≤ b ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
+                },
+                {
+                    "args": "x, real",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ {p. a ≤ p ∧ p ≤ b}",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ x ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "1.1.2",
+                    "prevs": [
+                        "1.1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ a ≤ x ∧ x ≤ b"
+                },
+                {
+                    "args": "conjD1, {}, {A: a ≤ x, B: x ≤ b}",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ a ≤ x"
+                },
+                {
+                    "args": "conjD2, {}, {A: a ≤ x, B: x ≤ b}",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ x ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬a ≤ b, x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ a ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.6",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬a ≤ b, x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ x ∈ {p. b ≤ p ∧ p ≤ a}"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.7",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬a ≤ b ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬a ≤ b ⊢ {p. a ≤ p ∧ p ≤ b} ⊆ {p. b ≤ p ∧ p ≤ a}"
+                },
+                {
+                    "args": "real_closed_interval_def, real_closed_interval a b ⊆ real_closed_interval b a",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬a ≤ b ⊢ real_closed_interval a b ⊆ real_closed_interval b a"
+                },
+                {
+                    "args": "if_not_P, real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬a ≤ b ⊢ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬a ≤ b ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "closed_real_segment_interval, real_closed_interval a b ⊆ closed_real_segment a b",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_closed_interval a b ⊆ closed_real_segment a b"
+                }
+            ],
+            "prop": "real_closed_interval a b ⊆ closed_real_segment a b",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "closed_real_segment_interval"
+                },
+                {
+                    "case": "a ≤ b",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_refl"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1"
+                    ],
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2"
+                    ],
+                    "goal_id": "1.1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2"
+                    ],
+                    "goal_id": "1.1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal": "a <= b",
+                    "goal_id": "1.1.5",
+                    "method_name": "cut"
+                }
             ],
             "ty": "thm",
-            "vars": {}
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "open_real_interval_subset_real_segment",
+            "prop": "real_open_interval a b ⊆ open_real_segment a b",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
         },
         {
             "attributes": [],
@@ -852,12 +1149,12 @@
             }
         },
         {
-            "attributes": [],
-            "name": "ends_in_real_segment",
-            "prop": [
-                "a ∈ closed_real_segment a b &",
-                "b ∈ closed_real_segment a b"
+            "attributes": [
+                "hint_resolve",
+                "hint_backward"
             ],
+            "name": "ends_in_real_segment1",
+            "prop": "a ∈ closed_real_segment a b",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -865,21 +1162,424 @@
             }
         },
         {
-            "attributes": [],
-            "name": "is_real_interval_contains_segment",
-            "prop": [
-                "is_realinterval s =",
-                "!a. !b. a ∈ s & b ∈ s --> subset (closed_real_segment a b) s"
+            "attributes": [
+                "hint_resolve",
+                "hint_backward"
             ],
+            "name": "ends_in_real_segment2",
+            "prop": "b ∈ closed_real_segment a b",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "is_real_interval_contains_segment",
+            "prop": "is_realinterval s ⟷ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s)",
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_rewrite",
+                "hint_backward",
+                "hint_resolve"
+            ],
             "name": "is_realinterval_contains_segment_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s) ⟶ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
+                },
+                {
+                    "args": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ ∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "a, real",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s ⟶ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "closed_real_segment a b ⊆ s",
+                    "id": "0.1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s"
+                },
+                {
+                    "args": "ends_in_real_segment1, {}, {a: a, b: b}",
+                    "id": "0.1.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a ∈ closed_real_segment a b"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "0.1.2.2",
+                    "prevs": [
+                        "0.1.2.0",
+                        "0.1.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "closed_real_segment a b ⊆ s, ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s"
+                },
+                {
+                    "args": "ends_in_real_segment2, {}, {a: a, b: b}",
+                    "id": "0.1.2.3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ b ∈ closed_real_segment a b"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "0.1.2.4",
+                    "prevs": [
+                        "0.1.2.0",
+                        "0.1.2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "closed_real_segment a b ⊆ s, ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ b ∈ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.1.2.5",
+                    "prevs": [
+                        "0.1.2.2",
+                        "0.1.2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s, closed_real_segment a b ⊆ s ⊢ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2.6",
+                    "prevs": [
+                        "0.1.2.0",
+                        "0.1.2.5"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s ⟶ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                },
+                {
+                    "args": "a ∈ s ∧ b ∈ s",
+                    "id": "0.1.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ s ∧ b ∈ s ⊢ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3.1",
+                    "prevs": [
+                        "0.0",
+                        "0.1.3.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s, a ∈ s ∧ b ∈ s ⊢ closed_real_segment a b ⊆ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.3.2",
+                    "prevs": [
+                        "0.1.3.0",
+                        "0.1.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.2",
+                        "0.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1",
+                        "0.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s ⊢ ∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s) ⟶ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s) ⟶ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s)"
+                },
+                {
+                    "args": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ ∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                },
+                {
+                    "args": "a, real",
+                    "id": "1.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "1.1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "a ∈ s ∧ b ∈ s",
+                    "id": "1.1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ s ∧ b ∈ s ⊢ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "a",
+                    "id": "1.1.3",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "b",
+                    "id": "1.1.4",
+                    "prevs": [
+                        "1.1.3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s"
+                },
+                {
+                    "args": "closed_real_segment a b ⊆ s",
+                    "id": "1.1.5",
+                    "prevs": [
+                        "1.1.4",
+                        "1.1.2",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "a ∈ s ∧ b ∈ s, ∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ closed_real_segment a b ⊆ s"
+                },
+                {
+                    "args": "",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.0",
+                        "1.1.1",
+                        "1.1.2",
+                        "1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s ⊢ ∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s) ⟶ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∀a. ∀b. a ∈ s ∧ b ∈ s ⟶ closed_real_segment a b ⊆ s) ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
+                },
+                {
+                    "args": "is_real_interval_contains_segment, is_realinterval s ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval s ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)"
+                }
+            ],
             "prop": "is_realinterval s ⟷ (∀a. ∀b. closed_real_segment a b ⊆ s ⟷ a ∈ s ∧ b ∈ s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "is_real_interval_contains_segment"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": "a, b"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2.0"
+                    ],
+                    "goal_id": "0.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetE"
+                },
+                {
+                    "goal_id": "0.1.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "ends_in_real_segment1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.2.0"
+                    ],
+                    "goal_id": "0.1.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetE"
+                },
+                {
+                    "goal_id": "0.1.2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "ends_in_real_segment2"
+                },
+                {
+                    "goal_id": "0.1.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1.3.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "introduction",
+                    "names": "a,b"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1.3",
+                    "method_name": "forall_elim",
+                    "s": "a"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.3"
+                    ],
+                    "goal_id": "1.1.4",
+                    "method_name": "forall_elim",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.4"
+                    ],
+                    "goal_id": "1.1.5",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
@@ -896,23 +1596,386 @@
         },
         {
             "attributes": [],
-            "name": "is_realinterval_segment",
-            "prop": [
-                "(∀a. ∀b. is_realinterval (closed_real_segment a b)) &",
-                "(∀a. ∀b. is_realinterval (open_real_segment a b))"
+            "name": "is_realinterval_closed_segment",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ∀a1. ∀b1. ∀c. a1 ∈ real_closed_interval a b ∧ b1 ∈ real_closed_interval a b ∧ a1 ≤ c ∧ c ≤ b1 ⟶ c ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "is_realinterval_def, is_realinterval (real_closed_interval a b)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ a ≤ b"
+                },
+                {
+                    "args": "if_P, is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "closed_real_segment_interval, is_realinterval (closed_real_segment a b)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval (closed_real_segment a b)"
+                }
+            ],
+            "prop": "is_realinterval (closed_real_segment a b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "closed_real_segment_interval"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "is_realinterval_def"
+                }
             ],
             "ty": "thm",
-            "vars": {}
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
         },
         {
             "attributes": [],
-            "name": "is_real_segment",
+            "name": "is_realinterval_open_segment",
+            "prop": "is_realinterval (open_real_segment a b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "is_closed_real_segment",
+            "prop": "x ∈ closed_real_segment a b ⟷ a ≤ x ∧ x ≤ b ∨ b ≤ x ∧ x ≤ a",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "is_closed_real_segment",
+            "prop": "x ∈ open_real_segment a b ⟷ a < x ∧ x < b ∨ b < x ∧ x < a",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "floor_continuous_monotone_floor",
             "prop": [
-                "(∀a. ∀b. !x. x ∈ (closed_real_segment a b) <--> a <= x & x <= b | b <= x & x <= a) ∧ ",
-                "(∀a. ∀b. !x. x ∈ (open_real_segment a b) <--> a < x & x < b | b < x & x < a)"
+                "is_realinterval s &",
+                "real_continuous_on f s &",
+                "(!x. !y. x ∈ s & y ∈ s & x <= y --> f x <= f y) &",
+                "(!x. x ∈ s & integer (f x) --> integer x)",
+                "--> !x. (floor x) ∈ s & x ∈ s --> floor (f (floor x)) = floor (f x)"
             ],
             "ty": "thm",
-            "vars": {}
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_convex_on",
+            "prop": [
+                "real_convex_on f s <-->",
+                "        !x. !y. !u. !v. x ∈ s & y ∈ s & 0 <= u & 0 <= v & (u + v = 1)",
+                "                  --> f(u * x + v * y) <= u * f(x) + v * f(y)"
+            ],
+            "ty": "def",
+            "type": "(real ⇒ real) ⇒ real set ⇒ bool"
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_empty",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ f (u * x + v * y) ≤ u * f x + v * f y"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, real",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "u, real",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR u"
+                },
+                {
+                    "args": "v, real",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR v"
+                },
+                {
+                    "args": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1",
+                    "id": "0.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1"
+                },
+                {
+                    "args": "conjD1, {}, {A: x ∈ ∅, B: y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1}",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ f (u * x + v * y) ≤ u * f x + v * f y"
+                },
+                {
+                    "args": "",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.3",
+                        "0.4",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. ∀y. ∀u. ∀v. x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ f (u * x + v * y) ≤ u * f x + v * f y"
+                },
+                {
+                    "args": "real_convex_on_def, real_convex_on f ∅",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_convex_on f ∅"
+                }
+            ],
+            "prop": "real_convex_on f empty_set",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_convex_on_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x,y,u,v"
+                },
+                {
+                    "fact_ids": [
+                        "0.4"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_eq",
+            "prop": [
+                "is_realinterval s & (!x. x ∈ s --> f x = g x) & real_convex_on f s",
+                "         --> real_convex_on g s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_sing",
+            "prop": "real_convex_on f {a}",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_subset",
+            "prop": "real_convex_on f t & subset s t --> real_convex_on f s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_const",
+            "prop": "real_convex_on (%x. c) s",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_add",
+            "prop": [
+                "real_convex_on f s & real_convex_on g s",
+                "--> real_convex_on (%x. f x + g x) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": " real_convex_lmul",
+            "prop": "0 ≤ c ∧ real_convex_on f s ⟶ real_convex_on (λx. c * f x) s",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_rmul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 ≤ c ∧ real_convex_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ c ∧ real_convex_on f s ⊢ 0 ≤ c ∧ real_convex_on f s"
+                },
+                {
+                    "args": " real_convex_lmul",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 ≤ c ∧ real_convex_on f s ⊢ real_convex_on (λx. c * f x) s"
+                },
+                {
+                    "args": "real_mult_comm, real_convex_on (λx. f x * c) s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ c ∧ real_convex_on f s ⊢ real_convex_on (λx. f x * c) s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ c ∧ real_convex_on f s ⟶ real_convex_on (λx. f x * c) s"
+                }
+            ],
+            "prop": "0 ≤ c ∧ real_convex_on f s ⟶ real_convex_on (λx. f x * c) s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": " real_convex_lmul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "s": "real set"
+            }
         }
     ],
     "description": "Some analytic concepts for real.",

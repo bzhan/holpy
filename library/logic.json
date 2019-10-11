@@ -1598,6 +1598,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "conj_disj_distribL1",
             "num_gaps": 0,
             "proof": [
@@ -1908,7 +1911,7 @@
                     "th": "⊢ A ∧ (B ∨ C) ⟷ A ∧ B ∨ A ∧ C"
                 }
             ],
-            "prop": "(A & (B | C)) = ((A & B) | (A & C))",
+            "prop": "A ∧ (B ∨ C) ⟷ A ∧ B ∨ A ∧ C",
             "steps": [
                 {
                     "goal_id": "0",
