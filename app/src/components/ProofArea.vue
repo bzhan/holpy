@@ -287,7 +287,12 @@ export default {
         })
 
         if (query_result !== undefined) {
-          Object.assign(input, query_result)
+          for (var k in query_result) {
+            if (k === 'names')
+              input[k] = query_result[k]
+            else
+              input['param_' + k] = query_result[k]
+          }
           this.apply_method_ajax(input)
         }
       } else if ('err_type' in result.data) {
