@@ -205,8 +205,9 @@ def init_saved_proof():
         return jsonify(cell.json_data())
     except Exception as e:
         error = {
-            "failed": e.__class__.__name__,
-            "message": str(e)
+            "err_type": e.__class__.__name__,
+            "err_str": str(e),
+            "trace": traceback2.format_exc()
         }
     return jsonify(error)
 
@@ -231,8 +232,9 @@ def apply_method():
             })
         else:
             return jsonify({
-                "failed": e.__class__.__name__,
-                "message": str(e)
+                "err_type": e.__class__.__name__,
+                "err_str": str(e),
+                "trace": traceback2.format_exc()
             })
 
 def str_of_extension(thy, exts):

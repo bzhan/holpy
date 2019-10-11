@@ -1,11 +1,17 @@
 <template>
   <div>
-    <div><span class="item-text">{{ status }}</span></div>
+    <div>
+      <span class="item-text">{{ status }}</span>
+      <a href="#" v-if="trace !== undefined" v-on:click="show_trace = !show_trace">
+        {{ show_trace ? 'Hide stack trace' : 'Show stack trace' }}
+      </a>
+      <pre v-if="trace !== undefined && show_trace">{{trace}}</pre>
+    </div>
     <div>
       <span v-if="instr_no !== ''">
-        <a href="#" id="link-backward" v-on:click="ref_proof.step_backward()">&lt;</a>
+        <a href="#" v-on:click="ref_proof.step_backward()">&lt;</a>
         <span id="instruction-number" v-html="instr_no"/>
-        <a href="#" id="link-forward" v-on:click="ref_proof.step_forward()">&gt;</a>
+        <a href="#" v-on:click="ref_proof.step_forward()">&gt;</a>
       </span>
       <Expression style="margin-left:10pt" v-bind:line="instr"/>
     </div>
@@ -39,6 +45,12 @@ export default {
       
       // Display of status (text)
       status: '',
+
+      // Trace of exception
+      trace: undefined,
+
+      // Whether to show trace
+      show_trace: false,
 
       // List of search results
       search_res: [],

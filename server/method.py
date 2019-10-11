@@ -355,7 +355,7 @@ class apply_resolve_step(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.theorem(data['theorem']))
+            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
         else:
             for th_name, th in thy.get_data("theorems").items():
                 if 'hint_resolve' in thy.get_attributes(th_name):

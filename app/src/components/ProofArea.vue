@@ -77,6 +77,12 @@ export default {
 
     display_status: function (status) {
       this.ref_status.status = status
+      this.ref_status.trace = undefined
+    },
+
+    display_error: function (err_type, err_str, trace) {
+      this.ref_status.status = err_type + ": " + err_str
+      this.ref_status.trace = trace
     },
 
     // Display selected facts (in yellow) and goal (in red).
@@ -102,8 +108,8 @@ export default {
 
     display_checked_proof: function (result) {
       let editor = this.editor
-      if ('failed' in result) {
-        this.display_status(result.failed + ': ' + result.message, 'red')
+      if ('err_type' in result) {
+        this.display_error(result.err_type, result.err_str, result.trace)
       } else {
         this.proof = result.proof
         editor.startOperation()
@@ -284,8 +290,8 @@ export default {
           Object.assign(input, query_result)
           this.apply_method_ajax(input)
         }
-      } else if ('failed' in result.data) {
-        this.display_status(result.data.failed + ': ' + result.data.message, 'red')
+      } else if ('err_type' in result.data) {
+        this.display_error(result.data.err_type, result.data.err_str, result.data.trace)
       } else {
         // Success
         var hId = this.index
@@ -486,8 +492,8 @@ export default {
 
       let response = await axios.post('http://127.0.0.1:5000/api/init-saved-proof', JSON.stringify(data))
 
-      if ('failed' in response.data) {
-        this.display_status(response.data.failed + ': ' + response.data.message)
+      if ('err_type' in response.data) {
+        this.display_error(response.data.err_type, response.data.err_str, response.data.trace)
       } else {
         this.goal = -1
         this.method_sig = response.data.method_sig

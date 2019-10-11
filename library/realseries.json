@@ -1734,7 +1734,7 @@
         {
             "attributes": [],
             "name": "real_convex_on_empty",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -1788,10 +1788,12 @@
                     "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ ∅"
                 },
                 {
-                    "args": "",
+                    "args": "member_empty, f (u * x + v * y) ≤ u * f x + v * f y",
                     "id": "0.6",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "resolve_theorem",
                     "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ f (u * x + v * y) ≤ u * f x + v * f y"
                 },
                 {
@@ -1837,6 +1839,14 @@
                     "goal_id": "0.5",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.5"
+                    ],
+                    "goal_id": "0.6",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
                 }
             ],
             "ty": "thm",
