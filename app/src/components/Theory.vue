@@ -287,11 +287,11 @@ export default {
         filename: this.theory.name,
         prev_list: this.theory.content.slice(0, Number(this.on_edit)),
         line_length: 80,
-        content: this.$refs.edit[0]._data.item
+        item: this.$refs.edit[0]._data.item
       }
-      delete data.content.err_type
-      delete data.content.err_str
-      delete data.content.trace
+      delete data.item.err_type
+      delete data.item.err_str
+      delete data.item.trace
       this.$emit('set-message', {
         type: 'OK',
         data: 'Checking...'

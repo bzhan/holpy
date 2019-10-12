@@ -168,20 +168,27 @@ export default {
     },
 
     current_state: function () {
-      var goalNo = this.goal
-      if (goalNo === -1) {
+      if (this.goal === -1) {
         return undefined
       }
-      var factIds = []
-      this.facts.forEach(v => factIds.push(this.proof[v].id))
+      var fact_ids = []
+      for (let i = 0; i < this.facts.length; i++) {
+        fact_ids.push(this.proof[this.facts[i]].id)
+      }
+      var goal_id = this.proof[this.goal].id
+
       return {
         username: this.$state.user,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
-        goal_id: this.proof[goalNo].id,
-        fact_ids: factIds,
-        vars: this.vars,
-        proof: this.proof
+        proof: {
+          vars: this.vars,
+          proof: this.proof,
+        },
+        step: {
+          goal_id: goal_id,
+          fact_ids: fact_ids,
+        }
       }
     },
 
@@ -206,30 +213,31 @@ export default {
       this.apply_method(res._method_name, res);
     },
 
-    apply_method: async function (methodName, args) {
-      var count = 0
-      var sigList = []
-      var sigs = this.method_sig[methodName]
+    // Apply method with the given method name, on the given
+    // argments.
+    apply_method: async function (method_name, args) {
+      var sigs = this.method_sig[method_name]
       var input = this.current_state()
-      input.method_name = methodName
+      input.step.method_name = method_name
       if (args === undefined) {
         args = {}
       }
+
+      var sigList = []
       for (let i = 0; i < sigs.length; i++) {
         let sig = sigs[i]
         if (sig in args) {
-          input[sig] = args[sig]
+          input.step[sig] = args[sig]
         } else {
           sigList.push(sig)
-          count += 1
         }
       }
 
-      if (count > 0) {
+      if (sigList.length > 0) {
         let $vm = this
         const query_result = await new Promise(function (resolve, reject) {
           $vm.$emit('query', {
-            title: 'Method ' + methodName,
+            title: 'Method ' + method_name,
             fields: sigList,
             resolve: resolve,
             reject: reject
@@ -264,9 +272,9 @@ export default {
         if (query_result !== undefined) {
           for (var k in query_result) {
             if (k === 'names')
-              input[k] = query_result[k]
+              input.step[k] = query_result[k]
             else
-              input['param_' + k] = query_result[k]
+              input.step['param_' + k] = query_result[k]
           }
           this.apply_method_ajax(input)
         }
@@ -275,8 +283,11 @@ export default {
       } else {
         // Success
         var hId = this.index
-        this.steps[hId] = input
+        this.steps[hId] = input.step
         this.steps.length = hId + 1
+        if (this.steps[hId].fact_ids.length === 0) {
+          delete this.steps[hId].fact_ids
+        }
         this.history[hId].steps_output = result.data.steps_output
         this.history[hId + 1] = {
           steps_output: [['Current state', 0]],
@@ -284,12 +295,6 @@ export default {
           report: result.data.report
         }
         this.history.length = hId + 2
-        if (input.fact_ids.length === 0) { delete input.fact_ids }
-        delete input.username
-        delete input.theory_name
-        delete input.thm_name
-        delete input.vars
-        delete input.proof
         this.index += 1
         this.display_instructions()
       }
@@ -325,8 +330,10 @@ export default {
         username: this.$state.user,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
-        vars: this.vars,
-        prop: this.prop
+        proof: {
+          vars: this.vars,
+          prop: this.prop
+        }
       }
 
       let response = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
@@ -349,10 +356,12 @@ export default {
         username: this.$state.user,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
-        vars: this.vars,
-        prop: this.prop,
-        steps: this.old_steps,
-        proof: this.old_proof
+        proof: {
+          vars: this.vars,
+          prop: this.prop,
+          steps: this.old_steps,
+          proof: this.old_proof
+        }
       }
 
       let response = await axios.post('http://127.0.0.1:5000/api/init-saved-proof', JSON.stringify(data))

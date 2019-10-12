@@ -224,6 +224,7 @@ def init_empty_proof():
     * username: username.
     * theory_name: name of the theory.
     * thm_name: name of the theorem.
+    * proof: initial data for the proof.
 
     Returns:
     * initial proof of the theorem.
@@ -236,7 +237,7 @@ def init_empty_proof():
     else:
         limit = None
     thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
-    cell = server.ProofState.parse_init_state(thy, data)
+    cell = server.ProofState.parse_init_state(thy, data['proof'])
     return jsonify(cell.json_data())
 
 
@@ -248,6 +249,7 @@ def init_saved_proof():
     * username: username.
     * theory_name: name of the theory.
     * thm_name: name of the theorem.
+    * proof: initial data for the proof.
 
     Returns:
     * saved proof of the theorem.
@@ -264,7 +266,7 @@ def init_saved_proof():
         thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
         print("Load: %f" % (time.clock() - start_time))
         start_time = time.clock()
-        cell = server.ProofState.parse_proof(thy, data)
+        cell = server.ProofState.parse_proof(thy, data['proof'])
         print("Parse: %f" % (time.clock() - start_time))
         return jsonify(cell.json_data())
     except Exception as e:
@@ -296,10 +298,10 @@ def apply_method():
     else:
         limit = None
     thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
-    cell = server.ProofState.parse_proof(thy, data)
+    cell = server.ProofState.parse_proof(thy, data['proof'])
     try:
-        step_output = method.display_method(cell, data, unicode=True, highlight=True)
-        method.apply_method(cell, data)
+        step_output = method.display_method(cell, data['step'], unicode=True, highlight=True)
+        method.apply_method(cell, data['step'])
         cell_data = cell.json_data()
         cell_data['steps_output'] = step_output
         return jsonify(cell_data)
@@ -455,8 +457,8 @@ def load_json_file():
         f_data = json.load(f)
     if 'content' in f_data:
         thy = basic.load_imported_theory(f_data['imports'], user=username)
-        for data in f_data['content']:
-            file_data_to_output(thy, data, line_length=line_length)
+        for item in f_data['content']:
+            file_data_to_output(thy, item, line_length=line_length)
     else:
         f_data['content'] = []
 
@@ -505,9 +507,9 @@ def search_method():
     else:
         limit = None
     thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
-    cell = server.ProofState.parse_proof(thy, data)
-    fact_ids = data['fact_ids']
-    goal_id = data['goal_id']
+    cell = server.ProofState.parse_proof(thy, data['proof'])
+    fact_ids = data['step']['fact_ids']
+    goal_id = data['step']['goal_id']
     search_res = cell.search_method(goal_id, fact_ids)
     for res in search_res:
         if '_goal' in res:
@@ -517,20 +519,12 @@ def search_method():
 
     ctxt = cell.get_ctxt(goal_id)
     print_ctxt = dict((k, printer.print_type(thy, v, highlight=True))
-                        for k, v in ctxt['vars'].items())
+                      for k, v in ctxt['vars'].items())
     return jsonify({
         'search_res': search_res,
         'ctxt': print_ctxt
     })
 
-
-def parse_var_decls(thy, var_decls):
-    res = dict()
-    for var_decl in var_decls:
-        if var_decl:
-            nm, T = parser.parse_var_decl(thy, var_decl)
-            res[nm] = str(T)
-    return res
 
 @app.route('/api/check-modify', methods=['POST'])
 def check_modify():
@@ -540,7 +534,7 @@ def check_modify():
     * username: username.
     * filename: name of the file.
     * line_length: maximum length of printed line.
-    * content: item to be checked.
+    * item: item to be checked.
 
     Returns:
     * checked item.
@@ -548,7 +542,7 @@ def check_modify():
     """
     data = json.loads(request.get_data().decode("utf-8"))
     username = data['username']
-    item = data['content']
+    item = data['item']
     line_length = data.get('line_length')
 
     with open(user_file(username, data['filename']), 'r', encoding='utf-8') as f:
@@ -558,7 +552,12 @@ def check_modify():
         parser.parse_extensions(thy, data['prev_list'])
 
         if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
-            item['vars'] = parse_var_decls(thy, item['vars_lines'].split('\n'))
+            item['vars'] = dict()
+            for var_decl in item['vars_lines'].split('\n'):
+                if var_decl:
+                    nm, T = parser.parse_var_decl(thy, var_decl)
+                    item['vars'][nm] = str(T)
+
             item['prop'] = item['prop_lines'].split('\n')
             if len(item['prop']) == 1:
                 item['prop'] = item['prop'][0]
