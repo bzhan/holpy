@@ -22,6 +22,8 @@ export default {
         return 'blue'
       } else if (x === 3) { // tvar
         return 'purple'
+      } else if (x === 4) {
+        return 'silver'
       }
     }
   }
