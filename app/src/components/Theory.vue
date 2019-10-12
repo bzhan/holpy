@@ -136,7 +136,7 @@ import Inductive from './items/Inductive'
 import Theorem from './items/Theorem'
 import TheoremEdit from './items/TheoremEdit'
 import MetadataEdit from './items/MetadataEdit'
-import ProofArea from './ProofArea'
+import ProofArea from './proof/ProofArea'
 
 export default {
   name: 'Theory',

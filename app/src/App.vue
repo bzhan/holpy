@@ -20,6 +20,10 @@ export default {
 
 <style>
 
+body {
+  font-size: 15px;
+}
+
 .navbar {
   padding: 4px 1rem;
 }
@@ -33,10 +37,6 @@ a.dropdown-item {
   padding: 0.3rem 1.0rem 0.3rem 0.5rem;
 }
 
-.CodeMirror {
-  height: 260px;
-}
-
 .keyword {
   font-weight: bold;
   color: #006000;
@@ -48,14 +48,12 @@ a.dropdown-item {
 
 .item-text {
   font-family: Consolas, monospace;
-  font-size: 15px;
 }
 
 .form-element {
   margin-left: 0.5em;
   padding-left: 5px;
   padding-right: 5px;
-  font-size: 15px;
   font-family: Consolas, monospace;
 }
 

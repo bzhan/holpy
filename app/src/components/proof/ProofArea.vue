@@ -1,17 +1,26 @@
 <template>
   <div style="margin-top:8px">
-    <textarea id="proof-area"></textarea>
+    <div v-if="proof !== undefined">
+      <ProofLine v-for="(line, index) in proof"
+                 v-bind:key="index" v-bind:line="line"
+                 v-bind:is_last_id="is_last_id(proof, index)"
+                 v-bind:is_goal="goal === index"
+                 v-bind:is_fact="facts.indexOf(index) !== -1"
+                 v-on:select="mark_text(index)"/>
+    </div>
   </div>
 </template>
 
 <script>
-import 'codemirror/lib/codemirror.css'
 import axios from 'axios'
-import CodeMirror from 'codemirror'
-
+import ProofLine from './ProofLine'
 
 export default {
   name: 'ProofArea',
+
+  components: {
+    ProofLine,
+  },
 
   props: [
     // Input theory_name and thm_name specifies the position in the
@@ -45,10 +54,8 @@ export default {
 
   data: function () {
     return {
-      editor: undefined,  // CodeMirror object
-      edit_flag: false,   // Edit flag for CodeMirror
-      is_mousedown: false,  // Used to manage clicks
-      method_sig: [],     // Method signature
+      // Method signature
+      method_sig: [],
 
       // Information about the proof
       index: 0,
@@ -85,38 +92,11 @@ export default {
       this.ref_status.trace = trace
     },
 
-    // Display selected facts (in yellow) and goal (in red).
-    display_facts_and_goal: function () {
-      let editor = this.editor
-      editor.getAllMarks().forEach(e => {
-          if (e.css === 'background: red' || e.css == 'background: yellow') {
-              e.clear()
-          }
-      });
-      if (this.goal !== -1) {
-          let goal_line = editor.getLineHandle(this.goal).text;
-          editor.markText({line: this.goal, ch: goal_line.length - 5},
-                          {line: this.goal, ch: goal_line.length},
-                          {css: 'background: red'});    
-      }
-      this.facts.forEach(fact_no => {
-          let fact_line = editor.getLineHandle(fact_no).text;
-          editor.markText({line: fact_no, ch: 0}, {line: fact_no, ch: fact_line.length},
-                          {css: 'background: yellow'});
-      })
-    },
-
     display_checked_proof: function (result) {
-      let editor = this.editor
       if ('err_type' in result) {
         this.display_error(result.err_type, result.err_str, result.trace)
       } else {
         this.proof = result.proof
-        editor.startOperation()
-        this.edit_flag = true
-        this.display()
-        this.edit_flag = false
-        editor.endOperation()
         var numGaps = result.report.num_gaps
         this.num_gaps = numGaps
         if (numGaps > 0) {
@@ -128,37 +108,31 @@ export default {
         if ('goal' in result) {
           // Looking at a previous step, already has goal_id and fact_id
           this.goal = result.goal
-          editor.setCursor(result.goal, 0)
           this.facts = []
           if ('facts' in result) {
             this.facts = result.facts
           }
         } else {
-          var lineCount = editor.lineCount()
           var newLineNo = -1
           var preLineNo = 0
           if (this.goal !== -1) {
             preLineNo = this.goal
           }
-          for (var i = preLineNo; i < lineCount; i++) {
-            if (editor.getLine(i).indexOf('sorry') !== -1) {
+          for (var i = preLineNo; i < this.proof.length; i++) {
+            if (this.proof[i].rule === 'sorry') {
               newLineNo = i
               break
             }
           }
           if (newLineNo === -1) {
-            editor.setCursor(0, 0)
             this.facts = []
             this.goal = -1
           } else {
-            editor.setCursor(newLineNo, 0)
             this.facts = []
             this.goal = newLineNo
           }
         }
-        this.display_facts_and_goal()
         this.match_thm()
-        editor.focus()
       }
     },
 
@@ -326,139 +300,21 @@ export default {
       return proof[lineNo + 1].rule === 'intros'
     },
 
-    display_have_prompt: function (editor, proof, lineNo, ch) {
-      if (this.is_last_id(proof, lineNo)) {
-        return this.display_str(editor, 'show ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
-      } else {
-        return this.display_str(editor, 'have ', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
-      }
-    },
-
-    display_highlight_str: function (editor, p, lineNo, ch) {
-      let color
-      if (p[1] === 0) {
-        color = 'color: black'
-      } else if (p[1] === 1) {
-        color = 'color: green'
-      } else if (p[1] === 2) {
-        color = 'color: blue'
-      } else if (p[1] === 3) {
-        color = 'color: purple'
-      } else if (p[1] === 4) {
-        color = 'color: silver'
-      }
-      return this.display_str(editor, p[0], lineNo, ch, {css: color})
-    },
-
-    display_highlight_strs: function (editor, ps, lineNo, ch) {
-      for (let i = 0; i < ps.length; i++) {
-        ch = this.display_highlight_str(editor, ps[i], lineNo, ch)
-      }
-      return ch
-    },
-
-    display_str: function (editor, str, lineNo, ch, mark) {
-      let len = str.length
-      editor.replaceRange(str, {line: lineNo, ch: ch}, {line: lineNo, ch: ch + len})
-      if (typeof mark !== 'undefined') {
-        editor.markText({line: lineNo, ch: ch}, {line: lineNo, ch: ch + len}, mark)
-      }
-      return ch + len
-    },
-
-    display_line: function (proof, lineNo) {
-      let editor = this.editor
-      let line = proof[lineNo]
-      let ch = 0
-      let strTemp = ''
-      for (let i = 0; i < line.id.length; i++) {
-        if (line.id[i] === '.') {
-          strTemp += '  '
-        }
-      }
-      ch = this.display_str(editor, strTemp, lineNo, ch, {css: 'font-weight: bold'})
-      if (line.rule === 'assume') {
-        ch = this.display_str(editor, 'assume ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
-        ch = this.display_highlight_strs(editor, line.args_hl, lineNo, ch)
-      } else if (line.rule === 'variable') {
-        ch = this.display_str(editor, 'fix ', lineNo, ch, {css: 'color: darkcyan; font-weight: bold'})
-        ch = this.display_highlight_strs(editor, line.args_hl, lineNo, ch)
-      } else if (line.rule === 'subproof') {
-        ch = this.display_have_prompt(editor, proof, lineNo, ch)
-        ch = this.display_highlight_strs(editor, line.th_hl, lineNo, ch)
-        ch = this.display_str(editor, ' with', lineNo, ch, {css: 'color: darkblue; font-weight: bold'})
-      } else {
-        // Display theorem with highlight
-        if (line.th_hl.length > 0) {
-          ch = this.display_have_prompt(editor, proof, lineNo, ch)
-          ch = this.display_highlight_strs(editor, line.th_hl, lineNo, ch)
-          ch = this.display_str(editor, ' by ', lineNo, ch, {css: 'font-weight: bold'})
-        }
-        // Display rule name
-        ch = this.display_str(editor, line.rule, lineNo, ch)
-        // Display args with highlight
-        if (line.args_hl.length > 0) {
-          ch = this.display_str(editor, ' ', lineNo, ch)
-          ch = this.display_highlight_strs(editor, line.args_hl, lineNo, ch)
-        }
-        if (line.prevs.length > 0) {
-          ch = this.display_str(editor, ' from ', lineNo, ch, {css: 'font-weight: bold'})
-          ch = this.display_str(editor, line.prevs.join(', '), lineNo, ch)
-        }
-      }
-      editor.execCommand('goDocEnd')
-    },
-
-    display: function () {
-      if (this.editor) {
-        let editor = this.editor
-        let proof = this.proof
-        editor.setValue('')
-        editor.setOption('lineNumberFormatter', function(lineNo) {
-          if (lineNo < proof.length) {
-            return proof[lineNo].id
-          } else {
-            return ''
-          }
-        })
-        let maxIdLen = 0
-        for (let lineNo = 0; lineNo < this.proof.length; lineNo++) {
-          let line = this.proof[lineNo];
-          let idLen = line.id.length
-          if (idLen >= maxIdLen) {
-            maxIdLen = idLen
-          }
-          this.display_line(this.proof, lineNo)
-          let len = editor.getLineHandle(lineNo).text.length
-          editor.replaceRange('\n', {line: lineNo, ch: len}, {line: lineNo, ch: len + 1})
-          if (line.rule === 'intros') {
-            editor.markText({line: lineNo, ch: 0}, {line: lineNo}, {inclusiveRight: true, inclusiveLeft: true, collapsed: 'true'})
-          }
-        }
-      }
-    },
-
     // Select goal or fact
-    mark_text: function () {
-      let editor = this.editor;
-      var line_num = editor.getCursor().line;
-      var line = editor.getLineHandle(line_num).text;
-      if (line_num >= this.proof.length) {
-        return;
-      }
-      if (line.indexOf('sorry') !== -1) {
+    mark_text: function (line_no) {
+      if (this.proof[line_no].rule === 'sorry') {
         // Choose a new goal
-        this.goal = line_num;
+        this.goal = line_no;
       }
       else if (this.goal !== -1) {
         // Choose or unchoose a fact
-        let i = this.facts.indexOf(line_num);
+        let i = this.facts.indexOf(line_no);
         if (i === -1)
-          this.facts.push(line_num);
+          this.facts.push(line_no);
         else
           this.facts.splice(i, 1);
       }
-      this.display_facts_and_goal();
+      this.match_thm();
     },
 
     init_empty_proof: async function () {
@@ -541,62 +397,6 @@ export default {
   },
 
   async mounted() {
-    let editor = await CodeMirror.fromTextArea(document.getElementById("proof-area"), {
-      mode: 'text/x-python',
-      lineNumbers: true,
-      firstLineNumber: 0,
-      theme: '',
-      lineWrapping: false,
-      foldGutter: true,
-      smartIndent: false,
-      matchBrackets: true,
-      viewportMargin: Infinity,
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-      extraKeys: {
-        'Ctrl-I': function () {
-          this.apply_method('introduction')
-        },
-        'Ctrl-B': function () {
-          this.apply_method('apply_backward_step')
-        },
-        'Ctrl-R': function () {
-          this.apply_method('rewrite_goal')
-        },
-        'Ctrl-F': function () {
-          this.apply_method('apply_forward_step')
-        },
-        'Ctrl-Q': function (cm) {
-          cm.foldCode(cm.getCursor())
-        }
-      },
-      beforeChange: function (cm, change) {
-        if (!this.edit_flag) {
-            change.cancel();
-        }        
-      }
-    })
-
-    let that = this
-    editor.on('beforeChange', function (cm, change) {
-      if (!that.edit_flag) {
-        change.cancel();
-      }
-    });
-
-    editor.on('cursorActivity', function (cm) {
-      if (that.is_mousedown) {
-        that.mark_text(cm);
-        that.match_thm();
-        that.is_mousedown = false;
-      }
-    });
-
-    editor.on('mousedown', function () {
-      that.is_mousedown = true;
-    });
-
-    this.editor = editor
-
     if (this.prop) {
       this.init_proof()
     }

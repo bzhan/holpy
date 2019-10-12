@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import ProofArea from './ProofArea'
+import ProofArea from './proof/ProofArea'
 
 export default {
   name: 'Program',

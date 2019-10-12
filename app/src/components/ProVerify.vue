@@ -53,9 +53,9 @@
 <script>
 import axios from 'axios'
 import Program from './Program'
-import ProofStatus from './ProofStatus'
-import ProofQuery from './ProofQuery'
-import ProofContext from './ProofContext'
+import ProofStatus from './proof/ProofStatus'
+import ProofQuery from './proof/ProofQuery'
+import ProofContext from './proof/ProofContext'
 
 export default {
   name: 'ProVerify',
