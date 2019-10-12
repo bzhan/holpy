@@ -12,6 +12,7 @@ from kernel import extension, theory
 from syntax import parser, printer, settings, pprint
 from server import server, method
 from logic import basic
+from logic.basic import user_dir, user_file
 from logic import induct
 from imperative import parser2
 from imperative import imp
@@ -84,21 +85,6 @@ def register():
 
 DATABASE = os.getcwd() + '/users/user.db'
 
-def user_dir(username):
-    """Returns directory for the user."""
-    assert username, "user_dir: empty username."
-    if username == 'master':
-        return './library/'
-    else:
-        return './users/' + username
-
-def user_file(username, filename):
-    """Return json file for the user and given filename."""
-    assert username, "user_file: empty username."
-    if username == 'master':
-        return './library/' + filename + '.json'
-    else:
-        return './users/' + username + '/' + filename + '.json'
 
 def add_user(username, password):
     """Add new user to the database."""
@@ -236,7 +222,7 @@ def init_empty_proof():
         limit = ('thm', data['thm_name'])
     else:
         limit = None
-    thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
+    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
     cell = server.ProofState.parse_init_state(thy, data['proof'])
     return jsonify(cell.json_data())
 
@@ -263,7 +249,7 @@ def init_saved_proof():
             limit = ('thm', data['thm_name'])
         else:
             limit = None
-        thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
+        thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
         print("Load: %f" % (time.clock() - start_time))
         start_time = time.clock()
         cell = server.ProofState.parse_proof(thy, data['proof'])
@@ -297,7 +283,7 @@ def apply_method():
         limit = ('thm', data['thm_name'])
     else:
         limit = None
-    thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
+    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
     cell = server.ProofState.parse_proof(thy, data['proof'])
     try:
         step_output = method.display_method(cell, data['step'], unicode=True, highlight=True)
@@ -453,10 +439,10 @@ def load_json_file():
     username = data['username']
     filename = data['filename']
     line_length = data.get('line_length')
-    with open(user_file(username, filename), 'r', encoding='utf-8') as f:
+    with open(user_file(filename, username), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     if 'content' in f_data:
-        thy = basic.load_imported_theory(f_data['imports'], user=username)
+        thy = basic.load_theories(f_data['imports'], username=username)
         for item in f_data['content']:
             file_data_to_output(thy, item, line_length=line_length)
     else:
@@ -478,7 +464,7 @@ def save_file():
     username = data['username']
     filename = data['filename']
 
-    with open(user_file(username, filename), 'w+', encoding='utf-8') as f:
+    with open(user_file(filename, username), 'w+', encoding='utf-8') as f:
         json.dump(data['content'], f, indent=4, ensure_ascii=False, sort_keys=True)
     basic.clear_cache(user=username)
 
@@ -506,7 +492,7 @@ def search_method():
         limit = ('thm', data['thm_name'])
     else:
         limit = None
-    thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
+    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
     cell = server.ProofState.parse_proof(thy, data['proof'])
     fact_ids = data['step']['fact_ids']
     goal_id = data['step']['goal_id']
@@ -545,10 +531,10 @@ def check_modify():
     item = data['item']
     line_length = data.get('line_length')
 
-    with open(user_file(username, data['filename']), 'r', encoding='utf-8') as f:
+    with open(user_file(data['filename'], username), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     try:
-        thy = basic.load_imported_theory(f_data['imports'], username)
+        thy = basic.load_theories(f_data['imports'], username=username)
         parser.parse_extensions(thy, data['prev_list'])
 
         if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
@@ -618,13 +604,15 @@ def find_files():
     data = json.loads(request.get_data().decode("utf-8"))
     username = data['username']
 
+    basic.load_metadata(username=username)
+
     files = []
-    for f in os.listdir(user_dir(username)):
-        if f.endswith('.json'):
-            files.append(f[:-5])
+    for name, cache in basic.theory_cache[username].items():
+        files.append((cache['order'], name))
+    files.sort()
 
     return jsonify({
-        'theories': files
+        'theories': tuple(name for _, name in files)
     })
 
 
@@ -640,6 +628,6 @@ def remove_file():
     data = json.loads(request.get_data().decode("utf-8"))
     username = data['username']
     filename = data['filename']
-    os.remove(user_file(username, filename))
+    os.remove(user_file(filename, username))
 
     return jsonify({})

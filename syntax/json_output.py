@@ -13,7 +13,7 @@ class JSONTheory():
     def __init__(self, name, imports, description):
         self.name = name
         self.imports = imports
-        self.thy = basic.load_imported_theory(imports)
+        self.thy = basic.load_theories(imports)
         self.description = description
         self.content = []
 

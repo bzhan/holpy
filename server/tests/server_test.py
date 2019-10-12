@@ -390,11 +390,11 @@ class ServerTest(unittest.TestCase):
 
     def testHasLimitUnique(self):
         """Proof of has_limit f x --> has_limit f y --> x = y."""
-        testMethods(self, 'limits', 'has_limit_unique', no_gaps=False, print_proof=True)
+        testMethods(self, 'limits', 'has_limit_unique', no_gaps=False)
 
     def testTheI(self):
         """Proof of P a --> (!x. P x --> x = a) --> P (THE x. P x)."""
-        testMethods(self, 'logic_base', 'theI', no_gaps=False, print_proof=True)
+        testMethods(self, 'logic_base', 'theI')
 
 
 if __name__ == "__main__":

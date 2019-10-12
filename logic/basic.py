@@ -5,16 +5,114 @@ import os
 import inspect
 import json
 
-from kernel.theory import Theory
+from kernel.theory import Theory, TheoryException
 from logic import logic  # Load all defined macros
 from data import expr
 from syntax import parser
 from syntax import operator
 from server import method  # Load all defined methods
 
-"""Global record of loaded theories."""
-loaded_theories = dict()
 
+"""Cache of parsed theories.
+
+The dictionary is indexed by user, and then by theory name.
+In the contents, instead of each item is the parsed item as
+well as the corresponding extension.
+
+"""
+theory_cache = dict()
+
+
+def user_dir(username="master"):
+    """Returns directory for the user."""
+    assert username, "user_dir: empty username."
+    if username == 'master':
+        return './library/'
+    else:
+        return './users/' + username
+
+def user_file(filename, username="master"):
+    """Return json file for the user and given filename."""
+    assert username, "user_file: empty username."
+    if username == 'master':
+        return './library/' + filename + '.json'
+    else:
+        return './users/' + username + '/' + filename + '.json'
+
+def load_json_data(filename, username="master"):
+    """Load json data for the given theory name and user."""
+    with open(user_file(filename, username), encoding='utf-8') as f:
+        return json.load(f)
+
+def load_metadata(username="master"):
+    """For the given user, load metadata for all theory files."""
+    theory_cache[username] = dict()
+    for f in os.listdir(user_dir(username)):
+        if f.endswith('.json'):
+            filename = f[:-5]
+            data = load_json_data(filename, username)
+            theory_cache[username][filename] = {
+                'imports': data['imports'],
+                'description': data['description']
+            }
+
+    # Immediately check for topological order.
+    check_topological_sort()
+
+def check_topological_sort(username="master"):
+    """For the given user, check the import relations have no cycles."""
+    for name in theory_cache[username].keys():
+        theory_cache[username][name]['visited'] = False
+    
+    count = 0
+    def dfs(name, path):
+        """Perform depth-first search.
+
+        name - current theory name.
+        path - list of theory names on the current search path,
+               not including the current theory.
+
+        """
+        nonlocal count
+        if theory_cache[username][name]['visited']:
+            return
+
+        if name in path:
+            id = path.index(name)
+            cycle = path[id:] + (name,)
+            raise TheoryException("Cycle in imports: %s" % (', '.join(cycle)))
+
+        for import_name in theory_cache[username][name]['imports']:
+            dfs(import_name, path + (name,))
+        theory_cache[username][name]['order'] = count
+        theory_cache[username][name]['visited'] = True
+        count += 1
+
+    for name in sorted(theory_cache[username].keys()):
+        if not theory_cache[username][name]['visited']:
+            dfs(name, tuple())
+
+def get_import_order(filenames, username="master"):
+    """Obtain the order of loading theories for fulfilling
+    the imports in the theory given by the list of filenames.
+
+    """
+    if username not in theory_cache:
+        load_metadata(username)
+
+    depend_list = []
+    def dfs(name):
+        if name in depend_list:
+            return
+        else:
+            for import_name in theory_cache[username][name]['imports']:
+                dfs(import_name)
+            depend_list.append(name)
+    
+    for name in filenames:
+        dfs(name)
+
+    return depend_list
 
 def get_init_theory():
     """Returns a (fresh copy of) the initial theory. This is an
@@ -29,72 +127,77 @@ def get_init_theory():
 
     return thy
 
-def load_json_data(theory_name, *, user="master"):
-    """Load json data for the given theory name and user."""
-    if user == "master":
-        dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-        with open(dir + '/../library/' + theory_name + '.json', encoding='utf-8') as a:
-            return json.load(a)
-    else:
-        with open('users/' + user + '/' + theory_name + '.json', encoding='utf-8') as a:
-            return json.load(a)
+def load_theory_cache(filename, username="master"):
+    """Load the content of the given theory into cache."""
+    if username not in theory_cache:
+        load_metadata(username)
 
-def load_imported_theory(imports, user="master"):
-    """Load imported theory according to the imports field in data."""
+    cache = theory_cache[username][filename]
+    timestamp = os.path.getmtime(user_file(filename, username))
 
-    imports = tuple(imports)
-    assert isinstance(imports, tuple) and all(isinstance(imp, str) for imp in imports), \
-        "load_imported_theory"
+    if 'timestamp' in cache and timestamp == cache['timestamp']:
+        return cache
 
-    if (imports, user) in loaded_theories:
-        return copy(loaded_theories[(imports, user)])
-
+    # Load all imported theories
+    depend_list = get_import_order(cache['imports'], username)
     thy = get_init_theory()
-    finished = []
+    for prev_name in depend_list:
+        prev_cache = load_theory_cache(prev_name, username)
+        for item in prev_cache['content']:
+            thy.unchecked_extend(item['ext'])
 
-    def rec(theory_name):
-        data = load_json_data(theory_name, user=user)
-        for imp in data['imports']:
-            if imp not in finished:
-                rec(imp)
+    # Use this theory to parse the content of current theory
+    cache['timestamp'] = timestamp
+    data = load_json_data(filename, username)
+    cache['content'] = []
+    for item in data['content']:
+        item = parser.parse_item(thy, item)
+        ext = parser.get_extension(thy, item)
+        item['ext'] = ext
+        thy.unchecked_extend(ext)
+        cache['content'].append(item)
 
-        parser.parse_extensions(thy, data['content'])
-        finished.append(theory_name)
+    return cache
 
-    for imp in imports:
-        rec(imp)
-
-    loaded_theories[(imports, user)] = thy
-
-    return copy(thy)
-
-def load_theory(theory_name, *, limit=None, user="master"):
-    """Load the theory with the given theory name. Optional limit is
-    a pair (ty, name) specifying the first item that should not
-    be loaded.
+def load_theories(filenames, username="master"):
+    """Load a list of theories (usually serve as a base for
+    extending a theory).
     
     """
-    data = load_json_data(theory_name, user=user)
-    thy = load_imported_theory(data['imports'], user=user)
-
-    # Take the portion of content up to (and not including) limit
-    content = data['content']
-    limit_i = -1
-    if limit:
-        ty, name = limit
-        for i, val in enumerate(content):
-            if val['ty'] == ty and val['name'] == name:
-                limit_i = i
-                break
-        assert limit_i != -1, "Limit not found"
-        content = content[:limit_i]
-
-    # Read data into theory
-    parser.parse_extensions(thy, content)
+    depend_list = get_import_order(filenames, username)
+    thy = get_init_theory()
+    for prev_name in depend_list:
+        prev_cache = load_theory_cache(prev_name, username)
+        for item in prev_cache['content']:
+            thy.unchecked_extend(item['ext'])
 
     return thy
 
-def clear_cache(user="master"):
-    """Clear cached theories for the given user."""
-    global loaded_theories
-    loaded_theories = {k: v for k, v in loaded_theories.items() if k[1] != user}
+
+def load_theory(filename, *, limit=None, username="master"):
+    """Load the theory with the given theory name.
+    
+    Optional limit is a pair (ty, name) specifying the first item
+    that should not be loaded.
+    
+    """
+    load_theory_cache(filename, username)
+    
+    cache = theory_cache[username][filename]
+    thy = load_theories(cache['imports'], username)
+        
+    # Take the portion of content up to (and not including) limit
+    content = cache['content']
+    found_limit = False
+    for item in content:
+        assert 'ext' in item
+        if limit and item['ty'] == limit[0] and item['name'] == limit[1]:
+            found_limit = True
+            break
+
+        thy.unchecked_extend(item['ext'])
+
+    if limit:
+        assert found_limit
+
+    return thy
