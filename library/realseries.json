@@ -1986,6 +1986,517 @@
                 "f": "real => real",
                 "s": "real set"
             }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_sum",
+            "prop": [
+                "finite s & (!a. a ∈ s --> real_convex_on (f a) t)",
+                "--> real_convex_on (%x. sum s (%a. f a x)) t"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real => real",
+                "s": "'a set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_compose",
+            "prop": [
+                "real_convex_on f s & real_convex_on g t &",
+                "is_realinterval s & is_realinterval t & subset (image f s) t &",
+                "(!x. !y.  x ∈ t & y ∈ t & x <= y --> g x <= g y)",
+                "--> real_convex_on (g O f) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_lower",
+            "prop": [
+                "real_convex_on f s ∧ x ∈ s ∧ y ∈ s ∧",
+                "0 <= u & 0 <= v & u + v = 1",
+                "--> f (u * x + v * y) <= max (f x) (f y)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "u": "real",
+                "v": "real",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": " real_convex_lower_real_segment",
+            "prop": [
+                "real_convex_on f s ∧ a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
+                "⟶ f x ≤ max (f a) (f b)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real => real",
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_lower_real_interval",
+            "prop": [
+                "real_convex_on f (real_closed_interval a b) ∧ x ∈ closed_real_segment a b ",
+                "⟶ f x ≤ max (f a) (f b)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real => real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_local_global_minimum",
+            "prop": [
+                "real_convex_on f s ∧ x ∈ t & real_open t & subset t s &",
+                "(!y. y ∈ t --> f x <= f y)",
+                "--> !y. y ∈ s --> f x <= f y"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set",
+                "t": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_distance",
+            "prop": "real_convex_on (%x. abs (a - x)) s",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_jensen",
+            "prop": [
+                "is_realinterval s",
+                "--> (real_convex_on f s <-->",
+                "!k. !u. !x. (!i. 1 <= i & i <= k --> 0 < u i & x i ∈ s) &",
+                "(sum {1..k} u = 1)",
+                "--> f (sum {1..k} (%i. u i * x i)) <= sum {1..k} (%i. u i * f (x i)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_imp_jensen",
+            "prop": [
+                "real_convex_on f s  & is_realinterval s & finite k &",
+                "  (∀i. i ∈ k ⟶ 0 <= u i ∧ x i ∈ s) ∧ sum k u = 1 ",
+                "          ⟶ f (sum k (λi. u i * x i)) ≤ sum k (λi. u i * f (x i))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "k": "'a set",
+                "s": "real set",
+                "u": "'a => real",
+                "x": "'a => real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_continuous",
+            "prop": "real_open s & real_convex_on f s --> real_continuous_on f s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_left_secant_mul",
+            "prop": [
+                "real_convex_on f s ⟷ ",
+                "(∀a. ∀b. ∀x. a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
+                "       ⟶ (f x - f a) * abs (b - a) ≤ (f b - f a) * abs (x - a))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_right_secant_mul",
+            "prop": [
+                "real_convex_on f s ⟷ ",
+                "(∀a. ∀b. ∀x. a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
+                "       ⟶ (f b - f a) * abs (b - x) ≤ (f b - f x) * abs (b - a))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_left_secant",
+            "prop": [
+                "real_convex_on f s ⟷ ",
+                "(∀a. ∀b. ∀x. a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
+                "       ⟶ (f x - f a) / abs (x - a) ≤ (f b - f a) / abs (b - a))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_right_secant",
+            "prop": [
+                "real_convex_on f s ⟷ ",
+                "(∀a. ∀b. ∀x. a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
+                "       ⟶ (f b - f a) / abs (b - a) ≤ (f b - f x) * abs (b - x))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_derivative_secant_imp",
+            "prop": [
+                "real_convex_on f s & subset (closed_real_segment x y) s &",
+                "has_real_derivative f f1 (within (atreal x) s)",
+                "--> f1 * (y - x) <= f y - f x"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_secant_derivative_imp",
+            "prop": [
+                "real_convex_on f s ∧ ",
+                "closed_real_segment x y ⊆ s ∧ has_real_derivative f f1 (within (atreal y) s) ",
+                "⟶ f y - f x ≤ f1 * (y - x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real",
+                "s": "real set",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_derivative_imp",
+            "prop": [
+                "real_convex_on f s ∧ ",
+                "closed_real_segment x y ⊆ s ∧ has_real_derivative f f1x (within (atreal x) s) &",
+                "has_real_derivative f f1y (within (atreal y) s)",
+                "⟶ f1x * (y - x) ≤ f1y * (y - x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1x": "real",
+                "f1y": "real",
+                "s": "real set",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_derivative_increasing_imp",
+            "prop": [
+                "real_convex_on f s ∧ ",
+                "real_closed_interval x y ⊆ s ∧ ",
+                "has_real_derivative f f1x (within (atreal x) s) ∧ ",
+                "has_real_derivative f f1y (within (atreal y) s) &",
+                "x < y",
+                "⟶ f1x ≤ f1y"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1x": "real",
+                "f1y": "real",
+                "s": "real set",
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_derivative_secant",
+            "prop": [
+                "is_realinterval s & ",
+                "(!x. x ∈ s --> has_real_derivative f (f1 x) (within (atreal x) s))",
+                "--> (real_convex_on f s <-->",
+                "!x. !y. x ∈ s & y ∈ s --> f1 x * (y - x) ≤ f y - f x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_secant_derivative",
+            "prop": [
+                "is_realinterval s ∧ ",
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f y - f x ≤ f1 y * (y - x))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_derivatives",
+            "prop": [
+                "is_realinterval s ∧ ",
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f1 x * (y - x) ≤ f1 y * (y - x))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_derivatives_increasing",
+            "prop": [
+                "is_realinterval s ∧ ",
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "⟶ real_convex_on f s ⟷ (∀x. ∀y. x ∈ s ∧ y ∈ s & x <= y ⟶ f1 x ≤ f1 y)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_increasing_imp",
+            "prop": [
+                "is_realinterval s ∧ ",
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) &",
+                "(∀x. x ∈ s ⟶ 0 <= f1 x) &",
+                "a ∈ s ∧ b ∈ s ∧ a ≤ b ⟶ f a ≤ f b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real => real",
+                "f1": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_increasing",
+            "prop": [
+                "is_realinterval s ∧ ~(?a. s = {a}) &",
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) ",
+                "--> ((∀x. x ∈ s ⟶ 0 ≤ f1 x) <--> (!x. !y. x ∈ s ∧ y ∈ s ∧ x ≤ y ",
+                "⟶ f x ≤ f y))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_strictly_increasing_imp",
+            "prop": [
+                "(∀x. x ∈ (real_closed_interval a b) ⟶ has_real_derivative f (f1 x) (within (atreal x) (real_closed_interval a b))) ∧ ",
+                "(∀x. x ∈ (real_closed_interval a b) ⟶ 0 ≤ f1 x) ∧ a < b ",
+                "⟶ f a < f b"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real => real",
+                "f1": "real => real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_second_derivative",
+            "prop": [
+                "is_realinterval s ∧ ¬(∃a. s = {a}) ∧",
+                "(∀x. x ∈ s ⟶ has_real_derivative f (f1 x) (within (atreal x) s)) &",
+                "(∀x. x ∈ s ⟶ has_real_derivative f1 (f2 x) (within (atreal x) s))",
+                "--> (real_convex_on f s <--> !x. x ∈ s ⟶  0 ≤ f2 x)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "f1": "real => real",
+                "f2": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_asym",
+            "prop": [
+                "real_convex_on f s ⟷",
+                "!x. !y. !u. !v. x ∈ s ∧ y ∈ s ∧ x < y & 0 <= u & 0 <= v & u + v = 1",
+                "--> f (u * x + v * y) <= u * f x + v * f y"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_exp",
+            "prop": "real_convex_on exp s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_rpow",
+            "prop": [
+                "subset s {x. 0 <= x} & 1 <= t",
+                "--> real_convex_on (%x. x ^ t) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_rpow_neg",
+            "prop": "s ⊆ {x. x < 0} ∧ t ≤ 0 ⟶ real_convex_on (λx. x ^ t) s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_rpow_integer",
+            "prop": "s ⊆ {x. 0 < x} ∧ integer t ⟶ real_convex_on (λx. x ^ t) s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_real_inv",
+            "prop": "s ⊆ {x. 0 < x} ⟶ real_convex_on real_inverse s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_real_",
+            "prop": [
+                "real_convex_on f s & is_realinterval s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x)",
+                "--> real_convex_on (λx. (f x) ^ n) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "n": "nat",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_convex_on_log",
+            "prop": "s ⊆ {x. 0 < x} ⟶ real_convex_on (%x. - (log x)) s",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_continuous_midpoint_convex",
+            "prop": [
+                "real_continuous_on f s & is_realinterval s &",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f ((x + y) /2) ≤ (f x + f y) / 2)",
+                "--> real_convex_on f s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
         }
     ],
     "description": "Some analytic concepts for real.",
