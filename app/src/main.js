@@ -10,9 +10,9 @@ import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
 Vue.component('v-icon', Icon)
 
-import Expression from './components/Expression'
+import Expression from './components/util/Expression'
 Vue.component('Expression', Expression)
-import ExpressionEdit from './components/ExpressionEdit'
+import ExpressionEdit from './components/util/ExpressionEdit'
 Vue.component('ExpressionEdit', ExpressionEdit)
 
 import router from './router'

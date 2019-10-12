@@ -74,10 +74,10 @@
 import axios from 'axios'
 import Theory from './Theory'
 import Content from './Content'
-import Message from './Message'
-import ProofStatus from './ProofStatus'
-import ProofQuery from './ProofQuery'
-import ProofContext from './ProofContext'
+import Message from './util/Message'
+import ProofStatus from './proof/ProofStatus'
+import ProofQuery from './proof/ProofQuery'
+import ProofContext from './proof/ProofContext'
 
 export default {
   name: 'Editor',

@@ -4,8 +4,8 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 import Index from './components/Index.vue'
-import Login from './components/Login.vue'
-import Register from './components/Register.vue'
+import Login from './components/login/Login.vue'
+import Register from './components/login/Register.vue'
 import Editor from './components/Editor.vue'
 import ProVerify from './components/ProVerify.vue'
 
