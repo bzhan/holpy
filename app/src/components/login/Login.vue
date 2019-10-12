@@ -31,7 +31,7 @@ export default {
   methods: {
     submit: async function () {
       const data = {
-        name: this.name,
+        username: this.name,
         password: this.password
       }
       const response = await axios.post('http://127.0.0.1:5000/api/login', JSON.stringify(data))

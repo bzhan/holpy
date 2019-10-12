@@ -283,7 +283,8 @@ export default {
     // Send an item to the server for parsing.
     parse_item: async function () {
       const data = {
-        file_name: this.theory.name,
+        username: this.$state.user,
+        filename: this.theory.name,
         prev_list: this.theory.content.slice(0, Number(this.on_edit)),
         line_length: 80,
         content: this.$refs.edit[0]._data.item
@@ -526,10 +527,14 @@ export default {
       }
 
       const data = {
-        name: this.theory.name,
-        imports: this.theory.imports,
-        description: this.theory.description,
-        content: content
+        username: this.$state.user,
+        filename: this.theory.name,
+        content: {
+          name: this.theory.name,
+          imports: this.theory.imports,
+          description: this.theory.description,
+          content: content
+        }
       }
 
       var response = undefined

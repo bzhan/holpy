@@ -175,10 +175,11 @@ export default {
       var factIds = []
       this.facts.forEach(v => factIds.push(this.proof[v].id))
       return {
-        goal_id: this.proof[goalNo].id,
-        fact_ids: factIds,
+        username: this.$state.user,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
+        goal_id: this.proof[goalNo].id,
+        fact_ids: factIds,
         vars: this.vars,
         proof: this.proof
       }
@@ -284,6 +285,7 @@ export default {
         }
         this.history.length = hId + 2
         if (input.fact_ids.length === 0) { delete input.fact_ids }
+        delete input.username
         delete input.theory_name
         delete input.thm_name
         delete input.vars
@@ -320,6 +322,7 @@ export default {
     init_empty_proof: async function () {
       // Start new proof
       const data = {
+        username: this.$state.user,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
         vars: this.vars,
@@ -343,6 +346,7 @@ export default {
     init_saved_proof: async function () {
       // Has existing proof
       const data = {
+        username: this.$state.user,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
         vars: this.vars,

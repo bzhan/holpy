@@ -31,10 +31,10 @@ export default {
   methods: {
     submit: async function () {
       const data = {
-        name: this.name,
+        username: this.name,
         password: this.password
       }
-      const response = await axios.post('http://127.0.0.1:5000/api/register_login', JSON.stringify(data))
+      const response = await axios.post('http://127.0.0.1:5000/api/register', JSON.stringify(data))
 
       if (response.data.result === 'success') {
         this.info = ''

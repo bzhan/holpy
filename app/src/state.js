@@ -1,3 +1,3 @@
 export default {
-  user: null,
+  user: 'master',
 }

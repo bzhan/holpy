@@ -160,8 +160,11 @@ export default {
 
     load_filelist: async function () {
       var response = undefined;
+      const data = {
+        username: this.$state.user
+      }
       try {
-        response = await axios.get('http://127.0.0.1:5000/api/find-files')
+        response = await axios.post('http://127.0.0.1:5000/api/find-files', JSON.stringify(data))
       } catch (err) {
         this.message = {
           type: 'error',
@@ -205,6 +208,7 @@ export default {
         return
       }
       const data = JSON.stringify({
+        username: this.$state.user,
         filename: this.filename,
         line_length: 80,
       })

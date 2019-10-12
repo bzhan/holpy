@@ -4,6 +4,7 @@ import os, sqlite3, shutil
 import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
+import time
 
 from kernel.term import get_vars
 from kernel.type import HOLType, TVar, Type, TFun
@@ -27,40 +28,49 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 app.config.from_object('config')
 
-user_info = {
-    # Whether there is an user signed in
-    'is_signed_in': False,
 
-    # Name of the user signed in
-    'username': "master",
-
-    # List of files in user's directory
-    'file_list': []
-}
-
-# Login for user
 @app.route('/api/login', methods=['POST'])
 def login():
+    """Login for an user.
+
+    Input:
+    * username: username
+    * password: password
+
+    Returns:
+    * result: success - login is successful.
+    * result: failed - login failed (username / password do not match).
+
+    """
     data = json.loads(request.get_data().decode('utf-8'))
-    username = data['name']
+    username = data['username']
     password = data['password']
     for k in get_users():
         if username == k[1] and password == str(k[2]):
-            user_info['is_signed_in'] = True
-            user_info['username'] = username
             user_list = os.listdir('./users')
             if username != 'master' and username not in user_list:
-                shutil.copytree('./library', user_dir())
+                shutil.copytree('./library', user_dir(username))
 
             return jsonify({'result': 'success'})
 
     return jsonify({'result': 'failed'})
 
-# Register new user
-@app.route('/api/register_login', methods=['POST'])
-def register_login():
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    """Register a new user.
+
+    Input:
+    * username: username
+    * password: password
+
+    Returns:
+    * result: success - registration is successful.
+    * result: failed - registration failed (user already exists).
+
+    """
     data = json.loads(request.get_data().decode('utf-8'))
-    username = data['name']
+    username = data['username']
     password = data['password']
     for k in get_users():
         if username == k[1]:
@@ -74,21 +84,21 @@ def register_login():
 
 DATABASE = os.getcwd() + '/users/user.db'
 
-def user_dir():
+def user_dir(username):
     """Returns directory for the user."""
-    assert user_info['username'], "user_dir: empty username."
-    if user_info['username'] == 'master':
-        return 'library/'
+    assert username, "user_dir: empty username."
+    if username == 'master':
+        return './library/'
     else:
-        return './users/' + user_info['username']
+        return './users/' + username
 
-def user_file(filename):
-    """Return json file for the current user and given filename."""
-    assert user_info['username'], "user_file: empty username."
-    if user_info['username'] == 'master':
-        return 'library/' + filename + '.json'
+def user_file(username, filename):
+    """Return json file for the user and given filename."""
+    assert username, "user_file: empty username."
+    if username == 'master':
+        return './library/' + filename + '.json'
     else:
-        return 'users/' + user_info['username'] + '/' + filename + '.json'
+        return './users/' + username + '/' + filename + '.json'
 
 def add_user(username, password):
     """Add new user to the database."""
@@ -116,10 +126,19 @@ def get_users():
         conn.commit()
     return results
 
-# Load a file containing programs
-@app.route('/api/get-program-file', methods = ['POST', 'GET'])
+@app.route('/api/get-program-file', methods = ['POST'])
 def get_program_file():
-    file_name = json.loads(request.get_data().decode("utf-8"))['file_name']
+    """Load a json file for program verification.
+    
+    Input:
+    * file_name: name of the file (under imperative/examples).
+
+    Returns:
+    * file_data: content of the file.
+
+    """
+    data = json.loads(request.get_data().decode("utf-8"))
+    file_name = data['file_name']
     thy = basic.load_theory('hoare')
     path = 'imperative/examples/' + file_name + '.json'
     with open(path, 'r', encoding='utf-8') as f:
@@ -132,9 +151,12 @@ def get_program_file():
 
     return jsonify({'file_data': file_data['content']})
 
-# Verifying a program
 @app.route('/api/program-verify', methods=['POST'])
 def verify():
+    """Verify a program by generating verification conditions,
+    and attempt to solve the conditions using SMT.
+
+    """
     data = json.loads(request.get_data().decode("utf-8"))
     thy = basic.load_theory('hoare')
     pre = cond_parser.parse(data['pre'])
@@ -154,9 +176,11 @@ def verify():
         'lines': lines,
     })
 
-# Saving a proof for program verification
 @app.route('/api/save-program-proof', methods=['POST'])
 def save_program_proof():
+    """Save a proof for program verification.
+    
+    """
     data = json.loads(request.get_data().decode("utf-8"))
 
     file_name = data['file_name']
@@ -173,35 +197,75 @@ def save_program_proof():
 
     return jsonify({})
 
-# Replace user data with library data
+
 @app.route('/api/refresh-files', methods=['POST'])
 def refresh_files():
-    if user_info['username'] and user_info['username'] != 'master':
-        shutil.rmtree(user_dir())
-        shutil.copytree('./library', user_dir())
-        basic.clear_cache(user=user_info['username'])
+    """Replace user data with library data.
+
+    Input:
+    * username: username.
+
+    """
+    data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
+    if username != 'master':
+        shutil.rmtree(user_dir(username))
+        shutil.copytree('./library', user_dir(username))
+        basic.clear_cache(user=username)
 
     return jsonify({})
 
 
 @app.route('/api/init-empty-proof', methods=['POST'])
 def init_empty_proof():
-    """Initialize empty proof."""
+    """Initialize an empty proof for the given theorem.
+
+    Input:
+    * username: username.
+    * theory_name: name of the theory.
+    * thm_name: name of the theorem.
+
+    Returns:
+    * initial proof of the theorem.
+    
+    """
     data = json.loads(request.get_data().decode("utf-8"))
-    limit = ('thm', data['thm_name']) if 'thm_name' in data else None
-    thy = basic.load_theory(data['theory_name'], limit=limit, user=user_info['username'])
+    username = data['username']
+    if 'thm_name' in data:
+        limit = ('thm', data['thm_name'])
+    else:
+        limit = None
+    thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
     cell = server.ProofState.parse_init_state(thy, data)
     return jsonify(cell.json_data())
 
 
 @app.route('/api/init-saved-proof', methods=['POST'])
 def init_saved_proof():
-    """Load saved proof."""
+    """Load a saved proof.
+    
+    Input:
+    * username: username.
+    * theory_name: name of the theory.
+    * thm_name: name of the theorem.
+
+    Returns:
+    * saved proof of the theorem.
+
+    """
     data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
+    start_time = time.clock()
     try:
-        limit = ('thm', data['thm_name']) if 'thm_name' in data else None
-        thy = basic.load_theory(data['theory_name'], limit=limit, user=user_info['username'])
+        if 'thm_name' in data:
+            limit = ('thm', data['thm_name'])
+        else:
+            limit = None
+        thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
+        print("Load: %f" % (time.clock() - start_time))
+        start_time = time.clock()
         cell = server.ProofState.parse_proof(thy, data)
+        print("Parse: %f" % (time.clock() - start_time))
         return jsonify(cell.json_data())
     except Exception as e:
         error = {
@@ -214,10 +278,24 @@ def init_saved_proof():
 
 @app.route('/api/apply-method', methods=['POST'])
 def apply_method():
+    """Apply a proof method.
+
+    Input:
+    * username: username.
+    * theory_name: name of the theory.
+    * thm_name: name of the theorem.
+
+    Returns:
+    * updated proof.
+
+    """
     data = json.loads(request.get_data().decode("utf-8"))
-    limit = ('thm', data['thm_name']) if 'thm_name' in data else None
-    user = user_info['username'] if user_info['username'] else 'master'
-    thy = basic.load_theory(data['theory_name'], limit=limit, user=user)
+    username = data['username']
+    if 'thm_name' in data:
+        limit = ('thm', data['thm_name'])
+    else:
+        limit = None
+    thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
     cell = server.ProofState.parse_proof(thy, data)
     try:
         step_output = method.display_method(cell, data, unicode=True, highlight=True)
@@ -356,16 +434,27 @@ def file_data_to_output(thy, data, *, line_length=None):
         data['ext'] = str_of_extension(thy, ext)
 
 
-# Loads json file for the given user and file name.
 @app.route('/api/load-json-file', methods=['POST'])
 def load_json_file():
+    """Loads json file for the given user and file name.
+
+    Input:
+    * username: username.
+    * filename: name of the file.
+    * line_length: maximum length of printed line.
+
+    Returns:
+    * content of the file.
+
+    """
     data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
     filename = data['filename']
     line_length = data.get('line_length')
-    with open(user_file(filename), 'r', encoding='utf-8') as f:
+    with open(user_file(username, filename), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     if 'content' in f_data:
-        thy = basic.load_imported_theory(f_data['imports'], user=user_info['username'])
+        thy = basic.load_imported_theory(f_data['imports'], user=username)
         for data in f_data['content']:
             file_data_to_output(thy, data, line_length=line_length)
     else:
@@ -376,47 +465,63 @@ def load_json_file():
 
 @app.route('/api/save-file', methods=['POST'])
 def save_file():
-    """Save given data to file."""
+    """Save given data to file.
+    
+    Input:
+    * username: username
+    * filename: name of the file.
+    
+    """
     data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
+    filename = data['filename']
 
-    with open(user_file(data['name']), 'w+', encoding='utf-8') as f:
-        json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
-    basic.clear_cache(user=user_info['username'])
-
-    if data['name'] not in user_info['file_list']:
-        user_info['file_list'].append(data['name'])
-        user_info['file_list'].sort()
+    with open(user_file(username, filename), 'w+', encoding='utf-8') as f:
+        json.dump(data['content'], f, indent=4, ensure_ascii=False, sort_keys=True)
+    basic.clear_cache(user=username)
 
     return jsonify({})
 
 
 @app.route('/api/search-method', methods=['POST'])
 def search_method():
-    """Match for applicable methods and their arguments."""
+    """Match for applicable methods and their arguments.
+    
+    Input:
+    * username: username.
+    * theory_name: name of the theory.
+    * thm_name: name of the theorem.
+
+    Returns:
+    * search_res: list of search results.
+    * ctxt: current proof context.
+
+    """
     data = json.loads(request.get_data().decode("utf-8"))
-    if data:
-        limit = ('thm', data['thm_name']) if 'thm_name' in data else None
-        user = user_info['username'] if user_info['username'] else 'master'
-        thy = basic.load_theory(data['theory_name'], limit=limit, user=user)
-        cell = server.ProofState.parse_proof(thy, data)
-        fact_ids = data['fact_ids']
-        goal_id = data['goal_id']
-        search_res = cell.search_method(goal_id, fact_ids)
-        for res in search_res:
-            if '_goal' in res:
-                res['_goal'] = [printer.print_term(thy, t, unicode=True) for t in res['_goal']]
-            if '_fact' in res:
-                res['_fact'] = [printer.print_term(thy, t, unicode=True) for t in res['_fact']]
+    username = data['username']
 
-        ctxt = cell.get_ctxt(goal_id)
-        print_ctxt = dict((k, printer.print_type(thy, v, highlight=True))
-                          for k, v in ctxt['vars'].items())
-        return jsonify({
-            'search_res': search_res,
-            'ctxt': print_ctxt
-        })
+    if 'thm_name' in data:
+        limit = ('thm', data['thm_name'])
+    else:
+        limit = None
+    thy = basic.load_theory(data['theory_name'], limit=limit, user=username)
+    cell = server.ProofState.parse_proof(thy, data)
+    fact_ids = data['fact_ids']
+    goal_id = data['goal_id']
+    search_res = cell.search_method(goal_id, fact_ids)
+    for res in search_res:
+        if '_goal' in res:
+            res['_goal'] = [printer.print_term(thy, t, unicode=True) for t in res['_goal']]
+        if '_fact' in res:
+            res['_fact'] = [printer.print_term(thy, t, unicode=True) for t in res['_fact']]
 
-    return jsonify({})
+    ctxt = cell.get_ctxt(goal_id)
+    print_ctxt = dict((k, printer.print_type(thy, v, highlight=True))
+                        for k, v in ctxt['vars'].items())
+    return jsonify({
+        'search_res': search_res,
+        'ctxt': print_ctxt
+    })
 
 
 def parse_var_decls(thy, var_decls):
@@ -429,15 +534,27 @@ def parse_var_decls(thy, var_decls):
 
 @app.route('/api/check-modify', methods=['POST'])
 def check_modify():
-    """Check a modified item for validity."""
+    """Check a modified item for validity.
+    
+    Input:
+    * username: username.
+    * filename: name of the file.
+    * line_length: maximum length of printed line.
+    * content: item to be checked.
+
+    Returns:
+    * checked item.
+
+    """
     data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
     item = data['content']
     line_length = data.get('line_length')
 
-    with open(user_file(data['file_name']), 'r', encoding='utf-8') as f:
+    with open(user_file(username, data['filename']), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
     try:
-        thy = basic.load_imported_theory(f_data['imports'], user_info['username'])
+        thy = basic.load_imported_theory(f_data['imports'], username)
         parser.parse_extensions(thy, data['prev_list'])
 
         if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
@@ -491,24 +608,39 @@ def check_modify():
     })
 
 
-@app.route('/api/find-files', methods=['GET'])
+@app.route('/api/find-files', methods=['POST'])
 def find_files():
-    """Find list of files in user's directory."""
+    """Find list of files in user's directory.
+    
+    Input:
+    * username: username.
+
+    """
+    data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
+
     files = []
-    for f in os.listdir(user_dir()):
+    for f in os.listdir(user_dir(username)):
         if f.endswith('.json'):
             files.append(f[:-5])
 
-    user_info['file_list'] = sorted(files)
-    return jsonify({'theories': user_info['file_list']})
+    return jsonify({
+        'theories': files
+    })
 
 
 @app.route('/api/remove-file', methods=['PUT'])
 def remove_file():
-    """Remove file with the given name."""
-    filename = json.loads(request.get_data().decode('utf-8'))
-    user_info['file_list'].remove(filename)
-    os.remove(user_file(filename))
+    """Remove file with the given name.
+    
+    Input:
+    * username: username.
+    * filename: name of the file.
+
+    """
+    data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
+    filename = data['filename']
+    os.remove(user_file(username, filename))
 
     return jsonify({})
-
