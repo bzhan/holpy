@@ -6,8 +6,9 @@ from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 import time
 
-from kernel.term import get_vars
+from kernel import type as hol_type
 from kernel.type import HOLType, TVar, Type, TFun
+from kernel.term import get_vars
 from kernel import extension, theory
 from syntax import parser, printer, settings, pprint
 from server import server, method
@@ -302,28 +303,6 @@ def apply_method():
                 "trace": traceback2.format_exc()
             })
 
-def str_of_extension(thy, exts):
-    """Print given extension for display in the edit area."""
-    res = []
-    for ext in exts.data:
-        if isinstance(ext, extension.AxType):
-            res.append("Type " + ext.name)
-        elif isinstance(ext, extension.AxConstant):
-            res.append("Constant " + ext.name + " :: " + printer.print_type(thy, ext.T, unicode=True))
-        elif isinstance(ext, extension.Theorem):
-            res.append("Theorem " + ext.name + ": " + printer.print_term(thy, ext.th.prop, unicode=True))
-    return '\n'.join(res)
-
-@settings.with_settings
-def str_of_constr(thy, constr):
-    """Print a given type constructor."""
-    argsT, _ = constr['type'].strip_type()
-    assert len(argsT) == len(constr['args']), "file_data_to_output: unexpected number of args."
-    res = printer.N(constr['name'])
-    for i, arg in enumerate(constr['args']):
-        res += printer.N(' (' + arg + ' :: ') + printer.print_type(thy, argsT[i]) + printer.N(')')
-    return res
-
 def file_data_to_output(thy, data, *, line_length=None):
     """Convert items in the theory from json format for the file to
     json format for the web client. Modifies data in-place.
@@ -377,8 +356,8 @@ def file_data_to_output(thy, data, *, line_length=None):
         data['constrs_lines'] = []
         data['constrs_hl'] = []
         for constr in parsed_data['constrs']:
-            data['constrs_lines'].append(str_of_constr(thy, constr, unicode=True, highlight=False))
-            data['constrs_hl'].append(str_of_constr(thy, constr, unicode=True, highlight=True))
+            data['constrs_lines'].append(printer.print_type_constr(thy, constr, unicode=True, highlight=False))
+            data['constrs_hl'].append(printer.print_type_constr(thy, constr, unicode=True, highlight=True))
         data['constrs_lines'] = '\n'.join(data['constrs_lines'])
 
         # Obtain type to be defined
@@ -418,7 +397,7 @@ def file_data_to_output(thy, data, *, line_length=None):
 
     # Obtain items added by the extension
     if ext and data['ty'] in ('type.ind', 'def', 'def.ind', 'def.pred'):
-        data['ext'] = str_of_extension(thy, ext)
+        data['ext'] = printer.print_extensions(thy, ext, unicode=True)
 
 
 @app.route('/api/load-json-file', methods=['POST'])
@@ -554,7 +533,7 @@ def check_modify():
 
         if item['ty'] == 'type.ind':
             T = parser.parse_type(thy, item['edit_type'])
-            assert T.ty == HOLType.TYPE and all(argT.ty == HOLType.TVAR for argT in T.args), \
+            assert T.ty == hol_type.TYPE and all(argT.ty == hol_type.TVAR for argT in T.args), \
                 "invalid input type."
             item['name'] = T.name
             item['args'] = [argT.name for argT in T.args]

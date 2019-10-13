@@ -2,7 +2,8 @@
 
 """Hindley-Milner type inference algorithm."""
 
-from kernel.type import HOLType, TVar, TFun
+from kernel import type as hol_type
+from kernel.type import TVar, TFun
 from kernel.term import Term
 from kernel import term
 from data import nat
@@ -20,7 +21,7 @@ def is_internal_type(T):
     (and hence can be unified).
 
     """
-    return T.ty == HOLType.TVAR and T.name.startswith("_t")
+    return T.ty == hol_type.TVAR and T.name.startswith("_t")
 
 def unify(uf, T1, T2):
     """Unification of two types. This modifies the supplied union-find
@@ -31,11 +32,11 @@ def unify(uf, T1, T2):
     T1 = uf.find(T1)
     T2 = uf.find(T2)
     # Type constructors, recursively unify each argument
-    if T1.ty == HOLType.TYPE and T2.ty == HOLType.TYPE and T1.name == T2.name:
+    if T1.ty == hol_type.TYPE and T2.ty == hol_type.TYPE and T1.name == T2.name:
         for i in range(len(T1.args)):
             unify(uf, T1.args[i], T2.args[i])
     # Concrete type variables
-    elif T1.ty == HOLType.TVAR and T2.ty == HOLType.TVAR and T1.name == T2.name:
+    elif T1.ty == hol_type.TVAR and T2.ty == hol_type.TVAR and T1.name == T2.name:
         return
     # Internal (unifiable) type variables
     elif is_internal_type(T1):

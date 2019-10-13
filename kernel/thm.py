@@ -3,7 +3,8 @@
 from collections import OrderedDict
 
 from kernel.type import Type, TFun, boolT
-from kernel.term import Term, Var, Const, TermSubstitutionException, TypeCheckException
+from kernel import term
+from kernel.term import Term, Const
 from kernel import macro
 
 
@@ -80,7 +81,7 @@ class Thm():
         """
         for t in list(self.hyps) + [self.prop]:
             if t.checked_get_type() != boolT:
-                raise TypeCheckException
+                raise term.TypeCheckException
 
     @staticmethod
     def mk_implies(*args):
@@ -268,7 +269,7 @@ class Thm():
         try:
             hyps_new = [hyp.subst(inst) for hyp in th.hyps]
             prop_new = th.prop.subst(inst)
-        except TermSubstitutionException:
+        except term.TermSubstitutionException:
             raise InvalidDerivationException("substitution")
         return Thm(hyps_new, prop_new)
 
@@ -280,7 +281,7 @@ class Thm():
         """
         try:
             t_new = t.beta_conv()
-        except TermSubstitutionException:
+        except term.TermSubstitutionException:
             raise InvalidDerivationException("beta_conv")
         return Thm.mk_equals(t, t_new)
 
@@ -298,7 +299,7 @@ class Thm():
             t1, t2 = th.prop.args
             try:
                 t1_new, t2_new = (Term.mk_abs(x, t1), Term.mk_abs(x, t2))
-            except TermSubstitutionException:
+            except term.TermSubstitutionException:
                 raise InvalidDerivationException("abstraction")
             return Thm(th.hyps, Term.mk_equals(t1_new, t2_new))
         else:
@@ -314,7 +315,7 @@ class Thm():
         """
         if any(hyp.occurs_var(x) for hyp in th.hyps):
             raise InvalidDerivationException("forall_intr")
-        elif x.ty != Term.VAR:
+        elif x.ty != term.VAR:
             raise InvalidDerivationException("forall_intr")
         else:
             return Thm(th.hyps, Term.mk_all(x, th.prop))

@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type, TFun, boolT
+from kernel import term
 from kernel.term import Term, Const
 from kernel.thm import Thm
 from kernel.theory import Method, global_methods
@@ -94,7 +95,7 @@ def is_binary(t):
     assert isinstance(t, Term), "is_binary"
     if t == zero or t == one or t.is_const_name("zero") or t.is_const_name("one"):
         return True
-    elif t.ty != Term.COMB:
+    elif t.ty != term.COMB:
         return False
     elif t.head == bit0 or t.head == bit1:
         return is_binary(t.arg)

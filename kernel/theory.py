@@ -3,12 +3,13 @@
 from copy import copy
 from typing import Tuple
 
+from kernel import type as hol_type
 from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofException
 from kernel.macro import ProofMacro, global_macros
-from kernel.extension import Extension
+from kernel import extension
 from kernel.report import ExtensionReport
 
 global_methods = dict()
@@ -160,7 +161,7 @@ class Theory():
                 raise TheoryException("Constant %s :: %s does not match overloaded type %s" % (name, T, aT))
 
             for _, v in sorted(inst.items()):
-                if v.ty != HOLType.TYPE:
+                if v.ty != hol_type.TYPE:
                     raise TheoryException("When overloading %s with %s: cannot instantiate to type variables" % (aT, T))
         else:
             # Make sure this name does not already occur in the theory
@@ -289,7 +290,7 @@ class Theory():
 
             baseT = []
             for _, v in sorted(inst.items()):
-                assert v.ty == HOLType.TYPE
+                assert v.ty == hol_type.TYPE
                 baseT.append(v)
 
             T_name = "_".join(T.name for T in baseT)
@@ -328,9 +329,9 @@ class Theory():
         arity.
 
         """
-        if T.ty == HOLType.TVAR:
+        if T.ty == hol_type.TVAR:
             return None
-        elif T.ty == HOLType.TYPE:
+        elif T.ty == hol_type.TYPE:
             if self.get_type_sig(T.name) != len(T.args):
                 raise TheoryException("Check type: " + repr(T))
             else:
@@ -505,13 +506,13 @@ class Theory():
 
     def extend_axiom_type(self, ext):
         """Extend the theory by adding an axiomatic type."""
-        assert ext.ty == Extension.AX_TYPE, "extend_axiom_type"
+        assert ext.ty == extension.AX_TYPE, "extend_axiom_type"
 
         self.add_type_sig(ext.name, ext.arity)
 
     def extend_axiom_constant(self, ext):
         """Extend the theory by adding an axiomatic constant."""
-        assert ext.ty == Extension.AX_CONSTANT, "extend_axiom_constant"
+        assert ext.ty == extension.AX_CONSTANT, "extend_axiom_constant"
 
         self.add_term_sig(ext.name, ext.T)
 
@@ -520,7 +521,7 @@ class Theory():
         equal to a certain expression.
 
         """
-        assert ext.ty == Extension.CONSTANT, "extend_constant"
+        assert ext.ty == extension.CONSTANT, "extend_constant"
 
         const = ext.get_const_term()
         self.add_term_sig(const.name, const.T)
@@ -528,28 +529,28 @@ class Theory():
 
     def extend_attribute(self, ext):
         """Extend the theory by adding an attribute."""
-        assert ext.ty == Extension.ATTRIBUTE, "extend_attribute"
+        assert ext.ty == extension.ATTRIBUTE, "extend_attribute"
 
         self.add_attribute(ext.name, ext.attribute)
 
     def unchecked_extend(self, thy_ext):
         """Perform the given theory extension without proof checking."""
         for ext in thy_ext.get_extensions():
-            if ext.ty == Extension.AX_TYPE:
+            if ext.ty == extension.AX_TYPE:
                 self.extend_axiom_type(ext)
-            elif ext.ty == Extension.AX_CONSTANT:
+            elif ext.ty == extension.AX_CONSTANT:
                 self.extend_axiom_constant(ext)
-            elif ext.ty == Extension.CONSTANT:
+            elif ext.ty == extension.CONSTANT:
                 self.extend_constant(ext)
-            elif ext.ty == Extension.THEOREM:
+            elif ext.ty == extension.THEOREM:
                 self.add_theorem(ext.name, ext.th)
-            elif ext.ty == Extension.ATTRIBUTE:
+            elif ext.ty == extension.ATTRIBUTE:
                 self.extend_attribute(ext)
-            elif ext.ty == Extension.MACRO:
+            elif ext.ty == extension.MACRO:
                 self.add_global_proof_macro(ext.name)
-            elif ext.ty == Extension.METHOD:
+            elif ext.ty == extension.METHOD:
                 self.add_global_method(ext.name)
-            elif ext.ty == Extension.OVERLOAD:
+            elif ext.ty == extension.OVERLOAD:
                 self.add_overload_const(ext.name)
             else:
                 raise TypeError
@@ -559,28 +560,28 @@ class Theory():
         ext_report = ExtensionReport()
 
         for ext in thy_ext.get_extensions():
-            if ext.ty == Extension.AX_TYPE:
+            if ext.ty == extension.AX_TYPE:
                 self.extend_axiom_type(ext)
                 ext_report.add_axiom(ext.name, ext.arity)
-            elif ext.ty == Extension.AX_CONSTANT:
+            elif ext.ty == extension.AX_CONSTANT:
                 self.extend_axiom_constant(ext)
                 ext_report.add_axiom(ext.name, ext.T)
-            elif ext.ty == Extension.CONSTANT:
+            elif ext.ty == extension.CONSTANT:
                 self.extend_constant(ext)
-            elif ext.ty == Extension.THEOREM:
+            elif ext.ty == extension.THEOREM:
                 if ext.prf:
                     self.check_proof(ext.prf)
                 else:  # No proof - add as axiom
                     ext_report.add_axiom(ext.name, ext.th)
 
                 self.add_theorem(ext.name, ext.th)
-            elif ext.ty == Extension.ATTRIBUTE:
+            elif ext.ty == extension.ATTRIBUTE:
                 self.extend_attribute(ext)
-            elif ext.ty == Extension.MACRO:
+            elif ext.ty == extension.MACRO:
                 self.add_global_proof_macro(ext.name)
-            elif ext.ty == Extension.METHOD:
+            elif ext.ty == extension.METHOD:
                 self.add_global_method(ext.name)
-            elif ext.ty == Extension.OVERLOAD:
+            elif ext.ty == extension.OVERLOAD:
                 self.add_overload_const(ext.name)
             else:
                 raise TypeError

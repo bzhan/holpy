@@ -4,6 +4,8 @@ from kernel.type import HOLType
 from kernel.term import Const
 from kernel.thm import Thm
 
+AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM, MACRO, METHOD, ATTRIBUTE, OVERLOAD = range(8)
+
 class Extension():
     """Represents a single extension to the theory.
 
@@ -35,24 +37,22 @@ class Extension():
     constant.
 
     """
-    AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM, MACRO, METHOD, ATTRIBUTE, OVERLOAD = range(8)
-
     def __str__(self):
-        if self.ty == Extension.AX_TYPE:
+        if self.ty == AX_TYPE:
             return "AxType " + self.name + " " + str(self.arity)
-        elif self.ty == Extension.AX_CONSTANT:
+        elif self.ty == AX_CONSTANT:
             return "AxConstant " + self.name + " :: " + str(self.T)
-        elif self.ty == Extension.CONSTANT:
+        elif self.ty == CONSTANT:
             return "Constant " + self.name + " = " + str(self.expr)
-        elif self.ty == Extension.THEOREM:
+        elif self.ty == THEOREM:
             return "Theorem " + self.name + ": " + str(self.th)
-        elif self.ty == Extension.ATTRIBUTE:
+        elif self.ty == ATTRIBUTE:
             return "Attribute " + self.name + " [" + self.attribute + "]"
-        elif self.ty == Extension.MACRO:
+        elif self.ty == MACRO:
             return "Macro " + self.name
-        elif self.ty == Extension.METHOD:
+        elif self.ty == METHOD:
             return "Method " + self.name
-        elif self.ty == Extension.OVERLOAD:
+        elif self.ty == OVERLOAD:
             return "Overload " + self.name
         else:
             raise TypeError
@@ -63,33 +63,33 @@ class Extension():
     def __eq__(self, other):
         if self.ty != other.ty:
             return False
-        elif self.ty == Extension.AX_TYPE:
+        elif self.ty == AX_TYPE:
             return self.name == other.name and self.arity == other.arity
-        elif self.ty == Extension.AX_CONSTANT:
+        elif self.ty == AX_CONSTANT:
             return self.name == other.name and self.T == other.T
-        elif self.ty == Extension.CONSTANT:
+        elif self.ty == CONSTANT:
             return self.name == other.name and self.expr == other.expr
-        elif self.ty == Extension.THEOREM:
+        elif self.ty == THEOREM:
             return self.name == other.name and self.th == other.th and self.prf == other.prf
-        elif self.ty == Extension.ATTRIBUTE:
+        elif self.ty == ATTRIBUTE:
             return self.name == other.name and self.attribute == other.attribute
-        elif self.ty == Extension.MACRO:
+        elif self.ty == MACRO:
             return self.name == other.name
-        elif self.ty == Extension.METHOD:
+        elif self.ty == METHOD:
             return self.name == other.name
-        elif self.ty == Extension.OVERLOAD:
+        elif self.ty == OVERLOAD:
             return self.name == other.name
         else:
             raise TypeError
 
     def get_const_term(self):
         """Return the term to be added in the Constant extension."""
-        assert self.ty == Extension.CONSTANT, "get_const_term"
+        assert self.ty == CONSTANT, "get_const_term"
         return Const(self.name, self.expr.get_type())
 
     def get_eq_thm(self):
         """Return the equality theorem to be added in the Constant extension."""
-        assert self.ty == Extension.CONSTANT, "get_eq_thm"
+        assert self.ty == CONSTANT, "get_eq_thm"
         return Thm.mk_equals(self.get_const_term(), self.expr)
 
 class AxType(Extension):
@@ -100,7 +100,7 @@ class AxType(Extension):
         arity -- arity of the type.
 
         """
-        self.ty = Extension.AX_TYPE
+        self.ty = AX_TYPE
         self.name = name
         self.arity = arity
 
@@ -112,7 +112,7 @@ class AxConstant(Extension):
         T -- type of the constant.
         
         """
-        self.ty = Extension.AX_CONSTANT
+        self.ty = AX_CONSTANT
         self.name = name
         assert isinstance(T, HOLType), "AxConstant: T must be HOLType."
         self.T = T
@@ -125,7 +125,7 @@ class Constant(Extension):
         expr -- the expression the constant is equal to.
 
         """
-        self.ty = Extension.CONSTANT
+        self.ty = CONSTANT
         self.name = name
         self.expr = expr
 
@@ -138,7 +138,7 @@ class Theorem(Extension):
         prf -- proof of the theorem. If None, this is an axiomatic extension.
 
         """
-        self.ty = Extension.THEOREM
+        self.ty = THEOREM
         self.name = name
         self.th = th
         self.prf = prf
@@ -151,7 +151,7 @@ class Attribute(Extension):
         attribute -- name of the attribute.
 
         """
-        self.ty = Extension.ATTRIBUTE
+        self.ty = ATTRIBUTE
         self.name = name
         self.attribute = attribute
 
@@ -162,7 +162,7 @@ class Macro(Extension):
         name -- name of the macro.
 
         """
-        self.ty = Extension.MACRO
+        self.ty = MACRO
         self.name = name
 
 class Method(Extension):
@@ -172,7 +172,7 @@ class Method(Extension):
         name -- name of the method.
 
         """
-        self.ty = Extension.METHOD
+        self.ty = METHOD
         self.name = name
 
 class Overload(Extension):
@@ -182,7 +182,7 @@ class Overload(Extension):
         name -- name of the overloaded constant.
 
         """
-        self.ty = Extension.OVERLOAD
+        self.ty = OVERLOAD
         self.name = name
 
 class TheoryExtension():

@@ -2,6 +2,7 @@
 
 from copy import copy
 
+from kernel import type as hol_type
 from kernel.type import HOLType
 from kernel import term
 from syntax import settings
@@ -196,9 +197,9 @@ def get_ast_type(thy, T):
     assert isinstance(T, HOLType), "get_ast_type: input is not a type."
 
     def helper(T):
-        if T.ty == HOLType.TVAR:
+        if T.ty == hol_type.TVAR:
             return TVarName(T.name)
-        elif T.ty == HOLType.TYPE:
+        elif T.ty == hol_type.TYPE:
             if len(T.args) == 0:
                 return TypeConstr(T.name, [])
             elif len(T.args) == 1:

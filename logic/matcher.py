@@ -7,6 +7,7 @@ By default, all variables in the pattern can be instantiated.
 """
 from collections import OrderedDict
 
+from kernel import type as hol_type
 from kernel.type import HOLType, TVar, Type, TFun, TypeMatchException
 from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from kernel import term
@@ -17,9 +18,9 @@ class MatchException(Exception):
 
 def to_internal_tvars(pat_T):
     """Add underscore to each type variable in the pattern."""
-    if pat_T.ty == HOLType.TVAR:
+    if pat_T.ty == hol_type.TVAR:
         return TVar("_" + pat_T.name)
-    elif pat_T.ty == HOLType.TYPE:
+    elif pat_T.ty == hol_type.TYPE:
         return Type(pat_T.name, *[to_internal_tvars(arg) for arg in pat_T.args])
 
 def to_internal_vars(pat):

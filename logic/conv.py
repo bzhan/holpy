@@ -2,7 +2,7 @@
 
 from kernel.type import Type
 from kernel import term
-from kernel.term import Var, Term
+from kernel.term import Term, Var
 from kernel.thm import Thm, InvalidDerivationException
 from logic.proofterm import ProofTerm, refl
 from logic import matcher
@@ -65,7 +65,7 @@ class combination_conv(Conv):
         self.cv2 = cv2
 
     def get_proof_term(self, thy, t):
-        if t.ty != Term.COMB:
+        if t.ty != term.COMB:
             raise ConvException("combination_conv: not a combination")
         pt1 = self.cv1.get_proof_term(thy, t.fun)
         pt2 = self.cv2.get_proof_term(thy, t.arg)
@@ -122,7 +122,7 @@ class abs_conv(Conv):
         self.cv = cv
 
     def get_proof_term(self, thy, t):
-        if t.ty != Term.ABS:
+        if t.ty != term.ABS:
             raise ConvException("abs_conv: not an abstraction")
 
         # Find a new variable x and substitute for body

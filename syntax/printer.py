@@ -5,7 +5,7 @@ from copy import copy
 from kernel.type import HOLType
 from kernel.term import Term, OpenTermException
 from kernel.thm import Thm
-from kernel.extension import Extension
+from kernel import extension
 from kernel import proof
 from syntax import operator
 from syntax import settings
@@ -78,17 +78,17 @@ def print_thm(thy, th):
 
 @settings.with_settings
 def print_extension(thy, ext):
-    if ext.ty == Extension.AX_TYPE:
+    if ext.ty == extension.AX_TYPE:
         return "AxType " + ext.name + " " + str(ext.arity)
-    elif ext.ty == Extension.AX_CONSTANT:
+    elif ext.ty == extension.AX_CONSTANT:
         return "AxConstant " + ext.name + " :: " + print_type(thy, ext.T)
-    elif ext.ty == Extension.CONSTANT:
+    elif ext.ty == extension.CONSTANT:
         return "Constant " + ext.name + " = " + print_term(thy, ext.expr)
-    elif ext.ty == Extension.THEOREM:
+    elif ext.ty == extension.THEOREM:
         return "Theorem " + ext.name + ": " + print_term(thy, ext.th.prop)
-    elif ext.ty == Extension.ATTRIBUTE:
+    elif ext.ty == extension.ATTRIBUTE:
         return "Attribute " + ext.name + " [" + ext.attribute + "]"
-    elif ext.ty == Extension.MACRO:
+    elif ext.ty == extension.MACRO:
         return "Macro " + ext.name
     else:
         raise TypeError
@@ -96,6 +96,16 @@ def print_extension(thy, ext):
 @settings.with_settings
 def print_extensions(thy, exts):
     return "\n".join(print_extension(thy, ext) for ext in exts.data)
+
+@settings.with_settings
+def print_type_constr(thy, constr):
+    """Print a given type constructor."""
+    argsT, _ = constr['type'].strip_type()
+    assert len(argsT) == len(constr['args']), "print_type_constr: unexpected number of args."
+    res = N(constr['name'])
+    for i, arg in enumerate(constr['args']):
+        res += N(' (' + arg + ' :: ') + print_type(thy, argsT[i]) + N(')')
+    return res
 
 @settings.with_settings
 def print_str_args(thy, rule, args, th):

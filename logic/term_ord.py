@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-from kernel.type import Type
+from kernel import type as hol_type
 from kernel.term import Term
 
 """Ordering on terms."""
@@ -43,9 +43,9 @@ def compare_list(l1, l2, cp):
 def fast_compare_typ(T1, T2):
     if T1.ty != T2.ty:
         return compare(T1.ty, T2.ty)
-    elif T1.ty == Type.TVAR:
+    elif T1.ty == hol_type.TVAR:
         return compare(T1.name, T2.name)
-    elif T1.ty == Type.TYPE:
+    elif T1.ty == hol_type.TYPE:
         return compare_pair((T1.name, T1.args), (T2.name, T2.args),
                             compare, lambda l1, l2: compare_list(l1, l2, fast_compare_typ))
     else:

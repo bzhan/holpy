@@ -5,6 +5,9 @@ from collections import OrderedDict
 class TypeMatchException(Exception):
     pass
 
+"""ty values for distinguishing between HOLType objects."""
+TVAR, TYPE = range(2)
+
 class HOLType():
     """Represents a type in higher-order logic.
     
@@ -48,11 +51,9 @@ class HOLType():
     nat list list: list of lists of natural numbers.
 
     """
-    (TVAR, TYPE) = range(2)
-
     def is_fun(self):
         """Whether self is of the form a => b."""
-        return self.ty == HOLType.TYPE and self.name == "fun"
+        return self.ty == TYPE and self.name == "fun"
     
     def domain_type(self):
         """Given a type of form a => b, return a."""
@@ -76,9 +77,9 @@ class HOLType():
             return ([], self)
         
     def __str__(self):
-        if self.ty == HOLType.TVAR:
+        if self.ty == TVAR:
             return "'" + self.name
-        elif self.ty == HOLType.TYPE:
+        elif self.ty == TYPE:
             if len(self.args) == 0:
                 return self.name
             elif len(self.args) == 1:
@@ -100,9 +101,9 @@ class HOLType():
             raise TypeError
 
     def __repr__(self):
-        if self.ty == HOLType.TVAR:
+        if self.ty == TVAR:
             return "TVar(" + self.name + ")"
-        elif self.ty == HOLType.TYPE:
+        elif self.ty == TYPE:
             return "Type(" + self.name + ", " + str(list(self.args)) + ")"
         else:
             raise TypeError
@@ -110,9 +111,9 @@ class HOLType():
     def __hash__(self):
         if hasattr(self, "_hash_val"):
             return self._hash_val
-        if self.ty == HOLType.TVAR:
+        if self.ty == TVAR:
             self._hash_val = hash(("VAR", self.name))
-        elif self.ty == HOLType.TYPE:
+        elif self.ty == TYPE:
             self._hash_val = hash(("COMB", self.name, tuple(hash(arg) for arg in self.args)))
         return self._hash_val
     
@@ -123,9 +124,9 @@ class HOLType():
 
         if self.ty != other.ty:
             return False
-        elif self.ty == HOLType.TVAR:
+        elif self.ty == TVAR:
             return self.name == other.name
-        elif self.ty == HOLType.TYPE:
+        elif self.ty == TYPE:
             return self.name == other.name and self.args == other.args
         else:
             raise TypeError
@@ -137,12 +138,12 @@ class HOLType():
 
         """
         assert isinstance(tyinst, dict), "tyinst must be a dictionary"
-        if self.ty == HOLType.TVAR:
+        if self.ty == TVAR:
             if self.name in tyinst:
                 return tyinst[self.name]
             else:
                 return self
-        elif self.ty == HOLType.TYPE:
+        elif self.ty == TYPE:
             return Type(self.name, *(T.subst(tyinst) for T in self.args))
         else:
             raise TypeError
@@ -152,7 +153,7 @@ class HOLType():
         is the current instantiation. This is updated by the function.
 
         """
-        if self.ty == HOLType.TVAR:
+        if self.ty == TVAR:
             if internal_only and not self.name.startswith('_'):
                 if self != T:
                     raise TypeMatchException
@@ -161,8 +162,8 @@ class HOLType():
                     raise TypeMatchException
             else:
                 tyinst[self.name] = T
-        elif self.ty == HOLType.TYPE:
-            if T.ty != HOLType.TYPE or T.name != self.name:
+        elif self.ty == TYPE:
+            if T.ty != TYPE or T.name != self.name:
                 raise TypeMatchException
             else:
                 for arg, argT in zip(self.args, T.args):
@@ -182,7 +183,7 @@ class HOLType():
     def get_tvars(self):
         """Return the list of type variables."""
         def collect(T):
-            if T.ty == HOLType.TVAR:
+            if T.ty == TVAR:
                 return [T]
             else:
                 return sum([collect(arg) for arg in T.args], [])
@@ -192,7 +193,7 @@ class HOLType():
     def get_tsubs(self):
         """Return the list of types appearing in self."""
         def collect(T):
-            if T.ty == HOLType.TVAR:
+            if T.ty == TVAR:
                 return [T]
             else:
                 return sum([collect(arg) for arg in T.args], [T])
@@ -202,13 +203,13 @@ class HOLType():
 class TVar(HOLType):
     """Type variable."""
     def __init__(self, name):
-        self.ty = HOLType.TVAR
+        self.ty = TVAR
         self.name = name
 
 class Type(HOLType):
     """Type constant, applied to a list of arguments."""
     def __init__(self, name, *args):
-        self.ty = HOLType.TYPE
+        self.ty = TYPE
         self.name = name
         self.args = args
 

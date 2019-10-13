@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 from kernel.type import TFun
+from kernel import term
 from kernel.term import Term, Const, Abs
 from kernel.macro import global_macros
 from data import nat
@@ -52,7 +53,7 @@ class fun_upd_eval_conv(Conv):
     """Evaluate the function (f)(a1 := b1, a2 := b2, ...) on an input."""
 
     def get_proof_term(self, thy, t):
-        if t.ty != Term.COMB:
+        if t.ty != term.COMB:
             return refl(t)
 
         f, c = t.fun, t.arg
