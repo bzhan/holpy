@@ -54,6 +54,7 @@
               v-on:set-message="onSetMessage"
               v-on:set-proof="handle_set_proof"
               v-on:query="handle_query"
+              v-on:goto-link="handleGoToLink"
               ref="theory"/>
     </div>
     <div id="message" v-show="ref_proof === undefined">
@@ -156,6 +157,11 @@ export default {
     handle_query_cancel: function () {
       this.query.resolve(undefined)
       this.query = undefined
+    },
+
+    handleGoToLink: function (filename) {
+      this.filename = filename
+      this.load_file()
     },
 
     load_filelist: async function () {

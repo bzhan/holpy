@@ -7,7 +7,10 @@
           <v-icon name="edit"/>
         </a>
       </div>
-      <span class="keyword">imports</span>&nbsp;{{theory.imports.join(' ')}}
+      <span class="keyword">imports</span>
+      <span v-for="(import_name, index) in theory.imports" v-bind:key=index
+            v-on:click="$emit('goto-link', import_name)"
+            class="import-link">{{import_name}}</span>
       <br><br>
       <span class="comment">{{theory.description}}</span>
       <br><br>
@@ -700,6 +703,15 @@ export default {
 </script>
 
 <style scoped>
+
+.import-link {
+  margin-left: 5px;
+}
+
+.import-link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 .theory-items {
   margin: 3px;
