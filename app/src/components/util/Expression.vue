@@ -1,31 +1,21 @@
 <template>
   <span class="item-text">
-    <span v-for="(p, index) in line" v-bind:key="index"
-          v-bind:style="{color: get_color(p.color)}">{{p.text.replace(/ /g, '&nbsp;')}}</span>
+    <ExpressionNode v-for="(node, index) in line" :key="index" :node="node" :editor="editor"/>
   </span>
 </template>
 
 <script>
+import ExpressionNode from './ExpressionNode'
+
 export default {
   name: 'Expression',
-  props: [
-    "line"
-  ],
+  components: {
+    ExpressionNode,
+  },
 
-  methods: {
-    get_color: function (x) {
-      if (x === 0) { // normal
-        return 'black'
-      } else if (x === 1) {  // bound
-        return '#006000'
-      } else if (x === 2) { // var
-        return 'blue'
-      } else if (x === 3) { // tvar
-        return 'purple'
-      } else if (x === 4) {
-        return 'silver'
-      }
-    }
-  }
+  props: [
+    "line",
+    "editor"
+  ],
 }
 </script>

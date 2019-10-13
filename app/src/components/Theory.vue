@@ -27,6 +27,7 @@
          v-on:click="handle_select(index, $event)"
          v-on:mousedown="handle_mousedown($event)"
          v-on:mousemove="handle_mousemove($event)"
+         ref="items"
          v-bind:class="{
            'item-selected': is_selected(index),
            'item-error': 'err_type' in item
@@ -39,7 +40,9 @@
         <span class="item-text">{{item.name}}</span>
       </div>
       <div v-if="item.ty === 'def.ax'">
-        <Constant v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <Constant v-if="on_edit !== index" v-bind:item="item"
+                  v-on:edit="edit_item(index)"
+                  :editor="editor"/>
         <div v-else>
           <ConstantEdit v-bind:old_item="item" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
@@ -48,7 +51,9 @@
         </div>
       </div>
       <div v-if="item.ty === 'type.ind'">
-        <Datatype v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <Datatype v-if="on_edit !== index" v-bind:item="item"
+                  v-on:edit="edit_item(index)"
+                  :editor="editor"/>
         <div v-else>
           <DatatypeEdit v-bind:old_item="item" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
@@ -57,7 +62,9 @@
         </div>
       </div>
       <div v-if="item.ty === 'def'">
-        <Definition v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <Definition v-if="on_edit !== index" v-bind:item="item"
+                    v-on:edit="edit_item(index)"
+                    :editor="editor"/>
         <div v-else>
           <DefinitionEdit v-bind:old_item="item" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
@@ -66,7 +73,9 @@
         </div>
       </div>
       <div v-if="item.ty === 'def.ind'">
-        <Inductive v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <Inductive v-if="on_edit !== index" v-bind:item="item"
+                   v-on:edit="edit_item(index)"
+                   :editor="editor"/>
         <div v-else>
           <DefinitionEdit v-bind:old_item="item" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
@@ -75,7 +84,9 @@
         </div>
       </div>
       <div v-if="item.ty === 'def.pred'">
-        <Inductive v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <Inductive v-if="on_edit !== index" v-bind:item="item"
+                   v-on:edit="edit_item(index)"
+                   :editor="editor"/>
         <div v-else>
           <DefinitionEdit v-bind:old_item="item" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
@@ -93,7 +104,8 @@
       </div>
       <div v-if="item.ty == 'thm'">
         <Theorem v-if="on_edit !== index" v-bind:item="item"
-                 v-on:edit="edit_item(index)" v-on:proof="init_proof(index)"/>
+                 v-on:edit="edit_item(index)" v-on:proof="init_proof(index)"
+                 :editor="editor"/>
         <div v-else>
           <TheoremEdit v-bind:old_item="item" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
@@ -113,7 +125,9 @@
         </div>
       </div>
       <div v-if="item.ty === 'thm.ax'">
-        <Axiom v-if="on_edit !== index" v-bind:item="item" v-on:edit="edit_item(index)"/>
+        <Axiom v-if="on_edit !== index" v-bind:item="item"
+               v-on:edit="edit_item(index)"
+               :editor="editor"/>
         <div v-else>
           <TheoremEdit v-bind:old_item="item" ref="edit"/>
           <button style="margin:5px" v-on:click="check_edit">Check</button>
@@ -164,7 +178,10 @@ export default {
 
     // Reference to status panel and context panel
     "ref_status",
-    "ref_context"
+    "ref_context",
+
+    // Reference to the editor
+    "editor"
   ],
 
   data: function () {
@@ -202,6 +219,17 @@ export default {
   },
 
   methods: {
+    scrollToSelected: function () {
+      if ('single' in this.selected)
+        this.$refs.items[this.selected.single].scrollIntoView({
+          block: 'nearest'
+        })
+      else
+        this.$refs.items[this.selected.end].scrollIntoView({
+          block: 'nearest'
+        })
+    },
+
     handle_keydown: function (event) {
       if (event.keyCode === 38 && event.ctrlKey) {  // Ctrl+Up
         this.item_move_up()
@@ -223,6 +251,7 @@ export default {
             }
           }
         }
+        this.scrollToSelected()
       } else if (event.keyCode === 40 && event.shiftKey) {  // Shift+Down
         if ('single' in this.selected && this.selected.single < this.theory.content.length-1) {
           this.selected = {
@@ -239,6 +268,7 @@ export default {
             }
           }
         }
+        this.scrollToSelected()
       }
     },
 
@@ -313,6 +343,13 @@ export default {
 
     // Select (or un-select) an item
     handle_select: function (index, event) {
+      // Outside selection
+      if (event === undefined) {
+          this.selected = {single: index}
+          this.scrollToSelected()
+          return
+      }
+
       // Ignore if click on a link
       if (event.target.tagName.toLowerCase() === 'a') {
         return

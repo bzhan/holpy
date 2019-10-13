@@ -8,7 +8,7 @@
     <br>
     <span v-if="'prop_hl' in item">
       <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-        <Expression class="indented-text" v-bind:line="line"/><br>
+        <Expression class="indented-text" v-bind:line="line" :editor="editor"/><br>
       </span>
     </span>
   </div>
@@ -20,7 +20,8 @@ export default {
   name: 'Axiom',
 
   props: [
-    "item"
+    "item",
+    "editor",
   ],
 
 }

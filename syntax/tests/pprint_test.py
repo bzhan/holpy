@@ -51,7 +51,7 @@ class PPrintTest(unittest.TestCase):
         ast = pprint.get_ast_term(thy, t, unicode=True)
         res = pprint.print_ast(thy, ast, highlight=True, line_length=80)
         expected_res = [[
-            {'text': 'real_bounded', 'color': 0, 'link': ''},
+            {'text': 'real_bounded', 'color': 0, 'link_name': '', 'link_ty': 'def'},
             {'text': ' ', 'color': 0},
             {'text': 't', 'color': 2},
             {'text': ' ', 'color': 0},
@@ -65,7 +65,7 @@ class PPrintTest(unittest.TestCase):
             {'text': ' ', 'color': 0},
             {'text': '⟶', 'color': 0},
             {'text': ' ', 'color': 0},
-            {'text': 'real_bounded', 'color': 0, 'link': ''},
+            {'text': 'real_bounded', 'color': 0, 'link_name': '', 'link_ty': 'def'},
             {'text': ' ', 'color': 0},
             {'text': 's', 'color': 2}
         ]]

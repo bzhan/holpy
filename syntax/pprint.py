@@ -429,10 +429,12 @@ def print_length(res):
 def N(s, *, link=None):
     if settings.highlight():
         res = {'text': s, 'color': 0}
-        if link == s:
-            res['link'] = ''
-        elif link is not None:
-            res['link'] = link
+        if link:
+            if link['name'] == s:
+                res['link_name'] = ''
+            else:
+                res['link_name'] = link['name']
+            res['link_ty'] = link['ty']
         return [res]
     else:
         return s
@@ -502,7 +504,7 @@ def print_ast(thy, ast, *, line_length=None):
         elif ast.ty == "var_name":
             add_var(ast.name)
         elif ast.ty == "const_name":
-            add_normal(ast.name, link=ast.name)
+            add_normal(ast.name, link={'name': ast.name, 'ty': 'def'})
         elif ast.ty == "number":
             add_normal(str(ast.n))
         elif ast.ty == "list":

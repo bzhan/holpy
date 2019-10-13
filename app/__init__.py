@@ -615,3 +615,35 @@ def remove_file():
     os.remove(user_file(filename, username))
 
     return jsonify({})
+
+
+@app.route('/api/find-link', methods=['POST'])
+def find_link():
+    """Return the location of the link.
+
+    Input:
+    * username: username.
+    * ty: type of item.
+    * name: name of the item to find.
+
+    Returns:
+    * filename: name of the theory file.
+    * position: index of the item in the theory.
+
+    """
+    data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
+
+    res = basic.query_item_index(username, data['ty'], data['name'])
+    if res:
+        filename, index = res
+        return jsonify({
+            'filename': filename,
+            'index': index
+        })
+    else:
+        return jsonify({})
+
+
+# Initialization
+basic.load_metadata('master')

@@ -51,6 +51,7 @@
       <Theory v-bind:theory="theory"
               v-bind:ref_status="ref_status"
               v-bind:ref_context="ref_context"
+              :editor="editor"
               v-on:set-message="onSetMessage"
               v-on:set-proof="handle_set_proof"
               v-on:query="handle_query"
@@ -107,6 +108,9 @@ export default {
       ref_status: undefined,
       ref_context: undefined,
 
+      // Reference to itself
+      editor: undefined,
+
       // Query information
       query: undefined,
 
@@ -137,6 +141,7 @@ export default {
   },
 
   created: function () {
+    this.editor = this
     this.load_filelist()
   },
 
@@ -159,9 +164,14 @@ export default {
       this.query = undefined
     },
 
-    handleGoToLink: function (filename) {
-      this.filename = filename
-      this.load_file()
+    handleGoToLink: async function (filename, index) {
+      if (filename !== this.filename) {
+        this.filename = filename
+        await this.load_file()
+      }
+      if (index !== undefined) {
+        this.$refs.theory.handle_select(index)
+      }
     },
 
     load_filelist: async function () {

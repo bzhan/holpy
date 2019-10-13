@@ -6,7 +6,7 @@
       <v-icon name="edit"/>
     </a>
     <span v-for="(v, i) in item.constrs_hl" v-bind:key=i>
-      <br><Expression class="indented-text" v-bind:line="v"/>
+      <br><Expression class="indented-text" v-bind:line="v" :editor="editor"/>
     </span>
   </div>  
 </template>
@@ -16,7 +16,8 @@ export default {
   name: 'Datatype',
   
   props: [
-    "item"
+    "item",
+    "editor"
   ],
 }
 </script>

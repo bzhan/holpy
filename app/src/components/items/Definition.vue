@@ -12,7 +12,7 @@
     <br>
     <span v-if="!('err_type' in item)">
       <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-        <Expression class="indented-text" v-bind:line="line"/><br>
+        <Expression class="indented-text" v-bind:line="line" :editor="editor"/><br>
       </span>
     </span>
     <div v-else>
@@ -34,7 +34,8 @@ export default {
   name: 'Definition',
 
   props: [
-    "item"
+    "item",
+    "editor"
   ],
 }
 </script>

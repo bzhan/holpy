@@ -13,14 +13,28 @@ from syntax import operator
 from server import method  # Load all defined methods
 
 
-"""Cache of parsed theories.
+"""
+Cache of parsed theories.
 
 The dictionary is indexed by user, and then by theory name.
+
+Each theory stores a 'timestamp' field, for the last modification
+time of the corresponding file.
+
 In the contents, instead of each item is the parsed item as
 well as the corresponding extension.
 
 """
 theory_cache = dict()
+
+"""
+Cache of item mapping.
+
+The dictionary is indexed by user. For each user, it is a
+mapping from (ty, name) to (theory_name, timestamp, index).
+
+"""
+item_index = dict()
 
 
 def user_dir(username="master"):
@@ -47,14 +61,22 @@ def load_json_data(filename, username="master"):
 def load_metadata(username="master"):
     """For the given user, load metadata for all theory files."""
     theory_cache[username] = dict()
+    item_index[username] = dict()
     for f in os.listdir(user_dir(username)):
         if f.endswith('.json'):
             filename = f[:-5]
             data = load_json_data(filename, username)
+            timestamp = os.path.getmtime(user_file(filename, username))
             theory_cache[username][filename] = {
                 'imports': data['imports'],
                 'description': data['description']
             }
+            for i, item in enumerate(data['content']):
+                ty = item['ty']
+                dot = ty.find('.')
+                if dot != -1:
+                    ty = ty[:dot]
+                item_index[username][(ty, item['name'])] = (filename, timestamp, i)
 
     # Immediately check for topological order.
     check_topological_sort()
@@ -158,6 +180,17 @@ def load_theory_cache(filename, username="master"):
         cache['content'].append(item)
 
     return cache
+
+def query_item_index(username, ty, name):
+    """Query the item index."""
+    if (ty, name) in item_index[username]:
+        filename, timestamp, index = item_index[username][(ty, name)]
+        if timestamp == os.path.getmtime(user_file(filename, username)):
+            return filename, index
+        else:
+            return None
+    else:
+        return None
 
 def load_theories(filenames, username="master"):
     """Load a list of theories (usually serve as a base for

@@ -13,7 +13,8 @@
     <br>
     <span v-if="!('err_type' in item)">
       <span v-for="(line, i) in item.prop_hl" v-bind:key=i>
-        <Expression class="indented-text" v-bind:line="line"/><br>
+        <Expression class="indented-text" v-bind:line="line" v-on:goto-item="goto-item"
+                    :editor="editor"/><br>
       </span>
     </span>
     <div v-else>
@@ -35,7 +36,8 @@ export default {
   name: 'Theorem',
 
   props: [
-    "item"
+    "item",
+    "editor",
   ],
 }
 </script>
