@@ -13,18 +13,6 @@ from syntax import infertype
 from syntax import pprint
 from util import name
 
-# 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
-def N(s):
-    return [(s, 0)] if settings.highlight() else s
-
-def B(s):
-    return [(s, 1)] if settings.highlight() else s
-
-def V(s):
-    return [(s, 2)] if settings.highlight() else s
-
-def Gray(s):
-    return [(s, 4)] if settings.highlight() else s
 
 @settings.with_settings
 def commas_join(strs):
@@ -37,7 +25,7 @@ def commas_join(strs):
         if strs:
             res = strs[0]
             for s in strs[1:]:
-                res.append((', ', 0))
+                res.extend(pprint.N(', '))
                 res = res + s
             return res
         else:
@@ -69,12 +57,12 @@ def print_thm(thy, th):
     """Print the given theorem with highlight."""
     assert isinstance(th, Thm), "print_thm: input is not a theorem."
 
-    turnstile = N("⊢") if settings.unicode() else N("|-")
+    turnstile = pprint.N("⊢") if settings.unicode() else pprint.N("|-")
     if th.hyps:
         str_hyps = commas_join(print_term(thy, hyp) for hyp in th.hyps)
-        return str_hyps + N(" ") + turnstile + N(" ") + print_term(thy, th.prop)
+        return str_hyps + pprint.N(" ") + turnstile + pprint.N(" ") + print_term(thy, th.prop)
     else:
-        return turnstile + N(" ") + print_term(thy, th.prop)
+        return turnstile + pprint.N(" ") + print_term(thy, th.prop)
 
 @settings.with_settings
 def print_extension(thy, ext):
@@ -102,9 +90,9 @@ def print_type_constr(thy, constr):
     """Print a given type constructor."""
     argsT, _ = constr['type'].strip_type()
     assert len(argsT) == len(constr['args']), "print_type_constr: unexpected number of args."
-    res = N(constr['name'])
+    res = pprint.N(constr['name'])
     for i, arg in enumerate(constr['args']):
-        res += N(' (' + arg + ' :: ') + print_type(thy, argsT[i]) + N(')')
+        res += pprint.N(' (' + arg + ' :: ') + print_type(thy, argsT[i]) + pprint.N(')')
     return res
 
 @settings.with_settings
@@ -112,20 +100,21 @@ def print_str_args(thy, rule, args, th):
     def str_val(val):
         if isinstance(val, dict):
             items = sorted(val.items(), key = lambda pair: pair[0])
-            return N('{') + commas_join(N(key + ': ') + str_val(val) for key, val in items) + N('}')
+            return pprint.N('{') + commas_join(pprint.N(key + ': ') + str_val(val)
+                                               for key, val in items) + pprint.N('}')
         elif isinstance(val, Term):
             if th and val == th.prop and rule != 'assume' and settings.highlight():
-                return Gray("⟨goal⟩")
+                return pprint.Gray("⟨goal⟩")
             else:
                 return print_term(thy, val)
         elif isinstance(val, HOLType):
             return print_type(thy, val)
         else:
-            return N(str(val))
+            return pprint.N(str(val))
 
     # Print var :: T for variables
     if rule == 'variable' and settings.highlight():
-        return N(args[0] + ' :: ') + str_val(args[1])
+        return pprint.N(args[0] + ' :: ') + str_val(args[1])
 
     if isinstance(args, tuple) or isinstance(args, list):
         return commas_join(str_val(val) for val in args)

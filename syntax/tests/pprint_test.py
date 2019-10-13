@@ -8,12 +8,12 @@ from syntax import pprint
 
 
 class PPrintTest(unittest.TestCase):
-    def run_test(self, thy_name, s, expected_res):
+    def run_test(self, thy_name, s, expected_res, *, line_length=80):
         thy = basic.load_theory(thy_name)
         ctxt = {'vars': {}}
         t = parser.parse_term(thy, ctxt, s)
         ast = pprint.get_ast_term(thy, t, unicode=True)
-        res = pprint.print_ast(thy, ast, line_length=80)
+        res = pprint.print_ast(thy, ast, line_length=line_length)
         self.assertEqual(res, expected_res)
 
     def testPPrint1(self):
@@ -32,17 +32,43 @@ class PPrintTest(unittest.TestCase):
         )
 
     def testPPrint2(self):
-        thy = basic.load_theory('logic_base')
+        self.run_test(
+            'logic_base',
+            'long_constant_1 --> long_constant_2 --> long_constant1 & long_constant_2',
+            [
+                'long_constant_1 ',
+                '⟶ long_constant_2 ',
+                '   ⟶ long_constant1 ∧ long_constant_2'
+            ],
+            line_length=40
+        )
+
+    def testPPrint3(self):
+        thy = basic.load_theory('realanalysis')
         ctxt = {'vars': {}}
-        t = parser.parse_term(thy, ctxt, 'long_constant_1 --> long_constant_2 --> long_constant1 & long_constant_2')
+        s = "real_bounded t ∧ t ⊆ s ⟶ real_bounded s"
+        t = parser.parse_term(thy, ctxt, s)
         ast = pprint.get_ast_term(thy, t, unicode=True)
-        res = pprint.print_ast(thy, ast, line_length=20, highlight=True)
-        expected_res = [
-            [('long_constant_1 ', 2)],
-            [('⟶ ', 0), ('long_constant_2 ', 2)],
-            [('   ⟶ ', 0), ('long_constant1 ', 2), ('∧ ', 0)],
-            [('      ', 0), ('long_constant_2', 2)]
-        ]
+        res = pprint.print_ast(thy, ast, highlight=True, line_length=80)
+        expected_res = [[
+            {'text': 'real_bounded', 'color': 0, 'link': ''},
+            {'text': ' ', 'color': 0},
+            {'text': 't', 'color': 2},
+            {'text': ' ', 'color': 0},
+            {'text': '∧', 'color': 0},
+            {'text': ' ', 'color': 0},
+            {'text': 't', 'color': 2},
+            {'text': ' ', 'color': 0},
+            {'text': '⊆', 'color': 0},
+            {'text': ' ', 'color': 0},
+            {'text': 's', 'color': 2},
+            {'text': ' ', 'color': 0},
+            {'text': '⟶', 'color': 0},
+            {'text': ' ', 'color': 0},
+            {'text': 'real_bounded', 'color': 0, 'link': ''},
+            {'text': ' ', 'color': 0},
+            {'text': 's', 'color': 2}
+        ]]
         self.assertEqual(res, expected_res)
 
 

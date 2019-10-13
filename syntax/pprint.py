@@ -419,31 +419,47 @@ def get_ast_term(thy, t):
 
     return helper(t, [])
 
-def optimize_highlight(lst):
-    """Optimize a highlight list (s1, n1), ... by combining parts that have
-    the same color.
-
-    """
-    if len(lst) == 0:
-        return lst
-    else:
-        prev = lst[0]
-        new_lst = []
-        for s, n in lst[1:]:
-            if s.strip() == "" or prev[1] == n:
-                # Combine with previous:
-                prev = (prev[0] + s, prev[1])
-            else:
-                new_lst.append(prev)
-                prev = (s, n)
-        new_lst.append(prev)
-    return new_lst
-
 def print_length(res):
     if settings.highlight():
-        return sum(len(s) for s, c in res)
+        return sum(len(node['text']) for node in res)
     else:
         return len(res)
+
+# 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
+def N(s, *, link=None):
+    if settings.highlight():
+        res = {'text': s, 'color': 0}
+        if link == s:
+            res['link'] = ''
+        elif link is not None:
+            res['link'] = link
+        return [res]
+    else:
+        return s
+
+def B(s):
+    if settings.highlight():
+        return [{'text': s, 'color': 1}]
+    else:
+        return s
+
+def V(s):
+    if settings.highlight():
+        return [{'text': s, 'color': 2}]
+    else:
+        return s
+
+def TV(s):
+    if settings.highlight():
+        return [{'text': s, 'color': 3}]
+    else:
+        return s
+
+def Gray(s):
+    if settings.highlight():
+        return [{'text': s, 'color': 4}]
+    else:
+        return s
 
 @settings.with_settings
 def print_ast(thy, ast, *, line_length=None):
@@ -451,17 +467,17 @@ def print_ast(thy, ast, *, line_length=None):
     cur_line = 0
     indent = 0
 
-    def add_normal(s):
-        res[cur_line].append((s, 0) if settings.highlight() else s)
+    def add_normal(s, **kwargs):
+        res[cur_line].extend(N(s, **kwargs))
     
     def add_bound(s):
-        res[cur_line].append((s, 1) if settings.highlight() else s)
+        res[cur_line].extend(B(s))
 
     def add_var(s):
-        res[cur_line].append((s, 2) if settings.highlight() else s)
+        res[cur_line].extend(V(s))
 
     def add_tvar(s):
-        res[cur_line].append((s, 3) if settings.highlight() else s)
+        res[cur_line].extend(TV(s))
 
     def newline():
         nonlocal cur_line
@@ -486,7 +502,7 @@ def print_ast(thy, ast, *, line_length=None):
         elif ast.ty == "var_name":
             add_var(ast.name)
         elif ast.ty == "const_name":
-            add_normal(ast.name)
+            add_normal(ast.name, link=ast.name)
         elif ast.ty == "number":
             add_normal(str(ast.n))
         elif ast.ty == "list":
@@ -632,9 +648,7 @@ def print_ast(thy, ast, *, line_length=None):
     rec(ast)
 
     for i in range(len(res)):
-        if settings.highlight():
-            res[i] = optimize_highlight(res[i])
-        else:
+        if not settings.highlight():
             res[i] = ''.join(res[i])
 
     if not line_length:

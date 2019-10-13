@@ -15,7 +15,7 @@ from kernel.macro import ProofMacro, global_macros
 from kernel.theory import Method, global_methods
 from logic import logic
 from data import nat, int
-from syntax import printer, settings
+from syntax import pprint, settings
 
 
 def convert(t):
@@ -134,7 +134,7 @@ class Z3Method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("Apply Z3")
+        return pprint.N("Apply Z3")
 
     def apply(self, state, id, data, prevs):
         assert z3_loaded, "Z3 method: not installed"

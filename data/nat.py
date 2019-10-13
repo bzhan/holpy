@@ -13,7 +13,7 @@ from logic.logic import apply_theorem
 from logic import logic
 from logic import term_ord
 from server.tactic import MacroTactic
-from syntax import printer, settings
+from syntax import pprint, settings
 
 """Utility functions for natural number arithmetic."""
 
@@ -568,7 +568,7 @@ class nat_norm_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("nat_norm: (solves)")
+        return pprint.N("nat_norm: (solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "nat_norm_method"
@@ -668,7 +668,7 @@ class nat_const_ineq_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("nat_const_ineq: (solves)")
+        return pprint.N("nat_const_ineq: (solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "nat_const_ineq_method"

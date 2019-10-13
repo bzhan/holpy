@@ -1,7 +1,7 @@
 <template>
   <span class="item-text">
     <span v-for="(p, index) in line" v-bind:key="index"
-          v-bind:style="{color: get_color(p[1])}">{{p[0].replace(/ /g, '&nbsp;')}}</span>
+          v-bind:style="{color: get_color(p.color)}">{{p.text.replace(/ /g, '&nbsp;')}}</span>
   </span>
 </template>
 

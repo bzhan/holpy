@@ -12,7 +12,7 @@ from logic.conv import arg_conv, then_conv, top_conv, beta_conv, binop_conv, \
     every_conv, rewr_conv, assums_conv, beta_norm
 from logic.proofterm import ProofTerm, ProofTermMacro, ProofTermDeriv
 from logic.logic import apply_theorem
-from syntax import printer, settings
+from syntax import pprint, settings
 from server.tactic import Tactic
 from prover import z3wrapper
 
@@ -247,7 +247,7 @@ class vcg_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("Apply VCG")
+        return pprint.N("Apply VCG")
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, vcg_tactic(), prevs=prevs)

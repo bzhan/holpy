@@ -13,7 +13,7 @@ from data.nat import natT
 from logic.conv import arg_conv
 from logic.proofterm import ProofTermMacro, ProofTerm
 from server.tactic import MacroTactic
-from syntax import printer, settings
+from syntax import pprint, settings
 
 """Automation for arithmetic expressions."""
 
@@ -125,7 +125,7 @@ class prove_avalI_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return printer.N("prove_avalI: (solves)")
+        return pprint.N("prove_avalI: (solves)")
 
     def apply(self, state, id, data, prevs):
         assert len(prevs) == 0, "prove_avalI_method"

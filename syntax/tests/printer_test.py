@@ -327,31 +327,41 @@ class PrinterTest(unittest.TestCase):
 
     def testPrintHighlight(self):
         """Test highlight"""
-        # 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
-        test_data = [
-            (abs(a,P(a)), [('%',0),('a',1),('. ',0),('P ',2),('a',1)]),
-            (all(a,P(a)), [('!',0),('a',1),('. ',0),('P ',2),("a",1)]),
-            (all(a,all(b,conj(P(a),P(b)))), [('!',0),('a',1),('. !',0),('b',1),('. ',0),('P ',2),('a ',1),('& ',0),('P ',2),('b',1)]),
-            (exists(a,all(b,R(a,b))), [('?',0),("a",1),('. !',0),('b',1),('. ',0),('R ',2),('a b',1)]),
-            (exists(a,P(a)), [('?',0),('a',1),('. ',0),('P ',2),('a',1)]),
-            (disj(disj(A,B),C), [('(',0),('A ',2),('| ',0),('B',2),(') | ',0),('C',2)]),
-            (imp(imp(A,B),C), [('(',0),('A ',2),('--> ',0),('B',2),(') --> ',0),('C',2)]),
-            (abs(a,a), [('%',0),('a',1),('::',0),("'a",3),('. ',0),('a',1)]),
-        ]
-
-        for t, s in test_data:
-            self.assertEqual(printer.print_term(thy, t, highlight=True), s)
+        t = exists(a,all(b,R(a,b)))
+        self.assertEqual(printer.print_term(thy, t, highlight=True), [
+            {'color': 0, 'text': '?'},
+            {'color': 1, 'text': 'a'},
+            {'color': 0, 'text': '. '},
+            {'color': 0, 'text': '!'},
+            {'color': 1, 'text': 'b'},
+            {'color': 0, 'text': '. '},
+            {'color': 2, 'text': 'R'},
+            {'color': 0, 'text': ' '},
+            {'color': 1, 'text': 'a'},
+            {'color': 0, 'text': ' '},
+            {'color': 1, 'text': 'b'}
+        ])
 
     def testPrintThmHighlight(self):
         """Test printing of theorems with highlight."""
-        # 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
         A = Var('A', boolT)
         B = Var('B', boolT)
         A_to_B = Term.mk_implies(A, B)
         th = Thm([A, A_to_B], B)
         res = printer.print_thm(thy, th, highlight=True)
-        self.assertEqual(res, [('A',2),(', ',0),('A ',2),('--> ',0),('B',2),(' ',0),('|-',0),(' ',0),('B',2)])
-
+        self.assertEqual(res, [
+            {'color': 2, 'text': 'A'},
+            {'color': 0, 'text': ', '},
+            {'color': 2, 'text': 'A'},
+            {'color': 0, 'text': ' '},
+            {'color': 0, 'text': '-->'},
+            {'color': 0, 'text': ' '},
+            {'color': 2, 'text': 'B'},
+            {'color': 0, 'text': ' '},
+            {'color': 0, 'text': '|-'},
+            {'color': 0, 'text': ' '},
+            {'color': 2, 'text': 'B'}
+        ])
 
 if __name__ == "__main__":
     unittest.main()
