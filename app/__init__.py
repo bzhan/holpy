@@ -197,7 +197,6 @@ def refresh_files():
     if username != 'master':
         shutil.rmtree(user_dir(username))
         shutil.copytree('./library', user_dir(username))
-        basic.clear_cache(user=username)
 
     return jsonify({})
 
@@ -466,7 +465,6 @@ def save_file():
 
     with open(user_file(filename, username), 'w+', encoding='utf-8') as f:
         json.dump(data['content'], f, indent=4, ensure_ascii=False, sort_keys=True)
-    basic.clear_cache(user=username)
 
     return jsonify({})
 
@@ -492,8 +490,13 @@ def search_method():
         limit = ('thm', data['thm_name'])
     else:
         limit = None
+    start_time = time.clock()
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
+    print("Load:", time.clock() - start_time)
+    start_time = time.clock()
     cell = server.ProofState.parse_proof(thy, data['proof'])
+    print("Parse:", time.clock() - start_time)
+    start_time = time.clock()
     fact_ids = data['step']['fact_ids']
     goal_id = data['step']['goal_id']
     search_res = cell.search_method(goal_id, fact_ids)
@@ -504,8 +507,9 @@ def search_method():
             res['_fact'] = [printer.print_term(thy, t, unicode=True) for t in res['_fact']]
 
     ctxt = cell.get_ctxt(goal_id)
-    print_ctxt = dict((k, printer.print_type(thy, v, highlight=True))
+    print_ctxt = dict((k, printer.print_type(thy, v, unicode=True, highlight=True))
                       for k, v in ctxt['vars'].items())
+    print("Response:", time.clock() - start_time)
     return jsonify({
         'search_res': search_res,
         'ctxt': print_ctxt
@@ -531,12 +535,12 @@ def check_modify():
     item = data['item']
     line_length = data.get('line_length')
 
-    with open(user_file(data['filename'], username), 'r', encoding='utf-8') as f:
-        f_data = json.load(f)
+    start_time = time.clock()
     try:
-        thy = basic.load_theories(f_data['imports'], username=username)
-        parser.parse_extensions(thy, data['prev_list'])
-
+        limit = (item['ty'], data['prev_name'])
+        thy = basic.load_theory(data['filename'], limit=limit, username=username)
+        print("Load:", time.clock() - start_time)
+        start_time = time.clock()
         if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
             item['vars'] = dict()
             for var_decl in item['vars_lines'].split('\n'):
@@ -588,6 +592,7 @@ def check_modify():
         item['err_str'] = str(e)
         item['trace'] = traceback2.format_exc()
 
+    print("Check:", time.clock() - start_time)
     return jsonify({
         'item': item
     })

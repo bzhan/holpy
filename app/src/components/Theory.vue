@@ -285,7 +285,7 @@ export default {
       const data = {
         username: this.$state.user,
         filename: this.theory.name,
-        prev_list: this.theory.content.slice(0, Number(this.on_edit)),
+        prev_name: this.theory.content[this.on_edit].name,
         line_length: 80,
         item: this.$refs.edit[0]._data.item
       }
