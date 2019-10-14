@@ -2,7 +2,7 @@
     "content": [
         {
             "name": "integer",
-            "prop": "integer x = ?n. abs x = real_of_nat n",
+            "prop": "integer x = ?n. abs x = of_nat n",
             "ty": "def",
             "type": "real => bool"
         },
@@ -15,7 +15,7 @@
         {
             "attributes": [],
             "name": "real_truncate_pos",
-            "prop": "0 <= x --> ?n. ?r. 0 <= r & r < 1 & (x = real_of_nat n + r)",
+            "prop": "0 <= x --> ?n. ?r. 0 <= r & r < 1 & (x = of_nat n + r)",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -73,7 +73,7 @@
         {
             "attributes": [],
             "name": "floor_nat",
-            "prop": "floor (real_of_nat n) = (real_of_nat n)",
+            "prop": "floor (of_nat n) = (of_nat n)",
             "ty": "thm",
             "vars": {
                 "n": "nat"

@@ -172,7 +172,7 @@ class ParaSystem():
         prop = Term.mk_equals(invC(s), inv_rhs)
 
         exts = extension.TheoryExtension()
-        exts.add_extension(extension.AxConstant("inv", TFun(gcl.stateT, boolT)))
+        exts.add_extension(extension.Constant("inv", TFun(gcl.stateT, boolT)))
         exts.add_extension(extension.Theorem("inv_def", Thm([], prop)))
         self.thy.unchecked_extend(exts)
         # print(printer.print_extensions(self.thy, exts))

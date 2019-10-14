@@ -4,22 +4,18 @@ from kernel.type import HOLType
 from kernel.term import Const
 from kernel.thm import Thm
 
-AX_TYPE, AX_CONSTANT, CONSTANT, THEOREM, MACRO, METHOD, ATTRIBUTE, OVERLOAD = range(8)
+TYPE, CONSTANT, THEOREM, MACRO, METHOD, ATTRIBUTE, OVERLOAD = range(7)
 
 class Extension():
     """Represents a single extension to the theory.
 
     There are currently four kinds of extensions:
 
-    AxType(name, arity): extend the theory by axiomatically defining
-    a type with the given name and arity.
+    Type(name, arity): extend the theory by a type with the given
+    name and arity.
 
-    AxConstant(name, T): extend the theory by axiomatically defining
-    a constant with the given name and type.
-
-    Constant(name, e): extend the theory by adding a constant with the
-    given name, and setting the constant to be equal to the expression e
-    (whose type provides the type of the constant).
+    Constant(name, T): extend the theory by a constant with the given
+    name and type.
 
     Theorem(name, th, prf): extend the theory by adding a theorem with
     the given name and statement. If prf = None, then the theorem should
@@ -38,12 +34,10 @@ class Extension():
 
     """
     def __str__(self):
-        if self.ty == AX_TYPE:
-            return "AxType " + self.name + " " + str(self.arity)
-        elif self.ty == AX_CONSTANT:
-            return "AxConstant " + self.name + " :: " + str(self.T)
+        if self.ty == TYPE:
+            return "Type " + self.name + " " + str(self.arity)
         elif self.ty == CONSTANT:
-            return "Constant " + self.name + " = " + str(self.expr)
+            return "Constant " + self.name + " :: " + str(self.T)
         elif self.ty == THEOREM:
             return "Theorem " + self.name + ": " + str(self.th)
         elif self.ty == ATTRIBUTE:
@@ -63,12 +57,10 @@ class Extension():
     def __eq__(self, other):
         if self.ty != other.ty:
             return False
-        elif self.ty == AX_TYPE:
+        elif self.ty == TYPE:
             return self.name == other.name and self.arity == other.arity
-        elif self.ty == AX_CONSTANT:
-            return self.name == other.name and self.T == other.T
         elif self.ty == CONSTANT:
-            return self.name == other.name and self.expr == other.expr
+            return self.name == other.name and self.T == other.T
         elif self.ty == THEOREM:
             return self.name == other.name and self.th == other.th and self.prf == other.prf
         elif self.ty == ATTRIBUTE:
@@ -82,52 +74,30 @@ class Extension():
         else:
             raise TypeError
 
-    def get_const_term(self):
-        """Return the term to be added in the Constant extension."""
-        assert self.ty == CONSTANT, "get_const_term"
-        return Const(self.name, self.expr.get_type())
 
-    def get_eq_thm(self):
-        """Return the equality theorem to be added in the Constant extension."""
-        assert self.ty == CONSTANT, "get_eq_thm"
-        return Thm.mk_equals(self.get_const_term(), self.expr)
-
-class AxType(Extension):
+class Type(Extension):
     def __init__(self, name, arity):
-        """Extending the theory by adding an axiomatized type.
+        """Extending the theory by adding an type.
 
         name -- name of the type.
         arity -- arity of the type.
 
         """
-        self.ty = AX_TYPE
+        self.ty = TYPE
         self.name = name
         self.arity = arity
 
-class AxConstant(Extension):
+class Constant(Extension):
     def __init__(self, name, T):
-        """Extending the theory by adding an axiomatized constant.
-
+        """Extending the theory by adding a constant.
+        
         name -- name of the constant.
         T -- type of the constant.
-        
-        """
-        self.ty = AX_CONSTANT
-        self.name = name
-        assert isinstance(T, HOLType), "AxConstant: T must be HOLType."
-        self.T = T
-
-class Constant(Extension):
-    def __init__(self, name, expr):
-        """Extending the theory by adding a constant by definition.
-        
-        name -- name of the constant.
-        expr -- the expression the constant is equal to.
 
         """
         self.ty = CONSTANT
         self.name = name
-        self.expr = expr
+        self.T = T
 
 class Theorem(Extension):
     def __init__(self, name, th, prf=None):

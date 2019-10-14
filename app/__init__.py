@@ -623,6 +623,7 @@ def find_link():
 
     Input:
     * username: username.
+    * filename: name of the file in which the query originates.
     * ty: type of item.
     * name: name of the item to find.
 
@@ -634,7 +635,7 @@ def find_link():
     data = json.loads(request.get_data().decode("utf-8"))
     username = data['username']
 
-    res = basic.query_item_index(username, data['ty'], data['name'])
+    res = basic.query_item_index(username, data['filename'], data['ext_ty'], data['name'])
     if res:
         filename, index = res
         return jsonify({

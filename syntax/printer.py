@@ -66,12 +66,10 @@ def print_thm(thy, th):
 
 @settings.with_settings
 def print_extension(thy, ext):
-    if ext.ty == extension.AX_TYPE:
-        return "AxType " + ext.name + " " + str(ext.arity)
-    elif ext.ty == extension.AX_CONSTANT:
-        return "AxConstant " + ext.name + " :: " + print_type(thy, ext.T)
+    if ext.ty == extension.TYPE:
+        return "Type " + ext.name + " " + str(ext.arity)
     elif ext.ty == extension.CONSTANT:
-        return "Constant " + ext.name + " = " + print_term(thy, ext.expr)
+        return "Constant " + ext.name + " :: " + print_type(thy, ext.T)
     elif ext.ty == extension.THEOREM:
         return "Theorem " + ext.name + ": " + print_term(thy, ext.th.prop)
     elif ext.ty == extension.ATTRIBUTE:

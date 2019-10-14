@@ -354,7 +354,7 @@ class PrinterTest(unittest.TestCase):
             {'color': 0, 'text': ', '},
             {'color': 2, 'text': 'A'},
             {'color': 0, 'text': ' '},
-            {'color': 0, 'text': '-->'},
+            {'color': 0, 'text': '-->', 'link_name': 'implies', 'link_ty': 1},
             {'color': 0, 'text': ' '},
             {'color': 2, 'text': 'B'},
             {'color': 0, 'text': ' '},

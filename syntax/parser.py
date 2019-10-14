@@ -587,17 +587,19 @@ def get_extension(thy, data):
     ext = extension.TheoryExtension()
 
     if data['ty'] == 'type.ax':
-        ext.add_extension(extension.AxType(data['name'], len(data['args'])))
+        ext.add_extension(extension.Type(data['name'], len(data['args'])))
 
     elif data['ty'] == 'def.ax':
-        ext.add_extension(extension.AxConstant(data['name'], data['type']))
         if 'overloaded' in data:
+            ext.add_extension(extension.Constant(data['name'], data['type']))
             ext.add_extension(extension.Overload(data['name']))
+        else:
+            cname = thy.get_overload_const_name(data['name'], data['type'])
+            ext.add_extension(extension.Constant(cname, data['type']))
 
     elif data['ty'] == 'def':
-        ext.add_extension(extension.AxConstant(data['name'], data['type']))
-
         cname = thy.get_overload_const_name(data['name'], data['type'])
+        ext.add_extension(extension.Constant(cname, data['type']))
         ext.add_extension(extension.Theorem(cname + "_def", Thm([], data['prop'])))
         if 'attributes' in data:
             for attr in data['attributes']:

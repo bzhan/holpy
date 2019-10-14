@@ -474,7 +474,7 @@
             "name": "real_cauchy_hadamard_radius_absconv_derivative",
             "prop": [
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
-                "⟶ real_summable k (λn. abs (real_of_nat n * a n * x ^ (n - 1)))"
+                "⟶ real_summable k (λn. abs (of_nat n * a n * x ^ (n - 1)))"
             ],
             "ty": "thm",
             "vars": {
@@ -489,7 +489,7 @@
             "name": "real_cauchy_hadamard_radius_derivative",
             "prop": [
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ b * abs x < 1 ",
-                "⟶ real_summable k (λn. real_of_nat n * a n * x ^ (n - 1))"
+                "⟶ real_summable k (λn. of_nat n * a n * x ^ (n - 1))"
             ],
             "ty": "thm",
             "vars": {
@@ -525,7 +525,7 @@
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ ",
                 "real_compact s ∧ (∀x. x ∈ s ⟶ b * abs x < 1) ",
                 "⟶ (∃l. ∀e. 0 < e ",
-                "        ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. real_of_nat i * a i * x ^ (i - 1)) - l x) < e))"
+                "        ⟶ (∃N. ∀n. ∀x. N ≤ n ∧ x ∈ s ⟶ abs (sum (k ∩ {0..n}) (λi. of_nat i * a i * x ^ (i - 1)) - l x) < e))"
             ],
             "ty": "thm",
             "vars": {
@@ -601,7 +601,7 @@
                 "(!i. !t. t ∈ (real_closed_interval a x) & i <= n",
                 "--> has_real_derivative (f i) (f (i + 1) t) (within (atreal t) (real_closed_interval a x)))",
                 "--> ?t. t ∈ (real_closed_interval a x) &",
-                "f 0 x = sum {0..n} (%i. f i a * (x - a) ^ i / (real_of_nat (fact i))) + f (n + 1) t * (x - a) ^ (n + 1) / (real_of_nat (fact (n + 1)))"
+                "f 0 x = sum {0..n} (%i. f i a * (x - a) ^ i / (of_nat (fact i))) + f (n + 1) t * (x - a) ^ (n + 1) / (of_nat (fact (n + 1)))"
             ],
             "ty": "thm",
             "vars": {
@@ -621,8 +621,8 @@
                 "          (within (atreal t) (real_closed_interval x a))) ",
                 "⟶ (∃t. t ∈ real_closed_interval x a ∧ ",
                 "      f 0 x = ",
-                "      sum ({0..n}) (λi. f i a * (x - a) ^ i / real_of_nat (fact i)) + ",
-                "      f (n + 1) t * (x - a) ^ (n + 1) / real_of_nat (fact (n + 1)))"
+                "      sum ({0..n}) (λi. f i a * (x - a) ^ i / of_nat (fact i)) + ",
+                "      f (n + 1) t * (x - a) ^ (n + 1) / of_nat (fact (n + 1)))"
             ],
             "ty": "thm",
             "vars": {
@@ -642,8 +642,8 @@
                 "          (within (atreal x) s)) &",
                 "(∀x. x ∈ s --> abs (f (n + 1) x) ≤ B)",
                 "⟶ (∀w. ∀z. w ∈ s ∧ z ∈ s ",
-                "⟶ abs (f 0 z - sum ({0..n}) (λi. f i w * (z - w) ^ i / real_of_nat (fact i))) ",
-                "≤ B * abs (z - w) ^ (n + 1) / real_of_nat (fact (n + 1)))"
+                "⟶ abs (f 0 z - sum ({0..n}) (λi. f i w * (z - w) ^ i / of_nat (fact i))) ",
+                "≤ B * abs (z - w) ^ (n + 1) / of_nat (fact (n + 1)))"
             ],
             "ty": "thm",
             "vars": {
@@ -658,11 +658,11 @@
             "name": "real_sum_integral_ubound_increasing",
             "prop": [
                 "m <= n &",
-                "(!x. x ∈ (real_closed_interval (real_of_nat m) (real_of_nat n + 1))",
+                "(!x. x ∈ (real_closed_interval (of_nat m) (of_nat n + 1))",
                 "--> has_real_derivative g (f x) ",
-                "(within (atreal x) (real_closed_interval (real_of_nat m) (real_of_nat n + 1)))) &",
-                " (!x. !y. (real_of_nat m) <= x & x <= y & y <= (real_of_nat n + 1) --> f x <= f y)",
-                "--> sum ({m..n}) (%k. f (real_of_nat k)) <= g (real_of_nat n + 1) - g (real_of_nat m)"
+                "(within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))) &",
+                " (!x. !y. (of_nat m) <= x & x <= y & y <= (of_nat n + 1) --> f x <= f y)",
+                "--> sum ({m..n}) (%k. f (of_nat k)) <= g (of_nat n + 1) - g (of_nat m)"
             ],
             "ty": "thm",
             "vars": {
@@ -677,11 +677,11 @@
             "name": "real_sum_integral_ubound_decreasing",
             "prop": [
                 "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (real_of_nat m - 1) (real_of_nat n) ",
+                "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ",
                 "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (real_of_nat m - 1) (real_of_nat n)))) ∧ ",
-                "(∀x. ∀y. real_of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ real_of_nat n ⟶ f y ≤ f x) ",
-                "⟶ sum ({m..n}) (λk. f (real_of_nat k)) ≤ g (real_of_nat n) - g (real_of_nat m - 1)"
+                "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ∧ ",
+                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ of_nat n ⟶ f y ≤ f x) ",
+                "⟶ sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n) - g (of_nat m - 1)"
             ],
             "ty": "thm",
             "vars": {
@@ -696,11 +696,11 @@
             "name": "real_sum_integral_lbound_increasing",
             "prop": [
                 "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (real_of_nat m - 1) (real_of_nat n) ",
+                "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n) ",
                 "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (real_of_nat m - 1) (real_of_nat n)))) ∧ ",
-                "(∀x. ∀y. real_of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ real_of_nat n ⟶ f x ≤ f y) ",
-                "⟶ g (real_of_nat n) - g (real_of_nat m - 1) <= sum ({m..n}) (λk. f (real_of_nat k))"
+                "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n)))) ∧ ",
+                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ of_nat n ⟶ f x ≤ f y) ",
+                "⟶ g (of_nat n) - g (of_nat m - 1) <= sum ({m..n}) (λk. f (of_nat k))"
             ],
             "ty": "thm",
             "vars": {
@@ -715,11 +715,11 @@
             "name": "real_sum_integral_lbound_decreasing",
             "prop": [
                 "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (real_of_nat m) (real_of_nat n + 1) ",
+                "(∀x. x ∈ real_closed_interval (of_nat m) (of_nat n + 1) ",
                 "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (real_of_nat m) (real_of_nat n + 1)))) ∧ ",
-                "(∀x. ∀y. real_of_nat m ≤ x ∧ x ≤ y ∧ y ≤ real_of_nat n + 1 ⟶ f y ≤ f x) ",
-                "⟶ g (real_of_nat n + 1) - g (real_of_nat m) ≤ sum ({m..n}) (λk. f (real_of_nat k))"
+                "        (within (atreal x) (real_closed_interval (of_nat m) (of_nat n + 1)))) ∧ ",
+                "(∀x. ∀y. of_nat m ≤ x ∧ x ≤ y ∧ y ≤ of_nat n + 1 ⟶ f y ≤ f x) ",
+                "⟶ g (of_nat n + 1) - g (of_nat m) ≤ sum ({m..n}) (λk. f (of_nat k))"
             ],
             "ty": "thm",
             "vars": {
@@ -734,12 +734,12 @@
             "name": "real_sum_integral_bounds_increasing",
             "prop": [
                 "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (real_of_nat m - 1) (real_of_nat n + 1) ",
+                "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ",
                 "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (real_of_nat m - 1) (real_of_nat n + 1)))) ∧ ",
-                "(∀x. ∀y. real_of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ (real_of_nat n + 1) ⟶ f x ≤ f y) ",
-                "⟶ g (real_of_nat n) - g (real_of_nat m - 1) ≤ sum ({m..n}) (λk. f (real_of_nat k)) &",
-                "sum ({m..n}) (λk. f (real_of_nat k)) ≤ g (real_of_nat n + 1) - g (real_of_nat m)"
+                "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))) ∧ ",
+                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ (of_nat n + 1) ⟶ f x ≤ f y) ",
+                "⟶ g (of_nat n) - g (of_nat m - 1) ≤ sum ({m..n}) (λk. f (of_nat k)) &",
+                "sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n + 1) - g (of_nat m)"
             ],
             "ty": "thm",
             "vars": {
@@ -754,12 +754,12 @@
             "name": " real_sum_integral_bounds_decreasing",
             "prop": [
                 "m ≤ n ∧ ",
-                "(∀x. x ∈ real_closed_interval (real_of_nat m - 1) (real_of_nat n + 1) ",
+                "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ",
                 "   ⟶ has_real_derivative g (f x) ",
-                "        (within (atreal x) (real_closed_interval (real_of_nat m - 1) (real_of_nat n + 1)))) ∧ ",
-                "(∀x. ∀y. real_of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ real_of_nat n + 1 ⟶ f y ≤ f x) ",
-                "⟶ g (real_of_nat n + 1) - g (real_of_nat m) ≤ sum ({m..n}) (λk. f (real_of_nat k)) ∧ ",
-                "   sum ({m..n}) (λk. f (real_of_nat k)) ≤ g (real_of_nat n) - g (real_of_nat m - 1)"
+                "        (within (atreal x) (real_closed_interval (of_nat m - 1) (of_nat n + 1)))) ∧ ",
+                "(∀x. ∀y. of_nat m - 1 ≤ x ∧ x ≤ y ∧ y ≤ of_nat n + 1 ⟶ f y ≤ f x) ",
+                "⟶ g (of_nat n + 1) - g (of_nat m) ≤ sum ({m..n}) (λk. f (of_nat k)) ∧ ",
+                "   sum ({m..n}) (λk. f (of_nat k)) ≤ g (of_nat n) - g (of_nat m - 1)"
             ],
             "ty": "thm",
             "vars": {
@@ -772,7 +772,7 @@
         {
             "attributes": [],
             "name": "reallim_posinfinity_sequentially",
-            "prop": "tendsto_real f l at_posinfinity = tendsto_real (%n. f (real_of_nat n)) l sequentially",
+            "prop": "tendsto_real f l at_posinfinity = tendsto_real (%n. f (of_nat n)) l sequentially",
             "ty": "thm",
             "vars": {
                 "f": "real => real",

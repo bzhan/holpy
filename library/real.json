@@ -53,11 +53,6 @@
             "type": "real => real => real"
         },
         {
-            "name": "real_of_nat",
-            "ty": "def.ax",
-            "type": "nat => real"
-        },
-        {
             "ascii_op": "^",
             "name": "power",
             "rules": [

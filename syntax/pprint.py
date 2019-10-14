@@ -5,6 +5,7 @@ from copy import copy
 from kernel import type as hol_type
 from kernel.type import HOLType
 from kernel import term
+from kernel import extension
 from syntax import settings
 from syntax import infertype
 from syntax import operator
@@ -41,10 +42,11 @@ class VarName(AST):
         return "VarName(%s,%s)" % (self.name, self.T)
 
 class ConstName(AST):
-    def __init__(self, name, T):
+    def __init__(self, name, T, link_name):
         self.ty = "const_name"
         self.name = name
         self.T = T
+        self.link_name = link_name
 
     def __repr__(self):
         return "ConstName(%s,%s)" % (self.name, self.T)
@@ -77,13 +79,14 @@ class Set(AST):
         return "Set(%s,%s)" % (','.join(str(e) for e in self.entries), self.T)
 
 class Operator(AST):
-    def __init__(self, symbol, T):
+    def __init__(self, symbol, T, link_name):
         self.ty = "operator"
         self.symbol = symbol
         self.T = T
+        self.link_name = link_name
 
     def __repr__(self):
-        return "Operator(%s,%s)" % (self.symbol, self.T)
+        return "Operator(%s,%s,%s)" % (self.symbol, self.T, self.link_name)
 
 class BinaryOp(AST):
     def __init__(self, arg1, op, arg2, T):
@@ -289,7 +292,7 @@ def get_ast_term(thy, t):
         elif set.is_literal_set(t):
             items = set.dest_literal_set(t)
             if set.is_empty_set(t):
-                res = Operator("∅", t.T) if settings.unicode() else Operator("{}", t.T)
+                res = Operator("∅", t.T, "empty_set") if settings.unicode() else Operator("{}", t.T, "empty_set")
                 if hasattr(t, "print_type"):
                     res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
                 return res
@@ -316,7 +319,8 @@ def get_ast_term(thy, t):
             return VarName(t.name, t.T)
 
         elif t.is_const():
-            res = ConstName(t.name, t.T)
+            link_name = thy.get_overload_const_name(t.name, t.T)
+            res = ConstName(t.name, t.T, link_name=link_name)
             if hasattr(t, "print_type"):
                 res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
             return res
@@ -337,7 +341,8 @@ def get_ast_term(thy, t):
                     arg1_ast = Bracket(arg1_ast)
 
                 op_str = op_data.unicode_op if settings.unicode() else op_data.ascii_op
-                op_ast = Operator(op_str, t.head.get_type())
+                op_name = thy.get_overload_const_name(op_data.fun_name, t.head.get_type())
+                op_ast = Operator(op_str, t.head.get_type(), op_name)
 
                 # Obtain output for second argument, enclose in parenthesis
                 # if necessary.
@@ -351,7 +356,8 @@ def get_ast_term(thy, t):
             # Unary case
             elif op_data and op_data.arity == operator.UNARY:
                 op_str = op_data.unicode_op if settings.unicode() else op_data.ascii_op
-                op_ast = Operator(op_str, t.head.get_type())
+                op_name = thy.get_overload_const_name(op_data.fun_name, t.head.get_type())
+                op_ast = Operator(op_str, t.head.get_type(), op_name)
 
                 arg_ast = helper(t.arg, bd_vars)
                 if get_priority(t.arg) < op_data.priority:
@@ -504,7 +510,7 @@ def print_ast(thy, ast, *, line_length=None):
         elif ast.ty == "var_name":
             add_var(ast.name)
         elif ast.ty == "const_name":
-            add_normal(ast.name, link={'name': ast.name, 'ty': 'def'})
+            add_normal(ast.name, link={'name': ast.link_name, 'ty': extension.CONSTANT})
         elif ast.ty == "number":
             add_normal(str(ast.n))
         elif ast.ty == "list":
@@ -524,7 +530,7 @@ def print_ast(thy, ast, *, line_length=None):
                 rec(e)
             add_normal("}")
         elif ast.ty == "operator":
-            add_normal(ast.symbol)
+            add_normal(ast.symbol, link={'name': ast.link_name, 'ty': extension.CONSTANT})
         elif ast.ty == "binary_op":
             if line_length and print_length(print_ast(thy, ast)) > line_length:
                 if ast.op.symbol in ("-->", "⟶"):

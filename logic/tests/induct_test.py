@@ -5,7 +5,7 @@ import unittest
 from kernel.type import TVar, Type, TFun, boolT
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
-from kernel.extension import AxType, AxConstant, Theorem, Attribute
+from kernel import extension
 from logic import basic
 from logic import logic, induct
 
@@ -29,13 +29,13 @@ class InductTest(unittest.TestCase):
         P = Var("P", TFun(nat, boolT))
 
         res = [
-            AxType("nat", 0),
-            AxConstant("zero", nat),
-            AxConstant("Suc", TFun(nat, nat)),
-            Theorem("nat_zero_Suc_neq", Thm([], logic.neg(eq(zero, S(n))))),
-            Theorem("nat_Suc_inject", Thm([], imp(eq(S(n), S(n2)), eq(n, n2)))),
-            Theorem("nat_induct", Thm([], imp(P(zero), all(n, imp(P(n), P(S(n)))), P(x)))),
-            Attribute("nat_induct", "var_induct")
+            extension.Type("nat", 0),
+            extension.Constant("zero", nat),
+            extension.Constant("Suc", TFun(nat, nat)),
+            extension.Theorem("nat_zero_Suc_neq", Thm([], logic.neg(eq(zero, S(n))))),
+            extension.Theorem("nat_Suc_inject", Thm([], imp(eq(S(n), S(n2)), eq(n, n2)))),
+            extension.Theorem("nat_induct", Thm([], imp(P(zero), all(n, imp(P(n), P(S(n)))), P(x)))),
+            extension.Attribute("nat_induct", "var_induct")
         ]
 
         self.assertEqual(nat_ext.data, res)
@@ -54,11 +54,11 @@ class InductTest(unittest.TestCase):
                 eq(plus(S(m), n), S(plus(m, n)))])
         
         res = [
-            AxConstant("nat_plus", TFun(nat, nat, nat)),
-            Theorem("nat_plus_def_1", Thm([], eq(plus(zero, n), n))),
-            Attribute("nat_plus_def_1", "hint_rewrite"),
-            Theorem("nat_plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n))))),
-            Attribute("nat_plus_def_2", "hint_rewrite"),
+            extension.Constant("nat_plus", TFun(nat, nat, nat)),
+            extension.Theorem("nat_plus_def_1", Thm([], eq(plus(zero, n), n))),
+            extension.Attribute("nat_plus_def_1", "hint_rewrite"),
+            extension.Theorem("nat_plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n))))),
+            extension.Attribute("nat_plus_def_2", "hint_rewrite"),
         ]
         self.assertEqual(ext.data, res)
 
@@ -78,13 +78,13 @@ class InductTest(unittest.TestCase):
         xlist = Var("x", Tlista)
 
         res = [
-            AxType("list", 1),
-            AxConstant("nil", Tlista),
-            AxConstant("cons", TFun(Ta, Tlista, Tlista)),
-            Theorem("list_nil_cons_neq", Thm([], logic.neg(eq(nil, cons(x, xs))))),
-            Theorem("list_cons_inject", Thm([], imp(eq(cons(x, xs), cons(x2, xs2)), conj(eq(x, x2), eq(xs, xs2))))),
-            Theorem("list_induct", Thm([], imp(P(nil), all(x, all(xs, imp(P(xs), P(cons(x, xs))))), P(xlist)))),
-            Attribute("list_induct", "var_induct")
+            extension.Type("list", 1),
+            extension.Constant("nil", Tlista),
+            extension.Constant("cons", TFun(Ta, Tlista, Tlista)),
+            extension.Theorem("list_nil_cons_neq", Thm([], logic.neg(eq(nil, cons(x, xs))))),
+            extension.Theorem("list_cons_inject", Thm([], imp(eq(cons(x, xs), cons(x2, xs2)), conj(eq(x, x2), eq(xs, xs2))))),
+            extension.Theorem("list_induct", Thm([], imp(P(nil), all(x, all(xs, imp(P(xs), P(cons(x, xs))))), P(xlist)))),
+            extension.Attribute("list_induct", "var_induct")
         ]
         self.assertEqual(list_ext.data, res)
 
@@ -104,11 +104,11 @@ class InductTest(unittest.TestCase):
         x = Var("x", Tab)
 
         res = [
-            AxType("prod", 2),
-            AxConstant("Pair", TFun(Ta, Tb, Tab)),
-            Theorem("prod_Pair_inject", Thm([], imp(eq(pair(a, b), pair(a2, b2)), conj(eq(a, a2), eq(b, b2))))),
-            Theorem("prod_induct", Thm([], imp(all(a, all(b, P(pair(a, b)))), P(x)))),
-            Attribute("prod_induct", "var_induct")
+            extension.Type("prod", 2),
+            extension.Constant("Pair", TFun(Ta, Tb, Tab)),
+            extension.Theorem("prod_Pair_inject", Thm([], imp(eq(pair(a, b), pair(a2, b2)), conj(eq(a, a2), eq(b, b2))))),
+            extension.Theorem("prod_induct", Thm([], imp(all(a, all(b, P(pair(a, b)))), P(x)))),
+            extension.Attribute("prod_induct", "var_induct")
         ]
         self.assertEqual(prod_ext.data, res)
 
@@ -126,12 +126,12 @@ class InductTest(unittest.TestCase):
         P = Var("P", boolT)
 
         res = [
-            AxConstant("even", TFun(nat, boolT)),
-            Theorem("even_zero", Thm([], even(zero))),
-            Attribute("even_zero", "hint_backward"),
-            Theorem("even_Suc", Thm.mk_implies(even(n), even(Suc(Suc(n))))),
-            Attribute("even_Suc", "hint_backward"),
-            Theorem("even_cases", Thm.mk_implies(even(a1), imp(eq(a1,zero), P), all(n, imp(eq(a1,Suc(Suc(n))), even(n), P)), P))
+            extension.Constant("even", TFun(nat, boolT)),
+            extension.Theorem("even_zero", Thm([], even(zero))),
+            extension.Attribute("even_zero", "hint_backward"),
+            extension.Theorem("even_Suc", Thm.mk_implies(even(n), even(Suc(Suc(n))))),
+            extension.Attribute("even_Suc", "hint_backward"),
+            extension.Theorem("even_cases", Thm.mk_implies(even(a1), imp(eq(a1,zero), P), all(n, imp(eq(a1,Suc(Suc(n))), even(n), P)), P))
         ]
         self.assertEqual(even_ext.data, res)
 

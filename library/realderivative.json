@@ -872,7 +872,7 @@
             "name": "has_real_derivative_pow_within",
             "prop": [
                 "has_real_derivative f f1 (within (atreal x) s) ",
-                "⟶ has_real_derivative (λx. f x ^ n) (real_of_nat n * f x ^ (n - 1) * f1) ",
+                "⟶ has_real_derivative (λx. f x ^ n) (of_nat n * f x ^ (n - 1) * f1) ",
                 "  (within (atreal x) s)"
             ],
             "ty": "thm",
@@ -889,7 +889,7 @@
             "name": "has_real_derivative_pow_atreal",
             "prop": [
                 "has_real_derivative f f1 (atreal x) ",
-                "⟶ has_real_derivative (λx. f x ^ n) (real_of_nat n * f x ^ (n - 1) * f1) ",
+                "⟶ has_real_derivative (λx. f x ^ n) (of_nat n * f x ^ (n - 1) * f1) ",
                 "  (atreal x)"
             ],
             "ty": "thm",
@@ -1987,7 +1987,7 @@
         {
             "attributes": [],
             "name": "reallim_1_over_n_offset",
-            "prop": "tendsto_real (%n. real_inverse (real_of_nat n + a)) 0 sequentially",
+            "prop": "tendsto_real (%n. real_inverse (of_nat n + a)) 0 sequentially",
             "ty": "thm",
             "vars": {
                 "a": "real"
@@ -1996,14 +1996,14 @@
         {
             "attributes": [],
             "name": "reallim_1_over_n",
-            "prop": "tendsto_real (λn. real_inverse (real_of_nat n)) 0 sequentially",
+            "prop": "tendsto_real (λn. real_inverse (of_nat n)) 0 sequentially",
             "ty": "thm",
             "vars": {}
         },
         {
             "attributes": [],
             "name": "reallim_1_over_pow",
-            "prop": "1 <= k --> tendsto_real (λn. real_inverse (real_of_nat n ^ k)) 0 sequentially",
+            "prop": "1 <= k --> tendsto_real (λn. real_inverse (of_nat n ^ k)) 0 sequentially",
             "ty": "thm",
             "vars": {
                 "k": "nat"
@@ -2012,14 +2012,14 @@
         {
             "attributes": [],
             "name": " reallim_log_over_n",
-            "prop": "tendsto_real (λn. log (real_of_nat n) / real_of_nat n) 0 sequentially",
+            "prop": "tendsto_real (λn. log (of_nat n) / of_nat n) 0 sequentially",
             "ty": "thm",
             "vars": {}
         },
         {
             "attributes": [],
             "name": "reallim_1_over_log",
-            "prop": "tendsto_real (λn. real_inverse (log (real_of_nat n))) 0 sequentially",
+            "prop": "tendsto_real (λn. real_inverse (log (of_nat n))) 0 sequentially",
             "ty": "thm",
             "vars": {}
         },
@@ -2042,7 +2042,7 @@
         {
             "attributes": [],
             "name": "reallim_root_refl",
-            "prop": "tendsto_real (λn. root n (real_of_nat n)) 1 sequentially",
+            "prop": "tendsto_real (λn. root n (of_nat n)) 1 sequentially",
             "ty": "thm",
             "vars": {}
         },

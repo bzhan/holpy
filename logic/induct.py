@@ -7,7 +7,7 @@ from kernel import term
 from kernel.term import Var, Const, Term
 from kernel.thm import Thm
 
-from kernel.extension import AxType, AxConstant, Theorem, Attribute, TheoryExtension
+from kernel import extension
 from logic import logic
 
 """Inductive definitions.
@@ -47,12 +47,12 @@ def add_induct_type(name, targs, constrs):
     (list, ["a"], [(nil, 'a list, []), (cons, 'a => 'a list => 'a list, ["x", "xs"])]).
 
     """
-    exts = TheoryExtension()
+    exts = extension.TheoryExtension()
 
     # Add to type and term signature.
-    exts.add_extension(AxType(name, len(targs)))
+    exts.add_extension(extension.Type(name, len(targs)))
     for cname, cT, _ in constrs:
-        exts.add_extension(AxConstant(cname, cT))
+        exts.add_extension(extension.Constant(cname, cT))
 
     # Add non-equality theorems.
     for (cname1, cT1, vars1), (cname2, cT2, vars2) in itertools.combinations(constrs, 2):
@@ -68,7 +68,7 @@ def add_induct_type(name, targs, constrs):
         rhs = B(*rhs_vars)
         neq = logic.neg(Term.mk_equals(lhs, rhs))
         th_name = name + "_" + cname1 + "_" + cname2 + "_neq"
-        exts.add_extension(Theorem(th_name, Thm([], neq)))
+        exts.add_extension(extension.Theorem(th_name, Thm([], neq)))
 
     # Add injectivity theorems.
     for cname, cT, vars in constrs:
@@ -83,7 +83,7 @@ def add_induct_type(name, targs, constrs):
             concls = [Term.mk_equals(var1, var2) for var1, var2 in zip(lhs_vars, rhs_vars)]
             concl = logic.mk_conj(*concls) if len(concls) > 1 else concls[0]
             th_name = name + "_" + cname + "_inject"
-            exts.add_extension(Theorem(th_name, Thm.mk_implies(assum, concl)))
+            exts.add_extension(extension.Theorem(th_name, Thm.mk_implies(assum, concl)))
 
     # Add the inductive theorem.
     tvars = [TVar(targ) for targ in targs]
@@ -102,8 +102,8 @@ def add_induct_type(name, targs, constrs):
         ind_assums.append(ind_assum)
     ind_concl = var_P(Var("x", T))
     th_name = name + "_induct"
-    exts.add_extension(Theorem(th_name, Thm.mk_implies(*(ind_assums + [ind_concl]))))
-    exts.add_extension(Attribute(th_name, "var_induct"))
+    exts.add_extension(extension.Theorem(th_name, Thm.mk_implies(*(ind_assums + [ind_concl]))))
+    exts.add_extension(extension.Attribute(th_name, "var_induct"))
 
     return exts
 
@@ -122,13 +122,13 @@ def add_induct_def(thy, name, T, eqs):
     [(times(0,n) = 0, times(Suc(m), n) = plus(n, times(m,n)))]).
 
     """
-    exts = TheoryExtension()
-    exts.add_extension(AxConstant(name, T))
+    exts = extension.TheoryExtension()
     cname = thy.get_overload_const_name(name, T)
+    exts.add_extension(extension.Constant(cname, T))
     for i, prop in enumerate(eqs):
         th_name = cname + "_def_" + str(i + 1)
-        exts.add_extension(Theorem(th_name, Thm([], prop)))
-        exts.add_extension(Attribute(th_name, "hint_rewrite"))
+        exts.add_extension(extension.Theorem(th_name, Thm([], prop)))
+        exts.add_extension(extension.Attribute(th_name, "hint_rewrite"))
 
     return exts
 
@@ -140,12 +140,12 @@ def add_induct_predicate(thy, name, T, props):
     introduction rule must be given a name.
 
     """
-    exts = TheoryExtension()
-    exts.add_extension(AxConstant(name, T))
+    exts = extension.TheoryExtension()
+    exts.add_extension(extension.Constant(name, T))
 
     for th_name, prop in props:
-        exts.add_extension(Theorem(th_name, Thm([], prop)))
-        exts.add_extension(Attribute(th_name, "hint_backward"))
+        exts.add_extension(extension.Theorem(th_name, Thm([], prop)))
+        exts.add_extension(extension.Attribute(th_name, "hint_backward"))
 
     # Case rule
     Targs, _ = T.strip_type()
@@ -169,6 +169,6 @@ def add_induct_predicate(thy, name, T, props):
 
     cname = thy.get_overload_const_name(name, T)
     prop = Term.mk_implies(*([assum0] + assums + [P]))
-    exts.add_extension(Theorem(cname + "_cases", Thm([], prop)))
+    exts.add_extension(extension.Theorem(cname + "_cases", Thm([], prop)))
 
     return exts

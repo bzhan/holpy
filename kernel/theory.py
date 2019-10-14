@@ -280,7 +280,17 @@ class Theory():
         return name in data
 
     def get_overload_const_name(self, name, T):
-        """Obtain the full name of the overloaded constant."""
+        """Obtain the full name of the overloaded constant.
+        
+        Input is the general constant name and the type of the constant.
+        Types will be appended to the front of the name, separated by
+        underscores.
+
+        For example:
+        (plus, nat => nat => nat) returns nat_plus.
+        (power, real => nat => real) returns real_nat_power.
+
+        """
         if self.is_overload_const(name):
             aT = self.get_term_sig(name)
             try:
@@ -504,28 +514,17 @@ class Theory():
             macro = self.get_proof_macro(name)
             return macro.sig
 
-    def extend_axiom_type(self, ext):
-        """Extend the theory by adding an axiomatic type."""
-        assert ext.ty == extension.AX_TYPE, "extend_axiom_type"
+    def extend_type(self, ext):
+        """Extend the theory by adding a type."""
+        assert ext.ty == extension.TYPE, "extend_type"
 
         self.add_type_sig(ext.name, ext.arity)
 
-    def extend_axiom_constant(self, ext):
-        """Extend the theory by adding an axiomatic constant."""
-        assert ext.ty == extension.AX_CONSTANT, "extend_axiom_constant"
-
-        self.add_term_sig(ext.name, ext.T)
-
     def extend_constant(self, ext):
-        """Extend the theory by adding a constant, which is set to be
-        equal to a certain expression.
-
-        """
+        """Extend the theory by adding a constant."""
         assert ext.ty == extension.CONSTANT, "extend_constant"
 
-        const = ext.get_const_term()
-        self.add_term_sig(const.name, const.T)
-        self.add_theorem(const.name + "_def", ext.get_eq_thm())
+        self.add_term_sig(ext.name, ext.T)
 
     def extend_attribute(self, ext):
         """Extend the theory by adding an attribute."""
@@ -536,10 +535,8 @@ class Theory():
     def unchecked_extend(self, thy_ext):
         """Perform the given theory extension without proof checking."""
         for ext in thy_ext.get_extensions():
-            if ext.ty == extension.AX_TYPE:
-                self.extend_axiom_type(ext)
-            elif ext.ty == extension.AX_CONSTANT:
-                self.extend_axiom_constant(ext)
+            if ext.ty == extension.TYPE:
+                self.extend_type(ext)
             elif ext.ty == extension.CONSTANT:
                 self.extend_constant(ext)
             elif ext.ty == extension.THEOREM:
@@ -560,12 +557,8 @@ class Theory():
         ext_report = ExtensionReport()
 
         for ext in thy_ext.get_extensions():
-            if ext.ty == extension.AX_TYPE:
-                self.extend_axiom_type(ext)
-                ext_report.add_axiom(ext.name, ext.arity)
-            elif ext.ty == extension.AX_CONSTANT:
-                self.extend_axiom_constant(ext)
-                ext_report.add_axiom(ext.name, ext.T)
+            if ext.ty == extension.TYPE:
+                self.extend_type(ext)
             elif ext.ty == extension.CONSTANT:
                 self.extend_constant(ext)
             elif ext.ty == extension.THEOREM:

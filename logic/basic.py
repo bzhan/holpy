@@ -6,6 +6,7 @@ import inspect
 import json
 
 from kernel.theory import Theory, TheoryException
+from kernel import extension
 from logic import logic  # Load all defined macros
 from data import expr
 from syntax import parser
@@ -71,12 +72,6 @@ def load_metadata(username="master"):
                 'imports': data['imports'],
                 'description': data['description']
             }
-            for i, item in enumerate(data['content']):
-                ty = item['ty']
-                dot = ty.find('.')
-                if dot != -1:
-                    ty = ty[:dot]
-                item_index[username][(ty, item['name'])] = (filename, timestamp, i)
 
     # Immediately check for topological order.
     check_topological_sort()
@@ -172,19 +167,25 @@ def load_theory_cache(filename, username="master"):
     cache['timestamp'] = timestamp
     data = load_json_data(filename, username)
     cache['content'] = []
-    for item in data['content']:
+    for index, item in enumerate(data['content']):
         item = parser.parse_item(thy, item)
-        ext = parser.get_extension(thy, item)
-        item['ext'] = ext
-        thy.unchecked_extend(ext)
+        exts = parser.get_extension(thy, item)
+        item['ext'] = exts
+        thy.unchecked_extend(exts)
         cache['content'].append(item)
+        for ext in exts.get_extensions():
+            item_index[username][(ext.ty, ext.name)] = (filename, timestamp, index)
 
     return cache
 
-def query_item_index(username, ty, name):
+def query_item_index(username, filename, ext_ty, name):
     """Query the item index."""
-    if (ty, name) in item_index[username]:
-        filename, timestamp, index = item_index[username][(ty, name)]
+
+    # Make sure the theory (and all its dependencies) are indexed
+    load_theory_cache(filename, username)
+
+    if (ext_ty, name) in item_index[username]:
+        filename, timestamp, index = item_index[username][(ext_ty, name)]
         if timestamp == os.path.getmtime(user_file(filename, username)):
             return filename, index
         else:
