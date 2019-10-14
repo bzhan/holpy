@@ -76,6 +76,9 @@ class ExprTest(unittest.TestCase):
             ("cong(A, B, C, D)", "cong(P, Q, P, S)", {}, []),
             ("coll(A, B, A, D)", "coll(P, Q, P, S)", {}, [{"A": "P", "B": "Q", "D": "S"}]),
             ("cong(A, B, A, D)", "cong(P, Q, P, S)", {}, [{"A": "P", "B": "Q", "D": "S"}]),
+            ("coll(A, B, C)", "coll(P, Q, R, T)", {"A": "Q", "B": "R"}, [{"A": "Q", "B": "R", "C": "T"}]),
+            ("coll(A, B, C)", "coll(P, Q, R, T)", {"A": "P", "B": "Q"},
+             [{"A": "P", "B": "Q", "C": "R"}, {"A": "P", "B": "Q", "C": "T"}]),
         ]
 
         for pat, f, inst, res in test_data:
@@ -86,35 +89,30 @@ class ExprTest(unittest.TestCase):
 
     def testMatchFactLines(self):
         test_data = [
-            # ("perp(l, m)", "perp(P, Q, R, S)", {}, ["line(O, P, Q)"], [{"l": ("P", "Q"), "m": ("R", "S")}]),
-            # ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, ["line(O, P, Q)"],
-            #  [{"l": ("Q", "P"), "m": ("R", "S")}]),
-            # ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, [], [{"l": ("Q", "P"), "m": ("R", "S")}]),
-            # ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("A", "P")}, ["line(O, P, Q)"], []),
-            # ("para(p, q)", "para(E, N, C, D)", {}, [], [{"p": ("E", "N"), "q": ("C", "D")}]),
-
-            # ("para(A, B, C, D)", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(M, N, P, Q)"],
-            #  [{'A': 'M', 'B': 'N', 'C': 'R', 'D': 'S'}, {'A': 'M', 'B': 'N', 'C': 'S', 'D': 'R'}]),
-
-            # ("para(A, B, C, D)", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(E, F, G, H)"], []),
-
-            # ("para(A, B, m)", "para(P, Q, R, S)", {"A": "Q"}, ["line(O, P, Q)"],
-            #  [{"A": "Q", "B": "P", "m": ("R", "S")}, {"A": "Q", "B": "O", "m": ("R", "S")}]),
-
-            # ("cong(A, B, C, D)", "cong(P, Q, R, S)", {}, [], [{"A": "P", "B": "Q", "C": "R", "D": "S"},
-            #                                                   {"A": "P", "B": "Q", "C": "S", "D": "R"},
-            #                                                   {"A": "Q", "B": "P", "C": "R", "D": "S"},
-            #                                                   {"A": "Q", "B": "P", "C": "S", "D": "R"}, ]),
-
-            # ("perp(B, A, C, A)", "perp(P, Q, P, R)", {}, [], [{"A": "P", "B": "Q", "C": "R"}]),
+            ("perp(l, m)", "perp(P, Q, R, S)", {}, ["line(O, P, Q)"], [{"l": ("P", "Q"), "m": ("R", "S")}]),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, ["line(O, P, Q)"],
+             [{"l": ("Q", "P"), "m": ("R", "S")}]),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("Q", "P")}, [], [{"l": ("Q", "P"), "m": ("R", "S")}]),
+            ("perp(l, m)", "perp(P, Q, R, S)", {"l": ("A", "P")}, ["line(O, P, Q)"], []),
+            ("para(p, q)", "para(E, N, C, D)", {}, [], [{"p": ("E", "N"), "q": ("C", "D")}]),
             #
-            # ("cong(E, A, E, B)", "cong(A, Q, B, Q)", {"A": "A", "B": "B", "D": "P"}, [],
-            #  [{"A": "A", "B": "B", "D": "P", "E": "Q"}]),
-            # ("perp(m, n)", "perp(A, C, B, E)", {"m": ("A", "C"), "l": ("B", "E")}, [], []),
-            # ("eqangle(C, A, C, B, R, P, R, Q)", "eqangle(C, F, C, E, H, F, H, E)", {}, [], []),
+            ("para(A, B, C, D)", "para(P, Q, R, S)", {'A': 'M', 'B': 'N'}, ["line(E, F, G, H)"], []),
+            #
+            ("cong(A, B, C, D)", "cong(P, Q, R, S)", {}, [], [{"A": "P", "B": "Q", "C": "R", "D": "S"},
+                                                              {"A": "P", "B": "Q", "C": "S", "D": "R"},
+                                                              {"A": "Q", "B": "P", "C": "R", "D": "S"},
+                                                              {"A": "Q", "B": "P", "C": "S", "D": "R"},]),
+
+            ("perp(B, A, C, A)", "perp(P, Q, P, R)", {}, [], [{"A": "P", "B": "Q", "C": "R"}]),
+
+            ("cong(E, A, E, B)", "cong(A, Q, B, Q)", {"A": "A", "B": "B", "D": "P"}, [],
+             [{"A": "A", "B": "B", "D": "P", "E": "Q"}]),
+            ("perp(m, n)", "perp(A, C, B, E)", {"m": ("A", "C"), "l": ("B", "E")}, [], []),
+            ("eqangle(C, A, C, B, R, P, R, Q)", "eqangle(C, F, C, E, H, F, H, E)", {}, [], []),
             # ("eqangle(C, A, C, B, R, P, R, Q)", "eqangle(B, E, A, C, B, C, A, F)", {},
             #  ["line(E, A, C)", "line(F, B, C)", "line(H, A, F)", "line(H, B, E)", "line(G, A, B)", "line(G, C, H)"], []),
-
+            ("para(p, q)", "para(E, F, G, H, P, Q)", {}, [],
+             [{"p": ("E", "F"), "q": ("G", "H")}, {"p": ("E", "F"), "q": ("P", "Q")}, {"p": ("G", "H"), "q": ("P", "Q")}]),
         ]
 
         for pat, f, inst, lines, res in test_data:
@@ -168,6 +166,7 @@ class ExprTest(unittest.TestCase):
             (ruleset["D42"], ["eqangle(B, E, A, C, A, F, B, C)"],
              ["line(E, A, C)", "line(F, B, C)", "line(H, A, F)", "line(H, B, E)", "line(G, A, B)", "line(G, C, H)"],
              [], ["cyclic(H, C, E, F)"]),
+            (ruleset["D9"], ["perp(G, F, D, E)", "perp(D, E, A, B)"], [], [], ["para(G, F, A, B)"]),
         ]
 
         for rule, facts, lines, circles, concls in test_data:
@@ -281,6 +280,7 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
             hyps = expr.search_fixpoint(ruleset, hyps, lines, circles, concl)
+            print(hyps)
             fact = expr.find_goal(hyps, concl, lines, circles)
             self.assertIsNotNone(fact)
 
@@ -311,7 +311,7 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
             hyps = expr.search_fixpoint(ruleset, hyps, lines, circles, concl)
-            # print(hyps)
+            print(hyps)
             fact = expr.find_goal(hyps, concl, lines, circles)
             self.assertIsNotNone(fact)
             expr.print_search(ruleset, hyps, fact)

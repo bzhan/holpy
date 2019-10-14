@@ -271,33 +271,115 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
     arg_types = get_arg_type_by_fact(pat)  # Get types of every argument.
 
     for arg_ty in arg_types:
+
         new_insts = []
+
         for inst in insts:
             if arg_ty == POINT:
-                if pos + 1 > len(f.args):
-                    continue
-                p_arg = pat.args[pat_pos]
-                if p_arg in inst:
-                    if f.args[pos] == inst[p_arg]:
-                        new_insts.append(inst)
-                elif f.args[pos] not in inst.values():
-                    inst[p_arg] = f.args[pos]
-                    new_insts.append(inst)
+                if pos > 0:
+                    new_insts = insts
+                    break
+                comb = list(itertools.combinations(f.args, len(pat.args)))
+                for c in comb:
+                    t_inst = copy.copy(inst)
+                    flag = False
+                    i = 0
+                    for p_arg in pat.args:
+                        if p_arg in inst:
+                            if c[pos + i] != inst[p_arg]:
+                                flag = True
+                        elif c[pos + i] not in inst.values():
+                            t_inst[p_arg] = c[pos + i]
+                        else:
+                            flag = True
+                        i += 1
+                    if not flag:
+                        new_insts.append(t_inst)
 
             elif arg_ty == LINE:
-                if pos + 2 > len(f.args):
-                    continue
-                p_arg = pat.args[pat_pos]
-                if p_arg in inst:
-                    l1 = get_line(lines, inst[p_arg])
-                    l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
-                    if l1 == l2:
-                        new_insts.append(inst)
-                elif (f.args[pos], f.args[pos + 1]) in inst.values():
-                    new_insts = []
-                else:
-                    inst[p_arg] = (f.args[pos], f.args[pos + 1])
-                    new_insts.append(inst)
+                if pos > 0:
+                    new_insts = insts
+                    break
+                groups = []
+                i = 0
+                while i < len(f.args):
+                    groups.append((f.args[i], f.args[i + 1]))
+                    i += 2
+                comb = list(itertools.combinations(groups, len(pat.args)))
+                for c in comb:
+                    t_inst = copy.copy(inst)
+                    flag = False
+                    i = 0
+                    for p_arg in pat.args:
+                        if p_arg in inst:
+                            l1 = get_line(lines, inst[p_arg])
+                            l2 = get_line(lines, c[pos + i])
+                            if l1 != l2:
+                                flag = True
+                        elif (c[pos + i]) in inst.values():
+                            flag = True
+                        else:
+                            t_inst[p_arg] = (c[pos + i])
+                        i += 1
+                    if not flag:
+                        new_insts.append(t_inst)
+
+            elif arg_ty == PonL:
+                if pos > 0:
+                    new_insts = insts
+                    break
+                groups = []
+                i = 0
+                # Generate possible lines selections (two lines in one selection).
+                while i < len(f.args):
+                    groups.append((f.args[i], f.args[i + 1]))
+                    i += 2
+                lines_comb = list(itertools.combinations(groups, int(len(pat.args) / 2)))
+                # Previous inst
+                base_inst = copy.copy(inst)
+                for c in lines_comb:
+                    i = 0  # Switch argument in target
+                    j = 0  # Switch argument in pattern
+                    if base_inst == {}:
+                        selection_insts = [{}]
+                    else:
+                        selection_insts = [copy.copy(base_inst)]
+                    while i < len(c):
+                        new_selection_insts = []
+                        for selection_inst in selection_insts:
+                            l = get_line(lines, c[pos + i])
+                            removed = copy.copy(l.args)
+                            removed = removed - set(selection_inst.values())
+                            pat_a, pat_b = pat.args[pat_pos + j:pat_pos + j + 2]
+
+                            if pat_a in selection_inst:
+                                if selection_inst[pat_a] in l.args:
+                                    a = [selection_inst[pat_a]]
+                                else:
+                                    a = []
+                            else:
+                                a = removed
+
+                            if pat_b in selection_inst:
+                                if selection_inst[pat_b] in l.args:
+                                    b = [selection_inst[pat_b]]
+                                else:
+                                    b = []
+                            else:
+                                b = removed
+
+                            perms = [[x, y] for x in a for y in b if x != y]
+                            for a, b in perms:
+                                t_inst = copy.copy(selection_inst)
+                                t_inst[pat_a] = a
+                                t_inst[pat_b] = b
+                                new_selection_insts.append(t_inst)
+
+                        i += 1
+                        j += 2
+                        selection_insts = new_selection_insts
+
+                    new_insts.extend(selection_insts)
 
             elif arg_ty == CIRC:
                 if pos > 0:
@@ -305,10 +387,10 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                 else:
                     if f.pred_name == "circle":
                         c = get_circle(circles, f.args[1:], f.args[0])
-                        error = False
+                        flag = False
                         if pat.args[0] in inst:
                             if f.args[0] != inst[pat.args[0]]:
-                                error = True
+                                flag = True
                         else:
                             inst[pat.args[0]] = f.args[0]
                         del f.args[0]
@@ -316,7 +398,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
 
                     else:
                         c = get_circle(circles, f.args)
-                        error = False
+                        flag = False
 
                     fixed = []  # arguments in pattern that are also in inst.
                     same_args = list(set(pat.args).intersection(set(inst.keys())))
@@ -324,17 +406,14 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                         if inst[same_arg] in c.args:
                             fixed.append(same_arg)
                         else:
-                            error = True
+                            flag = True
 
-                    # for_comb = list(c.args - set([inst[i] for i in fixed]))
                     for_comb = list(c.args - set(inst.values()))
-                    if not error:
+                    if not flag:
                         if len(f.args) - len(fixed) > 0:
                             # Order is not considered.
-                            # TODO: To decide generate more possibilities or not.
                             comb = list(itertools.permutations(sorted(for_comb),
-                                                               len(f.args) - len(fixed)))  # For more than one insts.
-                            # comb = [sorted(for_comb)[0:len(f.args) - len(fixed)]]  # Only generate one inst.
+                                                               len(f.args) - len(fixed)))
                             for item in comb:
                                 p = 0
                                 for i in range(len(pat.args)):
@@ -345,47 +424,6 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
                                 new_insts.append(copy.copy(inst))
                         else:
                             new_insts.append(inst)
-
-
-            elif arg_ty == PonL:
-                if pos + 2 > len(f.args):
-                    continue
-
-                # Target line
-                l2 = get_line(lines, (f.args[pos], f.args[pos + 1]))
-
-                pat_a, pat_b = pat.args[pat_pos:pat_pos + 2]
-
-                removed = copy.copy(l2.args) - set(inst.values())
-
-                # Obtain possible choices for a and b
-                if pat_a in inst:
-                    if inst[pat_a] in l2.args:
-                        a = [inst[pat_a]]
-                    else:
-                        a = []
-                else:
-                    a = removed
-
-                if pat_b in inst:
-                    if inst[pat_b] in l2.args:
-                        b = [inst[pat_b]]
-                    else:
-                        b = []
-                else:
-                    b = removed
-
-                removed = sorted(list(removed))
-
-                # if f.args[pos] in inst.values() or f.args[pos + 1] in inst.values():
-                #     a, b = [], []
-
-                # Permutations of pairs of a and b.
-                perms = [[x, y] for x in a for y in b if x != y]
-                for a, b in perms:
-                    inst[pat_a] = a
-                    inst[pat_b] = b
-                    new_insts.append(copy.copy(inst))
 
             elif arg_ty == SEG:
                 # Two endpoints of a segment can be exchanged when matching.
@@ -430,13 +468,10 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
             else:
                 raise NotImplementedError
 
-        if arg_ty == POINT:
-            pos += 1
-            pat_pos += 1
-        elif arg_ty == LINE:
-            pos += 2
-            pat_pos += 1
-        elif arg_ty == PonL or arg_ty == SEG:
+        if arg_ty in (POINT, LINE, PonL):
+            pos += len(f.args)
+            pat_pos += len(f.args)
+        elif arg_ty == SEG:
             pos += 2
             pat_pos += 2
         elif arg_ty == TRI:
