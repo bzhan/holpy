@@ -2,7 +2,7 @@
 
 import itertools, copy
 
-POINT, LINE, PonL, SEG, TRI, CIRC = range(6)
+POINT, LINE, PonL, SEG, TRI, CIRC, CYCL = range(7)
 
 def get_arg_type_by_fact(fact):
     """Obtain the type of given argument by a given pred_name of a fact.
@@ -33,7 +33,7 @@ def get_arg_type_by_fact(fact):
         elif pred_name == "midp":
             types = [POINT, POINT, POINT]
         elif pred_name == "cyclic":
-            types = [CIRC for _ in range(arg_len)]
+            types = [CYCL for _ in range(arg_len)]
         elif pred_name == "simtri":
             types = [TRI] * int(arg_len / 3)
         elif pred_name == "circle":
@@ -264,225 +264,226 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
     if pat.pred_name != f.pred_name:
         return []
 
-    pat_pos = 0  # Current position in pattern
-    pos = 0  # Current position in fact
+    arg_ty = get_arg_type_by_fact(pat)[0]
+    new_insts = []
+    if arg_ty == POINT:
+        comb = list(itertools.combinations(f.args, len(pat.args)))
+        for c in comb:
+            t_inst = copy.copy(inst)
+            flag = False
+            i = 0
+            for p_arg in pat.args:
+                if p_arg in inst:
+                    if c[i] != inst[p_arg]:
+                        flag = True
+                elif c[i] not in inst.values():
+                    t_inst[p_arg] = c[i]
+                else:
+                    flag = True
+                i += 1
+            if not flag:
+                new_insts.append(t_inst)
 
-    insts = [inst]
-    arg_types = get_arg_type_by_fact(pat)  # Get types of every argument.
+    elif arg_ty == LINE:
+        groups = []
+        i = 0
+        while i < len(f.args):
+            groups.append((f.args[i], f.args[i + 1]))
+            i += 2
+        comb = list(itertools.combinations(groups, len(pat.args)))
+        for c in comb:
+            t_inst = copy.copy(inst)
+            flag = False
+            i = 0
+            for p_arg in pat.args:
+                if p_arg in inst:
+                    l1 = get_line(lines, inst[p_arg])
+                    l2 = get_line(lines, c[i])
+                    if l1 != l2:
+                        flag = True
+                elif (c[i]) in inst.values():
+                    flag = True
+                else:
+                    t_inst[p_arg] = (c[i])
+                i += 1
+            if not flag:
+                new_insts.append(t_inst)
 
-    for arg_ty in arg_types:
+    elif arg_ty == SEG:
+        def f_not_in_inst(pat, arg):
+            if pat not in t_inst:
+                if arg not in t_inst.values():
+                    return True
+                return False
+            return False
+
+        def same_value(pat, arg):
+            if pat in t_inst:
+                if t_inst[pat] == arg:
+                    return True
+                return False
+            return False
 
         new_insts = []
+        groups = []
+        i = 0
+        while i < len(f.args):
+            groups.append((f.args[i], f.args[i + 1]))
+            i += 2
+        comb = list(itertools.combinations(groups, int(len(pat.args) / 2)))
 
-        for inst in insts:
-            if arg_ty == POINT:
-                if pos > 0:
-                    new_insts = insts
-                    break
-                comb = list(itertools.combinations(f.args, len(pat.args)))
-                for c in comb:
-                    t_inst = copy.copy(inst)
-                    flag = False
-                    i = 0
-                    for p_arg in pat.args:
-                        if p_arg in inst:
-                            if c[pos + i] != inst[p_arg]:
-                                flag = True
-                        elif c[pos + i] not in inst.values():
-                            t_inst[p_arg] = c[pos + i]
-                        else:
-                            flag = True
-                        i += 1
-                    if not flag:
-                        new_insts.append(t_inst)
-
-            elif arg_ty == LINE:
-                if pos > 0:
-                    new_insts = insts
-                    break
-                groups = []
-                i = 0
-                while i < len(f.args):
-                    groups.append((f.args[i], f.args[i + 1]))
-                    i += 2
-                comb = list(itertools.combinations(groups, len(pat.args)))
-                for c in comb:
-                    t_inst = copy.copy(inst)
-                    flag = False
-                    i = 0
-                    for p_arg in pat.args:
-                        if p_arg in inst:
-                            l1 = get_line(lines, inst[p_arg])
-                            l2 = get_line(lines, c[pos + i])
-                            if l1 != l2:
-                                flag = True
-                        elif (c[pos + i]) in inst.values():
-                            flag = True
-                        else:
-                            t_inst[p_arg] = (c[pos + i])
-                        i += 1
-                    if not flag:
-                        new_insts.append(t_inst)
-
-            elif arg_ty == PonL:
-                if pos > 0:
-                    new_insts = insts
-                    break
-                groups = []
-                i = 0
-                # Generate possible lines selections (two lines in one selection).
-                while i < len(f.args):
-                    groups.append((f.args[i], f.args[i + 1]))
-                    i += 2
-                lines_comb = list(itertools.combinations(groups, int(len(pat.args) / 2)))
-                # Previous inst
-                base_inst = copy.copy(inst)
-                for c in lines_comb:
-                    i = 0  # Switch argument in target
-                    j = 0  # Switch argument in pattern
-                    if base_inst == {}:
-                        selection_insts = [{}]
-                    else:
-                        selection_insts = [copy.copy(base_inst)]
-                    while i < len(c):
-                        new_selection_insts = []
-                        for selection_inst in selection_insts:
-                            l = get_line(lines, c[pos + i])
-                            removed = copy.copy(l.args)
-                            removed = removed - set(selection_inst.values())
-                            pat_a, pat_b = pat.args[pat_pos + j:pat_pos + j + 2]
-
-                            if pat_a in selection_inst:
-                                if selection_inst[pat_a] in l.args:
-                                    a = [selection_inst[pat_a]]
-                                else:
-                                    a = []
-                            else:
-                                a = removed
-
-                            if pat_b in selection_inst:
-                                if selection_inst[pat_b] in l.args:
-                                    b = [selection_inst[pat_b]]
-                                else:
-                                    b = []
-                            else:
-                                b = removed
-
-                            perms = [[x, y] for x in a for y in b if x != y]
-                            for a, b in perms:
-                                t_inst = copy.copy(selection_inst)
-                                t_inst[pat_a] = a
-                                t_inst[pat_b] = b
-                                new_selection_insts.append(t_inst)
-
-                        i += 1
-                        j += 2
-                        selection_insts = new_selection_insts
-
-                    new_insts.extend(selection_insts)
-
-            elif arg_ty == CIRC:
-                if pos > 0:
-                    new_insts.append(inst)
-                else:
-                    if f.pred_name == "circle":
-                        c = get_circle(circles, f.args[1:], f.args[0])
-                        flag = False
-                        if pat.args[0] in inst:
-                            if f.args[0] != inst[pat.args[0]]:
-                                flag = True
-                        else:
-                            inst[pat.args[0]] = f.args[0]
-                        del f.args[0]
-                        del pat.args[0]
-
-                    else:
-                        c = get_circle(circles, f.args)
-                        flag = False
-
-                    fixed = []  # arguments in pattern that are also in inst.
-                    same_args = list(set(pat.args).intersection(set(inst.keys())))
-                    for same_arg in same_args:
-                        if inst[same_arg] in c.args:
-                            fixed.append(same_arg)
-                        else:
-                            flag = True
-
-                    for_comb = list(c.args - set(inst.values()))
-                    if not flag:
-                        if len(f.args) - len(fixed) > 0:
-                            # Order is not considered.
-                            comb = list(itertools.permutations(sorted(for_comb),
-                                                               len(f.args) - len(fixed)))
-                            for item in comb:
-                                p = 0
-                                for i in range(len(pat.args)):
-                                    if pat.args[pos + i] in fixed:
-                                        continue
-                                    inst[pat.args[pos + i]] = item[p]
-                                    p += 1
-                                new_insts.append(copy.copy(inst))
-                        else:
-                            new_insts.append(inst)
-
-            elif arg_ty == SEG:
-                # Two endpoints of a segment can be exchanged when matching.
-                if pos + 2 > len(f.args):
-                    continue
-
-                pat_a, pat_b = pat.args[pat_pos:pat_pos + 2]
-
-                def f_not_in_inst(pat, arg):
-                    if pat not in inst:
-                        if arg not in inst.values():
-                            return True
-                        return False
-                    return False
-
-                def same_value(pat, arg):
-                    if pat in inst:
-                        if inst[pat] == arg:
-                            return True
-                        return False
-                    return False
-
-                if (f_not_in_inst(pat_a, f.args[pos]) or same_value(pat_a, f.args[pos])) and \
-                        (f_not_in_inst(pat_b, f.args[pos + 1]) or same_value(pat_b, f.args[pos + 1])):
-                    new_inst = copy.copy(inst)
-                    new_inst[pat_a] = f.args[pos]
-                    new_inst[pat_b] = f.args[pos + 1]
-                    new_insts.append(new_inst)
-
-                if (f_not_in_inst(pat_a, f.args[pos + 1]) or same_value(pat_a, f.args[pos + 1])) and \
-                        (f_not_in_inst(pat_b, f.args[pos]) or same_value(pat_b, f.args[pos])):
-                    new_inst = copy.copy(inst)
-                    new_inst[pat_a] = f.args[pos + 1]
-                    new_inst[pat_b] = f.args[pos]
-                    new_insts.append(new_inst)
-
-
-            # TODO: Support more types.
-            elif arg_ty == TRI:
-                raise NotImplementedError
-
+        for c in comb:
+            if inst == {}:
+                t_insts = [{}]
             else:
-                raise NotImplementedError
+                t_insts = [copy.copy(inst)]
+            i = 0
+            j = 0
+            while j < len(pat.args):
+                ts = []
+                for t_inst in t_insts:
+                    pat_a, pat_b = pat.args[j:j + 2]
+                    if (f_not_in_inst(pat_a, c[i][0]) or same_value(pat_a, c[i][0])) and \
+                            (f_not_in_inst(pat_b, c[i][1]) or same_value(pat_b, c[i][1])):
+                        t = copy.copy(t_inst)
+                        t[pat_a] = c[i][0]
+                        t[pat_b] = c[i][1]
+                        ts.append(t)
 
-        if arg_ty in (POINT, LINE, PonL):
-            pos += len(f.args)
-            pat_pos += len(f.args)
-        elif arg_ty == SEG:
-            pos += 2
-            pat_pos += 2
-        elif arg_ty == TRI:
-            pos += 3
-            pat_pos += 1
-        elif arg_ty == CIRC:
-            pos += len(pat.args)
-            pat_pos += len(pat.args)
+                    if (f_not_in_inst(pat_a, c[i][1]) or same_value(pat_a, c[i][1])) and \
+                            (f_not_in_inst(pat_b, c[i][0]) or same_value(pat_b, c[i][0])):
+                        t = copy.copy(t_inst)
+                        t[pat_a] = c[i][1]
+                        t[pat_b] = c[i][0]
+                        ts.append(t)
+                i += 1
+                j += 2
+                t_insts = ts
 
-        insts = new_insts
+            new_insts.extend(t_insts)
 
+    elif arg_ty == PonL:
+        groups = []
+        i = 0
+        # Generate possible lines selections (two lines in one selection).
+        while i < len(f.args):
+            groups.append((f.args[i], f.args[i + 1]))
+            i += 2
+        lines_comb = list(itertools.combinations(groups, int(len(pat.args) / 2)))
+        # Previous inst
+        base_inst = copy.copy(inst)
+        for c in lines_comb:
+            i, j = 0, 0
+            if base_inst == {}:
+                selection_insts = [{}]
+            else:
+                selection_insts = [copy.copy(base_inst)]
+            while i < len(c):
+                new_selection_insts = []
+                for selection_inst in selection_insts:
+                    l = get_line(lines, c[i])
+                    removed = copy.copy(l.args)
+                    removed = removed - set(selection_inst.values())
+                    pat_a, pat_b = pat.args[j:j + 2]
+
+                    if pat_a in selection_inst:
+                        if selection_inst[pat_a] in l.args:
+                            a = [selection_inst[pat_a]]
+                        else:
+                            a = []
+                    else:
+                        a = removed
+
+                    if pat_b in selection_inst:
+                        if selection_inst[pat_b] in l.args:
+                            b = [selection_inst[pat_b]]
+                        else:
+                            b = []
+                    else:
+                        b = removed
+
+                    perms = [[x, y] for x in a for y in b if x != y]
+                    for a, b in perms:
+                        t_inst = copy.copy(selection_inst)
+                        t_inst[pat_a], t_inst[pat_b] = a, b
+                        new_selection_insts.append(t_inst)
+
+                i += 1
+                j += 2
+                selection_insts = new_selection_insts
+
+            new_insts.extend(selection_insts)
+
+    elif arg_ty == CYCL:
+        c = get_circle(circles, f.args)
+        flag = False
+        fixed = []  # arguments in pattern that are also in inst.
+        same_args = list(set(pat.args).intersection(set(inst.keys())))
+        for same_arg in same_args:
+            if inst[same_arg] in c.args:
+                fixed.append(same_arg)
+            else:
+                flag = True
+        for_comb = list(c.args - set(inst.values()))
+        if not flag:
+            if len(f.args) - len(fixed) > 0:
+                # Order is not considered.
+                comb = list(itertools.permutations(sorted(for_comb),
+                                                   len(f.args) - len(fixed)))
+                for item in comb:
+                    p = 0
+                    for i in range(len(pat.args)):
+                        if pat.args[i] in fixed:
+                            continue
+                        inst[pat.args[i]] = item[p]
+                        p += 1
+                    new_insts.append(copy.copy(inst))
+            else:
+                new_insts.append(inst)
+
+    elif arg_ty == CIRC:
+        c = get_circle(circles, f.args[1:], f.args[0])
+        flag = False
+        if pat.args[0] in inst:
+            if f.args[0] != inst[pat.args[0]]:
+                flag = True
+        else:
+            inst[pat.args[0]] = f.args[0]
+        del f.args[0]
+        del pat.args[0]
+
+        fixed = []  # arguments in pattern that are also in inst.
+        same_args = list(set(pat.args).intersection(set(inst.keys())))
+        for same_arg in same_args:
+            if inst[same_arg] in c.args:
+                fixed.append(same_arg)
+            else:
+                flag = True
+
+        for_comb = list(c.args - set(inst.values()))
+        if not flag:
+            if len(f.args) - len(fixed) > 0:
+                # Order is not considered.
+                comb = list(itertools.permutations(sorted(for_comb),
+                                                   len(f.args) - len(fixed)))
+                for item in comb:
+                    p = 0
+                    for i in range(len(pat.args)):
+                        if pat.args[i] in fixed:
+                            continue
+                        inst[pat.args[i]] = item[p]
+                        p += 1
+                    new_insts.append(copy.copy(inst))
+            else:
+                new_insts.append(inst)
+
+    # TODO: Support more types.
+    elif arg_ty == TRI:
+        raise NotImplementedError
+
+    else:
+        raise NotImplementedError
+    insts = new_insts
     return insts
 
 
@@ -661,7 +662,7 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
                 arg1, arg2 = rule.concl.args[pat_pos:pat_pos + 2]
                 pat_pos += 2
                 concl_args.extend([inst[arg1], inst[arg2]])
-            elif arg_type == CIRC:
+            elif arg_type == CIRC or arg_type == CYCL:
                 arg = rule.concl.args[pat_pos]
                 pat_pos += 1
                 concl_args.append(inst[arg])
