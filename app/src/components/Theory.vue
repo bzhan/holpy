@@ -215,19 +215,24 @@ export default {
         'def.pred': 'inductive',
         'type.ind': 'datatype'
       },
+
+      // Whether to scroll into position after update
+      scroll_after_update: false,
     }
   },
 
   methods: {
     scrollToSelected: function () {
-      if ('single' in this.selected)
+      if ('single' in this.selected) {
         this.$refs.items[this.selected.single].scrollIntoView({
           block: 'nearest'
         })
-      else
+      }
+      else {
         this.$refs.items[this.selected.end].scrollIntoView({
           block: 'nearest'
         })
+      }
     },
 
     handle_keydown: function (event) {
@@ -251,7 +256,7 @@ export default {
             }
           }
         }
-        this.scrollToSelected()
+        this.scroll_after_update = true
       } else if (event.keyCode === 40 && event.shiftKey) {  // Shift+Down
         if ('single' in this.selected && this.selected.single < this.theory.content.length-1) {
           this.selected = {
@@ -268,7 +273,7 @@ export default {
             }
           }
         }
-        this.scrollToSelected()
+        this.scroll_after_update = true
       }
     },
 
@@ -315,16 +320,25 @@ export default {
 
     // Send an item to the server for parsing.
     parse_item: async function () {
+      var limit_ty = undefined
+      var limit_name = undefined
+      if (this.on_add) {
+        if (this.on_edit != this.theory.content.length - 1) {
+          limit_ty = this.theory.content[this.on_edit+1].ty
+          limit_name = this.theory.content[this.on_edit+1].name
+        }
+      } else {
+        limit_ty = this.theory.content[this.on_edit].ty
+        limit_name = this.theory.content[this.on_edit].name
+      }
       const data = {
         username: this.$state.user,
         filename: this.theory.name,
-        prev_name: this.theory.content[this.on_edit].name,
+        limit_ty: limit_ty,
+        limit_name: limit_name,
         line_length: 80,
         item: this.$refs.edit[0]._data.item
       }
-      delete data.item.err_type
-      delete data.item.err_str
-      delete data.item.trace
       this.$emit('set-message', {
         type: 'OK',
         data: 'Checking...'
@@ -346,7 +360,7 @@ export default {
       // Outside selection
       if (event === undefined) {
           this.selected = {single: index}
-          this.scrollToSelected()
+          this.scroll_after_update = true
           return
       }
 
@@ -471,6 +485,7 @@ export default {
       }
       this.on_edit = this.selected.single
       this.on_add = true
+      this.scroll_after_update = true
     },
 
     remove_selected: function () {
@@ -728,6 +743,10 @@ export default {
   updated() {
     if ('proof' in this.$refs) {
       this.$emit('set-proof', this.$refs.proof[0])
+    }
+    if (this.scroll_after_update) {
+      this.scroll_after_update = false
+      this.scrollToSelected()
     }
   },
 
