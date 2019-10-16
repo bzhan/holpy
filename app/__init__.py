@@ -516,8 +516,8 @@ def check_modify():
 
     start_time = time.clock()
     try:
-        if 'limit_ty' in item:
-            limit = (item['limit_ty'], data['limit_name'])
+        if 'limit_ty' in data:
+            limit = (data['limit_ty'], data['limit_name'])
         else:
             limit = None
         thy = basic.load_theory(data['filename'], limit=limit, username=username)

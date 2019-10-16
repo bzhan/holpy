@@ -541,6 +541,9 @@ export default {
     // Convert items in the theory from json format for the web client
     // back to the json format for the file.
     item_to_output: function (data) {
+      delete data.err_type
+      delete data.err_str
+      delete data.trace
       if (data.ty === 'def.ax') {
         delete data.type_hl;
       } else if (data.ty === 'thm' || data.ty === 'thm.ax') {

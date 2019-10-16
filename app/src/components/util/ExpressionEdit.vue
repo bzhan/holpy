@@ -32,30 +32,30 @@ export default {
 
   data: function () {
     return {
-      replace_obj: {
-        "\\lambda": "λ",
-        "%": "λ",
-        "\\forall": "∀",
-        "\\exists": "∃",
-        "\\and": "∧",
-        "&": "∧",
-        "\\or": "∨",
-        "|": "∨",
-        "-->": "⟶",
-        "<-->": "⟷",
-        "~": "¬",
-        "\\not": "¬",
-        "=>": "⇒",
-        "\\empty": "∅",
-        "\\Inter": "⋂",
-        "\\inter": "∩",
-        "\\Union": "⋃",
-        "\\union": "∪",
-        "\\circ": "∘",
-        "\\in": "∈",
-        "\\subset": "⊆",
-        "<=": "≤",
-      },
+      replace_obj: [
+        ["\\lambda", "λ"],
+        ["%", "λ"],
+        ["\\forall", "∀"],
+        ["\\exists", "∃"],
+        ["\\and", "∧"],
+        ["&", "∧"],
+        ["\\or", "∨"],
+        ["|", "∨"],
+        ["<-->", "⟷"],
+        ["-->", "⟶"],
+        ["~", "¬"],
+        ["\\not", "¬"],
+        ["=>", "⇒"],
+        ["\\empty", "∅"],
+        ["\\Inter", "⋂"],
+        ["\\inter", "∩"],
+        ["\\Union", "⋃"],
+        ["\\union", "∪"],
+        ["\\circ", "∘"],
+        ["\\in", "∈"],
+        ["\\subset", "⊆"],
+        ["<=", "≤"],
+      ]
     }
   },
 
@@ -83,16 +83,18 @@ export default {
       var pos = input.selectionStart;
       if (pos !== 0 && event.keyCode === 9) {  // Tab
         var len = '';
-        for (var key in this.replace_obj) {
-          var l = key.length;
-          if (content.substring(pos - l, pos) === key) {
+        for (let i = 0; i < this.replace_obj.length; i++) {
+          var s = this.replace_obj[i][0]
+          var repl_s = this.replace_obj[i][1]
+          var l = s.length;
+          if (content.substring(pos - l, pos) === s) {
             if (event && event.preventDefault) {
               event.preventDefault();
             } else {
               window.event.returnValue = false;
             }
             len = l;
-            content = content.slice(0, pos - len) + this.replace_obj[key] + content.slice(pos,);
+            content = content.slice(0, pos - len) + repl_s + content.slice(pos,);
           }
         }
         if (len) {
