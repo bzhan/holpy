@@ -3863,6 +3863,56 @@
             "prop": "inf s = (THE a. (∀x. x ∈ s ⟶ a ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ a))",
             "ty": "def",
             "type": "real set ⇒ real"
+        },
+        {
+            "attributes": [],
+            "name": "itset",
+            "prop": [
+                "itset f s b = (THE g. (g empty_set = b) &",
+                "!x. !s. finite s --> (g (insert x s) = if x ∈ s then g s else f x (g s))) s"
+            ],
+            "ty": "def",
+            "type": "('a ⇒ 'b ⇒ 'b) ⇒ 'a set ⇒ 'b ⇒ 'b"
+        },
+        {
+            "attributes": [],
+            "name": "card",
+            "prop": "card s = itset (%x. %n. Suc n) s 0",
+            "ty": "def",
+            "type": "'a set ⇒ nat"
+        },
+        {
+            "attributes": [],
+            "name": "has_size",
+            "prop": "has_size s n ⟷ finite s ∧ card s = n",
+            "ty": "def",
+            "type": "'a set ⇒ nat ⇒ bool"
+        },
+        {
+            "attributes": [],
+            "name": "finite2",
+            "rules": [
+                {
+                    "name": "finite2_empty",
+                    "prop": "finite2 (∅::'a set)"
+                },
+                {
+                    "name": "finite2_insert",
+                    "prop": "finite2 A ⟶ finite2 (insert x A)"
+                }
+            ],
+            "ty": "def.pred",
+            "type": "'a set => bool"
+        },
+        {
+            "attributes": [],
+            "name": "test",
+            "prop": "finite2 {x, y}",
+            "ty": "thm",
+            "vars": {
+                "x": "'a",
+                "y": "'a"
+            }
         }
     ],
     "description": "Basic results about sets.",
