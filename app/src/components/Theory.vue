@@ -615,6 +615,8 @@ export default {
 
     init_proof: function (index) {
       this.on_proof = index
+      this.selected = {single: index}
+      this.scroll_after_update = true
     },
 
     save_proof: function () {

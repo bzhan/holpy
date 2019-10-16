@@ -432,6 +432,7 @@ def print_length(res):
         return len(res)
 
 # 0, 1, 2, 3 = NORMAL, BOUND, VAR, TVAR
+@settings.with_settings
 def N(s, *, link=None):
     if settings.highlight():
         res = {'text': s, 'color': 0}
@@ -445,24 +446,28 @@ def N(s, *, link=None):
     else:
         return s
 
+@settings.with_settings
 def B(s):
     if settings.highlight():
         return [{'text': s, 'color': 1}]
     else:
         return s
 
+@settings.with_settings
 def V(s):
     if settings.highlight():
         return [{'text': s, 'color': 2}]
     else:
         return s
 
+@settings.with_settings
 def TV(s):
     if settings.highlight():
         return [{'text': s, 'color': 3}]
     else:
         return s
 
+@settings.with_settings
 def Gray(s):
     if settings.highlight():
         return [{'text': s, 'color': 4}]

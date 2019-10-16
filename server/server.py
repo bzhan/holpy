@@ -10,7 +10,7 @@ from kernel import report
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
-from syntax import parser, printer
+from syntax import parser, printer, pprint
 from server import tactic
 from server import method
 from server.method import incr_id
@@ -188,7 +188,7 @@ class ProofState():
                 })
                 method.apply_method(state, step)
             state.history.append({
-                'steps_output': [("Current state", 0)],
+                'steps_output': pprint.N('Current state', highlight=True),
                 'proof': state.export_proof(state.prf),
                 'report': state.rpt.json_data()
             })

@@ -245,7 +245,7 @@ export default {
         })
 
       if (query_result !== undefined) {
-          Object.assign(input, query_result)
+          Object.assign(input.step, query_result)
           this.display_status('Running')
           this.apply_method_ajax(input)
         }
@@ -290,7 +290,7 @@ export default {
         }
         this.history[hId].steps_output = result.data.steps_output
         this.history[hId + 1] = {
-          steps_output: [['Current state', 0]],
+          steps_output: [{text: "Current state", color: 0}],
           proof: result.data.proof,
           report: result.data.report
         }
@@ -342,7 +342,7 @@ export default {
       this.method_sig = response.data.method_sig
       this.steps = []
       this.history = [{
-        steps_output: [['Current state', 0]],
+        steps_output: [{text: "Current state", color: 0}],
         proof: response.data.proof,
         report: response.data.report
       }]
@@ -399,7 +399,7 @@ export default {
       }
 
       this.history.length -= 1;
-      this.history[h_id-1].steps_output = [["Current state", 0]]
+      this.history[h_id-1].steps_output = [{text: "Current state", color: 0}]
       this.index = h_id - 1;
       this.display_instructions();
 

@@ -231,7 +231,7 @@ def load_theory(filename, *, limit=None, username="master"):
 
         thy.unchecked_extend(item['ext'])
 
-    if limit:
-        assert found_limit
+    if limit and not found_limit:
+        raise TheoryException("load_theory: limit %s not found" % str(limit))
 
     return thy

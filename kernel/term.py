@@ -624,6 +624,25 @@ def has_var(t):
 
     return helper(t)
 
+def get_tvars(t):
+    """Get the list of type variables for a term."""
+    def helper(t):
+        if t.is_var() or t.is_const():
+            return t.T.get_tvars()
+        elif t.is_comb():
+            return helper(t.fun) + helper(t.arg)
+        elif t.is_abs():
+            return t.var_T.get_tvars() + helper(t.body)
+        else:
+            return []
+
+    if isinstance(t, Term):
+        return list(OrderedDict.fromkeys(helper(t)))
+    elif isinstance(t, list):
+        return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
+    else:
+        raise TypeError
+
 def get_consts(t):
     """Returns list of constants in a term or a list of terms."""
     def helper(t):
