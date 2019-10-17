@@ -28,11 +28,9 @@ class ExprTest(unittest.TestCase):
 
     def testGetArgTypeByFact(self):
         test_data = [
-            ("coll(A, B, C)", [expr.POINT, expr.POINT, expr.POINT]),
-            ("perp(l, A, B)", [expr.LINE, expr.PonL]),
-            ("cong(A, B, C, D)", [expr.SEG, expr.SEG]),
-            ("para(A, B, C, D)", [expr.PonL, expr.PonL]),
-            ("eqangle(k, l, m, A, B)", [expr.LINE, expr.LINE, expr.LINE, expr.PonL]),
+            ("coll(A, B, C)", expr.POINT),
+            ("cong(A, B, C, D)", expr.SEG),
+            ("para(A, B, C, D)", expr.PonL),
         ]
         for fact, r in test_data:
             self.assertEqual(expr.get_arg_type_by_fact(parser.parse_fact(fact)), r)
@@ -311,7 +309,6 @@ class ExprTest(unittest.TestCase):
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
             hyps = expr.search_fixpoint(ruleset, hyps, lines, circles, concl)
-            print(hyps)
             fact = expr.find_goal(hyps, concl, lines, circles)
             self.assertIsNotNone(fact)
             expr.print_search(ruleset, hyps, fact)

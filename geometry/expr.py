@@ -9,40 +9,24 @@ def get_arg_type_by_fact(fact):
     Return a list of types.
     """
     pred_name = fact.pred_name
-    arg_len = len(fact.args)
 
     if pred_name in ("para", "perp", "eqangle"):
-        types = []
-        idx = 0
-        while idx < len(fact.args):
-            if fact.args[idx].isupper():
-                assert fact.args[idx + 1].isupper()
-                types.append(PonL)
-                idx += 2
-            elif fact.args[idx].islower():
-                idx += 1
-                types.append(LINE)
-            else:
-                raise NotImplementedError
-    else:
-        assert all(arg.isupper() for arg in fact.args)
-        if pred_name == "coll":
-            types = [POINT for _ in range(arg_len)]
-        elif pred_name == "eqratio" or pred_name == "cong":
-            types = [SEG] * int(arg_len / 2)
-        elif pred_name == "midp":
-            types = [POINT, POINT, POINT]
-        elif pred_name == "cyclic":
-            types = [CYCL for _ in range(arg_len)]
-        elif pred_name == "simtri":
-            types = [TRI] * int(arg_len / 3)
-        elif pred_name == "circle":
-            types = [CIRC for _ in range(arg_len)]
+        if fact.args[0].isupper():
+            return PonL
         else:
-            raise NotImplementedError
-
-    return types
-
+            return LINE
+    elif pred_name in ("coll", "midp"):
+        return POINT
+    elif pred_name in ("eqratio", "cong"):
+        return SEG
+    elif pred_name == "cyclic":
+        return CYCL
+    elif pred_name == "circle":
+        return CIRC
+    elif pred_name == "simtri":
+        return TRI
+    else:
+        raise NotImplementedError
 
 class Fact:
     """Represent a fact in geometry prover, e.g.:
@@ -264,7 +248,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
     if pat.pred_name != f.pred_name:
         return []
 
-    arg_ty = get_arg_type_by_fact(pat)[0]
+    arg_ty = get_arg_type_by_fact(pat)
     new_insts = []
     if arg_ty == POINT:
         comb = list(itertools.combinations(f.args, len(pat.args)))
@@ -331,7 +315,6 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
             groups.append((f.args[i], f.args[i + 1]))
             i += 2
         comb = list(itertools.combinations(groups, int(len(pat.args) / 2)))
-
         for c in comb:
             if inst == {}:
                 t_insts = [{}]
@@ -483,8 +466,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
 
     else:
         raise NotImplementedError
-    insts = new_insts
-    return insts
+    return new_insts
 
 
 def make_new_lines(facts, lines):
@@ -645,30 +627,25 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
         insts = new_insts
 
     new_facts = []
-    arg_types = get_arg_type_by_fact(rule.concl)
+    arg_type = get_arg_type_by_fact(rule.concl)
     for inst in insts:
         concl_args = []
-        pat_pos = 0
-        for arg_type in arg_types:
-            if arg_type == POINT:
-                arg = rule.concl.args[pat_pos]
-                pat_pos += 1
-                concl_args.append(inst[arg])
-            elif arg_type == LINE:
-                arg = rule.concl.args[pat_pos]
-                pat_pos += 1
-                concl_args.extend(inst[arg])
-            elif arg_type == PonL or arg_type == SEG:
-                arg1, arg2 = rule.concl.args[pat_pos:pat_pos + 2]
-                pat_pos += 2
+        if arg_type in (POINT, CIRC, CYCL):
+            l = [inst[arg] for arg in rule.concl.args]
+            concl_args.extend(l)
+        elif arg_type in (PonL, SEG):
+            i = 0
+            while i < len(rule.concl.args):
+                arg1, arg2 = rule.concl.args[i:i + 2]
                 concl_args.extend([inst[arg1], inst[arg2]])
-            elif arg_type == CIRC or arg_type == CYCL:
-                arg = rule.concl.args[pat_pos]
-                pat_pos += 1
-                concl_args.append(inst[arg])
-            else:
-                # TODO: Support more types.
-                raise NotImplementedError
+                i += 2
+        elif arg_type == LINE:
+            i = 0
+            while i < len(rule.concl.args):
+                concl_args.extend(inst[rule.concl.args[i]])
+                i += 1
+        else:
+            raise NotImplementedError
 
         if record:
             new_fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=facts)
@@ -777,10 +754,10 @@ def search_fixpoint(ruleset, hyps, lines, circles, concl):
     """
 
     # Any fact in original hypotheses might be used for the first step.
-    short = [get_short_facts(hyp) for hyp in hyps]
-    hyps = []
-    for item in short:
-        hyps.extend(item)
+    # short = [get_short_facts(hyp) for hyp in hyps]
+    # hyps = []
+    # for item in short:
+    #     hyps.extend(item)
     search_step(ruleset, hyps, lines=lines, circles=circles)
     prev_hyps = []
     prev_lines = []
@@ -794,9 +771,41 @@ def search_fixpoint(ruleset, hyps, lines, circles, concl):
         search_step(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
         if in_facts(hyps, concl, lines, circles):
             break
-
-
     return hyps
+
+
+def combine_facts(fact, goal, lines, circles):
+    """
+    Combine this fact to other fact.
+    Return a combined long fact if succeed.
+    """
+    if fact.pred_name != goal.pred_name:
+        return None
+
+    if fact.pred_name in ('para'):
+        pass
+        # Two facts that have the pred_name "para" can be combined
+        # if they have at least one identical line.
+
+        # Get all lines in fact and goal.
+        fact_lines, goal_lines = set(), set()
+        i = 0
+        while i < len(fact.args):
+            fact_lines.add(get_line(lines, (fact.args[i], fact.args[i + 1])))
+            i += 2
+        i = 0
+        while i < len(goal.args):
+            goal_lines.add(get_line(lines, (fact.args[i], fact.args[i + 1])))
+            i += 2
+
+        same = fact_lines - goal_lines
+        if len(same) > 0:
+            pass
+        else:
+            return None
+
+    else:
+        raise NotImplementedError
 
 
 def match_goal(fact, goal, lines, circles):
@@ -881,7 +890,6 @@ def in_facts(facts, goal, lines, circles):
     for fact in facts:
         if match_goal(fact, goal, lines, circles):
             return True
-
     return False
 
 def rewrite_fact(fact):
