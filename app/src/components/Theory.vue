@@ -364,13 +364,9 @@ export default {
           return
       }
 
-      // Ignore if click on a link
-      if (event.target.tagName.toLowerCase() === 'a') {
-        return
-      }
-
-      // Ignore if currently editing or proving something
-      if (this.on_edit !== undefined || this.on_proof !== undefined) {
+      // Ignore if click on a link or button
+      if (event.target.tagName.toLowerCase() === 'a' ||
+          event.target.tagName.toLowerCase() === 'button') {
         return
       }
 
@@ -446,11 +442,13 @@ export default {
 
     // Cancel the current edit without saving.
     cancel_edit: function () {
-      this.on_edit = undefined
       if (this.on_add === true) {
-        this.remove_selected()
+        this.theory.content.splice(this.on_edit, 1)
+        this.$set(this.theory, 'content', this.theory.content)
         this.on_add = false
       }
+      this.selected = {}
+      this.on_edit = undefined
     },
 
     // Add a new item.
