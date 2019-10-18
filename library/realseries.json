@@ -3036,6 +3036,124 @@
                 "f": "real => real",
                 "s": "real set"
             }
+        },
+        {
+            "attributes": [],
+            "name": "real_log_convex_on",
+            "prop": [
+                "is_realinterval s & (!x. x ∈ s --> 0 < f x)",
+                "--> (real_log_convex_on f s <--> real_log_convex_on (log O f) s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_log_convex_imp_convex",
+            "prop": "real_log_convex_on f s --> real_convex_on f s",
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_log_convex_add",
+            "prop": [
+                "real_log_convex_on f s & real_log_convex_on g s",
+                "--> real_log_convex_on (%x. f x + g x) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_log_convex_mul",
+            "prop": [
+                "real_log_convex_on f s ∧ real_log_convex_on g s ",
+                "⟶ real_log_convex_on (λx. f x * g x) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "midpoint_real_log_convex",
+            "prop": [
+                "real_continuous_on f s & is_realinterval s &",
+                "(∀x. x ∈ s ⟶ 0 < f x) &",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ⟶ f ((x + y) / 2) ^ (2::nat) ≤ (f x * f y))",
+                "--> real_log_convex_on f s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_log_convex_const",
+            "prop": "0 <= a --> real_log_convex_on (%x. a) s",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_log_convex_product",
+            "prop": [
+                "finite k & (!i. i ∈ k --> real_log_convex_on (%x. f x i) s)",
+                "--> real_log_convex_on (%x. product k (f x)) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => 'a => real",
+                "k": "'a set",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_log_convex_rpow_right",
+            "prop": "0 < a --> real_log_convex_on (%x. a ^ x) s",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_log_convex_lim",
+            "prop": [
+                "~(trivial_limit net) &",
+                "(!x. !y. !u. !v. x ∈ s & y ∈ s & 0 <= u & 0 <= v & u + v = 1",
+                "--> tendsto_real (%i. f i (u * x + v * y)) (g (u * x + v * y)) net) &",
+                "eventually (%i. real_log_convex_on (f i) s) net",
+                "--> real_log_convex_on g s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real => real",
+                "g": "real => real",
+                "net": "'a net",
+                "s": "real set"
+            }
         }
     ],
     "description": "Some analytic concepts for real.",
