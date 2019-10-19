@@ -33,9 +33,11 @@
             "type": "real => real"
         },
         {
+            "ascii_op": "-",
             "name": "minus",
-            "ty": "def.ax",
-            "type": "real => real => real"
+            "prop": "x - y = x + -y",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real"
         },
         {
             "name": "times",
@@ -48,9 +50,11 @@
             "type": "real => real"
         },
         {
+            "ascii_op": "/",
             "name": "real_divide",
-            "ty": "def.ax",
-            "type": "real => real => real"
+            "prop": "x / y = x * real_inverse y",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ real"
         },
         {
             "ascii_op": "^",
@@ -67,8 +71,22 @@
             "type": "real => nat => real"
         },
         {
+            "name": "less_eq",
+            "ty": "def.ax",
+            "type": "real => real => bool"
+        },
+        {
+            "name": "less",
+            "prop": "less x y = neg(less_eq y x)",
+            "ty": "def",
+            "type": "real ⇒ real ⇒ bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_add_assoc",
-            "prop": "x + (y + z) = (x + y) + z",
+            "prop": "x + (y + z) = x + y + z",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -77,6 +95,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_add_comm",
             "prop": "x + y = y + x",
             "ty": "thm",
@@ -86,8 +107,33 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_add_lid",
+            "prop": "0 + x = x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_add_linv",
+            "prop": "-x + x = 0",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_mult_assoc",
-            "prop": "x * (y * z) = (x * y) * z",
+            "prop": "x * (y * z) = x * y * z",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -111,6 +157,1043 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "real_mul_lid",
+            "prop": "1 * x = x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_add_ldistrib",
+            "prop": "x * (y + z) = x * y + x * z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_le_refl",
+            "prop": "x <= x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_le_antisym",
+            "prop": "x <= y & y <= x <--> x = y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_le_trans",
+            "prop": "x <= y & y <= z --> x <= z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_le_total",
+            "prop": "x <= y | y <= x",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_le_ladd_imp",
+            "prop": "y <= z --> x + y <= x + z",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_forward"
+            ],
+            "name": "real_le_mul",
+            "prop": "0 <= x & 0 <= y --> 0 <= x * y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "real_inv_0",
+            "prop": "real_inverse 0 = 0",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [],
+            "name": "real_mul_linv",
+            "prop": "~(x = 0) --> real_inverse x * x = 1",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_of_nat_eq",
+            "prop": "(of_nat::nat=>real) m = (of_nat::nat=>real) n ⟷ m = n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_of_nat_le",
+            "prop": "(of_nat::nat ⇒ real) m ≤ (of_nat::nat ⇒ real) n ⟷ m ≤ n",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_of_nat_add",
+            "prop": "(of_nat::nat ⇒ real) m + (of_nat::nat ⇒ real) n = (of_nat::nat ⇒ real) (m + n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_of_nat_mul",
+            "prop": "(of_nat::nat ⇒ real) m * (of_nat::nat ⇒ real) n = (of_nat::nat ⇒ real) (m * n)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_add_rinv",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_add_linv, -x + x = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -x + x = 0"
+                },
+                {
+                    "args": "real_add_comm, x + -x = 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x + -x = 0"
+                }
+            ],
+            "prop": "x + -x = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_linv"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_resolve",
+                "hint_backward"
+            ],
+            "name": "real_eq_add_lcancel",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x + y = x + z ⟶ y = z"
+                },
+                {
+                    "args": "x + y = x + z",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x + y = x + z ⊢ x + y = x + z"
+                },
+                {
+                    "args": "-x + (x + y) = -x + (x + z)",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x + y = x + z ⊢ -x + (x + y) = -x + (x + z)"
+                },
+                {
+                    "args": "real_add_assoc",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x + y = x + z ⊢ -x + x + y = -x + x + z"
+                },
+                {
+                    "args": "real_add_linv",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x + y = x + z ⊢ 0 + y = 0 + z"
+                },
+                {
+                    "args": "real_add_lid",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x + y = x + z ⊢ y = z"
+                },
+                {
+                    "args": "y = z",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "x + y = x + z ⊢ y = z"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + y = x + z ⟶ y = z"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ y = z ⟶ x + y = x + z"
+                },
+                {
+                    "args": "y = z",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y = z ⊢ y = z"
+                },
+                {
+                    "args": "x + y = x + z",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "y = z ⊢ x + y = x + z"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ y = z ⟶ x + y = x + z"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ x + y = x + z ⟷ y = z"
+                }
+            ],
+            "prop": "x + y = x + z ⟷ y = z",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "-x + (x + y) = -x + (x + z)",
+                    "goal_id": "0.1",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_linv"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.3"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_lid"
+                },
+                {
+                    "fact_ids": [
+                        "0.4"
+                    ],
+                    "goal_id": "0.5",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_eq_add_rcancel",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_eq_add_lcancel, z + x = z + y ⟷ x = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ z + x = z + y ⟷ x = y"
+                },
+                {
+                    "args": "real_add_comm, x + z = y + z ⟷ x = y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x + z = y + z ⟷ x = y"
+                }
+            ],
+            "prop": "x + z = y + z ⟷ x = y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_eq_add_lcancel"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_mul_rzero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_add_lid, x * (0 + 1) = 0 + x * 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x * (0 + 1) = 0 + x * 1"
+                },
+                {
+                    "args": "real_add_ldistrib",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ x * 0 + x * 1 = 0 + x * 1"
+                },
+                {
+                    "args": "real_eq_add_rcancel",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ x * 0 = 0"
+                },
+                {
+                    "args": "x * 0 = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ x * 0 = 0"
+                }
+            ],
+            "prop": "x * 0 = 0",
+            "steps": [
+                {
+                    "goal": "x * (0 + 1) = 0 + x * 1",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_lid"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_ldistrib"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_eq_add_rcancel"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_mul_lzero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_mul_rzero, x * 0 = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x * 0 = 0"
+                },
+                {
+                    "args": "real_mult_comm, 0 * x = 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 * x = 0"
+                }
+            ],
+            "prop": "0 * x = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_mul_rzero"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_neg_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_add_rinv, 0 = x + -x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = x + -x"
+                },
+                {
+                    "args": "real_add_linv, --x + -x = x + -x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ --x + -x = x + -x"
+                },
+                {
+                    "args": "real_eq_add_rcancel",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ --x = x"
+                },
+                {
+                    "args": "--x = x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ --x = x"
+                }
+            ],
+            "prop": "-(-x)=x",
+            "steps": [
+                {
+                    "goal": "--x + -x = x + -x",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_linv"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_rinv"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_eq_add_rcancel"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_mul_rneg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_mul_rzero, x * 0 = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x * 0 = 0"
+                },
+                {
+                    "args": "real_add_linv, x * (-y + y) = -(x * y) + x * y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x * (-y + y) = -(x * y) + x * y"
+                },
+                {
+                    "args": "real_add_ldistrib",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ x * -y + x * y = -(x * y) + x * y"
+                },
+                {
+                    "args": "real_eq_add_rcancel",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ x * -y = -(x * y)"
+                },
+                {
+                    "args": "x * -y = -(x * y)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ x * -y = -(x * y)"
+                }
+            ],
+            "prop": "x * -y = -(x * y)",
+            "steps": [
+                {
+                    "goal": "x * (-y + y) = -(x * y) + (x * y)",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_linv"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_ldistrib"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_eq_add_rcancel"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_mul_lneg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_mul_rneg, y * -x = -(y * x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y * -x = -(y * x)"
+                },
+                {
+                    "args": "real_mult_comm, -x * y = -(x * y)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -x * y = -(x * y)"
+                }
+            ],
+            "prop": "(-x) * y = -(x * y)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_mul_rneg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_neg_add",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "real_add_rinv, 0 = x + -x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = x + -x"
+                },
+                {
+                    "args": "real_add_lid, 0 = x + (0 + -x)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = x + (0 + -x)"
+                },
+                {
+                    "args": "real_add_comm, 0 = -x + 0 + x",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = -x + 0 + x"
+                },
+                {
+                    "args": "real_add_linv, 0 = -x + (-y + y) + x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = -x + (-y + y) + x"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ 0 = -x + -y + x + y"
+                },
+                {
+                    "args": "real_add_assoc, 0 = -x + -y + (x + y)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 = -x + -y + (x + y)"
+                },
+                {
+                    "args": "real_add_linv, -(x + y) + (x + y) = -x + -y + (x + y)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(x + y) + (x + y) = -x + -y + (x + y)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ -(x + y) = -x + -y"
+                }
+            ],
+            "prop": "-(x+y)= -x+-y",
+            "steps": [
+                {
+                    "goal": "-(x+y) + (x +y) = -x + -y + (x + y)",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_linv"
+                },
+                {
+                    "goal": "0 = -x + (-y + y) + x",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_linv"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_lid"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_rinv"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_assoc"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_add_rid",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_add_lid, 0 + x = x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 + x = x"
+                },
+                {
+                    "args": "real_add_comm, x + 0 = x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x + 0 = x"
+                }
+            ],
+            "prop": "x + 0 = x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_lid"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_neg_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_add_rid, (0::real) = 0 + 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::real) = 0 + 0"
+                },
+                {
+                    "args": "real_add_linv, -(0::real) + 0 = 0 + 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -(0::real) + 0 = 0 + 0"
+                },
+                {
+                    "args": "real_eq_add_rcancel",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ -(0::real) = 0"
+                },
+                {
+                    "args": "-(0::real) = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ -(0::real) = 0"
+                }
+            ],
+            "prop": "-(0::real) = 0",
+            "steps": [
+                {
+                    "goal": "-(0::real) + 0 = 0 + 0",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_linv"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_eq_add_rcancel"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_poly_neg1",
             "prop": "-x = -1 * x",
             "ty": "thm",
@@ -129,17 +1212,6 @@
                 "x": "real",
                 "y": "real"
             }
-        },
-        {
-            "name": "less_eq",
-            "ty": "def.ax",
-            "type": "real => real => bool"
-        },
-        {
-            "name": "less",
-            "prop": "less x y = neg(less_eq y x)",
-            "ty": "def",
-            "type": "real ⇒ real ⇒ bool"
         },
         {
             "name": "greater_eq",
