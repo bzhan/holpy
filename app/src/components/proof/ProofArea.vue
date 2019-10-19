@@ -198,10 +198,24 @@ export default {
         this.ref_status.search_res = []
         this.ref_context.ctxt = {}
       } else {
-        let response = await axios.post('http://127.0.0.1:5000/api/search-method', JSON.stringify(input))
+        var response = undefined
+        try {
+          response = await axios.post('http://127.0.0.1:5000/api/search-method', JSON.stringify(input))
+        } catch (err) {
+          this.$emit('set-message', {
+            type: 'error',
+            data: 'Server error'
+          })
+        }
 
-        this.ref_status.search_res = response.data.search_res
-        this.ref_context.ctxt = response.data.ctxt
+        if (response === undefined) {
+          this.display_status('Server error')
+          this.ref_status.search_res = []
+          this.ref_context.ctxt = []
+        } else {
+          this.ref_status.search_res = response.data.search_res
+          this.ref_context.ctxt = response.data.ctxt
+        }
       }
     },
 
@@ -256,7 +270,19 @@ export default {
     },
 
     apply_method_ajax: async function (input) {
-      const result = await axios.post('http://127.0.0.1:5000/api/apply-method', JSON.stringify(input))
+      var result = undefined
+      try {
+        result = await axios.post('http://127.0.0.1:5000/api/apply-method', JSON.stringify(input))
+      } catch (err) {
+        this.$emit('set-message', {
+          type: 'error',
+          data: 'Server error'
+        })
+      }
+      if (result === undefined) {
+        this.display_status('Server error')
+        return
+      }
 
       if ('query' in result.data) {
         let $vm = this
@@ -336,7 +362,19 @@ export default {
         }
       }
 
-      let response = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
+      var response = undefined
+      try {
+        response = await axios.post('http://127.0.0.1:5000/api/init-empty-proof', JSON.stringify(data))
+      } catch (err) {
+        this.$emit('set-message', {
+          type: 'error',
+          data: 'Server error'
+        })
+      }
+      if (response === undefined) {
+        this.display_status('Server error')
+        return
+      }
 
       this.goal = -1
       this.method_sig = response.data.method_sig
@@ -364,7 +402,19 @@ export default {
         }
       }
 
-      let response = await axios.post('http://127.0.0.1:5000/api/init-saved-proof', JSON.stringify(data))
+      var response = undefined
+      try {
+        response = await axios.post('http://127.0.0.1:5000/api/init-saved-proof', JSON.stringify(data))
+      } catch (err) {
+        this.$emit('set-message', {
+          type: 'error',
+          data: 'Server error'
+        })
+      }
+      if (response === undefined) {
+        this.display_status('Server error')
+        return
+      }
 
       if ('err_type' in response.data) {
         this.display_error(response.data.err_type, response.data.err_str, response.data.trace)
