@@ -19,7 +19,7 @@ class InductTest(unittest.TestCase):
     def testInductNat(self):
         nat = Type("nat")
         nat_ext = induct.add_induct_type(
-            "nat", [], [("zero", nat, []), ("Suc", TFun(nat, nat), ["n"])])
+            thy, "nat", [], [("zero", nat, []), ("Suc", TFun(nat, nat), ["n"])])
         
         zero = Const("zero", nat)
         S = Const("Suc", TFun(nat, nat))
@@ -66,7 +66,7 @@ class InductTest(unittest.TestCase):
         Ta = TVar("a")
         Tlista = Type("list", Ta)
         list_ext = induct.add_induct_type(
-            "list", ["a"], [("nil", Tlista, []), ("cons", TFun(Ta, Tlista, Tlista), ["x", "xs"])])
+            thy, "list", ["a"], [("nil", Tlista, []), ("cons", TFun(Ta, Tlista, Tlista), ["x", "xs"])])
 
         nil = Const("nil", Tlista)
         cons = Const("cons", TFun(Ta, Tlista, Tlista))
@@ -93,7 +93,7 @@ class InductTest(unittest.TestCase):
         Tb = TVar("b")
         Tab = Type("prod", Ta, Tb)
         prod_ext = induct.add_induct_type(
-            "prod", ["a", "b"], [("Pair", TFun(Ta, Tb, Tab), ["a", "b"])])
+            thy, "prod", ["a", "b"], [("Pair", TFun(Ta, Tb, Tab), ["a", "b"])])
 
         a = Var("a", Ta)
         b = Var("b", Tb)

@@ -69,7 +69,8 @@ def print_extension(thy, ext):
     if ext.ty == extension.TYPE:
         return "Type " + ext.name + " " + str(ext.arity)
     elif ext.ty == extension.CONSTANT:
-        return "Constant " + ext.name + " :: " + print_type(thy, ext.T)
+        ref_str = " (" + ext.ref_name + ")" if ext.ref_name != ext.name else ""
+        return "Constant " + ext.name + " :: " + print_type(thy, ext.T) + ref_str
     elif ext.ty == extension.THEOREM:
         return "Theorem " + ext.name + ": " + print_term(thy, ext.th.prop)
     elif ext.ty == extension.ATTRIBUTE:

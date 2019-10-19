@@ -32,7 +32,7 @@ plus: nat => nat => nat
 
 """
 
-def add_induct_type(name, targs, constrs):
+def add_induct_type(thy, name, targs, constrs):
     """Add the given inductive type to the theory.
     
     The inductive type is specified by name, arity (as list of default
@@ -51,8 +51,9 @@ def add_induct_type(name, targs, constrs):
 
     # Add to type and term signature.
     exts.add_extension(extension.Type(name, len(targs)))
-    for cname, cT, _ in constrs:
-        exts.add_extension(extension.Constant(cname, cT))
+    for constr_name, cT, _ in constrs:
+        ref_name = thy.get_overload_const_name(constr_name, cT)
+        exts.add_extension(extension.Constant(constr_name, cT, ref_name=ref_name))
 
     # Add non-equality theorems.
     for (cname1, cT1, vars1), (cname2, cT2, vars2) in itertools.combinations(constrs, 2):
@@ -124,7 +125,7 @@ def add_induct_def(thy, name, T, eqs):
     """
     exts = extension.TheoryExtension()
     cname = thy.get_overload_const_name(name, T)
-    exts.add_extension(extension.Constant(cname, T))
+    exts.add_extension(extension.Constant(name, T, ref_name=cname))
     for i, prop in enumerate(eqs):
         th_name = cname + "_def_" + str(i + 1)
         exts.add_extension(extension.Theorem(th_name, Thm([], prop)))
@@ -141,7 +142,8 @@ def add_induct_predicate(thy, name, T, props):
 
     """
     exts = extension.TheoryExtension()
-    exts.add_extension(extension.Constant(name, T))
+    cname = thy.get_overload_const_name(name, T)
+    exts.add_extension(extension.Constant(name, T, ref_name=cname))
 
     for th_name, prop in props:
         exts.add_extension(extension.Theorem(th_name, Thm([], prop)))
