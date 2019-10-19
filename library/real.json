@@ -108,6 +108,29 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_poly_neg1",
+            "prop": "-x = -1 * x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_poly_neg2",
+            "prop": "x - y = x + -1 * y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "name": "less_eq",
             "ty": "def.ax",
             "type": "real => real => bool"
