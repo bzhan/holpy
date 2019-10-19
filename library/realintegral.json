@@ -1802,10 +1802,10 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "⊢ has_real_integral (λx. 0) (real_of_nat 0) s"
+                    "th": "⊢ has_real_integral (λx. 0) 0 s"
                 },
                 {
-                    "args": "exI, {a: real}, {P: λa. has_real_integral (λx. 0) a s, a: real_of_nat 0}",
+                    "args": "exI, {a: real}, {P: λa. has_real_integral (λx. 0) a s, a: (0::real)}",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -1833,7 +1833,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
-                    "param_a": "real_of_nat 0",
+                    "param_a": "(0::real)",
                     "theorem": "exI"
                 }
             ],

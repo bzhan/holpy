@@ -174,7 +174,11 @@ def load_theory_cache(filename, username="master"):
         thy.unchecked_extend(exts)
         cache['content'].append(item)
         for ext in exts.get_extensions():
-            item_index[username][(ext.ty, ext.name)] = (filename, timestamp, index)
+            if ext.ty == extension.CONSTANT:
+                name = ext.ref_name
+            else:
+                name = ext.name
+            item_index[username][(ext.ty, name)] = (filename, timestamp, index)
 
     return cache
 

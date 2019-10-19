@@ -28,7 +28,7 @@ class BasicTest(unittest.TestCase):
         thy1 = basic.load_theory('logic_base', limit=('thm.ax', 'conjD1'))
         self.assertEqual(thy.get_theorem('conjI'), thy1.get_theorem('conjI'))
         self.assertRaises(TheoryException, thy1.get_theorem, 'conjD1')
-        self.assertRaises(AssertionError, basic.load_theory, 'logic_base', limit=('thm.ax', 'conj'))
+        self.assertRaises(TheoryException, basic.load_theory, 'logic_base', limit=('thm.ax', 'conj'))
 
     def testConjComm(self):
         """Proof of commutativity of conjunction."""

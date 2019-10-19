@@ -37,7 +37,8 @@ class Extension():
         if self.ty == TYPE:
             return "Type " + self.name + " " + str(self.arity)
         elif self.ty == CONSTANT:
-            return "Constant " + self.name + " :: " + str(self.T)
+            ref_str = " (" + self.ref_name + ")" if self.ref_name != self.name else ""
+            return "Constant " + self.name + " :: " + str(self.T) + ref_str
         elif self.ty == THEOREM:
             return "Theorem " + self.name + ": " + str(self.th)
         elif self.ty == ATTRIBUTE:
@@ -88,7 +89,7 @@ class Type(Extension):
         self.arity = arity
 
 class Constant(Extension):
-    def __init__(self, name, T):
+    def __init__(self, name, T, *, ref_name=None):
         """Extending the theory by adding a constant.
         
         name -- name of the constant.
@@ -98,6 +99,7 @@ class Constant(Extension):
         self.ty = CONSTANT
         self.name = name
         self.T = T
+        self.ref_name = name if ref_name is None else ref_name
 
 class Theorem(Extension):
     def __init__(self, name, th, prf=None):

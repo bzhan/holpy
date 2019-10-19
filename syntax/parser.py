@@ -595,11 +595,11 @@ def get_extension(thy, data):
             ext.add_extension(extension.Overload(data['name']))
         else:
             cname = thy.get_overload_const_name(data['name'], data['type'])
-            ext.add_extension(extension.Constant(cname, data['type']))
+            ext.add_extension(extension.Constant(data['name'], data['type'], ref_name=cname))
 
     elif data['ty'] == 'def':
         cname = thy.get_overload_const_name(data['name'], data['type'])
-        ext.add_extension(extension.Constant(cname, data['type']))
+        ext.add_extension(extension.Constant(data['name'], data['type'], ref_name=cname))
         ext.add_extension(extension.Theorem(cname + "_def", Thm([], data['prop'])))
         if 'attributes' in data:
             for attr in data['attributes']:
@@ -615,7 +615,7 @@ def get_extension(thy, data):
         constrs = []
         for constr in data['constrs']:
             constrs.append((constr['name'], constr['type'], constr['args']))
-        ext = induct.add_induct_type(data['name'], data['args'], constrs)
+        ext = induct.add_induct_type(thy, data['name'], data['args'], constrs)
 
     elif data['ty'] == 'def.ind':
         rules = []
