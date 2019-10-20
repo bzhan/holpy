@@ -96,7 +96,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_resolve"
             ],
             "name": "real_add_comm",
             "prop": "x + y = y + x",
@@ -1189,6 +1190,632 @@
             ],
             "ty": "thm",
             "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_le_lneg",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ -x ≤ y ⟶ 0 ≤ x + y"
+                },
+                {
+                    "args": "-x ≤ y",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "-x ≤ y ⊢ -x ≤ y"
+                },
+                {
+                    "args": "real_le_ladd_imp, {}, {x: x, y: -x, z: y}",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "-x ≤ y ⊢ x + -x ≤ x + y"
+                },
+                {
+                    "args": "real_add_rinv",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "-x ≤ y ⊢ 0 ≤ x + y"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "-x ≤ y ⊢ 0 ≤ x + y"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ -x ≤ y ⟶ 0 ≤ x + y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 ≤ x + y ⟶ -x ≤ y"
+                },
+                {
+                    "args": "0 ≤ x + y",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x + y ⊢ 0 ≤ x + y"
+                },
+                {
+                    "args": "real_le_ladd_imp, {}, {x: -x, y: (0::real), z: x + y}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ x + y ⊢ -x + 0 ≤ -x + (x + y)"
+                },
+                {
+                    "args": "real_add_assoc",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x + y ⊢ -x + 0 ≤ -x + x + y"
+                },
+                {
+                    "args": "real_add_linv",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x + y ⊢ -x + 0 ≤ 0 + y"
+                },
+                {
+                    "args": "real_add_lid",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x + y ⊢ -x + 0 ≤ y"
+                },
+                {
+                    "args": "real_add_rid",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x + y ⊢ -x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 ≤ x + y ⊢ -x ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x + y ⟶ -x ≤ y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ -x ≤ y ⟷ 0 ≤ x + y"
+                }
+            ],
+            "prop": "-x <= y <--> 0 <= x + y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "real_le_ladd_imp"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_rinv"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "param_x": "-x",
+                    "theorem": "real_le_ladd_imp"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_linv"
+                },
+                {
+                    "fact_ids": [
+                        "1.3"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_lid"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_rid"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_le_lneg2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 ≤ x + -y ⟶ 0 ≤ -y + x"
+                },
+                {
+                    "args": "0 ≤ x + -y",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x + -y ⊢ 0 ≤ x + -y"
+                },
+                {
+                    "args": "real_add_comm, 0 ≤ -y + x",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x + -y ⊢ 0 ≤ -y + x"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x + -y ⟶ 0 ≤ -y + x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 ≤ -y + x ⟶ 0 ≤ x + -y"
+                },
+                {
+                    "args": "0 ≤ -y + x",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ -y + x ⊢ 0 ≤ -y + x"
+                },
+                {
+                    "args": "real_add_comm, 0 ≤ x + -y",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ -y + x ⊢ 0 ≤ x + -y"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ -y + x ⟶ 0 ≤ x + -y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ 0 ≤ x + -y ⟷ 0 ≤ -y + x"
+                },
+                {
+                    "args": "real_le_lneg, -x ≤ -y ⟷ --y ≤ x",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ -x ≤ -y ⟷ --y ≤ x"
+                },
+                {
+                    "args": "real_neg_neg, --y ≤ x ⟷ y ≤ x",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ --y ≤ x ⟷ y ≤ x"
+                },
+                {
+                    "args": "-x ≤ -y ⟷ y ≤ x",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ -x ≤ -y ⟷ y ≤ x"
+                }
+            ],
+            "prop": "-x ≤ -y ⟷ y ≤ x",
+            "steps": [
+                {
+                    "goal": "-x <= -y <--> --y <= x",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_le_lneg"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_comm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_comm"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_neg_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_le_rneg",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ≤ -y ⟶ x + y ≤ 0"
+                },
+                {
+                    "args": "x ≤ -y",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ -y ⊢ x ≤ -y"
+                },
+                {
+                    "args": "real_le_ladd_imp, {}, {x: y, y: x, z: -y}",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ≤ -y ⊢ y + x ≤ y + -y"
+                },
+                {
+                    "args": "real_add_rinv",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ≤ -y ⊢ y + x ≤ 0"
+                },
+                {
+                    "args": "real_add_comm, x + y ≤ 0",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ≤ -y ⊢ x + y ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ≤ -y ⟶ x + y ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x + y ≤ 0 ⟶ x ≤ -y"
+                },
+                {
+                    "args": "x + y ≤ 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x + y ≤ 0 ⊢ x + y ≤ 0"
+                },
+                {
+                    "args": "real_le_ladd_imp, {}, {x: -y, y: x + y, z: (0::real)}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x + y ≤ 0 ⊢ -y + (x + y) ≤ -y + 0"
+                },
+                {
+                    "args": "real_add_rid",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x + y ≤ 0 ⊢ -y + (x + y) ≤ -y"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "x + y ≤ 0 ⊢ x ≤ -y"
+                },
+                {
+                    "args": "real_add_lid, 0 + x ≤ -y",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x + y ≤ 0 ⊢ 0 + x ≤ -y"
+                },
+                {
+                    "args": "real_add_linv, -y + y + x ≤ -y",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x + y ≤ 0 ⊢ -y + y + x ≤ -y"
+                },
+                {
+                    "args": "real_add_assoc, -y + (y + x) ≤ -y",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x + y ≤ 0 ⊢ -y + (y + x) ≤ -y"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "x + y ≤ 0 ⊢ x ≤ -y"
+                },
+                {
+                    "args": "",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.0",
+                        "1.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x + y ≤ 0 ⟶ x ≤ -y"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ x ≤ -y ⟷ x + y ≤ 0"
+                }
+            ],
+            "prop": "x ≤ -y ⟷ x + y <= 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_forward_step",
+                    "param_x": "y",
+                    "theorem": "real_le_ladd_imp"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_rinv"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_comm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "param_x": "-y",
+                    "theorem": "real_le_ladd_imp"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal": "-y + (y + x) <= -y",
+                    "goal_id": "1.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_assoc"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_linv"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_lid"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
         },
         {
             "attributes": [

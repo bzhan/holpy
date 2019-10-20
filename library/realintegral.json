@@ -1916,11 +1916,7 @@
                     "args": "has_real_integral_0, {}, {s: s}",
                     "id": "0",
                     "prevs": [],
-<<<<<<< HEAD
                     "rule": "apply_theorem_for",
-=======
-                    "rule": "sorry",
->>>>>>> 661a725c53570c22e42cb12089911a9d3d95a9fc
                     "th": "⊢ has_real_integral (λx. 0) 0 s"
                 },
                 {
@@ -1953,7 +1949,6 @@
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
                     "param_a": "(0::real)",
-<<<<<<< HEAD
                     "theorem": "exI"
                 },
                 {
@@ -2161,8 +2156,6 @@
                     "goal_id": "9",
                     "method_name": "apply_backward_step",
                     "param_a": "l + k",
-=======
->>>>>>> 661a725c53570c22e42cb12089911a9d3d95a9fc
                     "theorem": "exI"
                 },
                 {
