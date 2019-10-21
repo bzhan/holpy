@@ -2563,26 +2563,32 @@
             "type": "'a => 'a => bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "less_eq",
             "rules": [
                 {
-                    "prop": "m <= 0 ⟷ m = 0"
+                    "prop": "m ≤ 0 ⟷ m = 0"
                 },
                 {
-                    "prop": "m <= Suc n ⟷ m = Suc n | m <= n"
+                    "prop": "m ≤ Suc n ⟷ m = Suc n ∨ m ≤ n"
                 }
             ],
             "ty": "def.ind",
             "type": "nat => nat => bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "less",
             "rules": [
                 {
                     "prop": "m < 0 ⟷ false"
                 },
                 {
-                    "prop": "m < Suc n ⟷ m = n | m < n"
+                    "prop": "m < Suc n ⟷ m = n ∨ m < n"
                 }
             ],
             "ty": "def.ind",
@@ -2605,7 +2611,159 @@
                 "hint_rewrite"
             ],
             "name": "lesseq_Suc_less",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ Suc m = 0 ⟷ false"
+                },
+                {
+                    "args": "nat_less_eq_def_1, Suc m ≤ 0 ⟷ false",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc m ≤ 0 ⟷ false"
+                },
+                {
+                    "args": "nat_less_def_1, Suc m ≤ 0 ⟷ m < 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc m ≤ 0 ⟷ m < 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ∀n. Suc m ≤ n ⟷ m < n ⟶ Suc m ≤ Suc n ⟷ m < Suc n"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. Suc m ≤ n ⟷ m < n, x: n}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Suc m ≤ n ⟷ m < n"
+                }
+            ],
             "prop": "Suc m ≤ n ⟷ m < n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "nat_less_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "nat_less_eq_def_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "less_Suc_lesseq",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ m = 0 ∨ false ⟷ m = 0"
+                },
+                {
+                    "args": "nat_less_def_1, m = 0 ∨ m < 0 ⟷ m = 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m = 0 ∨ m < 0 ⟷ m = 0"
+                },
+                {
+                    "args": "nat_less_def_2, m < Suc 0 ⟷ m = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m < Suc 0 ⟷ m = 0"
+                },
+                {
+                    "args": "nat_less_eq_def_1, m < Suc 0 ⟷ m ≤ 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ m < Suc 0 ⟷ m ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ∀n. m < Suc n ⟷ m ≤ n ⟶ m < Suc (Suc n) ⟷ m ≤ Suc n"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. m < Suc n ⟷ m ≤ n, x: n}",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ m < Suc n ⟷ m ≤ n"
+                }
+            ],
+            "prop": "m < Suc n <--> m <= n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "nat_less_def_2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "nat_less_def_1"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -2640,6 +2798,126 @@
             "ty": "thm",
             "vars": {
                 "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_resolve",
+                "hint_rewrite",
+                "hint_backward"
+            ],
+            "name": "le_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nat_less_eq_def_1, (0::nat) ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::nat) ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. 0 ≤ n ⟶ 0 ≤ Suc n"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "0 ≤ n",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ n ⊢ 0 ≤ n"
+                },
+                {
+                    "args": "disjI2, {}, {A: 0 = Suc n, B: 0 ≤ n}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ n ⊢ 0 = Suc n ∨ 0 ≤ n"
+                },
+                {
+                    "args": "nat_less_eq_def_2, 0 ≤ Suc n",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ n ⊢ 0 ≤ Suc n"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. 0 ≤ n ⟶ 0 ≤ Suc n"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn::nat. 0 ≤ n, x: n}",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ n"
+                }
+            ],
+            "prop": "0 ≤ n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "nat_less_eq_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "nat_less_eq_def_2"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "less_0",
+            "prop": "0 < Suc n",
+            "ty": "thm",
+            "vars": {
                 "n": "nat"
             }
         },

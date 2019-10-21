@@ -150,6 +150,10 @@ class add_conv(Conv):
     def eval(self, thy, t):
         return Thm.mk_equals(t, to_binary(from_binary(t.arg1) + from_binary(t.arg)))
 
+# t = f x --> f = t.head, x = t.arg
+# t = f x y --> f = t.head, x = t.arg1, y = t.arg
+# t = f x y z --> f = t.head, [x, y, z] = t.args
+
     def get_proof_term(self, thy, t):
         if not (is_plus(t) and is_binary(t.arg1) and is_binary(t.arg)):
             raise ConvException("add_conv")

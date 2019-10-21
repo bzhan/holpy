@@ -56,7 +56,7 @@
             "name": "exists1",
             "prop": "exists1 P <--> ((∃x. P x) ∧ (∀y. P y ⟶ y = x))",
             "ty": "def",
-            "type": "('a => bool) => bool"
+            "type": "('a ⇒ bool) ⇒ bool"
         },
         {
             "attributes": [
@@ -157,7 +157,8 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_resolve"
             ],
             "name": "trueI",
             "prop": "true",
