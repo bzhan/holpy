@@ -1,0 +1,38 @@
+{
+    "content": [
+        {
+            "args": [],
+            "constrs": [
+                {
+                    "args": [
+                        "v"
+                    ],
+                    "name": "Char",
+                    "type": "nat => char"
+                }
+            ],
+            "name": "char",
+            "ty": "type.ind"
+        },
+        {
+            "args": [],
+            "constrs": [
+                {
+                    "args": [
+                        "s"
+                    ],
+                    "name": "String",
+                    "type": "char list => string"
+                }
+            ],
+            "name": "string",
+            "ty": "type.ind"
+        }
+    ],
+    "description": "Strings",
+    "imports": [
+        "nat",
+        "list"
+    ],
+    "name": "string"
+}

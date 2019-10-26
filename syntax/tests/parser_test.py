@@ -340,6 +340,21 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(t2.checked_get_type(), T)
             self.assertEqual(print_term(thy, t2, unicode=True), s2)
 
+    def testParseString(self):
+        thy = basic.load_theory('string')
+        ctxt = {'vars': {}}
+        test_data = [
+            ("'a'", "char"),
+            ('"ab"', "string"),
+        ]
+
+        for s, Ts in test_data:
+            T = parser.parse_type(thy, Ts)
+            t = parser.parse_term(thy, ctxt, s)
+            self.assertIsInstance(t, Term)
+            self.assertEqual(t.checked_get_type(), T)
+            self.assertEqual(print_term(thy, t), s)
+
     def testParseInterval(self):
         thy = basic.load_theory('iterate')
         ctxt = {'vars': {

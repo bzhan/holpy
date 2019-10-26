@@ -154,6 +154,16 @@ class ITE(AST):
         self.a2 = a2
         self.T = T
 
+class Char(AST):
+    def __init__(self, c):
+        self.ty = "char"
+        self.c = c
+
+class String(AST):
+    def __init__(self, s):
+        self.ty = "string"
+        self.s = s
+
 class Interval(AST):
     def __init__(self, left, right, T):
         self.ty = "interval"
@@ -239,6 +249,7 @@ def get_ast_term(thy, t):
     from data import set
     from data import function
     from data import interval
+    from data import string
 
     def get_priority(t):
         """Obtain the binding priority of the top-most operation of t."""
@@ -282,6 +293,7 @@ def get_ast_term(thy, t):
                 res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
             return res
 
+        # Lists
         elif list.is_literal_list(t):
             items = list.dest_literal_list(t)
             res = List([helper(item, bd_vars) for item in items], t.get_type())
@@ -289,6 +301,7 @@ def get_ast_term(thy, t):
                 res = Bracket(ShowType(res, get_ast_type(thy, res.T)))
             return res
 
+        # Sets
         elif set.is_literal_set(t):
             items = set.dest_literal_set(t)
             if set.is_empty_set(t):
@@ -299,6 +312,13 @@ def get_ast_term(thy, t):
             else:
                 return Set([helper(item, bd_vars) for item in items], t.get_type())
 
+        # Chars and Strings
+        elif string.is_char(t):
+            return Char(string.dest_char(t))
+        elif string.is_string(t):
+            return String(string.dest_string(t))
+
+        # Intervals
         elif interval.is_interval(t):
             return Interval(helper(t.arg1, bd_vars), helper(t.arg, bd_vars), t.get_type())
 
@@ -608,6 +628,10 @@ def print_ast(thy, ast, *, line_length=None):
                 rec(ast.a1)
                 add_normal(' else ')
                 rec(ast.a2)
+        elif ast.ty == "char":
+            add_normal("'" + ast.c + "'")
+        elif ast.ty == "string":
+            add_normal('"' + ast.s + '"')
         elif ast.ty == "interval":
             add_normal('{')
             rec(ast.left)
