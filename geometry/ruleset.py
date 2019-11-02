@@ -17,7 +17,7 @@ ruleset_raw = {
     # "D18": "eqangle(B, A, l, m ,n) :- eqangle(A, B, l, m, n)",
     # "D19": "eqangle(l, k, n, m) :- eqangle(k, l, m, n)",
     # "D20": "eqangle(m ,n ,k ,l) :- eqangle(k, l ,m ,n)",
-    # "D21": "eqangle(k, m ,l, n) :- eqangle(k, l, m, n)",
+    "D21": "eqangle(k, m ,l, n) :- eqangle(k, l, m, n)",
     "D22": "eqangle(a, b, e, f) :- eqangle(a, b, c, d), eqangle(c, d, e, f)",
     # "D24": "cong(C, D, A, B) :- cong(A, B, C, D)",
     # "D25": "cong(A, B, E, F) :- cong(A, B, C, D), cong(C, D, E, F)",
@@ -34,7 +34,8 @@ ruleset_raw = {
     # Use this rule to generate eqangle from two perp facts. (Written by myself)
     "D76": "eqangle(k, l, m, n) :- perp(k, l), perp(m ,n)",
     # (This one is also written by myself)
-    "D77": "perp(m, n) :- perp(k, l), eqangle(k, l, m, n)",
+    "D77": "perp(m, n) :-  eqangle(k, l, m, n), perp(k, l)",
+    "D78": "eqangle(l, k, m, n) :- perp(k, l), perp(m, n)",
 }
 
 ruleset = dict()

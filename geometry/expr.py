@@ -4,6 +4,7 @@ import itertools, copy
 
 POINT, LINE, PonL, SEG, TRI, CIRC, CYCL = range(7)
 
+
 def get_arg_type_by_fact(fact):
     """Obtain the type of given argument by a given pred_name of a fact.
     Return a list of types.
@@ -27,6 +28,7 @@ def get_arg_type_by_fact(fact):
         return TRI
     else:
         raise NotImplementedError
+
 
 class Fact:
     """Represent a fact in geometry prover, e.g.:
@@ -147,6 +149,7 @@ class Circle:
                 self.args = self.args.union(other.args)
             if other.center and not self.center:
                 self.center = other.center
+
 
 class Rule:
     """Represent a rule in geometry prover, e.g.:
@@ -271,10 +274,21 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
     elif arg_ty == LINE:
         groups = []
         i = 0
-        while i < len(f.args):
-            groups.append((f.args[i], f.args[i + 1]))
-            i += 2
-        comb = list(itertools.combinations(groups, len(pat.args)))
+        if f.pred_name == "eqangle":
+            while i < len(f.args):
+                groups.append((f.args[i], f.args[i + 1], f.args[i + 2], f.args[i + 3]))
+                i += 4
+            ls = list(itertools.combinations(groups, int(len(pat.args) / 2)))
+            comb = []
+            for l in ls:
+                comb.append(((l[0][0], l[0][1]), (l[0][2], l[0][3]), (l[1][0], l[1][1]), (l[1][2], l[1][3])))
+
+        else:
+            while i < len(f.args):
+                groups.append((f.args[i], f.args[i + 1]))
+                i += 2
+            comb = list(itertools.permutations(groups, len(pat.args)))
+
         for c in comb:
             t_inst = copy.copy(inst)
             flag = False
@@ -349,10 +363,20 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
         groups = []
         i = 0
         # Generate possible lines selections (two lines in one selection).
-        while i < len(f.args):
-            groups.append((f.args[i], f.args[i + 1]))
-            i += 2
-        lines_comb = list(itertools.combinations(groups, int(len(pat.args) / 2)))
+        if f.pred_name == "eqangle":
+            while i < len(f.args):
+                groups.append((f.args[i], f.args[i + 1], f.args[i + 2], f.args[i + 3]))
+                i += 4
+            ls = list(itertools.combinations(groups, int(len(pat.args) / 4)))
+            lines_comb = []
+            for l in ls:
+                lines_comb.append(((l[0][0], l[0][1]), (l[0][2], l[0][3]), (l[1][0], l[1][1]), (l[1][2], l[1][3])))
+
+        else:
+            while i < len(f.args):
+                groups.append((f.args[i], f.args[i + 1]))
+                i += 2
+            lines_comb = list(itertools.combinations(groups, int(len(pat.args) / 2)))
         # Previous inst
         base_inst = copy.copy(inst)
         for c in lines_comb:
@@ -398,7 +422,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
             new_insts.extend(selection_insts)
 
     elif arg_ty == CYCL:
-        c = get_circle(circles, f.args)
+        c = get_circle(circles, list(f.args))
         flag = False
         fixed = []  # arguments in pattern that are also in inst.
         same_args = list(set(pat.args).intersection(set(inst.keys())))
@@ -466,6 +490,7 @@ def match_expr(pat, f, inst, *, lines=None, circles=None):
 
     else:
         raise NotImplementedError
+
     return new_insts
 
 
@@ -517,9 +542,9 @@ def make_new_circles(facts, circles):
     for fact in facts:
         if fact.pred_name in ("cyclic", "circle"):
             if fact.pred_name == "cyclic":
-                new_circle = Circle(fact.args)
+                new_circle = Circle(list(fact.args))
             if fact.pred_name == "circle":
-                new_circle = Circle(fact.args[1:], center=fact.args[0])
+                new_circle = Circle(list(fact.args[1:]), center=fact.args[0])
             same = [inx for inx, _ in enumerate(circles) if new_circle.is_same_circle(circles[inx])]
             if len(same) >= 1:
                 circles[same[0]].combine(new_circle)
@@ -531,7 +556,8 @@ def make_new_circles(facts, circles):
     while length != len(circles):
         length = len(circles)
         for circle in circles:
-            same = [inx for inx, _ in enumerate(circles) if circle.is_same_circle(circles[inx]) and circle is not circles[inx]]
+            same = [inx for inx, _ in enumerate(circles) if
+                    circle.is_same_circle(circles[inx]) and circle is not circles[inx]]
             if len(same) > 0:
                 circles[same[0]].combine(circle)
                 circles.remove(circle)
@@ -648,14 +674,30 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
             raise NotImplementedError
 
         if record:
-            new_fact = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=facts)
-            if not in_facts(new_facts, new_fact, lines, circles):
-                new_facts.append(new_fact)
+            new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=set(facts))
         else:
-            new_fact = Fact(rule.concl.pred_name, concl_args)
-            if not in_facts(new_facts, new_fact, lines, circles):
-                new_facts.append(new_fact)
+            new = Fact(rule.concl.pred_name, concl_args)
+        print("|||||||<new>: ", new, "|||||||")
+        print("From: ", facts)
+        print("prev new_facts:", new_facts)
 
+        flg = False
+        for i in range(len(new_facts)):
+            r = combine_facts(new, new_facts[i], lines, circles)
+            if r:
+                flg = True
+                new_facts[i] = r
+                break
+
+        if not flg:
+            new_facts.append(new)
+        if not new_facts:
+            new_facts.append(new)
+
+        print("combined new_facts: ", new_facts)
+
+    if new_facts:
+        print("In apply_rule: ", new_facts)
     return new_facts
 
 
@@ -675,7 +717,7 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None):
     assert isinstance(rule, Rule)
     assert isinstance(hyps, list)
     assert all(isinstance(fact, Fact) for fact in hyps)
-    new_facts = []
+    new = []
 
     for seq in itertools.permutations(range(len(hyps)), len(rule.assums)):
         facts = []
@@ -685,17 +727,16 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None):
         if only_updated:
             updated = [fact for fact in facts if fact.updated]
             if len(updated) > 0:
-                fs = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
-                for f in fs:
-                    if not in_facts(new_facts, f, lines, circles):
-                        new_facts.append(f)
+                n = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
+                new = combine_facts_list(n, new, lines, circles)
         else:
             fs = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
-            for f in fs:
-                if not in_facts(new_facts, f, lines, circles):
-                    new_facts.append(f)
+            n = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
+            new = combine_facts_list(n, new, lines, circles)
 
-    return new_facts
+    if new:
+        print('In apply_rule_hyps:', rule, new)
+    return new
 
 
 def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=None):
@@ -708,18 +749,48 @@ def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=No
     assert isinstance(ruleset, dict)
     assert all(isinstance(rule, Rule) and isinstance(name, str) for name, rule in ruleset.items())
 
-    new_facts = []
+    new = []
     for _, rule in ruleset.items():
         if only_updated:
-            unique = [fact for fact in apply_rule_hyps(rule, hyps, only_updated=True, lines=lines, circles=circles)
-                      if not in_facts(new_facts, fact, lines, circles)]
+            n = apply_rule_hyps(rule, hyps, only_updated=True, lines=lines, circles=circles)
         else:
-            unique = [fact for fact in apply_rule_hyps(rule, hyps, lines=lines, circles=circles)
-                      if not in_facts(new_facts, fact, lines, circles)]
+            n = apply_rule_hyps(rule, hyps, lines=lines, circles=circles)
+        new = combine_facts_list(n, new, lines, circles)
 
-        new_facts.extend(unique)
+    if new:
+        print('In apply_ruleset_hyps:', new)
+    return new
 
-    return new_facts
+
+
+    # for _, rule in ruleset.items():
+    #     if only_updated:
+    #         unique = [fact for fact in apply_rule_hyps(rule, hyps, only_updated=True, lines=lines, circles=circles)
+    #                   if not in_facts(new_facts, fact, lines, circles)]
+    #     else:
+    #         unique = [fact for fact in apply_rule_hyps(rule, hyps, lines=lines, circles=circles)
+    #                   if not in_facts(new_facts, fact, lines, circles)]
+
+        # new_facts.extend(unique)
+
+
+def combine_facts_list(facts, target, lines, circles):
+    """
+    Combine a list of facts with another list of facts.
+    Use combine_facts() to combine every two facts in separate list.
+    Return a combined list.
+    """
+    for f in range(len(facts)):
+        s = False
+        for t in range(len(target)):
+            r = combine_facts(facts[f], target[t], lines, circles)
+            if r:
+                target[t] = r
+                s = True
+                break
+        if not s:
+            target.append(facts[f])
+    return target
 
 
 def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
@@ -741,9 +812,10 @@ def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
         new_facts = apply_ruleset_hyps(ruleset, hyps, lines=lines, circles=circles)
 
     # Update the list of facts.
-    for new_fact in new_facts:
-        if not in_facts(hyps, new_fact, lines, circles):
-            hyps.append(new_fact)
+    # print(new_facts)
+    hyps = combine_facts_list(new_facts, hyps, lines, circles)
+    print("In search_step: ", hyps)
+    print("+++++++++++++++++++")
 
 
 def search_fixpoint(ruleset, hyps, lines, circles, concl):
@@ -765,12 +837,14 @@ def search_fixpoint(ruleset, hyps, lines, circles, concl):
     t = 0
 
     while hyps != prev_hyps or lines != prev_lines or circles != prev_circles:
+    # while t < 2:
         prev_hyps = copy.copy(hyps)
         prev_lines = copy.copy(lines)
         prev_circles = copy.copy(circles)
         search_step(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
         if in_facts(hyps, concl, lines, circles):
             break
+        # t += 1
     return hyps
 
 
@@ -779,33 +853,153 @@ def combine_facts(fact, goal, lines, circles):
     Combine this fact to other fact.
     Return a combined long fact if succeed.
     """
+    new_goal = copy.deepcopy(goal)
     if fact.pred_name != goal.pred_name:
-        return None
+        return False
 
-    if fact.pred_name in ('para'):
-        pass
+    if fact.pred_name == "perp":
+        fact_lines = [get_line(lines, (fact.args[0], fact.args[1])), get_line(lines, (fact.args[2], fact.args[3]))]
+        goal_lines = [get_line(lines, (goal.args[0], goal.args[1])), get_line(lines, (goal.args[2], goal.args[3]))]
+        if fact_lines == goal_lines:
+            return goal
+        return False
+
+    if fact.pred_name == 'coll':
+        fact_pts = set(fact.args)
+        goal_pts = set(goal.args)
+        new_goal_pts = goal_pts.union(fact_pts)
+        if len(goal_pts) + len(fact_pts) - len(new_goal_pts) >= 2:
+            new_goal.args = list(new_goal_pts)
+            # new_goal.cond.append(fact.cond)
+            return new_goal
+        else:
+            # goal = prev
+            return False
+
+    elif fact.pred_name == 'circle':
+        fact_circle = get_circle(circles, fact.args[1:], center=fact.args[0])
+        goal_circle = get_circle(circles, goal.args[1:], center=goal.args[0])
+        if fact_circle.is_same_circle(goal_circle):
+            new_goal.args = set(fact.args).union(set(goal.args))
+            # new_goal.cond.append(fact.cond)
+            return new_goal
+        else:
+            # goal = prev
+            return False
+
+    elif fact.pred_name == 'cyclic':
+        fact_circle = get_circle(circles, list(fact.args))
+        goal_circle = get_circle(circles, list(goal.args))
+        if fact_circle.is_same_circle(goal_circle):
+            new_goal.args = set(fact.args).union(set(goal.args))
+            # new_goal.cond.append(fact.cond)
+            return new_goal
+        else:
+            # goal = prev
+            return False
+
+    elif fact.pred_name in ('eqratio', 'cong'):
+        flg = False
+        i, j = 0, 0
+        while i < len(fact.args):
+            t_flg = False
+            j = 0
+            while j < len(goal.args):
+                if (fact.args[i] == goal.args[j] and fact.args[i + 1] == goal.args[j + 1]) or \
+                        (fact.args[i] == goal.args[j + 1] and fact.args[i + 1] == goal.args[j]):
+                    flg = True
+                    t_flg = True
+                    break
+                j += 2
+            if not t_flg:
+                new_goal.args.extend(fact.args[i])
+                new_goal.args.extend(fact.args[i + 1])
+            i += 2
+        # if not flg:
+        #     goal = prev
+        if not flg:
+            return False
+        # new_goal.cond.append(fact.cond)
+        return new_goal
+
+    elif fact.pred_name == 'para':
         # Two facts that have the pred_name "para" can be combined
         # if they have at least one identical line.
-
         # Get all lines in fact and goal.
-        fact_lines, goal_lines = set(), set()
+        prev_goal_args = copy.copy(goal.args)
+        fact_pts, goal_pts = [], []
         i = 0
         while i < len(fact.args):
-            fact_lines.add(get_line(lines, (fact.args[i], fact.args[i + 1])))
+            fact_pts.append((fact.args[i], fact.args[i + 1]))
             i += 2
         i = 0
         while i < len(goal.args):
-            goal_lines.add(get_line(lines, (fact.args[i], fact.args[i + 1])))
+            goal_pts.append((goal.args[i], goal.args[i + 1]))
             i += 2
+        fact_lines = [get_line(lines, pair) for pair in fact_pts]
+        goal_lines = [get_line(lines, pair) for pair in goal_pts]
+        flg = False
+        for idx, fact_line in enumerate(fact_lines):
+            t_flg = False
+            for goal_line in goal_lines:
+                if fact_line.is_same_line(goal_line):
+                    flg = True
+                    t_flg = True
+                    break
+            if not t_flg:
+                new_goal.args.extend(fact_pts[idx])
+        # if not flg:
+        #     goal = prev
+        if not flg:
+            return False
+        # new_goal.cond.append(fact.cond)
+        return new_goal
 
-        same = fact_lines - goal_lines
-        if len(same) > 0:
-            pass
-        else:
-            return None
+    elif fact.pred_name == "eqangle":
+        # print(fact, ",", goal, end=" -> ")
+        # prev_goal_args = copy.copy(goal.args)
+        fact_pts, goal_pts = [], []
+        i = 0
+        while i < len(fact.args):
+            fact_pts.append((fact.args[i], fact.args[i + 1]))
+            i += 2
+        i = 0
+        while i < len(goal.args):
+            goal_pts.append((goal.args[i], goal.args[i + 1]))
+            i += 2
+        fact_lines = [get_line(lines, pair) for pair in fact_pts]
+        goal_lines = [get_line(lines, pair) for pair in goal_pts]
+
+        flg = False
+        i, j = 0, 0
+        while i < len(fact_lines):
+            t_flg = False
+            j = 0
+            while j < len(goal_lines):
+                if fact_lines[i].is_same_line(goal_lines[j]) and fact_lines[i + 1].is_same_line(goal_lines[j + 1]):
+                    flg = True
+                    t_flg = True
+                    break
+                j += 2
+            if not t_flg:
+                new_goal.args.extend(fact_pts[i])
+                new_goal.args.extend(fact_pts[i + 1])
+            i += 2
+        if not flg:
+            return False
+        # new_goal.cond = fact.cond
+        if fact.cond:
+            if new_goal.cond:
+                new_goal.cond = new_goal.cond.union(fact.cond)
+            else:
+                new_goal.cond = fact.cond
+        print("cond: ", new_goal.cond)
+        return new_goal
 
     else:
-        raise NotImplementedError
+        if fact.args == goal.args:
+            return goal
+        return False
 
 
 def match_goal(fact, goal, lines, circles):
@@ -877,7 +1071,8 @@ def find_goal(facts, goal, lines, circles):
 
     """
     for fact in facts:
-        if match_goal(fact, goal, lines, circles):
+        # if match_goal(fact, goal, lines, circles):
+        if combine_facts(fact, goal, lines, circles):
             return fact
 
     return None
@@ -885,29 +1080,32 @@ def find_goal(facts, goal, lines, circles):
 
 def in_facts(facts, goal, lines, circles):
     """Check if a fact refers to the similar fact in a list.
-    match_goal() defines the details.
     """
     for fact in facts:
-        if match_goal(fact, goal, lines, circles):
+        r = combine_facts(goal, fact, lines, circles)
+        if r:
             return True
     return False
+
 
 def rewrite_fact(fact):
     """Generate more explicit form of given fact in terms of printing (if possible). """
     if fact.pred_name == "eqangle":
-        return "∠[" + fact.args[0] + fact.args[1] + "," + fact.args[2] + fact.args[3] + "]" + " = ∠[" \
-               + fact.args[4] + fact.args[5] + "," + fact.args[6] + fact.args[7] + "]"
+        s = ""
+        i = 0
+        while i < len(fact.args):
+            s = s + "∠[" + fact.args[i] + fact.args[i + 1] + "," + fact.args[i + 2] + fact.args[i + 3] + "] = "
+            i += 4
+        return s[:-3]
     else:
         return str(fact)
 
 
 def print_search(ruleset, facts, concl):
     """Print the process of searching fixpoint.
-
     The given list of facts must contains all the deduce procedures
     (as parameters of facts in the list). Using a given ruleset to
     find out the name of rules used in deduce procedures.
-    
     """
 
     def print_step(fact):
