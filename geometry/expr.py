@@ -563,65 +563,6 @@ def make_new_circles(facts, circles):
                 circles.remove(circle)
 
 
-def get_short_facts(fact):
-    """
-    If a given fact has two or more arguments,
-    return a list of shorter facts that can be deduced from this fact with given quantity of arguments.
-    Notice: Different sequences of arguments in a shorter fact are not considered.
-            Some rules in ruleset will handle this.
-    Only fact has enough arguments and has pred_name of para, eqangle, cong, eqratio or simtri take effect.
-    A list with all short facts will be returned. Otherwise, return a list only has the given fact.
-    """
-
-    def get_short_args(args, length):
-        arranged = []
-        idx = 0
-        while idx < len(args):
-            arranged.append(args[idx:idx + length])
-            idx += length
-        return arranged
-
-    def args_to_facts(arranged):
-        short_args = itertools.combinations(arranged, 2)
-        short_args = [list(itertools.chain.from_iterable(short_arg)) for short_arg in short_args]
-        short_facts = [Fact(fact.pred_name, short_arg, updated=fact.updated, lemma=fact.lemma, cond=fact.cond)
-                       for short_arg in short_args]
-        return short_facts
-
-    pred_name = fact.pred_name
-    if pred_name == "para":
-        if len(fact.args) == 2:
-            return fact
-        arranged = []
-        idx = 0
-        while idx < len(fact.args):
-            if fact.args[idx].isupper():
-                assert fact.args[idx + 1].isupper()
-                arranged.append([fact.args[idx], fact.args[idx + 1]])
-                idx += 2
-            elif fact.args[idx].islower():
-                arranged.append(fact.args[idx])
-                idx += 1
-        return args_to_facts(arranged)
-    if pred_name == "eqangle" and pred_name == "eqratio":
-        assert len(fact.args) % 4 == 0
-        if len(fact.args) == 8:
-            return [fact]
-        return args_to_facts(get_short_args(fact.args, 4))
-    elif pred_name == "simtri":
-        assert len(fact.args) % 3 == 0
-        if len(fact.args) == 6:
-            return [fact]
-        return args_to_facts(get_short_args(fact.args, 3))
-    elif pred_name == "cong":
-        assert len(fact.args) % 2 == 0
-        if len(fact.args) == 4:
-            return [fact]
-        return args_to_facts(get_short_args(fact.args, 2))
-    else:
-        return [fact]
-
-
 def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
     """Apply given rule to the list of facts, returns a list of new
     facts that can be derived from the rule.

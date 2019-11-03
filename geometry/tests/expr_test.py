@@ -272,19 +272,6 @@ class ExprTest(unittest.TestCase):
             expr.make_new_circles(facts, circles)
             self.assertEqual(set(combined), set(circles))
 
-    def testGetShortFacts(self):
-        test_data = [
-            ["cong(A, B, C, D, E, F)", ["cong(A, B, C, D)", "cong(A, B, E, F)", "cong(C, D, E, F)"]],
-            ["simtri(A, B, C, D, E, F, P, Q, R)", ["simtri(A, B, C, D, E, F)", "simtri(A, B, C, P, Q, R)",
-                                                   "simtri(D, E, F, P, Q, R)"]],
-            ["para(l, A, B, m)", ["para(l, A, B)", "para(l, m)", "para(A, B, m)"]],
-            ["perp(l, m)", ["perp(l, m)"]],
-        ]
-        for fact, concls in test_data:
-            fact = parser.parse_fact(fact)
-            concls = [parser.parse_fact(concl) for concl in concls]
-            short_facts = expr.get_short_facts(fact)
-            self.assertEqual(set(concls), set(short_facts))
 
     def testApplyRuleHyps(self):
         test_data = [
@@ -372,7 +359,7 @@ class ExprTest(unittest.TestCase):
         print('Deductions of long facts are not printed correctly now (Although the processes of deduction '
               'are correct). ')
         print()
- 
+
         for rules, hyps, lines, circles, concl in test_data:
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concl = parser.parse_fact(concl)
