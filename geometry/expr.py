@@ -677,9 +677,9 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
             new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=set(facts))
         else:
             new = Fact(rule.concl.pred_name, concl_args)
-        print("|||||||<new>: ", new, "|||||||")
-        print("From: ", facts)
-        print("prev new_facts:", new_facts)
+        # print("|||||||<new>: ", new, "|||||||")
+        # print("From: ", facts)
+        # print("prev new_facts:", new_facts)
 
         flg = False
         for i in range(len(new_facts)):
@@ -694,10 +694,10 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
         if not new_facts:
             new_facts.append(new)
 
-        print("combined new_facts: ", new_facts)
-
-    if new_facts:
-        print("In apply_rule: ", new_facts)
+        # print("combined new_facts: ", new_facts)
+    #
+    # if new_facts:
+    #     print("In apply_rule: ", new_facts)
     return new_facts
 
 
@@ -734,8 +734,8 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None):
             n = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
             new = combine_facts_list(n, new, lines, circles)
 
-    if new:
-        print('In apply_rule_hyps:', rule, new)
+    # if new:
+    #     print('In apply_rule_hyps:', rule, new)
     return new
 
 
@@ -757,8 +757,8 @@ def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=No
             n = apply_rule_hyps(rule, hyps, lines=lines, circles=circles)
         new = combine_facts_list(n, new, lines, circles)
 
-    if new:
-        print('In apply_ruleset_hyps:', new)
+    # if new:
+    #     print('In apply_ruleset_hyps:', new)
     return new
 
 
@@ -814,8 +814,8 @@ def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
     # Update the list of facts.
     # print(new_facts)
     hyps = combine_facts_list(new_facts, hyps, lines, circles)
-    print("In search_step: ", hyps)
-    print("+++++++++++++++++++")
+    # print("In search_step: ", hyps)
+    # print("+++++++++++++++++++")
 
 
 def search_fixpoint(ruleset, hyps, lines, circles, concl):
@@ -867,10 +867,9 @@ def combine_facts(fact, goal, lines, circles):
     if fact.pred_name == 'coll':
         fact_pts = set(fact.args)
         goal_pts = set(goal.args)
-        new_goal_pts = goal_pts.union(fact_pts)
-        if len(goal_pts) + len(fact_pts) - len(new_goal_pts) >= 2:
-            new_goal.args = list(new_goal_pts)
-            # new_goal.cond.append(fact.cond)
+        new_pts = goal_pts.union(fact_pts)
+        if len(fact_pts) + len(goal_pts) - len(new_pts) >= 2:
+            new_goal.args = new_pts
             return new_goal
         else:
             # goal = prev
@@ -988,12 +987,12 @@ def combine_facts(fact, goal, lines, circles):
         if not flg:
             return False
         # new_goal.cond = fact.cond
-        if fact.cond:
-            if new_goal.cond:
-                new_goal.cond = new_goal.cond.union(fact.cond)
-            else:
-                new_goal.cond = fact.cond
-        print("cond: ", new_goal.cond)
+        # if fact.cond:
+        #     if new_goal.cond:
+        #         new_goal.cond = new_goal.cond.union(fact.cond)
+        #     else:
+        #         new_goal.cond = fact.cond
+        # print("cond: ", new_goal.cond)
         return new_goal
 
     else:
