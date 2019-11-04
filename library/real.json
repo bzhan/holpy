@@ -265,9 +265,12 @@
             "vars": {}
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "real_mul_linv",
-            "prop": "~(x = 0) --> real_inverse x * x = 1",
+            "prop": "¬x = 0 ⟶ real_inverse x * x = 1",
             "ty": "thm",
             "vars": {
                 "x": "real"
