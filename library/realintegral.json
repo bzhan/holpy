@@ -2932,7 +2932,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": "real_integrable_add",
+            "name": "real_integrable_sub",
             "num_gaps": 0,
             "proof": [
                 {
@@ -3574,6 +3574,1666 @@
                 "f": "'a => real => real",
                 "s": "real set",
                 "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_forward",
+                "hint_backward"
+            ],
+            "name": "has_real_integral_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ (∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ ∀x. g x = f x - (f x - g x)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "real_neg_neg, g x = --g x",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ g x = --g x"
+                },
+                {
+                    "args": "real_add_lid, g x = 0 + --g x",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ g x = 0 + --g x"
+                },
+                {
+                    "args": "real_add_rinv, g x = f x + -f x + --g x",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ g x = f x + -f x + --g x"
+                },
+                {
+                    "args": "real_add_assoc, g x = f x + (-f x + --g x)",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ g x = f x + (-f x + --g x)"
+                },
+                {
+                    "args": "real_neg_add, g x = f x + -(f x + -g x)",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ g x = f x + -(f x + -g x)"
+                },
+                {
+                    "args": "real_minus_def, g x = f x - (f x - g x)",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ g x = f x - (f x - g x)"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ ∀x. g x = f x - (f x - g x)"
+                },
+                {
+                    "args": "extension",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ g = (λx. f x - (f x - g x))"
+                },
+                {
+                    "args": "real_add_rid, k = k + 0",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ k = k + 0"
+                },
+                {
+                    "args": "real_neg_0, k = k + -0",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ k = k + -0"
+                },
+                {
+                    "args": "real_minus_def, k = k - 0",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ k = k - 0"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ has_real_integral f k s"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ ∀x. x ∈ s ⟶ f x - g x = 0"
+                },
+                {
+                    "args": "x, real",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "7.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∀x. x ∈ s ⟶ f x = g x, B: has_real_integral f k s}",
+                    "id": "7.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ ∀x. x ∈ s ⟶ f x = g x"
+                },
+                {
+                    "args": "",
+                    "id": "7.3",
+                    "prevs": [
+                        "7.2",
+                        "7.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s, x ∈ s ⊢ f x = g x"
+                },
+                {
+                    "args": "real_sub_0, f x - g x = 0",
+                    "id": "7.4",
+                    "prevs": [
+                        "7.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s, x ∈ s ⊢ f x - g x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "7.5",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.4"
+                    ],
+                    "rule": "intros",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ ∀x. x ∈ s ⟶ f x - g x = 0"
+                },
+                {
+                    "args": "has_real_integral_is_0",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ has_real_integral (λx. f x - g x) 0 s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9",
+                    "prevs": [
+                        "6",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ has_real_integral f k s ∧ has_real_integral (λx. f x - g x) 0 s"
+                },
+                {
+                    "args": "has_real_integral_sub",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ has_real_integral (λx. f x - (f x - g x)) (k - 0) s"
+                },
+                {
+                    "args": "has_real_integral (λx. f x - (f x - g x)) k s",
+                    "id": "11",
+                    "prevs": [
+                        "5",
+                        "10",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ has_real_integral (λx. f x - (f x - g x)) k s"
+                },
+                {
+                    "args": "has_real_integral g k s",
+                    "id": "12",
+                    "prevs": [
+                        "2",
+                        "11",
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⊢ has_real_integral g k s"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [
+                        "0",
+                        "12"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⟶ has_real_integral g k s"
+                }
+            ],
+            "prop": "(∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s ⟶ has_real_integral g k s",
+            "steps": [
+                {
+                    "goal": "g = %x. f x - (%x. f x - g x) x",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "extension"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_neg_add"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_assoc"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_rinv"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_lid"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_neg_neg"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "k = k -0",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_neg_0"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_sub"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_is_0"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "7.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_sub_0"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "7.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "7.2"
+                    ],
+                    "goal_id": "7.3",
+                    "method_name": "apply_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "k": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_integrable_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s ⊢ (∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∀x. x ∈ s ⟶ f x = g x, B: real_integrable_on f s}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s ⊢ ∀x. x ∈ s ⟶ f x = g x"
+                },
+                {
+                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ f x = g x, B: real_integrable_on f s}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s ⊢ real_integrable_on f s"
+                },
+                {
+                    "args": "real_integrable_on_def",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s ⊢ ∃y. has_real_integral f y s"
+                },
+                {
+                    "args": "y, real",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "has_real_integral f y s",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral f y s ⊢ has_real_integral f y s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "1",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s, has_real_integral f y s ⊢ (∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f y s"
+                },
+                {
+                    "args": "has_real_integral_eq",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s, has_real_integral f y s ⊢ has_real_integral g y s"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λy. has_real_integral g y s, a: y}",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s, has_real_integral f y s ⊢ ∃a. has_real_integral g a s"
+                },
+                {
+                    "args": "real_integrable_on_def, real_integrable_on g s",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s, has_real_integral f y s ⊢ real_integrable_on g s"
+                },
+                {
+                    "args": "∃y. has_real_integral f y s",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "3",
+                        "4",
+                        "5",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s ⟶ real_integrable_on g s"
+                }
+            ],
+            "prop": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_integrable_on f s ⟶ real_integrable_on g s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "exists_elim",
+                    "names": "y"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "param_f": "f",
+                    "theorem": "has_real_integral_eq"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "has_real_integral_eq_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. x ∈ s ⟶ f x = g x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ f x = g x ⊢ ∀x. x ∈ s ⟶ f x = g x"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ f x = g x ⊢ has_real_integral f k s ⟶ has_real_integral g k s"
+                },
+                {
+                    "args": "has_real_integral f k s",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral f k s ⊢ has_real_integral f k s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1",
+                    "prevs": [
+                        "0",
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ f x = g x, has_real_integral f k s ⊢ (∀x. x ∈ s ⟶ f x = g x) ∧ has_real_integral f k s"
+                },
+                {
+                    "args": "has_real_integral_eq",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ f x = g x, has_real_integral f k s ⊢ has_real_integral g k s"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ f x = g x ⊢ has_real_integral f k s ⟶ has_real_integral g k s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ f x = g x ⊢ has_real_integral g k s ⟶ has_real_integral f k s"
+                },
+                {
+                    "args": "has_real_integral g k s",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral g k s ⊢ has_real_integral g k s"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ f x = g x, has_real_integral g k s ⊢ ∀x. x ∈ s ⟶ g x = f x"
+                },
+                {
+                    "args": "x, real",
+                    "id": "2.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "2.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "2.1.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "∀x. x ∈ s ⟶ f x = g x ⊢ x ∈ s ⟶ f x = g x"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.3",
+                    "prevs": [
+                        "2.1.2",
+                        "2.1.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀x. x ∈ s ⟶ f x = g x, x ∈ s ⊢ f x = g x"
+                },
+                {
+                    "args": "g x = f x",
+                    "id": "2.1.4",
+                    "prevs": [
+                        "2.1.3",
+                        "0",
+                        "2.1.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀x. x ∈ s ⟶ f x = g x, has_real_integral g k s, x ∈ s ⊢ g x = f x"
+                },
+                {
+                    "args": "",
+                    "id": "2.1.5",
+                    "prevs": [
+                        "2.1.0",
+                        "2.1.1",
+                        "2.1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ f x = g x, has_real_integral g k s ⊢ ∀x. x ∈ s ⟶ g x = f x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1",
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ f x = g x, has_real_integral g k s ⊢ (∀x. x ∈ s ⟶ g x = f x) ∧ has_real_integral g k s"
+                },
+                {
+                    "args": "has_real_integral_eq",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ f x = g x, has_real_integral g k s ⊢ has_real_integral f k s"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ f x = g x ⊢ has_real_integral g k s ⟶ has_real_integral f k s"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ f x = g x ⊢ has_real_integral f k s ⟷ has_real_integral g k s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ f x = g x) ⟶ has_real_integral f k s ⟷ has_real_integral g k s"
+                }
+            ],
+            "prop": "(∀x. x ∈ s ⟶ f x = g x) ⟶ (has_real_integral f k s = has_real_integral g k s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "param_f": "f",
+                    "theorem": "has_real_integral_eq"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "param_f": "g",
+                    "theorem": "has_real_integral_eq"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1.2",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.2",
+                        "2.1.1"
+                    ],
+                    "goal_id": "2.1.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.1.3"
+                    ],
+                    "goal_id": "2.1.4",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "k": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "has_real_integral_null",
+            "prop": "b ≤ a ⟶ has_real_integral f 0 (real_closed_interval a b)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "has_real_integral_null_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "b ≤ a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b ≤ a ⊢ b ≤ a"
+                },
+                {
+                    "args": "has_real_integral_null, {}, {a: a, b: b, f: f}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b ≤ a ⊢ has_real_integral f 0 (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integral_unique, {}, {f: f, k: real_closed_interval a b, y: (0::real)}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b ≤ a ⊢ real_integral (real_closed_interval a b) f = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "b ≤ a ⊢ has_real_integral f i (real_closed_interval a b) ⟶ i = 0"
+                },
+                {
+                    "args": "has_real_integral f i (real_closed_interval a b)",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral f i (real_closed_interval a b) ⊢ has_real_integral f i (real_closed_interval a b)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b ≤ a, has_real_integral f i (real_closed_interval a b) ⊢ has_real_integral f i (real_closed_interval a b) ∧ has_real_integral f 0 (real_closed_interval a b)"
+                },
+                {
+                    "args": "has_real_integral_unique",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b ≤ a, has_real_integral f i (real_closed_interval a b) ⊢ i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.0",
+                        "3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "b ≤ a ⊢ has_real_integral f i (real_closed_interval a b) ⟶ i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "b ≤ a ⊢ i = 0 ⟶ has_real_integral f i (real_closed_interval a b)"
+                },
+                {
+                    "args": "i = 0",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i = 0 ⊢ i = 0"
+                },
+                {
+                    "args": "has_real_integral f i (real_closed_interval a b)",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0",
+                        "1",
+                        "4.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "b ≤ a, i = 0 ⊢ has_real_integral f i (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.0",
+                        "4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "b ≤ a ⊢ i = 0 ⟶ has_real_integral f i (real_closed_interval a b)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b ≤ a ⊢ has_real_integral f i (real_closed_interval a b) ⟷ i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ b ≤ a ⟶ has_real_integral f i (real_closed_interval a b) ⟷ i = 0"
+                }
+            ],
+            "prop": "b ≤ a ⟶ (has_real_integral f i (real_closed_interval a b) <--> i = 0)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "theorem": "has_real_integral_null"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "param_f": "f",
+                    "param_i": "real_closed_interval a b",
+                    "theorem": "has_real_integral_unique"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.0"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real => real",
+                "i": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_integral_null",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "b ≤ a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b ≤ a ⊢ b ≤ a"
+                },
+                {
+                    "args": "has_real_integral_null, {}, {a: a, b: b, f: f}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b ≤ a ⊢ has_real_integral f 0 (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "b ≤ a ⊢ real_integral (real_closed_interval a b) f = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ b ≤ a ⟶ real_integral (real_closed_interval a b) f = 0"
+                }
+            ],
+            "prop": "b ≤ a ⟶ real_integral (real_closed_interval a b) f = 0",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_null"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_integrable_on_null",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "b ≤ a",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "b ≤ a ⊢ b ≤ a"
+                },
+                {
+                    "args": "has_real_integral_null, {}, {a: a, b: b, f: f}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b ≤ a ⊢ has_real_integral f 0 (real_closed_interval a b)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λy. has_real_integral f y (real_closed_interval a b), a: (0::real)}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "b ≤ a ⊢ ∃a1. has_real_integral f a1 (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integrable_on_def, real_integrable_on f (real_closed_interval a b)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "b ≤ a ⊢ real_integrable_on f (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ b ≤ a ⟶ real_integrable_on f (real_closed_interval a b)"
+                }
+            ],
+            "prop": "b ≤ a ⟶ real_integrable_on f (real_closed_interval a b)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::real)"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_null"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_resolve",
+                "hint_rewrite",
+                "hint_backward"
+            ],
+            "name": "has_real_integral_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ ∅ ⟶ f x = 0"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ ∅",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ ∅ ⊢ x ∈ ∅"
+                },
+                {
+                    "args": "member_empty, f x = 0",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "resolve_theorem",
+                    "th": "x ∈ ∅ ⊢ f x = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ ∅ ⟶ f x = 0"
+                },
+                {
+                    "args": "has_real_integral_is_0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ has_real_integral f 0 ∅"
+                }
+            ],
+            "prop": "has_real_integral f 0 ∅",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_is_0"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_real_integral_empty_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ has_real_integral f i ∅ ⟶ i = 0"
+                },
+                {
+                    "args": "has_real_integral f i ∅",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral f i ∅ ⊢ has_real_integral f i ∅"
+                },
+                {
+                    "args": "has_real_integral_empty, {}, {f: f}",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_integral f 0 ∅"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral f i ∅ ⊢ has_real_integral f i ∅ ∧ has_real_integral f 0 ∅"
+                },
+                {
+                    "args": "has_real_integral_unique",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral f i ∅ ⊢ i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_integral f i ∅ ⟶ i = 0"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ i = 0 ⟶ has_real_integral f i ∅"
+                },
+                {
+                    "args": "i = 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "i = 0 ⊢ i = 0"
+                },
+                {
+                    "args": "has_real_integral_empty, {}, {f: f}",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_integral f 0 ∅"
+                },
+                {
+                    "args": "has_real_integral f i ∅",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "i = 0 ⊢ has_real_integral f i ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ i = 0 ⟶ has_real_integral f i ∅"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ has_real_integral f i ∅ ⟷ i = 0"
+                }
+            ],
+            "prop": "has_real_integral f i ∅ ⟷ i = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "param_f": "f",
+                    "param_i": "({}::real set)",
+                    "theorem": "has_real_integral_unique"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_empty"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_resolve"
+            ],
+            "name": "real_integrable_on_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "eq_refl, {a: real}, {x: (0::real)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) = 0"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λy::real. y = 0, a: (0::real)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a::real. a = 0"
+                },
+                {
+                    "args": "has_real_integral_empty_eq, ∃y. has_real_integral f y ∅",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ∃y. has_real_integral f y ∅"
+                },
+                {
+                    "args": "real_integrable_on_def, real_integrable_on f ∅",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_integrable_on f ∅"
+                }
+            ],
+            "prop": "real_integrable_on f {}",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_integral_empty_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::real)"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_integral_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_integral_empty_eq, has_real_integral f 0 ∅",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_integral f 0 ∅"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_integral ∅ f = 0"
+                }
+            ],
+            "prop": "real_integral {} f = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_integral_empty_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": " has_real_integral_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_le_refl, {}, {x: a}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a ≤ a"
+                },
+                {
+                    "args": "has_real_integral_null, {}, {a: a, b: a, f: f}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_integral f 0 (real_closed_interval a a)"
+                }
+            ],
+            "prop": "has_real_integral f 0 (real_closed_interval a a)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_null"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_integrable_on_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_le_refl, {}, {x: a}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ a ≤ a"
+                },
+                {
+                    "args": "real_integrable_on_null, {}, {a: a, b: a, f: f}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_integrable_on f (real_closed_interval a a)"
+                }
+            ],
+            "prop": "real_integrable_on f (real_closed_interval a a)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_on_null"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_integral_refl",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": " has_real_integral_refl, {}, {a: a, f: f}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_integral f 0 (real_closed_interval a a)"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_integral (real_closed_interval a a) f = 0"
+                }
+            ],
+            "prop": "real_integral (real_closed_interval a a) f = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": " has_real_integral_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "f": "real => real"
             }
         }
     ],
