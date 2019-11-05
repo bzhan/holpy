@@ -139,6 +139,19 @@ class ExprTest(unittest.TestCase):
             insts = expr.match_expr(pat, f, inst, circles=circles)
             self.assertEqual(insts, res)
 
+    def testApplyRuleFromRuleset(self):
+        test_data = [
+            ("D5", ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"], [], ruleset,
+             ["para(G, H, E, F)"]),
+        ]
+        for rule, facts, lines, circles, rset, concls in test_data:
+            facts = [parser.parse_fact(fact) for fact in facts]
+            concls = [parser.parse_fact(concl) for concl in concls]
+            lines = [parser.parse_line(line) for line in lines]
+            circles = [parser.parse_circle(circle) for circle in circles]
+            facts = expr.apply_rule(rule, facts, lines=lines, circles=circles, ruleset=rset)
+            self.assertEqual(set(facts), set(concls))
+
     def testApplyRule(self):
         test_data = [
             (ruleset["D5"], ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"], [],
@@ -272,6 +285,19 @@ class ExprTest(unittest.TestCase):
             expr.make_new_circles(facts, circles)
             self.assertEqual(set(combined), set(circles))
 
+    def testApplyRuleHypsFromRuleset(self):
+        test_data = [
+            ("D5", ["para(P, Q, R, S)"], [], ruleset, ["para(R, S, P, Q)"]),
+            ("D45", ["midp(N, B, D)", "para(E, N, C, D)", "coll(E, B, C)"],
+             ["line(M, N, E)", "line(C, D)", "line(D, N, B)", "line(C, E, B)"], ruleset, ["midp(E, B, C)"]),
+        ]
+
+        for rule, hyps, lines, rst, concls in test_data:
+            hyps = [parser.parse_fact(fact) for fact in hyps]
+            concls = [parser.parse_fact(concl) for concl in concls]
+            lines = [parser.parse_line(line) for line in lines]
+            new_facts = expr.apply_rule_hyps(rule, hyps, lines=lines, ruleset=rst)
+            self.assertEqual(set(new_facts), set(concls))
 
     def testApplyRuleHyps(self):
         test_data = [
@@ -356,8 +382,7 @@ class ExprTest(unittest.TestCase):
                        "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
         ]
 
-        print('Deductions of long facts are not printed correctly now (Although the processes of deduction '
-              'are correct). ')
+        print('Not printing deduction process. ')
         print()
 
         for rules, hyps, lines, circles, concl in test_data:
@@ -369,8 +394,7 @@ class ExprTest(unittest.TestCase):
             # print('Final: ', hyps)
             fact = expr.find_goal(hyps, concl, lines, circles)
             self.assertIsNotNone(fact)
-            expr.print_search(ruleset, hyps, fact)
-            print("------------------------------------------------------------------------")
+            # expr.print_search(ruleset, hyps, fact)
 
 
 if __name__ == "__main__":

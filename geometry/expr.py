@@ -563,7 +563,7 @@ def make_new_circles(facts, circles):
                 circles.remove(circle)
 
 
-def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
+def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=None):
     """Apply given rule to the list of facts, returns a list of new
     facts that can be derived from the rule.
 
@@ -582,8 +582,16 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
     -> [].
 
     """
-    assert isinstance(rule, Rule)
     assert isinstance(facts, list) and all(isinstance(fact, Fact) for fact in facts)
+
+    rule_name = ''
+    if ruleset:
+        assert isinstance(ruleset, dict)
+        assert isinstance(rule, str)
+        rule_name = copy.copy(rule)
+        rule = ruleset[rule]
+
+    assert isinstance(rule, Rule)
     assert len(facts) == len(rule.assums)
 
     insts = [dict()]
@@ -615,7 +623,11 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
             raise NotImplementedError
 
         if record:
-            new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=set(facts))
+            # new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=set(facts))
+            if rule_name:
+                new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=set(facts))
+            else:
+                new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=set(facts))
         else:
             new = Fact(rule.concl.pred_name, concl_args)
         # print("|||||||<new>: ", new, "|||||||")
@@ -642,7 +654,7 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None):
     return new_facts
 
 
-def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None):
+def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ruleset=None):
     """Try to apply given rule to one or more facts in a list, generate
     new facts (as many new facts as possible), return a list of new facts.
 
@@ -655,11 +667,17 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None):
         ) -> [coll(D, F, E), coll(P, R, Q)].
 
     """
+    rule_name = ''
+    if ruleset:
+        assert isinstance(ruleset, dict)
+        assert isinstance(rule, str)
+        rule_name = copy.copy(rule)
+        rule = ruleset[rule]
     assert isinstance(rule, Rule)
     assert isinstance(hyps, list)
     assert all(isinstance(fact, Fact) for fact in hyps)
-    new = []
 
+    new = []
     for seq in itertools.permutations(range(len(hyps)), len(rule.assums)):
         facts = []
         for num in list(seq):
@@ -668,11 +686,18 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None):
         if only_updated:
             updated = [fact for fact in facts if fact.updated]
             if len(updated) > 0:
-                n = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
+                if rule_name:
+                    n = apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
+                else:
+                    n = apply_rule(rule, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
                 new = combine_facts_list(n, new, lines, circles)
         else:
-            fs = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
-            n = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
+            # fs = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
+
+            if rule_name:
+                n = apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
+            else:
+                n = apply_rule(rule, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
             new = combine_facts_list(n, new, lines, circles)
 
     # if new:
@@ -691,11 +716,11 @@ def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=No
     assert all(isinstance(rule, Rule) and isinstance(name, str) for name, rule in ruleset.items())
 
     new = []
-    for _, rule in ruleset.items():
+    for key in ruleset:
         if only_updated:
-            n = apply_rule_hyps(rule, hyps, only_updated=True, lines=lines, circles=circles)
+            n = apply_rule_hyps(key, hyps, only_updated=True, lines=lines, circles=circles, ruleset=ruleset)
         else:
-            n = apply_rule_hyps(rule, hyps, lines=lines, circles=circles)
+            n = apply_rule_hyps(key, hyps, lines=lines, circles=circles, ruleset=ruleset)
         new = combine_facts_list(n, new, lines, circles)
 
     # if new:
