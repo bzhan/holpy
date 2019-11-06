@@ -47,7 +47,7 @@
             "name": "real_bounded",
             "prop": "real_bounded s = ?B. !x. member x s --> abs x <= B",
             "ty": "def",
-            "type": "real set => bool"
+            "type": "real set ⇒ bool"
         },
         {
             "attributes": [
@@ -122,7 +122,7 @@
             "name": "tendsto_real",
             "prop": "tendsto_real f l net = !e. 0 < e --> eventualy (%x. abs (f x - l) < e) net",
             "ty": "def",
-            "type": "('a => real) => real => 'a net => bool"
+            "type": "('a ⇒ real) ⇒ real ⇒ 'a net ⇒ bool"
         },
         {
             "attributes": [
@@ -131,7 +131,7 @@
             "name": "reallim",
             "prop": "reallim net f = THE l. tendsto_real f l net",
             "ty": "def",
-            "type": "'a net => ('a => real) => real"
+            "type": "'a net ⇒ ('a ⇒ real) ⇒ real"
         },
         {
             "attributes": [
@@ -140,7 +140,7 @@
             "name": "trivial_limit",
             "prop": "trivial_limit net = eventualy (%x::'a. false) net",
             "ty": "def",
-            "type": "'a net => bool"
+            "type": "'a net ⇒ bool"
         },
         {
             "name": "reallim_trivial",
@@ -756,19 +756,19 @@
             "name": "real_sums",
             "prop": "real_sums f l s = tendsto_real (%n. sum (inter s {0..n}) f) l sequentially",
             "ty": "def",
-            "type": "(nat => real) => real => nat set => bool"
+            "type": "(nat ⇒ real) ⇒ real ⇒ nat set ⇒ bool"
         },
         {
             "name": "real_infsum",
             "prop": "real_infsum s f = THE l. real_sums f l s",
             "ty": "def",
-            "type": "nat set => (nat => real) => real"
+            "type": "nat set ⇒ (nat ⇒ real) ⇒ real"
         },
         {
             "name": "real_summable",
             "prop": "real_summable s f = ?l. real_sums f l s",
             "ty": "def",
-            "type": "nat set => (nat => real) => bool"
+            "type": "nat set ⇒ (nat ⇒ real) ⇒ bool"
         },
         {
             "name": "real_series_cauchy",
@@ -819,7 +819,7 @@
             "name": "from",
             "prop": "from n = {m. n <= m}",
             "ty": "def",
-            "type": "nat => nat set"
+            "type": "nat ⇒ nat set"
         },
         {
             "name": "real_series_from",
@@ -2227,7 +2227,7 @@
             "name": "real_continuous",
             "prop": "real_continuous f net = tendsto_real f (f (netlimit net)) net",
             "ty": "def",
-            "type": "('a => real) => 'a net => bool"
+            "type": "('a ⇒ real) ⇒ 'a net ⇒ bool"
         },
         {
             "name": "real_continuous_trivial_limit",
@@ -2608,14 +2608,14 @@
                 "--> abs (f x1 - f x) < e"
             ],
             "ty": "def",
-            "type": "(real => real) => real set => bool"
+            "type": "(real ⇒ real) ⇒ real set ⇒ bool"
         },
         {
-            "name": "real_continuous_on_eq_continuous_within",
-            "prop": [
-                "real_continuous_on f s =",
-                "!x. member x s --> real_continuous f (within (atreal x) s)"
+            "attributes": [
+                "hint_rewrite"
             ],
+            "name": "real_continuous_on_eq_continuous_within",
+            "prop": "real_continuous_on f s ⟷ (∀x. x ∈ s ⟶ real_continuous f (within (atreal x) s))",
             "ty": "thm",
             "vars": {
                 "f": "real => real",
@@ -2990,7 +2990,7 @@
                 "--> abs (f x1 - f x) < e"
             ],
             "ty": "def",
-            "type": "(real => real) => real set => bool"
+            "type": "(real ⇒ real) ⇒ real set ⇒ bool"
         },
         {
             "name": "real_uniformly_continuous_imp_real_continuous",
