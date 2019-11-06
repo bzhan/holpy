@@ -6,13 +6,13 @@ from geometry import parser
 ruleset_raw = {
     # "D1": "coll(A, C, B) :- coll(A, B, C)",
     # "D2": "coll(B, A, C) :- coll(A, B, C)",
-    "D3": "coll(C, D, A) :- coll(A, B, C), coll(A, B, D)",
+    # "D3": "coll(C, D, A) :- coll(A, B, C), coll(A, B, D)",
     "D5": "para(m, l) :- para(l, m)",
     "D6": "para(l, n) :- para(l, m), para(m, n)",
     "D8": "perp(m, l) :- perp(l, m)",
     "D9": "para(l, n) :- perp(l, m), perp(m, n)",
     "D13": "cyclic(A, B, C, D) :- cong(O, A, O, B), cong(O, A, O, C), cong(O, A, O, D)",
-    "D17": "cyclic(B, C, D, E) :- cyclic(A, B, C, D), cyclic(A, B, C, E)",
+    # "D17": "cyclic(B, C, D, E) :- cyclic(A, B, C, D), cyclic(A, B, C, E)",
     # Currently no need
     # "D18": "eqangle(B, A, l, m ,n) :- eqangle(A, B, l, m, n)",
     # "D19": "eqangle(l, k, n, m) :- eqangle(k, l, m, n)",

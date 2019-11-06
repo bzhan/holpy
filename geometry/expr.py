@@ -37,12 +37,11 @@ class Fact:
 
     """
 
-    def __init__(self, pred_name, args, *, updated=False, lemma=None, cond=None):
+    def __init__(self, pred_name, args, *, lemma=None, cond=None):
         assert isinstance(pred_name, str)
         assert isinstance(args, list) and all(isinstance(arg, str) for arg in args)
         self.pred_name = pred_name
         self.args = args
-        self.updated = updated
         self.lemma = lemma
         self.cond = cond
 
@@ -563,11 +562,9 @@ def make_new_circles(facts, circles):
                 circles.remove(circle)
 
 
-def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=None):
+def apply_rule(rule, facts, *, lines=None, circles=None, ruleset=None):
     """Apply given rule to the list of facts, returns a list of new
     facts that can be derived from the rule.
-
-    record: whether to record application of the rule in the new fact.
 
     Example:
 
@@ -584,12 +581,10 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
     """
     assert isinstance(facts, list) and all(isinstance(fact, Fact) for fact in facts)
 
-    rule_name = ''
-    if ruleset:
-        assert isinstance(ruleset, dict)
-        assert isinstance(rule, str)
-        rule_name = copy.copy(rule)
-        rule = ruleset[rule]
+    assert isinstance(ruleset, dict)
+    assert isinstance(rule, str)
+    rule_name = rule
+    rule = ruleset[rule]
 
     assert isinstance(rule, Rule)
     assert len(facts) == len(rule.assums)
@@ -622,17 +617,7 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
         else:
             raise NotImplementedError
 
-        if record:
-            # new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=set(facts))
-            if rule_name:
-                new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=set(facts))
-            else:
-                new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=set(facts))
-        else:
-            new = Fact(rule.concl.pred_name, concl_args)
-        # print("|||||||<new>: ", new, "|||||||")
-        # print("From: ", facts)
-        # print("prev new_facts:", new_facts)
+        new = Fact(rule.concl.pred_name, concl_args, lemma=rule_name, cond=set(facts))
 
         flg = False
         for i in range(len(new_facts)):
@@ -647,14 +632,10 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
         if not new_facts:
             new_facts.append(new)
 
-        # print("combined new_facts: ", new_facts)
-    #
-    # if new_facts:
-    #     print("In apply_rule: ", new_facts)
     return new_facts
 
 
-def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ruleset=None):
+def apply_rule_hyps(rule, hyps, lines=None, circles=None, ruleset=None):
     """Try to apply given rule to one or more facts in a list, generate
     new facts (as many new facts as possible), return a list of new facts.
 
@@ -667,12 +648,11 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ru
         ) -> [coll(D, F, E), coll(P, R, Q)].
 
     """
-    rule_name = ''
-    if ruleset:
-        assert isinstance(ruleset, dict)
-        assert isinstance(rule, str)
-        rule_name = copy.copy(rule)
-        rule = ruleset[rule]
+    assert isinstance(ruleset, dict)
+    assert isinstance(rule, str)
+    rule_name = rule
+    rule = ruleset[rule]
+
     assert isinstance(rule, Rule)
     assert isinstance(hyps, list)
     assert all(isinstance(fact, Fact) for fact in hyps)
@@ -682,30 +662,13 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ru
         facts = []
         for num in list(seq):
             facts.append(hyps[int(num)])
+        n = apply_rule(rule_name, facts, lines=lines, circles=circles, ruleset=ruleset)
+        combine_facts_list(n, new, lines, circles)
 
-        if only_updated:
-            updated = [fact for fact in facts if fact.updated]
-            if len(updated) > 0:
-                if rule_name:
-                    n = apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
-                else:
-                    n = apply_rule(rule, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
-                new = combine_facts_list(n, new, lines, circles)
-        else:
-            # fs = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
-
-            if rule_name:
-                n = apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
-            else:
-                n = apply_rule(rule, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
-            new = combine_facts_list(n, new, lines, circles)
-
-    # if new:
-    #     print('In apply_rule_hyps:', rule, new)
     return new
 
 
-def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=None):
+def apply_ruleset_hyps(ruleset, hyps, lines=None, circles=None):
     """Try to apply every rule in a ruleset to one or more fact
     in a list (as many as possible), return a list of new facts.
 
@@ -717,27 +680,10 @@ def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=No
 
     new = []
     for key in ruleset:
-        if only_updated:
-            n = apply_rule_hyps(key, hyps, only_updated=True, lines=lines, circles=circles, ruleset=ruleset)
-        else:
-            n = apply_rule_hyps(key, hyps, lines=lines, circles=circles, ruleset=ruleset)
-        new = combine_facts_list(n, new, lines, circles)
+        n = apply_rule_hyps(key, hyps, lines=lines, circles=circles, ruleset=ruleset)
+        combine_facts_list(n, new, lines, circles)
 
-    # if new:
-    #     print('In apply_ruleset_hyps:', new)
     return new
-
-
-
-    # for _, rule in ruleset.items():
-    #     if only_updated:
-    #         unique = [fact for fact in apply_rule_hyps(rule, hyps, only_updated=True, lines=lines, circles=circles)
-    #                   if not in_facts(new_facts, fact, lines, circles)]
-    #     else:
-    #         unique = [fact for fact in apply_rule_hyps(rule, hyps, lines=lines, circles=circles)
-    #                   if not in_facts(new_facts, fact, lines, circles)]
-
-        # new_facts.extend(unique)
 
 
 def combine_facts_list(facts, target, lines, circles):
@@ -756,10 +702,9 @@ def combine_facts_list(facts, target, lines, circles):
                 break
         if not s:
             target.append(facts[f])
-    return target
 
 
-def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
+def search_step(ruleset, hyps, lines=None, circles=None):
     """One step of searching fixpoint.
 
     Apply given ruleset to a list of hypotheses to obtain new facts.
@@ -772,16 +717,10 @@ def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
     make_new_lines(hyps, lines)
     make_new_circles(hyps, circles)
 
-    if only_updated:
-        new_facts = apply_ruleset_hyps(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
-    else:
-        new_facts = apply_ruleset_hyps(ruleset, hyps, lines=lines, circles=circles)
+    new_facts = apply_ruleset_hyps(ruleset, hyps, lines=lines, circles=circles)
 
     # Update the list of facts.
-    # print(new_facts)
-    hyps = combine_facts_list(new_facts, hyps, lines, circles)
-    # print("In search_step: ", hyps)
-    # print("+++++++++++++++++++")
+    combine_facts_list(new_facts, hyps, lines, circles)
 
 
 def search_fixpoint(ruleset, hyps, lines, circles, concl):
@@ -792,25 +731,18 @@ def search_fixpoint(ruleset, hyps, lines, circles, concl):
     """
 
     # Any fact in original hypotheses might be used for the first step.
-    # short = [get_short_facts(hyp) for hyp in hyps]
-    # hyps = []
-    # for item in short:
-    #     hyps.extend(item)
     search_step(ruleset, hyps, lines=lines, circles=circles)
     prev_hyps = []
     prev_lines = []
     prev_circles = []
-    t = 0
 
     while hyps != prev_hyps or lines != prev_lines or circles != prev_circles:
-    # while t < 2:
         prev_hyps = copy.copy(hyps)
         prev_lines = copy.copy(lines)
         prev_circles = copy.copy(circles)
-        search_step(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
-        if in_facts(hyps, concl, lines, circles):
+        search_step(ruleset, hyps, lines=lines, circles=circles)
+        if find_goal(hyps, concl, lines, circles):
             break
-        # t += 1
     return hyps
 
 
@@ -838,7 +770,6 @@ def combine_facts(fact, goal, lines, circles):
             new_goal.args = new_pts
             return new_goal
         else:
-            # goal = prev
             return False
 
     elif fact.pred_name == 'circle':
@@ -846,10 +777,8 @@ def combine_facts(fact, goal, lines, circles):
         goal_circle = get_circle(circles, goal.args[1:], center=goal.args[0])
         if fact_circle.is_same_circle(goal_circle):
             new_goal.args = set(fact.args).union(set(goal.args))
-            # new_goal.cond.append(fact.cond)
             return new_goal
         else:
-            # goal = prev
             return False
 
     elif fact.pred_name == 'cyclic':
@@ -857,10 +786,8 @@ def combine_facts(fact, goal, lines, circles):
         goal_circle = get_circle(circles, list(goal.args))
         if fact_circle.is_same_circle(goal_circle):
             new_goal.args = set(fact.args).union(set(goal.args))
-            # new_goal.cond.append(fact.cond)
             return new_goal
         else:
-            # goal = prev
             return False
 
     elif fact.pred_name in ('eqratio', 'cong'):
@@ -880,11 +807,8 @@ def combine_facts(fact, goal, lines, circles):
                 new_goal.args.extend(fact.args[i])
                 new_goal.args.extend(fact.args[i + 1])
             i += 2
-        # if not flg:
-        #     goal = prev
         if not flg:
             return False
-        # new_goal.cond.append(fact.cond)
         return new_goal
 
     elif fact.pred_name == 'para':
@@ -913,16 +837,11 @@ def combine_facts(fact, goal, lines, circles):
                     break
             if not t_flg:
                 new_goal.args.extend(fact_pts[idx])
-        # if not flg:
-        #     goal = prev
         if not flg:
             return False
-        # new_goal.cond.append(fact.cond)
         return new_goal
 
     elif fact.pred_name == "eqangle":
-        # print(fact, ",", goal, end=" -> ")
-        # prev_goal_args = copy.copy(goal.args)
         fact_pts, goal_pts = [], []
         i = 0
         while i < len(fact.args):
@@ -952,13 +871,7 @@ def combine_facts(fact, goal, lines, circles):
             i += 2
         if not flg:
             return False
-        # new_goal.cond = fact.cond
-        # if fact.cond:
-        #     if new_goal.cond:
-        #         new_goal.cond = new_goal.cond.union(fact.cond)
-        #     else:
-        #         new_goal.cond = fact.cond
-        # print("cond: ", new_goal.cond)
+
         return new_goal
 
     else:
@@ -973,20 +886,10 @@ def find_goal(facts, goal, lines, circles):
 
     """
     for fact in facts:
-        if combine_facts(fact, goal, lines, circles):
+        if combine_facts(goal, fact, lines, circles):
             return fact
 
     return None
-
-
-def in_facts(facts, goal, lines, circles):
-    """Check if a fact refers to the similar fact in a list.
-    """
-    for fact in facts:
-        r = combine_facts(goal, fact, lines, circles)
-        if r:
-            return True
-    return False
 
 
 def rewrite_fact(fact):
@@ -1011,10 +914,9 @@ def print_search(ruleset, facts, concl):
 
     def print_step(fact):
         r = ruleset[fact.lemma]
-        # r = list(ruleset.keys())[list(ruleset.values()).index(fact.lemma)]
-        s = "(" + str(r) + ") " + rewrite_fact(fact) + " :- "
+        s = "(" + fact.lemma + ") " + rewrite_fact(fact) + " :- "
         for sub_fact in fact.cond:
-            if sub_fact.updated:
+            if sub_fact.lemma:
                 s = s + rewrite_fact(sub_fact) + ", "
                 print_step(sub_fact)
             else:
