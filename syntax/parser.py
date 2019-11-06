@@ -47,6 +47,8 @@ grammar = r"""
         | "{" term ("," term)* "}" -> literal_set   // Set
         | "{" CNAME "::" type "." term "}" -> collect_set
         | "{" CNAME ". " term "}"          -> collect_set_notype
+        | "'" ("_"|LETTER|DIGIT) "'"  -> char
+        | "\"" CNAME "\""               -> string
         | "if" term "then" term "else" term  -> if_expr // if expression
         | "(" term ")(" term ":=" term ("," term ":=" term)* ")"   -> fun_upd // function update
         | "{" term ".." term "}"   -> nat_interval
@@ -137,6 +139,8 @@ grammar = r"""
     %import common.CNAME
     %import common.WS
     %import common.INT
+    %import common.LETTER
+    %import common.DIGIT
 
     %ignore WS
 """
@@ -191,6 +195,14 @@ class HOLTransformer(Transformer):
     def literal_list(self, *args):
         from data import list
         return list.mk_literal_list(args, None)
+
+    def char(self, c):
+        from data import string
+        return string.mk_char(str(c))
+
+    def string(self, s):
+        from data import string
+        return string.mk_string(str(s))
 
     def if_expr(self, P, x, y):
         return Const("IF", None)(P, x, y)

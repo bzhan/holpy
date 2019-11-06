@@ -71,7 +71,10 @@ bit0 = Const("bit0", TFun(natT, natT))
 bit1 = Const("bit1", TFun(natT, natT))
     
 def to_binary(n):
-    """Convert integer n to binary form."""
+    """Convert Python integer n to HOL binary form (without
+    appending of_nat).
+    
+    """
     assert isinstance(n, int), "to_binary"
     if n == 0:
         return zero
@@ -83,6 +86,7 @@ def to_binary(n):
         return bit1(to_binary(n // 2))
 
 def to_binary_nat(n):
+    """Convert Python integer n to HOL binary form (appending of_nat)."""
     if n == 0:
         return zero
     elif n == 1:
@@ -108,7 +112,7 @@ def is_binary_nat(t):
             is_binary(t.arg) and from_binary(t.arg) >= 2)
 
 def from_binary(t):
-    """Convert binary form to integer."""
+    """Convert HOL binary form (without of_nat) to Python integer."""
     assert isinstance(t, Term), "from_binary"
     if t == zero or t.is_const_name("zero"):
         return 0
@@ -120,6 +124,7 @@ def from_binary(t):
         return 2 * from_binary(t.arg) + 1
 
 def from_binary_nat(t):
+    """Convert HOL binary form (with of_nat) to Python integer."""
     assert is_binary_nat(t), "from_binary_nat"
     if t == zero:
         return 0

@@ -12,6 +12,7 @@ from data import int
 from data import real
 from data import list
 from data import set
+from data import string
 from data import function
 from data import interval
 from syntax import printer
@@ -296,6 +297,16 @@ class PrinterTest(unittest.TestCase):
         ]
 
         thy = basic.load_theory('function')
+        for t, s in test_data:
+            self.assertEqual(printer.print_term(thy, t), s)
+
+    def testPrintString(self):
+        test_data = [
+            (string.mk_char('c'), "'c'"),
+            (string.mk_string("ab"), '"ab"'),
+        ]
+
+        thy = basic.load_theory('string')
         for t, s in test_data:
             self.assertEqual(printer.print_term(thy, t), s)
 
