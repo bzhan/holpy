@@ -3137,6 +3137,175 @@
             "vars": {
                 "P": "'a => bool"
             }
+        },
+        {
+            "attributes": [],
+            "name": "test",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "p a ∨ q b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p a ∨ q b ⊢ p a ∨ q b"
+                },
+                {
+                    "args": "∀x. p x ⟶ q x",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. p x ⟶ q x ⊢ ∀x. p x ⟶ q x"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p a ∨ q b, ∀x. p x ⟶ q x ⊢ p a ⟶ (∃x. q x)"
+                },
+                {
+                    "args": "p a",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "p a ⊢ p a"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [
+                        "1",
+                        "2.0"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀x. p x ⟶ q x, p a ⊢ q a"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: q, a: a}",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. p x ⟶ q x, p a ⊢ ∃a. q a"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "p a ∨ q b, ∀x. p x ⟶ q x ⊢ p a ⟶ (∃x. q x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "p a ∨ q b, ∀x. p x ⟶ q x ⊢ q b ⟶ (∃x. q x)"
+                },
+                {
+                    "args": "q b",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "q b ⊢ q b"
+                },
+                {
+                    "args": "exI, {a: 'a}, {P: q, a: b}",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "q b ⊢ ∃a. q a"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "p a ∨ q b, ∀x. p x ⟶ q x ⊢ q b ⟶ (∃x. q x)"
+                },
+                {
+                    "args": "disjE",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "p a ∨ q b, ∀x. p x ⟶ q x ⊢ ∃x. q x"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p a ∨ q b ⟶ (∀x. p x ⟶ q x) ⟶ (∃x. q x)"
+                }
+            ],
+            "prop": "p(a) ∨ q(b) ⟶ (∀x. p(x) ⟶ q(x)) ⟶ (∃x. q x)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'a",
+                "p": "'a => bool",
+                "q": "'a => bool"
+            }
         }
     ],
     "description": "Basic results in logic",
