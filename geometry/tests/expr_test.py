@@ -382,9 +382,6 @@ class ExprTest(unittest.TestCase):
                        "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
         ]
 
-        print('Not printing deduction process. ')
-        print()
-
         for rules, hyps, lines, circles, concl in test_data:
             hyps = [parser.parse_fact(fact) for fact in hyps]
             concl = parser.parse_fact(concl)
@@ -394,7 +391,8 @@ class ExprTest(unittest.TestCase):
             # print('Final: ', hyps)
             fact = expr.find_goal(hyps, concl, lines, circles)
             self.assertIsNotNone(fact)
-            # expr.print_search(ruleset, hyps, fact)
+            print("--- Proof for", concl, "---")
+            expr.print_search(ruleset, hyps, fact)
 
 
 if __name__ == "__main__":

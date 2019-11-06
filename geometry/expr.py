@@ -967,76 +967,12 @@ def combine_facts(fact, goal, lines, circles):
         return False
 
 
-def match_goal(fact, goal, lines, circles):
-    """Given a fact and a goal, determine whether the fact directly
-    implies the goal.
-
-    """
-    if fact.pred_name != goal.pred_name:
-        return False
-
-    if fact.pred_name in ('para', 'perp'):
-        # For para and perp, it is only necessary for the lines
-        # containing the first two points and the last two points
-        # be the same.
-        A, B, C, D = fact.args
-        P, Q, R, S = goal.args
-        return get_line(lines, (A, B)) == get_line(lines, (P, Q)) and \
-               get_line(lines, (C, D)) == get_line(lines, (R, S))
-
-    elif fact.pred_name in ('eqangle'):
-        # For eqangle, check each angle with two lines respectively.
-        if len(fact.args) == 8:
-            A, B, C, D, E, F, G, H = fact.args
-            P, Q, R, S, T, U, V, W = goal.args
-
-            a = get_line(lines, (A, B)) == get_line(lines, (P, Q)) and \
-                get_line(lines, (C, D)) == get_line(lines, (R, S)) and \
-                get_line(lines, (E, F)) == get_line(lines, (T, U)) and \
-                get_line(lines, (G, H)) == get_line(lines, (V, W))
-            b = get_line(lines, (A, B)) == get_line(lines, (T, U)) and \
-                get_line(lines, (C, D)) == get_line(lines, (V, W)) and \
-                get_line(lines, (E, F)) == get_line(lines, (P, Q)) and \
-                get_line(lines, (G, H)) == get_line(lines, (R, S))
-
-            return a or b
-
-        if len(fact.args) == 4:
-            A, B, C, D = fact.args
-            P, Q, R, S = goal.args
-            a = get_line(lines, (A, B)) == get_line(lines, (P, Q)) and \
-                get_line(lines, (C, D)) == get_line(lines, (R, S))
-            b = get_line(lines, (A, B)) == get_line(lines, (R, S)) and \
-                get_line(lines, (C, D)) == get_line(lines, (P, Q))
-
-            return a or b
-
-
-    elif fact.pred_name in ('cong'):
-        # For congruent segments, check if both fact and goal refers to
-        # the same set of segments.
-        A, B, C, D = fact.args
-        P, Q, R, S = goal.args
-        return (A == P and B == Q and C == R and D == S) or \
-               (A == R and B == S and C == P and D == Q)
-    elif fact.pred_name in ('cyclic'):
-        return get_circle(circles, fact.args) == get_circle(circles, goal.args)
-    elif fact.pred_name in ('circle'):
-        return get_circle(circles, fact.args[1:], center=fact.args[0]) == \
-               get_circle(circles, goal.args[1:], center=goal.args[0])
-
-    else:
-        # TODO: make other cases more precise.
-        return fact.args == goal.args
-
-
 def find_goal(facts, goal, lines, circles):
     """Tries to find the goal among a list of facts. Return the
     fact if it is found. Otherwise return None.
 
     """
     for fact in facts:
-        # if match_goal(fact, goal, lines, circles):
         if combine_facts(fact, goal, lines, circles):
             return fact
 
@@ -1074,7 +1010,8 @@ def print_search(ruleset, facts, concl):
     """
 
     def print_step(fact):
-        r = list(ruleset.keys())[list(ruleset.values()).index(fact.lemma)]
+        r = ruleset[fact.lemma]
+        # r = list(ruleset.keys())[list(ruleset.values()).index(fact.lemma)]
         s = "(" + str(r) + ") " + rewrite_fact(fact) + " :- "
         for sub_fact in fact.cond:
             if sub_fact.updated:
