@@ -25,15 +25,15 @@ def display_goals(state, data):
     assert '_goal' in data, "display_goals"
     if data['_goal']:
         goals = [printer.print_term(state.thy, t) for t in data['_goal']]
-        return printer.commas_join(goals)
+        return pprint.KWRed("goal ") + printer.commas_join(goals)
     else:
-        return pprint.N("(solves)")
+        return pprint.KWGreen("(solves)")
 
 def display_facts(state, data):
     """Return list of new facts in string form."""
     assert '_fact' in data and len(data['_fact']) > 0, "display_facts"
     facts = [printer.print_term(state.thy, t) for t in data['_fact']]
-    return pprint.N("have ") + printer.commas_join(facts)
+    return pprint.KWGreen("fact ") + printer.commas_join(facts)
 
 
 class cut_method(Method):

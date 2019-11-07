@@ -468,6 +468,7 @@ def N(s, *, link=None):
 
 @settings.with_settings
 def B(s):
+    """Bound variable"""
     if settings.highlight():
         return [{'text': s, 'color': 1}]
     else:
@@ -475,6 +476,7 @@ def B(s):
 
 @settings.with_settings
 def V(s):
+    """Free variable"""
     if settings.highlight():
         return [{'text': s, 'color': 2}]
     else:
@@ -482,6 +484,7 @@ def V(s):
 
 @settings.with_settings
 def TV(s):
+    """Type variable"""
     if settings.highlight():
         return [{'text': s, 'color': 3}]
     else:
@@ -489,8 +492,25 @@ def TV(s):
 
 @settings.with_settings
 def Gray(s):
+    """Grey output"""
     if settings.highlight():
         return [{'text': s, 'color': 4}]
+    else:
+        return s
+
+@settings.with_settings
+def KWRed(s):
+    """Red keyword"""
+    if settings.highlight():
+        return [{'text': s, 'color': 5}]
+    else:
+        return s
+
+@settings.with_settings
+def KWGreen(s):
+    """Green keyword"""
+    if settings.highlight():
+        return [{'text': s, 'color': 6}]
     else:
         return s
 

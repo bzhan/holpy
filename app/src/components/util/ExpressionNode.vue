@@ -45,6 +45,10 @@ export default {
         return 'purple'
       } else if (x === 4) {
         return 'silver'
+      } else if (x === 5) {
+        return 'red'
+      } else if (x === 6) {
+        return 'green'
       }
     },
 
