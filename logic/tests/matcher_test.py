@@ -2,31 +2,13 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, boolT
-from kernel.term import Term, Var, Const, Abs, Bound
-from logic import logic, matcher
-from data import nat
-from data import list
-
-natT = nat.natT
-listT = list.listT
-
-Ta = TVar("a")
-Tb = TVar("b")
-a = Const("a", Ta)
-b = Const("b", Ta)
-c = Const("c", Ta)
-f = Const("f", TFun(Ta, Ta, Ta))
-m = Const("m", natT)
-n = Const("n", natT)
-p = Var("p", natT)
-q = Var("q", natT)
-x = Var("x", Ta)
-y = Var("y", Ta)
-z = Var("z", Tb)
-abs = Term.mk_abs
-conj = logic.mk_conj
-exists = logic.mk_exists
+from kernel.type import TVar
+from kernel.term import Var, Const, Abs
+from logic import basic
+from logic import matcher
+from logic.matcher import first_order_match, MatchException
+from data.nat import natT
+from syntax import parser
 
 class MatcherTest(unittest.TestCase):
     def testToInternalVars(self):
@@ -61,69 +43,100 @@ class MatcherTest(unittest.TestCase):
 
     def testIsPattern(self):
         test_data = [
-            (Var('a', Ta), True),
-            (Var('f', TFun(Ta, Tb))(Var('a', Ta)), False),
-            (Const('f', TFun(Ta, Tb))(Var('a', Ta)), True),
+            ("a", True),
+            ("f a", False),
+            ("m + n", True),
         ]
 
+        thy = basic.load_theory('nat')
+        ctxt = {"f": "'a => 'b", "a": "'a", "m": "nat", "n": "nat"}
+        ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
+                        for nm, s in ctxt.items()) if ctxt is not None else {}}
         for t, res in test_data:
+            t = parser.parse_term(thy, ctxt, t)
             self.assertEqual(matcher.is_pattern(t, []), res)
 
-    def testFirstOrderMatch(self):
+    def run_test(self, thy_name, ctxt, pat, t, *, tyinst=None, inst=None, failed=None):
+        thy = basic.load_theory(thy_name)
+        ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
+                        for nm, s in ctxt.items()) if ctxt is not None else {}}
+        pat = parser.parse_term(thy, ctxt, pat)
+        t = parser.parse_term(thy, ctxt, t)
+        tyinst = dict((nm, parser.parse_type(thy, s))
+                      for nm, s in tyinst.items()) if tyinst is not None else dict()
+        inst = dict((nm, parser.parse_term(thy, ctxt, s))
+                    for nm, s in inst.items()) if inst is not None else dict()
+
+        if failed is not None:
+            self.assertRaises(failed, first_order_match, pat, t)
+            return
+
+        self.assertEqual(first_order_match(pat, t), (tyinst, inst))
+
+    def testFirstOrderMatchBasic(self):
+        """Basic tests."""
         test_data = [
-            (x, y, {"x" : y}),
-            (x, a, {"x" : a}),
-            (a, a, {}),
-            (a, b, None),
-            (f(x,y), f(a,b), {"x" : a, "y" : b}),
-            (f(x,x), f(a,a), {"x" : a}),
-            (f(x,x), f(a,b), None),
-            (abs(x,y), abs(x,a), {"y" : a}),
-            (abs(x,a), abs(x,a), {}),
-            (abs(x,a), abs(x,b), None),
-            (abs(x,y), abs(x,x), None),
-            (abs(x,z), abs(x,abs(y,y)), {"z" : abs(y,y)}),
-            (abs(x,y), abs(x,abs(y,x)), None),
-            (abs(x,x), abs(x,x), {}),
-            (abs(x,abs(y,y)), abs(x,abs(y,x)), None),
+            ("x", "a", {"x": "a"}),
+            ("x", "(0::nat)", {"x": "(0::nat)"}),
+            ("(0::nat)", "(0::nat)", {}),
+            ("x + y", "a + b", {"x": "a", "y": "b"}),
+            ("x + x", "a + a", {"x": "a"}),
+            ("x + x", "a + b", None),
         ]
 
+        ctxt = {"x": "nat", "y": "nat", "z": "nat", "a": "nat", "b": "nat"}
         for pat, t, inst in test_data:
             if inst is not None:
-                self.assertEqual(matcher.first_order_match(pat, t)[1], inst)
+                self.run_test('nat', ctxt, pat, t, inst=inst)
             else:
-                self.assertRaises(matcher.MatchException, matcher.first_order_match, pat, t)
+                self.run_test('nat', ctxt, pat, t, failed=MatchException)
+
+    def testFirstOrderMatchAbs(self):
+        """Tests involving abstraction."""
+        test_data = [
+            ("%x::nat. y", "%x::nat. a", {"y": "a"}),
+            ("%x::nat. (0::nat)", "%x::nat. (0::nat)", {}),
+            ("%x::nat. y", "%x::nat. x", None),
+            ("%x::nat. x", "%x::nat. x", {}),
+            ("%x::nat. x", "%x::nat. a", None),
+            ("%x::nat. y", "%x::nat. a + b", {"y": "a + b"}),
+            ("%x::nat. y", "%x::nat. even x", None),
+            ("%x::nat. %y::nat. x", "%x::nat. %y::nat. x", {}),
+            ("%x::nat. %y::nat. x", "%x::nat. %y::nat. y", None),
+        ]
+
+        ctxt = {"x": "nat", "y": "nat", "z": "nat", "a": "nat", "b": "nat"}
+        for pat, t, inst in test_data:
+            if inst is not None:
+                self.run_test('nat', ctxt, pat, t, inst=inst)
+            else:
+                self.run_test('nat', ctxt, pat, t, failed=MatchException)
 
     def testFirstOrderMatchFun(self):
-        """First-order matching of variables in function position."""
-        P = Var("P", TFun(Ta, boolT))
-        Q = Var("Q", TFun(Ta, boolT))
-        C = Const("C", TFun(boolT, boolT, boolT))
-
+        """Tests involving variables in function position."""
         test_data = [
-            (abs(x,P(x)), abs(x,C(P(x),Q(x))), {"P" : abs(x,C(P(x),Q(x)))}),
-            (abs(x,C(P(x),Q(x))), abs(x,C(Q(x),P(x))), {"P": Q, "Q": P}),
-            (abs(x,C(P(x),P(x))), abs(x,C(C(P(x),Q(x)),C(P(x),Q(x)))), {"P": abs(x,C(P(x),Q(x)))}),
-            (exists(x,P(x)), exists(x,conj(P(x),Q(x))), {"P": abs(x,conj(P(x),Q(x)))}),
+            ("%x. P x", "%x. P x & Q x", {"P": "%x. P x & Q x"}),
+            ("%x. P x & Q x", "%x. Q x & P x", {"P": "Q", "Q": "P"}),
+            ("%x. P x & Q x", "%x. (P x & Q x) & R x", {"P": "%x. P x & Q x", "Q": "R"}),
+            ("?x. P x", "?x. P x & Q x", {"P": "%x. P x & Q x"}),
         ]
 
+        ctxt = {"P": "nat => bool", "Q": "nat => bool", "R": "nat => bool"}
         for pat, t, inst in test_data:
             if inst is not None:
-                self.assertEqual(matcher.first_order_match(pat, t)[1], inst)
+                self.run_test('nat', ctxt, pat, t, inst=inst)
             else:
-                self.assertRaises(matcher.MatchException, matcher.first_order_match, pat, t)
+                self.run_test('nat', ctxt, pat, t, failed=MatchException)
 
     def testFirstOrderMatchType(self):
+        """Tests involving type variables."""
         test_data = [
-            (x, m, ({"a": natT}, {"x": m})),
-            (p, m, ({}, {"p": m})),
+            ("x", "m", {"a": "nat"}, {"x": "m"}),
         ]
 
-        for pat, t, instsp in test_data:
-            if instsp is not None:
-                self.assertEqual(matcher.first_order_match(pat, t), instsp)
-            else:
-                self.assertRaises(matcher.MatchException, matcher.first_order_match, pat, t)
+        ctxt = {"x": "'a", "m": "nat"}
+        for pat, t, tyinst, inst in test_data:
+            self.run_test('nat', ctxt, pat, t, tyinst=tyinst, inst=inst)
 
 
 if __name__ == "__main__":
