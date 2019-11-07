@@ -8638,37 +8638,44 @@
                 "hint_resolve"
             ],
             "name": "real_negligible_empty",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
-                    "args": "",
+                    "args": "a, real",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "real_negligible_sing, {}, {a: a}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
                     "th": "⊢ real_negligible ({a})"
                 },
                 {
-                    "args": "",
-                    "id": "1",
+                    "args": "subset_empty, {a: real}, {A: {a}}",
+                    "id": "2",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "apply_theorem_for",
                     "th": "⊢ ∅ ⊆ {a}"
                 },
                 {
                     "args": "conjI",
-                    "id": "2",
+                    "id": "3",
                     "prevs": [
-                        "0",
-                        "1"
+                        "1",
+                        "2"
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ real_negligible ({a}) ∧ ∅ ⊆ {a}"
                 },
                 {
                     "args": "real_negligible_subset",
-                    "id": "3",
+                    "id": "4",
                     "prevs": [
-                        "2"
+                        "3"
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ real_negligible ∅"
@@ -8678,14 +8685,30 @@
             "steps": [
                 {
                     "goal_id": "0",
+                    "method_name": "new_var",
+                    "name": "a",
+                    "type": "real"
+                },
+                {
+                    "goal_id": "1",
                     "method_name": "apply_backward_step",
-                    "param_s": "{(a::real)}",
+                    "param_s": "{a}",
                     "theorem": "real_negligible_subset"
                 },
                 {
-                    "goal_id": "0",
+                    "goal_id": "1",
                     "method_name": "apply_backward_step",
                     "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_negligible_sing"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subset_empty"
                 }
             ],
             "ty": "thm",
