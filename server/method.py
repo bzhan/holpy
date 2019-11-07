@@ -227,7 +227,10 @@ class apply_forward_step(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th):
+        def search_thm(th_name, th, min_prevs):
+            if len(prevs) < min_prevs:
+                return
+
             try:
                 macro = logic.apply_theorem_macro()
                 res_th = macro.eval(thy, th_name, prev_ths)
@@ -242,7 +245,7 @@ class apply_forward_step(Method):
         else:
             for th_name, th in thy.get_data("theorems").items():
                 if 'hint_forward' in thy.get_attributes(th_name):
-                    search_thm(th_name, th)
+                    search_thm(th_name, th, min_prevs=1)
 
         return sorted(results, key=lambda d: d['theorem'])
 
