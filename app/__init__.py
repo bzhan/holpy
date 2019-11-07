@@ -341,7 +341,12 @@ def file_data_to_output(thy, data, *, line_length=None):
 
     # If parsing succeeds, fill data with pretty-printed form of
     # types and terms
-    if data['ty'] == 'def.ax':
+    if data['ty'] == 'type.ax':
+        Targs = [TVar(arg) for arg in data['args']]
+        T = Type(data['name'], *Targs)
+        data['type_hl'] = printer.print_type(thy, T, unicode=True, highlight=True)
+
+    elif data['ty'] == 'def.ax':
         data['type_hl'] = printer.print_type(thy, parsed_data['type'], unicode=True, highlight=True)
 
     elif data['ty'] in ('thm', 'thm.ax'):

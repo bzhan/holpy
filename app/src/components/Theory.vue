@@ -37,7 +37,7 @@
       </div>
       <div v-if="item.ty === 'type.ax'">
         <span class="keyword">type</span>&nbsp;
-        <span class="item-text">{{item.name}}</span>
+        <Expression v-bind:line="item.type_hl" :editor="editor"/>
       </div>
       <div v-if="item.ty === 'def.ax'">
         <Constant v-if="on_edit !== index" v-bind:item="item"
@@ -542,7 +542,7 @@ export default {
       delete data.err_type
       delete data.err_str
       delete data.trace
-      if (data.ty === 'def.ax') {
+      if (data.ty === 'def.ax' || data.ty === 'type.ax') {
         delete data.type_hl;
       } else if (data.ty === 'thm' || data.ty === 'thm.ax') {
         delete data.prop_hl;
