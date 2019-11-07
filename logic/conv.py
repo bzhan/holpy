@@ -252,6 +252,8 @@ class rewr_conv(Conv):
         self.pt = pt
         self.sym = sym
         self.match_vars = match_vars
+        if conds is not None:
+            assert isinstance(conds, list) and all(isinstance(cond, ProofTerm) for cond in conds), "rewr_conv"
         self.conds = conds
 
     def __str__(self):
