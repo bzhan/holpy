@@ -11,6 +11,7 @@ from kernel import type as hol_type
 from kernel.type import HOLType, TVar, Type, TFun, TypeMatchException
 from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from kernel import term
+from util import name
 
 class MatchException(Exception):
     pass
@@ -162,7 +163,9 @@ def first_order_match_incr(pat, t, instsp):
             except TypeMatchException:
                 raise MatchException
             T = pat.var_T.subst(tyinst)
-            v = Var(pat.var_name, T)
+            var_names = [v.name for v in term.get_vars(pat.body) + term.get_vars(t.body)]
+            nm = name.get_variant_name(pat.var_name, var_names)
+            v = Var(nm, T)
             pat_body = pat.subst_type(tyinst).subst_bound(v)
             t_body = t.subst_bound(v)
             match(pat_body, t_body, instsp, bd_vars + [v])
