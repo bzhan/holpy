@@ -312,7 +312,7 @@ class apply_backward_step(Method):
         else:
             for th_name, th in thy.get_data("theorems").items():
                 if 'hint_backward' in thy.get_attributes(th_name) or \
-                ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
+                   ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
                     search_thm(th_name, th)
 
         return sorted(results, key=lambda d: d['theorem'])

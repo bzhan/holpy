@@ -195,6 +195,12 @@ class ServerTest(unittest.TestCase):
         search_res = state.apply_search(1, method.apply_backward_step())
         self.assertEqual([res['theorem'] for res in search_res], ["disjI1", "disjI2"])
 
+    def testApplyBackwardStepThms4(self):
+        """Example with no variables."""
+        state = ProofState.init_state(thy, [], [], logic.true)
+        search_res = state.apply_search(0, method.apply_backward_step())
+        self.assertEqual([res['theorem'] for res in search_res], ["trueI"])
+
     def testApplyBackwardStep(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         state.apply_backward_step(1, "conjI")

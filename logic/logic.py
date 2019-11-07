@@ -297,7 +297,6 @@ class apply_theorem_macro(ProofTermMacro):
         As, C = th.prop.strip_implies()
 
         if not self.with_inst:
-            assert len(prevs) > 0, "apply_theorem: no prevs"
             assert len(prevs) <= len(As), "apply_theorem: too many prevs."
 
         for idx, prev_th in enumerate(prevs):
@@ -325,7 +324,6 @@ class apply_theorem_macro(ProofTermMacro):
         As, C = th.prop.strip_implies()
 
         if not self.with_inst:
-            assert len(pts) > 0, "apply_theorem: no prevs"
             assert len(pts) <= len(As), "apply_theorem: too many prevs."
 
         for idx, pt in enumerate(pts):
