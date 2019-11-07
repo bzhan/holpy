@@ -195,15 +195,24 @@ class ProofTerm():
 
     def on_arg(self, thy, *cvs):
         """Apply the given conversion to the argument of the proposition."""
-        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        assert isinstance(thy, Theory), "on_arg: first argument must be Theory object."
         pt = self
         for cv in cvs:
             pt = cv.apply_to_pt(thy, pt, pos="arg")
         return pt
 
+    def on_lhs(self, thy, *cvs):
+        """Apply the given expression to the lhs of the proposition."""
+        assert isinstance(thy, Theory), "on_lhs: first argument must be Theory object."
+        assert self.prop.is_equals(), "on_lhs: theorem is not an equality."
+        pt = self
+        for cv in cvs:
+            pt = cv.apply_to_pt(thy, pt, pos="lhs")
+        return pt
+
     def on_rhs(self, thy, *cvs):
         """Same as on_arg, except check the current theorem is an equality."""
-        assert isinstance(thy, Theory), "on_prop: first argument must be Theory object."
+        assert isinstance(thy, Theory), "on_rhs: first argument must be Theory object."
         assert self.prop.is_equals(), "on_rhs: theorem is not an equality."
         pt = self
         for cv in cvs:
