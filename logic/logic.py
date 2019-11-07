@@ -428,7 +428,8 @@ class rewrite_goal_macro(ProofTermMacro):
         eq_pt = ProofTerm.theorem(thy, name)
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
-        cv = then_conv(top_conv(rewr_conv(eq_pt)), top_conv(beta_conv()))
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt)),
+                       top_conv(beta_conv()))
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
         if Term.is_equals(pt.prop.lhs) and pt.prop.lhs.lhs == pt.prop.lhs.rhs:
@@ -457,9 +458,9 @@ class rewrite_fact_macro(ProofTermMacro):
         assert eq_pt.prop.is_equals(), "rewrite_fact: theorem is not an equality"
 
         # Check rewriting using the theorem has an effect
-        assert not top_conv(rewr_conv(th_name)).eval(thy, pts[0].prop).is_reflexive(), "rewrite_fact"
+        assert not top_sweep_conv(rewr_conv(th_name)).eval(thy, pts[0].prop).is_reflexive(), "rewrite_fact"
 
-        cv = then_conv(top_conv(rewr_conv(eq_pt)),
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt)),
                        top_conv(beta_conv()))
         return pts[0].on_prop(thy, cv)
 

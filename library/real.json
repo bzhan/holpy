@@ -5415,7 +5415,9 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_poly_neg1",
             "prop": "-x = -1 * x",
             "ty": "thm",

@@ -161,9 +161,9 @@ class rewrite(Tactic):
         assert not (goal.prop.is_implies() or goal.prop.is_all()), "rewrite"
 
         # Check whether rewriting using the theorem has an effect
-        assert not top_conv(rewr_conv(th_name)).eval(thy, C).is_reflexive(), "rewrite"
+        assert not top_sweep_conv(rewr_conv(th_name)).eval(thy, C).is_reflexive(), "rewrite"
 
-        cv = then_conv(top_conv(rewr_conv(th_name)),
+        cv = then_conv(top_sweep_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs

@@ -6,7 +6,6 @@ from kernel.thm import Thm
 from kernel.proof import id_force_tuple, print_id, Proof, ProofException
 from kernel.theory import Method
 from kernel import theory
-from logic.conv import top_conv, rewr_conv, beta_conv, then_conv, top_sweep_conv
 from logic.proofterm import ProofTermAtom
 from logic import matcher
 from logic import logic

@@ -9,7 +9,6 @@ from kernel.proof import ProofItem, Proof, id_force_tuple
 from kernel import report
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
-from logic.conv import top_conv, rewr_conv, then_conv, beta_conv
 from syntax import parser, printer, pprint
 from server import tactic
 from server import method
