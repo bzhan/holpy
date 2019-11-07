@@ -432,6 +432,10 @@ class Theory():
                     prev_ths.append(prf.find_item(prev).th)
                 except ProofException:
                     raise CheckProofException("previous item not found")
+            
+            for prev, prev_th in zip(seq.prevs, prev_ths):
+                if prev_th is None:
+                    raise CheckProofException("previous theorem %s is None" % prev)
 
             if seq.rule in primitive_deriv:
                 # If the method is one of the primitive derivations, obtain and

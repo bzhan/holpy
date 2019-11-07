@@ -77,6 +77,16 @@ class ProofItem():
         return self.id == other.id and self.rule == other.rule and self.args == other.args \
             and self.prevs == other.prevs and self.th == other.th
 
+    def get_sorrys(self):
+        if self.rule == 'sorry':
+            assert self.subproof is None
+            return [self.th]
+        
+        if self.subproof:
+            return sum([item.get_sorrys() for item in self.subproof.items], [])
+        else:
+            return []
+
 class Proof():
     """Proof objects represent proofs in the natural deduction format.
 
@@ -141,3 +151,6 @@ class Proof():
             prf.items.append(item)
         except IndexError:
             raise ProofException
+
+    def get_sorrys(self):
+        return sum([item.get_sorrys() for item in self.items], [])
