@@ -309,6 +309,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "subset_empty",
             "num_gaps": 0,
             "proof": [
@@ -363,7 +366,7 @@
                     "th": "⊢ ∅ ⊆ A"
                 }
             ],
-            "prop": "subset empty_set A",
+            "prop": "∅ ⊆ A",
             "steps": [
                 {
                     "goal_id": "0",

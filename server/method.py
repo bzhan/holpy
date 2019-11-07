@@ -597,7 +597,8 @@ class new_var(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return pprint.N("variable " + data['name'] + " :: ") + data['type']
+        T = parser.parse_type(state.thy, data['type'])
+        return pprint.N("variable " + data['name'] + " :: ") + printer.print_type(state.thy, T)
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
