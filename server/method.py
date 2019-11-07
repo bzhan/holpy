@@ -194,6 +194,11 @@ class rewrite_fact(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'rewrite_fact', args=data['theorem'], prevs=prevs)
 
+        id2 = incr_id(id, 1)
+        new_id = state.find_goal(state.get_proof_item(id2).th, id2)
+        if new_id is not None:
+            state.replace_id(id2, new_id)
+
 class rewrite_fact_with_prev(Method):
     """Rewrite fact using a previous equality."""
     def __init__(self):
@@ -241,7 +246,7 @@ class apply_forward_step(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+            search_thm(data['theorem'], thy.get_theorem(data['theorem']), min_prevs=0)
         else:
             for th_name, th in thy.get_data("theorems").items():
                 if 'hint_forward' in thy.get_attributes(th_name):
