@@ -15,7 +15,7 @@ from syntax import printer
 
 
 class TacticTest(unittest.TestCase):
-    def run_test(self, thy_name, tactic, *, ctxt=None, prevs=None, goal, args=None, new_goals=None):
+    def run_test(self, thy_name, tactic, *, ctxt=None, prevs=None, goal, args=None, new_goals=None, failed=None):
         """Test a single invocation of a tactic."""
         thy = basic.load_theory(thy_name)
         ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
@@ -24,9 +24,14 @@ class TacticTest(unittest.TestCase):
         prf = Proof(*assms)
         prevs = [ProofTermAtom(i, Thm([], assm)) for i, assm in enumerate(assms)]
         goal = parser.parse_term(thy, ctxt, goal)
+        goal_pt = ProofTerm.sorry(Thm(assms, goal))
 
         # Invoke the tactic to get the proof term
-        pt = tactic.get_proof_term(thy, ProofTerm.sorry(Thm([], goal)), prevs=prevs, args=args)
+        if failed is not None:
+            self.assertRaises(failed, tactic.get_proof_term, thy, goal_pt, prevs=prevs, args=args)
+            return
+
+        pt = tactic.get_proof_term(thy, goal_pt, prevs=prevs, args=args)
 
         # Export and check proof
         prefix = (len(prevs)-1,) if len(prevs) > 0 else (len(prevs),)
@@ -111,6 +116,25 @@ class TacticTest(unittest.TestCase):
             goal="(if a = a then b else a) = b",
             args="if_P",
             new_goals=["a = a"]
+        )
+
+    def testRewrite3(self):
+        self.run_test(
+            'logic_base', tactic.rewrite(),
+            ctxt={'P': 'bool', 'a': "'a", 'b': "'a"},
+            prevs=["P"],
+            goal="(if P then a else b) = a",
+            args="if_P"
+        )
+
+    def testRewrite4(self):
+        self.run_test(
+            'logic_base', tactic.rewrite(),
+            ctxt={'P': 'bool', 'Q': 'bool', 'a': "'a", 'b': "'a"},
+            prevs=["Q"],
+            goal="(if P then a else b) = a",
+            args="if_P",
+            failed=AssertionError
         )
 
     def testCases(self):

@@ -137,7 +137,7 @@ class rewrite_goal(Method):
 
         def search_thm(th_name, th):
             try:
-                pt = tactic.rewrite().get_proof_term(thy, cur_item.th, args=th_name, prevs=[])
+                pt = tactic.rewrite().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
             except (AssertionError, matcher.MatchException):
                 pass

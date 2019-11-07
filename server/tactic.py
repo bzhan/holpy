@@ -158,17 +158,35 @@ class rewrite(Tactic):
         C = goal.prop
 
         # Do not perform rewrite on forall-imply goals
-        assert not (goal.prop.is_implies() or goal.prop.is_all()), "rewrite"
+        assert not (goal.prop.is_implies() or goal.prop.is_all()), \
+            "rewrite: goal is in implies/forall form."
 
         # Check whether rewriting using the theorem has an effect
-        assert not top_sweep_conv(rewr_conv(th_name)).eval(thy, C).is_reflexive(), "rewrite"
+        assert not top_sweep_conv(rewr_conv(th_name)).eval(thy, C).is_reflexive(), \
+            "rewrite: unable to apply theorem."
 
         cv = then_conv(top_sweep_conv(rewr_conv(th_name)),
                        top_conv(beta_conv()))
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
 
-        side_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in eq_th.hyps]
+        # For each side goal, either try to find it in prevs, or place a sorry
+        side_goals = []
+        prev_used = [False] * len(prevs)
+        for A in eq_th.hyps:
+            found = False
+            for i, prev in enumerate(prevs):
+                if prev.th.can_prove(Thm(goal.hyps, A)):
+                    found = True
+                    prev_used[i] = True
+                    side_goals.append(prev)
+                    break
+            if not found:
+                side_goals.append(ProofTerm.sorry(Thm(goal.hyps, A)))
+
+        assert all(used for used in prev_used), \
+            "rewrite: not all prevs used."
+
         if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
             return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=side_goals)
         else:
