@@ -3908,10 +3908,73 @@
             "type": "'a => 'a => 'a"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "min",
-            "prop": "min m n = if m <= n then m else n",
+            "prop": "min m n = (if m ≤ n then m else n)",
             "ty": "def",
             "type": "nat ⇒ nat ⇒ nat"
+        },
+        {
+            "attributes": [],
+            "name": "min_simp1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "m ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "m ≤ n ⊢ m ≤ n"
+                },
+                {
+                    "args": "if_P, (if m ≤ n then m else n) = m",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n ⊢ (if m ≤ n then m else n) = m"
+                },
+                {
+                    "args": "nat_min_def, min m n = m",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "m ≤ n ⊢ min m n = m"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ m ≤ n ⟶ min m n = m"
+                }
+            ],
+            "prop": "m ≤ n ⟶ min m n = m",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "nat_min_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
         },
         {
             "name": "even",
