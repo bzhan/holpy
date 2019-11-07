@@ -1910,7 +1910,7 @@
         {
             "attributes": [
                 "hint_resolve",
-                "hint_rewrite"
+                "hint_backward"
             ],
             "name": "real_integrable_0",
             "num_gaps": 0,
