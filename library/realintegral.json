@@ -8696,7 +8696,7 @@
                 "hint_backward"
             ],
             "name": "real_negligible_finite",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "finite s",
@@ -8792,8 +8792,11 @@
                 {
                     "args": "",
                     "id": "5",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "4",
+                        "0"
+                    ],
+                    "rule": "apply_fact",
                     "th": "finite s ⊢ real_negligible s"
                 },
                 {
@@ -8846,6 +8849,13 @@
                     "goal_id": "2.3",
                     "method_name": "apply_backward_step",
                     "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_prev"
                 }
             ],
             "ty": "thm",
@@ -10888,15 +10898,131 @@
                 "hint_forward"
             ],
             "name": "real_integrable_subinterval",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "real_integrable_on f (real_closed_interval A B) ∧ real_closed_interval c d ⊆ real_closed_interval A B",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_integrable_on f (real_closed_interval A B) ∧ real_closed_interval c d ⊆ real_closed_interval A B ⊢ real_integrable_on f (real_closed_interval A B) ∧ real_closed_interval c d ⊆ real_closed_interval A B"
+                },
+                {
+                    "args": "real_integrable_on_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_integrable_on f (real_closed_interval A B) ∧ real_closed_interval c d ⊆ real_closed_interval A B ⊢ (∃y. has_real_integral f y (real_closed_interval A B)) ∧ real_closed_interval c d ⊆ real_closed_interval A B"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∃y. has_real_integral f y (real_closed_interval A B), B: real_closed_interval c d ⊆ real_closed_interval A B}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f (real_closed_interval A B) ∧ real_closed_interval c d ⊆ real_closed_interval A B ⊢ ∃y. has_real_integral f y (real_closed_interval A B)"
+                },
+                {
+                    "args": "y, real",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "has_real_integral f y (real_closed_interval A B)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral f y (real_closed_interval A B) ⊢ has_real_integral f y (real_closed_interval A B)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "real_integrable_on f (real_closed_interval A B) ∧ real_closed_interval c d ⊆ real_closed_interval A B, has_real_integral f y (real_closed_interval A B) ⊢ has_real_integral f y (real_closed_interval c d)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λy. has_real_integral f y (real_closed_interval c d), a: y}",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f (real_closed_interval A B) ∧ real_closed_interval c d ⊆ real_closed_interval A B, has_real_integral f y (real_closed_interval A B) ⊢ ∃a. has_real_integral f a (real_closed_interval c d)"
+                },
+                {
+                    "args": "real_integrable_on_def, real_integrable_on f (real_closed_interval c d)",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_integrable_on f (real_closed_interval A B) ∧ real_closed_interval c d ⊆ real_closed_interval A B, has_real_integral f y (real_closed_interval A B) ⊢ real_integrable_on f (real_closed_interval c d)"
+                },
+                {
+                    "args": "∃y. has_real_integral f y (real_closed_interval A B)",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "3",
+                        "4",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_integrable_on f (real_closed_interval A B) ∧ real_closed_interval c d ⊆ real_closed_interval A B ⟶ real_integrable_on f (real_closed_interval c d)"
+                }
+            ],
             "prop": [
-                "real_integrable_on f (real_closed_interval a b) &",
-                "subset (real_closed_interval c d) (real_closed_interval a b)",
-                "--> real_integrable_on f (real_closed_interval c d)"
+                "real_integrable_on f (real_closed_interval A B) ∧ ",
+                "real_closed_interval c d ⊆ real_closed_interval A B ",
+                "⟶ real_integrable_on f (real_closed_interval c d)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "y"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                }
             ],
             "ty": "thm",
             "vars": {
-                "a": "real",
-                "b": "real",
+                "A": "real",
+                "B": "real",
                 "c": "real",
                 "d": "real",
                 "f": "real => real"
