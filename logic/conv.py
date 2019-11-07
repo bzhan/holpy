@@ -36,7 +36,10 @@ class Conv():
             eq_pt = self.get_proof_term(thy, pt.prop.rhs)
             return ProofTerm.transitive(pt, eq_pt)
 
-        if pos == "arg":
+        elif pos == "lhs":
+            eq_pt = self.get_proof_term(thy, pt.prop.lhs)
+            return ProofTerm.transitive(ProofTerm.symmetric(eq_pt), pt)
+        elif pos == "arg":
             return arg_conv(self).apply_to_pt(thy, pt)
         elif pos == "assums":
             return assums_conv(self).apply_to_pt(thy, pt)
@@ -83,6 +86,9 @@ class then_conv(Conv):
         self.cv1 = cv1
         self.cv2 = cv2
 
+    def __str__(self):
+        return "then_conv(%s,%s)" % (str(self.cv1), str(self.cv2))
+
     def get_proof_term(self, thy, t):
         pt1 = self.cv1.get_proof_term(thy, t)
         t2 = pt1.prop.rhs
@@ -106,6 +112,9 @@ class else_conv(Conv):
 
 class beta_conv(Conv):
     """Applies beta-conversion."""
+    def __str__(self):
+        return "beta_conv"
+
     def get_proof_term(self, thy, t):
         try:
             return ProofTerm.beta_conv(t)
@@ -214,6 +223,9 @@ class top_conv(Conv):
         assert isinstance(cv, Conv), "top_conv: argument"
         self.cv = cv
 
+    def __str__(self):
+        return "top_conv(%s)" % str(self.cv)
+
     def get_proof_term(self, thy, t):
         return then_conv(try_conv(self.cv), sub_conv(self)).get_proof_term(thy, t)
 
@@ -222,6 +234,9 @@ class top_sweep_conv(Conv):
     def __init__(self, cv):
         assert isinstance(cv, Conv), "top_sweep_conv: argument"
         self.cv = cv
+
+    def __str__(self):
+        return "top_sweep_conv(%s)" % str(self.cv)
 
     def get_proof_term(self, thy, t):
         return else_conv(self.cv, else_conv(sub_conv(self), all_conv())).get_proof_term(thy, t)
@@ -239,14 +254,22 @@ class rewr_conv(Conv):
         self.match_vars = match_vars
         self.conds = conds
 
+    def __str__(self):
+        if isinstance(self.pt, str):
+            return "rewr_conv(%s)" % str(self.pt)
+        else:
+            return "rewr_conv(%s)" % str(self.pt.th)
+
     def get_proof_term(self, thy, t):
         if isinstance(self.pt, str):
-            self.pt = ProofTerm.theorem(thy, self.pt)
+            eq_pt = ProofTerm.theorem(thy, self.pt)
             if self.sym:
-                self.pt = ProofTerm.symmetric(self.pt)
+                eq_pt = ProofTerm.symmetric(eq_pt)
+        else:
+            eq_pt = self.pt
                 
         # Deconstruct th into assumptions and conclusion
-        As, C = self.pt.assums, self.pt.concl
+        As, C = eq_pt.assums, eq_pt.concl
         assert Term.is_equals(C), "rewr_conv: theorem is not an equality."
 
         tyinst, inst = dict(), dict()
@@ -259,11 +282,15 @@ class rewr_conv(Conv):
         elif C.lhs != t:
             raise ConvException("rewr_conv: %s ~= %s" % (str(C.lhs), str(t)))
 
-        pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, self.pt))
+        pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, eq_pt))
         if self.conds is not None:
             pt = ProofTerm.implies_elim(pt, *self.conds)
 
         As = pt.assums
         for A in As:
             pt = ProofTerm.implies_elim(pt, ProofTerm.assume(A))
+
+        if not (pt.th.is_equals() and pt.th.prop.lhs == t):
+            raise ConvException("rewr_conv: wrong result")
+
         return pt
