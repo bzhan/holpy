@@ -8638,7 +8638,56 @@
                 "hint_resolve"
             ],
             "name": "real_negligible_empty",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ real_negligible ({a})"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ∅ ⊆ {a}"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible ({a}) ∧ ∅ ⊆ {a}"
+                },
+                {
+                    "args": "real_negligible_subset",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible ∅"
+                }
+            ],
             "prop": "real_negligible ∅",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "param_s": "{(a::real)}",
+                    "theorem": "real_negligible_subset"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -8647,7 +8696,7 @@
                 "hint_backward"
             ],
             "name": "real_negligible_finite",
-            "num_gaps": 3,
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "finite s",
@@ -8657,18 +8706,69 @@
                     "th": "finite s ⊢ finite s"
                 },
                 {
-                    "args": "",
+                    "args": "real_negligible_empty",
                     "id": "1",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "finite s ⊢ real_negligible ∅"
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible ∅"
                 },
                 {
                     "args": "",
                     "id": "2",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
                     "th": "finite s ⊢ ∀x. ∀s. real_negligible s ∧ ¬x ∈ s ∧ finite s ⟶ real_negligible (insert x s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "t, real set",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR t"
+                },
+                {
+                    "args": "real_negligible t ∧ ¬x ∈ t ∧ finite t",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_negligible t ∧ ¬x ∈ t ∧ finite t ⊢ real_negligible t ∧ ¬x ∈ t ∧ finite t"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible t ∧ ¬x ∈ t ∧ finite t ⊢ real_negligible t"
+                },
+                {
+                    "args": "real_negligible_insert, real_negligible (insert x t)",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s, real_negligible t ∧ ¬x ∈ t ∧ finite t ⊢ real_negligible (insert x t)"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ⊢ ∀x. ∀t. real_negligible t ∧ ¬x ∈ t ∧ finite t ⟶ real_negligible (insert x t)"
                 },
                 {
                     "args": "conjI",
@@ -8723,6 +8823,29 @@
                     "goal_id": "1",
                     "method_name": "apply_backward_step",
                     "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_negligible_empty"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x,t"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_negligible_insert"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
                 }
             ],
             "ty": "thm",
@@ -8735,9 +8858,50 @@
                 "hint_backward"
             ],
             "name": "real_negligible_unions",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ finite s ∧ (∀t. t ∈ s ⟶ real_negligible t)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ finite s ⟶ (∀t. t ∈ s ⟶ real_negligible t) ⟶ real_negligible (⋃s)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ real_negligible (⋃s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⟶ real_negligible (⋃s)"
+                }
+            ],
             "prop": [
                 "finite s & (!t. t ∈ s --> real_negligible t)",
                 "--> real_negligible (Union s)"
+            ],
+            "steps": [
+                {
+                    "goal": "finite s --> \n(∀t. t ∈ s ⟶ real_negligible t)\n--> real_negligible (⋃s)",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                }
             ],
             "ty": "thm",
             "vars": {
