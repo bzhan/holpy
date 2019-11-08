@@ -4,9 +4,12 @@ Implementation of higher-order logic in Python.
 
 ### Installation and usage:
 
-This project requires Python 3.5.
+This project requires Python 3.5 and npm:
+https://www.python.org/download/releases/3.0/
+https://www.npmjs.com/
 
-Required packages are listed in requirements.txt. To install required packages, use:
+Required packages are listed in requirements.txt. To install required packages, use
+(depending on your system, may need to replace python by python3 or python3.x):
 
 ```python -m pip install -r requirements.txt```
 
