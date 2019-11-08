@@ -147,6 +147,17 @@ class MatcherTest(unittest.TestCase):
         for pat, t, inst in test_data:
             self.run_test('nat', ctxt, pat, t, inst=inst)
 
+    def testFirstOrderMatchFun3(self):
+        """Heuristic matching for variables in function position."""
+        test_data = [
+            ("%x. f (m x + c)", "%x. g (r x + 0)", {"f": "g", "m": "r", "c": "(0::nat)"}),
+        ]
+
+        ctxt = {"f": "nat => nat", "g": "nat => nat", "m": "nat => nat", "r": "nat => nat",
+                "c": "nat"}
+        for pat, t, inst in test_data:
+            self.run_test('nat', ctxt, pat, t, inst=inst)
+
     def testFirstOrderMatchType(self):
         """Tests involving type variables."""
         test_data = [
