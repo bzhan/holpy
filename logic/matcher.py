@@ -61,12 +61,9 @@ def is_pattern(t, matched_vars):
     if t.is_abs():
         return is_pattern(t.body, matched_vars)
     else:
-        if t.head.is_var():
-            if t.head.name in matched_vars:
-                return is_pattern_list(t.args, matched_vars)
-            else:
-                return all(arg.is_bound() for arg in t.args) and \
-                       len(set(t.args)) == len(t.args)
+        if t.head.is_var() and t.head.name not in matched_vars:
+            return all(arg.is_bound() or arg.is_var() and arg.name in matched_vars for arg in t.args) and \
+                   len(set(t.args)) == len(t.args)
         else:
             return is_pattern_list(t.args, matched_vars)
 
@@ -86,6 +83,15 @@ def is_pattern_list(ts, matched_vars):
             all_vars = list(set(matched_vars + [v.name for v in term.get_vars(ts[1:])]))
             return is_pattern(ts[0], all_vars)
 
+def find_term(t, sub_t):
+    if t == sub_t:
+        return True
+    if t.is_comb():
+        return find_term(t.fun) or find_term(t.arg)
+    if t.is_abs():
+        return find_term(t.body)
+    return False
+
 def first_order_match_incr(pat, t, instsp):
     """First-order matching of pat with t, where instsp is the
     current partial instantiation for type and term variables. The
@@ -102,33 +108,64 @@ def first_order_match_incr(pat, t, instsp):
         if pat.head.is_var() and pat.head.name.startswith('_'):
             # Case where the head of the function is a variable.
             if pat.head.name not in inst:
-                # If the variable is not instantiated, check that the
-                # arguments are distinct bound variables, and all bound
+                # If the head variable is not instantiated, check that the
+                # arguments are distinct, and each argument is either a
+                # bound variable or a matched variable. In addition, all bound
                 # variables appearing in t also appear as an argument.
                 # If all conditions hold, assign appropriately.
-                t_vars = term.get_vars(t)
-                if any(v not in bd_vars for v in pat.args):
-                    raise MatchException
+
+                # Check each argument is either a bound variable or is a free
+                # variable that is already matched.
+                for v in pat.args:
+                    if not (v in bd_vars or (v.is_var() and v.name in inst)):
+                        raise MatchException
+
+                # Check arguments of pat are distinct.
                 if len(set(pat.args)) != len(pat.args):
                     raise MatchException
+
+                # Check t does not contain any extra bound variables.
+                t_vars = term.get_vars(t)
                 if any(v in t_vars and v not in pat.args for v in bd_vars):
                     raise MatchException
                 
-                pat_T = TFun(*([v.T for v in pat.args] + [t.get_type()]))
+                # First, obtain and match the expected type of pat_T.
+                Tlist = []
+                for v in pat.args:
+                    if v in bd_vars:
+                        Tlist.append(v.T)
+                    else:
+                        Tlist.append(inst[v.name].get_type())
+                Tlist.append(t.get_type())
                 try:
-                    pat.head.T.match_incr(pat_T, tyinst, internal_only=True)
+                    pat.head.T.match_incr(TFun(*Tlist), tyinst, internal_only=True)
                 except TypeMatchException:
                     raise MatchException
+
+                # The instantiation of the head variable is computed by starting
+                # with t, then abstract each of the arguments.
                 inst_t = t
                 for v in reversed(pat.args):
-                    if inst_t.is_comb() and inst_t.arg == v and v not in term.get_vars(inst_t.fun):
-                        inst_t = inst_t.fun
+                    if v in bd_vars:
+                        if inst_t.is_comb() and inst_t.arg == v and v not in term.get_vars(inst_t.fun):
+                            # inst_t is of the form f x, where x is the argument.
+                            # In this case, directly reduce to f.
+                            inst_t = inst_t.fun
+                        else:
+                            # Otherwise, perform the abstraction.
+                            inst_t = Term.mk_abs(v, inst_t)
                     else:
-                        inst_t = Term.mk_abs(v, inst_t)
+                        assert v.name in inst
+                        inst_v = inst[v.name]
+                        if inst_t.is_comb() and inst_t.arg == inst_v and not find_term(inst_t.fun, inst_v):
+                            inst_t = inst_t.fun
+                        else:
+                            raise MatchException
                 inst[pat.head.name] = inst_t
             else:
-                # If the variable is already instantiated, apply the
-                # instantiation, simplify, and match again.
+                # If the head variable is already instantiated, apply the
+                # instantiation onto the arguments, simplify using beta-conversion,
+                # and match again.
                 pat2 = inst[pat.head.name](*pat.args).beta_norm()
                 match(pat2, t.beta_norm(), instsp, bd_vars)
         elif pat.ty != t.ty:

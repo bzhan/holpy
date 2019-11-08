@@ -50,7 +50,7 @@ class MatcherTest(unittest.TestCase):
             ("P (THE x. P x)", False),
             ("(!x. P x) & P x", True),
             ("P x & (!x. P x)", True),
-            ("P x & x > 0", False)
+            ("P x & x > 0", True),
         ]
 
         thy = basic.load_theory('nat')
@@ -129,10 +129,19 @@ class MatcherTest(unittest.TestCase):
 
         ctxt = {"P": "nat => bool", "Q": "nat => bool", "R": "nat => bool"}
         for pat, t, inst in test_data:
-            if inst is not None:
-                self.run_test('nat', ctxt, pat, t, inst=inst)
-            else:
-                self.run_test('nat', ctxt, pat, t, failed=MatchException)
+            self.run_test('nat', ctxt, pat, t, inst=inst)
+
+    def testFirstOrderMatchFun2(self):
+        """More complex matching with variables in function position."""
+        test_data = [
+            ("f x + g y + x + y", "p a + q b + a + b", {"f": "p", "g": "q", "x": "a", "y": "b"}),
+            ("f x + x", "p (a + b) + (a + b)", {"f": "p", "x": "a + b"})
+        ]
+
+        ctxt = {"f": "nat => nat", "g": "nat => nat", "x": "nat", "y": "nat",
+                "p": "nat => nat", "q": "nat => nat", "a": "nat", "b": "nat"}
+        for pat, t, inst in test_data:
+            self.run_test('nat', ctxt, pat, t, inst=inst)
 
     def testFirstOrderMatchType(self):
         """Tests involving type variables."""
