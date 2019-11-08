@@ -7,7 +7,7 @@ import json
 from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
-from kernel.proof import Proof
+from kernel.proof import Proof, ItemID
 from kernel import theory
 from kernel.report import ProofReport
 from logic import logic
@@ -102,7 +102,7 @@ class ServerTest(unittest.TestCase):
         ]
 
         for (id, start, n), res in test_data:
-            self.assertEqual(server.incr_id_after(id, start, n), res)
+            self.assertEqual(ItemID(id).incr_id_after(ItemID(start), n).id, res)
 
     def testInitProof(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))

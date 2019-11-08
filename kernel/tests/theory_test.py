@@ -5,7 +5,7 @@ import unittest
 from kernel.type import Type, TVar, TFun, boolT
 from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from kernel.thm import Thm
-from kernel.proof import Proof
+from kernel.proof import Proof, ItemID
 from kernel.macro import ProofMacro
 from kernel.theory import Theory, TheoryException, CheckProofException
 from kernel import extension
@@ -45,8 +45,8 @@ class beta_conv_rhs_macro(ProofMacro):
         rhs = th.prop.rhs
 
         prf = Proof()
-        prf.add_item(prefix + (0,), "beta_conv", args=rhs)
-        prf.add_item(prefix + (1,), "transitive", prevs=[id, prefix + (0,)])
+        prf.add_item(ItemID(prefix.id + (0,)), "beta_conv", args=rhs)
+        prf.add_item(ItemID(prefix.id + (1,)), "transitive", prevs=[id, ItemID(prefix.id + (0,))])
         return prf
 
 

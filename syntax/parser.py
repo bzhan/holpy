@@ -9,7 +9,7 @@ from kernel.term import Var, Const, Comb, Abs, Bound, Term
 from kernel import macro
 from kernel import term
 from kernel.thm import Thm
-from kernel.proof import ProofItem, id_force_tuple
+from kernel.proof import ProofItem
 from kernel import extension
 from logic import induct
 from syntax import infertype

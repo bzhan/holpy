@@ -4,6 +4,7 @@ import unittest
 
 from kernel.term import Term
 from kernel.thm import Thm
+from kernel.proof import ItemID
 from data import nat
 from logic import basic
 from logic import logic
@@ -210,7 +211,7 @@ class NatTest(unittest.TestCase):
         ctxt = {'vars': {"x": nat.natT, "y": nat.natT, "z": nat.natT}}
         for expr in test_data:
             goal = parser.parse_term(thy, ctxt, expr)
-            prf = macro.expand((), thy, goal, [])
+            prf = macro.expand(ItemID(tuple()), thy, goal, [])
             self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testNatIneqMacro(self):

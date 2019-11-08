@@ -3,7 +3,7 @@
 from kernel.term import Term, Var
 from kernel.thm import Thm, primitive_deriv
 from kernel.theory import Theory
-from kernel.proof import Proof, id_force_tuple
+from kernel.proof import Proof, ItemID
 from kernel.macro import ProofMacro
 
 class ProofTerm():
@@ -166,9 +166,9 @@ class ProofTerm():
                 raise TypeError
         
         if subproof:
-            id = prefix + (len(prf.items),)
+            id = ItemID(prefix.id + (len(prf.items),))
         else:
-            id = prefix[:-1] + (prefix[-1] + len(prf.items),)
+            id = ItemID(prefix.id[:-1] + (prefix.id[-1] + len(prf.items),))
 
         seq_to_id[self.th] = id
         if self.rule == 'sorry':
@@ -180,7 +180,7 @@ class ProofTerm():
     def export(self, prefix=None, prf=None, subproof=True):
         """Convert to proof object."""
         if prefix is None:
-            prefix = tuple()
+            prefix = ItemID(tuple())
         if prf is None:
             prf = Proof()
         return self._export(prefix, dict(), prf, subproof)
@@ -235,7 +235,7 @@ class ProofTermAtom(ProofTerm):
     def __init__(self, id, th):
         assert isinstance(th, Thm), "ProofTermAtom: th must be a Thm object."
         self.ty = ProofTerm.ATOM
-        self.id = id_force_tuple(id)
+        self.id = ItemID(id)
         self.th = th
 
 class ProofTermDeriv(ProofTerm):

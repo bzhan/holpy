@@ -5,7 +5,7 @@ import unittest
 from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import Proof, ProofItem
+from kernel.proof import Proof, ProofItem, ItemID
 from logic.proofterm import ProofTerm, ProofTermAtom
 from logic import basic
 from data.nat import natT, plus, zero
@@ -35,7 +35,7 @@ class TacticTest(unittest.TestCase):
         pt = tactic.get_proof_term(thy, goal_pt, prevs=prevs, args=args)
 
         # Export and check proof
-        prefix = (len(prevs)-1,) if len(prevs) > 0 else (len(prevs),)
+        prefix = ItemID(len(prevs)-1) if len(prevs) > 0 else ItemID(len(prevs))
         prf = pt.export(prefix=prefix, prf=prf, subproof=False)
         self.assertEqual(thy.check_proof(prf), Thm(assms, goal))
 

@@ -21,11 +21,11 @@ class JSONTheory():
         str_th = printer.print_thm(self.thy, item.th) if item.th else ""
         str_args = printer.print_str_args(self.thy, item.rule, item.args, item.th)
         res = {
-            'id': proof.print_id(item.id),
+            'id': str(item.id),
             'th': str_th,
             'rule': item.rule,
             'args': str_args,
-            'prevs': [proof.print_id(prev) for prev in item.prevs]
+            'prevs': [str(prev) for prev in item.prevs]
         }
         if item.subproof:
             return [res] + sum([self.export_proof_json(i) for i in item.subproof.items], [])

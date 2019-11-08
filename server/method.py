@@ -3,7 +3,7 @@
 from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import id_force_tuple, print_id, Proof, ProofException
+from kernel.proof import ItemID, Proof, ProofException
 from kernel.theory import Method
 from kernel import theory
 from logic.proofterm import ProofTermAtom
@@ -12,10 +12,6 @@ from logic import logic
 from syntax import parser, printer, pprint, settings
 from server import tactic
 
-
-def incr_id(id, n):
-    """Increment the last number in id by n."""
-    return id[:-1] + (id[-1] + n,)
 
 def display_goals(state, data):
     """Return list of goals in string form. If there is no goals
@@ -194,7 +190,7 @@ class rewrite_fact(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'rewrite_fact', args=data['theorem'], prevs=prevs)
 
-        id2 = incr_id(id, 1)
+        id2 = id.incr_id(1)
         new_id = state.find_goal(state.get_proof_item(id2).th, id2)
         if new_id is not None:
             state.replace_id(id2, new_id)
@@ -278,16 +274,16 @@ class apply_forward_step(Method):
         cur_hyps = cur_item.th.hyps
         state.add_line_before(id, len(As) + 1)
         for i in range(len(As)):
-            state.set_line(incr_id(id, i), 'sorry', th=Thm(cur_hyps, As[i]))
-            prevs.append(incr_id(id, i))
+            state.set_line(id.incr_id(i), 'sorry', th=Thm(cur_hyps, As[i]))
+            prevs.append(id.incr_id(i))
         if inst:
-            state.set_line(incr_id(id, len(As)), 'apply_theorem_for',
+            state.set_line(id.incr_id(len(As)), 'apply_theorem_for',
                            args=(data['theorem'], dict(), inst), prevs=prevs)
         else:
-            state.set_line(incr_id(id, len(As)), 'apply_theorem', args=data['theorem'],
+            state.set_line(id.incr_id(len(As)), 'apply_theorem', args=data['theorem'],
                            prevs=prevs)
 
-        id2 = incr_id(id, len(As)+1)
+        id2 = id.incr_id(len(As)+1)
         new_id = state.find_goal(state.get_proof_item(id2).th, id2)
         if new_id is not None:
             state.replace_id(id2, new_id)
@@ -396,7 +392,7 @@ class introduction(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        res = "introduction on " + print_id(id)
+        res = "introduction on " + str(id)
         if 'names' in data and data['names'] != "":
             names = [name.strip() for name in data['names'].split(',')]
             if len(names) > 1:
@@ -466,16 +462,16 @@ class exists_elim(Method):
         # Add one line for each variable, and one line for body of exists
         state.add_line_before(id, len(vars) + 1)
         for i, var in enumerate(vars):
-            state.set_line(incr_id(id, i), 'variable', args=(var.name, var.T), prevs=[])
-        state.set_line(incr_id(id, len(vars)), 'assume', args=body, prevs=[])
+            state.set_line(id.incr_id(i), 'variable', args=(var.name, var.T), prevs=[])
+        state.set_line(id.incr_id(len(vars)), 'assume', args=body, prevs=[])
 
         # Find the intros at the end, append exists fact and new variables
         # and assumptions to prevs.
-        new_intros = [prevs[0]] + [incr_id(id, i) for i in range(len(vars)+1)]
+        new_intros = [prevs[0]] + [id.incr_id(i) for i in range(len(vars)+1)]
         i = len(vars) + 1
         while True:
             try:
-                item = state.get_proof_item(incr_id(id, i))
+                item = state.get_proof_item(id.incr_id(i))
             except ProofException:
                 raise AssertionError("exists_elim: cannot find intros at the end")
             else:
@@ -487,7 +483,7 @@ class exists_elim(Method):
                     item.prevs = item.prevs[:-1] + new_intros + [item.prevs[-1]]
                     break
                 else:
-                    state.set_line(incr_id(id, i), item.rule, args=item.args, prevs=item.prevs, \
+                    state.set_line(id.incr_id(i), item.rule, args=item.args, prevs=item.prevs, \
                                    th=Thm(list(item.th.hyps) + [body], item.th.prop))
             i += 1
 
@@ -626,8 +622,8 @@ class apply_fact(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return pprint.N("Apply fact (f) " + print_id(prevs[0]) + " onto " + \
-                         ", ".join(print_id(id) for id in prevs[1:]))
+        return pprint.N("Apply fact (f) " + str(prevs[0]) + " onto " + \
+                         ", ".join(str(id) for id in prevs[1:]))
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
@@ -640,8 +636,8 @@ def apply_method(state, step):
 
     """
     method = state.thy.get_method(step['method_name'])
-    goal_id = id_force_tuple(step['goal_id'])
-    fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
+    goal_id = ItemID(step['goal_id'])
+    fact_ids = [ItemID(fact_id) for fact_id in step['fact_ids']] \
         if 'fact_ids' in step and step['fact_ids'] else []
     return method.apply(state, goal_id, step, fact_ids)
 
@@ -649,9 +645,9 @@ def apply_method(state, step):
 def display_method(state, step):
     """Obtain the string explaining the step in the user interface."""
     method = theory.global_methods[step['method_name']]
-    goal_id = id_force_tuple(step['goal_id'])
-    fact_ids = [id_force_tuple(fact_id) for fact_id in step['fact_ids']] \
-                if 'fact_ids' in step and step['fact_ids'] else []
+    goal_id = ItemID(step['goal_id'])
+    fact_ids = [ItemID(fact_id) for fact_id in step['fact_ids']] \
+        if 'fact_ids' in step and step['fact_ids'] else []
     search_res = method.search(state, goal_id, fact_ids, data=step)
     assert len(search_res) == 1, "display_method: %s, %d result found." % (
         step['method_name'], len(search_res))

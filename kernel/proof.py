@@ -3,26 +3,65 @@
 from kernel.term import Term
 from kernel.thm import Thm
 
-def id_force_tuple(id):
-    """Convert id into tuple form."""
-    if isinstance(id, tuple) and all(isinstance(i, int) for i in id):
-        return id
-    elif isinstance(id, int):
-        return (id,)
-    elif isinstance(id, str):
-        return tuple(int(s) for s in id.split("."))
-    else:
-        raise TypeError
+class ItemID():
+    """Represents id of an item."""
+    def __init__(self, id):
+        """Convert id into tuple form."""
+        if isinstance(id, tuple) and all(isinstance(i, int) for i in id):
+            self.id = id
+        elif isinstance(id, int):
+            self.id = (id,)
+        elif isinstance(id, str):
+            self.id = tuple(int(s) for s in id.split("."))
+        elif isinstance(id, ItemID):
+            self.id = id.id
+        else:
+            raise TypeError
 
-def print_id(id):
-    """Print id in n1.n2.n3 form."""
-    if isinstance(id, str):
-        return id
-    else:
-        return ".".join(str(i) for i in id)
+    def __str__(self):
+        """Print id in n1.n2.n3 form."""
+        return ".".join(str(i) for i in self.id)
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def incr_id_after(self, start, n):
+        """Perform the id adjustment necessary for adding n lines before
+        start id. The exact logic is as follows:
+        
+        Suppose start has length k. Find all ids with length at least k,
+        where the first k-1 numbers agree with start, and the k'th number
+        is greater than or equal to start. Increment the k'th number by n
+        and leave the rest unchanged.
+
+        """
+        k = len(start.id)
+        if len(self.id) >= k and self.id[:k-1] == start.id[:k-1] and self.id[k-1] >= start.id[k-1]:
+            return ItemID(self.id[:k-1] + (self.id[k-1] + n,) + self.id[k:])
+        else:
+            return self
+
+    def incr_id(self, n):
+        """Increment the last number in id by n."""
+        return ItemID(self.id[:-1] + (self.id[-1] + n,))
+
+    def decr_id(self, id_remove):
+        """Decrement a single id, with the aim of closing the gap at
+        id_remove. The logic used is similar to that incr_id_after.
+        
+        """
+        k = len(id_remove.id)
+        if len(self.id) >= k and self.id[:k-1] == id_remove.id[:k-1] and self.id[k-1] > id_remove.id[k-1]:
+            return ItemID(self.id[:k-1] + (self.id[k-1] - 1,) + self.id[k:])
+        else:
+            return self
+
+    def last(self):
+        return self.id[-1]
 
 class ProofException(Exception):
     pass
+
 
 class ProofItem():
     """An item in a proof, consisting of the following data:
@@ -36,10 +75,10 @@ class ProofItem():
 
     """
     def __init__(self, id, rule, *, args=None, prevs=None, th=None):
-        self.id = id_force_tuple(id)
+        self.id = ItemID(id)
         self.rule = rule
         self.args = args
-        self.prevs = [id_force_tuple(prev) for prev in prevs] if prevs is not None else []
+        self.prevs = [ItemID(prev) for prev in prevs] if prevs is not None else []
         self.th = th
         self.subproof = None
 
@@ -60,9 +99,9 @@ class ProofItem():
 
     def __str__(self):
         """Print the given proof item."""
-        str_id = print_id(self.id)
+        str_id = str(self.id)
         str_args = " " + self.print_str_args() if self.args else ""
-        str_prevs = " from " + ", ".join(print_id(prev) for prev in self.prevs) if self.prevs else ""
+        str_prevs = " from " + ", ".join(str(prev) for prev in self.prevs) if self.prevs else ""
         str_th = str(self.th) + " by " if self.th else ""
         cur_line = str_id + ": " + str_th + self.rule + str_args + str_prevs
         if self.subproof:
@@ -116,8 +155,8 @@ class Proof():
     def find_item(self, id):
         """Find item at the given id."""
         try:
-            item = self.items[id[0]]
-            for i in id[1:]:
+            item = self.items[id.id[0]]
+            for i in id.id[1:]:
                 item = item.subproof.items[i]
             return item
         except (AttributeError, IndexError):
@@ -127,7 +166,7 @@ class Proof():
         """Traverse the proof to the subproof containing the given id."""
         try:
             prf = self
-            for i in id[:-1]:
+            for i in id.id[:-1]:
                 prf = prf.items[i].subproof
             if prf is None:
                 raise ProofException
@@ -142,11 +181,11 @@ class Proof():
         """
         try:
             prf = self
-            for i in item.id[:-1]:
+            for i in item.id.id[:-1]:
                 if prf.items[i].subproof is None:
                     prf.items[i].subproof = Proof()
                 prf = prf.items[i].subproof
-            if item.id[-1] != len(prf.items):
+            if item.id.id[-1] != len(prf.items):
                 raise ProofException
             prf.items.append(item)
         except IndexError:
