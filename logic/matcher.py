@@ -159,6 +159,8 @@ def first_order_match_incr(pat, t, instsp):
                         inst_v = inst[v.name]
                         if inst_t.is_comb() and inst_t.arg == inst_v and not find_term(inst_t.fun, inst_v):
                             inst_t = inst_t.fun
+                        elif inst_v.is_var():
+                            inst_t = Term.mk_abs(inst_v, inst_t)
                         else:
                             raise MatchException
                 inst[pat.head.name] = inst_t
@@ -189,7 +191,7 @@ def first_order_match_incr(pat, t, instsp):
         elif pat.is_comb():
             # In the combination case (where the head is not a variable),
             # match fun and arg.
-            if is_pattern(pat.fun, list(instsp[1].keys())):
+            if is_pattern(pat.fun, [v.name for v in bd_vars] + list(instsp[1].keys())):
                 match(pat.fun, t.fun, instsp, bd_vars)
                 match(pat.arg, t.arg, instsp, bd_vars)
             else:
