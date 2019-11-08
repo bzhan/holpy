@@ -137,6 +137,14 @@ class ConvTest(unittest.TestCase):
             t_res="-1 * x"
         )
 
+    def testTopSweepConv2(self):
+        test_conv(
+            self, 'set', top_sweep_conv(rewr_conv('if_P')),
+            ctxt={'s': 'nat set'},
+            t="(%x. if x Mem s then x else 0)",
+            t_res="(%x. if x Mem s then x else 0)"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

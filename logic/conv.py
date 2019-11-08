@@ -139,7 +139,13 @@ class abs_conv(Conv):
         nm = name.get_variant_name(t.var_name, var_names)
         v = Var(nm, t.var_T)
         t2 = t.subst_bound(v)
-        return ProofTerm.abstraction(self.cv.get_proof_term(thy, t2), v)
+
+        # It is possible that cv produces additional assumptions
+        # containing v. In this case the conversion should fail.
+        try:
+            return ProofTerm.abstraction(self.cv.get_proof_term(thy, t2), v)
+        except InvalidDerivationException:
+            raise ConvException("abs_conv")
 
 def try_conv(cv):
     return else_conv(cv, all_conv())
