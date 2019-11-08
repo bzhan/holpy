@@ -51,11 +51,13 @@ class MatcherTest(unittest.TestCase):
             ("(!x. P x) & P x", True),
             ("P x & (!x. P x)", True),
             ("P x & x > 0", True),
+            ("P (x + 1)", False),
+            ("∀x. ∀s. Q s ⟶ ¬x ∈ s ⟶ finite s ⟶ Q (insert x s)", True),
         ]
 
-        thy = basic.load_theory('nat')
+        thy = basic.load_theory('set')
         ctxt = {"f": "'a => 'b", "a": "'a", "m": "nat", "n": "nat",
-                "P": "nat => bool"}
+                "P": "nat => bool", "Q": "nat set => bool", "x": "nat", "s": "nat set"}
         ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
                         for nm, s in ctxt.items()) if ctxt is not None else {}}
         for t, res in test_data:
@@ -135,11 +137,24 @@ class MatcherTest(unittest.TestCase):
         """More complex matching with variables in function position."""
         test_data = [
             ("f x + g y + x + y", "p a + q b + a + b", {"f": "p", "g": "q", "x": "a", "y": "b"}),
-            ("f x + x", "p (a + b) + (a + b)", {"f": "p", "x": "a + b"})
+            ("f x + x", "p (a + b) + (a + b)", {"f": "p", "x": "a + b"}),
+            ("f x + x", "(p a + q a) + a", {"f": "%x. p x + q x", "x": "a"}),
+            ("f x + x", "p (q a) + a", {"f": "%x. p (q x)", "x": "a"}),
         ]
 
         ctxt = {"f": "nat => nat", "g": "nat => nat", "x": "nat", "y": "nat",
                 "p": "nat => nat", "q": "nat => nat", "a": "nat", "b": "nat"}
+        for pat, t, inst in test_data:
+            self.run_test('nat', ctxt, pat, t, inst=inst)
+
+    def testFirstOrderMatchFun3(self):
+        """Heuristic matching for variables in function position."""
+        test_data = [
+            ("%x. f (m x + c)", "%x. g (r x + 0)", {"f": "g", "m": "r", "c": "(0::nat)"}),
+        ]
+
+        ctxt = {"f": "nat => nat", "g": "nat => nat", "m": "nat => nat", "r": "nat => nat",
+                "c": "nat"}
         for pat, t, inst in test_data:
             self.run_test('nat', ctxt, pat, t, inst=inst)
 

@@ -15,6 +15,7 @@ from logic import basic
 from data import nat
 from data import list
 from data import function
+from syntax import parser
 from syntax import printer
 from server import tactic, method, server
 from server.server import ProofState
@@ -224,6 +225,16 @@ class ServerTest(unittest.TestCase):
         """Test when additional instantiation is not provided."""
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], A)
         self.assertRaises(theory.ParameterQueryException, state.apply_backward_step, 1, "conjD1")
+
+    def testApplyBackwardStep5(self):
+        """Test strong induction."""
+        thy = basic.load_theory('set')
+        ctxt = {'vars': {'s': parser.parse_type(thy, "'a set")}}
+        s = parser.parse_term(thy, ctxt, "s")
+        assum = parser.parse_term(thy, ctxt, "finite s")
+        concl = parser.parse_term(thy, ctxt, "card s >= 0")
+        state = ProofState.init_state(thy, [s], [assum], concl)
+        state.apply_backward_step(1, "finite_induct_strong", prevs=[0])
 
     def testApplyForwardStep1(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))

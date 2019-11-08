@@ -243,17 +243,17 @@ def init_saved_proof():
     """
     data = json.loads(request.get_data().decode("utf-8"))
     username = data['username']
-    start_time = time.clock()
+    # start_time = time.clock()
     try:
         if 'thm_name' in data:
             limit = ('thm', data['thm_name'])
         else:
             limit = None
         thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-        print("Load: %f" % (time.clock() - start_time))
-        start_time = time.clock()
+        # print("Load: %f" % (time.clock() - start_time))
+        # start_time = time.clock()
         cell = server.ProofState.parse_proof(thy, data['proof'])
-        print("Parse: %f" % (time.clock() - start_time))
+        # print("Parse: %f" % (time.clock() - start_time))
         return jsonify(cell.json_data())
     except Exception as e:
         error = {
@@ -474,13 +474,13 @@ def search_method():
         limit = ('thm', data['thm_name'])
     else:
         limit = None
-    start_time = time.clock()
+    # start_time = time.clock()
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
-    print("Load:", time.clock() - start_time)
-    start_time = time.clock()
+    # print("Load:", time.clock() - start_time)
+    # start_time = time.clock()
     cell = server.ProofState.parse_proof(thy, data['proof'])
-    print("Parse:", time.clock() - start_time)
-    start_time = time.clock()
+    # print("Parse:", time.clock() - start_time)
+    # start_time = time.clock()
     fact_ids = data['step']['fact_ids']
     goal_id = data['step']['goal_id']
     search_res = cell.search_method(goal_id, fact_ids)
@@ -493,7 +493,7 @@ def search_method():
     ctxt = cell.get_ctxt(goal_id)
     print_ctxt = dict((k, printer.print_type(thy, v, unicode=True, highlight=True))
                       for k, v in ctxt['vars'].items())
-    print("Response:", time.clock() - start_time)
+    # print("Response:", time.clock() - start_time)
     return jsonify({
         'search_res': search_res,
         'ctxt': print_ctxt
@@ -519,15 +519,15 @@ def check_modify():
     item = data['item']
     line_length = data.get('line_length')
 
-    start_time = time.clock()
+    # start_time = time.clock()
     try:
         if 'limit_ty' in data:
             limit = (data['limit_ty'], data['limit_name'])
         else:
             limit = None
         thy = basic.load_theory(data['filename'], limit=limit, username=username)
-        print("Load:", time.clock() - start_time)
-        start_time = time.clock()
+        # print("Load:", time.clock() - start_time)
+        # start_time = time.clock()
         if item['ty'] == 'thm' or item['ty'] == 'thm.ax':
             item['vars'] = dict()
             for var_decl in item['vars_lines'].split('\n'):
@@ -579,7 +579,7 @@ def check_modify():
         item['err_str'] = str(e)
         item['trace'] = traceback2.format_exc()
 
-    print("Check:", time.clock() - start_time)
+    # print("Check:", time.clock() - start_time)
     return jsonify({
         'item': item
     })
