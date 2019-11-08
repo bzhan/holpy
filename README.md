@@ -5,7 +5,9 @@ Implementation of higher-order logic in Python.
 ### Installation and usage:
 
 This project requires Python 3.5 and npm:
+
 https://www.python.org/download/releases/3.0/
+
 https://www.npmjs.com/
 
 Required packages are listed in requirements.txt. To install required packages, use
@@ -13,17 +15,10 @@ Required packages are listed in requirements.txt. To install required packages, 
 
 ```python -m pip install -r requirements.txt```
 
-The current user interface is built using Vue, in the ./app folder. To start,
+The user interface is built using Vue, in the ./app folder. To start,
 change to ./app and use ```npm install``` followed by ```npm run serve```,
 then start the server (in the root directory) using ```python app.py```,
 and go to page ```localhost:8080```.
-
-To see a stable version of the old user interface, use:
-
-```git checkout icfem```
-
-Then start the server using ```python app.py```, and go to page
-```http://127.0.0.1:5000/master```.
 
 To see statistics for the search functionality on a collection of lemmas, use:
 
