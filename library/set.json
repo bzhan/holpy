@@ -4505,14 +4505,123 @@
         },
         {
             "attributes": [
-                "hint_backward1"
+                "hint_backward"
             ],
             "name": "finite_induct_strong",
-            "prop": "finite s ⟶ P ∅ ⟶ (∀x. ∀s. P s ⟶ ¬x ∈ s ⟶ finite s ⟶ P (insert x s)) ⟶ P s",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)) ⊢ P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)) ⊢ ∀s. finite s ⟶ P s"
+                },
+                {
+                    "args": "s, 'a set",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "finite s",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "conjD1, {}, {A: P ∅, B: ∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)}",
+                    "id": "1.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)) ⊢ P ∅"
+                },
+                {
+                    "args": "conjD2, {}, {A: P ∅, B: ∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)}",
+                    "id": "1.3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)) ⊢ ∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1",
+                        "1.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)), finite s ⊢ P s"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.4"
+                    ],
+                    "rule": "intros",
+                    "th": "P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)) ⊢ ∀s. finite s ⟶ P s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)) ⟶ (∀s. finite s ⟶ P s)"
+                }
+            ],
+            "prop": "P ∅ ∧ (∀x. ∀s. P s ∧ ¬x ∈ s ∧ finite s ⟶ P (insert x s)) ⟶ (∀s. finite s ⟶ P s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "s"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
-                "P": "'a set => bool",
-                "s": "'a set"
+                "P": "'a set => bool"
             }
         },
         {
@@ -4544,23 +4653,6 @@
         },
         {
             "attributes": [],
-            "name": "sup",
-            "prop": [
-                "sup s = THE a. (!x. x ∈ s --> x <= a) &",
-                "!b. (!x. x ∈ s --> x <= b) --> a <= b"
-            ],
-            "ty": "def",
-            "type": "real set ⇒ real"
-        },
-        {
-            "attributes": [],
-            "name": "inf",
-            "prop": "inf s = (THE a. (∀x. x ∈ s ⟶ a ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ a))",
-            "ty": "def",
-            "type": "real set ⇒ real"
-        },
-        {
-            "attributes": [],
             "name": "itset",
             "prop": [
                 "itset f s b = (THE g. (g empty_set = b) &",
@@ -4582,6 +4674,28 @@
             "prop": "has_size s n ⟷ finite s ∧ card s = n",
             "ty": "def",
             "type": "'a set ⇒ nat ⇒ bool"
+        },
+        {
+            "name": "countable",
+            "ty": "def.ax",
+            "type": "'a set => bool"
+        },
+        {
+            "attributes": [],
+            "name": "sup",
+            "prop": [
+                "sup s = THE a. (!x. x ∈ s --> x <= a) &",
+                "!b. (!x. x ∈ s --> x <= b) --> a <= b"
+            ],
+            "ty": "def",
+            "type": "real set ⇒ real"
+        },
+        {
+            "attributes": [],
+            "name": "inf",
+            "prop": "inf s = (THE a. (∀x. x ∈ s ⟶ a ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ a))",
+            "ty": "def",
+            "type": "real set ⇒ real"
         },
         {
             "attributes": [],
