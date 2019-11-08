@@ -406,10 +406,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "has_real_derivative_within_subset",
             "prop": [
-                "has_real_derivative f f1 (within (atreal x) s) & subset t s",
-                "--> has_real_derivative f f1 (within (atreal x) t)"
+                "has_real_derivative f f1 (within (atreal x) s) ∧ t ⊆ s ",
+                "⟶ has_real_derivative f f1 (within (atreal x) t)"
             ],
             "ty": "thm",
             "vars": {

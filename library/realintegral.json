@@ -12382,7 +12382,7 @@
                 "hint_forward"
             ],
             "name": "real_antiderivative_integral_continuous",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "real_continuous_on f (real_closed_interval a b)",
@@ -12443,20 +12443,363 @@
                     "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v"
                 },
                 {
-                    "args": "",
+                    "args": "conjD2, {}, {A: u ∈ real_closed_interval a b, B: v ∈ real_closed_interval a b ∧ u ≤ v}",
                     "id": "4.3",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ v ∈ real_closed_interval a b ∧ u ≤ v"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ u ≤ v"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ ∀x. x ∈ real_closed_interval u v ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval u v))"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ real_closed_interval u v",
+                    "id": "4.5.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval u v ⊢ x ∈ real_closed_interval u v"
+                },
+                {
+                    "args": "x",
+                    "id": "4.5.2",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)) ⊢ x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b))"
+                },
+                {
+                    "args": "conjD1, {}, {A: u ∈ real_closed_interval a b, B: v ∈ real_closed_interval a b ∧ u ≤ v}",
+                    "id": "4.5.3",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ u ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "real_closed_interval_def",
+                    "id": "4.5.4",
+                    "prevs": [
+                        "4.5.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ u ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "4.5.5",
+                    "prevs": [
+                        "4.5.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ a ≤ u ∧ u ≤ b"
+                },
+                {
+                    "args": "conjD1, {}, {A: v ∈ real_closed_interval a b, B: u ≤ v}",
+                    "id": "4.5.6",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ v ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "real_closed_interval_def",
+                    "id": "4.5.7",
+                    "prevs": [
+                        "4.5.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ v ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "4.5.8",
+                    "prevs": [
+                        "4.5.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ a ≤ v ∧ v ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ ∀x. x ∈ {p. u ≤ p ∧ p ≤ v} ⟶ x ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "y, real",
+                    "id": "4.5.9.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "y ∈ {p. u ≤ p ∧ p ≤ v}",
+                    "id": "4.5.9.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ y ∈ {p. u ≤ p ∧ p ≤ v}"
+                },
+                {
+                    "args": "member_collect",
+                    "id": "4.5.9.2",
+                    "prevs": [
+                        "4.5.9.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ u ≤ y ∧ y ≤ v"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.5.9.3",
+                    "prevs": [
+                        "4.5.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ a ≤ u"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "4.5.9.4",
+                    "prevs": [
+                        "4.5.9.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ u ≤ y"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.5.9.5",
+                    "prevs": [
+                        "4.5.9.3",
+                        "4.5.9.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v, y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ a ≤ u ∧ u ≤ y"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "4.5.9.6",
+                    "prevs": [
+                        "4.5.9.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v, y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ a ≤ y"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4.5.9.7",
+                    "prevs": [
+                        "4.5.9.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ y ≤ v"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4.5.9.8",
+                    "prevs": [
+                        "4.5.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ v ≤ b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.5.9.9",
+                    "prevs": [
+                        "4.5.9.7",
+                        "4.5.9.8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v, y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ y ≤ v ∧ v ≤ b"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "4.5.9.10",
+                    "prevs": [
+                        "4.5.9.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v, y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ y ≤ b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.5.9.11",
+                    "prevs": [
+                        "4.5.9.6",
+                        "4.5.9.10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v, y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ a ≤ y ∧ y ≤ b"
+                },
+                {
+                    "args": "member_collect, y ∈ {p. a ≤ p ∧ p ≤ b}",
+                    "id": "4.5.9.12",
+                    "prevs": [
+                        "4.5.9.11"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v, y ∈ {p. u ≤ p ∧ p ≤ v} ⊢ y ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.9.13",
+                    "prevs": [
+                        "4.5.9.0",
+                        "4.5.9.1",
+                        "4.5.9.12"
+                    ],
+                    "rule": "intros",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ ∀y. y ∈ {p. u ≤ p ∧ p ≤ v} ⟶ y ∈ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "4.5.10",
+                    "prevs": [
+                        "4.5.9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ {p. u ≤ p ∧ p ≤ v} ⊆ {p. a ≤ p ∧ p ≤ b}"
+                },
+                {
+                    "args": "real_closed_interval_def, real_closed_interval u v ⊆ real_closed_interval a b",
+                    "id": "4.5.11",
+                    "prevs": [
+                        "4.5.10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ real_closed_interval u v ⊆ real_closed_interval a b"
+                },
+                {
+                    "args": "subsetE",
+                    "id": "4.5.12",
+                    "prevs": [
+                        "4.5.11",
+                        "4.5.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.13",
+                    "prevs": [
+                        "4.5.2",
+                        "4.5.12"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), real_continuous_on f (real_closed_interval a b), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b))"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.14",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ ∀x. x ∈ real_closed_interval u v ⟶ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.14.0",
+                    "prevs": [
+                        "4.5.0",
+                        "4.5.1",
+                        "4.5.12"
+                    ],
+                    "rule": "intros",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ ∀x. x ∈ real_closed_interval u v ⟶ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "4.5.15",
+                    "prevs": [
+                        "4.5.14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ real_closed_interval u v ⊆ real_closed_interval a b"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.5.16",
+                    "prevs": [
+                        "4.5.13",
+                        "4.5.15"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)) ∧ real_closed_interval u v ⊆ real_closed_interval a b"
+                },
+                {
+                    "args": "has_real_derivative_within_subset",
+                    "id": "4.5.17",
+                    "prevs": [
+                        "4.5.16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v, x ∈ real_closed_interval u v ⊢ has_real_derivative g (f x) (within (atreal x) (real_closed_interval u v))"
+                },
+                {
+                    "args": "",
+                    "id": "4.5.18",
+                    "prevs": [
+                        "4.5.0",
+                        "4.5.1",
+                        "4.5.17"
+                    ],
+                    "rule": "intros",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ ∀x. x ∈ real_closed_interval u v ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval u v))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.4",
+                        "4.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ u ≤ v ∧ (∀x. x ∈ real_closed_interval u v ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval u v)))"
+                },
+                {
+                    "args": "real_fundamental_theorem_of_calculus",
+                    "id": "4.7",
+                    "prevs": [
+                        "4.6"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)), u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⊢ has_real_integral f (g v - g u) (real_closed_interval u v)"
                 },
                 {
                     "args": "",
-                    "id": "4.4",
+                    "id": "4.8",
                     "prevs": [
                         "4.0",
                         "4.1",
                         "4.2",
-                        "4.3"
+                        "4.7"
                     ],
                     "rule": "intros",
                     "th": "real_continuous_on f (real_closed_interval a b), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)) ⊢ ∀u. ∀v. u ∈ real_closed_interval a b ∧ v ∈ real_closed_interval a b ∧ u ≤ v ⟶ has_real_integral f (g v - g u) (real_closed_interval u v)"
@@ -12515,6 +12858,214 @@
                     "goal_id": "4",
                     "method_name": "introduction",
                     "names": "u,v"
+                },
+                {
+                    "goal_id": "4.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_fundamental_theorem_of_calculus"
+                },
+                {
+                    "goal_id": "4.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "4.2"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4.3"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4.5",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4.5.2",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "goal_id": "4.5.3",
+                    "method_name": "apply_backward_step",
+                    "param_s": "real_closed_interval a b",
+                    "theorem": "has_real_derivative_within_subset"
+                },
+                {
+                    "goal_id": "4.5.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.2"
+                    ],
+                    "goal_id": "4.5.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "4.5.3",
+                    "method_name": "apply_backward_step",
+                    "param_A": "real_closed_interval u v",
+                    "theorem": "subsetE"
+                },
+                {
+                    "goal_id": "4.5.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "goal_id": "4.5.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "fact_ids": [
+                        "4.2"
+                    ],
+                    "goal_id": "4.5.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.3"
+                    ],
+                    "goal_id": "4.5.4",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.4"
+                    ],
+                    "goal_id": "4.5.5",
+                    "method_name": "rewrite_fact",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "4.3"
+                    ],
+                    "goal_id": "4.5.6",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.6"
+                    ],
+                    "goal_id": "4.5.7",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_closed_interval_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.7"
+                    ],
+                    "goal_id": "4.5.8",
+                    "method_name": "rewrite_fact",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "4.5.9",
+                    "method_name": "introduction",
+                    "names": "y"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.9.1"
+                    ],
+                    "goal_id": "4.5.9.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "4.5.9.3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "4.5.9.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.5.9.3",
+                    "method_name": "apply_backward_step",
+                    "param_y": "u",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "goal_id": "4.5.9.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.5"
+                    ],
+                    "goal_id": "4.5.9.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.9.2"
+                    ],
+                    "goal_id": "4.5.9.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "4.5.9.7",
+                    "method_name": "apply_backward_step",
+                    "param_y": "v",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "goal_id": "4.5.9.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.9.2"
+                    ],
+                    "goal_id": "4.5.9.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4.5.8"
+                    ],
+                    "goal_id": "4.5.9.8",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4.5.14",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "4.5.14",
+                    "method_name": "introduction",
+                    "names": "x"
                 }
             ],
             "ty": "thm",
@@ -12522,6 +13073,180 @@
                 "a": "real",
                 "b": "real",
                 "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "has_real_integral_affinity",
+            "prop": [
+                "has_real_integral f i (real_closed_interval a b) ∧ ¬m = 0 ",
+                "⟶ has_real_integral (λx. f (m * x + c)) (real_inverse (abs m) * i) ",
+                "     (image (λx. real_inverse m * (x - c)) (real_closed_interval a b))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "f": "real => real",
+                "i": "real",
+                "m": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_integrable_affinity",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0 ⊢ real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0"
+                },
+                {
+                    "args": "conjD1, {}, {A: real_integrable_on f (real_closed_interval a b), B: ¬m = 0}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0 ⊢ real_integrable_on f (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integrable_on_def",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0 ⊢ ∃y. has_real_integral f y (real_closed_interval a b)"
+                },
+                {
+                    "args": "i, real",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
+                },
+                {
+                    "args": "has_real_integral f i (real_closed_interval a b)",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral f i (real_closed_interval a b) ⊢ has_real_integral f i (real_closed_interval a b)"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_integrable_on f (real_closed_interval a b), B: ¬m = 0}",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0 ⊢ ¬m = 0"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0, has_real_integral f i (real_closed_interval a b) ⊢ has_real_integral (λx. f (m * x + c)) (real_inverse (abs m) * i) (image (λx. real_inverse m * (x - c)) (real_closed_interval a b))"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λy. has_real_integral (λx. f (m * x + c)) y (image (λx. real_inverse m * (x - c)) (real_closed_interval a b)), a: real_inverse (abs m) * i}",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0, has_real_integral f i (real_closed_interval a b) ⊢ ∃a1. has_real_integral (λx. f (m * x + c)) a1 (image (λx. real_inverse m * (x - c)) (real_closed_interval a b))"
+                },
+                {
+                    "args": "real_integrable_on_def, real_integrable_on (λx. f (m * x + c)) (image (λx. real_inverse m * (x - c)) (real_closed_interval a b))",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0, has_real_integral f i (real_closed_interval a b) ⊢ real_integrable_on (λx. f (m * x + c)) (image (λx. real_inverse m * (x - c)) (real_closed_interval a b))"
+                },
+                {
+                    "args": "∃y. has_real_integral f y (real_closed_interval a b)",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "3",
+                        "4",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0 ⟶ real_integrable_on (λx. f (m * x + c)) (image (λx. real_inverse m * (x - c)) (real_closed_interval a b))"
+                }
+            ],
+            "prop": [
+                "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0 ",
+                "⟶ real_integrable_on (λx. f (m * x + c)) ",
+                "     (image (λx. real_inverse m * (x - c)) (real_closed_interval a b))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "i"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "inst_exists_goal",
+                    "s": "real_inverse (abs m) * i"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "f": "real => real",
+                "m": "real"
             }
         }
     ],
