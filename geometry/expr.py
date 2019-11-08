@@ -563,7 +563,7 @@ def make_new_circles(facts, circles):
                 circles.remove(circle)
 
 
-def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=None):
+def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=None, hyps=None):
     """Apply given rule to the list of facts, returns a list of new
     facts that can be derived from the rule.
 
@@ -583,6 +583,9 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
 
     """
     assert isinstance(facts, list) and all(isinstance(fact, Fact) for fact in facts)
+
+    # if hyps:
+    #     print(hyps)
 
     rule_name = ''
     if ruleset:
@@ -630,28 +633,29 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
                 new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=set(facts))
         else:
             new = Fact(rule.concl.pred_name, concl_args)
+        combine_facts_list([new], hyps, lines, circles)
+
         # print("|||||||<new>: ", new, "|||||||")
         # print("From: ", facts)
         # print("prev new_facts:", new_facts)
 
-        flg = False
-        for i in range(len(new_facts)):
-            r = combine_facts(new, new_facts[i], lines, circles)
-            if r:
-                flg = True
-                new_facts[i] = r
-                break
-
-        if not flg:
-            new_facts.append(new)
-        if not new_facts:
-            new_facts.append(new)
-
-        # print("combined new_facts: ", new_facts)
+    #     flg = False
+    #     for i in range(len(new_facts)):
+    #         r = combine_facts(new, new_facts[i], lines, circles)
+    #         if r:
+    #             flg = True
+    #             new_facts[i] = r
+    #             break
     #
-    # if new_facts:
-    #     print("In apply_rule: ", new_facts)
-    return new_facts
+    #     if not flg:
+    #         new_facts.append(new)
+    #     if not new_facts:
+    #         new_facts.append(new)
+    #
+    # if hyps:
+    #     combine_facts_list(new_facts, hyps, lines, circles)
+    # else:
+    #     return new_facts
 
 
 def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ruleset=None):
@@ -667,6 +671,7 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ru
         ) -> [coll(D, F, E), coll(P, R, Q)].
 
     """
+    # print('In apply_rule_hyps: ', hyps)
     rule_name = ''
     if ruleset:
         assert isinstance(ruleset, dict)
@@ -687,22 +692,19 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ru
             updated = [fact for fact in facts if fact.updated]
             if len(updated) > 0:
                 if rule_name:
-                    n = apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
+                    apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset, hyps=hyps)
                 else:
                     n = apply_rule(rule, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
-                new = combine_facts_list(n, new, lines, circles)
+                    # new = combine_facts_list(n, new, lines, circles)
         else:
             # fs = apply_rule(rule, facts, lines=lines, circles=circles, record=True)
-
             if rule_name:
-                n = apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
+                apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset, hyps=hyps)
             else:
                 n = apply_rule(rule, facts, lines=lines, circles=circles, record=True, ruleset=ruleset)
-            new = combine_facts_list(n, new, lines, circles)
+                # new = combine_facts_list(n, new, lines, circles)
 
-    # if new:
-    #     print('In apply_rule_hyps:', rule, new)
-    return new
+    # return new
 
 
 def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=None):
@@ -712,20 +714,23 @@ def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=No
     Repetitive facts as hypotheses apply to one rule is not allowed.
 
     """
+    # print('In apply_ruleset_hyps: ', hyps)
     assert isinstance(ruleset, dict)
     assert all(isinstance(rule, Rule) and isinstance(name, str) for name, rule in ruleset.items())
 
     new = []
     for key in ruleset:
         if only_updated:
-            n = apply_rule_hyps(key, hyps, only_updated=True, lines=lines, circles=circles, ruleset=ruleset)
+            # n = apply_rule_hyps(key, hyps, only_updated=True, lines=lines, circles=circles, ruleset=ruleset)
+            apply_rule_hyps(key, hyps, only_updated=True, lines=lines, circles=circles, ruleset=ruleset)
         else:
-            n = apply_rule_hyps(key, hyps, lines=lines, circles=circles, ruleset=ruleset)
-        new = combine_facts_list(n, new, lines, circles)
+            apply_rule_hyps(key, hyps, lines=lines, circles=circles, ruleset=ruleset)
+            # n = apply_rule_hyps(key, hyps, lines=lines, circles=circles, ruleset=ruleset)
+        # new = combine_facts_list(n, new, lines, circles)
 
     # if new:
     #     print('In apply_ruleset_hyps:', new)
-    return new
+    # return new
 
 
 
@@ -773,13 +778,15 @@ def search_step(ruleset, hyps, only_updated=False, lines=None, circles=None):
     make_new_circles(hyps, circles)
 
     if only_updated:
-        new_facts = apply_ruleset_hyps(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
+        apply_ruleset_hyps(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
+        # new_facts = apply_ruleset_hyps(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
     else:
-        new_facts = apply_ruleset_hyps(ruleset, hyps, lines=lines, circles=circles)
+        apply_ruleset_hyps(ruleset, hyps, lines=lines, circles=circles)
+        # new_facts = apply_ruleset_hyps(ruleset, hyps, lines=lines, circles=circles)
 
     # Update the list of facts.
     # print(new_facts)
-    hyps = combine_facts_list(new_facts, hyps, lines, circles)
+    # hyps = combine_facts_list(new_facts, hyps, lines, circles)
     # print("In search_step: ", hyps)
     # print("+++++++++++++++++++")
 
