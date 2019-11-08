@@ -15,7 +15,8 @@ from syntax import printer
 
 
 class TacticTest(unittest.TestCase):
-    def run_test(self, thy_name, tactic, *, ctxt=None, prevs=None, goal, args=None, new_goals=None, failed=None):
+    def run_test(self, thy_name, tactic, *,
+                 ctxt=None, prevs=None, goal, args=None, new_goals=None, failed=None):
         """Test a single invocation of a tactic."""
         thy = basic.load_theory(thy_name)
         ctxt = {'vars': dict((nm, parser.parse_type(thy, s))

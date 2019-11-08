@@ -299,8 +299,9 @@ class apply_theorem_macro(ProofTermMacro):
         if not self.with_inst:
             assert len(prevs) <= len(As), "apply_theorem: too many prevs."
 
-        for idx, prev_th in enumerate(prevs):
-            matcher.first_order_match_incr(As[idx], prev_th.prop, (tyinst, inst))
+        pats = As[:len(prevs)]
+        ts = [prev_th.prop for prev_th in prevs]
+        matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
         # Check that every variable in the theorem has an instantiation
         unmatched_vars = [v.name for v in term.get_vars(As + [C]) if v.name not in inst]
@@ -326,8 +327,9 @@ class apply_theorem_macro(ProofTermMacro):
         if not self.with_inst:
             assert len(pts) <= len(As), "apply_theorem: too many prevs."
 
-        for idx, pt in enumerate(pts):
-            matcher.first_order_match_incr(As[idx], pt.prop, (tyinst, inst))
+        pats = As[:len(pts)]
+        ts = [pt.prop for pt in pts]
+        matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
         # Check that every variable in the theorem has an instantiation
         unmatched_vars = [v.name for v in term.get_vars(As + [C]) if v.name not in inst]

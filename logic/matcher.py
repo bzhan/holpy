@@ -81,7 +81,10 @@ def is_pattern_list(ts, matched_vars):
             all_vars = list(set(matched_vars + [v.name for v in term.get_vars(ts[0])]))
             return is_pattern_list(ts[1:], all_vars)
         else:
-            return False
+            if not is_pattern_list(ts[1:], matched_vars):
+                return False
+            all_vars = list(set(matched_vars + [v.name for v in term.get_vars(ts[1:])]))
+            return is_pattern(ts[0], all_vars)
 
 def first_order_match_incr(pat, t, instsp):
     """First-order matching of pat with t, where instsp is the
@@ -187,3 +190,23 @@ def first_order_match(pat, t):
     tyinst, inst = dict(), dict()
     first_order_match_incr(pat, t, (tyinst, inst))
     return tyinst, inst
+
+def first_order_match_list_incr(pats, ts, instsp):
+    """First-order matching of a list of pattern-term pairs."""
+    if len(pats) == 0:
+        return
+    
+    if len(pats) == 1:
+        first_order_match_incr(pats[0], ts[0], instsp)
+        return
+
+    if is_pattern(pats[0], list(instsp[1].keys())):
+        first_order_match_incr(pats[0], ts[0], instsp)
+        first_order_match_list_incr(pats[1:], ts[1:], instsp)
+        return
+    else:
+        if not is_pattern_list(pats[1:], list(instsp[1].keys())):
+            raise MatchException
+        first_order_match_list_incr(pats[1:], ts[1:], instsp)
+        first_order_match_incr(pats[0], ts[0], instsp)
+        return

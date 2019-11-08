@@ -46,10 +46,16 @@ class MatcherTest(unittest.TestCase):
             ("a", True),
             ("f a", False),
             ("m + n", True),
+            ("%x. P x", True),
+            ("P (THE x. P x)", False),
+            ("(!x. P x) & P x", True),
+            ("P x & (!x. P x)", True),
+            ("P x & x > 0", False)
         ]
 
         thy = basic.load_theory('nat')
-        ctxt = {"f": "'a => 'b", "a": "'a", "m": "nat", "n": "nat"}
+        ctxt = {"f": "'a => 'b", "a": "'a", "m": "nat", "n": "nat",
+                "P": "nat => bool"}
         ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
                         for nm, s in ctxt.items()) if ctxt is not None else {}}
         for t, res in test_data:
