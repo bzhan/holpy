@@ -656,4 +656,5 @@ macro.global_macros.update({
     "rewrite_fact": rewrite_fact_macro(),
     "rewrite_fact_with_prev": rewrite_fact_with_prev_macro(),
     "trivial": trivial_macro(),
+    "imp_conj": imp_conj_macro(),
 })
