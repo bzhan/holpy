@@ -15095,7 +15095,7 @@
                 "hint_forward"
             ],
             "name": "real_integrable_spike_set",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "real_negligible (diff s t ∪ diff t s)",
@@ -15154,40 +15154,33 @@
                     "th": "real_negligible (diff s t ∪ diff t s), has_real_integral f y s ⊢ has_real_integral f y t"
                 },
                 {
-                    "args": "",
-                    "id": "7",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "real_negligible (diff s t ∪ diff t s), real_integrable_on f s, has_real_integral f y s ⊢ has_real_integral f y t"
-                },
-                {
                     "args": "exI, {a: real}, {P: λy. has_real_integral f y t, a: y}",
-                    "id": "8",
+                    "id": "7",
                     "prevs": [
-                        "7"
+                        "6"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "real_negligible (diff s t ∪ diff t s), real_integrable_on f s, has_real_integral f y s ⊢ ∃a. has_real_integral f a t"
                 },
                 {
                     "args": "real_integrable_on_def, real_integrable_on f t",
-                    "id": "9",
+                    "id": "8",
                     "prevs": [
-                        "8"
+                        "7"
                     ],
                     "rule": "rewrite_goal",
                     "th": "real_negligible (diff s t ∪ diff t s), real_integrable_on f s, has_real_integral f y s ⊢ real_integrable_on f t"
                 },
                 {
                     "args": "∃y. has_real_integral f y s",
-                    "id": "10",
+                    "id": "9",
                     "prevs": [
                         "0",
                         "1",
                         "2",
                         "3",
                         "4",
-                        "9"
+                        "8"
                     ],
                     "rule": "intros",
                     "th": "⊢ real_negligible (diff s t ∪ diff t s) ⟶ real_integrable_on f s ⟶ real_integrable_on f t"

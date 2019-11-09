@@ -217,6 +217,11 @@ class rewrite_fact_with_prev(Method):
         state.add_line_before(id, 1)
         state.set_line(id, 'rewrite_fact_with_prev', prevs=prevs)
 
+        id2 = id.incr_id(1)
+        new_id = state.find_goal(state.get_proof_item(id2).th, id2)
+        if new_id is not None:
+            state.replace_id(id2, new_id)
+
 class apply_forward_step(Method):
     """Apply theorem in the forward direction."""
     def __init__(self):
