@@ -127,6 +127,7 @@ class rewrite_goal(Method):
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
+        prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
 
         thy = state.thy
         results = []
