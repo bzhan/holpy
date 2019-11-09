@@ -180,7 +180,7 @@ class ProofTerm():
     def export(self, prefix=None, prf=None, subproof=True):
         """Convert to proof object."""
         if prefix is None:
-            prefix = ItemID(tuple())
+            prefix = ItemID()
         if prf is None:
             prf = Proof()
         return self._export(prefix, dict(), prf, subproof)

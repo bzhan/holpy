@@ -5,9 +5,11 @@ from kernel.thm import Thm
 
 class ItemID():
     """Represents id of an item."""
-    def __init__(self, id):
+    def __init__(self, id=None):
         """Convert id into tuple form."""
-        if isinstance(id, tuple) and all(isinstance(i, int) for i in id):
+        if id is None:
+            self.id = tuple()
+        elif isinstance(id, tuple) and all(isinstance(i, int) for i in id):
             self.id = id
         elif isinstance(id, int):
             self.id = (id,)

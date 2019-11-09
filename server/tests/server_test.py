@@ -7,7 +7,6 @@ import json
 from kernel.type import TVar, TFun, boolT
 from kernel.term import Term, Var, Const
 from kernel.thm import Thm
-from kernel.proof import Proof, ItemID
 from kernel import theory
 from kernel.report import ProofReport
 from logic import logic
@@ -90,20 +89,6 @@ def testMethods(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
 
 
 class ServerTest(unittest.TestCase):
-    def testIncrIdAfter(self):
-        test_data = [
-            (((0,), (0,), 1), (1,),),
-            (((0, 1), (0,), 1), (1, 1)),
-            (((1,), (2, 2), 1), (1,)),
-            (((2, 1), (2, 2), 1), (2, 1)),
-            (((2, 2), (2, 2), 1), (2, 3)),
-            (((2, 3, 2), (2, 2), 1), (2, 4, 2)),
-            (((3,), (2, 2), 1), (3,)),
-        ]
-
-        for (id, start, n), res in test_data:
-            self.assertEqual(ItemID(id).incr_id_after(ItemID(start), n).id, res)
-
     def testInitProof(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         self.assertEqual(len(state.prf.items), 3)
