@@ -2314,7 +2314,9 @@
             "type": "real ⇒ real"
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_abs_nat",
             "num_gaps": 0,
             "proof": [
