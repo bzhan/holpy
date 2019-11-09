@@ -5,13 +5,29 @@ import unittest
 from kernel.type import boolT
 from kernel.term import Term, Var
 from kernel.thm import Thm
-from kernel.proof import ProofItem, Proof
+from kernel.proof import ProofItem, Proof, ItemID
 
 A = Var("A", boolT)
 B = Var("B", boolT)
 A_to_B = Term.mk_implies(A,B)
 
 class ProofTest(unittest.TestCase):
+    def testIncrIdAfter(self):
+        test_data = [
+            (("0", "0", 1), "1"),
+            (("0.1", "0", 1), "1.1"),
+            (("1", "2.2", 1), "1"),
+            (("2.1", "2.2", 1), "2.1"),
+            (("2.2", "2.2", 1), "2.3"),
+            (("2.3.2", "2.2", 1), "2.4.2"),
+            (("3", "2.2", 1), "3"),
+        ]
+
+        for (id, start, n), res in test_data:
+            id = ItemID(id)
+            start = ItemID(start)
+            self.assertEqual(str(id.incr_id_after(start, n)), res)
+
     def testProofItem(self):
         test_data = [
             (ProofItem(0, "theorem", args="conjD1"),

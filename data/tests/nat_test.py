@@ -9,6 +9,8 @@ from data import nat
 from logic import basic
 from logic import logic
 from data.nat import zero, one, bit0, bit1
+from logic.tests.logic_test import test_macro
+from logic.tests.conv_test import test_conv
 from syntax import parser
 
 thy = basic.load_theory('nat')
@@ -67,13 +69,10 @@ class NatTest(unittest.TestCase):
             0, 1, 2, 3, 4, 5, 6, 7, 19, 127, 1000, 1001,
         ]
 
-        cv = nat.Suc_conv()
         for n in test_data:
             t = nat.Suc(nat.to_binary(n))
-            res_th = Thm.mk_equals(t, nat.to_binary(n + 1))
-            self.assertEqual(cv.eval(thy, t), res_th)
-            prf = cv.get_proof_term(thy, t).export()
-            self.assertEqual(thy.check_proof(prf), res_th)
+            t_res = nat.to_binary(n + 1)
+            test_conv(self, 'nat', nat.Suc_conv(), t=t, t_res=t_res)
 
     def testAddConv(self):
         test_data = [
@@ -90,13 +89,10 @@ class NatTest(unittest.TestCase):
             (12345,98765),
         ]
 
-        cv = nat.add_conv()
         for m, n in test_data:
             t = nat.mk_plus(nat.to_binary(m), nat.to_binary(n))
-            res_th = Thm.mk_equals(t, nat.to_binary(m + n))
-            self.assertEqual(cv.eval(thy, t), res_th)
-            prf = cv.get_proof_term(thy, t).export()
-            self.assertEqual(thy.check_proof(prf), res_th)
+            t_res = nat.to_binary(m + n)
+            test_conv(self, 'nat', nat.add_conv(), t=t, t_res=t_res)
 
     def testMultConv(self):
         test_data = [
@@ -113,13 +109,10 @@ class NatTest(unittest.TestCase):
             (123,987),
         ]
 
-        cv = nat.mult_conv()
         for m, n in test_data:
             t = nat.mk_times(nat.to_binary(m), nat.to_binary(n))
-            res_th = Thm.mk_equals(t, nat.to_binary(m * n))
-            self.assertEqual(cv.eval(thy, t), res_th)
-            prf = cv.get_proof_term(thy, t).export()
-            self.assertEqual(thy.check_proof(prf), res_th)
+            t_res = nat.to_binary(m * n)
+            test_conv(self, 'nat', nat.mult_conv(), t=t, t_res=t_res)
 
     def testNatConv(self):
         test_data = [
@@ -131,13 +124,9 @@ class NatTest(unittest.TestCase):
             ("5 * Suc (2 + 5)", 40),
         ]
 
-        cv = nat.nat_conv()
-        for expr, n in test_data:
-            t = parser.parse_term(thy, {}, expr)
-            res_th = Thm.mk_equals(t, nat.to_binary_nat(n))
-            self.assertEqual(cv.eval(thy, t), res_th)
-            prf = cv.get_proof_term(thy, t).export()
-            self.assertEqual(thy.check_proof(prf), res_th)
+        for t, n in test_data:
+            t_res = nat.to_binary_nat(n)
+            test_conv(self, 'nat', nat.nat_conv(), t=t, t_res=t_res)
 
     def testNormFull(self):
         test_data = [
@@ -156,14 +145,9 @@ class NatTest(unittest.TestCase):
             ("x * 1 * 1 * 1", "x"),
         ]
 
-        cv = nat.norm_full()
-        ctxt = {'vars': {"x": nat.natT, "y": nat.natT, "z": nat.natT}}
+        ctxt = {"x": 'nat', "y": 'nat', "z": 'nat'}
         for expr, res in test_data:
-            t = parser.parse_term(thy, ctxt, expr)
-            t2 = parser.parse_term(thy, ctxt, res)
-            res_th = Thm.mk_equals(t, t2)
-            prf = cv.get_proof_term(thy, t).export()
-            self.assertEqual(thy.check_proof(prf), res_th)
+            test_conv(self, 'nat', nat.norm_full(), ctxt=ctxt, t=expr, t_res=res)
 
     def testNormFullLevel1(self):
         thy = basic.load_theory('nat', limit=('thm', 'mult_0_right'))
@@ -207,12 +191,9 @@ class NatTest(unittest.TestCase):
             ("x + y + (y + z) = y * 2 + (x + z)"),
         ]
 
-        macro = nat.nat_norm_macro()
-        ctxt = {'vars': {"x": nat.natT, "y": nat.natT, "z": nat.natT}}
+        ctxt = {"x": 'nat', "y": 'nat', "z": 'nat'}
         for expr in test_data:
-            goal = parser.parse_term(thy, ctxt, expr)
-            prf = macro.expand(ItemID(tuple()), thy, goal, [])
-            self.assertEqual(thy.check_proof(prf), Thm([], goal))
+            test_macro(self, 'nat', 'nat_norm', ctxt=ctxt, args=expr, res=expr)
 
     def testNatIneqMacro(self):
         test_data = [
@@ -224,11 +205,9 @@ class NatTest(unittest.TestCase):
             (10, 13), (17, 19), (22, 24),
         ]
 
-        macro = nat.nat_const_ineq_macro()
         for m, n in test_data:
-            goal = logic.neg(Term.mk_equals(nat.to_binary_nat(m), nat.to_binary_nat(n)))
-            prf = macro.get_proof_term(thy, goal, []).export()
-            self.assertEqual(thy.check_proof(prf), Thm([], goal))
+            goal = "~(%d::nat) = %d" % (m, n)
+            test_macro(self, 'nat', 'nat_const_ineq', args=goal, res=goal)
 
     def testNatEqConv(self):
         test_data = [

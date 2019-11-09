@@ -14,7 +14,10 @@ def test_conv(self, thy_name, cv, *, ctxt=None, t, t_res=None, failed=None, assm
     thy = basic.load_theory(thy_name)
     ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
                          for nm, s in ctxt.items()) if ctxt is not None else {}}
-    t = parser.parse_term(thy, ctxt, t)
+    
+    if isinstance(t, str):
+        t = parser.parse_term(thy, ctxt, t)
+    assert isinstance(t, Term)
 
     if failed is not None:
         self.assertRaises(failed, cv.eval, thy, t)
@@ -23,7 +26,11 @@ def test_conv(self, thy_name, cv, *, ctxt=None, t, t_res=None, failed=None, assm
 
     assms = [parser.parse_term(thy, ctxt, assm)
              for assm in assms] if assms is not None else []
-    t_res = parser.parse_term(thy, ctxt, t_res)
+
+    if isinstance(t_res, str):
+        t_res = parser.parse_term(thy, ctxt, t_res)
+    assert isinstance(t_res, Term)
+
     self.assertEqual(cv.eval(thy, t), Thm(assms, Term.mk_equals(t, t_res)))
     pt = cv.get_proof_term(thy, t)
     prf = pt.export()
