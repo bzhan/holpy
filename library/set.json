@@ -393,6 +393,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "subset_univ",
             "num_gaps": 0,
             "proof": [
@@ -401,7 +404,7 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀x. member x A ⟶ member x univ"
+                    "th": "⊢ ∀x. x ∈ A ⟶ x ∈ univ"
                 },
                 {
                     "args": "x, 'a",
@@ -411,18 +414,18 @@
                     "th": "⊢ _VAR x"
                 },
                 {
-                    "args": "member x A",
+                    "args": "x ∈ A",
                     "id": "0.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "member x A ⊢ member x A"
+                    "th": "x ∈ A ⊢ x ∈ A"
                 },
                 {
                     "args": "member_univ, {a: 'a}, {x: x}",
                     "id": "0.2",
                     "prevs": [],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ member x univ"
+                    "th": "⊢ x ∈ univ"
                 },
                 {
                     "args": "",
@@ -433,7 +436,7 @@
                         "0.2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀x. member x A ⟶ member x univ"
+                    "th": "⊢ ∀x. x ∈ A ⟶ x ∈ univ"
                 },
                 {
                     "args": "subsetI",
@@ -442,10 +445,27 @@
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ subset A univ"
+                    "th": "⊢ A ⊆ univ"
                 }
             ],
-            "prop": "subset A univ",
+            "prop": "A ⊆ univ",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_univ"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "'a set"
