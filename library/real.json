@@ -2704,8 +2704,11 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "max",
-            "prop": "max m n = if m <= n then n else m",
+            "prop": "max m n = (if m ≤ n then n else m)",
             "ty": "def",
             "type": "real ⇒ real ⇒ real"
         },
@@ -5440,6 +5443,132 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_abs_bounds",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (if 0 ≤ x then x else -x) ≤ k ⟷ -k ≤ x ∧ x ≤ k"
+                },
+                {
+                    "args": "real_abs_def, abs x ≤ k ⟷ -k ≤ x ∧ x ≤ k",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs x ≤ k ⟷ -k ≤ x ∧ x ≤ k"
+                }
+            ],
+            "prop": "abs x <= k <--> -k <= x & x <= k",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_abs_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "k": "real",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_abs_mul",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 ≤ x ⟶ abs (x * y) = abs x * abs y"
+                },
+                {
+                    "args": "0 ≤ x",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "0 ≤ x ⊢ (if 0 ≤ x * y then x * y else -(x * y)) = (if 0 ≤ x then x else -x) * (if 0 ≤ y then y else -y)"
+                },
+                {
+                    "args": "real_abs_def, abs (x * y) = abs x * abs y",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ abs (x * y) = abs x * abs y"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ abs (x * y) = abs x * abs y"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ¬0 ≤ x ⟶ abs (x * y) = abs x * abs y"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ abs (x * y) = abs x * abs y"
+                }
+            ],
+            "prop": "abs (x * y) = abs x * abs y",
+            "steps": [
+                {
+                    "case": "0 <= x",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_abs_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
             "name": "real_sgn",
             "prop": "real_sgn x = if 0 < x then 1 else if x <0 then -1 else 0",
             "ty": "def",
@@ -5450,6 +5579,43 @@
             "prop": "sqrt x = THE y. real_sgn y =  real_sgn x & y ^ (2::nat) = abs x",
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_abs_abs",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (if 0 ≤ abs x then abs x else -abs x) = (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "real_abs_def, abs (abs x) = abs x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (abs x) = abs x"
+                }
+            ],
+            "prop": "abs (abs x) = abs x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_abs_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         }
     ],
     "description": "real numbers",
