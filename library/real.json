@@ -2704,8 +2704,11 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "max",
-            "prop": "max m n = if m <= n then n else m",
+            "prop": "max m n = (if m ≤ n then n else m)",
             "ty": "def",
             "type": "real ⇒ real ⇒ real"
         },
@@ -5576,6 +5579,43 @@
             "prop": "sqrt x = THE y. real_sgn y =  real_sgn x & y ^ (2::nat) = abs x",
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_abs_abs",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (if 0 ≤ abs x then abs x else -abs x) = (if 0 ≤ x then x else -x)"
+                },
+                {
+                    "args": "real_abs_def, abs (abs x) = abs x",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs (abs x) = abs x"
+                }
+            ],
+            "prop": "abs (abs x) = abs x",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_abs_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         }
     ],
     "description": "real numbers",
