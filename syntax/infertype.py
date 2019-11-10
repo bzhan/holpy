@@ -3,7 +3,7 @@
 """Hindley-Milner type inference algorithm."""
 
 from kernel import type as hol_type
-from kernel.type import TVar, TFun
+from kernel.type import STVar, TFun
 from kernel.term import Term
 from kernel import term
 from data import nat
@@ -22,7 +22,7 @@ def is_internal_type(T):
     (and hence can be unified).
 
     """
-    return T.ty == hol_type.TVAR and T.name.startswith("_t")
+    return T.ty == hol_type.STVAR and T.name.startswith("_")
 
 def unify(uf, T1, T2):
     """Unification of two types. This modifies the supplied union-find
@@ -32,13 +32,19 @@ def unify(uf, T1, T2):
     # First, find representatives of T1 and T2
     T1 = uf.find(T1)
     T2 = uf.find(T2)
+
     # Type constructors, recursively unify each argument
     if T1.ty == hol_type.TYPE and T2.ty == hol_type.TYPE and T1.name == T2.name:
         for i in range(len(T1.args)):
             unify(uf, T1.args[i], T2.args[i])
+
     # Concrete type variables
     elif T1.ty == hol_type.TVAR and T2.ty == hol_type.TVAR and T1.name == T2.name:
         return
+
+    elif T1.ty == hol_type.STVAR and T2.ty == hol_type.STVAR and T1.name == T2.name:
+        return
+
     # Internal (unifiable) type variables
     elif is_internal_type(T1):
         uf.union(T2, T1, force_first=True)
@@ -68,7 +74,7 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     # Create and return a new type variable.
     def new_type():
         nonlocal num_internal
-        T = TVar("_t" + str(num_internal))
+        T = STVar("_t" + str(num_internal))
         num_internal += 1
         return T
 
@@ -113,11 +119,11 @@ def type_infer(ctxt, t, *, forbid_internal=True):
                 if t.name in ctxt.consts:
                     t.T = ctxt.consts[t.name]
                 else:
-                    T = thy.get_term_sig(t.name)
-                    Tvars = T.get_tvars()
+                    T = thy.get_term_sig(t.name, stvar=True)
+                    STvars = T.get_stvars()
                     tyinst = dict()
-                    for Tv in Tvars:
-                        tyinst[Tv.name] = new_type()
+                    for STv in STvars:
+                        tyinst[STv.name] = new_type()
                     t.T = T.subst(tyinst)
             add_type(t.T)
             return t.T
@@ -163,7 +169,7 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     tyinst = dict()
     for i in range(num_internal):
         nm = "_t" + str(i)
-        tyinst[nm] = uf.find(TVar(nm))
+        tyinst[nm] = uf.find(STVar(nm))
 
     for i in range(100):
         repr_t = repr(t)

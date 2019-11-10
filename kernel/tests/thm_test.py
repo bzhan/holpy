@@ -2,12 +2,13 @@
 
 import unittest
 
-from kernel.type import TVar, TFun, boolT
-from kernel.term import Term, Var, Const, Comb, Abs, Bound, TypeCheckException
+from kernel.type import STVar, TVar, TFun, boolT
+from kernel.term import Term, SVar, Var, Const, Comb, Abs, Bound, TypeCheckException
 from kernel.thm import Thm, InvalidDerivationException
 
 Ta = TVar("a")
 Tb = TVar("b")
+STa = STVar("a")
 Tab = TFun(Ta, Tb)
 A = Var("A", boolT)
 B = Var("B", boolT)
@@ -162,19 +163,19 @@ class ThmTest(unittest.TestCase):
         self.assertRaises(InvalidDerivationException, Thm.equal_elim, th1, th2)
 
     def testSubstType(self):
-        x_eq_y = Term.mk_equals(x,y)
+        x_eq_y = Term.mk_equals(Var("x", STa), Var("y", STa))
         th = Thm([x_eq_y], x_eq_y)
         xb_eq_yb = Term.mk_equals(Var("x", Tb), Var("y", Tb))
         self.assertEqual(Thm.subst_type({"a" : Tb}, th), Thm([xb_eq_yb], xb_eq_yb))
 
     def testSubstitution(self):
-        x_eq_y = Term.mk_equals(x,y)
+        x_eq_y = Term.mk_equals(SVar('x', Ta), SVar('y', Ta))
         th = Thm([x_eq_y], x_eq_y)
         y_eq_x = Term.mk_equals(y,x)
         self.assertEqual(Thm.substitution({"x" : y, "y" : x}, th), Thm([y_eq_x], y_eq_x))
 
     def testSubstitutionFail(self):
-        x_eq_y = Term.mk_equals(x,y)
+        x_eq_y = Term.mk_equals(SVar('x', Ta), SVar('y', Ta))
         th = Thm([x_eq_y], x_eq_y)
         self.assertRaises(InvalidDerivationException, Thm.substitution, {"x" : Var("a", Tb)}, th)
 

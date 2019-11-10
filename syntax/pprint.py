@@ -194,6 +194,11 @@ class Collect(AST):
         self.body = body
         self.T = T
 
+class STVarName(AST):
+    def __init__(self, name):
+        self.ty = 'stvar_name'
+        self.name = name
+
 class TVarName(AST):
     def __init__(self, name):
         self.ty = 'tvar_name'
@@ -219,7 +224,9 @@ def get_ast_type(thy, T):
     assert isinstance(T, HOLType), "get_ast_type: input is not a type."
 
     def helper(T):
-        if T.ty == hol_type.TVAR:
+        if T.ty == hol_type.STVAR:
+            return STVarName(T.name)
+        elif T.ty == hol_type.TVAR:
             return TVarName(T.name)
         elif T.ty == hol_type.TYPE:
             if len(T.args) == 0:
@@ -692,6 +699,8 @@ def print_ast(thy, ast, *, line_length=None):
             add_normal('. ')
             rec(ast.body)
             add_normal('}')
+        elif ast.ty == 'stvar_name':
+            add_tvar("'?" + ast.name)
         elif ast.ty == 'tvar_name':
             add_tvar("'" + ast.name)
         elif ast.ty == 'type_constr':

@@ -17,52 +17,13 @@ class MatchException(Exception):
     pass
 
 
-def to_internal_tvars(pat_T):
-    """Add underscore to each type variable in the pattern."""
-    if pat_T.ty == hol_type.TVAR:
-        return TVar("_" + pat_T.name)
-    elif pat_T.ty == hol_type.TYPE:
-        return Type(pat_T.name, *[to_internal_tvars(arg) for arg in pat_T.args])
-
-def to_internal_vars(pat):
-    """Add underscore to each variable in the pattern."""
-    if pat.is_var():
-        return Var("_" + pat.name, to_internal_tvars(pat.T))
-    elif pat.is_const():
-        return Const(pat.name, to_internal_tvars(pat.T))
-    elif pat.is_comb():
-        return to_internal_vars(pat.fun)(to_internal_vars(pat.arg))
-    elif pat.is_abs():
-        return Abs(pat.var_name, to_internal_tvars(pat.var_T), to_internal_vars(pat.body))
-    elif pat.is_bound():
-        return pat
-    else:
-        raise TypeError
-
-def to_internal_instsp(instsp):
-    """Convert instantiation pair to assignments of internal variables."""
-    tyinst, inst = instsp
-    tyinst2 = {"_" + nm: T for nm, T in tyinst.items()}
-    inst2 = {"_" + nm: t for nm, t in inst.items()}
-    return tyinst2, inst2
-
-def from_internal_instsp(instsp):
-    """Convert instantiation pair consisting of assignments to internal
-    variables to assignments on normal variables.
-
-    """
-    tyinst, inst = instsp
-    tyinst2 = {nm[1:]: T for nm, T in tyinst.items()}
-    inst2 = {nm[1:]: t for nm, t in inst.items()}
-    return tyinst2, inst2
-
 def is_pattern(t, matched_vars):
     """Test whether t is a matchable pattern, given the current instantiations."""
     if t.is_abs():
         return is_pattern(t.body, matched_vars)
     else:
-        if t.head.is_var() and t.head.name not in matched_vars:
-            return all(arg.is_bound() or arg.is_var() and arg.name in matched_vars for arg in t.args) and \
+        if t.head.is_svar() and t.head.name not in matched_vars:
+            return all(arg.is_bound() or arg.is_svar() and arg.name in matched_vars for arg in t.args) and \
                    len(set(t.args)) == len(t.args)
         else:
             return is_pattern_list(t.args, matched_vars)
@@ -75,12 +36,12 @@ def is_pattern_list(ts, matched_vars):
         return is_pattern(ts[0], matched_vars)
     else:
         if is_pattern(ts[0], matched_vars):
-            all_vars = list(set(matched_vars + [v.name for v in term.get_vars(ts[0])]))
+            all_vars = list(set(matched_vars + [v.name for v in term.get_svars(ts[0])]))
             return is_pattern_list(ts[1:], all_vars)
         else:
             if not is_pattern_list(ts[1:], matched_vars):
                 return False
-            all_vars = list(set(matched_vars + [v.name for v in term.get_vars(ts[1:])]))
+            all_vars = list(set(matched_vars + [v.name for v in term.get_svars(ts[1:])]))
             return is_pattern(ts[0], all_vars)
 
 def find_term(t, sub_t):
@@ -100,12 +61,13 @@ def first_order_match_incr(pat, t, instsp):
     """
     assert isinstance(pat, Term) and isinstance(t, Term), \
            "first_order_match_incr: pat and t must be terms."
-    # print("First order match", pat, "with", t)
+    assert len(term.get_svars(t)) == 0, "first_order_match_incr: t should not contain patterns."
 
+    # print("First order match", pat, "with", t)
     def match(pat, t, instsp, bd_vars):
         tyinst, inst = instsp
-        # print("Match", pat, "with", t, "inst", inst)
-        if pat.head.is_var() and pat.head.name.startswith('_'):
+        # print("Match", repr(pat), "with", repr(t), "inst", inst)
+        if pat.head.is_svar():
             # Case where the head of the function is a variable.
             if pat.head.name not in inst:
                 # If the head variable is not instantiated, check that the
@@ -115,10 +77,10 @@ def first_order_match_incr(pat, t, instsp):
                 # If all conditions hold, assign appropriately.
 
                 heuristic_match = False
-                # Check each argument is either a bound variable or is a free
-                # variable that is already matched.
+                # Check each argument is either a bound variable or is a
+                # schematic variable that is already matched.
                 for v in pat.args:
-                    if not (v in bd_vars or (v.is_var() and v.name in inst)):
+                    if not (v in bd_vars or (v.is_svar() and v.name in inst)):
                         heuristic_match = True
 
                 # Check arguments of pat are distinct.
@@ -132,7 +94,7 @@ def first_order_match_incr(pat, t, instsp):
 
                 if heuristic_match:
                     # Heuristic matching: just assign pat.fun to t.fun.
-                    if pat.is_var():
+                    if pat.is_svar():
                         # t contains bound variables, so match fails
                         raise MatchException
                     elif t.is_comb():
@@ -150,7 +112,7 @@ def first_order_match_incr(pat, t, instsp):
                             Tlist.append(inst[v.name].get_type())
                     Tlist.append(t.get_type())
                     try:
-                        pat.head.T.match_incr(TFun(*Tlist), tyinst, internal_only=True)
+                        pat.head.T.match_incr(TFun(*Tlist), tyinst)
                     except TypeMatchException:
                         raise MatchException
 
@@ -186,18 +148,14 @@ def first_order_match_incr(pat, t, instsp):
             # In all other cases, top-level structure of the term
             # must agree.
             raise MatchException
-        elif pat.is_var():
-            # The case where pat come from a bound variable.
-            if pat.name != t.name:
-                raise MatchException
-        elif pat.is_const():
-            # When pat is a constant, t must also be a constant with
-            # the same name and matching type.
+        elif pat.is_var() or pat.is_const():
+            # The case where pat is a free variable, constant, or comes
+            # from a bound variable.
             if pat.name != t.name:
                 raise MatchException
             else:
                 try:
-                    pat.T.match_incr(t.T, tyinst, internal_only=True)
+                    pat.T.match_incr(t.T, tyinst)
                 except TypeMatchException:
                     raise MatchException
         elif pat.is_comb():
@@ -213,7 +171,7 @@ def first_order_match_incr(pat, t, instsp):
             # When pat is a lambda term, t must also be a lambda term.
             # Replace bound variable by a variable, then match the body.
             try:
-                pat.var_T.match_incr(t.var_T, tyinst, internal_only=True)
+                pat.var_T.match_incr(t.var_T, tyinst)
             except TypeMatchException:
                 raise MatchException
             T = pat.var_T.subst(tyinst)
@@ -228,10 +186,7 @@ def first_order_match_incr(pat, t, instsp):
         else:
             raise TypeError
 
-    instsp2 = to_internal_instsp(instsp)
-    match(to_internal_vars(pat), t, instsp2, [])
-    instsp[0].update(from_internal_instsp(instsp2)[0])
-    instsp[1].update(from_internal_instsp(instsp2)[1])
+    match(pat, t, instsp, [])
 
 def first_order_match(pat, t):
     """First-order matching of pat with t. Return the instantiation

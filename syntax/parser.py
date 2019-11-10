@@ -4,7 +4,7 @@ from typing import Tuple, List
 import copy
 from lark import Lark, Transformer, v_args, exceptions
 
-from kernel.type import HOLType, TVar, Type, TFun, boolT
+from kernel.type import HOLType, STVar, TVar, Type, TFun, boolT
 from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term
 from kernel import macro
 from kernel import term
@@ -24,6 +24,7 @@ class ParserException(Exception):
 
 grammar = r"""
     ?type: "'" CNAME  -> tvar              // Type variable
+        | "'?" CNAME  -> stvar             // Schematic type variable
         | type ("=>"|"⇒") type -> funtype       // Function types
         | CNAME -> type                   // Type constants
         | type CNAME                      // Type constructor with one argument
@@ -158,6 +159,9 @@ class HOLTransformer(Transformer):
 
     def tvar(self, s):
         return TVar(s)
+
+    def stvar(self, s):
+        return STVar(s)
 
     def type(self, *args):
         return Type(str(args[-1]), *args[:-1])

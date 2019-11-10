@@ -132,7 +132,7 @@ class rewrite_goal(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th):
+        def search_thm(th_name):
             try:
                 pt = tactic.rewrite().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
@@ -140,11 +140,11 @@ class rewrite_goal(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+            search_thm(data['theorem'])
         else:
-            for th_name, th in thy.get_data("theorems").items():
+            for th_name in thy.get_data("theorems"):
                 if 'hint_rewrite' in thy.get_attributes(th_name):
-                    search_thm(th_name, th)
+                    search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -167,7 +167,7 @@ class rewrite_fact(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th):
+        def search_thm(th_name):
             try:
                 pt = logic.rewrite_fact_macro().get_proof_term(thy, th_name, prevs)
                 results.append({"theorem": th_name, "_fact": [pt.prop]})
@@ -175,11 +175,11 @@ class rewrite_fact(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+            search_thm(data['theorem'])
         else:
-            for th_name, th in thy.get_data("theorems").items():
+            for th_name in thy.get_data("theorems"):
                 if 'hint_rewrite' in thy.get_attributes(th_name):
-                    search_thm(th_name, th)
+                    search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -234,7 +234,7 @@ class apply_forward_step(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th, min_prevs):
+        def search_thm(th_name, min_prevs):
             if len(prevs) < min_prevs:
                 return
 
@@ -248,11 +248,11 @@ class apply_forward_step(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']), min_prevs=0)
+            search_thm(data['theorem'], min_prevs=0)
         else:
-            for th_name, th in thy.get_data("theorems").items():
+            for th_name in thy.get_data("theorems"):
                 if 'hint_forward' in thy.get_attributes(th_name):
-                    search_thm(th_name, th, min_prevs=1)
+                    search_thm(th_name, min_prevs=1)
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -306,7 +306,7 @@ class apply_backward_step(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th):
+        def search_thm(th_name):
             try:
                 pt = tactic.rule().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
@@ -317,12 +317,12 @@ class apply_backward_step(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+            search_thm(data['theorem'])
         else:
-            for th_name, th in thy.get_data("theorems").items():
+            for th_name in thy.get_data("theorems"):
                 if 'hint_backward' in thy.get_attributes(th_name) or \
                    ('hint_backward1' in thy.get_attributes(th_name) and len(prevs) >= 1):
-                    search_thm(th_name, th)
+                    search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
 
@@ -356,7 +356,7 @@ class apply_resolve_step(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name, th):
+        def search_thm(th_name):
             try:
                 pt = tactic.resolve().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
@@ -364,11 +364,11 @@ class apply_resolve_step(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], thy.get_theorem(data['theorem']))
+            search_thm(data['theorem'])
         else:
-            for th_name, th in thy.get_data("theorems").items():
+            for th_name in thy.get_data("theorems").items():
                 if 'hint_resolve' in thy.get_attributes(th_name):
-                    search_thm(th_name, th)
+                    search_thm(th_name)
 
         return sorted(results, key=lambda d: d['theorem'])
 

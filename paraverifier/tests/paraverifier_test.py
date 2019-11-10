@@ -11,7 +11,7 @@ from syntax import printer
 from paraverifier import gcl
 from paraverifier.paraverifier import load_system, load_hints
 
-print_log = False
+print_log = True
 def log(*s):
     if print_log:
         print(*s)

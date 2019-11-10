@@ -4,7 +4,7 @@ from typing import List, Tuple
 
 from kernel.type import TVar, TFun, boolT
 from kernel import term
-from kernel.term import Term, Var, Const, Abs
+from kernel.term import Term, SVar, Var, Const, Abs
 from kernel.thm import Thm
 from kernel import theory
 from kernel import macro
@@ -137,7 +137,7 @@ def mk_if(P, x, y):
     """Obtain the term if P then x else y."""
     return if_t(x.get_type())(P, x, y)
 
-def get_forall_names(t, prevs):
+def get_forall_names(t):
     """Given a term of the form
 
     !x_1 ... x_k. A_1 --> ... --> A_n --> C.
@@ -150,9 +150,9 @@ def get_forall_names(t, prevs):
             return [t.arg.var_name] + helper(t.arg.body)
         else:
             return []
-    return name.get_variant_names(helper(t), prevs)
+    return name.get_variant_names(helper(t), [])
 
-def strip_all_implies(t, names):
+def strip_all_implies(t, names, svar=True):
     """Given a term of the form
 
     !x_1 ... x_k. A_1 --> ... --> A_n --> C.
@@ -166,8 +166,11 @@ def strip_all_implies(t, names):
     if Term.is_all(t):
         assert len(names) > 0, "strip_all_implies: not enough names input."
         assert isinstance(names[0], str), "strip_all_implies: names must be strings."
-        v = Var(names[0], t.arg.var_T)
-        vars, As, C = strip_all_implies(t.arg.subst_bound(v), names[1:])
+        if svar:
+            v = SVar(names[0], t.arg.var_T)
+        else:
+            v = Var(names[0], t.arg.var_T)
+        vars, As, C = strip_all_implies(t.arg.subst_bound(v), names[1:], svar=svar)
         return ([v] + vars, As, C)
     else:
         assert len(names) == 0, "strip_all_implies: too many names input."
@@ -294,19 +297,17 @@ class apply_theorem_macro(ProofTermMacro):
             name, tyinst, inst = args
         else:
             name = args
-        th = thy.get_theorem(name)
-
+        th = thy.get_theorem(name, svar=True)
         As, C = th.prop.strip_implies()
 
-        if not self.with_inst:
-            assert len(prevs) <= len(As), "apply_theorem: too many prevs."
+        assert len(prevs) <= len(As), "apply_theorem: too many prevs."
 
         pats = As[:len(prevs)]
         ts = [prev_th.prop for prev_th in prevs]
         matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
         # Check that every variable in the theorem has an instantiation
-        unmatched_vars = [v.name for v in term.get_vars(As + [C]) if v.name not in inst]
+        unmatched_vars = [v.name for v in term.get_svars(As + [C]) if v.name not in inst]
         if unmatched_vars:
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
@@ -322,19 +323,17 @@ class apply_theorem_macro(ProofTermMacro):
             name, tyinst, inst = args
         else:
             name = args
-        th = thy.get_theorem(name)
-
+        th = thy.get_theorem(name, svar=True)
         As, C = th.prop.strip_implies()
 
-        if not self.with_inst:
-            assert len(pts) <= len(As), "apply_theorem: too many prevs."
+        assert len(pts) <= len(As), "apply_theorem: too many prevs."
 
         pats = As[:len(pts)]
         ts = [pt.prop for pt in pts]
         matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
         # Check that every variable in the theorem has an instantiation
-        unmatched_vars = [v.name for v in term.get_vars(As + [C]) if v.name not in inst]
+        unmatched_vars = [v.name for v in term.get_svars(As + [C]) if v.name not in inst]
         if unmatched_vars:
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
@@ -369,9 +368,7 @@ class apply_fact_macro(ProofTermMacro):
         pt, pt_prevs = pts[0], pts[1:]
 
         # First, obtain the patterns
-        vars = term.get_vars([pt_prev.prop for pt_prev in pts])
-        old_names = [v.name for v in vars]
-        new_names = get_forall_names(pt.prop, old_names)
+        new_names = get_forall_names(pt.prop)
 
         new_vars, As, C = strip_all_implies(pt.prop, new_names)
         assert len(pt_prevs) <= len(As), "apply_fact: too many prevs"
@@ -380,7 +377,7 @@ class apply_fact_macro(ProofTermMacro):
             assert len(args) == len(new_names), "apply_fact_macro: wrong number of args."
             tyinst, inst = {}, {nm: v for nm, v in zip(new_names, args)}
         else:
-            tyinst, inst = dict(), {v.name: v for v in vars}
+            tyinst, inst = dict(), dict()
             for idx, pt_prev in enumerate(pt_prevs):
                 matcher.first_order_match_incr(As[idx], pt_prev.prop, (tyinst, inst))
 
@@ -488,7 +485,7 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
         pts = pts[1:]
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
-        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, match_vars=False)),
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt)),
                        top_conv(beta_conv()))
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
@@ -519,7 +516,7 @@ class rewrite_fact_with_prev_macro(ProofTermMacro):
         assert eq_pt.prop.is_equals, "rewrite_fact_with_prev"
 
         # Check rewriting using eq_pt has an effect
-        cv1 = top_sweep_conv(rewr_conv(eq_pt, match_vars=False))
+        cv1 = top_sweep_conv(rewr_conv(eq_pt))
         assert not cv1.eval(thy, pt.prop).is_reflexive(), "rewrite_fact_with_prev"
 
         cv = then_conv(cv1, top_conv(beta_conv()))

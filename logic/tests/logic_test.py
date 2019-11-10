@@ -105,7 +105,7 @@ class LogicTest(unittest.TestCase):
         ]
 
         for t, res in test_data:
-            self.assertEqual(logic.get_forall_names(t, []), res)
+            self.assertEqual(logic.get_forall_names(t), res)
 
     def testNormBoolExpr(self):
         test_data = [

@@ -343,6 +343,13 @@ class Thm():
             raise InvalidDerivationException("mk_VAR")
         return Thm([], Const("_VAR", TFun(v.T, boolT))(v))
 
+    @staticmethod
+    def convert_svar(th):
+        """Obtain the version of theorem with SVar."""
+        if len(th.hyps) > 0:
+            raise InvalidDerivationException("convert_svar")
+        return Thm([], th.prop.convert_svar())
+
 
 # Table of primitive derivations
 primitive_deriv = {

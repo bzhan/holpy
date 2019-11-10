@@ -92,6 +92,15 @@ class TacticTest(unittest.TestCase):
             new_goals=["Q x"]
         )
 
+    def testIntros2(self):
+        self.run_test(
+            'logic_base', tactic.intros(),
+            vars={"x": "'a", "y": "'b", "R": "'a => 'b => bool"},
+            goal="!x. !y. R x y",
+            args=["x", "y"],
+            new_goals=["R x y"]
+        )
+
     def testInduct(self):
         n = Var("n", natT)
         self.run_test(
@@ -100,6 +109,17 @@ class TacticTest(unittest.TestCase):
             goal="n + 0 = n",
             args=("nat_induct", n),
             new_goals=["(0::nat) + 0 = 0", "!n. n + 0 = n --> Suc n + 0 = Suc n"]
+        )
+
+    def testInduct2(self):
+        thy = basic.load_theory('list')
+        xs = Var("xs", parser.parse_type(thy, "'a list"))
+        self.run_test(
+            'list', tactic.var_induct(),
+            vars={"xs": "'a list"},
+            goal="xs @ [] = xs",
+            args=("list_induct", xs),
+            new_goals=["([]::'a list) @ [] = []", "!x::'a. !xs. xs @ [] = xs --> (x # xs) @ [] = x # xs"]
         )
 
     def testRewrite(self):

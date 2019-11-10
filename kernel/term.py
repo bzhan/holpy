@@ -286,7 +286,7 @@ class Term():
 
         """
         assert isinstance(inst, dict), "inst must be a dictionary"
-        if self.is_var():
+        if self.is_svar():
             if self.name in inst:
                 t = inst[self.name]
                 if t.get_type() == self.T:
@@ -295,7 +295,7 @@ class Term():
                     raise TermSubstitutionException("Type " + str(t.get_type()) + " != " + str(self.T))
             else:
                 return self
-        elif self.is_svar() or self.is_const():
+        elif self.is_var() or self.is_const():
             return self
         elif self.is_comb():
             return Comb(self.fun.subst(inst), self.arg.subst(inst))
@@ -492,7 +492,9 @@ class Term():
         
         """
         def rec(s, n):
-            if s.is_var():
+            if s.is_svar():
+                return s
+            elif s.is_var():
                 if s.name == t.name:
                     if s.T != t.T:
                         raise TermSubstitutionException("abstract_over: wrong type")
@@ -548,6 +550,22 @@ class Term():
                 raise TypeError
         return rec(self, [])
 
+    def convert_svar(self):
+        if self.is_svar():
+            raise TermSubstitutionException("convert_svar: term already contains SVar.")
+        elif self.is_var():
+            return SVar(self.name, self.T.convert_stvar())
+        elif self.is_const():
+            return Const(self.name, self.T.convert_stvar())
+        elif self.is_comb():
+            return self.fun.convert_svar()(self.arg.convert_svar())
+        elif self.is_abs():
+            return Abs(self.var_name, self.var_T.convert_stvar(), self.body.convert_svar())
+        elif self.is_bound():
+            return self
+        else:
+            raise TypeError
+
 
 class SVar(Term):
     """Schematic variable, specified by name and type."""
@@ -602,6 +620,25 @@ class Bound(Term):
 
 def all_t(T):
     return Const("all", TFun(TFun(T, boolT), boolT))
+
+def get_svars(t):
+    """Returns list of vschematic ariables in a term or a list of terms."""
+    def helper(t):
+        if t.is_svar():
+            return [t]
+        elif t.is_comb():
+            return helper(t.fun) + helper(t.arg)
+        elif t.is_abs():
+            return helper(t.body)
+        else:
+            return []
+
+    if isinstance(t, Term):
+        return list(OrderedDict.fromkeys(helper(t)))
+    elif isinstance(t, list):
+        return list(OrderedDict.fromkeys(sum([helper(s) for s in t], [])))
+    else:
+        raise TypeError
 
 def get_vars(t):
     """Returns list of variables in a term or a list of terms."""

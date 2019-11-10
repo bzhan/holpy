@@ -248,16 +248,11 @@ class top_sweep_conv(Conv):
         return else_conv(self.cv, else_conv(sub_conv(self), all_conv())).get_proof_term(thy, t)
 
 class rewr_conv(Conv):
-    """Rewrite using the given equality theorem.
-    
-    match_vars -- whether variables in pat should be matched.
-    
-    """
-    def __init__(self, pt, match_vars=True, sym=False, conds=None):
+    """Rewrite using the given equality theorem."""
+    def __init__(self, pt, sym=False, conds=None):
         assert isinstance(pt, ProofTerm) or isinstance(pt, str), "rewr_conv: argument"
         self.pt = pt
         self.sym = sym
-        self.match_vars = match_vars
         if conds is not None:
             assert isinstance(conds, list) and all(isinstance(cond, ProofTerm) for cond in conds), "rewr_conv"
         self.conds = conds
@@ -282,13 +277,10 @@ class rewr_conv(Conv):
 
         tyinst, inst = dict(), dict()
 
-        if self.match_vars:
-            try:
-                matcher.first_order_match_incr(C.lhs, t, (tyinst, inst))
-            except matcher.MatchException:
-                raise ConvException("rewr_conv: cannot match %s with %s" % (str(C.lhs), str(t)))
-        elif C.lhs != t:
-            raise ConvException("rewr_conv: %s ~= %s" % (str(C.lhs), str(t)))
+        try:
+            matcher.first_order_match_incr(C.lhs, t, (tyinst, inst))
+        except matcher.MatchException:
+            raise ConvException("rewr_conv: cannot match %s with %s" % (str(C.lhs), str(t)))
 
         pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, eq_pt))
         if self.conds is not None:

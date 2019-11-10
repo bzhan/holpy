@@ -68,12 +68,12 @@ class rule(Tactic):
         if prevs is None:
             prevs = []
         
-        th = thy.get_theorem(th_name)
+        th = thy.get_theorem(th_name, svar=True)
         As, C = th.assums, th.concl
 
+        # Length of prevs is at most length of As
+        assert len(prevs) <= len(As), "rule: too many previous facts"
         if instsp is None:
-            # Length of prevs is at most length of As
-            assert len(prevs) <= len(As), "rule: too many previous facts"
             instsp = (dict(), dict())
 
         # Match the conclusion and assumptions. Either the conclusion
@@ -89,7 +89,7 @@ class rule(Tactic):
 
         # Check that every variable in the theorem has an instantiation.
         tyinst, inst = instsp
-        unmatched_vars = [v.name for v in term.get_vars(As + [C]) if v.name not in inst]
+        unmatched_vars = [v.name for v in term.get_svars(As + [C]) if v.name not in inst]
         if unmatched_vars:
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
@@ -99,7 +99,7 @@ class rule(Tactic):
 
         # Determine whether it is necessary to provide instantiation
         # to apply_theorem.
-        if set(term.get_vars(th.assums)) != set(term.get_vars(th.prop)) or \
+        if set(term.get_svars(th.assums)) != set(term.get_svars(th.prop)) or \
            set(term.get_tvars(th.assums)) != set(term.get_tvars(th.prop)) or \
            not matcher.is_pattern_list(th.assums, []):
             return apply_theorem(thy, th_name, *pts, tyinst=tyinst, inst=inst)
@@ -114,7 +114,7 @@ class resolve(Tactic):
     def get_proof_term(self, thy, goal, args, prevs):
         assert isinstance(args, str) and len(prevs) == 1, "resolve"
         th_name = args
-        th = thy.get_theorem(th_name)
+        th = thy.get_theorem(th_name, svar=True)
 
         assert logic.is_neg(th.prop), "resolve"
 
@@ -132,7 +132,7 @@ class intros(Tactic):
         else:
             var_names = args
 
-        vars, As, C = logic.strip_all_implies(goal.prop, var_names)
+        vars, As, C = logic.strip_all_implies(goal.prop, var_names, svar=False)
         
         pt = ProofTerm.sorry(Thm(list(goal.hyps) + As, C))
         ptAs = [ProofTerm.assume(A) for A in As]
@@ -144,12 +144,13 @@ class var_induct(Tactic):
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):
         th_name, var = args
         P = Term.mk_abs(var, goal.prop)
-        th = thy.get_theorem(th_name)
+        th = thy.get_theorem(th_name, svar=True)
         f, args = th.concl.strip_comb()
         if len(args) != 1:
             raise NotImplementedError
-        inst = {f.name: P, args[0].name: var}
-        return rule().get_proof_term(thy, goal, args=(th_name, ({}, inst)))
+        instsp = matcher.first_order_match(args[0], var)
+        instsp[1][f.name] = P
+        return rule().get_proof_term(thy, goal, args=(th_name, instsp))
 
 class rewrite(Tactic):
     """Rewrite the goal using a theorem."""
@@ -207,10 +208,10 @@ class rewrite_goal_with_prev(Tactic):
                "rewrite_goal_with_prev"
 
         # Check whether rewriting using the theorem has an effect
-        assert not top_sweep_conv(rewr_conv(pt, match_vars=False)).eval(thy, C).is_reflexive(), \
+        assert not top_sweep_conv(rewr_conv(pt)).eval(thy, C).is_reflexive(), \
                "rewrite_goal_with_prev"
 
-        cv = then_conv(top_sweep_conv(rewr_conv(pt, match_vars=False)),
+        cv = then_conv(top_sweep_conv(rewr_conv(pt)),
                        top_conv(beta_conv()))
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
@@ -229,14 +230,11 @@ class apply_prev(Tactic):
         pt, prev_pts = prevs[0], prevs[1:]
 
         # First, obtain the patterns
-        old_vars = term.get_vars([prev.prop for prev in prevs])
-        old_names = [v.name for v in old_vars]
-        new_names = logic.get_forall_names(pt.prop, old_names)
-
+        new_names = logic.get_forall_names(pt.prop)
         new_vars, As, C = logic.strip_all_implies(pt.prop, new_names)
         assert len(prev_pts) <= len(As), "apply_prev: too many prev_pts"
 
-        instsp = dict(), {v.name: v for v in old_vars}
+        instsp = dict(), dict()
         matcher.first_order_match_incr(C, goal.prop, instsp)
         for idx, prev_pt in enumerate(prev_pts):
             matcher.first_order_match_incr(As[idx], prev_pt.prop, instsp)
@@ -251,11 +249,11 @@ class apply_prev(Tactic):
         for new_name in new_names:
             pt = ProofTerm.forall_elim(inst[new_name], pt)
         inst_As, inst_C = pt.prop.strip_implies()
-        
+
         inst_arg = [inst[new_name] for new_name in new_names]
         new_goals = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in inst_As[len(prev_pts):]]
         if set(new_names).issubset({v.name for v in term.get_vars(As)}) and \
-           matcher.is_pattern_list(As, [v.name for v in old_vars]):
+           matcher.is_pattern_list(As, []):
             return ProofTermDeriv('apply_fact', thy, args=None, prevs=prevs + new_goals)
         else:
             return ProofTermDeriv('apply_fact_for', thy, args=inst_arg, prevs=prevs + new_goals)

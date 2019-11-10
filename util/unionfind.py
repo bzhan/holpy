@@ -14,6 +14,12 @@ class UnionFind():
         # Map from node to size of subtree based at that node.
         self.size = dict()
 
+    def __str__(self):
+        res = ""
+        for k, v in self.parents.items():
+            res += str(k) + ": " + str(v) + "\n"
+        return res 
+
     def has_key(self, item):
         """Whether the data structure has the given item as key."""
         return item in self.parents

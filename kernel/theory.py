@@ -154,7 +154,7 @@ class Theory():
         if self.is_overload_const(name):
             # Assert the given type is an instance of the overloaded type,
             # and all instantiations are concrete types.
-            aT = self.get_term_sig(name)
+            aT = self.get_term_sig(name, stvar=True)
             try:
                 inst = aT.match(T)
             except TypeMatchException:
@@ -173,13 +173,16 @@ class Theory():
     def has_term_sig(self, name):
         return name in self.get_data("term_sig")
 
-    def get_term_sig(self, name):
+    def get_term_sig(self, name, stvar=False):
         """Returns the most general type of the term."""
         data = self.get_data("term_sig")
         if name not in data:
             raise TheoryException("Const " + name + " not found")
 
-        return data[name]
+        if stvar:
+            return data[name].convert_stvar()
+        else:
+            return data[name]
 
     def add_theorem(self, name, th):
         """Add the given theorem under the given name."""
@@ -193,13 +196,16 @@ class Theory():
         data = self.get_data("theorems")
         return name in data
     
-    def get_theorem(self, name):
+    def get_theorem(self, name, svar=False):
         """Returns the theorem under that name."""
         data = self.get_data("theorems")
         if name not in data:
             raise TheoryException("Theorem " + name + " not found")
 
-        return data[name]
+        if svar:
+            return Thm.convert_svar(data[name])
+        else:
+            return data[name]
 
     def add_attribute(self, name, attribute):
         """Add an attribute for the given theorem."""
@@ -292,7 +298,7 @@ class Theory():
 
         """
         if self.is_overload_const(name):
-            aT = self.get_term_sig(name)
+            aT = self.get_term_sig(name, stvar=True)
             try:
                 inst = aT.match(T)
             except TypeMatchException:
@@ -360,7 +366,7 @@ class Theory():
             return None
         elif t.is_const():
             try:
-                self.get_term_sig(t.name).match(t.T)
+                self.get_term_sig(t.name, stvar=True).match(t.T)
             except TypeMatchException:
                 raise TheoryException("Check term: " + repr(t))
         elif t.is_comb():
@@ -409,7 +415,7 @@ class Theory():
         if seq.rule == "theorem":
             # Copies an existing theorem in the theory into the proof.
             try:
-                res_th = self.get_theorem(seq.args)
+                res_th = self.get_theorem(seq.args, svar=True)
                 if rpt is not None:
                     rpt.apply_theorem(seq.args)
             except TheoryException:
