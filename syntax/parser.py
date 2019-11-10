@@ -5,7 +5,7 @@ import copy
 from lark import Lark, Transformer, v_args, exceptions
 
 from kernel.type import HOLType, TVar, Type, TFun, boolT
-from kernel.term import Var, Const, Comb, Abs, Bound, Term
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term
 from kernel import macro
 from kernel import term
 from kernel.thm import Thm
@@ -31,6 +31,7 @@ grammar = r"""
         | "(" type ")"                    // Parenthesis
 
     ?atom: CNAME -> vname                 // Constant, variable, or bound variable
+        | "?" CNAME -> sname              // Schematic variable
         | INT -> number                   // Numbers
         | ("%"|"λ") CNAME "::" type ". " term -> abs     // Abstraction
         | ("%"|"λ") CNAME ". " term           -> abs_notype
@@ -163,6 +164,10 @@ class HOLTransformer(Transformer):
 
     def funtype(self, t1, t2):
         return TFun(t1, t2)
+
+    def sname(self, s):
+        s = str(s)
+        return SVar(s, None)
 
     def vname(self, s):
         thy = parser_setting['thy']

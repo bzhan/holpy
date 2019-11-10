@@ -31,9 +31,9 @@ class TermTest(unittest.TestCase):
             (f2(a,a), "Comb(Comb(Var(f2,'a => 'a => 'b),Var(a,'a)),Var(a,'a))"),
             (f(g(a)), "Comb(Var(f,'a => 'b),Comb(Var(g,'a => 'a),Var(a,'a)))"),
             (Abs("x", Ta, b), "Abs(x,'a,Var(b,'b))"),
-            (Abs("x", Ta, B0), "Abs(x,'a,Bound 0)"),
-            (Abs("x", Ta, "y", Ta, B0), "Abs(x,'a,Abs(y,'a,Bound 0))"),
-            (Abs("x", Ta, "y", Ta, B1), "Abs(x,'a,Abs(y,'a,Bound 1))"),
+            (Abs("x", Ta, B0), "Abs(x,'a,Bound(0))"),
+            (Abs("x", Ta, "y", Ta, B0), "Abs(x,'a,Abs(y,'a,Bound(0)))"),
+            (Abs("x", Ta, "y", Ta, B1), "Abs(x,'a,Abs(y,'a,Bound(1)))"),
         ]
 
         for t, repr_t in test_data:

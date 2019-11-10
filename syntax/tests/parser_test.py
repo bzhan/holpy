@@ -63,8 +63,8 @@ class ParserTest(unittest.TestCase):
         a = parser.parse_type(thy, 'bool')
         self.assertEqual(type(a.name), str)
 
-    def run_test(self, thy, *, vars=None, s, Ts, unicode=False):
-        ctxt = Context(thy, vars=vars)
+    def run_test(self, thy, *, vars=None, svars=None, s, Ts, unicode=False):
+        ctxt = Context(thy, vars=vars, svars=svars)
         thy = ctxt.thy
         t = parser.parse_term(ctxt, s)
         T = parser.parse_type(thy, Ts)
@@ -78,6 +78,7 @@ class ParserTest(unittest.TestCase):
             ("A", "bool"),
             ("P", "'a => bool"),
             ("a", "'a"),
+            ("?P", "bool"),
 
             # Function application
             ("P a", "bool"),
@@ -202,9 +203,10 @@ class ParserTest(unittest.TestCase):
                 'R': "'a => 'a => bool", 'a': "'a", 'b': "'a", 'c': "'a",
                 'f': "'a => 'a", 'nn': "bool => bool", 'm': "nat", 'n': "nat", 'p': "nat",
                 'xs': "'a list", 'ys': "'a list", 'zs': "'a list"}
+        svars = {'P': 'bool'}
 
         for s, Ts in test_data:
-            self.run_test('list', vars=vars, s=s, Ts=Ts)
+            self.run_test('list', vars=vars, svars=svars, s=s, Ts=Ts)
 
     def testParseInt(self):
         test_data = [

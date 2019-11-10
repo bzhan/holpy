@@ -3,7 +3,7 @@
 import unittest
 
 from kernel.type import TVar, Type, TFun, boolT
-from kernel.term import Var, Const, Comb, Abs, Bound, Term
+from kernel.term import SVar, Var, Const, Comb, Abs, Bound, Term
 from kernel.thm import Thm
 from logic import basic
 from logic import logic
@@ -48,6 +48,10 @@ mk_if = logic.mk_if
 class PrinterTest(unittest.TestCase):
     def testPrintLogical(self):
         test_data = [
+            # Variables
+            (SVar("P", boolT), "?P"),
+            (a, "a"),
+
             # Equality and implies
             (eq(a, b), "a = b"),
             (imp(A, B), "A --> B"),

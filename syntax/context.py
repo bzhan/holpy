@@ -5,7 +5,7 @@ from kernel import theory
 
 
 class Context:
-    def __init__(self, thy, *, vars=None, consts=None, limit=None):
+    def __init__(self, thy, *, svars=None, vars=None, consts=None, limit=None):
         from logic import basic
         from syntax import parser
         if isinstance(thy, str):
@@ -13,6 +13,13 @@ class Context:
         else:
             assert isinstance(thy, theory.Theory)
             self.thy = thy
+
+        self.svars = dict()
+        if svars is not None:
+            for nm, T in svars.items():
+                if isinstance(T, str):
+                    T = parser.parse_type(self.thy, T)
+                self.svars[nm] = T
 
         self.vars = dict()
         if vars is not None:

@@ -63,6 +63,7 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     # Records type of variables assigned during inference. This enforces
     # the condition that all occurrence of a variable have the same type.
     incr_ctxt = dict()
+    incr_sctxt = dict()
 
     # Create and return a new type variable.
     def new_type():
@@ -81,7 +82,19 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     def infer(t, bd_vars):
         # Var case: if type is not known, try to obtain it from context,
         # otherwise, make a new type.
-        if t.is_var():
+        if t.is_svar():
+            if t.T is None:
+                if t.name in ctxt.svars:
+                    t.T = ctxt.svars[t.name]
+                elif t.name in incr_sctxt:
+                    t.T = incr_sctxt[t.name]
+                else:
+                    t.T = new_type()
+                    incr_sctxt[t.name] = t.T
+            add_type(t.T)
+            return t.T
+
+        elif t.is_var():
             if t.T is None:
                 if t.name in ctxt.vars:
                     t.T = ctxt.vars[t.name]

@@ -32,6 +32,15 @@ class ShowType(AST):
     def __repr__(self):
         return "ShowType(%s,%s)" % (repr(self.body), repr(self.ast_T))
 
+class SVarName(AST):
+    def __init__(self, name, T):
+        self.ty = "svar_name"
+        self.name = name
+        self.T = T
+
+    def __repr__(self):
+        return "SVarName(%s,%s)" % (self.name, self.T)
+
 class VarName(AST):
     def __init__(self, name, T):
         self.ty = "var_name"
@@ -335,6 +344,9 @@ def get_ast_term(thy, t):
             P, x, y = t.args
             return ITE(helper(P, bd_vars), helper(x, bd_vars), helper(y, bd_vars), t.get_type())
 
+        elif t.is_svar():
+            return SVarName(t.name, t.T)
+
         elif t.is_var():
             return VarName(t.name, t.T)
 
@@ -552,6 +564,8 @@ def print_ast(thy, ast, *, line_length=None):
             rec(ast.body)
             add_normal('::')
             rec(ast.ast_T)
+        elif ast.ty == "svar_name":
+            add_var("?" + ast.name)
         elif ast.ty == "var_name":
             add_var(ast.name)
         elif ast.ty == "const_name":
