@@ -253,9 +253,15 @@ def get_ast_type(thy, T):
 
     return helper(T)
 
+# Hash table for ASTs.
+term_ast = dict()
+
 @settings.with_settings
 def get_ast_term(thy, t):
     """Obtain the abstract syntax tree for a term."""
+    if (thy, t) in term_ast:
+        return term_ast[(thy, t)]
+
     assert isinstance(t, term.Term), "get_ast_term: input is not a term."
 
     # Import modules for custom parsed data
@@ -459,10 +465,12 @@ def get_ast_term(thy, t):
         else:
             raise TypeError
 
-    t = copy(t)  # make copy here, because infer_printed_type may change t.
-    infertype.infer_printed_type(thy, t)
+    copy_t = copy(t)  # make copy here, because infer_printed_type may change t.
+    infertype.infer_printed_type(thy, copy_t)
 
-    return helper(t, [])
+    ast = helper(copy_t, [])
+    term_ast[(thy, t)] = ast
+    return ast
 
 def print_length(res):
     if settings.highlight():

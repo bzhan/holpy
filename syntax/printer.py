@@ -26,7 +26,7 @@ def commas_join(strs):
             res = strs[0]
             for s in strs[1:]:
                 res.extend(pprint.N(', '))
-                res = res + s
+                res.extend(s)
             return res
         else:
             return []
@@ -35,7 +35,7 @@ def commas_join(strs):
 
 @settings.with_settings
 def print_type(thy, T):
-    """Pretty-print the given type."""
+    """Pretty-printing for types."""
     assert isinstance(T, HOLType), "print_type: input is not a type."
 
     ast = pprint.get_ast_type(thy, T)
@@ -43,10 +43,7 @@ def print_type(thy, T):
 
 @settings.with_settings
 def print_term(thy, t, *, line_length=None):
-    """More sophisticated printing function for terms. Handles printing
-    of operators.
-
-    """
+    """Pretty-printing for terms."""
     assert isinstance(t, Term), "print_term: input is not a term."
 
     ast = pprint.get_ast_term(thy, t)
