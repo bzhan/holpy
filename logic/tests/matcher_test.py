@@ -9,6 +9,7 @@ from logic import matcher
 from logic.matcher import first_order_match, MatchException
 from data.nat import natT
 from syntax import parser
+from syntax.context import Context
 
 class MatcherTest(unittest.TestCase):
     def testToInternalVars(self):
@@ -55,24 +56,21 @@ class MatcherTest(unittest.TestCase):
             ("∀x. ∀s. Q s ⟶ ¬x ∈ s ⟶ finite s ⟶ Q (insert x s)", True),
         ]
 
-        thy = basic.load_theory('set')
-        ctxt = {"f": "'a => 'b", "a": "'a", "m": "nat", "n": "nat",
-                "P": "nat => bool", "Q": "nat set => bool", "x": "nat", "s": "nat set"}
-        ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
-                        for nm, s in ctxt.items()) if ctxt is not None else {}}
+        ctxt = Context('set', vars={
+            "f": "'a => 'b", "a": "'a", "m": "nat", "n": "nat",
+            "P": "nat => bool", "Q": "nat set => bool", "x": "nat", "s": "nat set"})
         for t, res in test_data:
-            t = parser.parse_term(thy, ctxt, t)
+            t = parser.parse_term(ctxt, t)
             self.assertEqual(matcher.is_pattern(t, []), res)
 
-    def run_test(self, thy_name, ctxt, pat, t, *, tyinst=None, inst=None, failed=None):
-        thy = basic.load_theory(thy_name)
-        ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
-                        for nm, s in ctxt.items()) if ctxt is not None else {}}
-        pat = parser.parse_term(thy, ctxt, pat)
-        t = parser.parse_term(thy, ctxt, t)
+    def run_test(self, thy, vars, pat, t, *, tyinst=None, inst=None, failed=None):
+        ctxt = Context(thy, vars=vars)
+        thy = ctxt.thy
+        pat = parser.parse_term(ctxt, pat)
+        t = parser.parse_term(ctxt, t)
         tyinst = dict((nm, parser.parse_type(thy, s))
                       for nm, s in tyinst.items()) if tyinst is not None else dict()
-        inst = dict((nm, parser.parse_term(thy, ctxt, s))
+        inst = dict((nm, parser.parse_term(ctxt, s))
                     for nm, s in inst.items()) if inst is not None else dict()
 
         if failed is not None:
@@ -92,12 +90,12 @@ class MatcherTest(unittest.TestCase):
             ("x + x", "a + b", None),
         ]
 
-        ctxt = {"x": "nat", "y": "nat", "z": "nat", "a": "nat", "b": "nat"}
+        vars = {"x": "nat", "y": "nat", "z": "nat", "a": "nat", "b": "nat"}
         for pat, t, inst in test_data:
             if inst is not None:
-                self.run_test('nat', ctxt, pat, t, inst=inst)
+                self.run_test('nat', vars, pat, t, inst=inst)
             else:
-                self.run_test('nat', ctxt, pat, t, failed=MatchException)
+                self.run_test('nat', vars, pat, t, failed=MatchException)
 
     def testFirstOrderMatchAbs(self):
         """Tests involving abstraction."""
@@ -113,12 +111,12 @@ class MatcherTest(unittest.TestCase):
             ("%x::nat. %y::nat. x", "%x::nat. %y::nat. y", None),
         ]
 
-        ctxt = {"x": "nat", "y": "nat", "z": "nat", "a": "nat", "b": "nat"}
+        vars = {"x": "nat", "y": "nat", "z": "nat", "a": "nat", "b": "nat"}
         for pat, t, inst in test_data:
             if inst is not None:
-                self.run_test('nat', ctxt, pat, t, inst=inst)
+                self.run_test('nat', vars, pat, t, inst=inst)
             else:
-                self.run_test('nat', ctxt, pat, t, failed=MatchException)
+                self.run_test('nat', vars, pat, t, failed=MatchException)
 
     def testFirstOrderMatchFun(self):
         """Tests involving variables in function position."""
@@ -129,9 +127,9 @@ class MatcherTest(unittest.TestCase):
             ("?x. P x", "?x. P x & Q x", {"P": "%x. P x & Q x"}),
         ]
 
-        ctxt = {"P": "nat => bool", "Q": "nat => bool", "R": "nat => bool"}
+        vars = {"P": "nat => bool", "Q": "nat => bool", "R": "nat => bool"}
         for pat, t, inst in test_data:
-            self.run_test('nat', ctxt, pat, t, inst=inst)
+            self.run_test('nat', vars, pat, t, inst=inst)
 
     def testFirstOrderMatchFun2(self):
         """More complex matching with variables in function position."""
@@ -142,10 +140,10 @@ class MatcherTest(unittest.TestCase):
             ("f x + x", "p (q a) + a", {"f": "%x. p (q x)", "x": "a"}),
         ]
 
-        ctxt = {"f": "nat => nat", "g": "nat => nat", "x": "nat", "y": "nat",
+        vars = {"f": "nat => nat", "g": "nat => nat", "x": "nat", "y": "nat",
                 "p": "nat => nat", "q": "nat => nat", "a": "nat", "b": "nat"}
         for pat, t, inst in test_data:
-            self.run_test('nat', ctxt, pat, t, inst=inst)
+            self.run_test('nat', vars, pat, t, inst=inst)
 
     def testFirstOrderMatchFun3(self):
         """Heuristic matching for variables in function position."""
@@ -153,10 +151,10 @@ class MatcherTest(unittest.TestCase):
             ("%x. f (m x + c)", "%x. g (r x + 0)", {"f": "g", "m": "r", "c": "(0::nat)"}),
         ]
 
-        ctxt = {"f": "nat => nat", "g": "nat => nat", "m": "nat => nat", "r": "nat => nat",
+        vars = {"f": "nat => nat", "g": "nat => nat", "m": "nat => nat", "r": "nat => nat",
                 "c": "nat"}
         for pat, t, inst in test_data:
-            self.run_test('nat', ctxt, pat, t, inst=inst)
+            self.run_test('nat', vars, pat, t, inst=inst)
 
     def testFirstOrderMatchType(self):
         """Tests involving type variables."""
@@ -164,9 +162,9 @@ class MatcherTest(unittest.TestCase):
             ("x", "m", {"a": "nat"}, {"x": "m"}),
         ]
 
-        ctxt = {"x": "'a", "m": "nat"}
+        vars = {"x": "'a", "m": "nat"}
         for pat, t, tyinst, inst in test_data:
-            self.run_test('nat', ctxt, pat, t, tyinst=tyinst, inst=inst)
+            self.run_test('nat', vars, pat, t, tyinst=tyinst, inst=inst)
 
 
 if __name__ == "__main__":

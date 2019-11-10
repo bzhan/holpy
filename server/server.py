@@ -10,6 +10,7 @@ from kernel import report
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from syntax import parser, printer, pprint
+from syntax.context import Context
 from server import tactic
 from server import method
 
@@ -51,9 +52,9 @@ class ProofState():
     def get_ctxt(self, id):
         """Obtain the context at the given id."""
         id = ItemID(id)
-        ctxt = {'vars': {}}
+        ctxt = Context(self.thy)
         for v in self.vars:
-            ctxt['vars'][v.name] = v.T
+            ctxt.vars[v.name] = v.T
 
         prf = self.prf
         try:
@@ -61,7 +62,7 @@ class ProofState():
                 for item in prf.items[:n+1]:
                     if item.rule == "variable":
                         nm, T = item.args
-                        ctxt['vars'][nm] = T
+                        ctxt.vars[nm] = T
                 prf = prf.items[n].subproof
             return ctxt
         except (AttributeError, IndexError):
@@ -111,12 +112,11 @@ class ProofState():
         data['prop']: proposition to be proved. In the form A1 --> ... --> An --> C.
 
         """
-        ctxt = parser.parse_vars(thy, data['vars'])
-        vars = [Var(name, T) for name, T in ctxt['vars'].items()]
-        prop = parser.parse_term(thy, ctxt, data['prop'])
+        ctxt = Context(thy, vars=data['vars'])
+        prop = parser.parse_term(ctxt, data['prop'])
         assums, concl = prop.strip_implies()
 
-        return ProofState.init_state(thy, vars, assums, concl)
+        return ProofState.init_state(thy, ctxt.get_vars(), assums, concl)
 
     def get_method_sig(self):
         """Obtain signature of all methods in the theory."""
@@ -165,15 +165,15 @@ class ProofState():
                 'report': state.rpt.json_data()
             })
         else:
-            ctxt = parser.parse_vars(thy, data['vars'])
+            ctxt = Context(thy, vars=data['vars'])
             state = ProofState(thy)
-            state.vars = [Var(name, T) for name, T in ctxt['vars'].items()]
+            state.vars = ctxt.get_vars()
             state.prf = Proof()
             for line in data['proof']:
                 if line['rule'] == "variable":
                     nm, str_T = line['args'].split(',', 1)
-                    ctxt['vars'][nm] = parser.parse_type(thy, str_T.strip())
-                item = parser.parse_proof_rule(thy, ctxt, line)
+                    ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
+                item = parser.parse_proof_rule(ctxt, line)
                 state.prf.insert_item(item)
 
         state.check_proof(compute_only=True)

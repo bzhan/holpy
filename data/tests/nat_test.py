@@ -145,12 +145,11 @@ class NatTest(unittest.TestCase):
             ("x * 1 * 1 * 1", "x"),
         ]
 
-        ctxt = {"x": 'nat', "y": 'nat', "z": 'nat'}
+        vars = {"x": 'nat', "y": 'nat', "z": 'nat'}
         for expr, res in test_data:
-            test_conv(self, 'nat', nat.norm_full(), ctxt=ctxt, t=expr, t_res=res)
+            test_conv(self, 'nat', nat.norm_full(), vars=vars, t=expr, t_res=res)
 
     def testNormFullLevel1(self):
-        thy = basic.load_theory('nat', limit=('thm', 'mult_0_right'))
         test_data = [
             ("y + (x + x * y)", "x + y + x * y"),
             ("z + y + x", "x + y + z"),
@@ -160,29 +159,23 @@ class NatTest(unittest.TestCase):
         ]
 
         cv = nat.norm_full()
-        ctxt = {'vars': {"x": nat.natT, "y": nat.natT, "z": nat.natT}}
+        limit = ('thm', 'mult_0_right')
+        vars = {"x": 'nat', "y": 'nat', "z": 'nat'}
         for expr, res in test_data:
-            t = parser.parse_term(thy, ctxt, expr)
-            t2 = parser.parse_term(thy, ctxt, res)
-            res_th = Thm.mk_equals(t, t2)
-            prf = cv.get_proof_term(thy, t).export()
-            self.assertEqual(thy.check_proof(prf), res_th)
+            test_conv(self, 'nat', nat.norm_full(), limit=limit, vars=vars, t=expr, t_res=res)
 
     def testNormFullLevel2(self):
-        thy = basic.load_theory('nat', limit=('thm', 'add_cancel_left'))
+        thy = basic.load_theory('nat', )
         test_data = [
             ("(x + y) * (y + x)", "x * x + x * y + x * y + y * y"),
             ("(Suc x) * y", "y + x * y"),
         ]
 
         cv = nat.norm_full()
-        ctxt = {'vars': {"x": nat.natT, "y": nat.natT, "z": nat.natT}}
+        limit = ('thm', 'add_cancel_left')
+        vars = {"x": 'nat', "y": 'nat', "z": 'nat'}
         for expr, res in test_data:
-            t = parser.parse_term(thy, ctxt, expr)
-            t2 = parser.parse_term(thy, ctxt, res)
-            res_th = Thm.mk_equals(t, t2)
-            prf = cv.get_proof_term(thy, t).export()
-            self.assertEqual(thy.check_proof(prf), res_th)
+            test_conv(self, 'nat', nat.norm_full(), limit=limit, vars=vars, t=expr, t_res=res)
 
     def testNatNormMacro(self):
         test_data = [
@@ -191,9 +184,9 @@ class NatTest(unittest.TestCase):
             ("x + y + (y + z) = y * 2 + (x + z)"),
         ]
 
-        ctxt = {"x": 'nat', "y": 'nat', "z": 'nat'}
+        vars = {"x": 'nat', "y": 'nat', "z": 'nat'}
         for expr in test_data:
-            test_macro(self, 'nat', 'nat_norm', ctxt=ctxt, args=expr, res=expr)
+            test_macro(self, 'nat', 'nat_norm', vars=vars, args=expr, res=expr)
 
     def testNatIneqMacro(self):
         test_data = [
@@ -216,12 +209,9 @@ class NatTest(unittest.TestCase):
             ((0, 1), logic.false),
         ]
 
-        cv = nat.nat_eq_conv()
         for (a, b), res in test_data:
-            t = Term.mk_equals(nat.to_binary_nat(a), nat.to_binary_nat(b))
-            prf = cv.get_proof_term(thy, t).export()
-            res_th = Thm.mk_equals(t, res)
-            self.assertEqual(thy.check_proof(prf), res_th)
+            expr = "(%d::nat) = %d" % (a, b)
+            test_conv(self, 'nat', nat.nat_eq_conv(), t=expr, t_res=res)
 
     def testNatLessEqMacro(self):
         test_data = [
@@ -229,12 +219,9 @@ class NatTest(unittest.TestCase):
             (4, 4),
         ]
 
-        macro = nat.nat_const_less_eq_macro()
         for m, n in test_data:
-            goal = nat.less_eq(nat.to_binary_nat(m), nat.to_binary_nat(n))
-            pt = macro.get_proof_term(thy, goal, [])
-            prf = pt.export()
-            self.assertEqual(thy.check_proof(prf), Thm([], goal))
+            goal = "(%d::nat) <= %d" % (m, n)
+            test_macro(self, 'nat', 'nat_const_less_eq', args=goal, res=goal)
 
     def testNatLessMacro(self):
         test_data = [
@@ -242,12 +229,9 @@ class NatTest(unittest.TestCase):
             (3, 5),
         ]
 
-        macro = nat.nat_const_less_macro()
         for m, n in test_data:
-            goal = nat.less(nat.to_binary_nat(m), nat.to_binary_nat(n))
-            pt = macro.get_proof_term(thy, goal, [])
-            prf = pt.export()
-            self.assertEqual(thy.check_proof(prf), Thm([], goal))
+            goal = "(%d::nat) < %d" % (m, n)
+            test_macro(self, 'nat', 'nat_const_less', args=goal, res=goal)
 
 
 if __name__ == "__main__":

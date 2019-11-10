@@ -12,19 +12,19 @@ from data.nat import natT, plus, zero
 from server import tactic
 from syntax import parser
 from syntax import printer
+from syntax.context import Context
 
 
 class TacticTest(unittest.TestCase):
-    def run_test(self, thy_name, tactic, *,
-                 ctxt=None, prevs=None, goal, args=None, new_goals=None, failed=None):
+    def run_test(self, thy, tactic, *, vars=None, prevs=None, goal, args=None, new_goals=None, failed=None):
         """Test a single invocation of a tactic."""
-        thy = basic.load_theory(thy_name)
-        ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
-                             for nm, s in ctxt.items()) if ctxt is not None else {}}
-        assms = [parser.parse_term(thy, ctxt, prev) for prev in prevs] if prevs is not None else []
+        ctxt = Context(thy, vars=vars)
+        thy = ctxt.thy
+
+        assms = [parser.parse_term(ctxt, prev) for prev in prevs] if prevs is not None else []
         prf = Proof(*assms)
         prevs = [ProofTermAtom(i, Thm([], assm)) for i, assm in enumerate(assms)]
-        goal = parser.parse_term(thy, ctxt, goal)
+        goal = parser.parse_term(ctxt, goal)
         goal_pt = ProofTerm.sorry(Thm(assms, goal))
 
         # Invoke the tactic to get the proof term
@@ -40,7 +40,7 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), Thm(assms, goal))
 
         # Test agreement of new goals
-        new_goals = [parser.parse_term(thy, ctxt, new_goal)
+        new_goals = [parser.parse_term(ctxt, new_goal)
                      for new_goal in new_goals] if new_goals is not None else []
         concls = [goal.prop for goal in prf.get_sorrys()]
         self.assertEqual(new_goals, concls)
@@ -48,7 +48,7 @@ class TacticTest(unittest.TestCase):
     def testRule(self):
         self.run_test(
             'logic_base', tactic.rule(),
-            ctxt={"A": "bool", "B": "bool"},
+            vars={"A": "bool", "B": "bool"},
             goal="B & A",
             args="conjI",
             new_goals=["B", "A"]
@@ -57,7 +57,7 @@ class TacticTest(unittest.TestCase):
     def testRule2(self):
         self.run_test(
             'logic_base', tactic.rule(),
-            ctxt={"A": "bool", "B": "bool"},
+            vars={"A": "bool", "B": "bool"},
             prevs=["A | B"],
             goal="B | A",
             args="disjE",
@@ -67,7 +67,7 @@ class TacticTest(unittest.TestCase):
     def testRule3(self):
         self.run_test(
             'logic_base', tactic.rule(),
-            ctxt={"A": "bool", "B": "bool"},
+            vars={"A": "bool", "B": "bool"},
             prevs=["B"],
             goal="B | A",
             args="disjI1"
@@ -77,7 +77,7 @@ class TacticTest(unittest.TestCase):
         n = Var("n", natT)
         self.run_test(
             'nat', tactic.rule(),
-            ctxt={"n": "nat"},
+            vars={"n": "nat"},
             goal="n + 0 = n",
             args=("nat_induct", ({}, {'P': Term.mk_abs(n, Term.mk_equals(plus(n, zero), n)), 'x': n})),
             new_goals=["(0::nat) + 0 = 0", "!n. n + 0 = n --> Suc n + 0 = Suc n"]
@@ -86,7 +86,7 @@ class TacticTest(unittest.TestCase):
     def testIntros(self):
         self.run_test(
             'logic_base', tactic.intros(),
-            ctxt={"x": "'a", "P": "'a => bool", "Q": "'a => bool"},
+            vars={"x": "'a", "P": "'a => bool", "Q": "'a => bool"},
             goal="!x. P x --> Q x",
             args=["x"],
             new_goals=["Q x"]
@@ -96,7 +96,7 @@ class TacticTest(unittest.TestCase):
         n = Var("n", natT)
         self.run_test(
             'nat', tactic.var_induct(),
-            ctxt={"n": "nat"},
+            vars={"n": "nat"},
             goal="n + 0 = n",
             args=("nat_induct", n),
             new_goals=["(0::nat) + 0 = 0", "!n. n + 0 = n --> Suc n + 0 = Suc n"]
@@ -105,7 +105,7 @@ class TacticTest(unittest.TestCase):
     def testRewrite(self):
         self.run_test(
             'nat', tactic.rewrite(),
-            ctxt={"n": "nat"},
+            vars={"n": "nat"},
             goal="0 + n = n",
             args="nat_plus_def_1"
         )
@@ -113,7 +113,7 @@ class TacticTest(unittest.TestCase):
     def testRewrite2(self):
         self.run_test(
             'logic_base', tactic.rewrite(),
-            ctxt={"a": "'a", "b": "'a"},
+            vars={"a": "'a", "b": "'a"},
             goal="(if a = a then b else a) = b",
             args="if_P",
             new_goals=["a = a"]
@@ -122,7 +122,7 @@ class TacticTest(unittest.TestCase):
     def testRewrite3(self):
         self.run_test(
             'logic_base', tactic.rewrite(),
-            ctxt={'P': 'bool', 'a': "'a", 'b': "'a"},
+            vars={'P': 'bool', 'a': "'a", 'b': "'a"},
             prevs=["P"],
             goal="(if P then a else b) = a",
             args="if_P"
@@ -131,7 +131,7 @@ class TacticTest(unittest.TestCase):
     def testRewrite4(self):
         self.run_test(
             'logic_base', tactic.rewrite(),
-            ctxt={'P': 'bool', 'Q': 'bool', 'a': "'a", 'b': "'a"},
+            vars={'P': 'bool', 'Q': 'bool', 'a': "'a", 'b': "'a"},
             prevs=["Q"],
             goal="(if P then a else b) = a",
             args="if_P",
@@ -142,7 +142,7 @@ class TacticTest(unittest.TestCase):
         A = Var('A', boolT)
         self.run_test(
             'logic_base', tactic.cases(),
-            ctxt={'A': 'bool', 'B': 'bool', 'C': 'bool'},
+            vars={'A': 'bool', 'B': 'bool', 'C': 'bool'},
             goal='C',
             args=A,
             new_goals=["A --> C", "~A --> C"]

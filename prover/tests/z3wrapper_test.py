@@ -8,18 +8,16 @@ from data import nat
 from logic import basic
 from syntax import parser
 from syntax import printer
+from syntax.context import Context
 from prover import z3wrapper
 
-thy = basic.load_theory('nat')
-
-natT = nat.natT
 
 class Z3WrapperTest(unittest.TestCase):
     def testSolve(self):
         if not z3wrapper.z3_loaded:
             return
 
-        ctxt = {'vars': {"s": TFun(natT, natT), "A": natT, "B": natT}}
+        ctxt = Context('nat', vars={"s": 'nat => nat', "A": 'nat', "B": 'nat'})
         test_data = [
             ("s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B", True),
             ("s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B", True),
@@ -33,7 +31,7 @@ class Z3WrapperTest(unittest.TestCase):
         ]
 
         for s, res in test_data:
-            t = parser.parse_term(thy, ctxt, s)
+            t = parser.parse_term(ctxt, s)
             self.assertEqual(z3wrapper.solve(t), res)
 
     def testZ3Macro(self):
@@ -42,14 +40,15 @@ class Z3WrapperTest(unittest.TestCase):
 
         macro = z3wrapper.Z3Macro()
 
-        ctxt = {'vars': {"s": TFun(natT, natT), "A": natT, "B": natT}}
+        ctxt = Context('nat', vars={'s': 'nat => nat', 'A': 'nat', 'B': 'nat'})
+        thy = ctxt.thy
         test_data = [
             ("A * B + 1 = 1 + B * A", True),
             ("s 0 = s 1", False),
         ]
 
         for s, res in test_data:
-            t = parser.parse_term(thy, ctxt, s)
+            t = parser.parse_term(ctxt, s)
             if res:
                 self.assertEqual(macro.eval(thy, t, []), Thm([], t))
             else:

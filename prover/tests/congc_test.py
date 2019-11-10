@@ -9,6 +9,7 @@ from kernel.thm import Thm
 from logic import basic
 from data.nat import natT
 from syntax import parser, printer
+from syntax.context import Context
 
 MERGE, CHECK, EXPLAIN, MATCH = range(4)
 
@@ -81,7 +82,7 @@ class CongClosureHOLTest(unittest.TestCase):
     def run_test(self, data, verbose=False):
         thy = basic.load_theory('nat')
         Ta = TVar('a')
-        ctxt = {'vars': {
+        ctxt = Context(thy, vars={
             'a': Ta,
             'b': Ta,
             'c': Ta,
@@ -96,25 +97,25 @@ class CongClosureHOLTest(unittest.TestCase):
             'x': natT,
             'y': natT,
             'z': natT
-        }}
+        })
         closure = congc.CongClosureHOL(thy)
         for item in data:
             if item[0] == MERGE:
                 _, s, t = item
-                s = parser.parse_term(thy, ctxt, s)
-                t = parser.parse_term(thy, ctxt, t)
+                s = parser.parse_term(ctxt, s)
+                t = parser.parse_term(ctxt, t)
                 closure.merge(s, t)
                 if verbose:
                     print("Merge %s, %s\nAfter\n%s" % (s, t, closure))
             elif item[0] == CHECK:
                 _, s, t, b = item
-                s = parser.parse_term(thy, ctxt, s)
-                t = parser.parse_term(thy, ctxt, t)
+                s = parser.parse_term(ctxt, s)
+                t = parser.parse_term(ctxt, t)
                 self.assertEqual(closure.test(s, t), b)
             elif item[0] == EXPLAIN:
                 _, s, t = item
-                s = parser.parse_term(thy, ctxt, s)
-                t = parser.parse_term(thy, ctxt, t)
+                s = parser.parse_term(ctxt, s)
+                t = parser.parse_term(ctxt, t)
                 prf = closure.explain(s, t).export()
                 self.assertEqual(thy.check_proof(prf), Thm.mk_equals(s, t))
                 if verbose:
@@ -122,11 +123,11 @@ class CongClosureHOLTest(unittest.TestCase):
                     print(printer.print_proof(thy, prf))
             elif item[0] == MATCH:
                 _, pat, t, res = item
-                pat = parser.parse_term(thy, ctxt, pat)
-                t = parser.parse_term(thy, ctxt, t)
+                pat = parser.parse_term(ctxt, pat)
+                t = parser.parse_term(ctxt, t)
                 for res_inst in res:
                     for k in res_inst:
-                        res_inst[k] = parser.parse_term(thy, ctxt, res_inst[k])
+                        res_inst[k] = parser.parse_term(ctxt, res_inst[k])
                 inst = closure.ematch(pat, t)
                 self.assertEqual(inst, res)
             else:

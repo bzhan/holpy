@@ -13,6 +13,7 @@ from kernel.proof import ProofItem
 from kernel import extension
 from logic import induct
 from syntax import infertype
+from syntax.context import Context
 
 
 class ParserException(Exception):
@@ -167,7 +168,7 @@ class HOLTransformer(Transformer):
         thy = parser_setting['thy']
         ctxt = parser_setting['ctxt']
         s = str(s)
-        if thy.has_term_sig(s) or ('consts' in ctxt and s in ctxt['consts']):
+        if thy.has_term_sig(s) or s in ctxt.consts:
             # s is the name of a constant in the theory
             return Const(s, None)
         else:
@@ -416,36 +417,36 @@ def parse_type(thy, s):
     parser_setting['thy'] = thy
     return type_parser.parse(s)
 
-def parse_term(thy, ctxt, s):
+def parse_term(ctxt, s):
     """Parse a term."""
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
     # Permit parsing a list of strings by concatenating them.
     if isinstance(s, list):
         s = " ".join(s)
     try:
         t = term_parser.parse(s)
-        return infertype.type_infer(thy, ctxt, t)
+        return infertype.type_infer(ctxt, t)
     except (term.OpenTermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
         print("When parsing:", s)
         raise e
 
-def parse_thm(thy, ctxt, s):
+def parse_thm(ctxt, s):
     """Parse a theorem (sequent)."""
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
     th = thm_parser.parse(s)
-    th.hyps = tuple(infertype.type_infer(thy, ctxt, hyp) for hyp in th.hyps)
-    th.prop = infertype.type_infer(thy, ctxt, th.prop)
+    th.hyps = tuple(infertype.type_infer(ctxt, hyp) for hyp in th.hyps)
+    th.prop = infertype.type_infer(ctxt, th.prop)
     return th
 
-def parse_inst(thy, ctxt, s):
+def parse_inst(ctxt, s):
     """Parse a term instantiation."""
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
     inst = inst_parser.parse(s)
     for k in inst:
-        inst[k] = infertype.type_infer(thy, ctxt, inst[k])
+        inst[k] = infertype.type_infer(ctxt, inst[k])
     return inst
 
 def parse_tyinst(thy, s):
@@ -453,21 +454,21 @@ def parse_tyinst(thy, s):
     parser_setting['thy'] = thy
     return tyinst_parser.parse(s)
 
-def parse_named_thm(thy, ctxt, s):
+def parse_named_thm(ctxt, s):
     """Parse a named theorem."""
     res = named_thm_parser.parse(s)
     if len(res) == 1:
-        return (None, infertype.type_infer(thy, ctxt, res[0]))
+        return (None, infertype.type_infer(ctxt, res[0]))
     else:
-        return (str(res[0]), infertype.type_infer(thy, ctxt, res[1]))
+        return (str(res[0]), infertype.type_infer(ctxt, res[1]))
 
-def parse_instsp(thy, ctxt, s):
+def parse_instsp(ctxt, s):
     """Parse type and term instantiations."""
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
     tyinst, inst = instsp_parser.parse(s)
     for k in inst:
-        inst[k] = infertype.type_infer(thy, ctxt, inst[k])
+        inst[k] = infertype.type_infer(ctxt, inst[k])
     return tyinst, inst
 
 def parse_ind_constr(thy, s):
@@ -480,7 +481,7 @@ def parse_var_decl(thy, s):
     parser_setting['thy'] = thy
     return var_decl_parser.parse(s)
 
-def parse_term_list(thy, ctxt, s):
+def parse_term_list(ctxt, s):
     """Parse a list of terms."""
     if s == "":
         return []
@@ -488,11 +489,12 @@ def parse_term_list(thy, ctxt, s):
     parser_setting['ctxt'] = ctxt
     ts = term_list_parser.parse(s)
     for i in range(len(ts)):
-        ts[i] = infertype.type_infer(thy, ctxt, ts[i])
+        ts[i] = infertype.type_infer(ctxt, ts[i])
     return ts
 
-def parse_args(thy, ctxt, sig, args):
+def parse_args(ctxt, sig, args):
     """Parse the argument according to the signature."""
+    thy = ctxt.thy
     try:
         if sig == None:
             assert args == "", "rule expects no argument."
@@ -500,9 +502,9 @@ def parse_args(thy, ctxt, sig, args):
         elif sig == str:
             return args
         elif sig == Term:
-            return parse_term(thy, ctxt, args)
+            return parse_term(ctxt, args)
         elif sig == macro.Inst:
-            return parse_inst(thy, ctxt, args)
+            return parse_inst(ctxt, args)
         elif sig == macro.TyInst:
             return parse_tyinst(thy, args)
         elif sig == Tuple[str, HOLType]:
@@ -510,20 +512,20 @@ def parse_args(thy, ctxt, sig, args):
             return s1, parse_type(thy, s2)
         elif sig == Tuple[str, Term]:
             s1, s2 = args.split(",", 1)
-            return s1, parse_term(thy, ctxt, s2)
+            return s1, parse_term(ctxt, s2)
         elif sig == Tuple[str, macro.TyInst, macro.Inst]:
             s1, s2 = args.split(",", 1)
-            tyinst, inst = parse_instsp(thy, ctxt, s2)
+            tyinst, inst = parse_instsp(ctxt, s2)
             return s1, tyinst, inst
         elif sig == List[Term]:
-            return parse_term_list(thy, ctxt, args)
+            return parse_term_list(ctxt, args)
         else:
             raise TypeError
     except exceptions.UnexpectedToken as e:
         raise ParserException("When parsing %s, unexpected token %r at column %s.\n"
                               % (args, e.token, e.column))
 
-def parse_proof_rule(thy, ctxt, data):
+def parse_proof_rule(ctxt, data):
     """Parse a proof rule.
 
     data is a dictionary containing id, rule, args, prevs, and th.
@@ -533,6 +535,7 @@ def parse_proof_rule(thy, ctxt, data):
     require different parsing of the arguments.
 
     """
+    thy = ctxt.thy
     id, rule = data['id'], data['rule']
 
     if rule == "":
@@ -541,17 +544,11 @@ def parse_proof_rule(thy, ctxt, data):
     if data['th'] == "":
         th = None
     else:
-        th = parse_thm(thy, ctxt, data['th'])
+        th = parse_thm(ctxt, data['th'])
 
     sig = thy.get_proof_rule_sig(rule)
-    args = parse_args(thy, ctxt, sig, data['args'])
+    args = parse_args(ctxt, sig, data['args'])
     return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)
-
-def parse_vars(thy, vars_data):
-    ctxt = {'vars': {}}
-    for k, v in vars_data.items():
-        ctxt['vars'][k] = parse_type(thy, v)
-    return ctxt
 
 def parse_item(thy, data):
     """Parse the string elements in the item, replacing it by
@@ -565,14 +562,14 @@ def parse_item(thy, data):
 
     elif data['ty'] == 'def':
         data['type'] = parse_type(thy, data['type'])
-        ctxt = {'vars': {}, 'consts': {data['name']: data['type']}}
-        data['prop'] = parse_term(thy, ctxt, data['prop'])
+        ctxt = Context(thy, consts={data['name']: data['type']})
+        data['prop'] = parse_term(ctxt, data['prop'])
 
     elif data['ty'] in ('thm', 'thm.ax'):
-        ctxt = parse_vars(thy, data['vars'])
+        ctxt = Context(thy, vars=data['vars'])
         for nm in data['vars']:
             data['vars'][nm] = parse_type(thy, data['vars'][nm])
-        data['prop'] = parse_term(thy, ctxt, data['prop'])
+        data['prop'] = parse_term(ctxt, data['prop'])
         prop_vars = set(v.name for v in term.get_vars(data['prop']))
         assert prop_vars.issubset(set(data['vars'].keys())), \
             "parse_item on %s: extra variables in prop: %s" % (
@@ -585,8 +582,8 @@ def parse_item(thy, data):
     elif data['ty'] in ('def.ind', 'def.pred'):
         data['type'] = parse_type(thy, data['type'])
         for rule in data['rules']:
-            ctxt = {'vars': {}, 'consts': {data['name']: data['type']}}
-            rule['prop'] = parse_term(thy, ctxt, rule['prop'])
+            ctxt = Context(thy, consts={data['name']: data['type']})
+            rule['prop'] = parse_term(ctxt, rule['prop'])
 
     else:
         pass

@@ -13,34 +13,9 @@ from data import real
 from logic import basic
 from data import set
 from syntax.printer import print_term, print_type
-import syntax.parser as parser
+from syntax import parser
+from syntax.context import Context
 
-thy = basic.load_theory('list')
-
-Ta = TVar("a")
-ctxt = {'vars': {
-    "A" : boolT,
-    "B" : boolT,
-    "C" : boolT,
-    "P" : TFun(Ta, boolT),
-    "Q" : TFun(Ta, boolT),
-    "R" : TFun(Ta, Ta, boolT),
-    "a" : Ta,
-    "b" : Ta,
-    "c" : Ta,
-    "f" : TFun(Ta, Ta),
-    "nn" : TFun(boolT, boolT),
-    "m" : nat.natT,
-    "n" : nat.natT,
-    "p" : nat.natT,
-    "xs" : Type("list", Ta),
-    "ys" : Type("list", Ta),
-    "zs" : Type("list", Ta),
-}}
-
-A = Var("A", boolT)
-B = Var("B", boolT)
-C = Var("C", boolT)
 
 class ParserTest(unittest.TestCase):
     def testParseType(self):
@@ -66,6 +41,7 @@ class ParserTest(unittest.TestCase):
             "('a list, 'b => 'c) prod",
         ]
 
+        thy = basic.load_theory('list')
         for s in test_data:
             T = parser.parse_type(thy, s)
             self.assertIsInstance(T, HOLType)
@@ -76,14 +52,25 @@ class ParserTest(unittest.TestCase):
             "'a ⇒ 'b"
         ]
 
+        thy = basic.load_theory('list')
         for s in test_data:
             T = parser.parse_type(thy, s)
             self.assertIsInstance(T, HOLType)
             self.assertEqual(print_type(thy, T, unicode=True), s)
 
     def testParseTypeIsString(self):
+        thy = basic.load_theory('logic_base')
         a = parser.parse_type(thy, 'bool')
         self.assertEqual(type(a.name), str)
+
+    def run_test(self, thy, *, vars=None, s, Ts, unicode=False):
+        ctxt = Context(thy, vars=vars)
+        thy = ctxt.thy
+        t = parser.parse_term(ctxt, s)
+        T = parser.parse_type(thy, Ts)
+        self.assertIsInstance(t, Term)
+        self.assertEqual(t.checked_get_type(), T)
+        self.assertEqual(print_term(thy, t, unicode=unicode), s)
 
     def testParseTerm(self):
         test_data = [
@@ -211,19 +198,15 @@ class ParserTest(unittest.TestCase):
             ("[[], [a]]", "'a list list"),
         ]
 
+        vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'P': "'a => bool", 'Q': "'a => bool",
+                'R': "'a => 'a => bool", 'a': "'a", 'b': "'a", 'c': "'a",
+                'f': "'a => 'a", 'nn': "bool => bool", 'm': "nat", 'n': "nat", 'p': "nat",
+                'xs': "'a list", 'ys': "'a list", 'zs': "'a list"}
+
         for s, Ts in test_data:
-            t = parser.parse_term(thy, ctxt, s)
-            T = parser.parse_type(thy, Ts)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t), s)
+            self.run_test('list', vars=vars, s=s, Ts=Ts)
 
     def testParseInt(self):
-        thy = basic.load_theory('int')
-        ctxt = {'vars': {
-            'x': int.intT,
-            'y': int.intT
-        }}
         test_data = [
             ("x + y", "int"),
             ("x * y", "int"),
@@ -239,19 +222,11 @@ class ParserTest(unittest.TestCase):
             ("(1::int) + 2", "int"),
         ]
 
+        vars = {'x': 'int', 'y': 'int'}
         for s, Ts in test_data:
-            t = parser.parse_term(thy, ctxt, s)
-            T = parser.parse_type(thy, Ts)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t), s)
+            self.run_test('int', vars=vars, s=s, Ts=Ts)
 
     def testParseReal(self):
-        thy = basic.load_theory('real')
-        ctxt = {'vars': {
-            'x': real.realT,
-            'y': real.realT
-        }}
         test_data = [
             ("x + y", "real"),
             ("x * y", "real"),
@@ -271,24 +246,11 @@ class ParserTest(unittest.TestCase):
             ("{(2::real), 3} Un {4, 5}", "real set"),
         ]
 
+        vars = {'x': 'real', 'y': 'real'}
         for s, Ts in test_data:
-            t = parser.parse_term(thy, ctxt, s)
-            T = parser.parse_type(thy, Ts)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t), s)
+            self.run_test('real', vars=vars, s=s, Ts=Ts)
 
     def testParseFunction(self):
-        thy = basic.load_theory('function')
-        Tb = TVar('b')
-        Tc = TVar('c')
-        ctxt = {'vars': {
-            'a': Ta,
-            'b': Ta,
-            'f': TFun(Ta, Ta),
-            'g': TFun(Tb, Tc),
-            'h': TFun(Ta, Tb),
-        }}
         test_data = [
             ("(f)(a := b)", "'a => 'a"),
             ("(f)(a := b, b := a)", "'a => 'a"),
@@ -296,22 +258,11 @@ class ParserTest(unittest.TestCase):
             ("(g O h) a", "'c"),
         ]
 
+        vars = {'a': "'a", 'b': "'a", 'f': "'a => 'a", 'g': "'b => 'c", 'h': "'a => 'b"}
         for s, Ts in test_data:
-            t = parser.parse_term(thy, ctxt, s)
-            T = parser.parse_type(thy, Ts)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t), s)
+            self.run_test('function', vars=vars, s=s, Ts=Ts)
 
     def testParseSet(self):
-        ctxt = {'vars': {
-            "x": Ta,
-            "y": Ta,
-            "A": set.setT(Ta),
-            "B": set.setT(Ta),
-            "P": TFun(Ta, boolT),
-            "S": set.setT(set.setT(Ta)),
-        }}
         test_data = [
             ("({}::'a set)", "(∅::'a set)", "'a set"),
             ("x Mem A", "x ∈ A", "bool"),
@@ -327,65 +278,38 @@ class ParserTest(unittest.TestCase):
             ("INT S", "⋂S", "'a set"),
         ]
 
+        vars = {"x": "'a", "y": "'a", "A": "'a set", "B": "'a set", "P": "'a => bool", "S": "'a set set"}
         for s1, s2, Ts in test_data:
-            T = parser.parse_type(thy, Ts)
-
-            t1 = parser.parse_term(thy, ctxt, s1)
-            self.assertIsInstance(t1, Term)
-            self.assertEqual(t1.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t1), s1)
-
-            t2 = parser.parse_term(thy, ctxt, s2)
-            self.assertIsInstance(t2, Term)
-            self.assertEqual(t2.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t2, unicode=True), s2)
+            self.run_test('set', vars=vars, s=s1, Ts=Ts)
+            self.run_test('set', vars=vars, s=s2, Ts=Ts, unicode=True)
 
     def testParseString(self):
-        thy = basic.load_theory('string')
-        ctxt = {'vars': {}}
         test_data = [
             ("'a'", "char"),
             ('"ab"', "string"),
         ]
 
         for s, Ts in test_data:
-            T = parser.parse_type(thy, Ts)
-            t = parser.parse_term(thy, ctxt, s)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t), s)
+            self.run_test('string', s=s, Ts=Ts)
 
     def testParseInterval(self):
-        thy = basic.load_theory('iterate')
-        ctxt = {'vars': {
-            "m": nat.natT,
-            "n": nat.natT
-        }}
         test_data = [
             ("{m..n}", "nat set"),
             ("{1..m}", "nat set"),
         ]
 
+        vars = {'m': 'nat', 'n': 'nat'}
         for s, Ts in test_data:
-            T = parser.parse_type(thy, Ts)
-            t = parser.parse_term(thy, ctxt, s)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t), s)
+            self.run_test('iterate', vars=vars, s=s, Ts=Ts)
 
     def testInferType2(self):
-        thy = basic.load_theory('function')
         test_data = [
             ("%x::nat. (0::nat)", "nat => nat"),
             ("(%x::nat. (0::nat))(1 := 7)", "nat => nat")
         ]
 
         for s, Ts in test_data:
-            t = parser.parse_term(thy, ctxt, s)
-            T = parser.parse_type(thy, Ts)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t), s)
+            self.run_test('function', s=s, Ts=Ts)
 
     def testParseTermNoAbs(self):
         test_data = [
@@ -402,12 +326,9 @@ class ParserTest(unittest.TestCase):
             ("!a. P a", "bool"),
         ]
 
+        vars = {'P': "'a => bool", 'Q': "'a => bool", 'R': "'a => 'a => bool"}
         for s, Ts in test_data:
-            t = parser.parse_term(thy, ctxt, s)
-            T = parser.parse_type(thy, Ts)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t), s)
+            self.run_test('logic_base', vars=vars, s=s, Ts=Ts)
 
     def testParseTypedTerm(self):
         test_data = [
@@ -418,14 +339,11 @@ class ParserTest(unittest.TestCase):
         ]
 
         for s, Ts in test_data:
-            t = parser.parse_term(thy, ctxt, s)
-            T = parser.parse_type(thy, Ts)
-            self.assertIsInstance(t, Term)
-            self.assertEqual(t.checked_get_type(), T)
-            self.assertEqual(print_term(thy, t), s)
+            self.run_test('list', s=s, Ts=Ts)
 
     def testParseTermIsString(self):
-        a = parser.parse_term(thy, ctxt, 'a')
+        ctxt = Context('logic_base', vars={'a': "'a"})
+        a = parser.parse_term(ctxt, 'a')
         self.assertEqual(type(a.name), str)
 
     def testParseUnicode(self):
@@ -442,12 +360,18 @@ class ParserTest(unittest.TestCase):
             ("(∀x::'a. P x) & Q x", "(!x. P x) & Q x"),
         ]
 
+        ctxt = Context('logic_base', vars={
+            'A': 'bool', 'B': 'bool', 'C': 'bool', 'P': "'a => bool", 'Q': "'a => bool"})
+        thy = ctxt.thy
         for s, ascii_s in test_data:
-            t = parser.parse_term(thy, ctxt, s)
+            t = parser.parse_term(ctxt, s)
             self.assertIsInstance(t, Term)
             self.assertEqual(print_term(thy, t), ascii_s)
 
     def testParseThm(self):
+        A = Var('A', boolT)
+        B = Var('B', boolT)
+        C = Var('C', boolT)
         test_data = [
             ("|- A", Thm([], A)),
             ("|- A & B", Thm([], logic.mk_conj(A, B))),
@@ -455,10 +379,13 @@ class ParserTest(unittest.TestCase):
             ("A, B |- C", Thm([A, B], C)),
         ]
 
+        ctxt = Context('logic', vars={'A': 'bool', 'B': 'bool', 'C': 'bool'})
         for s, th in test_data:
-            self.assertEqual(parser.parse_thm(thy, ctxt, s), th)
+            self.assertEqual(parser.parse_thm(ctxt, s), th)
 
     def testParseProofRule(self):
+        A = Var('A', boolT)
+        B = Var('B', boolT)
         test_data = [
             ({'id': "0", 'rule': "theorem", 'args': "conjD1", 'prevs': [], 'th': ""},
              ProofItem(0, "theorem", args="conjD1", prevs=[])),
@@ -476,8 +403,9 @@ class ParserTest(unittest.TestCase):
              ProofItem(5, "apply_theorem_for", args=("disjI1", {}, {'A': B, 'B': A}), prevs=[4])),
         ]
 
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
         for s, res in test_data:
-            self.assertEqual(parser.parse_proof_rule(thy, ctxt, s), res)
+            self.assertEqual(parser.parse_proof_rule(ctxt, s), res)
 
     def testParseTypeInd(self):
         test_data = [
@@ -485,18 +413,21 @@ class ParserTest(unittest.TestCase):
              {'name': 'cons', 'type': [TVar('a'), Type('list', TVar('a'))], 'args': ['x', 'xs']}),
         ]
 
+        thy = basic.load_theory('logic_base')
         for s, res in test_data:
             self.assertEqual(parser.parse_ind_constr(thy, s), res)
 
     def testParseNamedThm(self):
-        ctxt = {'vars': {'A': boolT, 'B': boolT}}
+        A = Var('A', boolT)
+        B = Var('B', boolT)
         test_data = [
             ("conjI: A = B", ('conjI', Term.mk_equals(A, B))),
             ("A = B", (None, Term.mk_equals(A, B)))
         ]
 
+        ctxt = Context('logic_base', vars={'A': 'bool', 'B': 'bool'})
         for s, res in test_data:
-            self.assertEqual(parser.parse_named_thm(thy, ctxt, s), res)
+            self.assertEqual(parser.parse_named_thm(ctxt, s), res)
 
 
 if __name__ == "__main__":

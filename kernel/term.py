@@ -354,6 +354,7 @@ class Term():
         """
         return self.is_comb() and self.fun.is_const_name("all") and self.arg.is_abs()
 
+    @staticmethod
     def mk_all(x, body):
         """Given a variable x and a term t possibly depending on x, return
         the term !x. t. Optional arguments var_name and T specify the
@@ -417,7 +418,9 @@ class Term():
         elif self.is_bound():
             if self.n == n:
                 return t
-            else:
+            elif self.n > n:  # Bound outside
+                return Bound(self.n - 1)
+            else:  # Locally bound
                 return self
         else:
             raise TypeError
@@ -431,7 +434,7 @@ class Term():
             # Perform the substitution. Note t may be a bound variable itself.
             return self.body._subst_bound(t, 0)
         else:
-            raise TermSubstitutionException
+            raise TermSubstitutionException("subst_bound: input is not an abstraction.")
 
     def beta_conv(self):
         """Beta-conversion: given a term of the form (%x. t1) t2, return the
@@ -441,7 +444,7 @@ class Term():
         if self.is_comb():
             return self.fun.subst_bound(self.arg)
         else:
-            raise TermSubstitutionException
+            raise TermSubstitutionException("beta_conv: input is not a combination.")
 
     def beta_norm(self):
         """Normalize self using beta-conversion."""
@@ -589,6 +592,9 @@ class Bound(Term):
     def __init__(self, n):
         self.ty = BOUND
         self.n = n
+
+def all_t(T):
+    return Const("all", TFun(TFun(T, boolT), boolT))
 
 def get_vars(t):
     """Returns list of variables in a term or a list of terms."""

@@ -7,8 +7,7 @@ from imperative import imp
 from imperative.parser import parse_com, process_file
 from syntax import parser
 from syntax import printer
-
-thy = basic.load_theory('hoare')
+from syntax.context import Context
 
 
 class HoareParserTest(unittest.TestCase):
@@ -23,7 +22,7 @@ class HoareParserTest(unittest.TestCase):
 
         for s, res in test_data:
             t = parse_com(s)
-            t_res = parser.parse_term(thy, {}, res)
+            t_res = parser.parse_term(Context('hoare'), res)
             self.assertEqual(t, t_res)
 
     def testParseFile(self):
