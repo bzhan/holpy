@@ -21,7 +21,10 @@ disj = Const("disj", TFun(boolT, boolT, boolT))
 neg = Const("neg", TFun(boolT, boolT))
 true = Const("true", boolT)
 false = Const("false", boolT)
-    
+
+def exists_t(T):
+    return Const("exists", TFun(TFun(T, boolT), boolT))
+
 def is_conj(t):
     """Whether t is of the form A & B."""
     return t.is_binop() and t.head == conj
@@ -86,8 +89,7 @@ def mk_exists(x, body):
 
     """
     assert x.is_var(), "mk_exists"
-    exists_t = Const("exists", TFun(TFun(x.T, boolT), boolT))
-    return exists_t(Term.mk_abs(x, body))
+    return exists_t(x.T)(Term.mk_abs(x, body))
 
 def is_exists1(t):
     """Whether t is of the form ?!x. P x."""
