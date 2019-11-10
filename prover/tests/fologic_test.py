@@ -52,6 +52,22 @@ class FOLogicTest(unittest.TestCase):
             res = parser.parse_term(thy, ctxt, res)
             self.assertEqual(fologic.nnf(fm), res)
 
+    def testASKolem(self):
+        test_data = [
+            # Test case from Section 3.6 of HPLAR.
+            ("?y::nat. x < y --> !u. ?v. x * u < y * v",
+             "~x < f_y x | (!u::nat. x * u < f_y x * f_v x u)"),
+            ("!x. P x --> (?y. ?z::'a. Q y | ~(?z. P z & Q z))",
+             "!x. ~P x | Q c_y | (!z. ~P z | ~Q z)")
+        ]
+
+        thy = basic.load_theory('nat')
+        ctxt = {'vars': {'P': TFun(TVar('a'), boolT), 'Q': TFun(TVar('a'), boolT)}}
+        for fm, res in test_data:
+            fm = parser.parse_term(thy, ctxt, fm)
+            res = parser.parse_term(thy, ctxt, res)
+            self.assertEqual(fologic.askolemize(fm), res)
+
 
 if __name__ == "__main__":
     unittest.main()

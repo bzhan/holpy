@@ -4,9 +4,11 @@ References:
 Chapter 3, Handbook of Practical Logic and Automated Reasoning.
 """
 
+from kernel.type import TFun
 from kernel import term
 from kernel.term import Term, Var, Abs
 from logic import logic
+from util import name
 
 def has_bound0(fm):
     """Determine whether the bound variable of the given abstraction
@@ -90,7 +92,7 @@ def simplify(fm):
 
     """
     if logic.is_neg(fm):
-        return simplify1(logic.mk_neg(simplify(fm.arg)))
+        return simplify1(logic.neg(simplify(fm.arg)))
     elif logic.is_conj(fm) or logic.is_disj(fm) or Term.is_implies(fm) or Term.is_equals(fm):
         return simplify1(fm.head(simplify(fm.arg1), simplify(fm.arg)))
     elif Term.is_all(fm) or logic.is_exists(fm):
@@ -138,3 +140,39 @@ def nnf(fm):
         return fm.fun(Abs(fm.arg.var_name, fm.arg.var_T, nnf(fm.arg.body)))
     else:
         return fm
+
+def skolem(fm):
+    """Skolemize the formula. Assume the formula is already in nnf."""
+    var_names = [v.name for v in term.get_vars(fm)]
+
+    def rec(t):
+        if logic.is_exists(t):
+            # Obtain the list of variables that t depends on, not
+            # counting functions (including skolem functions).
+            xs = [v for v in term.get_vars(t.arg.body) if not v.T.is_fun()]
+
+            # Obtain the new skolem variable.
+            nm = "c_" + t.arg.var_name if len(xs) == 0 else "f_" + t.arg.var_name
+            nm = name.get_variant_name(nm, var_names)
+            var_names.append(nm)
+
+            # Obtain the concrete instantiation of the skolem variable.
+            T = TFun(*([x.T for x in xs] + [t.arg.var_T]))
+            f = Var(nm, T)(*xs)
+            return rec(t.arg.subst_bound(f))
+        elif Term.is_all(t):
+            nm = name.get_variant_name(t.arg.var_name, var_names)
+            var_names.append(nm)
+            v = Var(nm, t.arg.var_T)
+            body = t.arg.subst_bound(v)
+            return Term.mk_all(v, rec(body))
+        elif logic.is_conj(t) or logic.is_disj(t):
+            return t.head(rec(t.arg1), rec(t.arg))
+        else:
+            return t
+
+    return rec(fm)
+
+def askolemize(fm):
+    """Perform simplify, nnf, and skolem transformations."""
+    return skolem(nnf(simplify(fm)))

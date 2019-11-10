@@ -434,7 +434,7 @@ class Term():
             # Perform the substitution. Note t may be a bound variable itself.
             return self.body._subst_bound(t, 0)
         else:
-            raise TermSubstitutionException
+            raise TermSubstitutionException("subst_bound: input is not an abstraction.")
 
     def beta_conv(self):
         """Beta-conversion: given a term of the form (%x. t1) t2, return the
@@ -444,7 +444,7 @@ class Term():
         if self.is_comb():
             return self.fun.subst_bound(self.arg)
         else:
-            raise TermSubstitutionException
+            raise TermSubstitutionException("beta_conv: input is not a combination.")
 
     def beta_norm(self):
         """Normalize self using beta-conversion."""
