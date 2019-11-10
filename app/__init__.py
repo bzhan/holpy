@@ -492,7 +492,7 @@ def search_method():
 
     ctxt = cell.get_ctxt(goal_id)
     print_ctxt = dict((k, printer.print_type(thy, v, unicode=True, highlight=True))
-                      for k, v in ctxt['vars'].items())
+                      for k, v in ctxt.vars.items())
     print("Response:", time.perf_counter() - start_time)
     return jsonify({
         'search_res': search_res,

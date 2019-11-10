@@ -13,6 +13,7 @@ from data.function import mk_const_fun, mk_fun_upd
 from logic import basic
 from syntax import parser
 from syntax import printer
+from syntax.context import Context
 
 thy = basic.load_theory('hoare')
 
@@ -122,7 +123,7 @@ class HoareTest(unittest.TestCase):
     def testVCGWhile(self):
         A = Var("A", natT)
         B = Var("B", natT)
-        ctxt = {'vars': {"A": natT, "B": natT}}
+        ctxt = Context(thy, vars={"A": 'nat', "B": 'nat'})
         c = parser.parse_term(thy, ctxt, \
             "While (%s. ~s (0::nat) = A) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))")
         P = parser.parse_term(thy, ctxt, "%s. s (0::nat) = (0::nat) & s 1 = 0")
@@ -132,7 +133,7 @@ class HoareTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), Thm([], goal))
 
     def testVCGIf(self):
-        ctxt = {'vars': {"A": natT}}
+        ctxt = Context(thy, vars={'A': 'nat'})
         c = parser.parse_term(thy, ctxt, \
             "Cond (%s. s (0::nat) = A) Skip (Assign 0 (%s. A))")
         P = parser.parse_term(thy, ctxt, "%s::nat=>nat. true")

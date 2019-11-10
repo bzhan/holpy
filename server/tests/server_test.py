@@ -16,6 +16,7 @@ from data import list
 from data import function
 from syntax import parser
 from syntax import printer
+from syntax.context import Context
 from server import tactic, method, server
 from server.server import ProofState
 from imperative import imp
@@ -138,7 +139,7 @@ class ServerTest(unittest.TestCase):
 
     def testGetCtxt(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
-        self.assertEqual(state.get_ctxt(0), {'vars': {'A': boolT, 'B': boolT}})
+        self.assertEqual(state.get_ctxt(0), Context(thy, vars={'A': 'bool', 'B': 'bool'}))
 
     def testAddLineBefore(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
@@ -214,7 +215,7 @@ class ServerTest(unittest.TestCase):
     def testApplyBackwardStep5(self):
         """Test strong induction."""
         thy = basic.load_theory('set')
-        ctxt = {'vars': {'s': parser.parse_type(thy, "'a set")}}
+        ctxt = Context(thy, vars={'s': "'a set"})
         s = parser.parse_term(thy, ctxt, "s")
         assum = parser.parse_term(thy, ctxt, "finite s")
         concl = parser.parse_term(thy, ctxt, "card s >= 0")

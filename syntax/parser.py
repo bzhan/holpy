@@ -13,6 +13,7 @@ from kernel.proof import ProofItem
 from kernel import extension
 from logic import induct
 from syntax import infertype
+from syntax.context import Context
 
 
 class ParserException(Exception):
@@ -167,7 +168,7 @@ class HOLTransformer(Transformer):
         thy = parser_setting['thy']
         ctxt = parser_setting['ctxt']
         s = str(s)
-        if thy.has_term_sig(s) or ('consts' in ctxt and s in ctxt['consts']):
+        if thy.has_term_sig(s) or s in ctxt.consts:
             # s is the name of a constant in the theory
             return Const(s, None)
         else:
@@ -547,12 +548,6 @@ def parse_proof_rule(thy, ctxt, data):
     args = parse_args(thy, ctxt, sig, data['args'])
     return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)
 
-def parse_vars(thy, vars_data):
-    ctxt = {'vars': {}}
-    for k, v in vars_data.items():
-        ctxt['vars'][k] = parse_type(thy, v)
-    return ctxt
-
 def parse_item(thy, data):
     """Parse the string elements in the item, replacing it by
     objects of the appropriate type (HOLType, Term, etc).
@@ -565,11 +560,11 @@ def parse_item(thy, data):
 
     elif data['ty'] == 'def':
         data['type'] = parse_type(thy, data['type'])
-        ctxt = {'vars': {}, 'consts': {data['name']: data['type']}}
+        ctxt = Context(thy, consts={data['name']: data['type']})
         data['prop'] = parse_term(thy, ctxt, data['prop'])
 
     elif data['ty'] in ('thm', 'thm.ax'):
-        ctxt = parse_vars(thy, data['vars'])
+        ctxt = Context(thy, vars=data['vars'])
         for nm in data['vars']:
             data['vars'][nm] = parse_type(thy, data['vars'][nm])
         data['prop'] = parse_term(thy, ctxt, data['prop'])
@@ -585,7 +580,7 @@ def parse_item(thy, data):
     elif data['ty'] in ('def.ind', 'def.pred'):
         data['type'] = parse_type(thy, data['type'])
         for rule in data['rules']:
-            ctxt = {'vars': {}, 'consts': {data['name']: data['type']}}
+            ctxt = Context(thy, consts={data['name']: data['type']})
             rule['prop'] = parse_term(thy, ctxt, rule['prop'])
 
     else:

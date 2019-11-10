@@ -13,12 +13,13 @@ from data import real
 from logic import basic
 from data import set
 from syntax.printer import print_term, print_type
-import syntax.parser as parser
+from syntax import parser
+from syntax.context import Context
 
 thy = basic.load_theory('list')
 
 Ta = TVar("a")
-ctxt = {'vars': {
+ctxt = Context(thy, vars={
     "A" : boolT,
     "B" : boolT,
     "C" : boolT,
@@ -36,7 +37,7 @@ ctxt = {'vars': {
     "xs" : Type("list", Ta),
     "ys" : Type("list", Ta),
     "zs" : Type("list", Ta),
-}}
+})
 
 A = Var("A", boolT)
 B = Var("B", boolT)
@@ -220,10 +221,7 @@ class ParserTest(unittest.TestCase):
 
     def testParseInt(self):
         thy = basic.load_theory('int')
-        ctxt = {'vars': {
-            'x': int.intT,
-            'y': int.intT
-        }}
+        ctxt = Context(thy, vars={'x': 'int', 'y': 'int'})
         test_data = [
             ("x + y", "int"),
             ("x * y", "int"),
@@ -248,10 +246,7 @@ class ParserTest(unittest.TestCase):
 
     def testParseReal(self):
         thy = basic.load_theory('real')
-        ctxt = {'vars': {
-            'x': real.realT,
-            'y': real.realT
-        }}
+        ctxt = Context(thy, vars={'x': 'real', 'y': 'real'})
         test_data = [
             ("x + y", "real"),
             ("x * y", "real"),
@@ -280,15 +275,7 @@ class ParserTest(unittest.TestCase):
 
     def testParseFunction(self):
         thy = basic.load_theory('function')
-        Tb = TVar('b')
-        Tc = TVar('c')
-        ctxt = {'vars': {
-            'a': Ta,
-            'b': Ta,
-            'f': TFun(Ta, Ta),
-            'g': TFun(Tb, Tc),
-            'h': TFun(Ta, Tb),
-        }}
+        ctxt = Context(thy, vars={'a': "'a", 'b': "'a", 'f': "'a => 'a", 'g': "'b => 'c", 'h': "'a => 'b"})
         test_data = [
             ("(f)(a := b)", "'a => 'a"),
             ("(f)(a := b, b := a)", "'a => 'a"),
@@ -304,14 +291,14 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(print_term(thy, t), s)
 
     def testParseSet(self):
-        ctxt = {'vars': {
+        ctxt = Context(thy, vars={
             "x": Ta,
             "y": Ta,
             "A": set.setT(Ta),
             "B": set.setT(Ta),
             "P": TFun(Ta, boolT),
             "S": set.setT(set.setT(Ta)),
-        }}
+        })
         test_data = [
             ("({}::'a set)", "(∅::'a set)", "'a set"),
             ("x Mem A", "x ∈ A", "bool"),
@@ -342,7 +329,7 @@ class ParserTest(unittest.TestCase):
 
     def testParseString(self):
         thy = basic.load_theory('string')
-        ctxt = {'vars': {}}
+        ctxt = Context(thy)
         test_data = [
             ("'a'", "char"),
             ('"ab"', "string"),
@@ -357,10 +344,7 @@ class ParserTest(unittest.TestCase):
 
     def testParseInterval(self):
         thy = basic.load_theory('iterate')
-        ctxt = {'vars': {
-            "m": nat.natT,
-            "n": nat.natT
-        }}
+        ctxt = Context(thy, vars={'m': 'nat', 'n': 'nat'})
         test_data = [
             ("{m..n}", "nat set"),
             ("{1..m}", "nat set"),
@@ -489,7 +473,7 @@ class ParserTest(unittest.TestCase):
             self.assertEqual(parser.parse_ind_constr(thy, s), res)
 
     def testParseNamedThm(self):
-        ctxt = {'vars': {'A': boolT, 'B': boolT}}
+        ctxt = Context(thy, vars={'A': 'bool', 'B': 'bool'})
         test_data = [
             ("conjI: A = B", ('conjI', Term.mk_equals(A, B))),
             ("A = B", (None, Term.mk_equals(A, B)))

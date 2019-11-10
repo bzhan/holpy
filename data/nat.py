@@ -750,6 +750,8 @@ class nat_eq_conv(Conv):
 macro.global_macros.update({
     "nat_norm": nat_norm_macro(),
     "nat_const_ineq": nat_const_ineq_macro(),
+    "nat_const_less_eq": nat_const_less_eq_macro(),
+    "nat_const_less": nat_const_less_macro(),
 })
 
 global_methods.update({

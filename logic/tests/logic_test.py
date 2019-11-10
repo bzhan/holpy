@@ -16,6 +16,7 @@ from logic import matcher
 from logic.tests.conv_test import test_conv
 from data import nat
 from syntax import parser
+from syntax.context import Context
 
 Ta = TVar("a")
 a = Var("a", boolT)
@@ -25,10 +26,10 @@ d = Var("d", boolT)
 x = Var("x", Ta)
 y = Var("y", Ta)
 
-def test_macro(self, thy_name, macro, *, ctxt=None, assms=None, res=None, args="", failed=None):
-    thy = basic.load_theory(thy_name)
-    ctxt = {'vars': dict((nm, parser.parse_type(thy, s))
-                    for nm, s in ctxt.items()) if ctxt is not None else {}}
+def test_macro(self, thy, macro, *, vars=None, assms=None, res=None, args="", failed=None, limit=None):
+    ctxt = Context(thy, vars=vars, limit=limit)
+    thy = ctxt.thy
+
     macro = global_macros[macro]
     assms = [parser.parse_term(thy, ctxt, assm)
              for assm in assms] if assms is not None else []
@@ -125,21 +126,21 @@ class LogicTest(unittest.TestCase):
             ("((A & B) & C) & D", "A & B & C & D"),
         ]
 
-        ctxt = {'A': 'bool', 'B': 'bool'}
+        vars = {'A': 'bool', 'B': 'bool'}
         for t, t_res in test_data:
-            test_conv(self, 'logic', logic.norm_conj_assoc(), ctxt=ctxt, t=t, t_res=t_res)
+            test_conv(self, 'logic', logic.norm_conj_assoc(), vars=vars, t=t, t_res=t_res)
 
     def testBetaNorm(self):
         test_macro(
             self, 'logic_base', "beta_norm",
-            ctxt={'f': "'a => 'b", 'x': "'a", 'y': "'b"},
+            vars={'f': "'a => 'b", 'x': "'a", 'y': "'b"},
             assms=["(%x. f x) x = y"],
             res="f x = y")
 
     def testApplyTheorem(self):
         test_macro(
             self, 'logic_base', "apply_theorem",
-            ctxt={'A': 'bool', 'B': 'bool'},
+            vars={'A': 'bool', 'B': 'bool'},
             assms=["A & B"],
             args="conjD1",
             res="A"
@@ -185,7 +186,7 @@ class LogicTest(unittest.TestCase):
     def testApplyFactMacro(self):
         test_macro(
             self, 'logic_base', 'apply_fact',
-            ctxt={"P": "'a => bool", "Q": "'a => bool", "s": "'a"},
+            vars={"P": "'a => bool", "Q": "'a => bool", "s": "'a"},
             assms=["!s. P s --> Q s", "P s"],
             res="Q s"
         )
@@ -198,12 +199,12 @@ class LogicTest(unittest.TestCase):
             ('A & B & C --> A & B', True)
         ]
 
-        ctxt = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'D': 'bool'}
+        vars = {'A': 'bool', 'B': 'bool', 'C': 'bool', 'D': 'bool'}
         for t, success in test_data:
             if success:
-                test_macro(self, 'logic_base', 'imp_conj', ctxt=ctxt, args=t, res=t)
+                test_macro(self, 'logic_base', 'imp_conj', vars=vars, args=t, res=t)
             else:
-                test_macro(self, 'logic_base', 'imp_conj', ctxt=ctxt, args=t, failed=AssertionError)
+                test_macro(self, 'logic_base', 'imp_conj', vars=vars, args=t, failed=AssertionError)
 
 
 if __name__ == "__main__":

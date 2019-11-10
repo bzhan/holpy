@@ -8,6 +8,7 @@ from logic import basic
 from logic import logic
 from data import nat
 from data import list
+from syntax.context import Context
 from syntax.infertype import type_infer, infer_printed_type, TypeInferenceException
 
 thy = basic.load_theory('list')
@@ -15,7 +16,7 @@ thy = basic.load_theory('list')
 Ta = TVar("a")
 listT = list.listT
 
-ctxt = {'vars': {
+ctxt = Context(thy, vars={
     "A" : boolT,
     "B" : boolT,
     "C" : boolT,
@@ -33,7 +34,7 @@ ctxt = {'vars': {
     "xs" : listT(Ta),
     "ys" : listT(Ta),
     "zs" : listT(Ta),
-}}
+})
 
 class InferTypeTest(unittest.TestCase):
     def testInferType(self):

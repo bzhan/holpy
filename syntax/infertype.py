@@ -8,6 +8,7 @@ from kernel.term import Term
 from kernel import term
 from data import nat
 from util import unionfind
+from syntax.context import Context
 
 
 class TypeInferenceException(Exception):
@@ -81,8 +82,8 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
         # otherwise, make a new type.
         if t.is_var():
             if t.T is None:
-                if t.name in ctxt['vars']:
-                    t.T = ctxt['vars'][t.name]
+                if t.name in ctxt.vars:
+                    t.T = ctxt.vars[t.name]
                 elif t.name in incr_ctxt:
                     t.T = incr_ctxt[t.name]
                 else:
@@ -95,8 +96,8 @@ def type_infer(thy, ctxt, t, *, forbid_internal=True):
         # replacing arbitrary variables by new types.
         elif t.is_const():
             if t.T is None:
-                if 'consts' in ctxt and t.name in ctxt['consts']:
-                    t.T = ctxt['consts'][t.name]
+                if t.name in ctxt.consts:
+                    t.T = ctxt.consts[t.name]
                 else:
                     T = thy.get_term_sig(t.name)
                     Tvars = T.get_tvars()
@@ -199,7 +200,7 @@ def infer_printed_type(thy, t):
 
     for i in range(100):
         clear_const_type(t)
-        type_infer(thy, dict(), t, forbid_internal=False)
+        type_infer(thy, Context(thy), t, forbid_internal=False)
 
         def has_internalT(T):
             return any(is_internal_type(subT) for subT in T.get_tsubs())

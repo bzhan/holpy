@@ -9,6 +9,7 @@ from kernel.thm import Thm
 from logic import basic
 from data.nat import natT
 from syntax import parser, printer
+from syntax.context import Context
 
 MERGE, CHECK, EXPLAIN, MATCH = range(4)
 
@@ -81,7 +82,7 @@ class CongClosureHOLTest(unittest.TestCase):
     def run_test(self, data, verbose=False):
         thy = basic.load_theory('nat')
         Ta = TVar('a')
-        ctxt = {'vars': {
+        ctxt = Context(thy, vars={
             'a': Ta,
             'b': Ta,
             'c': Ta,
@@ -96,7 +97,7 @@ class CongClosureHOLTest(unittest.TestCase):
             'x': natT,
             'y': natT,
             'z': natT
-        }}
+        })
         closure = congc.CongClosureHOL(thy)
         for item in data:
             if item[0] == MERGE:

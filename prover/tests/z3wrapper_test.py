@@ -8,18 +8,17 @@ from data import nat
 from logic import basic
 from syntax import parser
 from syntax import printer
+from syntax.context import Context
 from prover import z3wrapper
 
 thy = basic.load_theory('nat')
-
-natT = nat.natT
 
 class Z3WrapperTest(unittest.TestCase):
     def testSolve(self):
         if not z3wrapper.z3_loaded:
             return
 
-        ctxt = {'vars': {"s": TFun(natT, natT), "A": natT, "B": natT}}
+        ctxt = Context(thy, vars={"s": 'nat => nat', "A": 'nat', "B": 'nat'})
         test_data = [
             ("s 0 = 0 & s 1 = 0 --> s 1 = s 0 * B", True),
             ("s 1 = s 0 * B & ~~s 0 = A --> s 1 = A * B", True),
@@ -42,7 +41,7 @@ class Z3WrapperTest(unittest.TestCase):
 
         macro = z3wrapper.Z3Macro()
 
-        ctxt = {'vars': {"s": TFun(natT, natT), "A": natT, "B": natT}}
+        ctxt = Context(thy, vars={'s': 'nat => nat', 'A': 'nat', 'B': 'nat'})
         test_data = [
             ("A * B + 1 = 1 + B * A", True),
             ("s 0 = s 1", False),

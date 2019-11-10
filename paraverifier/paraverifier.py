@@ -17,6 +17,7 @@ from logic.proofterm import ProofTerm, ProofTermDeriv
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
+from syntax.context import Context
 from paraverifier import gcl
 
 
@@ -248,11 +249,11 @@ def load_system(filename):
     for rule in data['rules']:
         if isinstance(rule['var'], str):
             rule_var = Var(rule['var'], natT)
-            ctxt = {'vars': {v.name: v.T for v in vars + [rule_var]}}
+            ctxt = Context(thy, vars={v.name: v.T for v in vars + [rule_var]})
         else:
             assert isinstance(rule['var'], list)
             rule_var = [Var(nm, natT) for nm in rule['var']]
-            ctxt = {'vars': {v.name: v.T for v in vars + rule_var}}
+            ctxt = Context(thy, vars={v.name: v.T for v in vars + rule_var})
         guard = parser.parse_term(thy, ctxt, rule['guard'])
         assign = dict()
         for k, v in rule['assign'].items():
@@ -262,7 +263,7 @@ def load_system(filename):
     invs = []
     for inv in data['invs']:
         inv_vars = [Var(nm, natT) for nm in inv['vars']]
-        ctxt = {'vars': {v.name: v.T for v in vars + inv_vars}}
+        ctxt = Context(thy, vars={v.name: v.T for v in vars + inv_vars})
         prop = parser.parse_term(thy, ctxt, inv['prop'])
         invs.append((inv_vars, prop))
 

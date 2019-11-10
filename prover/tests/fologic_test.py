@@ -6,6 +6,7 @@ from kernel.type import boolT, TFun, TVar
 from logic import basic
 from syntax import parser
 from syntax import printer
+from syntax.context import Context
 from prover import fologic
 
 
@@ -17,7 +18,7 @@ class FOLogicTest(unittest.TestCase):
         ]
 
         thy = basic.load_theory('logic_base')
-        ctxt = {'vars': {'y': TVar('a')}}
+        ctxt = Context(thy, vars={'y': "'a"})
         for fm, res in test_data:
             fm = parser.parse_term(thy, ctxt, fm)
             self.assertEqual(fologic.has_bound0(fm.body), res)
@@ -31,8 +32,7 @@ class FOLogicTest(unittest.TestCase):
         ]
 
         thy = basic.load_theory('logic_base')
-        ctxt = {'vars': {'p': boolT, 'q': boolT,
-                         'P': TFun(TVar('a'), boolT), 'Q': TFun(TVar('a'), boolT)}}
+        ctxt = Context(thy, vars={'p': 'bool', 'q': 'bool', 'P': "'a => bool", 'Q': "'a => bool"})
         for fm, res in test_data:
             fm = parser.parse_term(thy, ctxt, fm)
             res = parser.parse_term(thy, ctxt, res)
@@ -46,7 +46,7 @@ class FOLogicTest(unittest.TestCase):
         ]
 
         thy = basic.load_theory('logic_base')
-        ctxt = {'vars': {'P': TFun(TVar('a'), boolT), 'Q': TFun(TVar('a'), boolT)}}
+        ctxt = Context(thy, vars={'P': "'a => bool", 'Q': "'a => bool"})
         for fm, res in test_data:
             fm = parser.parse_term(thy, ctxt, fm)
             res = parser.parse_term(thy, ctxt, res)
@@ -62,7 +62,7 @@ class FOLogicTest(unittest.TestCase):
         ]
 
         thy = basic.load_theory('nat')
-        ctxt = {'vars': {'P': TFun(TVar('a'), boolT), 'Q': TFun(TVar('a'), boolT)}}
+        ctxt = Context(thy, vars={'P': "'a => bool", 'Q': "'a => bool"})
         for fm, res in test_data:
             fm = parser.parse_term(thy, ctxt, fm)
             res = parser.parse_term(thy, ctxt, res)

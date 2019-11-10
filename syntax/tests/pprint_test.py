@@ -5,12 +5,13 @@ import unittest
 from logic import basic
 from syntax import parser
 from syntax import pprint
+from syntax.context import Context
 
 
 class PPrintTest(unittest.TestCase):
     def run_test(self, thy_name, s, expected_res, *, line_length=80):
         thy = basic.load_theory(thy_name)
-        ctxt = {'vars': {}}
+        ctxt = Context(thy)
         t = parser.parse_term(thy, ctxt, s)
         ast = pprint.get_ast_term(thy, t, unicode=True)
         res = pprint.print_ast(thy, ast, line_length=line_length)
@@ -45,7 +46,7 @@ class PPrintTest(unittest.TestCase):
 
     def testPPrint3(self):
         thy = basic.load_theory('realanalysis')
-        ctxt = {'vars': {}}
+        ctxt = Context(thy)
         s = "real_bounded t ∧ t ⊆ s ⟶ real_bounded s"
         t = parser.parse_term(thy, ctxt, s)
         ast = pprint.get_ast_term(thy, t, unicode=True)
