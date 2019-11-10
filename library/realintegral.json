@@ -18040,6 +18040,1492 @@
                 "s": "real set",
                 "t": "real set"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "has_real_integral_unions",
+            "prop": [
+                "finite t &",
+                "(!s. s ∈ t --> has_real_integral f (i s) s) &",
+                "(!s. !s1. s ∈ t & s1 ∈ t & ~(s = s1)",
+                "--> real_negligible (inter s s1))",
+                "--> has_real_integral f (sum t i) (Union t)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "i": "real set => real",
+                "t": "real set set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_indefinite_integral_continuous",
+            "prop": [
+                "real_integrable_on f (real_closed_interval a b) &",
+                "c ∈ (real_closed_interval a b) &",
+                "d ∈ (real_closed_interval a b) &",
+                "0 < e",
+                "--> ?k. 0 < k &",
+                "!c1. !d1. c1 ∈ (real_closed_interval a b) &",
+                "d1 ∈ (real_closed_interval a b) &",
+                "abs (c1 - c) <= k & abs (d1 - d) <= k",
+                "--> abs ((real_integral (real_closed_interval c1 d1) f) -",
+                " (real_integral (real_closed_interval c d) f)) < e"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "e": "real",
+                "f": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_monotone_convergence_increasing",
+            "prop": [
+                "(!k. real_integrable_on (f k) s) &",
+                "(!k. !x. x ∈ s --> f k x <= f (Suc k) x) &",
+                "(!x. x ∈ s --> tendsto_real (%k. f k x) (g x) sequentially) &",
+                "real_bounded {y. !k. y = real_integral s (f k)}",
+                "--> real_integrable_on g s & tendsto_real (%k. real_integral s (f k)) (real_integral s g) sequentially"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_monotone_convergence_decreasing",
+            "prop": [
+                "(∀k. real_integrable_on (f k) s) ∧ ",
+                "(∀k. ∀x. x ∈ s ⟶ f (Suc k) x ≤ f k x) ∧ ",
+                "(∀x. x ∈ s ⟶ tendsto_real (λk. f k x) (g x) sequentially) ∧ ",
+                "real_bounded ({y. ∀k. y = real_integral s (f k)}) ",
+                "⟶ real_integrable_on g s ∧ ",
+                "   tendsto_real (λk. real_integral s (f k)) (real_integral s g) sequentially"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_beppo_levi_increasing",
+            "prop": [
+                "(∀k. real_integrable_on (f k) s) ∧",
+                "(∀k. ∀x. x ∈ s ⟶ f k x ≤ f (Suc k) x) ∧",
+                "real_bounded ({y. ∀k. y = real_integral s (f k)})",
+                "--> ?g. ?k. real_negligible k &",
+                "!x. x ∈ (diff s k) --> tendsto_real (λk. f k x) (g x) sequentially"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_beppo_levi_decreasing",
+            "prop": [
+                "(∀k. real_integrable_on (f k) s) ∧ ",
+                "(∀k. ∀x. x ∈ s ⟶ f (Suc k) x ≤ f k x) ∧ ",
+                "real_bounded ({y. ∀k. y = real_integral s (f k)}) ",
+                "⟶ (∃g. ∃k. real_negligible k ∧ ",
+                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk. f k x) (g x) sequentially))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_beppo_levi_monotone_convergence_increasing",
+            "prop": [
+                "(∀k. real_integrable_on (f k) s) ∧ ",
+                "(∀k. ∀x. x ∈ s ⟶ f k x ≤ f (Suc k) x) ∧ ",
+                "real_bounded ({y. ∀k. y = real_integral s (f k)}) ",
+                "⟶ (∃g. ∃k. real_negligible k ∧ ",
+                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk. f k x) (g x) sequentially) &",
+                "real_integrable_on g s ∧ ",
+                "   tendsto_real (λk. real_integral s (f k)) (real_integral s g) sequentially)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_beppo_levi_monotone_convergence_decreasing",
+            "prop": [
+                "(∀k. real_integrable_on (f k) s) ∧ ",
+                "(∀k. ∀x. x ∈ s ⟶ f (Suc k) x ≤ f k x) ∧ ",
+                "real_bounded ({y. ∀k. y = real_integral s (f k)}) ",
+                "⟶ (∃g. ∃k. real_negligible k ∧ ",
+                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk. f k x) (g x) sequentially) ∧ ",
+                "        real_integrable_on g s ∧ ",
+                "        tendsto_real (λk. real_integral s (f k)) (real_integral s g) sequentially)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_integral_abs_bound_integral",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x)"
+                },
+                {
+                    "args": "real_abs_bounds",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ -g x ≤ f x ∧ f x ≤ g x)"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_integrable_on f s, B: real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x)}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ real_integrable_on g s"
+                },
+                {
+                    "args": "real_integrable_integral",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ has_real_integral g (real_integral s g) s"
+                },
+                {
+                    "args": "has_real_integral_neg",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ has_real_integral (λx. -g x) (-real_integral s g) s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ real_integrable_on f s"
+                },
+                {
+                    "args": "real_integrable_integral",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ has_real_integral f (real_integral s f) s"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ ∀x. x ∈ s ⟶ -g x ≤ f x"
+                },
+                {
+                    "args": "x, real",
+                    "id": "8.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "8.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_integrable_on f s, B: real_integrable_on g s ∧ (∀x. x ∈ s ⟶ -g x ≤ f x ∧ f x ≤ g x)}",
+                    "id": "8.2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ -g x ≤ f x ∧ f x ≤ g x)"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_integrable_on g s, B: ∀x. x ∈ s ⟶ -g x ≤ f x ∧ f x ≤ g x}",
+                    "id": "8.3",
+                    "prevs": [
+                        "8.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ ∀x. x ∈ s ⟶ -g x ≤ f x ∧ f x ≤ g x"
+                },
+                {
+                    "args": "x",
+                    "id": "8.4",
+                    "prevs": [
+                        "8.3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ x ∈ s ⟶ -g x ≤ f x ∧ f x ≤ g x"
+                },
+                {
+                    "args": "",
+                    "id": "8.5",
+                    "prevs": [
+                        "8.4",
+                        "8.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x), x ∈ s ⊢ -g x ≤ f x ∧ f x ≤ g x"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "8.6",
+                    "prevs": [
+                        "8.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x), x ∈ s ⊢ -g x ≤ f x"
+                },
+                {
+                    "args": "",
+                    "id": "8.7",
+                    "prevs": [
+                        "8.0",
+                        "8.1",
+                        "8.6"
+                    ],
+                    "rule": "intros",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ ∀x. x ∈ s ⟶ -g x ≤ f x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9",
+                    "prevs": [
+                        "7",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ has_real_integral f (real_integral s f) s ∧ (∀x. x ∈ s ⟶ -g x ≤ f x)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10",
+                    "prevs": [
+                        "5",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ has_real_integral (λx. -g x) (-real_integral s g) s ∧ has_real_integral f (real_integral s f) s ∧ (∀x. x ∈ s ⟶ -g x ≤ f x)"
+                },
+                {
+                    "args": "has_real_integral_le",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ -real_integral s g ≤ real_integral s f"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ ∀x. x ∈ s ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "x, real",
+                    "id": "12.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "12.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "12.2",
+                    "prevs": [
+                        "8.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x), x ∈ s ⊢ f x ≤ g x"
+                },
+                {
+                    "args": "",
+                    "id": "12.3",
+                    "prevs": [
+                        "12.0",
+                        "12.1",
+                        "12.2"
+                    ],
+                    "rule": "intros",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ ∀x. x ∈ s ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "13",
+                    "prevs": [
+                        "4",
+                        "12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ has_real_integral g (real_integral s g) s ∧ (∀x. x ∈ s ⟶ f x ≤ g x)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "14",
+                    "prevs": [
+                        "7",
+                        "13"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ has_real_integral f (real_integral s f) s ∧ has_real_integral g (real_integral s g) s ∧ (∀x. x ∈ s ⟶ f x ≤ g x)"
+                },
+                {
+                    "args": "has_real_integral_le",
+                    "id": "15",
+                    "prevs": [
+                        "14"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ real_integral s f ≤ real_integral s g"
+                },
+                {
+                    "args": "conjI",
+                    "id": "16",
+                    "prevs": [
+                        "11",
+                        "15"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ -real_integral s g ≤ real_integral s f ∧ real_integral s f ≤ real_integral s g"
+                },
+                {
+                    "args": "real_abs_bounds, abs (real_integral s f) ≤ real_integral s g",
+                    "id": "17",
+                    "prevs": [
+                        "16"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⊢ abs (real_integral s f) ≤ real_integral s g"
+                },
+                {
+                    "args": "",
+                    "id": "18",
+                    "prevs": [
+                        "0",
+                        "17"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ⟶ abs (real_integral s f) ≤ real_integral s g"
+                }
+            ],
+            "prop": [
+                "real_integrable_on f s & real_integrable_on g s &",
+                "(!x. x ∈ s --> abs (f x) <= g x)",
+                "--> abs (real_integral s f) <= real_integral s g"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_abs_bounds"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(%x. -g x)",
+                    "param_g": "f",
+                    "param_s": "s",
+                    "theorem": "has_real_integral_le"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_neg"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_integral"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_integral"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "8",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "8.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "8.2"
+                    ],
+                    "goal_id": "8.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "8.3"
+                    ],
+                    "goal_id": "8.4",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "8.4",
+                        "8.1"
+                    ],
+                    "goal_id": "8.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "8.5"
+                    ],
+                    "goal_id": "8.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "param_f": "f",
+                    "param_g": "g",
+                    "param_s": "s",
+                    "theorem": "has_real_integral_le"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "8.5"
+                    ],
+                    "goal_id": "12.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "absolutely_real_integrable_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "absolutely_real_integrable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "absolutely_real_integrable_on f s ⊢ absolutely_real_integrable_on f s"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on f s ∧ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on f s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "absolutely_real_integrable_on f s ⊢ ∀x. x ∈ s ⟶ abs (f x) ≤ abs (f x)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "real_le_refl, {}, {x: abs (f x)}",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ abs (f x) ≤ abs (f x)"
+                },
+                {
+                    "args": "",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2"
+                    ],
+                    "rule": "intros",
+                    "th": "absolutely_real_integrable_on f s ⊢ ∀x. x ∈ s ⟶ abs (f x) ≤ abs (f x)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. abs (f x)) s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ abs (f x))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "2",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on f s ∧ real_integrable_on (λx. abs (f x)) s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ abs (f x))"
+                },
+                {
+                    "args": "real_integral_abs_bound_integral",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ abs (real_integral s f) ≤ real_integral s (λx. abs (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ absolutely_real_integrable_on f s ⟶ abs (real_integral s f) ≤ real_integral s (λx. abs (f x))"
+                }
+            ],
+            "prop": [
+                "absolutely_real_integrable_on f s",
+                "--> abs (real_integral s f) ≤ real_integral s (%x. abs (f x))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integral_abs_bound_integral"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "4.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "absolutely_real_integrable_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_integrable_0, {}, {s: s}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_integrable_on (λx. 0) s"
+                },
+                {
+                    "args": "real_zero_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ real_integrable_on (λx. of_nat 0) s"
+                },
+                {
+                    "args": "real_abs_nat, real_integrable_on (λx. abs (of_nat 0)) s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_integrable_on (λx. abs (of_nat 0)) s"
+                },
+                {
+                    "args": "real_zero_def, real_integrable_on (λx. abs 0) s",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_integrable_on (λx. abs 0) s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_integrable_on (λx. 0) s ∧ real_integrable_on (λx. abs 0) s"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def, absolutely_real_integrable_on (λx. 0) s",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ absolutely_real_integrable_on (λx. 0) s"
+                }
+            ],
+            "prop": "absolutely_real_integrable_on (%x. 0) s ",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_abs_nat"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_zero_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "absolutely_real_integrable_const",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_integrable_const, {}, {a: a, b: b, c: c}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_integrable_on (λx. c) (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integrable_const, {}, {a: a, b: b, c: abs c}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_integrable_on (λx. abs c) (real_closed_interval a b)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_integrable_on (λx. c) (real_closed_interval a b) ∧ real_integrable_on (λx. abs c) (real_closed_interval a b)"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def, absolutely_real_integrable_on (λx. c) (real_closed_interval a b)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ absolutely_real_integrable_on (λx. c) (real_closed_interval a b)"
+                }
+            ],
+            "prop": "absolutely_real_integrable_on (λx. c) (real_closed_interval a b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_const"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_const"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "absolutely_real_integrable_lmul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "absolutely_real_integrable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "absolutely_real_integrable_on f s ⊢ absolutely_real_integrable_on f s"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on f s ∧ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on f s"
+                },
+                {
+                    "args": "real_integrable_lmul, {}, {c: c, f: f, s: s}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. c * f x) s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "real_integrable_lmul, {}, {c: abs c, f: λx. abs (f x), s: s}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. abs c * abs (f x)) s"
+                },
+                {
+                    "args": "real_abs_mul, real_integrable_on (λx. abs (c * f x)) s",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. abs (c * f x)) s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "7",
+                    "prevs": [
+                        "3",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. c * f x) s ∧ real_integrable_on (λx. abs (c * f x)) s"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def, absolutely_real_integrable_on (λx. c * f x) s",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "absolutely_real_integrable_on f s ⊢ absolutely_real_integrable_on (λx. c * f x) s"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ absolutely_real_integrable_on f s ⟶ absolutely_real_integrable_on (λx. c * f x) s"
+                }
+            ],
+            "prop": [
+                "absolutely_real_integrable_on f s ",
+                "⟶ absolutely_real_integrable_on (λx. c * f x) s"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_lmul"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_abs_mul"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_lmul"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "absolutely_real_integrable_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "absolutely_real_integrable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "absolutely_real_integrable_on f s ⊢ absolutely_real_integrable_on f s"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on f s ∧ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on f s"
+                },
+                {
+                    "args": "real_integrable_neg",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. -f x) s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "real_abs_neg, real_integrable_on (λx. abs (-f x)) s",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. abs (-f x)) s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ⊢ real_integrable_on (λx. -f x) s ∧ real_integrable_on (λx. abs (-f x)) s"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def, absolutely_real_integrable_on (λx. -f x) s",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "absolutely_real_integrable_on f s ⊢ absolutely_real_integrable_on (λx. -f x) s"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ absolutely_real_integrable_on f s ⟶ absolutely_real_integrable_on (λx. -f x) s"
+                }
+            ],
+            "prop": [
+                "absolutely_real_integrable_on f s ",
+                "⟶ absolutely_real_integrable_on (λx. -f x) s"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integrable_neg"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_abs_neg"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "absolutely_real_integrable_on_subinterval",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ (real_integrable_on f s ∧ real_integrable_on (λx. abs (f x)) s) ∧ real_closed_interval a b ⊆ s"
+                },
+                {
+                    "args": "conjD1, {}, {A: real_integrable_on f s ∧ real_integrable_on (λx. abs (f x)) s, B: real_closed_interval a b ⊆ s}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ real_integrable_on f s ∧ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ real_integrable_on f s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ real_closed_interval a b ⊆ s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ real_integrable_on f s ∧ real_closed_interval a b ⊆ s"
+                },
+                {
+                    "args": "real_integrable_on_subinterval",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ real_integrable_on f (real_closed_interval a b)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "7",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "8",
+                    "prevs": [
+                        "7",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ real_integrable_on (λx. abs (f x)) s ∧ real_closed_interval a b ⊆ s"
+                },
+                {
+                    "args": "real_integrable_on_subinterval",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ real_integrable_on (λx. abs (f x)) (real_closed_interval a b)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10",
+                    "prevs": [
+                        "6",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ real_integrable_on f (real_closed_interval a b) ∧ real_integrable_on (λx. abs (f x)) (real_closed_interval a b)"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def, absolutely_real_integrable_on f (real_closed_interval a b)",
+                    "id": "11",
+                    "prevs": [
+                        "10"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⊢ absolutely_real_integrable_on f (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [
+                        "0",
+                        "11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ⟶ absolutely_real_integrable_on f (real_closed_interval a b)"
+                }
+            ],
+            "prop": [
+                "absolutely_real_integrable_on f s ∧ real_closed_interval a b ⊆ s ",
+                "⟶ absolutely_real_integrable_on f (real_closed_interval a b)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "theorem": "real_integrable_on_subinterval"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "theorem": "real_integrable_on_subinterval"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "f": "real => real",
+                "s": "real set"
+            }
         }
     ],
     "description": "Integrals of real->real functions; measures of real set. Refer to realanalysis.ml from hol light.",
