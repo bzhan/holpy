@@ -9,10 +9,10 @@ from syntax.context import Context
 
 
 class PPrintTest(unittest.TestCase):
-    def run_test(self, thy_name, s, expected_res, *, line_length=80):
-        thy = basic.load_theory(thy_name)
+    def run_test(self, thy, s, expected_res, *, line_length=80):
         ctxt = Context(thy)
-        t = parser.parse_term(thy, ctxt, s)
+        thy = ctxt.thy
+        t = parser.parse_term(ctxt, s)
         ast = pprint.get_ast_term(thy, t, unicode=True)
         res = pprint.print_ast(thy, ast, line_length=line_length)
         self.assertEqual(res, expected_res)
@@ -45,10 +45,10 @@ class PPrintTest(unittest.TestCase):
         )
 
     def testPPrint3(self):
-        thy = basic.load_theory('realanalysis')
-        ctxt = Context(thy)
+        ctxt = Context('realanalysis')
+        thy = ctxt.thy
         s = "real_bounded t ∧ t ⊆ s ⟶ real_bounded s"
-        t = parser.parse_term(thy, ctxt, s)
+        t = parser.parse_term(ctxt, s)
         ast = pprint.get_ast_term(thy, t, unicode=True)
         res = pprint.print_ast(thy, ast, highlight=True, line_length=80)
         expected_res = [[

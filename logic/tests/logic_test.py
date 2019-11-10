@@ -31,18 +31,18 @@ def test_macro(self, thy, macro, *, vars=None, assms=None, res=None, args="", fa
     thy = ctxt.thy
 
     macro = global_macros[macro]
-    assms = [parser.parse_term(thy, ctxt, assm)
+    assms = [parser.parse_term(ctxt, assm)
              for assm in assms] if assms is not None else []
     prev_ths = [Thm([assm], assm) for assm in assms]
     prevs = [ProofTerm.assume(assm) for assm in assms]
-    args = parser.parse_args(thy, ctxt, macro.sig, args)
+    args = parser.parse_args(ctxt, macro.sig, args)
 
     if failed is not None:
         self.assertRaises(failed, macro.eval, thy, args, prev_ths)
         self.assertRaises(failed, macro.get_proof_term, thy, args, prevs)
         return
 
-    res = parser.parse_term(thy, ctxt, res)
+    res = parser.parse_term(ctxt, res)
 
     # Check the eval function
     self.assertEqual(macro.eval(thy, args, prev_ths), Thm(assms, res))

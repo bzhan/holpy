@@ -47,13 +47,14 @@ def unify(uf, T1, T2):
     else:
         raise TypeInferenceException("Unable to unify " + str(T1) + " with " + str(T2))
 
-def type_infer(thy, ctxt, t, *, forbid_internal=True):
+def type_infer(ctxt, t, *, forbid_internal=True):
     """Perform type inference on the given term. The input term
     has all types marked None, except those subterms whose type is
     explicitly given. This function works on terms with overloaded
     constants.
     
     """
+    thy = ctxt.thy
     uf = unionfind.UnionFind()
 
     # Number of internal type variables created.
@@ -200,7 +201,7 @@ def infer_printed_type(thy, t):
 
     for i in range(100):
         clear_const_type(t)
-        type_infer(thy, Context(thy), t, forbid_internal=False)
+        type_infer(Context(thy), t, forbid_internal=False)
 
         def has_internalT(T):
             return any(is_internal_type(subT) for subT in T.get_tsubs())

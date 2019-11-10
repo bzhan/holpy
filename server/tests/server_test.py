@@ -214,12 +214,11 @@ class ServerTest(unittest.TestCase):
 
     def testApplyBackwardStep5(self):
         """Test strong induction."""
-        thy = basic.load_theory('set')
-        ctxt = Context(thy, vars={'s': "'a set"})
-        s = parser.parse_term(thy, ctxt, "s")
-        assum = parser.parse_term(thy, ctxt, "finite s")
-        concl = parser.parse_term(thy, ctxt, "card s >= 0")
-        state = ProofState.init_state(thy, [s], [assum], concl)
+        ctxt = Context('set', vars={'s': "'a set"})
+        s = parser.parse_term(ctxt, "s")
+        assum = parser.parse_term(ctxt, "finite s")
+        concl = parser.parse_term(ctxt, "card s >= 0")
+        state = ProofState.init_state(ctxt.thy, [s], [assum], concl)
         state.apply_backward_step(1, "finite_induct_strong", prevs=[0])
 
     def testApplyForwardStep1(self):

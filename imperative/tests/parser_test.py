@@ -9,8 +9,6 @@ from syntax import parser
 from syntax import printer
 from syntax.context import Context
 
-thy = basic.load_theory('hoare')
-
 
 class HoareParserTest(unittest.TestCase):
     def testHoareParser(self):
@@ -24,7 +22,7 @@ class HoareParserTest(unittest.TestCase):
 
         for s, res in test_data:
             t = parse_com(s)
-            t_res = parser.parse_term(thy, Context(thy), res)
+            t_res = parser.parse_term(Context('hoare'), res)
             self.assertEqual(t, t_res)
 
     def testParseFile(self):

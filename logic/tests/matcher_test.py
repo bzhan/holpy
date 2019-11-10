@@ -56,22 +56,21 @@ class MatcherTest(unittest.TestCase):
             ("∀x. ∀s. Q s ⟶ ¬x ∈ s ⟶ finite s ⟶ Q (insert x s)", True),
         ]
 
-        thy = basic.load_theory('set')
-        ctxt = Context(thy, vars={
+        ctxt = Context('set', vars={
             "f": "'a => 'b", "a": "'a", "m": "nat", "n": "nat",
             "P": "nat => bool", "Q": "nat set => bool", "x": "nat", "s": "nat set"})
         for t, res in test_data:
-            t = parser.parse_term(thy, ctxt, t)
+            t = parser.parse_term(ctxt, t)
             self.assertEqual(matcher.is_pattern(t, []), res)
 
     def run_test(self, thy, vars, pat, t, *, tyinst=None, inst=None, failed=None):
         ctxt = Context(thy, vars=vars)
         thy = ctxt.thy
-        pat = parser.parse_term(thy, ctxt, pat)
-        t = parser.parse_term(thy, ctxt, t)
+        pat = parser.parse_term(ctxt, pat)
+        t = parser.parse_term(ctxt, t)
         tyinst = dict((nm, parser.parse_type(thy, s))
                       for nm, s in tyinst.items()) if tyinst is not None else dict()
-        inst = dict((nm, parser.parse_term(thy, ctxt, s))
+        inst = dict((nm, parser.parse_term(ctxt, s))
                     for nm, s in inst.items()) if inst is not None else dict()
 
         if failed is not None:

@@ -21,10 +21,10 @@ class TacticTest(unittest.TestCase):
         ctxt = Context(thy, vars=vars)
         thy = ctxt.thy
 
-        assms = [parser.parse_term(thy, ctxt, prev) for prev in prevs] if prevs is not None else []
+        assms = [parser.parse_term(ctxt, prev) for prev in prevs] if prevs is not None else []
         prf = Proof(*assms)
         prevs = [ProofTermAtom(i, Thm([], assm)) for i, assm in enumerate(assms)]
-        goal = parser.parse_term(thy, ctxt, goal)
+        goal = parser.parse_term(ctxt, goal)
         goal_pt = ProofTerm.sorry(Thm(assms, goal))
 
         # Invoke the tactic to get the proof term
@@ -40,7 +40,7 @@ class TacticTest(unittest.TestCase):
         self.assertEqual(thy.check_proof(prf), Thm(assms, goal))
 
         # Test agreement of new goals
-        new_goals = [parser.parse_term(thy, ctxt, new_goal)
+        new_goals = [parser.parse_term(ctxt, new_goal)
                      for new_goal in new_goals] if new_goals is not None else []
         concls = [goal.prop for goal in prf.get_sorrys()]
         self.assertEqual(new_goals, concls)

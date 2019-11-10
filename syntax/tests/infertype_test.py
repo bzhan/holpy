@@ -60,7 +60,7 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t, res in test_data:
-            self.assertEqual(type_infer(thy, ctxt, t), res)
+            self.assertEqual(type_infer(ctxt, t), res)
 
     def testInferTypeFail(self):
         test_data = [
@@ -69,7 +69,7 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t in test_data:
-            self.assertRaisesRegex(TypeInferenceException, "When infering type", type_infer, thy, ctxt, t)
+            self.assertRaisesRegex(TypeInferenceException, "When infering type", type_infer, ctxt, t)
 
     def testInferTypeFail2(self):
         test_data = [
@@ -78,7 +78,7 @@ class InferTypeTest(unittest.TestCase):
         ]
 
         for t in test_data:
-            self.assertRaisesRegex(TypeInferenceException, "Unspecified type", type_infer, thy, ctxt, t)
+            self.assertRaisesRegex(TypeInferenceException, "Unspecified type", type_infer, ctxt, t)
 
     def testInferPrintedType(self):
         t = Const("nil", listT(Ta))

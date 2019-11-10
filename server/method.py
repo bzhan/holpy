@@ -45,14 +45,14 @@ class cut_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        goal = parser.parse_term(state.thy, state.get_ctxt(id), data['goal'])
+        goal = parser.parse_term(state.get_ctxt(id), data['goal'])
         return pprint.N("have ") + printer.print_term(state.thy, goal)
 
     def apply(self, state, id, data, prevs):
         cur_item = state.get_proof_item(id)
         hyps = cur_item.th.hyps
 
-        goal = parser.parse_term(state.thy, state.get_ctxt(id), data['goal'])
+        goal = parser.parse_term(state.get_ctxt(id), data['goal'])
 
         state.add_line_before(id, 1)
         state.set_line(id, 'sorry', th=Thm(hyps, goal))
@@ -70,11 +70,11 @@ class cases_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        A = parser.parse_term(state.thy, state.get_ctxt(id), data['case'])
+        A = parser.parse_term(state.get_ctxt(id), data['case'])
         return pprint.N("case ") + printer.print_term(state.thy, A)
 
     def apply(self, state, id, data, prevs):
-        A = parser.parse_term(state.thy, state.get_ctxt(id), data['case'])
+        A = parser.parse_term(state.get_ctxt(id), data['case'])
         state.apply_tactic(id, tactic.cases(), args=A)
 
 class apply_prev_method(Method):
@@ -268,7 +268,7 @@ class apply_forward_step(Method):
         ctxt = state.get_ctxt(id)
         for key, val in data.items():
             if key.startswith("param_"):
-                inst[key[6:]] = parser.parse_term(state.thy, ctxt, val)
+                inst[key[6:]] = parser.parse_term(ctxt, val)
 
         # First test apply_theorem
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
@@ -338,7 +338,7 @@ class apply_backward_step(Method):
         ctxt = state.get_ctxt(id)
         for key, val in data.items():
             if key.startswith("param_"):
-                inst[key[6:]] = parser.parse_term(state.thy, ctxt, val)
+                inst[key[6:]] = parser.parse_term(ctxt, val)
         if inst:
             state.apply_tactic(id, tactic.rule(), args=(data['theorem'], (dict(), inst)), prevs=prevs)
         else:
@@ -515,7 +515,7 @@ class forall_elim(Method):
         return pprint.N("forall elimination")
 
     def apply(self, state, id, data, prevs):
-        t = parser.parse_term(state.thy, state.get_ctxt(id), data['s'])
+        t = parser.parse_term(state.get_ctxt(id), data['s'])
         state.add_line_before(id, 1)
         state.set_line(id, 'forall_elim', args=t, prevs=prevs)
 
@@ -542,7 +542,7 @@ class inst_exists_goal(Method):
         return pprint.N("instantiate exists goal")
 
     def apply(self, state, id, data, prevs):
-        t = parser.parse_term(state.thy, state.get_ctxt(id), data['s'])
+        t = parser.parse_term(state.get_ctxt(id), data['s'])
         state.apply_tactic(id, tactic.inst_exists_goal(), args=t, prevs=[])
 
 class induction(Method):

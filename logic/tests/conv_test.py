@@ -16,7 +16,7 @@ def test_conv(self, thy, cv, *, vars=None, t, t_res=None, failed=None, assms=Non
     thy = ctxt.thy
 
     if isinstance(t, str):
-        t = parser.parse_term(thy, ctxt, t)
+        t = parser.parse_term(ctxt, t)
     assert isinstance(t, Term)
 
     if failed is not None:
@@ -24,11 +24,11 @@ def test_conv(self, thy, cv, *, vars=None, t, t_res=None, failed=None, assms=Non
         self.assertRaises(failed, cv.get_proof_term, thy, t)
         return
 
-    assms = [parser.parse_term(thy, ctxt, assm)
+    assms = [parser.parse_term(ctxt, assm)
              for assm in assms] if assms is not None else []
 
     if isinstance(t_res, str):
-        t_res = parser.parse_term(thy, ctxt, t_res)
+        t_res = parser.parse_term(ctxt, t_res)
     assert isinstance(t_res, Term)
 
     self.assertEqual(cv.eval(thy, t), Thm(assms, Term.mk_equals(t, t_res)))
@@ -95,8 +95,7 @@ class ConvTest(unittest.TestCase):
         )
 
     def testRewrConv4(self):
-        thy = basic.load_theory('nat')
-        cond = parser.parse_term(thy, Context(thy), "(x::nat) <= y")
+        cond = parser.parse_term(Context('nat'), "(x::nat) <= y")
         test_conv(
             self, 'nat', rewr_conv("min_simp1", conds=[ProofTerm.sorry(Thm([], cond))]),
             vars={"x": "nat", "y": "nat"},

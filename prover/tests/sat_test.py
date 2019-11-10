@@ -7,7 +7,6 @@ from syntax import parser
 from syntax.context import Context
 from prover import encode, sat
 
-thy = basic.load_theory('logic_base')
 
 class SATTest(unittest.TestCase):
     def testDisplayCNF(self):
@@ -66,8 +65,8 @@ class SATTest(unittest.TestCase):
             f_data = json.load(f)
 
         for problem in f_data:
-            ctxt = Context(thy, vars=problem['vars'])
-            prop = parser.parse_term(thy ,ctxt, problem['prop'])
+            ctxt = Context('logic', vars=problem['vars'])
+            prop = parser.parse_term(ctxt, problem['prop'])
             cnf, _ = encode.encode(logic.neg(prop))
             self.assertIsNone(sat.solve_cnf(cnf))
 

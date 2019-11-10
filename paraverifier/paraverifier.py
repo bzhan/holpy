@@ -254,17 +254,17 @@ def load_system(filename):
             assert isinstance(rule['var'], list)
             rule_var = [Var(nm, natT) for nm in rule['var']]
             ctxt = Context(thy, vars={v.name: v.T for v in vars + rule_var})
-        guard = parser.parse_term(thy, ctxt, rule['guard'])
+        guard = parser.parse_term(ctxt, rule['guard'])
         assign = dict()
         for k, v in rule['assign'].items():
-            assign[parser.parse_term(thy, ctxt, k)] = parser.parse_term(thy, ctxt, v)
+            assign[parser.parse_term(ctxt, k)] = parser.parse_term(ctxt, v)
         rules.append((rule_var, guard, assign))
 
     invs = []
     for inv in data['invs']:
         inv_vars = [Var(nm, natT) for nm in inv['vars']]
         ctxt = Context(thy, vars={v.name: v.T for v in vars + inv_vars})
-        prop = parser.parse_term(thy, ctxt, inv['prop'])
+        prop = parser.parse_term(ctxt, inv['prop'])
         invs.append((inv_vars, prop))
 
     return ParaSystem(thy, name, vars, states, rules, invs)

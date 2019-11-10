@@ -113,7 +113,7 @@ class ProofState():
 
         """
         ctxt = Context(thy, vars=data['vars'])
-        prop = parser.parse_term(thy, ctxt, data['prop'])
+        prop = parser.parse_term(ctxt, data['prop'])
         assums, concl = prop.strip_implies()
 
         return ProofState.init_state(thy, ctxt.get_vars(), assums, concl)
@@ -173,7 +173,7 @@ class ProofState():
                 if line['rule'] == "variable":
                     nm, str_T = line['args'].split(',', 1)
                     ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
-                item = parser.parse_proof_rule(thy, ctxt, line)
+                item = parser.parse_proof_rule(ctxt, line)
                 state.prf.insert_item(item)
 
         state.check_proof(compute_only=True)
