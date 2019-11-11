@@ -49,7 +49,8 @@ export default {
 
     // Area for displaying status and context
     'ref_status',
-    'ref_context'
+    'ref_context',
+    'editor'
   ],
 
   data: function () {
@@ -179,6 +180,7 @@ export default {
 
       return {
         username: this.$state.user,
+        profile: this.editor.profile,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
         proof: {
@@ -392,6 +394,7 @@ export default {
       // Has existing proof
       const data = {
         username: this.$state.user,
+        profile: this.editor !== undefined && this.editor.profile,
         theory_name: this.theory_name,
         thm_name: this.thm_name,
         proof: {

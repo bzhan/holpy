@@ -5,6 +5,8 @@ import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
 import time
+from pstats import Stats
+import cProfile
 
 from kernel import type as hol_type
 from kernel.type import HOLType, TVar, Type, TFun
@@ -249,11 +251,23 @@ def init_saved_proof():
             limit = ('thm', data['thm_name'])
         else:
             limit = None
+
+        if data['profile']:
+            pr = cProfile.Profile()
+            pr.enable()
+
         thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
         print("Load: %f" % (time.perf_counter() - start_time))
         start_time = time.perf_counter()
         cell = server.ProofState.parse_proof(thy, data['proof'])
         print("Parse: %f" % (time.perf_counter() - start_time))
+
+        if data['profile']:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats()
+
         return jsonify(cell.json_data())
     except Exception as e:
         error = {
@@ -424,12 +438,23 @@ def load_json_file():
     line_length = data.get('line_length')
     with open(user_file(filename, username), 'r', encoding='utf-8') as f:
         f_data = json.load(f)
+
+    if data['profile']:
+        pr = cProfile.Profile()
+        pr.enable()
+        
     if 'content' in f_data:
         thy = basic.load_theories(f_data['imports'], username=username)
         for item in f_data['content']:
             file_data_to_output(thy, item, line_length=line_length)
     else:
         f_data['content'] = []
+
+    if data['profile']:
+        p = Stats(pr)
+        p.strip_dirs()
+        p.sort_stats('cumtime')
+        p.print_stats()
 
     return jsonify(f_data)
 
@@ -475,6 +500,11 @@ def search_method():
     else:
         limit = None
     start_time = time.perf_counter()
+
+    if data['profile']:
+        pr = cProfile.Profile()
+        pr.enable()
+
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
     print("Load:", time.perf_counter() - start_time)
     start_time = time.perf_counter()
@@ -494,6 +524,13 @@ def search_method():
     print_ctxt = dict((k, printer.print_type(thy, v, unicode=True, highlight=True))
                       for k, v in ctxt.vars.items())
     print("Response:", time.perf_counter() - start_time)
+
+    if data['profile']:
+        p = Stats(pr)
+        p.strip_dirs()
+        p.sort_stats('cumtime')
+        p.print_stats()
+
     return jsonify({
         'search_res': search_res,
         'ctxt': print_ctxt
