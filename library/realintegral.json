@@ -94,44 +94,27 @@
                     "th": "real_integrable_on f i ⊢ ∃y. has_real_integral f y i"
                 },
                 {
-                    "args": "(THE y. has_real_integral f y i), real",
+                    "args": "",
                     "id": "2",
                     "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR (THE y. has_real_integral f y i)"
+                    "rule": "sorry",
+                    "th": "real_integrable_on f i ⊢ has_real_integral f (THE y. has_real_integral f y i) i"
                 },
                 {
-                    "args": "has_real_integral f (THE y. has_real_integral f y i) i",
+                    "args": "real_integral_def, has_real_integral f (real_integral i f) i",
                     "id": "3",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "has_real_integral f (THE y. has_real_integral f y i) i ⊢ has_real_integral f (THE y. has_real_integral f y i) i"
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_integrable_on f i ⊢ has_real_integral f (real_integral i f) i"
                 },
                 {
                     "args": "",
                     "id": "4",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "real_integrable_on f i, has_real_integral f (THE y. has_real_integral f y i) i ⊢ has_real_integral f (THE y. has_real_integral f y i) i"
-                },
-                {
-                    "args": "real_integral_def, has_real_integral f (real_integral i f) i",
-                    "id": "5",
-                    "prevs": [
-                        "4"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "real_integrable_on f i, has_real_integral f (THE y. has_real_integral f y i) i ⊢ has_real_integral f (real_integral i f) i"
-                },
-                {
-                    "args": "∃y. has_real_integral f y i",
-                    "id": "6",
                     "prevs": [
                         "0",
-                        "1",
-                        "2",
-                        "3",
-                        "5"
+                        "3"
                     ],
                     "rule": "intros",
                     "th": "⊢ real_integrable_on f i ⟶ has_real_integral f (real_integral i f) i"
@@ -151,14 +134,6 @@
                     "goal_id": "1",
                     "method_name": "rewrite_fact",
                     "theorem": "real_integrable_on_def"
-                },
-                {
-                    "fact_ids": [
-                        "1"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "exists_elim",
-                    "names": "(THE y. has_real_integral f y i)"
                 }
             ],
             "ty": "thm",
@@ -21433,6 +21408,136 @@
             "vars": {
                 "m1": "real",
                 "m2": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_measure_unique",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure s m",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "has_real_measure_mesure, has_real_measure s (real_measure s) ⟷ real_measurable s",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_measure s (real_measure s) ⟷ real_measurable s"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λm. has_real_measure s m, a: m}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_measure s m ⊢ ∃a. has_real_measure s a"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable s",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_measure s m ⊢ real_measurable s"
+                },
+                {
+                    "args": "has_real_measure s (real_measure s)",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "has_real_measure s m ⊢ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "4",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m ⊢ has_real_measure s (real_measure s) ∧ has_real_measure s m"
+                },
+                {
+                    "args": "has_real_measure_unique",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m ⊢ real_measure s = m"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_measure s m ⟶ real_measure s = m"
+                }
+            ],
+            "prop": "has_real_measure s m --> real_measure s = m",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "theorem": "has_real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal": "has_real_measure s (real_measure s) <--> real_measurable s",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_mesure"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "inst_exists_goal",
+                    "s": "m"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
                 "s": "real set"
             }
         }
