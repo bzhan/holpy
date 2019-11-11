@@ -907,16 +907,8 @@
             }
         },
         {
-            "name": "z3",
-            "ty": "macro"
-        },
-        {
             "name": "vcg",
             "ty": "macro"
-        },
-        {
-            "name": "z3",
-            "ty": "method"
         },
         {
             "name": "vcg",

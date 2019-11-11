@@ -108,6 +108,15 @@
             }
         },
         {
+            "attributes": [],
+            "name": "member_empty_simp",
+            "prop": "x ∈ ∅ ⟷ false",
+            "ty": "thm",
+            "vars": {
+                "x": "'a"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],

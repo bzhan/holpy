@@ -9365,7 +9365,7 @@
                     "th": "⊢ real_negligible ({a, b})"
                 },
                 {
-                    "args": "",
+                    "args": "{x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊆ {a, b}",
                     "id": "4",
                     "prevs": [],
                     "rule": "subproof",

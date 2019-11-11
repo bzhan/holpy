@@ -159,7 +159,7 @@ def verify():
         if line['ty'] == 'vc':
             vc_hol = line['prop']
             line['prop'] = printer.print_term(thy, line['prop'])
-            line['smt'] = z3wrapper.solve(vc_hol)
+            line['smt'] = z3wrapper.solve(thy, vc_hol)
 
     return jsonify({
         'lines': lines,

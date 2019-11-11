@@ -52,6 +52,14 @@ class Thm():
     def concl(self):
         return self.prop.strip_implies()[1]
 
+    @property
+    def lhs(self):
+        return self.prop.lhs
+
+    @property
+    def rhs(self):
+        return self.prop.rhs
+
     def __str__(self):
         """Print the given theorem."""
         if self.hyps:
