@@ -17,32 +17,36 @@ class MatchException(Exception):
     pass
 
 
-def is_pattern(t, matched_vars):
+def is_pattern(t, matched_vars, bd_vars=None):
     """Test whether t is a matchable pattern, given the current instantiations."""
+    if bd_vars is None:
+        bd_vars = []
     if t.is_abs():
-        return is_pattern(t.body, matched_vars)
+        return is_pattern(t.body, matched_vars, bd_vars)
     else:
         if t.head.is_svar() and t.head.name not in matched_vars:
-            return all(arg.is_bound() or arg.is_svar() and arg.name in matched_vars for arg in t.args) and \
+            return all(arg.is_bound() or \
+                       arg.is_svar() and arg.name in matched_vars or \
+                       arg.is_var() and arg.name in bd_vars for arg in t.args) and \
                    len(set(t.args)) == len(t.args)
         else:
-            return is_pattern_list(t.args, matched_vars)
+            return is_pattern_list(t.args, matched_vars, bd_vars)
 
-def is_pattern_list(ts, matched_vars):
+def is_pattern_list(ts, matched_vars, bd_vars=None):
     """Test whether a list of ts can be matched."""
     if len(ts) == 0:
         return True
     elif len(ts) == 1:
-        return is_pattern(ts[0], matched_vars)
+        return is_pattern(ts[0], matched_vars, bd_vars)
     else:
         if is_pattern(ts[0], matched_vars):
             all_vars = list(set(matched_vars + [v.name for v in term.get_svars(ts[0])]))
-            return is_pattern_list(ts[1:], all_vars)
+            return is_pattern_list(ts[1:], all_vars, bd_vars)
         else:
-            if not is_pattern_list(ts[1:], matched_vars):
+            if not is_pattern_list(ts[1:], matched_vars, bd_vars):
                 return False
             all_vars = list(set(matched_vars + [v.name for v in term.get_svars(ts[1:])]))
-            return is_pattern(ts[0], all_vars)
+            return is_pattern(ts[0], all_vars, bd_vars)
 
 def find_term(t, sub_t):
     if t == sub_t:
@@ -66,7 +70,7 @@ def first_order_match_incr(pat, t, instsp):
     # print("First order match", pat, "with", t)
     def match(pat, t, instsp, bd_vars):
         tyinst, inst = instsp
-        # print("Match", repr(pat), "with", repr(t), "inst", inst)
+        # print("Match", str(pat), "with", str(t), "inst", inst)
         if pat.head.is_svar():
             # Case where the head of the function is a variable.
             if pat.head.name not in inst:
@@ -161,7 +165,7 @@ def first_order_match_incr(pat, t, instsp):
         elif pat.is_comb():
             # In the combination case (where the head is not a variable),
             # match fun and arg.
-            if is_pattern(pat.fun, [v.name for v in bd_vars] + list(instsp[1].keys())):
+            if is_pattern(pat.fun, list(instsp[1].keys()), bd_vars=[v.name for v in bd_vars]):
                 match(pat.fun, t.fun, instsp, bd_vars)
                 match(pat.arg, t.arg, instsp, bd_vars)
             else:

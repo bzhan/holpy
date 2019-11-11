@@ -8900,25 +8900,45 @@
                     "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ finite s ∧ (∀t. t ∈ s ⟶ real_negligible t)"
                 },
                 {
-                    "args": "",
+                    "args": "conjD1, {}, {A: finite s, B: ∀t. t ∈ s ⟶ real_negligible t}",
                     "id": "1",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ finite s ⟶ (∀t. t ∈ s ⟶ real_negligible t) ⟶ real_negligible (⋃s)"
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ finite s"
                 },
                 {
                     "args": "",
                     "id": "2",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ real_negligible (⋃s)"
+                    "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ real_negligible (⋃∅)"
                 },
                 {
                     "args": "",
                     "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ ∀x. ∀s. real_negligible (⋃s) ⟶ ¬x ∈ s ⟶ finite s ⟶ real_negligible (⋃insert x s)"
+                },
+                {
+                    "args": "finite_induct_strong",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⊢ real_negligible (⋃s)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "2"
+                        "4"
                     ],
                     "rule": "intros",
                     "th": "⊢ finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⟶ real_negligible (⋃s)"
@@ -8930,9 +8950,20 @@
             ],
             "steps": [
                 {
-                    "goal": "finite s --> \n(∀t. t ∈ s ⟶ real_negligible t)\n--> real_negligible (⋃s)",
+                    "fact_ids": [
+                        "0"
+                    ],
                     "goal_id": "1",
-                    "method_name": "cut"
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_induct_strong"
                 }
             ],
             "ty": "thm",
