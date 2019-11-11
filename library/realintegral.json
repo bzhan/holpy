@@ -20119,6 +20119,726 @@
                 "b": "real",
                 "f": "real => real"
             }
+        },
+        {
+            "attributes": [],
+            "name": "monnegative_absolutely_real_integrable",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ real_integrable_on f s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ ∀x. x ∈ s ⟶ f x = abs (f x)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∀x. x ∈ s ⟶ 0 ≤ f x, B: real_integrable_on f s}",
+                    "id": "2.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ ∀x. x ∈ s ⟶ 0 ≤ f x"
+                },
+                {
+                    "args": "x",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ x ∈ s ⟶ 0 ≤ f x"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3",
+                        "2.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s, x ∈ s ⊢ 0 ≤ f x"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s, x ∈ s ⊢ f x = (if 0 ≤ f x then f x else -f x)"
+                },
+                {
+                    "args": "real_abs_def, f x = abs (f x)",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s, x ∈ s ⊢ f x = abs (f x)"
+                },
+                {
+                    "args": "",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ ∀x. x ∈ s ⟶ f x = abs (f x)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3",
+                    "prevs": [
+                        "2",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ (∀x. x ∈ s ⟶ f x = abs (f x)) ∧ real_integrable_on f s"
+                },
+                {
+                    "args": "real_integrable_eq",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "1",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ real_integrable_on f s ∧ real_integrable_on (λx. abs (f x)) s"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def, absolutely_real_integrable_on f s",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⊢ absolutely_real_integrable_on f s"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s ⟶ absolutely_real_integrable_on f s"
+                }
+            ],
+            "prop": [
+                "(!x. x ∈ s --> 0 <= f x) &",
+                "real_integrable_on f s",
+                "--> absolutely_real_integrable_on f s"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "param_f": "f",
+                    "theorem": "real_integrable_eq"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "2.3",
+                        "2.1"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "2.5",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_abs_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "absolutely_real_integrable_integrable_bound",
+            "prop": [
+                "(∀x. x ∈ s ⟶ abs (f x) ≤ g x) ∧ real_integrable_on f s ∧ real_integrable_on g s",
+                "⟶ absolutely_real_integrable_on f s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "absolutely_real_integrable_absolutely_real_integrable_bound",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ (∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ ∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)"
+                },
+                {
+                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x), B: real_integrable_on f s ∧ absolutely_real_integrable_on g s}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ real_integrable_on f s ∧ absolutely_real_integrable_on g s"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ real_integrable_on f s"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_integrable_on f s, B: absolutely_real_integrable_on g s}",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ absolutely_real_integrable_on g s"
+                },
+                {
+                    "args": "absolutely_real_integrable_on_def",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ real_integrable_on g s ∧ real_integrable_on (λx. abs (g x)) s"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ real_integrable_on (λx. abs (g x)) s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "7",
+                    "prevs": [
+                        "3",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ real_integrable_on f s ∧ real_integrable_on (λx. abs (g x)) s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "8",
+                    "prevs": [
+                        "1",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ (∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ real_integrable_on (λx. abs (g x)) s"
+                },
+                {
+                    "args": "absolutely_real_integrable_integrable_bound",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ absolutely_real_integrable_on f s"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ real_integrable_on f s ∧ absolutely_real_integrable_on g s ⟶ absolutely_real_integrable_on f s"
+                }
+            ],
+            "prop": [
+                "(∀x. x ∈ s ⟶ abs (f x) ≤ abs (g x)) ∧ ",
+                "real_integrable_on f s ∧ absolutely_real_integrable_on g s ",
+                "⟶ absolutely_real_integrable_on f s"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_g": "%x.  abs (g x)",
+                    "theorem": "absolutely_real_integrable_integrable_bound"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_fact",
+                    "theorem": "absolutely_real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "absolutely_real_integrable_absolutely_real_integrable_ubound",
+            "prop": [
+                "(∀x. x ∈ s ⟶ f x ≤ g x) ∧ ",
+                "real_integrable_on f s ∧ absolutely_real_integrable_on g s ",
+                "⟶ absolutely_real_integrable_on f s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "absolutely_real_integrable_absolutely_real_integrable_lbound",
+            "prop": [
+                "(∀x. x ∈ s ⟶ f x ≤ g x) ∧ ",
+                "absolutely_real_integrable_on f s ∧ real_integrable_on g s ",
+                "⟶ absolutely_real_integrable_on g s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real => real",
+                "g": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "absolutely_real_integrable_inf",
+            "prop": [
+                "finite k & ~(k = {}) &",
+                "(!i. i ∈ k --> absolutely_real_integrable_on (%x. fs x i) s)",
+                "--> absolutely_real_integrable_on (%x. inf (image (fs x) k)) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "fs": "real => 'a => real",
+                "k": "'a set",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "absolutely_real_integrable_sup",
+            "prop": [
+                "finite k ∧ ¬k = ∅ ∧ (∀i. i ∈ k ⟶ absolutely_real_integrable_on (λx. fs x i) s) ",
+                "⟶ absolutely_real_integrable_on (λx. sup (image (fs x) k)) s"
+            ],
+            "ty": "thm",
+            "vars": {
+                "fs": "real => 'a => real",
+                "k": "'a set",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_dominated_convergence",
+            "prop": [
+                "(!k. real_integrable_on (f k) s) & real_integrable_on h s &",
+                "(!k. !x. x ∈ s ⟶ abs (f k x) ≤ h x) ∧ ",
+                "(!x. x ∈ s ⟶ tendsto_real (%k. f k x) (g x) sequentially)",
+                "--> real_integrable_on g s ∧ ",
+                "tendsto_real (%k. real_integral s (f k)) (real_integral s g) sequentially"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "nat => real => real",
+                "g": "real => real",
+                "h": "real => real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_real_measure_mesure",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃m. has_real_measure s m) ⟶ has_real_measure s (THE m. has_real_measure s m)"
+                },
+                {
+                    "args": "∃m. has_real_measure s m",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃m. has_real_measure s m ⊢ ∃m. has_real_measure s m"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∃m. has_real_measure s m ⊢ has_real_measure s (THE m. has_real_measure s m)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃m. has_real_measure s m) ⟶ has_real_measure s (THE m. has_real_measure s m)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ has_real_measure s (THE m. has_real_measure s m) ⟶ (∃m. has_real_measure s m)"
+                },
+                {
+                    "args": "has_real_measure s (THE m. has_real_measure s m)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s (THE m. has_real_measure s m) ⊢ has_real_measure s (THE m. has_real_measure s m)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λm. has_real_measure s m, a: THE m. has_real_measure s m}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_measure s (THE m. has_real_measure s m) ⊢ ∃a. has_real_measure s a"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_measure s (THE m. has_real_measure s m) ⟶ (∃m. has_real_measure s m)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃m. has_real_measure s m) ⟷ has_real_measure s (THE m. has_real_measure s m)"
+                },
+                {
+                    "args": "real_measure_def, (∃m. has_real_measure s m) ⟷ has_real_measure s (real_measure s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃m. has_real_measure s m) ⟷ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable s ⟷ has_real_measure s (real_measure s)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_measurable s ⟷ has_real_measure s (real_measure s)"
+                }
+            ],
+            "prop": "real_measurable s = has_real_measure s (real_measure s)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measure_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "inst_exists_goal",
+                    "s": "(THE m. has_real_measure s m)"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_unique",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure s m1 ∧ has_real_measure s m2",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s m1 ∧ has_real_measure s m2 ⊢ has_real_measure s m1 ∧ has_real_measure s m2"
+                },
+                {
+                    "args": "has_real_measure_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_measure s m1 ∧ has_real_measure s m2 ⊢ has_real_integral (λx. 1) m1 s ∧ has_real_integral (λx. 1) m2 s"
+                },
+                {
+                    "args": "has_real_integral_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m1 ∧ has_real_measure s m2 ⊢ m1 = m2"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_measure s m1 ∧ has_real_measure s m2 ⟶ m1 = m2"
+                }
+            ],
+            "prop": [
+                "has_real_measure s m1 & has_real_measure s m2",
+                "--> m1 = m2"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_real_measure_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_unique"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m1": "real",
+                "m2": "real",
+                "s": "real set"
+            }
         }
     ],
     "description": "Integrals of real->real functions; measures of real set. Refer to realanalysis.ml from hol light.",
