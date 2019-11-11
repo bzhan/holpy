@@ -21571,6 +21571,1370 @@
                 "m": "real",
                 "s": "real set"
             }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_real_measure_real_measurable_real_measure",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ has_real_measure s m ⟶ real_measurable s ∧ real_measure s = m"
+                },
+                {
+                    "args": "has_real_measure s m",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m ⊢ real_measure s = m"
+                },
+                {
+                    "args": "has_real_measure s (real_measure s)",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1",
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "has_real_measure s m ⊢ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m ⊢ real_measure s = m ∧ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "conj_comm, has_real_measure s (real_measure s) ∧ real_measure s = m",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_measure s m ⊢ has_real_measure s (real_measure s) ∧ real_measure s = m"
+                },
+                {
+                    "args": "has_real_measure_mesure, real_measurable s ∧ real_measure s = m",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_measure s m ⊢ real_measurable s ∧ real_measure s = m"
+                },
+                {
+                    "args": "",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.0",
+                        "0.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_measure s m ⟶ real_measurable s ∧ real_measure s = m"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ real_measurable s ∧ real_measure s = m ⟶ has_real_measure s m"
+                },
+                {
+                    "args": "real_measurable s ∧ real_measure s = m",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ∧ real_measure s = m ⊢ real_measurable s ∧ real_measure s = m"
+                },
+                {
+                    "args": "has_real_measure_mesure",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ∧ real_measure s = m ⊢ has_real_measure s (real_measure s) ∧ real_measure s = m"
+                },
+                {
+                    "args": "conj_comm",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ∧ real_measure s = m ⊢ real_measure s = m ∧ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "conjD1, {}, {A: real_measure s = m, B: has_real_measure s (real_measure s)}",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_measure s = m ⊢ real_measure s = m"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_measure s = m, B: has_real_measure s (real_measure s)}",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_measure s = m ⊢ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.3",
+                        "1.4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "real_measurable s ∧ real_measure s = m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ∧ real_measure s = m ⟶ has_real_measure s m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ has_real_measure s m ⟷ real_measurable s ∧ real_measure s = m"
+                }
+            ],
+            "prop": "has_real_measure s m <--> real_measurable s & real_measure s = m",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_mesure"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "conj_comm"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_real_measure_mesure"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "conj_comm"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.3",
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_real_measure",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_integral_restrict_univ, has_real_integral (λx. 1) m s ⟷ has_real_integral (λx. if x ∈ s then (λx. 1) x else 0) m univ",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_integral (λx. 1) m s ⟷ has_real_integral (λx. if x ∈ s then (λx. 1) x else 0) m univ"
+                },
+                {
+                    "args": "has_real_integral (λx. 1) m s ⟷ has_real_integral (λx. if x ∈ s then 1 else 0) m univ",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ has_real_integral (λx. 1) m s ⟷ has_real_integral (λx. if x ∈ s then 1 else 0) m univ"
+                },
+                {
+                    "args": "has_real_measure_def, has_real_measure s m ⟷ has_real_integral (λx. if x ∈ s then 1 else 0) m univ",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_measure s m ⟷ has_real_integral (λx. if x ∈ s then 1 else 0) m univ"
+                }
+            ],
+            "prop": [
+                "has_real_measure s m <-->",
+                "has_real_integral (%x. if x ∈ s then 1 else 0) m univ"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_def"
+                },
+                {
+                    "goal": "has_real_integral (λx. 1) m s ⟷ has_real_integral (λx. if x ∈ s then ((λx. 1) x) else 0) m univ",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_integral_restrict_univ"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_measurable",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_integrable_on_def, (∃m. has_real_integral (λx. 1) m s) ⟷ real_integrable_on (λx. 1) s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃m. has_real_integral (λx. 1) m s) ⟷ real_integrable_on (λx. 1) s"
+                },
+                {
+                    "args": "has_real_measure_def, (∃m. has_real_measure s m) ⟷ real_integrable_on (λx. 1) s",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃m. has_real_measure s m) ⟷ real_integrable_on (λx. 1) s"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable s ⟷ real_integrable_on (λx. 1) s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_measurable s ⟷ real_integrable_on (λx. 1) s"
+                }
+            ],
+            "prop": "real_measurable s ⟷ real_integrable_on (λx. 1) s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_integrable_on_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_measurable_real_integrable",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure, (∃m. has_real_measure s m) ⟷ (∃y. has_real_integral (λx. if x ∈ s then 1 else 0) y univ)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃m. has_real_measure s m) ⟷ (∃y. has_real_integral (λx. if x ∈ s then 1 else 0) y univ)"
+                },
+                {
+                    "args": "real_integrable_on_def, (∃m. has_real_measure s m) ⟷ real_integrable_on (λx. if x ∈ s then 1 else 0) univ",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃m. has_real_measure s m) ⟷ real_integrable_on (λx. if x ∈ s then 1 else 0) univ"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable s ⟷ real_integrable_on (λx. if x ∈ s then 1 else 0) univ",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_measurable s ⟷ real_integrable_on (λx. if x ∈ s then 1 else 0) univ"
+                }
+            ],
+            "prop": "real_measurable s ⟷ real_integrable_on (λx. if x ∈ s then 1 else 0) univ",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_measure_real_integral",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ⊢ real_measurable s"
+                },
+                {
+                    "args": "eq_refl, {a: real}, {x: real_measure s}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_measure s = real_measure s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ real_measurable s ∧ real_measure s = real_measure s"
+                },
+                {
+                    "args": "has_real_measure_real_measurable_real_measure, has_real_measure s (real_measure s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ⊢ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "real_measurable",
+                    "id": "4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ⊢ real_integrable_on (λx. 1) s"
+                },
+                {
+                    "args": "eq_refl, {a: real}, {x: real_integral s (λx. 1)}",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_integral s (λx. 1) = real_integral s (λx. 1)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ real_integrable_on (λx. 1) s ∧ real_integral s (λx. 1) = real_integral s (λx. 1)"
+                },
+                {
+                    "args": "has_real_integral_integrable_integral, has_real_integral (λx. 1) (real_integral s (λx. 1)) s",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ⊢ has_real_integral (λx. 1) (real_integral s (λx. 1)) s"
+                },
+                {
+                    "args": "has_real_measure_def, has_real_measure s (real_integral s (λx. 1))",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ⊢ has_real_measure s (real_integral s (λx. 1))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9",
+                    "prevs": [
+                        "3",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ has_real_measure s (real_measure s) ∧ has_real_measure s (real_integral s (λx. 1))"
+                },
+                {
+                    "args": "has_real_measure_unique",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ real_measure s = real_integral s (λx. 1)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ⟶ real_measure s = real_integral s (λx. 1)"
+                }
+            ],
+            "prop": "real_measurable s --> real_measure s = real_integral s (λx. 1)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "theorem": "has_real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_real_measurable_real_measure"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_def"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_integral_integrable_integral"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_measurable"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_measure_real_integral_univ",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ⊢ real_measurable s"
+                },
+                {
+                    "args": "eq_refl, {a: real}, {x: real_measure s}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_measure s = real_measure s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ real_measurable s ∧ real_measure s = real_measure s"
+                },
+                {
+                    "args": "has_real_measure_real_measurable_real_measure, has_real_measure s (real_measure s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ⊢ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "real_measurable_real_integrable",
+                    "id": "4",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ⊢ real_integrable_on (λx. if x ∈ s then 1 else 0) univ"
+                },
+                {
+                    "args": "eq_refl, {a: real}, {x: real_integral univ (λx. if x ∈ s then 1 else 0)}",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_integral univ (λx. if x ∈ s then 1 else 0) = real_integral univ (λx. if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ real_integrable_on (λx. if x ∈ s then 1 else 0) univ ∧ real_integral univ (λx. if x ∈ s then 1 else 0) = real_integral univ (λx. if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "has_real_integral_integrable_integral, has_real_integral (λx. if x ∈ s then 1 else 0) (real_integral univ (λx. if x ∈ s then 1 else 0)) univ",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ⊢ has_real_integral (λx. if x ∈ s then 1 else 0) (real_integral univ (λx. if x ∈ s then 1 else 0)) univ"
+                },
+                {
+                    "args": "has_real_measure, has_real_measure s (real_integral univ (λx. if x ∈ s then 1 else 0))",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ⊢ has_real_measure s (real_integral univ (λx. if x ∈ s then 1 else 0))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9",
+                    "prevs": [
+                        "3",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ has_real_measure s (real_measure s) ∧ has_real_measure s (real_integral univ (λx. if x ∈ s then 1 else 0))"
+                },
+                {
+                    "args": "has_real_measure_unique",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ real_measure s = real_integral univ (λx. if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "11",
+                    "prevs": [
+                        "0",
+                        "10"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ⟶ real_measure s = real_integral univ (λx. if x ∈ s then 1 else 0)"
+                }
+            ],
+            "prop": "real_measurable s ⟶ real_measure s = real_integral univ (λx. if x ∈ s then 1 else 0)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "theorem": "has_real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_real_measurable_real_measure"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_integral_integrable_integral"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_measurable_real_integrable"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "eq_refl"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_integral_real_measure",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ⊢ real_measurable s"
+                },
+                {
+                    "args": "real_measure_real_integral, {}, {s: s}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ⊢ real_measure s = real_integral s (λx. 1)"
+                },
+                {
+                    "args": "real_integral s (λx. 1) = real_measure s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_measurable s ⊢ real_integral s (λx. 1) = real_measure s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ⟶ real_integral s (λx. 1) = real_measure s"
+                }
+            ],
+            "prop": [
+                "real_measurable s ",
+                "⟶ real_integral s (λx. 1) = real_measure s"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_measure_real_integral"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_integral_real_measure_univ",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ⊢ real_measurable s"
+                },
+                {
+                    "args": "real_measure_real_integral_univ, {}, {s: s}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ⊢ real_measure s = real_integral univ (λx. if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "real_integral univ (λx. if x ∈ s then 1 else 0) = real_measure s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_measurable s ⊢ real_integral univ (λx. if x ∈ s then 1 else 0) = real_measure s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ⟶ real_integral univ (λx. if x ∈ s then 1 else 0) = real_measure s"
+                }
+            ],
+            "prop": [
+                "real_measurable s ",
+                "⟶ real_integral univ (λx. if x ∈ s then 1 else 0) = real_measure s"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_measure_real_integral_univ"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "has_real_measure_real_interval1",
+            "prop": "has_real_measure (real_closed_interval a b) (max (b - a) 0)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "has_real_measure_real_interval2",
+            "prop": "has_real_measure (real_open_interval a b) (max (b - a) 0)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_measurable_real_interval1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure_real_interval1, {}, {a: a, b: b}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_measure (real_closed_interval a b) (max (b - a) 0)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λm. has_real_measure (real_closed_interval a b) m, a: max (b - a) 0}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. has_real_measure (real_closed_interval a b) a1"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable (real_closed_interval a b)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_measurable (real_closed_interval a b)"
+                }
+            ],
+            "prop": "real_measurable (real_closed_interval a b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "(max (b - a) 0)"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_interval1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": " real_measurable_real_interval2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure_real_interval2, {}, {a: a, b: b}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_measure (real_open_interval a b) (max (b - a) 0)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λm. has_real_measure (real_open_interval a b) m, a: max (b - a) 0}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. has_real_measure (real_open_interval a b) a1"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable (real_open_interval a b)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_measurable (real_open_interval a b)"
+                }
+            ],
+            "prop": "real_measurable (real_open_interval a b)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "(max (b - a) 0)"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_interval2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_measure_real_interval1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure_real_interval1, {}, {a: a, b: b}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_measure (real_closed_interval a b) (max (b - a) 0)"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_measure (real_closed_interval a b) = max (b - a) 0"
+                }
+            ],
+            "prop": "real_measure (real_closed_interval a b) = max (b - a) 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_interval1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_measure_real_interval2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure_real_interval2, {}, {a: a, b: b}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_measure (real_open_interval a b) (max (b - a) 0)"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_measure (real_open_interval a b) = max (b - a) 0"
+                }
+            ],
+            "prop": "real_measure (real_open_interval a b) = max (b - a) 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_interval2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward",
+                "hint_backward1"
+            ],
+            "name": "real_measurable_inter",
+            "num_gaps": 3,
+            "proof": [
+                {
+                    "args": "real_measurable s ∧ real_measurable t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable s ∧ real_measurable t"
+                },
+                {
+                    "args": "conjD1, {}, {A: real_measurable s, B: real_measurable t}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable s"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_measurable s, B: real_measurable t}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable t"
+                },
+                {
+                    "args": "real_measurable",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_integrable_on (λx. 1) s"
+                },
+                {
+                    "args": "real_measurable",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_integrable_on (λx. 1) t"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. (if x ∈ s ∩ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "5.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ x ∈ s ∩ t ⟶ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ t then 1 else 0 else if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "5.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ ¬x ∈ s ∩ t ⟶ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ t then 1 else 0 else if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.1",
+                        "5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ t then 1 else 0 else if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "real_max_def, (if x ∈ s ∩ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ (if x ∈ s ∩ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.0",
+                        "5.4"
+                    ],
+                    "rule": "intros",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. (if x ∈ s ∩ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
+                },
+                {
+                    "args": "extension",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ (λx. if x ∈ s ∩ t then (1::real) else 0) = (λx. max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0))"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_integrable_on (λx. 1) (s ∩ t)"
+                },
+                {
+                    "args": "real_measurable, real_measurable (s ∩ t)",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ∧ real_measurable t ⟶ real_measurable (s ∩ t)"
+                }
+            ],
+            "prop": [
+                "real_measurable s & real_measurable t",
+                "⟶ real_measurable (inter s t)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_measurable"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_measurable"
+                },
+                {
+                    "goal": "(%x::real. if x ∈ inter s t then (1::real) else 0) = (%x::real. max (if x ∈ s then (1::real) else 0) (if x ∈ t then (1::real) else 0))",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "extension"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_max_def"
+                },
+                {
+                    "case": "x ∈ inter s t",
+                    "goal_id": "5.1",
+                    "method_name": "cases"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
         }
     ],
     "description": "Integrals of real->real functions; measures of real set. Refer to realanalysis.ml from hol light.",
