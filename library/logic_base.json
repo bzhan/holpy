@@ -218,8 +218,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
-                "hint_forward"
+                "hint_rewrite"
             ],
             "name": "if_P",
             "prop": "P ⟶ (if P then x else y) = x",
@@ -232,8 +231,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
-                "hint_forward"
+                "hint_rewrite"
             ],
             "name": "if_not_P",
             "prop": "¬P ⟶ (if P then x else y) = y",
@@ -869,6 +867,117 @@
             "ty": "thm",
             "vars": {
                 "f": "'a => 'b"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "if_true",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "trueI",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
+                },
+                {
+                    "args": "if_P, (if true then a else b) = a",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if true then a else b) = a"
+                }
+            ],
+            "prop": "(if true then a else b) = a",
+            "steps": [
+                {
+                    "goal": "true",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "if_false",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "false ⟶ false",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ false ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬false"
+                },
+                {
+                    "args": "if_not_P, (if false then a else b) = b",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if false then a else b) = b"
+                }
+            ],
+            "prop": "(if false then a else b) = b",
+            "steps": [
+                {
+                    "goal": "~false",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_not_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "'a",
+                "b": "'a"
             }
         }
     ],

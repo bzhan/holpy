@@ -310,7 +310,7 @@ class apply_theorem_macro(ProofTermMacro):
         matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
         # Check that every variable in the theorem has an instantiation
-        unmatched_vars = [v.name for v in term.get_svars(As + [C]) if v.name not in inst]
+        unmatched_vars = [v.name for v in term.get_svars(th.prop) if v.name not in inst]
         if unmatched_vars:
             raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
 
@@ -426,13 +426,20 @@ class rewrite_goal_macro(ProofTermMacro):
 
     def get_proof_term(self, thy, args, pts):
         assert isinstance(args, tuple) and len(args) == 2 and \
-               isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
+               isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal: signature"
 
         name, goal = args
         eq_pt = ProofTerm.theorem(thy, name)
         if self.backward:
             eq_pt = ProofTerm.symmetric(eq_pt)
-        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt)),
+
+        if len(pts) == len(eq_pt.assums):
+            rewr_cv = rewr_conv(eq_pt, conds=pts)
+        else:
+            assert len(pts) == len(eq_pt.assums) + 1, "rewrite_goal: wrong number of prevs"
+            rewr_cv = rewr_conv(eq_pt, conds=pts[1:])
+
+        cv = then_conv(top_sweep_conv(rewr_cv),
                        top_conv(beta_conv()))
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
@@ -440,10 +447,7 @@ class rewrite_goal_macro(ProofTermMacro):
             pt = ProofTerm.equal_elim(pt, ProofTerm.reflexive(pt.prop.lhs.lhs))
         else:
             pt = ProofTerm.equal_elim(pt, pts[0])  # goal
-            pts = pts[1:]
 
-        for A in pts:
-            pt = ProofTerm.implies_elim(ProofTerm.implies_intr(A.prop, pt), A)
         return pt
 
 class rewrite_fact_macro(ProofTermMacro):

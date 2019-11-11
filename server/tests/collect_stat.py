@@ -51,7 +51,10 @@ test_theorems = [
 class CollectStat(unittest.TestCase):
     def testCollectStat(self):
         for thy_name, thm_name in test_theorems:
-            testMethods(self, thy_name, thm_name, no_gaps=True, print_stat=True)
+            try:
+                testMethods(self, thy_name, thm_name, no_gaps=True, print_stat=True)
+            except Exception as e:
+                print(thy_name, thm_name, "failed:", e.__class__)
 
 
 if __name__ == "__main__":

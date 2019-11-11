@@ -249,12 +249,15 @@ class top_sweep_conv(Conv):
 
 class rewr_conv(Conv):
     """Rewrite using the given equality theorem."""
-    def __init__(self, pt, sym=False, conds=None):
+    def __init__(self, pt, *, sym=False, conds=None):
         assert isinstance(pt, ProofTerm) or isinstance(pt, str), "rewr_conv: argument"
         self.pt = pt
         self.sym = sym
         if conds is not None:
-            assert isinstance(conds, list) and all(isinstance(cond, ProofTerm) for cond in conds), "rewr_conv"
+            conds = list(conds)
+            assert all(isinstance(cond, ProofTerm) for cond in conds), "rewr_conv"
+        else:
+            conds = []
         self.conds = conds
 
     def __str__(self):
@@ -274,21 +277,25 @@ class rewr_conv(Conv):
         # Deconstruct th into assumptions and conclusion
         As, C = eq_pt.assums, eq_pt.concl
         assert Term.is_equals(C), "rewr_conv: theorem is not an equality."
+        if len(As) != len(self.conds):
+            raise ConvException("rewr_conv: number of conds does not agree")
 
         tyinst, inst = dict(), dict()
-
+        ts = [cond.prop for cond in self.conds]
         try:
+            matcher.first_order_match_list_incr(As, ts, (tyinst, inst))
             matcher.first_order_match_incr(C.lhs, t, (tyinst, inst))
         except matcher.MatchException:
-            raise ConvException("rewr_conv: cannot match %s with %s" % (str(C.lhs), str(t)))
+            raise ConvException("rewr_conv: cannot match")
+
+        # Check that every variable in the theorem has an instantiation
+        unmatched_vars = [v.name for v in term.get_svars(eq_pt.prop) if v.name not in inst]
+        if unmatched_vars:
+            raise ConvException("rewr_conv: unmatched vars")
 
         pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, eq_pt))
         if self.conds is not None:
             pt = ProofTerm.implies_elim(pt, *self.conds)
-
-        As = pt.assums
-        for A in As:
-            pt = ProofTerm.implies_elim(pt, ProofTerm.assume(A))
 
         if not (pt.th.is_equals() and pt.th.prop.lhs == t):
             raise ConvException("rewr_conv: wrong result")
