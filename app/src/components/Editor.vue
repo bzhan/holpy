@@ -26,6 +26,9 @@
           <b-dropdown-item href="#" v-on:click='rewrite_goal'>Rewrite goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='rewrite_fact'>Rewrite fact</b-dropdown-item>          
         </b-nav-item-dropdown>
+        <b-nav-item-dropdown text="Setting" left>
+          <b-dropdown-item href='#' v-on:click='toggle_profile'>{{profile ? 'Profile on' : 'Profile off'}}</b-dropdown-item>
+        </b-nav-item-dropdown>
         <b-nav-form>
           <b-button style="margin-left:10px" variant="primary" v-on:click="add_item">New</b-button>
           <b-form-select style="margin-left:10px" v-model='add_type' :options="add_type_options"/>
@@ -136,7 +139,10 @@ export default {
         {value: 'end', text: "at end"},
         {value: 'before', text: 'before'},
         {value: 'after', text: 'after'}
-      ]
+      ],
+
+      // Settings
+      profile: false,
     }
   },
 
@@ -172,6 +178,10 @@ export default {
       if (index !== undefined) {
         this.$refs.theory.handle_select(index)
       }
+    },
+
+    toggle_profile: function () {
+      this.profile = !this.profile
     },
 
     load_filelist: async function () {
@@ -226,6 +236,7 @@ export default {
       const data = JSON.stringify({
         username: this.$state.user,
         filename: this.filename,
+        profile: this.profile,
         line_length: 80,
       })
       this.message = {

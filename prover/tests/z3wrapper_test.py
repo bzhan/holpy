@@ -34,6 +34,33 @@ class Z3WrapperTest(unittest.TestCase):
             t = parser.parse_term(ctxt, s)
             self.assertEqual(z3wrapper.solve(t), res)
 
+    def testSolveSet(self):
+        if not z3wrapper.z3_loaded:
+            return
+
+        ctxt = Context('set', vars={'m': 'nat', 'S': 'nat set', 'T': 'nat set'})
+        test_data = [
+            ('a Mem S --> S Sub T --> a Mem T', True),
+        ]
+
+        for s, res in test_data:
+            t = parser.parse_term(ctxt, s)
+            self.assertEqual(z3wrapper.solve(t), res)
+
+    def testSolveReal(self):
+        if not z3wrapper.z3_loaded:
+            return
+
+        ctxt = Context('real', vars={'a': 'real', 'b': 'real', 'x': 'real', 'f': 'real => real', 'S': 'real set', 'T': 'real set'})
+        test_data = [
+            ('max a b = (1/2) * (a + b + abs(a - b))', True),
+            ('(x Mem T --> 0 <= f x) --> S Sub T --> (if x Mem S then f x else 0) <= (if x Mem T then f x else 0)', True),
+        ]
+
+        for s, res in test_data:
+            t = parser.parse_term(ctxt, s)
+            self.assertEqual(z3wrapper.solve(t), res)
+
     def testZ3Macro(self):
         if not z3wrapper.z3_loaded:
             return
