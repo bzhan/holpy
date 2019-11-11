@@ -9328,7 +9328,7 @@
                 "hint_backward"
             ],
             "name": "real_integrable_frontier_interval",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "finite_empty, {a: real}, {}",
@@ -9365,10 +9365,10 @@
                     "th": "⊢ real_negligible ({a, b})"
                 },
                 {
-                    "args": "",
+                    "args": "{x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊆ {a, b}",
                     "id": "4",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "z3",
                     "th": "⊢ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊆ {a, b}"
                 },
                 {
@@ -9479,6 +9479,10 @@
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
                     "theorem": "finite_empty"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",

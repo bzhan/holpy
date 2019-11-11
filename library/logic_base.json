@@ -389,6 +389,14 @@
             "ty": "method"
         },
         {
+            "name": "z3",
+            "ty": "macro"
+        },
+        {
+            "name": "z3",
+            "ty": "method"
+        },
+        {
             "depth": 0,
             "name": "Some simple results",
             "ty": "header"

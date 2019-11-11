@@ -160,7 +160,7 @@ class ParaSystem():
         goal = self.get_subgoal(inv_id, rule_id, case_id, hint)
         goal = self.replace_states(goal)
         if z3wrapper.z3_loaded:
-            ans = z3wrapper.solve(goal)
+            ans = z3wrapper.solve(self.thy, goal)
         else:
             ans = True
         return goal, ans

@@ -13,6 +13,23 @@ from prover import z3wrapper
 
 
 class Z3WrapperTest(unittest.TestCase):
+    def testNormTerm(self):
+        ctxt = Context('real', vars={'S': 'real set', 'T': 'real set', 'x': 'real', 'a': 'real', 'b': 'real'})
+        thy = ctxt.thy
+
+        test_data = [
+            ('S ⊆ T', '∀x. x ∈ S ⟶ x ∈ T'),
+            ('x ∈ {a, b}', 'x = a ∨ x = b'),
+            ('x ∈ {x. a < x ∧ x < b}', 'a < x ∧ x < b'),
+            ('{x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊆ {a, b}',
+             '∀x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b) ⟶ x = a ∨ x = b')
+        ]
+
+        for t, res_t in test_data:
+            t = parser.parse_term(ctxt, t)
+            res_t = parser.parse_term(ctxt, res_t)
+            self.assertEqual(z3wrapper.norm_term(thy, t), res_t)
+
     def testSolve(self):
         if not z3wrapper.z3_loaded:
             return
@@ -32,7 +49,7 @@ class Z3WrapperTest(unittest.TestCase):
 
         for s, res in test_data:
             t = parser.parse_term(ctxt, s)
-            self.assertEqual(z3wrapper.solve(t), res)
+            self.assertEqual(z3wrapper.solve(ctxt.thy, t), res)
 
     def testSolveSet(self):
         if not z3wrapper.z3_loaded:
@@ -45,7 +62,7 @@ class Z3WrapperTest(unittest.TestCase):
 
         for s, res in test_data:
             t = parser.parse_term(ctxt, s)
-            self.assertEqual(z3wrapper.solve(t), res)
+            self.assertEqual(z3wrapper.solve(ctxt.thy, t), res)
 
     def testSolveReal(self):
         if not z3wrapper.z3_loaded:
@@ -55,11 +72,12 @@ class Z3WrapperTest(unittest.TestCase):
         test_data = [
             ('max a b = (1/2) * (a + b + abs(a - b))', True),
             ('(x Mem T --> 0 <= f x) --> S Sub T --> (if x Mem S then f x else 0) <= (if x Mem T then f x else 0)', True),
+            ('{x. (a <= x & x <= b) & ~(a < x & x < b)} Sub {a, b}', True),
         ]
 
         for s, res in test_data:
             t = parser.parse_term(ctxt, s)
-            self.assertEqual(z3wrapper.solve(t), res)
+            self.assertEqual(z3wrapper.solve(ctxt.thy, t), res)
 
     def testZ3Macro(self):
         if not z3wrapper.z3_loaded:

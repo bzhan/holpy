@@ -14,10 +14,12 @@ from kernel.thm import Thm
 from kernel.macro import ProofMacro, global_macros
 from kernel.theory import Method, global_methods
 from logic import logic
+from logic import conv
 from data import nat, int
 from data.real import realT
 from data import set as hol_set
 from syntax import pprint, settings
+from prover import fologic
 
 
 def convert(t):
@@ -50,7 +52,12 @@ def convert(t):
             v = Var(t.arg.var_name, nat.natT)
             z3_v = z3.Int(t.arg.var_name)
             return z3.ForAll([z3_v], convert(t.arg.subst_bound(v)))
+        elif t.arg.var_T == realT:
+            v = Var(t.arg.var_name, realT)
+            z3_v = z3.Real(t.arg.var_name)
+            return z3.ForAll([z3_v], convert(t.arg.subst_bound(v)))
         else:
+            print("convert: unsupported forall type " + str(t.arg.var_T))
             raise NotImplementedError
     elif int.is_binary_int(t):
         return int.from_binary_int(t)
@@ -100,18 +107,6 @@ def convert(t):
     elif t.head.is_const_name('member'):
         a, S = convert(t.arg1), convert(t.arg)
         return S(a)
-    elif t.head.is_const_name('subset'):
-        if t.arg1.T.args[0] == nat.natT:
-            S, T = convert(t.arg1), convert(t.arg)
-            z3_v = z3.Int("_u")
-            return z3.ForAll([z3_v], z3.Implies(S(z3_v), T(z3_v)))
-        elif t.arg1.T.args[0] == realT:
-            S, T = convert(t.arg1), convert(t.arg)
-            z3_v = z3.Real("_u")
-            return z3.ForAll([z3_v], z3.Implies(S(z3_v), T(z3_v)))
-        else:
-            print("convert: unsupported constant " + repr(t))
-            raise NotImplementedError
     elif t.is_comb():
         return convert(t.fun)(convert(t.arg))
     elif t.is_const():
@@ -126,16 +121,36 @@ def convert(t):
         print("convert: unsupported operation " + repr(t))
         raise NotImplementedError
 
-def solve(t):
+norm_thms = [
+    'member_empty_simp',
+    'member_insert',
+    'member_collect',
+    'subset_def'
+]
+
+def norm_term(thy, t):
+    # Collect list of theorems that can be used.
+    th_names = [name for name in norm_thms if thy.has_theorem(name)]
+    cvs = [conv.try_conv(conv.rewr_conv(th_name)) for th_name in th_names]
+    cvs.append(conv.try_conv(conv.beta_conv()))
+    cv = conv.top_conv(conv.every_conv(*cvs))
+    return fologic.simplify(cv.eval(thy, t).rhs)
+
+def solve(thy, t):
     """Solve the given goal using Z3."""
     s = z3.Solver()
 
     # First strip foralls from t.
-    while Term.is_all(t):
-        t = t.arg.subst_bound(Var(t.arg.var_name, t.arg.var_T))
+    t = norm_term(thy, t)
+    new_names = logic.get_forall_names(t, svar=False)
+    _, As, C = logic.strip_all_implies(t, new_names, svar=False)
+
     try:
-        # print(convert(t))
-        s.add(z3.Not(convert(t)))
+        for A in As:
+            # print('A', convert(A))
+            s.add(convert(A))
+        # print('C', convert(C))
+        s.add(z3.Not(convert(C)))
         return str(s.check()) == 'unsat'
     except NotImplementedError:
         return False
@@ -148,7 +163,7 @@ class Z3Macro(ProofMacro):
 
     def eval(self, thy, args, prevs):
         if z3_loaded:
-            assert solve(args), "Z3: not solved."
+            assert solve(thy, args), "Z3: not solved."
         else:
             print("Warning: Z3 is not installed")
 
@@ -175,7 +190,7 @@ class Z3Method(Method):
     def apply(self, state, id, data, prevs):
         assert z3_loaded, "Z3 method: not installed"
         goal = state.get_proof_item(id).th.prop
-        assert solve(goal), "Z3 method: not solved"
+        assert solve(state.thy, goal), "Z3 method: not solved"
         state.set_line(id, 'z3', args=goal, prevs=[])
 
 
