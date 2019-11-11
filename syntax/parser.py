@@ -494,7 +494,7 @@ def parse_term_list(ctxt, s):
     """Parse a list of terms."""
     if s == "":
         return []
-    parser_setting['thy'] = thy
+    parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
     ts = term_list_parser.parse(s)
     for i in range(len(ts)):
