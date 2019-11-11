@@ -221,6 +221,13 @@ class ServerTest(unittest.TestCase):
         state = ProofState.init_state(ctxt.thy, [s], [assum], concl)
         state.apply_backward_step(1, "finite_induct_strong", prevs=[0])
 
+    def testApplyBackwardStep6(self):
+        """Test case with type variable only."""
+        ctxt = Context('real')
+        concl = parser.parse_term(ctxt, "finite (empty_set::real set)")
+        state = ProofState.init_state(ctxt.thy, [], [], concl)
+        state.apply_backward_step(0, 'finite_empty')
+
     def testApplyForwardStep1(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         state.apply_forward_step(1, "conjD1", prevs=[0])

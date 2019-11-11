@@ -9328,13 +9328,13 @@
                 "hint_backward"
             ],
             "name": "real_integrable_frontier_interval",
-            "num_gaps": 2,
+            "num_gaps": 1,
             "proof": [
                 {
-                    "args": "",
+                    "args": "finite_empty, {a: real}, {}",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "apply_theorem_for",
                     "th": "⊢ finite (∅::real set)"
                 },
                 {
@@ -9474,6 +9474,11 @@
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
                     "theorem": "finite_insert"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "finite_empty"
                 }
             ],
             "ty": "thm",
