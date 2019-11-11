@@ -15,6 +15,8 @@ from kernel.macro import ProofMacro, global_macros
 from kernel.theory import Method, global_methods
 from logic import logic
 from data import nat, int
+from data.real import realT
+from data import set as hol_set
 from syntax import pprint, settings
 
 
@@ -30,6 +32,16 @@ def convert(t):
             return z3.Function(t.name, z3.IntSort(), z3.BoolSort())
         elif T == boolT:
             return z3.Bool(t.name)
+        elif T == realT:
+            return z3.Real(t.name)
+        elif T == TFun(realT, realT):
+            return z3.Function(t.name, z3.RealSort(), z3.RealSort())
+        elif T == TFun(realT, boolT):
+            return z3.Function(t.name, z3.RealSort(), z3.BoolSort())
+        elif T == hol_set.setT(nat.natT):
+            return z3.Function(t.name, z3.IntSort(), z3.BoolSort())
+        elif T == hol_set.setT(realT):
+            return z3.Function(t.name, z3.RealSort(), z3.BoolSort())
         else:
             print("convert: unsupported type " + repr(T))
             raise NotImplementedError
@@ -55,28 +67,51 @@ def convert(t):
         return z3.If(convert(b), convert(t1), convert(t2))
     elif logic.is_neg(t):
         return z3.Not(convert(t.arg))
-    elif nat.is_plus(t):
+    elif t.head.is_const_name('plus'):
         return convert(t.arg1) + convert(t.arg)
-    elif nat.is_times(t):
-        return convert(t.arg1) * convert(t.arg)
-    elif nat.is_less_eq(t):
-        return convert(t.arg1) <= convert(t.arg)
-    elif nat.is_less(t):
-        return convert(t.arg1) < convert(t.arg)
-    elif nat.is_binary_nat(t):
-        return nat.from_binary_nat(t)
-    elif int.is_plus(t):
-        return convert(t.arg1) + convert(t.arg)
-    elif int.is_minus(t):
+    elif t.head.is_const_name('minus'):
         return convert(t.arg1) - convert(t.arg)
-    elif int.is_uminus(t):
+    elif t.head.is_const_name('uminus'):
         return -convert(t.arg)
-    elif int.is_times(t):
+    elif t.head.is_const_name('times'):
         return convert(t.arg1) * convert(t.arg)
-    elif int.is_less_eq(t):
+    elif t.head.is_const_name('less_eq'):
         return convert(t.arg1) <= convert(t.arg)
-    elif int.is_less(t):
+    elif t.head.is_const_name('less'):
         return convert(t.arg1) < convert(t.arg)
+    elif t.head.is_const_name('greater_eq'):
+        return convert(t.arg1) >= convert(t.arg)
+    elif t.head.is_const_name('greater'):
+        return convert(t.arg1) > convert(t.arg)
+    elif t.head.is_const_name('real_divide'):
+        return convert(t.arg1) / convert(t.arg)
+    elif t.head.is_const_name('zero'):
+        return 0
+    elif t.head.is_const_name('one'):
+        return 1
+    elif t.head.is_const_name('of_nat') and nat.is_binary(t.arg):
+        return nat.from_binary(t.arg)
+    elif t.head.is_const_name('max'):
+        a, b = convert(t.arg1), convert(t.arg)
+        return z3.If(a >= b, a, b)
+    elif t.head.is_const_name('abs'):
+        a = convert(t.arg)
+        return z3.If(a >= 0, a, -a)
+    elif t.head.is_const_name('member'):
+        a, S = convert(t.arg1), convert(t.arg)
+        return S(a)
+    elif t.head.is_const_name('subset'):
+        if t.arg1.T.args[0] == nat.natT:
+            S, T = convert(t.arg1), convert(t.arg)
+            z3_v = z3.Int("_u")
+            return z3.ForAll([z3_v], z3.Implies(S(z3_v), T(z3_v)))
+        elif t.arg1.T.args[0] == realT:
+            S, T = convert(t.arg1), convert(t.arg)
+            z3_v = z3.Real("_u")
+            return z3.ForAll([z3_v], z3.Implies(S(z3_v), T(z3_v)))
+        else:
+            print("convert: unsupported constant " + repr(t))
+            raise NotImplementedError
     elif t.is_comb():
         return convert(t.fun)(convert(t.arg))
     elif t.is_const():
@@ -99,6 +134,7 @@ def solve(t):
     while Term.is_all(t):
         t = t.arg.subst_bound(Var(t.arg.var_name, t.arg.var_T))
     try:
+        # print(convert(t))
         s.add(z3.Not(convert(t)))
         return str(s.check()) == 'unsat'
     except NotImplementedError:
