@@ -2323,6 +2323,30 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "de_morgan_thm1",
+            "prop": "¬(A ∧ B) ⟷ (¬A ∨ ¬B)",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "de_morgan_thm2",
+            "prop": "¬(A | B) ⟷ ¬A & ¬B",
+            "ty": "thm",
+            "vars": {
+                "A": "bool",
+                "B": "bool"
+            }
+        },
+        {
             "name": "eq_true",
             "num_gaps": 1,
             "proof": [

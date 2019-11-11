@@ -4596,6 +4596,15 @@
             "type": "'a set ⇒ nat ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "disjoint",
+            "prop": "disjoint s t <--> inter s t = {}",
+            "ty": "def",
+            "type": "'a set ⇒ 'a set ⇒ bool"
+        },
+        {
             "name": "countable",
             "ty": "def.ax",
             "type": "'a set => bool"
