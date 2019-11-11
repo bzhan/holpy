@@ -2,7 +2,8 @@
 
 import unittest
 
-from kernel.term import Term
+from kernel.type import boolT
+from kernel.term import Term, Var
 from kernel.thm import Thm
 from logic import basic
 from logic.proofterm import ProofTerm
@@ -91,7 +92,7 @@ class ConvTest(unittest.TestCase):
             vars={"x": "nat", "y": "nat"},
             t="min x y",
             t_res="x",
-            assms=["x <= y"]
+            failed=ConvException
         )
 
     def testRewrConv4(self):
@@ -101,6 +102,15 @@ class ConvTest(unittest.TestCase):
             vars={"x": "nat", "y": "nat"},
             t="min x y",
             t_res="x"
+        )
+
+    def testRewrConv5(self):
+        cond = Var('P', boolT)
+        test_conv(
+            self, 'logic_base', rewr_conv('if_P', conds=[ProofTerm.sorry(Thm([], cond))]),
+            vars={'a': "'a", 'b': "'a", 'P': "bool"},
+            t="if P then a else b",
+            t_res="a"
         )
 
     def testAbsConv(self):
@@ -149,6 +159,15 @@ class ConvTest(unittest.TestCase):
             vars={'s': 'nat set'},
             t="(%x. if x Mem s then x else 0)",
             t_res="(%x. if x Mem s then x else 0)"
+        )
+
+    def testTopSweepConv3(self):
+        cond = Var('P', boolT)
+        test_conv(
+            self, 'logic_base', top_sweep_conv(rewr_conv('if_P', conds=[ProofTerm.sorry(Thm([], cond))])),
+            vars={'a': "'a", 'b': "'a", 'P': "bool"},
+            t="(if P then a else b) = a",
+            t_res="a = a"
         )
 
 

@@ -11,6 +11,7 @@ from logic import logic  # Load all defined macros
 from data import expr
 from syntax import parser
 from syntax import operator
+from prover import z3wrapper
 from server import method  # Load all defined methods
 
 

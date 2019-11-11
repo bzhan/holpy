@@ -306,12 +306,11 @@ class ServerTest(unittest.TestCase):
         Ta = TVar("a")
         a = Var("a", Ta)
         b = Var("b", Ta)
-        eq_a = Term.mk_equals(a, a)
-        if_t = logic.mk_if(eq_a, b, a)
-        state = ProofState.init_state(thy, [a, b], [], Term.mk_equals(if_t, b))
-        state.rewrite_goal(0, "if_P")
-        state.set_line(0, "reflexive", args=a)
-        self.assertEqual(state.check_proof(no_gaps=True), Thm.mk_equals(if_t, b))
+        P = Var("P", boolT)
+        if_t = logic.mk_if(P, a, b)
+        state = ProofState.init_state(thy, [P, a, b], [P], Term.mk_equals(if_t, b))
+        state.rewrite_goal(1, "if_P", prevs=[0])
+        self.assertEqual(state.check_proof(), Thm.mk_implies(P, Term.mk_equals(if_t, b)))
 
     def testConjComm(self):
         """Proof of A & B --> B & A."""

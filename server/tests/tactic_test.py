@@ -143,7 +143,7 @@ class TacticTest(unittest.TestCase):
             vars={"a": "'a", "b": "'a"},
             goal="(if a = a then b else a) = b",
             args="if_P",
-            new_goals=["a = a"]
+            failed=AssertionError
         )
 
     def testRewrite3(self):

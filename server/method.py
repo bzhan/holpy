@@ -153,7 +153,7 @@ class rewrite_goal(Method):
         return pprint.N(data['theorem'] + " (r): ") + display_goals(state, data)
 
     def apply(self, state, id, data, prevs):
-        state.apply_tactic(id, tactic.rewrite(), args=data['theorem'])
+        state.apply_tactic(id, tactic.rewrite(), args=data['theorem'], prevs=prevs)
 
 class rewrite_fact(Method):
     """Rewrite fact using a theorem."""

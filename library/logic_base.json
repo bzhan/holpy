@@ -218,8 +218,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
-                "hint_forward"
+                "hint_rewrite"
             ],
             "name": "if_P",
             "prop": "P ⟶ (if P then x else y) = x",
@@ -232,8 +231,7 @@
         },
         {
             "attributes": [
-                "hint_backward",
-                "hint_forward"
+                "hint_rewrite"
             ],
             "name": "if_not_P",
             "prop": "¬P ⟶ (if P then x else y) = y",
