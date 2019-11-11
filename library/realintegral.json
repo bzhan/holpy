@@ -9328,13 +9328,13 @@
                 "hint_backward"
             ],
             "name": "real_integrable_frontier_interval",
-            "num_gaps": 0,
+            "num_gaps": 2,
             "proof": [
                 {
-                    "args": "finite_empty, {a: real}, {}",
+                    "args": "",
                     "id": "0",
                     "prevs": [],
-                    "rule": "apply_theorem_for",
+                    "rule": "sorry",
                     "th": "⊢ finite (∅::real set)"
                 },
                 {
@@ -9368,306 +9368,60 @@
                     "args": "",
                     "id": "4",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "⊢ ∀x. x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⟶ x ∈ {a, b}"
-                },
-                {
-                    "args": "x, real",
-                    "id": "4.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)}",
-                    "id": "4.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)}"
-                },
-                {
-                    "args": "member_collect",
-                    "id": "4.2",
-                    "prevs": [
-                        "4.1"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)"
-                },
-                {
-                    "args": "real_le_lt",
-                    "id": "4.3",
-                    "prevs": [
-                        "4.2"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ ((a < x ∨ a = x) ∧ (x < b ∨ x = b)) ∧ ¬(a < x ∧ x < b)"
-                },
-                {
-                    "args": "conjD1, {}, {A: (a < x ∨ a = x) ∧ (x < b ∨ x = b), B: ¬(a < x ∧ x < b)}",
-                    "id": "4.4",
-                    "prevs": [
-                        "4.3"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ (a < x ∨ a = x) ∧ (x < b ∨ x = b)"
-                },
-                {
-                    "args": "conjD2, {}, {A: (a < x ∨ a = x) ∧ (x < b ∨ x = b), B: ¬(a < x ∧ x < b)}",
-                    "id": "4.5",
-                    "prevs": [
-                        "4.3"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ ¬(a < x ∧ x < b)"
-                },
-                {
-                    "args": "conjD1, {}, {A: a < x ∨ a = x, B: x < b ∨ x = b}",
-                    "id": "4.6",
-                    "prevs": [
-                        "4.4"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ a < x ∨ a = x"
-                },
-                {
-                    "args": "",
-                    "id": "4.7",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ a < x ⟶ x = a"
-                },
-                {
-                    "args": "a < x",
-                    "id": "4.7.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "a < x ⊢ a < x"
-                },
-                {
-                    "args": "conjD2, {}, {A: a < x ∨ a = x, B: x < b ∨ x = b}",
-                    "id": "4.7.1",
-                    "prevs": [
-                        "4.4"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ x < b ∨ x = b"
-                },
-                {
-                    "args": "x < b ⟶ x < b",
-                    "id": "4.7.2",
-                    "prevs": [],
-                    "rule": "trivial",
-                    "th": "⊢ x < b ⟶ x < b"
-                },
-                {
-                    "args": "",
-                    "id": "4.7.3",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)}, a < x ⊢ x = b ⟶ x < b"
-                },
-                {
-                    "args": "x = b",
-                    "id": "4.7.3.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x = b ⊢ x = b"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "4.7.3.1",
-                    "prevs": [
-                        "4.7.5"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)}, a < x ⊢ x < b"
-                },
-                {
-                    "args": "",
-                    "id": "4.7.3.2",
-                    "prevs": [
-                        "4.7.3.0",
-                        "4.7.3.1"
-                    ],
-                    "rule": "intros",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)}, a < x ⊢ x = b ⟶ x < b"
-                },
-                {
-                    "args": "disjE",
-                    "id": "4.7.4",
-                    "prevs": [
-                        "4.7.1",
-                        "4.7.2",
-                        "4.7.3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)}, a < x ⊢ x < b"
-                },
-                {
-                    "args": "conjI",
-                    "id": "4.7.5",
-                    "prevs": [
-                        "4.7.0",
-                        "4.7.4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)}, a < x ⊢ a < x ∧ x < b"
-                },
-                {
-                    "args": "negE_gen, {}, {A: a < x ∧ x < b, C: x = a}",
-                    "id": "4.7.6",
-                    "prevs": [
-                        "4.5",
-                        "4.7.5"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)}, a < x ⊢ x = a"
-                },
-                {
-                    "args": "",
-                    "id": "4.7.7",
-                    "prevs": [
-                        "4.7.0",
-                        "4.7.6"
-                    ],
-                    "rule": "intros",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ a < x ⟶ x = a"
-                },
-                {
-                    "args": "",
-                    "id": "4.8",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ a = x ⟶ x = a"
-                },
-                {
-                    "args": "a = x",
-                    "id": "4.8.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "a = x ⊢ a = x"
-                },
-                {
-                    "args": "x = a",
-                    "id": "4.8.1",
-                    "prevs": [
-                        "4.8.0",
-                        "4.8.0"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)}, a = x ⊢ x = a"
-                },
-                {
-                    "args": "",
-                    "id": "4.8.2",
-                    "prevs": [
-                        "4.8.0",
-                        "4.8.1"
-                    ],
-                    "rule": "intros",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ a = x ⟶ x = a"
-                },
-                {
-                    "args": "disjE",
-                    "id": "4.9",
-                    "prevs": [
-                        "4.6",
-                        "4.7",
-                        "4.8"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ x = a"
-                },
-                {
-                    "args": "disjI1, {}, {A: x = a, B: x = b ∨ x ∈ ∅}",
-                    "id": "4.10",
-                    "prevs": [
-                        "4.9"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ x = a ∨ x = b ∨ x ∈ ∅"
-                },
-                {
-                    "args": "member_insert, x ∈ {a, b}",
-                    "id": "4.11",
-                    "prevs": [
-                        "4.10"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊢ x ∈ {a, b}"
-                },
-                {
-                    "args": "",
-                    "id": "4.12",
-                    "prevs": [
-                        "4.0",
-                        "4.1",
-                        "4.11"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ ∀x. x ∈ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⟶ x ∈ {a, b}"
-                },
-                {
-                    "args": "subsetI",
-                    "id": "5",
-                    "prevs": [
-                        "4"
-                    ],
-                    "rule": "apply_theorem",
+                    "rule": "sorry",
                     "th": "⊢ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊆ {a, b}"
                 },
                 {
-                    "args": "member_collect, {x. x ∈ {p. a ≤ p ∧ p ≤ b} ∧ ¬x ∈ {p. a < p ∧ p < b}} ⊆ {a, b}",
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible ({a, b}) ∧ {x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)} ⊆ {a, b}"
+                },
+                {
+                    "args": "real_negligible_subset",
                     "id": "6",
                     "prevs": [
                         "5"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ {x. x ∈ {p. a ≤ p ∧ p ≤ b} ∧ ¬x ∈ {p. a < p ∧ p < b}} ⊆ {a, b}"
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible ({x. (a ≤ x ∧ x ≤ b) ∧ ¬(a < x ∧ x < b)})"
                 },
                 {
-                    "args": "conjI",
+                    "args": "member_collect, real_negligible ({x. x ∈ {p. a ≤ p ∧ p ≤ b} ∧ ¬x ∈ {p. a < p ∧ p < b}})",
                     "id": "7",
                     "prevs": [
-                        "3",
                         "6"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "⊢ real_negligible ({a, b}) ∧ {x. x ∈ {p. a ≤ p ∧ p ≤ b} ∧ ¬x ∈ {p. a < p ∧ p < b}} ⊆ {a, b}"
-                },
-                {
-                    "args": "real_negligible_subset",
-                    "id": "8",
-                    "prevs": [
-                        "7"
-                    ],
-                    "rule": "apply_theorem",
+                    "rule": "rewrite_goal",
                     "th": "⊢ real_negligible ({x. x ∈ {p. a ≤ p ∧ p ≤ b} ∧ ¬x ∈ {p. a < p ∧ p < b}})"
                 },
                 {
                     "args": "real_open_interval_def, real_negligible ({x. x ∈ {p. a ≤ p ∧ p ≤ b} ∧ ¬x ∈ real_open_interval a b})",
-                    "id": "9",
+                    "id": "8",
                     "prevs": [
-                        "8"
+                        "7"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ real_negligible ({x. x ∈ {p. a ≤ p ∧ p ≤ b} ∧ ¬x ∈ real_open_interval a b})"
                 },
                 {
                     "args": "real_closed_interval_def, real_negligible ({x. x ∈ real_closed_interval a b ∧ ¬x ∈ real_open_interval a b})",
-                    "id": "10",
+                    "id": "9",
                     "prevs": [
-                        "9"
+                        "8"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ real_negligible ({x. x ∈ real_closed_interval a b ∧ ¬x ∈ real_open_interval a b})"
                 },
                 {
                     "args": "diff_def, real_negligible (diff (real_closed_interval a b) (real_open_interval a b))",
-                    "id": "11",
+                    "id": "10",
                     "prevs": [
-                        "10"
+                        "9"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ real_negligible (diff (real_closed_interval a b) (real_open_interval a b))"
@@ -9689,6 +9443,11 @@
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "theorem": "real_open_interval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "member_collect"
                 },
                 {
                     "goal_id": "0",
@@ -9715,140 +9474,6 @@
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
                     "theorem": "finite_insert"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "finite_empty"
-                },
-                {
-                    "goal_id": "4",
-                    "method_name": "rewrite_goal",
-                    "theorem": "member_collect"
-                },
-                {
-                    "goal_id": "4",
-                    "method_name": "apply_backward_step",
-                    "theorem": "subsetI"
-                },
-                {
-                    "goal_id": "4",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "fact_ids": [
-                        "4.1"
-                    ],
-                    "goal_id": "4.2",
-                    "method_name": "rewrite_fact",
-                    "theorem": "member_collect"
-                },
-                {
-                    "fact_ids": [
-                        "4.2"
-                    ],
-                    "goal_id": "4.3",
-                    "method_name": "rewrite_fact",
-                    "theorem": "real_le_lt"
-                },
-                {
-                    "fact_ids": [
-                        "4.3"
-                    ],
-                    "goal_id": "4.4",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "4.3"
-                    ],
-                    "goal_id": "4.5",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "goal_id": "4.6",
-                    "method_name": "rewrite_goal",
-                    "theorem": "member_insert"
-                },
-                {
-                    "goal_id": "4.6",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjI1"
-                },
-                {
-                    "fact_ids": [
-                        "4.4"
-                    ],
-                    "goal_id": "4.6",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "4.6"
-                    ],
-                    "goal_id": "4.7",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjE"
-                },
-                {
-                    "goal_id": "4.7",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "4.5"
-                    ],
-                    "goal_id": "4.7.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "negE_gen"
-                },
-                {
-                    "goal_id": "4.7.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "fact_ids": [
-                        "4.4"
-                    ],
-                    "goal_id": "4.7.1",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "4.7.1"
-                    ],
-                    "goal_id": "4.7.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjE"
-                },
-                {
-                    "goal_id": "4.7.3",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "4.7.5"
-                    ],
-                    "goal_id": "4.7.3.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "goal_id": "4.8",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "4.8.0"
-                    ],
-                    "goal_id": "4.8.1",
-                    "method_name": "rewrite_goal_with_prev"
                 }
             ],
             "ty": "thm",
@@ -16840,44 +16465,91 @@
                     "args": "",
                     "id": "5.5",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ ⊢ x ∈ s"
+                    "rule": "subproof",
+                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ ⊢ x ∈ s ⟶ (if x ∈ s then f x else 0) ≤ (if x ∈ t then f x else 0)"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "5.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
                 },
                 {
                     "args": "subsetE, {a: real}, {A: s, B: t, x: x}",
-                    "id": "5.6",
+                    "id": "5.5.1",
                     "prevs": [
                         "5.4",
-                        "5.5"
+                        "5.5.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ ⊢ x ∈ t"
+                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ s ⊢ x ∈ t"
                 },
                 {
                     "args": "",
-                    "id": "5.7",
+                    "id": "5.5.2",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ ⊢ f x ≤ f x"
+                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ, x ∈ s ⊢ (if x ∈ s then f x else 0) ≤ (if x ∈ t then f x else 0)"
                 },
                 {
-                    "args": "if_P, (if x ∈ s then f x else 0) ≤ (if x ∈ t then f x else 0)",
-                    "id": "5.8",
+                    "args": "",
+                    "id": "5.5.3",
                     "prevs": [
-                        "5.7",
+                        "5.5.0",
+                        "5.5.2"
+                    ],
+                    "rule": "intros",
+                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ ⊢ x ∈ s ⟶ (if x ∈ s then f x else 0) ≤ (if x ∈ t then f x else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "5.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ ⊢ ¬x ∈ s ⟶ (if x ∈ s then f x else 0) ≤ (if x ∈ t then f x else 0)"
+                },
+                {
+                    "args": "¬x ∈ s",
+                    "id": "5.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x ∈ s ⊢ ¬x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "5.6.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ, ¬x ∈ s ⊢ (if x ∈ s then f x else 0) ≤ (if x ∈ t then f x else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "5.6.2",
+                    "prevs": [
+                        "5.6.0",
+                        "5.6.1"
+                    ],
+                    "rule": "intros",
+                    "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ ⊢ ¬x ∈ s ⟶ (if x ∈ s then f x else 0) ≤ (if x ∈ t then f x else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5.7",
+                    "prevs": [
                         "5.5",
                         "5.6"
                     ],
-                    "rule": "rewrite_goal",
+                    "rule": "apply_theorem",
                     "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x), x ∈ univ ⊢ (if x ∈ s then f x else 0) ≤ (if x ∈ t then f x else 0)"
                 },
                 {
                     "args": "",
-                    "id": "5.9",
+                    "id": "5.8",
                     "prevs": [
                         "5.0",
                         "5.1",
-                        "5.8"
+                        "5.7"
                     ],
                     "rule": "intros",
                     "th": "s ⊆ t ∧ has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x) ⊢ ∀x. x ∈ univ ⟶ (if x ∈ s then f x else 0) ≤ (if x ∈ t then f x else 0)"
@@ -17022,18 +16694,26 @@
                     "theorem": "conjD1"
                 },
                 {
-                    "fact_ids": [
-                        "5.4"
-                    ],
+                    "case": "x ∈ s",
                     "goal_id": "5.5",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "5.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.4",
+                        "5.5.0"
+                    ],
+                    "goal_id": "5.5.1",
                     "method_name": "apply_forward_step",
-                    "param_x": "x",
                     "theorem": "subsetE"
                 },
                 {
-                    "goal_id": "5.7",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
+                    "goal_id": "5.6",
+                    "method_name": "introduction"
                 }
             ],
             "ty": "thm",
@@ -20150,7 +19830,7 @@
                 "hint_forward"
             ],
             "name": "absolutely_real_integrable_max",
-            "num_gaps": 2,
+            "num_gaps": 3,
             "proof": [
                 {
                     "args": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s",
@@ -20184,43 +19864,75 @@
                     "args": "",
                     "id": "1.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ (if a ≤ b then b else a) = 1 / (of_nat (bit0 (Suc 0)) * (a + b + (if 0 ≤ a - b then a - b else -(a - b))))"
+                    "rule": "subproof",
+                    "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ a ≤ b ⟶ (if a ≤ b then b else a) = 1 / (2 * (a + b + (if 0 ≤ a - b then a - b else -(a - b))))"
                 },
                 {
-                    "args": "nat_one_def, (if a ≤ b then b else a) = 1 / (2 * (a + b + (if 0 ≤ a - b then a - b else -(a - b))))",
-                    "id": "1.3",
+                    "args": "a ≤ b",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ b ⊢ a ≤ b"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s, a ≤ b ⊢ (if a ≤ b then b else a) = 1 / (2 * (a + b + (if 0 ≤ a - b then a - b else -(a - b))))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.2",
                     "prevs": [
-                        "1.2"
+                        "1.2.0",
+                        "1.2.1"
                     ],
-                    "rule": "rewrite_goal",
+                    "rule": "intros",
+                    "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ a ≤ b ⟶ (if a ≤ b then b else a) = 1 / (2 * (a + b + (if 0 ≤ a - b then a - b else -(a - b))))"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ ¬a ≤ b ⟶ (if a ≤ b then b else a) = 1 / (2 * (a + b + (if 0 ≤ a - b then a - b else -(a - b))))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ (if a ≤ b then b else a) = 1 / (2 * (a + b + (if 0 ≤ a - b then a - b else -(a - b))))"
                 },
                 {
                     "args": "real_abs_def, (if a ≤ b then b else a) = 1 / (2 * (a + b + abs (a - b)))",
-                    "id": "1.4",
+                    "id": "1.5",
                     "prevs": [
-                        "1.3"
+                        "1.4"
                     ],
                     "rule": "rewrite_goal",
                     "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ (if a ≤ b then b else a) = 1 / (2 * (a + b + abs (a - b)))"
                 },
                 {
                     "args": "real_max_def, max a b = 1 / (2 * (a + b + abs (a - b)))",
-                    "id": "1.5",
+                    "id": "1.6",
                     "prevs": [
-                        "1.4"
+                        "1.5"
                     ],
                     "rule": "rewrite_goal",
                     "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ max a b = 1 / (2 * (a + b + abs (a - b)))"
                 },
                 {
                     "args": "",
-                    "id": "1.6",
+                    "id": "1.7",
                     "prevs": [
                         "1.0",
                         "1.1",
-                        "1.5"
+                        "1.6"
                     ],
                     "rule": "intros",
                     "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ ∀a. ∀b. max a b = 1 / (2 * (a + b + abs (a - b)))"
@@ -20269,9 +19981,13 @@
                     "theorem": "real_abs_def"
                 },
                 {
+                    "case": "a <= b",
                     "goal_id": "1.2",
-                    "method_name": "rewrite_goal",
-                    "theorem": "nat_one_def"
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction"
                 }
             ],
             "ty": "thm",

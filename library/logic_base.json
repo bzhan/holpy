@@ -218,10 +218,11 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_backward",
+                "hint_forward"
             ],
             "name": "if_P",
-            "prop": "P --> (if P then x else y) = x",
+            "prop": "P ⟶ (if P then x else y) = x",
             "ty": "thm.ax",
             "vars": {
                 "P": "bool",
@@ -231,10 +232,11 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_backward",
+                "hint_forward"
             ],
             "name": "if_not_P",
-            "prop": "~P --> (if P then x else y) = y",
+            "prop": "¬P ⟶ (if P then x else y) = y",
             "ty": "thm.ax",
             "vars": {
                 "P": "bool",
