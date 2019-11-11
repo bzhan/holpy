@@ -4,7 +4,7 @@
 
 import unittest
 
-from server.tests.server_test import testMethods
+from server.tests.server_test import testSteps
 
 test_theorems = [
     # Logic
@@ -52,7 +52,7 @@ class CollectStat(unittest.TestCase):
     def testCollectStat(self):
         for thy_name, thm_name in test_theorems:
             try:
-                testMethods(self, thy_name, thm_name, no_gaps=True, print_stat=True)
+                testSteps(self, thy_name, thm_name, no_gaps=True, print_stat=True)
             except Exception as e:
                 print(thy_name, thm_name, "failed:", e.__class__)
 

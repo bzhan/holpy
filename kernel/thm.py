@@ -94,6 +94,7 @@ class Thm():
     @staticmethod
     def mk_implies(*args):
         """Returns the theorem s1 --> ... --> sn --> t."""
+        assert all(isinstance(arg, Term) for arg in args)
         return Thm([], Term.mk_implies(*args))
 
     @staticmethod
