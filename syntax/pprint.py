@@ -260,7 +260,7 @@ term_ast = dict()
 def get_ast_term(thy, t):
     """Obtain the abstract syntax tree for a term."""
     if (thy, t, settings.unicode()) in term_ast:
-        return term_ast[(thy, t, settings.unicode)]
+        return term_ast[(thy, t, settings.unicode())]
 
     assert isinstance(t, term.Term), "get_ast_term: input is not a term."
 
@@ -469,7 +469,7 @@ def get_ast_term(thy, t):
     infertype.infer_printed_type(thy, copy_t)
 
     ast = helper(copy_t, [])
-    term_ast[(thy, t, settings.unicode)] = ast
+    term_ast[(thy, t, settings.unicode())] = ast
     return ast
 
 def print_length(res):

@@ -83,6 +83,13 @@ class TacticTest(unittest.TestCase):
             new_goals=["(0::nat) + 0 = 0", "!n. n + 0 = n --> Suc n + 0 = Suc n"]
         )
 
+    def testRule5(self):
+        self.run_test(
+            'set', tactic.rule(),
+            goal="finite (empty_set::nat set)",
+            args="finite_empty"
+        )
+
     def testIntros(self):
         self.run_test(
             'logic_base', tactic.intros(),

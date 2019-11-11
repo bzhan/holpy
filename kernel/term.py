@@ -674,15 +674,15 @@ def has_var(t):
 
     return helper(t)
 
-def get_tvars(t):
+def get_stvars(t):
     """Get the list of type variables for a term."""
     def helper(t):
         if t.is_var() or t.is_const():
-            return t.T.get_tvars()
+            return t.T.get_stvars()
         elif t.is_comb():
             return helper(t.fun) + helper(t.arg)
         elif t.is_abs():
-            return t.var_T.get_tvars() + helper(t.body)
+            return t.var_T.get_stvars() + helper(t.body)
         else:
             return []
 
