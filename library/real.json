@@ -273,7 +273,6 @@
         {
             "attributes": [
                 "hint_resolve",
-                "hint_rewrite",
                 "hint_backward"
             ],
             "name": "real_le_refl",
@@ -2574,8 +2573,11 @@
             "type": "real ⇒ real ⇒ real"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "min",
-            "prop": "min m n = if m <= n then m else n",
+            "prop": "min m n = (if m ≤ n then m else n)",
             "ty": "def",
             "type": "real ⇒ real ⇒ real"
         },
