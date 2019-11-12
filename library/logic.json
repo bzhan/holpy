@@ -481,6 +481,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "conj_assoc",
             "num_gaps": 0,
             "proof": [
@@ -655,7 +658,7 @@
                     "th": "⊢ A ∧ B ∧ C ⟷ (A ∧ B) ∧ C"
                 }
             ],
-            "prop": "(A & B & C) = ((A & B) & C)",
+            "prop": "A ∧ B ∧ C ⟷ (A ∧ B) ∧ C",
             "steps": [
                 {
                     "goal_id": "0",
