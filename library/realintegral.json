@@ -25545,6 +25545,695 @@
             "vars": {
                 "s": "real set"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_measure_eq_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_negligible s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_negligible s ⊢ real_negligible s"
+                },
+                {
+                    "args": "has_real_measure_0, has_real_measure s 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_negligible s ⊢ has_real_measure s 0"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible s ⊢ real_measure s = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_negligible s ⟶ real_measure s = 0"
+                }
+            ],
+            "prop": "real_negligible s --> real_measure s = 0",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_0"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "has_real_measure_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_negligible_empty",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible ∅"
+                },
+                {
+                    "args": "has_real_measure_0, has_real_measure ∅ 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_measure ∅ 0"
+                }
+            ],
+            "prop": "has_real_measure {} 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_0"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_negligible_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_measure_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure_empty",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ has_real_measure ∅ 0"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_measure ∅ = 0"
+                }
+            ],
+            "prop": "real_measure ∅ = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_measurable_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure_empty",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ has_real_measure ∅ 0"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λm. has_real_measure ∅ m, a: (0::real)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a. has_real_measure ∅ a"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable ∅",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_measurable ∅"
+                }
+            ],
+            "prop": "real_measurable ∅",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::real)"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_measurable_real_measure_eq_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ⊢ real_measurable s"
+                },
+                {
+                    "args": "has_real_measure_0, real_negligible s ⟷ has_real_measure s 0",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_negligible s ⟷ has_real_measure s 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_measurable s ⊢ real_measure s = 0 ⟶ has_real_measure s 0"
+                },
+                {
+                    "args": "real_measure s = 0",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measure s = 0 ⊢ real_measure s = 0"
+                },
+                {
+                    "args": "has_real_measure_mesure",
+                    "id": "2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ⊢ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "real_measure s = 0, real_measurable s ⊢ has_real_measure s 0"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "real_measurable s ⊢ real_measure s = 0 ⟶ has_real_measure s 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_measurable s ⊢ has_real_measure s 0 ⟶ real_measure s = 0"
+                },
+                {
+                    "args": "has_real_measure s 0",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s 0 ⊢ has_real_measure s 0"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s, has_real_measure s 0 ⊢ real_measure s = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.0",
+                        "3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "real_measurable s ⊢ has_real_measure s 0 ⟶ real_measure s = 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ real_measure s = 0 ⟷ has_real_measure s 0"
+                },
+                {
+                    "args": "real_measure s = 0 ⟷ real_negligible s",
+                    "id": "5",
+                    "prevs": [
+                        "1",
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_measurable s ⊢ real_measure s = 0 ⟷ real_negligible s"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ⟶ real_measure s = 0 ⟷ real_negligible s"
+                }
+            ],
+            "prop": "real_measurable s ⟶ real_measure s = 0 <--> real_negligible s",
+            "steps": [
+                {
+                    "goal": "real_negligible s <--> has_real_measure s 0",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_0"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_real_measure_mesure"
+                },
+                {
+                    "fact_ids": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_measurable_real_measure_pos_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ⊢ real_measurable s"
+                },
+                {
+                    "args": "real_measure_pos_le, {}, {s: s}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ⊢ 0 ≤ real_measure s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_measurable s ⊢ 0 ≤ real_measure s ∧ ¬0 = real_measure s ⟶ ¬real_negligible s"
+                },
+                {
+                    "args": "0 ≤ real_measure s ∧ ¬0 = real_measure s",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ real_measure s ∧ ¬0 = real_measure s ⊢ 0 ≤ real_measure s ∧ ¬0 = real_measure s"
+                },
+                {
+                    "args": "real_measurable_real_measure_eq_0, {}, {s: s}",
+                    "id": "2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ⊢ real_measure s = 0 ⟷ real_negligible s"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 ≤ real_measure s, B: ¬0 = real_measure s}",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ real_measure s ∧ ¬0 = real_measure s ⊢ ¬0 = real_measure s"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_measurable s, 0 ≤ real_measure s ∧ ¬0 = real_measure s ⊢ real_negligible s ⟶ false"
+                },
+                {
+                    "args": "real_negligible s",
+                    "id": "2.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_negligible s ⊢ real_negligible s"
+                },
+                {
+                    "args": "ineq_sym",
+                    "id": "2.3.1",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s, 0 ≤ real_measure s ∧ ¬0 = real_measure s, real_negligible s ⊢ ¬real_measure s = 0"
+                },
+                {
+                    "args": "real_measure s = 0",
+                    "id": "2.3.2",
+                    "prevs": [
+                        "2.1",
+                        "2.3.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_measurable s, 0 ≤ real_measure s ∧ ¬0 = real_measure s, real_negligible s ⊢ real_measure s = 0"
+                },
+                {
+                    "args": "negE",
+                    "id": "2.3.3",
+                    "prevs": [
+                        "2.3.1",
+                        "2.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s, 0 ≤ real_measure s ∧ ¬0 = real_measure s, real_negligible s ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "2.3.4",
+                    "prevs": [
+                        "2.3.0",
+                        "2.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "real_measurable s, 0 ≤ real_measure s ∧ ¬0 = real_measure s ⊢ real_negligible s ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s, 0 ≤ real_measure s ∧ ¬0 = real_measure s ⊢ ¬real_negligible s"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "real_measurable s ⊢ 0 ≤ real_measure s ∧ ¬0 = real_measure s ⟶ ¬real_negligible s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_measurable s ⊢ ¬real_negligible s ⟶ 0 ≤ real_measure s ∧ ¬0 = real_measure s"
+                },
+                {
+                    "args": "¬real_negligible s",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬real_negligible s ⊢ ¬real_negligible s"
+                },
+                {
+                    "args": "¬real_measure s = 0",
+                    "id": "3.1",
+                    "prevs": [
+                        "2.1",
+                        "3.0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_measurable s, ¬real_negligible s ⊢ ¬real_measure s = 0"
+                },
+                {
+                    "args": "ineq_sym",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s, ¬real_negligible s ⊢ ¬0 = real_measure s"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.3",
+                    "prevs": [
+                        "1",
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s, ¬real_negligible s ⊢ 0 ≤ real_measure s ∧ ¬0 = real_measure s"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.0",
+                        "3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "real_measurable s ⊢ ¬real_negligible s ⟶ 0 ≤ real_measure s ∧ ¬0 = real_measure s"
+                },
+                {
+                    "args": "iffI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ 0 ≤ real_measure s ∧ ¬0 = real_measure s ⟷ ¬real_negligible s"
+                },
+                {
+                    "args": "real_lt_le, 0 < real_measure s ⟷ ¬real_negligible s",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ⊢ 0 < real_measure s ⟷ ¬real_negligible s"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ⟶ 0 < real_measure s ⟷ ¬real_negligible s"
+                }
+            ],
+            "prop": "real_measurable s ⟶ (0 < real_measure s <--> ~real_negligible s)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_lt_le"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_measure_pos_le"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_measurable_real_measure_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.3.1",
+                    "method_name": "apply_backward_step",
+                    "param_A": "real_measure s = 0",
+                    "theorem": "negE"
+                },
+                {
+                    "goal_id": "2.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "ineq_sym"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.3.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "ineq_sym"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
         }
     ],
     "description": "Integrals of real->real functions; measures of real set. Refer to realanalysis.ml from hol light.",
