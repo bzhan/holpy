@@ -26,7 +26,8 @@ d = Var("d", boolT)
 x = Var("x", Ta)
 y = Var("y", Ta)
 
-def test_macro(self, thy, macro, *, vars=None, assms=None, res=None, args="", failed=None, limit=None):
+def test_macro(self, thy, macro, *, vars=None, assms=None, res=None, args="", failed=None,
+               limit=None, eval_only=False):
     ctxt = Context(thy, vars=vars, limit=limit)
     thy = ctxt.thy
 
@@ -48,9 +49,10 @@ def test_macro(self, thy, macro, *, vars=None, assms=None, res=None, args="", fa
     self.assertEqual(macro.eval(thy, args, prev_ths), Thm(assms, res))
 
     # Check the proof term
-    pt = macro.get_proof_term(thy, args, prevs)
-    prf = pt.export()
-    self.assertEqual(thy.check_proof(prf), Thm(assms, res))
+    if not eval_only:
+        pt = macro.get_proof_term(thy, args, prevs)
+        prf = pt.export()
+        self.assertEqual(thy.check_proof(prf), Thm(assms, res))
 
 class LogicTest(unittest.TestCase):
     def testConj(self):

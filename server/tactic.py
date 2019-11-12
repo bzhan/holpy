@@ -112,11 +112,11 @@ class resolve(Tactic):
     
     """
     def get_proof_term(self, thy, goal, args, prevs):
-        assert isinstance(args, str) and len(prevs) == 1, "resolve"
+        assert isinstance(args, str) and len(prevs) == 1, "resolve: type"
         th_name = args
         th = thy.get_theorem(th_name, svar=True)
 
-        assert logic.is_neg(th.prop), "resolve"
+        assert logic.is_neg(th.prop), "resolve: prop is not a negation"
 
         # Checking that the theorem matches the fact is done here.
         return ProofTermDeriv('resolve_theorem', thy, (args, goal.prop), prevs)

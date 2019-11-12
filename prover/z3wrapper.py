@@ -127,6 +127,7 @@ def convert(t):
 norm_thms = [
     'member_empty_simp',
     'member_insert',
+    'member_univ_simp',
     'member_collect',
     'member_union_iff',
     'member_inter_iff',
@@ -169,11 +170,12 @@ class Z3Macro(ProofMacro):
 
     def eval(self, thy, args, prevs):
         if z3_loaded:
-            assert solve(thy, args), "Z3: not solved."
+            assms = [prev.prop for prev in prevs]
+            assert solve(thy, Term.mk_implies(*(assms + [args]))), "Z3: not solved."
         else:
             print("Warning: Z3 is not installed")
 
-        return Thm([], args)
+        return Thm(sum([th.hyps for th in prevs], ()), args)
 
     def expand(self, prefix, thy, args, prevs):
         raise NotImplementedError
@@ -195,9 +197,11 @@ class Z3Method(Method):
 
     def apply(self, state, id, data, prevs):
         assert z3_loaded, "Z3 method: not installed"
+        prev_ths = [state.get_proof_item(prev).th for prev in prevs]
+        assms = [prev.prop for prev in prev_ths]
         goal = state.get_proof_item(id).th.prop
-        assert solve(state.thy, goal), "Z3 method: not solved"
-        state.set_line(id, 'z3', args=goal, prevs=[])
+        assert solve(state.thy, Term.mk_implies(*(assms + [goal]))), "Z3 method: not solved"
+        state.set_line(id, 'z3', args=goal, prevs=prevs)
 
 
 global_macros.update({
