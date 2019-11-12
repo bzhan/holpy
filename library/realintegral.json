@@ -24,8 +24,14 @@
             "type": "real set ⇒ (real ⇒ real) ⇒ real"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_negligible",
-            "prop": "real_negligible s = !a. !b. has_real_integral (indicator s) 0 (real_closed_interval a b)",
+            "prop": [
+                "real_negligible s ⟷ ",
+                "(∀a. ∀b. has_real_integral (indicator s) 0 (real_closed_interval a b))"
+            ],
             "ty": "def",
             "type": "real set ⇒ bool"
         },
@@ -829,15 +835,19 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "has_real_integral_alt",
             "prop": [
-                "has_real_integral f i s <-->",
-                "(!a. !b. real_integrable_on (%x. if x ∈ s then f x else 0) (real_closed_interval a b)) &",
-                "(!e. 0 < e",
-                "--> (?B. 0 < B &",
-                "(!a. !b. subset (real_closed_interval (-B) B) (real_closed_interval a b)",
-                "--> abs (real_integral (real_closed_interval a b) (%x. if x ∈ s then f x else 0) - i) < e)))"
+                "has_real_integral f i s ⟷ ",
+                "(∀a. ∀b. real_integrable_on (λx. if x ∈ s then f x else 0) (real_closed_interval a b)) ∧ ",
+                "(∀e. 0 < e ",
+                "   ⟶ (∃B. 0 < B ∧ ",
+                "         (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ",
+                "              ⟶ abs ",
+                "                   (real_integral (real_closed_interval a b) (λx. if x ∈ s then f x else 0) - i) < ",
+                "                 e)))"
             ],
             "ty": "thm",
             "vars": {
@@ -22819,280 +22829,11 @@
                     "th": "real_measurable s ∧ real_measurable t ⊢ real_integrable_on (λx. if x ∈ s then 1 else 0) univ ∧ real_integrable_on (λx. if x ∈ t then 1 else 0) univ"
                 },
                 {
-                    "args": "",
+                    "args": "∀x. (if x ∈ s ∩ t then (1::real) else 0) = min (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)",
                     "id": "2",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. (if x ∈ s ∩ t then (1::real) else 0) = min (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "2.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "",
-                    "id": "2.1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ x ∈ s ∩ t ⟶ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "x ∈ s ∩ t",
-                    "id": "2.1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ s ∩ t ⊢ x ∈ s ∩ t"
-                },
-                {
-                    "args": "member_inter_iff",
-                    "id": "2.1.1",
-                    "prevs": [
-                        "2.1.0"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ s ∩ t ⊢ x ∈ s ∧ x ∈ t"
-                },
-                {
-                    "args": "conjD1, {}, {A: x ∈ s, B: x ∈ t}",
-                    "id": "2.1.2",
-                    "prevs": [
-                        "2.1.1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ s ∩ t ⊢ x ∈ s"
-                },
-                {
-                    "args": "conjD2, {}, {A: x ∈ s, B: x ∈ t}",
-                    "id": "2.1.3",
-                    "prevs": [
-                        "2.1.1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ s ∩ t ⊢ x ∈ t"
-                },
-                {
-                    "args": "(1::real) = (if (1::real) ≤ 1 then 1 else 1)",
-                    "id": "2.1.4",
-                    "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ (1::real) = (if (1::real) ≤ 1 then 1 else 1)"
-                },
-                {
-                    "args": "if_P, (1::real) = (if (1::real) ≤ (if x ∈ t then 1 else 0) then 1 else if x ∈ t then 1 else 0)",
-                    "id": "2.1.5",
-                    "prevs": [
-                        "2.1.4",
-                        "2.1.3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "x ∈ s ∩ t, real_measurable s ∧ real_measurable t ⊢ (1::real) = (if (1::real) ≤ (if x ∈ t then 1 else 0) then 1 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "if_P, (1::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)",
-                    "id": "2.1.6",
-                    "prevs": [
-                        "2.1.5",
-                        "2.1.2"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "x ∈ s ∩ t, real_measurable s ∧ real_measurable t ⊢ (1::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "if_P, (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)",
-                    "id": "2.1.7",
-                    "prevs": [
-                        "2.1.6",
-                        "2.1.0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "x ∈ s ∩ t, real_measurable s ∧ real_measurable t ⊢ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.1.8",
-                    "prevs": [
-                        "2.1.0",
-                        "2.1.7"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ x ∈ s ∩ t ⟶ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.2",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ¬x ∈ s ∩ t ⟶ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "¬x ∈ s ∩ t",
-                    "id": "2.2.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬x ∈ s ∩ t ⊢ ¬x ∈ s ∩ t"
-                },
-                {
-                    "args": "member_inter_iff",
-                    "id": "2.2.1",
-                    "prevs": [
-                        "2.2.0"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "¬x ∈ s ∩ t ⊢ ¬(x ∈ s ∧ x ∈ t)"
-                },
-                {
-                    "args": "de_morgan_thm1",
-                    "id": "2.2.2",
-                    "prevs": [
-                        "2.2.1"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "¬x ∈ s ∩ t ⊢ ¬x ∈ s ∨ ¬x ∈ t"
-                },
-                {
-                    "args": "",
-                    "id": "2.2.3",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t, ¬x ∈ s ∩ t ⊢ ¬x ∈ s ⟶ (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "¬x ∈ s",
-                    "id": "2.2.3.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬x ∈ s ⊢ ¬x ∈ s"
-                },
-                {
-                    "args": "(0::real) = (if (0::real) ≤ (if x ∈ t then 1 else 0) then 0 else if x ∈ t then 1 else 0)",
-                    "id": "2.2.3.1",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ (0::real) = (if (0::real) ≤ (if x ∈ t then 1 else 0) then 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "if_not_P, (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)",
-                    "id": "2.2.3.2",
-                    "prevs": [
-                        "2.2.3.1",
-                        "2.2.3.0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬x ∈ s, real_measurable s ∧ real_measurable t, ¬x ∈ s ∩ t ⊢ (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.2.3.3",
-                    "prevs": [
-                        "2.2.3.0",
-                        "2.2.3.2"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t, ¬x ∈ s ∩ t ⊢ ¬x ∈ s ⟶ (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.2.4",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t, ¬x ∈ s ∩ t ⊢ ¬x ∈ t ⟶ (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "¬x ∈ t",
-                    "id": "2.2.4.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬x ∈ t ⊢ ¬x ∈ t"
-                },
-                {
-                    "args": "(0::real) = (if (if x ∈ s then (1::real) else 0) ≤ 0 then if x ∈ s then 1 else 0 else 0)",
-                    "id": "2.2.4.1",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ 0 then if x ∈ s then 1 else 0 else 0)"
-                },
-                {
-                    "args": "if_not_P, (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)",
-                    "id": "2.2.4.2",
-                    "prevs": [
-                        "2.2.4.1",
-                        "2.2.4.0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬x ∈ t, real_measurable s ∧ real_measurable t, ¬x ∈ s ∩ t ⊢ (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.2.4.3",
-                    "prevs": [
-                        "2.2.4.0",
-                        "2.2.4.2"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t, ¬x ∈ s ∩ t ⊢ ¬x ∈ t ⟶ (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "disjE",
-                    "id": "2.2.5",
-                    "prevs": [
-                        "2.2.2",
-                        "2.2.3",
-                        "2.2.4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "¬x ∈ s ∩ t, real_measurable s ∧ real_measurable t ⊢ (0::real) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "if_not_P, (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)",
-                    "id": "2.2.6",
-                    "prevs": [
-                        "2.2.5",
-                        "2.2.0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬x ∈ s ∩ t, real_measurable s ∧ real_measurable t ⊢ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.2.7",
-                    "prevs": [
-                        "2.2.0",
-                        "2.2.6"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ¬x ∈ s ∩ t ⟶ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "classical_cases",
-                    "id": "2.3",
-                    "prevs": [
-                        "2.1",
-                        "2.2"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ (if x ∈ s ∩ t then (1::real) else 0) = (if (if x ∈ s then (1::real) else 0) ≤ (if x ∈ t then 1 else 0) then if x ∈ s then 1 else 0 else if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "real_min_def, (if x ∈ s ∩ t then (1::real) else 0) = min (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)",
-                    "id": "2.4",
-                    "prevs": [
-                        "2.3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ (if x ∈ s ∩ t then (1::real) else 0) = min (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.5",
-                    "prevs": [
-                        "2.0",
-                        "2.4"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. (if x ∈ s ∩ t then (1::real) else 0) = min (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
+                    "th": "⊢ ∀x. (if x ∈ s ∩ t then (1::real) else 0) = min (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
                 },
                 {
                     "args": "extension",
@@ -23330,141 +23071,6 @@
                 },
                 {
                     "goal_id": "2",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "goal_id": "2.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "real_min_def"
-                },
-                {
-                    "case": "x ∈ s ∩ t",
-                    "goal_id": "2.1",
-                    "method_name": "cases"
-                },
-                {
-                    "goal_id": "2.1",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.0"
-                    ],
-                    "goal_id": "2.1.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.0"
-                    ],
-                    "goal_id": "2.1.1",
-                    "method_name": "rewrite_fact",
-                    "theorem": "member_inter_iff"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.1"
-                    ],
-                    "goal_id": "2.1.2",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.1"
-                    ],
-                    "goal_id": "2.1.3",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.2"
-                    ],
-                    "goal_id": "2.1.4",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.3"
-                    ],
-                    "goal_id": "2.1.4",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
-                },
-                {
-                    "goal_id": "2.1.4",
-                    "method_name": "z3"
-                },
-                {
-                    "goal_id": "2.2",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.0"
-                    ],
-                    "goal_id": "2.2.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_not_P"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.0"
-                    ],
-                    "goal_id": "2.2.1",
-                    "method_name": "rewrite_fact",
-                    "theorem": "member_inter_iff"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.1"
-                    ],
-                    "goal_id": "2.2.2",
-                    "method_name": "rewrite_fact",
-                    "theorem": "de_morgan_thm1"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.2"
-                    ],
-                    "goal_id": "2.2.3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjE"
-                },
-                {
-                    "goal_id": "2.2.3",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.3.0"
-                    ],
-                    "goal_id": "2.2.3.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_not_P"
-                },
-                {
-                    "goal_id": "2.2.3.1",
-                    "method_name": "z3"
-                },
-                {
-                    "goal_id": "2.2.4",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.4.0"
-                    ],
-                    "goal_id": "2.2.4.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_not_P"
-                },
-                {
-                    "goal_id": "2.2.4.1",
                     "method_name": "z3"
                 },
                 {
@@ -24194,7 +23800,7 @@
                 "hint_forward"
             ],
             "name": "has_real_measure_disjoint_union",
-            "num_gaps": 4,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2",
@@ -24359,10 +23965,12 @@
                     "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2, x ∈ s1, x ∈ s2 ⊢ x ∈ ∅"
                 },
                 {
-                    "args": "",
+                    "args": "member_empty, (1::real) + 1 = 1",
                     "id": "5.4.2.1.4",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "5.4.2.1.3"
+                    ],
+                    "rule": "resolve_theorem",
                     "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2, x ∈ s1, x ∈ s2 ⊢ (1::real) + 1 = 1"
                 },
                 {
@@ -24386,11 +23994,11 @@
                     "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2, x ∈ s1 ⊢ x ∈ s2 ⟶ (1::real) + (if x ∈ s2 then 1 else 0) = 1"
                 },
                 {
-                    "args": "",
+                    "args": "¬x ∈ s2 ⟶ (1::real) + (if x ∈ s2 then 1 else 0) = 1",
                     "id": "5.4.2.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2, x ∈ s1 ⊢ ¬x ∈ s2 ⟶ (1::real) + (if x ∈ s2 then 1 else 0) = 1"
+                    "rule": "z3",
+                    "th": "⊢ ¬x ∈ s2 ⟶ (1::real) + (if x ∈ s2 then 1 else 0) = 1"
                 },
                 {
                     "args": "classical_cases",
@@ -24426,7 +24034,85 @@
                     "args": "",
                     "id": "5.4.3",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2 ⊢ x ∈ s2 ⟶ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = 1"
+                },
+                {
+                    "args": "x ∈ s2",
+                    "id": "5.4.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s2 ⊢ x ∈ s2"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.3.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2, x ∈ s2 ⊢ ¬x ∈ s1 ⟶ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = 1"
+                },
+                {
+                    "args": "¬x ∈ s1",
+                    "id": "5.4.3.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x ∈ s1 ⊢ ¬x ∈ s1"
+                },
+                {
+                    "args": "real_add_lid, (0::real) + 1 = 1",
+                    "id": "5.4.3.1.1",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::real) + 1 = 1"
+                },
+                {
+                    "args": "if_P, (0::real) + (if x ∈ s2 then 1 else 0) = 1",
+                    "id": "5.4.3.1.2",
+                    "prevs": [
+                        "5.4.3.1.1",
+                        "5.4.3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ s2, has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2, ¬x ∈ s1 ⊢ (0::real) + (if x ∈ s2 then 1 else 0) = 1"
+                },
+                {
+                    "args": "if_not_P, (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = 1",
+                    "id": "5.4.3.1.3",
+                    "prevs": [
+                        "5.4.3.1.2",
+                        "5.4.3.1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬x ∈ s1, has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2, x ∈ s2 ⊢ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = 1"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.3.1.4",
+                    "prevs": [
+                        "5.4.3.1.0",
+                        "5.4.3.1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2, x ∈ s2 ⊢ ¬x ∈ s1 ⟶ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = 1"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "5.4.3.2",
+                    "prevs": [
+                        "5.4.2",
+                        "5.4.3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2, x ∈ s2 ⊢ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = 1"
+                },
+                {
+                    "args": "",
+                    "id": "5.4.3.3",
+                    "prevs": [
+                        "5.4.3.0",
+                        "5.4.3.2"
+                    ],
+                    "rule": "intros",
                     "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ, x ∈ s1 ∪ s2 ⊢ x ∈ s2 ⟶ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = 1"
                 },
                 {
@@ -24461,11 +24147,11 @@
                     "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ ⊢ x ∈ s1 ∪ s2 ⟶ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = (if x ∈ s1 ∪ s2 then 1 else 0)"
                 },
                 {
-                    "args": "",
+                    "args": "¬x ∈ s1 ∪ s2 ⟶ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = (if x ∈ s1 ∪ s2 then 1 else 0)",
                     "id": "5.5",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2, x ∈ univ ⊢ ¬x ∈ s1 ∪ s2 ⟶ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = (if x ∈ s1 ∪ s2 then 1 else 0)"
+                    "rule": "z3",
+                    "th": "⊢ ¬x ∈ s1 ∪ s2 ⟶ (if x ∈ s1 then (1::real) else 0) + (if x ∈ s2 then 1 else 0) = (if x ∈ s1 ∪ s2 then 1 else 0)"
                 },
                 {
                     "args": "classical_cases",
@@ -24691,6 +24377,56 @@
                     ],
                     "goal_id": "5.4.2.1.3",
                     "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.2.1.3"
+                    ],
+                    "goal_id": "5.4.2.1.4",
+                    "method_name": "apply_resolve_step",
+                    "theorem": "member_empty"
+                },
+                {
+                    "goal_id": "5.4.2.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "5.4.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "case": "x ∈ s1",
+                    "goal_id": "5.4.3.1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "5.4.3.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.3.1.0"
+                    ],
+                    "goal_id": "5.4.3.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "5.4.3.0"
+                    ],
+                    "goal_id": "5.4.3.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "5.4.3.1.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_add_lid"
+                },
+                {
+                    "goal_id": "5.5",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
@@ -25366,6 +25102,448 @@
             "vars": {
                 "s": "real set",
                 "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_real_measure_0",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀f. ∀s. has_real_integral f 0 s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) 0 univ"
+                },
+                {
+                    "args": "f, real ⇒ real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR f"
+                },
+                {
+                    "args": "s, real set",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "has_real_integral_restrict_univ, has_real_integral f 0 s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) 0 univ",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_integral f 0 s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) 0 univ"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀f. ∀s. has_real_integral f 0 s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) 0 univ"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ has_real_measure s 0 ⟶ real_negligible s"
+                },
+                {
+                    "args": "has_real_measure s 0",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s 0 ⊢ has_real_measure s 0"
+                },
+                {
+                    "args": "has_real_measure_def",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_measure s 0 ⊢ has_real_integral (λx. 1) 0 s"
+                },
+                {
+                    "args": "λx::real. (1::real)",
+                    "id": "1.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ ∀s. has_real_integral (λx. 1) 0 s ⟷ has_real_integral (λx. if x ∈ s then (λx. 1) x else 0) 0 univ"
+                },
+                {
+                    "args": "s",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ has_real_integral (λx. 1) 0 s ⟷ has_real_integral (λx. if x ∈ s then (λx. 1) x else 0) 0 univ"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3",
+                        "1.1"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "has_real_measure s 0 ⊢ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ"
+                },
+                {
+                    "args": "",
+                    "id": "1.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_measure s 0 ⊢ ∀a. ∀b. has_real_integral (indicator s) 0 (real_closed_interval a b)"
+                },
+                {
+                    "args": "a, real",
+                    "id": "1.5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, real",
+                    "id": "1.5.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "indicator s",
+                    "id": "1.5.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ ∀s1. has_real_integral (indicator s) 0 s1 ⟷ has_real_integral (λx. if x ∈ s1 then indicator s x else 0) 0 univ"
+                },
+                {
+                    "args": "real_closed_interval a b",
+                    "id": "1.5.3",
+                    "prevs": [
+                        "1.5.2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ has_real_integral (indicator s) 0 (real_closed_interval a b) ⟷ has_real_integral (λx. if x ∈ real_closed_interval a b then indicator s x else 0) 0 univ"
+                },
+                {
+                    "args": "has_real_integral_alt",
+                    "id": "1.5.4",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_measure s 0 ⊢ (∀a. ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)) ∧ (∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) - 0) < e)))"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∀a. ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b), B: ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) - 0) < e))}",
+                    "id": "1.5.5",
+                    "prevs": [
+                        "1.5.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_measure s 0 ⊢ ∀a. ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)"
+                },
+                {
+                    "args": "a",
+                    "id": "1.5.6",
+                    "prevs": [
+                        "1.5.5"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "has_real_measure s 0 ⊢ ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)"
+                },
+                {
+                    "args": "b",
+                    "id": "1.5.7",
+                    "prevs": [
+                        "1.5.6"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "has_real_measure s 0 ⊢ real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integrable_on_def",
+                    "id": "1.5.8",
+                    "prevs": [
+                        "1.5.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_measure s 0 ⊢ ∃y. has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b)"
+                },
+                {
+                    "args": "λx. if x ∈ univ then if x ∈ s then (1::real) else 0 else 0",
+                    "id": "1.5.9",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ ∀s1. has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) 0 s1 ⟷ has_real_integral (λx. if x ∈ s1 then (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) x else 0) 0 univ"
+                },
+                {
+                    "args": "real_closed_interval a b",
+                    "id": "1.5.10",
+                    "prevs": [
+                        "1.5.9"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) 0 (real_closed_interval a b) ⟷ has_real_integral (λx. if x ∈ real_closed_interval a b then (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) x else 0) 0 univ"
+                },
+                {
+                    "args": "(0::real), real",
+                    "id": "1.5.11",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR (0::real)"
+                },
+                {
+                    "args": "has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b)",
+                    "id": "1.5.12",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b)"
+                },
+                {
+                    "args": "",
+                    "id": "1.5.13",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_real_measure s 0, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ real_closed_interval a b then indicator s x else 0) 0 univ"
+                },
+                {
+                    "args": "has_real_integral (indicator s) 0 (real_closed_interval a b)",
+                    "id": "1.5.14",
+                    "prevs": [
+                        "1.5.3",
+                        "1.5.13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "has_real_measure s 0, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b) ⊢ has_real_integral (indicator s) 0 (real_closed_interval a b)"
+                },
+                {
+                    "args": "∃y. has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b)",
+                    "id": "1.5.15",
+                    "prevs": [
+                        "1.5.0",
+                        "1.5.1",
+                        "1.5.8",
+                        "1.5.11",
+                        "1.5.12",
+                        "1.5.14"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_measure s 0 ⊢ ∀a. ∀b. has_real_integral (indicator s) 0 (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_negligible_def, real_negligible s",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_measure s 0 ⊢ real_negligible s"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_measure s 0 ⟶ real_negligible s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ real_negligible s ⟶ has_real_measure s 0"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ has_real_measure s 0 ⟷ real_negligible s"
+                }
+            ],
+            "prop": "has_real_measure s 0 <--> real_negligible s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal": "!f. !s. has_real_integral f 0 s = has_real_integral (%x. if x ∈ s then f x else 0) 0 univ",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "f, s"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_integral_restrict_univ"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_real_measure_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "forall_elim",
+                    "s": "(%x::real. (1::real))"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "forall_elim",
+                    "s": "s"
+                },
+                {
+                    "fact_ids": [
+                        "1.3",
+                        "1.1"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_negligible_def"
+                },
+                {
+                    "goal_id": "1.5",
+                    "method_name": "introduction",
+                    "names": "a,b"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.5.2",
+                    "method_name": "forall_elim",
+                    "s": "(indicator s)"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.2"
+                    ],
+                    "goal_id": "1.5.3",
+                    "method_name": "forall_elim",
+                    "s": "(real_closed_interval a b)"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.3"
+                    ],
+                    "goal_id": "1.5.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5.4",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_real_integral_alt"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.4"
+                    ],
+                    "goal_id": "1.5.5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.5"
+                    ],
+                    "goal_id": "1.5.6",
+                    "method_name": "forall_elim",
+                    "s": "a"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.6"
+                    ],
+                    "goal_id": "1.5.7",
+                    "method_name": "forall_elim",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.7"
+                    ],
+                    "goal_id": "1.5.8",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_integrable_on_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.5.9",
+                    "method_name": "forall_elim",
+                    "s": "(λx::real. if x ∈ univ then if x ∈ s then (1::real) else 0 else 0)"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.9"
+                    ],
+                    "goal_id": "1.5.10",
+                    "method_name": "forall_elim",
+                    "s": "(real_closed_interval a b)"
+                },
+                {
+                    "fact_ids": [
+                        "1.5.8"
+                    ],
+                    "goal_id": "1.5.11",
+                    "method_name": "exists_elim",
+                    "names": "(0::real)"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
             }
         }
     ],

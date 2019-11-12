@@ -120,7 +120,8 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_resolve"
             ],
             "name": "member_univ",
             "num_gaps": 0,
@@ -151,7 +152,7 @@
                     "th": "⊢ x ∈ univ"
                 }
             ],
-            "prop": "member x univ",
+            "prop": "x ∈ univ",
             "steps": [
                 {
                     "goal_id": "0",
@@ -181,154 +182,6 @@
             "name": "member_ext",
             "prop": "(!x. member x A = member x B) --> A = B",
             "ty": "thm.ax",
-            "vars": {
-                "A": "'a set",
-                "B": "'a set"
-            }
-        },
-        {
-            "attributes": [],
-            "name": "set_equal_iff",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "⊢ A = B ⟶ (∀x. x ∈ A ⟷ x ∈ B)"
-                },
-                {
-                    "args": "A = B",
-                    "id": "0.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "A = B ⊢ A = B"
-                },
-                {
-                    "args": "",
-                    "id": "0.1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "A = B ⊢ ∀x. x ∈ A ⟷ x ∈ B"
-                },
-                {
-                    "args": "x, 'a",
-                    "id": "0.1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ A ⟷ x ∈ B",
-                    "id": "0.1.1",
-                    "prevs": [
-                        "0.0"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "A = B ⊢ x ∈ A ⟷ x ∈ B"
-                },
-                {
-                    "args": "",
-                    "id": "0.1.2",
-                    "prevs": [
-                        "0.1.0",
-                        "0.1.1"
-                    ],
-                    "rule": "intros",
-                    "th": "A = B ⊢ ∀x. x ∈ A ⟷ x ∈ B"
-                },
-                {
-                    "args": "",
-                    "id": "0.2",
-                    "prevs": [
-                        "0.0",
-                        "0.1"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ A = B ⟶ (∀x. x ∈ A ⟷ x ∈ B)"
-                },
-                {
-                    "args": "",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "⊢ (∀x. x ∈ A ⟷ x ∈ B) ⟶ A = B"
-                },
-                {
-                    "args": "∀x. x ∈ A ⟷ x ∈ B",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "∀x. x ∈ A ⟷ x ∈ B ⊢ ∀x. x ∈ A ⟷ x ∈ B"
-                },
-                {
-                    "args": "member_ext",
-                    "id": "1.1",
-                    "prevs": [
-                        "1.0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "∀x. x ∈ A ⟷ x ∈ B ⊢ A = B"
-                },
-                {
-                    "args": "",
-                    "id": "1.2",
-                    "prevs": [
-                        "1.0",
-                        "1.1"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ (∀x. x ∈ A ⟷ x ∈ B) ⟶ A = B"
-                },
-                {
-                    "args": "iffI",
-                    "id": "2",
-                    "prevs": [
-                        "0",
-                        "1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "⊢ A = B ⟷ (∀x. x ∈ A ⟷ x ∈ B)"
-                }
-            ],
-            "prop": "A = B ⟷ (∀x. x ∈ A ⟷ x ∈ B)",
-            "steps": [
-                {
-                    "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "iffI"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "0.0"
-                    ],
-                    "goal_id": "0.1",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "fact_ids": [
-                        "0.0"
-                    ],
-                    "goal_id": "0.1.1",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "introduction"
-                },
-                {
-                    "goal_id": "1.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "member_ext"
-                }
-            ],
-            "ty": "thm",
             "vars": {
                 "A": "'a set",
                 "B": "'a set"
