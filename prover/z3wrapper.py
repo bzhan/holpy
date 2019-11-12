@@ -101,6 +101,9 @@ def convert(t):
     elif t.head.is_const_name('max'):
         a, b = convert(t.arg1), convert(t.arg)
         return z3.If(a >= b, a, b)
+    elif t.head.is_const_name('min'):
+        a, b = convert(t.arg1), convert(t.arg)
+        return z3.If(a <= b, a, b)
     elif t.head.is_const_name('abs'):
         a = convert(t.arg)
         return z3.If(a >= 0, a, -a)
@@ -125,6 +128,9 @@ norm_thms = [
     'member_empty_simp',
     'member_insert',
     'member_collect',
+    'member_union_iff',
+    'member_inter_iff',
+    'set_equal_iff',
     'subset_def'
 ]
 

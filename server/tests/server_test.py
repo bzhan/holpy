@@ -369,6 +369,17 @@ class ServerTest(unittest.TestCase):
             gaps=False
         )
 
+    def testApplyResolveStepThms(self):
+        self.run_search_thm(
+            'set',
+            vars={'x': "'a"},
+            assms=['x Mem empty_set'],
+            concl=['false'],
+            method_name='apply_resolve_step',
+            prevs=[0],
+            res=['member_empty']
+        )
+
     def testIntroduction(self):
         self.run_method(
             'logic_base',
