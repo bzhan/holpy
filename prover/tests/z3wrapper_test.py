@@ -6,10 +6,12 @@ from kernel.type import TFun
 from kernel.thm import Thm
 from data import nat
 from logic import basic
+from logic.tests.logic_test import test_macro
 from syntax import parser
 from syntax import printer
 from syntax.context import Context
 from prover import z3wrapper
+from server.tests.server_test import test_method
 
 
 class Z3WrapperTest(unittest.TestCase):
@@ -58,6 +60,7 @@ class Z3WrapperTest(unittest.TestCase):
         ctxt = Context('set', vars={'m': 'nat', 'S': 'nat set', 'T': 'nat set'})
         test_data = [
             ('a Mem S --> S Sub T --> a Mem T', True),
+            ('m Mem univ', True),
         ]
 
         for s, res in test_data:
@@ -86,21 +89,28 @@ class Z3WrapperTest(unittest.TestCase):
         if not z3wrapper.z3_loaded:
             return
 
-        macro = z3wrapper.Z3Macro()
+        test_macro(
+            self, 'real', 'z3',
+            vars={'S': 'real set', 'T': 'real set', 'x': 'real'},
+            assms=['S Int T = empty_set'],
+            args='(if x Mem S then (1::real) else 0) + (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)',
+            res='(if x Mem S then (1::real) else 0) + (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)',
+            eval_only=True
+        )
 
-        ctxt = Context('nat', vars={'s': 'nat => nat', 'A': 'nat', 'B': 'nat'})
-        thy = ctxt.thy
-        test_data = [
-            ("A * B + 1 = 1 + B * A", True),
-            ("s 0 = s 1", False),
-        ]
+    def testZ3Method(self):
+        if not z3wrapper.z3_loaded:
+            return
 
-        for s, res in test_data:
-            t = parser.parse_term(ctxt, s)
-            if res:
-                self.assertEqual(macro.eval(thy, t, []), Thm([], t))
-            else:
-                self.assertRaises(AssertionError, macro.eval, thy, t, [])
+        test_method(
+            self, 'real',
+            vars={'S': 'real set', 'T': 'real set', 'x': 'real'},
+            assms=['S Int T = empty_set'],
+            concl='(if x Mem S then (1::real) else 0) + (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)',
+            method_name='z3',
+            prevs=[0],
+            gaps=False
+        )
 
 
 if __name__ == "__main__":

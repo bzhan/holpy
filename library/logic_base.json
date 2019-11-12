@@ -401,6 +401,41 @@
         },
         {
             "attributes": [
+                "hint_resolve"
+            ],
+            "name": "not_false_res",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "false ⟶ false",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ false ⟶ false"
+                },
+                {
+                    "args": "negI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬false"
+                }
+            ],
+            "prop": "¬false",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
                 "hint_backward"
             ],
             "name": "eq_refl",

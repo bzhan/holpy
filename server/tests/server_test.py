@@ -25,6 +25,53 @@ B = Var("B", boolT)
 conj = logic.mk_conj
 disj = logic.mk_disj
 
+def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=None, args=None,
+                gaps=None, lines=None, query=None):
+    """Test run a method.
+
+    gaps -- expected gaps remaining.
+    query -- expected query for variables.
+
+    """
+    # Build context
+    ctxt = Context(thy, vars=vars)
+    thy = ctxt.thy
+
+    # Build starting state
+    vars = [Var(nm, T) for nm, T in ctxt.vars.items()]
+    assms = [parser.parse_term(ctxt, t) for t in assms] if assms is not None else []
+    concl = parser.parse_term(ctxt, concl)
+    state = ProofState.init_state(thy, vars, assms, concl)
+
+    # Obtain and run method
+    if args is None:
+        args = dict()
+    args['method_name'] = method_name
+    args['goal_id'] = len(assms)
+    args['fact_ids'] = prevs
+
+    if query is not None:
+        self.assertRaises(theory.ParameterQueryException, method.apply_method, state, args)
+        return
+
+    method.apply_method(state, args)
+    self.assertEqual(state.check_proof(), Thm.mk_implies(*(assms + [concl])))
+    
+    # Compare list of gaps
+    if gaps is None:
+        gaps = [concl]  # gaps unchanged
+    elif gaps == False:
+        gaps = []  # assert no gaps
+    else:
+        gaps = [parser.parse_term(ctxt, gap) for gap in gaps] if gaps is not None else []
+    self.assertEqual([gap.prop for gap in state.rpt.gaps], gaps)
+
+    # Compare list of lines
+    if lines:
+        for id, t in lines.items():
+            t = parser.parse_term(ctxt, t)
+            self.assertEqual(state.get_proof_item(id).th.prop, t)
+
 def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
               print_stat=False, print_search=False, print_steps=False):
     """Test list of steps for the given theorem."""
@@ -81,7 +128,6 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
         for val in f_data['content']:
             if val['ty'] == 'thm' and val['name'] == thm_name:
                 test_val(thy, val)
-
 
 class ServerTest(unittest.TestCase):
     def testInitProof(self):
@@ -176,53 +222,6 @@ class ServerTest(unittest.TestCase):
         search_res = state.apply_search(len(assms), method, prevs=prevs)
         self.assertEqual([res['theorem'] for res in search_res], res)
 
-    def run_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=None, args=None,
-                   gaps=None, lines=None, query=None):
-        """Test run a method.
-
-        gaps -- expected gaps remaining.
-        query -- expected query for variables.
-
-        """
-        # Build context
-        ctxt = Context(thy, vars=vars)
-        thy = ctxt.thy
-
-        # Build starting state
-        vars = [Var(nm, T) for nm, T in ctxt.vars.items()]
-        assms = [parser.parse_term(ctxt, t) for t in assms] if assms is not None else []
-        concl = parser.parse_term(ctxt, concl)
-        state = ProofState.init_state(thy, vars, assms, concl)
-
-        # Obtain and run method
-        if args is None:
-            args = dict()
-        args['method_name'] = method_name
-        args['goal_id'] = len(assms)
-        args['fact_ids'] = prevs
-
-        if query is not None:
-            self.assertRaises(theory.ParameterQueryException, method.apply_method, state, args)
-            return
-
-        method.apply_method(state, args)
-        self.assertEqual(state.check_proof(), Thm.mk_implies(*(assms + [concl])))
-        
-        # Compare list of gaps
-        if gaps is None:
-            gaps = [concl]  # gaps unchanged
-        elif gaps == False:
-            gaps = []  # assert no gaps
-        else:
-            gaps = [parser.parse_term(ctxt, gap) for gap in gaps] if gaps is not None else []
-        self.assertEqual([gap.prop for gap in state.rpt.gaps], gaps)
-
-        # Compare list of lines
-        if lines:
-            for id, t in lines.items():
-                t = parser.parse_term(ctxt, t)
-                self.assertEqual(state.get_proof_item(id).th.prop, t)
-
     def testApplyBackwardStepThms(self):
         self.run_search_thm(
             'logic_base',
@@ -265,7 +264,7 @@ class ServerTest(unittest.TestCase):
         )
 
     def testApplyBackwardStep(self):
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': 'bool', 'B': 'bool'},
             assms=['A & B'],
@@ -277,7 +276,7 @@ class ServerTest(unittest.TestCase):
 
     def testApplyBackwardStep2(self):
         """Case where one or more assumption also needs to be matched."""
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': 'bool', 'B': 'bool'},
             assms=['A | B'],
@@ -290,7 +289,7 @@ class ServerTest(unittest.TestCase):
 
     def testApplyBackwardStep3(self):
         """Test when additional instantiation is not provided."""
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': 'bool', 'B': 'bool'},
             assms=['A & B'],
@@ -302,7 +301,7 @@ class ServerTest(unittest.TestCase):
 
     def testApplyBackwardStep4(self):
         """Test when additional instantiation is not provided."""
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': 'bool', 'B': 'bool'},
             assms=['A & B'],
@@ -314,7 +313,7 @@ class ServerTest(unittest.TestCase):
 
     def testApplyBackwardStep5(self):
         """Test case with type variable only."""
-        self.run_method(
+        test_method(self,
             'set',
             concl='finite (empty_set::nat set)',
             method_name='apply_backward_step',
@@ -334,7 +333,7 @@ class ServerTest(unittest.TestCase):
         )
 
     def testApplyForwardStep1(self):
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': 'bool', 'B': 'bool'},
             assms=['A & B'],
@@ -346,7 +345,7 @@ class ServerTest(unittest.TestCase):
         )
 
     def testApplyForwardStep2(self):
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': 'bool', 'B': 'bool'},
             assms=['A'],
@@ -358,7 +357,7 @@ class ServerTest(unittest.TestCase):
         )
 
     def testApplyForwardStep3(self):
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': 'bool', 'B': 'bool'},
             assms=['A'],
@@ -380,8 +379,18 @@ class ServerTest(unittest.TestCase):
             res=['member_empty']
         )
 
+    def testApplyResolveStepThms2(self):
+        self.run_search_thm(
+            'logic_base',
+            assms=['false'],
+            concl=['false'],
+            method_name='apply_resolve_step',
+            prevs=[0],
+            res=['not_false_res']
+        )
+
     def testIntroduction(self):
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': 'bool', 'B': 'bool'},
             concl="A | B --> B | A",
@@ -390,7 +399,7 @@ class ServerTest(unittest.TestCase):
         )
 
     def testIntroduction2(self):
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': 'bool', 'B': 'bool'},
             concl='A --> B --> A & B',
@@ -399,7 +408,7 @@ class ServerTest(unittest.TestCase):
         )
 
     def testIntroduction3(self):
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'A': "'a => bool", 'B': "'a => bool"},
             concl='!x. A x --> B x',
@@ -409,7 +418,7 @@ class ServerTest(unittest.TestCase):
         )
 
     def testApplyInduction(self):
-        self.run_method(
+        test_method(self,
             'nat',
             vars={'n': 'nat'},
             concl='n + 0 = n',
@@ -428,7 +437,7 @@ class ServerTest(unittest.TestCase):
         )
 
     def testRewriteGoal(self):
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'P': 'bool', 'a': "'a", 'b': "'a"},
             assms=['P'],
@@ -440,7 +449,7 @@ class ServerTest(unittest.TestCase):
         )
 
     def testRewriteGoal2(self):
-        self.run_method(
+        test_method(self,
             'logic_base',
             vars={'P': 'bool', 'a': "'a", 'b': "'a"},
             assms=['P'],
