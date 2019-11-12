@@ -73,6 +73,9 @@ class Z3WrapperTest(unittest.TestCase):
             ('max a b = (1/2) * (a + b + abs(a - b))', True),
             ('(x Mem T --> 0 <= f x) --> S Sub T --> (if x Mem S then f x else 0) <= (if x Mem T then f x else 0)', True),
             ('{x. (a <= x & x <= b) & ~(a < x & x < b)} Sub {a, b}', True),
+            ('max (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)', True),
+            ('min (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Int T) then 1 else 0)', True),
+            ('S Int T = empty_set --> (if x Mem S then (1::real) else 0) + (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)', True),
         ]
 
         for s, res in test_data:
