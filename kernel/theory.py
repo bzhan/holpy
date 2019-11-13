@@ -190,7 +190,6 @@ class Theory():
             raise TypeError
 
         self.add_data("theorems", name, th)
-        self.add_data("theorems_svar", name, Thm.convert_svar(th))
 
     def has_theorem(self, name):
         """Returns whether the current theory contains the given theorem."""
@@ -199,13 +198,17 @@ class Theory():
     
     def get_theorem(self, name, svar=False):
         """Returns the theorem under that name."""
-        if name not in self.get_data("theorems"):
+        data = self.get_data("theorems")
+        if name not in data:
             raise TheoryException("Theorem " + name + " not found")
 
         if svar:
-            return self.get_data("theorems_svar")[name]
+            data_svar = self.get_data("theorems_svar")
+            if name not in data_svar:
+                data_svar[name] = Thm.convert_svar(data[name])
+            return data_svar[name]
         else:
-            return self.get_data("theorems")[name]
+            return data[name]
 
     def add_attribute(self, name, attribute):
         """Add an attribute for the given theorem."""
@@ -323,7 +326,7 @@ class Theory():
         thy.add_data_type("type_sig")
         thy.add_data_type("term_sig")
         thy.add_data_type("theorems")
-        thy.add_data_type("theorems_svar")
+        thy.add_data_type("theorems_svar")  # cache of version of theorem with SVar.
         thy.add_data_type("proof_macro")
         thy.add_data_type("method")
         thy.add_data_type("attributes")
