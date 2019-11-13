@@ -1,6 +1,8 @@
 <template>
   <div v-if="line !== undefined && line.rule !== 'intros'" style="font-size:14px;white-space:nowrap"
-       v-bind:style="styleObject" v-on:click="$emit('select')">
+       v-bind:style="styleObject" v-on:click="$emit('select')"
+       @mouseenter="handleMouseEnter"
+       @mouseleave="handleMouseLeave">
     <span style="display:inline-block;width:40px">{{line.id}}</span>
     <span class="item-text" v-html="indent"/>
     <span v-if="line.rule === 'assume'">
@@ -49,9 +51,30 @@ export default {
     // Whether is a goal or fact.
     "is_goal",
     "is_fact",
+
+    // Whether can be selected.
+    "can_select"
   ],
 
-  computed: {
+  data: function () {
+    return {
+      hover: false
+    }
+  },
+
+  methods: {
+    handleMouseEnter: function () {
+      if (this.can_select)
+        this.hover = true
+    },
+
+    handleMouseLeave: function () {
+      if (this.can_select)
+        this.hover = false
+    },
+  },
+
+  computed: {    
     indent: function () {
       var indent = ''
       for (let i = 0; i < this.line.id.length; i++) {
@@ -65,6 +88,8 @@ export default {
     styleObject: function () {
       if (this.is_fact) {
         return {backgroundColor: 'yellow'}
+      } else if (this.hover) {
+        return {backgroundColor: 'lightYellow'}
       } else {
         return {}
       }

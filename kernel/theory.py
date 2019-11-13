@@ -438,6 +438,8 @@ class Theory():
             prev_ths = []
             assert isinstance(seq.prevs, list), "prevs should be a list"
             for prev in seq.prevs:
+                if not seq.id.can_depend_on(prev):
+                    raise CheckProofException("id %s cannot depend on %s" % (seq.id, prev))
                 try:
                     prev_ths.append(prf.find_item(prev).th)
                 except ProofException:

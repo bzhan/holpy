@@ -28,6 +28,19 @@ class ProofTest(unittest.TestCase):
             start = ItemID(start)
             self.assertEqual(str(id.incr_id_after(start, n)), res)
 
+    def testCanDependOn(self):
+        test_data = [
+            ("0", "0", False),
+            ("0", "1", False),
+            ("1", "0", True),
+            ("1.1", "1.0", True),
+            ("1.1", "1", False),
+            ("2", "1.1", False)
+        ]
+
+        for id1, id2, res in test_data:
+            self.assertEqual(ItemID(id1).can_depend_on(ItemID(id2)), res)
+
     def testProofItem(self):
         test_data = [
             (ProofItem(0, "theorem", args="conjD1"),

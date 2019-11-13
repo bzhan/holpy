@@ -59,7 +59,17 @@ class ItemID():
             return self
 
     def last(self):
+        """Return the last entry of the id."""
         return self.id[-1]
+
+    def can_depend_on(self, other):
+        """Return whether the current id can depend on another id."""
+        l = len(other.id)
+        if l > len(self.id):
+            return False
+        if other.id[:l-1] != self.id[:l-1]:
+            return False
+        return other.id[l-1] < self.id[l-1]
 
 class ProofException(Exception):
     pass

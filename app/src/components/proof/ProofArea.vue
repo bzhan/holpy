@@ -3,9 +3,10 @@
     <div v-if="proof !== undefined">
       <ProofLine v-for="(line, index) in proof"
                  v-bind:key="index" v-bind:line="line"
-                 v-bind:is_last_id="is_last_id(proof, index)"
+                 v-bind:is_last_id="is_last_id(index)"
                  v-bind:is_goal="goal === index"
                  v-bind:is_fact="facts.indexOf(index) !== -1"
+                 v-bind:can_select="can_select(index)"
                  v-on:select="mark_text(index)"/>
     </div>
   </div>
@@ -328,11 +329,26 @@ export default {
       }
     },
 
-    is_last_id: function (proof, lineNo) {
-      if (proof.length - 1 === lineNo) {
+    is_last_id: function (line_no) {
+      if (this.proof.length - 1 === line_no) {
         return true
       }
-      return proof[lineNo + 1].rule === 'intros'
+      return this.proof[line_no + 1].rule === 'intros'
+    },
+
+    can_select: function (line_no) {
+      if (this.goal === -1)
+        return false
+
+      const goal_id = this.proof[this.goal].id
+      const fact_id = this.proof[line_no].id
+      const len = fact_id.length
+      if (len > goal_id.length)
+        return false
+      for (let i = 0; i < len-1; i++)
+        if (fact_id[i] !== goal_id[i])
+          return false
+      return fact_id[len-1] < goal_id[len-1]
     },
 
     // Select goal or fact
@@ -342,6 +358,10 @@ export default {
         this.goal = line_no;
       }
       else if (this.goal !== -1) {
+        if (!this.can_select(line_no)) {
+          // Goal cannot depend on this fact
+          return
+        }
         // Choose or unchoose a fact
         let i = this.facts.indexOf(line_no);
         if (i === -1)

@@ -180,7 +180,7 @@ class TheoryTest(unittest.TestCase):
         prf = Proof()
         prf.add_item(0, "implies_intr", prevs=[1])
 
-        self.assertRaisesRegex(CheckProofException, "previous item not found", thy.check_proof, prf)
+        self.assertRaisesRegex(CheckProofException, "id 0 cannot depend on 1", thy.check_proof, prf)
 
     def testCheckProofFail2(self):
         """Invalid derivation."""
