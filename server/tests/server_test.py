@@ -433,7 +433,7 @@ class ServerTest(unittest.TestCase):
             vars={'n': 'nat'},
             concl='0 + n = 0',
             method_name='rewrite_goal',
-            res=['nat_plus_def_1']
+            res=['eq_sym_eq', 'nat_plus_def_1']
         )
 
     def testRewriteGoal(self):
