@@ -308,16 +308,20 @@ class Term():
 
     def strip_comb(self):
         """Given a term f t1 t2 ... tn, returns (f, [t1, t2, ..., tn])."""
-        if self.is_comb():
-            (f, args) = self.fun.strip_comb()
-            return (f, args + [self.arg])
-        else:
-            return (self, [])
+        t = self
+        args = []
+        while t.is_comb():
+            args.append(t.arg)
+            t = t.fun
+        return (t, list(reversed(args)))
 
     @property
     def head(self):
         """Given a term f t1 t2 ... tn, returns f."""
-        return self.strip_comb()[0]
+        t = self
+        while t.is_comb():
+            t = t.fun
+        return t
 
     @property
     def args(self):
@@ -326,7 +330,7 @@ class Term():
 
     def is_binop(self):
         """Whether self is of the form f t1 t2."""
-        return len(self.args) == 2
+        return self.is_comb() and self.fun.is_comb() and not self.fun.fun.is_comb()
 
     @property
     def arg1(self):
@@ -335,8 +339,7 @@ class Term():
 
     def is_implies(self):
         """Whether self is of the form A --> B."""
-        implies = Const("implies", TFun(boolT, boolT, boolT))
-        return self.is_binop() and self.head == implies
+        return self.is_comb() and self.fun.is_comb() and self.fun.fun.is_const_name('implies')
 
     @staticmethod
     def mk_implies(*args):
@@ -385,10 +388,7 @@ class Term():
 
     def is_equals(self):
         """Whether self is of the form A = B."""
-        if self.is_binop():
-            return self.head.is_const_name("equals")
-        else:
-            return False
+        return self.is_comb() and self.fun.is_comb() and self.fun.fun.is_const_name("equals")
 
     def is_reflexive(self):
         """Whether self is of the form A = A."""
