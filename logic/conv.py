@@ -260,6 +260,11 @@ class rewr_conv(Conv):
             conds = []
         self.conds = conds
 
+        # Computed after the first invocation
+        self.eq_pt = None
+        self.As = None
+        self.C = None
+
     def __str__(self):
         if isinstance(self.pt, str):
             return "rewr_conv(%s)" % str(self.pt)
@@ -267,34 +272,40 @@ class rewr_conv(Conv):
             return "rewr_conv(%s)" % str(self.pt.th)
 
     def get_proof_term(self, thy, t):
-        if isinstance(self.pt, str):
-            eq_pt = ProofTerm.theorem(thy, self.pt)
-            if self.sym:
-                eq_pt = ProofTerm.symmetric(eq_pt)
-        else:
-            eq_pt = self.pt
-                
-        # Deconstruct th into assumptions and conclusion
-        As, C = eq_pt.assums, eq_pt.concl
-        assert Term.is_equals(C), "rewr_conv: theorem is not an equality."
-        if len(As) != len(self.conds):
+        if self.eq_pt is None:
+            if isinstance(self.pt, str):
+                self.eq_pt = ProofTerm.theorem(thy, self.pt)
+                if self.sym:
+                    self.eq_pt = ProofTerm.symmetric(self.eq_pt)
+            else:
+                self.eq_pt = self.pt
+
+            self.As, self.C = self.eq_pt.prop.strip_implies()
+
+        assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
+        if len(self.As) != len(self.conds):
             raise ConvException("rewr_conv: number of conds does not agree")
 
-        tyinst, inst = dict(), dict()
+        instsp = dict(), dict()
         ts = [cond.prop for cond in self.conds]
         try:
-            matcher.first_order_match_list_incr(As, ts, (tyinst, inst))
-            matcher.first_order_match_incr(C.lhs, t, (tyinst, inst))
+            matcher.first_order_match_list_incr(self.As, ts, instsp)
+            matcher.first_order_match_incr(self.C.lhs, t, instsp)
         except matcher.MatchException:
             raise ConvException("rewr_conv: cannot match")
 
         # Check that every variable in the theorem has an instantiation
-        unmatched_vars = [v.name for v in term.get_svars(eq_pt.prop) if v.name not in inst]
+        unmatched_vars = [v.name for v in term.get_svars(self.eq_pt.prop) if v.name not in instsp[1]]
         if unmatched_vars:
             raise ConvException("rewr_conv: unmatched vars")
 
-        pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, eq_pt))
-        if self.conds is not None:
+        pt = self.eq_pt
+        tyinst, inst = instsp
+        if tyinst:
+            pt = ProofTerm.subst_type(tyinst, pt)
+        if inst:
+            pt = ProofTerm.substitution(inst, pt)
+        if self.conds:
             pt = ProofTerm.implies_elim(pt, *self.conds)
 
         if not (pt.th.is_equals() and pt.th.prop.lhs == t):
