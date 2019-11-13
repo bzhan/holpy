@@ -3,6 +3,8 @@
 """Statistics of common theorems."""
 
 import unittest
+from pstats import Stats
+import cProfile
 
 from server.tests.server_test import testSteps
 
@@ -48,14 +50,25 @@ test_theorems = [
     ('list', 'rev_length'),
 ]
 
+profile = True
+
 class CollectStat(unittest.TestCase):
     def testCollectStat(self):
+        if profile:
+            pr = cProfile.Profile()
+            pr.enable()
+
         for thy_name, thm_name in test_theorems:
             try:
                 testSteps(self, thy_name, thm_name, no_gaps=True, print_stat=True)
             except Exception as e:
                 print(thy_name, thm_name, "failed:", e.__class__)
 
+        if profile:
+            p = Stats(pr)
+            p.strip_dirs()
+            p.sort_stats('cumtime')
+            p.print_stats()
 
 if __name__ == "__main__":
     unittest.main()
