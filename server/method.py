@@ -13,25 +13,6 @@ from syntax import parser, printer, pprint, settings
 from server import tactic
 
 
-def display_goals(state, data):
-    """Return list of goals in string form. If there is no goals
-    remaining, return '(solves)'.
-
-    """
-    assert '_goal' in data, "display_goals"
-    if data['_goal']:
-        goals = [printer.print_term(state.thy, t) for t in data['_goal']]
-        return pprint.KWRed("goal ") + printer.commas_join(goals)
-    else:
-        return pprint.KWGreen("(solves)")
-
-def display_facts(state, data):
-    """Return list of new facts in string form."""
-    assert '_fact' in data and len(data['_fact']) > 0, "display_facts"
-    facts = [printer.print_term(state.thy, t) for t in data['_fact']]
-    return pprint.KWGreen("fact ") + printer.commas_join(facts)
-
-
 class cut_method(Method):
     """Insert intermediate goal."""
     def __init__(self):
@@ -93,7 +74,7 @@ class apply_prev_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return pprint.N("Apply fact (b): ") + display_goals(state, data)
+        return pprint.N("Apply fact (b)")
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.apply_prev(), prevs=prevs)
@@ -115,7 +96,7 @@ class rewrite_goal_with_prev_method(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return pprint.N("rewrite with fact: ") + display_goals(state, data)
+        return pprint.N("rewrite with fact")
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=prevs)
@@ -150,7 +131,7 @@ class rewrite_goal(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return pprint.N(data['theorem'] + " (r): ") + display_goals(state, data)
+        return pprint.N(data['theorem'] + " (r)")
 
     def apply(self, state, id, data, prevs):
         state.apply_tactic(id, tactic.rewrite_goal(), args=data['theorem'], prevs=prevs)
@@ -185,7 +166,7 @@ class rewrite_fact(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return pprint.N(data['theorem'] + " (r): ") + display_facts(state, data)
+        return pprint.N(data['theorem'] + " (r)")
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
@@ -258,10 +239,7 @@ class apply_forward_step(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        if "_fact" in data:
-            return pprint.N(data['theorem'] + " (f): ") + display_facts(state, data)
-        else:
-            return pprint.N(data['theorem'] + " (f)")
+        return pprint.N(data['theorem'] + " (f)")
 
     def apply(self, state, id, data, prevs):
         inst = dict()
@@ -328,10 +306,7 @@ class apply_backward_step(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        if "_goal" in data:
-            return pprint.N(data['theorem'] + " (b): ") + display_goals(state, data)
-        else:
-            return pprint.N(data['theorem'] + " (b)")
+        return pprint.N(data['theorem'] + " (b)")
 
     def apply(self, state, id, data, prevs):
         inst = dict()
@@ -398,7 +373,7 @@ class introduction(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        res = "introduction on " + str(id)
+        res = "introduction"
         if 'names' in data and data['names'] != "":
             names = [name.strip() for name in data['names'].split(',')]
             if len(names) > 1:
@@ -512,7 +487,7 @@ class forall_elim(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return pprint.N("forall elimination")
+        return pprint.N("Forall elimination")
 
     def apply(self, state, id, data, prevs):
         t = parser.parse_term(state.get_ctxt(id), data['s'])
@@ -539,7 +514,7 @@ class inst_exists_goal(Method):
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return pprint.N("instantiate exists goal")
+        return pprint.N("Instantiate exists goal")
 
     def apply(self, state, id, data, prevs):
         t = parser.parse_term(state.get_ctxt(id), data['s'])
@@ -574,9 +549,9 @@ class induction(Method):
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
         if 'var' in data:
-            return pprint.N("induction " + data['theorem'] + " var: " + data['var'])
+            return pprint.N("Induction " + data['theorem'] + " var: " + data['var'])
         else:
-            return pprint.N("induction " + data['theorem'])
+            return pprint.N("Induction " + data['theorem'])
 
     def apply(self, state, id, data, prevs):
         # Find variable
@@ -600,7 +575,7 @@ class new_var(Method):
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
         T = parser.parse_type(state.thy, data['type'])
-        return pprint.N("variable " + data['name'] + " :: ") + printer.print_type(state.thy, T)
+        return pprint.N("Variable " + data['name'] + " :: ") + printer.print_type(state.thy, T)
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
@@ -648,7 +623,7 @@ def apply_method(state, step):
     return method.apply(state, goal_id, step, fact_ids)
 
 @settings.with_settings
-def display_method(state, step):
+def display_method(state, step, mode='long'):
     """Obtain the string explaining the step in the user interface."""
     method = theory.global_methods[step['method_name']]
     goal_id = ItemID(step['goal_id'])
@@ -657,7 +632,8 @@ def display_method(state, step):
     search_res = method.search(state, goal_id, fact_ids, data=step)
     assert len(search_res) == 1, "display_method: %s, %d result found." % (
         step['method_name'], len(search_res))
-    return method.display_step(state, goal_id, search_res[0], fact_ids)
+
+    return method.output_step(state, goal_id, search_res[0], fact_ids, mode=mode)
 
 
 theory.global_methods.update({

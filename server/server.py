@@ -155,12 +155,14 @@ class ProofState():
             for step in data['steps']:
                 state.history.append({
                     'steps_output': method.display_method(state, step, unicode=True, highlight=True),
+                    'steps_output_short': method.display_method(state, step, mode='short', unicode=True, highlight=True),
                     'proof': state.export_proof(state.prf),
                     'report': state.rpt.json_data()
                 })
                 method.apply_method(state, step)
             state.history.append({
                 'steps_output': pprint.N('Current state', highlight=True),
+                'steps_output_short': pprint.N('Current state', highlight=True),
                 'proof': state.export_proof(state.prf),
                 'report': state.rpt.json_data()
             })
@@ -266,7 +268,7 @@ class ProofState():
             res = method.search(self, id, prevs)
             for r in res:
                 r['_method_name'] = name
-                r['display'] = method.display_step(self, id, r, prevs, highlight=True, unicode=True)
+                r['display'] = method.output_step(self, id, r, prevs, highlight=True, unicode=True)
             results.extend(res)
 
         # If there is an element in results that solves the goal,

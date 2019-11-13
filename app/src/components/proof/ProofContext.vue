@@ -10,6 +10,7 @@
     <div>
       <div style="margin-left:10px" v-for="(line, index) in steps" v-bind:key="index"
            v-on:click="handleSelect(index)"
+           class='step-entry'
            v-bind:class="{'step-selected': selected_step === index}">
         <Expression v-bind:line="line"/>
       </div>
@@ -48,6 +49,10 @@ export default {
 
 
 <style>
+
+.step-entry {
+  cursor: pointer
+}
 
 .step-selected {
   background-color: yellow

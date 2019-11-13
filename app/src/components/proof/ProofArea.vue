@@ -129,7 +129,7 @@ export default {
 
     display_instructions: function () {
       if (this.history[this.index] !== undefined) {
-        this.ref_status.instr = this.history[this.index].steps_output
+        this.ref_status.instr = this.history[this.index].steps_output_short
         this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
       } else {
         this.ref_status.instr = ''
@@ -141,7 +141,7 @@ export default {
       // Display history in ref_context
       var steps = []
       for (let i = 0; i < this.history.length; i++) {
-        steps.push(this.history[i].steps_output)
+        steps.push(this.history[i].steps_output_short)
       }
       this.ref_context.steps = steps
     },
