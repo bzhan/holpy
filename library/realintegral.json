@@ -29802,7 +29802,7 @@
                 "hint_forward"
             ],
             "name": "real_measure_union",
-            "num_gaps": 2,
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "real_measurable s ∧ real_measurable t",
@@ -29812,11 +29812,11 @@
                     "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable s ∧ real_measurable t"
                 },
                 {
-                    "args": "",
+                    "args": "s ∪ t = s ∩ t ∪ {x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}",
                     "id": "1",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ s ∪ t = s ∩ t ∪ {x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}"
+                    "rule": "z3",
+                    "th": "⊢ s ∪ t = s ∩ t ∪ {x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}"
                 },
                 {
                     "args": "diff_def, s ∪ t = s ∩ t ∪ diff s t ∪ diff t s",
@@ -29828,18 +29828,166 @@
                     "th": "real_measurable s ∧ real_measurable t ⊢ s ∪ t = s ∩ t ∪ diff s t ∪ diff t s"
                 },
                 {
-                    "args": "",
+                    "args": "∀a::real. ∀b. ∀c. a + b - c = c + (a - c) + (b - c)",
                     "id": "3",
                     "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. a + b - c = c + (a - c) + (b - c)"
+                },
+                {
+                    "args": "real_measure s",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ ∀b. ∀c. real_measure s + b - c = c + (real_measure s - c) + (b - c)"
+                },
+                {
+                    "args": "real_measure t",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ ∀c. real_measure s + real_measure t - c = c + (real_measure s - c) + (real_measure t - c)"
+                },
+                {
+                    "args": "real_measure (s ∩ t)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ real_measure s + real_measure t - real_measure (s ∩ t) = real_measure (s ∩ t) + (real_measure s - real_measure (s ∩ t)) + (real_measure t - real_measure (s ∩ t))"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀s. ∀t. real_measurable s ∧ real_measurable t ∧ disjoint s t ⟶ real_measure (s ∪ t) = real_measure s + real_measure t"
+                },
+                {
+                    "args": "s1, real set",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s1"
+                },
+                {
+                    "args": "t1, real set",
+                    "id": "7.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR t1"
+                },
+                {
+                    "args": "real_measurable s1 ∧ real_measurable t1 ∧ disjoint s1 t1",
+                    "id": "7.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s1 ∧ real_measurable t1 ∧ disjoint s1 t1 ⊢ real_measurable s1 ∧ real_measurable t1 ∧ disjoint s1 t1"
+                },
+                {
+                    "args": "real_measure_disjoint_union",
+                    "id": "7.3",
+                    "prevs": [
+                        "7.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_measurable t, real_measurable s1 ∧ real_measurable t1 ∧ disjoint s1 t1 ⊢ real_measure (s1 ∪ t1) = real_measure s1 + real_measure t1"
+                },
+                {
+                    "args": "",
+                    "id": "7.4",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.2",
+                        "7.3"
+                    ],
+                    "rule": "intros",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀s. ∀t. real_measurable s ∧ real_measurable t ∧ disjoint s t ⟶ real_measure (s ∪ t) = real_measure s + real_measure t"
+                },
+                {
+                    "args": "diff s t",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀t1. real_measurable (diff s t) ∧ real_measurable t1 ∧ disjoint (diff s t) t1 ⟶ real_measure (diff s t ∪ t1) = real_measure (diff s t) + real_measure t1"
+                },
+                {
+                    "args": "diff t s",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable (diff s t) ∧ real_measurable (diff t s) ∧ disjoint (diff s t) (diff t s) ⟶ real_measure (diff s t ∪ diff t s) = real_measure (diff s t) + real_measure (diff t s)"
+                },
+                {
+                    "args": "real_measurable_diff, {}, {s: s, t: t}",
+                    "id": "10",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable (diff s t)"
+                },
+                {
+                    "args": "conj_comm",
+                    "id": "11",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable t ∧ real_measurable s"
+                },
+                {
+                    "args": "real_measurable_diff, {}, {s: t, t: s}",
+                    "id": "12",
+                    "prevs": [
+                        "11"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable (diff t s)"
+                },
+                {
+                    "args": "",
+                    "id": "13",
+                    "prevs": [],
                     "rule": "sorry",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measure (s ∩ t ∪ {x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}) = real_measure (s ∩ t) + (real_measure s - real_measure (s ∩ t)) + (real_measure t - real_measure (s ∩ t))"
+                },
+                {
+                    "args": "real_measure (s ∩ t ∪ {x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}) = real_measure s + real_measure t - real_measure (s ∩ t)",
+                    "id": "14",
+                    "prevs": [
+                        "6",
+                        "13"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measure (s ∩ t ∪ {x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}) = real_measure s + real_measure t - real_measure (s ∩ t)"
+                },
+                {
+                    "args": "real_measure (s ∪ t) = real_measure s + real_measure t - real_measure (s ∩ t)",
+                    "id": "15",
+                    "prevs": [
+                        "1",
+                        "14"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
                     "th": "real_measurable s ∧ real_measurable t ⊢ real_measure (s ∪ t) = real_measure s + real_measure t - real_measure (s ∩ t)"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "16",
                     "prevs": [
                         "0",
-                        "3"
+                        "15"
                     ],
                     "rule": "intros",
                     "th": "⊢ real_measurable s ∧ real_measurable t ⟶ real_measure (s ∪ t) = real_measure s + real_measure t - real_measure (s ∩ t)"
@@ -29860,6 +30008,112 @@
                     "goal_id": "1",
                     "method_name": "rewrite_goal",
                     "theorem": "diff_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "!a::real. !b. !c. a + b - c = c + (a - c) + (b - c)",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "forall_elim",
+                    "s": "real_measure s"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "forall_elim",
+                    "s": "real_measure t"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "forall_elim",
+                    "s": "real_measure (s ∩ t)"
+                },
+                {
+                    "fact_ids": [
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "!s. !t. real_measurable s ∧ real_measurable t ∧ disjoint s t \n⟶ real_measure (s ∪ t) = real_measure s + real_measure t",
+                    "goal_id": "7",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction",
+                    "names": "s1,t1"
+                },
+                {
+                    "goal_id": "7.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_disjoint_union"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "forall_elim",
+                    "s": "diff s t"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "forall_elim",
+                    "s": "diff t s"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_measurable_diff"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_fact",
+                    "theorem": "conj_comm"
+                },
+                {
+                    "fact_ids": [
+                        "11"
+                    ],
+                    "goal_id": "12",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_measurable_diff"
                 }
             ],
             "ty": "thm",
