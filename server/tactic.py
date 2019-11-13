@@ -6,7 +6,7 @@ from kernel.thm import Thm
 from kernel import theory
 from logic import logic
 from logic import matcher
-from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, top_sweep_conv
+from logic.conv import then_conv, top_conv, rewr_conv, beta_conv, top_sweep_conv, has_rewrite
 from logic.proofterm import ProofTerm, ProofTermDeriv
 from logic.logic import apply_theorem
 from syntax import printer
@@ -152,7 +152,7 @@ class var_induct(Tactic):
         instsp[1][f.name] = P
         return rule().get_proof_term(thy, goal, args=(th_name, instsp))
 
-class rewrite(Tactic):
+class rewrite_goal(Tactic):
     """Rewrite the goal using a theorem."""
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):
         th_name = args
@@ -163,7 +163,7 @@ class rewrite(Tactic):
             "rewrite: goal is in implies/forall form."
 
         # Check whether rewriting using the theorem has an effect
-        assert not top_sweep_conv(rewr_conv(th_name, conds=prevs)).eval(thy, C).is_reflexive(), \
+        assert has_rewrite(thy, th_name, C, conds=prevs), \
             "rewrite: unable to apply theorem."
 
         cv = then_conv(top_sweep_conv(rewr_conv(th_name, conds=prevs)),
@@ -191,8 +191,7 @@ class rewrite_goal_with_prev(Tactic):
                "rewrite_goal_with_prev"
 
         # Check whether rewriting using the theorem has an effect
-        assert not top_sweep_conv(rewr_conv(pt)).eval(thy, C).is_reflexive(), \
-               "rewrite_goal_with_prev"
+        assert has_rewrite(thy, pt.th, C), "rewrite_goal_with_prev"
 
         cv = then_conv(top_sweep_conv(rewr_conv(pt)),
                        top_conv(beta_conv()))

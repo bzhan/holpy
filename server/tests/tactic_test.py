@@ -131,7 +131,7 @@ class TacticTest(unittest.TestCase):
 
     def testRewrite(self):
         self.run_test(
-            'nat', tactic.rewrite(),
+            'nat', tactic.rewrite_goal(),
             vars={"n": "nat"},
             goal="0 + n = n",
             args="nat_plus_def_1"
@@ -139,7 +139,7 @@ class TacticTest(unittest.TestCase):
 
     def testRewrite2(self):
         self.run_test(
-            'logic_base', tactic.rewrite(),
+            'logic_base', tactic.rewrite_goal(),
             vars={"a": "'a", "b": "'a"},
             goal="(if a = a then b else a) = b",
             args="if_P",
@@ -148,7 +148,7 @@ class TacticTest(unittest.TestCase):
 
     def testRewrite3(self):
         self.run_test(
-            'logic_base', tactic.rewrite(),
+            'logic_base', tactic.rewrite_goal(),
             vars={'P': 'bool', 'a': "'a", 'b': "'a"},
             prevs=["P"],
             goal="(if P then a else b) = a",
@@ -157,7 +157,7 @@ class TacticTest(unittest.TestCase):
 
     def testRewrite4(self):
         self.run_test(
-            'logic_base', tactic.rewrite(),
+            'logic_base', tactic.rewrite_goal(),
             vars={'P': 'bool', 'Q': 'bool', 'a': "'a", 'b': "'a"},
             prevs=["Q"],
             goal="(if P then a else b) = a",

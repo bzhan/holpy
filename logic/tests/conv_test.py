@@ -8,7 +8,7 @@ from kernel.thm import Thm
 from logic import basic
 from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
-    top_sweep_conv, arg_conv, rewr_conv, ConvException
+    top_sweep_conv, arg_conv, rewr_conv, has_rewrite, ConvException
 from syntax import parser
 from syntax.context import Context
 
@@ -169,6 +169,18 @@ class ConvTest(unittest.TestCase):
             t="(if P then a else b) = a",
             t_res="a = a"
         )
+
+    def testHasRewrite(self):
+        test_data = [
+            ("(0::nat) + x = x", "nat_plus_def_1", True),
+            ("(0::nat) + x = x + 0", "add_0_right", True),
+            ("%x. comp_fun g f x = y", "comp_fun_eval", True),
+        ]
+
+        ctxt = Context('function', vars={'x': 'nat', 'y': 'nat', 'f': 'nat => nat', 'g': 'nat => nat'})
+        for t, th_name, res in test_data:
+            t = parser.parse_term(ctxt, t)
+            self.assertEqual(has_rewrite(ctxt.thy, th_name, t), res)
 
 
 if __name__ == "__main__":

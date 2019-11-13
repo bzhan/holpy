@@ -349,7 +349,7 @@ class ProofState():
 
     def rewrite_goal(self, id, th_name, *, backward=False, prevs=None):
         """Apply an existing equality theorem to the given goal."""
-        self.apply_tactic(id, tactic.rewrite(), args=th_name, prevs=prevs)
+        self.apply_tactic(id, tactic.rewrite_goal(), args=th_name, prevs=prevs)
 
     def rewrite_goal_with_prev(self, id, prev):
         """Apply existence fact to the given goal."""

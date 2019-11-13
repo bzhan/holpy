@@ -295,8 +295,7 @@ class rewr_conv(Conv):
             raise ConvException("rewr_conv: cannot match")
 
         # Check that every variable in the theorem has an instantiation
-        unmatched_vars = [v.name for v in term.get_svars(self.eq_pt.prop) if v.name not in instsp[1]]
-        if unmatched_vars:
+        if set(term.get_svars(self.As + [self.C.lhs])) != set(term.get_svars(self.As + [self.C])):
             raise ConvException("rewr_conv: unmatched vars")
 
         pt = self.eq_pt
@@ -312,3 +311,51 @@ class rewr_conv(Conv):
             raise ConvException("rewr_conv: wrong result")
 
         return pt
+
+def has_rewrite(thy, th, t, *, conds=None):
+    """Returns whether a rewrite is possible on a subterm of t.
+    
+    This can serve as a pre-check for top_sweep_conv, top_conv, and
+    bottom_conv applied to rewr_conv.
+
+    th -- either the name of a theorem, or the theorem itself.
+    t -- target of rewriting.
+    conds -- optional list of theorems matching assumptions of th.
+
+    """
+    if isinstance(th, str):
+        th = thy.get_theorem(th, svar=True)
+
+    As, C = th.prop.strip_implies() 
+
+    if conds is None:
+        conds = []
+    if not Term.is_equals(C) or len(As) != len(conds):
+        return False
+        
+    if set(term.get_svars(As + [C.lhs])) != set(term.get_svars(As + [C])):
+        return False
+
+    ts = [cond.prop for cond in conds]
+    instsp = dict(), dict()
+    try:
+        matcher.first_order_match_list_incr(As, ts, instsp)
+    except matcher.MatchException:
+        return False
+
+    def rec(t):
+        if not t.is_open() and matcher.can_first_order_match_incr(C.lhs, t, instsp):
+            return True
+
+        if t.is_comb():
+            return rec(t.fun) or rec(t.arg)
+        elif t.is_abs():
+            var_names = [v.name for v in term.get_vars(t.body)]
+            nm = name.get_variant_name(t.var_name, var_names)
+            v = Var(nm, t.var_T)
+            t2 = t.subst_bound(v)
+            return rec(t2)
+        else:
+            return False
+
+    return rec(t)
