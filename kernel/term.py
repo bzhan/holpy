@@ -110,7 +110,7 @@ class Term():
                 return "%" + t.var_name + ". " + body_repr
             elif t.is_bound():
                 if t.n >= len(bd_vars):
-                    raise OpenTermException
+                    return ":B" + str(t.n)
                 else:
                     return bd_vars[t.n]
             else:

@@ -484,6 +484,10 @@ class ServerTest(unittest.TestCase):
         """Proof of n + 0 = n by induction."""
         testSteps(self, 'nat', 'add_0_right')
 
+    def testAddComm(self):
+        """Proof of n + m = m + n."""
+        testSteps(self, 'nat', 'add_comm')
+
     def testMultZeroRight(self):
         """Proof of n * 0 = 0 by induction."""
         testSteps(self, 'nat', 'mult_0_right')
@@ -539,6 +543,10 @@ class ServerTest(unittest.TestCase):
     def testInjectiveCompFun(self):
         """Proof of injective f --> injective g --> injective (g o f)."""
         testSteps(self, 'function', 'injective_comp_fun')
+
+    def testSurjectiveCompFun(self):
+        """Proof of surjective f --> surjective g --> surjective (g o f)."""
+        testSteps(self, 'function', 'surjective_comp_fun')
 
     def testSurjectiveD(self):
         """Proof of surjective f --> (?x. f x = y)."""

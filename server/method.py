@@ -134,7 +134,7 @@ class rewrite_goal(Method):
 
         def search_thm(th_name):
             try:
-                pt = tactic.rewrite().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                pt = tactic.rewrite_goal().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
                 results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
             except (AssertionError, matcher.MatchException):
                 pass
@@ -153,7 +153,7 @@ class rewrite_goal(Method):
         return pprint.N(data['theorem'] + " (r): ") + display_goals(state, data)
 
     def apply(self, state, id, data, prevs):
-        state.apply_tactic(id, tactic.rewrite(), args=data['theorem'], prevs=prevs)
+        state.apply_tactic(id, tactic.rewrite_goal(), args=data['theorem'], prevs=prevs)
 
 class rewrite_fact(Method):
     """Rewrite fact using a theorem."""

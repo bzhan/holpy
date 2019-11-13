@@ -260,6 +260,11 @@ class rewr_conv(Conv):
             conds = []
         self.conds = conds
 
+        # Computed after the first invocation
+        self.eq_pt = None
+        self.As = None
+        self.C = None
+
     def __str__(self):
         if isinstance(self.pt, str):
             return "rewr_conv(%s)" % str(self.pt)
@@ -267,37 +272,90 @@ class rewr_conv(Conv):
             return "rewr_conv(%s)" % str(self.pt.th)
 
     def get_proof_term(self, thy, t):
-        if isinstance(self.pt, str):
-            eq_pt = ProofTerm.theorem(thy, self.pt)
-            if self.sym:
-                eq_pt = ProofTerm.symmetric(eq_pt)
-        else:
-            eq_pt = self.pt
-                
-        # Deconstruct th into assumptions and conclusion
-        As, C = eq_pt.assums, eq_pt.concl
-        assert Term.is_equals(C), "rewr_conv: theorem is not an equality."
-        if len(As) != len(self.conds):
+        if self.eq_pt is None:
+            if isinstance(self.pt, str):
+                self.eq_pt = ProofTerm.theorem(thy, self.pt)
+                if self.sym:
+                    self.eq_pt = ProofTerm.symmetric(self.eq_pt)
+            else:
+                self.eq_pt = self.pt
+
+            self.As, self.C = self.eq_pt.prop.strip_implies()
+
+        assert Term.is_equals(self.C), "rewr_conv: theorem is not an equality."
+        if len(self.As) != len(self.conds):
             raise ConvException("rewr_conv: number of conds does not agree")
 
-        tyinst, inst = dict(), dict()
+        instsp = dict(), dict()
         ts = [cond.prop for cond in self.conds]
         try:
-            matcher.first_order_match_list_incr(As, ts, (tyinst, inst))
-            matcher.first_order_match_incr(C.lhs, t, (tyinst, inst))
+            matcher.first_order_match_list_incr(self.As, ts, instsp)
+            matcher.first_order_match_incr(self.C.lhs, t, instsp)
         except matcher.MatchException:
             raise ConvException("rewr_conv: cannot match")
 
         # Check that every variable in the theorem has an instantiation
-        unmatched_vars = [v.name for v in term.get_svars(eq_pt.prop) if v.name not in inst]
-        if unmatched_vars:
+        if set(term.get_svars(self.As + [self.C.lhs])) != set(term.get_svars(self.As + [self.C])):
             raise ConvException("rewr_conv: unmatched vars")
 
-        pt = ProofTerm.substitution(inst, ProofTerm.subst_type(tyinst, eq_pt))
-        if self.conds is not None:
+        pt = self.eq_pt
+        tyinst, inst = instsp
+        if tyinst:
+            pt = ProofTerm.subst_type(tyinst, pt)
+        if inst:
+            pt = ProofTerm.substitution(inst, pt)
+        if self.conds:
             pt = ProofTerm.implies_elim(pt, *self.conds)
 
         if not (pt.th.is_equals() and pt.th.prop.lhs == t):
             raise ConvException("rewr_conv: wrong result")
 
         return pt
+
+def has_rewrite(thy, th, t, *, conds=None):
+    """Returns whether a rewrite is possible on a subterm of t.
+    
+    This can serve as a pre-check for top_sweep_conv, top_conv, and
+    bottom_conv applied to rewr_conv.
+
+    th -- either the name of a theorem, or the theorem itself.
+    t -- target of rewriting.
+    conds -- optional list of theorems matching assumptions of th.
+
+    """
+    if isinstance(th, str):
+        th = thy.get_theorem(th, svar=True)
+
+    As, C = th.prop.strip_implies() 
+
+    if conds is None:
+        conds = []
+    if not Term.is_equals(C) or len(As) != len(conds):
+        return False
+        
+    if set(term.get_svars(As + [C.lhs])) != set(term.get_svars(As + [C])):
+        return False
+
+    ts = [cond.prop for cond in conds]
+    instsp = dict(), dict()
+    try:
+        matcher.first_order_match_list_incr(As, ts, instsp)
+    except matcher.MatchException:
+        return False
+
+    def rec(t):
+        if not t.is_open() and matcher.can_first_order_match_incr(C.lhs, t, instsp):
+            return True
+
+        if t.is_comb():
+            return rec(t.fun) or rec(t.arg)
+        elif t.is_abs():
+            var_names = [v.name for v in term.get_vars(t.body)]
+            nm = name.get_variant_name(t.var_name, var_names)
+            v = Var(nm, t.var_T)
+            t2 = t.subst_bound(v)
+            return rec(t2)
+        else:
+            return False
+
+    return rec(t)

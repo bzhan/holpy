@@ -5,6 +5,7 @@
 By default, all variables in the pattern can be instantiated.
 
 """
+from copy import copy
 from collections import OrderedDict
 
 from kernel import type as hol_type
@@ -200,6 +201,14 @@ def first_order_match(pat, t):
     tyinst, inst = dict(), dict()
     first_order_match_incr(pat, t, (tyinst, inst))
     return tyinst, inst
+
+def can_first_order_match_incr(pat, t, instsp):
+    instsp = copy(instsp[0]), copy(instsp[1])
+    try:
+        first_order_match_incr(pat, t, instsp)
+        return True
+    except MatchException:
+        return False
 
 def first_order_match_list_incr(pats, ts, instsp):
     """First-order matching of a list of pattern-term pairs."""
