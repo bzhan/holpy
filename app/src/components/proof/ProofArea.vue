@@ -137,6 +137,15 @@ export default {
       }
     },
 
+    display_history: function () {
+      // Display history in ref_context
+      var steps = []
+      for (let i = 0; i < this.history.length; i++) {
+        steps.push(this.history[i].steps_output)
+      }
+      this.ref_context.steps = steps
+    },
+
     current_state: function () {
       if (this.goal === -1) {
         return undefined
@@ -246,11 +255,8 @@ export default {
       this.proof = this.history[hId].proof
       this.num_gaps = this.history[hId].report.num_gaps
       this.facts = []
-      console.log('hId', hId)
-      console.log('length', this.steps.length)
       if (hId === this.steps.length) {
         this.goal = this.compute_new_goal(0)
-        console.log('goal', this.goal)
       } else {
         this.goal = this.get_line_no_from_id(this.steps[hId].goal_id)
         const fact_ids = this.steps[hId].fact_ids
@@ -260,10 +266,11 @@ export default {
           }
         }
       }
-      this.display_instructions()
+      this.ref_context.selected_step = this.index
+      this.display_history()
       this.display_num_gaps()
+      this.display_instructions()
       this.match_thm()
-      console.log('goal', this.goal)
     },
 
     apply_method_ajax: async function (input) {
@@ -440,6 +447,7 @@ export default {
           this.history = response.data.history
           this.goto_index(this.history.length-1)
         } else {
+          // Case without history
           this.num_gaps = response.data.report.num_gaps
           this.goal = -1
           this.facts = []
@@ -460,19 +468,19 @@ export default {
     },
 
     undo_move: function () {
-      var h_id = this.index;
+      var h_id = this.index
       if (h_id < this.steps.length) {
           // Perform undo only when at end
-          return;
+          return
       }
 
-      this.history.length -= 1;
+      this.history.length -= 1
       this.history[h_id-1].steps_output = [{text: "Current state", color: 0}]
-      this.goto_index(h_id-1);
+      this.goto_index(h_id-1)
 
-      // Remove last step after display_instructions, so goal and fact_no can
+      // Remove last step after goto_index, so goal and fact_no can
       // be used during display.
-      this.steps.length -= 1;
+      this.steps.length -= 1
     }
   },
 
