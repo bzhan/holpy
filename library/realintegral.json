@@ -8701,6 +8701,17 @@
         },
         {
             "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_negligible",
+            "prop": "real_negligible s ⟷ (∀t. has_real_integral (indicator s) 0 t)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
                 "hint_backward"
             ],
             "name": "real_negligible_finite",
@@ -25109,436 +25120,1175 @@
                 "hint_rewrite"
             ],
             "name": "has_real_measure_0",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀f. ∀s. has_real_integral f 0 s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) 0 univ"
+                    "th": "⊢ ∀i. ∀f. ∀s. has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ"
+                },
+                {
+                    "args": "i, real",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR i"
                 },
                 {
                     "args": "f, real ⇒ real",
-                    "id": "0.0",
+                    "id": "0.1",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR f"
                 },
                 {
                     "args": "s, real set",
-                    "id": "0.1",
+                    "id": "0.2",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR s"
                 },
                 {
-                    "args": "has_real_integral_restrict_univ, has_real_integral f 0 s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) 0 univ",
-                    "id": "0.2",
+                    "args": "has_real_integral_restrict_univ, has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ",
+                    "id": "0.3",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ has_real_integral f 0 s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) 0 univ"
+                    "th": "⊢ has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ"
                 },
                 {
                     "args": "",
-                    "id": "0.3",
+                    "id": "0.4",
                     "prevs": [
                         "0.0",
                         "0.1",
-                        "0.2"
+                        "0.2",
+                        "0.3"
                     ],
                     "rule": "intros",
+                    "th": "⊢ ∀i. ∀f. ∀s. has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ"
+                },
+                {
+                    "args": "(0::real)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "forall_elim",
                     "th": "⊢ ∀f. ∀s. has_real_integral f 0 s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) 0 univ"
                 },
                 {
-                    "args": "",
-                    "id": "1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "⊢ has_real_measure s 0 ⟶ real_negligible s"
-                },
-                {
-                    "args": "has_real_measure s 0",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "has_real_measure s 0 ⊢ has_real_measure s 0"
-                },
-                {
-                    "args": "has_real_measure_def",
-                    "id": "1.1",
-                    "prevs": [
-                        "1.0"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "has_real_measure s 0 ⊢ has_real_integral (λx. 1) 0 s"
-                },
-                {
                     "args": "λx::real. (1::real)",
-                    "id": "1.2",
+                    "id": "2",
                     "prevs": [
-                        "0"
+                        "1"
                     ],
                     "rule": "forall_elim",
                     "th": "⊢ ∀s. has_real_integral (λx. 1) 0 s ⟷ has_real_integral (λx. if x ∈ s then (λx. 1) x else 0) 0 univ"
                 },
                 {
                     "args": "s",
-                    "id": "1.3",
+                    "id": "3",
                     "prevs": [
-                        "1.2"
+                        "2"
                     ],
                     "rule": "forall_elim",
                     "th": "⊢ has_real_integral (λx. 1) 0 s ⟷ has_real_integral (λx. if x ∈ s then (λx. 1) x else 0) 0 univ"
                 },
                 {
                     "args": "",
-                    "id": "1.4",
-                    "prevs": [
-                        "1.3",
-                        "1.1"
-                    ],
-                    "rule": "rewrite_fact_with_prev",
-                    "th": "has_real_measure s 0 ⊢ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ"
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⟶ real_negligible s"
+                },
+                {
+                    "args": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⊢ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ"
                 },
                 {
                     "args": "",
-                    "id": "1.5",
+                    "id": "4.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "has_real_measure s 0 ⊢ ∀a. ∀b. has_real_integral (indicator s) 0 (real_closed_interval a b)"
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⊢ ∀a. ∀b. has_real_integral (indicator s) 0 (real_closed_interval a b)"
                 },
                 {
                     "args": "a, real",
-                    "id": "1.5.0",
+                    "id": "4.1.0",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR a"
                 },
                 {
                     "args": "b, real",
-                    "id": "1.5.1",
+                    "id": "4.1.1",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR b"
                 },
                 {
                     "args": "indicator s",
-                    "id": "1.5.2",
+                    "id": "4.1.2",
                     "prevs": [
-                        "0"
+                        "1"
                     ],
                     "rule": "forall_elim",
                     "th": "⊢ ∀s1. has_real_integral (indicator s) 0 s1 ⟷ has_real_integral (λx. if x ∈ s1 then indicator s x else 0) 0 univ"
                 },
                 {
                     "args": "real_closed_interval a b",
-                    "id": "1.5.3",
+                    "id": "4.1.3",
                     "prevs": [
-                        "1.5.2"
+                        "4.1.2"
                     ],
                     "rule": "forall_elim",
                     "th": "⊢ has_real_integral (indicator s) 0 (real_closed_interval a b) ⟷ has_real_integral (λx. if x ∈ real_closed_interval a b then indicator s x else 0) 0 univ"
                 },
                 {
                     "args": "has_real_integral_alt",
-                    "id": "1.5.4",
+                    "id": "4.1.4",
                     "prevs": [
-                        "1.4"
+                        "4.0"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "has_real_measure s 0 ⊢ (∀a. ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)) ∧ (∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) - 0) < e)))"
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⊢ (∀a. ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)) ∧ (∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) - 0) < e)))"
                 },
                 {
                     "args": "conjD1, {}, {A: ∀a. ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b), B: ∀e. 0 < e ⟶ (∃B. 0 < B ∧ (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ⟶ abs (real_integral (real_closed_interval a b) (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) - 0) < e))}",
-                    "id": "1.5.5",
+                    "id": "4.1.5",
                     "prevs": [
-                        "1.5.4"
+                        "4.1.4"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "has_real_measure s 0 ⊢ ∀a. ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)"
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⊢ ∀a. ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)"
                 },
                 {
                     "args": "a",
-                    "id": "1.5.6",
+                    "id": "4.1.6",
                     "prevs": [
-                        "1.5.5"
+                        "4.1.5"
                     ],
                     "rule": "forall_elim",
-                    "th": "has_real_measure s 0 ⊢ ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)"
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⊢ ∀b. real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)"
                 },
                 {
                     "args": "b",
-                    "id": "1.5.7",
+                    "id": "4.1.7",
                     "prevs": [
-                        "1.5.6"
+                        "4.1.6"
                     ],
                     "rule": "forall_elim",
-                    "th": "has_real_measure s 0 ⊢ real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)"
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⊢ real_integrable_on (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (real_closed_interval a b)"
                 },
                 {
                     "args": "real_integrable_on_def",
-                    "id": "1.5.8",
+                    "id": "4.1.8",
                     "prevs": [
-                        "1.5.7"
+                        "4.1.7"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "has_real_measure s 0 ⊢ ∃y. has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b)"
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⊢ ∃y. has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b)"
                 },
                 {
-                    "args": "λx. if x ∈ univ then if x ∈ s then (1::real) else 0 else 0",
-                    "id": "1.5.9",
+                    "args": "y, real",
+                    "id": "4.1.9",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b)",
+                    "id": "4.1.10",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b)"
+                },
+                {
+                    "args": "y",
+                    "id": "4.1.11",
                     "prevs": [
                         "0"
                     ],
                     "rule": "forall_elim",
-                    "th": "⊢ ∀s1. has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) 0 s1 ⟷ has_real_integral (λx. if x ∈ s1 then (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) x else 0) 0 univ"
+                    "th": "⊢ ∀f. ∀s. has_real_integral f y s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) y univ"
+                },
+                {
+                    "args": "λx. if x ∈ univ then if x ∈ s then (1::real) else 0 else 0",
+                    "id": "4.1.12",
+                    "prevs": [
+                        "4.1.11"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ ∀s1. has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y s1 ⟷ has_real_integral (λx. if x ∈ s1 then (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) x else 0) y univ"
                 },
                 {
                     "args": "real_closed_interval a b",
-                    "id": "1.5.10",
+                    "id": "4.1.13",
                     "prevs": [
-                        "1.5.9"
+                        "4.1.12"
                     ],
                     "rule": "forall_elim",
-                    "th": "⊢ has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) 0 (real_closed_interval a b) ⟷ has_real_integral (λx. if x ∈ real_closed_interval a b then (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) x else 0) 0 univ"
-                },
-                {
-                    "args": "(0::real), real",
-                    "id": "1.5.11",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR (0::real)"
-                },
-                {
-                    "args": "has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b)",
-                    "id": "1.5.12",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b)"
+                    "th": "⊢ has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⟷ has_real_integral (λx. if x ∈ real_closed_interval a b then (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) x else 0) y univ"
                 },
                 {
                     "args": "",
-                    "id": "1.5.13",
+                    "id": "4.1.14",
+                    "prevs": [
+                        "4.1.13",
+                        "4.1.10"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) y univ"
+                },
+                {
+                    "args": "real_le_antisym, y = 0 ⟷ y ≤ 0 ∧ 0 ≤ y",
+                    "id": "4.1.15",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "has_real_measure s 0, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ real_closed_interval a b then indicator s x else 0) 0 univ"
+                    "rule": "rewrite_goal",
+                    "th": "⊢ y = 0 ⟷ y ≤ 0 ∧ 0 ≤ y"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.16",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ ∀x. x ∈ univ ⟶ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.1.16.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ univ",
+                    "id": "4.1.16.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ univ ⊢ x ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.16.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ x ∈ real_closed_interval a b ⟶ (if x ∈ real_closed_interval a b then if x ∈ s then (1::real) else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "x ∈ real_closed_interval a b",
+                    "id": "4.1.16.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval a b ⊢ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "real_le_refl, {}, {x: if x ∈ s then (1::real) else 0}",
+                    "id": "4.1.16.2.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (if x ∈ s then (1::real) else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "if_P, (if x ∈ real_closed_interval a b then if x ∈ s then (1::real) else 0 else 0) ≤ (if x ∈ s then 1 else 0)",
+                    "id": "4.1.16.2.2",
+                    "prevs": [
+                        "4.1.16.2.1",
+                        "4.1.16.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ real_closed_interval a b, has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ (if x ∈ real_closed_interval a b then if x ∈ s then (1::real) else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.16.2.3",
+                    "prevs": [
+                        "4.1.16.2.0",
+                        "4.1.16.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ x ∈ real_closed_interval a b ⟶ (if x ∈ real_closed_interval a b then if x ∈ s then (1::real) else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.16.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ ¬x ∈ real_closed_interval a b ⟶ (if x ∈ real_closed_interval a b then if x ∈ s then (1::real) else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "¬x ∈ real_closed_interval a b",
+                    "id": "4.1.16.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x ∈ real_closed_interval a b ⊢ ¬x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "(0::real) ≤ (if x ∈ s then 1 else 0)",
+                    "id": "4.1.16.3.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (0::real) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "if_not_P, (if x ∈ real_closed_interval a b then if x ∈ s then (1::real) else 0 else 0) ≤ (if x ∈ s then 1 else 0)",
+                    "id": "4.1.16.3.2",
+                    "prevs": [
+                        "4.1.16.3.1",
+                        "4.1.16.3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬x ∈ real_closed_interval a b, has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ (if x ∈ real_closed_interval a b then if x ∈ s then (1::real) else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.16.3.3",
+                    "prevs": [
+                        "4.1.16.3.0",
+                        "4.1.16.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ ¬x ∈ real_closed_interval a b ⟶ (if x ∈ real_closed_interval a b then if x ∈ s then (1::real) else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4.1.16.4",
+                    "prevs": [
+                        "4.1.16.2",
+                        "4.1.16.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ (if x ∈ real_closed_interval a b then if x ∈ s then (1::real) else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "if_P, (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0) ≤ (if x ∈ s then 1 else 0)",
+                    "id": "4.1.16.5",
+                    "prevs": [
+                        "4.1.16.4",
+                        "4.1.16.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ univ, has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.16.6",
+                    "prevs": [
+                        "4.1.16.0",
+                        "4.1.16.1",
+                        "4.1.16.5"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ ∀x. x ∈ univ ⟶ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.1.17",
+                    "prevs": [
+                        "4.0",
+                        "4.1.16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ∧ (∀x. x ∈ univ ⟶ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0) ≤ (if x ∈ s then 1 else 0))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.1.18",
+                    "prevs": [
+                        "4.1.14",
+                        "4.1.17"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) y univ ∧ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ∧ (∀x. x ∈ univ ⟶ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0) ≤ (if x ∈ s then 1 else 0))"
+                },
+                {
+                    "args": "has_real_integral_le",
+                    "id": "4.1.19",
+                    "prevs": [
+                        "4.1.18"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ y ≤ 0"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.20",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.1.20.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ univ",
+                    "id": "4.1.20.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ univ ⊢ x ∈ univ"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.20.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ x ∈ real_closed_interval a b ⟶ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)"
+                },
+                {
+                    "args": "x ∈ real_closed_interval a b",
+                    "id": "4.1.20.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ real_closed_interval a b ⊢ x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "(0::real) ≤ (if x ∈ s then 1 else 0)",
+                    "id": "4.1.20.2.1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (0::real) ≤ (if x ∈ s then 1 else 0)"
+                },
+                {
+                    "args": "if_P, (0::real) ≤ (if x ∈ univ then if x ∈ s then 1 else 0 else 0)",
+                    "id": "4.1.20.2.2",
+                    "prevs": [
+                        "4.1.20.2.1",
+                        "4.1.20.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ univ, has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ real_closed_interval a b ⊢ (0::real) ≤ (if x ∈ univ then if x ∈ s then 1 else 0 else 0)"
+                },
+                {
+                    "args": "if_P, (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)",
+                    "id": "4.1.20.2.3",
+                    "prevs": [
+                        "4.1.20.2.2",
+                        "4.1.20.2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ real_closed_interval a b, has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.20.2.4",
+                    "prevs": [
+                        "4.1.20.2.0",
+                        "4.1.20.2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ x ∈ real_closed_interval a b ⟶ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.20.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ ¬x ∈ real_closed_interval a b ⟶ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)"
+                },
+                {
+                    "args": "¬x ∈ real_closed_interval a b",
+                    "id": "4.1.20.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬x ∈ real_closed_interval a b ⊢ ¬x ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "real_le_refl, {}, {x: (0::real)}",
+                    "id": "4.1.20.3.1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 0"
+                },
+                {
+                    "args": "if_not_P, (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)",
+                    "id": "4.1.20.3.2",
+                    "prevs": [
+                        "4.1.20.3.1",
+                        "4.1.20.3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬x ∈ real_closed_interval a b, has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.20.3.3",
+                    "prevs": [
+                        "4.1.20.3.0",
+                        "4.1.20.3.2"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ ¬x ∈ real_closed_interval a b ⟶ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4.1.20.4",
+                    "prevs": [
+                        "4.1.20.2",
+                        "4.1.20.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.20.5",
+                    "prevs": [
+                        "4.1.20.0",
+                        "4.1.20.1",
+                        "4.1.20.4"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.1.21",
+                    "prevs": [
+                        "4.1.14",
+                        "4.1.20"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) y univ ∧ (∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0))"
+                },
+                {
+                    "args": "has_real_integral_pos",
+                    "id": "4.1.22",
+                    "prevs": [
+                        "4.1.21"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ 0 ≤ y"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.1.23",
+                    "prevs": [
+                        "4.1.19",
+                        "4.1.22"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ y ≤ 0 ∧ 0 ≤ y"
+                },
+                {
+                    "args": "y = 0",
+                    "id": "4.1.24",
+                    "prevs": [
+                        "4.1.15",
+                        "4.1.23"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ y = 0"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.25",
+                    "prevs": [
+                        "4.1.24",
+                        "4.1.14"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) 0 univ"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.26",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ ∀x. x ∈ univ ⟶ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) = (if x ∈ real_closed_interval a b then indicator s x else 0)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "4.1.26.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ univ",
+                    "id": "4.1.26.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ univ ⊢ x ∈ univ"
+                },
+                {
+                    "args": "if_P, (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0) = (if x ∈ real_closed_interval a b then if x ∈ s then 1 else 0 else 0)",
+                    "id": "4.1.26.2",
+                    "prevs": [
+                        "4.1.26.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "x ∈ univ ⊢ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0) = (if x ∈ real_closed_interval a b then if x ∈ s then 1 else 0 else 0)"
+                },
+                {
+                    "args": "indicator_def, (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) = (if x ∈ real_closed_interval a b then indicator s x else 0)",
+                    "id": "4.1.26.3",
+                    "prevs": [
+                        "4.1.26.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b), x ∈ univ ⊢ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) = (if x ∈ real_closed_interval a b then indicator s x else 0)"
+                },
+                {
+                    "args": "",
+                    "id": "4.1.26.4",
+                    "prevs": [
+                        "4.1.26.0",
+                        "4.1.26.1",
+                        "4.1.26.3"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ ∀x. x ∈ univ ⟶ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) = (if x ∈ real_closed_interval a b then indicator s x else 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.1.27",
+                    "prevs": [
+                        "4.1.26",
+                        "4.1.25"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ (∀x. x ∈ univ ⟶ (if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) = (if x ∈ real_closed_interval a b then indicator s x else 0)) ∧ has_real_integral (λx. if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then 1 else 0 else 0 else 0) 0 univ"
+                },
+                {
+                    "args": "has_real_integral_eq",
+                    "id": "4.1.28",
+                    "prevs": [
+                        "4.1.27"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ has_real_integral (λx. if x ∈ real_closed_interval a b then indicator s x else 0) 0 univ"
                 },
                 {
                     "args": "has_real_integral (indicator s) 0 (real_closed_interval a b)",
-                    "id": "1.5.14",
+                    "id": "4.1.29",
                     "prevs": [
-                        "1.5.3",
-                        "1.5.13"
+                        "4.1.3",
+                        "4.1.28"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "has_real_measure s 0, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) (0::real) (real_closed_interval a b) ⊢ has_real_integral (indicator s) 0 (real_closed_interval a b)"
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ, has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b) ⊢ has_real_integral (indicator s) 0 (real_closed_interval a b)"
                 },
                 {
                     "args": "∃y. has_real_integral (λx. if x ∈ univ then if x ∈ s then 1 else 0 else 0) y (real_closed_interval a b)",
-                    "id": "1.5.15",
+                    "id": "4.1.30",
                     "prevs": [
-                        "1.5.0",
-                        "1.5.1",
-                        "1.5.8",
-                        "1.5.11",
-                        "1.5.12",
-                        "1.5.14"
+                        "4.1.0",
+                        "4.1.1",
+                        "4.1.8",
+                        "4.1.9",
+                        "4.1.10",
+                        "4.1.29"
                     ],
                     "rule": "intros",
-                    "th": "has_real_measure s 0 ⊢ ∀a. ∀b. has_real_integral (indicator s) 0 (real_closed_interval a b)"
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⊢ ∀a. ∀b. has_real_integral (indicator s) 0 (real_closed_interval a b)"
                 },
                 {
                     "args": "real_negligible_def, real_negligible s",
-                    "id": "1.6",
+                    "id": "4.2",
                     "prevs": [
-                        "1.5"
+                        "4.1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "has_real_measure s 0 ⊢ real_negligible s"
+                    "th": "has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⊢ real_negligible s"
                 },
                 {
                     "args": "",
-                    "id": "1.7",
+                    "id": "4.3",
                     "prevs": [
-                        "1.0",
-                        "1.6"
+                        "4.0",
+                        "4.2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ has_real_measure s 0 ⟶ real_negligible s"
+                    "th": "⊢ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⟶ real_negligible s"
                 },
                 {
                     "args": "",
-                    "id": "2",
+                    "id": "5",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "⊢ real_negligible s ⟶ has_real_measure s 0"
+                    "rule": "subproof",
+                    "th": "⊢ real_negligible s ⟶ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ"
+                },
+                {
+                    "args": "real_negligible s",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_negligible s ⊢ real_negligible s"
+                },
+                {
+                    "args": "real_negligible",
+                    "id": "5.1",
+                    "prevs": [
+                        "5.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_negligible s ⊢ ∀t. has_real_integral (indicator s) 0 t"
+                },
+                {
+                    "args": "(univ::real set)",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.1"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "real_negligible s ⊢ has_real_integral (indicator s) 0 univ"
+                },
+                {
+                    "args": "indicator_def",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_negligible s ⊢ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ"
+                },
+                {
+                    "args": "",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.0",
+                        "5.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_negligible s ⟶ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ"
                 },
                 {
                     "args": "iffI",
-                    "id": "3",
+                    "id": "6",
                     "prevs": [
-                        "1",
-                        "2"
+                        "4",
+                        "5"
                     ],
                     "rule": "apply_theorem",
+                    "th": "⊢ has_real_integral (λx. if x ∈ s then 1 else 0) 0 univ ⟷ real_negligible s"
+                },
+                {
+                    "args": "has_real_integral (λx. 1) 0 s ⟷ real_negligible s",
+                    "id": "7",
+                    "prevs": [
+                        "3",
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ has_real_integral (λx. 1) 0 s ⟷ real_negligible s"
+                },
+                {
+                    "args": "has_real_measure_def, has_real_measure s 0 ⟷ real_negligible s",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
                     "th": "⊢ has_real_measure s 0 ⟷ real_negligible s"
                 }
             ],
             "prop": "has_real_measure s 0 <--> real_negligible s",
             "steps": [
                 {
-                    "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "iffI"
-                },
-                {
-                    "goal": "!f. !s. has_real_integral f 0 s = has_real_integral (%x. if x ∈ s then f x else 0) 0 univ",
+                    "goal": "!i. !f. !s. has_real_integral f i s = has_real_integral (%x. if x ∈ s then f x else 0) i univ",
                     "goal_id": "0",
                     "method_name": "cut"
                 },
                 {
                     "goal_id": "0",
                     "method_name": "introduction",
-                    "names": "f, s"
+                    "names": "i,f,s"
                 },
                 {
-                    "goal_id": "0.2",
+                    "goal_id": "0.3",
                     "method_name": "rewrite_goal",
                     "theorem": "has_real_integral_restrict_univ"
                 },
                 {
                     "goal_id": "1",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "1.0"
-                    ],
-                    "goal_id": "1.1",
-                    "method_name": "rewrite_fact",
+                    "method_name": "rewrite_goal",
                     "theorem": "has_real_measure_def"
                 },
                 {
                     "fact_ids": [
                         "0"
                     ],
-                    "goal_id": "1.2",
+                    "goal_id": "1",
+                    "method_name": "forall_elim",
+                    "s": "(0::real)"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
                     "method_name": "forall_elim",
                     "s": "(%x::real. (1::real))"
                 },
                 {
                     "fact_ids": [
-                        "1.2"
+                        "2"
                     ],
-                    "goal_id": "1.3",
+                    "goal_id": "3",
                     "method_name": "forall_elim",
                     "s": "s"
                 },
                 {
                     "fact_ids": [
-                        "1.3",
-                        "1.1"
+                        "3"
                     ],
-                    "goal_id": "1.4",
-                    "method_name": "rewrite_fact_with_prev"
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
                 },
                 {
-                    "goal_id": "1.5",
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1",
                     "method_name": "rewrite_goal",
                     "theorem": "real_negligible_def"
                 },
                 {
-                    "goal_id": "1.5",
+                    "goal_id": "4.1",
                     "method_name": "introduction",
                     "names": "a,b"
                 },
                 {
                     "fact_ids": [
-                        "0"
+                        "1"
                     ],
-                    "goal_id": "1.5.2",
+                    "goal_id": "4.1.2",
                     "method_name": "forall_elim",
                     "s": "(indicator s)"
                 },
                 {
                     "fact_ids": [
-                        "1.5.2"
+                        "4.1.2"
                     ],
-                    "goal_id": "1.5.3",
+                    "goal_id": "4.1.3",
                     "method_name": "forall_elim",
                     "s": "(real_closed_interval a b)"
                 },
                 {
                     "fact_ids": [
-                        "1.5.3"
+                        "4.1.3"
                     ],
-                    "goal_id": "1.5.4",
+                    "goal_id": "4.1.4",
                     "method_name": "rewrite_goal_with_prev"
                 },
                 {
                     "fact_ids": [
-                        "1.4"
+                        "4.0"
                     ],
-                    "goal_id": "1.5.4",
+                    "goal_id": "4.1.4",
                     "method_name": "rewrite_fact",
                     "theorem": "has_real_integral_alt"
                 },
                 {
                     "fact_ids": [
-                        "1.5.4"
+                        "4.1.4"
                     ],
-                    "goal_id": "1.5.5",
+                    "goal_id": "4.1.5",
                     "method_name": "apply_forward_step",
                     "theorem": "conjD1"
                 },
                 {
                     "fact_ids": [
-                        "1.5.5"
+                        "4.1.5"
                     ],
-                    "goal_id": "1.5.6",
+                    "goal_id": "4.1.6",
                     "method_name": "forall_elim",
                     "s": "a"
                 },
                 {
                     "fact_ids": [
-                        "1.5.6"
+                        "4.1.6"
                     ],
-                    "goal_id": "1.5.7",
+                    "goal_id": "4.1.7",
                     "method_name": "forall_elim",
                     "s": "b"
                 },
                 {
                     "fact_ids": [
-                        "1.5.7"
+                        "4.1.7"
                     ],
-                    "goal_id": "1.5.8",
+                    "goal_id": "4.1.8",
                     "method_name": "rewrite_fact",
                     "theorem": "real_integrable_on_def"
                 },
                 {
                     "fact_ids": [
-                        "0"
+                        "4.1.8"
                     ],
-                    "goal_id": "1.5.9",
-                    "method_name": "forall_elim",
-                    "s": "(λx::real. if x ∈ univ then if x ∈ s then (1::real) else 0 else 0)"
+                    "goal_id": "4.1.9",
+                    "method_name": "exists_elim",
+                    "names": "y"
                 },
                 {
                     "fact_ids": [
-                        "1.5.9"
+                        "0"
                     ],
-                    "goal_id": "1.5.10",
+                    "goal_id": "4.1.11",
+                    "method_name": "forall_elim",
+                    "s": "y"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.11"
+                    ],
+                    "goal_id": "4.1.12",
+                    "method_name": "forall_elim",
+                    "s": "(λx. if x ∈ univ then if x ∈ s then (1::real) else 0 else 0)"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.12"
+                    ],
+                    "goal_id": "4.1.13",
                     "method_name": "forall_elim",
                     "s": "(real_closed_interval a b)"
                 },
                 {
                     "fact_ids": [
-                        "1.5.8"
+                        "4.1.13",
+                        "4.1.10"
                     ],
-                    "goal_id": "1.5.11",
-                    "method_name": "exists_elim",
-                    "names": "(0::real)"
+                    "goal_id": "4.1.14",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "y = 0",
+                    "goal_id": "4.1.15",
+                    "method_name": "cut"
+                },
+                {
+                    "goal": "y = 0 <--> y <= 0 & 0 <= y",
+                    "goal_id": "4.1.15",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "4.1.15",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_le_antisym"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.15"
+                    ],
+                    "goal_id": "4.1.16",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.1.16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.1.16",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(λx. if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0)",
+                    "param_g": "(λx. if x ∈ s then (1::real) else 0)",
+                    "param_s": "(univ::real set)",
+                    "theorem": "has_real_integral_le"
+                },
+                {
+                    "goal_id": "4.1.16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.1.16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.1.16",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.16.1"
+                    ],
+                    "goal_id": "4.1.16.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                },
+                {
+                    "case": "x ∈ real_closed_interval a b",
+                    "goal_id": "4.1.16.2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "4.1.16.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.16.2.0"
+                    ],
+                    "goal_id": "4.1.16.2.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "4.1.16.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "4.1.16.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.16.3.0"
+                    ],
+                    "goal_id": "4.1.16.3.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "4.1.16.3.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "4.1.20",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(λx. if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0)",
+                    "param_s": "(univ::real set)",
+                    "theorem": "has_real_integral_pos"
+                },
+                {
+                    "goal_id": "4.1.20",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.1.20",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "case": "x ∈ real_closed_interval a b",
+                    "goal_id": "4.1.20.2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "4.1.20.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.20.2.0"
+                    ],
+                    "goal_id": "4.1.20.2.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.20.1"
+                    ],
+                    "goal_id": "4.1.20.2.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "4.1.20.2.1",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "4.1.20.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.20.3.0"
+                    ],
+                    "goal_id": "4.1.20.3.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "4.1.20.3.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.24",
+                        "4.1.14"
+                    ],
+                    "goal_id": "4.1.25",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "4.1.26",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(λx. if x ∈ real_closed_interval a b then if x ∈ univ then if x ∈ s then (1::real) else 0 else 0 else 0)",
+                    "theorem": "has_real_integral_eq"
+                },
+                {
+                    "goal_id": "4.1.26",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "4.1.26",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "4.1.26.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "indicator_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.1.26.1"
+                    ],
+                    "goal_id": "4.1.26.2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "5.0"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_negligible"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "forall_elim",
+                    "s": "(univ::real set)"
+                },
+                {
+                    "fact_ids": [
+                        "5.2"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "indicator_def"
                 }
             ],
             "ty": "thm",
@@ -25935,7 +26685,7 @@
                 "hint_backward",
                 "hint_forward"
             ],
-            "name": "real_measurable_real_measure_pos_le",
+            "name": "real_measurable_real_measure_pos_lt",
             "num_gaps": 0,
             "proof": [
                 {
@@ -26141,7 +26891,7 @@
                     "th": "⊢ real_measurable s ⟶ 0 < real_measure s ⟷ ¬real_negligible s"
                 }
             ],
-            "prop": "real_measurable s ⟶ (0 < real_measure s <--> ~real_negligible s)",
+            "prop": "real_measurable s ⟶ 0 < real_measure s ⟷ ¬real_negligible s",
             "steps": [
                 {
                     "goal_id": "1",
@@ -26233,6 +26983,3074 @@
             "ty": "thm",
             "vars": {
                 "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_negligible_real_interval1",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (∀a1. ∀b1. has_real_integral (indicator (real_closed_interval a b)) 0 (real_closed_interval a1 b1)) ⟷ real_open_interval a b = ∅"
+                },
+                {
+                    "args": "real_negligible_def, real_negligible (real_closed_interval a b) ⟷ real_open_interval a b = ∅",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_negligible (real_closed_interval a b) ⟷ real_open_interval a b = ∅"
+                }
+            ],
+            "prop": "real_negligible (real_closed_interval a b) <--> (real_open_interval a b) = {}",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_negligible_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_negligible_real_interval2",
+            "prop": "real_negligible (real_open_interval a b) ⟷ real_open_interval a b = ∅",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measurable_unions",
+            "prop": [
+                "finite f & (!s. s ∈ f --> real_measurable s)",
+                "--> real_measurable (Union f)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real set set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_forward",
+                "hint_backward1",
+                "hint_backward"
+            ],
+            "name": "has_real_measure_diff_subset",
+            "prop": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ s2 ⊆ s1 ⟶ has_real_measure (diff s1 s2) (m1 - m2)",
+            "ty": "thm",
+            "vars": {
+                "m1": "real",
+                "m2": "real",
+                "s1": "real set",
+                "s2": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measurable_diff",
+            "prop": "real_measurable s ∧ real_measurable t ⟶ real_measurable (diff s t)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_diff_subset",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s ∧ real_measurable t ∧ t ⊆ s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ∧ real_measurable t ∧ t ⊆ s ⊢ real_measurable s ∧ real_measurable t ∧ t ⊆ s"
+                },
+                {
+                    "args": "has_real_measure_mesure",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ∧ real_measurable t ∧ t ⊆ s ⊢ has_real_measure s (real_measure s) ∧ has_real_measure t (real_measure t) ∧ t ⊆ s"
+                },
+                {
+                    "args": "has_real_measure_diff_subset",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_measurable t ∧ t ⊆ s ⊢ has_real_measure (diff s t) (real_measure s - real_measure t)"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_measurable t ∧ t ⊆ s ⊢ real_measure (diff s t) = real_measure s - real_measure t"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ∧ real_measurable t ∧ t ⊆ s ⟶ real_measure (diff s t) = real_measure s - real_measure t"
+                }
+            ],
+            "prop": [
+                "real_measurable s ∧ real_measurable t ∧ t ⊆ s",
+                "⟶ real_measure (diff s t) = real_measure s - real_measure t"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_diff_subset"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_real_measure_mesure"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_union_real_negligible",
+            "prop": [
+                "has_real_measure s m ∧ real_negligible t",
+                "--> has_real_measure (union s t) m"
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_diff_real_negligible",
+            "prop": "has_real_measure s m ∧ real_negligible t ⟶ has_real_measure (diff s t) m",
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_union_real_negligible_eq",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "real_negligible t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_negligible t ⊢ real_negligible t"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_negligible t ⊢ has_real_measure (s ∪ t) m ⟶ has_real_measure s m"
+                },
+                {
+                    "args": "has_real_measure (s ∪ t) m",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure (s ∪ t) m ⊢ has_real_measure (s ∪ t) m"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "real_negligible t, has_real_measure (s ∪ t) m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "real_negligible t ⊢ has_real_measure (s ∪ t) m ⟶ has_real_measure s m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_negligible t ⊢ has_real_measure s m ⟶ has_real_measure (s ∪ t) m"
+                },
+                {
+                    "args": "has_real_measure s m",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m, real_negligible t ⊢ has_real_measure s m ∧ real_negligible t"
+                },
+                {
+                    "args": "has_real_measure_union_real_negligible",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible t, has_real_measure s m ⊢ has_real_measure (s ∪ t) m"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "real_negligible t ⊢ has_real_measure s m ⟶ has_real_measure (s ∪ t) m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible t ⊢ has_real_measure (s ∪ t) m ⟷ has_real_measure s m"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_negligible t ⟶ has_real_measure (s ∪ t) m ⟷ has_real_measure s m"
+                }
+            ],
+            "prop": "real_negligible t ⟶ (has_real_measure (s ∪ t) m <--> has_real_measure s m)",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_union_real_negligible"
+                },
+                {
+                    "fact_ids": [
+                        "2.0",
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_diff_real_negligible_eq",
+            "prop": "real_negligible t ⟶ has_real_measure (diff s t) m ⟷ has_real_measure s m",
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_almost",
+            "prop": "has_real_measure s m ∧ real_negligible t & (s ∪ t) = (s1 ∪ t) ⟶ has_real_measure s1 m",
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set",
+                "s1": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_almost_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_negligible t ∧ s ∪ t = s1 ∪ t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ real_negligible t ∧ s ∪ t = s1 ∪ t"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ has_real_measure s m ⟶ has_real_measure s1 m"
+                },
+                {
+                    "args": "has_real_measure s m",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m, real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ has_real_measure s m ∧ real_negligible t ∧ s ∪ t = s1 ∪ t"
+                },
+                {
+                    "args": "has_real_measure_almost",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t, has_real_measure s m ⊢ has_real_measure s1 m"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ has_real_measure s m ⟶ has_real_measure s1 m"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ has_real_measure s1 m ⟶ has_real_measure s m"
+                },
+                {
+                    "args": "has_real_measure s1 m",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s1 m ⊢ has_real_measure s1 m"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ real_negligible t"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_negligible t, B: s ∪ t = s1 ∪ t}",
+                    "id": "2.2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ s ∪ t = s1 ∪ t"
+                },
+                {
+                    "args": "s1 ∪ t = s ∪ t",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ s1 ∪ t = s ∪ t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.1",
+                        "2.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t, has_real_measure s1 m ⊢ real_negligible t ∧ s1 ∪ t = s ∪ t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s1 m, real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ has_real_measure s1 m ∧ real_negligible t ∧ s1 ∪ t = s ∪ t"
+                },
+                {
+                    "args": "has_real_measure_almost",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t, has_real_measure s1 m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.0",
+                        "2.6"
+                    ],
+                    "rule": "intros",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ has_real_measure s1 m ⟶ has_real_measure s m"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ has_real_measure s m ⟷ has_real_measure s1 m"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_negligible t ∧ s ∪ t = s1 ∪ t ⟶ has_real_measure s m ⟷ has_real_measure s1 m"
+                }
+            ],
+            "prop": [
+                "real_negligible t ∧ s ∪ t = s1 ∪ t ",
+                "⟶ has_real_measure s m <--> has_real_measure s1 m "
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "param_t": "t",
+                    "theorem": "has_real_measure_almost"
+                },
+                {
+                    "fact_ids": [
+                        "1.0",
+                        "0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s1",
+                    "param_t": "t",
+                    "theorem": "has_real_measure_almost"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set",
+                "s1": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measurable_almost",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t"
+                },
+                {
+                    "args": "real_measurable_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ (∃m. has_real_measure s m) ∧ real_negligible t ∧ s ∪ t = s1 ∪ t"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∃m. has_real_measure s m, B: real_negligible t ∧ s ∪ t = s1 ∪ t}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ ∃m. has_real_measure s m"
+                },
+                {
+                    "args": "m, real",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "has_real_measure s m",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ real_negligible t ∧ s ∪ t = s1 ∪ t"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m, real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ⊢ has_real_measure s m ∧ real_negligible t ∧ s ∪ t = s1 ∪ t"
+                },
+                {
+                    "args": "has_real_measure_almost",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t, has_real_measure s m ⊢ has_real_measure s1 m"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λm. has_real_measure s1 m, a: m}",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t, has_real_measure s m ⊢ ∃a. has_real_measure s1 a"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable s1",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t, has_real_measure s m ⊢ real_measurable s1"
+                },
+                {
+                    "args": "∃m. has_real_measure s m",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "3",
+                        "4",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ⟶ real_measurable s1"
+                }
+            ],
+            "prop": [
+                "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ",
+                "⟶ real_measurable s1"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "inst_exists_goal",
+                    "s": "m"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "param_t": "t",
+                    "theorem": "has_real_measure_almost"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "s1": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_real_negligible_union",
+            "prop": [
+                "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ real_negligible (inter s1 s2) ",
+                "⟶ has_real_measure (union s1 s2) (m1 + m2)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "m1": "real",
+                "m2": "real",
+                "s1": "real set",
+                "s2": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_real_negligible_union",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t) ⊢ real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t)"
+                },
+                {
+                    "args": "has_real_measure_mesure",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t) ⊢ has_real_measure s (real_measure s) ∧ has_real_measure t (real_measure t) ∧ real_negligible (s ∩ t)"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_union",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t) ⊢ has_real_measure (s ∪ t) (real_measure s + real_measure t)"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t) ⊢ real_measure (s ∪ t) = real_measure s + real_measure t"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t) ⟶ real_measure (s ∪ t) = real_measure s + real_measure t"
+                }
+            ],
+            "prop": [
+                "real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t)",
+                "--> real_measure (s ∪ t) = real_measure s + real_measure t"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_negligible_union"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_real_measure_mesure"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_real_negligible_symdiff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "∀x. x ∈ s ∪ ({x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}) ⟷ x ∈ t ∪ ({x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s})",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. x ∈ s ∪ ({x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}) ⟷ x ∈ t ∪ ({x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s})"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ⊢ s ∪ ({x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}) = t ∪ ({x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s})"
+                },
+                {
+                    "args": "diff_def, s ∪ (diff s t ∪ diff t s) = t ∪ (diff s t ∪ diff t s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ⊢ s ∪ (diff s t ∪ diff t s) = t ∪ (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ⊢ (has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s)) ∧ s ∪ (diff s t ∪ diff t s) = t ∪ (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "conj_assoc, has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ∧ s ∪ (diff s t ∪ diff t s) = t ∪ (diff s t ∪ diff t s)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ∧ s ∪ (diff s t ∪ diff t s) = t ∪ (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "has_real_measure_almost",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure t m"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ⟶ has_real_measure t m"
+                }
+            ],
+            "prop": [
+                "has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s) ",
+                "⟶ has_real_measure t m"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "param_t": "(diff s t ∪ diff t s)",
+                    "theorem": "has_real_measure_almost"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "diff_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measurable_real_negligible_symdiff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s ∧ real_negligible (diff s t ∪ diff t s)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ⊢ real_measurable s ∧ real_negligible (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "real_measurable_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ⊢ (∃m. has_real_measure s m) ∧ real_negligible (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∃m. has_real_measure s m, B: real_negligible (diff s t ∪ diff t s)}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ⊢ ∃m. has_real_measure s m"
+                },
+                {
+                    "args": "m, real",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "has_real_measure s m",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ⊢ real_negligible (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s m, real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure s m ∧ real_negligible (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_symdiff",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_negligible (diff s t ∪ diff t s), has_real_measure s m ⊢ has_real_measure t m"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λm. has_real_measure t m, a: m}",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_negligible (diff s t ∪ diff t s), has_real_measure s m ⊢ ∃a. has_real_measure t a"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable t",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ∧ real_negligible (diff s t ∪ diff t s), has_real_measure s m ⊢ real_measurable t"
+                },
+                {
+                    "args": "∃m. has_real_measure s m",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "3",
+                        "4",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ⟶ real_measurable t"
+                }
+            ],
+            "prop": [
+                "real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ",
+                "⟶ real_measurable t"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "exists_elim",
+                    "names": "m"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "inst_exists_goal",
+                    "s": "m"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "theorem": "has_real_measure_real_negligible_symdiff"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_real_negligible_symdiff",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ (real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "conjD1, {}, {A: real_measurable s ∨ real_measurable t, B: real_negligible (diff s t ∪ diff t s)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ real_measurable s ∨ real_measurable t"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_measurable s ∨ real_measurable t, B: real_negligible (diff s t ∪ diff t s)}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ real_negligible (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "has_real_measure_mesure",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure s (real_measure s) ∨ has_real_measure t (real_measure t)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure s (real_measure s) ⟶ real_measure s = real_measure t"
+                },
+                {
+                    "args": "has_real_measure s (real_measure s)",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s (real_measure s) ⊢ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4.1",
+                    "prevs": [
+                        "4.0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure s (real_measure s), (real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure s (real_measure s) ∧ real_negligible (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_symdiff",
+                    "id": "4.2",
+                    "prevs": [
+                        "4.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s), has_real_measure s (real_measure s) ⊢ has_real_measure t (real_measure s)"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "4.3",
+                    "prevs": [
+                        "4.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s), has_real_measure s (real_measure s) ⊢ real_measure t = real_measure s"
+                },
+                {
+                    "args": "eq_sym_eq, real_measure s = real_measure t",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s), has_real_measure s (real_measure s) ⊢ real_measure s = real_measure t"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.0",
+                        "4.4"
+                    ],
+                    "rule": "intros",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure s (real_measure s) ⟶ real_measure s = real_measure t"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure t (real_measure t) ⟶ real_measure s = real_measure t"
+                },
+                {
+                    "args": "has_real_measure t (real_measure t)",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure t (real_measure t) ⊢ has_real_measure t (real_measure t)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5.1",
+                    "prevs": [
+                        "5.0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_measure t (real_measure t), (real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure t (real_measure t) ∧ real_negligible (diff s t ∪ diff t s)"
+                },
+                {
+                    "args": "union_comm, has_real_measure t (real_measure t) ∧ real_negligible (diff t s ∪ diff s t)",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s), has_real_measure t (real_measure t) ⊢ has_real_measure t (real_measure t) ∧ real_negligible (diff t s ∪ diff s t)"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_symdiff",
+                    "id": "5.3",
+                    "prevs": [
+                        "5.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s), has_real_measure t (real_measure t) ⊢ has_real_measure s (real_measure t)"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s), has_real_measure t (real_measure t) ⊢ real_measure s = real_measure t"
+                },
+                {
+                    "args": "",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.0",
+                        "5.4"
+                    ],
+                    "rule": "intros",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ has_real_measure t (real_measure t) ⟶ real_measure s = real_measure t"
+                },
+                {
+                    "args": "disjE",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "4",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⊢ real_measure s = real_measure t"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⟶ real_measure s = real_measure t"
+                }
+            ],
+            "prop": "(real_measurable s | real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⟶ real_measure s = real_measure t",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_real_measure_mesure"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s",
+                    "theorem": "has_real_measure_real_negligible_symdiff"
+                },
+                {
+                    "fact_ids": [
+                        "4.0",
+                        "2"
+                    ],
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "param_s": "t",
+                    "theorem": "has_real_measure_real_negligible_symdiff"
+                },
+                {
+                    "goal_id": "5.1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "union_comm"
+                },
+                {
+                    "fact_ids": [
+                        "5.0",
+                        "2"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_real_negligible_unions",
+            "prop": [
+                "finite f ∧ ",
+                "(∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ ",
+                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t)) ",
+                "⟶ has_real_measure (⋃f) (sum f m)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real set set",
+                "m": "real set => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_real_negligible_unions",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t)) ⊢ finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t))"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_unions",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t)) ⊢ has_real_measure (⋃f) (sum f m)"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t)) ⊢ real_measure (⋃f) = sum f m"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t)) ⟶ real_measure (⋃f) = sum f m"
+                }
+            ],
+            "prop": [
+                "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) &",
+                "(!s. !t. s ∈ f & t ∈ f & ~(s = t) --> real_negligible (inter s t))",
+                "⟶ real_measure (⋃f) = sum f m"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_negligible_unions"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real set set",
+                "m": "real set => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_disjoint_unions",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t)"
+                },
+                {
+                    "args": "disjoint_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ s ∩ t = ∅)"
+                },
+                {
+                    "args": "conj_assoc",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ (finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s))) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ s ∩ t = ∅)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ ∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t)"
+                },
+                {
+                    "args": "s, real set",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR s"
+                },
+                {
+                    "args": "t, real set",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR t"
+                },
+                {
+                    "args": "s ∈ f ∧ t ∈ f ∧ ¬s = t",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s ∈ f ∧ t ∈ f ∧ ¬s = t ⊢ s ∈ f ∧ t ∈ f ∧ ¬s = t"
+                },
+                {
+                    "args": "conjD2, {}, {A: finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)), B: ∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ s ∩ t = ∅}",
+                    "id": "4.3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ ∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ s ∩ t = ∅"
+                },
+                {
+                    "args": "s",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ s ∩ t = ∅"
+                },
+                {
+                    "args": "t",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ s ∩ t = ∅"
+                },
+                {
+                    "args": "",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5",
+                        "4.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t), s ∈ f ∧ t ∈ f ∧ ¬s = t ⊢ s ∩ t = ∅"
+                },
+                {
+                    "args": "real_negligible_empty",
+                    "id": "4.7",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible ∅"
+                },
+                {
+                    "args": "real_negligible (s ∩ t)",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.6",
+                        "4.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t), s ∈ f ∧ t ∈ f ∧ ¬s = t ⊢ real_negligible (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "4.9",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.8"
+                    ],
+                    "rule": "intros",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ ∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ (finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s))) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t))"
+                },
+                {
+                    "args": "conj_assoc, finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t))",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t))"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_unions",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ has_real_measure (⋃f) (sum f m)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⟶ has_real_measure (⋃f) (sum f m)"
+                }
+            ],
+            "prop": [
+                "finite f ∧ ",
+                "(∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ ",
+                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ",
+                "⟶ has_real_measure (⋃f) (sum f m)"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "disjoint_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_negligible_unions"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "s,t"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "4.3"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "forall_elim",
+                    "s": "s"
+                },
+                {
+                    "fact_ids": [
+                        "4.4"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "forall_elim",
+                    "s": "t"
+                },
+                {
+                    "fact_ids": [
+                        "4.5",
+                        "4.2"
+                    ],
+                    "goal_id": "4.6",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
+                    ],
+                    "goal_id": "4.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_negligible_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real set set",
+                "m": "real set => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_disjoint_unions",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t)"
+                },
+                {
+                    "args": "has_real_measure_disjoint_unions",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ has_real_measure (⋃f) (sum f m)"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⊢ real_measure (⋃f) = sum f m"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ (∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ⟶ real_measure (⋃f) = sum f m"
+                }
+            ],
+            "prop": [
+                "finite f ∧ ",
+                "(∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ ",
+                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ",
+                "⟶ real_measure (⋃f) = sum f m"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_disjoint_unions"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real set set",
+                "m": "real set => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_real_negligible_unions_image",
+            "prop": [
+                "finite s ∧ ",
+                "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible ((f x) ∩ (f y))) ",
+                "⟶ has_real_measure (⋃(image f s)) (sum s (%x. real_measure (f x)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real set",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_real_negligible_unions_image",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ⊢ finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_unions_image",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ⊢ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ⊢ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                }
+            ],
+            "prop": [
+                "finite s ∧ ",
+                "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ",
+                "⟶ real_measure (⋃(image f s)) = (sum s (λx. real_measure (f x)))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_negligible_unions_image"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real set",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_disjoint_unions_image",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))"
+                },
+                {
+                    "args": "conj_assoc",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ (finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x))) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x))"
+                },
+                {
+                    "args": "conjD2, {}, {A: finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)), B: ∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)}",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ ∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ ∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, 'a",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "x ∈ s ∧ y ∈ s ∧ ¬x = y",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ y ∈ s ∧ ¬x = y ⊢ x ∈ s ∧ y ∈ s ∧ ¬x = y"
+                },
+                {
+                    "args": "x",
+                    "id": "4.3",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)"
+                },
+                {
+                    "args": "y",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4",
+                        "4.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)), x ∈ s ∧ y ∈ s ∧ ¬x = y ⊢ disjoint (f x) (f y)"
+                },
+                {
+                    "args": "disjoint_def",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)), x ∈ s ∧ y ∈ s ∧ ¬x = y ⊢ f x ∩ f y = ∅"
+                },
+                {
+                    "args": "real_negligible_empty",
+                    "id": "4.7",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible ∅"
+                },
+                {
+                    "args": "real_negligible (f x ∩ f y)",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.6",
+                        "4.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)), x ∈ s ∧ y ∈ s ∧ ¬x = y ⊢ real_negligible (f x ∩ f y)"
+                },
+                {
+                    "args": "",
+                    "id": "4.9",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.8"
+                    ],
+                    "rule": "intros",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ ∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ (finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x))) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))"
+                },
+                {
+                    "args": "conj_assoc, finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_unions_image",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⟶ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                }
+            ],
+            "prop": [
+                "finite s ∧ ",
+                "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ",
+                "⟶ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_negligible_unions_image"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "4.3"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "forall_elim",
+                    "s": "y"
+                },
+                {
+                    "fact_ids": [
+                        "4.4",
+                        "4.2"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.5"
+                    ],
+                    "goal_id": "4.6",
+                    "method_name": "rewrite_fact",
+                    "theorem": "disjoint_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
+                    ],
+                    "goal_id": "4.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_negligible_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real set",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_disjoint_unions_image",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))"
+                },
+                {
+                    "args": "has_real_measure_disjoint_unions_image",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                }
+            ],
+            "prop": [
+                "finite s ∧ ",
+                "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ",
+                "⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_disjoint_unions_image"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real set",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_real_negligible_unions_image_strong",
+            "prop": [
+                "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ ",
+                "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ",
+                "⟶ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real set",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_real_negligible_unions_image_strong",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ⊢ finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_unions_image_strong",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ⊢ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ⊢ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                }
+            ],
+            "prop": [
+                "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ ",
+                "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ",
+                "⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_negligible_unions_image_strong"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real set",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_disjoint_unions_image_strong:",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))"
+                },
+                {
+                    "args": "conj_assoc",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ (finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x))) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x))"
+                },
+                {
+                    "args": "conjD2, {}, {A: finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)), B: ∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)}",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ ∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ ∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)"
+                },
+                {
+                    "args": "x, 'a",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "y, 'a",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "x ∈ s ∧ y ∈ s ∧ ¬x = y",
+                    "id": "4.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ y ∈ s ∧ ¬x = y ⊢ x ∈ s ∧ y ∈ s ∧ ¬x = y"
+                },
+                {
+                    "args": "x",
+                    "id": "4.3",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)"
+                },
+                {
+                    "args": "y",
+                    "id": "4.4",
+                    "prevs": [
+                        "4.3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)"
+                },
+                {
+                    "args": "",
+                    "id": "4.5",
+                    "prevs": [
+                        "4.4",
+                        "4.2"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)), x ∈ s ∧ y ∈ s ∧ ¬x = y ⊢ disjoint (f x) (f y)"
+                },
+                {
+                    "args": "disjoint_def",
+                    "id": "4.6",
+                    "prevs": [
+                        "4.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)), x ∈ s ∧ y ∈ s ∧ ¬x = y ⊢ f x ∩ f y = ∅"
+                },
+                {
+                    "args": "real_negligible_empty",
+                    "id": "4.7",
+                    "prevs": [],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible ∅"
+                },
+                {
+                    "args": "real_negligible (f x ∩ f y)",
+                    "id": "4.8",
+                    "prevs": [
+                        "4.6",
+                        "4.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)), x ∈ s ∧ y ∈ s ∧ ¬x = y ⊢ real_negligible (f x ∩ f y)"
+                },
+                {
+                    "args": "",
+                    "id": "4.9",
+                    "prevs": [
+                        "4.0",
+                        "4.1",
+                        "4.2",
+                        "4.8"
+                    ],
+                    "rule": "intros",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ ∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ (finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x))) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))"
+                },
+                {
+                    "args": "conj_assoc, finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y))"
+                },
+                {
+                    "args": "has_real_measure_real_negligible_unions_image_strong",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⟶ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                }
+            ],
+            "prop": [
+                "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ ",
+                "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ",
+                "⟶ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_real_negligible_unions_image_strong"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "conj_assoc"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "x,y"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4.3",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "4.3"
+                    ],
+                    "goal_id": "4.4",
+                    "method_name": "forall_elim",
+                    "s": "y"
+                },
+                {
+                    "fact_ids": [
+                        "4.4",
+                        "4.2"
+                    ],
+                    "goal_id": "4.5",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "4.5"
+                    ],
+                    "goal_id": "4.6",
+                    "method_name": "rewrite_fact",
+                    "theorem": "disjoint_def"
+                },
+                {
+                    "fact_ids": [
+                        "4.6"
+                    ],
+                    "goal_id": "4.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4.7",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_negligible_empty"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real set",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_disjoint_unions_image_strong",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y))"
+                },
+                {
+                    "args": "has_real_measure_disjoint_unions_image_strong:",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⊢ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ (∀x. x ∈ s ⟶ real_measurable (f x)) ∧ (∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                }
+            ],
+            "prop": [
+                "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ ",
+                "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ",
+                "⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_measure_disjoint_unions_image_strong:"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real set",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_union",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "real_measurable s ∧ real_measurable t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable s ∧ real_measurable t"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ s ∪ t = s ∩ t ∪ {x. x ∈ s ∧ ¬x ∈ t} ∪ {x. x ∈ t ∧ ¬x ∈ s}"
+                },
+                {
+                    "args": "diff_def, s ∪ t = s ∩ t ∪ diff s t ∪ diff t s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ s ∪ t = s ∩ t ∪ diff s t ∪ diff t s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measure (s ∪ t) = real_measure s + real_measure t - real_measure (s ∩ t)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ∧ real_measurable t ⟶ real_measure (s ∪ t) = real_measure s + real_measure t - real_measure (s ∩ t)"
+                }
+            ],
+            "prop": [
+                "real_measurable s & real_measurable t",
+                "--> real_measure (union s t) =",
+                "real_measure s + real_measure t - real_measure (inter s t) "
+            ],
+            "steps": [
+                {
+                    "goal": "s ∪ t = (s ∩ t) ∪ diff s t ∪ diff t s",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "theorem": "diff_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_union_le",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s ∧ real_measurable t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable s ∧ real_measurable t"
+                },
+                {
+                    "args": "real_measure_union, {}, {s: s, t: t}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measure (s ∪ t) = real_measure s + real_measure t - real_measure (s ∩ t)"
+                },
+                {
+                    "args": "∀a::real. ∀b. a - b ≤ a ⟷ 0 ≤ b",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. a - b ≤ a ⟷ 0 ≤ b"
+                },
+                {
+                    "args": "real_measure s + real_measure t",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ ∀b. real_measure s + real_measure t - b ≤ real_measure s + real_measure t ⟷ 0 ≤ b"
+                },
+                {
+                    "args": "real_measure (s ∩ t)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ real_measure s + real_measure t - real_measure (s ∩ t) ≤ real_measure s + real_measure t ⟷ 0 ≤ real_measure (s ∩ t)"
+                },
+                {
+                    "args": "real_measurable_inter",
+                    "id": "5",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measurable (s ∩ t)"
+                },
+                {
+                    "args": "real_measure_pos_le",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ 0 ≤ real_measure (s ∩ t)"
+                },
+                {
+                    "args": "real_measure s + real_measure t - real_measure (s ∩ t) ≤ real_measure s + real_measure t",
+                    "id": "7",
+                    "prevs": [
+                        "4",
+                        "6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measure s + real_measure t - real_measure (s ∩ t) ≤ real_measure s + real_measure t"
+                },
+                {
+                    "args": "real_measure (s ∪ t) ≤ real_measure s + real_measure t",
+                    "id": "8",
+                    "prevs": [
+                        "1",
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "real_measurable s ∧ real_measurable t ⊢ real_measure (s ∪ t) ≤ real_measure s + real_measure t"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ∧ real_measurable t ⟶ real_measure (s ∪ t) ≤ real_measure s + real_measure t"
+                }
+            ],
+            "prop": [
+                "real_measurable s ∧ real_measurable t ",
+                "⟶ real_measure (s ∪ t) <= real_measure s + real_measure t"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_measure_union"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "!a. !b. a - b <= a <--> (0::real) <= b ",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "forall_elim",
+                    "s": "real_measure s + real_measure t"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "forall_elim",
+                    "s": "real_measure (s ∩ t)"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_pos_le"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measurable_inter"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "t": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_unions_le",
+            "prop": [
+                "finite f ∧ ",
+                "(∀s. s ∈ f ⟶ real_measurable s)",
+                "⟶ real_measure (⋃f) = sum f (λs. real_measure s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "real set set"
             }
         }
     ],

@@ -7,7 +7,7 @@
             "name": "real_closed_interval",
             "prop": "real_closed_interval a b = {p. less_eq a p & less_eq p b}",
             "ty": "def",
-            "type": "real => real => real set"
+            "type": "real ⇒ real ⇒ real set"
         },
         {
             "attributes": [
@@ -16,7 +16,7 @@
             "name": "real_open_interval",
             "prop": "real_open_interval a b = {p. less a p & less p b}",
             "ty": "def",
-            "type": "real => real => real set"
+            "type": "real ⇒ real ⇒ real set"
         },
         {
             "name": "has_integral",
@@ -35,7 +35,7 @@
             "name": "integrable_on",
             "prop": "integrable_on f i = ?y. has_integral f y i",
             "ty": "def",
-            "type": "(real => real) => real set => bool"
+            "type": "(real ⇒ real) ⇒ real set ⇒ bool"
         },
         {
             "attributes": [
@@ -44,7 +44,7 @@
             "name": "integral",
             "prop": "integral i f = THE y. has_integral f y i",
             "ty": "def",
-            "type": "real set => (real => real) => real"
+            "type": "real set ⇒ (real ⇒ real) ⇒ real"
         },
         {
             "attributes": [
@@ -860,16 +860,19 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "indicator",
-            "prop": "indicator s = %x. if (member x s) then 1 else 0",
+            "prop": "indicator s = (λx. if x ∈ s then 1 else 0)",
             "ty": "def",
-            "type": "real set => real => real"
+            "type": "real set ⇒ real ⇒ real"
         },
         {
             "name": "negligible",
             "prop": "negligible s = !a. !b. has_integral (indicator s) 0 (real_closed_interval a b)",
             "ty": "def",
-            "type": "real set => bool"
+            "type": "real set ⇒ bool"
         },
         {
             "name": "has_integral_negligible",
