@@ -72,15 +72,13 @@ export default {
   methods: {
     step_backward: function () {
       if (this.index > 0) {
-        this.index--;
-        this.display_instructions();
+        this.goto_index(this.index - 1);
       }
     },
 
     step_forward: function () {
       if (this.index < this.history.length-1) {
-        this.index++;
-        this.display_instructions();
+        this.goto_index(this.index + 1);
       }
     },
 
@@ -94,47 +92,29 @@ export default {
       this.ref_status.trace = trace
     },
 
-    display_checked_proof: function (result) {
-      if ('err_type' in result) {
-        this.display_error(result.err_type, result.err_str, result.trace)
+    compute_new_goal: function (start) {
+      // Start search from the current goal, or the beginning
+      // if there is no current goal.
+      var pre_line_no = start
+      var new_line_no = undefined
+      for (var i = pre_line_no; i < this.proof.length; i++) {
+        if (this.proof[i].rule === 'sorry') {
+          new_line_no = i
+          break
+        }
+      }
+      if (new_line_no === undefined) {  // Past the last goal
+        return -1
       } else {
-        this.proof = result.proof
-        var numGaps = result.report.num_gaps
-        this.num_gaps = numGaps
-        if (numGaps > 0) {
-          this.display_status('OK. ' + numGaps + ' gap(s) remaining.')
-        } else {
-          this.display_status('OK. Proof complete!')
-        }
+        return new_line_no
+      }
+    },
 
-        if ('goal' in result) {
-          // Looking at a previous step, already has goal_id and fact_id
-          this.goal = result.goal
-          this.facts = []
-          if ('facts' in result) {
-            this.facts = result.facts
-          }
-        } else {
-          var newLineNo = -1
-          var preLineNo = 0
-          if (this.goal !== -1) {
-            preLineNo = this.goal
-          }
-          for (var i = preLineNo; i < this.proof.length; i++) {
-            if (this.proof[i].rule === 'sorry') {
-              newLineNo = i
-              break
-            }
-          }
-          if (newLineNo === -1) {
-            this.facts = []
-            this.goal = -1
-          } else {
-            this.facts = []
-            this.goal = newLineNo
-          }
-        }
-        this.match_thm()
+    display_num_gaps: function () {
+      if (this.num_gaps > 0) {
+        this.display_status('OK. ' + this.num_gaps + ' gap(s) remaining.')
+      } else {
+        this.display_status('OK. Proof complete!')
       }
     },
 
@@ -148,25 +128,13 @@ export default {
     },
 
     display_instructions: function () {
-      var hId = this.index
-      this.ref_status.instr = this.history[hId].steps_output
-      this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
-
-      var proof_info = {
-        proof: this.history[hId].proof,
-        report: this.history[hId].report
+      if (this.history[this.index] !== undefined) {
+        this.ref_status.instr = this.history[this.index].steps_output
+        this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
+      } else {
+        this.ref_status.instr = ''
+        this.ref_status.instr_no = ''
       }
-      if (hId < this.steps.length) {
-        // Find line number corresponding to ids
-        proof_info.goal = this.get_line_no_from_id(this.steps[hId].goal_id)
-        proof_info.facts = []
-        if (this.steps[hId].fact_ids !== undefined) {
-          this.steps[hId].fact_ids.forEach(
-            v => proof_info.facts.push(this.get_line_no_from_id(v))
-          )
-        }
-      }
-      this.display_checked_proof(proof_info)
     },
 
     current_state: function () {
@@ -272,6 +240,32 @@ export default {
       }
     },
 
+    // Go to the index given by hId
+    goto_index: function (hId) {
+      this.index = hId
+      this.proof = this.history[hId].proof
+      this.num_gaps = this.history[hId].report.num_gaps
+      this.facts = []
+      console.log('hId', hId)
+      console.log('length', this.steps.length)
+      if (hId === this.steps.length) {
+        this.goal = this.compute_new_goal(0)
+        console.log('goal', this.goal)
+      } else {
+        this.goal = this.get_line_no_from_id(this.steps[hId].goal_id)
+        const fact_ids = this.steps[hId].fact_ids
+        if (fact_ids !== undefined) {
+          for (let i = 0; i < fact_ids.length; i++) {
+            this.facts.push(this.get_line_no_from_id(fact_ids[i]))
+          }
+        }
+      }
+      this.display_instructions()
+      this.display_num_gaps()
+      this.match_thm()
+      console.log('goal', this.goal)
+    },
+
     apply_method_ajax: async function (input) {
       var result = undefined
       try {
@@ -324,8 +318,7 @@ export default {
           report: result.data.report
         }
         this.history.length = hId + 2
-        this.index += 1
-        this.display_instructions()
+        this.goto_index(hId + 1)
       }
     },
 
@@ -406,8 +399,7 @@ export default {
         proof: response.data.proof,
         report: response.data.report
       }]
-      this.index = 0
-      this.display_instructions()
+      this.goto_index(0)
     },
 
     init_saved_proof: async function () {
@@ -442,22 +434,25 @@ export default {
       if ('err_type' in response.data) {
         this.display_error(response.data.err_type, response.data.err_str, response.data.trace)
       } else {
-        this.goal = -1
         this.method_sig = response.data.method_sig
-        this.steps = response.data.steps
-        if (response.data.history !== undefined) {
+        if (response.data.steps !== undefined) {
+          this.steps = response.data.steps
           this.history = response.data.history
-          this.index = response.data.history.length - 1
-          this.display_instructions()
+          this.goto_index(this.history.length-1)
         } else {
+          this.num_gaps = response.data.report.num_gaps
+          this.goal = -1
+          this.facts = []
           this.proof = response.data.proof
-          this.display_checked_proof(response.data)
+          this.display_num_gaps()
+          this.display_instructions()
+          this.match_thm()
         }
       }
     },
 
     init_proof: async function () {
-      if (this.old_steps === undefined) {
+      if (this.old_proof === undefined) {
         this.init_empty_proof()
       } else {
         this.init_saved_proof()
@@ -473,8 +468,7 @@ export default {
 
       this.history.length -= 1;
       this.history[h_id-1].steps_output = [{text: "Current state", color: 0}]
-      this.index = h_id - 1;
-      this.display_instructions();
+      this.goto_index(h_id-1);
 
       // Remove last step after display_instructions, so goal and fact_no can
       // be used during display.
