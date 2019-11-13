@@ -30306,6 +30306,582 @@
             "vars": {
                 "f": "real set set"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measure_unions_le_image",
+            "prop": [
+                "finite f ∧ (∀a. a ∈ f ⟶ real_measurable (s a)) ",
+                "⟶ real_measure (⋃ image s f) = sum f (λa. real_measure (s a))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a set",
+                "s": "'a => real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_negligible_outer",
+            "prop": [
+                "real_negligible s <-->",
+                "       !e. 0 < e",
+                "           --> ?t. subset s t & real_measurable t & real_measure t < e"
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_negligible_outer_le",
+            "prop": [
+                "real_negligible s ⟷ ",
+                "(∀e. 0 < e ⟶ (∃t. s ⊆ t ∧ real_measurable t ∧ real_measure t <= e))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_measurable_inner_outer",
+            "prop": [
+                "real_measurable s ⟷ ",
+                "(∀e. 0 < e ",
+                "   ⟶ (∃t. ∃u. t ⊆ s ∧ ",
+                "           s ⊆ u ∧ ",
+                "           real_measurable t ∧ ",
+                "           real_measurable u ∧ abs (real_measure t - real_measure u) < e))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_real_measure_inner_outer",
+            "prop": [
+                "has_real_measure s m <-->",
+                "                (!e. 0 < e --> ?t. t ⊆ s & real_measurable t &",
+                "                                    m - e < real_measure t) &",
+                "                (!e. 0 < e --> ?u. s ⊆ u & real_measurable u &",
+                "                                    real_measure u < m + e)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_real_measure_inner_outer_le",
+            "prop": [
+                "has_real_measure s m ⟷ ",
+                "(∀e. 0 < e ⟶ (∃t. t ⊆ s ∧ real_measurable t ∧ m - e <= real_measure t)) ∧ ",
+                "(∀e. 0 < e ⟶ (∃u. s ⊆ u ∧ real_measurable u ∧ real_measure u <= m + e))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_forward",
+                "hint_backward"
+            ],
+            "name": "has_real_measure_affinity",
+            "prop": [
+                "has_real_measure s y",
+                "             --> has_real_measure (image (%x. m * x + c) s) (abs m * y)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "m": "real",
+                "s": "real set",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_scaling",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure s y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s y ⊢ has_real_measure s y"
+                },
+                {
+                    "args": "has_real_measure_affinity, {}, {c: (0::real), m: m, s: s, y: y}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_measure s y ⊢ has_real_measure (image (λx. m * x + 0) s) (abs m * y)"
+                },
+                {
+                    "args": "real_add_rid",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_measure s y ⊢ has_real_measure (image (λx. m * x) s) (abs m * y)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_measure s y ⟶ has_real_measure (image (λx. m * x) s) (abs m * y)"
+                }
+            ],
+            "prop": "has_real_measure s y ⟶ has_real_measure (image (λx. m * x) s) (abs m * y)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_c": "(0::real)",
+                    "param_m": "m",
+                    "theorem": "has_real_measure_affinity"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_rid"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "real",
+                "s": "real set",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_translation",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure s m",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_measure s m ⊢ has_real_measure s m"
+                },
+                {
+                    "args": "has_real_measure_affinity, {}, {c: a, m: (1::real), s: s, y: m}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_measure s m ⊢ has_real_measure (image (λx. 1 * x + a) s) (abs 1 * m)"
+                },
+                {
+                    "args": "real_mul_lid",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_measure s m ⊢ has_real_measure (image (λx. x + a) s) (abs 1 * m)"
+                },
+                {
+                    "args": "abs 1 * m = m",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ abs 1 * m = m"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "has_real_measure s m ⊢ has_real_measure (image (λx. x + a) s) m"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_measure s m ⟶ has_real_measure (image (λx. x + a) s) m"
+                }
+            ],
+            "prop": "has_real_measure s m ⟶ has_real_measure (image (λx. x + a) s) m",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_c": "a",
+                    "param_m": "(1::real)",
+                    "theorem": "has_real_measure_affinity"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal": "abs 1 * m = m",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "m": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_negligible_translation",
+            "prop": "real_negligible s ⟶ real_negligible (image (λx. x + a) s)",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "has_real_measure_translation_eq",
+            "prop": "has_real_measure (image (λx. x + a) s) m ⟷ has_real_measure s m",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "m": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_negligible_translation_rev",
+            "prop": "real_negligible (image (λx. x + a) s) ⟶ real_negligible s",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_negligible_translation_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ real_negligible (image (λx. x + a) s) ⟶ real_negligible s"
+                },
+                {
+                    "args": "real_negligible (image (λx. x + a) s)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_negligible (image (λx. x + a) s) ⊢ real_negligible (image (λx. x + a) s)"
+                },
+                {
+                    "args": "real_negligible_translation_rev",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_negligible (image (λx. x + a) s) ⊢ real_negligible s"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_negligible (image (λx. x + a) s) ⟶ real_negligible s"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ real_negligible s ⟶ real_negligible (image (λx. x + a) s)"
+                },
+                {
+                    "args": "real_negligible s",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_negligible s ⊢ real_negligible s"
+                },
+                {
+                    "args": "real_negligible_translation, {}, {a: a, s: s}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_negligible s ⊢ real_negligible (image (λx. x + a) s)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_negligible s ⟶ real_negligible (image (λx. x + a) s)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ real_negligible (image (λx. x + a) s) ⟷ real_negligible s"
+                }
+            ],
+            "prop": "real_negligible (image (λx. x + a) s) <--> real_negligible s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "param_a": "a",
+                    "theorem": "real_negligible_translation_rev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_negligible_translation"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_measurable_translation",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_measure_translation_eq, (∃m. has_real_measure (image (λx. x + a) s) m) ⟷ (∃m. has_real_measure s m)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∃m. has_real_measure (image (λx. x + a) s) m) ⟷ (∃m. has_real_measure s m)"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable (image (λx. x + a) s) ⟷ real_measurable s",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_measurable (image (λx. x + a) s) ⟷ real_measurable s"
+                }
+            ],
+            "prop": "real_measurable (image (λx. x + a) s) ⟷ real_measurable s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "real_measurable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_translation_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_forward",
+                "hint_backward"
+            ],
+            "name": "real_measure_translation",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_measurable s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_measurable s ⊢ real_measurable s"
+                },
+                {
+                    "args": "has_real_measure_mesure",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_measurable s ⊢ has_real_measure s (real_measure s)"
+                },
+                {
+                    "args": "has_real_measure_translation_eq, has_real_measure (image (λx. x + a) s) (real_measure s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_measurable s ⊢ has_real_measure (image (λx. x + a) s) (real_measure s)"
+                },
+                {
+                    "args": "real_measure_unique",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_measurable s ⊢ real_measure (image (λx. x + a) s) = real_measure s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_measurable s ⟶ real_measure (image (λx. x + a) s) = real_measure s"
+                }
+            ],
+            "prop": [
+                "real_measurable s",
+                "--> real_measure (image (λx. x + a) s) = real_measure s"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "has_real_measure_mesure"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_unique"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "theorem": "has_real_measure_translation_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "s": "real set"
+            }
         }
     ],
     "description": "Integrals of real->real functions; measures of real set. Refer to realanalysis.ml from hol light.",
