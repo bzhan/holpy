@@ -1012,8 +1012,11 @@
             "type": "'a ⇒ 'a"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "comp_fun",
-            "prop": "comp_fun f g = (%x. f (g x))",
+            "prop": "f ∘ g = (λx. f (g x))",
             "ty": "def",
             "type": "('b ⇒ 'c) ⇒ ('a ⇒ 'b) ⇒ 'a ⇒ 'c"
         },
