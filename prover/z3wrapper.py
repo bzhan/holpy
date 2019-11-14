@@ -25,75 +25,63 @@ from prover import fologic
 from util import name
 
 
+class Z3Exception(Exception):
+    def __init__(self, err):
+        self.err = err
+
+    def __str__(self):
+        return self.err
+
+
+def convert_type(T):
+    if T.ty == hol_type.TVAR:
+        return z3.DeclareSort(T.name)
+    if T == nat.natT or T == int.intT:
+        return z3.IntSort()
+    elif T == boolT:
+        return z3.BoolSort()
+    elif T == realT:
+        return z3.RealSort()
+    elif T.is_fun():
+        domainT = convert_type(T.domain_type())
+        rangeT = convert_type(T.range_type())
+        if isinstance(domainT, tuple):
+            raise Z3Exception("convert: unsupported type " + repr(T))
+        if isinstance(rangeT, tuple):
+            return tuple([domainT] + rangeT)
+        else:
+            return (domainT, rangeT)
+    elif T.ty == hol_type.TYPE and T.name == 'set':
+        domainT = convert_type(T.args[0])
+        if isinstance(domainT, tuple):
+            raise Z3Exception("convert: unsupported type " + repr(T))
+        return (domainT, convert_type(boolT))
+    else:
+        raise Z3Exception("convert: unsupported type " + repr(T))
+
+def convert_const(name, T):
+    z3_T = convert_type(T)
+    if isinstance(z3_T, tuple):
+        return z3.Function(name, *z3_T)
+    else:
+        return z3.Const(name, z3_T)
+
 def convert(t):
     """Convert term t to Z3 input."""
     if t.is_var():
-        T = t.get_type()
-        if T == nat.natT or T == int.intT:
-            return z3.Int(t.name)
-        elif T == TFun(nat.natT, nat.natT):
-            return z3.Function(t.name, z3.IntSort(), z3.IntSort())
-        elif T == TFun(nat.natT, boolT):
-            return z3.Function(t.name, z3.IntSort(), z3.BoolSort())
-        elif T == boolT:
-            return z3.Bool(t.name)
-        elif T == realT:
-            return z3.Real(t.name)
-        elif T == TFun(realT, realT):
-            return z3.Function(t.name, z3.RealSort(), z3.RealSort())
-        elif T == TFun(realT, boolT):
-            return z3.Function(t.name, z3.RealSort(), z3.BoolSort())
-        elif T == hol_set.setT(nat.natT):
-            return z3.Function(t.name, z3.IntSort(), z3.BoolSort())
-        elif T == hol_set.setT(realT):
-            return z3.Function(t.name, z3.RealSort(), z3.BoolSort())
-        elif T.ty == hol_type.TYPE and T.name == 'set' and T.args[0].ty == hol_type.TVAR:
-            z3_sort = z3.DeclareSort(T.args[0].name)
-            return z3.Function(t.name, z3_sort, z3.BoolSort())
-        elif T.ty == hol_type.TVAR:
-            z3_sort = z3.DeclareSort(T.name)
-            return z3.Consts(T.name, z3_sort)
-        else:
-            print("convert: unsupported type " + repr(T))
-            raise NotImplementedError
+        return convert_const(t.name, t.T)
     elif t.is_all():
         var_names = [v.name for v in term.get_vars(t.arg.body)]
         nm = name.get_variant_name(t.arg.var_name, var_names)
-        if t.arg.var_T == nat.natT:
-            v = Var(nm, nat.natT)
-            z3_v = z3.Int(nm)
-            return z3.ForAll(z3_v, convert(t.arg.subst_bound(v)))
-        elif t.arg.var_T == realT:
-            v = Var(nm, realT)
-            z3_v = z3.Real(nm)
-            return z3.ForAll(z3_v, convert(t.arg.subst_bound(v)))
-        elif t.arg.var_T.ty == hol_type.TVAR:
-            v = Var(nm, t.arg.var_T)
-            z3_sort = z3.DeclareSort(t.arg.var_T.name)
-            z3_v = z3.Consts(nm, z3_sort)
-            return z3.Forall(z3_v, convert(t.arg.subst_bound(v)))
-        else:
-            print("convert: unsupported forall type " + str(t.arg.var_T))
-            raise NotImplementedError
+        v = Var(nm, t.arg.var_T)
+        z3_v = convert_const(nm, t.arg.var_T)
+        return z3.ForAll(z3_v, convert(t.arg.subst_bound(v)))
     elif logic.is_exists(t):
         var_names = [v.name for v in term.get_vars(t.arg.body)]
         nm = name.get_variant_name(t.arg.var_name, var_names)
-        if t.arg.var_T == nat.natT:
-            v = Var(nm, nat.natT)
-            z3_v = z3.Int(nm)
-            return z3.Exists(z3_v, convert(t.arg.subst_bound(v)))
-        elif t.arg.var_T == realT:
-            v = Var(nm, realT)
-            z3_v = z3.Real(nm)
-            return z3.Exists(z3_v, convert(t.arg.subst_bound(v)))
-        elif t.arg.var_T.ty == hol_type.TVAR:
-            v = Var(nm, t.arg.var_T)
-            z3_sort = z3.DeclareSort(t.arg.var_T.name)
-            z3_v = z3.Consts(nm, z3_sort)
-            return z3.Exists(z3_v, convert(t.arg.subst_bound(v)))
-        else:
-            print("convert: unsupported exists type " + str(t.arg.var_T))
-            raise NotImplementedError
+        v = Var(nm, t.arg.var_T)
+        z3_v = convert_const(nm, t.arg.var_T)
+        return z3.Exists(z3_v, convert(t.arg.subst_bound(v)))
     elif int.is_binary_int(t):
         return int.from_binary_int(t)
     elif t.is_implies():
@@ -153,11 +141,9 @@ def convert(t):
         elif t == logic.false:
             return z3.BoolVal(False)
         else:
-            print("convert: unsupported constant " + repr(t))
-            raise NotImplementedError
+            raise Z3Exception("convert: unsupported constant " + repr(t))
     else:
-        print("convert: unsupported operation " + repr(t))
-        raise NotImplementedError
+        raise Z3Exception("convert: unsupported operation " + repr(t))
 
 norm_thms = [
     'member_empty_simp',
@@ -201,7 +187,7 @@ def solve(thy, t):
         # print('C', convert(C))
         s.add(z3.Not(convert(C)))
         return str(s.check()) == 'unsat'
-    except NotImplementedError:
+    except Z3Exception:
         return False
 
 class Z3Macro(ProofMacro):

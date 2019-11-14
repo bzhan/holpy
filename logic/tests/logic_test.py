@@ -40,7 +40,8 @@ def test_macro(self, thy, macro, *, vars=None, assms=None, res=None, args="", fa
 
     if failed is not None:
         self.assertRaises(failed, macro.eval, thy, args, prev_ths)
-        self.assertRaises(failed, macro.get_proof_term, thy, args, prevs)
+        if not eval_only:
+            self.assertRaises(failed, macro.get_proof_term, thy, args, prevs)
         return
 
     res = parser.parse_term(ctxt, res)

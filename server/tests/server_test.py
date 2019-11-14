@@ -26,11 +26,12 @@ conj = logic.mk_conj
 disj = logic.mk_disj
 
 def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=None, args=None,
-                gaps=None, lines=None, query=None):
+                gaps=None, lines=None, query=None, failed=None):
     """Test run a method.
 
     gaps -- expected gaps remaining.
     query -- expected query for variables.
+    failed -- if None, expected Exception.
 
     """
     # Build context
@@ -49,6 +50,10 @@ def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=N
     args['method_name'] = method_name
     args['goal_id'] = len(assms)
     args['fact_ids'] = prevs
+
+    if failed is not None:
+        self.assertRaises(failed, method.apply_method, state, args)
+        return
 
     if query is not None:
         self.assertRaises(theory.ParameterQueryException, method.apply_method, state, args)

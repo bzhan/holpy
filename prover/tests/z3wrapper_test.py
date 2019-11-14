@@ -105,6 +105,18 @@ class Z3WrapperTest(unittest.TestCase):
             eval_only=True
         )
 
+    def testZ3MacroFail(self):
+        if not z3wrapper.z3_loaded:
+            return
+
+        test_macro(
+            self, 'logic_base', 'z3',
+            vars={'P': 'bool', 'Q': 'bool'},
+            args='P --> Q',
+            eval_only=True,
+            failed=AssertionError
+        )
+
     def testZ3Method(self):
         if not z3wrapper.z3_loaded:
             return
@@ -117,6 +129,18 @@ class Z3WrapperTest(unittest.TestCase):
             method_name='z3',
             prevs=[0],
             gaps=False
+        )
+
+    def testZ3MethodFail(self):
+        if not z3wrapper.z3_loaded:
+            return
+
+        test_method(
+            self, 'logic_base',
+            vars={'P': 'bool', 'Q': 'bool'},
+            concl='P --> Q',
+            method_name='z3',
+            failed=AssertionError
         )
 
 
