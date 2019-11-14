@@ -104,7 +104,7 @@ class rewrite_goal_with_prev_method(Method):
 class rewrite_goal(Method):
     """Rewrite using a theorem."""
     def __init__(self):
-        self.sig = ['theorem']
+        self.sig = ['theorem', 'sym']
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -113,28 +113,38 @@ class rewrite_goal(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name):
+        def search_thm(th_name, sym):
             try:
-                pt = tactic.rewrite_goal().get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
-                results.append({"theorem": th_name, "_goal": [gap.prop for gap in pt.get_gaps()]})
-            except (AssertionError, matcher.MatchException):
+                sym_b = True if sym == 'true' else False
+                pt = tactic.rewrite_goal(sym=sym_b).get_proof_term(thy, cur_item.th, args=th_name, prevs=prevs)
+                results.append({"theorem": th_name, "sym": sym, "_goal": [gap.prop for gap in pt.get_gaps()]})
+            except (AssertionError, matcher.MatchException) as e:
                 pass
 
         if data:
-            search_thm(data['theorem'])
+            search_thm(data['theorem'], data['sym'])
         else:
             for th_name in thy.get_data("theorems"):
                 if 'hint_rewrite' in thy.get_attributes(th_name):
-                    search_thm(th_name)
+                    search_thm(th_name, 'false')
+                if 'hint_rewrite_sym' in thy.get_attributes(th_name):
+                    search_thm(th_name, 'true')
 
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
     def display_step(self, state, id, data, prevs):
-        return pprint.N(data['theorem'] + " (r)")
+        if 'sym' in data and data['sym'] == 'true':
+            return pprint.N(data['theorem'] + " (sym, r)")
+        else:
+            return pprint.N(data['theorem'] + " (r)")
 
     def apply(self, state, id, data, prevs):
-        state.apply_tactic(id, tactic.rewrite_goal(), args=data['theorem'], prevs=prevs)
+        if 'sym' in data and data['sym'] == 'true':
+            sym_b = True
+        else:
+            sym_b = False
+        state.apply_tactic(id, tactic.rewrite_goal(sym=sym_b), args=data['theorem'], prevs=prevs)
 
 class rewrite_fact(Method):
     """Rewrite fact using a theorem."""

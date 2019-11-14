@@ -173,6 +173,15 @@ class LogicTest(unittest.TestCase):
             res="(0::nat) + 0 = 0"
         )
 
+    def testRewriteGoal2(self):
+        test_macro(
+            self, 'set', 'rewrite_goal_sym',
+            vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set"},
+            args=("image_combine, image f (image g s) = t"),
+            assms=["image (f O g) s = t"],
+            res="image f (image g s) = t"
+        )
+
     def testTrivialMacro(self):
         test_macro(
             self, 'logic_base', 'trivial',

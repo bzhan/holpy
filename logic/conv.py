@@ -275,10 +275,10 @@ class rewr_conv(Conv):
         if self.eq_pt is None:
             if isinstance(self.pt, str):
                 self.eq_pt = ProofTerm.theorem(thy, self.pt)
-                if self.sym:
-                    self.eq_pt = ProofTerm.symmetric(self.eq_pt)
             else:
                 self.eq_pt = self.pt
+            if self.sym:
+                self.eq_pt = ProofTerm.symmetric(self.eq_pt)
 
             self.As, self.C = self.eq_pt.prop.strip_implies()
 
@@ -312,7 +312,7 @@ class rewr_conv(Conv):
 
         return pt
 
-def has_rewrite(thy, th, t, *, conds=None):
+def has_rewrite(thy, th, t, *, sym=False, conds=None):
     """Returns whether a rewrite is possible on a subterm of t.
     
     This can serve as a pre-check for top_sweep_conv, top_conv, and
@@ -325,6 +325,9 @@ def has_rewrite(thy, th, t, *, conds=None):
     """
     if isinstance(th, str):
         th = thy.get_theorem(th, svar=True)
+
+    if sym:
+        th = Thm.symmetric(th)
 
     As, C = th.prop.strip_implies() 
 

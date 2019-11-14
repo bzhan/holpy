@@ -7167,7 +7167,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_rewrite_sym"
             ],
             "name": "image_combine",
             "num_gaps": 0,
@@ -7879,61 +7880,6 @@
             "prop": "inf s = (THE a. (∀x. x ∈ s ⟶ a ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ a))",
             "ty": "def",
             "type": "real set ⇒ real"
-        },
-        {
-            "attributes": [],
-            "name": "test",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "finite_empty, {a: 'a}, {}",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ finite (∅::'a set)"
-                },
-                {
-                    "args": "finite_insert, {a: 'a}, {A: (∅::'a set), x: y}",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ finite ({y})"
-                },
-                {
-                    "args": "finite_insert, {a: 'a}, {A: {y}, x: x}",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ finite ({x, y})"
-                }
-            ],
-            "prop": "finite {x, y}",
-            "steps": [
-                {
-                    "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "finite_insert"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "finite_insert"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "finite_empty"
-                }
-            ],
-            "ty": "thm",
-            "vars": {
-                "x": "'a",
-                "y": "'a"
-            }
         }
     ],
     "description": "Basic results about sets.",

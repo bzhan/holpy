@@ -154,6 +154,9 @@ class var_induct(Tactic):
 
 class rewrite_goal(Tactic):
     """Rewrite the goal using a theorem."""
+    def __init__(self, *, sym=False):
+        self.sym = sym
+
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):
         th_name = args
         C = goal.prop
@@ -163,19 +166,23 @@ class rewrite_goal(Tactic):
             "rewrite: goal is in implies/forall form."
 
         # Check whether rewriting using the theorem has an effect
-        assert has_rewrite(thy, th_name, C, conds=prevs), \
+        assert has_rewrite(thy, th_name, C, sym=self.sym, conds=prevs), \
             "rewrite: unable to apply theorem."
 
-        cv = then_conv(top_sweep_conv(rewr_conv(th_name, conds=prevs)),
+        cv = then_conv(top_sweep_conv(rewr_conv(th_name, sym=self.sym, conds=prevs)),
                        top_conv(beta_conv()))
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
 
+        if self.sym:
+            macro_name = 'rewrite_goal_sym'
+        else:
+            macro_name = 'rewrite_goal'
         if Term.is_equals(new_goal) and new_goal.lhs == new_goal.rhs:
-            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=prevs)
+            return ProofTermDeriv(macro_name, thy, args=(th_name, C), prevs=prevs)
         else:
             new_goal = ProofTerm.sorry(Thm(goal.hyps, new_goal))
-            return ProofTermDeriv('rewrite_goal', thy, args=(th_name, C), prevs=[new_goal] + prevs)
+            return ProofTermDeriv(macro_name, thy, args=(th_name, C), prevs=[new_goal] + prevs)
 
 class rewrite_goal_with_prev(Tactic):
     def get_proof_term(self, thy, goal, *, args=None, prevs=None):
