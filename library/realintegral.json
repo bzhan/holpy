@@ -31748,6 +31748,60 @@
             "vars": {
                 "s": "nat => real set"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measurable_countable_unions_strong",
+            "prop": [
+                "(∀n. real_measurable (s n)) ∧ ",
+                "(∀n. real_measure (⋃{y. ∀k. y = s k & k <= n}) ≤ B) ",
+                "⟶ real_measurable (⋃{y. ∀n. y = s n}) "
+            ],
+            "ty": "thm",
+            "vars": {
+                "B": "real",
+                "s": "nat => real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_measure_countable_real_negligible_unions_bounded",
+            "prop": [
+                "(∀n. real_measurable (s n)) ∧ ",
+                "(∀m. ∀n. ¬m = n ⟶ real_negligible (s m ∩ s n)) ∧ ",
+                "real_bounded (⋃{y. ∀n. y = s n})",
+                "⟶ real_measurable (⋃{y. ∀n. y = s n}) ∧ ",
+                "   real_sums (λn. real_measure (s n)) (real_measure (⋃{y. ∀n. y = s n})) (from 0)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "nat => real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_measurable_countable_unions",
+            "prop": [
+                "(∀n. real_measurable (s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ B) ",
+                "⟶ real_measurable (⋃({y. ∀n. y = s n}))"
+            ],
+            "ty": "thm",
+            "vars": {
+                "B": "real",
+                "s": "nat => real set"
+            }
         }
     ],
     "description": "Integrals of real->real functions; measures of real set. Refer to realanalysis.ml from hol light.",
