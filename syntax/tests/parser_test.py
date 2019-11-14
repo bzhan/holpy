@@ -278,9 +278,11 @@ class ParserTest(unittest.TestCase):
             ("collect P", "collect P", "'a set"),
             ("UN S", "⋃S", "'a set"),
             ("INT S", "⋂S", "'a set"),
+            ("INT (image f S)", "⋂(image f S)", "'a set")
         ]
 
-        vars = {"x": "'a", "y": "'a", "A": "'a set", "B": "'a set", "P": "'a => bool", "S": "'a set set"}
+        vars = {"x": "'a", "y": "'a", "A": "'a set", "B": "'a set",
+                "P": "'a => bool", "S": "'a set set", "f": "'a set => 'a set"}
         for s1, s2, Ts in test_data:
             self.run_test('set', vars=vars, s=s1, Ts=Ts)
             self.run_test('set', vars=vars, s=s2, Ts=Ts, unicode=True)

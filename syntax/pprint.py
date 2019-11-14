@@ -289,7 +289,7 @@ def get_ast_term(thy, t):
         elif t.is_abs():
             return 10
         else:
-            return 100  # Atom case
+            return 200  # Atom case
 
     def helper(t, bd_vars):
         """Main recursive function. Here bd_vars is the list of bound
