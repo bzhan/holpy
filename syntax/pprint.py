@@ -127,12 +127,11 @@ class Binder(AST):
         return "Binder(%s)" % self.symbol
 
 class BinderAppl(AST):
-    def __init__(self, op, bind_var, body, T):
+    def __init__(self, op, bind_var, body):
         self.ty = "binder_appl"
         self.op = op
         self.bind_var = bind_var
         self.body = body
-        self.T = T
 
     def __repr__(self):
         return "Binder(%s,%s,%s,%s)" % (self.op, self.bind_var, self.body, self.T)
@@ -423,7 +422,7 @@ def get_ast_term(thy, t):
                 if hasattr(t.arg, "print_type"):
                     bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
 
-                return BinderAppl(op_ast, bind_var, body_ast, t.get_type())
+                return BinderAppl(op_ast, bind_var, body_ast)
 
             # Function update
             elif function.is_fun_upd(t):
@@ -455,7 +454,7 @@ def get_ast_term(thy, t):
             if hasattr(t, "print_type"):
                 bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
 
-            return BinderAppl(op_ast, bind_var, body_ast, t.get_type())
+            return BinderAppl(op_ast, bind_var, body_ast)
 
         elif t.is_bound():
             if t.n >= len(bd_vars):
