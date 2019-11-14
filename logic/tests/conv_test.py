@@ -113,6 +113,14 @@ class ConvTest(unittest.TestCase):
             t_res="a"
         )
 
+    def testRewrConv6(self):
+        test_conv(
+            self, 'set', rewr_conv('image_combine', sym=True),
+            vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set"},
+            t="image f (image g s)",
+            t_res="image (f O g) s"
+        )
+
     def testAbsConv(self):
         test_conv(
             self, 'nat', abs_conv(rewr_conv('nat_plus_def_2')),
@@ -170,6 +178,14 @@ class ConvTest(unittest.TestCase):
             t_res="a = a"
         )
 
+    def testTopSweepConv4(self):
+        test_conv(
+            self, 'set', top_sweep_conv(rewr_conv('image_combine', sym=True)),
+            vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set"},
+            t="image f (image g s) = t",
+            t_res="image (f O g) s = t"
+        )
+
     def testHasRewrite(self):
         test_data = [
             ("(0::nat) + x = x", "nat_plus_def_1", True),
@@ -181,6 +197,17 @@ class ConvTest(unittest.TestCase):
         for t, th_name, res in test_data:
             t = parser.parse_term(ctxt, t)
             self.assertEqual(has_rewrite(ctxt.thy, th_name, t), res)
+
+    def testHasRewriteSym(self):
+        test_data = [
+            ("image f (image g s)", "image_combine", True),
+            ("image h (image h t) = t", "image_combine", True),
+        ]
+
+        ctxt = Context('set', vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set", 'h': 'nat => nat', 't': 'nat set'})
+        for t, th_name, res in test_data:
+            t = parser.parse_term(ctxt, t)
+            self.assertEqual(has_rewrite(ctxt.thy, th_name, t, sym=True), res)
 
 
 if __name__ == "__main__":

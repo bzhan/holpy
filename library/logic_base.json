@@ -295,7 +295,7 @@
             "ty": "macro"
         },
         {
-            "name": "rewrite_back_goal",
+            "name": "rewrite_goal_sym",
             "ty": "macro"
         },
         {
@@ -303,7 +303,7 @@
             "ty": "macro"
         },
         {
-            "name": "rewrite_back_goal_with_prev",
+            "name": "rewrite_goal_with_prev_sym",
             "ty": "macro"
         },
         {

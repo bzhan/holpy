@@ -18,6 +18,11 @@
                v-model="item.attributes">
         <label v-bind:for="'rewrite-check' + id">Rewrite</label>
       </span>
+      <span class="hint-element">
+        <input type="checkbox" v-bind:id="'rewrite-sym-check' + id" value="hint_rewrite_sym"
+               v-model="item.attributes">
+        <label v-bind:for="'rewrite-sym-check' + id">Rewrite (sym)</label>
+      </span>
     </div>
     <pre class="ext-output">{{item.ext}}</pre>
   </form>

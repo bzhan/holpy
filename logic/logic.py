@@ -407,18 +407,17 @@ class rewrite_goal_macro(ProofTermMacro):
     The remainder of prev are theorems to be used to discharge
     assumptions in conversion.
     
-    backward - whether to apply the given equality in the backward
-    direction.
+    sym - whether to apply the given equality in the backward direction.
 
     """
-    def __init__(self, *, backward=False):
+    def __init__(self, *, sym=False):
         self.level = 1
-        self.backward = backward
+        self.sym = sym
         self.sig = Tuple[str, Term]
 
     def eval(self, thy, args, ths):
         assert isinstance(args, tuple) and len(args) == 2 and \
-               isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal_macro: signature"
+               isinstance(args[0], str) and isinstance(args[1], Term), "rewrite_goal: signature"
 
         # Simply produce the goal
         _, goal = args
@@ -430,14 +429,12 @@ class rewrite_goal_macro(ProofTermMacro):
 
         name, goal = args
         eq_pt = ProofTerm.theorem(thy, name)
-        if self.backward:
-            eq_pt = ProofTerm.symmetric(eq_pt)
 
         if len(pts) == len(eq_pt.assums):
-            rewr_cv = rewr_conv(eq_pt, conds=pts)
+            rewr_cv = rewr_conv(eq_pt, sym=self.sym, conds=pts)
         else:
             assert len(pts) == len(eq_pt.assums) + 1, "rewrite_goal: wrong number of prevs"
-            rewr_cv = rewr_conv(eq_pt, conds=pts[1:])
+            rewr_cv = rewr_conv(eq_pt, sym=self.sym, conds=pts[1:])
 
         cv = then_conv(top_sweep_conv(rewr_cv),
                        top_conv(beta_conv()))
@@ -479,9 +476,9 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
     are used to resolve conditions that arise when applying the equality.
 
     """
-    def __init__(self, *, backward=False):
+    def __init__(self, *, sym=False):
         self.level = 1
-        self.backward = backward
+        self.sym = sym
         self.sig = Term
 
     def get_proof_term(self, thy, args, pts):
@@ -490,9 +487,8 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
         goal = args
         eq_pt = pts[0]
         pts = pts[1:]
-        if self.backward:
-            eq_pt = ProofTerm.symmetric(eq_pt)
-        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt)),
+
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, sym=self.sym)),
                        top_conv(beta_conv()))
         pt = cv.get_proof_term(thy, goal)  # goal = th.prop
         pt = ProofTerm.symmetric(pt)  # th.prop = goal
@@ -656,9 +652,9 @@ macro.global_macros.update({
     "apply_fact": apply_fact_macro(),
     "apply_fact_for": apply_fact_macro(with_inst=True),
     "rewrite_goal": rewrite_goal_macro(),
-    "rewrite_back_goal": rewrite_goal_macro(backward=True),
+    "rewrite_goal_sym": rewrite_goal_macro(sym=True),
     "rewrite_goal_with_prev": rewrite_goal_with_prev_macro(),
-    "rewrite_back_goal_with_prev": rewrite_goal_with_prev_macro(backward=True),
+    "rewrite_goal_with_prev_sym": rewrite_goal_with_prev_macro(sym=True),
     "rewrite_fact": rewrite_fact_macro(),
     "rewrite_fact_with_prev": rewrite_fact_with_prev_macro(),
     "trivial": trivial_macro(),

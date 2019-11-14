@@ -26,11 +26,12 @@ conj = logic.mk_conj
 disj = logic.mk_disj
 
 def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=None, args=None,
-                gaps=None, lines=None, query=None):
+                gaps=None, lines=None, query=None, failed=None):
     """Test run a method.
 
     gaps -- expected gaps remaining.
     query -- expected query for variables.
+    failed -- if None, expected Exception.
 
     """
     # Build context
@@ -49,6 +50,10 @@ def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=N
     args['method_name'] = method_name
     args['goal_id'] = len(assms)
     args['fact_ids'] = prevs
+
+    if failed is not None:
+        self.assertRaises(failed, method.apply_method, state, args)
+        return
 
     if query is not None:
         self.assertRaises(theory.ParameterQueryException, method.apply_method, state, args)
@@ -436,6 +441,15 @@ class ServerTest(unittest.TestCase):
             res=['eq_sym_eq', 'nat_plus_def_1']
         )
 
+    def testRewriteGoalThms2(self):
+        self.run_search_thm(
+            'set',
+            vars={'f': "nat => nat", 'S': "nat set", 'T': "nat set"},
+            concl='image f (image f S) = T',
+            method_name='rewrite_goal',
+            res=['eq_sym_eq', 'image_combine', 'image_def']
+        )
+
     def testRewriteGoal(self):
         test_method(self,
             'logic_base',
@@ -458,6 +472,16 @@ class ServerTest(unittest.TestCase):
             args={'theorem': 'if_P'},
             prevs=[0],
             gaps=False
+        )
+
+    def testRewriteGoal3(self):
+        test_method(self,
+            'set',
+            vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set", 't': "'c set"},
+            concl='image f (image g s) = t',
+            method_name='rewrite_goal',
+            args={'theorem': 'image_combine', 'sym': 'true'},
+            gaps=["image (f O g) s = t"]
         )
 
     def testConjComm(self):

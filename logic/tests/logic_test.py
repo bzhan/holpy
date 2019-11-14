@@ -40,7 +40,8 @@ def test_macro(self, thy, macro, *, vars=None, assms=None, res=None, args="", fa
 
     if failed is not None:
         self.assertRaises(failed, macro.eval, thy, args, prev_ths)
-        self.assertRaises(failed, macro.get_proof_term, thy, args, prevs)
+        if not eval_only:
+            self.assertRaises(failed, macro.get_proof_term, thy, args, prevs)
         return
 
     res = parser.parse_term(ctxt, res)
@@ -170,6 +171,15 @@ class LogicTest(unittest.TestCase):
             self, 'nat', "rewrite_goal",
             args=("nat_plus_def_1, (0::nat) + 0 = 0"),
             res="(0::nat) + 0 = 0"
+        )
+
+    def testRewriteGoal2(self):
+        test_macro(
+            self, 'set', 'rewrite_goal_sym',
+            vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set"},
+            args=("image_combine, image f (image g s) = t"),
+            assms=["image (f O g) s = t"],
+            res="image f (image g s) = t"
         )
 
     def testTrivialMacro(self):
