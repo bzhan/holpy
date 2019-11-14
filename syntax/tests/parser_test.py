@@ -278,7 +278,8 @@ class ParserTest(unittest.TestCase):
             ("collect P", "collect P", "'a set"),
             ("UN S", "⋃S", "'a set"),
             ("INT S", "⋂S", "'a set"),
-            ("INT (image f S)", "⋂(image f S)", "'a set")
+            ("INT (image f S)", "⋂(image f S)", "'a set"),
+            ("f (INT S)", "f (⋃S)", "'a set")
         ]
 
         vars = {"x": "'a", "y": "'a", "A": "'a set", "B": "'a set",

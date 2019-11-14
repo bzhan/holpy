@@ -72,10 +72,10 @@ class OperatorTable():
             OperatorData("implies", 20, assoc=RIGHT, ascii_op="-->", unicode_op="⟶"),
             OperatorData("conj", 35, assoc=RIGHT, ascii_op="&", unicode_op="∧"),
             OperatorData("disj", 30, assoc=RIGHT, ascii_op="|", unicode_op="∨"),
-            OperatorData("neg", 100, arity=UNARY, ascii_op="~", unicode_op="¬"),
+            OperatorData("neg", 95, arity=UNARY, ascii_op="~", unicode_op="¬"),
             OperatorData("plus", 65, assoc=LEFT, ascii_op="+"),
             OperatorData("minus", 65, assoc=LEFT, ascii_op="-"),
-            OperatorData("uminus", 100, arity=UNARY, ascii_op="-"),
+            OperatorData("uminus", 95, arity=UNARY, ascii_op="-"),
             OperatorData("power", 81, assoc=LEFT, ascii_op="^"),
             OperatorData("times", 70, assoc=LEFT, ascii_op="*"),
             OperatorData("real_divide", 70, assoc=LEFT, ascii_op="/"),
@@ -93,8 +93,8 @@ class OperatorTable():
             OperatorData("inter", 70, assoc=LEFT, ascii_op="Int", unicode_op="∩"),
             OperatorData("union", 65, assoc=LEFT, ascii_op="Un", unicode_op="∪"),
             OperatorData("empty_set", 0, arity=CONST, ascii_op="{}", unicode_op="∅"),
-            OperatorData("Union", 100, arity=UNARY, ascii_op="UN ", unicode_op="⋃"),
-            OperatorData("Inter", 100, arity=UNARY, ascii_op="INT ", unicode_op="⋂"),
+            OperatorData("Union", 95, arity=UNARY, ascii_op="UN ", unicode_op="⋃"),
+            OperatorData("Inter", 95, arity=UNARY, ascii_op="INT ", unicode_op="⋂"),
             OperatorData("comp_fun", 60, assoc=RIGHT, ascii_op="O", unicode_op="∘"),
         ]
 

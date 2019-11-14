@@ -255,6 +255,8 @@ def get_ast_type(thy, T):
 # Hash table for ASTs.
 term_ast = dict()
 
+ATOM, FUN_APPL, UNARY, BINARY, BINDER = range(5)
+
 @settings.with_settings
 def get_ast_term(thy, t):
     """Obtain the abstract syntax tree for a term."""
@@ -272,24 +274,30 @@ def get_ast_term(thy, t):
     from data import interval
     from data import string
 
-    def get_priority(t):
+    def get_priority_pair(t):
         """Obtain the binding priority of the top-most operation of t."""
         if nat.is_binary(t) or list.is_literal_list(t):
-            return 100  # Nat atom case
+            return 100, ATOM  # Nat atom case
         elif t.is_comb():
             op_data = operator.get_info_for_fun(thy, t.head)
             binder_data = operator.get_binder_info_for_fun(thy, t.head)
 
             if op_data is not None:
-                return op_data.priority
+                if op_data.arity == operator.UNARY:
+                    return op_data.priority, UNARY
+                else:
+                    return op_data.priority, BINARY
             elif binder_data is not None or logic.is_if(t):
-                return 10
+                return 10, BINDER
             else:
-                return 95  # Function application
+                return 95, FUN_APPL  # Function application
         elif t.is_abs():
-            return 10
+            return 10, BINDER
         else:
-            return 200  # Atom case
+            return 100, ATOM  # Atom case
+
+    def get_priority(t):
+        return get_priority_pair(t)[0]
 
     def helper(t, bd_vars):
         """Main recursive function. Here bd_vars is the list of bound
@@ -404,7 +412,8 @@ def get_ast_term(thy, t):
                 op_ast = Operator(op_str, t.head.get_type(), op_name)
 
                 arg_ast = helper(t.arg, bd_vars)
-                if get_priority(t.arg) < op_data.priority:
+                arg_prior, arg_type = get_priority_pair(t.arg)
+                if arg_prior < op_data.priority or arg_type == FUN_APPL:
                     arg_ast = Bracket(arg_ast)
 
                 return UnaryOp(op_ast, arg_ast, t.get_type())
@@ -434,7 +443,8 @@ def get_ast_term(thy, t):
             # Finally, usual function application
             else:
                 fun_ast = helper(t.fun, bd_vars)
-                if get_priority(t.fun) < 95:
+                fun_prior, fun_type = get_priority_pair(t.fun)
+                if fun_prior < 95 or fun_type == UNARY:
                     fun_ast = Bracket(fun_ast)
 
                 arg_ast = helper(t.arg, bd_vars)
