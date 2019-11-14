@@ -122,7 +122,10 @@ class rewrite_goal(Method):
                 pass
 
         if data:
-            search_thm(data['theorem'], data['sym'])
+            sym = 'false'
+            if 'sym' in data:
+                sym = data['sym']
+            search_thm(data['theorem'], sym)
         else:
             for th_name in thy.get_data("theorems"):
                 if 'hint_rewrite' in thy.get_attributes(th_name):
