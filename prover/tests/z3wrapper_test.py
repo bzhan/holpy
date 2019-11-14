@@ -57,10 +57,16 @@ class Z3WrapperTest(unittest.TestCase):
         if not z3wrapper.z3_loaded:
             return
 
-        ctxt = Context('set', vars={'m': 'nat', 'S': 'nat set', 'T': 'nat set'})
+        ctxt = Context('set', vars={
+            'm': 'nat', 'S': 'nat set', 'T': 'nat set', 'x': 'nat',
+            'a': "'a", 'A': "'a set"})
         test_data = [
-            ('a Mem S --> S Sub T --> a Mem T', True),
+            ('x Mem S --> S Sub T --> x Mem T', True),
             ('m Mem univ', True),
+            ('(?x1. x = x1 & x1 Mem S) --> x Mem S', True),
+            ('(?a1. a = a1 & a1 Mem A) --> a Mem A', True),
+            ('x Mem (diff S T) --> x Mem S', True),
+            ('x Mem S --> x Mem (diff S T)', False)
         ]
 
         for s, res in test_data:

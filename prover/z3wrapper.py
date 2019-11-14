@@ -8,7 +8,9 @@ if importlib.util.find_spec("z3"):
 else:
     z3_loaded = False
 
+from kernel import type as hol_type
 from kernel.type import TFun
+from kernel import term
 from kernel.term import Term, Var, boolT
 from kernel.thm import Thm
 from kernel.macro import ProofMacro, global_macros
@@ -20,6 +22,7 @@ from data.real import realT
 from data import set as hol_set
 from syntax import pprint, settings
 from prover import fologic
+from util import name
 
 
 def convert(t):
@@ -44,20 +47,52 @@ def convert(t):
             return z3.Function(t.name, z3.IntSort(), z3.BoolSort())
         elif T == hol_set.setT(realT):
             return z3.Function(t.name, z3.RealSort(), z3.BoolSort())
+        elif T.ty == hol_type.TYPE and T.name == 'set' and T.args[0].ty == hol_type.TVAR:
+            z3_sort = z3.DeclareSort(T.args[0].name)
+            return z3.Function(t.name, z3_sort, z3.BoolSort())
+        elif T.ty == hol_type.TVAR:
+            z3_sort = z3.DeclareSort(T.name)
+            return z3.Consts(T.name, z3_sort)
         else:
             print("convert: unsupported type " + repr(T))
             raise NotImplementedError
     elif t.is_all():
+        var_names = [v.name for v in term.get_vars(t.arg.body)]
+        nm = name.get_variant_name(t.arg.var_name, var_names)
         if t.arg.var_T == nat.natT:
-            v = Var(t.arg.var_name, nat.natT)
-            z3_v = z3.Int(t.arg.var_name)
-            return z3.ForAll([z3_v], convert(t.arg.subst_bound(v)))
+            v = Var(nm, nat.natT)
+            z3_v = z3.Int(nm)
+            return z3.ForAll(z3_v, convert(t.arg.subst_bound(v)))
         elif t.arg.var_T == realT:
-            v = Var(t.arg.var_name, realT)
-            z3_v = z3.Real(t.arg.var_name)
-            return z3.ForAll([z3_v], convert(t.arg.subst_bound(v)))
+            v = Var(nm, realT)
+            z3_v = z3.Real(nm)
+            return z3.ForAll(z3_v, convert(t.arg.subst_bound(v)))
+        elif t.arg.var_T.ty == hol_type.TVAR:
+            v = Var(nm, t.arg.var_T)
+            z3_sort = z3.DeclareSort(t.arg.var_T.name)
+            z3_v = z3.Consts(nm, z3_sort)
+            return z3.Forall(z3_v, convert(t.arg.subst_bound(v)))
         else:
             print("convert: unsupported forall type " + str(t.arg.var_T))
+            raise NotImplementedError
+    elif logic.is_exists(t):
+        var_names = [v.name for v in term.get_vars(t.arg.body)]
+        nm = name.get_variant_name(t.arg.var_name, var_names)
+        if t.arg.var_T == nat.natT:
+            v = Var(nm, nat.natT)
+            z3_v = z3.Int(nm)
+            return z3.Exists(z3_v, convert(t.arg.subst_bound(v)))
+        elif t.arg.var_T == realT:
+            v = Var(nm, realT)
+            z3_v = z3.Real(nm)
+            return z3.Exists(z3_v, convert(t.arg.subst_bound(v)))
+        elif t.arg.var_T.ty == hol_type.TVAR:
+            v = Var(nm, t.arg.var_T)
+            z3_sort = z3.DeclareSort(t.arg.var_T.name)
+            z3_v = z3.Consts(nm, z3_sort)
+            return z3.Exists(z3_v, convert(t.arg.subst_bound(v)))
+        else:
+            print("convert: unsupported exists type " + str(t.arg.var_T))
             raise NotImplementedError
     elif int.is_binary_int(t):
         return int.from_binary_int(t)
@@ -132,7 +167,8 @@ norm_thms = [
     'member_union_iff',
     'member_inter_iff',
     'set_equal_iff',
-    'subset_def'
+    'subset_def',
+    'diff_def'
 ]
 
 def norm_term(thy, t):
@@ -141,7 +177,13 @@ def norm_term(thy, t):
     cvs = [conv.try_conv(conv.rewr_conv(th_name)) for th_name in th_names]
     cvs.append(conv.try_conv(conv.beta_conv()))
     cv = conv.top_conv(conv.every_conv(*cvs))
-    return fologic.simplify(cv.eval(thy, t).rhs)
+    while True:
+        rhs = cv.eval(thy, t).rhs
+        if rhs == t:
+            break
+        else:
+            t = rhs
+    return fologic.simplify(t)
 
 def solve(thy, t):
     """Solve the given goal using Z3."""
