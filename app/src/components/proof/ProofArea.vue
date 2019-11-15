@@ -340,15 +340,15 @@ export default {
       if (this.goal === -1)
         return false
 
-      const goal_id = this.proof[this.goal].id
-      const fact_id = this.proof[line_no].id
+      const goal_id = this.proof[this.goal].id.split('.')
+      const fact_id = this.proof[line_no].id.split('.')
       const len = fact_id.length
       if (len > goal_id.length)
         return false
       for (let i = 0; i < len-1; i++)
         if (fact_id[i] !== goal_id[i])
           return false
-      return fact_id[len-1] < goal_id[len-1]
+      return Number(fact_id[len-1]) < Number(goal_id[len-1])
     },
 
     // Select goal or fact
