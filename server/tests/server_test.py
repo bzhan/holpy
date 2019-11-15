@@ -40,7 +40,11 @@ def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=N
 
     # Build starting state
     vars = [Var(nm, T) for nm, T in ctxt.vars.items()]
-    assms = [parser.parse_term(ctxt, t) for t in assms] if assms is not None else []
+    if assms is not None:
+        assert isinstance(assms, list), "test_method: assms need to be a list"
+        assms = [parser.parse_term(ctxt, t) for t in assms]
+    else:
+        assms = []
     concl = parser.parse_term(ctxt, concl)
     state = ProofState.init_state(thy, vars, assms, concl)
 
@@ -68,7 +72,8 @@ def test_method(self, thy, *, vars=None, assms=None, concl, method_name, prevs=N
     elif gaps == False:
         gaps = []  # assert no gaps
     else:
-        gaps = [parser.parse_term(ctxt, gap) for gap in gaps] if gaps is not None else []
+        assert isinstance(gaps, list), "test_method: gaps need to be a list"
+        gaps = [parser.parse_term(ctxt, gap) for gap in gaps]
     self.assertEqual([gap.prop for gap in state.rpt.gaps], gaps)
 
     # Compare list of lines
@@ -226,6 +231,46 @@ class ServerTest(unittest.TestCase):
         method = theory.global_methods[method_name]
         search_res = state.apply_search(len(assms), method, prevs=prevs)
         self.assertEqual([res['theorem'] for res in search_res], res)
+
+    def testCases(self):
+        test_method(self,
+            'logic_base',
+            vars={'B': 'bool', 'C': 'bool'},
+            concl='B | C',
+            method_name='cases',
+            args={'case': 'B'},
+            gaps=['B --> B | C', '~B --> B | C']
+        )
+
+    def testCasesFail(self):
+        test_method(self,
+            'logic_base',
+            vars={'B': 'bool', 'C': 'bool'},
+            concl='B | C',
+            method_name='cases',
+            args={'case': '(A::bool)'},
+            failed=AssertionError
+        )
+
+    def testGoal(self):
+        test_method(self,
+            'logic_base',
+            vars={'B': 'bool', 'C': 'bool'},
+            concl='B & C',
+            method_name='cut',
+            args={'goal': 'B'},
+            gaps=['B', 'B & C']
+        )
+
+    def testGoalFail(self):
+        test_method(self,
+            'logic_base',
+            vars={'B': 'bool', 'C': 'bool'},
+            concl='B & C',
+            method_name='cut',
+            args={'goal': '(A::bool)'},
+            failed=AssertionError
+        )
 
     def testApplyBackwardStepThms(self):
         self.run_search_thm(
@@ -506,6 +551,52 @@ class ServerTest(unittest.TestCase):
             method_name='rewrite_goal',
             args={'theorem': 'image_combine', 'sym': 'true'},
             gaps=["image (f O g) s = t"]
+        )
+
+    def testForallElim(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat', 'P': 'nat => bool', 'Q': 'nat => bool'},
+            assms=['!x. P x --> Q x'],
+            concl='Q n',
+            method_name='forall_elim',
+            args={'s': 'n'},
+            prevs=[0],
+            lines={'1': 'P n --> Q n'}
+        )
+
+    def testForallElimFail(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat', 'P': 'nat => bool', 'Q': 'nat => bool'},
+            assms=['!x. P x --> Q x'],
+            concl='Q n',
+            method_name='forall_elim',
+            args={'s': '(m::nat)'},
+            prevs=[0],
+            failed=AssertionError
+        )
+
+    def testInstExistsGoal(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat', 'P': 'nat => bool', 'Q': 'nat => bool'},
+            assms=['P n'],
+            concl='?x. P x --> Q x',
+            method_name='inst_exists_goal',
+            args={'s': 'n'},
+            gaps=['P n --> Q n']
+        )
+
+    def testInstExistsGoalFail(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat', 'P': 'nat => bool', 'Q': 'nat => bool'},
+            assms=['P n'],
+            concl='?x. P x --> Q x',
+            method_name='inst_exists_goal',
+            args={'s': '(m::nat)'},
+            failed=AssertionError
         )
 
     def testConjComm(self):

@@ -33,10 +33,14 @@ class cut_method(Method):
         cur_item = state.get_proof_item(id)
         hyps = cur_item.th.hyps
 
-        goal = parser.parse_term(state.get_ctxt(id), data['goal'])
+        ctxt = state.get_ctxt(id)
+        C = parser.parse_term(ctxt, data['goal'])
+        for v in term.get_vars(C):
+            if v.name not in ctxt.vars:
+                raise AssertionError('Insert goal: extra variable %s' % v.name)
 
         state.add_line_before(id, 1)
-        state.set_line(id, 'sorry', th=Thm(hyps, goal))
+        state.set_line(id, 'sorry', th=Thm(hyps, C))
 
 class cases_method(Method):
     """Case analysis."""
@@ -55,7 +59,12 @@ class cases_method(Method):
         return pprint.N("case ") + printer.print_term(state.thy, A)
 
     def apply(self, state, id, data, prevs):
-        A = parser.parse_term(state.get_ctxt(id), data['case'])
+        ctxt = state.get_ctxt(id)
+        A = parser.parse_term(ctxt, data['case'])
+        for v in term.get_vars(A):
+            if v.name not in ctxt.vars:
+                raise AssertionError('Apply case: extra variable %s' % v.name)
+
         state.apply_tactic(id, tactic.cases(), args=A)
 
 class apply_prev_method(Method):
@@ -507,7 +516,13 @@ class forall_elim(Method):
         return pprint.N("Forall elimination")
 
     def apply(self, state, id, data, prevs):
-        t = parser.parse_term(state.get_ctxt(id), data['s'])
+        ctxt = state.get_ctxt(id)
+        t = parser.parse_term(ctxt, data['s'])
+
+        for v in term.get_vars(t):
+            if v.name not in ctxt.vars:
+                raise AssertionError('Forall elimination: extra variable %s' % v.name)
+
         state.add_line_before(id, 1)
         state.set_line(id, 'forall_elim', args=t, prevs=prevs)
 
@@ -534,7 +549,13 @@ class inst_exists_goal(Method):
         return pprint.N("Instantiate exists goal")
 
     def apply(self, state, id, data, prevs):
-        t = parser.parse_term(state.get_ctxt(id), data['s'])
+        ctxt = state.get_ctxt(id)
+        t = parser.parse_term(ctxt, data['s'])
+
+        for v in term.get_vars(t):
+            if v.name not in ctxt.vars:
+                raise AssertionError('Instantiate exists: extra variable %s' % v.name)
+
         state.apply_tactic(id, tactic.inst_exists_goal(), args=t, prevs=[])
 
 class induction(Method):
