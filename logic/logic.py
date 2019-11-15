@@ -309,16 +309,17 @@ class apply_theorem_macro(ProofTermMacro):
         ts = [prev_th.prop for prev_th in prevs]
         matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
-        # Check that every variable in the theorem has an instantiation
-        unmatched_vars = [v.name for v in term.get_svars(th.prop) if v.name not in inst]
-        if unmatched_vars:
-            raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
-
         As, C = subst_norm(th.prop, (tyinst, inst)).strip_implies()
         new_prop = Term.mk_implies(*(As[len(prevs):] + [C]))
 
         prev_hyps = sum([prev.hyps for prev in prevs], ())
-        return Thm(th.hyps + prev_hyps, new_prop)
+        th = Thm(th.hyps + prev_hyps, new_prop)
+
+        assert len(term.get_stvars(new_prop)) == 0, "apply_theorem: unmatched type variables."
+        vars = term.get_svars(new_prop)
+        for v in reversed(vars):
+            th = Thm.forall_intr(v, th)
+        return th
 
     def get_proof_term(self, thy, args, pts):
         tyinst, inst = dict(), dict()
@@ -335,11 +336,6 @@ class apply_theorem_macro(ProofTermMacro):
         ts = [pt.prop for pt in pts]
         matcher.first_order_match_list_incr(pats, ts, (tyinst, inst))
 
-        # Check that every variable in the theorem has an instantiation
-        unmatched_vars = [v.name for v in term.get_svars(As + [C]) if v.name not in inst]
-        if unmatched_vars:
-            raise theory.ParameterQueryException(list("param_" + name for name in unmatched_vars))
-
         pt = ProofTerm.theorem(thy, name)
         if tyinst:
             pt = ProofTerm.subst_type(tyinst, pt)
@@ -349,6 +345,11 @@ class apply_theorem_macro(ProofTermMacro):
             pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
         for prev_pt in pts:
             pt = ProofTerm.implies_elim(pt, prev_pt)
+
+        assert len(term.get_stvars(pt.prop)) == 0, "apply_theorem: unmatched type variables."
+        vars = term.get_svars(pt.prop)
+        for v in reversed(vars):
+            pt = ProofTerm.forall_intr(v, pt)
 
         return pt
 

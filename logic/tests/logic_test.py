@@ -149,6 +149,23 @@ class LogicTest(unittest.TestCase):
             res="A"
         )
 
+    def testApplyTheorem2(self):
+        test_macro(
+            self, 'set', 'apply_theorem',
+            vars={'A': "'a set", 'B': "'a set", 'C': "'a set"},
+            assms=["A Sub B"],
+            args="subset_trans",
+            res="!C. B Sub C --> A Sub C"
+        )
+
+    def testApplyTheorem3(self):
+        test_macro(
+            self, 'set', 'apply_theorem_for',
+            vars={'A': 'nat set'},
+            args="subset_trans, {a: nat}, {A: A}",
+            res="!B. !C. A Sub B --> B Sub C --> A Sub C"
+        )
+
     def testIntro(self):
         thy = basic.load_theory('logic_base')
         macro = logic.intros_macro()

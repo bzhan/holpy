@@ -324,7 +324,7 @@ class Thm():
         """
         if any(hyp.occurs_var(x) for hyp in th.hyps):
             raise InvalidDerivationException("forall_intr")
-        elif x.ty != term.VAR:
+        elif not (x.is_var() or x.is_svar()):
             raise InvalidDerivationException("forall_intr")
         else:
             return Thm(th.hyps, Term.mk_all(x, th.prop))

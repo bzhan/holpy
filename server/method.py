@@ -256,31 +256,35 @@ class apply_forward_step(Method):
 
     def apply(self, state, id, data, prevs):
         inst = dict()
+        thy = state.thy
         ctxt = state.get_ctxt(id)
         for key, val in data.items():
             if key.startswith("param_"):
-                inst[key[6:]] = parser.parse_term(ctxt, val)
+                if val != '':
+                    inst[key[6:]] = parser.parse_term(ctxt, val)
+
+        th = thy.get_theorem(data['theorem'], svar=True)
+
+        # Check whether to ask for parameters
+        As, C = th.prop.strip_implies()
+        match_svars = term.get_svars(As[:len(prevs)])
+        all_svars = term.get_svars(th.prop)
+        param_svars = [v for v in all_svars if v not in match_svars and 'param_' + v.name not in data]
+        if param_svars:
+            raise theory.ParameterQueryException(list("param_" + v.name for v in param_svars))
 
         # First test apply_theorem
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
         macro = logic.apply_theorem_macro(with_inst=True)
         res_th = macro.eval(state.thy, (data['theorem'], dict(), inst), prev_ths)
 
-        As, C = res_th.prop.strip_implies()
-        cur_item = state.get_proof_item(id)
-        cur_hyps = cur_item.th.hyps
-        state.add_line_before(id, len(As) + 1)
-        for i in range(len(As)):
-            state.set_line(id.incr_id(i), 'sorry', th=Thm(cur_hyps, As[i]))
-            prevs.append(id.incr_id(i))
+        state.add_line_before(id, 1)
         if inst:
-            state.set_line(id.incr_id(len(As)), 'apply_theorem_for',
-                           args=(data['theorem'], dict(), inst), prevs=prevs)
+            state.set_line(id, 'apply_theorem_for', args=(data['theorem'], dict(), inst), prevs=prevs)
         else:
-            state.set_line(id.incr_id(len(As)), 'apply_theorem', args=data['theorem'],
-                           prevs=prevs)
+            state.set_line(id, 'apply_theorem', args=data['theorem'], prevs=prevs)
 
-        id2 = id.incr_id(len(As)+1)
+        id2 = id.incr_id(1)
         new_id = state.find_goal(state.get_proof_item(id2).th, id2)
         if new_id is not None:
             state.replace_id(id2, new_id)

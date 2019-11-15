@@ -104,7 +104,7 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 for res in search_res:
                     m = theory.global_methods[res['_method_name']]
                     if res['_method_name'] == step['method_name'] and \
-                       all(sig not in res or res[sig] == step[sig] for sig in m.sig):
+                       all(sig not in res or sig not in step or res[sig] == step[sig] for sig in m.sig):
                         if print_search:
                             print('* ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
                         found += 1
@@ -371,6 +371,30 @@ class ServerTest(unittest.TestCase):
             args={'theorem': 'disjI1', 'param_B': 'B'},
             prevs=[0],
             gaps=False
+        )
+
+    def testApplyForwardStep4(self):
+        test_method(self,
+            'set',
+            vars={'A': 'nat set', 'B': 'nat set'},
+            assms=['A Sub B'],
+            concl='false',
+            method_name='apply_forward_step',
+            args={'theorem': 'subset_trans', 'param_C': ''},
+            prevs=[0],
+            lines={'1': '!C. B Sub C --> A Sub C'}
+        )
+
+    def testApplyForwardStep5(self):
+        test_method(self,
+            'set',
+            vars={'A': 'nat set', 'B': 'nat set', 'C': 'nat set'},
+            assms=['A Sub B'],
+            concl='B Sub C',
+            method_name='apply_forward_step',
+            args={'theorem': 'subset_trans', 'param_C': 'C'},
+            prevs=[0],
+            lines={'1': 'B Sub C --> A Sub C'}
         )
 
     def testApplyResolveStepThms(self):

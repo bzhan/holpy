@@ -493,9 +493,15 @@ class Term():
         """
         def rec(s, n):
             if s.is_svar():
-                return s
+                if t.is_svar() and s.name == t.name:
+                    if s.T != t.T:
+                        raise TermSubstitutionException("abstract_over: wrong type")
+                    else:
+                        return Bound(n)
+                else:
+                    return s
             elif s.is_var():
-                if s.name == t.name:
+                if t.is_var() and s.name == t.name:
                     if s.T != t.T:
                         raise TermSubstitutionException("abstract_over: wrong type")
                     else:
@@ -513,7 +519,7 @@ class Term():
             else:
                 raise TypeError
 
-        if t.is_var():
+        if t.is_var() or t.is_svar():
             return rec(self, 0)
         else:
             raise TermSubstitutionException("abstract_over: t is not a variable.")
@@ -521,7 +527,7 @@ class Term():
     @staticmethod
     def mk_abs(t, body):
         """Given body in terms of t, return the term %t. body. """
-        if not t.is_var():
+        if not (t.is_var() or t.is_svar()):
             raise TermSubstitutionException("mk_abs: t is not a variable.")
         res = Abs(t.name, t.T, body.abstract_over(t))
         return res

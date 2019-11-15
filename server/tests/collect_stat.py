@@ -68,7 +68,7 @@ class CollectStat(unittest.TestCase):
             p = Stats(pr)
             p.strip_dirs()
             p.sort_stats('cumtime')
-            p.print_stats()
+            p.print_stats(100)
 
 if __name__ == "__main__":
     unittest.main()
