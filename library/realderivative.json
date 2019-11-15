@@ -855,11 +855,14 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "has_real_derivative_mul_atreal",
             "prop": [
-                "has_real_derivative f f1 (atreal x) ∧ ",
-                "has_real_derivative g g1 (atreal x) ",
+                "has_real_derivative f f1 (atreal x) ∧ has_real_derivative g g1 (atreal x) ",
                 "⟶ has_real_derivative (λx. f x * g x) (f x * g1 + f1 * g x) (atreal x)"
             ],
             "ty": "thm",

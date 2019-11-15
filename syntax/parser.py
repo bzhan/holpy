@@ -48,7 +48,7 @@ grammar = r"""
         | "[" term ("," term)* "]" -> literal_list  // List
         | ("{}"|"∅")               -> literal_set   // Empty set
         | "{" term ("," term)* "}" -> literal_set   // Set
-        | "{" CNAME "::" type "." term "}" -> collect_set
+        | "{" CNAME "::" type ". " term "}" -> collect_set
         | "{" CNAME ". " term "}"          -> collect_set_notype
         | "'" ("_"|LETTER|DIGIT) "'"  -> char
         | "\"" CNAME "\""               -> string
