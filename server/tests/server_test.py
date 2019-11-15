@@ -599,6 +599,29 @@ class ServerTest(unittest.TestCase):
             failed=AssertionError
         )
 
+    def testInstExistsFact(self):
+        test_method(self,
+            'nat',
+            assms=['?n::nat. n + 1 = 2'],
+            concl='false',
+            method_name='exists_elim',
+            args={'names': 'n'},
+            prevs=[0],
+            lines={'1': '_VAR (n::nat)', '2': '(n::nat) + 1 = 2'}
+        )
+
+    def testInstExistsFactFail(self):
+        test_method(self,
+            'nat',
+            vars={'n': 'nat'},
+            assms=['?n::nat. n + 1 = 2'],
+            concl='n = 1',
+            method_name='exists_elim',
+            args={'names': 'n'},
+            prevs=[0],
+            failed=AssertionError
+        )
+
     def testConjComm(self):
         """Proof of A & B --> B & A."""
         testSteps(self, 'logic', 'conj_comm')

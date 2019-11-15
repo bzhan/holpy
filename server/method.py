@@ -456,9 +456,14 @@ class exists_elim(Method):
         return pprint.N("Instantiate exists fact")
 
     def apply(self, state, id, data, prevs):
-        # Parse the list of variable names
-        names = [name.strip() for name in data['names'].split(',')]
         assert len(prevs) == 1, "exists_elim"
+
+        # Parse the list of variable names
+        ctxt = state.get_ctxt(id)
+        names = [name.strip() for name in data['names'].split(',')]
+        for name in names:
+            if name in ctxt.vars:
+                raise AssertionError("Instantiate exists: duplicate name %s" % name)
 
         exists_item = state.get_proof_item(prevs[0])
         exists_prop = exists_item.th.prop
