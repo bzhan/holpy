@@ -98,7 +98,7 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 if 'fact_ids' not in step:
                     step['fact_ids'] = []
                 if print_steps:
-                    print(method.display_method(state, step))
+                    print(method.output_step(state, step))
                 if print_search:
                     select_ids = "goal " + step['goal_id']
                     if step['fact_ids']:
@@ -107,20 +107,20 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 search_res = state.search_method(step['goal_id'], step['fact_ids'])
                 found = 0
                 for res in search_res:
-                    m = theory.global_methods[res['_method_name']]
-                    if res['_method_name'] == step['method_name'] and \
+                    m = theory.global_methods[res['method_name']]
+                    if res['method_name'] == step['method_name'] and \
                        all(sig not in res or sig not in step or res[sig] == step[sig] for sig in m.sig):
                         if print_search:
-                            print('* ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                            print('* ' + m.display_step(state, res))
                         found += 1
                     else:
                         if print_search:
-                            print('  ' + m.display_step(state, step['goal_id'], res, step['fact_ids']))
+                            print('  ' + m.display_step(state, res))
                 assert found <= 1, "test_val: multiple found"
                 if found == 0:
                     if print_search:
                         m = theory.global_methods[step['method_name']]
-                        print('- ' + m.display_step(state, step['goal_id'], step, step['fact_ids']))
+                        print('- ' + m.display_step(state, step))
                 else:
                     num_found += 1
             method.apply_method(state, step)

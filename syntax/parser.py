@@ -68,21 +68,19 @@ grammar = r"""
 
     ?uminus: "-" uminus -> uminus | power   // Unary minus: priority 80
 
-    ?times: times "*" uminus | uminus        // Multiplication: priority 70
+    ?times_expr: times_expr "*" uminus -> times     // Multiplication: priority 70
+        | times_expr "/" uminus -> real_divide      // Division: priority 70
+        | times_expr "DIV" uminus -> nat_divide     // Division: priority 70
+        | times_expr "MOD" uminus -> nat_modulus    // Modulus: priority 70
+        | uminus
 
-    ?real_divide: real_divide "/" times | times        // Division: priority 70
+    ?inter: inter ("Int"|"∩") times_expr | times_expr     // Intersection: priority 70
 
-    ?nat_divide: nat_divide "DIV" real_divide | real_divide        // Division: priority 70
+    ?plus_expr: plus_expr "+" inter  -> plus     // Addition: priority 65
+        | plus_expr "-" inter -> minus           // Subtraction: priority 65
+        | inter                   
 
-    ?nat_modulus: nat_modulus "MOD" nat_divide | nat_divide        // Modulus: priority 70
-
-    ?inter: inter ("Int"|"∩") nat_modulus | nat_modulus     // Intersection: priority 70
-
-    ?plus: plus "+" inter | inter       // Addition: priority 65
-
-    ?minus: minus "-" plus | plus       // Subtraction: priority 65
-
-    ?append: minus "@" append | minus     // Append: priority 65
+    ?append: plus_expr "@" append | plus_expr    // Append: priority 65
 
     ?cons: append "#" cons | append     // Cons: priority 65
 

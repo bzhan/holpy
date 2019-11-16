@@ -99,7 +99,10 @@ def convert(t):
     elif t.head.is_const_name('plus'):
         return convert(t.arg1) + convert(t.arg)
     elif t.head.is_const_name('minus'):
-        return convert(t.arg1) - convert(t.arg)
+        m, n = convert(t.arg1), convert(t.arg)
+        if t.arg1.get_type() == nat.natT:
+            return z3.If(m >= n, m - n, 0)
+        return m - n
     elif t.head.is_const_name('uminus'):
         return -convert(t.arg)
     elif t.head.is_const_name('times'):
@@ -185,6 +188,9 @@ def solve(thy, t):
     _, As, C = logic.strip_all_implies(t, new_names, svar=False)
 
     try:
+        for v in term.get_vars(As + [C]):
+            if v.T == nat.natT:
+                s.add(convert_const(v.name, v.T) >= 0)
         for A in As:
             # print('A', convert(A))
             s.add(convert(A))
@@ -225,7 +231,7 @@ class Z3Method(Method):
         return [{}]
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Apply Z3")
 
     def apply(self, state, id, data, prevs):

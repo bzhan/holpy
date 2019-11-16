@@ -299,12 +299,10 @@ def apply_method():
     thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
     cell = server.ProofState.parse_proof(thy, data['proof'])
     try:
-        step_output = method.display_method(cell, data['step'], unicode=True, highlight=True)
-        step_output_short = method.display_method(cell, data['step'], mode='short', unicode=True, highlight=True)
+        step_output = method.output_step(cell, data['step'], unicode=True, highlight=True)
         method.apply_method(cell, data['step'])
         cell_data = cell.json_data()
         cell_data['steps_output'] = step_output
-        cell_data['steps_output_short'] = step_output_short
         return jsonify(cell_data)
     except Exception as e:
         if isinstance(e, theory.ParameterQueryException):

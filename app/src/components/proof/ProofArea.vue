@@ -129,7 +129,11 @@ export default {
 
     display_instructions: function () {
       if (this.history[this.index] !== undefined) {
-        this.ref_status.instr = this.history[this.index].steps_output_short
+        if (this.index === this.history.length - 1) {
+          this.ref_status.instr = [{text: "Current state", color: 0}]
+        } else {
+          this.ref_status.instr = this.history[this.index].steps_output
+        }
         this.ref_status.instr_no = this.index + '/' + (this.history.length - 1)
       } else {
         this.ref_status.instr = ''
@@ -140,9 +144,10 @@ export default {
     display_history: function () {
       // Display history in ref_context
       var steps = []
-      for (let i = 0; i < this.history.length; i++) {
-        steps.push(this.history[i].steps_output_short)
+      for (let i = 0; i < this.history.length-1; i++) {
+        steps.push(this.history[i].steps_output)
       }
+      steps.push([{text: "Current state", color: 0}])
       this.ref_context.steps = steps
     },
 
@@ -204,7 +209,7 @@ export default {
       if (res === undefined)
           return;
 
-      this.apply_method(res._method_name, res);
+      this.apply_method(res.method_name, res);
     },
 
     // Apply method with the given method name, on the given
@@ -253,7 +258,7 @@ export default {
     goto_index: function (hId) {
       this.index = hId
       this.proof = this.history[hId].proof
-      this.num_gaps = this.history[hId].report.num_gaps
+      this.num_gaps = this.history[hId].num_gaps
       this.facts = []
       if (hId === this.steps.length) {
         this.goal = this.compute_new_goal(0)
@@ -320,9 +325,8 @@ export default {
         }
         this.history[hId].steps_output = result.data.steps_output
         this.history[hId + 1] = {
-          steps_output: [{text: "Current state", color: 0}],
           proof: result.data.proof,
-          report: result.data.report
+          num_gaps: result.data.num_gaps
         }
         this.history.length = hId + 2
         this.goto_index(hId + 1)
@@ -402,9 +406,8 @@ export default {
       this.method_sig = response.data.method_sig
       this.steps = []
       this.history = [{
-        steps_output: [{text: "Current state", color: 0}],
         proof: response.data.proof,
-        report: response.data.report
+        num_gaps: response.data.num_gaps
       }]
       this.goto_index(0)
     },
@@ -448,7 +451,7 @@ export default {
           this.goto_index(this.history.length-1)
         } else {
           // Case without history
-          this.num_gaps = response.data.report.num_gaps
+          this.num_gaps = response.data.num_gaps
           this.goal = -1
           this.facts = []
           this.proof = response.data.proof
@@ -475,7 +478,7 @@ export default {
       }
 
       this.history.length -= 1
-      this.history[h_id-1].steps_output = [{text: "Current state", color: 0}]
+      delete this.history[h_id-1].steps_output
       this.goto_index(h_id-1)
 
       // Remove last step after goto_index, so goal and fact_no can

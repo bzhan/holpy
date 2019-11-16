@@ -63,6 +63,7 @@ class CollectStat(unittest.TestCase):
                 testSteps(self, thy_name, thm_name, no_gaps=True, print_stat=True)
             except Exception as e:
                 print(thy_name, thm_name, "failed:", e.__class__)
+                # raise e
 
         if profile:
             p = Stats(pr)

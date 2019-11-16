@@ -64,9 +64,7 @@ export default {
           ext_ty: this.node.link_ty,
           name: name
         }
-        console.log(data)
         const response = await axios.post('http://127.0.0.1:5000/api/find-link', JSON.stringify(data))
-        console.log(response.data)
         if ('filename' in response.data) {
           this.editor.handleGoToLink(response.data.filename, response.data.index)
         }

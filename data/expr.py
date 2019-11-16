@@ -124,7 +124,7 @@ class prove_avalI_method(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("prove_avalI: (solves)")
 
     def apply(self, state, id, data, prevs):

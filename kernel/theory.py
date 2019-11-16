@@ -10,7 +10,6 @@ from kernel.proof import Proof, ProofException
 from kernel.macro import ProofMacro, global_macros
 from kernel import extension
 from kernel.report import ExtensionReport
-from syntax import settings
 
 global_methods = dict()
 
@@ -22,32 +21,6 @@ class Method:
     def apply(self, state, id, args, prevs):
         pass
 
-    @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        pass
-
-    @settings.with_settings
-    def output_step(self, state, goal_id, step, fact_ids, *, mode='long'):
-        from syntax import printer, pprint
-        res = self.display_step(state, goal_id, step, fact_ids)
-        if mode == 'long':
-            if '_goal' in step:
-                if step['_goal']:
-                    goals = [printer.print_term(state.thy, t) for t in step['_goal']]
-                    res += pprint.KWRed(" goal ") + printer.commas_join(goals)
-                else:
-                    res += pprint.KWGreen(" (solves)")
-
-            if '_fact' in step and len(step['_fact']) > 0:
-                facts = [printer.print_term(state.thy, t) for t in step['_fact']]
-                res += pprint.KWGreen(" fact ") + printer.commas_join(facts)
-
-        elif mode == 'short':
-            res += pprint.N(' on ' + str(goal_id))
-            if len(fact_ids) > 0:
-                res += pprint.N(' using ' + ','.join([str(id) for id in fact_ids]))
-
-        return res
 
 class TheoryException(Exception):
     """General exception for theory operations."""

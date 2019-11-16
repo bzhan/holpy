@@ -576,7 +576,7 @@ class nat_norm_method(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("nat_norm: (solves)")
 
     def apply(self, state, id, data, prevs):
@@ -676,7 +676,7 @@ class nat_const_ineq_method(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("nat_const_ineq: (solves)")
 
     def apply(self, state, id, data, prevs):

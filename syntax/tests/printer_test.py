@@ -153,6 +153,8 @@ class PrinterTest(unittest.TestCase):
             (nat.plus(m, n), "m + n"),
             (nat.plus(nat.plus(m, n), p), "m + n + p"),
             (nat.plus(m, nat.plus(n, p)), "m + (n + p)"),
+            (nat.plus(nat.minus(m, n), p), "m - n + p"),
+            (nat.minus(m, nat.plus(n, p)), "m - (n + p)"),
             (nat.times(m, n), "m * n"),
             (nat.times(nat.times(m, n), p), "m * n * p"),
             (nat.times(m, nat.times(n, p)), "m * (n * p)"),
