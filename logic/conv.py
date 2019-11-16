@@ -68,7 +68,7 @@ class combination_conv(Conv):
         self.cv2 = cv2
 
     def get_proof_term(self, thy, t):
-        if t.ty != term.COMB:
+        if not t.is_comb():
             raise ConvException("combination_conv: not a combination")
         pt1 = self.cv1.get_proof_term(thy, t.fun)
         pt2 = self.cv2.get_proof_term(thy, t.arg)
@@ -131,7 +131,7 @@ class abs_conv(Conv):
         self.cv = cv
 
     def get_proof_term(self, thy, t):
-        if t.ty != term.ABS:
+        if not t.is_abs():
             raise ConvException("abs_conv: not an abstraction")
 
         # Find a new variable x and substitute for body

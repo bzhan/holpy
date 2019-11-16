@@ -1,6 +1,5 @@
 # Author: Bohua Zhan
 
-from kernel.type import HOLType
 from kernel.term import Const
 from kernel.thm import Thm
 

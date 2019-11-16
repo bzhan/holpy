@@ -8,7 +8,6 @@ if importlib.util.find_spec("z3"):
 else:
     z3_loaded = False
 
-from kernel import type as hol_type
 from kernel.type import TFun
 from kernel import term
 from kernel.term import Term, Var, boolT
@@ -34,7 +33,7 @@ class Z3Exception(Exception):
 
 
 def convert_type(T):
-    if T.ty == hol_type.TVAR:
+    if T.is_tvar():
         return z3.DeclareSort(T.name)
     if T == nat.natT or T == int.intT:
         return z3.IntSort()
@@ -51,7 +50,7 @@ def convert_type(T):
             return tuple([domainT] + rangeT)
         else:
             return (domainT, rangeT)
-    elif T.ty == hol_type.TYPE and T.name == 'set':
+    elif T.is_type() and T.name == 'set':
         domainT = convert_type(T.args[0])
         if isinstance(domainT, tuple):
             raise Z3Exception("convert: unsupported type " + repr(T))

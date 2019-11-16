@@ -17,10 +17,6 @@ class TypeCheckException(Exception):
     pass
 
 
-"""ty values for distinguishing between Term objects."""
-SVAR, VAR, CONST, COMB, ABS, BOUND = range(6)
-
-
 class Term():
     """Represents a term in higher-order logic.
     
@@ -64,23 +60,26 @@ class Term():
     Abs("x", S, Abs("y", T, Q(Bound(1), Bound(0)))) is %x::S. %y::T. Q x y.
 
     """
+    # ty values for distinguishing between Term objects.
+    SVAR, VAR, CONST, COMB, ABS, BOUND = range(6)
+
     def is_svar(self):
-        return self.ty == SVAR
+        return self.ty == Term.SVAR
 
     def is_var(self):
-        return self.ty == VAR
+        return self.ty == Term.VAR
 
     def is_const(self):
-        return self.ty == CONST
+        return self.ty == Term.CONST
 
     def is_comb(self):
-        return self.ty == COMB
+        return self.ty == Term.COMB
 
     def is_abs(self):
-        return self.ty == ABS
+        return self.ty == Term.ABS
 
     def is_bound(self):
-        return self.ty == BOUND
+        return self.ty == Term.BOUND
 
     def __str__(self):
         """Printing function for terms. Note we do not yet handle collision
@@ -595,28 +594,28 @@ class Term():
 class SVar(Term):
     """Schematic variable, specified by name and type."""
     def __init__(self, name, T):
-        self.ty = SVAR
+        self.ty = Term.SVAR
         self.name = name
         self.T = T
 
 class Var(Term):
     """Variable, specified by name and type."""
     def __init__(self, name, T):
-        self.ty = VAR
+        self.ty = Term.VAR
         self.name = name
         self.T = T
 
 class Const(Term):
     """Constant, specified by name and type."""
     def __init__(self, name, T):
-        self.ty = CONST
+        self.ty = Term.CONST
         self.name = name
         self.T = T
 
 class Comb(Term):
     """Combination."""
     def __init__(self, fun, arg):
-        self.ty = COMB
+        self.ty = Term.COMB
         self.fun = fun
         self.arg = arg
 
@@ -629,7 +628,7 @@ class Abs(Term):
         if len(args) < 3:
             raise TypeError
         else:
-            self.ty = ABS
+            self.ty = Term.ABS
             self.var_name = args[0]
             self.var_T = args[1]
             if len(args) == 3:
@@ -640,7 +639,7 @@ class Abs(Term):
 class Bound(Term):
     """Bound variable, with de Bruijn index n."""
     def __init__(self, n):
-        self.ty = BOUND
+        self.ty = Term.BOUND
         self.n = n
 
 def all_t(T):

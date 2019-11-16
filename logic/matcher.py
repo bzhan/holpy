@@ -8,8 +8,7 @@ By default, all variables in the pattern can be instantiated.
 from copy import copy
 from collections import OrderedDict
 
-from kernel import type as hol_type
-from kernel.type import HOLType, TVar, Type, TFun, TypeMatchException
+from kernel.type import TVar, Type, TFun, TypeMatchException
 from kernel.term import Term, Var, Const, Comb, Abs, Bound
 from kernel import term
 from util import name

@@ -3,7 +3,6 @@
 from copy import copy
 from typing import Tuple
 
-from kernel import type as hol_type
 from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
@@ -189,7 +188,7 @@ class Theory():
                 raise TheoryException("Constant %s :: %s does not match overloaded type %s" % (name, T, aT))
 
             for _, v in sorted(inst.items()):
-                if v.ty != hol_type.TYPE:
+                if not v.is_type():
                     raise TheoryException("When overloading %s with %s: cannot instantiate to type variables" % (aT, T))
         else:
             # Make sure this name does not already occur in the theory
@@ -337,7 +336,7 @@ class Theory():
 
             baseT = []
             for _, v in sorted(inst.items()):
-                assert v.ty == hol_type.TYPE
+                assert v.is_type()
                 baseT.append(v)
 
             T_name = "_".join(T.name for T in baseT)
@@ -377,9 +376,9 @@ class Theory():
         arity.
 
         """
-        if T.ty == hol_type.TVAR:
+        if T.is_stvar() or T.is_tvar():
             return None
-        elif T.ty == hol_type.TYPE:
+        elif T.is_type():
             if self.get_type_sig(T.name) != len(T.args):
                 raise TheoryException("Check type: " + repr(T))
             else:

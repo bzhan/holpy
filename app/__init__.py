@@ -8,8 +8,7 @@ import time
 from pstats import Stats
 import cProfile
 
-from kernel import type as hol_type
-from kernel.type import HOLType, TVar, Type, TFun
+from kernel.type import TVar, Type, TFun
 from kernel.term import get_vars
 from kernel import extension, theory
 from syntax import parser, printer, settings, pprint
@@ -580,8 +579,7 @@ def check_modify():
 
         if item['ty'] == 'type.ind':
             T = parser.parse_type(thy, item['edit_type'])
-            assert T.ty == hol_type.TYPE and all(argT.ty == hol_type.TVAR for argT in T.args), \
-                "invalid input type."
+            assert T.is_type() and all(argT.is_tvar() for argT in T.args), "invalid input type."
             item['name'] = T.name
             item['args'] = [argT.name for argT in T.args]
 
