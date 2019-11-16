@@ -4,7 +4,7 @@
             "name": "nat_interval",
             "prop": "nat_interval m n = {p. less_eq m p & less_eq p n}",
             "ty": "def",
-            "type": "nat => nat => nat set"
+            "type": "nat ⇒ nat ⇒ nat set"
         },
         {
             "name": "finite_numseg",
@@ -133,11 +133,27 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "hint_backward": "true",
             "name": "neutral",
-            "prop": "neutral op x = (!y. (op x y = y) & (op y x = y))",
+            "prop": "neutral op ⟷ THE x. (∀y. op x y = y ∧ op y x = y)",
             "ty": "def",
-            "type": "('a => 'a => 'a) => 'a => bool"
+            "type": "('a ⇒ 'a ⇒ 'a) ⇒ 'a"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "monoidal",
+            "prop": [
+                "monoidal op = (!x. !y. op x y = op y x) &",
+                "(!x. !y. !z. op x (op y z) = op (op x y) z) &",
+                "(!x::'a. op (neutral op) x = x)"
+            ],
+            "ty": "def",
+            "type": "('a ⇒ 'a ⇒ 'a) ⇒ bool"
         },
         {
             "name": "sum",
@@ -154,7 +170,7 @@
             "name": "polynomial_function",
             "prop": "polynomial_function p ⟷ (∃m. ∃c. ∀x. p x = sum ({0..m}) (λi. c i * x ^ i))",
             "ty": "def",
-            "type": "(real=>real)=>bool"
+            "type": "(real ⇒ real) ⇒ bool"
         }
     ],
     "description": "Basic results about iterate.",

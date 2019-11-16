@@ -31508,7 +31508,7 @@
                 "hint_forward"
             ],
             "name": "real_negligible_countable_unions",
-            "num_gaps": 3,
+            "num_gaps": 2,
             "proof": [
                 {
                     "args": "∀n. real_negligible (s n)",
@@ -31522,14 +31522,14 @@
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀n. real_negligible (s n) ⊢ (∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬m = n ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0) ⟶ real_measurable (⋃{y. ∀n. y = s n}) ∧ real_sums (λn. real_measure (s n)) (real_measure (⋃{y. ∀n. y = s n})) (from 0)"
+                    "th": "∀n. real_negligible (s n) ⊢ (∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0) ⟶ real_measurable (⋃({y. ∀n. y = s n})) ∧ real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∀n. y = s n}))) (from 0)"
                 },
                 {
-                    "args": "(∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬m = n ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0)",
+                    "args": "(∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0)",
                     "id": "1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "(∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬m = n ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0) ⊢ (∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬m = n ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0)"
+                    "th": "(∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0) ⊢ (∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0)"
                 },
                 {
                     "args": "has_real_measure_countable_real_negligible_unions",
@@ -31538,7 +31538,7 @@
                         "1.0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∀n. real_negligible (s n), (∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬m = n ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0) ⊢ real_measurable (⋃{y. ∀n. y = s n}) ∧ real_sums (λn. real_measure (s n)) (real_measure (⋃{y. ∀n. y = s n})) (from 0)"
+                    "th": "∀n. real_negligible (s n), (∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0) ⊢ real_measurable (⋃({y. ∀n. y = s n})) ∧ real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∀n. y = s n}))) (from 0)"
                 },
                 {
                     "args": "",
@@ -31548,7 +31548,7 @@
                         "1.1"
                     ],
                     "rule": "intros",
-                    "th": "∀n. real_negligible (s n) ⊢ (∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬m = n ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0) ⟶ real_measurable (⋃{y. ∀n. y = s n}) ∧ real_sums (λn. real_measure (s n)) (real_measure (⋃{y. ∀n. y = s n})) (from 0)"
+                    "th": "∀n. real_negligible (s n) ⊢ (∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0) ⟶ real_measurable (⋃({y. ∀n. y = s n})) ∧ real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∀n. y = s n}))) (from 0)"
                 },
                 {
                     "args": "",
@@ -31588,10 +31588,12 @@
                     "th": "∀n. real_negligible (s n) ⊢ real_negligible (s x)"
                 },
                 {
-                    "args": "",
+                    "args": "real_measure_eq_0",
                     "id": "2.1.2",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "2.1.1"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "∀n. real_negligible (s n) ⊢ real_measure (s x) = 0"
                 },
                 {
@@ -31611,7 +31613,7 @@
                         "2.1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∀n. real_negligible (s n) ⊢ (λx. real_measure (s x)) = (λx. 0)"
+                    "th": "∀n. real_negligible (s n) ⊢ (λk. real_measure (s k)) = (λk. 0)"
                 },
                 {
                     "args": "",
@@ -31621,17 +31623,17 @@
                     "th": "∀n. real_negligible (s n) ⊢ sum ({0..n}) (λx. 0) = 0"
                 },
                 {
-                    "args": "sum ({0..n}) (λx. real_measure (s x)) = 0",
+                    "args": "sum ({0..n}) (λk. real_measure (s k)) = 0",
                     "id": "2.4",
                     "prevs": [
                         "2.2",
                         "2.3"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "∀n. real_negligible (s n) ⊢ sum ({0..n}) (λx. real_measure (s x)) = 0"
+                    "th": "∀n. real_negligible (s n) ⊢ sum ({0..n}) (λk. real_measure (s k)) = 0"
                 },
                 {
-                    "args": "disjI2, {}, {A: sum ({0..n}) (λk. real_measure (s k)) < 0, B: sum ({0..n}) (λx. real_measure (s x)) = 0}",
+                    "args": "disjI2, {}, {A: sum ({0..n}) (λk. real_measure (s k)) < 0, B: sum ({0..n}) (λk. real_measure (s k)) = 0}",
                     "id": "2.5",
                     "prevs": [
                         "2.4"
@@ -31663,7 +31665,7 @@
                     "id": "3",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "∀n. real_negligible (s n) ⊢ real_negligible (⋃{y. ∀n. y = s n})"
+                    "th": "∀n. real_negligible (s n) ⊢ real_negligible (⋃({y. ∀n. y = s n}))"
                 },
                 {
                     "args": "",
@@ -31673,7 +31675,7 @@
                         "3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ (∀n. real_negligible (s n)) ⟶ real_negligible (⋃{y. ∀n. y = s n})"
+                    "th": "⊢ (∀n. real_negligible (s n)) ⟶ real_negligible (⋃({y. ∀n. y = s n}))"
                 }
             ],
             "prop": "(∀n. real_negligible (s n)) --> real_negligible (⋃{y. ∀n. y = s n})",
@@ -31742,6 +31744,11 @@
                     "goal_id": "2.1.1",
                     "method_name": "forall_elim",
                     "s": "x"
+                },
+                {
+                    "goal_id": "2.1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_eq_0"
                 }
             ],
             "ty": "thm",
@@ -31877,7 +31884,7 @@
                 "hint_forward"
             ],
             "name": "has_real_integral_negligible_eq",
-            "num_gaps": 1,
+            "num_gaps": 2,
             "proof": [
                 {
                     "args": "∀x. x ∈ s ⟶ 0 ≤ f x",
@@ -31905,23 +31912,40 @@
                     "id": "1.1",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ real_negligible (⋃({s. ∀n. s = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}})) ∧ {x. x ∈ s ∧ ¬(f x = 0)} ⊆ ⋃({s. ∀n. s = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}})"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ real_negligible (⋃({t. ∀n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}}))"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ {x. x ∈ s ∧ ¬(f x = 0)} ⊆ ⋃({t. ∀n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}})"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.1",
+                        "1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ real_negligible (⋃({t. ∀n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}})) ∧ {x. x ∈ s ∧ ¬(f x = 0)} ⊆ ⋃({t. ∀n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}})"
                 },
                 {
                     "args": "real_negligible_subset",
-                    "id": "1.2",
+                    "id": "1.4",
                     "prevs": [
-                        "1.1"
+                        "1.3"
                     ],
                     "rule": "apply_theorem",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ real_negligible ({x. x ∈ s ∧ ¬(f x = 0)})"
                 },
                 {
                     "args": "",
-                    "id": "1.3",
+                    "id": "1.5",
                     "prevs": [
                         "1.0",
-                        "1.2"
+                        "1.4"
                     ],
                     "rule": "intros",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x ⊢ has_real_integral f 0 s ⟶ real_negligible ({x. x ∈ s ∧ ¬(f x = 0)})"
@@ -32219,8 +32243,13 @@
                 {
                     "goal_id": "1.1",
                     "method_name": "apply_backward_step",
-                    "param_s": "(Union ({s. !n::nat. s = {x. x ∈ s & abs (f x) >= 1 / (of_nat n + 1)}}))\n",
+                    "param_s": "(Union ({t. !n::nat. t = {x. x ∈ s & abs (f x) >= (1::real) / (of_nat n + 1)}}))",
                     "theorem": "real_negligible_subset"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
                 }
             ],
             "ty": "thm",
@@ -32236,7 +32265,7 @@
                 "hint_forward"
             ],
             "name": "real_integration_by_parts",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "a ≤ b ∧ countable c ∧ real_continuous_on (λx. f x * g x) (real_closed_interval a b) ∧ (∀x. x ∈ diff (real_open_interval a b) c ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x)) ∧ has_real_integral (λx. f x * g1 x) (f b * g b - f a * g a - y) (real_closed_interval a b)",
@@ -32362,19 +32391,31 @@
                     "th": "x ∈ diff (real_open_interval a b) c ⊢ x ∈ diff (real_open_interval a b) c"
                 },
                 {
-                    "args": "",
+                    "args": "x",
                     "id": "12.2",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "a ≤ b ∧ countable c ∧ real_continuous_on (λx. f x * g x) (real_closed_interval a b) ∧ (∀x. x ∈ diff (real_open_interval a b) c ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x)) ∧ has_real_integral (λx. f x * g1 x) (f b * g b - f a * g a - y) (real_closed_interval a b), x ∈ diff (real_open_interval a b) c ⊢ has_real_derivative (λb. f b * g b) (f x * g1 x + f1 x * g x) (atreal x)"
+                    "prevs": [
+                        "7",
+                        "12.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "a ≤ b ∧ countable c ∧ real_continuous_on (λx. f x * g x) (real_closed_interval a b) ∧ (∀x. x ∈ diff (real_open_interval a b) c ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x)) ∧ has_real_integral (λx. f x * g1 x) (f b * g b - f a * g a - y) (real_closed_interval a b), x ∈ diff (real_open_interval a b) c ⊢ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_mul_atreal",
+                    "id": "12.3",
+                    "prevs": [
+                        "12.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "a ≤ b ∧ countable c ∧ real_continuous_on (λx. f x * g x) (real_closed_interval a b) ∧ (∀x. x ∈ diff (real_open_interval a b) c ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x)) ∧ has_real_integral (λx. f x * g1 x) (f b * g b - f a * g a - y) (real_closed_interval a b), x ∈ diff (real_open_interval a b) c ⊢ has_real_derivative (λx. f x * g x) (f x * g1 x + f1 x * g x) (atreal x)"
                 },
                 {
                     "args": "",
-                    "id": "12.3",
+                    "id": "12.4",
                     "prevs": [
                         "12.0",
                         "12.1",
-                        "12.2"
+                        "12.3"
                     ],
                     "rule": "intros",
                     "th": "a ≤ b ∧ countable c ∧ real_continuous_on (λx. f x * g x) (real_closed_interval a b) ∧ (∀x. x ∈ diff (real_open_interval a b) c ⟶ has_real_derivative f (f1 x) (atreal x) ∧ has_real_derivative g (g1 x) (atreal x)) ∧ has_real_integral (λx. f x * g1 x) (f b * g b - f a * g a - y) (real_closed_interval a b) ⊢ ∀x. x ∈ diff (real_open_interval a b) c ⟶ has_real_derivative (λb. f b * g b) (f x * g1 x + f1 x * g x) (atreal x)"
@@ -32614,6 +32655,19 @@
                     "goal_id": "12",
                     "method_name": "introduction",
                     "names": "x"
+                },
+                {
+                    "goal_id": "12.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_mul_atreal"
+                },
+                {
+                    "fact_ids": [
+                        "7",
+                        "12.1"
+                    ],
+                    "goal_id": "12.2",
+                    "method_name": "apply_prev"
                 }
             ],
             "ty": "thm",
@@ -33083,6 +33137,203 @@
                 "b": "real",
                 "f": "real => real",
                 "f1": "real => real",
+                "g": "real => real",
+                "g1": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_integral_substitution_strong",
+            "prop": [
+                "countable k ∧",
+                "real_integrable_on f (real_closed_interval c d) ∧ ",
+                "real_integrable_on g (real_closed_interval a b) ∧",
+                "subset (image g (real_closed_interval a b)) (real_closed_interval c d) &",
+                "(∀x. x ∈ diff (real_closed_interval a b) k",
+                "   ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b)) &",
+                "real_continuous f (within (atreal (g x)) (real_closed_interval c d))) ∧",
+                "a ≤ b ∧ c ≤ d ∧ g a ≤ g b  ",
+                "⟶ has_real_integral (λx. f (g x) * g1 x) (real_integral (real_closed_interval (g a) (g b)) f)",
+                "(real_closed_interval a b)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "f": "real => real",
+                "g": "real => real",
+                "g1": "real => real",
+                "k": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_integral_substitution",
+            "prop": [
+                "countable k ∧ ",
+                "real_integrable_on f (real_closed_interval c d) ∧ ",
+                "real_integrable_on g (real_closed_interval a b) ∧ ",
+                "image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ ",
+                "(∀x. x ∈ diff (real_closed_interval a b) k ",
+                "   ⟶ has_real_derivative g (g1 x) (atreal x)) ∧ ",
+                "a ≤ b ∧ c ≤ d ∧ g a ≤ g b ",
+                "⟶ has_real_integral (λx. f (g x) * g1 x) ",
+                "     (real_integral (real_closed_interval (g a) (g b)) f) ",
+                "     (real_closed_interval a b)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "f": "real => real",
+                "g": "real => real",
+                "g1": "real => real",
+                "k": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_integral_substitution",
+            "prop": [
+                "countable k ∧ ",
+                "real_continuous_on f (real_closed_interval c d) ∧ ",
+                "real_continuous_on g (real_closed_interval a b) ∧ ",
+                "image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ ",
+                "(∀x. x ∈ diff (real_closed_interval a b) k ⟶ has_real_derivative g (g1 x) (atreal x)) ∧ ",
+                "a ≤ b ∧ c ≤ d ∧ g a ≤ g b ",
+                "⟶ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) =",
+                "    real_integral (real_closed_interval (g a) (g b)) f "
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "f": "real => real",
+                "g": "real => real",
+                "g1": "real => real",
+                "k": "real set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "has_real_integral_substitution_simple",
+            "prop": [
+                "real_continuous_on f (real_closed_interval c d) ∧ ",
+                "(∀x. x ∈ (real_closed_interval a b) ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ ",
+                "image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ ",
+                "a ≤ b ∧ c ≤ d ∧ g a ≤ g b ",
+                "⟶ has_real_integral (λx. f (g x) * g1 x) ",
+                "     (real_integral (real_closed_interval (g a) (g b)) f) ",
+                "     (real_closed_interval a b)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "f": "real => real",
+                "g": "real => real",
+                "g1": "real => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "real_integral_substitution_simple",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b ⊢ real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b"
+                },
+                {
+                    "args": "has_real_integral_substitution_simple",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b ⊢ has_real_integral (λx. f (g x) * g1 x) (real_integral (real_closed_interval (g a) (g b)) f) (real_closed_interval a b)"
+                },
+                {
+                    "args": "real_integral_unique",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b ⊢ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) = real_integral (real_closed_interval (g a) (g b)) f"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) = real_integral (real_closed_interval (g a) (g b)) f"
+                }
+            ],
+            "prop": [
+                "real_continuous_on f (real_closed_interval c d) ∧ ",
+                "(∀x. x ∈ real_closed_interval a b ",
+                "   ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ ",
+                "image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ ",
+                "a ≤ b ∧ c ≤ d ∧ g a ≤ g b ",
+                "⟶ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) = ",
+                "   real_integral (real_closed_interval (g a) (g b)) f"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_integral_unique"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_c": "c",
+                    "param_d": "d",
+                    "theorem": "has_real_integral_substitution_simple"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real",
+                "c": "real",
+                "d": "real",
+                "f": "real => real",
                 "g": "real => real",
                 "g1": "real => real"
             }
