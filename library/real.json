@@ -386,10 +386,11 @@
         },
         {
             "attributes": [
-                "hint_forward"
+                "hint_forward",
+                "hint_backward"
             ],
             "name": "real_le_mul",
-            "prop": "0 <= x & 0 <= y --> 0 <= x * y",
+            "prop": "0 ≤ x ∧ 0 ≤ y ⟶ 0 ≤ x * y",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -2017,6 +2018,17 @@
             "vars": {
                 "x": "real",
                 "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_pos",
+            "prop": "(0::real) <= of_nat n",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
             }
         },
         {
