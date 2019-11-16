@@ -31885,7 +31885,7 @@
                 "hint_forward"
             ],
             "name": "has_real_integral_negligible_eq",
-            "num_gaps": 5,
+            "num_gaps": 4,
             "proof": [
                 {
                     "args": "∀x. x ∈ s ⟶ 0 ≤ f x",
@@ -32000,17 +32000,36 @@
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ 0 ≤ f x"
                 },
                 {
-                    "args": "",
+                    "args": "real_pos, {}, {n: n}",
                     "id": "1.1.1.2.6",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ, x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ (0::real) ≤ of_nat n + 1"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ of_nat n"
                 },
                 {
                     "args": "conjI",
                     "id": "1.1.1.2.7",
                     "prevs": [
                         "1.1.1.2.6",
+                        "1.1.1.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ, x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ (0::real) ≤ of_nat n ∧ (0::real) ≤ 1"
+                },
+                {
+                    "args": "real_le_add",
+                    "id": "1.1.1.2.8",
+                    "prevs": [
+                        "1.1.1.2.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ, x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ (0::real) ≤ of_nat n + 1"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.1.2.9",
+                    "prevs": [
+                        "1.1.1.2.8",
                         "1.1.1.2.5"
                     ],
                     "rule": "apply_theorem",
@@ -32018,45 +32037,54 @@
                 },
                 {
                     "args": "real_le_mul",
-                    "id": "1.1.1.2.8",
+                    "id": "1.1.1.2.10",
                     "prevs": [
-                        "1.1.1.2.7"
+                        "1.1.1.2.9"
                     ],
                     "rule": "apply_theorem",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ, x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ 0 ≤ (of_nat n + 1) * f x"
                 },
                 {
+                    "args": "conjD2, {}, {A: x ∈ s, B: 1 / (of_nat n + 1) ≤ abs (f x)}",
+                    "id": "1.1.1.2.11",
+                    "prevs": [
+                        "1.1.1.2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ 1 / (of_nat n + 1) ≤ abs (f x)"
+                },
+                {
                     "args": "",
-                    "id": "1.1.1.2.9",
+                    "id": "1.1.1.2.12",
                     "prevs": [],
                     "rule": "sorry",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ, x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ 1 ≤ abs ((of_nat n + 1) * f x)"
                 },
                 {
                     "args": "conjI",
-                    "id": "1.1.1.2.10",
+                    "id": "1.1.1.2.13",
                     "prevs": [
-                        "1.1.1.2.8",
-                        "1.1.1.2.9"
+                        "1.1.1.2.10",
+                        "1.1.1.2.12"
                     ],
                     "rule": "apply_theorem",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ, x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ 0 ≤ (of_nat n + 1) * f x ∧ 1 ≤ abs ((of_nat n + 1) * f x)"
                 },
                 {
                     "args": "(of_nat n + 1) * f x, (1::real)",
-                    "id": "1.1.1.2.11",
+                    "id": "1.1.1.2.14",
                     "prevs": [
                         "1.1.1.2.3",
-                        "1.1.1.2.10"
+                        "1.1.1.2.13"
                     ],
                     "rule": "apply_fact_for",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ, x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ 1 ≤ (of_nat n + 1) * f x"
                 },
                 {
                     "args": "if_P, 1 ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
-                    "id": "1.1.1.2.12",
+                    "id": "1.1.1.2.15",
                     "prevs": [
-                        "1.1.1.2.11",
+                        "1.1.1.2.14",
                         "1.1.1.2.2"
                     ],
                     "rule": "rewrite_goal",
@@ -32064,19 +32092,19 @@
                 },
                 {
                     "args": "conjI",
-                    "id": "1.1.1.2.13",
+                    "id": "1.1.1.2.16",
                     "prevs": [
                         "1.1.1.2.1",
-                        "1.1.1.2.12"
+                        "1.1.1.2.15"
                     ],
                     "rule": "apply_theorem",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ, x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ (0::real) ≤ 1 ∧ 1 ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
                 },
                 {
                     "args": "if_P, (0::real) ≤ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ∧ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
-                    "id": "1.1.1.2.14",
+                    "id": "1.1.1.2.17",
                     "prevs": [
-                        "1.1.1.2.13",
+                        "1.1.1.2.16",
                         "1.1.1.2.0"
                     ],
                     "rule": "rewrite_goal",
@@ -32084,10 +32112,10 @@
                 },
                 {
                     "args": "",
-                    "id": "1.1.1.2.15",
+                    "id": "1.1.1.2.18",
                     "prevs": [
                         "1.1.1.2.0",
-                        "1.1.1.2.14"
+                        "1.1.1.2.17"
                     ],
                     "rule": "intros",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ ⊢ x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⟶ (0::real) ≤ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ∧ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
@@ -32678,6 +32706,29 @@
                     "goal_id": "1.1.1.2.6",
                     "method_name": "apply_backward_step",
                     "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.1.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_add"
+                },
+                {
+                    "goal_id": "1.1.1.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.1.1.2.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pos"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.1.2.0"
+                    ],
+                    "goal_id": "1.1.1.2.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
                 }
             ],
             "ty": "thm",
