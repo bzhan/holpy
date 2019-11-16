@@ -386,10 +386,11 @@
         },
         {
             "attributes": [
-                "hint_forward"
+                "hint_forward",
+                "hint_backward"
             ],
             "name": "real_le_mul",
-            "prop": "0 <= x & 0 <= y --> 0 <= x * y",
+            "prop": "0 ≤ x ∧ 0 ≤ y ⟶ 0 ≤ x * y",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -2021,6 +2022,17 @@
         },
         {
             "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_pos",
+            "prop": "(0::real) <= of_nat n",
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "real_of_nat_pow",
@@ -2420,14 +2432,20 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "greater_eq",
-            "prop": "greater_eq m n = less_eq n m",
+            "prop": "m ≥ n ⟷ n ≤ m",
             "ty": "def",
             "type": "real ⇒ real ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "greater",
-            "prop": "greater m n = less n m",
+            "prop": "m > n ⟷ n < m",
             "ty": "def",
             "type": "real ⇒ real ⇒ bool"
         },
