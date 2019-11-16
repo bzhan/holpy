@@ -4,12 +4,12 @@ import os, sqlite3, shutil
 import json, sys, io, traceback2
 from flask import Flask, request, render_template, redirect, session
 from flask.json import jsonify
+from flask_cors import CORS
 import time
 from pstats import Stats
 import cProfile
 
 from kernel.type import TVar, Type, TFun
-from kernel.term import get_vars
 from kernel import extension, theory
 from syntax import parser, printer, settings, pprint
 from server import server, method
@@ -19,10 +19,9 @@ from logic import induct
 from imperative import parser2
 from imperative import imp
 from prover import z3wrapper
-from syntax import infertype
 from server.server import ProofState
+from server import monitor
 from imperative.parser2 import cond_parser, com_parser
-from flask_cors import CORS
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -687,6 +686,21 @@ def find_link():
         })
     else:
         return jsonify({})
+
+@app.route('/api/check-theory', methods=['POST'])
+def check_theory():
+    """Check a theory.
+    
+    * username: username.
+    * filename: name of the theory file.
+
+    """
+    data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
+    filename = data['filename']
+
+    res = monitor.check_theory(filename, username)
+    return jsonify(res)
 
 
 # Initialization

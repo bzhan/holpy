@@ -8,13 +8,15 @@ import Login from './components/login/Login.vue'
 import Register from './components/login/Register.vue'
 import Editor from './components/Editor.vue'
 import ProVerify from './components/ProVerify.vue'
+import Monitor from './components/Monitor.vue'
 
 const routes = [
   {path: '/', name: 'main', component: Index},
   {path: '/login', name: 'login', component: Login},
   {path: '/register', name: 'register', component: Register},
   {path: '/ide', name: 'editor', component: Editor},
-  {path: '/program', name: 'program', component: ProVerify}
+  {path: '/program', name: 'program', component: ProVerify},
+  {path: '/monitor', name: 'monitor', component: Monitor}
 ]
 
 const router = new VueRouter({
