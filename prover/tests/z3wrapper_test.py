@@ -53,6 +53,21 @@ class Z3WrapperTest(unittest.TestCase):
             t = parser.parse_term(ctxt, s)
             self.assertEqual(z3wrapper.solve(ctxt.thy, t), res)
 
+    def testSolveNat(self):
+        if not z3wrapper.z3_loaded:
+            return
+
+        ctxt = Context('set', vars={
+            'x': 'nat', 'y': 'nat', 'z': 'nat'
+        })
+        test_data = [
+            ('x - y + z = x + z - y', False),
+            ('x >= y --> x - y + z = x + z - y', True)
+        ]
+        for s, res in test_data:
+            t = parser.parse_term(ctxt, s)
+            self.assertEqual(z3wrapper.solve(ctxt.thy, t), res)
+
     def testSolveSet(self):
         if not z3wrapper.z3_loaded:
             return
@@ -77,7 +92,9 @@ class Z3WrapperTest(unittest.TestCase):
         if not z3wrapper.z3_loaded:
             return
 
-        ctxt = Context('real', vars={'a': 'real', 'b': 'real', 'x': 'real', 'f': 'real => real', 'S': 'real set', 'T': 'real set'})
+        ctxt = Context('real', vars={
+            'a': 'real', 'b': 'real', 'x': 'real', 'f': 'real => real', 'S': 'real set', 'T': 'real set',
+            'n': 'nat'})
         test_data = [
             ('max a b = (1/2) * (a + b + abs(a - b))', True),
             ('(x Mem T --> 0 <= f x) --> S Sub T --> (if x Mem S then f x else 0) <= (if x Mem T then f x else 0)', True),
@@ -87,6 +104,7 @@ class Z3WrapperTest(unittest.TestCase):
             ('S Int T = empty_set --> (if x Mem S then (1::real) else 0) + (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)', True),
             ('S ∪ T = S ∩ T ∪ {x. x ∈ S ∧ ¬x ∈ T} ∪ {x. x ∈ T ∧ ¬x ∈ S}', True),
             ('(0::real) <= (if x Mem s & 1 / (of_nat n + 1) <= abs (f x) then 1 else 0)', True),
+            ('(0::real) <= of_nat n + 1', True),
         ]
 
         for s, res in test_data:

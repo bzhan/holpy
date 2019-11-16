@@ -164,6 +164,8 @@ class ParserTest(unittest.TestCase):
             ("m * n", "nat"),
             ("m + n + p", "nat"),
             ("m + (n + p)", "nat"),
+            ("m - n + p", "nat"),
+            ("m - (n + p)", "nat"),
             ("m + n * p", "nat"),
             ("m * (n + p)", "nat"),
             ("(0::nat)", "nat"),
