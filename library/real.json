@@ -2025,7 +2025,54 @@
                 "hint_backward"
             ],
             "name": "real_pos",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "le_0, {}, {n: n}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ n"
+                },
+                {
+                    "args": "real_of_nat_le, (of_nat::nat ⇒ real) 0 ≤ of_nat n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (of_nat::nat ⇒ real) 0 ≤ of_nat n"
+                },
+                {
+                    "args": "real_zero_def, (0::real) ≤ of_nat n",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::real) ≤ of_nat n"
+                }
+            ],
             "prop": "(0::real) <= of_nat n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_of_nat_le"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "n": "nat"
