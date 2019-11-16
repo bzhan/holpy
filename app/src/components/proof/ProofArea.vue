@@ -6,7 +6,7 @@
                  v-bind:is_last_id="is_last_id(index)"
                  v-bind:is_goal="goal === index"
                  v-bind:is_fact="facts.indexOf(index) !== -1"
-                 v-bind:can_select="can_select(index)"
+                 v-bind:can_select="can_select(goal, index)"
                  v-on:select="mark_text(index)"/>
     </div>
   </div>
@@ -267,7 +267,10 @@ export default {
         const fact_ids = this.steps[hId].fact_ids
         if (fact_ids !== undefined) {
           for (let i = 0; i < fact_ids.length; i++) {
-            this.facts.push(this.get_line_no_from_id(fact_ids[i]))
+            let fact_no = this.get_line_no_from_id(fact_ids[i])
+            if (this.can_select(this.goal, fact_no)) {
+              this.facts.push(fact_no)
+            }
           }
         }
       }
@@ -340,11 +343,11 @@ export default {
       return this.proof[line_no + 1].rule === 'intros'
     },
 
-    can_select: function (line_no) {
-      if (this.goal === -1)
+    can_select: function (goal, line_no) {
+      if (goal === -1)
         return false
 
-      const goal_id = this.proof[this.goal].id.split('.')
+      const goal_id = this.proof[goal].id.split('.')
       const fact_id = this.proof[line_no].id.split('.')
       const len = fact_id.length
       if (len > goal_id.length)
@@ -362,7 +365,7 @@ export default {
         this.goal = line_no;
       }
       else if (this.goal !== -1) {
-        if (!this.can_select(line_no)) {
+        if (!this.can_select(this.goal, line_no)) {
           // Goal cannot depend on this fact
           return
         }

@@ -1,6 +1,7 @@
 # Author: Bohua Zhan
 
 import io
+import traceback2
 
 from kernel import term
 from kernel.term import Term, Var
@@ -131,7 +132,6 @@ class ProofState():
 
     def json_data(self):
         """Export proof in json format."""
-        self.check_proof()
         res = {
             "vars": {v.name: str(v.T) for v in self.vars},
             "proof": self.export_proof(self.prf),
@@ -158,7 +158,15 @@ class ProofState():
                     'proof': state.export_proof(state.prf),
                     'num_gaps': len(state.rpt.gaps)
                 })
-                method.apply_method(state, step)
+                try:
+                    method.apply_method(state, step)
+                    state.check_proof()
+                except Exception as e:
+                    state.history[-1]['error'] = {
+                        'err_type': e.__class__.__name__,
+                        'err_str': str(e),
+                        'trace': traceback2.format_exc()
+                    }
             state.history.append({
                 'proof': state.export_proof(state.prf),
                 'num_gaps': len(state.rpt.gaps)
@@ -174,8 +182,8 @@ class ProofState():
                     ctxt.vars[nm] = parser.parse_type(thy, str_T.strip())
                 item = parser.parse_proof_rule(ctxt, line)
                 state.prf.insert_item(item)
+            state.check_proof()
 
-        state.check_proof(compute_only=True)
         return state
 
     def check_proof(self, *, no_gaps=False, compute_only=False):
