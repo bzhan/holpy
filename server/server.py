@@ -154,15 +154,12 @@ class ProofState():
             state.history = []
             for step in data['steps']:
                 state.history.append({
-                    'steps_output': method.display_method(state, step, unicode=True, highlight=True),
-                    'steps_output_short': method.display_method(state, step, mode='short', unicode=True, highlight=True),
+                    'steps_output': method.display_method(state, step, mode='short', unicode=True, highlight=True),
                     'proof': state.export_proof(state.prf),
                     'report': state.rpt.json_data()
                 })
                 method.apply_method(state, step)
             state.history.append({
-                'steps_output': pprint.N('Current state', highlight=True),
-                'steps_output_short': pprint.N('Current state', highlight=True),
                 'proof': state.export_proof(state.prf),
                 'report': state.rpt.json_data()
             })
