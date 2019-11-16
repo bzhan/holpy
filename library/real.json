@@ -2420,14 +2420,20 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "greater_eq",
-            "prop": "greater_eq m n = less_eq n m",
+            "prop": "m ≥ n ⟷ n ≤ m",
             "ty": "def",
             "type": "real ⇒ real ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "greater",
-            "prop": "greater m n = less n m",
+            "prop": "m > n ⟷ n < m",
             "ty": "def",
             "type": "real ⇒ real ⇒ bool"
         },
