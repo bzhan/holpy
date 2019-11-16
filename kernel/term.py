@@ -414,6 +414,25 @@ class Term():
         eq_t = Term.equals(s.get_type())
         return eq_t(s, t)
 
+    def incr_boundvars(self, inc):
+        """Increase loose bound variables in self by inc."""
+        def rec(t, lev):
+            if t.is_svar() or t.is_var() or t.is_const():
+                return t
+            elif t.is_comb():
+                return Comb(rec(t.fun, lev), rec(t.arg, lev))
+            elif t.is_abs():
+                return Abs(t.var_name, t.var_T, rec(t.body, lev+1))
+            elif t.is_bound():
+                if t.n >= lev:
+                    return Bound(t.n + inc)
+                else:
+                    return t
+            else:
+                raise TypeError
+
+        return rec(self, 0)
+
     def subst_bound(self, t):
         """Given an Abs(x,T,body), substitute x for t in the body. t should
         have type T.
@@ -429,7 +448,7 @@ class Term():
                 return Abs(s.var_name, s.var_T, rec(s.body, n+1))
             elif s.is_bound():
                 if s.n == n:
-                    return t
+                    return t.incr_boundvars(n)
                 elif s.n > n:  # Bound outside
                     return Bound(s.n - 1)
                 else:  # Locally bound
