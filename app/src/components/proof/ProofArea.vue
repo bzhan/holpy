@@ -209,7 +209,7 @@ export default {
       if (res === undefined)
           return;
 
-      this.apply_method(res._method_name, res);
+      this.apply_method(res.method_name, res);
     },
 
     // Apply method with the given method name, on the given

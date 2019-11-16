@@ -154,7 +154,7 @@ class ProofState():
             state.history = []
             for step in data['steps']:
                 state.history.append({
-                    'steps_output': method.display_method(state, step, mode='short', unicode=True, highlight=True),
+                    'steps_output': method.output_step(state, step, unicode=True, highlight=True),
                     'proof': state.export_proof(state.prf),
                     'report': state.rpt.json_data()
                 })
@@ -261,11 +261,14 @@ class ProofState():
         prevs = [ItemID(prev) for prev in prevs] if prevs else []
         results = []
         method_data = self.thy.get_data("method")
-        for name, method in method_data.items():
-            res = method.search(self, id, prevs)
+        for name in method_data:
+            res = method_data[name].search(self, id, prevs)
             for r in res:
-                r['_method_name'] = name
-                r['display'] = method.output_step(self, id, r, prevs, highlight=True, unicode=True)
+                r['method_name'] = name
+                r['goal_id'] = str(id)
+                if prevs:
+                    r['fact_ids'] = list(str(id) for id in prevs) 
+                r['display'] = method.output_hint(self, r, highlight=True, unicode=True)
             results.extend(res)
 
         # If there is an element in results that solves the goal,

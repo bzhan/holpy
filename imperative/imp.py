@@ -246,7 +246,7 @@ class vcg_method(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Apply VCG")
 
     def apply(self, state, id, data, prevs):

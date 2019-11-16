@@ -225,7 +225,7 @@ class Z3Method(Method):
         return [{}]
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Apply Z3")
 
     def apply(self, state, id, data, prevs):

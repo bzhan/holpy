@@ -25,8 +25,8 @@ class cut_method(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        goal = parser.parse_term(state.get_ctxt(id), data['goal'])
+    def display_step(self, state, data):
+        goal = parser.parse_term(state.get_ctxt(data['goal_id']), data['goal'])
         return pprint.N("have ") + printer.print_term(state.thy, goal)
 
     def apply(self, state, id, data, prevs):
@@ -54,8 +54,8 @@ class cases_method(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        A = parser.parse_term(state.get_ctxt(id), data['case'])
+    def display_step(self, state, data):
+        A = parser.parse_term(state.get_ctxt(data['goal_id']), data['case'])
         return pprint.N("case ") + printer.print_term(state.thy, A)
 
     def apply(self, state, id, data, prevs):
@@ -82,7 +82,7 @@ class apply_prev_method(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Apply fact (b)")
 
     def apply(self, state, id, data, prevs):
@@ -104,7 +104,7 @@ class rewrite_goal_with_prev_method(Method):
             return [{"_goal": [gap.prop for gap in pt.get_gaps()]}]        
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("rewrite with fact")
 
     def apply(self, state, id, data, prevs):
@@ -145,7 +145,7 @@ class rewrite_goal(Method):
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         if 'sym' in data and data['sym'] == 'true':
             return pprint.N(data['theorem'] + " (sym, r)")
         else:
@@ -187,7 +187,7 @@ class rewrite_fact(Method):
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N(data['theorem'] + " (r)")
 
     def apply(self, state, id, data, prevs):
@@ -214,7 +214,7 @@ class rewrite_fact_with_prev(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("rewrite fact with fact")
 
     def apply(self, state, id, data, prevs):
@@ -260,7 +260,7 @@ class apply_forward_step(Method):
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N(data['theorem'] + " (f)")
 
     def apply(self, state, id, data, prevs):
@@ -331,7 +331,7 @@ class apply_backward_step(Method):
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N(data['theorem'] + " (b)")
 
     def apply(self, state, id, data, prevs):
@@ -374,7 +374,7 @@ class apply_resolve_step(Method):
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Resolve using " + data['theorem'])
 
     def apply(self, state, id, data, prevs):
@@ -398,7 +398,7 @@ class introduction(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         res = "introduction"
         if 'names' in data and data['names'] != "":
             names = [name.strip() for name in data['names'].split(',')]
@@ -452,7 +452,7 @@ class exists_elim(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Instantiate exists fact")
 
     def apply(self, state, id, data, prevs):
@@ -517,7 +517,7 @@ class forall_elim(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Forall elimination")
 
     def apply(self, state, id, data, prevs):
@@ -550,7 +550,7 @@ class inst_exists_goal(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         return pprint.N("Instantiate exists goal")
 
     def apply(self, state, id, data, prevs):
@@ -590,7 +590,7 @@ class induction(Method):
         return results
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         if 'var' in data:
             return pprint.N("Induction " + data['theorem'] + " var: " + data['var'])
         else:
@@ -616,7 +616,7 @@ class new_var(Method):
         return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
+    def display_step(self, state, data):
         T = parser.parse_type(state.thy, data['type'])
         return pprint.N("Variable " + data['name'] + " :: ") + printer.print_type(state.thy, T)
 
@@ -645,9 +645,8 @@ class apply_fact(Method):
             return []
 
     @settings.with_settings
-    def display_step(self, state, id, data, prevs):
-        return pprint.N("Apply fact (f) " + str(prevs[0]) + " onto " + \
-                         ", ".join(str(id) for id in prevs[1:]))
+    def display_step(self, state, data):
+        return pprint.N("Apply fact (f) %s onto %s" % (data['fact_ids'][0], ", ".join(data['fact_ids'][1:])))
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
@@ -666,17 +665,31 @@ def apply_method(state, step):
     return method.apply(state, goal_id, step, fact_ids)
 
 @settings.with_settings
-def display_method(state, step, mode='long'):
+def output_step(state, step):
     """Obtain the string explaining the step in the user interface."""
     method = theory.global_methods[step['method_name']]
-    goal_id = ItemID(step['goal_id'])
-    fact_ids = [ItemID(fact_id) for fact_id in step['fact_ids']] \
-        if 'fact_ids' in step and step['fact_ids'] else []
-    search_res = method.search(state, goal_id, fact_ids, data=step)
-    assert len(search_res) == 1, "display_method: %s, %d result found." % (
-        step['method_name'], len(search_res))
+    res = method.display_step(state, step)
+    res += pprint.N(' on ' + step['goal_id'])
+    if 'fact_ids' in step and len(step['fact_ids']) > 0:
+        res += pprint.N(' using ' + ','.join(step['fact_ids']))
+    return res
 
-    return method.output_step(state, goal_id, search_res[0], fact_ids, mode=mode)
+@settings.with_settings
+def output_hint(state, step):
+    method = theory.global_methods[step['method_name']]
+    res = method.display_step(state, step)
+    if '_goal' in step:
+        if step['_goal']:
+            goals = [printer.print_term(state.thy, t) for t in step['_goal']]
+            res += pprint.KWRed(" goal ") + printer.commas_join(goals)
+        else:
+            res += pprint.KWGreen(" (solves)")
+
+    if '_fact' in step and len(step['_fact']) > 0:
+        facts = [printer.print_term(state.thy, t) for t in step['_fact']]
+        res += pprint.KWGreen(" fact ") + printer.commas_join(facts)
+
+    return res
 
 
 theory.global_methods.update({
