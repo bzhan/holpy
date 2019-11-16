@@ -632,7 +632,7 @@ export default {
         if ($proof.history !== undefined) {
           const len = $proof.history.length
           cur_proof = $proof.history[len-1].proof
-          item.num_gaps = $proof.history[len-1].report.num_gaps
+          item.num_gaps = $proof.history[len-1].num_gaps
         } else {
           cur_proof = $proof.proof
           item.num_gaps = $proof.num_gaps

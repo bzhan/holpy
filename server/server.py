@@ -156,12 +156,12 @@ class ProofState():
                 state.history.append({
                     'steps_output': method.output_step(state, step, unicode=True, highlight=True),
                     'proof': state.export_proof(state.prf),
-                    'report': state.rpt.json_data()
+                    'num_gaps': len(state.rpt.gaps)
                 })
                 method.apply_method(state, step)
             state.history.append({
                 'proof': state.export_proof(state.prf),
-                'report': state.rpt.json_data()
+                'num_gaps': len(state.rpt.gaps)
             })
         else:
             ctxt = Context(thy, vars=data['vars'])

@@ -258,7 +258,7 @@ export default {
     goto_index: function (hId) {
       this.index = hId
       this.proof = this.history[hId].proof
-      this.num_gaps = this.history[hId].report.num_gaps
+      this.num_gaps = this.history[hId].num_gaps
       this.facts = []
       if (hId === this.steps.length) {
         this.goal = this.compute_new_goal(0)
@@ -326,7 +326,7 @@ export default {
         this.history[hId].steps_output = result.data.steps_output
         this.history[hId + 1] = {
           proof: result.data.proof,
-          report: result.data.report
+          num_gaps: result.data.num_gaps
         }
         this.history.length = hId + 2
         this.goto_index(hId + 1)
@@ -407,7 +407,7 @@ export default {
       this.steps = []
       this.history = [{
         proof: response.data.proof,
-        report: response.data.report
+        num_gaps: response.data.num_gaps
       }]
       this.goto_index(0)
     },
@@ -451,7 +451,7 @@ export default {
           this.goto_index(this.history.length-1)
         } else {
           // Case without history
-          this.num_gaps = response.data.report.num_gaps
+          this.num_gaps = response.data.num_gaps
           this.goal = -1
           this.facts = []
           this.proof = response.data.proof
