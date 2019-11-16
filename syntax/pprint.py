@@ -2,7 +2,6 @@
 
 from copy import copy
 
-from kernel import type as hol_type
 from kernel.type import HOLType
 from kernel import term
 from kernel import extension
@@ -223,25 +222,25 @@ def get_ast_type(thy, T):
     assert isinstance(T, HOLType), "get_ast_type: input is not a type."
 
     def helper(T):
-        if T.ty == hol_type.STVAR:
+        if T.is_stvar():
             return STVarName(T.name)
-        elif T.ty == hol_type.TVAR:
+        elif T.is_tvar():
             return TVarName(T.name)
-        elif T.ty == hol_type.TYPE:
+        elif T.is_type():
             if len(T.args) == 0:
                 return TypeConstr(T.name, [])
             elif len(T.args) == 1:
                 arg_ast = helper(T.args[0])
                 # Insert parenthesis if the single argument is a function.
-                if HOLType.is_fun(T.args[0]):
+                if T.args[0].is_fun():
                     arg_ast = Bracket(arg_ast)
                 return TypeConstr(T.name, [arg_ast])
-            elif HOLType.is_fun(T):
+            elif T.is_fun():
                 # 'a => 'b => 'c associates to the right. So parenthesis is
                 # needed to express ('a => 'b) => 'c.
                 fun_op = " ⇒ " if settings.unicode() else " => "
                 arg1_ast = helper(T.args[0])
-                if HOLType.is_fun(T.args[0]):
+                if T.args[0].is_fun():
                     arg1_ast = Bracket(arg1_ast)
                 arg2_ast = helper(T.args[1])
                 return FunType(arg1_ast, fun_op, arg2_ast)

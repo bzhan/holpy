@@ -2,11 +2,10 @@
 
 from collections import OrderedDict
 
+
 class TypeMatchException(Exception):
     pass
 
-"""ty values for distinguishing between HOLType objects."""
-STVAR, TVAR, TYPE = range(3)
 
 class HOLType():
     """Represents a type in higher-order logic.
@@ -52,9 +51,24 @@ class HOLType():
     nat list list: list of lists of natural numbers.
 
     """
+    # ty values for distinguishing between HOLType objects.
+    STVAR, TVAR, TYPE = range(3)
+    
+    def is_stvar(self):
+        """Return whether self is a schematic type variable."""
+        return self.ty == HOLType.STVAR
+
+    def is_tvar(self):
+        """Return whether self is a type variable."""
+        return self.ty == HOLType.TVAR
+
+    def is_type(self):
+        """Return whether self is given by a type constructor."""
+        return self.ty == HOLType.TYPE
+
     def is_fun(self):
         """Whether self is of the form a => b."""
-        return self.ty == TYPE and self.name == "fun"
+        return self.is_type() and self.name == "fun"
     
     def domain_type(self):
         """Given a type of form a => b, return a."""
@@ -78,23 +92,23 @@ class HOLType():
             return ([], self)
         
     def __str__(self):
-        if self.ty == STVAR:
+        if self.is_stvar():
             return "'?" + self.name
-        elif self.ty == TVAR:
+        elif self.is_tvar():
             return "'" + self.name
-        elif self.ty == TYPE:
+        elif self.is_type():
             if len(self.args) == 0:
                 return self.name
             elif len(self.args) == 1:
                 # Insert parenthesis if the single argument is a function.
-                if HOLType.is_fun(self.args[0]):
+                if self.args[0].is_fun():
                     return "(%s) %s" % (self.args[0], self.name)
                 else:
                     return "%s %s" % (self.args[0], self.name)
-            elif HOLType.is_fun(self):
+            elif self.is_fun():
                 # 'a => 'b => 'c associates to the right. So parenthesis is
                 # needed to express ('a => 'b) => 'c.
-                if HOLType.is_fun(self.args[0]):
+                if self.args[0].is_fun():
                     return "(%s) => %s" % (self.args[0], self.args[1])
                 else:
                     return "%s => %s" % (self.args[0], self.args[1])
@@ -104,22 +118,22 @@ class HOLType():
             raise TypeError
 
     def __repr__(self):
-        if self.ty == STVAR:
+        if self.is_stvar():
             return "STVar(%s)" % self.name
-        if self.ty == TVAR:
+        if self.is_tvar():
             return "TVar(%s)" % self.name
-        elif self.ty == TYPE:
+        elif self.is_type():
             return "Type(%s, %s)" % (self.name, list(self.args))
         else:
             raise TypeError
 
     def __hash__(self):
         if not hasattr(self, "_hash_val"):
-            if self.ty == STVAR:
+            if self.is_stvar():
                 self._hash_val = hash(("STVAR", self.name))
-            if self.ty == TVAR:
+            if self.is_tvar():
                 self._hash_val = hash(("TVAR", self.name))
-            elif self.ty == TYPE:
+            elif self.is_type():
                 self._hash_val = hash(("TYPE", self.name, tuple(hash(arg) for arg in self.args)))
         return self._hash_val
     
@@ -130,9 +144,9 @@ class HOLType():
 
         if self.ty != other.ty:
             return False
-        elif self.ty in (STVAR, TVAR):
+        elif self.is_stvar() or self.is_tvar():
             return self.name == other.name
-        elif self.ty == TYPE:
+        elif self.is_type():
             return self.name == other.name and self.args == other.args
         else:
             raise TypeError
@@ -144,14 +158,14 @@ class HOLType():
 
         """
         assert isinstance(tyinst, dict), "tyinst must be a dictionary"
-        if self.ty == STVAR:
+        if self.is_stvar():
             if self.name in tyinst:
                 return tyinst[self.name]
             else:
                 return self
-        elif self.ty == TVAR:
+        elif self.is_tvar():
             return self
-        elif self.ty == TYPE:
+        elif self.is_type():
             return Type(self.name, *(T.subst(tyinst) for T in self.args))
         else:
             raise TypeError
@@ -161,17 +175,17 @@ class HOLType():
         is the current instantiation. This is updated by the function.
 
         """
-        if self.ty == STVAR:
+        if self.is_stvar():
             if self.name in tyinst:
                 if T != tyinst[self.name]:
                     raise TypeMatchException
             else:
                 tyinst[self.name] = T
-        elif self.ty == TVAR:
+        elif self.is_tvar():
             if self != T:
                 raise TypeMatchException
-        elif self.ty == TYPE:
-            if T.ty != TYPE or T.name != self.name:
+        elif self.is_type():
+            if (not T.is_type()) or T.name != self.name:
                 raise TypeMatchException
             else:
                 for arg, argT in zip(self.args, T.args):
@@ -191,9 +205,9 @@ class HOLType():
     def get_stvars(self):
         """Return the list of schematic type variables."""
         def collect(T):
-            if T.ty == STVAR:
+            if T.is_stvar():
                 return [T]
-            elif T.ty == TVAR:
+            elif T.is_tvar():
                 return []
             else:
                 return sum([collect(arg) for arg in T.args], [])
@@ -203,9 +217,9 @@ class HOLType():
     def get_tvars(self):
         """Return the list of type variables."""
         def collect(T):
-            if T.ty == STVAR:
+            if T.is_stvar():
                 return []
-            elif T.ty == TVAR:
+            elif T.is_tvar():
                 return [T]
             else:
                 return sum([collect(arg) for arg in T.args], [])
@@ -215,7 +229,7 @@ class HOLType():
     def get_tsubs(self):
         """Return the list of types appearing in self."""
         def collect(T):
-            if T.ty in (STVAR, TVAR):
+            if T.is_stvar() or T.is_tvar():
                 return [T]
             else:
                 return sum([collect(arg) for arg in T.args], [T])
@@ -223,11 +237,11 @@ class HOLType():
         return list(OrderedDict.fromkeys(collect(self)))
 
     def convert_stvar(self):
-        if self.ty == STVAR:
+        if self.is_stvar():
             raise TypeMatchException("convert_stvar")
-        elif self.ty == TVAR:
+        elif self.is_tvar():
             return STVar(self.name)
-        elif self.ty == TYPE:
+        elif self.is_type():
             return Type(self.name, *(arg.convert_stvar() for arg in self.args))
         else:
             raise TypeError
@@ -235,19 +249,19 @@ class HOLType():
 class STVar(HOLType):
     """Schematic type variable."""
     def __init__(self, name):
-        self.ty = STVAR
+        self.ty = HOLType.STVAR
         self.name = name
 
 class TVar(HOLType):
     """Type variable."""
     def __init__(self, name):
-        self.ty = TVAR
+        self.ty = HOLType.TVAR
         self.name = name
 
 class Type(HOLType):
     """Type constant, applied to a list of arguments."""
     def __init__(self, name, *args):
-        self.ty = TYPE
+        self.ty = HOLType.TYPE
         self.name = name
         self.args = args
 

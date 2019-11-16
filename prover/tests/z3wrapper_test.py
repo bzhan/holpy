@@ -85,7 +85,8 @@ class Z3WrapperTest(unittest.TestCase):
             ('max (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)', True),
             ('min (if x Mem S then (1::real) else 0) (if x Mem T then 1 else 0) = (if x Mem (S Int T) then 1 else 0)', True),
             ('S Int T = empty_set --> (if x Mem S then (1::real) else 0) + (if x Mem T then 1 else 0) = (if x Mem (S Un T) then 1 else 0)', True),
-            ('S ∪ T = S ∩ T ∪ {x. x ∈ S ∧ ¬x ∈ T} ∪ {x. x ∈ T ∧ ¬x ∈ S}', True)
+            ('S ∪ T = S ∩ T ∪ {x. x ∈ S ∧ ¬x ∈ T} ∪ {x. x ∈ T ∧ ¬x ∈ S}', True),
+            ('(0::real) <= (if x Mem s & 1 / (of_nat n + 1) <= abs (f x) then 1 else 0)', True),
         ]
 
         for s, res in test_data:

@@ -2,7 +2,6 @@
 
 """Hindley-Milner type inference algorithm."""
 
-from kernel import type as hol_type
 from kernel.type import STVar, TFun
 from kernel.term import Term
 from kernel import term
@@ -53,7 +52,7 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     def union(T1, T2):
         """Join temporary type variable T1 with T2."""
         # Compute the set of temporary type variables reachable from T2.
-        if T2.ty == hol_type.STVAR:
+        if T2.is_stvar():
             new_reach = reach[int(T2.name[1:])]
         else:
             new_reach = set()
@@ -72,27 +71,27 @@ def type_infer(ctxt, t, *, forbid_internal=True):
     def unify(T1, T2):
         """Unification of two types."""
         # First, find representatives of T1 and T2
-        if T1.ty == hol_type.STVAR:
+        if T1.is_stvar():
             T1 = uf[int(T1.name[1:])]
-        if T2.ty == hol_type.STVAR:
+        if T2.is_stvar():
             T2 = uf[int(T2.name[1:])]
 
         # Type constructors, recursively unify each argument
-        if T1.ty == hol_type.TYPE and T2.ty == hol_type.TYPE and T1.name == T2.name:
+        if T1.is_type() and T2.is_type() and T1.name == T2.name:
             for i in range(len(T1.args)):
                 unify(T1.args[i], T2.args[i])
 
         # Concrete type variables
-        elif T1.ty == hol_type.TVAR and T2.ty == hol_type.TVAR and T1.name == T2.name:
+        elif T1.is_tvar() and T2.is_tvar() and T1.name == T2.name:
             return
 
-        elif T1.ty == hol_type.STVAR and T2.ty == hol_type.STVAR and T1.name == T2.name:
+        elif T1.is_stvar() and T2.is_stvar() and T1.name == T2.name:
             return
 
         # Internal (unifiable) type variables
-        elif T1.ty == hol_type.STVAR:
+        elif T1.is_stvar():
             union(T1, T2)
-        elif T2.ty == hol_type.STVAR:
+        elif T2.is_stvar():
             union(T2, T1)
         else:
             raise TypeInferenceException("Unable to unify " + str(T1) + " with " + str(T2))
@@ -144,7 +143,7 @@ def type_infer(ctxt, t, *, forbid_internal=True):
             funT = infer(t.fun, bd_vars)
             argT = infer(t.arg, bd_vars)
             try:
-                if not funT.is_fun() and funT.ty != hol_type.STVAR:
+                if not funT.is_fun() and not funT.is_stvar():
                     raise TypeInferenceException(str(funT) + ' is not of function type')
                 if funT.is_fun():
                     unify(funT.domain_type(), argT)
@@ -244,7 +243,7 @@ def infer_printed_type(thy, t):
         type_infer(Context(thy), t, forbid_internal=False)
 
         def has_internalT(T):
-            return any(subT.ty == hol_type.STVAR for subT in T.get_tsubs())
+            return any(subT.is_stvar() for subT in T.get_tsubs())
 
         to_replace, to_replaceT = None, None
         def find_to_replace(t):
