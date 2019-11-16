@@ -148,22 +148,391 @@
             ],
             "name": "monoidal",
             "prop": [
-                "monoidal op = (!x. !y. op x y = op y x) &",
-                "(!x. !y. !z. op x (op y z) = op (op x y) z) &",
-                "(!x::'a. op (neutral op) x = x)"
+                "monoidal op ⟷ ((∀x. ∀y. op x y = op y x) ∧ ",
+                "(∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x))"
             ],
             "ty": "def",
             "type": "('a ⇒ 'a ⇒ 'a) ⇒ bool"
         },
         {
-            "name": "sum",
-            "ty": "def.ax",
-            "type": "'a set => ('a => real) => real"
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "monoidal_ac",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "monoidal op",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "monoidal op ⊢ monoidal op"
+                },
+                {
+                    "args": "monoidal_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "monoidal op ⊢ (∀x. ∀y. op x y = op y x) ∧ (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∀a. ∀b. op a b = op b a, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ ∀a. ∀b. op a b = op b a"
+                },
+                {
+                    "args": "conjD2, {}, {A: ∀a. ∀b. op a b = op b a, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ ∀x. op (neutral op) x = x"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op ⊢ ∀a. op a (neutral op) = a"
+                },
+                {
+                    "args": "a, 'a",
+                    "id": "5.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "a",
+                    "id": "5.1",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "monoidal op ⊢ ∀y. op a y = op y a"
+                },
+                {
+                    "args": "neutral op",
+                    "id": "5.2",
+                    "prevs": [
+                        "5.1"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "monoidal op ⊢ op a (neutral op) = op (neutral op) a"
+                },
+                {
+                    "args": "a",
+                    "id": "5.3",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op ⊢ op (neutral op) a = a"
+                },
+                {
+                    "args": "op a (neutral op) = a",
+                    "id": "5.4",
+                    "prevs": [
+                        "5.2",
+                        "5.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op ⊢ op a (neutral op) = a"
+                },
+                {
+                    "args": "",
+                    "id": "5.5",
+                    "prevs": [
+                        "5.0",
+                        "5.4"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op ⊢ ∀a. op a (neutral op) = a"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "monoidal op ⊢ ∀a. ∀b. ∀c. op (op a b) c = op a (op b c)"
+                },
+                {
+                    "args": "a, 'a",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, 'a",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "c, 'a",
+                    "id": "6.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR c"
+                },
+                {
+                    "args": "",
+                    "id": "6.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "monoidal op ⊢ op a (op b c) = op (op a b) c"
+                },
+                {
+                    "args": "eq_sym_eq, op (op a b) c = op a (op b c)",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "monoidal op ⊢ op (op a b) c = op a (op b c)"
+                },
+                {
+                    "args": "",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.2",
+                        "6.4"
+                    ],
+                    "rule": "intros",
+                    "th": "monoidal op ⊢ ∀a. ∀b. ∀c. op (op a b) c = op a (op b c)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "monoidal op ⊢ ∀a. ∀b. ∀c. op a (op b c) = op b (op a c)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "8",
+                    "prevs": [
+                        "6",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "9",
+                    "prevs": [
+                        "2",
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ (∀a. ∀b. op a b = op b a) ∧ (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "10",
+                    "prevs": [
+                        "5",
+                        "9"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ (∀a. op a (neutral op) = a) ∧ (∀a. ∀b. op a b = op b a) ∧ (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
+                },
+                {
+                    "args": "conjI",
+                    "id": "11",
+                    "prevs": [
+                        "4",
+                        "10"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "monoidal op ⊢ (∀a. op (neutral op) a = a) ∧ (∀a. op a (neutral op) = a) ∧ (∀a. ∀b. op a b = op b a) ∧ (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
+                },
+                {
+                    "args": "",
+                    "id": "12",
+                    "prevs": [
+                        "0",
+                        "11"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ monoidal op ⟶ (∀a. op (neutral op) a = a) ∧ (∀a. op a (neutral op) = a) ∧ (∀a. ∀b. op a b = op b a) ∧ (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
+                }
+            ],
+            "prop": [
+                "monoidal op",
+                "--> (!a. op (neutral op) a = a) &",
+                "(!a. op a (neutral op) = a) &",
+                "(!a. !b. op a b = op b a) &",
+                "(!a. !b. !c. op (op a b) c = op a (op b c)) &",
+                "(!a. !b. !c. op a (op b c) = op b (op a c))"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "theorem": "monoidal_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "introduction",
+                    "names": "a"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "5.1",
+                    "method_name": "forall_elim",
+                    "s": "a"
+                },
+                {
+                    "fact_ids": [
+                        "5.1"
+                    ],
+                    "goal_id": "5.2",
+                    "method_name": "forall_elim",
+                    "s": "(neutral op)"
+                },
+                {
+                    "fact_ids": [
+                        "5.2"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "a,b,c"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "op": "'a => 'a => 'a"
+            }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "support",
+            "prop": "support op f s = {x. x ∈ s & ~(f x = neutral op)}",
+            "ty": "def",
+            "type": "('a ⇒ 'a ⇒ 'a) ⇒ ('b ⇒ 'a) ⇒ 'b set ⇒ 'b set"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "iterate",
+            "prop": [
+                "iterate op s f =",
+                "if finite (support op f s)",
+                "then itset (%x. %a. op (f x) a) (support op f s) (neutral op)",
+                "else neutral op"
+            ],
+            "ty": "def",
+            "type": "('a ⇒ 'a ⇒ 'a) ⇒ 'b set ⇒ ('b ⇒ 'a) ⇒ 'a"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sum",
+            "prop": "sum = iterate (plus)",
+            "ty": "def",
+            "type": "'a set ⇒ ('a ⇒ real) ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "product",
-            "ty": "def.ax",
-            "type": "'a set => ('a => real) => real"
+            "prop": "product = iterate (times)",
+            "ty": "def",
+            "type": "'a set ⇒ ('a ⇒ real) ⇒ real"
         },
         {
             "attributes": [],
