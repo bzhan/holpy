@@ -160,7 +160,7 @@
                 "hint_forward"
             ],
             "name": "monoidal_ac",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "monoidal op",
@@ -179,16 +179,16 @@
                     "th": "monoidal op ⊢ (∀x. ∀y. op x y = op y x) ∧ (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)"
                 },
                 {
-                    "args": "conjD1, {}, {A: ∀a. ∀b. op a b = op b a, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
+                    "args": "conjD1, {}, {A: ∀x. ∀y. op x y = op y x, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
                     "id": "2",
                     "prevs": [
                         "1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "monoidal op ⊢ ∀a. ∀b. op a b = op b a"
+                    "th": "monoidal op ⊢ ∀x. ∀y. op x y = op y x"
                 },
                 {
-                    "args": "conjD2, {}, {A: ∀a. ∀b. op a b = op b a, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
+                    "args": "conjD2, {}, {A: ∀x. ∀y. op x y = op y x, B: (∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)}",
                     "id": "3",
                     "prevs": [
                         "1"
@@ -203,7 +203,7 @@
                         "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "monoidal op ⊢ ∀x. op (neutral op) x = x"
+                    "th": "monoidal op ⊢ ∀a. op (neutral op) a = a"
                 },
                 {
                     "args": "",
@@ -295,29 +295,40 @@
                     "th": "⊢ _VAR c"
                 },
                 {
-                    "args": "",
+                    "args": "conjD1, {}, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀a. op (neutral op) a = a}",
                     "id": "6.3",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z"
+                },
+                {
+                    "args": "a, b, c",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3"
+                    ],
+                    "rule": "apply_fact_for",
                     "th": "monoidal op ⊢ op a (op b c) = op (op a b) c"
                 },
                 {
                     "args": "eq_sym_eq, op (op a b) c = op a (op b c)",
-                    "id": "6.4",
+                    "id": "6.5",
                     "prevs": [
-                        "6.3"
+                        "6.4"
                     ],
                     "rule": "rewrite_goal",
                     "th": "monoidal op ⊢ op (op a b) c = op a (op b c)"
                 },
                 {
                     "args": "",
-                    "id": "6.5",
+                    "id": "6.6",
                     "prevs": [
                         "6.0",
                         "6.1",
                         "6.2",
-                        "6.4"
+                        "6.5"
                     ],
                     "rule": "intros",
                     "th": "monoidal op ⊢ ∀a. ∀b. ∀c. op (op a b) c = op a (op b c)"
@@ -326,7 +337,114 @@
                     "args": "",
                     "id": "7",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "monoidal op ⊢ ∀a. ∀b. ∀c. op a (op b c) = op b (op a c)"
+                },
+                {
+                    "args": "a, 'a",
+                    "id": "7.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "b, 'a",
+                    "id": "7.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR b"
+                },
+                {
+                    "args": "c, 'a",
+                    "id": "7.2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR c"
+                },
+                {
+                    "args": "b",
+                    "id": "7.3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "monoidal op ⊢ ∀y. op b y = op y b"
+                },
+                {
+                    "args": "op a c",
+                    "id": "7.4",
+                    "prevs": [
+                        "7.3"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "monoidal op ⊢ op b (op a c) = op (op a c) b"
+                },
+                {
+                    "args": "b",
+                    "id": "7.5",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "monoidal op ⊢ ∀y. op b y = op y b"
+                },
+                {
+                    "args": "c",
+                    "id": "7.6",
+                    "prevs": [
+                        "7.5"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "monoidal op ⊢ op b c = op c b"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z, B: ∀a. op (neutral op) a = a}",
+                    "id": "7.7",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "monoidal op ⊢ ∀x. ∀y. ∀z. op x (op y z) = op (op x y) z"
+                },
+                {
+                    "args": "a, c, b",
+                    "id": "7.8",
+                    "prevs": [
+                        "7.7"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "monoidal op ⊢ op a (op c b) = op (op a c) b"
+                },
+                {
+                    "args": "op a (op b c) = op (op a c) b",
+                    "id": "7.9",
+                    "prevs": [
+                        "7.6",
+                        "7.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op ⊢ op a (op b c) = op (op a c) b"
+                },
+                {
+                    "args": "op a (op b c) = op b (op a c)",
+                    "id": "7.10",
+                    "prevs": [
+                        "7.4",
+                        "7.9"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "monoidal op ⊢ op a (op b c) = op b (op a c)"
+                },
+                {
+                    "args": "",
+                    "id": "7.11",
+                    "prevs": [
+                        "7.0",
+                        "7.1",
+                        "7.2",
+                        "7.10"
+                    ],
+                    "rule": "intros",
                     "th": "monoidal op ⊢ ∀a. ∀b. ∀c. op a (op b c) = op b (op a c)"
                 },
                 {
@@ -486,6 +604,87 @@
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "6.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "6.3"
+                    ],
+                    "goal_id": "6.4",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "7",
+                    "method_name": "introduction",
+                    "names": "a,b,c"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "7.3",
+                    "method_name": "forall_elim",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "7.3"
+                    ],
+                    "goal_id": "7.4",
+                    "method_name": "forall_elim",
+                    "s": "(op a c)"
+                },
+                {
+                    "fact_ids": [
+                        "7.4"
+                    ],
+                    "goal_id": "7.5",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "7.5",
+                    "method_name": "forall_elim",
+                    "s": "b"
+                },
+                {
+                    "fact_ids": [
+                        "7.5"
+                    ],
+                    "goal_id": "7.6",
+                    "method_name": "forall_elim",
+                    "s": "c"
+                },
+                {
+                    "fact_ids": [
+                        "7.6"
+                    ],
+                    "goal_id": "7.7",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "7.7",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "7.7"
+                    ],
+                    "goal_id": "7.8",
+                    "method_name": "apply_prev"
                 }
             ],
             "ty": "thm",
@@ -520,6 +719,53 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "in_support",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, x ∈ {x. x ∈ s ∧ ¬(f x = neutral op)} ⟷ x ∈ s ∧ ¬(f x = neutral op)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {x. x ∈ s ∧ ¬(f x = neutral op)} ⟷ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "support_def, x ∈ support op f s ⟷ x ∈ s ∧ ¬(f x = neutral op)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ support op f s ⟷ x ∈ s ∧ ¬(f x = neutral op)"
+                }
+            ],
+            "prop": "x ∈ (support op f s) <--> x ∈ s & ~(f x = neutral op)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b => 'a",
+                "op": "'a => 'a => 'a",
+                "s": "'b set",
+                "x": "'b"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "sum",
             "prop": "sum = iterate (plus)",
             "ty": "def",
@@ -533,6 +779,345 @@
             "prop": "product = iterate (times)",
             "ty": "def",
             "type": "'a set ⇒ ('a ⇒ real) ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "neutral_real_add",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (THE x::real. ∀y. x + y = y ∧ y + x = y) = 0"
+                },
+                {
+                    "args": "neutral_def, neutral plus = (0::real)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ neutral plus = (0::real)"
+                }
+            ],
+            "prop": "neutral ((plus)::real=>real=>real) = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "neutral_real_mul",
+            "prop": "neutral times = (1::real)",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "monoidal_real_add",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(∀x::real. ∀y. x + y = y + x) ∧ (∀x::real. ∀y. ∀z. x + (y + z) = x + y + z) ∧ (∀x::real. 0 + x = x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (∀x::real. ∀y. x + y = y + x) ∧ (∀x::real. ∀y. ∀z. x + (y + z) = x + y + z) ∧ (∀x::real. 0 + x = x)"
+                },
+                {
+                    "args": "neutral_real_add, (∀x::real. ∀y. x + y = y + x) ∧ (∀x::real. ∀y. ∀z. x + (y + z) = x + y + z) ∧ (∀x::real. neutral plus + x = x)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∀x::real. ∀y. x + y = y + x) ∧ (∀x::real. ∀y. ∀z. x + (y + z) = x + y + z) ∧ (∀x::real. neutral plus + x = x)"
+                },
+                {
+                    "args": "monoidal_def, monoidal (plus::real ⇒ real ⇒ real)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
+                }
+            ],
+            "prop": "monoidal (plus::real=>real=>real)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "monoidal_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_real_add"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "monoidal_real_mul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(∀x::real. ∀y. x * y = y * x) ∧ (∀x::real. ∀y. ∀z. x * (y * z) = x * y * z) ∧ (∀x::real. 1 * x = x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (∀x::real. ∀y. x * y = y * x) ∧ (∀x::real. ∀y. ∀z. x * (y * z) = x * y * z) ∧ (∀x::real. 1 * x = x)"
+                },
+                {
+                    "args": "neutral_real_mul, (∀x::real. ∀y. x * y = y * x) ∧ (∀x::real. ∀y. ∀z. x * (y * z) = x * y * z) ∧ (∀x::real. neutral times * x = x)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (∀x::real. ∀y. x * y = y * x) ∧ (∀x::real. ∀y. ∀z. x * (y * z) = x * y * z) ∧ (∀x::real. neutral times * x = x)"
+                },
+                {
+                    "args": "monoidal_def, monoidal (times::real ⇒ real ⇒ real)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ monoidal (times::real ⇒ real ⇒ real)"
+                }
+            ],
+            "prop": "monoidal (times::real ⇒ real ⇒ real)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "monoidal_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_real_mul"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "sum_degenerate",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(finite ({x. x ∈ s ∧ ¬(f x = 0)}))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(finite ({x. x ∈ s ∧ ¬(f x = 0)})) ⊢ ¬(finite ({x. x ∈ s ∧ ¬(f x = 0)}))"
+                },
+                {
+                    "args": "if_not_P, (if finite ({x. x ∈ s ∧ ¬(f x = 0)}) then itset (λx. λa. f x + a) ({x. x ∈ s ∧ ¬(f x = 0)}) 0 else 0) = 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(finite ({x. x ∈ s ∧ ¬(f x = 0)})) ⊢ (if finite ({x. x ∈ s ∧ ¬(f x = 0)}) then itset (λx. λa. f x + a) ({x. x ∈ s ∧ ¬(f x = 0)}) 0 else 0) = 0"
+                },
+                {
+                    "args": "neutral_real_add, (if finite ({x. x ∈ s ∧ ¬(f x = neutral plus)}) then itset (λx. λa. f x + a) ({x. x ∈ s ∧ ¬(f x = neutral plus)}) (neutral plus) else neutral plus) = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(finite ({x. x ∈ s ∧ ¬(f x = 0)})) ⊢ (if finite ({x. x ∈ s ∧ ¬(f x = neutral plus)}) then itset (λx. λa. f x + a) ({x. x ∈ s ∧ ¬(f x = neutral plus)}) (neutral plus) else neutral plus) = 0"
+                },
+                {
+                    "args": "support_def, (if finite (support plus f s) then itset (λx. λa. f x + a) (support plus f s) (neutral plus) else neutral plus) = 0",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(finite ({x. x ∈ s ∧ ¬(f x = 0)})) ⊢ (if finite (support plus f s) then itset (λx. λa. f x + a) (support plus f s) (neutral plus) else neutral plus) = 0"
+                },
+                {
+                    "args": "iterate_def, iterate plus s f = 0",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(finite ({x. x ∈ s ∧ ¬(f x = 0)})) ⊢ iterate plus s f = 0"
+                },
+                {
+                    "args": "sum_def, sum s f = 0",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(finite ({x. x ∈ s ∧ ¬(f x = 0)})) ⊢ sum s f = 0"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(finite ({x. x ∈ s ∧ ¬(f x = 0)})) ⟶ sum s f = 0"
+                }
+            ],
+            "prop": " ~(finite {x. x ∈ s & ~(f x = 0)}) --> sum s f = 0",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "iterate_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "neutral_real_add"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sum_empty",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ (if finite (support plus f ∅) then itset (λx. λa. f x + a) (support plus f ∅) (neutral plus) else neutral plus) = 0"
+                },
+                {
+                    "args": "iterate_def, iterate plus ∅ f = 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ iterate plus ∅ f = 0"
+                },
+                {
+                    "args": "sum_def, sum ∅ f = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sum ∅ f = 0"
+                }
+            ],
+            "prop": "sum {} f = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "iterate_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "sum_insert",
+            "prop": [
+                "finite s",
+                "--> (sum (insert x s) f =",
+                "                 if x ∈ s then sum s f else f x + sum s f)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set",
+                "x": "'a"
+            }
         },
         {
             "attributes": [],

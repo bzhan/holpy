@@ -5448,6 +5448,58 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_le_ldiv_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "0 < z",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < z ⊢ 0 < z"
+                },
+                {
+                    "args": "x / z ≤ y ⟷ x ≤ y * z",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < z ⊢ x / z ≤ y ⟷ x ≤ y * z"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 < z ⟶ x / z ≤ y ⟷ x ≤ y * z"
+                }
+            ],
+            "prop": "0 < z --> (x / z <= y <--> x <= y * z)",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real",
+                "z": "real"
+            }
+        },
+        {
             "name": "real_sgn",
             "prop": "real_sgn x = if 0 < x then 1 else if x <0 then -1 else 0",
             "ty": "def",

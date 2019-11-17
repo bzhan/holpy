@@ -5533,11 +5533,15 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "itset",
             "prop": [
-                "itset f s b = (THE g. (g empty_set = b) &",
-                "!x. !s. finite s --> (g (insert x s) = if x ∈ s then g s else f x (g s))) s"
+                "itset f s b = ",
+                "((THE g. g ∅ = b ∧ ",
+                "    (∀x. ∀s. finite s ⟶ g (insert x s) = (if x ∈ s then g s else f x (g s)))) ",
+                "   s)"
             ],
             "ty": "def",
             "type": "('a ⇒ 'b ⇒ 'b) ⇒ 'a set ⇒ 'b ⇒ 'b"
