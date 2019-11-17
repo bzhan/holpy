@@ -4,7 +4,7 @@ from geometry.ruleset import ruleset
 
 class RuleSetTest(unittest.TestCase):
     def testRuleSet(self):
-        print(ruleset['D3'])
+        self.assertEqual(str(ruleset['D5']), 'para(m,l) :- para(l,m)')
 
 
 if __name__ == "__main__":

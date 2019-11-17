@@ -347,11 +347,11 @@ class ExprTest(unittest.TestCase):
                        "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
             (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
 
-            (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
-             ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
+            # (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
+            #  ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
             
-            (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
-                       "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
+            # (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
+            #            "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
         ]
 
         for rules, hyps, lines, circles, concl in test_data:
@@ -363,8 +363,8 @@ class ExprTest(unittest.TestCase):
             # print('Final: ', hyps)
             fact = expr.find_goal(hyps, concl, lines, circles)
             self.assertIsNotNone(fact)
-            print("--- Proof for", concl, "---")
-            expr.print_search(ruleset, hyps, fact)
+            # print("--- Proof for", concl, "---")
+            # expr.print_search(ruleset, hyps, fact)
 
 
 if __name__ == "__main__":
