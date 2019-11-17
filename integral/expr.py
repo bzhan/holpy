@@ -144,8 +144,9 @@ class Expr:
                 return -(x.to_poly())
             elif self.op == "/":
                 x, y = self.args
-                if y.ty == CONST:
-                    return x.to_poly().scale(Fraction(1) / Fraction(y.val))
+                y = y.to_poly()
+                if y.is_nonzero_constant():
+                    return x.to_poly().scale(Fraction(1) / Fraction(y.get_constant()))
                 else:
                     return poly.singleton(self)
             elif self.op == "^":

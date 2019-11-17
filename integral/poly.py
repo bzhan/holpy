@@ -81,6 +81,15 @@ class Monomial:
     def __neg__(self):
         return self.scale(-1)
 
+    def is_constant(self):
+        return len(self.factors) == 0
+
+    def get_constant(self):
+        if len(self.factors) == 0:
+            return self.coeff
+        else:
+            raise AssertionError
+
 class Polynomial:
     """Represents a polynomial."""
     def __init__(self, monomials):
@@ -116,6 +125,17 @@ class Polynomial:
     def __mul__(self, other):
         return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
 
+    def is_nonzero_constant(self):
+        return len(self.monomials) == 1 and self.monomials[0].is_constant()
+
+    def get_constant(self):
+        """If self is a constant, return the constant. Otherwise raise an exception."""
+        if len(self.monomials) == 0:
+            return 0
+        elif len(self.monomials) == 1 and self.monomials[0].is_constant():
+            return self.monomials[0].get_constant()
+        else:
+            raise AssertionError
 
 def singleton(s):
     """Polynomial for 1*s^1."""

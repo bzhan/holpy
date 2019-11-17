@@ -66,6 +66,7 @@ class CommonIntegral(Rule):
         if e.body == Var(e.var):
             # Integral of x is x^2/2.
             return EvalAt(e.var, e.lower, e.upper, (Var(e.var) ^ Const(2)) / Const(2))
+
         elif e.body.ty == expr.CONST:
             if e.body.val == 1:
                 # Integral of 1 is x
@@ -74,6 +75,7 @@ class CommonIntegral(Rule):
                 # Integral of c is c*x
                 integral = e.body * Var(e.var)
             return EvalAt(e.var, e.lower, e.upper, integral)
+
         elif e.body.ty == expr.OP:
             if e.body.op == "^":
                 a, b = e.body.args
@@ -86,8 +88,20 @@ class CommonIntegral(Rule):
                     return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
                 else:
                     return e
+            elif e.body.op == "/":
+                a, b = e.body.args
+                if a == Const(1):
+                    if b == Var(e.var):
+                        return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
+                    elif b.ty == expr.OP and b.op == "^" and b.args[0] == Var(e.var) and b.args[1].ty == expr.CONST:
+                        exponent = b.args[1].val
+                        integral = Const(1) / (Const(- exponent + 1) * (Var(e.var) ^ Const(exponent - 1)))
+                        return EvalAt(e.var, e.lower, e.upper, integral)
+                    else:
+                        return e
             else:
                 return e
+
         elif e.body.ty == expr.FUN:
             if e.body.func_name == "sin" and e.body.args[0] == Var(e.var):
                 return EvalAt(e.var, e.lower, e.upper, -expr.cos(Var(e.var)))
