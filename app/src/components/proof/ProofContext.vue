@@ -8,13 +8,20 @@
     </div>
     <div style="margin-top:10px;margin-bottom:5px;font-size:18px">History</div>
     <div>
-      <div style="margin-left:10px" v-for="(line, index) in steps" v-bind:key="index"
-           v-on:click="handleSelect(index)"
-           class='step-entry'
-           v-bind:class="{
-             'step-selected': selected_step === index,
-             'step-error': line.error !== undefined}">
-        <Expression v-bind:line="line.steps_output"/>
+      <div v-for="(line, index) in steps" v-bind:key="index"
+           style="white-space:nowrap"
+           v-on:mouseenter="handleMouseEnter(index)"
+           v-on:mouseleave="handleMouseLeave(index)">
+        <v-icon style="color:red" title="delete" name="times"
+            v-on:click.native="handleDelete(index)"
+            v-show="line.hover === true"/>
+        <Expression style="margin-left:5px" v-bind:line="line.steps_output" 
+            v-on:click.native="handleSelect(index)"
+            v-bind:class="{
+              'step-entry': true,
+              'step-selected': selected_step === index,
+              'step-unread': !line.is_read,
+              'step-error': line.is_read && line.error !== undefined}"/>
       </div>
     </div>
   </div>
@@ -42,9 +49,21 @@ export default {
   },
 
   methods: {
+    handleMouseEnter: function (index) {
+      this.$set(this.steps[index], 'hover', true)
+    },
+
+    handleMouseLeave: function (index) {
+      this.$set(this.steps[index], 'hover', false)
+    },
+
     handleSelect: function (index) {
-      this.ref_proof.goto_index(index)
-    } 
+      this.ref_proof.gotoStep(index)
+    },
+
+    handleDelete: function (index) {
+      this.ref_proof.deleteStep(index)
+    }
   }
 }
 </script>
@@ -63,4 +82,9 @@ export default {
 .step-error {
   background-color: red
 }
+
+.step-unread {
+  background-color: pink
+}
+
 </style>

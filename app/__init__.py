@@ -283,10 +283,13 @@ def apply_method():
     Input:
     * username: username.
     * theory_name: name of the theory.
-    * thm_name: name of the theorem.
+    * thm_name: name of the theorem to be proved.
+    * proof: starting proof.
+    * step: step to be applied.
 
     Returns:
-    * updated proof.
+    * On success: the updated proof.
+    * On failure: query for parameters, or fail outright.
 
     """
     data = json.loads(request.get_data().decode("utf-8"))
@@ -314,6 +317,68 @@ def apply_method():
                 "err_str": str(e),
                 "trace": traceback2.format_exc()
             })
+
+@app.route('/api/apply-steps', methods=['POST'])
+def apply_steps():
+    """Apply multiple steps in batch mode.
+
+    Unlike apply_method, failure in one of the steps does not lead
+    to exit of the function. Instead, error information is returned
+    along with the history.
+
+    Input:
+    * username: username.
+    * theory_name: name of the theory.
+    * thm_name: name of the theorem to be proved.
+    * proof: starting proof.
+    * steps: steps to be applied.
+
+    Returns:
+    * history: history of the proof when applying steps.
+
+    """
+    data = json.loads(request.get_data().decode("utf-8"))
+    username = data['username']
+    if 'thm_name' in data:
+        limit = ('thm', data['thm_name'])
+    else:
+        limit = None
+    thy = basic.load_theory(data['theory_name'], limit=limit, username=username)
+    state = server.ProofState.parse_proof(thy, data['proof'])
+
+    history = []
+    for step in data['steps']:
+        history.append({
+            'steps_output': method.output_step(state, step, unicode=True, highlight=True),
+            'proof': state.export_proof(state.prf),
+            'num_gaps': len(state.rpt.gaps)
+        })
+        try:
+            method.apply_method(state, step)
+            state.check_proof(compute_only=True)
+        except Exception as e:
+            history[-1]['error'] = {
+                'err_type': e.__class__.__name__,
+                'err_str': str(e),
+                'trace': traceback2.format_exc()
+            }
+    history.append({
+        'proof': state.export_proof(state.prf),
+        'num_gaps': len(state.rpt.gaps)
+    })
+    try:    
+        state.check_proof()
+    except Exception as e:
+        history[-1]['error'] = {
+            'err_type': e.__class__.__name__,
+            'err_str': str(e),
+            'trace': traceback2.format_exc()
+        }
+    
+    return jsonify({
+        'history': history
+    })
+
 
 def file_data_to_output(thy, data, *, line_length=None):
     """Convert items in the theory from json format for the file to

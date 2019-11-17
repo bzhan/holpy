@@ -15,7 +15,6 @@
           <b-dropdown-item href="#" style="width:170px" v-on:click='item_move_down'>Move down<span style="float:right;color:dimgrey">Ctrl+↓</span></b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Proof" left>
-          <b-dropdown-item href="#" v-on:click='undo_move'>Undo move</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_cut'>Insert goal</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_cases'>Apply cases</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_induction'>Apply induction</b-dropdown-item>
@@ -273,10 +272,6 @@ export default {
 
     add_item: function () {
       this.$refs.theory.add_item(this.add_type, this.add_pos)
-    },
-
-    undo_move: function() {
-      this.ref_proof.undo_move()
     },
 
     apply_cut: function () {
