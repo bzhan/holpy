@@ -55,14 +55,23 @@
                     "theorem": "fun_upd_def"
                 },
                 {
+                    "goal": "a = a",
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
+                    "method_name": "cut"
                 },
                 {
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
                     "theorem": "eq_refl"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
                 }
             ],
             "ty": "thm",
@@ -80,11 +89,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "¬c = a",
+                    "args": "¬(c = a)",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "¬c = a ⊢ ¬c = a"
+                    "th": "¬(c = a) ⊢ ¬(c = a)"
                 },
                 {
                     "args": "if_not_P, (if c = a then b else f c) = f c",
@@ -93,7 +102,7 @@
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬c = a ⊢ (if c = a then b else f c) = f c"
+                    "th": "¬(c = a) ⊢ (if c = a then b else f c) = f c"
                 },
                 {
                     "args": "fun_upd_def, (f)(a := b) c = f c",
@@ -102,7 +111,7 @@
                         "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬c = a ⊢ (f)(a := b) c = f c"
+                    "th": "¬(c = a) ⊢ (f)(a := b) c = f c"
                 },
                 {
                     "args": "",
@@ -112,7 +121,7 @@
                         "2"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ¬c = a ⟶ (f)(a := b) c = f c"
+                    "th": "⊢ ¬(c = a) ⟶ (f)(a := b) c = f c"
                 }
             ],
             "prop": "~(c = a) --> fun_upd f a b c = f c",
@@ -123,8 +132,12 @@
                     "theorem": "fun_upd_def"
                 },
                 {
+                    "fact_ids": [
+                        "0"
+                    ],
                     "goal_id": "1",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "if_not_P"
                 }
             ],
@@ -948,32 +961,41 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "¬0 = 1",
+                    "args": "¬((0::nat) = 1)",
                     "id": "0",
                     "prevs": [],
                     "rule": "nat_const_ineq",
-                    "th": "⊢ ¬0 = 1"
+                    "th": "⊢ ¬((0::nat) = 1)"
                 },
                 {
-                    "args": "fun_upd_other, (λx. 0)(1 := 5) 0 = 0",
+                    "args": "fun_upd_other, (λx::nat. (0::nat))(1 := 5) 0 = 0",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (λx. 0)(1 := 5) 0 = 0"
+                    "th": "⊢ (λx::nat. (0::nat))(1 := 5) 0 = 0"
                 }
             ],
             "prop": "fun_upd (%x::nat. (0::nat)) 1 5 0 = 0",
             "steps": [
                 {
+                    "goal": "~((0::nat) = 1)",
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "fun_upd_other"
+                    "method_name": "cut"
                 },
                 {
                     "goal_id": "0",
                     "method_name": "nat_const_ineq"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "fun_upd_other"
                 }
             ],
             "ty": "thm",

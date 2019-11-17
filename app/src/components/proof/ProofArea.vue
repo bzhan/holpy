@@ -144,10 +144,17 @@ export default {
     display_history: function () {
       // Display history in ref_context
       var steps = []
-      for (let i = 0; i < this.history.length-1; i++) {
-        steps.push(this.history[i].steps_output)
+      var h_len = this.history.length
+      for (let i = 0; i < h_len-1; i++) {
+        steps.push({
+          error: this.history[i].error,
+          steps_output: this.history[i].steps_output
+        })
       }
-      steps.push([{text: "Current state", color: 0}])
+      steps.push({
+        error: this.history[h_len-1].error,
+        steps_output: [{text: "Current state", color: 0}]
+      })
       this.ref_context.steps = steps
     },
 

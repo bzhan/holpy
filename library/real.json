@@ -586,7 +586,6 @@
                     "args": "-x + (x + y) = -x + (x + z)",
                     "id": "0.1",
                     "prevs": [
-                        "0.0",
                         "0.0"
                     ],
                     "rule": "rewrite_goal_with_prev",
@@ -620,21 +619,11 @@
                     "th": "x + y = x + z ⊢ y = z"
                 },
                 {
-                    "args": "y = z",
+                    "args": "",
                     "id": "0.5",
                     "prevs": [
-                        "0.4",
-                        "0.0"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "x + y = x + z ⊢ y = z"
-                },
-                {
-                    "args": "",
-                    "id": "0.6",
-                    "prevs": [
                         "0.0",
-                        "0.5"
+                        "0.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ x + y = x + z ⟶ y = z"
@@ -657,7 +646,6 @@
                     "args": "x + y = x + z",
                     "id": "1.1",
                     "prevs": [
-                        "1.0",
                         "1.0"
                     ],
                     "rule": "rewrite_goal_with_prev",
@@ -727,6 +715,11 @@
                     "fact_ids": [
                         "0.3"
                     ],
+                    "goal_id": "0.4",
+                    "method_name": "rewrite_fact",
+                    "theorem": "real_add_lid"
+                },
+                {
                     "goal_id": "1",
                     "method_name": "introduction"
                 },
@@ -735,21 +728,6 @@
                         "1.0"
                     ],
                     "goal_id": "1.1",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "fact_ids": [
-                        "0.3"
-                    ],
-                    "goal_id": "0.4",
-                    "method_name": "rewrite_fact",
-                    "theorem": "real_add_lid"
-                },
-                {
-                    "fact_ids": [
-                        "0.4"
-                    ],
-                    "goal_id": "0.5",
                     "method_name": "rewrite_goal_with_prev"
                 }
             ],
@@ -1155,70 +1133,52 @@
                 "hint_rewrite"
             ],
             "name": "real_neg_add",
-            "num_gaps": 2,
+            "num_gaps": 3,
             "proof": [
                 {
-                    "args": "real_add_rinv, 0 = x + -x",
+                    "args": "",
                     "id": "0",
                     "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 0 = x + -x"
-                },
-                {
-                    "args": "real_add_lid, 0 = x + (0 + -x)",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 0 = x + (0 + -x)"
+                    "rule": "sorry",
+                    "th": "⊢ 0 = x + (-x + 0)"
                 },
                 {
                     "args": "real_add_comm, 0 = -x + 0 + x",
-                    "id": "2",
+                    "id": "1",
                     "prevs": [
-                        "1"
+                        "0"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ 0 = -x + 0 + x"
                 },
                 {
                     "args": "real_add_linv, 0 = -x + (-y + y) + x",
-                    "id": "3",
+                    "id": "2",
                     "prevs": [
-                        "2"
+                        "1"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ 0 = -x + (-y + y) + x"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "3",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "⊢ 0 = -x + -y + x + y"
-                },
-                {
-                    "args": "real_add_assoc, 0 = -x + -y + (x + y)",
-                    "id": "5",
-                    "prevs": [
-                        "4"
-                    ],
-                    "rule": "rewrite_goal",
                     "th": "⊢ 0 = -x + -y + (x + y)"
                 },
                 {
                     "args": "real_add_linv, -(x + y) + (x + y) = -x + -y + (x + y)",
-                    "id": "6",
+                    "id": "4",
                     "prevs": [
-                        "5"
+                        "3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ -(x + y) + (x + y) = -x + -y + (x + y)"
                 },
                 {
                     "args": "",
-                    "id": "7",
+                    "id": "5",
                     "prevs": [],
                     "rule": "sorry",
                     "th": "⊢ -(x + y) = -x + -y"
@@ -1249,25 +1209,8 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "real_add_comm"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "real_add_lid"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "real_add_rinv"
-                },
-                {
-                    "fact_ids": [
-                        "3"
-                    ],
-                    "goal_id": "4",
-                    "method_name": "rewrite_goal",
-                    "theorem": "real_add_assoc"
                 }
             ],
             "ty": "thm",

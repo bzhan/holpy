@@ -11,8 +11,10 @@
       <div style="margin-left:10px" v-for="(line, index) in steps" v-bind:key="index"
            v-on:click="handleSelect(index)"
            class='step-entry'
-           v-bind:class="{'step-selected': selected_step === index}">
-        <Expression v-bind:line="line"/>
+           v-bind:class="{
+             'step-selected': selected_step === index,
+             'step-error': line.error !== undefined}">
+        <Expression v-bind:line="line.steps_output"/>
       </div>
     </div>
   </div>
@@ -55,7 +57,10 @@ export default {
 }
 
 .step-selected {
-  background-color: yellow
+  border: 1px solid black
 }
 
+.step-error {
+  background-color: red
+}
 </style>

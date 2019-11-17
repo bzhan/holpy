@@ -662,6 +662,8 @@ def apply_method(state, step):
     goal_id = ItemID(step['goal_id'])
     fact_ids = [ItemID(fact_id) for fact_id in step['fact_ids']] \
         if 'fact_ids' in step and step['fact_ids'] else []
+    assert all(goal_id.can_depend_on(fact_id) for fact_id in fact_ids), \
+        "apply_method: illegal dependence."
     return method.apply(state, goal_id, step, fact_ids)
 
 @settings.with_settings
