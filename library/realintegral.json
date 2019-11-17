@@ -22856,43 +22856,11 @@
                     "th": "real_measurable s ∧ real_measurable t ⊢ (λx. if x ∈ s ∩ t then (1::real) else 0) = (λx. min (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0))"
                 },
                 {
-                    "args": "",
+                    "args": "∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s then 1 else 0)",
                     "id": "4",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s then 1 else 0)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "4.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ univ",
-                    "id": "4.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ univ ⊢ x ∈ univ"
-                },
-                {
-                    "args": "(0::real) ≤ (if x ∈ s then 1 else 0)",
-                    "id": "4.2",
-                    "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ (0::real) ≤ (if x ∈ s then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "4.3",
-                    "prevs": [
-                        "4.0",
-                        "4.1",
-                        "4.2"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s then 1 else 0)"
+                    "th": "⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s then 1 else 0)"
                 },
                 {
                     "args": "conjD1",
@@ -22923,43 +22891,11 @@
                     "th": "real_measurable s ∧ real_measurable t ⊢ absolutely_real_integrable_on (λx. if x ∈ s then 1 else 0) univ"
                 },
                 {
-                    "args": "",
+                    "args": "∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ t then 1 else 0)",
                     "id": "8",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "8.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ univ",
-                    "id": "8.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ univ ⊢ x ∈ univ"
-                },
-                {
-                    "args": "(0::real) ≤ (if x ∈ t then 1 else 0)",
-                    "id": "8.2",
-                    "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ (0::real) ≤ (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "8.3",
-                    "prevs": [
-                        "8.0",
-                        "8.1",
-                        "8.2"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ t then 1 else 0)"
+                    "th": "⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ t then 1 else 0)"
                 },
                 {
                     "args": "conjD2",
@@ -23113,11 +23049,6 @@
                 },
                 {
                     "goal_id": "4",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "goal_id": "4.2",
                     "method_name": "z3"
                 },
                 {
@@ -23140,11 +23071,6 @@
                 },
                 {
                     "goal_id": "8",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "goal_id": "8.2",
                     "method_name": "z3"
                 },
                 {
@@ -23188,203 +23114,11 @@
                     "th": "real_measurable s ∧ real_measurable t ⊢ real_integrable_on (λx. if x ∈ s then 1 else 0) univ ∧ real_integrable_on (λx. if x ∈ t then 1 else 0) univ"
                 },
                 {
-                    "args": "",
+                    "args": "∀x. (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)",
                     "id": "2",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "2.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "",
-                    "id": "2.1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ x ∈ s ∪ t ⟶ (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "x ∈ s ∪ t",
-                    "id": "2.1.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ s ∪ t ⊢ x ∈ s ∪ t"
-                },
-                {
-                    "args": "member_union_iff",
-                    "id": "2.1.1",
-                    "prevs": [
-                        "2.1.0"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ s ∪ t ⊢ x ∈ s ∨ x ∈ t"
-                },
-                {
-                    "args": "x ∈ s ⟶ (1::real) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)",
-                    "id": "2.1.2",
-                    "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ x ∈ s ⟶ (1::real) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "x ∈ t ⟶ (1::real) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)",
-                    "id": "2.1.3",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ x ∈ t ⟶ (1::real) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "disjE",
-                    "id": "2.1.4",
-                    "prevs": [
-                        "2.1.1",
-                        "2.1.2",
-                        "2.1.3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "x ∈ s ∪ t, real_measurable s ∧ real_measurable t ⊢ (1::real) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "if_P, (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)",
-                    "id": "2.1.5",
-                    "prevs": [
-                        "2.1.4",
-                        "2.1.0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "x ∈ s ∪ t, real_measurable s ∧ real_measurable t ⊢ (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.1.6",
-                    "prevs": [
-                        "2.1.0",
-                        "2.1.5"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ x ∈ s ∪ t ⟶ (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.2",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ¬x ∈ s ∪ t ⟶ (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "¬x ∈ s ∪ t",
-                    "id": "2.2.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "¬x ∈ s ∪ t ⊢ ¬x ∈ s ∪ t"
-                },
-                {
-                    "args": "member_union_iff",
-                    "id": "2.2.1",
-                    "prevs": [
-                        "2.2.0"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "¬x ∈ s ∪ t ⊢ ¬(x ∈ s ∨ x ∈ t)"
-                },
-                {
-                    "args": "de_morgan_thm2",
-                    "id": "2.2.2",
-                    "prevs": [
-                        "2.2.1"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "¬x ∈ s ∪ t ⊢ ¬x ∈ s ∧ ¬x ∈ t"
-                },
-                {
-                    "args": "conjD1, {}, {A: ¬x ∈ s, B: ¬x ∈ t}",
-                    "id": "2.2.3",
-                    "prevs": [
-                        "2.2.2"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "¬x ∈ s ∪ t ⊢ ¬x ∈ s"
-                },
-                {
-                    "args": "conjD2, {}, {A: ¬x ∈ s, B: ¬x ∈ t}",
-                    "id": "2.2.4",
-                    "prevs": [
-                        "2.2.2"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "¬x ∈ s ∪ t ⊢ ¬x ∈ t"
-                },
-                {
-                    "args": "(0::real) = max 0 0",
-                    "id": "2.2.5",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ (0::real) = max 0 0"
-                },
-                {
-                    "args": "if_not_P, (0::real) = max 0 (if x ∈ t then 1 else 0)",
-                    "id": "2.2.6",
-                    "prevs": [
-                        "2.2.5",
-                        "2.2.4"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬x ∈ s ∪ t, real_measurable s ∧ real_measurable t ⊢ (0::real) = max 0 (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "if_not_P, (0::real) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)",
-                    "id": "2.2.7",
-                    "prevs": [
-                        "2.2.6",
-                        "2.2.3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬x ∈ s ∪ t, real_measurable s ∧ real_measurable t ⊢ (0::real) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "if_not_P, (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)",
-                    "id": "2.2.8",
-                    "prevs": [
-                        "2.2.7",
-                        "2.2.0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬x ∈ s ∪ t, real_measurable s ∧ real_measurable t ⊢ (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.2.9",
-                    "prevs": [
-                        "2.2.0",
-                        "2.2.8"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ¬x ∈ s ∪ t ⟶ (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "classical_cases",
-                    "id": "2.3",
-                    "prevs": [
-                        "2.1",
-                        "2.2"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.4",
-                    "prevs": [
-                        "2.0",
-                        "2.3"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
+                    "th": "⊢ ∀x. (if x ∈ s ∪ t then (1::real) else 0) = max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0)"
                 },
                 {
                     "args": "extension",
@@ -23396,43 +23130,11 @@
                     "th": "real_measurable s ∧ real_measurable t ⊢ (λx. if x ∈ s ∪ t then (1::real) else 0) = (λx. max (if x ∈ s then 1 else 0) (if x ∈ t then 1 else 0))"
                 },
                 {
-                    "args": "",
+                    "args": "∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s then 1 else 0)",
                     "id": "4",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s then 1 else 0)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "4.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ univ",
-                    "id": "4.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ univ ⊢ x ∈ univ"
-                },
-                {
-                    "args": "(0::real) ≤ (if x ∈ s then 1 else 0)",
-                    "id": "4.2",
-                    "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ (0::real) ≤ (if x ∈ s then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "4.3",
-                    "prevs": [
-                        "4.0",
-                        "4.1",
-                        "4.2"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s then 1 else 0)"
+                    "th": "⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s then 1 else 0)"
                 },
                 {
                     "args": "conjD1",
@@ -23463,43 +23165,11 @@
                     "th": "real_measurable s ∧ real_measurable t ⊢ absolutely_real_integrable_on (λx. if x ∈ s then 1 else 0) univ"
                 },
                 {
-                    "args": "",
+                    "args": "∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ t then 1 else 0)",
                     "id": "8",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "8.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ univ",
-                    "id": "8.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ univ ⊢ x ∈ univ"
-                },
-                {
-                    "args": "(0::real) ≤ (if x ∈ t then 1 else 0)",
-                    "id": "8.2",
-                    "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ (0::real) ≤ (if x ∈ t then 1 else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "8.3",
-                    "prevs": [
-                        "8.0",
-                        "8.1",
-                        "8.2"
-                    ],
-                    "rule": "intros",
-                    "th": "real_measurable s ∧ real_measurable t ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ t then 1 else 0)"
+                    "th": "⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ t then 1 else 0)"
                 },
                 {
                     "args": "conjD2",
@@ -23619,112 +23289,6 @@
                 },
                 {
                     "goal_id": "2",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "case": "x ∈ s ∪ t",
-                    "goal_id": "2.1",
-                    "method_name": "cases"
-                },
-                {
-                    "goal_id": "2.1",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.0"
-                    ],
-                    "goal_id": "2.1.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.0"
-                    ],
-                    "goal_id": "2.1.1",
-                    "method_name": "rewrite_fact",
-                    "theorem": "member_union_iff"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.1"
-                    ],
-                    "goal_id": "2.1.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjE"
-                },
-                {
-                    "goal_id": "2.1.2",
-                    "method_name": "z3"
-                },
-                {
-                    "goal_id": "2.1.3",
-                    "method_name": "z3"
-                },
-                {
-                    "goal_id": "2.2",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.0"
-                    ],
-                    "goal_id": "2.2.1",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_not_P"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.0"
-                    ],
-                    "goal_id": "2.2.1",
-                    "method_name": "rewrite_fact",
-                    "theorem": "member_union_iff"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.1"
-                    ],
-                    "goal_id": "2.2.2",
-                    "method_name": "rewrite_fact",
-                    "theorem": "de_morgan_thm2"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.2"
-                    ],
-                    "goal_id": "2.2.3",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.2"
-                    ],
-                    "goal_id": "2.2.4",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.3"
-                    ],
-                    "goal_id": "2.2.5",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_not_P"
-                },
-                {
-                    "fact_ids": [
-                        "2.2.4"
-                    ],
-                    "goal_id": "2.2.5",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_not_P"
-                },
-                {
-                    "goal_id": "2.2.5",
                     "method_name": "z3"
                 },
                 {
@@ -23756,11 +23320,6 @@
                 },
                 {
                     "goal_id": "4",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "goal_id": "4.2",
                     "method_name": "z3"
                 },
                 {
@@ -23783,11 +23342,6 @@
                 },
                 {
                     "goal_id": "8",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "goal_id": "8.2",
                     "method_name": "z3"
                 },
                 {

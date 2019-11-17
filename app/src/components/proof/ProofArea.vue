@@ -383,18 +383,28 @@ export default {
       } else {
         // Success
         var hId = this.index
-        this.steps[hId] = input.step
-        this.steps.length = hId + 1
+        this.steps.splice(hId, 0, input.step)
         if (this.steps[hId].fact_ids.length === 0) {
           delete this.steps[hId].fact_ids
         }
-        this.history[hId].steps_output = result.data.steps_output
-        this.history[hId + 1] = {
-          proof: result.data.proof,
-          num_gaps: result.data.num_gaps
+        if (this.index == this.history.length-1) {
+          // At end
+          this.history.splice(hId+1, 0, {
+            proof: result.data.proof,
+            num_gaps: result.data.num_gaps
+          })
+          this.history[hId].steps_output = result.data.steps_output
+        } else {
+          // In the middle
+          this.history.splice(hId, 0, {
+            steps_output: result.data.steps_output,
+            proof: this.history[hId + 1].proof,
+            num_gaps: this.history[hId + 1].num_gaps
+          })
+          this.history[hId + 1].proof = result.data.proof
+          this.history[hId + 1].num_gaps = result.data.num_gaps
         }
-        this.history.length = hId + 2
-        this.max_loaded = hId + 1
+        this.max_loaded = hId
         this.gotoStep(hId + 1)
       }
     },
