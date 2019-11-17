@@ -66,19 +66,22 @@ export default {
       goal: -1,
       facts: new Set(),
       proof: undefined,
+
+      // Maximum index in history that is read.
+      max_loaded: -1,
     }
   },
 
   methods: {
     step_backward: function () {
       if (this.index > 0) {
-        this.goto_index(this.index - 1);
+        this.gotoStep(this.index - 1);
       }
     },
 
     step_forward: function () {
       if (this.index < this.history.length-1) {
-        this.goto_index(this.index + 1);
+        this.gotoStep(this.index + 1);
       }
     },
 
@@ -148,12 +151,14 @@ export default {
       for (let i = 0; i < h_len-1; i++) {
         steps.push({
           error: this.history[i].error,
-          steps_output: this.history[i].steps_output
+          steps_output: this.history[i].steps_output,
+          is_read: this.max_loaded >= i
         })
       }
       steps.push({
         error: this.history[h_len-1].error,
-        steps_output: [{text: "Current state", color: 0}]
+        steps_output: [{text: "Current state", color: 0}],
+        is_read: this.max_loaded >= h_len-1
       })
       this.ref_context.steps = steps
     },
@@ -261,17 +266,58 @@ export default {
       }
     },
 
-    // Go to the index given by hId
-    goto_index: function (hId) {
-      this.index = hId
-      this.proof = this.history[hId].proof
-      this.num_gaps = this.history[hId].num_gaps
+    loadSteps: async function () {
+      var result = undefined
+      const at_end = (this.index === this.history.length-1)
+      const input = {
+        username: this.$state.user,
+        theory_name: this.theory_name,
+        thm_name: this.thm_name,
+        proof: {
+          vars: this.vars,
+          proof: this.history[this.max_loaded+1].proof
+        },
+        steps: this.steps.slice(this.max_loaded+1, at_end ? this.index : this.index+1)
+      }
+      try {
+        result = await axios.post('http://127.0.0.1:5000/api/apply-steps', JSON.stringify(input))
+      } catch (err) {
+        this.$emit('set-message', {
+          type: 'error',
+          data: 'Server error'
+        })
+      }
+      if (result === undefined) {
+        this.display_status('Server error')
+        return
+      }
+
+      const history = result.data.history
+      const h_len = history.length
+      for (let i = 0; i < h_len-1; i++) {
+        this.history[this.max_loaded+i+1] = history[i]
+      }
+      const history_last = this.history[this.max_loaded+h_len]
+      history_last.proof = history[h_len-1].proof
+      history_last.num_gaps = history[h_len-1].num_gaps
+      history_last.error = history[h_len-1].error
+      this.max_loaded = this.index
+    },
+
+    // Go to the step given by index
+    gotoStep: async function (index) {
+      this.index = index
+      if (this.index > this.max_loaded) {
+        await this.loadSteps()
+      }
+      this.proof = this.history[index].proof
+      this.num_gaps = this.history[index].num_gaps
       this.facts = []
-      if (hId === this.steps.length) {
+      if (index === this.steps.length) {
         this.goal = this.compute_new_goal(0)
       } else {
-        this.goal = this.get_line_no_from_id(this.steps[hId].goal_id)
-        const fact_ids = this.steps[hId].fact_ids
+        this.goal = this.get_line_no_from_id(this.steps[index].goal_id)
+        const fact_ids = this.steps[index].fact_ids
         if (fact_ids !== undefined) {
           for (let i = 0; i < fact_ids.length; i++) {
             let fact_no = this.get_line_no_from_id(fact_ids[i])
@@ -286,6 +332,15 @@ export default {
       this.display_num_gaps()
       this.display_instructions()
       this.match_thm()
+    },
+
+    // Delete the step given by index
+    deleteStep: function (index) {
+      this.history[index+1].proof = this.history[index].proof
+      this.history.splice(index, 1)
+      this.steps.splice(index, 1)
+      this.max_loaded = index-1
+      this.gotoStep(index)
     },
 
     apply_method_ajax: async function (input) {
@@ -339,7 +394,8 @@ export default {
           num_gaps: result.data.num_gaps
         }
         this.history.length = hId + 2
-        this.goto_index(hId + 1)
+        this.max_loaded = hId + 1
+        this.gotoStep(hId + 1)
       }
     },
 
@@ -419,7 +475,7 @@ export default {
         proof: response.data.proof,
         num_gaps: response.data.num_gaps
       }]
-      this.goto_index(0)
+      this.gotoStep(0)
     },
 
     init_saved_proof: async function () {
@@ -456,9 +512,11 @@ export default {
       } else {
         this.method_sig = response.data.method_sig
         if (response.data.steps !== undefined) {
+          // Case with history
           this.steps = response.data.steps
           this.history = response.data.history
-          this.goto_index(this.history.length-1)
+          this.max_loaded = this.history.length-1
+          this.gotoStep(this.history.length-1)
         } else {
           // Case without history
           this.num_gaps = response.data.num_gaps
@@ -479,22 +537,6 @@ export default {
         this.init_saved_proof()
       }
     },
-
-    undo_move: function () {
-      var h_id = this.index
-      if (h_id < this.steps.length) {
-          // Perform undo only when at end
-          return
-      }
-
-      this.history.length -= 1
-      delete this.history[h_id-1].steps_output
-      this.goto_index(h_id-1)
-
-      // Remove last step after goto_index, so goal and fact_no can
-      // be used during display.
-      this.steps.length -= 1
-    }
   },
 
   async mounted() {

@@ -813,15 +813,6 @@
                     ],
                     "rule": "rewrite_fact",
                     "th": "⊢ x * 0 = 0"
-                },
-                {
-                    "args": "x * 0 = 0",
-                    "id": "3",
-                    "prevs": [
-                        "2"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "⊢ x * 0 = 0"
                 }
             ],
             "prop": "x * 0 = 0",
@@ -851,13 +842,6 @@
                     "goal_id": "2",
                     "method_name": "rewrite_fact",
                     "theorem": "real_eq_add_rcancel"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "rewrite_goal_with_prev"
                 }
             ],
             "ty": "thm",
@@ -938,15 +922,6 @@
                     ],
                     "rule": "rewrite_fact",
                     "th": "⊢ --x = x"
-                },
-                {
-                    "args": "--x = x",
-                    "id": "3",
-                    "prevs": [
-                        "2"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "⊢ --x = x"
                 }
             ],
             "prop": "-(-x)=x",
@@ -973,13 +948,6 @@
                     "goal_id": "2",
                     "method_name": "rewrite_fact",
                     "theorem": "real_eq_add_rcancel"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "rewrite_goal_with_prev"
                 }
             ],
             "ty": "thm",
@@ -1027,15 +995,6 @@
                     ],
                     "rule": "rewrite_fact",
                     "th": "⊢ x * -y = -(x * y)"
-                },
-                {
-                    "args": "x * -y = -(x * y)",
-                    "id": "4",
-                    "prevs": [
-                        "3"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "⊢ x * -y = -(x * y)"
                 }
             ],
             "prop": "x * -y = -(x * y)",
@@ -1070,13 +1029,6 @@
                     "goal_id": "3",
                     "method_name": "rewrite_fact",
                     "theorem": "real_eq_add_rcancel"
-                },
-                {
-                    "fact_ids": [
-                        "3"
-                    ],
-                    "goal_id": "4",
-                    "method_name": "rewrite_goal_with_prev"
                 }
             ],
             "ty": "thm",
@@ -1292,15 +1244,6 @@
                     ],
                     "rule": "rewrite_fact",
                     "th": "⊢ -(0::real) = 0"
-                },
-                {
-                    "args": "-(0::real) = 0",
-                    "id": "3",
-                    "prevs": [
-                        "2"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "⊢ -(0::real) = 0"
                 }
             ],
             "prop": "-(0::real) = 0",
@@ -1327,13 +1270,6 @@
                     "goal_id": "2",
                     "method_name": "rewrite_fact",
                     "theorem": "real_eq_add_rcancel"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "rewrite_goal_with_prev"
                 }
             ],
             "ty": "thm",
@@ -1344,7 +1280,7 @@
                 "hint_rewrite"
             ],
             "name": "real_le_lneg",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -1388,20 +1324,11 @@
                     "th": "-x ≤ y ⊢ of_nat 0 ≤ x + y"
                 },
                 {
-                    "args": "real_zero_def, 0 ≤ x + y",
+                    "args": "",
                     "id": "0.4",
                     "prevs": [
-                        "0.3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "-x ≤ y ⊢ 0 ≤ x + y"
-                },
-                {
-                    "args": "",
-                    "id": "0.5",
-                    "prevs": [
                         "0.0",
-                        "0.4"
+                        "0.2"
                     ],
                     "rule": "intros",
                     "th": "⊢ -x ≤ y ⟶ 0 ≤ x + y"
@@ -1468,16 +1395,9 @@
                 {
                     "args": "",
                     "id": "1.6",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "0 ≤ x + y ⊢ -x ≤ y"
-                },
-                {
-                    "args": "",
-                    "id": "1.7",
                     "prevs": [
                         "1.0",
-                        "1.6"
+                        "1.5"
                     ],
                     "rule": "intros",
                     "th": "⊢ 0 ≤ x + y ⟶ -x ≤ y"
@@ -1527,11 +1447,6 @@
                     ],
                     "goal_id": "0.3",
                     "method_name": "rewrite_fact",
-                    "theorem": "real_zero_def"
-                },
-                {
-                    "goal_id": "0.4",
-                    "method_name": "rewrite_goal",
                     "theorem": "real_zero_def"
                 },
                 {
@@ -2463,31 +2378,31 @@
                     "th": "⊢ 0 ≤ n"
                 },
                 {
-                    "args": "if_P, (if 0 ≤ n then (of_nat::nat ⇒ real) n else -of_nat n) = of_nat n",
+                    "args": "if_P, (if 0 ≤ n then (of_nat::nat ⇒ real) n else -(of_nat n)) = of_nat n",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (if 0 ≤ n then (of_nat::nat ⇒ real) n else -of_nat n) = of_nat n"
+                    "th": "⊢ (if 0 ≤ n then (of_nat::nat ⇒ real) n else -(of_nat n)) = of_nat n"
                 },
                 {
-                    "args": "real_of_nat_le, (if (of_nat::nat ⇒ real) 0 ≤ of_nat n then (of_nat::nat ⇒ real) n else -of_nat n) = of_nat n",
+                    "args": "real_of_nat_le, (if (of_nat::nat ⇒ real) 0 ≤ of_nat n then (of_nat::nat ⇒ real) n else -(of_nat n)) = of_nat n",
                     "id": "2",
                     "prevs": [
                         "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (if (of_nat::nat ⇒ real) 0 ≤ of_nat n then (of_nat::nat ⇒ real) n else -of_nat n) = of_nat n"
+                    "th": "⊢ (if (of_nat::nat ⇒ real) 0 ≤ of_nat n then (of_nat::nat ⇒ real) n else -(of_nat n)) = of_nat n"
                 },
                 {
-                    "args": "real_zero_def, (if (0::real) ≤ of_nat n then (of_nat::nat ⇒ real) n else -of_nat n) = of_nat n",
+                    "args": "real_zero_def, (if (0::real) ≤ of_nat n then (of_nat::nat ⇒ real) n else -(of_nat n)) = of_nat n",
                     "id": "3",
                     "prevs": [
                         "2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ (if (0::real) ≤ of_nat n then (of_nat::nat ⇒ real) n else -of_nat n) = of_nat n"
+                    "th": "⊢ (if (0::real) ≤ of_nat n then (of_nat::nat ⇒ real) n else -(of_nat n)) = of_nat n"
                 },
                 {
                     "args": "real_abs_def, abs ((of_nat::nat ⇒ real) n) = of_nat n",
@@ -2517,14 +2432,23 @@
                     "theorem": "real_of_nat_le"
                 },
                 {
+                    "goal": "0 <= n",
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
+                    "method_name": "cut"
                 },
                 {
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
                     "theorem": "le_0"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
                 }
             ],
             "ty": "thm",
@@ -2601,7 +2525,7 @@
                     "id": "0",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ y ≤ x ⟶ false"
+                    "th": "⊢ y ≤ x ⟶ ¬(y ≤ x) ∨ y ≤ x"
                 },
                 {
                     "args": "y ≤ x",
@@ -2611,14 +2535,13 @@
                     "th": "y ≤ x ⊢ y ≤ x"
                 },
                 {
-                    "args": "negE",
+                    "args": "disjI2, {}, {A: ¬(y ≤ x), B: y ≤ x}",
                     "id": "0.1",
                     "prevs": [
-                        "1",
                         "0.0"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "y ≤ x ⊢ false"
+                    "rule": "apply_theorem_for",
+                    "th": "y ≤ x ⊢ ¬(y ≤ x) ∨ y ≤ x"
                 },
                 {
                     "args": "",
@@ -2628,25 +2551,50 @@
                         "0.1"
                     ],
                     "rule": "intros",
-                    "th": "⊢ y ≤ x ⟶ false"
+                    "th": "⊢ y ≤ x ⟶ ¬(y ≤ x) ∨ y ≤ x"
                 },
                 {
-                    "args": "negI",
+                    "args": "",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "⊢ ¬y ≤ x"
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(y ≤ x) ⟶ ¬(y ≤ x) ∨ y ≤ x"
                 },
                 {
-                    "args": "disjI1, {}, {A: ¬y ≤ x, B: y ≤ x}",
-                    "id": "2",
+                    "args": "¬(y ≤ x)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(y ≤ x) ⊢ ¬(y ≤ x)"
+                },
+                {
+                    "args": "disjI1, {}, {A: ¬(y ≤ x), B: y ≤ x}",
+                    "id": "1.1",
                     "prevs": [
-                        "1"
+                        "1.0"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ ¬y ≤ x ∨ y ≤ x"
+                    "th": "¬(y ≤ x) ⊢ ¬(y ≤ x) ∨ y ≤ x"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(y ≤ x) ⟶ ¬(y ≤ x) ∨ y ≤ x"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ ¬(y ≤ x) ∨ y ≤ x"
                 },
                 {
                     "args": "real_less_def, x < y ∨ y ≤ x",
@@ -2666,14 +2614,9 @@
                     "theorem": "real_less_def"
                 },
                 {
+                    "case": "y <= x",
                     "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjI1"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "negI"
+                    "method_name": "cases"
                 },
                 {
                     "goal_id": "0",
@@ -2681,11 +2624,23 @@
                 },
                 {
                     "fact_ids": [
-                        "1"
+                        "0.0"
                     ],
                     "goal_id": "0.1",
                     "method_name": "apply_backward_step",
-                    "theorem": "negE"
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI1"
                 }
             ],
             "ty": "thm",
@@ -3311,14 +3266,6 @@
                     "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "real_lt_imp_le"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD2"
                 },
                 {
                     "fact_ids": [
