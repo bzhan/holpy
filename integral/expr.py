@@ -164,6 +164,15 @@ class Expr:
         elif self.ty == FUN:
             if self.func_name == "exp" and self.args[0] == Const(0):
                 return poly.constant(1)
+            elif self.func_name == "cos":
+                if self.args[0] == Const(0):
+                    return poly.constant(1)
+                elif self.args[0] == pi / Const(4):
+                    return poly.singleton(Fun("sqrt", Const(2))).scale(Fraction(1) / Fraction(2))
+                elif self.args[0] == pi / Const(2):
+                    return poly.constant(0)
+                else:
+                    return poly.singleton(self)
             else:
                 return poly.singleton(self)
         elif self.ty == EVAL_AT:
@@ -342,8 +351,10 @@ class Fun(Expr):
     """Functions."""
     def __init__(self, func_name, *args):
         assert isinstance(func_name, str) and all(isinstance(arg, Expr) for arg in args)
-        if len(args) == 1:
-            assert func_name in ["sin", "cos", "log", "exp"]
+        if len(args) == 0:
+            assert func_name in ["pi"]
+        elif len(args) == 1:
+            assert func_name in ["sin", "cos", "log", "exp", "sqrt"]
         else:
             raise NotImplementedError
 
@@ -358,10 +369,16 @@ class Fun(Expr):
         return other.ty == FUN and self.func_name == other.func_name and self.args == other.args
 
     def __str__(self):
-        return "%s(%s)" % (self.func_name, ",".join(str(arg) for arg in self.args))
+        if len(self.args) > 0:
+            return "%s(%s)" % (self.func_name, ",".join(str(arg) for arg in self.args))
+        else:
+            return self.func_name
 
     def __repr__(self):
-        return "Fun(%s,%s)" % (self.func_name, ",".join(repr(arg) for arg in self.args))
+        if len(self.args) > 0:
+            return "Fun(%s,%s)" % (self.func_name, ",".join(repr(arg) for arg in self.args))
+        else:
+            return "Fun(%s)" % self.func_name
 
 def sin(e):
     return Fun("sin", e)
@@ -374,6 +391,8 @@ def log(e):
 
 def exp(e):
     return Fun("exp", e)
+
+pi = Fun("pi")
 
 class Deriv(Expr):
     """Derivative of an expression."""

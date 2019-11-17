@@ -81,6 +81,9 @@ class ExprTest(unittest.TestCase):
             ("[x]_x=a,b", "-1 * a + b"),
             ("[x ^ 2 * y]_x=a,b", "-1 * y * a ^ 2 + y * b ^ 2"),
             ("[x ^ 2]_x=3,4", "7"),
+            ("cos(pi/4)", "1/2 * sqrt(2)"),
+            ("cos(0) - cos(pi/4)", "1 + -1/2 * sqrt(2)"),
+            ("cos(0) - cos(pi/2)", "1"),
             ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
              "-1 * a + b + -1 * a ^ 2 + -1/3 * a ^ 3 + b ^ 2 + 1/3 * b ^ 3"),
         ]

@@ -1,7 +1,7 @@
 {
     "content": [
         {
-            "_problem_latex": "\\int_{x=2}^{3} 2 x + x ^ 2 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{2}^{3} 2 x + x ^ 2 \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{x=2}^{3} 2 x + x ^ 2 \\,\\mathrm{dx}",
@@ -18,7 +18,7 @@
             "problem": "INT x:[2,3]. 2 * x + x ^ 2"
         },
         {
-            "_problem_latex": "\\int_{x=0}^{1} (3 x + 1) ^ {-2} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{1} (3 x + 1) ^ {-2} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{x=0}^{1} (3 x + 1) ^ {-2} \\,\\mathrm{dx}",
@@ -55,12 +55,12 @@
             "problem": "INT x:[0,1]. (3 * x + 1) ^ (-2)"
         },
         {
-            "_problem_latex": "\\int_{x=0}^{1} \\exp{(6 x)} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{1} \\exp{(6 x)} \\,\\mathrm{dx}",
             "name": "Exercise 3",
             "problem": "INT x:[0,1]. exp(6*x)"
         },
         {
-            "_problem_latex": "\\int_{x=-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{x=-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
@@ -80,6 +80,28 @@
             ],
             "name": "Exercise 4",
             "problem": "INT x:[-1,2]. x * exp(x)"
+        },
+        {
+            "_problem_latex": "\\int_{0}^{\\pi/4} \\sin{x} \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{0}^{\\pi/4} \\sin{x} \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[0,pi / 4]. sin(x)"
+                },
+                {
+                    "latex": "\\left. -\\cos{x} \\right\\vert_{x=0}^{\\pi/4}",
+                    "reason": "Common integrals",
+                    "text": "[-cos(x)]_x=0,pi / 4"
+                },
+                {
+                    "latex": "1 + \\frac{-1}{2} \\sqrt{2}",
+                    "reason": "Simplification",
+                    "text": "1 + -1/2 * sqrt(2)"
+                }
+            ],
+            "name": "Exercise 5",
+            "problem": "INT x:[0,pi/4]. sin(x)"
         }
     ]
 }

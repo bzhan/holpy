@@ -12,6 +12,7 @@ grammar = r"""
         | INT -> int_expr
         | DECIMAL -> decimal_expr
         | "D" CNAME "." expr -> deriv_expr
+        | "pi" -> pi_expr
         | CNAME "(" expr ("," expr)* ")" -> fun_expr
         | "(" expr ")"
         | "INT" CNAME ":[" expr "," expr "]." expr -> integral_expr
@@ -74,6 +75,9 @@ class ExprTransformer(Transformer):
             return expr.Const(-a.val)
         else:
             return -a
+
+    def pi_expr(self):
+        return expr.pi
 
     def fun_expr(self, func_name, *args):
         return expr.Fun(func_name, *args)

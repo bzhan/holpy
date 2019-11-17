@@ -4,7 +4,7 @@ import unittest
 from fractions import Fraction
 from decimal import Decimal
 
-from integral.expr import Var, Const
+from integral.expr import Var, Const, Op, Fun
 from integral.parser import parse_expr
 
 
@@ -20,6 +20,7 @@ class ParserTest(unittest.TestCase):
             "D x. 3 * x",
             "INT x:[1,2]. 3 * x",
             "[3 * x]_x=1,2",
+            "INT x:[0,pi / 4]. sin(x)",
         ]
 
         for s in test_data:
@@ -33,6 +34,7 @@ class ParserTest(unittest.TestCase):
             ("1/2", Const(Fraction(1) / 2)),
             ("-1/2", Const(Fraction(-1) / 2)),
             ("0.5", Const(Decimal("0.5"))),
+            ("pi", Fun("pi")),
         ]
 
         for s, e, in test_data:
