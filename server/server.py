@@ -135,7 +135,7 @@ class ProofState():
         res = {
             "vars": {v.name: str(v.T) for v in self.vars},
             "proof": self.export_proof(self.prf),
-            "report": self.rpt.json_data(),
+            "num_gaps": len(self.rpt.gaps),
             "method_sig": self.get_method_sig(),
         }
         if hasattr(self, 'steps'):
@@ -160,7 +160,7 @@ class ProofState():
                 })
                 try:
                     method.apply_method(state, step)
-                    state.check_proof()
+                    state.check_proof(compute_only=True)
                 except Exception as e:
                     state.history[-1]['error'] = {
                         'err_type': e.__class__.__name__,
@@ -171,6 +171,14 @@ class ProofState():
                 'proof': state.export_proof(state.prf),
                 'num_gaps': len(state.rpt.gaps)
             })
+            try:    
+                state.check_proof()
+            except Exception as e:
+                state.history[-1]['error'] = {
+                    'err_type': e.__class__.__name__,
+                    'err_str': str(e),
+                    'trace': traceback2.format_exc()
+                }
         else:
             ctxt = Context(thy, vars=data['vars'])
             state = ProofState(thy)

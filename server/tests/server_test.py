@@ -162,7 +162,7 @@ class ServerTest(unittest.TestCase):
         json_data = state.json_data()
         self.assertEqual(len(json_data['vars']), 2)
         self.assertEqual(len(json_data['proof']), 3)
-        self.assertIn('report', json_data)
+        self.assertEqual(json_data['num_gaps'], 1)
 
     def testParseProof(self):
         data = {
