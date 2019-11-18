@@ -553,6 +553,40 @@ class ServerTest(unittest.TestCase):
             gaps=["image (f O g) s = t"]
         )
 
+    def testRewriteFactThms(self):
+        self.run_search_thm(
+            'nat',
+            vars={'n': 'nat'},
+            assms=['0 + n = 0'],
+            concl='false',
+            method_name='rewrite_fact',
+            prevs=[0],
+            res=['eq_sym_eq', 'nat_plus_def_1']
+        )
+
+    def testRewriteFactThms2(self):
+        self.run_search_thm(
+            'set',
+            vars={'f': "nat => nat", 'S': "nat set", 'T': "nat set"},
+            assms=['image f (image f S) = T'],
+            concl='false',
+            method_name='rewrite_fact',
+            prevs=[0],
+            res=['eq_sym_eq', 'image_combine', 'image_def']
+        )
+
+    def testRewriteFact(self):
+        test_method(self,
+            'set',
+            vars={'g': "'a => 'b", 'f': "'b => 'c", 's': "'a set", 't': "'c set"},
+            assms=['image f (image g s) = t'],
+            concl='false',
+            method_name='rewrite_fact',
+            prevs=[0],
+            args={'theorem': 'image_combine', 'sym': 'true'},
+            lines={'1': "image (f O g) s = t"}
+        )
+
     def testForallElim(self):
         test_method(self,
             'nat',
