@@ -311,6 +311,10 @@
             "ty": "macro"
         },
         {
+            "name": "rewrite_fact_sym",
+            "ty": "macro"
+        },
+        {
             "name": "rewrite_fact_with_prev",
             "ty": "macro"
         },

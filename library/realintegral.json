@@ -31567,66 +31567,8 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "",
+                    "args": "∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ∧ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
                     "id": "1.1.1",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ∧ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "1.1.1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ univ",
-                    "id": "1.1.1.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ univ ⊢ x ∈ univ"
-                },
-                {
-                    "args": "",
-                    "id": "1.1.1.2",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ ⊢ x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⟶ (0::real) ≤ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ∧ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
-                },
-                {
-                    "args": "x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x)",
-                    "id": "1.1.1.2.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x)"
-                },
-                {
-                    "args": "(0::real) ≤ 1",
-                    "id": "1.1.1.2.1",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ (0::real) ≤ 1"
-                },
-                {
-                    "args": "conjD1, {}, {A: x ∈ s, B: 1 / (of_nat n + 1) ≤ abs (f x)}",
-                    "id": "1.1.1.2.2",
-                    "prevs": [
-                        "1.1.1.2.0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⊢ x ∈ s"
-                },
-                {
-                    "args": "∀x::real. ∀a. 0 ≤ x ∧ a ≤ abs x ⟶ a ≤ x",
-                    "id": "1.1.1.2.3",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ ∀x::real. ∀a. 0 ≤ x ∧ a ≤ abs x ⟶ a ≤ x"
-                },
-                {
-                    "args": "x",
-                    "id": "1.1.1.2.4",
                     "prevs": [
                         "0"
                     ],
@@ -32159,132 +32101,11 @@
                     "th": "real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ real_negligible ({x. x ∈ s ∧ ¬(f x = 0)})"
                 },
                 {
-                    "args": "",
+                    "args": "∀x. x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⟶ f x = 0",
                     "id": "2.1",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ ∀x. x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⟶ f x = 0"
-                },
-                {
-                    "args": "x, real",
-                    "id": "2.1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)})",
-                    "id": "2.1.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)})"
-                },
-                {
-                    "args": "diff_def",
-                    "id": "2.1.2",
-                    "prevs": [
-                        "2.1.1"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ x ∈ {x. x ∈ s ∧ ¬(x ∈ {x. x ∈ s ∧ ¬(f x = 0)})}"
-                },
-                {
-                    "args": "member_collect",
-                    "id": "2.1.3",
-                    "prevs": [
-                        "2.1.2"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ x ∈ s ∧ ¬(x ∈ {x. x ∈ s ∧ ¬(f x = 0)})"
-                },
-                {
-                    "args": "member_collect",
-                    "id": "2.1.4",
-                    "prevs": [
-                        "2.1.3"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ x ∈ s ∧ ¬(x ∈ s ∧ ¬(f x = 0))"
-                },
-                {
-                    "args": "de_morgan_thm1",
-                    "id": "2.1.5",
-                    "prevs": [
-                        "2.1.4"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ x ∈ s ∧ (¬(x ∈ s) ∨ ¬¬(f x = 0))"
-                },
-                {
-                    "args": "conj_disj_distribL1",
-                    "id": "2.1.6",
-                    "prevs": [
-                        "2.1.5"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ x ∈ s ∧ ¬(x ∈ s) ∨ x ∈ s ∧ ¬¬(f x = 0)"
-                },
-                {
-                    "args": "",
-                    "id": "2.1.7",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}), x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ x ∈ s ∧ ¬(x ∈ s) ⟶ f x = 0"
-                },
-                {
-                    "args": "x ∈ s ∧ ¬(x ∈ s)",
-                    "id": "2.1.7.0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ s ∧ ¬(x ∈ s) ⊢ x ∈ s ∧ ¬(x ∈ s)"
-                },
-                {
-                    "args": "f x = 0",
-                    "id": "2.1.7.1",
-                    "prevs": [
-                        "2.1.7.0"
-                    ],
                     "rule": "z3",
-                    "th": "x ∈ s ∧ ¬(x ∈ s) ⊢ f x = 0"
-                },
-                {
-                    "args": "",
-                    "id": "2.1.7.2",
-                    "prevs": [
-                        "2.1.7.0",
-                        "2.1.7.1"
-                    ],
-                    "rule": "intros",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}), x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ x ∈ s ∧ ¬(x ∈ s) ⟶ f x = 0"
-                },
-                {
-                    "args": "x ∈ s ∧ ¬¬(f x = 0) ⟶ f x = 0",
-                    "id": "2.1.8",
-                    "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ x ∈ s ∧ ¬¬(f x = 0) ⟶ f x = 0"
-                },
-                {
-                    "args": "disjE",
-                    "id": "2.1.9",
-                    "prevs": [
-                        "2.1.6",
-                        "2.1.7",
-                        "2.1.8"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}), ∀x. x ∈ s ⟶ 0 ≤ f x, real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ f x = 0"
-                },
-                {
-                    "args": "",
-                    "id": "2.1.10",
-                    "prevs": [
-                        "2.1.0",
-                        "2.1.1",
-                        "2.1.9"
-                    ],
-                    "rule": "intros",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ ∀x. x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⟶ f x = 0"
+                    "th": "⊢ ∀x. x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⟶ f x = 0"
                 },
                 {
                     "args": "conjI",
@@ -32368,70 +32189,6 @@
                 },
                 {
                     "goal_id": "2.1",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.1"
-                    ],
-                    "goal_id": "2.1.2",
-                    "method_name": "rewrite_fact",
-                    "theorem": "diff_def"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.2"
-                    ],
-                    "goal_id": "2.1.3",
-                    "method_name": "rewrite_fact",
-                    "theorem": "member_collect"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.3"
-                    ],
-                    "goal_id": "2.1.4",
-                    "method_name": "rewrite_fact",
-                    "theorem": "member_collect"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.4"
-                    ],
-                    "goal_id": "2.1.5",
-                    "method_name": "rewrite_fact",
-                    "theorem": "de_morgan_thm1"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.5"
-                    ],
-                    "goal_id": "2.1.6",
-                    "method_name": "rewrite_fact",
-                    "theorem": "conj_disj_distribL1"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.6"
-                    ],
-                    "goal_id": "2.1.7",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjE"
-                },
-                {
-                    "goal_id": "2.1.7",
-                    "method_name": "introduction"
-                },
-                {
-                    "fact_ids": [
-                        "2.1.7.0"
-                    ],
-                    "goal_id": "2.1.7.1",
-                    "method_name": "z3"
-                },
-                {
-                    "goal_id": "2.1.8",
                     "method_name": "z3"
                 },
                 {

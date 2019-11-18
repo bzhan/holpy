@@ -450,8 +450,9 @@ class rewrite_goal_macro(ProofTermMacro):
 
 class rewrite_fact_macro(ProofTermMacro):
     """Rewrite a fact in the proof using a theorem."""
-    def __init__(self):
+    def __init__(self, *, sym=False):
         self.level = 1
+        self.sym = sym
         self.sig = str
 
     def get_proof_term(self, thy, args, pts):
@@ -463,10 +464,11 @@ class rewrite_fact_macro(ProofTermMacro):
         # eq_pt should be an equality
         assert eq_pt.prop.is_equals(), "rewrite_fact: theorem is not an equality"
 
+        rewr_cv = rewr_conv(th_name, sym=self.sym)
         # Check rewriting using the theorem has an effect
-        assert not top_sweep_conv(rewr_conv(th_name)).eval(thy, pts[0].prop).is_reflexive(), "rewrite_fact"
+        assert not top_sweep_conv(rewr_cv).eval(thy, pts[0].prop).is_reflexive(), "rewrite_fact"
 
-        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt)),
+        cv = then_conv(top_sweep_conv(rewr_cv),
                        top_conv(beta_conv()))
         return pts[0].on_prop(thy, cv)
 
@@ -657,6 +659,7 @@ macro.global_macros.update({
     "rewrite_goal_with_prev": rewrite_goal_with_prev_macro(),
     "rewrite_goal_with_prev_sym": rewrite_goal_with_prev_macro(sym=True),
     "rewrite_fact": rewrite_fact_macro(),
+    "rewrite_fact_sym": rewrite_fact_macro(sym=True),
     "rewrite_fact_with_prev": rewrite_fact_with_prev_macro(),
     "trivial": trivial_macro(),
     "imp_conj": imp_conj_macro(),

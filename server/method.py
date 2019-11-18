@@ -161,7 +161,7 @@ class rewrite_goal(Method):
 class rewrite_fact(Method):
     """Rewrite fact using a theorem."""
     def __init__(self):
-        self.sig = ['theorem']
+        self.sig = ['theorem', 'sym']
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -170,29 +170,39 @@ class rewrite_fact(Method):
         thy = state.thy
         results = []
 
-        def search_thm(th_name):
+        def search_thm(th_name, sym):
             try:
-                pt = logic.rewrite_fact_macro().get_proof_term(thy, th_name, prevs)
-                results.append({"theorem": th_name, "_fact": [pt.prop]})
-            except (AssertionError, matcher.MatchException):
+                sym_b = True if sym == 'true' else False
+                pt = logic.rewrite_fact_macro(sym=sym_b).get_proof_term(thy, th_name, prevs)
+                results.append({"theorem": th_name, "sym": sym, "_fact": [pt.prop]})
+            except (AssertionError, matcher.MatchException) as e:
+                # print(e)
                 pass
 
         if data:
-            search_thm(data['theorem'])
+            search_thm(data['theorem'], data['sym'])
         else:
             for th_name in thy.get_data("theorems"):
                 if 'hint_rewrite' in thy.get_attributes(th_name):
-                    search_thm(th_name)
+                    search_thm(th_name, 'false')
+                if 'hint_rewrite_sym' in thy.get_attributes(th_name):
+                    search_thm(th_name, 'true')
 
         return sorted(results, key=lambda d: d['theorem'])
 
     @settings.with_settings
     def display_step(self, state, data):
-        return pprint.N(data['theorem'] + " (r)")
+        if 'sym' in data and data['sym'] == 'true':
+            return pprint.N(data['theorem'] + " (sym, r)")
+        else:
+            return pprint.N(data['theorem'] + " (r)")
 
     def apply(self, state, id, data, prevs):
         state.add_line_before(id, 1)
-        state.set_line(id, 'rewrite_fact', args=data['theorem'], prevs=prevs)
+        if 'sym' in data and data['sym'] == 'true':
+            state.set_line(id, 'rewrite_fact_sym', args=data['theorem'], prevs=prevs)
+        else:
+            state.set_line(id, 'rewrite_fact', args=data['theorem'], prevs=prevs)
 
         id2 = id.incr_id(1)
         new_id = state.find_goal(state.get_proof_item(id2).th, id2)
