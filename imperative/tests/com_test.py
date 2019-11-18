@@ -99,7 +99,10 @@ class ComTest(unittest.TestCase):
         goal = vc.convert_hol({"a": "int"})
         As, C = goal.strip_implies()
         state = ProofState.init_state(thy, get_vars(goal), As, C)
-        state.rewrite_goal(0, "int_abs_def")
+        method.apply_method(state, {
+            'method_name': 'rewrite_goal',
+            'theorem': 'int_abs_def',
+            'goal_id': '0'})
         method.apply_method(state, {
             'method_name': 'z3',
             'goal_id': "0"})
@@ -122,7 +125,10 @@ class ComTest(unittest.TestCase):
         goal = vc.convert_hol({"m": "int", "n": "int"})
         As, C = goal.strip_implies()
         state = ProofState.init_state(thy, get_vars(goal), As, C)
-        state.rewrite_goal(0, "int_max_def")
+        method.apply_method(state, {
+            'method_name': 'rewrite_goal',
+            'theorem': 'int_max_def',
+            'goal_id': '0'})
         method.apply_method(state, {
             'method_name': 'z3',
             'goal_id': "0"})
