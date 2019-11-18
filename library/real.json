@@ -12,7 +12,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_rewrite_sym"
             ],
             "name": "zero",
             "prop": "zero = of_nat (zero::nat)",
@@ -21,7 +22,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_rewrite_sym"
             ],
             "name": "one",
             "prop": "one = of_nat (one::nat)",
@@ -5497,6 +5499,65 @@
             "ty": "thm",
             "vars": {
                 "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_arch_lt",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "real_arch_simple, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃n. x ≤ of_nat n"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ∃n. x < of_nat n"
+                }
+            ],
+            "prop": "?n. x < of_nat n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "real_arch_simple"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_arch",
+            "prop": "0 < x --> !y. ?n. y < of_nat n * x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_arch_inv",
+            "prop": "0 < e <--> ?n. ~(n = 0) & 0 < real_inverse (of_nat n) & real_inverse (of_nat n) < e",
+            "ty": "thm",
+            "vars": {
+                "e": "real"
             }
         },
         {

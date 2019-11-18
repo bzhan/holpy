@@ -7911,6 +7911,34 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "exists_in_gspec1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(∃z. z ∈ {y. ∃x. y = f x ∧ P x} ∧ Q z) ⟷ (∃x. P x ∧ Q (f x))",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (∃z. z ∈ {y. ∃x. y = f x ∧ P x} ∧ Q z) ⟷ (∃x. P x ∧ Q (f x))"
+                }
+            ],
+            "prop": "(∃z. z ∈ {y. ∃x. y = f x} ∧ Q z) ⟷ (∃x. Q (f x))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "Q": "'b => bool",
+                "f": "'a => 'b"
+            }
+        },
+        {
             "name": "countable",
             "ty": "def.ax",
             "type": "'a set => bool"
