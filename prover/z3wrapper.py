@@ -65,92 +65,109 @@ def convert_const(name, T):
     else:
         return z3.Const(name, z3_T)
 
-def convert(t):
+def convert(t, var_names, assms, to_real):
     """Convert term t to Z3 input."""
-    if t.is_var():
-        return convert_const(t.name, t.T)
-    elif t.is_all():
-        var_names = [v.name for v in term.get_vars(t.arg.body)]
-        nm = name.get_variant_name(t.arg.var_name, var_names)
-        v = Var(nm, t.arg.var_T)
-        z3_v = convert_const(nm, t.arg.var_T)
-        return z3.ForAll(z3_v, convert(t.arg.subst_bound(v)))
-    elif logic.is_exists(t):
-        var_names = [v.name for v in term.get_vars(t.arg.body)]
-        nm = name.get_variant_name(t.arg.var_name, var_names)
-        v = Var(nm, t.arg.var_T)
-        z3_v = convert_const(nm, t.arg.var_T)
-        return z3.Exists(z3_v, convert(t.arg.subst_bound(v)))
-    elif int.is_binary_int(t):
-        return int.from_binary_int(t)
-    elif t.is_implies():
-        return z3.Implies(convert(t.arg1), convert(t.arg))
-    elif t.is_equals():
-        return convert(t.arg1) == convert(t.arg)
-    elif logic.is_conj(t):
-        return z3.And(convert(t.arg1), convert(t.arg))
-    elif logic.is_disj(t):
-        return z3.Or(convert(t.arg1), convert(t.arg))
-    elif logic.is_if(t):
-        b, t1, t2 = t.args
-        return z3.If(convert(b), convert(t1), convert(t2))
-    elif logic.is_neg(t):
-        return z3.Not(convert(t.arg))
-    elif t.head.is_const_name('plus'):
-        return convert(t.arg1) + convert(t.arg)
-    elif t.head.is_const_name('minus'):
-        m, n = convert(t.arg1), convert(t.arg)
-        if t.arg1.get_type() == nat.natT:
-            return z3.If(m >= n, m - n, 0)
-        return m - n
-    elif t.head.is_const_name('uminus'):
-        return -convert(t.arg)
-    elif t.head.is_const_name('times'):
-        return convert(t.arg1) * convert(t.arg)
-    elif t.head.is_const_name('less_eq'):
-        return convert(t.arg1) <= convert(t.arg)
-    elif t.head.is_const_name('less'):
-        return convert(t.arg1) < convert(t.arg)
-    elif t.head.is_const_name('greater_eq'):
-        return convert(t.arg1) >= convert(t.arg)
-    elif t.head.is_const_name('greater'):
-        return convert(t.arg1) > convert(t.arg)
-    elif t.head.is_const_name('real_divide'):
-        return convert(t.arg1) / convert(t.arg)
-    elif t.head.is_const_name('zero'):
-        return 0
-    elif t.head.is_const_name('one'):
-        return 1
-    elif t.is_comb() and t.head.is_const_name('of_nat'):
-        if nat.is_binary(t.arg):
-            return nat.from_binary(t.arg)
-        elif t.get_type() == realT:
-            return z3.ToReal(convert(t.arg))
+    def rec(t):
+        if t.is_var():
+            z3_t = convert_const(t.name, t.T)
+            if t.T == nat.natT and t.name not in assms:
+                assms[t.name] = z3_t >= 0
+            return z3_t
+        elif t.is_all():
+            nm = name.get_variant_name(t.arg.var_name, var_names)
+            var_names.append(nm)
+            v = Var(nm, t.arg.var_T)
+            z3_v = convert_const(nm, t.arg.var_T)
+            return z3.ForAll(z3_v, rec(t.arg.subst_bound(v)))
+        elif logic.is_exists(t):
+            nm = name.get_variant_name(t.arg.var_name, var_names)
+            var_names.append(nm)
+            v = Var(nm, t.arg.var_T)
+            z3_v = convert_const(nm, t.arg.var_T)
+            return z3.Exists(z3_v, rec(t.arg.subst_bound(v)))
+        elif int.is_binary_int(t):
+            return int.from_binary_int(t)
+        elif t.is_implies():
+            return z3.Implies(rec(t.arg1), rec(t.arg))
+        elif t.is_equals():
+            return rec(t.arg1) == rec(t.arg)
+        elif logic.is_conj(t):
+            return z3.And(rec(t.arg1), rec(t.arg))
+        elif logic.is_disj(t):
+            return z3.Or(rec(t.arg1), rec(t.arg))
+        elif logic.is_if(t):
+            b, t1, t2 = t.args
+            return z3.If(rec(b), rec(t1), rec(t2))
+        elif logic.is_neg(t):
+            return z3.Not(rec(t.arg))
+        elif t.head.is_const_name('plus'):
+            return rec(t.arg1) + rec(t.arg)
+        elif t.head.is_const_name('minus'):
+            m, n = rec(t.arg1), rec(t.arg)
+            if t.arg1.get_type() == nat.natT:
+                return z3.If(m >= n, m - n, 0)
+            return m - n
+        elif t.head.is_const_name('uminus'):
+            return -rec(t.arg)
+        elif t.head.is_const_name('times'):
+            return rec(t.arg1) * rec(t.arg)
+        elif t.head.is_const_name('less_eq'):
+            return rec(t.arg1) <= rec(t.arg)
+        elif t.head.is_const_name('less'):
+            return rec(t.arg1) < rec(t.arg)
+        elif t.head.is_const_name('greater_eq'):
+            return rec(t.arg1) >= rec(t.arg)
+        elif t.head.is_const_name('greater'):
+            return rec(t.arg1) > rec(t.arg)
+        elif t.head.is_const_name('real_divide'):
+            return rec(t.arg1) / rec(t.arg)
+        elif t.head.is_const_name('zero'):
+            return 0
+        elif t.head.is_const_name('one'):
+            return 1
+        elif t.is_comb() and t.head.is_const_name('of_nat'):
+            if nat.is_binary(t.arg):
+                return nat.from_binary(t.arg)
+            elif t.get_type() == realT:
+                if t.arg.is_var():
+                    if t.arg.name not in to_real:
+                        nm = name.get_variant_name("r" + t.arg.name, var_names)
+                        var_names.append(nm)
+                        to_real[t.arg.name] = nm
+                        z3_t = convert_const(nm, realT)
+                        assms[nm] = z3_t >= 0
+                        return z3_t
+                    else:
+                        return convert_const(to_real[t.arg.name], realT)
+                return z3.ToReal(rec(t.arg))
+            else:
+                raise Z3Exception("convert: unsupported of_nat " + repr(t))
+        elif t.head.is_const_name('max'):
+            a, b = rec(t.arg1), rec(t.arg)
+            return z3.If(a >= b, a, b)
+        elif t.head.is_const_name('min'):
+            a, b = rec(t.arg1), rec(t.arg)
+            return z3.If(a <= b, a, b)
+        elif t.head.is_const_name('abs'):
+            a = rec(t.arg)
+            return z3.If(a >= 0, a, -a)
+        elif t.head.is_const_name('member'):
+            a, S = rec(t.arg1), rec(t.arg)
+            return S(a)
+        elif t.is_comb():
+            return rec(t.fun)(rec(t.arg))
+        elif t.is_const():
+            if t == logic.true:
+                return z3.BoolVal(True)
+            elif t == logic.false:
+                return z3.BoolVal(False)
+            else:
+                raise Z3Exception("convert: unsupported constant " + repr(t))
         else:
-            raise Z3Exception("convert: unsupported of_nat " + repr(t))
-    elif t.head.is_const_name('max'):
-        a, b = convert(t.arg1), convert(t.arg)
-        return z3.If(a >= b, a, b)
-    elif t.head.is_const_name('min'):
-        a, b = convert(t.arg1), convert(t.arg)
-        return z3.If(a <= b, a, b)
-    elif t.head.is_const_name('abs'):
-        a = convert(t.arg)
-        return z3.If(a >= 0, a, -a)
-    elif t.head.is_const_name('member'):
-        a, S = convert(t.arg1), convert(t.arg)
-        return S(a)
-    elif t.is_comb():
-        return convert(t.fun)(convert(t.arg))
-    elif t.is_const():
-        if t == logic.true:
-            return z3.BoolVal(True)
-        elif t == logic.false:
-            return z3.BoolVal(False)
-        else:
-            raise Z3Exception("convert: unsupported constant " + repr(t))
-    else:
-        raise Z3Exception("convert: unsupported operation " + repr(t))
+            raise Z3Exception("convert: unsupported operation " + repr(t))
+
+    return rec(t)
+
 
 norm_thms = [
     'member_empty_simp',
@@ -188,14 +205,19 @@ def solve(thy, t):
     _, As, C = logic.strip_all_implies(t, new_names, svar=False)
 
     try:
-        for v in term.get_vars(As + [C]):
-            if v.T == nat.natT:
-                s.add(convert_const(v.name, v.T) >= 0)
+        var_names = [v.name for v in term.get_vars(As + [C])]
+        assms = dict()
+        to_real = dict()
         for A in As:
-            # print('A', convert(A))
-            s.add(convert(A))
-        # print('C', convert(C))
-        s.add(z3.Not(convert(C)))
+            z3_A = convert(A, var_names, assms, to_real)
+            # print('A', z3_A)
+            s.add(z3_A)
+        z3_C = convert(C, var_names, assms, to_real)
+        # print('C', z3_C)
+        s.add(z3.Not(z3_C))
+        for nm, A in assms.items():
+            # print('A', A)
+            s.add(A)
         return str(s.check()) == 'unsat'
     except Z3Exception as e:
         # print(e)

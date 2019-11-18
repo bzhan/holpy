@@ -105,6 +105,8 @@ class Z3WrapperTest(unittest.TestCase):
             ('S ∪ T = S ∩ T ∪ {x. x ∈ S ∧ ¬x ∈ T} ∪ {x. x ∈ T ∧ ¬x ∈ S}', True),
             ('(0::real) <= (if x Mem s & 1 / (of_nat n + 1) <= abs (f x) then 1 else 0)', True),
             ('(0::real) <= of_nat n + 1', True),
+            ('1 / (of_nat n + 1) < b --> 1 < (of_nat n + 1) * b', True),
+            ('1 / (a + 1) < b --> 1 < (a + 1) * b', False)
         ]
 
         for s, res in test_data:
