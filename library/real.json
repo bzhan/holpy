@@ -5300,7 +5300,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_rewrite_sym"
             ],
             "name": "real_abs_mul",
             "num_gaps": 0,
@@ -5447,18 +5448,6 @@
             }
         },
         {
-            "name": "real_sgn",
-            "prop": "real_sgn x = if 0 < x then 1 else if x <0 then -1 else 0",
-            "ty": "def",
-            "type": "real ⇒ real"
-        },
-        {
-            "name": "sqrt",
-            "prop": "sqrt x = THE y. real_sgn y =  real_sgn x & y ^ (2::nat) = abs x",
-            "ty": "def",
-            "type": "real ⇒ real"
-        },
-        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -5498,6 +5487,29 @@
             "vars": {
                 "x": "real"
             }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "real_arch_simple",
+            "prop": "?n. x <= of_nat n",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "name": "real_sgn",
+            "prop": "real_sgn x = if 0 < x then 1 else if x <0 then -1 else 0",
+            "ty": "def",
+            "type": "real ⇒ real"
+        },
+        {
+            "name": "sqrt",
+            "prop": "sqrt x = THE y. real_sgn y =  real_sgn x & y ^ (2::nat) = abs x",
+            "ty": "def",
+            "type": "real ⇒ real"
         }
     ],
     "description": "real numbers",
