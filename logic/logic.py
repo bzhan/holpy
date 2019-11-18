@@ -260,10 +260,13 @@ class intros_macro(ProofTermMacro):
         self.sig = List[Term]
 
     def get_proof_term(self, thy, args, prevs):
-        assert len(prevs) >= 2, "intros_macro"
+        assert len(prevs) >= 1, "intros_macro"
         if args is None:
             args = []
-        pt, intros = prevs[-1], prevs[:-1]        
+        pt, intros = prevs[-1], prevs[:-1]
+        if len(prevs) == 1:
+            return apply_theorem(thy, 'trivial', pt)
+
         for intro in reversed(intros):
             if intro.th.prop.is_VAR():  # variable case
                 pt = ProofTerm.forall_intr(intro.prop.arg, pt)
