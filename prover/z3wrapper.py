@@ -178,13 +178,21 @@ norm_thms = [
     'member_inter_iff',
     'set_equal_iff',
     'subset_def',
-    'diff_def'
+    'diff_def',
+    ('real_zero_def', True),
+    ('real_one_def', True),
+    ('real_of_nat_add', True),
+    ('real_of_nat_mul', True),
 ]
 
 def norm_term(thy, t):
     # Collect list of theorems that can be used.
-    th_names = [name for name in norm_thms if thy.has_theorem(name)]
-    cvs = [conv.try_conv(conv.rewr_conv(th_name)) for th_name in th_names]
+    cvs = []
+    for th_name in norm_thms:
+        if isinstance(th_name, str) and thy.has_theorem(th_name):
+            cvs.append(conv.try_conv(conv.rewr_conv(th_name)))
+        elif thy.has_theorem(th_name[0]):
+            cvs.append(conv.try_conv(conv.rewr_conv(th_name[0], sym=True)))
     cvs.append(conv.try_conv(conv.beta_conv()))
     cv = conv.top_conv(conv.every_conv(*cvs))
     while True:
@@ -195,7 +203,7 @@ def norm_term(thy, t):
             t = rhs
     return fologic.simplify(t)
 
-def solve(thy, t):
+def solve(thy, t, debug=False):
     """Solve the given goal using Z3."""
     s = z3.Solver()
 
@@ -204,23 +212,27 @@ def solve(thy, t):
     new_names = logic.get_forall_names(t, svar=False)
     _, As, C = logic.strip_all_implies(t, new_names, svar=False)
 
+    def print_debug(*args):
+        if debug:
+            print(*args)
+
     try:
         var_names = [v.name for v in term.get_vars(As + [C])]
         assms = dict()
         to_real = dict()
         for A in As:
             z3_A = convert(A, var_names, assms, to_real)
-            # print('A', z3_A)
+            print_debug('A', z3_A)
             s.add(z3_A)
         z3_C = convert(C, var_names, assms, to_real)
-        # print('C', z3_C)
+        print_debug('C', z3_C)
         s.add(z3.Not(z3_C))
         for nm, A in assms.items():
-            # print('A', A)
+            print_debug('A', A)
             s.add(A)
         return str(s.check()) == 'unsat'
     except Z3Exception as e:
-        # print(e)
+        print_debug(e)
         return False
 
 class Z3Macro(ProofMacro):

@@ -404,6 +404,15 @@
             "ty": "header"
         },
         {
+            "attributes": [],
+            "name": "trivial",
+            "prop": "A ⟶ A",
+            "ty": "thm",
+            "vars": {
+                "A": "bool"
+            }
+        },
+        {
             "attributes": [
                 "hint_resolve"
             ],

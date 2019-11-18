@@ -106,7 +106,8 @@ class Z3WrapperTest(unittest.TestCase):
             ('(0::real) <= (if x Mem s & 1 / (of_nat n + 1) <= abs (f x) then 1 else 0)', True),
             ('(0::real) <= of_nat n + 1', True),
             ('1 / (of_nat n + 1) < b --> 1 < (of_nat n + 1) * b', True),
-            ('1 / (a + 1) < b --> 1 < (a + 1) * b', False)
+            ('1 / (a + 1) < b --> 1 < (a + 1) * b', False),
+            ('a <= of_nat n --> a < of_nat (n + 1)', True),
         ]
 
         for s, res in test_data:

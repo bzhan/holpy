@@ -100,8 +100,7 @@ class ProofState():
         state.prf = Proof(*assums)
         n = len(assums)
         state.prf.add_item(n, "sorry", th=Thm(assums, concl))
-        if len(assums) > 0:
-            state.prf.add_item(n + 1, "intros", prevs=range(n+1))
+        state.prf.add_item(n + 1, "intros", prevs=range(n+1))
         state.check_proof(compute_only=True)
         return state
 
@@ -323,60 +322,3 @@ class ProofState():
             if item.rule == 'sorry':
                 if logic.trivial_macro().can_eval(self.thy, item.th.prop):
                     self.set_line(item.id, 'trivial', args=item.th.prop)
-
-    def apply_backward_step(self, id, th_name, *, prevs=None, instsp=None):
-        """Apply backward step using the given theorem.
-        
-        prevs - list of previous proved facts to use.
-        inst - existing instantiation.
-
-        """
-        self.apply_tactic(id, tactic.rule(), args=(th_name, instsp), prevs=prevs)
-
-    def apply_forward_step(self, id, th_name, prevs=None):
-        """Apply forward step using the given theorem."""
-        method.apply_method(self, {
-            'method_name': 'apply_forward_step',
-            'goal_id': id, 'fact_ids': prevs, 'theorem': th_name
-        })
-
-    def introduction(self, id, names=None):
-        """Introduce variables and assumptions."""
-        if names is None:
-            names = ""
-        elif isinstance(names, list):
-            names = ",".join(names)
-        method.apply_method(self, {
-            'method_name': 'introduction',
-            'goal_id': id, 'fact_ids': [], 'names': names
-        })
-
-    def apply_forall_elim(self, id, prev, s):
-        """Elimination of forall statement."""
-        method.apply_method(self, {
-            'method_name': 'forall_elim',
-            'goal_id': id, 'fact_ids': [prev], 's': s
-        })
-
-    def apply_induction(self, id, th_name, var):
-        """Apply induction using the given theorem and variable."""
-        method.apply_method(self, {
-            'method_name': 'induction',
-            'goal_id': id, 'fact_ids': [], 'theorem': th_name, 'var': var
-        })
-
-    def rewrite_goal(self, id, th_name, *, backward=False, prevs=None):
-        """Apply an existing equality theorem to the given goal."""
-        self.apply_tactic(id, tactic.rewrite_goal(), args=th_name, prevs=prevs)
-
-    def rewrite_goal_with_prev(self, id, prev):
-        """Apply existence fact to the given goal."""
-        self.apply_tactic(id, tactic.rewrite_goal_with_prev(), prevs=[prev])
-
-    def apply_cases(self, id, A):
-        """Apply case analysis on A."""
-        self.apply_tactic(id, tactic.cases(), args=A)
-
-    def apply_prev(self, id, prev):
-        """Apply previously proved rule."""
-        self.apply_tactic(id, tactic.apply_prev(), prevs=[prev])

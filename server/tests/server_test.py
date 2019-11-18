@@ -140,15 +140,20 @@ def testSteps(self, thy_name, thm_name, *, no_gaps=True, print_proof=False, \
                 test_val(thy, val)
 
 class ServerTest(unittest.TestCase):
-    def testInitProof(self):
+    def testInitState(self):
         state = ProofState.init_state(thy, [A, B], [conj(A, B)], conj(B, A))
         self.assertEqual(len(state.prf.items), 3)
         self.assertEqual(state.check_proof(), Thm.mk_implies(conj(A, B), conj(B, A)))
 
-    def testInitProof2(self):
+    def testInitState2(self):
         state = ProofState.init_state(thy, [A, B], [A, B], conj(A, B))
         self.assertEqual(len(state.prf.items), 4)
         self.assertEqual(state.check_proof(), Thm.mk_implies(A, B, conj(A, B)))
+
+    def testInitState3(self):
+        state = ProofState.init_state(thy, [A], [], disj(A, logic.neg(A)))
+        self.assertEqual(len(state.prf.items), 2)
+        self.assertEqual(state.check_proof(), Thm([], disj(A, logic.neg(A))))
 
     def testParseInitState(self):
         state = ProofState.parse_init_state(
