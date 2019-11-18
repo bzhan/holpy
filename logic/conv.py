@@ -307,9 +307,12 @@ class rewr_conv(Conv):
         if self.conds:
             pt = ProofTerm.implies_elim(pt, *self.conds)
 
-        if not (pt.th.is_equals() and pt.th.prop.lhs == t):
-            raise ConvException("rewr_conv: wrong result")
+        assert pt.th.is_equals(), "rewr_conv: wrong result."
 
+        if pt.th.prop.lhs != t:
+            pt = top_conv(beta_conv()).apply_to_pt(thy, pt)
+
+        assert pt.th.prop.lhs == t, "rewr_conv: wrong result"
         return pt
 
 def has_rewrite(thy, th, t, *, sym=False, conds=None):

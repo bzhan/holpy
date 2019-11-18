@@ -263,6 +263,7 @@ def get_ast_term(thy, t):
         return term_ast[(thy, t, settings.unicode())]
 
     assert isinstance(t, term.Term), "get_ast_term: input is not a term."
+    var_names = [v.name for v in term.get_vars(t)]
 
     # Import modules for custom parsed data
     from logic import logic
@@ -351,11 +352,12 @@ def get_ast_term(thy, t):
             return Interval(helper(t.arg1, bd_vars), helper(t.arg, bd_vars), t.get_type())
 
         elif t.is_comb() and t.fun.is_const_name('collect') and t.arg.is_abs():
-            var_names = [v.name for v in term.get_vars(t.arg.body)]
             nm = name.get_variant_name(t.arg.var_name, var_names)
+            var_names.append(nm)
 
             bind_var = Bound(nm, t.arg.var_T)
             body_ast = helper(t.arg.body, [bind_var] + bd_vars)
+            var_names.remove(nm)
 
             return Collect(bind_var, body_ast, t.get_type())
 
@@ -422,13 +424,14 @@ def get_ast_term(thy, t):
                 binder_str = binder_data.unicode_op if settings.unicode() else binder_data.ascii_op
                 op_ast = Binder(binder_str)
 
-                var_names = [v.name for v in term.get_vars(t.arg.body)]
                 nm = name.get_variant_name(t.arg.var_name, var_names)
+                var_names.append(nm)
 
                 bind_var = Bound(nm, t.arg.var_T)
                 body_ast = helper(t.arg.body, [bind_var] + bd_vars)
                 if hasattr(t.arg, "print_type"):
                     bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
+                var_names.remove(nm)
 
                 return BinderAppl(op_ast, bind_var, body_ast)
 
@@ -455,13 +458,14 @@ def get_ast_term(thy, t):
         elif t.is_abs():
             op_ast = Binder("λ") if settings.unicode() else Binder("%")
 
-            var_names = [v.name for v in term.get_vars(t.body)]
             nm = name.get_variant_name(t.var_name, var_names)
+            var_names.append(nm)
 
             bind_var = Bound(nm, t.var_T)
             body_ast = helper(t.body, [bind_var] + bd_vars)
             if hasattr(t, "print_type"):
                 bind_var = ShowType(bind_var, get_ast_type(thy, bind_var.T))
+            var_names.remove(nm)
 
             return BinderAppl(op_ast, bind_var, body_ast)
 

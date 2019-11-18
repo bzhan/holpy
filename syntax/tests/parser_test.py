@@ -364,7 +364,7 @@ class ParserTest(unittest.TestCase):
             ("∀x::'a. P x", "!x. P x"),
             ("∃x::'a. P x", "?x. P x"),
             ("∀x::'a. P x ∧ Q x", "!x. P x & Q x"),
-            ("(∀x::'a. P x) & Q x", "(!x. P x) & Q x"),
+            ("(∀x::'a. P x) & Q y", "(!x. P x) & Q y"),
         ]
 
         ctxt = Context('logic_base', vars={

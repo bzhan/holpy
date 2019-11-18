@@ -442,9 +442,13 @@ def parse_thm(ctxt, s):
     """Parse a theorem (sequent)."""
     parser_setting['thy'] = ctxt.thy
     parser_setting['ctxt'] = ctxt
-    th = thm_parser.parse(s)
-    th.hyps = tuple(infertype.type_infer(ctxt, hyp) for hyp in th.hyps)
-    th.prop = infertype.type_infer(ctxt, th.prop)
+    try:
+        th = thm_parser.parse(s)
+        th.hyps = tuple(infertype.type_infer(ctxt, hyp) for hyp in th.hyps)
+        th.prop = infertype.type_infer(ctxt, th.prop)
+    except (term.OpenTermException, exceptions.UnexpectedToken, exceptions.UnexpectedCharacters, infertype.TypeInferenceException) as e:
+        print("When parsing:", s)
+        raise e
     return th
 
 def parse_inst(ctxt, s):
