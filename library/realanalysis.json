@@ -832,8 +832,11 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_series_unique",
-            "prop": "real_sums f l1 s & real_sums f l2 s --> l1 = l2",
+            "prop": "real_sums f l1 s ∧ real_sums f l2 s ⟶ l1 = l2",
             "ty": "thm",
             "vars": {
                 "f": "nat => real",
@@ -986,8 +989,11 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_series_0",
-            "prop": "real_sums (%n. 0) 0 s",
+            "prop": "real_sums (λn. 0) 0 s",
             "ty": "thm",
             "vars": {
                 "s": "nat set"

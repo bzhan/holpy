@@ -1,8 +1,11 @@
 {
     "content": [
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "nat_interval",
-            "prop": "nat_interval m n = {p. less_eq m p & less_eq p n}",
+            "prop": "{m..n} = {p. m ≤ p ∧ p ≤ n}",
             "ty": "def",
             "type": "nat ⇒ nat ⇒ nat set"
         },
@@ -66,8 +69,53 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "member_numseg",
-            "prop": "member p {m..n} = (m <= p & p <= n)",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "member_collect, p ∈ {p1. m ≤ p1 ∧ p1 ≤ n} ⟷ m ≤ p ∧ p ≤ n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ p ∈ {p1. m ≤ p1 ∧ p1 ≤ n} ⟷ m ≤ p ∧ p ≤ n"
+                },
+                {
+                    "args": "nat_interval_def, p ∈ {m..n} ⟷ m ≤ p ∧ p ≤ n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ p ∈ {m..n} ⟷ m ≤ p ∧ p ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ p ∈ {m..n} ⟷ m ≤ p ∧ p ≤ n"
+                }
+            ],
+            "prop": "p ∈ {m..n} ⟷ m ≤ p ∧ p ≤ n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_interval_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -766,6 +814,1095 @@
             "attributes": [
                 "hint_rewrite"
             ],
+            "name": "support_support",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ {x1. (x1 ∈ s ∧ ¬(f x1 = neutral op)) ∧ ¬(f x1 = neutral op)} ⟷ x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = neutral op)}"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op) ⟶ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "(x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op)",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op) ⊢ (x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.1.1",
+                    "prevs": [
+                        "0.1.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op) ⊢ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.2",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op) ⟶ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ x ∈ s ∧ ¬(f x = neutral op) ⟶ (x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "x ∈ s ∧ ¬(f x = neutral op)",
+                    "id": "0.2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "0.2.1",
+                    "prevs": [
+                        "0.2.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.2.2",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ (x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2.3",
+                    "prevs": [
+                        "0.2.0",
+                        "0.2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ x ∈ s ∧ ¬(f x = neutral op) ⟶ (x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.1",
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op) ⟷ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "member_collect, x ∈ {x1. (x1 ∈ s ∧ ¬(f x1 = neutral op)) ∧ ¬(f x1 = neutral op)} ⟷ x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = neutral op)}",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ x ∈ {x1. (x1 ∈ s ∧ ¬(f x1 = neutral op)) ∧ ¬(f x1 = neutral op)} ⟷ x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = neutral op)}"
+                },
+                {
+                    "args": "",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.0",
+                        "0.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ {x1. (x1 ∈ s ∧ ¬(f x1 = neutral op)) ∧ ¬(f x1 = neutral op)} ⟷ x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = neutral op)}"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ {x. (x ∈ s ∧ ¬(f x = neutral op)) ∧ ¬(f x = neutral op)} = {x. x ∈ s ∧ ¬(f x = neutral op)}"
+                },
+                {
+                    "args": "in_support, {x. x ∈ support op f s ∧ ¬(f x = neutral op)} = {x. x ∈ s ∧ ¬(f x = neutral op)}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ {x. x ∈ support op f s ∧ ¬(f x = neutral op)} = {x. x ∈ s ∧ ¬(f x = neutral op)}"
+                },
+                {
+                    "args": "support_def, support op f (support op f s) = support op f s",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ support op f (support op f s) = support op f s"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ support op f (support op f s) = support op f s"
+                }
+            ],
+            "prop": "support op f (support op f s) = support op f s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_support"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.0"
+                    ],
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "0.2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.2.0"
+                    ],
+                    "goal_id": "0.2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b => 'a",
+                "op": "'a => 'a => 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "support_eq_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∀x. x ∈ s ⟶ f x = neutral op) ⟶ support op f s = ∅"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ f x = neutral op",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op ⊢ ∀x. x ∈ s ⟶ f x = neutral op"
+                },
+                {
+                    "args": "",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op ⊢ ∀x. x ∈ support op f s ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "0.1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟶ false"
+                },
+                {
+                    "args": "x ∈ s ∧ ¬(f x = neutral op)",
+                    "id": "0.1.1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "conjD1, {}, {A: x ∈ s, B: ¬(f x = neutral op)}",
+                    "id": "0.1.1.1",
+                    "prevs": [
+                        "0.1.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ x ∈ s"
+                },
+                {
+                    "args": "conjD2, {}, {A: x ∈ s, B: ¬(f x = neutral op)}",
+                    "id": "0.1.1.2",
+                    "prevs": [
+                        "0.1.1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.3",
+                    "prevs": [
+                        "0.0",
+                        "0.1.1.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op, x ∈ s ∧ ¬(f x = neutral op) ⊢ f x = neutral op"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.4",
+                    "prevs": [
+                        "0.1.1.3",
+                        "0.1.1.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op, x ∈ s ∧ ¬(f x = neutral op) ⊢ ¬(neutral op = neutral op)"
+                },
+                {
+                    "args": "negE",
+                    "id": "0.1.1.5",
+                    "prevs": [
+                        "0.1.1.2",
+                        "0.1.1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op), ∀x. x ∈ s ⟶ f x = neutral op ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.1.6",
+                    "prevs": [
+                        "0.1.1.0",
+                        "0.1.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟶ false"
+                },
+                {
+                    "args": "false ⟶ x ∈ s ∧ ¬(f x = neutral op)",
+                    "id": "0.1.2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ false ⟶ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "0.1.3",
+                    "prevs": [
+                        "0.1.1",
+                        "0.1.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟷ false"
+                },
+                {
+                    "args": "member_empty_simp, x ∈ s ∧ ¬(f x = neutral op) ⟷ x ∈ ∅",
+                    "id": "0.1.4",
+                    "prevs": [
+                        "0.1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "in_support, x ∈ support op f s ⟷ x ∈ ∅",
+                    "id": "0.1.5",
+                    "prevs": [
+                        "0.1.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op ⊢ x ∈ support op f s ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.1.6",
+                    "prevs": [
+                        "0.1.0",
+                        "0.1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op ⊢ ∀x. x ∈ support op f s ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ f x = neutral op ⊢ support op f s = ∅"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.0",
+                        "0.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ f x = neutral op) ⟶ support op f s = ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ support op f s = ∅ ⟶ (∀x. x ∈ s ⟶ f x = neutral op)"
+                },
+                {
+                    "args": "support op f s = ∅",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "support op f s = ∅ ⊢ support op f s = ∅"
+                },
+                {
+                    "args": "set_equal_iff",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "support op f s = ∅ ⊢ ∀x. x ∈ support op f s ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "support op f s = ∅ ⊢ ∀x. x ∈ s ⟶ f x = neutral op"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "1.2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "1.2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x",
+                    "id": "1.2.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "support op f s = ∅ ⊢ x ∈ support op f s ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "in_support",
+                    "id": "1.2.3",
+                    "prevs": [
+                        "1.2.2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "support op f s = ∅ ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟷ x ∈ ∅"
+                },
+                {
+                    "args": "member_empty_simp",
+                    "id": "1.2.4",
+                    "prevs": [
+                        "1.2.3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "support op f s = ∅ ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟷ false"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.5",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "support op f s = ∅, x ∈ s ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟶ false"
+                },
+                {
+                    "args": "x ∈ s ∧ ¬(f x = neutral op)",
+                    "id": "1.2.5.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ∧ ¬(f x = neutral op) ⊢ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.5.1",
+                    "prevs": [
+                        "1.2.4",
+                        "1.2.5.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "support op f s = ∅, x ∈ s ∧ ¬(f x = neutral op) ⊢ false"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.5.2",
+                    "prevs": [
+                        "1.2.5.0",
+                        "1.2.5.1"
+                    ],
+                    "rule": "intros",
+                    "th": "support op f s = ∅, x ∈ s ⊢ x ∈ s ∧ ¬(f x = neutral op) ⟶ false"
+                },
+                {
+                    "args": "¬false",
+                    "id": "1.2.6",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬false"
+                },
+                {
+                    "args": "¬(x ∈ s ∧ ¬(f x = neutral op))",
+                    "id": "1.2.7",
+                    "prevs": [
+                        "1.2.4",
+                        "1.2.6"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "support op f s = ∅, x ∈ s ⊢ ¬(x ∈ s ∧ ¬(f x = neutral op))"
+                },
+                {
+                    "args": "de_morgan_thm1",
+                    "id": "1.2.8",
+                    "prevs": [
+                        "1.2.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "support op f s = ∅, x ∈ s ⊢ ¬(x ∈ s) ∨ ¬¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.9",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "support op f s = ∅, x ∈ s ⊢ ¬(x ∈ s) ⟶ f x = neutral op"
+                },
+                {
+                    "args": "¬(x ∈ s)",
+                    "id": "1.2.9.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x ∈ s) ⊢ ¬(x ∈ s)"
+                },
+                {
+                    "args": "negE_gen, {}, {A: x ∈ s, C: f x = neutral op}",
+                    "id": "1.2.9.1",
+                    "prevs": [
+                        "1.2.9.0",
+                        "1.2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x ∈ s), x ∈ s ⊢ f x = neutral op"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.9.2",
+                    "prevs": [
+                        "1.2.9.0",
+                        "1.2.9.1"
+                    ],
+                    "rule": "intros",
+                    "th": "support op f s = ∅, x ∈ s ⊢ ¬(x ∈ s) ⟶ f x = neutral op"
+                },
+                {
+                    "args": "∀A. ¬¬A ⟷ A",
+                    "id": "1.2.10",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀A. ¬¬A ⟷ A"
+                },
+                {
+                    "args": "f x = neutral op",
+                    "id": "1.2.11",
+                    "prevs": [
+                        "1.2.10"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ ¬¬(f x = neutral op) ⟷ f x = neutral op"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.12",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "support op f s = ∅, x ∈ s ⊢ ¬¬(f x = neutral op) ⟶ f x = neutral op"
+                },
+                {
+                    "args": "¬¬(f x = neutral op)",
+                    "id": "1.2.12.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬(f x = neutral op) ⊢ ¬¬(f x = neutral op)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.12.1",
+                    "prevs": [
+                        "1.2.11",
+                        "1.2.12.0"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬¬(f x = neutral op) ⊢ f x = neutral op"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.12.2",
+                    "prevs": [
+                        "1.2.12.0",
+                        "1.2.12.1"
+                    ],
+                    "rule": "intros",
+                    "th": "support op f s = ∅, x ∈ s ⊢ ¬¬(f x = neutral op) ⟶ f x = neutral op"
+                },
+                {
+                    "args": "disjE",
+                    "id": "1.2.13",
+                    "prevs": [
+                        "1.2.8",
+                        "1.2.9",
+                        "1.2.12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "support op f s = ∅, x ∈ s ⊢ f x = neutral op"
+                },
+                {
+                    "args": "",
+                    "id": "1.2.14",
+                    "prevs": [
+                        "1.2.0",
+                        "1.2.1",
+                        "1.2.13"
+                    ],
+                    "rule": "intros",
+                    "th": "support op f s = ∅ ⊢ ∀x. x ∈ s ⟶ f x = neutral op"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.0",
+                        "1.2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ support op f s = ∅ ⟶ (∀x. x ∈ s ⟶ f x = neutral op)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∀x. x ∈ s ⟶ f x = neutral op) ⟷ support op f s = ∅"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ f x = neutral op) ⟷ support op f s = ∅"
+                }
+            ],
+            "prop": "(!x. x ∈ s --> f x = neutral op) <--> (support op f s = {})",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "in_support"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_empty_simp"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0.1.1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1.0"
+                    ],
+                    "goal_id": "0.1.1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1.0"
+                    ],
+                    "goal_id": "0.1.1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "0.0",
+                        "0.1.1.1"
+                    ],
+                    "goal_id": "0.1.1.3",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1.2"
+                    ],
+                    "goal_id": "0.1.1.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE"
+                },
+                {
+                    "fact_ids": [
+                        "0.1.1.3",
+                        "0.1.1.2"
+                    ],
+                    "goal_id": "0.1.1.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "0.1.2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "set_equal_iff"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2.2",
+                    "method_name": "forall_elim",
+                    "s": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.2"
+                    ],
+                    "goal_id": "1.2.3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "in_support"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.3"
+                    ],
+                    "goal_id": "1.2.4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_empty_simp"
+                },
+                {
+                    "goal": "x ∈ s ∧ ¬(f x = neutral op) --> false",
+                    "goal_id": "1.2.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.5",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.4",
+                        "1.2.5.0"
+                    ],
+                    "goal_id": "1.2.5.1",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "~(x ∈ s ∧ ¬(f x = neutral op))",
+                    "goal_id": "1.2.6",
+                    "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.4"
+                    ],
+                    "goal_id": "1.2.6",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.2.6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.7"
+                    ],
+                    "goal_id": "1.2.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "de_morgan_thm1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.8"
+                    ],
+                    "goal_id": "1.2.9",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                },
+                {
+                    "goal_id": "1.2.9",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.9.0",
+                        "1.2.1"
+                    ],
+                    "goal_id": "1.2.9.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal": "!A::bool. (~~A) = A",
+                    "goal_id": "1.2.10",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.2.10",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.10"
+                    ],
+                    "goal_id": "1.2.11",
+                    "method_name": "forall_elim",
+                    "s": "(f x = neutral op)"
+                },
+                {
+                    "goal_id": "1.2.12",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.2.11",
+                        "1.2.12.0"
+                    ],
+                    "goal_id": "1.2.12.1",
+                    "method_name": "rewrite_fact_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b => 'a",
+                "op": "'a => 'a => 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "support_subset",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀x. x ∈ support op f s ⟶ x ∈ s"
+                },
+                {
+                    "args": "x, 'b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ support op f s",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ support op f s ⊢ x ∈ support op f s"
+                },
+                {
+                    "args": "in_support",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ support op f s ⊢ x ∈ s ∧ ¬(f x = neutral op)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "0.3",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x ∈ support op f s ⊢ x ∈ s"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.1",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀x. x ∈ support op f s ⟶ x ∈ s"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ support op f s ⊆ s"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ support op f s ⊆ s"
+                }
+            ],
+            "prop": "subset (support op f s) s",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.1"
+                    ],
+                    "goal_id": "0.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "in_support"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b => 'a",
+                "op": "'a => 'a => 'a",
+                "s": "'b set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "support_empty",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "{x. x ∈ ∅ ∧ ¬(f x = neutral op)} = ∅",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ {x. x ∈ ∅ ∧ ¬(f x = neutral op)} = ∅"
+                },
+                {
+                    "args": "support_def, support op f ∅ = ∅",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ support op f ∅ = ∅"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ support op f ∅ = ∅"
+                }
+            ],
+            "prop": "support op f {} = {}",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b => 'a",
+                "op": "'a => 'a => 'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "support_insert",
+            "prop": [
+                "support op f (insert x s) =",
+                " if f x = neutral op then support op f s",
+                "else insert x (support op f s)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'b => 'a",
+                "op": "'a => 'a => 'a",
+                "s": "'b set",
+                "x": "'b"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "sum",
             "prop": "sum = iterate (plus)",
             "ty": "def",
@@ -1079,6 +2216,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ sum ∅ f = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sum ∅ f = 0"
                 }
             ],
             "prop": "sum {} f = 0",
@@ -1117,6 +2263,1094 @@
                 "f": "'a => real",
                 "s": "'a set",
                 "x": "'a"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sum_union",
+            "prop": [
+                "finite s & finite t & disjoint s t",
+                "--> (sum (union s t) f = sum s f + sum t f)"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sum_diff",
+            "prop": "finite s ∧ subset t s ⟶ sum (diff s t) f = sum s f - sum t f",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sum_incl_excl",
+            "prop": "finite s ∧ finite t ⟶ sum s f + sum t f = sum (s ∪ t) f + sum (inter s t) f",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set",
+                "t": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sum_support",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "support_support, (if finite (support plus f (support plus f s)) then itset (λx. λa. f x + a) (support plus f (support plus f s)) (neutral plus) else neutral plus) = (if finite (support plus f s) then itset (λx. λa. f x + a) (support plus f s) (neutral plus) else neutral plus)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (if finite (support plus f (support plus f s)) then itset (λx. λa. f x + a) (support plus f (support plus f s)) (neutral plus) else neutral plus) = (if finite (support plus f s) then itset (λx. λa. f x + a) (support plus f s) (neutral plus) else neutral plus)"
+                },
+                {
+                    "args": "iterate_def, iterate plus (support plus f s) f = iterate plus s f",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ iterate plus (support plus f s) f = iterate plus s f"
+                },
+                {
+                    "args": "sum_def, sum (support plus f s) f = sum s f",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sum (support plus f s) f = sum s f"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sum (support plus f s) f = sum s f"
+                }
+            ],
+            "prop": "sum (support plus f s) f = sum s f",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "iterate_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "support_support"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "sum_add",
+            "prop": "finite s --> (sum s (%x. f x + g x) = sum s f + sum s g)",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": " sum_add_gen",
+            "prop": [
+                "finite {x. x∈s & ~(f x = 0)} & finite {x. x∈s & ~(g x = 0)} ",
+                "⟶ sum s (λx. f x + g x) = sum s f + sum s g"
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "sum_eq_0",
+            "prop": "(!x. x∈s --> (f x = 0)) --> (sum s f = 0)",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sum_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. x ∈ s ⟶ (0::real) = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. x ∈ s ⟶ (0::real) = 0"
+                },
+                {
+                    "args": "sum_eq_0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ sum s (λx. 0) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sum s (λx. 0) = 0"
+                }
+            ],
+            "prop": "sum s (%x. 0) = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sum_eq_0"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sum_lmul",
+            "prop": "sum s (λx. c * f x) = c * sum s f",
+            "ty": "thm",
+            "vars": {
+                "c": "real",
+                "f": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "sum_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x::real. -x = -1 * x",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. -x = -1 * x"
+                },
+                {
+                    "args": "sum s f",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "forall_elim",
+                    "th": "⊢ -(sum s f) = -1 * sum s f"
+                },
+                {
+                    "args": "∀x. -(f x) = -1 * f x",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. -(f x) = -1 * f x"
+                },
+                {
+                    "args": "extension",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (λx. -(f x)) = (λx. -1 * f x)"
+                },
+                {
+                    "args": "sum_lmul, sum s (λx. -1 * f x) = -1 * sum s f",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ sum s (λx. -1 * f x) = -1 * sum s f"
+                },
+                {
+                    "args": "sum s (λx. -(f x)) = -1 * sum s f",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ sum s (λx. -(f x)) = -1 * sum s f"
+                },
+                {
+                    "args": "sum s (λx. -(f x)) = -(sum s f)",
+                    "id": "6",
+                    "prevs": [
+                        "1",
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ sum s (λx. -(f x)) = -(sum s f)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ sum s (λx. -(f x)) = -(sum s f)"
+                }
+            ],
+            "prop": "sum s (λx. -f x) = -sum s f",
+            "steps": [
+                {
+                    "goal": "!x::real. -x = -1 * x",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "forall_elim",
+                    "s": "(sum s f)"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal": "(λx. -(f x)) = (λx. -1 * (f x))",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "extension"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_lmul"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "sum_sub",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ⊢ finite s"
+                },
+                {
+                    "args": "sum_add, {a: 'a}, {f: f, g: λx. -(g x), s: s}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ⊢ sum s (λx. f x + -(g x)) = sum s f + sum s (λx. -(g x))"
+                },
+                {
+                    "args": "sum_neg",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "finite s ⊢ sum s (λx. f x + -(g x)) = sum s f + -(sum s g)"
+                },
+                {
+                    "args": "real_minus_def, sum s (λx. f x - g x) = sum s f - sum s g",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ⊢ sum s (λx. f x - g x) = sum s f - sum s g"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ⟶ sum s (λx. f x - g x) = sum s f - sum s g"
+                }
+            ],
+            "prop": "finite s ⟶ sum s (λx. f x - g x) = sum s f - sum s g",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_f": "f",
+                    "param_g": "(%x. -g x)",
+                    "theorem": "sum_add"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "sum_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sum_le",
+            "prop": "finite s & (!x. x ∈ s --> f x <= g x) ⟶ sum s f <= sum s g",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sum_lt",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x) ⊢ finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x)"
+                },
+                {
+                    "args": "conjD2, {}, {A: finite s, B: (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x) ⊢ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x)"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∀x. x ∈ s ⟶ f x ≤ g x, B: ∃x. x ∈ s ⟶ f x < g x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x) ⊢ ∀x. x ∈ s ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "conjD2, {}, {A: ∀x. x ∈ s ⟶ f x ≤ g x, B: ∃x. x ∈ s ⟶ f x < g x}",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x) ⊢ ∃x. x ∈ s ⟶ f x < g x"
+                },
+                {
+                    "args": "a, 'a",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR a"
+                },
+                {
+                    "args": "a ∈ s ⟶ f a < g a",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ∈ s ⟶ f a < g a ⊢ a ∈ s ⟶ f a < g a"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x), a ∈ s ⟶ f a < g a ⊢ s = insert a (diff s ({a}))"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x), a ∈ s ⟶ f a < g a ⊢ sum s f < sum s g"
+                },
+                {
+                    "args": "∃x. x ∈ s ⟶ f x < g x",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "3",
+                        "4",
+                        "5",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g"
+                }
+            ],
+            "prop": "finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "exists_elim",
+                    "names": "a"
+                },
+                {
+                    "goal": "s = insert a (diff s {a})",
+                    "goal_id": "6",
+                    "method_name": "cut"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sum_lt_all",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ finite s"
+                },
+                {
+                    "args": "conjD2, {}, {A: finite s, B: ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x)}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x)"
+                },
+                {
+                    "args": "conjD2, {}, {A: ¬(s = ∅), B: ∀x. x ∈ s ⟶ f x < g x}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ ∀x. x ∈ s ⟶ f x < g x"
+                },
+                {
+                    "args": "conjD1, {}, {A: ¬(s = ∅), B: ∀x. x ∈ s ⟶ f x < g x}",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ ¬(s = ∅)"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ f x ≤ g x",
+                    "id": "5",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "z3",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ ∀x. x ∈ s ⟶ f x ≤ g x"
+                },
+                {
+                    "args": "∃x. x ∈ s ⟶ f x < g x",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "3"
+                    ],
+                    "rule": "z3",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x), finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ ∃x. x ∈ s ⟶ f x < g x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "8",
+                    "prevs": [
+                        "1",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ∧ (∃x. x ∈ s ⟶ f x < g x)"
+                },
+                {
+                    "args": "sum_lt",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⊢ sum s f < sum s g"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g"
+                }
+            ],
+            "prop": "finite s ∧ ~(s = {}) ∧ (!x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sum_lt"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "3"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sum_pos_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x) ⊢ finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x)"
+                },
+                {
+                    "args": "real_le_refl, {}, {x: (0::real)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (0::real) ≤ 0"
+                },
+                {
+                    "args": "sum_0, 0 ≤ sum s (λx. 0)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x) ⊢ 0 ≤ sum s (λx. 0)"
+                },
+                {
+                    "args": "sum_lt",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x) ⊢ sum s (λx. 0) < sum s f"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x) ⊢ 0 ≤ sum s (λx. 0) ∧ sum s (λx. 0) < sum s f"
+                },
+                {
+                    "args": "real_let_trans",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x) ⊢ 0 < sum s f"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f"
+                }
+            ],
+            "prop": "finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_y": "sum s (λx. 0)",
+                    "theorem": "real_let_trans"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "sum_0"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sum_lt"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sum_pos_lt_all",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ finite s"
+                },
+                {
+                    "args": "conjD2, {}, {A: finite s, B: ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x)}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x)"
+                },
+                {
+                    "args": "conjD2, {}, {A: ¬(s = ∅), B: ∀x. x ∈ s ⟶ 0 < f x}",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ ∀x. x ∈ s ⟶ 0 < f x"
+                },
+                {
+                    "args": "conjD1, {}, {A: ¬(s = ∅), B: ∀x. x ∈ s ⟶ 0 < f x}",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ ¬(s = ∅)"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ 0 ≤ f x",
+                    "id": "5",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "z3",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ ∀x. x ∈ s ⟶ 0 ≤ f x"
+                },
+                {
+                    "args": "∃x. x ∈ s ⟶ 0 < f x",
+                    "id": "6",
+                    "prevs": [
+                        "4",
+                        "3"
+                    ],
+                    "rule": "z3",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x), finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ ∃x. x ∈ s ⟶ 0 < f x"
+                },
+                {
+                    "args": "conjI",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "8",
+                    "prevs": [
+                        "1",
+                        "7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ finite s ∧ (∀x. x ∈ s ⟶ 0 ≤ f x) ∧ (∃x. x ∈ s ⟶ 0 < f x)"
+                },
+                {
+                    "args": "sum_pos_lt",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⊢ 0 < sum s f"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f"
+                }
+            ],
+            "prop": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ 0 < f x) ⟶ 0 < sum s f",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sum_pos_lt"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4",
+                        "3"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "s": "'a set"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
+            "name": "sum_eq",
+            "prop": "finite s ∧ (∀x. x ∈ s ⟶ f x = g x) ⟶ sum s f = sum s g",
+            "ty": "thm",
+            "vars": {
+                "f": "'a => real",
+                "g": "'a => real",
+                "s": "'a set"
             }
         },
         {

@@ -31393,7 +31393,7 @@
                 "hint_forward"
             ],
             "name": "real_negligible_countable_unions",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "∀n. real_negligible (s n)",
@@ -31414,7 +31414,7 @@
                     "id": "2",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀n. real_negligible (s n) ⊢ ∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0"
+                    "th": "∀n. real_negligible (s n) ⊢ ∀n. real_measurable (s n)"
                 },
                 {
                     "args": "n, nat",
@@ -31424,114 +31424,405 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "",
+                    "args": "n",
                     "id": "2.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. real_negligible (s n) ⊢ real_negligible (s n)"
+                },
+                {
+                    "args": "has_real_measure_0, has_real_measure (s n) 0",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. real_negligible (s n) ⊢ has_real_measure (s n) 0"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λm. has_real_measure (s n) m, a: (0::real)}",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. real_negligible (s n) ⊢ ∃a. has_real_measure (s n) a"
+                },
+                {
+                    "args": "real_measurable_def, real_measurable (s n)",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. real_negligible (s n) ⊢ real_measurable (s n)"
+                },
+                {
+                    "args": "",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.0",
+                        "2.4"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. real_negligible (s n) ⊢ ∀n. real_measurable (s n)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀n. real_negligible (s n) ⊢ ∀x. real_measure (s x) = 0"
+                    "th": "∀n. real_negligible (s n) ⊢ ∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)"
+                },
+                {
+                    "args": "m, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR m"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "¬(m = n)",
+                    "id": "3.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = n) ⊢ ¬(m = n)"
+                },
+                {
+                    "args": "n",
+                    "id": "3.3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. real_negligible (s n) ⊢ real_negligible (s n)"
+                },
+                {
+                    "args": "inter_subset_id, {a: real}, {A: s n, B: s m}",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ s n ∩ s m ⊆ s n"
+                },
+                {
+                    "args": "inter_comm, s m ∩ s n ⊆ s n",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀n. real_negligible (s n), ¬(m = n) ⊢ s m ∩ s n ⊆ s n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.3",
+                        "3.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. real_negligible (s n), ¬(m = n) ⊢ real_negligible (s n) ∧ s m ∩ s n ⊆ s n"
+                },
+                {
+                    "args": "real_negligible_subset",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. real_negligible (s n), ¬(m = n) ⊢ real_negligible (s m ∩ s n)"
+                },
+                {
+                    "args": "",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.2",
+                        "3.7"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. real_negligible (s n) ⊢ ∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. real_negligible (s n) ⊢ ∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "4.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "",
+                    "id": "4.1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀n. real_negligible (s n) ⊢ ∀x. x ∈ {0..n} ⟶ real_measure (s x) = 0"
                 },
                 {
                     "args": "x, nat",
-                    "id": "2.1.0",
+                    "id": "4.1.0",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR x"
                 },
                 {
+                    "args": "x ∈ {0..n}",
+                    "id": "4.1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ {0..n} ⊢ x ∈ {0..n}"
+                },
+                {
                     "args": "x",
-                    "id": "2.1.1",
+                    "id": "4.1.2",
                     "prevs": [
                         "0"
                     ],
-                    "rule": "forall_elim",
+                    "rule": "apply_fact_for",
                     "th": "∀n. real_negligible (s n) ⊢ real_negligible (s x)"
                 },
                 {
                     "args": "real_measure_eq_0",
-                    "id": "2.1.2",
+                    "id": "4.1.3",
                     "prevs": [
-                        "2.1.1"
+                        "4.1.2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∀n. real_negligible (s n) ⊢ real_measure (s x) = 0"
+                    "th": "∀n. real_negligible (s n), x ∈ {0..n} ⊢ real_measure (s x) = 0"
                 },
                 {
                     "args": "",
-                    "id": "2.1.3",
+                    "id": "4.1.4",
                     "prevs": [
-                        "2.1.0",
-                        "2.1.2"
+                        "4.1.0",
+                        "4.1.1",
+                        "4.1.3"
                     ],
                     "rule": "intros",
-                    "th": "∀n. real_negligible (s n) ⊢ ∀x. real_measure (s x) = 0"
+                    "th": "∀n. real_negligible (s n) ⊢ ∀x. x ∈ {0..n} ⟶ real_measure (s x) = 0"
                 },
                 {
-                    "args": "extension",
-                    "id": "2.2",
+                    "args": "sum_eq_0",
+                    "id": "4.2",
                     "prevs": [
-                        "2.1"
+                        "4.1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∀n. real_negligible (s n) ⊢ (λk. real_measure (s k)) = (λk. 0)"
+                    "th": "∀n. real_negligible (s n) ⊢ sum ({0..n}) (λx. real_measure (s x)) = 0"
                 },
                 {
-                    "args": "",
-                    "id": "2.3",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "∀n. real_negligible (s n) ⊢ sum ({0..n}) (λk. 0) = 0"
-                },
-                {
-                    "args": "sum ({0..n}) (λk. real_measure (s k)) = 0",
-                    "id": "2.4",
+                    "args": "disjI2, {}, {A: sum ({0..n}) (λk. real_measure (s k)) < 0, B: sum ({0..n}) (λx. real_measure (s x)) = 0}",
+                    "id": "4.3",
                     "prevs": [
-                        "2.2",
-                        "2.3"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "∀n. real_negligible (s n) ⊢ sum ({0..n}) (λk. real_measure (s k)) = 0"
-                },
-                {
-                    "args": "disjI2, {}, {A: sum ({0..n}) (λk. real_measure (s k)) < 0, B: sum ({0..n}) (λk. real_measure (s k)) = 0}",
-                    "id": "2.5",
-                    "prevs": [
-                        "2.4"
+                        "4.2"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "∀n. real_negligible (s n) ⊢ sum ({0..n}) (λk. real_measure (s k)) < 0 ∨ sum ({0..n}) (λk. real_measure (s k)) = 0"
                 },
                 {
                     "args": "real_le_lt, sum ({0..n}) (λk. real_measure (s k)) ≤ 0",
-                    "id": "2.6",
+                    "id": "4.4",
                     "prevs": [
-                        "2.5"
+                        "4.3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "∀n. real_negligible (s n) ⊢ sum ({0..n}) (λk. real_measure (s k)) ≤ 0"
                 },
                 {
                     "args": "",
-                    "id": "2.7",
+                    "id": "4.5",
                     "prevs": [
-                        "2.0",
-                        "2.6"
+                        "4.0",
+                        "4.4"
                     ],
                     "rule": "intros",
                     "th": "∀n. real_negligible (s n) ⊢ ∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0"
                 },
                 {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. real_negligible (s n) ⊢ (∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "2",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. real_negligible (s n) ⊢ (∀n. real_measurable (s n)) ∧ (∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0)"
+                },
+                {
                     "args": "",
-                    "id": "3",
+                    "id": "7",
+                    "prevs": [
+                        "1",
+                        "6"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "∀n. real_negligible (s n) ⊢ real_measurable (⋃({y. ∃n. y = s n})) ∧ real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∃n. y = s n}))) (from 0)"
+                },
+                {
+                    "args": "conjD1, {}, {A: real_measurable (⋃({y. ∃n. y = s n})), B: real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∃n. y = s n}))) (from 0)}",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. real_negligible (s n) ⊢ real_measurable (⋃({y. ∃n. y = s n}))"
+                },
+                {
+                    "args": "real_measurable_real_measure_eq_0, {}, {s: ⋃({y. ∃n. y = s n})}",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. real_negligible (s n) ⊢ real_measure (⋃({y. ∃n. y = s n})) = 0 ⟷ real_negligible (⋃({y. ∃n. y = s n}))"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "10",
+                    "prevs": [
+                        "9"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "∀n. real_negligible (s n) ⊢ real_negligible (⋃({y. ∃n. y = s n})) ⟷ real_measure (⋃({y. ∃n. y = s n})) = 0"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_measurable (⋃({y. ∃n. y = s n})), B: real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∃n. y = s n}))) (from 0)}",
+                    "id": "11",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀n. real_negligible (s n) ⊢ real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∃n. y = s n}))) (from 0)"
+                },
+                {
+                    "args": "",
+                    "id": "12",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "subproof",
+                    "th": "∀n. real_negligible (s n) ⊢ ∀x. real_measure (s x) = 0"
+                },
+                {
+                    "args": "x, nat",
+                    "id": "12.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x",
+                    "id": "12.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀n. real_negligible (s n) ⊢ real_negligible (s x)"
+                },
+                {
+                    "args": "real_measure_eq_0",
+                    "id": "12.2",
+                    "prevs": [
+                        "12.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. real_negligible (s n) ⊢ real_measure (s x) = 0"
+                },
+                {
+                    "args": "",
+                    "id": "12.3",
+                    "prevs": [
+                        "12.0",
+                        "12.2"
+                    ],
+                    "rule": "intros",
+                    "th": "∀n. real_negligible (s n) ⊢ ∀x. real_measure (s x) = 0"
+                },
+                {
+                    "args": "extension",
+                    "id": "13",
+                    "prevs": [
+                        "12"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. real_negligible (s n) ⊢ (λx. real_measure (s x)) = (λx. 0)"
+                },
+                {
+                    "args": "",
+                    "id": "14",
+                    "prevs": [
+                        "13",
+                        "11"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "∀n. real_negligible (s n) ⊢ real_sums (λx. 0) (real_measure (⋃({y. ∃n. y = s n}))) (from 0)"
+                },
+                {
+                    "args": "real_series_0, {}, {s: from 0}",
+                    "id": "15",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_sums (λn. 0) 0 (from 0)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "16",
+                    "prevs": [
+                        "14",
+                        "15"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. real_negligible (s n) ⊢ real_sums (λk. 0) (real_measure (⋃({y. ∃n. y = s n}))) (from 0) ∧ real_sums (λk. 0) 0 (from 0)"
+                },
+                {
+                    "args": "real_series_unique",
+                    "id": "17",
+                    "prevs": [
+                        "16"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀n. real_negligible (s n) ⊢ real_measure (⋃({y. ∃n. y = s n})) = 0"
+                },
+                {
+                    "args": "real_negligible (⋃({y. ∃n. y = s n}))",
+                    "id": "18",
+                    "prevs": [
+                        "10",
+                        "17"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
                     "th": "∀n. real_negligible (s n) ⊢ real_negligible (⋃({y. ∃n. y = s n}))"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "19",
                     "prevs": [
                         "0",
-                        "3"
+                        "18"
                     ],
                     "rule": "intros",
                     "th": "⊢ (∀n. real_negligible (s n)) ⟶ real_negligible (⋃({y. ∃n. y = s n}))"
@@ -31547,9 +31838,21 @@
                     "theorem": "has_real_measure_countable_real_negligible_unions"
                 },
                 {
-                    "goal": "(∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ 0)",
+                    "goal": "real_measurable (⋃({y. ∃n. y = s n})) ∧ real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∃n. y = s n}))) (from 0)",
                     "goal_id": "2",
                     "method_name": "cut"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
                 },
                 {
                     "goal_id": "2",
@@ -31559,47 +31862,195 @@
                 {
                     "goal_id": "2.1",
                     "method_name": "rewrite_goal",
-                    "theorem": "real_le_lt"
+                    "sym": "false",
+                    "theorem": "real_measurable_def"
                 },
                 {
                     "goal_id": "2.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "disjI2"
-                },
-                {
-                    "goal": "(λk. real_measure (s k)) = (λk. (0::real))",
-                    "goal_id": "2.1",
-                    "method_name": "cut"
+                    "method_name": "inst_exists_goal",
+                    "s": "(0::real)"
                 },
                 {
                     "goal_id": "2.1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "extension"
-                },
-                {
-                    "fact_ids": [
-                        "2.2"
-                    ],
-                    "goal_id": "2.3",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "2.1",
-                    "method_name": "introduction",
-                    "names": "x"
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_real_measure_0"
                 },
                 {
                     "fact_ids": [
                         "0"
                     ],
-                    "goal_id": "2.1.1",
-                    "method_name": "forall_elim",
-                    "s": "x"
+                    "goal_id": "2.1",
+                    "method_name": "apply_prev"
                 },
                 {
-                    "goal_id": "2.1.2",
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "m,n"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "apply_backward_step",
+                    "param_s": "s n",
+                    "theorem": "real_negligible_subset"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "inter_comm"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "inter_subset_id"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_le_lt"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjI2"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sum_eq_0"
+                },
+                {
+                    "goal_id": "4.1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "4.1.2",
                     "method_name": "apply_backward_step",
                     "theorem": "real_measure_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "4.1.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "8"
+                    ],
+                    "goal_id": "9",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_measurable_real_measure_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "9"
+                    ],
+                    "goal_id": "10",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "10"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(%k::nat. (0::real))",
+                    "param_s": "from 0",
+                    "theorem": "real_series_unique"
+                },
+                {
+                    "goal_id": "11",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal": "(λn. real_measure (s n)) = (λk. 0)",
+                    "goal_id": "12",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "apply_backward_step",
+                    "theorem": "extension"
+                },
+                {
+                    "goal_id": "12",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "12.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_measure_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "12.1",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "13",
+                        "11"
+                    ],
+                    "goal_id": "14",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal_id": "15",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_series_0"
                 }
             ],
             "ty": "thm",
@@ -31614,10 +32065,123 @@
                 "hint_forward"
             ],
             "name": "real_measurable_countable_unions_strong",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "(∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B) ⊢ (∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B)"
+                },
+                {
+                    "args": "real_measurable_nested_unions, {}, {B: B, s: λn. ⋃(image s ({0..n}))}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (∀n. real_measurable (⋃(image s ({0..n})))) ∧ (∀n. real_measure (⋃(image s ({0..n}))) ≤ B) ∧ (∀n. ⋃(image s ({0..n})) ⊆ ⋃(image s ({0..Suc n}))) ⟶ real_measurable (⋃({y. ∃n. y = ⋃(image s ({0..n}))}))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "(∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B) ⊢ ∀x. x ∈ ⋃({y. ∃n. y = ⋃(image s ({0..n}))}) ⟷ x ∈ ⋃({y. ∃n. y = s n})"
+                },
+                {
+                    "args": "x, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "(∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B) ⊢ (∃A. x ∈ A ∧ A ∈ {y. ∃n. y = ⋃(image s ({0..n}))}) ⟷ (∃A. x ∈ A ∧ A ∈ {y. ∃n. y = s n})"
+                },
+                {
+                    "args": "member_Union, x ∈ ⋃({y. ∃n. y = ⋃(image s ({0..n}))}) ⟷ x ∈ ⋃({y. ∃n. y = s n})",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "(∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B) ⊢ x ∈ ⋃({y. ∃n. y = ⋃(image s ({0..n}))}) ⟷ x ∈ ⋃({y. ∃n. y = s n})"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "(∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B) ⊢ ∀x. x ∈ ⋃({y. ∃n. y = ⋃(image s ({0..n}))}) ⟷ x ∈ ⋃({y. ∃n. y = s n})"
+                },
+                {
+                    "args": "member_ext",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "(∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B) ⊢ ⋃({y. ∃n. y = ⋃(image s ({0..n}))}) = ⋃({y. ∃n. y = s n})"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "(∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B) ⊢ real_measurable (⋃({y. ∃n. y = s n}))"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀n. real_measurable (s n)) ∧ (∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B) ⟶ real_measurable (⋃({y. ∃n. y = s n}))"
+                }
+            ],
             "prop": [
                 "(∀n. real_measurable (s n)) ∧ ",
                 "(∀n. real_measure (⋃({y. ?k. y = s k ∧ k ≤ n})) ≤ B) ",
                 "⟶ real_measurable (⋃({y. ?n. y = s n}))"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_B": "B",
+                    "param_s": "(%n. Union (image s {0..n}))",
+                    "theorem": "real_measurable_nested_unions"
+                },
+                {
+                    "goal": "⋃({y. ∃n. y = ⋃(image s ({0..n}))}) = ⋃({y. ∃n. y = s n})",
+                    "goal_id": "2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "member_ext"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_Union"
+                }
             ],
             "ty": "thm",
             "vars": {

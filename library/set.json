@@ -407,7 +407,9 @@
             }
         },
         {
-            "attributes": [],
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "set_equal_iff",
             "num_gaps": 0,
             "proof": [
