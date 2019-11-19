@@ -156,6 +156,18 @@
             ],
             "name": "Exercise 7",
             "problem": "INT x:[1,2]. x^2 + 1/x^4"
+        },
+        {
+            "name": "Exercise 8",
+            "problem": "INT x:[pi/3, pi]. sin(x+pi/3)"
+        },
+        {
+            "name": "Exercise 9",
+            "problem": "INT x:[0,1]. x ^ 3 * (x^(1/2) + 1)"
+        },
+        {
+            "name": "Exercise 10",
+            "problem":"INT x:[-1,2]. x ^ (1/2)"
         }
     ]
 }

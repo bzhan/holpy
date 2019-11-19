@@ -35,7 +35,7 @@ class Monomial:
         """
         assert isinstance(coeff, (int, Fraction, Decimal))
         assert all(isinstance(factor, Iterable) and len(factor) == 2 and \
-            isinstance(factor[1], int) for factor in factors), \
+            isinstance(factor[1], (int, Fraction)) for factor in factors), \
             "Unexpected argument for factors: %s" % str(factors)
         self.coeff = coeff
         self.factors = collect_pairs(factors)
@@ -52,8 +52,15 @@ class Monomial:
             s = str(var)
             if len(s) != 1:
                 s = "(" + s + ")"
-            if p != 1:
-                s = s + "^" + str(p)
+            if(str(p) != "1"):
+                if isinstance(p, Fraction):
+                    assert p.denominator != 0
+                    if p.denominator == 1:
+                        s = s + "^" + str(p.numerator)
+                    else:
+                        s = s + " ^ " + str(p)
+                else:
+                    s = s + "^" + str(p)
             res += s
 
         if res == "":
@@ -158,6 +165,7 @@ grammar = r"""
     ?polynomial: monomial ("+" monomial)* -> polynomial
 
     %import common.LETTER
+    
     %import common.INT
     %import common.DECIMAL
     %import common.WS

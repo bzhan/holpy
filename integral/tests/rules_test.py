@@ -9,10 +9,23 @@ from integral import rules
 
 
 class RulesTest(unittest.TestCase):
+    def testSimplify(self):
+        test_data = [
+            ("INT x:[a,b]. x^(1/2) * x^(1/2)",
+             "INT x:[a,b]. x"),
+            ("INT x:[4, 9]. x^(1/2)*(1+x^(1/2))",
+            "INT x:[4, 9]. x^(1/2) + x")
+        ]
+        rule = rules.Simplify()
+        for s1, s2 in test_data:
+            s1 = parse_expr(s1)
+            s2 = parse_expr(s2)
+            self.assertEqual(rule.eval(s1), s2)
+
     def testLinearity(self):
         test_data = [
             ("INT x:[a,b]. 1 + 2 * x + x ^ 2",
-             "(INT x:[a,b]. 1) + 2 * (INT x:[a,b]. x) + (INT x:[a,b]. x ^ 2)")
+             "(INT x:[a,b]. 1) + 2 * (INT x:[a,b]. x) + (INT x:[a,b]. x ^ 2)"),
         ]
 
         rule = rules.Linearity()

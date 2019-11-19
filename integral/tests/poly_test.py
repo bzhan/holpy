@@ -4,7 +4,8 @@ import unittest
 
 from integral.expr import Var
 from integral.poly import Monomial, parse_mono, parse_poly
-
+from decimal import Decimal
+from fractions import Fraction
 
 class PolynomialTest(unittest.TestCase):
     def testPrintMonomial(self):
@@ -18,6 +19,8 @@ class PolynomialTest(unittest.TestCase):
             (Monomial(2, [("y", 2), ("x", 2)]), "2x^2y^2"),
             (Monomial(2, [("x+y", 2)]), "2(x+y)^2"),
             (Monomial(2, [("x", 1), ("x", 2)]), "2x^3"),
+            (Monomial(1, [("x", Fraction(1, 2))]), "x ^ 1/2"),
+            (Monomial(1, [("x", Fraction(1, 2)), ("x", Fraction(1, 2))]), "x")
         ]
 
         for m, s in test_data:

@@ -2,8 +2,9 @@
 
 from decimal import Decimal
 from fractions import Fraction
-
+from integral import parser
 from integral import expr
+from integral import rules
 
 def convert_expr(e, mode="large"):
     if e.ty == expr.VAR:
@@ -30,15 +31,27 @@ def convert_expr(e, mode="large"):
             sx = convert_expr(x, mode)
             sy = convert_expr(y, mode)
             if e.op in ("+", "-", "^"):
-                if x.priority() < expr.op_priority[e.op]:
-                    sx = "(%s)" % sx
-                if y.priority() < expr.op_priority[e.op]:
-                    sy = "(%s)" % sy
-                if e.op == "^" and len(sy) > 1:
-                    sy = "{%s}" % sy
-                return "%s %s %s" % (sx, e.op, sy)
+                if e.op == "^" and sy == "\\frac{1}{2}":
+                    return "\sqrt{%s}" % sx
+                else:
+                    if x.priority() < expr.op_priority[e.op]:
+                        sx = "(%s)" % sx
+                    if y.priority() < expr.op_priority[e.op]:
+                        sy = "(%s)" % sy
+                    if e.op == "^" and len(sy) > 1:
+                        sy = "{%s}" % sy
+                    return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
-                return "%s %s" % (sx, sy)
+                if x.ty == expr.CONST and y.ty == expr.VAR:
+                    if sx == "1":
+                        return "%s" % sy
+                    return "%s %s" % (sx, sy)
+                else:
+                    if x.priority() < expr.op_priority[e.op]:
+                        sx = "(%s)" % sx
+                    if y.priority() < expr.op_priority[e.op]:
+                        sy = "(%s)" % sy
+                    return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "/":
                 if mode == 'large':
                     return "\\frac{%s}{%s}" % (sx, sy)

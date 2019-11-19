@@ -86,6 +86,8 @@ class ExprTest(unittest.TestCase):
             ("cos(0) - cos(pi/2)", "1"),
             ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
              "-1 * a + b + -1 * a ^ 2 + -1/3 * a ^ 3 + b ^ 2 + 1/3 * b ^ 3"),
+            ("x ^ (1/2) * x ^ (1/2) ","x"),
+            ("2 * (1 + 3)","8")
         ]
 
         for s, res in test_data:

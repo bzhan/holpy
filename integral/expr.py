@@ -4,7 +4,7 @@ from decimal import Decimal
 from fractions import Fraction
 from integral import poly
 import functools, operator
-
+from integral import parser
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
 
 op_priority = {
@@ -158,6 +158,8 @@ class Expr:
                         return poly.constant(x.val ** y.val)
                 elif y.ty == CONST and y.val == 1:
                     return x.to_poly()
+                elif y.ty == CONST and y.val != 1:
+                    return poly.Polynomial([poly.Monomial(1, [(x, y.val)])])
                 else:
                     return poly.singleton(self)
             else:
@@ -174,12 +176,25 @@ class Expr:
                     return poly.constant(0)
                 else:
                     return poly.singleton(self)
+            elif self.func_name == "sin":
+                if self.args[0] == Const(0):
+                    return poly.constant(0)
+                elif self.args[0] == pi / Const(4):
+                    return poly.singleton(Fun("sqrt", Const(2))).scale(Fraction(1) / Fraction(2))
+                elif self.args[0] == pi / Const(2):
+                    return poly.constant(1)
+                else:
+                    return poly.singleton(self)
             else:
                 return poly.singleton(self)
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
             return (upper - lower).to_poly()
+        elif self.ty == INTEGRAL:
+            a = self
+            a.body = a.body.normalize()
+            return poly.singleton(a) 
         else:
             return poly.singleton(self)
 
