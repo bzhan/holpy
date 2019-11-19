@@ -21,6 +21,7 @@ class ParserTest(unittest.TestCase):
             "INT x:[1,2]. 3 * x",
             "[3 * x]_x=1,2",
             "INT x:[0,pi / 4]. sin(x)",
+            "x ^ (1/2)"
         ]
 
         for s in test_data:

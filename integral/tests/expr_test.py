@@ -2,6 +2,7 @@
 
 import unittest
 from decimal import Decimal
+from fractions import Fraction
 
 from integral import expr
 from integral.expr import Var, Const, Op, Fun, sin, cos, log, exp, Deriv, Integral, EvalAt
@@ -30,6 +31,7 @@ class ExprTest(unittest.TestCase):
             (x * (y ^ Const(2)), "x * y ^ 2"),
             ((x * y) ^ Const(2), "(x * y) ^ 2"),
             (-(x + y), "-(x + y)"),
+            (x ^ Const(Fraction("1/2")), "x ^ (1/2)"),
             (-x + y, "-x + y"),
             (sin(x), "sin(x)"),
             (cos(x), "cos(x)"),
@@ -79,15 +81,15 @@ class ExprTest(unittest.TestCase):
             ("(x + y) ^ 2", "(x + y) ^ 2"),
             ("(x + y) * (x - y)", "x ^ 2 + -1 * y ^ 2"),
             ("[x]_x=a,b", "-1 * a + b"),
-            ("[x ^ 2 * y]_x=a,b", "-1 * y * a ^ 2 + y * b ^ 2"),
+            ("[x ^ 2 * y]_x=a,b", "-1 * a ^ 2 * y + b ^ 2 * y"),
             ("[x ^ 2]_x=3,4", "7"),
             ("cos(pi/4)", "1/2 * sqrt(2)"),
             ("cos(0) - cos(pi/4)", "1 + -1/2 * sqrt(2)"),
             ("cos(0) - cos(pi/2)", "1"),
             ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
-             "-1 * a + b + -1 * a ^ 2 + -1/3 * a ^ 3 + b ^ 2 + 1/3 * b ^ 3"),
-            ("x ^ (1/2) * x ^ (1/2) ","x"),
-            ("2 * (1 + 3)","8")
+             "-1 * a + -1 * a ^ 2 + -1/3 * a ^ 3 + b + b ^ 2 + 1/3 * b ^ 3"),
+            ("x ^ (1/2) * x ^ (1/2) ", "x"),
+            ("2 * (1 + 3)", "8")
         ]
 
         for s, res in test_data:

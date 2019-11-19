@@ -67,8 +67,13 @@ class Expr:
             raise NotImplementedError
 
     def priority(self):
-        if self.ty in (VAR, CONST):
+        if self.ty == VAR:
             return 100
+        elif self.ty == CONST:
+            if isinstance(self.val, Fraction):
+                return 70  # priority of division
+            else:
+                return 100
         elif self.ty == OP:
             if len(self.args) == 1:
                 return 80
