@@ -175,6 +175,7 @@ class PrinterTest(unittest.TestCase):
         thy = basic.load_theory('real')
         x = Var('x', real.realT)
         y = Var('y', real.realT)
+        n = Var('n', nat.natT)
         test_data = [
             (real.plus(x, y), "x + y"),
             (real.times(x, y), "x * y"),
@@ -183,6 +184,8 @@ class PrinterTest(unittest.TestCase):
             (real.minus(x, real.uminus(y)), "x - -y"),
             (real.uminus(real.uminus(x)), "--x"),
             (real.uminus(real.minus(x, y)), "-(x - y)"),
+            (real.uminus(real.nat_power(x, n)), "-(x ^ n)"),
+            (real.nat_power(real.uminus(x), n), "-x ^ n"),
         ]
 
         for t, s in test_data:

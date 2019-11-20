@@ -63,15 +63,15 @@ grammar = r"""
 
     ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
 
-    ?power: power "^" big_union | big_union   // Power: priority 81
+    ?uminus: "-" uminus -> uminus | big_union   // Unary minus: priority 80
 
-    ?uminus: "-" uminus -> uminus | power   // Unary minus: priority 80
+    ?power: power "^" uminus | uminus   // Power: priority 81
 
-    ?times_expr: times_expr "*" uminus -> times     // Multiplication: priority 70
-        | times_expr "/" uminus -> real_divide      // Division: priority 70
-        | times_expr "DIV" uminus -> nat_divide     // Division: priority 70
-        | times_expr "MOD" uminus -> nat_modulus    // Modulus: priority 70
-        | uminus
+    ?times_expr: times_expr "*" power -> times     // Multiplication: priority 70
+        | times_expr "/" power -> real_divide      // Division: priority 70
+        | times_expr "DIV" power -> nat_divide     // Division: priority 70
+        | times_expr "MOD" power -> nat_modulus    // Modulus: priority 70
+        | power
 
     ?inter: inter ("Int"|"∩") times_expr | times_expr     // Intersection: priority 70
 
