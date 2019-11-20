@@ -17,7 +17,7 @@ from logic.proofterm import ProofTerm, ProofTermDeriv
 from prover import z3wrapper
 from syntax import parser
 from syntax import printer
-from syntax.context import Context
+from logic.basic import Context
 from paraverifier import gcl
 
 

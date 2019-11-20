@@ -14,7 +14,7 @@ from logic import basic
 from data import set
 from syntax.printer import print_term, print_type
 from syntax import parser
-from syntax.context import Context
+from logic.basic import Context
 
 
 class ParserTest(unittest.TestCase):
@@ -243,6 +243,9 @@ class ParserTest(unittest.TestCase):
             ("(1::real)", "real"),
             ("(2::real)", "real"),
             ("x + 1", "real"),
+            ("x ^ n", "real"),
+            ("-(x ^ n)", "real"),
+            ("-x ^ n", "real"),
             ("(1::real) + 2", "real"),
             ("(2::real) + 1", "real"),
             ("[(2::real), 3]", "real list"),
@@ -250,7 +253,7 @@ class ParserTest(unittest.TestCase):
             ("{(2::real), 3} Un {4, 5}", "real set"),
         ]
 
-        vars = {'x': 'real', 'y': 'real'}
+        vars = {'x': 'real', 'y': 'real', 'n': 'nat'}
         for s, Ts in test_data:
             self.run_test('real', vars=vars, s=s, Ts=Ts)
 

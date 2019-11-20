@@ -9,7 +9,7 @@ from logic import matcher
 from logic.matcher import first_order_match, MatchException
 from data.nat import natT
 from syntax import parser
-from syntax.context import Context
+from logic.basic import Context
 
 class MatcherTest(unittest.TestCase):
     def testIsPattern(self):

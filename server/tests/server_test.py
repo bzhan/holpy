@@ -13,7 +13,7 @@ from logic import logic
 from logic import basic
 from syntax import parser
 from syntax import printer
-from syntax.context import Context
+from logic.basic import Context
 from server import tactic, method, server
 from server.server import ProofState
 from imperative import imp
@@ -512,7 +512,7 @@ class ServerTest(unittest.TestCase):
             vars={'n': 'nat'},
             concl='0 + n = 0',
             method_name='rewrite_goal',
-            res=['eq_sym_eq', 'nat_plus_def_1']
+            res=['add_comm', 'eq_sym_eq', 'nat_plus_def_1']
         )
 
     def testRewriteGoalThms2(self):
@@ -521,7 +521,7 @@ class ServerTest(unittest.TestCase):
             vars={'f': "nat => nat", 'S': "nat set", 'T': "nat set"},
             concl='image f (image f S) = T',
             method_name='rewrite_goal',
-            res=['eq_sym_eq', 'image_combine', 'image_def']
+            res=['eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
         )
 
     def testRewriteGoal(self):
@@ -566,7 +566,7 @@ class ServerTest(unittest.TestCase):
             concl='false',
             method_name='rewrite_fact',
             prevs=[0],
-            res=['eq_sym_eq', 'nat_plus_def_1']
+            res=['add_comm', 'eq_sym_eq', 'nat_plus_def_1']
         )
 
     def testRewriteFactThms2(self):
@@ -577,7 +577,7 @@ class ServerTest(unittest.TestCase):
             concl='false',
             method_name='rewrite_fact',
             prevs=[0],
-            res=['eq_sym_eq', 'image_combine', 'image_def']
+            res=['eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
         )
 
     def testRewriteFact(self):

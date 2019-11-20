@@ -16,6 +16,7 @@ uminus = Const("uminus", TFun(realT, realT))
 times = Const("times", TFun(realT, realT, realT))
 less_eq = Const("less_eq", TFun(realT, realT, boolT))
 less = Const("less", TFun(realT, realT, boolT))
+nat_power = Const("power", TFun(realT, nat.natT, realT))
 
 def mk_plus(*args):
     if not args:
@@ -35,6 +36,12 @@ def mk_times(*args):
 
 def is_plus(t):
     return t.is_binop() and t.head == plus
+
+def is_minus(t):
+    return t.is_binop() and t.head == minus
+
+def is_uminus(t):
+    return t.is_comb() and t.fun == uminus
 
 def is_times(t):
     return t.is_binop() and t.head == times
