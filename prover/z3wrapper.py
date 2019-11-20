@@ -183,7 +183,8 @@ norm_thms = [
     ('real_one_def', True),
     ('real_of_nat_add', True),
     ('real_of_nat_mul', True),
-    'real_of_nat_minus'
+    'real_of_nat_minus',
+    'real_inverse_divide'
 ]
 
 def norm_term(thy, t):
