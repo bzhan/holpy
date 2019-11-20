@@ -583,6 +583,59 @@
             }
         },
         {
+            "attributes": [],
+            "name": "contradiction",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬P ⟶ P",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬P ⟶ P ⊢ ¬P ⟶ P"
+                },
+                {
+                    "args": "P ⟶ P",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "trivial",
+                    "th": "⊢ P ⟶ P"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬P ⟶ P ⊢ P"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (¬P ⟶ P) ⟶ P"
+                }
+            ],
+            "prop": "(¬P ⟶ P) ⟶ P",
+            "steps": [
+                {
+                    "case": "P",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool"
+            }
+        },
+        {
             "attributes": [
                 "hint_backward"
             ],
