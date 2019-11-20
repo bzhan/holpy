@@ -6385,29 +6385,20 @@
                     "th": "x * y = 1 ⊢ x * y = 1"
                 },
                 {
-                    "args": "1 / y = x",
+                    "args": "real_inverse y = x",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "z3",
-                    "th": "x * y = 1 ⊢ 1 / y = x"
-                },
-                {
-                    "args": "real_inverse_divide, real_inverse y = x",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "rewrite_goal",
                     "th": "x * y = 1 ⊢ real_inverse y = x"
                 },
                 {
                     "args": "",
-                    "id": "3",
+                    "id": "2",
                     "prevs": [
                         "0",
-                        "2"
+                        "1"
                     ],
                     "rule": "intros",
                     "th": "⊢ x * y = 1 ⟶ real_inverse y = x"
@@ -6415,12 +6406,6 @@
             ],
             "prop": "x * y = 1 --> real_inverse y = x",
             "steps": [
-                {
-                    "goal_id": "1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "real_inverse_divide"
-                },
                 {
                     "fact_ids": [
                         "0"
@@ -6770,7 +6755,7 @@
                 "hint_rewrite"
             ],
             "name": "real_arch_inv",
-            "num_gaps": 3,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "",
@@ -6841,11 +6826,14 @@
                     "th": "n = 0, real_inverse e < of_nat n ⊢ real_inverse e < 0"
                 },
                 {
-                    "args": "",
+                    "args": "false",
                     "id": "0.4.3",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "0 < e, real_inverse e < of_nat n, n = 0 ⊢ false"
+                    "prevs": [
+                        "0.4.2",
+                        "0.0"
+                    ],
+                    "rule": "z3",
+                    "th": "n = 0, real_inverse e < of_nat n, 0 < e ⊢ false"
                 },
                 {
                     "args": "",
@@ -6867,49 +6855,72 @@
                     "th": "0 < e, real_inverse e < of_nat n ⊢ ¬(n = 0)"
                 },
                 {
-                    "args": "",
+                    "args": "0 < real_inverse (of_nat n)",
                     "id": "0.6",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "0.3",
+                        "0.0"
+                    ],
+                    "rule": "z3",
+                    "th": "real_inverse e < of_nat n, 0 < e ⊢ 0 < real_inverse (of_nat n)"
+                },
+                {
+                    "args": "real_inverse (of_nat n) < e",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.3",
+                        "0.0"
+                    ],
+                    "rule": "z3",
+                    "th": "real_inverse e < of_nat n, 0 < e ⊢ real_inverse (of_nat n) < e"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.6",
+                        "0.7"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "0 < e, real_inverse e < of_nat n ⊢ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e"
                 },
                 {
                     "args": "conjI",
-                    "id": "0.7",
+                    "id": "0.9",
                     "prevs": [
                         "0.5",
-                        "0.6"
+                        "0.8"
                     ],
                     "rule": "apply_theorem",
                     "th": "0 < e, real_inverse e < of_nat n ⊢ ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e"
                 },
                 {
                     "args": "exI, {a: nat}, {P: λn. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e, a: n}",
-                    "id": "0.8",
+                    "id": "0.10",
                     "prevs": [
-                        "0.7"
+                        "0.9"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "0 < e, real_inverse e < of_nat n ⊢ ∃a. ¬(a = 0) ∧ 0 < real_inverse (of_nat a) ∧ real_inverse (of_nat a) < e"
+                    "th": "0 < e, real_inverse e < of_nat n ⊢ ∃n. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e"
                 },
                 {
                     "args": "∃n. real_inverse e < of_nat n",
-                    "id": "0.9",
+                    "id": "0.11",
                     "prevs": [
                         "0.0",
                         "0.1",
                         "0.2",
                         "0.3",
-                        "0.8"
+                        "0.10"
                     ],
                     "rule": "intros",
                     "th": "⊢ 0 < e ⟶ (∃n. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e)"
                 },
                 {
-                    "args": "",
+                    "args": "(∃n. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e) ⟶ 0 < e",
                     "id": "1",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "z3",
                     "th": "⊢ (∃n. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e) ⟶ 0 < e"
                 },
                 {
@@ -6992,6 +7003,39 @@
                     "method_name": "rewrite_fact",
                     "sym": "true",
                     "theorem": "real_zero_def"
+                },
+                {
+                    "fact_ids": [
+                        "0.4.2",
+                        "0.0"
+                    ],
+                    "goal_id": "0.4.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "0.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0.3",
+                        "0.0"
+                    ],
+                    "goal_id": "0.6",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.3",
+                        "0.0"
+                    ],
+                    "goal_id": "0.7",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
