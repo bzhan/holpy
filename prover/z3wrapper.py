@@ -217,24 +217,27 @@ def solve(thy, t, debug=False):
         if debug:
             print(*args)
 
-    try:
-        var_names = [v.name for v in term.get_vars(As + [C])]
-        assms = dict()
-        to_real = dict()
-        for A in As:
+    var_names = [v.name for v in term.get_vars(As + [C])]
+    assms = dict()
+    to_real = dict()
+    for A in As:
+        try:
             z3_A = convert(A, var_names, assms, to_real)
             print_debug('A', z3_A)
             s.add(z3_A)
+        except Z3Exception as e:
+            print_debug(e)
+    try:
         z3_C = convert(C, var_names, assms, to_real)
         print_debug('C', z3_C)
         s.add(z3.Not(z3_C))
-        for nm, A in assms.items():
-            print_debug('A', A)
-            s.add(A)
-        return str(s.check()) == 'unsat'
     except Z3Exception as e:
         print_debug(e)
-        return False
+
+    for nm, A in assms.items():
+        print_debug('A', A)
+        s.add(A)
+    return str(s.check()) == 'unsat'
 
 class Z3Macro(ProofMacro):
     """Macro invoking SMT solver Z3."""

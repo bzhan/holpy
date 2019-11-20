@@ -109,6 +109,7 @@ class Z3WrapperTest(unittest.TestCase):
             ('1 / (a + 1) < b --> 1 < (a + 1) * b', False),
             ('a <= of_nat n --> a < of_nat (n + 1)', True),
             ('~(n = 0) --> of_nat (n - 1) + (1::real) = of_nat n', True),
+            ('(1::real) = 0 --> real_inverse a = b', True),
         ]
 
         for s, res in test_data:
