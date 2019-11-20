@@ -20,6 +20,15 @@ class ProofTest(unittest.TestCase):
             ("x", "(1::real)"),
             ("x * y", "a * 0 + 1 * y"),
             ("x * x", "a * 1 + 1 * a"),
+            ("x ^ (2::nat)", "of_nat 2 * a ^ ((2::nat) - 1) * 1"),
+            ("x ^ (3::nat)", "of_nat 3 * a ^ ((3::nat) - 1) * 1"),
+            ("(x + 1) ^ (3::nat)", "of_nat 3 * (a + 1) ^ ((3::nat) - 1) * (1 + 0)"),
+            ("exp(x)", "exp(a) * 1"),
+            ("exp(x ^ (2::nat))", "exp (a ^ (2::nat)) * (of_nat 2 * a ^ ((2::nat) - 1) * 1)"),
+            ("exp(exp(x))", "exp (exp a) * (exp a * 1)"),
+            ("sin(x)", "cos a * 1"),
+            ("cos(x)", "-sin a * 1"),
+            ("sin(x) * cos(x)", "sin a * (-(sin a) * 1) + cos a * 1 * cos a"),
         ]
 
         ctxt = Context('realintegral', vars={'x': 'real', 'y': 'real', 'a': 'real', 'b': 'real', 'n': 'nat'})

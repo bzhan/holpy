@@ -571,9 +571,9 @@
             "attributes": [],
             "name": "real_diff_chain_within",
             "prop": [
-                "has_real_derivative f f1 (within (atreal x) s) &",
-                "has_real_derivative g g1 (within (atreal (f x)) (image f s))",
-                "-->has_real_derivative (g O f) (g1 * f1) (within (atreal x) s)"
+                "has_real_derivative f f1 (within (atreal x) s) ∧ ",
+                "has_real_derivative g g1 (within (atreal (f x)) (image f s)) ",
+                "⟶ has_real_derivative (λx. g (f x)) (g1 * f1) (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
@@ -589,9 +589,8 @@
             "attributes": [],
             "name": "real_diff_chain_atreal",
             "prop": [
-                "has_real_derivative f f1 (atreal x) ∧ ",
-                "has_real_derivative g g1 (atreal (f x)) ",
-                "⟶ has_real_derivative (g ∘ f) (g1 * f1) (atreal x)"
+                "has_real_derivative f f1 (atreal x) ∧ has_real_derivative g g1 (atreal (f x)) ",
+                "⟶ has_real_derivative (λx. g (f x)) (g1 * f1) (atreal x)"
             ],
             "ty": "thm",
             "vars": {
@@ -1433,6 +1432,16 @@
         },
         {
             "attributes": [],
+            "name": "has_real_derivative_exp_within",
+            "prop": "has_real_derivative exp (exp x) (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
             "name": "real_differentiable_at_exp",
             "prop": "real_differentiable exp (atreal x)",
             "ty": "thm",
@@ -1489,6 +1498,16 @@
         },
         {
             "attributes": [],
+            "name": "has_real_derivative_sin_within",
+            "prop": "has_real_derivative sin (cos x) (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
             "name": "real_differentiable_at_sin",
             "prop": "real_differentiable sin (atreal x)",
             "ty": "thm",
@@ -1540,6 +1559,16 @@
             "prop": "has_real_derivative cos (-sin x) (atreal x)",
             "ty": "thm",
             "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [],
+            "name": "has_real_derivative_cos_within",
+            "prop": "has_real_derivative cos (-(sin x)) (within (atreal x) s)",
+            "ty": "thm",
+            "vars": {
+                "s": "real set",
                 "x": "real"
             }
         },

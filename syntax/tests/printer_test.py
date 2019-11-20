@@ -186,6 +186,7 @@ class PrinterTest(unittest.TestCase):
             (real.uminus(real.minus(x, y)), "-(x - y)"),
             (real.uminus(real.nat_power(x, n)), "-(x ^ n)"),
             (real.nat_power(real.uminus(x), n), "-x ^ n"),
+            (real.plus(x, real.of_nat(nat.to_binary_nat(2))), "x + of_nat 2"),
         ]
 
         for t, s in test_data:

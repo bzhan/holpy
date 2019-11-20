@@ -2,7 +2,10 @@
 
 from kernel import term
 from kernel.term import Term, Var
+from logic.conv import top_conv
 from logic.logic import apply_theorem, conj_thms
+from data import set
+from data import nat
 from data import real
 from data.integral import within, atreal
 from util import name
@@ -23,7 +26,7 @@ def has_real_derivativeI(thy, f, x, S):
         nm = name.get_variant_name(f.var_name, var_names)
         v = Var(nm, f.var_T)
         t = f.subst_bound(v)
-        if t.is_binop():
+        if t.is_binop() and real.is_real(t.arg1) and real.is_real(t.arg):
             t1 = Term.mk_abs(v, t.arg1)
             t2 = Term.mk_abs(v, t.arg)
             pt1 = has_real_derivativeI(thy, t1, x, S)
@@ -36,11 +39,26 @@ def has_real_derivativeI(thy, f, x, S):
                 return apply_theorem(thy, 'has_real_derivative_mul_within', conj_thms(thy, pt1, pt2))
             else:
                 raise NotImplementedError
-        elif t.is_comb() and t.arg.get_type() == real.realT:
+        elif real.is_nat_power(t) and nat.is_binary_nat(t.arg) and nat.from_binary_nat(t.arg) > 0:
+            t1 = Term.mk_abs(v, t.arg1)
+            pt1 = has_real_derivativeI(thy, t1, x, S)
+            return apply_theorem(thy, 'has_real_derivative_pow_within', pt1, inst={'n': t.arg})
+        elif t.is_comb() and real.is_real(t.arg):
             argt = Term.mk_abs(v, t.arg)
             pt = has_real_derivativeI(thy, argt, x, S)
             if real.is_uminus(t):
                 return apply_theorem(thy, 'has_real_derivative_neg', pt)
+            elif t.fun in (real.exp, real.sin, real.cos):
+                if t.fun == real.exp:
+                    th_name = 'has_real_derivative_exp_within'
+                elif t.fun == real.sin:
+                    th_name = 'has_real_derivative_sin_within'
+                else:
+                    th_name = 'has_real_derivative_cos_within'
+                f = Term.mk_abs(v, t.arg)
+                pt1 = has_real_derivativeI(thy, f, x, S)
+                pt2 = apply_theorem(thy, th_name, inst={'x': f(x), 's': set.mk_image(f, S)})
+                return apply_theorem(thy, 'real_diff_chain_within', conj_thms(thy, pt1, pt2), inst={'f': f})
             else:
                 raise NotImplementedError
         elif t == v:
