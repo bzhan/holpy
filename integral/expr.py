@@ -160,7 +160,7 @@ class Expr:
                     if y.val < 0:
                         return poly.constant(Fraction(x.val) ** y.val)
                     else:
-                        return poly.constant(x.val ** y.val)
+                        return poly.constant(Fraction(x.val ** y.val))
                 elif y.ty == CONST and y.val == 1:
                     return x.to_poly()
                 elif y.ty == CONST and y.val != 1:
@@ -485,3 +485,11 @@ class EvalAt(Expr):
 
     def __repr__(self):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
+
+if __name__ == "__main__":
+    problem = "1^(2/9)"
+    t = parser.parse_expr(problem)
+
+    #c = t.normalize()
+    
+    print(t.normalize())
