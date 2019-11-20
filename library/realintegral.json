@@ -5112,7 +5112,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": " has_real_integral_refl",
+            "name": "has_real_integral_refl",
             "num_gaps": 0,
             "proof": [
                 {
@@ -5228,7 +5228,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
-                    "theorem": " has_real_integral_refl"
+                    "theorem": "has_real_integral_refl"
                 }
             ],
             "ty": "thm",
@@ -13825,7 +13825,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": " has_real_integral_reflect",
+            "name": "has_real_integral_reflect",
             "num_gaps": 0,
             "proof": [
                 {
@@ -14016,7 +14016,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": " has_real_integral_reflect"
+                    "theorem": "has_real_integral_reflect"
                 }
             ],
             "ty": "thm",
@@ -14063,7 +14063,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": " has_real_integral_reflect"
+                    "theorem": "has_real_integral_reflect"
                 }
             ],
             "ty": "thm",
@@ -16553,7 +16553,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": " has_real_integral_restrict_inter",
+            "name": "has_real_integral_restrict_inter",
             "num_gaps": 3,
             "proof": [
                 {
@@ -16965,7 +16965,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": " has_real_integral_restrict_inter"
+                    "theorem": "has_real_integral_restrict_inter"
                 }
             ],
             "ty": "thm",
@@ -22675,7 +22675,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": " real_measurable_real_interval2",
+            "name": "real_measurable_real_interval2",
             "num_gaps": 0,
             "proof": [
                 {

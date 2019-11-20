@@ -500,7 +500,7 @@
         },
         {
             "attributes": [],
-            "name": " has_real_derivative_transform_within",
+            "name": "has_real_derivative_transform_within",
             "prop": [
                 "0 < d ∧ ",
                 "x ∈ s ∧ ",
@@ -520,7 +520,7 @@
         },
         {
             "attributes": [],
-            "name": " has_real_derivative_transform_atreal",
+            "name": "has_real_derivative_transform_atreal",
             "prop": [
                 "0 < d ∧ ",
                 "(∀x1. x1 ∈ s ∧ abs (x1 - x) < d ⟶ f x1 = g x1) ∧ ",
@@ -539,7 +539,7 @@
         },
         {
             "attributes": [],
-            "name": " has_real_derivative_zero_constant",
+            "name": "has_real_derivative_zero_constant",
             "prop": [
                 "is_realinterval s &",
                 "(!x. x∈s --> has_real_derivative f 0 (within (atreal x) s))",
@@ -742,7 +742,7 @@
         },
         {
             "attributes": [],
-            "name": " has_real_derivative_cdiv_within",
+            "name": "has_real_derivative_cdiv_within",
             "prop": [
                 "has_real_derivative f f1 (within (atreal x) s) ",
                 "⟶ has_real_derivative (λx. f x / c) (f1 / c) (within (atreal x) s)"
@@ -774,7 +774,7 @@
         },
         {
             "attributes": [],
-            "name": " has_real_derivative_id",
+            "name": "has_real_derivative_id",
             "prop": "has_real_derivative (%x. x) 1 net",
             "ty": "thm",
             "vars": {
@@ -809,8 +809,8 @@
             "attributes": [],
             "name": "has_real_derivative_add",
             "prop": [
-                "has_real_derivative f f1 net & has_real_derivative g g1 net",
-                "⟶ has_real_derivative (λx. f x + g x) (f1 + g1) net"
+                "has_real_derivative f f1 net ",
+                "& has_real_derivative g g1 net ⟶ has_real_derivative (λx. f x + g x) (f1 + g1) net"
             ],
             "ty": "thm",
             "vars": {
@@ -825,8 +825,8 @@
             "attributes": [],
             "name": "has_real_derivative_sub",
             "prop": [
-                "has_real_derivative f f1 net ∧ has_real_derivative g g1 net ",
-                "⟶ has_real_derivative (λx. f x - g x) (f1 - g1) net"
+                "has_real_derivative f f1 net ",
+                "& has_real_derivative g g1 net ⟶ has_real_derivative (λx. f x - g x) (f1 - g1) net"
             ],
             "ty": "thm",
             "vars": {
@@ -1498,7 +1498,7 @@
         },
         {
             "attributes": [],
-            "name": " real_differentiable_within_sin",
+            "name": "real_differentiable_within_sin",
             "prop": "real_differentiable sin (within (atreal x) s)",
             "ty": "thm",
             "vars": {
@@ -1664,7 +1664,7 @@
         },
         {
             "attributes": [],
-            "name": " real_differentiable_at_log",
+            "name": "real_differentiable_at_log",
             "prop": "0 < x ⟶ real_differentiable log (atreal x)",
             "ty": "thm",
             "vars": {
@@ -1673,7 +1673,7 @@
         },
         {
             "attributes": [],
-            "name": " real_differentiable_within_log",
+            "name": "real_differentiable_within_log",
             "prop": "0 < x ⟶ real_differentiable log (within (atreal x) s)",
             "ty": "thm",
             "vars": {
@@ -2018,7 +2018,7 @@
         },
         {
             "attributes": [],
-            "name": " reallim_log_over_n",
+            "name": "reallim_log_over_n",
             "prop": "tendsto_real (λn. log (of_nat n) / of_nat n) 0 sequentially",
             "ty": "thm",
             "vars": {}

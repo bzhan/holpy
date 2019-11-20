@@ -188,7 +188,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": " real_add_rid",
+            "name": "real_add_rid",
             "num_gaps": 0,
             "proof": [
                 {
@@ -1306,7 +1306,7 @@
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": " real_add_rid"
+                    "theorem": "real_add_rid"
                 },
                 {
                     "goal_id": "0",

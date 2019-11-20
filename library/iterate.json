@@ -2402,7 +2402,7 @@
                 "hint_backward1",
                 "hint_forward"
             ],
-            "name": " sum_add_gen",
+            "name": "sum_add_gen",
             "prop": [
                 "finite {x. x∈s & ~(f x = 0)} & finite {x. x∈s & ~(g x = 0)} ",
                 "⟶ sum s (λx. f x + g x) = sum s f + sum s g"
