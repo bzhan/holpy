@@ -62,6 +62,9 @@
         },
         {
             "ascii_op": "/",
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_divide",
             "prop": "x / y = x * real_inverse y",
             "ty": "def",
