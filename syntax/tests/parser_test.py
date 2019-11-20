@@ -14,7 +14,7 @@ from logic import basic
 from data import set
 from syntax.printer import print_term, print_type
 from syntax import parser
-from syntax.context import Context
+from logic.basic import Context
 
 
 class ParserTest(unittest.TestCase):

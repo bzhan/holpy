@@ -394,8 +394,8 @@ def file_data_to_output(thy, data, *, line_length=None):
     # parsing succeeds, apply the extension to the theory. Otherwise,
     # add exception information to the item.
     try:
-        parsed_data = parser.parse_item(thy, data)
-        ext = parser.get_extension(thy, parsed_data)
+        parsed_data = basic.parse_item(thy, data)
+        ext = basic.get_extension(thy, parsed_data)
         thy.unchecked_extend(ext)
     except Exception as e:
         data['err_type'] = e.__class__.__name__
