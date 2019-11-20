@@ -458,6 +458,16 @@
             }
         },
         {
+            "attributes": [],
+            "name": "real_of_nat_minus",
+            "prop": "of_nat (m - n) = if m >= n then of_nat m - of_nat n else (0::real)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
