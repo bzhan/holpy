@@ -12,6 +12,16 @@
                     "latex": "2 \\int_{x=2}^{3} x \\,\\mathrm{dx} + (\\int_{x=2}^{3} x ^ 2 \\,\\mathrm{dx})",
                     "reason": "Linearity",
                     "text": "2 * (INT x:[2,3]. x) + (INT x:[2,3]. x ^ 2)"
+                },
+                {
+                    "latex": "2 * (\\left. \\frac{x ^ 2}{2} \\right\\vert_{x=2}^{3}) + (\\left. \\frac{x ^ 3}{3} \\right\\vert_{x=2}^{3})",
+                    "reason": "Common integrals",
+                    "text": "2 * ([x ^ 2 / 2]_x=2,3) + ([x ^ 3 / 3]_x=2,3)"
+                },
+                {
+                    "latex": "\\frac{34}{3}",
+                    "reason": "Simplification",
+                    "text": "34/3"
                 }
             ],
             "name": "Exercise 1",
@@ -60,7 +70,7 @@
             "problem": "INT x:[0,1]. exp(6*x)"
         },
         {
-            "_problem_latex": "\\int_{-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{-1}^{2} x * \\exp{x} \\,\\mathrm{dx}",
             "calc": [
                 {
                     "latex": "\\int_{x=-1}^{2} x \\exp{x} \\,\\mathrm{dx}",
@@ -104,25 +114,25 @@
             "problem": "INT x:[0,pi/4]. sin(x)"
         },
         {
-            "_problem_latex": "\\int_{0}^{a} 3 x ^ 2 - x + 1 \\,\\mathrm{dx}",
+            "_problem_latex": "\\int_{0}^{a} 3 * x ^ 2 - x + 1 \\,\\mathrm{dx}",
             "calc": [
                 {
-                    "latex": "\\int_{0}^{a} 3 x ^ 2 - x + 1 \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{a} 3 * x ^ 2 - x + 1 \\,\\mathrm{dx}",
                     "reason": "Initial",
                     "text": "INT x:[0,a]. 3 * x ^ 2 - x + 1"
                 },
                 {
-                    "latex": "(\\int_{0}^{a} 1 \\,\\mathrm{dx}) + -1 \\int_{0}^{a} x \\,\\mathrm{dx} + 3 \\int_{0}^{a} x ^ 2 \\,\\mathrm{dx}",
+                    "latex": "\\int_{0}^{a} 1 \\,\\mathrm{dx} - \\int_{0}^{a} x \\,\\mathrm{dx} + 3 * (\\int_{0}^{a} x ^ 2 \\,\\mathrm{dx})",
                     "reason": "Linearity",
                     "text": "(INT x:[0,a]. 1) + -1 * (INT x:[0,a]. x) + 3 * (INT x:[0,a]. x ^ 2)"
                 },
                 {
-                    "latex": "(\\left. x \\right\\vert_{x=0}^{a}) + -1 \\left. \\frac{x ^ 2}{2} \\right\\vert_{x=0}^{a} + 3 \\left. \\frac{x ^ 3}{3} \\right\\vert_{x=0}^{a}",
+                    "latex": "\\left. x \\right\\vert_{x=0}^{a} - \\left. \\frac{x ^ 2}{2} \\right\\vert_{x=0}^{a} + 3 * (\\left. \\frac{x ^ 3}{3} \\right\\vert_{x=0}^{a})",
                     "reason": "Common integrals",
                     "text": "([x]_x=0,a) + -1 * ([x ^ 2 / 2]_x=0,a) + 3 * ([x ^ 3 / 3]_x=0,a)"
                 },
                 {
-                    "latex": "a + \\frac{-1}{2} a ^ 2 + a ^ 3",
+                    "latex": "a - \\frac{1}{2} * a ^ 2 + a ^ 3",
                     "reason": "Simplification",
                     "text": "a + -1/2 * a ^ 2 + a ^ 3"
                 }
@@ -158,16 +168,41 @@
             "problem": "INT x:[1,2]. x^2 + 1/x^4"
         },
         {
+            "_problem_latex": "\\int_{\\pi/3}^{\\pi} \\sin{(x + \\frac{\\pi}{3})} \\,\\mathrm{dx}",
             "name": "Exercise 8",
             "problem": "INT x:[pi/3, pi]. sin(x+pi/3)"
         },
         {
+            "_problem_latex": "\\int_{4}^{9} \\sqrt[3]{x} * (\\sqrt{x} + 1) \\,\\mathrm{dx}",
+            "calc": [
+                {
+                    "latex": "\\int_{4}^{9} \\sqrt{x} * (\\sqrt{x} + 1) \\,\\mathrm{dx}",
+                    "reason": "Initial",
+                    "text": "INT x:[4,9]. x ^ (1/2) * (x ^ (1/2) + 1)"
+                },
+                {
+                    "latex": "\\int_{4}^{9} \\sqrt{x} + x \\,\\mathrm{dx}",
+                    "reason": "Simplification",
+                    "text": "INT x:[4,9]. x ^ (1/2) + x"
+                },
+                {
+                    "latex": "(\\int_{4}^{9} \\sqrt{x} \\,\\mathrm{dx}) + (\\int_{4}^{9} x \\,\\mathrm{dx})",
+                    "reason": "Linearity",
+                    "text": "(INT x:[4,9]. x ^ (1/2)) + (INT x:[4,9]. x)"
+                },
+                {
+                    "latex": "(\\left. \\frac{x ^ {(\\frac{3}{2})}}{\\frac{3}{2}} \\right\\vert_{x=4}^{9}) + (\\left. \\frac{x ^ 2}{2} \\right\\vert_{x=4}^{9})",
+                    "reason": "Common integrals",
+                    "text": "([x ^ (3/2) / (3/2)]_x=4,9) + ([x ^ 2 / 2]_x=4,9)"
+                },
+                {
+                    "latex": "\\frac{271}{6}",
+                    "reason": "Simplification",
+                    "text": "271/6"
+                }
+            ],
             "name": "Exercise 9",
-            "problem": "INT x:[0,1]. x ^ 3 * (x^(1/2) + 1)"
-        },
-        {
-            "name": "Exercise 10",
-            "problem":"INT x:[-1,2]. x ^ (1/2)"
+            "problem": "INT x:[4, 9]. x ^ (1 / 3) * (x ^ (1 / 2) + 1)"
         }
     ]
 }

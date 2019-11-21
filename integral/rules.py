@@ -3,7 +3,6 @@
 from integral import expr
 from integral import poly
 from integral.expr import Var, Const, Fun, EvalAt
-
 class Rule:
     """Represents a rule for integration. It takes an integral
     to be evaluated (as an expression), then outputs a new

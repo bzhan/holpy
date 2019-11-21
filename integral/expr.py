@@ -4,7 +4,6 @@ from decimal import Decimal
 from fractions import Fraction
 from integral import poly
 import functools, operator
-from integral import parser
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
 
 op_priority = {
@@ -137,6 +136,7 @@ class Expr:
         elif self.ty == OP:
             if self.op == "+":
                 x, y = self.args
+
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
@@ -157,10 +157,22 @@ class Expr:
             elif self.op == "^":
                 x, y = self.args
                 if x.ty == CONST and y.ty == CONST:
-                    if y.val < 0:
-                        return poly.constant(Fraction(x.val) ** y.val)
-                    else:
-                        return poly.constant(Fraction(x.val ** y.val))
+                    if x.val == 0: 
+                        if y.val == 0:
+                            return poly.constant(1)
+                        else:
+                            return poly.constant(0)
+                    if isinstance(y.val, int):
+                        if y.val < 0:
+                            return poly.constant(Fraction(x.val) ** y.val)
+                        else:
+                            return poly.constant(Fraction(x.val ** y.val))
+                    elif isinstance(y.val, Fraction):
+                        k = Fraction(x.val ** y.val)
+                        if k.denominator == 1:
+                            return poly.constant(k.numerator)
+                        else: 
+                            return poly.Polynomial([poly.Monomial(1, [(x, y.val)])])
                 elif y.ty == CONST and y.val == 1:
                     return x.to_poly()
                 elif y.ty == CONST and y.val != 1:
@@ -361,7 +373,7 @@ class Op(Expr):
                 s1 = "(%s)" % s1
             if b.priority() <= op_priority[self.op]:
                 s2 = "(%s)" % s2
-            return "%s %s %s" % (s1, self.op, s2)
+            return "%s %s %s" % (s1, self.op, s2)           
         else:
             raise NotImplementedError
 
@@ -485,11 +497,3 @@ class EvalAt(Expr):
 
     def __repr__(self):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
-
-if __name__ == "__main__":
-    problem = "1^(2/9)"
-    t = parser.parse_expr(problem)
-
-    #c = t.normalize()
-    
-    print(t.normalize())
