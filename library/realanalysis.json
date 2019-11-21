@@ -21,24 +21,39 @@
             "type": "real net"
         },
         {
+            "attributes": [],
             "name": "at_posinfinity",
-            "ty": "def.ax",
+            "prop": "at_posinfinity = at_infinity",
+            "ty": "def",
             "type": "real net"
         },
         {
+            "attributes": [],
             "name": "at_neginfinity",
-            "ty": "def.ax",
+            "prop": "at_neginfinity = at_infinity",
+            "ty": "def",
             "type": "real net"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_open",
-            "ty": "def.ax",
-            "type": "real set => bool"
+            "prop": [
+                "real_open s <-->",
+                "(!x. x ∈ s --> (?e. 0 < e & (!x1. abs (x1-x) < e --> x1 ∈ s)))"
+            ],
+            "ty": "def",
+            "type": "real set ⇒ bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_closed",
-            "ty": "def.ax",
-            "type": "real set => bool"
+            "prop": "real_closed s ⟷ real_open (diff univ s)",
+            "ty": "def",
+            "type": "real set ⇒ bool"
         },
         {
             "attributes": [
@@ -54,15 +69,354 @@
                 "hint_rewrite"
             ],
             "name": "real_bounded_pos_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ⟶ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b))"
+                },
+                {
+                    "args": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
+                },
+                {
+                    "args": "y, real",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ abs x ≤ y",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ y ⊢ ∀x. x ∈ s ⟶ abs x ≤ y"
+                },
+                {
+                    "args": "0 < 1 + abs y",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ 0 < 1 + abs y"
+                },
+                {
+                    "args": "∀x. x ∈ s ⟶ abs x < 1 + abs y",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ y ⊢ ∀x. x ∈ s ⟶ abs x < 1 + abs y"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.3",
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B, ∀x. x ∈ s ⟶ abs x ≤ y ⊢ 0 < 1 + abs y ∧ (∀x. x ∈ s ⟶ abs x < 1 + abs y)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λb. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b), a: 1 + abs y}",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B, ∀x. x ∈ s ⟶ abs x ≤ y ⊢ ∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a)"
+                },
+                {
+                    "args": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.0",
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ⟶ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)) ⟶ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B)"
+                },
+                {
+                    "args": "∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a) ⊢ ∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a)"
+                },
+                {
+                    "args": "y, real",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR y"
+                },
+                {
+                    "args": "0 < y ∧ (∀x. x ∈ s ⟶ abs x < y)",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < y ∧ (∀x. x ∈ s ⟶ abs x < y) ⊢ 0 < y ∧ (∀x. x ∈ s ⟶ abs x < y)"
+                },
+                {
+                    "args": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
+                    "id": "1.3",
+                    "prevs": [
+                        "1.2"
+                    ],
+                    "rule": "z3",
+                    "th": "0 < y ∧ (∀x. x ∈ s ⟶ abs x < y) ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
+                },
+                {
+                    "args": "∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a)",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.0",
+                        "1.0",
+                        "1.1",
+                        "1.2",
+                        "1.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)) ⟶ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ⟷ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b))"
+                },
+                {
+                    "args": "real_bounded_def, real_bounded s ⟷ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_bounded s ⟷ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_bounded s ⟷ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b))"
+                }
+            ],
             "prop": "real_bounded s = ?b. 0 < b & !x. member x s --> abs x < b",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_bounded_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "exists_elim",
+                    "names": "y"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "1 + abs y"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "exists_elim",
+                    "names": "y"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_bounded_subset",
-            "prop": "real_bounded t & subset t s --> real_bounded s",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_bounded t ∧ s ⊆ t",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_bounded t ∧ s ⊆ t ⊢ real_bounded t ∧ s ⊆ t"
+                },
+                {
+                    "args": "conjD1, {}, {A: real_bounded t, B: s ⊆ t}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_bounded t ∧ s ⊆ t ⊢ real_bounded t"
+                },
+                {
+                    "args": "conjD2, {}, {A: real_bounded t, B: s ⊆ t}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "real_bounded t ∧ s ⊆ t ⊢ s ⊆ t"
+                },
+                {
+                    "args": "real_bounded_def",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "real_bounded t ∧ s ⊆ t ⊢ ∃B. ∀x. x ∈ t ⟶ abs x ≤ B"
+                },
+                {
+                    "args": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
+                    "id": "4",
+                    "prevs": [
+                        "3",
+                        "2"
+                    ],
+                    "rule": "z3",
+                    "th": "real_bounded t ∧ s ⊆ t, real_bounded t ∧ s ⊆ t ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
+                },
+                {
+                    "args": "real_bounded_def, real_bounded s",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "real_bounded t ∧ s ⊆ t ⊢ real_bounded s"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_bounded t ∧ s ⊆ t ⟶ real_bounded s"
+                }
+            ],
+            "prop": "real_bounded t ∧ s ⊆ t ⟶ real_bounded s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_bounded_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_bounded_def"
+                },
+                {
+                    "fact_ids": [
+                        "3",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -70,8 +424,381 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_bounded_union",
-            "prop": "real_bounded (union s t) = real_bounded s & real_bounded t",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B) ⟶ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B)"
+                },
+                {
+                    "args": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B"
+                },
+                {
+                    "args": "B, real",
+                    "id": "0.1",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR B"
+                },
+                {
+                    "args": "∀x. x ∈ s ∪ t ⟶ abs x ≤ B",
+                    "id": "0.2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x. x ∈ s ∪ t ⟶ abs x ≤ B"
+                },
+                {
+                    "args": "",
+                    "id": "0.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x1. x1 ∈ s ⟶ abs x1 ≤ B"
+                },
+                {
+                    "args": "x, real",
+                    "id": "0.3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "0.3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "x ∈ s ∪ t",
+                    "id": "0.3.2",
+                    "prevs": [
+                        "0.3.1"
+                    ],
+                    "rule": "z3",
+                    "th": "x ∈ s ⊢ x ∈ s ∪ t"
+                },
+                {
+                    "args": "x",
+                    "id": "0.3.3",
+                    "prevs": [
+                        "0.2",
+                        "0.3.2"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, x ∈ s ⊢ abs x ≤ B"
+                },
+                {
+                    "args": "",
+                    "id": "0.3.4",
+                    "prevs": [
+                        "0.3.0",
+                        "0.3.1",
+                        "0.3.3"
+                    ],
+                    "rule": "intros",
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x1. x1 ∈ s ⟶ abs x1 ≤ B"
+                },
+                {
+                    "args": "∀x1. x1 ∈ t ⟶ abs x1 ≤ B",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.2"
+                    ],
+                    "rule": "z3",
+                    "th": "∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∀x1. x1 ∈ t ⟶ abs x1 ≤ B"
+                },
+                {
+                    "args": "conjI",
+                    "id": "0.5",
+                    "prevs": [
+                        "0.3",
+                        "0.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ (∀x1. x1 ∈ s ⟶ abs x1 ≤ B) ∧ (∀x1. x1 ∈ t ⟶ abs x1 ≤ B)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λx. (∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∀x1. x1 ∈ t ⟶ abs x1 ≤ x), a: B}",
+                    "id": "0.6",
+                    "prevs": [
+                        "0.5"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ ∃a. (∀x1. x1 ∈ s ⟶ abs x1 ≤ a) ∧ (∀x1. x1 ∈ t ⟶ abs x1 ≤ a)"
+                },
+                {
+                    "args": "ex_conj_distrib",
+                    "id": "0.7",
+                    "prevs": [
+                        "0.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, ∀x. x ∈ s ∪ t ⟶ abs x ≤ B ⊢ (∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x)"
+                },
+                {
+                    "args": "∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B",
+                    "id": "0.8",
+                    "prevs": [
+                        "0.0",
+                        "0.0",
+                        "0.1",
+                        "0.2",
+                        "0.7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B) ⟶ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B) ⟶ (∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B)"
+                },
+                {
+                    "args": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x) ⊢ (∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x)"
+                },
+                {
+                    "args": "conjD1, {}, {A: ∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x, B: ∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x) ⊢ ∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x"
+                },
+                {
+                    "args": "conjD2, {}, {A: ∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x, B: ∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x}",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x) ⊢ ∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x"
+                },
+                {
+                    "args": "B1, real",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR B1"
+                },
+                {
+                    "args": "∀x1. x1 ∈ s ⟶ abs x1 ≤ B1",
+                    "id": "1.4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x1. x1 ∈ s ⟶ abs x1 ≤ B1 ⊢ ∀x1. x1 ∈ s ⟶ abs x1 ≤ B1"
+                },
+                {
+                    "args": "B2, real",
+                    "id": "1.5",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR B2"
+                },
+                {
+                    "args": "∀x1. x1 ∈ t ⟶ abs x1 ≤ B2",
+                    "id": "1.6",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x1. x1 ∈ t ⟶ abs x1 ≤ B2 ⊢ ∀x1. x1 ∈ t ⟶ abs x1 ≤ B2"
+                },
+                {
+                    "args": "∀x. x ∈ s ∪ t ⟶ abs x ≤ max B1 B2",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.6",
+                        "1.4"
+                    ],
+                    "rule": "z3",
+                    "th": "∀x1. x1 ∈ t ⟶ abs x1 ≤ B2, ∀x1. x1 ∈ s ⟶ abs x1 ≤ B1 ⊢ ∀x. x ∈ s ∪ t ⟶ abs x ≤ max B1 B2"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λB. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B, a: max B1 B2}",
+                    "id": "1.8",
+                    "prevs": [
+                        "1.7"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "(∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x) ∧ (∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x), ∀x1. x1 ∈ s ⟶ abs x1 ≤ B1, ∀x1. x1 ∈ t ⟶ abs x1 ≤ B2 ⊢ ∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B"
+                },
+                {
+                    "args": "∃x. ∀x1. x1 ∈ t ⟶ abs x1 ≤ x, ∃x. ∀x1. x1 ∈ s ⟶ abs x1 ≤ x",
+                    "id": "1.9",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.3",
+                        "1.4",
+                        "1.2",
+                        "1.5",
+                        "1.6",
+                        "1.8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B) ⟶ (∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (∃B. ∀x. x ∈ s ∪ t ⟶ abs x ≤ B) ⟷ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B) ∧ (∃B. ∀x. x ∈ t ⟶ abs x ≤ B)"
+                },
+                {
+                    "args": "real_bounded_def, real_bounded (s ∪ t) ⟷ real_bounded s ∧ real_bounded t",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_bounded (s ∪ t) ⟷ real_bounded s ∧ real_bounded t"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_bounded (s ∪ t) ⟷ real_bounded s ∧ real_bounded t"
+                }
+            ],
+            "prop": "real_bounded (s ∪ t) ⟷ real_bounded s ∧ real_bounded t",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_bounded_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "exists_elim",
+                    "names": "B"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "ex_conj_distrib"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "B"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0.3",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.3.2",
+                    "method_name": "apply_prev"
+                },
+                {
+                    "fact_ids": [
+                        "0.3.1"
+                    ],
+                    "goal_id": "0.3.2",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0.2"
+                    ],
+                    "goal_id": "0.4",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "exists_elim",
+                    "names": "B1"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "exists_elim",
+                    "names": "B2"
+                },
+                {
+                    "goal_id": "1.7",
+                    "method_name": "inst_exists_goal",
+                    "s": "max B1 B2"
+                },
+                {
+                    "fact_ids": [
+                        "1.6",
+                        "1.4"
+                    ],
+                    "goal_id": "1.7",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -120,7 +847,7 @@
                 "hint_rewrite"
             ],
             "name": "tendsto_real",
-            "prop": "tendsto_real f l net = !e. 0 < e --> eventualy (%x. abs (f x - l) < e) net",
+            "prop": "tendsto_real f l net ⟷ (∀e. 0 < e ⟶ eventually (λx. abs (f x - l) < e) net)",
             "ty": "def",
             "type": "('a ⇒ real) ⇒ real ⇒ 'a net ⇒ bool"
         },
@@ -138,13 +865,112 @@
                 "hint_rewrite"
             ],
             "name": "trivial_limit",
-            "prop": "trivial_limit net = eventualy (%x::'a. false) net",
+            "prop": "trivial_limit net ⟷ eventually (λx. false) net",
             "ty": "def",
             "type": "'a net ⇒ bool"
         },
         {
             "name": "reallim_trivial",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "trivial_limit net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "trivial_limit net ⊢ trivial_limit net"
+                },
+                {
+                    "args": "trivial_limit_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "trivial_limit net ⊢ eventually (λx. false) net"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "trivial_limit net ⊢ ∀e. 0 < e ⟶ eventually (λx. abs (f x - l) < e) net"
+                },
+                {
+                    "args": "e, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "trivial_limit net, 0 < e ⊢ eventually (λx. abs (f x - l) < e) net"
+                },
+                {
+                    "args": "",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.2"
+                    ],
+                    "rule": "intros",
+                    "th": "trivial_limit net ⊢ ∀e. 0 < e ⟶ eventually (λx. abs (f x - l) < e) net"
+                },
+                {
+                    "args": "tendsto_real_def, tendsto_real f l net",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "trivial_limit net ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ trivial_limit net ⟶ tendsto_real f l net"
+                }
+            ],
             "prop": "trivial_limit net --> tendsto_real f l net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tendsto_real_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "trivial_limit_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "e"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => real",
@@ -164,8 +990,11 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_const",
-            "prop": "tendsto_real (%x. a) a net",
+            "prop": "tendsto_real (λx. a) a net",
             "ty": "thm",
             "vars": {
                 "a": "real",
@@ -173,8 +1002,12 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_lmul",
-            "prop": "tendsto_real f l net --> tendsto_real (%x. c * f x) (c * l) net",
+            "prop": "tendsto_real f l net ⟶ tendsto_real (λx. c * f x) (c * l) net",
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -184,8 +1017,63 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_rmul",
-            "prop": "tendsto_real f l net --> tendsto_real (%x. (f x) * c) (l * c) net",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tendsto_real f l net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "reallim_lmul, {a: 'a}, {c: c, f: f, l: l, net: net}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f l net ⊢ tendsto_real (λx. c * f x) (c * l) net"
+                },
+                {
+                    "args": "real_mult_comm, tendsto_real (λx. f x * c) (l * c) net",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ⊢ tendsto_real (λx. f x * c) (l * c) net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f l net ⟶ tendsto_real (λx. f x * c) (l * c) net"
+                }
+            ],
+            "prop": "tendsto_real f l net ⟶ tendsto_real (λx. f x * c) (l * c) net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_lmul"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -195,8 +1083,226 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_lmul_eq",
-            "prop": "neg (c = 0) --> tendsto_real (%x. c * f x) (c * l) net = tendsto_real f l net",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(c = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(c = 0) ⊢ ¬(c = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0) ⊢ tendsto_real (λx. c * f x) (c * l) net ⟶ tendsto_real f l net"
+                },
+                {
+                    "args": "tendsto_real (λx. c * f x) (c * l) net",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real (λx. c * f x) (c * l) net ⊢ tendsto_real (λx. c * f x) (c * l) net"
+                },
+                {
+                    "args": "reallim_lmul, {a: 'a}, {c: real_inverse c, f: λx. c * f x, l: c * l, net: net}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real (λx. c * f x) (c * l) net ⊢ tendsto_real (λx. real_inverse c * (c * f x)) (real_inverse c * (c * l)) net"
+                },
+                {
+                    "args": "real_mult_assoc",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "tendsto_real (λx. c * f x) (c * l) net ⊢ tendsto_real (λx. real_inverse c * c * f x) (real_inverse c * c * l) net"
+                },
+                {
+                    "args": "real_mul_linv, {}, {x: c}",
+                    "id": "1.3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(c = 0) ⊢ real_inverse c * c = 1"
+                },
+                {
+                    "args": "",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3",
+                        "1.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "¬(c = 0), tendsto_real (λx. c * f x) (c * l) net ⊢ tendsto_real (λx. 1 * f x) (1 * l) net"
+                },
+                {
+                    "args": "real_mul_lid",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(c = 0), tendsto_real (λx. c * f x) (c * l) net ⊢ tendsto_real (λx. f x) l net"
+                },
+                {
+                    "args": "eta_conversion",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.5"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(c = 0), tendsto_real (λx. c * f x) (c * l) net ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "",
+                    "id": "1.7",
+                    "prevs": [
+                        "1.0",
+                        "1.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0) ⊢ tendsto_real (λx. c * f x) (c * l) net ⟶ tendsto_real f l net"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(c = 0) ⊢ tendsto_real f l net ⟶ tendsto_real (λx. c * f x) (c * l) net"
+                },
+                {
+                    "args": "tendsto_real f l net",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "reallim_lmul, {a: 'a}, {c: c, f: f, l: l, net: net}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(c = 0), tendsto_real f l net ⊢ tendsto_real (λx. c * f x) (c * l) net"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(c = 0) ⊢ tendsto_real f l net ⟶ tendsto_real (λx. c * f x) (c * l) net"
+                },
+                {
+                    "args": "iffI",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(c = 0) ⊢ tendsto_real (λx. c * f x) (c * l) net ⟷ tendsto_real f l net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(c = 0) ⟶ tendsto_real (λx. c * f x) (c * l) net ⟷ tendsto_real f l net"
+                }
+            ],
+            "prop": "¬(c = 0) ⟶ tendsto_real (λx. c * f x) (c * l) net ⟷ tendsto_real f l net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_forward_step",
+                    "param_c": "real_inverse c",
+                    "theorem": "reallim_lmul"
+                },
+                {
+                    "fact_ids": [
+                        "1.1"
+                    ],
+                    "goal_id": "1.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mult_assoc"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_mul_linv"
+                },
+                {
+                    "fact_ids": [
+                        "1.3",
+                        "1.2"
+                    ],
+                    "goal_id": "1.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "1.4"
+                    ],
+                    "goal_id": "1.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "fact_ids": [
+                        "1.5"
+                    ],
+                    "goal_id": "1.6",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eta_conversion"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal_id": "2.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_lmul"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -207,7 +1313,61 @@
         },
         {
             "name": "reallim_rmul_eq",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(c = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(c = 0) ⊢ ¬(c = 0)"
+                },
+                {
+                    "args": "reallim_lmul_eq, {a: 'a}, {c: c, f: f, l: l, net: net}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(c = 0) ⊢ tendsto_real (λx. c * f x) (c * l) net ⟷ tendsto_real f l net"
+                },
+                {
+                    "args": "real_mult_comm, tendsto_real (λx. f x * c) (l * c) net ⟷ tendsto_real f l net",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(c = 0) ⊢ tendsto_real (λx. f x * c) (l * c) net ⟷ tendsto_real f l net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(c = 0) ⟶ tendsto_real (λx. f x * c) (l * c) net ⟷ tendsto_real f l net"
+                }
+            ],
             "prop": "neg (c = 0) --> tendsto_real (%x. (f x) * c) (l * c) net = tendsto_real f l net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_lmul_eq"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -217,8 +1377,65 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "reallim_neg_eq",
-            "prop": "tendsto_real (%x. -(f x)) (-l) net = tendsto_real f l net ",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(-(1::real) = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬(-(1::real) = 0)"
+                },
+                {
+                    "args": "reallim_lmul_eq, {a: 'a}, {c: -(1::real), f: f, l: l, net: net}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ tendsto_real (λx. -1 * f x) (-1 * l) net ⟷ tendsto_real f l net"
+                },
+                {
+                    "args": "real_poly_neg1, tendsto_real (λx. -(f x)) (-l) net ⟷ tendsto_real f l net",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tendsto_real (λx. -(f x)) (-l) net ⟷ tendsto_real f l net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real (λx. -(f x)) (-l) net ⟷ tendsto_real f l net"
+                }
+            ],
+            "prop": "tendsto_real (λx. -(f x)) (-l) net ⟷ tendsto_real f l net",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_poly_neg1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_lmul_eq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => real",
@@ -227,8 +1444,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "reallim_add",
-            "prop": "tendsto_real f l net & tendsto_real g m net --> tendsto_real (%x. f x + g x) (l + m) net",
+            "prop": [
+                "tendsto_real f l net ∧ tendsto_real g m net ",
+                "⟶ tendsto_real (λx. f x + g x) (l + m) net"
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => real",
@@ -240,7 +1465,122 @@
         },
         {
             "name": "reallim_sub",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tendsto_real f l net ∧ tendsto_real g m net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net ∧ tendsto_real g m net"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real g m net"
+                },
+                {
+                    "args": "reallim_neg_eq, tendsto_real (λx. -(g x)) (-m) net",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(g x)) (-m) net"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net ∧ tendsto_real (λx. -(g x)) (-m) net"
+                },
+                {
+                    "args": "reallim_add",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. f x + -(g x)) (l + -m) net"
+                },
+                {
+                    "args": "real_minus_def, tendsto_real (λx. f x - g x) (l - m) net",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. f x - g x) (l - m) net"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f l net ∧ tendsto_real g m net ⟶ tendsto_real (λx. f x - g x) (l - m) net"
+                }
+            ],
             "prop": "tendsto_real f l net & tendsto_real g m net --> tendsto_real (%x. f x - g x) (l - m) net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_add"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "reallim_neg_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => real",
@@ -251,8 +1591,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "reallim_mul",
-            "prop": "tendsto_real f l net & tendsto_real g m net --> tendsto_real (%x. f x * g x) (l * m) net",
+            "prop": [
+                "tendsto_real f l net ∧ tendsto_real g m net ",
+                "⟶ tendsto_real (λx. f x * g x) (l * m) net"
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => real",
@@ -263,8 +1611,79 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "reallim_inverse",
-            "prop": "tendsto_real f l net & neg (l = 0) --> tendsto_real (%x. real_inverse (f x)) (real_inverse l) net",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "tendsto_real f l net ∧ ¬(l = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ∧ ¬(l = 0) ⊢ tendsto_real f l net ∧ ¬(l = 0)"
+                },
+                {
+                    "args": "conjD1, {}, {A: tendsto_real f l net, B: ¬(l = 0)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f l net ∧ ¬(l = 0) ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "conjD2, {}, {A: tendsto_real f l net, B: ¬(l = 0)}",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f l net ∧ ¬(l = 0) ⊢ ¬(l = 0)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "tendsto_real f l net ∧ ¬(l = 0) ⊢ tendsto_real (λx. real_inverse (f x)) (real_inverse l) net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f l net ∧ ¬(l = 0) ⟶ tendsto_real (λx. real_inverse (f x)) (real_inverse l) net"
+                }
+            ],
+            "prop": [
+                "tendsto_real f l net ∧ ¬(l = 0) ",
+                "⟶ tendsto_real (λx. real_inverse (f x)) (real_inverse l) net"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => real",
@@ -273,10 +1692,129 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "reallim_div",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0)"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real g m net ∧ ¬(m = 0)"
+                },
+                {
+                    "args": "reallim_inverse",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real (λx. real_inverse (g x)) (real_inverse m) net"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real f l net ∧ tendsto_real (λx. real_inverse (g x)) (real_inverse m) net"
+                },
+                {
+                    "args": "reallim_mul",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real (λx. f x * real_inverse (g x)) (l * real_inverse m) net"
+                },
+                {
+                    "args": "real_divide_def, tendsto_real (λx. f x / g x) (l / m) net",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real (λx. f x / g x) (l / m) net"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⟶ tendsto_real (λx. f x / g x) (l / m) net"
+                }
+            ],
             "prop": [
-                "tendsto_real f l net & tendsto_real g m net & neg (m = 0)",
-                "--> tendsto_real (%x. (f x) / (g x)) (l / m) net"
+                "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ",
+                "⟶ tendsto_real (λx. f x / g x) (l / m) net"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_mul"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_inverse"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -298,8 +1836,162 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_pow",
-            "prop": "tendsto_real f l net --> tendsto_real (%x. (f x) ^ n) (l ^ n) net",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tendsto_real f l net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "reallim_const, {a: 'a}, {a: (1::real), net: net}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ tendsto_real (λx. 1) 1 net"
+                },
+                {
+                    "args": "real_nat_power_def_1, tendsto_real (λx. f x ^ (0::nat)) (l ^ (0::nat)) net",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ⊢ tendsto_real (λx. f x ^ (0::nat)) (l ^ (0::nat)) net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "tendsto_real f l net ⊢ ∀n. tendsto_real (λx. f x ^ n) (l ^ n) net ⟶ tendsto_real (λx. f x ^ Suc n) (l ^ Suc n) net"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "tendsto_real (λx. f x ^ n) (l ^ n) net",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real (λx. f x ^ n) (l ^ n) net ⊢ tendsto_real (λx. f x ^ n) (l ^ n) net"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.2",
+                    "prevs": [
+                        "0",
+                        "3.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net, tendsto_real (λx. f x ^ n) (l ^ n) net ⊢ tendsto_real f l net ∧ tendsto_real (λx. f x ^ n) (l ^ n) net"
+                },
+                {
+                    "args": "reallim_mul",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net, tendsto_real (λx. f x ^ n) (l ^ n) net ⊢ tendsto_real (λx. f x * f x ^ n) (l * l ^ n) net"
+                },
+                {
+                    "args": "real_nat_power_def_2, tendsto_real (λx. f x ^ Suc n) (l ^ Suc n) net",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net, tendsto_real (λx. f x ^ n) (l ^ n) net ⊢ tendsto_real (λx. f x ^ Suc n) (l ^ Suc n) net"
+                },
+                {
+                    "args": "",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "tendsto_real f l net ⊢ ∀n. tendsto_real (λx. f x ^ n) (l ^ n) net ⟶ tendsto_real (λx. f x ^ Suc n) (l ^ Suc n) net"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn::nat. tendsto_real (λx. f x ^ n) (l ^ n) net, x: n}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f l net ⊢ tendsto_real (λx. f x ^ n) (l ^ n) net"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f l net ⟶ tendsto_real (λx. f x ^ n) (l ^ n) net"
+                }
+            ],
+            "prop": "tendsto_real f l net ⟶ tendsto_real (λx. f x ^ n) (l ^ n) net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_const"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_2"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_mul"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => real",
@@ -309,10 +2001,60 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward",
+                "hint_backward1"
+            ],
             "name": "reallim_max",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "tendsto_real f l net ∧ tendsto_real g m net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net ∧ tendsto_real g m net"
+                },
+                {
+                    "args": "∀x. ∀y. max x y = 1 / 2 * (x + y + abs (x - y))",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x. ∀y. max x y = 1 / 2 * (x + y + abs (x - y))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. max (f x) (g x)) (max l m) net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f l net ∧ tendsto_real g m net ⟶ tendsto_real (λx. max (f x) (g x)) (max l m) net"
+                }
+            ],
             "prop": [
-                "tendsto_real f l net & tendsto_real g m net",
-                "--> tendsto_real (%x. max (f x) (g x)) (max l m) net"
+                "tendsto_real f l net ∧ tendsto_real g m net ",
+                "⟶ tendsto_real (λx. max (f x) (g x)) (max l m) net"
+            ],
+            "steps": [
+                {
+                    "goal": "!x::real. !y. max x y = 1 / 2 * ((x+y) + abs (x-y))",
+                    "goal_id": "1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "z3"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -324,10 +2066,160 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "reallim_min",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tendsto_real f l net ∧ tendsto_real g m net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net ∧ tendsto_real g m net"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "reallim_neg_eq, tendsto_real (λx. -(f x)) (-l) net",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(f x)) (-l) net"
+                },
+                {
+                    "args": "conjD2",
+                    "id": "3",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real g m net"
+                },
+                {
+                    "args": "reallim_neg_eq, tendsto_real (λx. -(g x)) (-m) net",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(g x)) (-m) net"
+                },
+                {
+                    "args": "conjI",
+                    "id": "5",
+                    "prevs": [
+                        "2",
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(f x)) (-l) net ∧ tendsto_real (λx. -(g x)) (-m) net"
+                },
+                {
+                    "args": "reallim_max",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. max (-(f x)) (-(g x))) (max (-l) (-m)) net"
+                },
+                {
+                    "args": "reallim_neg_eq, tendsto_real (λx. -(max (-(f x)) (-(g x)))) (-(max (-l) (-m))) net",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(max (-(f x)) (-(g x)))) (-(max (-l) (-m))) net"
+                },
+                {
+                    "args": "real_min_max, tendsto_real (λx. min (f x) (g x)) (min l m) net",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. min (f x) (g x)) (min l m) net"
+                },
+                {
+                    "args": "",
+                    "id": "9",
+                    "prevs": [
+                        "0",
+                        "8"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f l net ∧ tendsto_real g m net ⟶ tendsto_real (λx. min (f x) (g x)) (min l m) net"
+                }
+            ],
             "prop": [
-                "tendsto_real f l net & tendsto_real g m net",
-                "--> tendsto_real (%x. min (f x) (g x)) (min l m) net"
+                "tendsto_real f l net ∧ tendsto_real g m net ",
+                "⟶ tendsto_real (λx. min (f x) (g x)) (min l m) net"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_min_max"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "reallim_neg_eq"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_max"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "reallim_neg_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "reallim_neg_eq"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD2"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -339,8 +2231,137 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_null",
-            "prop": "tendsto_real f l net --> tendsto_real (%x. (f x) - l) 0 net",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tendsto_real f l net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f l net ⊢ tendsto_real f l net"
+                },
+                {
+                    "args": "tendsto_real_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "tendsto_real f l net ⊢ ∀e. 0 < e ⟶ eventually (λx. abs (f x - l) < e) net"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "tendsto_real f l net ⊢ ∀e. 0 < e ⟶ eventually (λx. abs (f x - l - 0) < e) net"
+                },
+                {
+                    "args": "e, real",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR e"
+                },
+                {
+                    "args": "0 < e",
+                    "id": "2.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 < e ⊢ 0 < e"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "1",
+                        "2.1"
+                    ],
+                    "rule": "apply_fact",
+                    "th": "tendsto_real f l net, 0 < e ⊢ eventually (λx. abs (f x - l) < e) net"
+                },
+                {
+                    "args": "real_sub_rzero, eventually (λx. abs (f x - l - 0) < e) net",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net, 0 < e ⊢ eventually (λx. abs (f x - l - 0) < e) net"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.1",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "tendsto_real f l net ⊢ ∀e. 0 < e ⟶ eventually (λx. abs (f x - l - 0) < e) net"
+                },
+                {
+                    "args": "tendsto_real_def, tendsto_real (λx. f x - l) 0 net",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net ⊢ tendsto_real (λx. f x - l) 0 net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f l net ⟶ tendsto_real (λx. f x - l) 0 net"
+                }
+            ],
+            "prop": "tendsto_real f l net ⟶ tendsto_real (λx. f x - l) 0 net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "tendsto_real_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "tendsto_real_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "e"
+                },
+                {
+                    "fact_ids": [
+                        "1",
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_fact"
+                },
+                {
+                    "goal_id": "2.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sub_rzero"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => real",
@@ -349,10 +2370,69 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "reallim_null_add",
-            "prop": [
-                "tendsto_real f 0 net & tendsto_real g 0 net",
-                "--> tendsto_real (%x. (f x) + g x) 0 net"
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tendsto_real f 0 net ∧ tendsto_real g 0 net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 net ∧ tendsto_real g 0 net ⊢ tendsto_real f 0 net ∧ tendsto_real g 0 net"
+                },
+                {
+                    "args": "reallim_add, {a: 'a}, {f: f, g: g, l: (0::real), m: (0::real), net: net}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 net ∧ tendsto_real g 0 net ⊢ tendsto_real (λx. f x + g x) (0 + 0) net"
+                },
+                {
+                    "args": "real_add_lid",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "tendsto_real f 0 net ∧ tendsto_real g 0 net ⊢ tendsto_real (λx. f x + g x) 0 net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f 0 net ∧ tendsto_real g 0 net ⟶ tendsto_real (λx. f x + g x) 0 net"
+                }
+            ],
+            "prop": "tendsto_real f 0 net ∧ tendsto_real g 0 net ⟶ tendsto_real (λx. f x + g x) 0 net",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "reallim_add"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_add_lid"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -362,8 +2442,70 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
             "name": "reallim_null_lmul",
-            "prop": "tendsto_real f 0 net --> tendsto_real (%x. c * f x) 0 net",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tendsto_real f 0 net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 net ⊢ tendsto_real f 0 net"
+                },
+                {
+                    "args": "reallim_lmul, {a: 'a}, {c: c, f: f, l: (0::real), net: net}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 net ⊢ tendsto_real (λx. c * f x) (c * 0) net"
+                },
+                {
+                    "args": "real_mul_rzero",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "tendsto_real f 0 net ⊢ tendsto_real (λx. c * f x) 0 net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f 0 net ⟶ tendsto_real (λx. c * f x) 0 net"
+                }
+            ],
+            "prop": "tendsto_real f 0 net ⟶ tendsto_real (λx. c * f x) 0 net",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_c": "c",
+                    "theorem": "reallim_lmul"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -373,7 +2515,58 @@
         },
         {
             "name": "reallim_null_rmul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "tendsto_real f 0 net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 net ⊢ tendsto_real f 0 net"
+                },
+                {
+                    "args": "reallim_null_lmul, {a: 'a}, {c: c, f: f, net: net}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 net ⊢ tendsto_real (λx. c * f x) 0 net"
+                },
+                {
+                    "args": "real_mult_comm, tendsto_real (λx. f x * c) 0 net",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f 0 net ⊢ tendsto_real (λx. f x * c) 0 net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f 0 net ⟶ tendsto_real (λx. f x * c) 0 net"
+                }
+            ],
             "prop": "tendsto_real f 0 net --> tendsto_real (%x. (f x) * c) 0 net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_null_lmul"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -383,7 +2576,71 @@
         },
         {
             "name": "reallim_null_pow",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "tendsto_real f 0 net ∧ ¬(n = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real f 0 net ∧ ¬(n = 0) ⊢ tendsto_real f 0 net ∧ ¬(n = 0)"
+                },
+                {
+                    "args": "conjD1, {}, {A: tendsto_real f 0 net, B: ¬(n = 0)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 net ∧ ¬(n = 0) ⊢ tendsto_real f 0 net"
+                },
+                {
+                    "args": "reallim_pow, {a: 'a}, {f: f, l: (0::real), n: n, net: net}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f 0 net ∧ ¬(n = 0) ⊢ tendsto_real (λx. f x ^ n) (0 ^ n) net"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "tendsto_real f 0 net ∧ ¬(n = 0) ⊢ tendsto_real (λx. f x ^ n) 0 net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real f 0 net ∧ ¬(n = 0) ⟶ tendsto_real (λx. f x ^ n) 0 net"
+                }
+            ],
             "prop": "tendsto_real f 0 net & neg (n = 0) --> tendsto_real (%x. (f x) ^ n) 0 net",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "reallim_pow"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "'a => real",
