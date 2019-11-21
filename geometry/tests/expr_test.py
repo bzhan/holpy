@@ -141,6 +141,8 @@ class ExprTest(unittest.TestCase):
 
     def testApplyRuleFromRuleset(self):
         test_data = [
+            ("D44", ["midp(P, E, F)", "midp(Q, E, G)"], ["line(E, F)", "line(G, E)"], [], ruleset,
+             ["para(P, Q, F, G)"]),
             ("D5", ["para(E, F, G, H)"], ["line(E, F)", "line(G, H)"], [], ruleset,
              ["para(G, H, E, F)"]),
         ]
@@ -149,7 +151,7 @@ class ExprTest(unittest.TestCase):
             concls = [parser.parse_fact(concl) for concl in concls]
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
-            facts = expr.apply_rule(rule, facts, lines=lines, circles=circles, ruleset=rset)
+            expr.apply_rule(rule, facts, lines=lines, circles=circles, ruleset=rset)
             self.assertEqual(set(facts), set(concls))
 
     def testApplyRule(self):
@@ -174,7 +176,8 @@ class ExprTest(unittest.TestCase):
             (ruleset["D9"], ["perp(B, E, A, C)", "perp(A, C, B, E)"], [], [], []),
             (ruleset["D9"], ["perp(G, F, D, E)", "perp(A, B, D, E)"], [], [], ["para(G, F, A, B)"]),
             (ruleset["D43"], ["eqangle(B, E, A, C, B, C, A, F)", "cyclic(B, A, E, F)"],
-             ["line(E, A, C)", "line(F, B, C)", "line(H, A, F)", "line(H, B, E)", "line(G, A, B)", "line(G, C, H)"], [], []),
+             ["line(E, A, C)", "line(F, B, C)", "line(H, A, F)", "line(H, B, E)", "line(G, A, B)", "line(G, C, H)"], [],
+             []),
             (ruleset["D42"], ["eqangle(B, E, A, C, A, F, B, C)"],
              ["line(E, A, C)", "line(F, B, C)", "line(H, A, F)", "line(H, B, E)", "line(G, A, B)", "line(G, C, H)"],
              [], ["cyclic(H, C, E, F)"]),
@@ -191,7 +194,7 @@ class ExprTest(unittest.TestCase):
             concls = [parser.parse_fact(concl) for concl in concls]
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
-            facts = expr.apply_rule(rule, facts, lines=lines, circles=circles)
+            expr.apply_rule(rule, facts, lines=lines, circles=circles)
             self.assertEqual(set(facts), set(concls))
 
     def testCombineFacts(self):
@@ -252,7 +255,6 @@ class ExprTest(unittest.TestCase):
             r = expr.combine_facts_list(facts, target, lines, circles)
             concl = [parser.parse_fact(fact) for fact in concl]
             self.assertEqual(set(r), set(concl))
-
 
     def testMakeNewLines(self):
         test_data = [
@@ -370,14 +372,14 @@ class ExprTest(unittest.TestCase):
 
     def testPrintSearch(self):
         test_data = [
-             (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
-                       "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
-            (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
-
-            # It takes too long time to prove this...
-            (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
-             ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
+            # (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
+            #            "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
             #
+            # (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
+            #
+            # (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
+            #  ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
+
             (ruleset, ["coll(E, A, C)", "perp(B, E, A, C)", "coll(F, B, C)", "perp(A, F, B, C)", "coll(H, A, F)",
                        "coll(H, B, E)", "coll(G, A, B)", "coll(G, C, H)"], [], [], "perp(C, G, A, B)"),
         ]
