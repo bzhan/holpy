@@ -174,6 +174,33 @@ class TacticTest(unittest.TestCase):
             new_goals=['∃x1. x ∈ {x. x ∈ s & abs (f x) >= 1 / (of_nat x1 + 1)}']
         )
 
+    def testRewriteGoalWithPrev(self):
+        self.run_test(
+            'nat', tactic.rewrite_goal_with_prev(),
+            vars={'m': 'nat', 'n': 'nat', 'q': 'nat'},
+            prevs=['p = m + n'],
+            goal='p = q',
+            new_goals=['m + n = q']
+        )
+
+    def testRewriteGoalWithPrev2(self):
+        self.run_test(
+            'nat', tactic.rewrite_goal_with_prev(),
+            vars={'a': 'nat', 'f': 'nat => nat', 'g': 'nat => nat'},
+            prevs=['!n. f n = g n'],
+            goal='f n = a',
+            new_goals=['g n = a']
+        )
+
+    def testRewriteGoalWithPrev3(self):
+        self.run_test(
+            'nat', tactic.rewrite_goal_with_prev(),
+            vars={'a': 'nat', 'f': 'nat => nat', 'g': 'nat => nat'},
+            prevs=['!n. f n = g n'],
+            goal='?x. f x = a',
+            new_goals=['?x. g x = a']
+        )
+
     def testCases(self):
         A = Var('A', boolT)
         self.run_test(

@@ -2,9 +2,7 @@
 
 from decimal import Decimal
 from fractions import Fraction
-from integral import parser
 from integral import expr
-from integral import rules
 
 def convert_expr(e, mode="large"):
     if e.ty == expr.VAR:
@@ -31,16 +29,33 @@ def convert_expr(e, mode="large"):
             sx = convert_expr(x, mode)
             sy = convert_expr(y, mode)
             if e.op in ("+", "-", "^"):
-                if e.op == "^" and sy == "\\frac{1}{2}":
-                    return "\sqrt{%s}" % sx
-                else:
-                    if x.priority() < expr.op_priority[e.op]:
-                        sx = "(%s)" % sx
-                    if y.priority() < expr.op_priority[e.op]:
-                        sy = "(%s)" % sy
-                    if e.op == "^" and len(sy) > 1:
-                        sy = "{%s}" % sy
-                    return "%s %s %s" % (sx, e.op, sy)
+                if e.op == "^": 
+                    if isinstance(y.val, Fraction):
+                        if y.val.numerator == 1:
+                            if y.val.denominator == 2:
+                                return "\sqrt{%s}" % sx
+                            else:
+                                return "\sqrt[%s]{%s}" % (y.val.denominator, sx)
+                elif e.op in ("+", "-"):
+                    if y.ty == expr.OP:
+                        y1, y2 = y.args
+                        if isinstance(y1, expr.Const):
+                            new_y = y
+                            if y1.val < 0:
+                                new_y = expr.Op(y.op, expr.Const(0 - y1.val), y2)                            
+                                if y.op == "*":
+                                    if y1.val == -1:
+                                        new_y = y2
+                                sy = convert_expr(new_y, mode)
+                                new_op = "-" if e.op == "+" else "+"
+                                return "%s %s %s" % (sx, new_op, sy)                 
+                if x.priority() < expr.op_priority[e.op]:
+                    sx = "(%s)" % sx
+                if y.priority() < expr.op_priority[e.op]:
+                    sy = "(%s)" % sy
+                if e.op == "^" and len(sy) > 1:
+                    sy = "{%s}" % sy
+                return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "*":
                 if x.ty == expr.CONST and y.ty == expr.VAR:
                     if sx == "1":

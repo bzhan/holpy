@@ -3,7 +3,7 @@
 from integral import expr
 from integral import poly
 from integral.expr import Var, Const, Fun, EvalAt
-
+from integral import parser
 class Rule:
     """Represents a rule for integration. It takes an integral
     to be evaluated (as an expression), then outputs a new
@@ -54,6 +54,7 @@ class CommonIntegral(Rule):
 
     INT c = c * x,
     INT x^n = x^(n+1) / (n+1),  (where n != -1)
+    INT 1/x^(n) = (-n)/x^(n+1), (where n != 1)
     INT sin(x) = -cos(x),
     INT cos(x) = sin(x),
     INT 1/x = log(x),  (where the range is positive)
@@ -86,6 +87,18 @@ class CommonIntegral(Rule):
                     return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
                 else:
                     return e
+            elif e.body.op == "/":
+                a, b = e.body.args
+                if b.ty == expr.OP:
+                    if b.op == "^":
+                        c, d = b.args
+                        if c == Var(e.var) and d.ty == expr.CONST and d.val != 1:
+                            #Integral of 1/x^n is (-n)/x^(n+1)
+                            integral = Const(-d.val)/(Var(e.var) ^ Const(d.val + 1))
+                            return EvalAt(e.var, e.lower, e.upper, integral)
+                        elif c == Var(e.var) and d.ty == expr.CONST and d.val == 1:
+                            #Integral of 1/x is log(x)
+                            return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
             else:
                 return e
         elif e.body.ty == expr.FUN:
@@ -171,3 +184,9 @@ class IntegrationByParts(Rule):
         else:
             print("%s != %s" % (str(udv), str(e.body)))
             raise NotImplementedError
+if __name__ == "__main__":
+    problem = "INT x:[-1,2]. 1/x^4"
+    rule = CommonIntegral()
+    p = parser.parse_expr(problem)
+    e = rule.eval(p)
+    print(e)
