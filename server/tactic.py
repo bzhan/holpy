@@ -190,12 +190,20 @@ class rewrite_goal_with_prev(Tactic):
         pt = prevs[0]
         C = goal.prop
 
+        # In general, we assume pt.th has forall quantification.
+        # First, obtain the patterns
+        new_names = logic.get_forall_names(pt.prop)
+        new_vars, prev_As, prev_C = logic.strip_all_implies(pt.prop, new_names)
+
         # Fact used must be an equality
-        assert pt.th.is_equals(), "rewrite_goal_with_prev"
+        assert len(prev_As) == 0 and prev_C.is_equals(), "rewrite_goal_with_prev"
 
         # Do not perform rewrite on forall-imply goals
         assert not (goal.prop.is_implies() or goal.prop.is_all()), \
                "rewrite_goal_with_prev"
+
+        for new_var in new_vars:
+            pt = ProofTerm.forall_elim(new_var, pt)
 
         # Check whether rewriting using the theorem has an effect
         assert has_rewrite(thy, pt.th, C), "rewrite_goal_with_prev"

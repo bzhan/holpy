@@ -558,6 +558,17 @@ class ServerTest(unittest.TestCase):
             gaps=["image (f O g) s = t"]
         )
 
+    def testRewriteGoalWithPrev(self):
+        test_method(self,
+            'nat',
+            vars={'f': 'nat => nat', 'g': 'nat => nat', 'a': 'nat'},
+            assms=['!n. f n = g n'],
+            concl='?x. f x = a',
+            method_name='rewrite_goal_with_prev',
+            prevs=[0],
+            gaps=['?x. g x = a']
+        )
+
     def testRewriteFactThms(self):
         self.run_search_thm(
             'nat',

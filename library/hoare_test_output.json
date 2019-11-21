@@ -106,23 +106,23 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "!s::nat => nat. true --> (if s ((12::nat)) <= s (13) then s (13) = s (12) | s (13) = s (13) else s (12) = s (12) | s (12) = s (13))",
+                    "args": "!s::nat => nat. true --> (if s (12::nat) <= s 13 then s 13 = s 12 | s 13 = s 13 else s 12 = s 12 | s 12 = s 13)",
                     "id": "0",
                     "prevs": [],
                     "rule": "z3",
-                    "th": "|- !s::nat => nat. true --> (if s ((12::nat)) <= s (13) then s (13) = s (12) | s (13) = s (13) else s (12) = s (12) | s (12) = s (13))"
+                    "th": "|- !s::nat => nat. true --> (if s (12::nat) <= s 13 then s 13 = s 12 | s 13 = s 13 else s 12 = s 12 | s 12 = s 13)"
                 },
                 {
-                    "args": "Valid (%s::nat => nat. true) (Cond (%s. s ((12::nat)) <= s (13)) (Assign (2) (%s. s (13))) (Assign (2) (%s. s (12)))) (%s. s (2) = s (12) | s (2) = s (13))",
+                    "args": "Valid (%s::nat => nat. true) (Cond (%s. s (12::nat) <= s 13) (Assign 2 (%s. s 13)) (Assign 2 (%s. s 12))) (%s. s 2 = s 12 | s 2 = s 13)",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "vcg",
-                    "th": "|- Valid (%s::nat => nat. true) (Cond (%s. s ((12::nat)) <= s (13)) (Assign (2) (%s. s (13))) (Assign (2) (%s. s (12)))) (%s. s (2) = s (12) | s (2) = s (13))"
+                    "th": "|- Valid (%s::nat => nat. true) (Cond (%s. s (12::nat) <= s 13) (Assign 2 (%s. s 13)) (Assign 2 (%s. s 12))) (%s. s 2 = s 12 | s 2 = s 13)"
                 }
             ],
-            "prop": "Valid (%s::nat => nat. true) (Cond (%s. s ((12::nat)) <= s (13)) (Assign (2) (%s. s (13))) (Assign (2) (%s. s (12)))) (%s. s (2) = s (12) | s (2) = s (13))",
+            "prop": "Valid (%s::nat => nat. true) (Cond (%s. s (12::nat) <= s 13) (Assign 2 (%s. s 13)) (Assign 2 (%s. s 12))) (%s. s 2 = s 12 | s 2 = s 13)",
             "ty": "thm",
             "vars": {}
         }
