@@ -522,7 +522,17 @@ class rewrite_fact_with_prev_macro(ProofTermMacro):
         assert len(pts) == 2, "rewrite_fact_with_prev"
 
         eq_pt, pt = pts
-        assert eq_pt.prop.is_equals, "rewrite_fact_with_prev"
+
+        # In general, we assume eq_pt has forall quantification
+        # First, obtain the patterns
+        new_names = get_forall_names(eq_pt.prop)
+        new_vars, eq_As, eq_C = strip_all_implies(eq_pt.prop, new_names)
+
+        # First fact must be an equality
+        assert len(eq_As) == 0 and eq_C.is_equals(), "rewrite_fact_with_prev"
+
+        for new_var in new_vars:
+            eq_pt = ProofTerm.forall_elim(new_var, eq_pt)
 
         # Check rewriting using eq_pt has an effect
         cv1 = top_sweep_conv(rewr_conv(eq_pt))

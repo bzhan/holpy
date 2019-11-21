@@ -199,6 +199,30 @@ class LogicTest(unittest.TestCase):
             res="image f (image g s) = t"
         )
 
+    def testRewriteFactWithPrev(self):
+        test_macro(
+            self, 'nat', 'rewrite_fact_with_prev',
+            vars={'m': 'nat', 'n': 'nat', 'p': 'nat', 'q': 'nat'},
+            assms=['p = m + n', 'p = q'],
+            res='m + n = q'
+        )
+
+    def testRewriteFactWithPrev2(self):
+        test_macro(
+            self, 'nat', 'rewrite_fact_with_prev',
+            vars={'f': 'nat => nat', 'g': 'nat => nat', 'a': 'nat'},
+            assms=['!n. f n = g n', 'f x = a'],
+            res='g x = a'
+        )
+
+    def testRewriteFactWithPrev3(self):
+        test_macro(
+            self, 'nat', 'rewrite_fact_with_prev',
+            vars={'f': 'nat => nat', 'g': 'nat => nat', 'a': 'nat'},
+            assms=['!n. f n = g n', '?x. f x = a'],
+            res='?x. g x = a'
+        )
+
     def testTrivialMacro(self):
         test_macro(
             self, 'logic_base', 'trivial',

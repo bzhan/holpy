@@ -603,6 +603,17 @@ class ServerTest(unittest.TestCase):
             lines={'1': "image (f O g) s = t"}
         )
 
+    def testRewriteFactWithPrev(self):
+        test_method(self,
+            'nat',
+            vars={'f': 'nat => nat', 'g': 'nat => nat', 'a': 'nat'},
+            assms=['!n. f n = g n', '?x. f x = a'],
+            concl='false',
+            method_name='rewrite_fact_with_prev',
+            prevs=[0, 1],
+            lines={'2': '?x. g x = a'}
+        )
+
     def testForallElim(self):
         test_method(self,
             'nat',
