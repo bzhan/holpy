@@ -5112,7 +5112,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": " has_real_integral_refl",
+            "name": "has_real_integral_refl",
             "num_gaps": 0,
             "proof": [
                 {
@@ -5228,7 +5228,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "apply_backward_step",
-                    "theorem": " has_real_integral_refl"
+                    "theorem": "has_real_integral_refl"
                 }
             ],
             "ty": "thm",
@@ -13825,7 +13825,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": " has_real_integral_reflect",
+            "name": "has_real_integral_reflect",
             "num_gaps": 0,
             "proof": [
                 {
@@ -14016,7 +14016,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": " has_real_integral_reflect"
+                    "theorem": "has_real_integral_reflect"
                 }
             ],
             "ty": "thm",
@@ -14063,7 +14063,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": " has_real_integral_reflect"
+                    "theorem": "has_real_integral_reflect"
                 }
             ],
             "ty": "thm",
@@ -16553,7 +16553,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": " has_real_integral_restrict_inter",
+            "name": "has_real_integral_restrict_inter",
             "num_gaps": 3,
             "proof": [
                 {
@@ -16965,7 +16965,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": " has_real_integral_restrict_inter"
+                    "theorem": "has_real_integral_restrict_inter"
                 }
             ],
             "ty": "thm",
@@ -22675,7 +22675,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": " real_measurable_real_interval2",
+            "name": "real_measurable_real_interval2",
             "num_gaps": 0,
             "proof": [
                 {
@@ -32296,7 +32296,7 @@
                 "hint_forward"
             ],
             "name": "has_real_integral_negligible_eq",
-            "num_gaps": 2,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "∀x. x ∈ s ⟶ 0 ≤ f x",
@@ -32338,7 +32338,7 @@
                     "id": "1.1.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ∧ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
                 },
                 {
                     "args": "x, real",
@@ -32355,22 +32355,22 @@
                     "th": "x ∈ univ ⊢ x ∈ univ"
                 },
                 {
-                    "args": "x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⟶ (0::real) ≤ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ∧ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
+                    "args": "x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⟶ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
                     "id": "1.1.1.2",
                     "prevs": [
                         "0"
                     ],
                     "rule": "z3",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x ⊢ x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⟶ (0::real) ≤ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ∧ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x ⊢ x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) ⟶ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
                 },
                 {
-                    "args": "¬(x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x)) ⟶ (0::real) ≤ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ∧ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
+                    "args": "¬(x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x)) ⟶ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
                     "id": "1.1.1.3",
                     "prevs": [
                         "0"
                     ],
                     "rule": "z3",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x ⊢ ¬(x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x)) ⟶ (0::real) ≤ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ∧ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x ⊢ ¬(x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x)) ⟶ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
                 },
                 {
                     "args": "classical_cases",
@@ -32380,16 +32380,16 @@
                         "1.1.1.3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ ⊢ (0::real) ≤ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ∧ (if x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ ⊢ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
                 },
                 {
-                    "args": "real_greater_eq_def, (0::real) ≤ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ∧ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
+                    "args": "real_greater_eq_def, (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
                     "id": "1.1.1.5",
                     "prevs": [
                         "1.1.1.4"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ ⊢ (0::real) ≤ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ∧ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ ⊢ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
                 },
                 {
                     "args": "",
@@ -32400,67 +32400,86 @@
                         "1.1.1.5"
                     ],
                     "rule": "intros",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ∧ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
                 },
                 {
-                    "args": "",
+                    "args": "real_mul_rzero, (0::real) = (of_nat n + 1) * 0",
                     "id": "1.1.2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ has_real_integral (λx. if x ∈ s then (of_nat n + 1) * f x else 0) 0 univ"
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (0::real) = (of_nat n + 1) * 0"
                 },
                 {
-                    "args": "conjI",
+                    "args": "has_real_integral_lmul, {}, {c: of_nat n + (1::real), f: f, k: (0::real), s: s}",
                     "id": "1.1.3",
                     "prevs": [
-                        "1.1.1",
-                        "1.1.2"
+                        "1.0"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ (∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ∧ (if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)) ∧ has_real_integral (λx. if x ∈ s then (of_nat n + 1) * f x else 0) 0 univ"
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ has_real_integral (λx. (of_nat n + 1) * f x) ((of_nat n + 1) * 0) s"
                 },
                 {
-                    "args": "has_real_integral_straddle_null",
+                    "args": "has_real_integral (λx. (of_nat n + 1) * f x) 0 s",
                     "id": "1.1.4",
                     "prevs": [
+                        "1.1.2",
                         "1.1.3"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ has_real_integral (λx. if x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1) then 1 else 0) 0 univ"
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ has_real_integral (λx. (of_nat n + 1) * f x) 0 s"
                 },
                 {
-                    "args": "member_collect, has_real_integral (λx. if x ∈ {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)} then 1 else 0) 0 univ",
+                    "args": "has_real_integral_restrict_univ, has_real_integral (λx. if x ∈ s then (of_nat n + 1) * f x else 0) 0 univ",
                     "id": "1.1.5",
                     "prevs": [
                         "1.1.4"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ has_real_integral (λx. if x ∈ {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)} then 1 else 0) 0 univ"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ has_real_integral (λx. if x ∈ s then (of_nat n + 1) * f x else 0) 0 univ"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.1.6",
+                    "prevs": [
+                        "1.1.1",
+                        "1.1.5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ (∀x. x ∈ univ ⟶ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)) ∧ has_real_integral (λx. if x ∈ s then (of_nat n + 1) * f x else 0) 0 univ"
+                },
+                {
+                    "args": "has_real_integral_straddle_null",
+                    "id": "1.1.7",
+                    "prevs": [
+                        "1.1.6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ has_real_integral (λx. if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) 0 univ"
                 },
                 {
                     "args": "has_real_measure, has_real_measure ({x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}) 0",
-                    "id": "1.1.6",
+                    "id": "1.1.8",
                     "prevs": [
-                        "1.1.5"
+                        "1.1.7"
                     ],
                     "rule": "rewrite_goal",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ has_real_measure ({x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}) 0"
                 },
                 {
                     "args": "has_real_measure_0, real_negligible ({x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)})",
-                    "id": "1.1.7",
+                    "id": "1.1.9",
                     "prevs": [
-                        "1.1.6"
+                        "1.1.8"
                     ],
                     "rule": "rewrite_goal_sym",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ real_negligible ({x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)})"
                 },
                 {
                     "args": "",
-                    "id": "1.1.8",
+                    "id": "1.1.10",
                     "prevs": [
                         "1.1.0",
-                        "1.1.7"
+                        "1.1.9"
                     ],
                     "rule": "intros",
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀n. real_negligible ({x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)})"
@@ -32479,7 +32498,7 @@
                     "id": "1.3",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀x. x ∈ {x. x ∈ s ∧ ¬(f x = 0)} ⟶ x ∈ ⋃({t. ∃n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}})"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀x. x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)} ⟶ x ∈ ⋃({t. ∃n. t = {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)}})"
                 },
                 {
                     "args": "x, real",
@@ -32489,11 +32508,11 @@
                     "th": "⊢ _VAR x"
                 },
                 {
-                    "args": "x ∈ {x. x ∈ s ∧ ¬(f x = 0)}",
+                    "args": "x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}",
                     "id": "1.3.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "x ∈ {x. x ∈ s ∧ ¬(f x = 0)} ⊢ x ∈ {x. x ∈ s ∧ ¬(f x = 0)}"
+                    "th": "x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)} ⊢ x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}"
                 },
                 {
                     "args": "¬(f x = 0) ⟷ 0 < abs (f x)",
@@ -32503,68 +32522,251 @@
                     "th": "⊢ ¬(f x = 0) ⟷ 0 < abs (f x)"
                 },
                 {
-                    "args": "",
+                    "args": "member_collect",
                     "id": "1.3.3",
                     "prevs": [
-                        "1.3.2",
                         "1.3.1"
                     ],
-                    "rule": "rewrite_fact_with_prev",
-                    "th": "x ∈ {x. x ∈ s ∧ ¬(f x = 0)} ⊢ x ∈ {x. x ∈ s ∧ 0 < abs (f x)}"
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)} ⊢ x ∈ s ∧ ¬(f x = 0)"
                 },
                 {
-                    "args": "member_collect",
+                    "args": "",
                     "id": "1.3.4",
                     "prevs": [
+                        "1.3.2",
                         "1.3.3"
                     ],
-                    "rule": "rewrite_fact",
-                    "th": "x ∈ {x. x ∈ s ∧ ¬(f x = 0)} ⊢ x ∈ s ∧ 0 < abs (f x)"
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)} ⊢ x ∈ s ∧ 0 < abs (f x)"
                 },
                 {
-                    "args": "conjD2, {}, {A: x ∈ s, B: 0 < abs (f x)}",
+                    "args": "conjD1, {}, {A: x ∈ s, B: 0 < abs (f x)}",
                     "id": "1.3.5",
                     "prevs": [
                         "1.3.4"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "x ∈ {x. x ∈ s ∧ ¬(f x = 0)} ⊢ 0 < abs (f x)"
+                    "th": "x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)} ⊢ x ∈ s"
                 },
                 {
-                    "args": "",
+                    "args": "conjD2, {}, {A: x ∈ s, B: 0 < abs (f x)}",
                     "id": "1.3.6",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x. x ∈ s ∧ ¬(f x = 0)} ⊢ ∃A. A ∈ {t. ∃n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}} ∧ x ∈ A"
+                    "prevs": [
+                        "1.3.4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)} ⊢ 0 < abs (f x)"
                 },
                 {
-                    "args": "conj_comm, ∃A. x ∈ A ∧ A ∈ {t. ∃n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}}",
+                    "args": "real_arch_inv",
                     "id": "1.3.7",
                     "prevs": [
                         "1.3.6"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x. x ∈ s ∧ ¬(f x = 0)} ⊢ ∃A. x ∈ A ∧ A ∈ {t. ∃n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}}"
+                    "rule": "rewrite_fact",
+                    "th": "x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)} ⊢ ∃n. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x)"
                 },
                 {
-                    "args": "member_Union, x ∈ ⋃({t. ∃n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}})",
+                    "args": "n, nat",
                     "id": "1.3.8",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x)",
+                    "id": "1.3.9",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x)"
+                },
+                {
+                    "args": "conjD2, {}, {A: ¬(n = 0), B: 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x)}",
+                    "id": "1.3.10",
                     "prevs": [
-                        "1.3.7"
+                        "1.3.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x)"
+                },
+                {
+                    "args": "conjD2, {}, {A: 0 < real_inverse (of_nat n), B: real_inverse (of_nat n) < abs (f x)}",
+                    "id": "1.3.11",
+                    "prevs": [
+                        "1.3.10"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ real_inverse (of_nat n) < abs (f x)"
+                },
+                {
+                    "args": "conjD1, {}, {A: ¬(n = 0), B: 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x)}",
+                    "id": "1.3.12",
+                    "prevs": [
+                        "1.3.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "conjD2, {}, {A: ¬(n = 0), B: 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x)}",
+                    "id": "1.3.13",
+                    "prevs": [
+                        "1.3.9"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x)"
+                },
+                {
+                    "args": "le_1_2, {}, {n: n}",
+                    "id": "1.3.14",
+                    "prevs": [
+                        "1.3.12"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ 1 ≤ n"
+                },
+                {
+                    "args": "sub_add, {}, {x: n, y: (1::nat)}",
+                    "id": "1.3.15",
+                    "prevs": [
+                        "1.3.14"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ n - 1 + 1 = n"
+                },
+                {
+                    "args": "real_lt_imp_le",
+                    "id": "1.3.16",
+                    "prevs": [
+                        "1.3.11"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ real_inverse (of_nat n) ≤ abs (f x)"
+                },
+                {
+                    "args": "real_inverse (of_nat (n - 1 + 1)) ≤ abs (f x)",
+                    "id": "1.3.17",
+                    "prevs": [
+                        "1.3.15",
+                        "1.3.16"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x), ∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)} ⊢ real_inverse (of_nat (n - 1 + 1)) ≤ abs (f x)"
+                },
+                {
+                    "args": "real_of_nat_add, real_inverse (of_nat (n - 1) + of_nat 1) ≤ abs (f x)",
+                    "id": "1.3.18",
+                    "prevs": [
+                        "1.3.17"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x. x ∈ s ∧ ¬(f x = 0)} ⊢ x ∈ ⋃({t. ∃n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}})"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ real_inverse (of_nat (n - 1) + of_nat 1) ≤ abs (f x)"
                 },
                 {
-                    "args": "",
-                    "id": "1.3.9",
+                    "args": "real_one_def, real_inverse (of_nat (n - 1) + 1) ≤ abs (f x)",
+                    "id": "1.3.19",
+                    "prevs": [
+                        "1.3.18"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ real_inverse (of_nat (n - 1) + 1) ≤ abs (f x)"
+                },
+                {
+                    "args": "real_mul_lid, 1 * real_inverse (of_nat (n - 1) + 1) ≤ abs (f x)",
+                    "id": "1.3.20",
+                    "prevs": [
+                        "1.3.19"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ 1 * real_inverse (of_nat (n - 1) + 1) ≤ abs (f x)"
+                },
+                {
+                    "args": "real_divide_def, 1 / (of_nat (n - 1) + 1) ≤ abs (f x)",
+                    "id": "1.3.21",
+                    "prevs": [
+                        "1.3.20"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ 1 / (of_nat (n - 1) + 1) ≤ abs (f x)"
+                },
+                {
+                    "args": "real_greater_eq_def, abs (f x) ≥ 1 / (of_nat (n - 1) + 1)",
+                    "id": "1.3.22",
+                    "prevs": [
+                        "1.3.21"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ abs (f x) ≥ 1 / (of_nat (n - 1) + 1)"
+                },
+                {
+                    "args": "conjI",
+                    "id": "1.3.23",
+                    "prevs": [
+                        "1.3.5",
+                        "1.3.22"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ x ∈ s ∧ abs (f x) ≥ 1 / (of_nat (n - 1) + 1)"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λx1. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat x1 + 1), a: n - 1}",
+                    "id": "1.3.24",
+                    "prevs": [
+                        "1.3.23"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ ∃x1. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat x1 + 1)"
+                },
+                {
+                    "args": "member_collect, ∃x1. x ∈ {x11. x11 ∈ s ∧ abs (f x11) ≥ 1 / (of_nat x1 + 1)}",
+                    "id": "1.3.25",
+                    "prevs": [
+                        "1.3.24"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ ∃x1. x ∈ {x11. x11 ∈ s ∧ abs (f x11) ≥ 1 / (of_nat x1 + 1)}"
+                },
+                {
+                    "args": "exists_in_gspec1, ∃A. A ∈ {t. ∃n. t = {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)}} ∧ x ∈ A",
+                    "id": "1.3.26",
+                    "prevs": [
+                        "1.3.25"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ ∃A. A ∈ {t. ∃n. t = {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)}} ∧ x ∈ A"
+                },
+                {
+                    "args": "conj_comm, ∃A. x ∈ A ∧ A ∈ {t. ∃n. t = {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)}}",
+                    "id": "1.3.27",
+                    "prevs": [
+                        "1.3.26"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ ∃A. x ∈ A ∧ A ∈ {t. ∃n. t = {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)}}"
+                },
+                {
+                    "args": "member_Union, x ∈ ⋃({t. ∃n. t = {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)}})",
+                    "id": "1.3.28",
+                    "prevs": [
+                        "1.3.27"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ x ∈ ⋃({t. ∃n. t = {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)}})"
+                },
+                {
+                    "args": "∃n. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x)",
+                    "id": "1.3.29",
                     "prevs": [
                         "1.3.0",
                         "1.3.1",
-                        "1.3.8"
+                        "1.3.7",
+                        "1.3.8",
+                        "1.3.9",
+                        "1.3.28"
                     ],
                     "rule": "intros",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀x. x ∈ {x. x ∈ s ∧ ¬(f x = 0)} ⟶ x ∈ ⋃({t. ∃n. t = {x. x ∈ s ∧ abs (f x) ≥ 1 / (of_nat n + 1)}})"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s ⊢ ∀x. x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)} ⟶ x ∈ ⋃({t. ∃n. t = {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)}})"
                 },
                 {
                     "args": "subsetI",
@@ -32619,11 +32821,11 @@
                     "th": "real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ real_negligible ({x. x ∈ s ∧ ¬(f x = 0)})"
                 },
                 {
-                    "args": "∀x. x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⟶ f x = 0",
+                    "args": "∀x. x ∈ diff s ({x1. x1 ∈ s ∧ ¬(f x1 = 0)}) ⟶ f x = 0",
                     "id": "2.1",
                     "prevs": [],
                     "rule": "z3",
-                    "th": "⊢ ∀x. x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⟶ f x = 0"
+                    "th": "⊢ ∀x. x ∈ diff s ({x1. x1 ∈ s ∧ ¬(f x1 = 0)}) ⟶ f x = 0"
                 },
                 {
                     "args": "conjI",
@@ -32633,7 +32835,7 @@
                         "2.1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}) ∧ (∀x. x ∈ diff s ({x. x ∈ s ∧ ¬(f x = 0)}) ⟶ f x = 0)"
+                    "th": "∀x. x ∈ s ⟶ 0 ≤ f x, real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}) ⊢ real_negligible ({x. x ∈ s ∧ ¬(f x = 0)}) ∧ (∀x. x ∈ diff s ({x1. x1 ∈ s ∧ ¬(f x1 = 0)}) ⟶ f x = 0)"
                 },
                 {
                     "args": "has_real_integral_negligible",
@@ -32744,12 +32946,6 @@
                 },
                 {
                     "goal_id": "1.1.1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "member_collect"
-                },
-                {
-                    "goal_id": "1.1.1",
                     "method_name": "apply_backward_step",
                     "param_g": "(%x. if x ∈ s then (of_nat n + 1) * f x else 0)",
                     "theorem": "has_real_integral_straddle_null"
@@ -32790,6 +32986,35 @@
                     "method_name": "z3"
                 },
                 {
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_real_integral_restrict_univ"
+                },
+                {
+                    "goal": "(0::real) = (of_nat n + 1) * 0",
+                    "goal_id": "1.1.2",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "fact_ids": [
+                        "1.1.2"
+                    ],
+                    "goal_id": "1.1.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_integral_lmul"
+                },
+                {
                     "goal_id": "1.3",
                     "method_name": "apply_backward_step",
                     "theorem": "subsetI"
@@ -32798,6 +33023,15 @@
                     "goal_id": "1.3",
                     "method_name": "introduction",
                     "names": "x"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.1"
+                    ],
+                    "goal_id": "1.3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "member_collect"
                 },
                 {
                     "goal": " ¬(f x = 0) <--> 0 < abs (f x)",
@@ -32811,18 +33045,10 @@
                 {
                     "fact_ids": [
                         "1.3.2",
-                        "1.3.1"
-                    ],
-                    "goal_id": "1.3.3",
-                    "method_name": "rewrite_fact_with_prev"
-                },
-                {
-                    "fact_ids": [
                         "1.3.3"
                     ],
                     "goal_id": "1.3.4",
-                    "method_name": "rewrite_fact",
-                    "theorem": "member_collect"
+                    "method_name": "rewrite_fact_with_prev"
                 },
                 {
                     "goal_id": "1.3.5",
@@ -32831,18 +33057,155 @@
                     "theorem": "member_Union"
                 },
                 {
+                    "goal_id": "1.3.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "conj_comm"
+                },
+                {
+                    "goal_id": "1.3.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "exists_in_gspec1"
+                },
+                {
+                    "goal_id": "1.3.5",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
                     "fact_ids": [
                         "1.3.4"
                     ],
                     "goal_id": "1.3.5",
                     "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.4"
+                    ],
+                    "goal_id": "1.3.6",
+                    "method_name": "apply_forward_step",
                     "theorem": "conjD2"
                 },
                 {
-                    "goal_id": "1.3.6",
+                    "fact_ids": [
+                        "1.3.6"
+                    ],
+                    "goal_id": "1.3.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_arch_inv"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.7"
+                    ],
+                    "goal_id": "1.3.8",
+                    "method_name": "exists_elim",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "1.3.10",
+                    "method_name": "inst_exists_goal",
+                    "s": "n - 1"
+                },
+                {
+                    "goal_id": "1.3.10",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "1.3.10",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": "conj_comm"
+                    "theorem": "real_greater_eq_def"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.9"
+                    ],
+                    "goal_id": "1.3.10",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.10"
+                    ],
+                    "goal_id": "1.3.11",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "1.3.12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1.3.12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "1.3.12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "1.3.12",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_of_nat_add"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.9"
+                    ],
+                    "goal_id": "1.3.12",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD1"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.9"
+                    ],
+                    "goal_id": "1.3.13",
+                    "method_name": "apply_forward_step",
+                    "theorem": "conjD2"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.12"
+                    ],
+                    "goal_id": "1.3.14",
+                    "method_name": "apply_forward_step",
+                    "theorem": "le_1_2"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.14"
+                    ],
+                    "goal_id": "1.3.15",
+                    "method_name": "apply_forward_step",
+                    "theorem": "sub_add"
+                },
+                {
+                    "fact_ids": [
+                        "1.3.15"
+                    ],
+                    "goal_id": "1.3.16",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1.3.16",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_lt_imp_le"
                 }
             ],
             "ty": "thm",

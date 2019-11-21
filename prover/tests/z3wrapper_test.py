@@ -9,7 +9,7 @@ from logic import basic
 from logic.tests.logic_test import test_macro
 from syntax import parser
 from syntax import printer
-from syntax.context import Context
+from logic.basic import Context
 from prover import z3wrapper
 from server.tests.server_test import test_method
 
@@ -108,6 +108,8 @@ class Z3WrapperTest(unittest.TestCase):
             ('1 / (of_nat n + 1) < b --> 1 < (of_nat n + 1) * b', True),
             ('1 / (a + 1) < b --> 1 < (a + 1) * b', False),
             ('a <= of_nat n --> a < of_nat (n + 1)', True),
+            ('~(n = 0) --> of_nat (n - 1) + (1::real) = of_nat n', True),
+            ('(1::real) = 0 --> real_inverse a = b', True),
         ]
 
         for s, res in test_data:

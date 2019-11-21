@@ -584,7 +584,7 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
 
     """
     assert isinstance(pts, tuple) and all(isinstance(pt, ProofTerm) for pt in pts), \
-        "apply_theorem: *pts must be a list of theorems."
+        "apply_theorem: *pts must be a list of proof terms."
     if concl is None and tyinst is None and inst is None:
         # Normal case, can use apply_theorem
         return ProofTermDeriv("apply_theorem", thy, th_name, pts)
@@ -599,6 +599,13 @@ def apply_theorem(thy, th_name, *pts, concl=None, tyinst=None, inst=None):
         for i, prev in enumerate(pts):
             matcher.first_order_match_incr(pt.assums[i], prev.prop, (tyinst, inst))
         return ProofTermDeriv("apply_theorem_for", thy, (th_name, tyinst, inst), pts)
+
+def conj_thms(thy, *pts):
+    assert len(pts) > 0, 'conj_thms: input list is empty.'
+    if len(pts) == 1:
+        return pts[0]
+    else:
+        return apply_theorem(thy, 'conjI', pts[0], conj_thms(thy, *pts[1:]))
 
 
 class imp_conj_macro(ProofTermMacro):

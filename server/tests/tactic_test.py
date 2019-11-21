@@ -12,7 +12,7 @@ from data.nat import natT, plus, zero
 from server import tactic
 from syntax import parser
 from syntax import printer
-from syntax.context import Context
+from logic.basic import Context
 
 
 class TacticTest(unittest.TestCase):

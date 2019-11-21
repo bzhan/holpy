@@ -11,7 +11,7 @@ from kernel import report
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from syntax import parser, printer, pprint
-from syntax.context import Context
+from logic.basic import Context
 from server import tactic
 from server import method
 

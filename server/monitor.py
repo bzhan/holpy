@@ -8,7 +8,6 @@ from logic import basic
 from server.server import ProofState
 from server import method
 from logic import logic
-from syntax import parser
 
 
 def check_proof(thy, item):
@@ -54,8 +53,8 @@ def check_theory(filename, username='master'):
             stat[item_res['status']] += 1
             res.append(item_res)
 
-        item = parser.parse_item(thy, item)
-        exts = parser.get_extension(thy, item)
+        item = basic.parse_item(thy, item)
+        exts = basic.get_extension(thy, item)
         thy.unchecked_extend(exts)
 
     return {

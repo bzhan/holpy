@@ -149,7 +149,7 @@
         },
         {
             "attributes": [],
-            "name": " has_limsup_sequentially",
+            "name": "has_limsup_sequentially",
             "prop": [
                 "has_limsup a l sequentially =",
                 "((!c. l <= c --> ?N. !n. N <= n --> a n <= c) &",
@@ -501,7 +501,7 @@
         },
         {
             "attributes": [],
-            "name": "  real_cauchy_hadamard_radius_uniform",
+            "name": "real_cauchy_hadamard_radius_uniform",
             "prop": [
                 "has_limsup (λn. root n (abs (a n))) b (within sequentially k) ∧ ",
                 "real_compact s & ",
@@ -751,7 +751,7 @@
         },
         {
             "attributes": [],
-            "name": " real_sum_integral_bounds_decreasing",
+            "name": "real_sum_integral_bounds_decreasing",
             "prop": [
                 "m ≤ n ∧ ",
                 "(∀x. x ∈ real_closed_interval (of_nat m - 1) (of_nat n + 1) ",
@@ -1917,7 +1917,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": " real_convex_lmul",
+            "name": "real_convex_lmul",
             "prop": "0 ≤ c ∧ real_convex_on f s ⟶ real_convex_on (λx. c * f x) s",
             "ty": "thm",
             "vars": {
@@ -1977,7 +1977,7 @@
                 {
                     "goal_id": "1",
                     "method_name": "apply_backward_step",
-                    "theorem": " real_convex_lmul"
+                    "theorem": "real_convex_lmul"
                 }
             ],
             "ty": "thm",
@@ -2040,7 +2040,7 @@
             "attributes": [
                 "hint_backward"
             ],
-            "name": " real_convex_lower_real_segment",
+            "name": "real_convex_lower_real_segment",
             "prop": [
                 "real_convex_on f s ∧ a ∈ s ∧ b ∈ s ∧ x ∈ closed_real_segment a b ",
                 "⟶ f x ≤ max (f a) (f b)"

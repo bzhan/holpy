@@ -13,7 +13,7 @@ from data.function import mk_const_fun, mk_fun_upd
 from logic import basic
 from syntax import parser
 from syntax import printer
-from syntax.context import Context
+from logic.basic import Context
 
 thy = basic.load_theory('hoare')
 

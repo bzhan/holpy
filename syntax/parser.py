@@ -13,7 +13,6 @@ from kernel.proof import ProofItem
 from kernel import extension
 from logic import induct
 from syntax import infertype
-from syntax.context import Context
 
 
 class ParserException(Exception):
@@ -64,15 +63,15 @@ grammar = r"""
 
     ?big_union: ("UN"|"⋃") big_union -> big_union | big_inter     // Union: priority 90
 
-    ?power: power "^" big_union | big_union   // Power: priority 81
+    ?uminus: "-" uminus -> uminus | big_union   // Unary minus: priority 80
 
-    ?uminus: "-" uminus -> uminus | power   // Unary minus: priority 80
+    ?power: power "^" uminus | uminus   // Power: priority 81
 
-    ?times_expr: times_expr "*" uminus -> times     // Multiplication: priority 70
-        | times_expr "/" uminus -> real_divide      // Division: priority 70
-        | times_expr "DIV" uminus -> nat_divide     // Division: priority 70
-        | times_expr "MOD" uminus -> nat_modulus    // Modulus: priority 70
-        | uminus
+    ?times_expr: times_expr "*" power -> times     // Multiplication: priority 70
+        | times_expr "/" power -> real_divide      // Division: priority 70
+        | times_expr "DIV" power -> nat_divide     // Division: priority 70
+        | times_expr "MOD" power -> nat_modulus    // Modulus: priority 70
+        | power
 
     ?inter: inter ("Int"|"∩") times_expr | times_expr     // Intersection: priority 70
 
@@ -560,111 +559,3 @@ def parse_proof_rule(ctxt, data):
     sig = thy.get_proof_rule_sig(rule)
     args = parse_args(ctxt, sig, data['args'])
     return ProofItem(id, rule, args=args, prevs=data['prevs'], th=th)
-
-def parse_item(thy, data):
-    """Parse the string elements in the item, replacing it by
-    objects of the appropriate type (HOLType, Term, etc).
-    
-    """
-    data = copy.deepcopy(data)  # Avoid modifying input
-
-    if data['ty'] == 'def.ax':
-        data['type'] = parse_type(thy, data['type'])
-
-    elif data['ty'] == 'def':
-        data['type'] = parse_type(thy, data['type'])
-        ctxt = Context(thy, consts={data['name']: data['type']})
-        data['prop'] = parse_term(ctxt, data['prop'])
-
-    elif data['ty'] in ('thm', 'thm.ax'):
-        ctxt = Context(thy, vars=data['vars'])
-        for nm in data['vars']:
-            data['vars'][nm] = parse_type(thy, data['vars'][nm])
-        data['prop'] = parse_term(ctxt, data['prop'])
-        prop_vars = set(v.name for v in term.get_vars(data['prop']))
-        assert prop_vars.issubset(set(data['vars'].keys())), \
-            "parse_item on %s: extra variables in prop: %s" % (
-                data['name'], ", ".join(v for v in prop_vars - set(data['vars'].keys())))
-
-    elif data['ty'] == 'type.ind':
-        for constr in data['constrs']:
-            constr['type'] = parse_type(thy, constr['type'])
-
-    elif data['ty'] in ('def.ind', 'def.pred'):
-        data['type'] = parse_type(thy, data['type'])
-        for rule in data['rules']:
-            ctxt = Context(thy, consts={data['name']: data['type']})
-            rule['prop'] = parse_term(ctxt, rule['prop'])
-
-    else:
-        pass
-
-    return data
-
-def get_extension(thy, data):
-    """Given a parsed item, return the resulting extension."""
-
-    ext = extension.TheoryExtension()
-
-    if data['ty'] == 'type.ax':
-        ext.add_extension(extension.Type(data['name'], len(data['args'])))
-
-    elif data['ty'] == 'def.ax':
-        if 'overloaded' in data:
-            ext.add_extension(extension.Constant(data['name'], data['type']))
-            ext.add_extension(extension.Overload(data['name']))
-        else:
-            cname = thy.get_overload_const_name(data['name'], data['type'])
-            ext.add_extension(extension.Constant(data['name'], data['type'], ref_name=cname))
-
-    elif data['ty'] == 'def':
-        cname = thy.get_overload_const_name(data['name'], data['type'])
-        ext.add_extension(extension.Constant(data['name'], data['type'], ref_name=cname))
-        ext.add_extension(extension.Theorem(cname + "_def", Thm([], data['prop'])))
-        if 'attributes' in data:
-            for attr in data['attributes']:
-                ext.add_extension(extension.Attribute(cname + "_def", attr))
-
-    elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
-        ext.add_extension(extension.Theorem(data['name'], Thm([], data['prop'])))
-        if 'attributes' in data:
-            for attr in data['attributes']:
-                ext.add_extension(extension.Attribute(data['name'], attr))
-
-    elif data['ty'] == 'type.ind':
-        constrs = []
-        for constr in data['constrs']:
-            constrs.append((constr['name'], constr['type'], constr['args']))
-        ext = induct.add_induct_type(thy, data['name'], data['args'], constrs)
-
-    elif data['ty'] == 'def.ind':
-        rules = []
-        for rule in data['rules']:
-            rules.append(rule['prop'])
-        ext = induct.add_induct_def(thy, data['name'], data['type'], rules)
-
-    elif data['ty'] == 'def.pred':
-        rules = []
-        for rule in data['rules']:
-            rules.append((rule['name'], rule['prop']))
-        ext = induct.add_induct_predicate(thy, data['name'], data['type'], rules)
-
-    elif data['ty'] == 'macro':
-        ext = extension.TheoryExtension()
-        ext.add_extension(extension.Macro(data['name']))
-
-    elif data['ty'] == 'method':
-        ext = extension.TheoryExtension()
-        ext.add_extension(extension.Method(data['name']))
-
-    return ext
-
-def parse_extensions(thy, data):
-    """Parse a list of extensions to thy in sequence."""
-    for item in data:
-        try:
-            item = parse_item(thy, item)
-            ext = get_extension(thy, item)
-            thy.unchecked_extend(ext)
-        except Exception:
-            pass

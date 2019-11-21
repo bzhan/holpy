@@ -276,7 +276,7 @@ def get_ast_term(thy, t):
 
     def get_priority_pair(t):
         """Obtain the binding priority of the top-most operation of t."""
-        if nat.is_binary(t) or list.is_literal_list(t):
+        if nat.is_binary_nat(t) or list.is_literal_list(t):
             return 100, ATOM  # Nat atom case
         elif t.is_comb():
             op_data = operator.get_info_for_fun(thy, t.head)

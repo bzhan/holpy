@@ -7,7 +7,6 @@ from kernel.term import Term
 from kernel import term
 from data import nat
 from util import unionfind
-from syntax.context import Context
 
 
 class TypeInferenceException(Exception):
@@ -215,6 +214,8 @@ def infer_printed_type(thy, t):
     4. Repeat until no internal type variables appear.
     
     """
+    from logic.basic import Context
+
     def clear_const_type(t):
         if t.is_const() and not hasattr(t, "print_type"):
             t.backupT = t.T
