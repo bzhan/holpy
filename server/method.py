@@ -583,8 +583,8 @@ class induction(Method):
             return [data]
 
         cur_th = state.get_proof_item(id).th
-        if len(cur_th.hyps) > 0:
-            return []
+#        if len(cur_th.hyps) > 0:
+#            return []
 
         results = []
         for name, th in state.thy.get_data("theorems").items():

@@ -1033,6 +1033,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
             "name": "double_neg",
             "num_gaps": 0,
             "proof": [
@@ -1189,7 +1193,7 @@
                     "th": "⊢ (¬¬A) = A"
                 }
             ],
-            "prop": "(~~A) = A",
+            "prop": "¬¬A ⟷ A",
             "steps": [
                 {
                     "fact_ids": [],

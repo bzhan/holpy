@@ -439,6 +439,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "add_Suc_right",
             "num_gaps": 0,
             "proof": [
@@ -782,6 +785,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "mult_0_right",
             "num_gaps": 0,
             "proof": [
@@ -888,6 +894,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "mult_1_left",
             "num_gaps": 0,
             "proof": [
@@ -954,6 +963,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "mult_1_right",
             "num_gaps": 0,
             "proof": [
@@ -1075,6 +1087,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "mult_Suc_right",
             "num_gaps": 0,
             "proof": [
@@ -1180,6 +1195,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
             "name": "distrib_l",
             "num_gaps": 0,
             "proof": [
@@ -1413,6 +1432,10 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
             "name": "mult_assoc",
             "num_gaps": 0,
             "proof": [
@@ -1551,6 +1574,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "mult_comm",
             "num_gaps": 0,
             "proof": [
@@ -1688,10 +1714,11 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_forward"
             ],
             "name": "add_cancel_left",
-            "prop": "x + y = x + z --> y = z",
+            "prop": "x + y = x + z ⟶ y = z",
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -1701,7 +1728,8 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_forward"
             ],
             "name": "add_cancel_right",
             "num_gaps": 0,
@@ -1742,7 +1770,7 @@
                     "th": "⊢ x + z = y + z ⟶ x = y"
                 }
             ],
-            "prop": "x + z = y + z --> x = y",
+            "prop": "x + z = y + z ⟶ x = y",
             "steps": [
                 {
                     "fact_ids": [
@@ -2809,6 +2837,18 @@
             ],
             "name": "less_eq_exist",
             "prop": "m ≤ n ⟷ (∃p. n = m + p)",
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "less_exist",
+            "prop": "m<n <--> (?d. n = m+Suc d)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
