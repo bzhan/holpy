@@ -445,6 +445,37 @@ class introduction(Method):
             if new_id is not None:
                 state.replace_id(item.id, new_id)
 
+
+class revert_intro(Method):
+    """Reverse an introduction."""
+    def __init__(self):
+        self.sig = []
+
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
+        return []
+
+    @settings.with_settings
+    def display_step(self, state, data):
+        return pprint.N("revert intro")
+
+    def apply(self, state, id, data, prevs):
+        cur_item = state.get_proof_item(id)
+        assert cur_item.rule == "sorry", "revert intro: id is not a gap"
+
+        assert len(prevs) == 1, "revert intro: prevs must have length one"
+
+        pt = state.get_proof_item(prevs[0])
+        assert pt.rule == 'assume', "revert_intro: prev is not assume"
+        state.set_line(id, 'sorry', th=Thm.implies_intr(pt.th.prop, cur_item.th))
+        item = state.get_proof_item(id.incr_id(1))
+        state.set_line(id.incr_id(1), item.rule, args=item.args,
+                       prevs=[p for p in item.prevs if p != prevs[0]], th=item.th)
+        state.remove_line(prevs[0])
+
+
 class exists_elim(Method):
     """Make use of an exists fact."""
     def __init__(self):
@@ -717,6 +748,7 @@ theory.global_methods.update({
     "apply_resolve_step": apply_resolve_step(),
     "apply_fact": apply_fact(),
     "introduction": introduction(),
+    "revert_intro": revert_intro(),
     "forall_elim": forall_elim(),
     "exists_elim": exists_elim(),
     "inst_exists_goal": inst_exists_goal(),

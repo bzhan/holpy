@@ -496,6 +496,17 @@ class ServerTest(unittest.TestCase):
             gaps=['B x']
         )
 
+    def testRevertIntro(self):
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A & B'],
+            concl='B & A',
+            method_name='revert_intro',
+            prevs=[0],
+            gaps=['A & B --> B & A']
+        )
+
     def testApplyInduction(self):
         test_method(self,
             'nat',

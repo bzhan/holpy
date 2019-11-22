@@ -19,6 +19,7 @@
           <b-dropdown-item href="#" v-on:click='apply_cases'>Apply cases</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_induction'>Apply induction</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='introduction'>Introduction</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='revert_intro'>Revert intro</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='new_var'>New variable</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_backward_step'>Apply backward step</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='apply_forward_step'>Apply forward step</b-dropdown-item>          
@@ -288,6 +289,10 @@ export default {
 
     introduction: function () {
       this.ref_proof.apply_method('introduction')
+    },
+
+    revert_intro: function () {
+      this.ref_proof.apply_method('revert_intro')
     },
 
     new_var: function () {

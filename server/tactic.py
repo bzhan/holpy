@@ -95,6 +95,10 @@ class rule(Tactic):
 
         # Substitute and normalize
         As, _ = logic.subst_norm(th.prop, instsp).strip_implies()
+        goal_Alen = len(goal.assums)
+        if goal_Alen > 0:
+            As = As[:-goal_Alen]
+
         pts = prevs + [ProofTerm.sorry(Thm(goal.hyps, A)) for A in As[len(prevs):]]
 
         # Determine whether it is necessary to provide instantiation

@@ -371,6 +371,10 @@
             "ty": "method"
         },
         {
+            "name": "revert_intro",
+            "ty": "method"
+        },
+        {
             "name": "forall_elim",
             "ty": "method"
         },
