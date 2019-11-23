@@ -296,7 +296,9 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_resolve",
+                "hint_backward"
             ],
             "name": "real_mult_comm",
             "prop": "x * y = y * x",
@@ -12596,7 +12598,7 @@
                 "hint_forward"
             ],
             "name": "real_div_pow2",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "¬(x = 0)",
@@ -12673,17 +12675,82 @@
                     "th": "¬(n ≤ m) ⊢ ¬(n ≤ m)"
                 },
                 {
-                    "args": "",
+                    "args": "not_le",
                     "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(n ≤ m) ⊢ m < n"
+                },
+                {
+                    "args": "lt_imp_le, {}, {m: m, n: n}",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(n ≤ m) ⊢ m ≤ n"
+                },
+                {
+                    "args": "real_pow_sub, {}, {m: m, n: n, x: x}",
+                    "id": "2.3",
+                    "prevs": [
+                        "0",
+                        "2.2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x = 0), ¬(n ≤ m) ⊢ x ^ (n - m) = x ^ n / x ^ m"
+                },
+                {
+                    "args": "real_mult_comm, {}, {x: x ^ m, y: real_inverse (x ^ n)}",
+                    "id": "2.4",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ x ^ m * real_inverse (x ^ n) = real_inverse (x ^ n) * x ^ m"
+                },
+                {
+                    "args": "real_inv_inv, x ^ m * real_inverse (x ^ n) = real_inverse (x ^ n) * real_inverse (real_inverse (x ^ m))",
+                    "id": "2.5",
+                    "prevs": [
+                        "2.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = 0), ¬(n ≤ m) ⊢ x ^ m * real_inverse (x ^ n) = real_inverse (x ^ n) * real_inverse (real_inverse (x ^ m))"
+                },
+                {
+                    "args": "real_inv_mul, x ^ m * real_inverse (x ^ n) = real_inverse (x ^ n * real_inverse (x ^ m))",
+                    "id": "2.6",
+                    "prevs": [
+                        "2.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = 0), ¬(n ≤ m) ⊢ x ^ m * real_inverse (x ^ n) = real_inverse (x ^ n * real_inverse (x ^ m))"
+                },
+                {
+                    "args": "real_divide_def, x ^ m / x ^ n = real_inverse (x ^ n / x ^ m)",
+                    "id": "2.7",
+                    "prevs": [
+                        "2.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = 0), ¬(n ≤ m) ⊢ x ^ m / x ^ n = real_inverse (x ^ n / x ^ m)"
+                },
+                {
+                    "args": "x ^ m / x ^ n = real_inverse (x ^ (n - m))",
+                    "id": "2.8",
+                    "prevs": [
+                        "2.3",
+                        "2.7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
                     "th": "¬(x = 0), ¬(n ≤ m) ⊢ x ^ m / x ^ n = real_inverse (x ^ (n - m))"
                 },
                 {
                     "args": "if_not_P, x ^ m / x ^ n = (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m)))",
-                    "id": "2.2",
+                    "id": "2.9",
                     "prevs": [
-                        "2.1",
+                        "2.8",
                         "2.0"
                     ],
                     "rule": "rewrite_goal",
@@ -12691,10 +12758,10 @@
                 },
                 {
                     "args": "",
-                    "id": "2.3",
+                    "id": "2.10",
                     "prevs": [
                         "2.0",
-                        "2.2"
+                        "2.9"
                     ],
                     "rule": "intros",
                     "th": "¬(x = 0) ⊢ ¬(n ≤ m) ⟶ x ^ m / x ^ n = (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
@@ -12768,6 +12835,521 @@
                         "2.0"
                     ],
                     "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "not_le"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2.2"
+                    ],
+                    "goal_id": "2.3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_pow_sub"
+                },
+                {
+                    "fact_ids": [
+                        "2.3"
+                    ],
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_mul"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_inv_inv"
+                },
+                {
+                    "goal_id": "2.4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_mult_comm"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "m": "nat",
+                "n": "nat",
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "real_div_pow2_lt",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬(x = 0)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(x = 0) ⊢ ¬(x = 0)"
+                },
+                {
+                    "args": "real_div_pow2, {}, {m: m, n: n, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬(x = 0) ⊢ x ^ m / x ^ n = (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(x = 0) ⊢ n < m ⟶ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                },
+                {
+                    "args": "n < m",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n < m ⊢ n < m"
+                },
+                {
+                    "args": "lt_imp_le, {}, {m: n, n: m}",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "n < m ⊢ n ≤ m"
+                },
+                {
+                    "args": "if_P, (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = x ^ (m - n)",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n < m ⊢ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = x ^ (m - n)"
+                },
+                {
+                    "args": "if_P, (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))",
+                    "id": "2.3",
+                    "prevs": [
+                        "2.2",
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n < m, ¬(x = 0) ⊢ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                },
+                {
+                    "args": "",
+                    "id": "2.4",
+                    "prevs": [
+                        "2.0",
+                        "2.3"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(x = 0) ⊢ n < m ⟶ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(x = 0) ⊢ ¬(n < m) ⟶ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                },
+                {
+                    "args": "¬(n < m)",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n < m) ⊢ ¬(n < m)"
+                },
+                {
+                    "args": "not_le",
+                    "id": "3.1",
+                    "prevs": [
+                        "3.0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "¬(n < m) ⊢ ¬¬(m ≤ n)"
+                },
+                {
+                    "args": "double_neg",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "¬(n < m) ⊢ m ≤ n"
+                },
+                {
+                    "args": "",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(x = 0), ¬(n < m) ⊢ n ≤ m ⟶ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = real_inverse (x ^ (n - m))"
+                },
+                {
+                    "args": "n ≤ m",
+                    "id": "3.3.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ≤ m ⊢ n ≤ m"
+                },
+                {
+                    "args": "sub_eq_0",
+                    "id": "3.3.1",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "¬(n < m) ⊢ m - n = 0"
+                },
+                {
+                    "args": "sub_eq_0",
+                    "id": "3.3.2",
+                    "prevs": [
+                        "3.3.0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "n ≤ m ⊢ n - m = 0"
+                },
+                {
+                    "args": "1 = real_inverse 1",
+                    "id": "3.3.3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ 1 = real_inverse 1"
+                },
+                {
+                    "args": "real_nat_power_def_1, x ^ (0::nat) = real_inverse (x ^ (0::nat))",
+                    "id": "3.3.4",
+                    "prevs": [
+                        "3.3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(x = 0), ¬(n < m), n ≤ m ⊢ x ^ (0::nat) = real_inverse (x ^ (0::nat))"
+                },
+                {
+                    "args": "x ^ (0::nat) = real_inverse (x ^ (n - m))",
+                    "id": "3.3.5",
+                    "prevs": [
+                        "3.3.2",
+                        "3.3.4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n ≤ m, ¬(x = 0), ¬(n < m) ⊢ x ^ (0::nat) = real_inverse (x ^ (n - m))"
+                },
+                {
+                    "args": "x ^ (m - n) = real_inverse (x ^ (n - m))",
+                    "id": "3.3.6",
+                    "prevs": [
+                        "3.3.1",
+                        "3.3.5"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(n < m), ¬(x = 0), n ≤ m ⊢ x ^ (m - n) = real_inverse (x ^ (n - m))"
+                },
+                {
+                    "args": "if_P, (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = real_inverse (x ^ (n - m))",
+                    "id": "3.3.7",
+                    "prevs": [
+                        "3.3.6",
+                        "3.3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "n ≤ m, ¬(x = 0), ¬(n < m) ⊢ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = real_inverse (x ^ (n - m))"
+                },
+                {
+                    "args": "",
+                    "id": "3.3.8",
+                    "prevs": [
+                        "3.3.0",
+                        "3.3.7"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(x = 0), ¬(n < m) ⊢ n ≤ m ⟶ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = real_inverse (x ^ (n - m))"
+                },
+                {
+                    "args": "",
+                    "id": "3.4",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "¬(x = 0), ¬(n < m) ⊢ ¬(n ≤ m) ⟶ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = real_inverse (x ^ (n - m))"
+                },
+                {
+                    "args": "¬(n ≤ m)",
+                    "id": "3.4.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n ≤ m) ⊢ ¬(n ≤ m)"
+                },
+                {
+                    "args": "if_not_P, (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = real_inverse (x ^ (n - m))",
+                    "id": "3.4.1",
+                    "prevs": [
+                        "3.4.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n ≤ m) ⊢ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = real_inverse (x ^ (n - m))"
+                },
+                {
+                    "args": "",
+                    "id": "3.4.2",
+                    "prevs": [
+                        "3.4.0",
+                        "3.4.1"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(x = 0), ¬(n < m) ⊢ ¬(n ≤ m) ⟶ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = real_inverse (x ^ (n - m))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.3",
+                        "3.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(x = 0), ¬(n < m) ⊢ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = real_inverse (x ^ (n - m))"
+                },
+                {
+                    "args": "if_not_P, (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.5",
+                        "3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(n < m), ¬(x = 0) ⊢ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                },
+                {
+                    "args": "",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.0",
+                        "3.6"
+                    ],
+                    "rule": "intros",
+                    "th": "¬(x = 0) ⊢ ¬(n < m) ⟶ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "¬(x = 0) ⊢ (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m))) = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                },
+                {
+                    "args": "x ^ m / x ^ n = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))",
+                    "id": "5",
+                    "prevs": [
+                        "1",
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(x = 0) ⊢ x ^ m / x ^ n = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(x = 0) ⟶ x ^ m / x ^ n = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                }
+            ],
+            "prop": [
+                "¬(x = 0) ",
+                "⟶ x ^ m / x ^ n = (if n < m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+            ],
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "apply_forward_step",
+                    "param_m": "m",
+                    "param_n": "n",
+                    "theorem": "real_div_pow2"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "case": "n < m",
+                    "goal_id": "2",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "theorem": "lt_imp_le"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "fact_ids": [
+                        "3.0"
+                    ],
+                    "goal_id": "3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "not_le"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                },
+                {
+                    "case": "n ≤ m",
+                    "goal_id": "3.3",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.0"
+                    ],
+                    "goal_id": "3.3.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.3.1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "sub_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.0"
+                    ],
+                    "goal_id": "3.3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "sub_eq_0"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.1"
+                    ],
+                    "goal_id": "3.3.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "3.3.2"
+                    ],
+                    "goal_id": "3.3.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.3.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "goal_id": "3.3.3",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3.4",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "3.4.0"
+                    ],
+                    "goal_id": "3.4.1",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "if_not_P"
