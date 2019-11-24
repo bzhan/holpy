@@ -129,7 +129,7 @@
             "name": "Assign",
             "prop": "Assign a b = Basic (λf. (f)(a := b f))",
             "ty": "def",
-            "type": "'a => (('a => 'b) => 'b) => ('a => 'b) com"
+            "type": "'a ⇒ (('a ⇒ 'b) ⇒ 'b) ⇒ ('a ⇒ 'b) com"
         },
         {
             "name": "Sem_Assign",
@@ -179,33 +179,87 @@
             "ty": "macro"
         },
         {
+            "name": "eval_Sem",
+            "ty": "method"
+        },
+        {
             "name": "P1",
             "prop": "P1 = Seq (Assign 0 (%s. 1)) (Assign 1 (%s. 2))",
             "ty": "def",
-            "type": "(nat => nat) com"
+            "type": "(nat ⇒ nat) com"
         },
         {
             "name": "P1_test",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem (Seq (Assign 0 (λs. 1)) (Assign 1 (λs. 2))) (λx. 0) ((λx. 0)(0 := 1, 1 := 2))",
+                    "args": "Sem_Assign, {a: nat, b: nat}, {a: (0::nat), b: λs::nat ⇒ nat. (1::nat), s: λx::nat. (0::nat)}",
                     "id": "0",
                     "prevs": [],
-                    "rule": "eval_Sem",
-                    "th": "⊢ Sem (Seq (Assign 0 (λs. 1)) (Assign 1 (λs. 2))) (λx. 0) ((λx. 0)(0 := 1, 1 := 2))"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Sem (Assign (0::nat) (λs. (1::nat))) (λx. 0) ((λx. 0)(0 := 1))"
+                },
+                {
+                    "args": "Sem_Assign, {a: nat, b: nat}, {a: (1::nat), b: λs::nat ⇒ nat. (2::nat), s: (λx::nat. (0::nat))(0 := 1)}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ Sem (Assign (1::nat) (λs. (2::nat))) ((λx. 0)(0 := 1)) ((λx. 0)(0 := 1, 1 := 2))"
+                },
+                {
+                    "args": "Sem_seq",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ Sem (Seq (Assign (0::nat) (λs. (1::nat))) (Assign 1 (λs. 2))) (λx. 0) ((λx. 0)(0 := 1, 1 := 2))"
                 },
                 {
                     "args": "P1_def, Sem P1 (λx. 0) ((λx. 0)(0 := 1, 1 := 2))",
-                    "id": "1",
+                    "id": "3",
                     "prevs": [
-                        "0"
+                        "2"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ Sem P1 (λx. 0) ((λx. 0)(0 := 1, 1 := 2))"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ Sem P1 (λx. 0) ((λx. 0)(0 := 1, 1 := 2))"
                 }
             ],
             "prop": "Sem P1 (%x. 0) (fun_upd (fun_upd (%x. 0) 0 1) 1 2)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "P1_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "param_s3": "((λx. 0)((0::nat) := (1::nat)))",
+                    "theorem": "Sem_seq"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "Sem_Assign"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "Sem_Assign"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -213,18 +267,18 @@
             "name": "P2",
             "prop": "P2 = Seq (Assign 0 (%s. s 0 + 1)) (Assign 0 (%s. s 0 + 1))",
             "ty": "def",
-            "type": "(nat => nat) com"
+            "type": "(nat ⇒ nat) com"
         },
         {
             "name": "P2_test",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem (Seq (Assign 0 (λs. s 0 + 1)) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 2))",
+                    "args": "Sem (Seq (Assign (0::nat) (λs. s 0 + (1::nat))) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 2))",
                     "id": "0",
                     "prevs": [],
                     "rule": "eval_Sem",
-                    "th": "⊢ Sem (Seq (Assign 0 (λs. s 0 + 1)) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 2))"
+                    "th": "⊢ Sem (Seq (Assign (0::nat) (λs. s 0 + (1::nat))) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 2))"
                 },
                 {
                     "args": "P2_def, Sem P2 (λx. 0) ((λx. 0)(0 := 2))",
@@ -234,9 +288,30 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ Sem P2 (λx. 0) ((λx. 0)(0 := 2))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Sem P2 (λx. 0) ((λx. 0)(0 := 2))"
                 }
             ],
             "prop": "Sem P2 (%x. 0) ((%x. 0)(0 := 2))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "P2_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "eval_Sem"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -244,18 +319,18 @@
             "name": "P3",
             "prop": "P3 = While (%s. ~(s 0 = 3)) (%s. true) (Assign 0 (%s. s 0 + 1))",
             "ty": "def",
-            "type": "(nat => nat) com"
+            "type": "(nat ⇒ nat) com"
         },
         {
             "name": "P3_test",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "Sem (While (λs. ¬s 0 = 3) (λs. true) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 3))",
+                    "args": "Sem (While (λs. ¬(s (0::nat) = (3::nat))) (λs. true) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 3))",
                     "id": "0",
                     "prevs": [],
                     "rule": "eval_Sem",
-                    "th": "⊢ Sem (While (λs. ¬s 0 = 3) (λs. true) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 3))"
+                    "th": "⊢ Sem (While (λs. ¬(s (0::nat) = (3::nat))) (λs. true) (Assign 0 (λs. s 0 + 1))) (λx. 0) ((λx. 0)(0 := 3))"
                 },
                 {
                     "args": "P3_def, Sem P3 (λx. 0) ((λx. 0)(0 := 3))",
@@ -265,9 +340,30 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ Sem P3 (λx. 0) ((λx. 0)(0 := 3))"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Sem P3 (λx. 0) ((λx. 0)(0 := 3))"
                 }
             ],
             "prop": "Sem P3 (%x. 0) ((%x. 0)(0 := 3))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "P3_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "eval_Sem"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -278,7 +374,7 @@
             "name": "Entail",
             "prop": "Entail P Q = (∀s. P s ⟶ Q s)",
             "ty": "def",
-            "type": "('a => bool) => ('a => bool) => bool"
+            "type": "('a ⇒ bool) ⇒ ('a ⇒ bool) ⇒ bool"
         },
         {
             "attributes": [
@@ -287,7 +383,7 @@
             "name": "Valid",
             "prop": "Valid P c Q = (∀s. ∀s2. P s ⟶ Sem c s s2 ⟶ Q s2)",
             "ty": "def",
-            "type": "('a => bool) => 'a com => ('a => bool) => bool"
+            "type": "('a ⇒ bool) ⇒ 'a com ⇒ ('a ⇒ bool) ⇒ bool"
         },
         {
             "name": "pre_rule",

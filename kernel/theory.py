@@ -548,9 +548,9 @@ class Theory():
 
         self.add_attribute(ext.name, ext.attribute)
 
-    def unchecked_extend(self, thy_ext):
+    def unchecked_extend(self, exts):
         """Perform the given theory extension without proof checking."""
-        for ext in thy_ext.get_extensions():
+        for ext in exts:
             if ext.ty == extension.TYPE:
                 self.extend_type(ext)
             elif ext.ty == extension.CONSTANT:
@@ -568,11 +568,11 @@ class Theory():
             else:
                 raise TypeError
 
-    def checked_extend(self, thy_ext):
+    def checked_extend(self, exts):
         """Perform the given theory extension with proof checking."""
         ext_report = ExtensionReport()
 
-        for ext in thy_ext.get_extensions():
+        for ext in exts:
             if ext.ty == extension.TYPE:
                 self.extend_type(ext)
             elif ext.ty == extension.CONSTANT:

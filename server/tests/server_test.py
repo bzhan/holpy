@@ -496,6 +496,17 @@ class ServerTest(unittest.TestCase):
             gaps=['B x']
         )
 
+    def testRevertIntro(self):
+        test_method(self,
+            'logic_base',
+            vars={'A': 'bool', 'B': 'bool'},
+            assms=['A & B'],
+            concl='B & A',
+            method_name='revert_intro',
+            prevs=[0],
+            gaps=['A & B --> B & A']
+        )
+
     def testApplyInduction(self):
         test_method(self,
             'nat',
@@ -512,7 +523,7 @@ class ServerTest(unittest.TestCase):
             vars={'n': 'nat'},
             concl='0 + n = 0',
             method_name='rewrite_goal',
-            res=['add_comm', 'eq_sym_eq', 'nat_plus_def_1']
+            res=['add_comm', 'double_neg', 'eq_sym_eq', 'nat_plus_def_1']
         )
 
     def testRewriteGoalThms2(self):
@@ -521,7 +532,7 @@ class ServerTest(unittest.TestCase):
             vars={'f': "nat => nat", 'S': "nat set", 'T': "nat set"},
             concl='image f (image f S) = T',
             method_name='rewrite_goal',
-            res=['eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
+            res=['double_neg', 'eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
         )
 
     def testRewriteGoal(self):
@@ -577,7 +588,7 @@ class ServerTest(unittest.TestCase):
             concl='false',
             method_name='rewrite_fact',
             prevs=[0],
-            res=['add_comm', 'eq_sym_eq', 'nat_plus_def_1']
+            res=['add_comm', 'double_neg', 'eq_sym_eq', 'nat_plus_def_1']
         )
 
     def testRewriteFactThms2(self):
@@ -588,7 +599,7 @@ class ServerTest(unittest.TestCase):
             concl='false',
             method_name='rewrite_fact',
             prevs=[0],
-            res=['eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
+            res=['double_neg', 'eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
         )
 
     def testRewriteFact(self):

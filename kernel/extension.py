@@ -155,27 +155,3 @@ class Overload(Extension):
         """
         self.ty = OVERLOAD
         self.name = name
-
-class TheoryExtension():
-    """A theory extension contains a list of extensions to a theory. These
-    may involve new types, constants, and theorems. Definition of
-    new types, constants, and theorems may be accompanied by proof, which
-    can be checked by the theory.
-
-    """
-    def __init__(self):
-        self.data = []
-
-    def add_extension(self, extension):
-        """Add a new extension."""
-        self.data.append(extension)
-
-    def get_extensions(self):
-        """Return list of extensions."""
-        return self.data
-
-    def __str__(self):
-        return "\n".join(str(ext) for ext in self.data)
-
-    def __repr__(self):
-        return str(self)

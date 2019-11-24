@@ -284,17 +284,18 @@ class TheoryTest(unittest.TestCase):
     def testUncheckedExtend(self):
         """Unchecked extension."""
         thy = Theory.EmptyTheory()
-        thy_ext = extension.TheoryExtension()
 
         id_const = Const("id", TFun(Ta,Ta))
         id_def = Abs("x", Ta, Bound(0))
         id_simps = Term.mk_equals(id_const(x), x)
 
-        thy_ext.add_extension(extension.Constant("id", TFun(Ta, Ta)))        
-        thy_ext.add_extension(extension.Theorem("id_def", Thm.mk_equals(id_const, id_def)))
-        thy_ext.add_extension(extension.Theorem("id.simps", Thm([], id_simps)))
+        exts = [
+            extension.Constant("id", TFun(Ta, Ta)),
+            extension.Theorem("id_def", Thm.mk_equals(id_const, id_def)),
+            extension.Theorem("id.simps", Thm([], id_simps))
+        ]
 
-        self.assertEqual(thy.unchecked_extend(thy_ext), None)
+        self.assertEqual(thy.unchecked_extend(exts), None)
         self.assertEqual(thy.get_term_sig("id"), TFun(Ta, Ta))
         self.assertEqual(thy.get_theorem("id_def"), Thm.mk_equals(id_const, id_def))
         self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
@@ -302,19 +303,17 @@ class TheoryTest(unittest.TestCase):
     def testCheckedExtend(self):
         """Checked extension: adding an axiom."""
         thy = Theory.EmptyTheory()
-        thy_ext = extension.TheoryExtension()
 
         id_simps = Term.mk_equals(Comb(Const("id", TFun(Ta,Ta)),x), x)
-        thy_ext.add_extension(extension.Theorem("id.simps", Thm([], id_simps)))
+        exts = [extension.Theorem("id.simps", Thm([], id_simps))]
 
-        ext_report = thy.checked_extend(thy_ext)
+        ext_report = thy.checked_extend(exts)
         self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
         self.assertEqual(ext_report.get_axioms(), [("id.simps", Thm([], id_simps))])
 
     def testCheckedExtend2(self):
         """Checked extension: proved theorem."""
         thy = Theory.EmptyTheory()
-        thy_ext = extension.TheoryExtension()
 
         id_const = Const("id", TFun(Ta,Ta))
         id_def = Abs("x", Ta, Bound(0))
@@ -329,22 +328,24 @@ class TheoryTest(unittest.TestCase):
         prf.add_item(4, "beta_conv", args=id_def(x))  # (%x. x) x = x
         prf.add_item(5, "transitive", prevs=[3, 4])  # id x = x
 
-        thy_ext.add_extension(extension.Constant("id", TFun(Ta, Ta)))
-        thy_ext.add_extension(extension.Theorem("id_def", Thm.mk_equals(id_const, id_def)))
-        thy_ext.add_extension(extension.Theorem("id.simps", Thm([], id_simps), prf))
+        exts = [
+            extension.Constant("id", TFun(Ta, Ta)),
+            extension.Theorem("id_def", Thm.mk_equals(id_const, id_def)),
+            extension.Theorem("id.simps", Thm([], id_simps), prf)
+        ]
 
-        ext_report = thy.checked_extend(thy_ext)
+        ext_report = thy.checked_extend(exts)
         self.assertEqual(thy.get_theorem("id.simps"), Thm([], id_simps))
         self.assertEqual(ext_report.get_axioms(), [('id_def', Thm.mk_equals(id_const, id_def))])
 
     def testCheckedExtend3(self):
         """Axiomatized constant."""
         thy = Theory.EmptyTheory()
-        thy_ext = extension.TheoryExtension()
-
-        thy_ext.add_extension(extension.Type("nat", 0))
-        thy_ext.add_extension(extension.Constant("id", TFun(Ta,Ta)))
-        ext_report = thy.checked_extend(thy_ext)
+        exts = [
+            extension.Type("nat", 0),
+            extension.Constant("id", TFun(Ta,Ta))
+        ]
+        ext_report = thy.checked_extend(exts)
         self.assertEqual(thy.get_type_sig("nat"), 0)
         self.assertEqual(thy.get_term_sig("id"), TFun(Ta,Ta))
 

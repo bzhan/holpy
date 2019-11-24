@@ -20,7 +20,12 @@
         <span>Partial {{info.stat.Partial}} </span>
         <span>Failed {{info.stat.Failed}} </span>
         <span>No steps {{info.stat.NoSteps}} </span>
-        <a href="#" v-on:click="info.unfold = !info.unfold">{{info.unfold ? 'fold' : 'unfold'}}</a>
+        <span>Proof OK {{info.stat.ProofOK}} </span>
+        <span>Proof Fail {{info.stat.ProofFail}} </span>
+        <span>Parse OK {{info.stat.ParseOK}} </span>
+        <span>Parse Fail {{info.stat.ParseFail}} </span>
+        <a href="#" v-on:click="info.unfold = !info.unfold">{{info.unfold ? 'Fold' : 'Unfold'}} </a>
+        <a href="#" v-on:click="recheckTheory(index)">Recheck</a>
       </div>
       <table v-if="info.unfold">
         <tr v-for="(line,index) in info.data" v-bind:key="index"
@@ -31,6 +36,10 @@
           <td v-if="line.status==='OK'">{{line.num_steps + ' steps'}}</td>
           <td v-if="line.status==='Partial'">{{line.num_steps + ' steps'}}</td>
           <td v-if="line.status==='NoSteps'"></td>
+          <td v-if="line.status==='ProofOK'"></td>
+          <td v-if="line.status==='ProofFail'"></td>
+          <td v-if="line.status==='ParseOK'"></td>
+          <td v-if="line.status==='ParseFail'"></td>
         </tr>
       </table>
     </div>
@@ -96,6 +105,33 @@ export default {
       }
     },
 
+    recheckTheory: async function (index) {
+      const filename = this.infos[index].filename
+      const data = {
+        username: this.$state.user,
+        filename: filename
+      }
+      var response = undefined
+
+      try {
+        response = await axios.post('http://127.0.0.1:5000/api/check-theory', JSON.stringify(data))
+      } catch (err) {
+        this.$set(this.infos, index, {
+          filename: filename,
+          message: 'Server error'
+        })
+      }
+
+      if (response !== undefined) {
+        this.$set(this.infos, index, {
+          filename: filename,
+          data: response.data.data,
+          stat: response.data.stat,
+          unfold: this.infos[index].unfold
+        })
+      }
+    },
+
     checkAllTheory: async function () {
       var data = {
         username: this.$state.user
@@ -112,11 +148,11 @@ export default {
     },
 
     getBackground: function (line) {
-      if (line.status === 'OK') {
+      if (line.status === 'OK' || line.status === 'ProofOK' || line.status === 'ParseOK') {
         return 'lime'
       } else if (line.status === 'NoSteps') {
         return 'aqua'
-      } else if (line.status === 'Failed') {
+      } else if (line.status === 'Failed' || line.status === 'ProofFail' || line.status === 'ParseFail') {
         return 'red'
       } else if (line.status === 'Partial') {
         return 'yellow'

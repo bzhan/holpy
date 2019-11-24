@@ -38,7 +38,7 @@ class InductTest(unittest.TestCase):
             extension.Attribute("nat_induct", "var_induct")
         ]
 
-        self.assertEqual(nat_ext.data, res)
+        self.assertEqual(nat_ext, res)
 
     def testInductAdd(self):
         nat = Type("nat")
@@ -60,7 +60,7 @@ class InductTest(unittest.TestCase):
             extension.Theorem("nat_plus_def_2", Thm([], eq(plus(S(m), n), S(plus(m, n))))),
             extension.Attribute("nat_plus_def_2", "hint_rewrite"),
         ]
-        self.assertEqual(ext.data, res)
+        self.assertEqual(ext, res)
 
     def testInductList(self):
         Ta = TVar("a")
@@ -86,7 +86,7 @@ class InductTest(unittest.TestCase):
             extension.Theorem("list_induct", Thm([], imp(P(nil), all(x, all(xs, imp(P(xs), P(cons(x, xs))))), P(xlist)))),
             extension.Attribute("list_induct", "var_induct")
         ]
-        self.assertEqual(list_ext.data, res)
+        self.assertEqual(list_ext, res)
 
     def testInductProd(self):
         Ta = TVar("a")
@@ -110,7 +110,7 @@ class InductTest(unittest.TestCase):
             extension.Theorem("prod_induct", Thm([], imp(all(a, all(b, P(pair(a, b)))), P(x)))),
             extension.Attribute("prod_induct", "var_induct")
         ]
-        self.assertEqual(prod_ext.data, res)
+        self.assertEqual(prod_ext, res)
 
     def testInductPredicate(self):
         nat = Type("nat")
@@ -133,7 +133,7 @@ class InductTest(unittest.TestCase):
             extension.Attribute("even_Suc", "hint_backward"),
             extension.Theorem("even_cases", Thm.mk_implies(even(a1), imp(eq(a1,zero), P), all(n, imp(eq(a1,Suc(Suc(n))), even(n), P)), P))
         ]
-        self.assertEqual(even_ext.data, res)
+        self.assertEqual(even_ext, res)
 
 
 if __name__ == "__main__":

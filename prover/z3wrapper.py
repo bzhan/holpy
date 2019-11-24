@@ -208,6 +208,7 @@ def norm_term(thy, t):
 def solve(thy, t, debug=False):
     """Solve the given goal using Z3."""
     s = z3.Solver()
+    s.set('timeout', 2000)
 
     # First strip foralls from t.
     t = norm_term(thy, t)
