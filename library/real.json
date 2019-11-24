@@ -13416,6 +13416,337 @@
             "attributes": [
                 "hint_backward"
             ],
+            "name": "real_le_pow2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_le_refl, {}, {x: (1::real)}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ (1::real) ≤ 1"
+                },
+                {
+                    "args": "real_nat_power_def_1, (1::real) ≤ 2 ^ (0::nat)",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ (1::real) ≤ 2 ^ (0::nat)"
+                },
+                {
+                    "args": "(1::real) ≤ 2",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (1::real) ≤ 2"
+                },
+                {
+                    "args": "le_0, {}, {n: n}",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ 0 ≤ n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (1::real) ≤ 2 ∧ 0 ≤ n"
+                },
+                {
+                    "args": "real_pow_mono",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (2::real) ^ (0::nat) ≤ 2 ^ n"
+                },
+                {
+                    "args": "conjI",
+                    "id": "6",
+                    "prevs": [
+                        "1",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (1::real) ≤ 2 ^ (0::nat) ∧ (2::real) ^ (0::nat) ≤ 2 ^ n"
+                },
+                {
+                    "args": "real_le_trans",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (1::real) ≤ 2 ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (1::real) ≤ 2 ^ n"
+                }
+            ],
+            "prop": "(1::real)<=2^n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "param_y": "(2::real) ^ (0::nat)",
+                    "theorem": "real_le_trans"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_le_refl"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_pow_mono"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_0"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_pow2_abs",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ 0 ≤ x ⟶ (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "0 ≤ x",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
+                },
+                {
+                    "args": "if_P, (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "0 ≤ x ⊢ (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ 0 ≤ x ⟶ (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ¬(0 ≤ x) ⟶ (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "¬(0 ≤ x)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(0 ≤ x) ⊢ ¬(0 ≤ x)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(0 ≤ x) ⊢ even (of_nat (bit0 (Suc 0))) ⟷ true"
+                },
+                {
+                    "args": "nat_one_def, even 2 ⟷ true",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 ≤ x) ⊢ even 2 ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "¬(0 ≤ x) ⊢ (if even 2 then x ^ (2::nat) else -(x ^ (2::nat))) = x ^ (2::nat)"
+                },
+                {
+                    "args": "real_pow_neg, -x ^ (2::nat) = x ^ (2::nat)",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 ≤ x) ⊢ -x ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "if_not_P, (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.4",
+                        "1.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(0 ≤ x) ⊢ (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(0 ≤ x) ⟶ (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "real_abs_def, abs x ^ (2::nat) = x ^ (2::nat)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ abs x ^ (2::nat) = x ^ (2::nat)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ abs x ^ (2::nat) = x ^ (2::nat)"
+                }
+            ],
+            "prop": "(abs x) ^ (2::nat) = x ^(2::nat)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_def"
+                },
+                {
+                    "case": "0 ≤ x",
+                    "goal_id": "0",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_pow_neg"
+                },
+                {
+                    "goal": "even 2 = true",
+                    "goal_id": "1.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "1.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_one_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_arch_simple",
             "prop": "?n. x <= of_nat n",
             "ty": "thm",

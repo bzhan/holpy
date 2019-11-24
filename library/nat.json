@@ -2175,6 +2175,10 @@
             "vars": {}
         },
         {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
             "name": "bit0_Suc",
             "num_gaps": 0,
             "proof": [
@@ -2211,6 +2215,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "bit1_Suc",
             "num_gaps": 0,
             "proof": [
@@ -5512,30 +5519,361 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "even",
             "rules": [
                 {
-                    "prop": "even 0 = true"
+                    "prop": "even 0 ⟷ true"
                 },
                 {
-                    "prop": "even (Suc n) = neg (even n)"
+                    "prop": "even (Suc n) ⟷ ¬(even n)"
                 }
             ],
             "ty": "def.ind",
             "type": "nat => bool"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "odd",
             "rules": [
                 {
-                    "prop": "odd 0 = false"
+                    "prop": "odd 0 ⟷ false"
                 },
                 {
-                    "prop": "odd (Suc n) = neg (odd n)"
+                    "prop": "odd (Suc n) ⟷ ¬(odd n)"
                 }
             ],
             "ty": "def.ind",
             "type": "nat => bool"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "arith_even1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "even_def_1, even 0 ⟷ true",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even 0 ⟷ true"
+                },
+                {
+                    "args": "add_0_right, even (0 + 0) ⟷ true",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even (0 + 0) ⟷ true"
+                },
+                {
+                    "args": "bit0_def, even (bit0 0) ⟷ true",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even (bit0 0) ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. even (bit0 n) ⟷ true ⟶ even (bit0 (Suc n)) ⟷ true"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "even (bit0 n) ⟷ true",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "even (bit0 n) ⟷ true ⊢ even (bit0 n) ⟷ true"
+                },
+                {
+                    "args": "bit0_def",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "even (bit0 n) ⟷ true ⊢ even (n + n) ⟷ true"
+                },
+                {
+                    "args": "double_neg, ¬¬true ⟷ true",
+                    "id": "3.3",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬¬true ⟷ true"
+                },
+                {
+                    "args": "¬¬(even (n + n)) ⟷ true",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.2",
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "even (bit0 n) ⟷ true ⊢ ¬¬(even (n + n)) ⟷ true"
+                },
+                {
+                    "args": "even_def_2, ¬(even (Suc (n + n))) ⟷ true",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (bit0 n) ⟷ true ⊢ ¬(even (Suc (n + n))) ⟷ true"
+                },
+                {
+                    "args": "nat_plus_def_2, ¬(even (Suc n + n)) ⟷ true",
+                    "id": "3.6",
+                    "prevs": [
+                        "3.5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (bit0 n) ⟷ true ⊢ ¬(even (Suc n + n)) ⟷ true"
+                },
+                {
+                    "args": "even_def_2, even (Suc (Suc n + n)) ⟷ true",
+                    "id": "3.7",
+                    "prevs": [
+                        "3.6"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (bit0 n) ⟷ true ⊢ even (Suc (Suc n + n)) ⟷ true"
+                },
+                {
+                    "args": "add_Suc_right, even (Suc n + Suc n) ⟷ true",
+                    "id": "3.8",
+                    "prevs": [
+                        "3.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (bit0 n) ⟷ true ⊢ even (Suc n + Suc n) ⟷ true"
+                },
+                {
+                    "args": "bit0_def, even (bit0 (Suc n)) ⟷ true",
+                    "id": "3.9",
+                    "prevs": [
+                        "3.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "even (bit0 n) ⟷ true ⊢ even (bit0 (Suc n)) ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "3.10",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. even (bit0 n) ⟷ true ⟶ even (bit0 (Suc n)) ⟷ true"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. even (bit0 n) ⟷ true, x: n}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (bit0 n) ⟷ true"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even (bit0 n) ⟷ true"
+                }
+            ],
+            "prop": "even (bit0 n) = true",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "bit0_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "bit0_def"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_Suc_right"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_plus_def_2"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "bit0_def"
+                },
+                {
+                    "fact_ids": [
+                        "3.2"
+                    ],
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "double_neg"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "arith_even2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬true ⟷ false",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬true ⟷ false"
+                },
+                {
+                    "args": "arith_even1, ¬(even (bit0 n)) ⟷ false",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even (bit0 n)) ⟷ false"
+                },
+                {
+                    "args": "even_def_2, even (Suc (bit0 n)) ⟷ false",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even (Suc (bit0 n)) ⟷ false"
+                },
+                {
+                    "args": "bit0_Suc, even (bit1 n) ⟷ false",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ even (bit1 n) ⟷ false"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ even (bit1 n) ⟷ false"
+                }
+            ],
+            "prop": "even (bit1 n) ⟷ false",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "bit0_Suc"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "arith_even1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
         },
         {
             "name": "nat_divide",
