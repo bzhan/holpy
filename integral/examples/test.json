@@ -203,6 +203,14 @@
             ],
             "name": "Exercise 9",
             "problem": "INT x:[4, 9]. x ^ (1 / 3) * (x ^ (1 / 2) + 1)"
+        },
+        {
+            "name": "Exercise 10",
+            "problem": "INT x:[-1, 0]. (3 * x ^ 4 + 3 * x ^ 2 + 1) / (x ^ 2 + 1)"
+        },
+        {
+            "name": "Exercise 11",
+            "problem": "INT x:[4, 9]. (x ^ 3 - 12 * x ^ 2 - 42) / (x - 3)"
         }
     ]
 }

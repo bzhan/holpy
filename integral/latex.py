@@ -11,7 +11,9 @@ def convert_expr(e, mode="large"):
         if isinstance(e.val, (int, Decimal)):
             return str(e.val)
         elif isinstance(e.val, Fraction):
-            if mode == 'large':
+            if e.val.denominator == 1:
+                return "%d" % e.val.numerator
+            elif mode == 'large':
                 return "\\frac{%d}{%d}" % (e.val.numerator, e.val.denominator)
             else:
                 return "%d/%d" % (e.val.numerator, e.val.denominator)
@@ -33,10 +35,14 @@ def convert_expr(e, mode="large"):
                     if isinstance(y.val, Fraction):
                         if y.val.numerator == 1:
                             if y.val.denominator == 2:
-                                return "\sqrt{%s}" % sx
+                                return "\\sqrt{%s}" % sx
                             else:
-                                return "\sqrt[%s]{%s}" % (y.val.denominator, sx)
+                                return "\\sqrt[%s]{%s}" % (y.val.denominator, sx)
                 elif e.op in ("+", "-"):
+                    if y.ty == expr.CONST:
+                        if y.val < 0:
+                            new_y = expr.Const(0 - y.val)
+                            return "%s %s %s" % (sx, "-", convert_expr(new_y))
                     if y.ty == expr.OP:
                         y1, y2 = y.args
                         if isinstance(y1, expr.Const):
@@ -48,7 +54,7 @@ def convert_expr(e, mode="large"):
                                         new_y = y2
                                 sy = convert_expr(new_y, mode)
                                 new_op = "-" if e.op == "+" else "+"
-                                return "%s %s %s" % (sx, new_op, sy)                 
+                                return "%s %s %s" % (sx, new_op, sy)                    
                 if x.priority() < expr.op_priority[e.op]:
                     sx = "(%s)" % sx
                 if y.priority() < expr.op_priority[e.op]:
@@ -61,6 +67,11 @@ def convert_expr(e, mode="large"):
                     if sx == "1":
                         return "%s" % sy
                     return "%s %s" % (sx, sy)
+                elif x.ty == expr.CONST and y.ty == expr.OP:
+                    if y.op == "^" and y.args[0].ty == expr.VAR:
+                        if sx == "1":
+                            return "%s" % sy
+                    return "%s %s" % (sx, sy)
                 else:
                     if x.priority() < expr.op_priority[e.op]:
                         sx = "(%s)" % sx
@@ -69,7 +80,10 @@ def convert_expr(e, mode="large"):
                     return "%s %s %s" % (sx, e.op, sy)
             elif e.op == "/":
                 if mode == 'large':
-                    return "\\frac{%s}{%s}" % (sx, sy)
+                    if sy == "1":
+                        return "%s" % sx
+                    else:
+                        return "\\frac{%s}{%s}" % (sx, sy)
                 else:
                     return "%s/%s" % (sx, sy)
             else:

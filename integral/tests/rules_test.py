@@ -14,7 +14,7 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. x^(1/2) * x^(1/2)",
              "INT x:[a,b]. x"),
             ("INT x:[4, 9]. x^(1/2)*(1+x^(1/2))",
-            "INT x:[4, 9]. x^(1/2) + x")
+            "INT x:[4, 9]. x + x^(1/2)")
         ]
         rule = rules.Simplify()
         for s1, s2 in test_data:
@@ -25,7 +25,7 @@ class RulesTest(unittest.TestCase):
     def testLinearity(self):
         test_data = [
             ("INT x:[a,b]. 1 + 2 * x + x ^ 2",
-             "(INT x:[a,b]. 1) + 2 * (INT x:[a,b]. x) + (INT x:[a,b]. x ^ 2)"),
+             "(INT x:[a,b]. x ^ 2) + 2 * (INT x:[a,b]. x) + (INT x:[a,b]. 1)"),
         ]
 
         rule = rules.Linearity()
@@ -41,9 +41,15 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. x", "[x ^ 2 / 2]_x=a,b"),
             ("INT x:[a,b]. x ^ 2", "[x ^ 3 / 3]_x=a,b"),
             ("INT x:[a,b]. x ^ 3", "[x ^ 4 / 4]_x=a,b"),
+            ("INT x:[a,b]. (x + 2) ^ 3", "[(x + 2) ^ 4 / 4]_x=a,b"),
+            ("INT x:[a,b]. 3 / x ^ 3", "[3 / ((-2) * x ^ 2)]_x=a,b"),
             ("INT x:[a,b]. x ^ -1", "[log(x)]_x=a,b"),
+            ("INT x:[a,b]. (x + 1) ^ -1", "[log(x+1)]_x=a,b"),
+            ("INT x:[a,b]. (x + 2) ^ 2", "[-1/(x+2)]_x=a,b"),
+            ("INT x:[a,b]. 1 / x", "[log(x)]_x=a,b"),
+            ("INT x:[a,b]. 1 / x ^ 2", "(-2)/ x_x=a,b"),
             ("INT x:[a,b]. sin(x)", "[-cos(x)]_x=a,b"),
-            ("INT x:[a,b]. cos(x)", "[sin(x)]_x=a,b"),
+            ("INT x:[a,b]. cos(x)", "[sin(x)]_x=a,b")
         ]
 
         rule = rules.CommonIntegral()
@@ -85,7 +91,7 @@ class RulesTest(unittest.TestCase):
         e = rules.Linearity().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
-        self.assertEqual(e, parse_expr("-1/6 + 1/6 * exp(6)"))
+        self.assertEqual(e, parse_expr("1/6 * exp(6) + -1/6"))
 
     def testIntegrationByParts(self):
         e = parse_expr("INT x:[-1,2]. x * exp(x)")
@@ -93,7 +99,19 @@ class RulesTest(unittest.TestCase):
         e = rules.Simplify().eval(e)
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
-        self.assertEqual(e, parse_expr("2 * exp(-1) + exp(2)"))
+        self.assertEqual(e, parse_expr("exp(2) + 2 * exp(-1)"))
+
+    def testPolynomialDivision(self):
+        test_data = [
+        ("(x^3 - 12 * x^2 - 42) / (x-3)", "x ^ 2 + -9 * x + -27 + -123 / (x + -3)"),
+        ("(3*x^4+3*x^2+1)/(x^2 + 1)", "3 * x ^ 2 + 1 / (x ^ 2 + 1)")
+        ]
+
+        rule = rules.PolynomialDivision()
+        for e1, e2 in test_data:
+            s1 = parse_expr(e1)
+            s2 = parse_expr(e2)
+            self.assertEqual(rule.eval(s1), s2)
 
 
 if __name__ == "__main__":
