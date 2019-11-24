@@ -22,6 +22,8 @@
         <span>No steps {{info.stat.NoSteps}} </span>
         <span>Proof OK {{info.stat.ProofOK}} </span>
         <span>Proof Fail {{info.stat.ProofFail}} </span>
+        <span>Parse OK {{info.stat.ParseOK}} </span>
+        <span>Parse Fail {{info.stat.ParseFail}} </span>
         <a href="#" v-on:click="info.unfold = !info.unfold">{{info.unfold ? 'Fold' : 'Unfold'}} </a>
         <a href="#" v-on:click="recheckTheory(index)">Recheck</a>
       </div>
@@ -36,6 +38,8 @@
           <td v-if="line.status==='NoSteps'"></td>
           <td v-if="line.status==='ProofOK'"></td>
           <td v-if="line.status==='ProofFail'"></td>
+          <td v-if="line.status==='ParseOK'"></td>
+          <td v-if="line.status==='ParseFail'"></td>
         </tr>
       </table>
     </div>
@@ -144,11 +148,11 @@ export default {
     },
 
     getBackground: function (line) {
-      if (line.status === 'OK' || line.status === 'ProofOK') {
+      if (line.status === 'OK' || line.status === 'ProofOK' || line.status === 'ParseOK') {
         return 'lime'
       } else if (line.status === 'NoSteps') {
         return 'aqua'
-      } else if (line.status === 'Failed' || line.status === 'ProofFail') {
+      } else if (line.status === 'Failed' || line.status === 'ProofFail' || line.status === 'ParseFail') {
         return 'red'
       } else if (line.status === 'Partial') {
         return 'yellow'

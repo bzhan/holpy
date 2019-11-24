@@ -54,7 +54,7 @@
         {
             "attributes": [],
             "name": "exists1",
-            "prop": "exists1 P <--> ((∃x. P x) ∧ (∀y. P y ⟶ y = x))",
+            "prop": "exists1 P <--> (∃x. P x ∧ (∀y. P y ⟶ y = x))",
             "ty": "def",
             "type": "('a ⇒ bool) ⇒ bool"
         },

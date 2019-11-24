@@ -1,6 +1,11 @@
 {
     "content": [
         {
+            "name": "infsum",
+            "ty": "def.ax",
+            "type": "nat set => (nat => 'a) => 'a"
+        },
+        {
             "name": "exp",
             "prop": "exp x = infsum (from 0) (%n. x ^ n / of_nat (fact n))",
             "ty": "def",
@@ -27,7 +32,7 @@
         {
             "attributes": [],
             "name": "log",
-            "prop": "log y = THE y. exp x = y",
+            "prop": "log y = THE x. exp x = y",
             "ty": "def",
             "type": "real=>real"
         },
@@ -40,8 +45,15 @@
         },
         {
             "attributes": [],
+            "name": "tan",
+            "prop": "tan x = sin x / cos x",
+            "ty": "def",
+            "type": "real ⇒ real"
+        },
+        {
+            "attributes": [],
             "name": "atn",
-            "prop": "atn y = THE x. -pi/2 < x & x < pi/2 & tan x =y",
+            "prop": "atn y = (THE x. -pi/2 < x & x < pi/2 & tan x =y)",
             "ty": "def",
             "type": "real=>real"
         },

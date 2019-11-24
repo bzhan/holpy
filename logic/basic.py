@@ -152,9 +152,8 @@ def get_init_theory():
 
 class Context:
     def __init__(self, thy, *, svars=None, vars=None, consts=None, limit=None):
-        from logic import basic
         if isinstance(thy, str):
-            self.thy = basic.load_theory(thy, limit=limit)
+            self.thy = load_theory(thy, limit=limit)
         else:
             assert isinstance(thy, Theory)
             self.thy = thy
@@ -201,6 +200,15 @@ def parse_item(thy, data):
         data['type'] = parser.parse_type(thy, data['type'])
         ctxt = Context(thy, consts={data['name']: data['type']})
         data['prop'] = parser.parse_term(ctxt, data['prop'])
+
+        # Check validity of definition.
+        assert data['prop'].is_equals(), "parse_item on %s: definition is not an equality" % data['name']
+        f, args = data['prop'].lhs.strip_comb()
+        lhs_vars = set(v.name for v in args)
+        rhs_vars = set(v.name for v in term.get_vars(data['prop'].rhs))
+        assert rhs_vars.issubset(lhs_vars), \
+            "parse_item on %s: extra variable %s on right side of definition" % (
+                data['name'], ", ".join(v for v in rhs_vars - lhs_vars))
 
     elif data['ty'] in ('thm', 'thm.ax'):
         ctxt = Context(thy, vars=data['vars'])
@@ -309,17 +317,20 @@ def load_theory_cache(filename, username="master"):
     data = load_json_data(filename, username)
     cache['content'] = []
     for index, item in enumerate(data['content']):
-        item = parse_item(thy, item)
-        exts = get_extension(thy, item)
-        item['ext'] = exts
-        thy.unchecked_extend(exts)
-        cache['content'].append(item)
-        for ext in exts.get_extensions():
-            if ext.ty == extension.CONSTANT:
-                name = ext.ref_name
-            else:
-                name = ext.name
-            item_index[username][(ext.ty, name)] = (filename, timestamp, index)
+        try:
+            item = parse_item(thy, item)
+            exts = get_extension(thy, item)
+            item['ext'] = exts
+            thy.unchecked_extend(exts)
+            cache['content'].append(item)
+            for ext in exts.get_extensions():
+                if ext.ty == extension.CONSTANT:
+                    name = ext.ref_name
+                else:
+                    name = ext.name
+                item_index[username][(ext.ty, name)] = (filename, timestamp, index)
+        except Exception as e:
+            pass
 
     return cache
 

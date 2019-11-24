@@ -1,6 +1,11 @@
 {
     "content": [
         {
+            "name": "has_inf",
+            "ty": "def.ax",
+            "type": "real set => real => bool"
+        },
+        {
             "attributes": [],
             "name": "has_limsup",
             "prop": [
@@ -805,7 +810,7 @@
         {
             "attributes": [],
             "name": "closed_real_segment",
-            "prop": "closed_real_segment a b = {x. x = (1 - u) * a + u * b & 0 <= u & u <= 1}",
+            "prop": "closed_real_segment a b = {x. ?u. x = (1 - u) * a + u * b & 0 <= u & u <= 1}",
             "ty": "def",
             "type": "real ⇒ real ⇒ real set"
         },

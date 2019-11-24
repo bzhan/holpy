@@ -24,7 +24,6 @@ def check_proof(thy, item):
             state.check_proof()
         except Exception as e:
             return {
-                'name': item['name'],
                 'status': 'Failed',
                 'err_type': e.__class__.__name__,
                 'err_str': str(e),
@@ -32,7 +31,6 @@ def check_proof(thy, item):
             }
 
         return {
-            'name': item['name'],
             'status': 'OK' if len(state.rpt.gaps) == 0 else 'Partial',
             'num_steps': len(item['steps']),
         }
@@ -51,7 +49,6 @@ def check_proof(thy, item):
             state.check_proof(no_gaps=True)
         except Exception as e:
             return {
-                'name': item['name'],
                 'status': 'ProofFail',
                 'err_type': e.__class__.__name__,
                 'err_str': str(e),
@@ -59,12 +56,10 @@ def check_proof(thy, item):
             }
         
         return {
-            'name': item['name'],
             'status': 'ProofOK'
         }
     else:
         return {
-            'name': item['name'],
             'status': 'NoSteps'
         }
 
@@ -74,17 +69,37 @@ def check_theory(filename, username='master'):
     thy = basic.load_theories(data['imports'], username)
 
     res = []
-    stat = {'OK': 0, 'NoSteps': 0, 'Failed': 0, 'Partial': 0, 'ProofOK': 0, 'ProofFail': 0}
+    stat = {'OK': 0, 'NoSteps': 0, 'Failed': 0, 'Partial': 0,
+            'ProofOK': 0, 'ProofFail': 0, 'ParseOK': 0, 'ParseFail': 0}
 
     for item in data['content']:
-        if item['ty'] == 'thm':
-            item_res = check_proof(thy, item)
-            stat[item_res['status']] += 1
-            res.append(item_res)
+        try:
+            parse_item = basic.parse_item(thy, item)
+            exts = basic.get_extension(thy, parse_item)
+        except Exception as e:
+            item_res = {
+                'ty': item['ty'],
+                'name': item['name'],
+                'status': 'ParseFail',
+                'err_type': e.__class__.__name__,
+                'err_str': str(e),
+                'trace': traceback2.format_exc()
+            }
+        else:
+            if item['ty'] == 'thm':
+                item_res = check_proof(thy, item)
+                item_res['ty'] = 'thm'
+                item_res['name'] = item['name']
+            else:
+                item_res = {
+                    'ty': item['ty'],
+                    'name': item['name'],
+                    'status': 'ParseOK'
+                }
+            thy.unchecked_extend(exts)
 
-        item = basic.parse_item(thy, item)
-        exts = basic.get_extension(thy, item)
-        thy.unchecked_extend(exts)
+        stat[item_res['status']] += 1
+        res.append(item_res)
 
     return {
         'data': res,
