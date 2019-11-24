@@ -897,21 +897,21 @@
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ¬a ≤ b ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                    "th": "⊢ ¬(a ≤ b) ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
-                    "args": "¬a ≤ b",
+                    "args": "¬(a ≤ b)",
                     "id": "1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "¬a ≤ b ⊢ ¬a ≤ b"
+                    "th": "¬(a ≤ b) ⊢ ¬(a ≤ b)"
                 },
                 {
                     "args": "",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "¬a ≤ b ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
+                    "th": "¬(a ≤ b) ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
                 },
                 {
                     "args": "x, real",
@@ -959,14 +959,14 @@
                     "id": "1.1.5",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "¬a ≤ b, x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ a ≤ b"
+                    "th": "¬(a ≤ b), x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ a ≤ b"
                 },
                 {
                     "args": "",
                     "id": "1.1.6",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "¬a ≤ b, x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ x ∈ {p. b ≤ p ∧ p ≤ a}"
+                    "th": "¬(a ≤ b), x ∈ {p. a ≤ p ∧ p ≤ b} ⊢ x ∈ {p. b ≤ p ∧ p ≤ a}"
                 },
                 {
                     "args": "",
@@ -977,7 +977,7 @@
                         "1.1.6"
                     ],
                     "rule": "intros",
-                    "th": "¬a ≤ b ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
+                    "th": "¬(a ≤ b) ⊢ ∀x. x ∈ {p. a ≤ p ∧ p ≤ b} ⟶ x ∈ {p. b ≤ p ∧ p ≤ a}"
                 },
                 {
                     "args": "subsetI",
@@ -986,7 +986,7 @@
                         "1.1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "¬a ≤ b ⊢ {p. a ≤ p ∧ p ≤ b} ⊆ {p. b ≤ p ∧ p ≤ a}"
+                    "th": "¬(a ≤ b) ⊢ {p. a ≤ p ∧ p ≤ b} ⊆ {p. b ≤ p ∧ p ≤ a}"
                 },
                 {
                     "args": "real_closed_interval_def, real_closed_interval a b ⊆ real_closed_interval b a",
@@ -995,7 +995,7 @@
                         "1.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬a ≤ b ⊢ real_closed_interval a b ⊆ real_closed_interval b a"
+                    "th": "¬(a ≤ b) ⊢ real_closed_interval a b ⊆ real_closed_interval b a"
                 },
                 {
                     "args": "if_not_P, real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)",
@@ -1005,7 +1005,7 @@
                         "1.0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "¬a ≤ b ⊢ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                    "th": "¬(a ≤ b) ⊢ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
                     "args": "",
@@ -1015,7 +1015,7 @@
                         "1.4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ¬a ≤ b ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                    "th": "⊢ ¬(a ≤ b) ⟶ real_closed_interval a b ⊆ (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
                     "args": "classical_cases",
@@ -1034,6 +1034,15 @@
                         "2"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ real_closed_interval a b ⊆ closed_real_segment a b"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ real_closed_interval a b ⊆ closed_real_segment a b"
                 }
             ],
@@ -1054,8 +1063,12 @@
                     "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "0.0"
+                    ],
                     "goal_id": "0.1",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "if_P"
                 },
                 {
@@ -1068,8 +1081,12 @@
                     "method_name": "introduction"
                 },
                 {
+                    "fact_ids": [
+                        "1.0"
+                    ],
                     "goal_id": "1.1",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "if_not_P"
                 },
                 {
@@ -1603,42 +1620,85 @@
                     "args": "",
                     "id": "0",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "⊢ ∀a1. ∀b1. ∀c. a1 ∈ real_closed_interval a b ∧ b1 ∈ real_closed_interval a b ∧ a1 ≤ c ∧ c ≤ b1 ⟶ c ∈ real_closed_interval a b"
+                    "rule": "subproof",
+                    "th": "⊢ a ≤ b ⟶ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
-                    "args": "is_realinterval_def, is_realinterval (real_closed_interval a b)",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ is_realinterval (real_closed_interval a b)"
+                    "args": "a ≤ b",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ b ⊢ a ≤ b"
                 },
                 {
                     "args": "",
-                    "id": "2",
+                    "id": "0.1",
                     "prevs": [],
                     "rule": "sorry",
-                    "th": "⊢ a ≤ b"
+                    "th": "a ≤ b ⊢ ∀a1. ∀b1. ∀c. a1 ∈ real_closed_interval a b ∧ b1 ∈ real_closed_interval a b ∧ a1 ≤ c ∧ c ≤ b1 ⟶ c ∈ real_closed_interval a b"
+                },
+                {
+                    "args": "is_realinterval_def, is_realinterval (real_closed_interval a b)",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "a ≤ b ⊢ is_realinterval (real_closed_interval a b)"
                 },
                 {
                     "args": "if_P, is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)",
-                    "id": "3",
+                    "id": "0.3",
                     "prevs": [
-                        "1",
-                        "2"
+                        "0.2",
+                        "0.0"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "a ≤ b ⊢ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "",
+                    "id": "0.4",
+                    "prevs": [
+                        "0.0",
+                        "0.3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ a ≤ b ⟶ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ¬(a ≤ b) ⟶ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
                     "th": "⊢ is_realinterval (if a ≤ b then real_closed_interval a b else real_closed_interval b a)"
                 },
                 {
                     "args": "closed_real_segment_interval, is_realinterval (closed_real_segment a b)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ is_realinterval (closed_real_segment a b)"
+                },
+                {
+                    "args": "",
                     "id": "4",
                     "prevs": [
                         "3"
                     ],
-                    "rule": "rewrite_goal",
+                    "rule": "intros",
                     "th": "⊢ is_realinterval (closed_real_segment a b)"
                 }
             ],
@@ -1650,13 +1710,27 @@
                     "theorem": "closed_real_segment_interval"
                 },
                 {
+                    "case": "a ≤ b",
                     "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "if_P"
+                    "method_name": "cases"
                 },
                 {
                     "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_P"
+                },
+                {
+                    "goal_id": "0.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "is_realinterval_def"
                 }
             ],
@@ -2740,13 +2814,12 @@
                     "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1"
                 },
                 {
-                    "args": "",
+                    "args": "0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v",
                     "id": "0.5",
                     "prevs": [
-                        "0",
                         "0.4"
                     ],
-                    "rule": "apply_fact",
+                    "rule": "z3",
                     "th": "x ∈ ∅ ∧ y ∈ ∅ ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⊢ 0 ≤ f (u * x + v * y) ∧ f (u * x + v * y) ≤ f x ^ u * f y ^ v"
                 },
                 {
@@ -2771,6 +2844,15 @@
                     ],
                     "rule": "rewrite_goal",
                     "th": "⊢ real_log_convex_on f ∅"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_log_convex_on f ∅"
                 }
             ],
             "prop": "real_log_convex_on f empty_set",
@@ -2787,11 +2869,10 @@
                 },
                 {
                     "fact_ids": [
-                        "0",
                         "0.4"
                     ],
                     "goal_id": "0.5",
-                    "method_name": "apply_prev"
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
