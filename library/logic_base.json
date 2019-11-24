@@ -491,10 +491,10 @@
                     "th": "¬A ⟶ C ⊢ ¬A ⟶ C"
                 },
                 {
-                    "args": "classical",
+                    "args": "classical, {}, {A: A}",
                     "id": "2",
                     "prevs": [],
-                    "rule": "theorem",
+                    "rule": "apply_theorem_for",
                     "th": "⊢ A ∨ ¬A"
                 },
                 {
@@ -521,6 +521,22 @@
                 }
             ],
             "prop": "(A --> C) --> (~A --> C) --> C",
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_A": "A",
+                    "theorem": "classical"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "disjE"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "A": "bool",

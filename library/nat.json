@@ -1339,11 +1339,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "add_0_right, 0 = 0 + 0",
+                    "args": "add_0_right, (0::nat) = 0 + 0",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ 0 = 0 + 0"
+                    "th": "⊢ (0::nat) = 0 + 0"
                 },
                 {
                     "args": "mult_0_right, (x + y) * 0 = x * 0 + y * 0",
@@ -1421,9 +1421,60 @@
                     ],
                     "rule": "apply_theorem_for",
                     "th": "⊢ (x + y) * z = x * z + y * z"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (x + y) * z = x * z + y * z"
                 }
             ],
             "prop": "(x + y) * z = x * z + y * z",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "z"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_0_right"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "mult_Suc_right"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "nat_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -2161,16 +2212,37 @@
                     "th": "⊢ Suc 1 = 1 + 1"
                 },
                 {
-                    "args": "bit0_def, Suc 1 = 2",
+                    "args": "bit0_def, Suc 1 = bit0 1",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ Suc 1 = 2"
+                    "th": "⊢ Suc 1 = bit0 1"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Suc 1 = bit0 1"
                 }
             ],
             "prop": "Suc 1 = bit0 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "bit0_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "nat_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -2404,16 +2476,52 @@
                     "th": "⊢ (m + m) * (n + n) = m * n + m * n + (m * n + m * n)"
                 },
                 {
-                    "args": "bit0_def, bit0 m * bit0 n = bit0 (bit0 (m * n))",
+                    "args": "bit0_def, (m + m) * (n + n) = bit0 (m * n) + bit0 (m * n)",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
+                    "th": "⊢ (m + m) * (n + n) = bit0 (m * n) + bit0 (m * n)"
+                },
+                {
+                    "args": "bit0_def, bit0 m * bit0 n = bit0 (bit0 (m * n))",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ bit0 m * bit0 n = bit0 (bit0 (m * n))"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
                     "th": "⊢ bit0 m * bit0 n = bit0 (bit0 (m * n))"
                 }
             ],
             "prop": "bit0 m * bit0 n = bit0 (bit0 (m * n))",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "bit0_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "",
+                    "theorem": "bit0_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "nat_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -2634,14 +2742,29 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "¬12 = 13",
+                    "args": "¬((12::nat) = 13)",
                     "id": "0",
                     "prevs": [],
                     "rule": "nat_const_ineq",
-                    "th": "⊢ ¬12 = 13"
+                    "th": "⊢ ¬((12::nat) = 13)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬((12::nat) = 13)"
                 }
             ],
             "prop": "~ (12::nat) = 13",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "nat_const_ineq"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -2663,11 +2786,11 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_plus_def_1, 0 = 0 + 0",
+                    "args": "add_0_right, (0::nat) = 0 + 0",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ 0 = 0 + 0"
+                    "th": "⊢ (0::nat) = 0 + 0"
                 },
                 {
                     "args": "Sigma_def_1, Sigma (λx. f x + g x) 0 = Sigma f 0 + Sigma g 0",
@@ -2745,9 +2868,60 @@
                     ],
                     "rule": "apply_theorem_for",
                     "th": "⊢ Sigma (λx. f x + g x) n = Sigma f n + Sigma g n"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Sigma (λx. f x + g x) n = Sigma f n + Sigma g n"
                 }
             ],
             "prop": "Sigma (%x. f x + g x) n = Sigma f n + Sigma g n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "Sigma_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "add_0_right"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "Sigma_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "2.1"
+                    ],
+                    "goal_id": "2.2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2.2",
+                    "method_name": "nat_norm"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "nat => nat",
