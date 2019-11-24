@@ -79,7 +79,7 @@ def print_extension(thy, ext):
 
 @settings.with_settings
 def print_extensions(thy, exts):
-    return "\n".join(print_extension(thy, ext) for ext in exts.data)
+    return "\n".join(print_extension(thy, ext) for ext in exts)
 
 @settings.with_settings
 def print_type_constr(thy, constr):

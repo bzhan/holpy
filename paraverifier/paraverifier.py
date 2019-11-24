@@ -172,9 +172,10 @@ class ParaSystem():
         inv_rhs = logic.mk_conj(*[gcl.convert_term(self.var_map, s, t) for _, t in self.invs])
         prop = Term.mk_equals(invC(s), inv_rhs)
 
-        exts = extension.TheoryExtension()
-        exts.add_extension(extension.Constant("inv", TFun(gcl.stateT, boolT)))
-        exts.add_extension(extension.Theorem("inv_def", Thm([], prop)))
+        exts = [
+            extension.Constant("inv", TFun(gcl.stateT, boolT)),
+            extension.Theorem("inv_def", Thm([], prop))
+        ]
         self.thy.unchecked_extend(exts)
         # print(printer.print_extensions(self.thy, exts))
 

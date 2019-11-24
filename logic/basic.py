@@ -238,60 +238,58 @@ def parse_item(thy, data):
 def get_extension(thy, data):
     """Given a parsed item, return the resulting extension."""
 
-    ext = extension.TheoryExtension()
+    exts = []
 
     if data['ty'] == 'type.ax':
-        ext.add_extension(extension.Type(data['name'], len(data['args'])))
+        exts.append(extension.Type(data['name'], len(data['args'])))
 
     elif data['ty'] == 'def.ax':
         if 'overloaded' in data:
-            ext.add_extension(extension.Constant(data['name'], data['type']))
-            ext.add_extension(extension.Overload(data['name']))
+            exts.append(extension.Constant(data['name'], data['type']))
+            exts.append(extension.Overload(data['name']))
         else:
             cname = thy.get_overload_const_name(data['name'], data['type'])
-            ext.add_extension(extension.Constant(data['name'], data['type'], ref_name=cname))
+            exts.append(extension.Constant(data['name'], data['type'], ref_name=cname))
 
     elif data['ty'] == 'def':
         cname = thy.get_overload_const_name(data['name'], data['type'])
-        ext.add_extension(extension.Constant(data['name'], data['type'], ref_name=cname))
-        ext.add_extension(extension.Theorem(cname + "_def", Thm([], data['prop'])))
+        exts.append(extension.Constant(data['name'], data['type'], ref_name=cname))
+        exts.append(extension.Theorem(cname + "_def", Thm([], data['prop'])))
         if 'attributes' in data:
             for attr in data['attributes']:
-                ext.add_extension(extension.Attribute(cname + "_def", attr))
+                exts.append(extension.Attribute(cname + "_def", attr))
 
     elif data['ty'] == 'thm' or data['ty'] == 'thm.ax':
-        ext.add_extension(extension.Theorem(data['name'], Thm([], data['prop'])))
+        exts.append(extension.Theorem(data['name'], Thm([], data['prop'])))
         if 'attributes' in data:
             for attr in data['attributes']:
-                ext.add_extension(extension.Attribute(data['name'], attr))
+                exts.append(extension.Attribute(data['name'], attr))
 
     elif data['ty'] == 'type.ind':
         constrs = []
         for constr in data['constrs']:
             constrs.append((constr['name'], constr['type'], constr['args']))
-        ext = induct.add_induct_type(thy, data['name'], data['args'], constrs)
+        exts = induct.add_induct_type(thy, data['name'], data['args'], constrs)
 
     elif data['ty'] == 'def.ind':
         rules = []
         for rule in data['rules']:
             rules.append(rule['prop'])
-        ext = induct.add_induct_def(thy, data['name'], data['type'], rules)
+        exts = induct.add_induct_def(thy, data['name'], data['type'], rules)
 
     elif data['ty'] == 'def.pred':
         rules = []
         for rule in data['rules']:
             rules.append((rule['name'], rule['prop']))
-        ext = induct.add_induct_predicate(thy, data['name'], data['type'], rules)
+        exts = induct.add_induct_predicate(thy, data['name'], data['type'], rules)
 
     elif data['ty'] == 'macro':
-        ext = extension.TheoryExtension()
-        ext.add_extension(extension.Macro(data['name']))
+        exts.append(extension.Macro(data['name']))
 
     elif data['ty'] == 'method':
-        ext = extension.TheoryExtension()
-        ext.add_extension(extension.Method(data['name']))
+        exts.append(extension.Method(data['name']))
 
-    return ext
+    return exts
 
 def load_theory_cache(filename, username="master"):
     """Load the content of the given theory into cache."""
@@ -323,7 +321,7 @@ def load_theory_cache(filename, username="master"):
             item['ext'] = exts
             thy.unchecked_extend(exts)
             cache['content'].append(item)
-            for ext in exts.get_extensions():
+            for ext in exts:
                 if ext.ty == extension.CONSTANT:
                     name = ext.ref_name
                 else:
