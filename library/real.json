@@ -11943,11 +11943,9 @@
                 {
                     "args": "real_pow_lt2, {}, {n: n, x: (1::real), y: x}",
                     "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
+                    "prevs": [],
                     "rule": "apply_theorem_for",
-                    "th": "¬(n = 0) ⊢ (0::real) ≤ 1 ⟶ 1 < x ⟶ 1 ^ n < x ^ n"
+                    "th": "⊢ (0::real) ≤ 1 ⟶ 1 < x ⟶ ¬(n = 0) ⟶ 1 ^ n < x ^ n"
                 },
                 {
                     "args": "real_pow_one",
@@ -11956,7 +11954,7 @@
                         "2"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "¬(n = 0) ⊢ (0::real) ≤ 1 ⟶ 1 < x ⟶ 1 < x ^ n"
+                    "th": "⊢ (0::real) ≤ 1 ⟶ 1 < x ⟶ ¬(n = 0) ⟶ 1 < x ^ n"
                 },
                 {
                     "args": "(0::real) ≤ 1",
@@ -11971,7 +11969,8 @@
                     "prevs": [
                         "3",
                         "4",
-                        "1"
+                        "1",
+                        "0"
                     ],
                     "rule": "apply_fact",
                     "th": "¬(n = 0), 1 < x ⊢ 1 < x ^ n"
@@ -11991,11 +11990,9 @@
             "prop": "¬(n = 0) --> 1 < x ⟶ 1 < x ^ n",
             "steps": [
                 {
-                    "fact_ids": [
-                        "0"
-                    ],
                     "goal_id": "2",
                     "method_name": "apply_forward_step",
+                    "param_n": "n",
                     "param_x": "(1::real)",
                     "param_y": "x",
                     "theorem": "real_pow_lt2"
@@ -12019,6 +12016,15 @@
                 {
                     "goal_id": "4",
                     "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
                 }
             ],
             "ty": "thm",
@@ -12060,12 +12066,9 @@
                 {
                     "args": "real_pow_lt2, {}, {n: n, x: x, y: (1::real)}",
                     "id": "3",
-                    "prevs": [
-                        "0",
-                        "1"
-                    ],
+                    "prevs": [],
                     "rule": "apply_theorem_for",
-                    "th": "¬(n = 0), 0 ≤ x ⊢ x < 1 ⟶ x ^ n < 1 ^ n"
+                    "th": "⊢ 0 ≤ x ⟶ x < 1 ⟶ ¬(n = 0) ⟶ x ^ n < 1 ^ n"
                 },
                 {
                     "args": "real_pow_one",
@@ -12074,14 +12077,16 @@
                         "3"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "¬(n = 0), 0 ≤ x ⊢ x < 1 ⟶ x ^ n < 1"
+                    "th": "⊢ 0 ≤ x ⟶ x < 1 ⟶ ¬(n = 0) ⟶ x ^ n < 1"
                 },
                 {
                     "args": "",
                     "id": "5",
                     "prevs": [
                         "4",
-                        "2"
+                        "1",
+                        "2",
+                        "0"
                     ],
                     "rule": "apply_fact",
                     "th": "¬(n = 0), 0 ≤ x, x < 1 ⊢ x ^ n < 1"
@@ -12102,12 +12107,10 @@
             "prop": "¬(n = 0) ⟶ 0 ≤ x ⟶ x < 1 ⟶ x ^ n < 1",
             "steps": [
                 {
-                    "fact_ids": [
-                        "0",
-                        "1"
-                    ],
                     "goal_id": "3",
                     "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "param_x": "x",
                     "param_y": "(1::real)",
                     "theorem": "real_pow_lt2"
                 },
@@ -12122,8 +12125,7 @@
                 },
                 {
                     "fact_ids": [
-                        "4",
-                        "2"
+                        "4"
                     ],
                     "goal_id": "5",
                     "method_name": "apply_prev"

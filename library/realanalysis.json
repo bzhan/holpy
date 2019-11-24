@@ -132,7 +132,7 @@
                         "0.5"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B, ∀x. x ∈ s ⟶ abs x ≤ y ⊢ ∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a)"
+                    "th": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B, ∀x. x ∈ s ⟶ abs x ≤ y ⊢ ∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)"
                 },
                 {
                     "args": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
@@ -155,11 +155,11 @@
                     "th": "⊢ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)) ⟶ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B)"
                 },
                 {
-                    "args": "∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a)",
+                    "args": "∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)",
                     "id": "1.0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a) ⊢ ∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a)"
+                    "th": "∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b) ⊢ ∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)"
                 },
                 {
                     "args": "y, real",
@@ -176,23 +176,32 @@
                     "th": "0 < y ∧ (∀x. x ∈ s ⟶ abs x < y) ⊢ 0 < y ∧ (∀x. x ∈ s ⟶ abs x < y)"
                 },
                 {
-                    "args": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
+                    "args": "∀x. x ∈ s ⟶ abs x ≤ y",
                     "id": "1.3",
                     "prevs": [
                         "1.2"
                     ],
                     "rule": "z3",
-                    "th": "0 < y ∧ (∀x. x ∈ s ⟶ abs x < y) ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
+                    "th": "0 < y ∧ (∀x. x ∈ s ⟶ abs x < y) ⊢ ∀x. x ∈ s ⟶ abs x ≤ y"
                 },
                 {
-                    "args": "∃a. 0 < a ∧ (∀x. x ∈ s ⟶ abs x < a)",
+                    "args": "exI, {a: real}, {P: λB. ∀x. x ∈ s ⟶ abs x ≤ B, a: y}",
                     "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b), 0 < y ∧ (∀x. x ∈ s ⟶ abs x < y) ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
+                },
+                {
+                    "args": "∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)",
+                    "id": "1.5",
                     "prevs": [
                         "1.0",
                         "1.0",
                         "1.1",
                         "1.2",
-                        "1.3"
+                        "1.4"
                     ],
                     "rule": "intros",
                     "th": "⊢ (∃b. 0 < b ∧ (∀x. x ∈ s ⟶ abs x < b)) ⟶ (∃B. ∀x. x ∈ s ⟶ abs x ≤ B)"
@@ -233,11 +242,6 @@
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "real_bounded_def"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "iffI"
                 },
                 {
                     "goal_id": "0",
@@ -288,6 +292,18 @@
                     "goal_id": "1.1",
                     "method_name": "exists_elim",
                     "names": "y"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "inst_exists_goal",
+                    "s": "y"
+                },
+                {
+                    "fact_ids": [
+                        "1.2"
+                    ],
+                    "goal_id": "1.3",
+                    "method_name": "z3"
                 },
                 {
                     "fact_ids": [
