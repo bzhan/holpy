@@ -5,6 +5,7 @@ from fractions import Fraction
 from integral import poly
 from integral.poly import *
 import functools, operator
+from integral import parser
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
 
@@ -138,7 +139,6 @@ class Expr:
         elif self.ty == OP:
             if self.op == "+":
                 x, y = self.args
-
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
@@ -153,9 +153,16 @@ class Expr:
                 return -(x.to_poly())
             elif self.op == "/":
                 x, y = self.args
-                y = y.to_poly()
-                if y.is_nonzero_constant():
-                    return x.to_poly().scale(Fraction(1) / Fraction(y.get_constant()))
+                xp = x.to_poly()
+                yp = y.to_poly()
+                if yp.is_nonzero_constant():
+                    return xp.scale(Fraction(1) / Fraction(yp.get_constant()))
+                elif xp.is_nonzero_constant() and xp.get_constant() != 1:
+                    #normalize assures constant always on the right
+                    return (Const(1)/y.normalize()).to_poly().scale(Fraction(xp.get_constant()))
+                elif xp.is_nonzero_constant() and xp.get_constant() == 1:
+                    #can't find a better way to normalize the denominator now
+                    return poly.singleton(self)
                 else:
                     return poly.singleton(self)
             elif self.op == "^":
@@ -215,14 +222,26 @@ class Expr:
                     return poly.singleton(Fun("pi")).scale(Fraction(1) / Fraction(4))
                 elif self.args[0] == Fun("sqrt", Const(3)):
                     return poly.singleton(Fun("pi")).scale(Fraction(1) / Fraction(3))
+                elif self.args[0] == Const(-1):
+                    return poly.singleton(Fun("pi")).scale(-1 * Fraction(1) / Fraction(4))
                 else:
                     return poly.singleton(self)
+            elif self.func_name == "log":
+                if self.args[0].ty == CONST and self.args[0].val <= 0:
+                    raise ValueError
+                elif self.args[0] == Const(1):
+                    return poly.constant(0)
+                elif self.args[0].ty == FUN and self.args[0].func_name == "exp":
+                    print("Wow")
+                    return poly.constant(1)
+                else:
+                    return poly.singleton(Fun("log", self.args[0].normalize()))
             else:
                 return poly.singleton(self)
         elif self.ty == EVAL_AT:
             upper = self.body.subst(self.var, self.upper)
             lower = self.body.subst(self.var, self.lower)
-            return (upper - lower).to_poly()
+            return (upper - lower).normalize().to_poly()
         elif self.ty == INTEGRAL:
             a = self
             a.body = a.body.normalize()
@@ -255,7 +274,8 @@ def from_poly(p):
     if len(p.monomials) == 0:
         return Const(0)
     else:
-        monos = [from_mono(m) for m in p.monomials]
+        #monos = [from_mono(m) for m in p.monomials]
+        monos = [from_mono(m) for m in p.del_zero_mono().monomials]
         return sum(monos[1:], monos[0])
 
 def deriv(var, e):
@@ -521,3 +541,9 @@ class EvalAt(Expr):
 
     def __repr__(self):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
+
+if __name__ == "__main__":
+    problem = "x+0"
+    p = parser.parse_expr(problem)
+    k = p.normalize()
+    print(k)
