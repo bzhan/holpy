@@ -64,6 +64,12 @@ class Item:
         """
         raise NotImplementedError
 
+def export_term(thy, t):
+    """Function for printing a term for export to json."""
+    res = printer.print_term(thy, t, unicode=True, line_length=80)
+    if len(res) == 1:
+        res = res[0]
+    return res
 
 class Constant(Item):
     """Axiomatic constant."""
@@ -208,7 +214,7 @@ class Axiom(Item):
             'ty': 'thm.ax',
             'name': self.name,
             'vars': dict((nm, printer.print_type(thy, T, unicode=True)) for nm, T in self.vars.items()),
-            'prop': printer.print_term(thy, self.prop, unicode=True, line_length=80)
+            'prop': export_term(thy, self.prop)
         }
         if self.attributes:
             res['attributes'] = self.attributes
@@ -352,7 +358,7 @@ class Definition(Item):
             'ty': 'def',
             'name': self.name,
             'type': printer.print_type(thy, self.type, unicode=True),
-            'prop': printer.print_term(thy, self.prop, unicode=True, line_length=80)
+            'prop': export_term(thy, self.prop)
         }
         if self.attributes:
             res['attributes'] = self.attributes
@@ -460,8 +466,7 @@ class Fun(Item):
             'ty': 'def.ind',
             'name': self.name,
             'type': printer.print_type(thy, self.type, unicode=True),
-            'rules': [{'prop': printer.print_term(thy, rule['prop'], unicode=True, line_length=80)}
-                      for rule in self.rules]
+            'rules': [{'prop': export_term(thy, rule['prop'])} for rule in self.rules]
         }
 
 class Inductive(Item):
@@ -571,10 +576,10 @@ class Inductive(Item):
     def export_json(self, thy):
         assert self.error is None, "export_json"
         return {
-            'ty': 'def.ind',
+            'ty': 'def.pred',
             'name': self.name,
             'type': printer.print_type(thy, self.type, unicode=True),
-            'rules': [{'name': rule['name'], 'prop': printer.print_term(thy, rule['prop'], unicode=True, line_length=80)}
+            'rules': [{'name': rule['name'], 'prop': export_term(thy, rule['prop'])}
                       for rule in self.rules]
         }
 
