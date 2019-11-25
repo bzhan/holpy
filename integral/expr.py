@@ -3,7 +3,9 @@
 from decimal import Decimal
 from fractions import Fraction
 from integral import poly
+from integral.poly import *
 import functools, operator
+
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
 
 op_priority = {
@@ -140,6 +142,8 @@ class Expr:
                 return x.to_poly() + y.to_poly()
             elif self.op == "*":
                 x, y = self.args
+                if x == Const(0) or y == Const(0):
+                    return poly.constant(0)
                 return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
                 x, y = self.args
@@ -200,6 +204,17 @@ class Expr:
                     return poly.singleton(Fun("sqrt", Const(2))).scale(Fraction(1) / Fraction(2))
                 elif self.args[0] == pi / Const(2):
                     return poly.constant(1)
+                else:
+                    return poly.singleton(self)
+            elif self.func_name == "arctan":
+                if self.args[0] == Const(0):
+                    return poly.constant(0)
+                elif self.args[0] == Fun("sqrt", Const(3)) / Const(3):
+                    return poly.singleton(Fun("pi")).scale(Fraction(1) / Fraction(6))
+                elif self.args[0] == Const(1):
+                    return poly.singleton(Fun("pi")).scale(Fraction(1) / Fraction(4))
+                elif self.args[0] == Fun("sqrt", Const(3)):
+                    return poly.singleton(Fun("pi")).scale(Fraction(1) / Fraction(3))
                 else:
                     return poly.singleton(self)
             else:
@@ -330,7 +345,7 @@ class Const(Expr):
         return hash((CONST, self.val))
 
     def __eq__(self, other):
-        return other.ty == CONST and type(self.val) == type(other.val) and self.val == other.val
+        return other.ty == CONST and self.val == other.val
 
     def __str__(self):
         return str(self.val)
@@ -387,7 +402,7 @@ class Fun(Expr):
         if len(args) == 0:
             assert func_name in ["pi"]
         elif len(args) == 1:
-            assert func_name in ["sin", "cos", "log", "exp", "sqrt"]
+            assert func_name in ["sin", "cos", "log", "exp", "sqrt", "arcsin", "arctan"]
         else:
             raise NotImplementedError
 
@@ -419,11 +434,20 @@ def sin(e):
 def cos(e):
     return Fun("cos", e)
 
+def tan(e):
+    return Fun("tan", e)
+
 def log(e):
     return Fun("log", e)
 
 def exp(e):
     return Fun("exp", e)
+
+def arcsin(e):
+    return Fun("arcsin", e)
+
+def arctan(e):
+    return Fun("arctan", e)
 
 pi = Fun("pi")
 

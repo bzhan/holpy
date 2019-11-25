@@ -20,7 +20,7 @@ def collect_pairs(ps):
             res[v] += c
         else:
             res[v] = c
-    return tuple(sorted((k, v) for k, v in res.items() if v != 0))
+    return tuple(sorted(((k, v) for k, v in res.items()),reverse=True))
 
 class Monomial:
     """Represents a monomial."""
@@ -39,6 +39,8 @@ class Monomial:
             "Unexpected argument for factors: %s" % str(factors)
         self.coeff = coeff
         self.factors = collect_pairs(factors)
+        self.var = None if self.is_constant() else factors[0][0]
+        self.degree = 0 if self.is_constant() else self.factors[0][1]
 
     def __eq__(self, other):
         return isinstance(other, Monomial) and self.coeff == other.coeff and \
@@ -52,7 +54,7 @@ class Monomial:
             s = str(var)
             if len(s) != 1:
                 s = "(" + s + ")"
-            if(str(p) != "1"):
+            if str(p) != "1":
                 if isinstance(p, Fraction):
                     assert p.denominator != 0
                     if p.denominator == 1:
@@ -79,6 +81,22 @@ class Monomial:
     def __mul__(self, other):
         return Monomial(self.coeff * other.coeff, self.factors + other.factors)
 
+    def __truediv__(self, other):
+        assert other.coeff != 0
+        c = Fraction(self.coeff, other.coeff)
+        if self.is_constant(): 
+            if other.is_constant():
+                return Monomial(c, tuple())
+            else:
+                return Monomial(c, ((self.var, -other.degree),))
+        else:
+            if other.is_constant():
+                return Monomial(c, ((self.var, self.degree),))
+            else:
+                if self.degree - other.degree != 0:
+                    return Monomial(c, ((self.var, self.degree-other.degree),))
+                else:
+                    return Monomial(c, tuple())
     def scale(self, c):
         if c == 1:
             return self
@@ -104,6 +122,10 @@ class Polynomial:
         assert all(isinstance(mono, Monomial) for mono in monomials)
         ts = collect_pairs((mono.factors, mono.coeff) for mono in monomials)
         self.monomials = tuple(Monomial(coeff, factor) for factor, coeff in ts)
+        self.var = None
+        if not self.is_nonzero_constant():
+            self.var = self.monomials[0].var
+        self.degree = 0 if self.is_nonzero_constant() else self.monomials[0].degree
 
     def __eq__(self, other):
         return isinstance(other, Polynomial) and self.monomials == other.monomials
@@ -133,7 +155,18 @@ class Polynomial:
         return Polynomial(m1 * m2 for m1 in self.monomials for m2 in other.monomials)
 
     def is_nonzero_constant(self):
-        return len(self.monomials) == 1 and self.monomials[0].is_constant()
+        return len(self.monomials) == 1 and self.monomials[0].is_constant() and self.monomials[0].coeff != 0
+
+    def is_zero_constant(self):
+        return len(self.monomials) == 1 and self.monomials[0].is_constant() and self.monomials[0].coeff == 0 \
+            or all(m.coeff == 0 for m in self.monomials)
+
+    def del_zero_mono(self):
+        np = []
+        for m in self.monomials:
+            if m.coeff != 0:
+                np.append(m)
+        return Polynomial(np)
 
     def get_constant(self):
         """If self is a constant, return the constant. Otherwise raise an exception."""
@@ -143,6 +176,35 @@ class Polynomial:
             return self.monomials[0].get_constant()
         else:
             raise AssertionError
+
+    def standardize(self):
+        """Sort the polynomial by the power value by descending order
+
+        5*x^2 + 3*x^4 + 2 => 3*x^4 + 0*x^3 + 5*x^2 + 0*x^1 + 2
+
+        """
+        if self.is_nonzero_constant():
+            return Polynomial(self.monomials)
+        if self.monomials[-1].is_constant():
+            np = list(self.monomials[:-1])
+        else:
+            np = list(self.monomials)
+        de = self.degree
+        for m in self.monomials:
+            if not m.is_constant():
+                while de != m.degree:
+                    np.append(Monomial(0, ((self.var, de),)))
+                    de -= 1
+                de -= 1
+        while de != 0:
+            np.append(Monomial(0, ((self.var, de),)))
+            de -= 1
+        if self.monomials[-1].is_constant():
+            np.append(self.monomials[-1])
+        else:
+            np.append(Monomial(0, tuple()))
+        return Polynomial(np)
+
 
 def singleton(s):
     """Polynomial for 1*s^1."""

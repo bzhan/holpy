@@ -2,7 +2,7 @@
 
 from integral import expr
 from integral import poly
-from integral.expr import Var, Const, Fun, EvalAt
+from integral.expr import Var, Const, Fun, EvalAt, Op
 from integral import parser
 class Rule:
     """Represents a rule for integration. It takes an integral
@@ -53,12 +53,13 @@ class CommonIntegral(Rule):
     """Applies common integrals:
 
     INT c = c * x,
-    INT x^n = x^(n+1) / (n+1),  (where n != -1)
-    INT 1/x^(n) = (-n)/x^(n+1), (where n != 1)
+    INT (x + c)^n = (x+c)^(n+1) / (n+1),  (where n != -1, c is a constant)
+    INT 1/(x + c)^(n) = (-n) / (x + c)^(n+1), (where n != 1)
     INT sin(x) = -cos(x),
     INT cos(x) = sin(x),
-    INT 1/x = log(x),  (where the range is positive)
+    INT 1/(x + c) = log(x),  (where the range is positive, c is a constant)
     INT e^x = e^x
+    INT 1 / (x^2 + 1) = tan^(-1)(x)
     """
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
@@ -76,6 +77,46 @@ class CommonIntegral(Rule):
                 integral = e.body * Var(e.var)
             return EvalAt(e.var, e.lower, e.upper, integral)
         elif e.body.ty == expr.OP:
+            # if e.body.op == "^":
+            #     x, i = e.body.args
+            #     assert isinstance(i, expr.Const)
+            #     p = x.to_poly()
+            #     if p.degree == 1:
+            #         x = x.normalize()
+            #         if i.ty == expr.CONST and i.val != -1:
+            #             integral = (x ^ Const(i.val + 1)) / Const(i.val + 1)
+            #         elif i.ty == expr.CONST and i.val == -1:
+            #             integral = expr.log(x)
+            #         return EvalAt(e.var, e.lower, e.upper, integral)
+            #     else:
+            #         #raise NotImplementedError
+            #         return e
+            # elif e.body.op == "/":
+            #     n, d = e.body.args
+            #     if n.ty == expr.CONST:
+            #         if d.ty == expr.OP:
+            #             if d.op in ("+", "-"):
+            #                 p = d.to_poly()
+            #                 if p.degree == 1:
+            #                     #consider 1 / (x + c) ^ n, ignore 1 / (x ^ n + c)
+            #                     #1 / (x + c)
+            #                     d = d.normalize()
+            #                     intergal = expr.log(d)
+            #                 # elif p.degree == 2 and d.args[1].val == 1:
+            #                 #     return EvalAt(e.var, e.lower, e.upper, )
+            #             elif d.op == "^":
+            #                 x, i = d.args
+            #                 xp = x.to_poly()
+            #                 if xp.degree == 1:
+            #                     #1 / (x + c) ^ n
+            #                     x = x.normalize()
+            #                     if i.ty == expr.CONST and i.val != 1:
+            #                         integral = expr.Const(1) / (x ^ expr.Const(i.val - 1) * expr.Const(i.val - 1))
+            #                     elif i.ty == expr.CONST and i.val == 1:
+            #                         intergal = expr.log(x)
+            #             return EvalAt(e.var, e.lower, e.upper, n * integral)
+            # else:
+            #     return e
             if e.body.op == "^":
                 a, b = e.body.args
                 if a == Var(e.var) and b.ty == expr.CONST and b.val != -1:
@@ -101,6 +142,7 @@ class CommonIntegral(Rule):
                             return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
             else:
                 return e
+
         elif e.body.ty == expr.FUN:
             if e.body.func_name == "sin" and e.body.args[0] == Var(e.var):
                 return EvalAt(e.var, e.lower, e.upper, -expr.cos(Var(e.var)))
@@ -174,7 +216,7 @@ class IntegrationByParts(Rule):
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
             return e
-
+        e.body = e.body.normalize()
         du = expr.deriv(e.var, self.u)
         dv = expr.deriv(e.var, self.v)
         udv = (self.u * dv).normalize()
@@ -184,9 +226,36 @@ class IntegrationByParts(Rule):
         else:
             print("%s != %s" % (str(udv), str(e.body)))
             raise NotImplementedError
-if __name__ == "__main__":
-    problem = "INT x:[-1,2]. 1/x^4"
-    rule = CommonIntegral()
-    p = parser.parse_expr(problem)
-    e = rule.eval(p)
-    print(e)
+
+class PolynomialDivision(Rule):
+    """Simplify the representation of polynomial divided by polinomial.
+    """
+    def eval(self, e):
+        assert isinstance(e.body, expr.Op) and e.body.op == "/"
+        dividend = e.body.args[0].normalize().to_poly().standardize()
+        divisor = e.body.args[1].normalize().to_poly().standardize()
+        if dividend.degree < divisor.degree:
+            return e
+        jieguo = []
+        quotinent = dividend.monomials[0] / divisor.monomials[0]
+        jieguo.append(quotinent)
+        s = poly.Polynomial([quotinent]) * divisor
+        #k is the remainder
+        k = poly.Polynomial(tuple(dividend.monomials[0:divisor.degree+1])) - s
+        if k.is_zero_constant():
+            return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(dividend.monomials[-k.monomials[-1].degree:]).del_zero_mono()) \
+                        /expr.from_poly(divisor.del_zero_mono()))
+        k = poly.Polynomial(tuple(k.monomials[1:]))
+        k = k + poly.Polynomial([dividend.monomials[-k.degree]])
+        #every time delete the first item which coffe has been 0 after sub
+        while not k.degree < divisor.degree and not k.is_nonzero_constant():
+            quotinent = k.monomials[0] / divisor.monomials[0]
+            jieguo.append(quotinent)
+            s = poly.Polynomial([quotinent]) * divisor
+            k = k - s
+            if k.is_zero_constant():
+                return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(dividend.monomials[-k.monomials[-1].degree:]).del_zero_mono()) \
+                        /expr.from_poly(divisor.del_zero_mono()))
+            k = k + poly.Polynomial([dividend.monomials[-k.degree]])
+            k = poly.Polynomial(tuple(k.monomials[1:]))
+        return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(k.monomials))/expr.from_poly(divisor))

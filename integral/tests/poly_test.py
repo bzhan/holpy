@@ -48,6 +48,16 @@ class PolynomialTest(unittest.TestCase):
             m3 = parse_mono(m3)
             self.assertEqual(m1 * m2, m3)
 
+    def testDivMonomial(self):
+        """Only consider when there is only one variable.
+        """
+
+        test_data = [
+            ("6", "3", "2"),
+            ("9x^2", "3", "3x^2"),
+            ("16x^8","2x^4","8x^4")
+        ]
+
     def testAddPolynomial(self):
         test_data = [
             ("2", "3", "5"),
@@ -76,6 +86,16 @@ class PolynomialTest(unittest.TestCase):
             p3 = parse_poly(p3)
             self.assertEqual(p1 * p2, p3)
 
+    def testStandardizePolynomial(self):
+        test_data = [
+            ("1","1"),
+            ("x","x"),
+            ("2 + 5x^2 + 3x^4 + 3", "3x^4 + 0x^3 + 5x^2 + 0x^1 + 5")
+        ]
 
+        for p1, p2 in test_data:
+            p1 = parse_poly(p1)
+            p2 = parse_poly(p2)
+            self.assertEqual(p1.standardize(), p2)
 if __name__ == "__main__":
     unittest.main()
