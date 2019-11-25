@@ -398,8 +398,8 @@ export default {
           // In the middle
           this.history.splice(hId, 0, {
             steps_output: result.data.steps_output,
-            proof: this.history[hId + 1].proof,
-            num_gaps: this.history[hId + 1].num_gaps
+            proof: this.history[hId].proof,
+            num_gaps: this.history[hId].num_gaps
           })
           this.history[hId + 1].proof = result.data.proof
           this.history[hId + 1].num_gaps = result.data.num_gaps
