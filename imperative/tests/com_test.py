@@ -101,7 +101,7 @@ class ComTest(unittest.TestCase):
         state = ProofState.init_state(thy, get_vars(goal), As, C)
         method.apply_method(state, {
             'method_name': 'rewrite_goal',
-            'theorem': 'int_abs_def',
+            'theorem': 'abs_def',
             'goal_id': '0'})
         method.apply_method(state, {
             'method_name': 'z3',
@@ -127,7 +127,7 @@ class ComTest(unittest.TestCase):
         state = ProofState.init_state(thy, get_vars(goal), As, C)
         method.apply_method(state, {
             'method_name': 'rewrite_goal',
-            'theorem': 'int_max_def',
+            'theorem': 'max_def',
             'goal_id': '0'})
         method.apply_method(state, {
             'method_name': 'z3',

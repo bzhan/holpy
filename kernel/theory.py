@@ -279,8 +279,8 @@ class Theory():
 
             baseT = []
             for _, v in sorted(inst.items()):
-                assert v.is_type()
-                baseT.append(v)
+                if v.is_type():
+                    baseT.append(v)
 
             T_name = "_".join(T.name for T in baseT)
             return T_name + "_" + name

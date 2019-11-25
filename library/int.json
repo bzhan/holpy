@@ -37,9 +37,12 @@
             "type": "'a => 'a"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "abs",
-            "overloaded": true,
-            "ty": "def.ax",
+            "prop": "abs n = (if zero <= n then n else -n)",
+            "ty": "def",
             "type": "'a => 'a"
         },
         {
@@ -66,15 +69,6 @@
             "name": "less",
             "ty": "def.ax",
             "type": "int => int => bool"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "abs",
-            "prop": "abs n = (if zero <= n then n else -n)",
-            "ty": "def",
-            "type": "int ⇒ int"
         },
         {
             "name": "int_add_assoc",
@@ -113,15 +107,6 @@
                 "x": "int",
                 "y": "int"
             }
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "max",
-            "prop": "max m n = (if m <= n then n else m)",
-            "ty": "def",
-            "type": "int ⇒ int ⇒ int"
         }
     ],
     "description": "integers",

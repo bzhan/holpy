@@ -1014,7 +1014,7 @@
                     "th": "⊢ if 0 ≤ a then a = (if 0 ≤ a then a else -a) else -a = (if 0 ≤ a then a else -a)"
                 },
                 {
-                    "args": "int_abs_def, if 0 ≤ a then a = abs a else -a = abs a",
+                    "args": "abs_def, if 0 ≤ a then a = abs a else -a = abs a",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -1038,7 +1038,7 @@
                 {
                     "goal_id": "1",
                     "method_name": "rewrite_goal",
-                    "theorem": "int_abs_def"
+                    "theorem": "abs_def"
                 },
                 {
                     "goal_id": "1",
@@ -1070,7 +1070,7 @@
                     "th": "⊢ if m ≤ n then n = (if m ≤ n then n else m) else m = (if m ≤ n then n else m)"
                 },
                 {
-                    "args": "int_max_def, if m ≤ n then n = max m n else m = max m n",
+                    "args": "max_def, if m ≤ n then n = max m n else m = max m n",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -1094,7 +1094,7 @@
                 {
                     "goal_id": "1",
                     "method_name": "rewrite_goal",
-                    "theorem": "int_max_def"
+                    "theorem": "max_def"
                 },
                 {
                     "goal_id": "1",

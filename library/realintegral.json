@@ -19998,7 +19998,7 @@
                     "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ (if a ≤ b then b else a) = 1 / (2 * (a + b + (if 0 ≤ a - b then a - b else -(a - b))))"
                 },
                 {
-                    "args": "real_abs_def, (if a ≤ b then b else a) = 1 / (2 * (a + b + abs (a - b)))",
+                    "args": "abs_def, (if a ≤ b then b else a) = 1 / (2 * (a + b + abs (a - b)))",
                     "id": "1.5",
                     "prevs": [
                         "1.4"
@@ -20007,7 +20007,7 @@
                     "th": "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ⊢ (if a ≤ b then b else a) = 1 / (2 * (a + b + abs (a - b)))"
                 },
                 {
-                    "args": "real_max_def, max a b = 1 / (2 * (a + b + abs (a - b)))",
+                    "args": "max_def, max a b = 1 / (2 * (a + b + abs (a - b)))",
                     "id": "1.6",
                     "prevs": [
                         "1.5"
@@ -20062,12 +20062,12 @@
                 {
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
-                    "theorem": "real_max_def"
+                    "theorem": "max_def"
                 },
                 {
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
-                    "theorem": "real_abs_def"
+                    "theorem": "abs_def"
                 },
                 {
                     "case": "a <= b",
@@ -20207,7 +20207,7 @@
                     "th": "real_continuous_on f (real_closed_interval a b) ⊢ real_integrable_on (λx. if 0 ≤ f x then f x else -f x) (real_closed_interval a b)"
                 },
                 {
-                    "args": "real_abs_def, real_integrable_on (λx. abs (f x)) (real_closed_interval a b)",
+                    "args": "abs_def, real_integrable_on (λx. abs (f x)) (real_closed_interval a b)",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -20271,7 +20271,7 @@
                 {
                     "goal_id": "2",
                     "method_name": "rewrite_goal",
-                    "theorem": "real_abs_def"
+                    "theorem": "abs_def"
                 }
             ],
             "ty": "thm",
@@ -20363,7 +20363,7 @@
                     "th": "(∀x. x ∈ s ⟶ 0 ≤ f x) ∧ real_integrable_on f s, x ∈ s ⊢ f x = (if 0 ≤ f x then f x else -f x)"
                 },
                 {
-                    "args": "real_abs_def, f x = abs (f x)",
+                    "args": "abs_def, f x = abs (f x)",
                     "id": "2.6",
                     "prevs": [
                         "2.5"
@@ -20497,7 +20497,7 @@
                 {
                     "goal_id": "2.5",
                     "method_name": "rewrite_goal",
-                    "theorem": "real_abs_def"
+                    "theorem": "abs_def"
                 }
             ],
             "ty": "thm",
@@ -31879,7 +31879,7 @@
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ univ ⊢ (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)"
                 },
                 {
-                    "args": "real_greater_eq_def, (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
+                    "args": "greater_eq_def, (0::real) ≤ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ∧ (if x ∈ {x1. x1 ∈ s ∧ abs (f x1) ≥ 1 / (of_nat n + 1)} then 1 else 0) ≤ (if x ∈ s then (of_nat n + 1) * f x else 0)",
                     "id": "1.1.1.5",
                     "prevs": [
                         "1.1.1.4"
@@ -32187,7 +32187,7 @@
                     "th": "∀x. x ∈ s ⟶ 0 ≤ f x, has_real_integral f 0 s, x ∈ {x1. x1 ∈ s ∧ ¬(f x1 = 0)}, ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < abs (f x) ⊢ 1 / (of_nat (n - 1) + 1) ≤ abs (f x)"
                 },
                 {
-                    "args": "real_greater_eq_def, abs (f x) ≥ 1 / (of_nat (n - 1) + 1)",
+                    "args": "greater_eq_def, abs (f x) ≥ 1 / (of_nat (n - 1) + 1)",
                     "id": "1.3.22",
                     "prevs": [
                         "1.3.21"
@@ -32460,7 +32460,7 @@
                     "goal_id": "1.1.1.2",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": "real_greater_eq_def"
+                    "theorem": "greater_eq_def"
                 },
                 {
                     "case": "x ∈ s ∧ 1 / (of_nat n + 1) ≤ abs (f x)",
@@ -32630,7 +32630,7 @@
                     "goal_id": "1.3.10",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": "real_greater_eq_def"
+                    "theorem": "greater_eq_def"
                 },
                 {
                     "fact_ids": [

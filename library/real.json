@@ -3217,33 +3217,6 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "greater_eq",
-            "prop": "m ≥ n ⟷ n ≤ m",
-            "ty": "def",
-            "type": "real ⇒ real ⇒ bool"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "greater",
-            "prop": "m > n ⟷ n < m",
-            "ty": "def",
-            "type": "real ⇒ real ⇒ bool"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "abs",
-            "prop": "abs n = (if 0 ≤ n then n else -n)",
-            "ty": "def",
-            "type": "real ⇒ real"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "real_abs_nat",
             "num_gaps": 0,
             "proof": [
@@ -3282,7 +3255,7 @@
                     "th": "⊢ (if (0::real) ≤ of_nat n then (of_nat::nat ⇒ real) n else -(of_nat n)) = of_nat n"
                 },
                 {
-                    "args": "real_abs_def, abs ((of_nat::nat ⇒ real) n) = of_nat n",
+                    "args": "abs_def, abs ((of_nat::nat ⇒ real) n) = of_nat n",
                     "id": "4",
                     "prevs": [
                         "3"
@@ -3296,7 +3269,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "real_abs_def"
+                    "theorem": "abs_def"
                 },
                 {
                     "goal_id": "0",
@@ -3371,24 +3344,6 @@
                 "x": "real",
                 "y": "real"
             }
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "max",
-            "prop": "max m n = (if m ≤ n then n else m)",
-            "ty": "def",
-            "type": "real ⇒ real ⇒ real"
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "min",
-            "prop": "min m n = (if m ≤ n then m else n)",
-            "ty": "def",
-            "type": "real ⇒ real ⇒ real"
         },
         {
             "attributes": [
@@ -5394,7 +5349,7 @@
                     "th": "⊢ (if 0 ≤ abs x then abs x else -abs x) = (if 0 ≤ x then x else -x)"
                 },
                 {
-                    "args": "real_abs_def, abs (abs x) = abs x",
+                    "args": "abs_def, abs (abs x) = abs x",
                     "id": "1",
                     "prevs": [
                         "0"
@@ -5408,7 +5363,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "real_abs_def"
+                    "theorem": "abs_def"
                 },
                 {
                     "goal_id": "0",
@@ -5807,7 +5762,7 @@
                     "th": "⊢ (if 0 ≤ x then x else -x) ≤ k ⟷ -k ≤ x ∧ x ≤ k"
                 },
                 {
-                    "args": "real_abs_def, abs x ≤ k ⟷ -k ≤ x ∧ x ≤ k",
+                    "args": "abs_def, abs x ≤ k ⟷ -k ≤ x ∧ x ≤ k",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -5830,7 +5785,7 @@
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "theorem": "real_abs_def"
+                    "theorem": "abs_def"
                 },
                 {
                     "case": "0 ≤ x",
@@ -6056,7 +6011,7 @@
                     "th": "⊢ (if 0 ≤ x * y then x * y else -(x * y)) = (if 0 ≤ x then x else -x) * (if 0 ≤ y then y else -y)"
                 },
                 {
-                    "args": "real_abs_def, abs (x * y) = abs x * abs y",
+                    "args": "abs_def, abs (x * y) = abs x * abs y",
                     "id": "0.2",
                     "prevs": [
                         "0.1"
@@ -6106,7 +6061,7 @@
                 {
                     "goal_id": "0.1",
                     "method_name": "rewrite_goal",
-                    "theorem": "real_abs_def"
+                    "theorem": "abs_def"
                 },
                 {
                     "goal_id": "0.1",
@@ -12796,7 +12751,7 @@
                     "th": "⊢ (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)"
                 },
                 {
-                    "args": "real_abs_def, abs x ^ (2::nat) = x ^ (2::nat)",
+                    "args": "abs_def, abs x ^ (2::nat) = x ^ (2::nat)",
                     "id": "3",
                     "prevs": [
                         "2"
@@ -12820,7 +12775,7 @@
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": "real_abs_def"
+                    "theorem": "abs_def"
                 },
                 {
                     "case": "0 ≤ x",

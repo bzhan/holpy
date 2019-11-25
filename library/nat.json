@@ -3023,15 +3023,15 @@
         {
             "ascii_op": ">=",
             "name": "greater_eq",
-            "overloaded": true,
-            "ty": "def.ax",
+            "prop": "greater_eq m n = less_eq n m",
+            "ty": "def",
             "type": "'a => 'a => bool"
         },
         {
             "ascii_op": ">",
             "name": "greater",
-            "overloaded": true,
-            "ty": "def.ax",
+            "prop": "greater m n = less n m",
+            "ty": "def",
             "type": "'a => 'a => bool"
         },
         {
@@ -3065,18 +3065,6 @@
             ],
             "ty": "def.ind",
             "type": "nat => nat => bool"
-        },
-        {
-            "name": "greater_eq",
-            "prop": "greater_eq m n = less_eq n m",
-            "ty": "def",
-            "type": "nat ⇒ nat ⇒ bool"
-        },
-        {
-            "name": "greater",
-            "prop": "greater m n = less n m",
-            "ty": "def",
-            "type": "nat ⇒ nat ⇒ bool"
         },
         {
             "attributes": [
@@ -5807,21 +5795,12 @@
             }
         },
         {
-            "name": "max",
-            "overloaded": true,
-            "ty": "def.ax",
-            "type": "'a => 'a => 'a"
-        },
-        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "max",
             "prop": "max m n = if m <= n then n else m",
             "ty": "def",
-            "type": "nat ⇒ nat ⇒ nat"
-        },
-        {
-            "name": "min",
-            "overloaded": true,
-            "ty": "def.ax",
             "type": "'a => 'a => 'a"
         },
         {
@@ -5831,7 +5810,7 @@
             "name": "min",
             "prop": "min m n = (if m ≤ n then m else n)",
             "ty": "def",
-            "type": "nat ⇒ nat ⇒ nat"
+            "type": "'a => 'a => 'a"
         },
         {
             "attributes": [],
@@ -5855,7 +5834,7 @@
                     "th": "m ≤ n ⊢ (if m ≤ n then m else n) = m"
                 },
                 {
-                    "args": "nat_min_def, min m n = m",
+                    "args": "min_def, min m n = m",
                     "id": "2",
                     "prevs": [
                         "1"
@@ -5879,7 +5858,7 @@
                 {
                     "goal_id": "1",
                     "method_name": "rewrite_goal",
-                    "theorem": "nat_min_def"
+                    "theorem": "min_def"
                 },
                 {
                     "fact_ids": [
