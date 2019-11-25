@@ -143,6 +143,14 @@
             "type": "nat => nat => nat"
         },
         {
+            "name": "nat_norm",
+            "ty": "macro"
+        },
+        {
+            "name": "nat_norm",
+            "ty": "method"
+        },
+        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -2704,6 +2712,14 @@
             "vars": {
                 "m": "nat"
             }
+        },
+        {
+            "name": "nat_const_ineq",
+            "ty": "macro"
+        },
+        {
+            "name": "nat_const_ineq",
+            "ty": "method"
         },
         {
             "depth": 0,
@@ -5676,6 +5692,134 @@
             "vars": {
                 "x": "nat",
                 "y": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_forward"
+            ],
+            "name": "nat_le_zero",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "n ≤ 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n ≤ 0 ⊢ n ≤ 0"
+                },
+                {
+                    "args": "less_eq_exist",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "n ≤ 0 ⊢ ∃p. 0 = n + p"
+                },
+                {
+                    "args": "p, nat",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR p"
+                },
+                {
+                    "args": "0 = n + p",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "0 = n + p ⊢ 0 = n + p"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "0 = n + p ⊢ n + p = 0"
+                },
+                {
+                    "args": "add_is_zero, {}, {x: n, y: p}",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 = n + p ⊢ n = 0 ∧ p = 0"
+                },
+                {
+                    "args": "conjD1",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "0 = n + p ⊢ n = 0"
+                },
+                {
+                    "args": "∃p. 0 = n + p",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ n ≤ 0 ⟶ n = 0"
+                }
+            ],
+            "prop": "n ≤ 0 ⟶ n = 0",
+            "steps": [
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "less_eq_exist"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "exists_elim",
+                    "names": "p"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "5",
+                    "method_name": "apply_forward_step",
+                    "theorem": "add_is_zero"
+                },
+                {
+                    "fact_ids": [
+                        "5"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjD1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
             }
         },
         {
