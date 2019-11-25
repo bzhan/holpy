@@ -143,14 +143,6 @@
             "type": "nat => nat => nat"
         },
         {
-            "name": "nat_norm",
-            "ty": "macro"
-        },
-        {
-            "name": "nat_norm",
-            "ty": "method"
-        },
-        {
             "attributes": [
                 "hint_rewrite"
             ],
@@ -2703,14 +2695,6 @@
             "vars": {
                 "m": "nat"
             }
-        },
-        {
-            "name": "nat_const_ineq",
-            "ty": "macro"
-        },
-        {
-            "name": "nat_const_ineq",
-            "ty": "method"
         },
         {
             "depth": 0,

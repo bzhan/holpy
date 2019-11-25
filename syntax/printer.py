@@ -72,8 +72,6 @@ def print_extension(thy, ext):
         return "Theorem " + ext.name + ": " + print_term(thy, ext.th.prop)
     elif ext.ty == extension.ATTRIBUTE:
         return "Attribute " + ext.name + " [" + ext.attribute + "]"
-    elif ext.ty == extension.MACRO:
-        return "Macro " + ext.name
     else:
         raise TypeError
 

@@ -953,10 +953,6 @@
             }
         },
         {
-            "name": "fun_upd_eval",
-            "ty": "macro"
-        },
-        {
             "name": "fun_upd_eval_test1",
             "num_gaps": 0,
             "proof": [

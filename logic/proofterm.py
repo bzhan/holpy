@@ -4,7 +4,7 @@ from kernel.term import Term, Var
 from kernel.thm import Thm, primitive_deriv
 from kernel.theory import Theory
 from kernel.proof import Proof, ItemID
-from kernel.macro import ProofMacro
+from kernel.macro import ProofMacro, get_macro
 
 class ProofTerm():
     """A proof term contains the derivation tree of a theorem.
@@ -263,7 +263,7 @@ class ProofTermDeriv(ProofTerm):
             rule_fun, _ = primitive_deriv[rule]
             self.th = rule_fun(*prev_ths) if args is None else rule_fun(args, *prev_ths)
         else:
-            macro = thy.get_proof_macro(rule)
+            macro = get_macro(thy, rule)
             self.th = macro.eval(thy, args, prev_ths)
         self.args = args
         self.prevs = prevs

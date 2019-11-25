@@ -242,6 +242,7 @@ class beta_norm_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = None
+        self.limit = None
 
     def eval(self, thy, args, ths):
         assert args is None, "beta_norm_macro"
@@ -258,6 +259,7 @@ class intros_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = List[Term]
+        self.limit = None
 
     def get_proof_term(self, thy, args, prevs):
         assert len(prevs) >= 1, "intros_macro"
@@ -296,6 +298,7 @@ class apply_theorem_macro(ProofTermMacro):
         self.level = 1
         self.with_inst = with_inst
         self.sig = Tuple[str, macro.TyInst, macro.Inst] if with_inst else str
+        self.limit = None
 
     def eval(self, thy, args, prevs):
         tyinst, inst = dict(), dict()
@@ -367,6 +370,7 @@ class apply_fact_macro(ProofTermMacro):
         self.level = 1
         self.with_inst = with_inst
         self.sig = List[Term] if with_inst else None
+        self.limit = None
 
     def get_proof_term(self, thy, args, pts):
         if not self.with_inst:
@@ -418,6 +422,7 @@ class rewrite_goal_macro(ProofTermMacro):
         self.level = 1
         self.sym = sym
         self.sig = Tuple[str, Term]
+        self.limit = None
 
     def eval(self, thy, args, ths):
         assert isinstance(args, tuple) and len(args) == 2 and \
@@ -457,6 +462,7 @@ class rewrite_fact_macro(ProofTermMacro):
         self.level = 1
         self.sym = sym
         self.sig = str
+        self.limit = None
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 1 and isinstance(args, str), "rewrite_fact_macro: signature"
@@ -486,6 +492,7 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
         self.level = 1
         self.sym = sym
         self.sig = Term
+        self.limit = None
 
     def get_proof_term(self, thy, args, pts):
         assert isinstance(args, Term), "rewrite_goal_macro: signature"
@@ -517,6 +524,7 @@ class rewrite_fact_with_prev_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = None
+        self.limit = None
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 2, "rewrite_fact_with_prev"
@@ -549,6 +557,7 @@ class trivial_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = Term
+        self.limit = None
 
     def can_eval(self, thy, args):
         As, C = args.strip_implies()
@@ -568,6 +577,7 @@ class resolve_theorem_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = Tuple[str, Term]
+        self.limit = None
 
     def get_proof_term(self, thy, args, pts):
         th_name, goal = args
@@ -622,6 +632,7 @@ class imp_conj_macro(ProofTermMacro):
     def __init__(self):
         self.level = 1
         self.sig = Term
+        self.limit = None
 
     def eval(self, thy, args, ths):
         def strip(t):
