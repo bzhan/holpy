@@ -174,7 +174,7 @@ class HOLTransformer(Transformer):
         thy = parser_setting['thy']
         ctxt = parser_setting['ctxt']
         s = str(s)
-        if thy.has_term_sig(s) or s in ctxt.consts:
+        if thy.has_term_sig(s) or s in ctxt.defs:
             # s is the name of a constant in the theory
             return Const(s, None)
         else:

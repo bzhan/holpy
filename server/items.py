@@ -295,7 +295,7 @@ class Definition(Item):
         try:
             self.type = parser.parse_type(thy, data['type'])
             self.cname = thy.get_overload_const_name(self.name, self.type)
-            ctxt = Context(thy, consts={self.name: self.type})
+            ctxt = Context(thy, defs={self.name: self.type})
             self.prop = parser.parse_term(ctxt, data['prop'])
 
             # prop should be an equality
@@ -401,7 +401,7 @@ class Fun(Item):
         try:
             self.type = parser.parse_type(thy, data['type'])
             self.cname = thy.get_overload_const_name(self.name, self.type)
-            ctxt = Context(thy, consts={self.name: self.type})
+            ctxt = Context(thy, defs={self.name: self.type})
             for rule in data['rules']:
                 prop = parser.parse_term(ctxt, rule['prop'])
 
@@ -496,7 +496,7 @@ class Inductive(Item):
         try:
             self.type = parser.parse_type(thy, data['type'])
             self.cname = thy.get_overload_const_name(self.name, self.type)
-            ctxt = Context(thy, consts={self.name: self.type})
+            ctxt = Context(thy, defs={self.name: self.type})
             for rule in data['rules']:
                 prop = parser.parse_term(ctxt, rule['prop'])
 

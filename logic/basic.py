@@ -163,7 +163,7 @@ def parse_item(thy, data):
 
     elif data['ty'] == 'def':
         data['type'] = parser.parse_type(thy, data['type'])
-        ctxt = Context(thy, consts={data['name']: data['type']})
+        ctxt = Context(thy, defs={data['name']: data['type']})
         data['prop'] = parser.parse_term(ctxt, data['prop'])
 
         # Check validity of definition.
@@ -192,7 +192,7 @@ def parse_item(thy, data):
     elif data['ty'] in ('def.ind', 'def.pred'):
         data['type'] = parser.parse_type(thy, data['type'])
         for rule in data['rules']:
-            ctxt = Context(thy, consts={data['name']: data['type']})
+            ctxt = Context(thy, defs={data['name']: data['type']})
             rule['prop'] = parser.parse_term(ctxt, rule['prop'])
 
     else:

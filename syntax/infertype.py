@@ -5,6 +5,7 @@
 from kernel.type import STVar, TFun
 from kernel.term import Term
 from kernel import term
+from kernel.theory import TheoryException
 from data import nat
 from util import unionfind
 
@@ -125,15 +126,18 @@ def type_infer(ctxt, t, *, forbid_internal=True):
         # replacing arbitrary variables by new types.
         elif t.is_const():
             if t.T is None:
-                if t.name in ctxt.consts:
-                    t.T = ctxt.consts[t.name]
-                else:
+                try:
                     T = thy.get_term_sig(t.name, stvar=True)
-                    STvars = T.get_stvars()
-                    tyinst = dict()
-                    for STv in STvars:
-                        tyinst[STv.name] = new_type()
-                    t.T = T.subst(tyinst)
+                except TheoryException as e:
+                    if t.name in ctxt.defs:
+                        T = ctxt.defs[t.name]
+                    else:
+                        raise e
+                STvars = T.get_stvars()
+                tyinst = dict()
+                for STv in STvars:
+                    tyinst[STv.name] = new_type()
+                t.T = T.subst(tyinst)
             return t.T
 
         # Comb case: recursively infer type of fun and arg, then
@@ -173,6 +177,11 @@ def type_infer(ctxt, t, *, forbid_internal=True):
 
         else:
             raise TypeError
+
+    if ctxt.defs and t.is_equals():
+        t_head, t_args = t.lhs.strip_comb()
+        if t_head.is_const() and t_head.name in ctxt.defs:
+            t_head.T = ctxt.defs[t_head.name]
 
     infer(t, [])
 
