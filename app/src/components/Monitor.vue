@@ -7,6 +7,7 @@
       <b-form-input style="margin-left:10px;display:inline-block;width:200px" v-model="filename" type="text"/>
       <b-button variant="primary" style="margin-left:10px" v-on:click="checkInputTheory">Check</b-button>
       <b-button variant="primary" style="margin-left:10px" v-on:click="checkAllTheory">Check All</b-button>
+      <b-form-checkbox label="rewrite-file" style="margin-left:10px" v-model="rewrite_file">Rewrite</b-form-checkbox>
     </b-navbar>
     <div style="margin:5px 10px">
       Checked {{infos.length}} of {{num_theories}} theories
@@ -14,7 +15,7 @@
       <a href="#" v-on:click="foldAll">Fold all</a>
     </div>
     <div v-for="(info,index) in infos" v-bind:key="index">
-      <div style="margin:5px 10px">
+      <div v-if="info.stat !== undefined" style="margin:5px 10px">
         <span>{{info.filename}}: </span>
         <span>OK {{info.stat.OK}} </span>
         <span>Partial {{info.stat.Partial}} </span>
@@ -24,8 +25,12 @@
         <span>Proof Fail {{info.stat.ProofFail}} </span>
         <span>Parse OK {{info.stat.ParseOK}} </span>
         <span>Parse Fail {{info.stat.ParseFail}} </span>
+        <span>Edit Fail {{info.stat.EditFail}} </span>
         <a href="#" v-on:click="info.unfold = !info.unfold">{{info.unfold ? 'Fold' : 'Unfold'}} </a>
         <a href="#" v-on:click="recheckTheory(index)">Recheck</a>
+      </div>
+      <div v-else style="margin:5px 10px">
+        <span>{{info.filename}}: Server error</span>
       </div>
       <table v-if="info.unfold">
         <tr v-for="(line,index) in info.data" v-bind:key="index"
@@ -40,6 +45,7 @@
           <td v-if="line.status==='ProofFail'"></td>
           <td v-if="line.status==='ParseOK'"></td>
           <td v-if="line.status==='ParseFail'"></td>
+          <td v-if="line.status==='EditFail'"></td>
         </tr>
       </table>
     </div>
@@ -56,7 +62,9 @@ export default {
     return {
       filename: '',
       num_theories: 0,
-      infos: []
+      infos: [],
+
+      rewrite_file: false
     }
   },
 
@@ -82,7 +90,8 @@ export default {
     checkTheory: async function (filename) {
       const data = {
         username: this.$state.user,
-        filename: filename
+        filename: filename,
+        rewrite: this.rewrite_file,
       }
       var response = undefined
 
@@ -109,7 +118,8 @@ export default {
       const filename = this.infos[index].filename
       const data = {
         username: this.$state.user,
-        filename: filename
+        filename: filename,
+        rewrite: this.rewrite_file,
       }
       var response = undefined
 
@@ -152,7 +162,8 @@ export default {
         return 'lime'
       } else if (line.status === 'NoSteps') {
         return 'aqua'
-      } else if (line.status === 'Failed' || line.status === 'ProofFail' || line.status === 'ParseFail') {
+      } else if (line.status === 'Failed' || line.status === 'ProofFail' ||
+                 line.status === 'ParseFail' || line.status === 'EditFail') {
         return 'red'
       } else if (line.status === 'Partial') {
         return 'yellow'

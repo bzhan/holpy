@@ -762,7 +762,7 @@ def check_theory():
     username = data['username']
     filename = data['filename']
 
-    res = monitor.check_theory(filename, username)
+    res = monitor.check_theory(filename, username, rewrite=data['rewrite'])
     return jsonify(res)
 
 

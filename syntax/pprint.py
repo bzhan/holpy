@@ -751,7 +751,7 @@ def print_ast(thy, ast, *, line_length=None):
         if not settings.highlight():
             res[i] = ''.join(res[i])
 
-    if not line_length:
+    if not line_length or (not settings.highlight() and len(res) == 1):
         res = res[0]
 
     return res

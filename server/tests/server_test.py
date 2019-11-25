@@ -295,7 +295,7 @@ class ServerTest(unittest.TestCase):
             concl='B | A',
             method_name='apply_backward_step',
             prevs=[0],
-            res=['disjE']
+            res=['contrapositive', 'disjE']
         )
 
     def testApplyBackwardStepThms3(self):
