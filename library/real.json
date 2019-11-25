@@ -1339,48 +1339,6 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "real_add_rid",
-            "num_gaps": 0,
-            "proof": [
-                {
-                    "args": "real_add_lid, 0 + x = x",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ 0 + x = x"
-                },
-                {
-                    "args": "real_add_comm, x + 0 = x",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ x + 0 = x"
-                }
-            ],
-            "prop": "x + 0 = x",
-            "steps": [
-                {
-                    "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "real_add_comm"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "real_add_lid"
-                }
-            ],
-            "ty": "thm",
-            "vars": {
-                "x": "real"
-            }
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "real_neg_0",
             "num_gaps": 0,
             "proof": [
@@ -5324,18 +5282,6 @@
                     "theorem": "real_le_antisym"
                 }
             ],
-            "ty": "thm",
-            "vars": {
-                "x": "real",
-                "y": "real"
-            }
-        },
-        {
-            "attributes": [
-                "hint_rewrite"
-            ],
-            "name": "real_lt_le",
-            "prop": "x < y <--> x <= y & ~(x = y)",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -9920,7 +9866,7 @@
                 "hint_backward",
                 "hint_backward1"
             ],
-            "name": "real_lt_inv2",
+            "name": "real_le_inv2",
             "num_gaps": 0,
             "proof": [
                 {

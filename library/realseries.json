@@ -1772,7 +1772,7 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "name": "is_closed_real_segment",
+            "name": "is_open_real_segment",
             "prop": "x ∈ open_real_segment a b ⟷ a < x ∧ x < b ∨ b < x ∧ x < a",
             "ty": "thm",
             "vars": {

@@ -4,6 +4,7 @@
 
 import traceback2
 import json
+import copy
 
 from kernel.proof import Proof
 from logic import basic
@@ -90,8 +91,20 @@ def check_theory(filename, username='master', rewrite=False):
             }
         else:
             exts = item.get_extension()
-            if item.ty == 'thm':
-                item_res = check_proof(thy, raw_item)
+            old_thy = copy.copy(thy)
+            thy.unchecked_extend(exts)
+
+            # Check consistency with edit_item
+            edit_item = item.get_display(thy, unicode=True, highlight=False)
+            item2 = items.parse_edit(old_thy, edit_item)
+            if item2.error or item != item2:
+                item_res = {
+                    'ty': item.ty,
+                    'name': item.name,
+                    'status': 'EditFail'
+                }
+            elif item.ty == 'thm':
+                item_res = check_proof(old_thy, raw_item)
                 item_res['ty'] = 'thm'
                 item_res['name'] = item.name
             else:
@@ -100,17 +113,7 @@ def check_theory(filename, username='master', rewrite=False):
                     'name': item.name,
                     'status': 'ParseOK'
                 }
-            thy.unchecked_extend(exts)
 
-            # Check consistency with edit_item
-            edit_item = item.get_display(thy, unicode=True, highlight=False)
-            item2 = items.parse_edit(thy, edit_item)
-            if item2.error or item.export_json(thy) != item2.export_json(thy):
-                item_res = {
-                    'ty': item.ty,
-                    'name': item.name,
-                    'status': 'EditFail'
-                }
         stat[item_res['status']] += 1
         res.append(item_res)
 

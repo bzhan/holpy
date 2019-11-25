@@ -75,6 +75,10 @@ class Constant(Item):
         self.cname = None  # expanded name of the constant (for linking)
         self.error = None
 
+    def __eq__(self, other):
+        return self.ty == other.ty and self.name == other.name and self.type == other.type and \
+            self.overloaded == other.overloaded and self.cname == other.cname and self.error == other.error
+
     def parse(self, thy, data):
         self.name = data['name']
         if 'overloaded' in data and data['overloaded']:
@@ -132,6 +136,10 @@ class Axiom(Item):
         self.attributes = list()  # list of attributes
         self.error = None
 
+    def __eq__(self, other):
+        return self.ty == other.ty and self.name == other.name and self.vars == other.vars and \
+            self.prop == other.prop and self.attributes == other.attributes and self.error == other.error
+
     def parse(self, thy, data):
         self.name = data['name']
 
@@ -139,6 +147,10 @@ class Axiom(Item):
             ctxt = Context(thy, vars=data['vars'])
             self.vars = ctxt.vars
             self.prop = parser.parse_term(ctxt, data['prop'])
+
+            # theorem does not already exist
+            if thy.has_theorem(self.name):
+                raise ItemException("Theorem %s: theorem already exists")
 
             # prop should not contain extra variables
             self_vars = set(self.vars.keys())
@@ -211,6 +223,10 @@ class Theorem(Axiom):
         self.proof = None
         self.num_gaps = None
 
+    def __eq__(self, other):
+        return super().__eq__(other) and self.steps == other.steps and self.proof == other.proof and \
+            self.num_gaps == other.num_gaps
+
     def parse(self, thy, data):
         super().parse(thy, data)
 
@@ -261,6 +277,11 @@ class Definition(Item):
         self.cname = None  # expanded name of the constant (for linking)
         self.attributes = []
         self.error = None
+
+    def __eq__(self, other):
+        return self.ty == other.ty and self.name == other.name and self.type == other.type and \
+            self.prop == other.prop and self.cname == other.cname and self.attributes == other.attributes and \
+            self.error == other.error
 
     def parse(self, thy, data):
         self.name = data['name']
@@ -364,6 +385,10 @@ class Fun(Item):
         self.cname = None  # expanded name of the constant (for linking)
         self.error = None
 
+    def __eq__(self, other):
+        return self.ty == other.ty and self.name == other.name and self.type == other.type and \
+            self.rules == other.rules and self.cname == other.cname and self.error == other.error
+
     def parse(self, thy, data):
         self.name = data['name']
 
@@ -455,6 +480,10 @@ class Inductive(Item):
         self.rules = []  # list of introduction rules
         self.cname = None  # expected name of the constant (for linking)
         self.error = None
+
+    def __eq__(self, other):
+        return self.ty == other.ty and self.name == other.name and self.type == other.type and \
+            self.rules == other.rules and self.cname == other.cname and self.error == other.error
 
     def parse(self, thy, data):
         self.name = data['name']
@@ -557,6 +586,10 @@ class AxType(Item):
         self.args = list()  # list of type arguments
         self.error = None
 
+    def __eq__(self, other):
+        return self.ty == other.ty and self.name == other.name and self.args == other.args and \
+            self.error == other.error
+
     def parse(self, thy, data):
         self.name = data['name']
         self.args = data['args']
@@ -616,6 +649,10 @@ class Datatype(Item):
         self.args = list()  # list of type arguments
         self.constrs = list()  # list of type constructors
         self.error = None
+
+    def __eq__(self, other):
+        return self.ty == other.ty and self.name == other.name and self.args == other.args and \
+            self.constrs == other.constrs and self.error == other.error
 
     def parse(self, thy, data):
         self.name = data['name']
@@ -755,6 +792,10 @@ class Header(Item):
         self.depth = None
         self.name = None
         self.error = None
+
+    def __eq__(self, other):
+        return self.ty == other.ty and self.depth == other.depth and self.name == other.name and \
+            self.error == other.error
 
     def parse(self, thy, data):
         self.depth = data['depth']

@@ -1217,17 +1217,6 @@
             }
         },
         {
-            "name": "integrable_combine",
-            "prop": "a <= c & c <= b & integrable_on f (real_closed_interval a c) & integrable_on f (real_closed_interval c b) --> integrable_on f (real_closed_interval a b)",
-            "ty": "thm",
-            "vars": {
-                "a": "real",
-                "b": "real",
-                "c": "real",
-                "f": "real => real"
-            }
-        },
-        {
             "name": "within",
             "ty": "def.ax",
             "type": "'a net => 'a set => 'a net"

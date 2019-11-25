@@ -19,13 +19,13 @@
         <span>{{info.filename}}: </span>
         <span>OK {{info.stat.OK}} </span>
         <span>Partial {{info.stat.Partial}} </span>
-        <span>Failed {{info.stat.Failed}} </span>
+        <span v-bind:style="{background:info.stat.Failed > 0 ? 'red' : 'white'}">Failed {{info.stat.Failed}} </span>
         <span>No steps {{info.stat.NoSteps}} </span>
         <span>Proof OK {{info.stat.ProofOK}} </span>
-        <span>Proof Fail {{info.stat.ProofFail}} </span>
+        <span v-bind:style="{background:info.stat.ProofFail > 0 ? 'red' : 'white'}">Proof Fail {{info.stat.ProofFail}} </span>
         <span>Parse OK {{info.stat.ParseOK}} </span>
-        <span>Parse Fail {{info.stat.ParseFail}} </span>
-        <span>Edit Fail {{info.stat.EditFail}} </span>
+        <span v-bind:style="{background:info.stat.ParseFail > 0 ? 'red' : 'white'}">Parse Fail {{info.stat.ParseFail}} </span>
+        <span v-bind:style="{background:info.stat.EditFail > 0 ? 'red' : 'white'}">Edit Fail {{info.stat.EditFail}} </span>
         <a href="#" v-on:click="info.unfold = !info.unfold">{{info.unfold ? 'Fold' : 'Unfold'}} </a>
         <a href="#" v-on:click="recheckTheory(index)">Recheck</a>
       </div>
