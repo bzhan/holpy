@@ -13,7 +13,7 @@ from logic import logic
 from logic import basic
 from syntax import parser
 from syntax import printer
-from logic.basic import Context
+from logic.context import Context
 from server import tactic, method, server
 from server.server import ProofState
 from imperative import imp

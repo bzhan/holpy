@@ -76,6 +76,7 @@ class fun_upd_eval_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'fun_upd_twist'
 
     def get_proof_term(self, thy, args, pts):
         assert len(pts) == 0, "fun_upd_eval_macro"

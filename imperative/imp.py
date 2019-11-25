@@ -108,6 +108,7 @@ class eval_Sem_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'Sem_Assign'
 
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "eval_Sem_macro"
@@ -129,6 +130,7 @@ class eval_Sem_method(Method):
     """Apply eval_Sem macro."""
     def __init__(self):
         self.sig = []
+        self.limit = 'Sem_Assign'
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -225,6 +227,7 @@ class vcg_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'while_rule'
 
     def get_proof_term(self, thy, goal, pts):
         f, (P, c, Q) = goal.strip_comb()
@@ -269,6 +272,7 @@ class vcg_method(Method):
     """Method corresponding to VCG."""
     def __init__(self):
         self.sig = []
+        self.limit = 'while_rule'
 
     def search(self, state, id, prevs, data=None):
         if data:

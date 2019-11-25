@@ -246,6 +246,7 @@ class Z3Macro(ProofMacro):
     def __init__(self):
         self.level = 0  # No expand implemented for Z3.
         self.sig = Term
+        self.limit = None
 
     def eval(self, thy, args, prevs):
         if z3_loaded:
@@ -263,6 +264,7 @@ class Z3Method(Method):
     """Method invoking SMT solver Z3."""
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:

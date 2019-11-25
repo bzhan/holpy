@@ -10,6 +10,7 @@ from kernel.term import Var
 from kernel.theory import Theory, TheoryException
 from kernel.thm import Thm
 from kernel import extension
+from logic.context import Context
 from logic import induct
 from logic import logic  # Load all defined macros
 from data import expr
@@ -148,42 +149,6 @@ def get_init_theory():
     thy.add_data_type("operator", operator.OperatorTable())
 
     return thy
-
-
-class Context:
-    def __init__(self, thy, *, svars=None, vars=None, consts=None, limit=None):
-        if isinstance(thy, str):
-            self.thy = load_theory(thy, limit=limit)
-        else:
-            assert isinstance(thy, Theory)
-            self.thy = thy
-
-        self.svars = dict()
-        if svars is not None:
-            for nm, T in svars.items():
-                if isinstance(T, str):
-                    T = parser.parse_type(self.thy, T)
-                self.svars[nm] = T
-
-        self.vars = dict()
-        if vars is not None:
-            for nm, T in vars.items():
-                if isinstance(T, str):
-                    T = parser.parse_type(self.thy, T)
-                self.vars[nm] = T
-
-        self.consts = dict()
-        if consts is not None:
-            for nm, T in consts.items():
-                if isinstance(T, str):
-                    T = parser.parse_type(self.thy, T)
-                self.consts[nm] = T
-
-    def __eq__(self, other):
-        return self.thy == other.thy and self.vars == other.vars and self.consts == other.consts
-
-    def get_vars(self):
-        return [Var(nm, T) for nm, T in self.vars.items()]
 
 
 def parse_item(thy, data):

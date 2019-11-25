@@ -243,33 +243,6 @@ class TheoryTest(unittest.TestCase):
 
         self.assertRaisesRegex(CheckProofException, "output does not match", thy.check_proof, prf)
 
-    def testCheckProofMacro(self):
-        """Proof checking with simple macro."""
-        thy = Theory.EmptyTheory()
-        thy.add_proof_macro("beta_conv_rhs", beta_conv_rhs_macro())
-        
-        t = Comb(Abs("x", Ta, Bound(0)), x)
-
-        prf = Proof()
-        prf.add_item(0, "reflexive", args=t)
-        prf.add_item(1, "beta_conv_rhs", prevs=[0])
-        th = Thm.mk_equals(t,x)
-
-        # Check obtaining signature
-        self.assertEqual(thy.get_proof_rule_sig("beta_conv_rhs"), Term)
-
-        # Check proof without trusting beta_conv_rhs
-        rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt), th)
-        self.assertEqual(rpt.steps_stat(), (0, 3, 0))
-        self.assertEqual(rpt.macros_expand, {"beta_conv_rhs"})
-
-        # Check proof while trusting beta_conv_rhs
-        rpt = ProofReport()
-        self.assertEqual(thy.check_proof(prf, rpt, check_level=1), th)
-        self.assertEqual(rpt.steps_stat(), (0, 1, 1))
-        self.assertEqual(rpt.macros_eval, {"beta_conv_rhs"})
-
     def testCheckProofGap(self):
         """Check proof with gap."""
         prf = Proof()

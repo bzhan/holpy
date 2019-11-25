@@ -214,7 +214,7 @@ def infer_printed_type(thy, t):
     4. Repeat until no internal type variables appear.
     
     """
-    from logic.basic import Context
+    from logic.context import Context
 
     def clear_const_type(t):
         if t.is_const() and not hasattr(t, "print_type"):

@@ -3,7 +3,7 @@
 from kernel.term import Const
 from kernel.thm import Thm
 
-TYPE, CONSTANT, THEOREM, MACRO, METHOD, ATTRIBUTE, OVERLOAD = range(7)
+TYPE, CONSTANT, THEOREM, ATTRIBUTE, OVERLOAD = range(5)
 
 class Extension():
     """Represents a single extension to the theory.
@@ -22,12 +22,6 @@ class Extension():
 
     Attribute(name, attribute): add given attribute to the given theorem.
 
-    Macro(name): extend the theory by adding the given macro from
-    global_macros.
-
-    Method(name): extend the theory by adding the given method from
-    global_methods.
-
     Overload(name): extend the theory by adding an overloading of a
     constant.
 
@@ -42,10 +36,6 @@ class Extension():
             return "Theorem " + self.name + ": " + str(self.th)
         elif self.ty == ATTRIBUTE:
             return "Attribute " + self.name + " [" + self.attribute + "]"
-        elif self.ty == MACRO:
-            return "Macro " + self.name
-        elif self.ty == METHOD:
-            return "Method " + self.name
         elif self.ty == OVERLOAD:
             return "Overload " + self.name
         else:
@@ -65,10 +55,6 @@ class Extension():
             return self.name == other.name and self.th == other.th and self.prf == other.prf
         elif self.ty == ATTRIBUTE:
             return self.name == other.name and self.attribute == other.attribute
-        elif self.ty == MACRO:
-            return self.name == other.name
-        elif self.ty == METHOD:
-            return self.name == other.name
         elif self.ty == OVERLOAD:
             return self.name == other.name
         else:
@@ -125,26 +111,6 @@ class Attribute(Extension):
         self.ty = ATTRIBUTE
         self.name = name
         self.attribute = attribute
-
-class Macro(Extension):
-    def __init__(self, name):
-        """Extending the theory by adding a macro.
-
-        name -- name of the macro.
-
-        """
-        self.ty = MACRO
-        self.name = name
-
-class Method(Extension):
-    def __init__(self, name):
-        """Extending the theory by adding a method.
-
-        name -- name of the method.
-
-        """
-        self.ty = METHOD
-        self.name = name
 
 class Overload(Extension):
     def __init__(self, name):

@@ -4,7 +4,7 @@ from kernel import term
 from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ItemID, Proof, ProofException
-from kernel.theory import Method
+from kernel.theory import Method, get_method
 from kernel import theory
 from logic.proofterm import ProofTermAtom
 from logic import matcher
@@ -17,6 +17,7 @@ class cut_method(Method):
     """Insert intermediate goal."""
     def __init__(self):
         self.sig = ['goal']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -46,6 +47,7 @@ class cases_method(Method):
     """Case analysis."""
     def __init__(self):
         self.sig = ['case']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -71,6 +73,7 @@ class apply_prev_method(Method):
     """Apply previous fact."""
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -92,6 +95,7 @@ class rewrite_goal_with_prev_method(Method):
     """Rewrite using previous fact."""
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         try:
@@ -114,6 +118,7 @@ class rewrite_goal(Method):
     """Rewrite using a theorem."""
     def __init__(self):
         self.sig = ['theorem', 'sym']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -162,6 +167,7 @@ class rewrite_fact(Method):
     """Rewrite fact using a theorem."""
     def __init__(self):
         self.sig = ['theorem', 'sym']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -213,6 +219,7 @@ class rewrite_fact_with_prev(Method):
     """Rewrite fact using a previous equality."""
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         prevs = [ProofTermAtom(prev, state.get_proof_item(prev).th) for prev in prevs]
@@ -240,6 +247,7 @@ class apply_forward_step(Method):
     """Apply theorem in the forward direction."""
     def __init__(self):
         self.sig = ['theorem']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
@@ -312,6 +320,7 @@ class apply_backward_step(Method):
     """Apply theorem in the backward direction."""
     def __init__(self):
         self.sig = ['theorem']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -359,6 +368,7 @@ class apply_resolve_step(Method):
     """Resolve using a theorem ~A and a fact A."""
     def __init__(self):
         self.sig = ["theorem"]
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         cur_item = state.get_proof_item(id)
@@ -394,6 +404,7 @@ class introduction(Method):
     """Introducing variables and assumptions."""
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -450,6 +461,7 @@ class revert_intro(Method):
     """Reverse an introduction."""
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -480,6 +492,7 @@ class exists_elim(Method):
     """Make use of an exists fact."""
     def __init__(self):
         self.sig = ['names']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -545,6 +558,7 @@ class forall_elim(Method):
     """Elimination of forall statement."""
     def __init__(self):
         self.sig = ['s']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -576,6 +590,7 @@ class inst_exists_goal(Method):
     """Instantiate an exists goal."""
     def __init__(self):
         self.sig = ['s']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -608,6 +623,7 @@ class induction(Method):
     """Apply induction."""
     def __init__(self):
         self.sig = ['theorem', 'var']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -649,6 +665,7 @@ class new_var(Method):
     """Create new variable."""
     def __init__(self):
         self.sig = ['name', 'type']
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -673,6 +690,7 @@ class apply_fact(Method):
     """
     def __init__(self):
         self.sig = []
+        self.limit = None
 
     def search(self, state, id, prevs, data=None):
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
@@ -699,7 +717,7 @@ def apply_method(state, step):
     all necessary information.
 
     """
-    method = state.thy.get_method(step['method_name'])
+    method = get_method(state.thy, step['method_name'])
     goal_id = ItemID(step['goal_id'])
     fact_ids = [ItemID(fact_id) for fact_id in step['fact_ids']] \
         if 'fact_ids' in step and step['fact_ids'] else []

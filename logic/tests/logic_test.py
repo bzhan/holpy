@@ -16,7 +16,7 @@ from logic import matcher
 from logic.tests.conv_test import test_conv
 from data import nat
 from syntax import parser
-from logic.basic import Context
+from logic.context import Context
 
 Ta = TVar("a")
 a = Var("a", boolT)

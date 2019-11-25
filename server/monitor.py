@@ -6,7 +6,7 @@ import traceback2
 
 from kernel.proof import Proof
 from logic import basic
-from logic.basic import Context
+from logic.context import Context
 from server.server import ProofState
 from server import method
 from logic import logic

@@ -9,7 +9,7 @@ from logic import basic
 from logic.tests.logic_test import test_macro
 from syntax import parser
 from syntax import printer
-from logic.basic import Context
+from logic.context import Context
 from prover import z3wrapper
 from server.tests.server_test import test_method
 

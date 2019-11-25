@@ -31,6 +31,7 @@ class prove_avalI_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'avalI_times'
 
     def get_avalI_th(self, thy, s, t):
         """Given state s and expression t, return the proof of a theorem
@@ -109,6 +110,7 @@ class prove_avalI_method(Method):
     """Apply prove_avalI macro."""
     def __init__(self):
         self.sig = []
+        self.limit = 'avalI_times'
 
     def search(self, state, id, prevs, data=None):
         if data:

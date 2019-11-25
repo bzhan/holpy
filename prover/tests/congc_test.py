@@ -9,7 +9,7 @@ from kernel.thm import Thm
 from logic import basic
 from data.nat import natT
 from syntax import parser, printer
-from logic.basic import Context
+from logic.context import Context
 
 MERGE, CHECK, EXPLAIN, MATCH = range(4)
 

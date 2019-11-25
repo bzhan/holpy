@@ -7,11 +7,37 @@ from kernel.type import HOLType, TVar, TFun, boolT, TypeMatchException
 from kernel.term import Term, Var, TypeCheckException
 from kernel.thm import Thm, primitive_deriv, InvalidDerivationException
 from kernel.proof import Proof, ProofException
-from kernel.macro import ProofMacro, global_macros
+from kernel.macro import ProofMacro, global_macros, has_macro, get_macro
 from kernel import extension
 from kernel.report import ExtensionReport
 
 global_methods = dict()
+
+def has_method(thy, name):
+    if name in global_methods:
+        method = global_methods[name]
+        return method.limit is None or thy.has_theorem(method.limit)
+    else:
+        return False
+
+def get_method(thy, name):
+    assert has_method(thy, name), "get_method: %s is not available" % name
+    return global_methods[name]
+
+def get_all_methods(thy):
+    res = dict()
+    for name in global_methods:
+        if has_method(thy, name):
+            res[name] = global_methods[name]
+    return res
+
+def get_method_sig(thy):
+    sig = dict()
+    for name in global_methods:
+        if has_method(thy, name):
+            sig[name] = global_methods[name].sig
+    return sig
+
 
 class Method:
     """Methods represent potential actions on the state."""
@@ -53,8 +79,6 @@ class Theory():
     term_sig: term signature. The most general type of each term constant.
 
     theorems: list of currently proved theorems.
-
-    proof_macro: list of macros for abbreviating proofs.
 
     One can also define new kinds of data to be kept in the theory.
 
@@ -224,60 +248,6 @@ class Theory():
         else:
             return tuple()
 
-    def add_proof_macro(self, name, macro):
-        """Add the given proof macro."""
-        if not isinstance(macro, ProofMacro):
-            raise TypeError
-
-        self.add_data("proof_macro", name, macro)
-
-    def add_global_proof_macro(self, name):
-        """Add a macro from global_macros."""
-        if name not in global_macros:
-            raise TheoryException("Macro " + name + " not found")
-
-        self.add_proof_macro(name, global_macros[name])
-
-    def has_proof_macro(self, name):
-        """Whether the given name corresponds to a proof macro."""
-        data = self.get_data("proof_macro")
-        return name in data
-
-    def get_proof_macro(self, name):
-        """Returns the proof macro with that name."""
-        data = self.get_data("proof_macro")
-        if name not in data:
-            raise TheoryException("Macro " + name + " not found")
-        
-        return data[name]
-
-    def add_method(self, name, method):
-        """Add a given method."""
-        if not isinstance(method, Method):
-            raise TypeError
-
-        self.add_data("method", name, method)
-
-    def add_global_method(self, name):
-        """Add a method from global_methods."""
-        if name not in global_methods:
-            raise TheoryException("Method " + name + " not found")
-
-        self.add_method(name, global_methods[name])
-
-    def has_method(self, name):
-        """Whether the given name corresponds to a method."""
-        data = self.get_data("method")
-        return name in data
-
-    def get_method(self, name):
-        """Returns the method with that name."""
-        data = self.get_data("method")
-        if name not in data:
-            raise TheoryException("Method " + name + " not found")
-        
-        return data[name]
-
     def add_overload_const(self, name):
         """Add a constant as an overloaded constant."""
         data = self.get_data("overload")
@@ -327,8 +297,6 @@ class Theory():
         thy.add_data_type("term_sig")
         thy.add_data_type("theorems")
         thy.add_data_type("theorems_svar")  # cache of version of theorem with SVar.
-        thy.add_data_type("proof_macro")
-        thy.add_data_type("method")
         thy.add_data_type("attributes")
         thy.add_data_type("overload")
 
@@ -462,12 +430,12 @@ class Theory():
                 except TypeError:
                     raise CheckProofException("invalid input to derivation " + seq.rule)
 
-            elif self.has_proof_macro(seq.rule):
+            elif has_macro(self, seq.rule):
                 # Otherwise, the proof method corresponds to a macro. If
                 # the level of the macro is less than or equal to the current
                 # trust level, simply evaluate the macro to check that results
                 # match. Otherwise, expand the macro and check all of the steps.
-                macro = self.get_proof_macro(seq.rule)
+                macro = get_macro(self, seq.rule)
                 assert macro.level is None or (isinstance(macro.level, int) and macro.level >= 0), \
                     ("check_proof: invalid macro level " + str(macro.level))
                 if macro.level is not None and macro.level <= check_level:
@@ -527,7 +495,7 @@ class Theory():
             _, sig = primitive_deriv[name]
             return sig
         else:
-            macro = self.get_proof_macro(name)
+            macro = get_macro(self, name)
             return macro.sig
 
     def extend_type(self, ext):
@@ -559,10 +527,6 @@ class Theory():
                 self.add_theorem(ext.name, ext.th)
             elif ext.ty == extension.ATTRIBUTE:
                 self.extend_attribute(ext)
-            elif ext.ty == extension.MACRO:
-                self.add_global_proof_macro(ext.name)
-            elif ext.ty == extension.METHOD:
-                self.add_global_method(ext.name)
             elif ext.ty == extension.OVERLOAD:
                 self.add_overload_const(ext.name)
             else:
@@ -586,10 +550,6 @@ class Theory():
                 self.add_theorem(ext.name, ext.th)
             elif ext.ty == extension.ATTRIBUTE:
                 self.extend_attribute(ext)
-            elif ext.ty == extension.MACRO:
-                self.add_global_proof_macro(ext.name)
-            elif ext.ty == extension.METHOD:
-                self.add_global_method(ext.name)
             elif ext.ty == extension.OVERLOAD:
                 self.add_overload_const(ext.name)
             else:

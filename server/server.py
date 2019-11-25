@@ -8,10 +8,11 @@ from kernel.term import Term, Var
 from kernel.thm import Thm
 from kernel.proof import ProofItem, Proof, ItemID
 from kernel import report
+from kernel import theory
 from logic import logic, matcher
 from logic.proofterm import ProofTerm, ProofTermAtom
 from syntax import parser, printer, pprint
-from logic.basic import Context
+from logic.context import Context
 from server import tactic
 from server import method
 
@@ -118,13 +119,6 @@ class ProofState():
 
         return ProofState.init_state(thy, ctxt.get_vars(), assums, concl)
 
-    def get_method_sig(self):
-        """Obtain signature of all methods in the theory."""
-        sig = {}
-        for name, method in self.thy.get_data('method').items():
-            sig[name] = method.sig
-        return sig
-
     def export_proof(self, prf):
         return sum([printer.export_proof_item(self.thy, item, unicode=True, highlight=True)
                     for item in prf.items], [])
@@ -135,7 +129,7 @@ class ProofState():
             "vars": {v.name: str(v.T) for v in self.vars},
             "proof": self.export_proof(self.prf),
             "num_gaps": len(self.rpt.gaps),
-            "method_sig": self.get_method_sig(),
+            "method_sig": theory.get_method_sig(self.thy),
         }
         if hasattr(self, 'steps'):
             res['steps'] = self.steps
@@ -275,9 +269,9 @@ class ProofState():
         id = ItemID(id)
         prevs = [ItemID(prev) for prev in prevs] if prevs else []
         results = []
-        method_data = self.thy.get_data("method")
-        for name in method_data:
-            res = method_data[name].search(self, id, prevs)
+        all_methods = theory.get_all_methods(self.thy)
+        for name in all_methods:
+            res = all_methods[name].search(self, id, prevs)
             for r in res:
                 r['method_name'] = name
                 r['goal_id'] = str(id)

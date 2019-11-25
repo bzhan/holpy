@@ -530,6 +530,7 @@ class nat_norm_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'nat_nat_power_def_1'
 
     def eval(self, thy, goal, pts):
         # Simply produce the goal.
@@ -561,6 +562,7 @@ class nat_norm_method(Method):
     """Apply nat_norm macro."""
     def __init__(self):
         self.sig = []
+        self.limit = 'nat_nat_power_def_1'
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -630,6 +632,7 @@ class nat_const_ineq_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'bit1_neq_one'
 
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "nat_const_ineq_macro"
@@ -661,6 +664,7 @@ class nat_const_ineq_method(Method):
     """Apply nat_const_ineq macro."""
     def __init__(self):
         self.sig = []
+        self.limit = 'bit1_neq_one'
 
     def search(self, state, id, prevs, data=None):
         if data:
@@ -688,6 +692,7 @@ class nat_const_less_eq_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'bit1_neq_one'
 
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "nat_const_less_eq_macro"
@@ -719,6 +724,7 @@ class nat_const_less_macro(ProofTermMacro):
     def __init__(self):
         self.level = 10
         self.sig = Term
+        self.limit = 'bit1_neq_one'
 
     def get_proof_term(self, thy, goal, pts):
         assert isinstance(goal, Term)

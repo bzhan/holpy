@@ -10,7 +10,7 @@ from logic.proofterm import ProofTerm
 from logic.conv import beta_conv, else_conv, try_conv, abs_conv, top_conv, bottom_conv, \
     top_sweep_conv, arg_conv, rewr_conv, has_rewrite, ConvException
 from syntax import parser
-from logic.basic import Context
+from logic.context import Context
 
 def test_conv(self, thy, cv, *, vars=None, t, t_res=None, failed=None, assms=None, limit=None):
     ctxt = Context(thy, vars=vars, limit=limit)

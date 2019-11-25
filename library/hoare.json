@@ -175,14 +175,6 @@
             }
         },
         {
-            "name": "eval_Sem",
-            "ty": "macro"
-        },
-        {
-            "name": "eval_Sem",
-            "ty": "method"
-        },
-        {
             "name": "P1",
             "prop": "P1 = Seq (Assign 0 (%s. 1)) (Assign 1 (%s. 2))",
             "ty": "def",
@@ -1001,14 +993,6 @@
                 "b": "'a => bool",
                 "c": "'a com"
             }
-        },
-        {
-            "name": "vcg",
-            "ty": "macro"
-        },
-        {
-            "name": "vcg",
-            "ty": "method"
         },
         {
             "attributes": [],
