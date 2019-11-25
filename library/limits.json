@@ -2,9 +2,9 @@
     "content": [
         {
             "name": "has_limit",
-            "prop": "has_limit f x <--> (!e. 0 < e --> (?N. !n. N <= n --> abs (f n - x) < e))",
+            "prop": "has_limit f x ⟷ (∀e. 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e))",
             "ty": "def",
-            "type": "(nat => real) => real => bool"
+            "type": "(nat ⇒ real) ⇒ real ⇒ bool"
         },
         {
             "attributes": [
@@ -58,7 +58,7 @@
                     "th": "⊢ has_limit f x ⟶ 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e)"
                 }
             ],
-            "prop": "has_limit f x --> 0 < e --> (?N. !n. N <= n --> abs (f n - x) < e)",
+            "prop": "has_limit f x ⟶ 0 < e ⟶ (∃N. ∀n. N ≤ n ⟶ abs (f n - x) < e)",
             "steps": [
                 {
                     "fact_ids": [
@@ -80,7 +80,7 @@
             "ty": "thm",
             "vars": {
                 "e": "real",
-                "f": "nat => real",
+                "f": "nat ⇒ real",
                 "x": "real"
             }
         },
@@ -167,7 +167,7 @@
                     "th": "⊢ has_limit f x ⟶ 0 < e ⟶ (∃n. abs (f n - x) < e)"
                 }
             ],
-            "prop": "has_limit f x --> 0 < e --> ?n. abs (f n - x) < e",
+            "prop": "has_limit f x ⟶ 0 < e ⟶ (∃n. abs (f n - x) < e)",
             "steps": [
                 {
                     "fact_ids": [
@@ -202,7 +202,7 @@
             "ty": "thm",
             "vars": {
                 "e": "real",
-                "f": "nat => real",
+                "f": "nat ⇒ real",
                 "x": "real"
             }
         },
@@ -308,7 +308,7 @@
                     "th": "⊢ has_limit f x ⟶ has_limit f y ⟶ x = y"
                 }
             ],
-            "prop": "has_limit f x --> has_limit f y --> x = y",
+            "prop": "has_limit f x ⟶ has_limit f y ⟶ x = y",
             "steps": [
                 {
                     "goal_id": "2",
@@ -326,18 +326,18 @@
                     "names": ""
                 },
                 {
-                    "goal_id": "2.1",
-                    "method_name": "apply_forward_step",
                     "fact_ids": [
                         "0"
                     ],
-                    "theorem": "has_limit_D2",
-                    "param_e": "y - x"
+                    "goal_id": "2.1",
+                    "method_name": "apply_forward_step",
+                    "param_e": "y - x",
+                    "theorem": "has_limit_D2"
                 }
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real",
+                "f": "nat ⇒ real",
                 "x": "real",
                 "y": "real"
             }
@@ -420,7 +420,7 @@
                     "th": "⊢ has_limit f x ⟶ has_limit g y ⟶ has_limit (λn. f n + g n) (x + y)"
                 }
             ],
-            "prop": "has_limit f x --> has_limit g y --> has_limit (%n. f n + g n) (x + y)",
+            "prop": "has_limit f x ⟶ has_limit g y ⟶ has_limit (λn. f n + g n) (x + y)",
             "steps": [
                 {
                     "goal_id": "2",
@@ -435,8 +435,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real",
-                "g": "nat => real",
+                "f": "nat ⇒ real",
+                "g": "nat ⇒ real",
                 "x": "real",
                 "y": "real"
             }

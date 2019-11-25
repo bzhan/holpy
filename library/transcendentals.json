@@ -3,93 +3,93 @@
         {
             "name": "infsum",
             "ty": "def.ax",
-            "type": "nat set => (nat => 'a) => 'a"
+            "type": "nat set ⇒ (nat ⇒ 'a) ⇒ 'a"
         },
         {
             "name": "exp",
-            "prop": "exp x = infsum (from 0) (%n. x ^ n / of_nat (fact n))",
+            "prop": "exp x = infsum (from 0) (λn. x ^ n / of_nat (fact n))",
             "ty": "def",
-            "type": "real => real"
+            "type": "real ⇒ real"
         },
         {
-            "attributes": [],
             "name": "cos",
-            "prop": "cos x = infsum (from 0) (λn. if (even n) then (-1) ^ (n DIV 2) * x ^ n / of_nat (fact n) else 0)",
+            "prop": [
+                "cos x = ",
+                "infsum (from 0) ",
+                "  (λn. if even n then -1 ^ (n DIV 2) * x ^ n / of_nat (fact n) else 0)"
+            ],
             "ty": "def",
-            "type": "real => real"
+            "type": "real ⇒ real"
         },
         {
-            "attributes": [],
             "name": "sin",
             "prop": [
                 "sin x = ",
                 "infsum (from 0) ",
-                "  (λn. if even n then 0 else (-1) ^ ((n - 1) DIV 2) * x ^ n / of_nat (fact n))"
+                "  (λn. if even n then 0 else -1 ^ ((n - 1) DIV 2) * x ^ n / of_nat (fact n))"
             ],
             "ty": "def",
-            "type": " real ⇒ real"
+            "type": "real ⇒ real"
         },
         {
-            "attributes": [],
             "name": "log",
-            "prop": "log y = THE x. exp x = y",
+            "prop": "log y = (THE x. exp x = y)",
             "ty": "def",
-            "type": "real=>real"
+            "type": "real ⇒ real"
         },
         {
-            "attributes": [],
             "name": "pi",
-            "prop": "pi = THE p. 0 < p & sin p = 0 & (!x. 0 <x & x < p --> neg (sin x = 0))",
+            "prop": "pi = (THE p. 0 < p ∧ sin p = 0 ∧ (∀x. 0 < x ∧ x < p ⟶ ¬(sin x = 0)))",
             "ty": "def",
             "type": "real"
         },
         {
-            "attributes": [],
             "name": "tan",
             "prop": "tan x = sin x / cos x",
             "ty": "def",
             "type": "real ⇒ real"
         },
         {
-            "attributes": [],
             "name": "atn",
-            "prop": "atn y = (THE x. -pi/2 < x & x < pi/2 & tan x =y)",
+            "prop": "atn y = (THE x. -pi / 2 < x ∧ x < pi / 2 ∧ tan x = y)",
             "ty": "def",
-            "type": "real=>real"
+            "type": "real ⇒ real"
         },
         {
-            "attributes": [],
             "name": "asn",
-            "prop": "asn y = (THE x. -pi / 2 <= x ∧ x <= pi / 2 ∧ sin x = y)",
+            "prop": "asn y = (THE x. -pi / 2 ≤ x ∧ x ≤ pi / 2 ∧ sin x = y)",
             "ty": "def",
-            "type": "real=>real"
+            "type": "real ⇒ real"
         },
         {
-            "attributes": [],
             "name": "acs",
             "prop": "acs y = (THE x. 0 ≤ x ∧ x ≤ pi ∧ cos x = y)",
             "ty": "def",
             "type": "real ⇒ real"
         },
         {
-            "ascii_op": "^",
-            "attributes": [],
             "name": "power",
             "prop": [
-                "x ^ y = if 0 < x then exp (y * log x)",
-                "else if x= 0 then if y =0 then 1 else 0",
-                "else if (?m. ?n. odd m & odd n & abs y = (of_nat m) / (of_nat n))",
-                "then -(exp (y * log (-x))) else exp (y * log (-x))"
+                "x ^ y = ",
+                "(if 0 < x then ",
+                "   exp (y * log x)",
+                " else ",
+                "   if x = 0 then ",
+                "     if y = 0 then 1 else 0",
+                "   else ",
+                "     if ∃m. ∃n. odd m ∧ odd n ∧ abs y = of_nat m / of_nat n then ",
+                "       -(exp (y * log (-x)))",
+                "     else ",
+                "       exp (y * log (-x)))"
             ],
             "ty": "def",
-            "type": "real=>real=>real"
+            "type": "real ⇒ real ⇒ real"
         },
         {
-            "attributes": [],
             "name": "root",
-            "prop": "root n x = real_sgn x * exp (log (abs x) / (of_nat n))",
+            "prop": "root n x = real_sgn x * exp (log (abs x) / of_nat n)",
             "ty": "def",
-            "type": "nat=>real=>real"
+            "type": "nat ⇒ real ⇒ real"
         }
     ],
     "description": "Real transcendentals.",

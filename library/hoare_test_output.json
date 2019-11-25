@@ -12,7 +12,10 @@
                     "th": "|- Sem (Seq (Assign (0::nat) (%s. (1::nat))) (Assign 1 (%s. 2))) (%x. 0) ((%x. 0)(0 := 1, 1 := 2))"
                 }
             ],
-            "prop": "Sem (Seq (Assign (0::nat) (%s. (1::nat))) (Assign 1 (%s. 2))) (%x. 0) ((%x. 0)(0 := 1, 1 := 2))",
+            "prop": [
+                "Sem (Seq (Assign (0::nat) (λs. (1::nat))) (Assign 1 (λs. 2))) (λx. 0) ",
+                "  ((λx. 0)(0 := 1, 1 := 2))"
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -28,7 +31,13 @@
                     "th": "|- Sem (While (%s. ~(s (0::nat) = (3::nat))) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + 1)))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))"
                 }
             ],
-            "prop": "Sem (While (%s. ~(s (0::nat) = (3::nat))) (%s. true) (Seq (Assign 1 (%s. s 1 + 5)) (Assign 0 (%s. s 0 + 1)))) (%x. 0) ((%x. 0)(0 := 3, 1 := 15))",
+            "prop": [
+                "Sem ",
+                "  (While (λs. ¬(s (0::nat) = (3::nat))) (λs. true) ",
+                "     (Seq (Assign 1 (λs. s 1 + 5)) (Assign 0 (λs. s 0 + 1)))) ",
+                "  (λx. 0) ",
+                "  ((λx. 0)(0 := 3, 1 := 15))"
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -69,7 +78,12 @@
                     "th": "|- Valid (%s. s (0::nat) = 0 & s 1 = 0) (While (%s. ~(s 0 = A)) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))) (%s. s 1 = A * B)"
                 }
             ],
-            "prop": "Valid (%s. s (0::nat) = 0 & s 1 = 0) (While (%s. ~(s 0 = A)) (%s. s 1 = s 0 * B) (Seq (Assign 1 (%s. s 1 + B)) (Assign 0 (%s. s 0 + 1)))) (%s. s 1 = A * B)",
+            "prop": [
+                "Valid (λs. s (0::nat) = 0 ∧ s 1 = 0) ",
+                "  (While (λs. ¬(s 0 = A)) (λs. s 1 = s 0 * B) ",
+                "     (Seq (Assign 1 (λs. s 1 + B)) (Assign 0 (λs. s 0 + 1)))) ",
+                "  (λs. s 1 = A * B)"
+            ],
             "ty": "thm",
             "vars": {
                 "A": "nat",
@@ -97,7 +111,10 @@
                     "th": "|- Valid (%s. true) (Cond (%s. ~(s (0::nat) = (0::nat))) (Assign 0 (%s. 0)) Skip) (%s. s 0 = 0)"
                 }
             ],
-            "prop": "Valid (%s. true) (Cond (%s. ~(s (0::nat) = (0::nat))) (Assign 0 (%s. 0)) Skip) (%s. s 0 = 0)",
+            "prop": [
+                "Valid (λs. true) (Cond (λs. ¬(s (0::nat) = (0::nat))) (Assign 0 (λs. 0)) Skip) ",
+                "  (λs. s 0 = 0)"
+            ],
             "ty": "thm",
             "vars": {}
         },
@@ -122,7 +139,11 @@
                     "th": "|- Valid (%s::nat => nat. true) (Cond (%s. s (12::nat) <= s 13) (Assign 2 (%s. s 13)) (Assign 2 (%s. s 12))) (%s. s 2 = s 12 | s 2 = s 13)"
                 }
             ],
-            "prop": "Valid (%s::nat => nat. true) (Cond (%s. s (12::nat) <= s 13) (Assign 2 (%s. s 13)) (Assign 2 (%s. s 12))) (%s. s 2 = s 12 | s 2 = s 13)",
+            "prop": [
+                "Valid (λs::nat ⇒ nat. true) ",
+                "  (Cond (λs. s (12::nat) ≤ s 13) (Assign 2 (λs. s 13)) (Assign 2 (λs. s 12))) ",
+                "  (λs. s 2 = s 12 ∨ s 2 = s 13)"
+            ],
             "ty": "thm",
             "vars": {}
         }

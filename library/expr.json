@@ -39,7 +39,6 @@
                     "type": "aexp => aexp => aexp"
                 }
             ],
-            "data_name": "aexp",
             "name": "aexp",
             "ty": "type.ind"
         },
@@ -127,7 +126,7 @@
                     "th": "⊢ aval (Plus (V 1) (N (5))) ((λx. 0)(1 := 7)) = 12"
                 }
             ],
-            "prop": "aval (Plus (V 1) (N 5)) (fun_upd (%x. 0) 1 7) = 12",
+            "prop": "aval (Plus (V 1) (N 5)) ((λx. 0)(1 := 7)) = 12",
             "steps": [
                 {
                     "goal_id": "0",
@@ -240,7 +239,7 @@
                     "th": "⊢ aval (Plus (V 0) (N (5))) ((λx. 0)(1 := 7)) = 5"
                 }
             ],
-            "prop": "aval (Plus (V 0) (N 5)) (fun_upd (%x. 0) 1 7) = 5",
+            "prop": "aval (Plus (V 0) (N 5)) ((λx. 0)(1 := 7)) = 5",
             "steps": [
                 {
                     "goal_id": "0",
@@ -309,7 +308,7 @@
                 }
             ],
             "ty": "def.pred",
-            "type": "(nat => nat) => aexp => nat => bool"
+            "type": "(nat ⇒ nat) ⇒ aexp ⇒ nat ⇒ bool"
         },
         {
             "name": "avalI_test1",
@@ -323,7 +322,7 @@
                     "th": "⊢ avalI ((λx. 0)(1 := 7)) (Plus (V 1) (N 5)) 12"
                 }
             ],
-            "prop": "avalI (fun_upd (%x. 0) 1 7) (Plus (V 1) (N 5)) 12",
+            "prop": "avalI ((λx. 0)(1 := 7)) (Plus (V 1) (N 5)) 12",
             "ty": "thm",
             "vars": {}
         },
@@ -339,7 +338,7 @@
                     "th": "⊢ avalI ((λx. 0)(1 := 7)) (Plus (V 0) (N 5)) 5"
                 }
             ],
-            "prop": "avalI (fun_upd (%x. 0) 1 7) (Plus (V 0) (N 5)) 5",
+            "prop": "avalI ((λx. 0)(1 := 7)) (Plus (V 0) (N 5)) 5",
             "ty": "thm",
             "vars": {}
         }

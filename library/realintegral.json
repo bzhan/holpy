@@ -3,14 +3,14 @@
         {
             "name": "has_real_integral",
             "ty": "def.ax",
-            "type": "(real => real) => real => real set => bool"
+            "type": "(real ⇒ real) ⇒ real ⇒ real set ⇒ bool"
         },
         {
             "attributes": [
                 "hint_rewrite"
             ],
             "name": "real_integrable_on",
-            "prop": "real_integrable_on f i = ?y. has_real_integral f y i",
+            "prop": "real_integrable_on f i ⟷ (∃y. has_real_integral f y i)",
             "ty": "def",
             "type": "(real ⇒ real) ⇒ real set ⇒ bool"
         },
@@ -19,7 +19,7 @@
                 "hint_rewrite"
             ],
             "name": "real_integral",
-            "prop": "real_integral i f = THE y. has_real_integral f y i",
+            "prop": "real_integral i f = (THE y. has_real_integral f y i)",
             "ty": "def",
             "type": "real set ⇒ (real ⇒ real) ⇒ real"
         },
@@ -41,8 +41,8 @@
             ],
             "name": "absolutely_real_integrable_on",
             "prop": [
-                "absolutely_real_integrable_on f s ⟷ real_integrable_on f s ∧ ",
-                "real_integrable_on (λx. abs (f x)) s"
+                "absolutely_real_integrable_on f s ⟷ ",
+                "real_integrable_on f s ∧ real_integrable_on (λx. abs (f x)) s"
             ],
             "ty": "def",
             "type": "(real ⇒ real) ⇒ real set ⇒ bool"
@@ -52,7 +52,7 @@
                 "hint_rewrite"
             ],
             "name": "has_real_measure",
-            "prop": "has_real_measure s m = has_real_integral (%x. 1) m s",
+            "prop": "has_real_measure s m ⟷ has_real_integral (λx. 1) m s",
             "ty": "def",
             "type": "real set ⇒ real ⇒ bool"
         },
@@ -61,7 +61,7 @@
                 "hint_rewrite"
             ],
             "name": "real_measurable",
-            "prop": "real_measurable s = ?m. has_real_measure s m",
+            "prop": "real_measurable s ⟷ (∃m. has_real_measure s m)",
             "ty": "def",
             "type": "real set ⇒ bool"
         },
@@ -144,7 +144,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real set"
             }
         },
@@ -207,13 +207,12 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "has_real_integral_integral",
             "num_gaps": 0,
             "proof": [
@@ -294,7 +293,7 @@
                     "th": "⊢ real_integrable_on f s ⟷ has_real_integral f (real_integral s f) s"
                 }
             ],
-            "prop": "real_integrable_on f s = has_real_integral f (real_integral s f) s",
+            "prop": "real_integrable_on f s ⟷ has_real_integral f (real_integral s f) s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -323,7 +322,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -335,7 +334,7 @@
             "prop": "has_real_integral f k1 i ∧ has_real_integral f k2 i ⟶ k1 = k2",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real set",
                 "k1": "real",
                 "k2": "real"
@@ -393,7 +392,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "k": "real set",
                 "y": "real"
             }
@@ -656,13 +655,12 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "real_integral_eq_has_integral",
             "num_gaps": 0,
             "proof": [
@@ -779,10 +777,7 @@
                     "th": "⊢ real_integrable_on f s ⟶ real_integral s f = i ⟷ has_real_integral f i s"
                 }
             ],
-            "prop": [
-                "real_integrable_on f s -->",
-                "(real_integral s f = i <--> has_real_integral f i s)"
-            ],
+            "prop": "real_integrable_on f s ⟶ real_integral s f = i ⟷ has_real_integral f i s",
             "steps": [
                 {
                     "goal_id": "1",
@@ -829,7 +824,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set"
             }
@@ -851,7 +846,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set"
             }
@@ -864,7 +859,7 @@
             "prop": "(∀x. x ∈ s ⟶ f x = 0) ⟶ has_real_integral f 0 s",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -949,7 +944,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "has_real_integral_0_eq",
             "num_gaps": 0,
             "proof": [
@@ -1116,13 +1110,12 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "k": "real",
                 "s": "real set"
             }
         },
         {
-            "attributes": [],
             "name": "has_real_integral_rmul",
             "num_gaps": 0,
             "proof": [
@@ -1178,7 +1171,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "k": "real",
                 "s": "real set"
             }
@@ -1188,10 +1181,10 @@
                 "hint_backward"
             ],
             "name": "has_real_integral_neg",
-            "prop": "has_real_integral f k s ⟶ has_real_integral (λx. -f x) (-k) s",
+            "prop": "has_real_integral f k s ⟶ has_real_integral (λx. -(f x)) (-k) s",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "k": "real",
                 "s": "real set"
             }
@@ -1209,8 +1202,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "k": "real",
                 "l": "real",
                 "s": "real set"
@@ -1340,8 +1333,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "k": "real",
                 "l": "real",
                 "s": "real set"
@@ -1527,8 +1520,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -1606,7 +1599,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -1669,7 +1662,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -1745,7 +1738,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -1887,8 +1880,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -2159,8 +2152,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -2281,7 +2274,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -2344,7 +2337,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -2631,10 +2624,7 @@
                     "th": "⊢ real_integrable_on (λx. c * f x) s ⟷ c = 0 ∨ real_integrable_on f s"
                 }
             ],
-            "prop": [
-                "real_integrable_on (λx. c * f x) s <-->",
-                "c = 0 | real_integrable_on f s"
-            ],
+            "prop": "real_integrable_on (λx. c * f x) s ⟷ c = 0 ∨ real_integrable_on f s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2762,7 +2752,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -2806,7 +2796,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -2888,7 +2878,7 @@
                     "th": "⊢ real_integrable_on f s ⟶ real_integrable_on (λx. -f x) s"
                 }
             ],
-            "prop": "real_integrable_on f s --> real_integrable_on (λx. -f x) s",
+            "prop": "real_integrable_on f s ⟶ real_integrable_on (λx. -(f x)) s",
             "steps": [
                 {
                     "goal_id": "1",
@@ -2925,7 +2915,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -3121,8 +3111,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -3132,14 +3122,13 @@
             ],
             "name": "has_real_integral_sum",
             "prop": [
-                "finite t &",
-                "(!a. a ∈ t --> has_real_integral (f a) (i a) s)",
-                "--> has_real_integral (%x. sum t (%a. f a x)) (sum t i) s"
+                "finite t ∧ (∀a. a ∈ t ⟶ has_real_integral (f a) (i a) s) ",
+                "⟶ has_real_integral (λx. sum t (λa. f a x)) (sum t i) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real => real",
-                "i": "'a => real",
+                "f": "'a ⇒ real ⇒ real",
+                "i": "'a ⇒ real",
                 "s": "real set",
                 "t": "'a set"
             }
@@ -3295,7 +3284,7 @@
             ],
             "prop": [
                 "finite t ∧ (∀a. a ∈ t ⟶ real_integrable_on (f a) s) ",
-                "⟶ real_integral s (λx. sum t (λa. f a x)) = sum t (%a. real_integral s (f a))"
+                "⟶ real_integral s (λx. sum t (λa. f a x)) = sum t (λa. real_integral s (f a))"
             ],
             "steps": [
                 {
@@ -3371,7 +3360,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real => real",
+                "f": "'a ⇒ real ⇒ real",
                 "s": "real set",
                 "t": "'a set"
             }
@@ -3556,7 +3545,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real => real",
+                "f": "'a ⇒ real ⇒ real",
                 "s": "real set",
                 "t": "'a set"
             }
@@ -3875,8 +3864,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "k": "real",
                 "s": "real set"
             }
@@ -4045,8 +4034,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -4234,7 +4223,7 @@
                     "th": "⊢ (∀x. x ∈ s ⟶ f x = g x) ⟶ has_real_integral f k s ⟷ has_real_integral g k s"
                 }
             ],
-            "prop": "(∀x. x ∈ s ⟶ f x = g x) ⟶ (has_real_integral f k s = has_real_integral g k s)",
+            "prop": "(∀x. x ∈ s ⟶ f x = g x) ⟶ has_real_integral f k s ⟷ has_real_integral g k s",
             "steps": [
                 {
                     "goal_id": "1",
@@ -4302,8 +4291,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "k": "real",
                 "s": "real set"
             }
@@ -4319,7 +4308,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -4454,7 +4443,7 @@
                     "th": "⊢ b ≤ a ⟶ has_real_integral f i (real_closed_interval a b) ⟷ i = 0"
                 }
             ],
-            "prop": "b ≤ a ⟶ (has_real_integral f i (real_closed_interval a b) <--> i = 0)",
+            "prop": "b ≤ a ⟶ has_real_integral f i (real_closed_interval a b) ⟷ i = 0",
             "steps": [
                 {
                     "fact_ids": [
@@ -4510,7 +4499,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real"
             }
         },
@@ -4575,7 +4564,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -4653,7 +4642,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -4739,7 +4728,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -4902,7 +4891,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real"
             }
         },
@@ -4949,7 +4938,7 @@
                     "th": "⊢ real_integrable_on f ∅"
                 }
             ],
-            "prop": "real_integrable_on f {}",
+            "prop": "real_integrable_on f ∅",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4974,7 +4963,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -5001,7 +4990,7 @@
                     "th": "⊢ real_integral ∅ f = 0"
                 }
             ],
-            "prop": "real_integral {} f = 0",
+            "prop": "real_integral ∅ f = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5016,7 +5005,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -5059,7 +5048,7 @@
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -5102,7 +5091,7 @@
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -5145,7 +5134,7 @@
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -5429,7 +5418,7 @@
                     "th": "⊢ a ≤ b ⟶ real_integral (real_closed_interval a b) (λx. c) = c * (b - a)"
                 }
             ],
-            "prop": "a ≤ b ⟶ real_integral (real_closed_interval a b) (λx. c) = (c * (b - a))",
+            "prop": "a ≤ b ⟶ real_integral (real_closed_interval a b) (λx. c) = c * (b - a)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -5457,17 +5446,18 @@
             ],
             "name": "has_real_integral_bound",
             "prop": [
-                "0 <= B & a <= b &",
-                "has_real_integral f i (real_closed_interval a b) &",
-                "(!x. x ∈ (real_closed_interval a b) --> abs (f x) <= B)",
-                "--> abs i <= B * (b - a)"
+                "0 ≤ B ∧ ",
+                "a ≤ b ∧ ",
+                "has_real_integral f i (real_closed_interval a b) ∧ ",
+                "(∀x. x ∈ real_closed_interval a b ⟶ abs (f x) ≤ B) ",
+                "⟶ abs i ≤ B * (b - a)"
             ],
             "ty": "thm",
             "vars": {
                 "B": "real",
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real"
             }
         },
@@ -5479,14 +5469,13 @@
             ],
             "name": "has_real_integral_le",
             "prop": [
-                "has_real_integral f i s & has_real_integral g j s &",
-                "(!x. x ∈ s --> f x <= g x)",
-                "--> i <= j"
+                "has_real_integral f i s ∧ has_real_integral g j s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ",
+                "⟶ i ≤ j"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "i": "real",
                 "j": "real",
                 "s": "real set"
@@ -5669,8 +5658,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -5750,7 +5739,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set"
             }
@@ -5866,7 +5855,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -5995,7 +5984,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set"
             }
@@ -6120,7 +6109,7 @@
                 "B": "real",
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real"
             }
         },
@@ -6228,8 +6217,8 @@
             "prop": [
                 "a ≤ b ∧ ",
                 "has_real_integral f i (real_closed_interval a b) ∧ ",
-                "(∀x. x ∈ real_closed_interval a b ⟶ f x <= B) ",
-                "⟶ i <= B * (b - a)"
+                "(∀x. x ∈ real_closed_interval a b ⟶ f x ≤ B) ",
+                "⟶ i ≤ B * (b - a)"
             ],
             "steps": [
                 {
@@ -6293,7 +6282,7 @@
                 "B": "real",
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real"
             }
         },
@@ -6464,7 +6453,7 @@
                 "B": "real",
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -6572,7 +6561,7 @@
                 "a ≤ b ∧ ",
                 "real_integrable_on f (real_closed_interval a b) ∧ ",
                 "(∀x. x ∈ real_closed_interval a b ⟶ f x ≤ B) ",
-                "⟶ real_integral (real_closed_interval a b) f ≤ B * (b - a) "
+                "⟶ real_integral (real_closed_interval a b) f ≤ B * (b - a)"
             ],
             "steps": [
                 {
@@ -6634,7 +6623,7 @@
                 "B": "real",
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -6644,16 +6633,16 @@
             ],
             "name": "real_integrable_uniform_limit",
             "prop": [
-                "(!e. 0 < e",
-                "--> ?g. (!x. x ∈ (real_closed_interval a b) --> abs (f x - g x) <= e) &",
-                "real_integrable_on g (real_closed_interval a b))",
-                "--> real_integrable_on f (real_closed_interval a b)"
+                "(∀e. 0 < e ",
+                "   ⟶ (∃g. (∀x. x ∈ real_closed_interval a b ⟶ abs (f x - g x) ≤ e) ∧ ",
+                "         real_integrable_on g (real_closed_interval a b))) ",
+                "⟶ real_integrable_on f (real_closed_interval a b)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -6663,13 +6652,10 @@
                 "hint_backward1"
             ],
             "name": "has_real_integral_negligible",
-            "prop": [
-                "real_negligible s & (!x. x ∈ (diff t s) --> f x = 0)",
-                "--> has_real_integral f 0 t"
-            ],
+            "prop": "real_negligible s ∧ (∀x. x ∈ diff t s ⟶ f x = 0) ⟶ has_real_integral f 0 t",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -6681,11 +6667,14 @@
                 "hint_forward"
             ],
             "name": "has_real_integral_spike",
-            "prop": "real_negligible s ∧ (∀x. x ∈ diff t s ⟶ g x = f x) & has_real_integral f y t ⟶ has_real_integral g y t",
+            "prop": [
+                "real_negligible s ∧ (∀x. x ∈ diff t s ⟶ g x = f x) ∧ has_real_integral f y t ",
+                "⟶ has_real_integral g y t"
+            ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "t": "real set",
                 "y": "real"
@@ -6933,8 +6922,8 @@
                 }
             ],
             "prop": [
-                "real_negligible s ∧ (∀x. x ∈ diff t s ⟶ g x = f x)",
-                "--> (has_real_integral f y t <--> has_real_integral g y t)"
+                "real_negligible s ∧ (∀x. x ∈ diff t s ⟶ g x = f x) ",
+                "⟶ has_real_integral f y t ⟷ has_real_integral g y t"
             ],
             "steps": [
                 {
@@ -7047,8 +7036,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "t": "real set",
                 "y": "real"
@@ -7182,7 +7171,7 @@
             ],
             "prop": [
                 "real_negligible s ∧ (∀x. x ∈ diff t s ⟶ g x = f x) ",
-                "⟶ real_integrable_on f t --> real_integrable_on g t"
+                "⟶ real_integrable_on f t ⟶ real_integrable_on g t"
             ],
             "steps": [
                 {
@@ -7247,8 +7236,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -7532,8 +7521,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -7547,12 +7536,12 @@
             "name": "real_integral_spike",
             "prop": [
                 "real_negligible s ∧ (∀x. x ∈ diff t s ⟶ g x = f x) ",
-                "⟶ (real_integral t f = real_integral t g)"
+                "⟶ real_integral t f = real_integral t g"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -7564,7 +7553,7 @@
                 "hint_forward"
             ],
             "name": "real_negligible_subset",
-            "prop": "real_negligible s ∧ subset t s --> real_negligible t ",
+            "prop": "real_negligible s ∧ t ⊆ s ⟶ real_negligible t",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -7623,7 +7612,7 @@
                     "th": "⊢ real_negligible s ⟶ real_negligible (diff s t)"
                 }
             ],
-            "prop": "real_negligible s --> real_negligible (diff s t)",
+            "prop": "real_negligible s ⟶ real_negligible (diff s t)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -7797,7 +7786,7 @@
                     "th": "⊢ real_negligible s ∨ real_negligible t ⟶ real_negligible (s ∩ t)"
                 }
             ],
-            "prop": "real_negligible s | real_negligible t ⟶ real_negligible (inter s t)",
+            "prop": "real_negligible s ∨ real_negligible t ⟶ real_negligible (s ∩ t)",
             "steps": [
                 {
                     "fact_ids": [
@@ -7865,7 +7854,7 @@
                 "hint_forward"
             ],
             "name": "real_negligible_union",
-            "prop": "real_negligible s & real_negligible t ⟶ real_negligible (union s t)",
+            "prop": "real_negligible s ∧ real_negligible t ⟶ real_negligible (s ∪ t)",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -8018,7 +8007,7 @@
                     "th": "⊢ real_negligible (s ∪ t) ⟷ real_negligible s ∧ real_negligible t"
                 }
             ],
-            "prop": "real_negligible (s ∪ t) <--> real_negligible s ∧ real_negligible t",
+            "prop": "real_negligible (s ∪ t) ⟷ real_negligible s ∧ real_negligible t",
             "steps": [
                 {
                     "goal_id": "0",
@@ -8092,7 +8081,7 @@
                 "hint_backward"
             ],
             "name": "real_negligible_sing",
-            "prop": "real_negligible {a}",
+            "prop": "real_negligible ({a})",
             "ty": "thm",
             "vars": {
                 "a": "real"
@@ -8396,7 +8385,7 @@
                     "th": "⊢ real_negligible (insert a s) ⟷ real_negligible s"
                 }
             ],
-            "prop": "real_negligible (insert a s) <--> real_negligible s",
+            "prop": "real_negligible (insert a s) ⟷ real_negligible s",
             "steps": [
                 {
                     "goal": "(insert a s) = union {a} s",
@@ -8626,7 +8615,7 @@
                 "hint_backward"
             ],
             "name": "real_negligible_finite",
-            "prop": "finite s --> real_negligible s",
+            "prop": "finite s ⟶ real_negligible s",
             "ty": "thm",
             "vars": {
                 "s": "real set"
@@ -8691,10 +8680,7 @@
                     "th": "⊢ finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⟶ real_negligible (⋃s)"
                 }
             ],
-            "prop": [
-                "finite s & (!t. t ∈ s --> real_negligible t)",
-                "--> real_negligible (Union s)"
-            ],
+            "prop": "finite s ∧ (∀t. t ∈ s ⟶ real_negligible t) ⟶ real_negligible (⋃s)",
             "steps": [
                 {
                     "fact_ids": [
@@ -8725,7 +8711,7 @@
                 "hint_backward1"
             ],
             "name": "real_open_not_real_negligible",
-            "prop": "real_open s & ~(s = {}) --> ~(real_negligible s)",
+            "prop": "real_open s ∧ ¬(s = ∅) ⟶ ¬(real_negligible s)",
             "ty": "thm",
             "vars": {
                 "s": "real set"
@@ -8845,8 +8831,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "t": "real set",
                 "y": "real"
@@ -8965,8 +8951,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "t": "real set",
                 "y": "real"
@@ -9095,8 +9081,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -10132,8 +10118,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "y": "real"
             }
         },
@@ -10323,8 +10309,8 @@
             ],
             "prop": [
                 "(∀x. x ∈ real_open_interval a b ⟶ g x = f x) ",
-                "--> (has_real_integral f y (real_closed_interval a b) <--> ",
-                "has_real_integral g y (real_closed_interval a b))"
+                "⟶ has_real_integral f y (real_closed_interval a b) ⟷ ",
+                "   has_real_integral g y (real_closed_interval a b)"
             ],
             "steps": [
                 {
@@ -10395,8 +10381,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "y": "real"
             }
         },
@@ -10546,8 +10532,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "g": "real => real"
+                "f": "real ⇒ real",
+                "g": "real ⇒ real"
             }
         },
         {
@@ -10700,10 +10686,7 @@
                     "th": "⊢ (∀x. x ∈ s ⟶ f x = g x) ⟶ real_integral s f = real_integral s g"
                 }
             ],
-            "prop": [
-                "(∀x. x ∈ s ⟶ f x = g x) ",
-                "⟶ real_integral s f = real_integral s g"
-            ],
+            "prop": "(∀x. x ∈ s ⟶ f x = g x) ⟶ real_integral s f = real_integral s g",
             "steps": [
                 {
                     "goal_id": "1",
@@ -10781,8 +10764,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -10865,7 +10848,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -10876,14 +10859,14 @@
             ],
             "name": "real_integrable_continuous",
             "prop": [
-                "real_continuous_on f (real_closed_interval a b)",
-                "--> real_integrable_on f (real_closed_interval a b)"
+                "real_continuous_on f (real_closed_interval a b) ",
+                "⟶ real_integrable_on f (real_closed_interval a b)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -10902,8 +10885,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real"
             }
         },
         {
@@ -11040,7 +11023,7 @@
                 "B": "real",
                 "c": "real",
                 "d": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -11051,17 +11034,18 @@
             ],
             "name": "has_real_integral_combine",
             "prop": [
-                "a <= c & c <= b &",
-                "has_real_integral f i (real_closed_interval a c) &",
-                "has_real_integral f j (real_closed_interval c b)",
-                "--> has_real_integral f (i + j) (real_closed_interval a b)"
+                "a ≤ c ∧ ",
+                "c ≤ b ∧ ",
+                "has_real_integral f i (real_closed_interval a c) ∧ ",
+                "has_real_integral f j (real_closed_interval c b) ",
+                "⟶ has_real_integral f (i + j) (real_closed_interval a b)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "j": "real"
             }
@@ -11354,12 +11338,10 @@
                 }
             ],
             "prop": [
-                "a ≤ c ∧ ",
-                "c ≤ b ∧ ",
-                "real_integrable_on f (real_closed_interval a b)",
-                "--> real_integral (real_closed_interval a c) f +  ",
-                "real_integral (real_closed_interval c b) f =",
-                "real_integral (real_closed_interval a b) f"
+                "a ≤ c ∧ c ≤ b ∧ real_integrable_on f (real_closed_interval a b) ",
+                "⟶ real_integral (real_closed_interval a c) f + ",
+                "   real_integral (real_closed_interval c b) f = ",
+                "   real_integral (real_closed_interval a b) f"
             ],
             "steps": [
                 {
@@ -11515,7 +11497,7 @@
                 "a": "real",
                 "b": "real",
                 "c": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -11700,9 +11682,11 @@
                 }
             ],
             "prop": [
-                "a ≤ c ∧ c ≤ b ∧ real_integrable_on f (real_closed_interval a c)",
-                "∧ real_integrable_on f (real_closed_interval c b)",
-                "--> real_integrable_on f (real_closed_interval a b) "
+                "a ≤ c ∧ ",
+                "c ≤ b ∧ ",
+                "real_integrable_on f (real_closed_interval a c) ∧ ",
+                "real_integrable_on f (real_closed_interval c b) ",
+                "⟶ real_integrable_on f (real_closed_interval a b)"
             ],
             "steps": [
                 {
@@ -11814,7 +11798,7 @@
                 "a": "real",
                 "b": "real",
                 "c": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -11823,19 +11807,18 @@
             ],
             "name": "real_integrable_on_little_subintervals",
             "prop": [
-                "(!x. x ∈ (real_closed_interval a b)",
-                "--> ?d. 0 < d &",
-                "!u. !v. x ∈ (real_closed_interval u v) &",
-                "(!y. y ∈ (real_closed_interval u v)",
-                "--> abs (y - x) < d & y ∈ (real_closed_interval a b))",
-                "--> real_integrable_on f (real_closed_interval u v))",
-                "--> real_integrable_on f (real_closed_interval a b)"
+                "(∀x. x ∈ real_closed_interval a b ",
+                "   ⟶ (∃d. 0 < d ∧ ",
+                "         (∀u. ∀v. x ∈ real_closed_interval u v ∧ ",
+                "              (∀y. y ∈ real_closed_interval u v ⟶ abs (y - x) < d ∧ y ∈ real_closed_interval a b) ",
+                "              ⟶ real_integrable_on f (real_closed_interval u v)))) ",
+                "⟶ real_integrable_on f (real_closed_interval a b)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -11845,17 +11828,17 @@
             ],
             "name": "real_integral_has_real_derivative_pointwise",
             "prop": [
-                "real_integrable_on f (real_closed_interval a b) &",
-                "x ∈ (real_closed_interval a b) &",
-                "real_continuous f (within (atreal x) (real_closed_interval a b))",
-                "--> has_real_derivative (%u. real_integral (real_closed_interval a u) f)",
-                "(f x) (within (atreal x) (real_closed_interval a b))"
+                "real_integrable_on f (real_closed_interval a b) ∧ ",
+                "x ∈ real_closed_interval a b ∧ ",
+                "real_continuous f (within (atreal x) (real_closed_interval a b)) ",
+                "⟶ has_real_derivative (λu. real_integral (real_closed_interval a u) f) (f x) ",
+                "     (within (atreal x) (real_closed_interval a b))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "x": "real"
             }
         },
@@ -12029,7 +12012,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -12077,10 +12060,9 @@
                 }
             ],
             "prop": [
-                "real_continuous_on f (real_closed_interval a b)",
-                "--> ?g. ∀x. x ∈ real_closed_interval a b",
-                "--> has_real_derivative g (f x) ",
-                "           (within (atreal x) (real_closed_interval a b))"
+                "real_continuous_on f (real_closed_interval a b) ",
+                "⟶ (∃g. ∀x. x ∈ real_closed_interval a b ",
+                "        ⟶ has_real_derivative g (f x) (within (atreal x) (real_closed_interval a b)))"
             ],
             "steps": [
                 {
@@ -12098,7 +12080,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -12797,7 +12779,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -12806,7 +12788,7 @@
             ],
             "name": "has_real_integral_affinity",
             "prop": [
-                "has_real_integral f i (real_closed_interval a b) ∧ ¬m = 0 ",
+                "has_real_integral f i (real_closed_interval a b) ∧ ¬(m = 0) ",
                 "⟶ has_real_integral (λx. f (m * x + c)) (real_inverse (abs m) * i) ",
                 "     (image (λx. real_inverse m * (x - c)) (real_closed_interval a b))"
             ],
@@ -12815,7 +12797,7 @@
                 "a": "real",
                 "b": "real",
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "m": "real"
             }
@@ -12929,7 +12911,7 @@
                 }
             ],
             "prop": [
-                "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0 ",
+                "real_integrable_on f (real_closed_interval a b) ∧ ¬(m = 0) ",
                 "⟶ real_integrable_on (λx. f (m * x + c)) ",
                 "     (image (λx. real_inverse m * (x - c)) (real_closed_interval a b))"
             ],
@@ -12992,7 +12974,7 @@
                 "a": "real",
                 "b": "real",
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "m": "real"
             }
         },
@@ -13058,7 +13040,7 @@
                 }
             ],
             "prop": [
-                "has_real_integral f i (real_closed_interval a b) ∧ ¬m = 0 ",
+                "has_real_integral f i (real_closed_interval a b) ∧ ¬(m = 0) ",
                 "⟶ has_real_integral (λx. f (m * x)) (real_inverse (abs m) * i) ",
                 "     (image (λx. real_inverse m * x) (real_closed_interval a b))"
             ],
@@ -13102,7 +13084,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "m": "real"
             }
@@ -13214,7 +13196,7 @@
                 }
             ],
             "prop": [
-                "real_integrable_on f (real_closed_interval a b) ∧ ¬m = 0 ",
+                "real_integrable_on f (real_closed_interval a b) ∧ ¬(m = 0) ",
                 "⟶ real_integrable_on (λx. f (m * x)) ",
                 "     (image (λx. real_inverse m * x) (real_closed_interval a b))"
             ],
@@ -13276,7 +13258,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "m": "real"
             }
         },
@@ -13287,14 +13269,14 @@
             ],
             "name": "has_real_integral_reflect_lemma",
             "prop": [
-                "has_real_integral f i (real_closed_interval a b)",
-                "--> has_real_integral (%x. f (-x)) i (real_closed_interval (-b) (-a))"
+                "has_real_integral f i (real_closed_interval a b) ",
+                "⟶ has_real_integral (λx. f (-x)) i (real_closed_interval (-b) (-a))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real"
             }
         },
@@ -13401,7 +13383,7 @@
                 }
             ],
             "prop": [
-                "has_real_integral (λx. f (-x)) i (real_closed_interval (-b) (-a)) <--> ",
+                "has_real_integral (λx. f (-x)) i (real_closed_interval (-b) (-a)) ⟷ ",
                 "has_real_integral f i (real_closed_interval a b)"
             ],
             "steps": [
@@ -13452,7 +13434,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real"
             }
         },
@@ -13500,7 +13482,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -13547,7 +13529,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -13555,13 +13537,10 @@
                 "hint_rewrite"
             ],
             "name": "has_real_integral_reflect_gen",
-            "prop": [
-                "has_real_integral (λx. f (-x)) i s ⟷ ",
-                "has_real_integral f i (image uminus s)"
-            ],
+            "prop": "has_real_integral (λx. f (-x)) i s ⟷ has_real_integral f i (image uminus s)",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set"
             }
@@ -13605,7 +13584,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -13633,7 +13612,7 @@
                     "th": "⊢ real_integral s (λx. f (-x)) = real_integral (image uminus s) f"
                 }
             ],
-            "prop": "real_integral s (λx. f (-x)) ⟷ real_integral (image uminus s) f",
+            "prop": "real_integral s (λx. f (-x)) = real_integral (image uminus s) f",
             "steps": [
                 {
                     "goal_id": "0",
@@ -13648,7 +13627,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -13658,17 +13637,17 @@
             ],
             "name": "real_fundamental_theorem_of_calculus_interior",
             "prop": [
-                "a ≤ b ∧ real_continuous_on f (real_closed_interval a b) &",
-                "(∀x. x ∈ real_closed_interval a b ",
-                "   ⟶ has_real_derivative f (f1 x) (atreal x)) ",
+                "a ≤ b ∧ ",
+                "real_continuous_on f (real_closed_interval a b) ∧ ",
+                "(∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative f (f1 x) (atreal x)) ",
                 "⟶ has_real_integral f1 (f b - f a) (real_closed_interval a b)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real"
             }
         },
         {
@@ -13687,8 +13666,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -14213,8 +14192,8 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -14233,7 +14212,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -14251,7 +14230,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -14261,15 +14240,17 @@
             "name": "has_real_derivative_zero_uniqe_strong_interval",
             "prop": [
                 "countable s ∧ ",
-                "real_continuous_on f (real_closed_interval a b) ∧ f a = y &",
-                "(∀x. x ∈ diff (real_closed_interval a b) s ⟶ has_real_derivative f 0 (within (atreal x) (real_closed_interval a b))) ",
-                "⟶ !x. x ∈ (real_closed_interval a b) --> f x = y"
+                "real_continuous_on f (real_closed_interval a b) ∧ ",
+                "f a = y ∧ ",
+                "(∀x. x ∈ diff (real_closed_interval a b) s ",
+                "   ⟶ has_real_derivative f 0 (within (atreal x) (real_closed_interval a b))) ",
+                "⟶ (∀x. x ∈ real_closed_interval a b ⟶ f x = y)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "y": "real"
             }
@@ -14280,17 +14261,17 @@
             ],
             "name": "has_real_derivative_zero_uniqe_strong_convex",
             "prop": [
-                "is_realinterval s & countable k ∧ ",
-                "real_continuous_on f s ∧ c ∈ s &",
-                "f c = y ∧ ",
-                "(∀x. x ∈ diff s k ",
-                "   ⟶ has_real_derivative f 0 (within (atreal x) s)) ",
+                "is_realinterval s ∧ ",
+                "countable k ∧ ",
+                "real_continuous_on f s ∧ ",
+                "c ∈ s ∧ ",
+                "f c = y ∧ (∀x. x ∈ diff s k ⟶ has_real_derivative f 0 (within (atreal x) s)) ",
                 "⟶ (∀x. x ∈ s ⟶ f x = y)"
             ],
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "k": "real set",
                 "s": "real set",
                 "y": "real"
@@ -14302,17 +14283,17 @@
             ],
             "name": "has_real_derivative_indefinite_integral",
             "prop": [
-                "real_continuous_on f (real_closed_interval a b)",
-                "--> ?k. real_negligible k &",
-                "!x. x ∈ diff (real_closed_interval a b) k",
-                "--> has_real_derivative (λx. real_integral (real_closed_interval a x) f)",
-                "(f x) (within (atreal x) (real_closed_interval a b))"
+                "real_continuous_on f (real_closed_interval a b) ",
+                "⟶ (∃k. real_negligible k ∧ ",
+                "      (∀x. x ∈ diff (real_closed_interval a b) k ",
+                "         ⟶ has_real_derivative (λx1. real_integral (real_closed_interval a x1) f) (f x) ",
+                "              (within (atreal x) (real_closed_interval a b))))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -14322,13 +14303,12 @@
             ],
             "name": "has_real_integral_restrict",
             "prop": [
-                "subset s t",
-                "--> (has_real_integral (%x. if x ∈ s then f x else 0) i t <-->",
-                "has_real_integral f i s)"
+                "s ⊆ t ",
+                "⟶ has_real_integral (λx. if x ∈ s then f x else 0) i t ⟷ has_real_integral f i s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set",
                 "t": "real set"
@@ -14358,7 +14338,10 @@
                     "th": "⊢ has_real_integral (λx. if x ∈ s then f x else 0) i univ ⟷ has_real_integral f i s"
                 }
             ],
-            "prop": "has_real_integral (λx. if x ∈ s then f x else 0) i univ ⟷ has_real_integral f i s",
+            "prop": [
+                "has_real_integral (λx. if x ∈ s then f x else 0) i univ ⟷ ",
+                "has_real_integral f i s"
+            ],
             "steps": [
                 {
                     "goal_id": "0",
@@ -14373,7 +14356,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set"
             }
@@ -14577,8 +14560,8 @@
                 }
             ],
             "prop": [
-                "real_negligible (union (diff s t) (diff t s))",
-                "--> (has_real_integral f y s <--> has_real_integral f y t)"
+                "real_negligible (diff s t ∪ diff t s) ",
+                "⟶ has_real_integral f y s ⟷ has_real_integral f y t"
             ],
             "steps": [
                 {
@@ -14676,7 +14659,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set",
                 "y": "real"
@@ -14753,9 +14736,8 @@
                 }
             ],
             "prop": [
-                "real_negligible (diff s t ∪ diff t s) &",
-                "has_real_integral f y s ",
-                "--> has_real_integral f y t"
+                "real_negligible (diff s t ∪ diff t s) ∧ has_real_integral f y s ",
+                "⟶ has_real_integral f y t"
             ],
             "steps": [
                 {
@@ -14795,7 +14777,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set",
                 "y": "real"
@@ -14900,8 +14882,7 @@
             ],
             "prop": [
                 "real_negligible (diff s t ∪ diff t s) ",
-                "⟶ real_integrable_on f s ",
-                "--> real_integrable_on f t"
+                "⟶ real_integrable_on f s ⟶ real_integrable_on f t"
             ],
             "steps": [
                 {
@@ -14951,7 +14932,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -15107,7 +15088,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -15154,10 +15135,7 @@
                     "th": "⊢ real_negligible (diff s t ∪ diff t s) ⟶ real_integral s f = real_integral t f"
                 }
             ],
-            "prop": [
-                "real_negligible (diff s t ∪ diff t s) ",
-                "⟶ real_integral s f ⟷ real_integral t f"
-            ],
+            "prop": "real_negligible (diff s t ∪ diff t s) ⟶ real_integral s f = real_integral t f",
             "steps": [
                 {
                     "goal_id": "1",
@@ -15167,7 +15145,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -15185,7 +15163,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "y": "real"
             }
         },
@@ -15233,7 +15211,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -15280,7 +15258,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -15505,8 +15483,8 @@
                 }
             ],
             "prop": [
-                "(!x. ~(x ∈ s) --> f x = 0) & subset s t & has_real_integral f i s",
-                "--> has_real_integral f i t"
+                "(∀x. ¬(x ∈ s) ⟶ f x = 0) ∧ s ⊆ t ∧ has_real_integral f i s ",
+                "⟶ has_real_integral f i t"
             ],
             "steps": [
                 {
@@ -15629,7 +15607,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set",
                 "t": "real set"
@@ -15771,8 +15749,8 @@
                 }
             ],
             "prop": [
-                "(∀x. ¬x ∈ s ⟶ f x = 0) ∧ s ⊆ t ∧ real_integrable_on f s ",
-                "⟶  real_integrable_on f t"
+                "(∀x. ¬(x ∈ s) ⟶ f x = 0) ∧ s ⊆ t ∧ real_integrable_on f s ",
+                "⟶ real_integrable_on f t"
             ],
             "steps": [
                 {
@@ -15852,7 +15830,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -15881,10 +15859,7 @@
                     "th": "⊢ real_integrable_on (λx. if x ∈ s then f x else 0) univ ⟷ real_integrable_on f s"
                 }
             ],
-            "prop": [
-                "real_integrable_on (λx. if x ∈ s then f x else 0) univ ⟷ ",
-                "real_integrable_on f s"
-            ],
+            "prop": "real_integrable_on (λx. if x ∈ s then f x else 0) univ ⟷ real_integrable_on f s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -15899,7 +15874,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -15973,10 +15948,7 @@
                     "th": "⊢ s ⊆ t ⟶ real_integral t (λx. if x ∈ s then f x else 0) = real_integral s f"
                 }
             ],
-            "prop": [
-                "s ⊆ t ",
-                "⟶ real_integral t (λx. if x ∈ s then f x else 0) = real_integral s f"
-            ],
+            "prop": "s ⊆ t ⟶ real_integral t (λx. if x ∈ s then f x else 0) = real_integral s f",
             "steps": [
                 {
                     "goal_id": "1",
@@ -16008,7 +15980,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -16259,7 +16231,10 @@
                     "th": "⊢ has_real_integral (λx. if x ∈ s then f x else 0) i t ⟷ has_real_integral f i (s ∩ t)"
                 }
             ],
-            "prop": "has_real_integral (λx. if x ∈ s then f x else 0) i t ⟷ has_real_integral f i (inter s t)",
+            "prop": [
+                "has_real_integral (λx. if x ∈ s then f x else 0) i t ⟷ ",
+                "has_real_integral f i (s ∩ t)"
+            ],
             "steps": [
                 {
                     "goal": "∀f. ∀s. ∀i. has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ",
@@ -16373,7 +16348,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "s": "real set",
                 "t": "real set"
@@ -16421,7 +16396,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -16431,7 +16406,7 @@
                 "hint_rewrite"
             ],
             "name": "real_negligible_on_interval",
-            "prop": "real_negligible s <--> !a. !b. real_negligible (inter s (real_closed_interval a b))",
+            "prop": "real_negligible s ⟷ (∀a. ∀b. real_negligible (s ∩ real_closed_interval a b))",
             "ty": "thm",
             "vars": {
                 "s": "real set"
@@ -16679,9 +16654,9 @@
                 }
             ],
             "prop": [
-                "subset s t & has_real_integral f i s & has_real_integral f j t &",
-                "(!x. x ∈ t --> 0 <= f x)",
-                "--> i <= j"
+                "s ⊆ t ∧ ",
+                "has_real_integral f i s ∧ has_real_integral f j t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x) ",
+                "⟶ i ≤ j"
             ],
             "steps": [
                 {
@@ -16793,7 +16768,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "j": "real",
                 "s": "real set",
@@ -16938,8 +16913,7 @@
                 }
             ],
             "prop": [
-                "s ⊆ t ∧ ",
-                "real_integrable_on f s ∧ real_integrable_on f t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x) ",
+                "s ⊆ t ∧ real_integrable_on f s ∧ real_integrable_on f t ∧ (∀x. x ∈ t ⟶ 0 ≤ f x) ",
                 "⟶ real_integral s f ≤ real_integral t f"
             ],
             "steps": [
@@ -17027,7 +17001,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -17039,14 +17013,14 @@
             ],
             "name": "real_integrable_on_subinterval",
             "prop": [
-                "real_integrable_on f s & (real_closed_interval a b) ⊆ s",
-                "--> real_integrable_on f (real_closed_interval a b)"
+                "real_integrable_on f s ∧ real_closed_interval a b ⊆ s ",
+                "⟶ real_integrable_on f (real_closed_interval a b)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -17056,13 +17030,10 @@
                 "hint_forward"
             ],
             "name": "real_integrable_on_subinterval_gen",
-            "prop": [
-                "real_integrable_on f s ∧ t ⊆ s & is_realinterval t",
-                "⟶ real_integrable_on f t"
-            ],
+            "prop": "real_integrable_on f s ∧ t ⊆ s ∧ is_realinterval t ⟶ real_integrable_on f t",
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -17073,16 +17044,14 @@
             ],
             "name": "real_integrable_straddle",
             "prop": [
-                "(!e. 0 < e",
-                "--> ?g. ?h. ?i. ?j. has_real_integral g i s &",
-                "has_real_integral h j s &",
-                "abs (i - j) < e &",
-                "!x. x ∈ s --> g x <= f x & f x <= h x)",
-                "--> real_integrable_on f s"
+                "(∀e. 0 < e ",
+                "   ⟶ (∃g. ∃h. ∃i. ∃j. has_real_integral g i s ∧ ",
+                "               has_real_integral h j s ∧ abs (i - j) < e ∧ (∀x. x ∈ s ⟶ g x ≤ f x ∧ f x ≤ h x))) ",
+                "⟶ real_integrable_on f s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -17498,9 +17467,8 @@
                 }
             ],
             "prop": [
-                "(!x. x ∈ s ⟶ 0 ≤ f x ∧ f x ≤ g x) &",
-                "has_real_integral g 0 s",
-                "--> has_real_integral f 0 s"
+                "(∀x. x ∈ s ⟶ 0 ≤ f x ∧ f x ≤ g x) ∧ has_real_integral g 0 s ",
+                "⟶ has_real_integral f 0 s"
             ],
             "steps": [
                 {
@@ -17734,8 +17702,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -17745,13 +17713,12 @@
             ],
             "name": "has_real_integral_union",
             "prop": [
-                "has_real_integral f i s ∧ has_real_integral f j t &",
-                "real_negligible (s ∩ t)",
-                "--> has_real_integral f (i + j) (union s t)"
+                "has_real_integral f i s ∧ has_real_integral f j t ∧ real_negligible (s ∩ t) ",
+                "⟶ has_real_integral f (i + j) (s ∪ t)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "i": "real",
                 "j": "real",
                 "s": "real set",
@@ -17764,16 +17731,15 @@
             ],
             "name": "has_real_integral_unions",
             "prop": [
-                "finite t &",
-                "(!s. s ∈ t --> has_real_integral f (i s) s) &",
-                "(!s. !s1. s ∈ t & s1 ∈ t & ~(s = s1)",
-                "--> real_negligible (inter s s1))",
-                "--> has_real_integral f (sum t i) (Union t)"
+                "finite t ∧ ",
+                "(∀s. s ∈ t ⟶ has_real_integral f (i s) s) ∧ ",
+                "(∀s. ∀s1. s ∈ t ∧ s1 ∈ t ∧ ¬(s = s1) ⟶ real_negligible (s ∩ s1)) ",
+                "⟶ has_real_integral f (sum t i) (⋃t)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "i": "real set => real",
+                "f": "real ⇒ real",
+                "i": "real set ⇒ real",
                 "t": "real set set"
             }
         },
@@ -17783,16 +17749,15 @@
             ],
             "name": "real_indefinite_integral_continuous",
             "prop": [
-                "real_integrable_on f (real_closed_interval a b) &",
-                "c ∈ (real_closed_interval a b) &",
-                "d ∈ (real_closed_interval a b) &",
-                "0 < e",
-                "--> ?k. 0 < k &",
-                "!c1. !d1. c1 ∈ (real_closed_interval a b) &",
-                "d1 ∈ (real_closed_interval a b) &",
-                "abs (c1 - c) <= k & abs (d1 - d) <= k",
-                "--> abs ((real_integral (real_closed_interval c1 d1) f) -",
-                " (real_integral (real_closed_interval c d) f)) < e"
+                "real_integrable_on f (real_closed_interval a b) ∧ ",
+                "c ∈ real_closed_interval a b ∧ d ∈ real_closed_interval a b ∧ 0 < e ",
+                "⟶ (∃k. 0 < k ∧ ",
+                "      (∀c1. ∀d1. c1 ∈ real_closed_interval a b ∧ ",
+                "           d1 ∈ real_closed_interval a b ∧ abs (c1 - c) ≤ k ∧ abs (d1 - d) ≤ k ",
+                "           ⟶ abs ",
+                "                (real_integral (real_closed_interval c1 d1) f - ",
+                "                 real_integral (real_closed_interval c d) f) < ",
+                "              e))"
             ],
             "ty": "thm",
             "vars": {
@@ -17801,7 +17766,7 @@
                 "c": "real",
                 "d": "real",
                 "e": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -17810,16 +17775,17 @@
             ],
             "name": "real_monotone_convergence_increasing",
             "prop": [
-                "(!k. real_integrable_on (f k) s) &",
-                "(!k. !x. x ∈ s --> f k x <= f (Suc k) x) &",
-                "(!x. x ∈ s --> tendsto_real (%k. f k x) (g x) sequentially) &",
-                "real_bounded {y. !k. y = real_integral s (f k)}",
-                "--> real_integrable_on g s & tendsto_real (%k. real_integral s (f k)) (real_integral s g) sequentially"
+                "(∀k. real_integrable_on (f k) s) ∧ ",
+                "(∀k. ∀x. x ∈ s ⟶ f k x ≤ f (Suc k) x) ∧ ",
+                "(∀x. x ∈ s ⟶ tendsto_real (λk. f k x) (g x) sequentially) ∧ ",
+                "real_bounded ({y. ∀k. y = real_integral s (f k)}) ",
+                "⟶ real_integrable_on g s ∧ ",
+                "   tendsto_real (λk. real_integral s (f k)) (real_integral s g) sequentially"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real => real",
-                "g": "real => real",
+                "f": "nat ⇒ real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -17838,8 +17804,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real => real",
-                "g": "real => real",
+                "f": "nat ⇒ real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -17849,15 +17815,15 @@
             ],
             "name": "real_beppo_levi_increasing",
             "prop": [
-                "(∀k. real_integrable_on (f k) s) ∧",
-                "(∀k. ∀x. x ∈ s ⟶ f k x ≤ f (Suc k) x) ∧",
-                "real_bounded ({y. ∀k. y = real_integral s (f k)})",
-                "--> ?g. ?k. real_negligible k &",
-                "!x. x ∈ (diff s k) --> tendsto_real (λk. f k x) (g x) sequentially"
+                "(∀k. real_integrable_on (f k) s) ∧ ",
+                "(∀k. ∀x. x ∈ s ⟶ f k x ≤ f (Suc k) x) ∧ ",
+                "real_bounded ({y. ∀k. y = real_integral s (f k)}) ",
+                "⟶ (∃g. ∃k. real_negligible k ∧ ",
+                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk1. f k1 x) (g x) sequentially))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real => real",
+                "f": "nat ⇒ real ⇒ real",
                 "s": "real set"
             }
         },
@@ -17871,11 +17837,11 @@
                 "(∀k. ∀x. x ∈ s ⟶ f (Suc k) x ≤ f k x) ∧ ",
                 "real_bounded ({y. ∀k. y = real_integral s (f k)}) ",
                 "⟶ (∃g. ∃k. real_negligible k ∧ ",
-                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk. f k x) (g x) sequentially))"
+                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk1. f k1 x) (g x) sequentially))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real => real",
+                "f": "nat ⇒ real ⇒ real",
                 "s": "real set"
             }
         },
@@ -17889,13 +17855,13 @@
                 "(∀k. ∀x. x ∈ s ⟶ f k x ≤ f (Suc k) x) ∧ ",
                 "real_bounded ({y. ∀k. y = real_integral s (f k)}) ",
                 "⟶ (∃g. ∃k. real_negligible k ∧ ",
-                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk. f k x) (g x) sequentially) &",
-                "real_integrable_on g s ∧ ",
-                "   tendsto_real (λk. real_integral s (f k)) (real_integral s g) sequentially)"
+                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk1. f k1 x) (g x) sequentially) ∧ ",
+                "        real_integrable_on g s ∧ ",
+                "        tendsto_real (λk1. real_integral s (f k1)) (real_integral s g) sequentially)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real => real",
+                "f": "nat ⇒ real ⇒ real",
                 "s": "real set"
             }
         },
@@ -17909,13 +17875,13 @@
                 "(∀k. ∀x. x ∈ s ⟶ f (Suc k) x ≤ f k x) ∧ ",
                 "real_bounded ({y. ∀k. y = real_integral s (f k)}) ",
                 "⟶ (∃g. ∃k. real_negligible k ∧ ",
-                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk. f k x) (g x) sequentially) ∧ ",
+                "        (∀x. x ∈ diff s k ⟶ tendsto_real (λk1. f k1 x) (g x) sequentially) ∧ ",
                 "        real_integrable_on g s ∧ ",
-                "        tendsto_real (λk. real_integral s (f k)) (real_integral s g) sequentially)"
+                "        tendsto_real (λk1. real_integral s (f k1)) (real_integral s g) sequentially)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real => real",
+                "f": "nat ⇒ real ⇒ real",
                 "s": "real set"
             }
         },
@@ -18232,9 +18198,8 @@
                 }
             ],
             "prop": [
-                "real_integrable_on f s & real_integrable_on g s &",
-                "(!x. x ∈ s --> abs (f x) <= g x)",
-                "--> abs (real_integral s f) <= real_integral s g"
+                "real_integrable_on f s ∧ real_integrable_on g s ∧ (∀x. x ∈ s ⟶ abs (f x) ≤ g x) ",
+                "⟶ abs (real_integral s f) ≤ real_integral s g"
             ],
             "steps": [
                 {
@@ -18415,8 +18380,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -18542,8 +18507,8 @@
                 }
             ],
             "prop": [
-                "absolutely_real_integrable_on f s",
-                "--> abs (real_integral s f) ≤ real_integral s (%x. abs (f x))"
+                "absolutely_real_integrable_on f s ",
+                "⟶ abs (real_integral s f) ≤ real_integral s (λx. abs (f x))"
             ],
             "steps": [
                 {
@@ -18598,7 +18563,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -18663,7 +18628,7 @@
                     "th": "⊢ absolutely_real_integrable_on (λx. 0) s"
                 }
             ],
-            "prop": "absolutely_real_integrable_on (%x. 0) s ",
+            "prop": "absolutely_real_integrable_on (λx. 0) s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -18932,7 +18897,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -19026,10 +18991,7 @@
                     "th": "⊢ absolutely_real_integrable_on f s ⟶ absolutely_real_integrable_on (λx. -f x) s"
                 }
             ],
-            "prop": [
-                "absolutely_real_integrable_on f s ",
-                "⟶ absolutely_real_integrable_on (λx. -f x) s"
-            ],
+            "prop": "absolutely_real_integrable_on f s ⟶ absolutely_real_integrable_on (λx. -(f x)) s",
             "steps": [
                 {
                     "goal_id": "1",
@@ -19078,7 +19040,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -19154,7 +19116,10 @@
                     "th": "⊢ absolutely_real_integrable_on f s ⟶ absolutely_real_integrable_on (λx. abs (f x)) s"
                 }
             ],
-            "prop": "absolutely_real_integrable_on f s ⟶ absolutely_real_integrable_on (λx. abs (f x)) s",
+            "prop": [
+                "absolutely_real_integrable_on f s ",
+                "⟶ absolutely_real_integrable_on (λx. abs (f x)) s"
+            ],
             "steps": [
                 {
                     "fact_ids": [
@@ -19190,7 +19155,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -19404,7 +19369,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -19502,8 +19467,8 @@
                 }
             ],
             "prop": [
-                "absolutely_real_integrable_on (λx. if x ∈ s then f x else 0) univ ⟷",
-                " absolutely_real_integrable_on f s"
+                "absolutely_real_integrable_on (λx. if x ∈ s then f x else 0) univ ⟷ ",
+                "absolutely_real_integrable_on f s"
             ],
             "steps": [
                 {
@@ -19541,7 +19506,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -19680,9 +19645,8 @@
                 }
             ],
             "prop": [
-                "absolutely_real_integrable_on f s &",
-                "absolutely_real_integrable_on g s",
-                " ⟶ absolutely_real_integrable_on (λx. f x + g x) s"
+                "absolutely_real_integrable_on f s ∧ absolutely_real_integrable_on g s ",
+                "⟶ absolutely_real_integrable_on (λx. f x + g x) s"
             ],
             "steps": [
                 {
@@ -19761,8 +19725,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -19891,8 +19855,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -19908,7 +19872,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real => real",
+                "f": "'a ⇒ real ⇒ real",
                 "s": "real set",
                 "t": "'a set"
             }
@@ -20081,8 +20045,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -20098,8 +20062,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -20147,10 +20111,7 @@
                     "th": "⊢ absolutely_real_integrable_on f s ⟶ real_integrable_on f s"
                 }
             ],
-            "prop": [
-                "absolutely_real_integrable_on f s",
-                "--> real_integrable_on f s"
-            ],
+            "prop": "absolutely_real_integrable_on f s ⟶ real_integrable_on f s",
             "steps": [
                 {
                     "fact_ids": [
@@ -20171,7 +20132,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -20246,8 +20207,8 @@
                 }
             ],
             "prop": [
-                "real_continuous_on f (real_closed_interval a b)",
-                "--> absolutely_real_integrable_on f (real_closed_interval a b)"
+                "real_continuous_on f (real_closed_interval a b) ",
+                "⟶ absolutely_real_integrable_on f (real_closed_interval a b)"
             ],
             "steps": [
                 {
@@ -20278,7 +20239,7 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real"
+                "f": "real ⇒ real"
             }
         },
         {
@@ -20502,7 +20463,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -20512,13 +20473,13 @@
             ],
             "name": "absolutely_real_integrable_integrable_bound",
             "prop": [
-                "(∀x. x ∈ s ⟶ abs (f x) ≤ g x) ∧ real_integrable_on f s ∧ real_integrable_on g s",
+                "(∀x. x ∈ s ⟶ abs (f x) ≤ g x) ∧ real_integrable_on f s ∧ real_integrable_on g s ",
                 "⟶ absolutely_real_integrable_on f s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -20703,8 +20664,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -20720,8 +20681,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -20737,8 +20698,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
-                "g": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -20748,13 +20709,12 @@
             ],
             "name": "absolutely_real_integrable_inf",
             "prop": [
-                "finite k & ~(k = {}) &",
-                "(!i. i ∈ k --> absolutely_real_integrable_on (%x. fs x i) s)",
-                "--> absolutely_real_integrable_on (%x. inf (image (fs x) k)) s"
+                "finite k ∧ ¬(k = ∅) ∧ (∀i. i ∈ k ⟶ absolutely_real_integrable_on (λx. fs x i) s) ",
+                "⟶ absolutely_real_integrable_on (λx. inf (image (fs x) k)) s"
             ],
             "ty": "thm",
             "vars": {
-                "fs": "real => 'a => real",
+                "fs": "real ⇒ 'a ⇒ real",
                 "k": "'a set",
                 "s": "real set"
             }
@@ -20765,12 +20725,12 @@
             ],
             "name": "absolutely_real_integrable_sup",
             "prop": [
-                "finite k ∧ ¬k = ∅ ∧ (∀i. i ∈ k ⟶ absolutely_real_integrable_on (λx. fs x i) s) ",
+                "finite k ∧ ¬(k = ∅) ∧ (∀i. i ∈ k ⟶ absolutely_real_integrable_on (λx. fs x i) s) ",
                 "⟶ absolutely_real_integrable_on (λx. sup (image (fs x) k)) s"
             ],
             "ty": "thm",
             "vars": {
-                "fs": "real => 'a => real",
+                "fs": "real ⇒ 'a ⇒ real",
                 "k": "'a set",
                 "s": "real set"
             }
@@ -20781,17 +20741,18 @@
             ],
             "name": "real_dominated_convergence",
             "prop": [
-                "(!k. real_integrable_on (f k) s) & real_integrable_on h s &",
-                "(!k. !x. x ∈ s ⟶ abs (f k x) ≤ h x) ∧ ",
-                "(!x. x ∈ s ⟶ tendsto_real (%k. f k x) (g x) sequentially)",
-                "--> real_integrable_on g s ∧ ",
-                "tendsto_real (%k. real_integral s (f k)) (real_integral s g) sequentially"
+                "(∀k. real_integrable_on (f k) s) ∧ ",
+                "real_integrable_on h s ∧ ",
+                "(∀k. ∀x. x ∈ s ⟶ abs (f k x) ≤ h x) ∧ ",
+                "(∀x. x ∈ s ⟶ tendsto_real (λk. f k x) (g x) sequentially) ",
+                "⟶ real_integrable_on g s ∧ ",
+                "   tendsto_real (λk. real_integral s (f k)) (real_integral s g) sequentially"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => real => real",
-                "g": "real => real",
-                "h": "real => real",
+                "f": "nat ⇒ real ⇒ real",
+                "g": "real ⇒ real",
+                "h": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -20895,7 +20856,7 @@
                     "th": "⊢ real_measurable s ⟷ has_real_measure s (real_measure s)"
                 }
             ],
-            "prop": "real_measurable s = has_real_measure s (real_measure s)",
+            "prop": "real_measurable s ⟷ has_real_measure s (real_measure s)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -20975,10 +20936,7 @@
                     "th": "⊢ has_real_measure s m1 ∧ has_real_measure s m2 ⟶ m1 = m2"
                 }
             ],
-            "prop": [
-                "has_real_measure s m1 & has_real_measure s m2",
-                "--> m1 = m2"
-            ],
+            "prop": "has_real_measure s m1 ∧ has_real_measure s m2 ⟶ m1 = m2",
             "steps": [
                 {
                     "fact_ids": [
@@ -21084,7 +21042,7 @@
                     "th": "⊢ has_real_measure s m ⟶ real_measure s = m"
                 }
             ],
-            "prop": "has_real_measure s m --> real_measure s = m",
+            "prop": "has_real_measure s m ⟶ real_measure s = m",
             "steps": [
                 {
                     "goal_id": "1",
@@ -21293,7 +21251,7 @@
                     "th": "⊢ has_real_measure s m ⟷ real_measurable s ∧ real_measure s = m"
                 }
             ],
-            "prop": "has_real_measure s m <--> real_measurable s & real_measure s = m",
+            "prop": "has_real_measure s m ⟷ real_measurable s ∧ real_measure s = m",
             "steps": [
                 {
                     "goal_id": "0",
@@ -21415,10 +21373,7 @@
                     "th": "⊢ has_real_measure s m ⟷ has_real_integral (λx. if x ∈ s then 1 else 0) m univ"
                 }
             ],
-            "prop": [
-                "has_real_measure s m <-->",
-                "has_real_integral (%x. if x ∈ s then 1 else 0) m univ"
-            ],
+            "prop": "has_real_measure s m ⟷ has_real_integral (λx. if x ∈ s then 1 else 0) m univ",
             "steps": [
                 {
                     "goal_id": "0",
@@ -21676,7 +21631,7 @@
                     "th": "⊢ real_measurable s ⟶ real_measure s = real_integral s (λx. 1)"
                 }
             ],
-            "prop": "real_measurable s --> real_measure s = real_integral s (λx. 1)",
+            "prop": "real_measurable s ⟶ real_measure s = real_integral s (λx. 1)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -21853,7 +21808,10 @@
                     "th": "⊢ real_measurable s ⟶ real_measure s = real_integral univ (λx. if x ∈ s then 1 else 0)"
                 }
             ],
-            "prop": "real_measurable s ⟶ real_measure s = real_integral univ (λx. if x ∈ s then 1 else 0)",
+            "prop": [
+                "real_measurable s ",
+                "⟶ real_measure s = real_integral univ (λx. if x ∈ s then 1 else 0)"
+            ],
             "steps": [
                 {
                     "goal_id": "1",
@@ -21959,10 +21917,7 @@
                     "th": "⊢ real_measurable s ⟶ real_integral s (λx. 1) = real_measure s"
                 }
             ],
-            "prop": [
-                "real_measurable s ",
-                "⟶ real_integral s (λx. 1) = real_measure s"
-            ],
+            "prop": "real_measurable s ⟶ real_integral s (λx. 1) = real_measure s",
             "steps": [
                 {
                     "fact_ids": [
@@ -22448,10 +22403,7 @@
                     "th": "⊢ real_measurable s ∧ real_measurable t ⟶ real_measurable (s ∩ t)"
                 }
             ],
-            "prop": [
-                "real_measurable s & real_measurable t",
-                "⟶ real_measurable (inter s t)"
-            ],
+            "prop": "real_measurable s ∧ real_measurable t ⟶ real_measurable (s ∩ t)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -22722,7 +22674,7 @@
                     "th": "⊢ real_measurable s ∧ real_measurable t ⟶ real_measurable (s ∪ t)"
                 }
             ],
-            "prop": "real_measurable s ∧ real_measurable t ⟶ real_measurable (union s t)",
+            "prop": "real_measurable s ∧ real_measurable t ⟶ real_measurable (s ∪ t)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -23244,8 +23196,8 @@
                 }
             ],
             "prop": [
-                "has_real_measure s1 m1 & has_real_measure s2 m2 & disjoint s1 s2",
-                "--> has_real_measure (union s1 s2) (m1 + m2)  "
+                "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ disjoint s1 s2 ",
+                "⟶ has_real_measure (s1 ∪ s2) (m1 + m2)"
             ],
             "steps": [
                 {
@@ -23759,7 +23711,7 @@
                     "th": "⊢ has_real_measure s m ⟶ 0 ≤ m"
                 }
             ],
-            "prop": "has_real_measure s m --> 0 <= m",
+            "prop": "has_real_measure s m ⟶ 0 ≤ m",
             "steps": [
                 {
                     "fact_ids": [
@@ -23981,10 +23933,7 @@
                     "th": "⊢ has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ s1 ⊆ s2 ⟶ m1 ≤ m2"
                 }
             ],
-            "prop": [
-                "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ subset s1 s2 ",
-                "⟶ m1 <= m2"
-            ],
+            "prop": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ s1 ⊆ s2 ⟶ m1 ≤ m2",
             "steps": [
                 {
                     "fact_ids": [
@@ -24107,10 +24056,7 @@
                     "th": "⊢ real_measurable s ∧ real_measurable t ∧ s ⊆ t ⟶ real_measure s ≤ real_measure t"
                 }
             ],
-            "prop": [
-                "real_measurable s ∧ real_measurable t ∧ s ⊆ t ",
-                "⟶ real_measure s <= real_measure t"
-            ],
+            "prop": "real_measurable s ∧ real_measurable t ∧ s ⊆ t ⟶ real_measure s ≤ real_measure t",
             "steps": [
                 {
                     "goal_id": "1",
@@ -25360,7 +25306,7 @@
                     "th": "⊢ real_negligible s ⟶ real_measure s = 0"
                 }
             ],
-            "prop": "real_negligible s --> real_measure s = 0",
+            "prop": "real_negligible s ⟶ real_measure s = 0",
             "steps": [
                 {
                     "goal_id": "1",
@@ -25402,7 +25348,7 @@
                     "th": "⊢ has_real_measure ∅ 0"
                 }
             ],
-            "prop": "has_real_measure {} 0",
+            "prop": "has_real_measure ∅ 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -25641,7 +25587,7 @@
                     "th": "⊢ real_measurable s ⟶ real_measure s = 0 ⟷ real_negligible s"
                 }
             ],
-            "prop": "real_measurable s ⟶ real_measure s = 0 <--> real_negligible s",
+            "prop": "real_measurable s ⟶ real_measure s = 0 ⟷ real_negligible s",
             "steps": [
                 {
                     "goal": "real_negligible s <--> has_real_measure s 0",
@@ -25908,7 +25854,7 @@
                     "th": "⊢ real_measurable s ⟶ 0 < real_measure s ⟷ ¬(real_negligible s)"
                 }
             ],
-            "prop": "real_measurable s ⟶ 0 < real_measure s ⟷ ¬real_negligible s",
+            "prop": "real_measurable s ⟶ 0 < real_measure s ⟷ ¬(real_negligible s)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -26019,7 +25965,7 @@
                     "th": "⊢ real_negligible (real_closed_interval a b) ⟷ real_open_interval a b = ∅"
                 }
             ],
-            "prop": "real_negligible (real_closed_interval a b) <--> (real_open_interval a b) = {}",
+            "prop": "real_negligible (real_closed_interval a b) ⟷ real_open_interval a b = ∅",
             "steps": [
                 {
                     "goal_id": "0",
@@ -26052,10 +25998,7 @@
                 "hint_forward"
             ],
             "name": "real_measurable_unions",
-            "prop": [
-                "finite f & (!s. s ∈ f --> real_measurable s)",
-                "--> real_measurable (Union f)"
-            ],
+            "prop": "finite f ∧ (∀s. s ∈ f ⟶ real_measurable s) ⟶ real_measurable (⋃f)",
             "ty": "thm",
             "vars": {
                 "f": "real set set"
@@ -26068,7 +26011,10 @@
                 "hint_backward"
             ],
             "name": "has_real_measure_diff_subset",
-            "prop": "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ s2 ⊆ s1 ⟶ has_real_measure (diff s1 s2) (m1 - m2)",
+            "prop": [
+                "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ s2 ⊆ s1 ",
+                "⟶ has_real_measure (diff s1 s2) (m1 - m2)"
+            ],
             "ty": "thm",
             "vars": {
                 "m1": "real",
@@ -26146,7 +26092,7 @@
                 }
             ],
             "prop": [
-                "real_measurable s ∧ real_measurable t ∧ t ⊆ s",
+                "real_measurable s ∧ real_measurable t ∧ t ⊆ s ",
                 "⟶ real_measure (diff s t) = real_measure s - real_measure t"
             ],
             "steps": [
@@ -26182,10 +26128,7 @@
                 "hint_forward"
             ],
             "name": "has_real_measure_union_real_negligible",
-            "prop": [
-                "has_real_measure s m ∧ real_negligible t",
-                "--> has_real_measure (union s t) m"
-            ],
+            "prop": "has_real_measure s m ∧ real_negligible t ⟶ has_real_measure (s ∪ t) m",
             "ty": "thm",
             "vars": {
                 "m": "real",
@@ -26318,7 +26261,7 @@
                     "th": "⊢ real_negligible t ⟶ has_real_measure (s ∪ t) m ⟷ has_real_measure s m"
                 }
             ],
-            "prop": "real_negligible t ⟶ (has_real_measure (s ∪ t) m <--> has_real_measure s m)",
+            "prop": "real_negligible t ⟶ has_real_measure (s ∪ t) m ⟷ has_real_measure s m",
             "steps": [
                 {
                     "goal_id": "1",
@@ -26376,7 +26319,10 @@
                 "hint_forward"
             ],
             "name": "has_real_measure_almost",
-            "prop": "has_real_measure s m ∧ real_negligible t & (s ∪ t) = (s1 ∪ t) ⟶ has_real_measure s1 m",
+            "prop": [
+                "has_real_measure s m ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ",
+                "⟶ has_real_measure s1 m"
+            ],
             "ty": "thm",
             "vars": {
                 "m": "real",
@@ -26547,7 +26493,7 @@
             ],
             "prop": [
                 "real_negligible t ∧ s ∪ t = s1 ∪ t ",
-                "⟶ has_real_measure s m <--> has_real_measure s1 m "
+                "⟶ has_real_measure s m ⟷ has_real_measure s1 m"
             ],
             "steps": [
                 {
@@ -26739,10 +26685,7 @@
                     "th": "⊢ real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ⟶ real_measurable s1"
                 }
             ],
-            "prop": [
-                "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ",
-                "⟶ real_measurable s1"
-            ],
+            "prop": "real_measurable s ∧ real_negligible t ∧ s ∪ t = s1 ∪ t ⟶ real_measurable s1",
             "steps": [
                 {
                     "goal_id": "1",
@@ -26817,8 +26760,8 @@
             ],
             "name": "has_real_measure_real_negligible_union",
             "prop": [
-                "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ real_negligible (inter s1 s2) ",
-                "⟶ has_real_measure (union s1 s2) (m1 + m2)"
+                "has_real_measure s1 m1 ∧ has_real_measure s2 m2 ∧ real_negligible (s1 ∩ s2) ",
+                "⟶ has_real_measure (s1 ∪ s2) (m1 + m2)"
             ],
             "ty": "thm",
             "vars": {
@@ -26883,8 +26826,8 @@
                 }
             ],
             "prop": [
-                "real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t)",
-                "--> real_measure (s ∪ t) = real_measure s + real_measure t"
+                "real_measurable s ∧ real_measurable t ∧ real_negligible (s ∩ t) ",
+                "⟶ real_measure (s ∪ t) = real_measure s + real_measure t"
             ],
             "steps": [
                 {
@@ -27147,10 +27090,7 @@
                     "th": "⊢ real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ⟶ real_measurable t"
                 }
             ],
-            "prop": [
-                "real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ",
-                "⟶ real_measurable t"
-            ],
+            "prop": "real_measurable s ∧ real_negligible (diff s t ∪ diff t s) ⟶ real_measurable t",
             "steps": [
                 {
                     "goal_id": "1",
@@ -27402,7 +27342,10 @@
                     "th": "⊢ (real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⟶ real_measure s = real_measure t"
                 }
             ],
-            "prop": "(real_measurable s | real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ⟶ real_measure s = real_measure t",
+            "prop": [
+                "(real_measurable s ∨ real_measurable t) ∧ real_negligible (diff s t ∪ diff t s) ",
+                "⟶ real_measure s = real_measure t"
+            ],
             "steps": [
                 {
                     "fact_ids": [
@@ -27511,13 +27454,13 @@
             "prop": [
                 "finite f ∧ ",
                 "(∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ ",
-                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ real_negligible (s ∩ t)) ",
+                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬(s = t) ⟶ real_negligible (s ∩ t)) ",
                 "⟶ has_real_measure (⋃f) (sum f m)"
             ],
             "ty": "thm",
             "vars": {
                 "f": "real set set",
-                "m": "real set => real"
+                "m": "real set ⇒ real"
             }
         },
         {
@@ -27566,8 +27509,9 @@
                 }
             ],
             "prop": [
-                "finite f ∧ (∀s. s ∈ f ⟶ has_real_measure s (m s)) &",
-                "(!s. !t. s ∈ f & t ∈ f & ~(s = t) --> real_negligible (inter s t))",
+                "finite f ∧ ",
+                "(∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ ",
+                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬(s = t) ⟶ real_negligible (s ∩ t)) ",
                 "⟶ real_measure (⋃f) = sum f m"
             ],
             "steps": [
@@ -27585,7 +27529,7 @@
             "ty": "thm",
             "vars": {
                 "f": "real set set",
-                "m": "real set => real"
+                "m": "real set ⇒ real"
             }
         },
         {
@@ -27767,7 +27711,7 @@
             "prop": [
                 "finite f ∧ ",
                 "(∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ ",
-                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ",
+                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬(s = t) ⟶ disjoint s t) ",
                 "⟶ has_real_measure (⋃f) (sum f m)"
             ],
             "steps": [
@@ -27863,7 +27807,7 @@
             "ty": "thm",
             "vars": {
                 "f": "real set set",
-                "m": "real set => real"
+                "m": "real set ⇒ real"
             }
         },
         {
@@ -27914,7 +27858,7 @@
             "prop": [
                 "finite f ∧ ",
                 "(∀s. s ∈ f ⟶ has_real_measure s (m s)) ∧ ",
-                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬s = t ⟶ disjoint s t) ",
+                "(∀s. ∀t. s ∈ f ∧ t ∈ f ∧ ¬(s = t) ⟶ disjoint s t) ",
                 "⟶ real_measure (⋃f) = sum f m"
             ],
             "steps": [
@@ -27932,7 +27876,7 @@
             "ty": "thm",
             "vars": {
                 "f": "real set set",
-                "m": "real set => real"
+                "m": "real set ⇒ real"
             }
         },
         {
@@ -27945,12 +27889,12 @@
             "prop": [
                 "finite s ∧ ",
                 "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible ((f x) ∩ (f y))) ",
-                "⟶ has_real_measure (⋃(image f s)) (sum s (%x. real_measure (f x)))"
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬(x = y) ⟶ real_negligible (f x ∩ f y)) ",
+                "⟶ has_real_measure (⋃(image f s)) (sum s (λx. real_measure (f x)))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real set",
+                "f": "'a ⇒ real set",
                 "s": "'a set"
             }
         },
@@ -28002,8 +27946,8 @@
             "prop": [
                 "finite s ∧ ",
                 "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ",
-                "⟶ real_measure (⋃(image f s)) = (sum s (λx. real_measure (f x)))"
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬(x = y) ⟶ real_negligible (f x ∩ f y)) ",
+                "⟶ real_measure (⋃(image f s)) = sum s (λx. real_measure (f x))"
             ],
             "steps": [
                 {
@@ -28019,7 +27963,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real set",
+                "f": "'a ⇒ real set",
                 "s": "'a set"
             }
         },
@@ -28202,8 +28146,8 @@
             "prop": [
                 "finite s ∧ ",
                 "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ",
-                "⟶ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬(x = y) ⟶ disjoint (f x) (f y)) ",
+                "⟶ has_real_measure (⋃(image f s)) (sum s (λx. real_measure (f x)))"
             ],
             "steps": [
                 {
@@ -28297,7 +28241,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real set",
+                "f": "'a ⇒ real set",
                 "s": "'a set"
             }
         },
@@ -28349,8 +28293,8 @@
             "prop": [
                 "finite s ∧ ",
                 "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ",
-                "⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬(x = y) ⟶ disjoint (f x) (f y)) ",
+                "⟶ real_measure (⋃(image f s)) = sum s (λx. real_measure (f x))"
             ],
             "steps": [
                 {
@@ -28366,7 +28310,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real set",
+                "f": "'a ⇒ real set",
                 "s": "'a set"
             }
         },
@@ -28378,14 +28322,14 @@
             ],
             "name": "has_real_measure_real_negligible_unions_image_strong",
             "prop": [
-                "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ ",
+                "finite ({x. x ∈ s ∧ ¬(f x = ∅)}) ∧ ",
                 "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ",
-                "⟶ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬(x = y) ⟶ real_negligible (f x ∩ f y)) ",
+                "⟶ has_real_measure (⋃(image f s)) (sum s (λx. real_measure (f x)))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real set",
+                "f": "'a ⇒ real set",
                 "s": "'a set"
             }
         },
@@ -28435,10 +28379,10 @@
                 }
             ],
             "prop": [
-                "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ ",
+                "finite ({x. x ∈ s ∧ ¬(f x = ∅)}) ∧ ",
                 "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ real_negligible (f x ∩ f y)) ",
-                "⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬(x = y) ⟶ real_negligible (f x ∩ f y)) ",
+                "⟶ real_measure (⋃(image f s)) = sum s (λx. real_measure (f x))"
             ],
             "steps": [
                 {
@@ -28454,7 +28398,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real set",
+                "f": "'a ⇒ real set",
                 "s": "'a set"
             }
         },
@@ -28635,10 +28579,10 @@
                 }
             ],
             "prop": [
-                "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ ",
+                "finite ({x. x ∈ s ∧ ¬(f x = ∅)}) ∧ ",
                 "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ",
-                "⟶ has_real_measure (⋃image f s) (sum s (λx. real_measure (f x)))"
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬(x = y) ⟶ disjoint (f x) (f y)) ",
+                "⟶ has_real_measure (⋃(image f s)) (sum s (λx. real_measure (f x)))"
             ],
             "steps": [
                 {
@@ -28732,7 +28676,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real set",
+                "f": "'a ⇒ real set",
                 "s": "'a set"
             }
         },
@@ -28782,10 +28726,10 @@
                 }
             ],
             "prop": [
-                "finite ({x. x ∈ s ∧ ¬f x = ∅}) ∧ ",
+                "finite ({x. x ∈ s ∧ ¬(f x = ∅)}) ∧ ",
                 "(∀x. x ∈ s ⟶ real_measurable (f x)) ∧ ",
-                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬x = y ⟶ disjoint (f x) (f y)) ",
-                "⟶ real_measure (⋃image f s) = sum s (λx. real_measure (f x))"
+                "(∀x. ∀y. x ∈ s ∧ y ∈ s ∧ ¬(x = y) ⟶ disjoint (f x) (f y)) ",
+                "⟶ real_measure (⋃(image f s)) = sum s (λx. real_measure (f x))"
             ],
             "steps": [
                 {
@@ -28801,7 +28745,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real set",
+                "f": "'a ⇒ real set",
                 "s": "'a set"
             }
         },
@@ -29004,9 +28948,8 @@
                 }
             ],
             "prop": [
-                "real_measurable s & real_measurable t",
-                "--> real_measure (union s t) =",
-                "real_measure s + real_measure t - real_measure (inter s t) "
+                "real_measurable s ∧ real_measurable t ",
+                "⟶ real_measure (s ∪ t) = real_measure s + real_measure t - real_measure (s ∩ t)"
             ],
             "steps": [
                 {
@@ -29233,7 +29176,7 @@
             ],
             "prop": [
                 "real_measurable s ∧ real_measurable t ",
-                "⟶ real_measure (s ∪ t) <= real_measure s + real_measure t"
+                "⟶ real_measure (s ∪ t) ≤ real_measure s + real_measure t"
             ],
             "steps": [
                 {
@@ -29308,8 +29251,7 @@
             ],
             "name": "real_measure_unions_le",
             "prop": [
-                "finite f ∧ ",
-                "(∀s. s ∈ f ⟶ real_measurable s)",
+                "finite f ∧ (∀s. s ∈ f ⟶ real_measurable s) ",
                 "⟶ real_measure (⋃f) = sum f (λs. real_measure s)"
             ],
             "ty": "thm",
@@ -29326,12 +29268,12 @@
             "name": "real_measure_unions_le_image",
             "prop": [
                 "finite f ∧ (∀a. a ∈ f ⟶ real_measurable (s a)) ",
-                "⟶ real_measure (⋃ image s f) = sum f (λa. real_measure (s a))"
+                "⟶ real_measure (⋃(image s f)) = sum f (λa. real_measure (s a))"
             ],
             "ty": "thm",
             "vars": {
                 "f": "'a set",
-                "s": "'a => real set"
+                "s": "'a ⇒ real set"
             }
         },
         {
@@ -29340,9 +29282,8 @@
             ],
             "name": "real_negligible_outer",
             "prop": [
-                "real_negligible s <-->",
-                "       !e. 0 < e",
-                "           --> ?t. subset s t & real_measurable t & real_measure t < e"
+                "real_negligible s ⟷ ",
+                "(∀e. 0 < e ⟶ (∃t. s ⊆ t ∧ real_measurable t ∧ real_measure t < e))"
             ],
             "ty": "thm",
             "vars": {
@@ -29356,7 +29297,7 @@
             "name": "real_negligible_outer_le",
             "prop": [
                 "real_negligible s ⟷ ",
-                "(∀e. 0 < e ⟶ (∃t. s ⊆ t ∧ real_measurable t ∧ real_measure t <= e))"
+                "(∀e. 0 < e ⟶ (∃t. s ⊆ t ∧ real_measurable t ∧ real_measure t ≤ e))"
             ],
             "ty": "thm",
             "vars": {
@@ -29387,11 +29328,9 @@
             ],
             "name": "has_real_measure_inner_outer",
             "prop": [
-                "has_real_measure s m <-->",
-                "                (!e. 0 < e --> ?t. t ⊆ s & real_measurable t &",
-                "                                    m - e < real_measure t) &",
-                "                (!e. 0 < e --> ?u. s ⊆ u & real_measurable u &",
-                "                                    real_measure u < m + e)"
+                "has_real_measure s m ⟷ ",
+                "(∀e. 0 < e ⟶ (∃t. t ⊆ s ∧ real_measurable t ∧ m - e < real_measure t)) ∧ ",
+                "(∀e. 0 < e ⟶ (∃u. s ⊆ u ∧ real_measurable u ∧ real_measure u < m + e))"
             ],
             "ty": "thm",
             "vars": {
@@ -29406,8 +29345,8 @@
             "name": "has_real_measure_inner_outer_le",
             "prop": [
                 "has_real_measure s m ⟷ ",
-                "(∀e. 0 < e ⟶ (∃t. t ⊆ s ∧ real_measurable t ∧ m - e <= real_measure t)) ∧ ",
-                "(∀e. 0 < e ⟶ (∃u. s ⊆ u ∧ real_measurable u ∧ real_measure u <= m + e))"
+                "(∀e. 0 < e ⟶ (∃t. t ⊆ s ∧ real_measurable t ∧ m - e ≤ real_measure t)) ∧ ",
+                "(∀e. 0 < e ⟶ (∃u. s ⊆ u ∧ real_measurable u ∧ real_measure u ≤ m + e))"
             ],
             "ty": "thm",
             "vars": {
@@ -29421,10 +29360,7 @@
                 "hint_backward"
             ],
             "name": "has_real_measure_affinity",
-            "prop": [
-                "has_real_measure s y",
-                "             --> has_real_measure (image (%x. m * x + c) s) (abs m * y)"
-            ],
+            "prop": "has_real_measure s y ⟶ has_real_measure (image (λx. m * x + c) s) (abs m * y)",
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -29734,7 +29670,7 @@
                     "th": "⊢ real_negligible (image (λx. x + a) s) ⟷ real_negligible s"
                 }
             ],
-            "prop": "real_negligible (image (λx. x + a) s) <--> real_negligible s",
+            "prop": "real_negligible (image (λx. x + a) s) ⟷ real_negligible s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -29863,10 +29799,7 @@
                     "th": "⊢ real_measurable s ⟶ real_measure (image (λx. x + a) s) = real_measure s"
                 }
             ],
-            "prop": [
-                "real_measurable s",
-                "--> real_measure (image (λx. x + a) s) = real_measure s"
-            ],
+            "prop": "real_measurable s ⟶ real_measure (image (λx. x + a) s) = real_measure s",
             "steps": [
                 {
                     "fact_ids": [
@@ -30105,9 +30038,8 @@
                 }
             ],
             "prop": [
-                "~(c=0)",
-                "--> (has_real_measure (image (λx. c * x) s) (abs c * m) <-->",
-                "has_real_measure s m)"
+                "¬(c = 0) ",
+                "⟶ has_real_measure (image (λx. c * x) s) (abs c * m) ⟷ has_real_measure s m"
             ],
             "steps": [
                 {
@@ -30543,10 +30475,7 @@
                     "th": "⊢ ¬(c = 0) ⟶ real_measurable (image (λx. c * x) s) ⟷ real_measurable s"
                 }
             ],
-            "prop": [
-                "¬c = 0 ",
-                "⟶ real_measurable (image (λx. c * x) s) ⟷ real_measurable s"
-            ],
+            "prop": "¬(c = 0) ⟶ real_measurable (image (λx. c * x) s) ⟷ real_measurable s",
             "steps": [
                 {
                     "goal_id": "1",
@@ -30696,10 +30625,7 @@
                     "th": "⊢ real_measurable s ⟶ real_measure (image (λx. c * x) s) = abs c * real_measure s"
                 }
             ],
-            "prop": [
-                "real_measurable s ",
-                "⟶ real_measure (image (λx. c * x) s) = (abs c * real_measure s)"
-            ],
+            "prop": "real_measurable s ⟶ real_measure (image (λx. c * x) s) = abs c * real_measure s",
             "steps": [
                 {
                     "fact_ids": [
@@ -30739,14 +30665,14 @@
             "prop": [
                 "(∀n. real_measurable (s n)) ∧ ",
                 "(∀n. real_measure (s n) ≤ B) ∧ (∀n. s n ⊆ s (Suc n)) ",
-                "⟶ real_measurable (⋃({y. ?n. y = s n})) ∧ ",
-                "   tendsto_real (λn. real_measure (s n)) (real_measure (⋃({y. ?n. y = s n}))) ",
+                "⟶ real_measurable (⋃({y. ∃n. y = s n})) ∧ ",
+                "   tendsto_real (λn. real_measure (s n)) (real_measure (⋃({y. ∃n. y = s n}))) ",
                 "     sequentially"
             ],
             "ty": "thm",
             "vars": {
                 "B": "real",
-                "s": "nat => real set"
+                "s": "nat ⇒ real set"
             }
         },
         {
@@ -30797,7 +30723,7 @@
             "prop": [
                 "(∀n. real_measurable (s n)) ∧ ",
                 "(∀n. real_measure (s n) ≤ B) ∧ (∀n. s n ⊆ s (Suc n)) ",
-                "⟶ real_measurable (⋃({y. ?n. y = s n}))"
+                "⟶ real_measurable (⋃({y. ∃n. y = s n}))"
             ],
             "steps": [
                 {
@@ -30820,7 +30746,7 @@
             "ty": "thm",
             "vars": {
                 "B": "real",
-                "s": "nat => real set"
+                "s": "nat ⇒ real set"
             }
         },
         {
@@ -30833,13 +30759,13 @@
                 "(∀n. real_measurable (s n)) ∧ ",
                 "(∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ ",
                 "(∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ B) ",
-                "⟶ real_measurable (⋃({y. ?n. y = s n})) ∧ ",
-                "   real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ?n. y = s n}))) (from 0)"
+                "⟶ real_measurable (⋃({y. ∃n. y = s n})) ∧ ",
+                "   real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∃n. y = s n}))) (from 0)"
             ],
             "ty": "thm",
             "vars": {
                 "B": "real",
-                "s": "nat => real set"
+                "s": "nat ⇒ real set"
             }
         },
         {
@@ -31283,7 +31209,7 @@
                     "th": "⊢ (∀n. real_negligible (s n)) ⟶ real_negligible (⋃({y. ∃n. y = s n}))"
                 }
             ],
-            "prop": "(∀n. real_negligible (s n)) ⟶ real_negligible (⋃({y. ?n. y = s n}))",
+            "prop": "(∀n. real_negligible (s n)) ⟶ real_negligible (⋃({y. ∃n. y = s n}))",
             "steps": [
                 {
                     "goal_id": "1",
@@ -31510,7 +31436,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "s": "nat => real set"
+                "s": "nat ⇒ real set"
             }
         },
         {
@@ -31605,8 +31531,8 @@
             ],
             "prop": [
                 "(∀n. real_measurable (s n)) ∧ ",
-                "(∀n. real_measure (⋃({y. ?k. y = s k ∧ k ≤ n})) ≤ B) ",
-                "⟶ real_measurable (⋃({y. ?n. y = s n}))"
+                "(∀n. real_measure (⋃({y. ∃k. y = s k ∧ k ≤ n})) ≤ B) ",
+                "⟶ real_measurable (⋃({y. ∃n. y = s n}))"
             ],
             "steps": [
                 {
@@ -31641,7 +31567,7 @@
             "ty": "thm",
             "vars": {
                 "B": "real",
-                "s": "nat => real set"
+                "s": "nat ⇒ real set"
             }
         },
         {
@@ -31654,13 +31580,13 @@
             "prop": [
                 "(∀n. real_measurable (s n)) ∧ ",
                 "(∀m. ∀n. ¬(m = n) ⟶ real_negligible (s m ∩ s n)) ∧ ",
-                "real_bounded (⋃({y. ?n. y = s n})) ",
-                "⟶ real_measurable (⋃({y. ?n. y = s n})) ∧ ",
-                "   real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ?n. y = s n}))) (from 0)"
+                "real_bounded (⋃({y. ∃n. y = s n})) ",
+                "⟶ real_measurable (⋃({y. ∃n. y = s n})) ∧ ",
+                "   real_sums (λn. real_measure (s n)) (real_measure (⋃({y. ∃n. y = s n}))) (from 0)"
             ],
             "ty": "thm",
             "vars": {
-                "s": "nat => real set"
+                "s": "nat ⇒ real set"
             }
         },
         {
@@ -31672,12 +31598,12 @@
             "name": "real_measurable_countable_unions",
             "prop": [
                 "(∀n. real_measurable (s n)) ∧ (∀n. sum ({0..n}) (λk. real_measure (s k)) ≤ B) ",
-                "⟶ real_measurable (⋃({y. ?n. y = s n}))"
+                "⟶ real_measurable (⋃({y. ∃n. y = s n}))"
             ],
             "ty": "thm",
             "vars": {
                 "B": "real",
-                "s": "nat => real set"
+                "s": "nat ⇒ real set"
             }
         },
         {
@@ -31688,12 +31614,12 @@
             ],
             "name": "real_measurable_countable_unions_bounded",
             "prop": [
-                "(∀n. real_measurable (s n)) ∧ real_bounded (⋃({y. ?n. y = s n})) ",
-                "⟶ real_measurable (⋃({y. ?n. y = s n}))"
+                "(∀n. real_measurable (s n)) ∧ real_bounded (⋃({y. ∃n. y = s n})) ",
+                "⟶ real_measurable (⋃({y. ∃n. y = s n}))"
             ],
             "ty": "thm",
             "vars": {
-                "s": "nat => real set"
+                "s": "nat ⇒ real set"
             }
         },
         {
@@ -31702,10 +31628,10 @@
                 "hint_forward"
             ],
             "name": "real_measurable_countable_inters",
-            "prop": "(∀n. real_measurable (s n)) ⟶ real_measurable (⋂({y. ?n. y = s n}))",
+            "prop": "(∀n. real_measurable (s n)) ⟶ real_measurable (⋂({y. ∃n. y = s n}))",
             "ty": "thm",
             "vars": {
-                "s": "nat => real set"
+                "s": "nat ⇒ real set"
             }
         },
         {
@@ -31714,7 +31640,7 @@
                 "hint_forward"
             ],
             "name": "real_negligible_countable",
-            "prop": "countable s --> real_negligible s",
+            "prop": "countable s ⟶ real_negligible s",
             "ty": "thm",
             "vars": {
                 "s": "real set"
@@ -31726,7 +31652,7 @@
                 "hint_forward"
             ],
             "name": "real_measurable_compact",
-            "prop": "real_compact s --> real_measurable s",
+            "prop": "real_compact s ⟶ real_measurable s",
             "ty": "thm",
             "vars": {
                 "s": "real set"
@@ -31739,7 +31665,7 @@
                 "hint_forward"
             ],
             "name": "real_measurable_open",
-            "prop": "real_bounded s & real_open s --> real_measurable s",
+            "prop": "real_bounded s ∧ real_open s ⟶ real_measurable s",
             "ty": "thm",
             "vars": {
                 "s": "real set"
@@ -32374,9 +32300,8 @@
                 }
             ],
             "prop": [
-                "(!x. x ∈ s --> 0 <= f x)",
-                "--> (has_real_integral f 0 s <-->",
-                "real_negligible {x. x ∈ s & ~(f x = 0)})"
+                "(∀x. x ∈ s ⟶ 0 ≤ f x) ",
+                "⟶ has_real_integral f 0 s ⟷ real_negligible ({x. x ∈ s ∧ ¬(f x = 0)})"
             ],
             "steps": [
                 {
@@ -32719,7 +32644,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real => real",
+                "f": "real ⇒ real",
                 "s": "real set"
             }
         },
@@ -32975,13 +32900,15 @@
                 }
             ],
             "prop": [
-                "a <= b & countable c &",
-                "real_continuous_on (%x. f x * g x) (real_closed_interval a b) &",
-                "(!x. x ∈ (diff (real_open_interval a b) c)",
-                "--> has_real_derivative f (f1 x) (atreal x) & ",
-                "has_real_derivative g (g1 x) (atreal x)) &",
-                "has_real_integral (%x. f x * g1 x) ((f b * g b - f a * g a) -y) (real_closed_interval a b)",
-                "--> has_real_integral (%x. f1 x * g x) y (real_closed_interval a b)"
+                "a ≤ b ∧ ",
+                "countable c ∧ ",
+                "real_continuous_on (λx. f x * g x) (real_closed_interval a b) ∧ ",
+                "(∀x. x ∈ diff (real_open_interval a b) c ",
+                "   ⟶ has_real_derivative f (f1 x) (atreal x) ∧ ",
+                "      has_real_derivative g (g1 x) (atreal x)) ∧ ",
+                "has_real_integral (λx. f x * g1 x) (f b * g b - f a * g a - y) ",
+                "  (real_closed_interval a b) ",
+                "⟶ has_real_integral (λx. f1 x * g x) y (real_closed_interval a b)"
             ],
             "steps": [
                 {
@@ -33140,10 +33067,10 @@
                 "a": "real",
                 "b": "real",
                 "c": "real set",
-                "f": "real => real",
-                "f1": "real => real",
-                "g": "real => real",
-                "g1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real",
                 "y": "real"
             }
         },
@@ -33167,10 +33094,10 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real",
-                "g": "real => real",
-                "g1": "real => real",
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real",
                 "y": "real"
             }
         },
@@ -33606,10 +33533,10 @@
                 "a": "real",
                 "b": "real",
                 "c": "real set",
-                "f": "real => real",
-                "f1": "real => real",
-                "g": "real => real",
-                "g1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real"
             }
         },
         {
@@ -33852,9 +33779,9 @@
                 "real_continuous_on (λx. f x * g x) (real_closed_interval a b) ∧ ",
                 "(∀x. x ∈ diff (real_open_interval a b) c ",
                 "   ⟶ has_real_derivative f (f1 x) (atreal x) ∧ ",
-                "      has_real_derivative g (g1 x) (atreal x))",
-                "--> (real_integrable_on (λx. f x * g1 x) (real_closed_interval a b) <--> ",
-                "real_integrable_on (λx. f1 x * g x) (real_closed_interval a b))"
+                "      has_real_derivative g (g1 x) (atreal x)) ",
+                "⟶ real_integrable_on (λx. f x * g1 x) (real_closed_interval a b) ⟷ ",
+                "   real_integrable_on (λx. f1 x * g x) (real_closed_interval a b)"
             ],
             "steps": [
                 {
@@ -33980,10 +33907,10 @@
                 "a": "real",
                 "b": "real",
                 "c": "real set",
-                "f": "real => real",
-                "f1": "real => real",
-                "g": "real => real",
-                "g1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real"
             }
         },
         {
@@ -33995,26 +33922,26 @@
             "name": "absolute_real_integration_by_parts",
             "prop": [
                 "a ≤ b ∧ ",
-                "absolutely_real_integrable_on f1 (real_closed_interval a b) &",
-                "absolutely_real_integrable_on g1 (real_closed_interval a b) &",
-                "(∀x. x ∈ (real_closed_interval a b) ",
+                "absolutely_real_integrable_on f1 (real_closed_interval a b) ∧ ",
+                "absolutely_real_integrable_on g1 (real_closed_interval a b) ∧ ",
+                "(∀x. x ∈ real_closed_interval a b ",
                 "   ⟶ has_real_integral f1 (f x) (real_closed_interval a x)) ∧ ",
-                "      (∀x. x ∈ (real_closed_interval a b) ",
+                "(∀x. x ∈ real_closed_interval a b ",
                 "   ⟶ has_real_integral g1 (g x) (real_closed_interval a x)) ",
-                "--> absolutely_real_integrable_on (λx. f x * g1 x) (real_closed_interval a b) &",
-                "absolutely_real_integrable_on (λx. f1 x * g x) (real_closed_interval a b) &",
-                "real_integral (real_closed_interval a b) (λx. f x * g1 x) +",
-                "real_integral (real_closed_interval a b) (λx. f1 x * g x) =",
-                "(f b * g b - f a * g a)"
+                "⟶ absolutely_real_integrable_on (λx. f x * g1 x) (real_closed_interval a b) ∧ ",
+                "   absolutely_real_integrable_on (λx. f1 x * g x) (real_closed_interval a b) ∧ ",
+                "   real_integral (real_closed_interval a b) (λx. f x * g1 x) + ",
+                "   real_integral (real_closed_interval a b) (λx. f1 x * g x) = ",
+                "   f b * g b - f a * g a"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
                 "b": "real",
-                "f": "real => real",
-                "f1": "real => real",
-                "g": "real => real",
-                "g1": "real => real"
+                "f": "real ⇒ real",
+                "f1": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real"
             }
         },
         {
@@ -34025,16 +33952,17 @@
             ],
             "name": "has_real_integral_substitution_strong",
             "prop": [
-                "countable k ∧",
+                "countable k ∧ ",
                 "real_integrable_on f (real_closed_interval c d) ∧ ",
-                "real_integrable_on g (real_closed_interval a b) ∧",
-                "subset (image g (real_closed_interval a b)) (real_closed_interval c d) &",
-                "(∀x. x ∈ diff (real_closed_interval a b) k",
-                "   ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b)) &",
-                "real_continuous f (within (atreal (g x)) (real_closed_interval c d))) ∧",
-                "a ≤ b ∧ c ≤ d ∧ g a ≤ g b  ",
-                "⟶ has_real_integral (λx. f (g x) * g1 x) (real_integral (real_closed_interval (g a) (g b)) f)",
-                "(real_closed_interval a b)"
+                "real_integrable_on g (real_closed_interval a b) ∧ ",
+                "image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ ",
+                "(∀x. x ∈ diff (real_closed_interval a b) k ",
+                "   ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b)) ∧ ",
+                "      real_continuous f (within (atreal (g x)) (real_closed_interval c d))) ∧ ",
+                "a ≤ b ∧ c ≤ d ∧ g a ≤ g b ",
+                "⟶ has_real_integral (λx. f (g x) * g1 x) ",
+                "     (real_integral (real_closed_interval (g a) (g b)) f) ",
+                "     (real_closed_interval a b)"
             ],
             "ty": "thm",
             "vars": {
@@ -34042,9 +33970,9 @@
                 "b": "real",
                 "c": "real",
                 "d": "real",
-                "f": "real => real",
-                "g": "real => real",
-                "g1": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real",
                 "k": "real set"
             }
         },
@@ -34072,9 +34000,9 @@
                 "b": "real",
                 "c": "real",
                 "d": "real",
-                "f": "real => real",
-                "g": "real => real",
-                "g1": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real",
                 "k": "real set"
             }
         },
@@ -34130,8 +34058,8 @@
                 "image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ ",
                 "(∀x. x ∈ diff (real_closed_interval a b) k ⟶ has_real_derivative g (g1 x) (atreal x)) ∧ ",
                 "a ≤ b ∧ c ≤ d ∧ g a ≤ g b ",
-                "⟶ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) =",
-                "    real_integral (real_closed_interval (g a) (g b)) f "
+                "⟶ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) = ",
+                "   real_integral (real_closed_interval (g a) (g b)) f"
             ],
             "steps": [
                 {
@@ -34154,9 +34082,9 @@
                 "b": "real",
                 "c": "real",
                 "d": "real",
-                "f": "real => real",
-                "g": "real => real",
-                "g1": "real => real",
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real",
                 "k": "real set"
             }
         },
@@ -34169,7 +34097,8 @@
             "name": "has_real_integral_substitution_simple",
             "prop": [
                 "real_continuous_on f (real_closed_interval c d) ∧ ",
-                "(∀x. x ∈ (real_closed_interval a b) ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ ",
+                "(∀x. x ∈ real_closed_interval a b ",
+                "   ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ ",
                 "image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ ",
                 "a ≤ b ∧ c ≤ d ∧ g a ≤ g b ",
                 "⟶ has_real_integral (λx. f (g x) * g1 x) ",
@@ -34182,9 +34111,9 @@
                 "b": "real",
                 "c": "real",
                 "d": "real",
-                "f": "real => real",
-                "g": "real => real",
-                "g1": "real => real"
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real"
             }
         },
         {
@@ -34261,9 +34190,9 @@
                 "b": "real",
                 "c": "real",
                 "d": "real",
-                "f": "real => real",
-                "g": "real => real",
-                "g1": "real => real"
+                "f": "real ⇒ real",
+                "g": "real ⇒ real",
+                "g1": "real ⇒ real"
             }
         }
     ],

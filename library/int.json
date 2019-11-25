@@ -8,71 +8,68 @@
         {
             "name": "of_nat",
             "ty": "def.ax",
-            "type": "nat => int"
+            "type": "nat ⇒ int"
         },
         {
-            "attributes": [],
             "name": "zero",
-            "prop": "(0::int) = of_nat (0::nat)",
+            "prop": "(0::int) = of_nat 0",
             "ty": "def",
             "type": "int"
         },
         {
-            "attributes": [],
             "name": "one",
-            "prop": "(1::int) = of_nat (1::nat)",
+            "prop": "(1::int) = of_nat 1",
             "ty": "def",
             "type": "int"
         },
         {
             "name": "plus",
             "ty": "def.ax",
-            "type": "int => int => int"
+            "type": "int ⇒ int ⇒ int"
         },
         {
-            "ascii_op": "-",
             "name": "uminus",
             "overloaded": true,
             "ty": "def.ax",
-            "type": "'a => 'a"
+            "type": "'a ⇒ 'a"
         },
         {
             "attributes": [
                 "hint_rewrite"
             ],
             "name": "abs",
-            "prop": "abs n = (if zero <= n then n else -n)",
+            "prop": "abs n = (if 0 ≤ n then n else -n)",
             "ty": "def",
-            "type": "'a => 'a"
+            "type": "'a ⇒ 'a"
         },
         {
             "name": "uminus",
             "ty": "def.ax",
-            "type": "int => int"
+            "type": "int ⇒ int"
         },
         {
             "name": "minus",
             "ty": "def.ax",
-            "type": "int => int => int"
+            "type": "int ⇒ int ⇒ int"
         },
         {
             "name": "times",
             "ty": "def.ax",
-            "type": "int => int => int"
+            "type": "int ⇒ int ⇒ int"
         },
         {
             "name": "less_eq",
             "ty": "def.ax",
-            "type": "int => int => bool"
+            "type": "int ⇒ int ⇒ bool"
         },
         {
             "name": "less",
             "ty": "def.ax",
-            "type": "int => int => bool"
+            "type": "int ⇒ int ⇒ bool"
         },
         {
             "name": "int_add_assoc",
-            "prop": "x + (y + z) = (x + y) + z",
+            "prop": "x + (y + z) = x + y + z",
             "ty": "thm",
             "vars": {
                 "x": "int",
@@ -91,7 +88,7 @@
         },
         {
             "name": "int_mult_assoc",
-            "prop": "x * (y * z) = (x * y) * z",
+            "prop": "x * (y * z) = x * y * z",
             "ty": "thm",
             "vars": {
                 "x": "int",

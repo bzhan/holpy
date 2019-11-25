@@ -8,7 +8,7 @@
         {
             "name": "of_nat",
             "ty": "def.ax",
-            "type": "nat => real"
+            "type": "nat ⇒ real"
         },
         {
             "attributes": [
@@ -16,7 +16,7 @@
                 "hint_rewrite_sym"
             ],
             "name": "zero",
-            "prop": "zero = of_nat (zero::nat)",
+            "prop": "(0::real) = of_nat 0",
             "ty": "def",
             "type": "real"
         },
@@ -26,22 +26,21 @@
                 "hint_rewrite_sym"
             ],
             "name": "one",
-            "prop": "one = of_nat (one::nat)",
+            "prop": "(1::real) = of_nat 1",
             "ty": "def",
             "type": "real"
         },
         {
             "name": "plus",
             "ty": "def.ax",
-            "type": "real => real => real"
+            "type": "real ⇒ real ⇒ real"
         },
         {
             "name": "uminus",
             "ty": "def.ax",
-            "type": "real => real"
+            "type": "real ⇒ real"
         },
         {
-            "ascii_op": "-",
             "attributes": [
                 "hint_rewrite"
             ],
@@ -53,15 +52,14 @@
         {
             "name": "times",
             "ty": "def.ax",
-            "type": "real => real => real"
+            "type": "real ⇒ real ⇒ real"
         },
         {
             "name": "real_inverse",
             "ty": "def.ax",
-            "type": "real => real"
+            "type": "real ⇒ real"
         },
         {
-            "ascii_op": "/",
             "attributes": [
                 "hint_rewrite"
             ],
@@ -71,30 +69,29 @@
             "type": "real ⇒ real ⇒ real"
         },
         {
-            "ascii_op": "^",
             "name": "power",
             "rules": [
                 {
-                    "prop": "(x::real) ^ 0 = 1"
+                    "prop": "x ^ (0::nat) = 1"
                 },
                 {
                     "prop": "x ^ Suc m = x * x ^ m"
                 }
             ],
             "ty": "def.ind",
-            "type": "real => nat => real"
+            "type": "real ⇒ nat ⇒ real"
         },
         {
             "name": "less_eq",
             "ty": "def.ax",
-            "type": "real => real => bool"
+            "type": "real ⇒ real ⇒ bool"
         },
         {
             "attributes": [
                 "hint_rewrite"
             ],
             "name": "less",
-            "prop": "x < y ⟷ ¬y ≤ x",
+            "prop": "x < y ⟷ ¬(y ≤ x)",
             "ty": "def",
             "type": "real ⇒ real ⇒ bool"
         },
@@ -439,7 +436,7 @@
                 "hint_forward"
             ],
             "name": "real_le_ladd_imp",
-            "prop": "y <= z --> x + y <= x + z",
+            "prop": "y ≤ z ⟶ x + y ≤ x + z",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -465,7 +462,7 @@
                 "hint_rewrite"
             ],
             "name": "real_lt_le",
-            "prop": "x < y <--> x <= y & ~(x = y)",
+            "prop": "x < y ⟷ x ≤ y ∧ ¬(x = y)",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -487,7 +484,7 @@
                 "hint_forward"
             ],
             "name": "real_mul_linv",
-            "prop": "¬x = 0 ⟶ real_inverse x * x = 1",
+            "prop": "¬(x = 0) ⟶ real_inverse x * x = 1",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -498,7 +495,7 @@
                 "hint_rewrite"
             ],
             "name": "real_of_nat_eq",
-            "prop": "(of_nat::nat=>real) m = (of_nat::nat=>real) n ⟷ m = n",
+            "prop": "(of_nat::nat ⇒ real) m = of_nat n ⟷ m = n",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -510,7 +507,7 @@
                 "hint_rewrite"
             ],
             "name": "real_of_nat_le",
-            "prop": "(of_nat::nat ⇒ real) m ≤ (of_nat::nat ⇒ real) n ⟷ m ≤ n",
+            "prop": "(of_nat::nat ⇒ real) m ≤ of_nat n ⟷ m ≤ n",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -522,7 +519,7 @@
                 "hint_rewrite"
             ],
             "name": "real_of_nat_add",
-            "prop": "(of_nat::nat ⇒ real) m + (of_nat::nat ⇒ real) n = (of_nat::nat ⇒ real) (m + n)",
+            "prop": "(of_nat::nat ⇒ real) m + of_nat n = of_nat (m + n)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -530,9 +527,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "real_of_nat_minus",
-            "prop": "of_nat (m - n) = if m >= n then of_nat m - of_nat n else (0::real)",
+            "prop": "of_nat (m - n) = (if m ≥ n then of_nat m - of_nat n else (0::real))",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -544,7 +540,7 @@
                 "hint_rewrite"
             ],
             "name": "real_of_nat_mul",
-            "prop": "(of_nat::nat ⇒ real) m * (of_nat::nat ⇒ real) n = (of_nat::nat ⇒ real) (m * n)",
+            "prop": "(of_nat::nat ⇒ real) m * of_nat n = of_nat (m * n)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -602,7 +598,7 @@
                     "th": "⊢ x + (y + z) = y + (x + z)"
                 }
             ],
-            "prop": "x+(y+z)=y+(x+z)",
+            "prop": "x + (y + z) = y + (x + z)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1043,7 +1039,7 @@
                     "th": "⊢ --x = x"
                 }
             ],
-            "prop": "-(-x)=x",
+            "prop": "--x = x",
             "steps": [
                 {
                     "goal": "--x + -x = x + -x",
@@ -1180,7 +1176,7 @@
                     "th": "⊢ -x * y = -(x * y)"
                 }
             ],
-            "prop": "(-x) * y = -(x * y)",
+            "prop": "-x * y = -(x * y)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1277,7 +1273,7 @@
                     "th": "⊢ -(x + y) = -x + -y"
                 }
             ],
-            "prop": "-(x+y)= -x+-y",
+            "prop": "-(x + y) = -x + -y",
             "steps": [
                 {
                     "goal": "-(x+y) + (x +y) = -x + -y + (x + y)",
@@ -1535,7 +1531,7 @@
                     "th": "⊢ -x ≤ y ⟷ 0 ≤ x + y"
                 }
             ],
-            "prop": "-x <= y <--> 0 <= x + y",
+            "prop": "-x ≤ y ⟷ 0 ≤ x + y",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1923,7 +1919,7 @@
                     "th": "⊢ x ≤ -y ⟷ x + y ≤ 0"
                 }
             ],
-            "prop": "x ≤ -y ⟷ x + y <= 0",
+            "prop": "x ≤ -y ⟷ x + y ≤ 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2299,7 +2295,7 @@
                     "th": "⊢ x * y = 0 ⟷ x = 0 ∨ y = 0"
                 }
             ],
-            "prop": "(x * y = 0) <--> (x = 0) | (y = 0)",
+            "prop": "x * y = 0 ⟷ x = 0 ∨ y = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2634,7 +2630,7 @@
                     "th": "⊢ (0::real) ≤ of_nat n"
                 }
             ],
-            "prop": "(0::real) <= of_nat n",
+            "prop": "(0::real) ≤ of_nat n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2770,7 +2766,7 @@
                     "th": "⊢ (of_nat::nat ⇒ real) x ^ n = of_nat (x ^ n)"
                 }
             ],
-            "prop": "(of_nat::nat=>real) x ^ n = of_nat (x ^ n)",
+            "prop": "(of_nat::nat ⇒ real) x ^ n = of_nat (x ^ n)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3078,7 +3074,7 @@
                     "th": "⊢ -x ^ n = (if even n then x ^ n else -(x ^ n))"
                 }
             ],
-            "prop": "(-x) ^ n = (if even n then x ^ n else -(x ^ n))",
+            "prop": "-x ^ n = (if even n then x ^ n else -(x ^ n))",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3338,7 +3334,7 @@
                 "hint_backward"
             ],
             "name": "real_eqI_from_lt_gt",
-            "prop": "(x < y --> false) --> (y < x --> false) --> x = y",
+            "prop": "(x < y ⟶ false) ⟶ (y < x ⟶ false) ⟶ x = y",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -3637,7 +3633,7 @@
                     "th": "⊢ 0 < x ∧ 0 < y ⟶ 0 < x * y"
                 }
             ],
-            "prop": "0 < x & 0 < y --> 0 < x * y",
+            "prop": "0 < x ∧ 0 < y ⟶ 0 < x * y",
             "steps": [
                 {
                     "goal_id": "1",
@@ -3902,7 +3898,7 @@
                     "th": "⊢ x < y ∨ y ≤ x"
                 }
             ],
-            "prop": "x < y | y <= x",
+            "prop": "x < y ∨ y ≤ x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4038,7 +4034,7 @@
                     "th": "⊢ x < y ⟶ x ≤ y"
                 }
             ],
-            "prop": "x <y --> x <= y",
+            "prop": "x < y ⟶ x ≤ y",
             "steps": [
                 {
                     "fact_ids": [
@@ -4209,7 +4205,7 @@
                     "th": "⊢ x < y ∧ y ≤ z ⟶ x < z"
                 }
             ],
-            "prop": "x < y & y <= z --> x < z",
+            "prop": "x < y ∧ y ≤ z ⟶ x < z",
             "steps": [
                 {
                     "goal_id": "1",
@@ -4668,7 +4664,7 @@
                     "th": "⊢ 0 ≤ x ∧ 0 ≤ y ⟶ 0 ≤ x + y"
                 }
             ],
-            "prop": "0 <= x & 0 <= y --> 0 <= x + y",
+            "prop": "0 ≤ x ∧ 0 ≤ y ⟶ 0 ≤ x + y",
             "steps": [
                 {
                     "goal_id": "1",
@@ -4801,7 +4797,7 @@
                     "th": "⊢ ¬(x < y ∧ y ≤ x)"
                 }
             ],
-            "prop": "~(x <y & y <=x)",
+            "prop": "¬(x < y ∧ y ≤ x)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4890,7 +4886,7 @@
                     "th": "⊢ 0 ≤ x - y ⟷ y ≤ x"
                 }
             ],
-            "prop": "0 <= x - y <--> y <= x",
+            "prop": "0 ≤ x - y ⟷ y ≤ x",
             "steps": [
                 {
                     "goal": "--y <= x <--> y <= x",
@@ -4969,7 +4965,7 @@
                     "th": "⊢ -(x - y) = y - x"
                 }
             ],
-            "prop": "-(x-y)= y-x",
+            "prop": "-(x - y) = y - x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4998,7 +4994,7 @@
                 "hint_rewrite"
             ],
             "name": "real_le_lt",
-            "prop": "x <= y <--> x <y | x = y",
+            "prop": "x ≤ y ⟷ x < y ∨ x = y",
             "ty": "thm",
             "vars": {
                 "x": "real",
@@ -5055,7 +5051,7 @@
                     "th": "⊢ 0 < x - y ⟷ y < x"
                 }
             ],
-            "prop": "0<x-y <--> y < x",
+            "prop": "0 < x - y ⟷ y < x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5180,7 +5176,7 @@
                     "th": "⊢ x - y = 0 ⟷ x = y"
                 }
             ],
-            "prop": "x-y=0 <--> x=y",
+            "prop": "x - y = 0 ⟷ x = y",
             "steps": [
                 {
                     "goal": "x - y = 0 <--> x - y <= 0 & 0 <= x - y",
@@ -5780,7 +5776,7 @@
                     "th": "⊢ abs x ≤ k ⟷ -k ≤ x ∧ x ≤ k"
                 }
             ],
-            "prop": "abs x <= k <--> -k <= x & x <= k",
+            "prop": "abs x ≤ k ⟷ -k ≤ x ∧ x ≤ k",
             "steps": [
                 {
                     "goal_id": "0",
@@ -6102,7 +6098,7 @@
                     "th": "⊢ min x y = -(max (-x) (-y))"
                 }
             ],
-            "prop": "min x y = -max (-x) (-y)",
+            "prop": "min x y = -(max (-x) (-y))",
             "steps": [
                 {
                     "goal_id": "0",
@@ -6583,7 +6579,7 @@
                     "th": "⊢ abs (x ^ n) = abs x ^ n"
                 }
             ],
-            "prop": "abs (x ^ n) = (abs x) ^ n",
+            "prop": "abs (x ^ n) = abs x ^ n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -6676,7 +6672,7 @@
                     "th": "⊢ 0 < x ∧ y ≤ z ⟶ x * y ≤ x * z"
                 }
             ],
-            "prop": "0 <= x ∧ y ≤ z ⟶ x * y ≤ x * z",
+            "prop": "0 ≤ x ∧ y ≤ z ⟶ x * y ≤ x * z",
             "steps": [
                 {
                     "fact_ids": [
@@ -6738,7 +6734,7 @@
                     "th": "⊢ 0 < x ⟶ y < z ⟶ x * y < x * z"
                 }
             ],
-            "prop": "0 < x --> y < z ⟶ x * y < x * z",
+            "prop": "0 < x ⟶ y < z ⟶ x * y < x * z",
             "steps": [
                 {
                     "fact_ids": [
@@ -6844,7 +6840,7 @@
                     "th": "⊢ x * y = 1 ⟶ real_inverse y = x"
                 }
             ],
-            "prop": "x * y = 1 --> real_inverse y = x",
+            "prop": "x * y = 1 ⟶ real_inverse y = x",
             "steps": [
                 {
                     "fact_ids": [
@@ -7171,7 +7167,7 @@
                     "th": "⊢ real_inverse x = 0 ⟷ x = 0"
                 }
             ],
-            "prop": "real_inverse x = 0 <--> x = 0",
+            "prop": "real_inverse x = 0 ⟷ x = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -7443,7 +7439,7 @@
                     "th": "⊢ real_inverse (x * y) = real_inverse x * real_inverse y"
                 }
             ],
-            "prop": "real_inverse (x*y) = real_inverse x * real_inverse y",
+            "prop": "real_inverse (x * y) = real_inverse x * real_inverse y",
             "steps": [
                 {
                     "case": "x=0",
@@ -7646,7 +7642,7 @@
                     "th": "⊢ (x * y) ^ n = x ^ n * y ^ n"
                 }
             ],
-            "prop": "(x * y) ^ n = x^n * y^n",
+            "prop": "(x * y) ^ n = x ^ n * y ^ n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -7971,7 +7967,7 @@
                     "th": "⊢ x / y = 0 ⟷ x = 0 ∨ y = 0"
                 }
             ],
-            "prop": "x/y=0 <--> x=0 | y=0",
+            "prop": "x / y = 0 ⟷ x = 0 ∨ y = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -8135,7 +8131,7 @@
                     "th": "⊢ x ^ (m + n) = x ^ m * x ^ n"
                 }
             ],
-            "prop": "x^(m+n)= x^m*x^n",
+            "prop": "x ^ (m + n) = x ^ m * x ^ n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -8336,7 +8332,7 @@
                     "th": "⊢ ¬(x = 0) ⟶ ¬(x ^ n = 0)"
                 }
             ],
-            "prop": "~(x=0)-->~(x^n=0)",
+            "prop": "¬(x = 0) ⟶ ¬(x ^ n = 0)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -8544,7 +8540,7 @@
                     "th": "⊢ ¬(x = 0) ⟶ m ≤ n ⟶ x ^ (n - m) = x ^ n / x ^ m"
                 }
             ],
-            "prop": "¬(x = 0) --> m ≤ n ⟶ x ^ (n - m) = x ^ n / x ^ m",
+            "prop": "¬(x = 0) ⟶ m ≤ n ⟶ x ^ (n - m) = x ^ n / x ^ m",
             "steps": [
                 {
                     "fact_ids": [
@@ -8673,7 +8669,7 @@
                     "th": "⊢ 0 < z ⟶ x / z ≤ y ⟷ x ≤ y * z"
                 }
             ],
-            "prop": "0 < z --> (x / z <= y <--> x <= y * z)",
+            "prop": "0 < z ⟶ x / z ≤ y ⟷ x ≤ y * z",
             "steps": [
                 {
                     "fact_ids": [
@@ -8991,7 +8987,7 @@
                     "th": "⊢ x ^ n = 0 ⟷ x = 0 ∧ ¬(n = 0)"
                 }
             ],
-            "prop": "(x ^ n = 0) <--> (x = 0) & ~(n=0)",
+            "prop": "x ^ n = 0 ⟷ x = 0 ∧ ¬(n = 0)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -9247,7 +9243,7 @@
                     "th": "⊢ 0 ≤ w ⟶ w ≤ x ⟶ 0 ≤ y ⟶ y ≤ z ⟶ w * y ≤ x * z"
                 }
             ],
-            "prop": "0 ≤ w --> w ≤ x --> 0 ≤ y --> y ≤ z ⟶ w * y ≤ x * z",
+            "prop": "0 ≤ w ⟶ w ≤ x ⟶ 0 ≤ y ⟶ y ≤ z ⟶ w * y ≤ x * z",
             "steps": [
                 {
                     "goal_id": "4",
@@ -9442,7 +9438,7 @@
                     "th": "⊢ 0 ≤ w ⟶ w < x ⟶ 0 ≤ y ⟶ y < z ⟶ w * y < x * z"
                 }
             ],
-            "prop": "0 ≤ w --> w < x --> 0 ≤ y --> y < z ⟶ w * y < x * z",
+            "prop": "0 ≤ w ⟶ w < x ⟶ 0 ≤ y ⟶ y < z ⟶ w * y < x * z",
             "steps": [
                 {
                     "goal_id": "4",
@@ -9525,7 +9521,7 @@
                     "th": "⊢ 0 < x * x ⟷ ¬(x = 0)"
                 }
             ],
-            "prop": "0 < x * x <--> ~(x = 0)",
+            "prop": "0 < x * x ⟷ ¬(x = 0)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -9799,7 +9795,7 @@
                     "th": "⊢ 0 < x ⟶ x < y ⟶ real_inverse y < real_inverse x"
                 }
             ],
-            "prop": "0 < x --> x < y --> real_inverse y < real_inverse x",
+            "prop": "0 < x ⟶ x < y ⟶ real_inverse y < real_inverse x",
             "steps": [
                 {
                     "fact_ids": [
@@ -9860,7 +9856,7 @@
                     "th": "⊢ 0 < x ⟶ x ≤ y ⟶ real_inverse y ≤ real_inverse x"
                 }
             ],
-            "prop": "0 < x ⟶ x <= y ⟶ real_inverse y <= real_inverse x",
+            "prop": "0 < x ⟶ x ≤ y ⟶ real_inverse y ≤ real_inverse x",
             "steps": [
                 {
                     "fact_ids": [
@@ -9921,7 +9917,7 @@
                     "th": "⊢ 0 < x ⟶ x ≤ 1 ⟶ 1 ≤ real_inverse x"
                 }
             ],
-            "prop": "0 < x --> x <= 1 --> 1 <= real_inverse x",
+            "prop": "0 < x ⟶ x ≤ 1 ⟶ 1 ≤ real_inverse x",
             "steps": [
                 {
                     "fact_ids": [
@@ -9972,7 +9968,7 @@
                     "th": "⊢ 0 < d ⟶ (∃e. 0 < e ∧ e < d)"
                 }
             ],
-            "prop": "0 < d --> ?e. 0 < e & e < d",
+            "prop": "0 < d ⟶ (∃e. 0 < e ∧ e < d)",
             "steps": [
                 {
                     "fact_ids": [
@@ -10137,7 +10133,7 @@
                     "th": "⊢ 0 ≤ x ⟶ x ≤ y ⟶ x ^ n ≤ y ^ n"
                 }
             ],
-            "prop": "0 ≤ x --> x ≤ y ⟶ x ^ n ≤ y ^ n",
+            "prop": "0 ≤ x ⟶ x ≤ y ⟶ x ^ n ≤ y ^ n",
             "steps": [
                 {
                     "goal_id": "2",
@@ -10269,7 +10265,7 @@
                     "th": "⊢ 1 ≤ x ⟶ 1 ≤ x ^ n"
                 }
             ],
-            "prop": "1 <= x --> 1 <= x ^ n",
+            "prop": "1 ≤ x ⟶ 1 ≤ x ^ n",
             "steps": [
                 {
                     "goal_id": "1",
@@ -10567,7 +10563,7 @@
                     "th": "⊢ 1 ≤ x ⟶ m ≤ n ⟶ x ^ m ≤ x ^ n"
                 }
             ],
-            "prop": "1 ≤ x --> m ≤ n ⟶ x ^ m ≤ x ^ n",
+            "prop": "1 ≤ x ⟶ m ≤ n ⟶ x ^ m ≤ x ^ n",
             "steps": [
                 {
                     "fact_ids": [
@@ -11061,7 +11057,7 @@
                     "th": "⊢ ¬(n = 0) ⟶ 1 < x ⟶ 1 < x ^ n"
                 }
             ],
-            "prop": "¬(n = 0) --> 1 < x ⟶ 1 < x ^ n",
+            "prop": "¬(n = 0) ⟶ 1 < x ⟶ 1 < x ^ n",
             "steps": [
                 {
                     "goal_id": "2",
@@ -11389,7 +11385,7 @@
                     "th": "⊢ 1 < x ⟶ m < n ⟶ x ^ m < x ^ n"
                 }
             ],
-            "prop": "1 < x --> m < n ⟶ x ^ m < x ^ n",
+            "prop": "1 < x ⟶ m < n ⟶ x ^ m < x ^ n",
             "steps": [
                 {
                     "fact_ids": [
@@ -11610,7 +11606,7 @@
                     "th": "⊢ x ^ m ^ n = x ^ (m * n)"
                 }
             ],
-            "prop": "(x ^ m) ^ n = x ^ (m * n)",
+            "prop": "x ^ m ^ n = x ^ (m * n)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -11865,7 +11861,7 @@
             ],
             "prop": [
                 "¬(x = 0) ",
-                "⟶ x ^ m / x ^ n = (if n <= m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
+                "⟶ x ^ m / x ^ n = (if n ≤ m then x ^ (m - n) else real_inverse (x ^ (n - m)))"
             ],
             "steps": [
                 {
@@ -12471,7 +12467,7 @@
                     "th": "⊢ (0::real) < 2 ^ n"
                 }
             ],
-            "prop": "0 < (2::real) ^ n",
+            "prop": "(0::real) < 2 ^ n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -12573,7 +12569,7 @@
                     "th": "⊢ (1::real) ≤ 2 ^ n"
                 }
             ],
-            "prop": "(1::real)<=2^n",
+            "prop": "(1::real) ≤ 2 ^ n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -13048,7 +13044,7 @@
                     "th": "⊢ abs x ≤ abs y ⟷ x ^ (2::nat) ≤ y ^ (2::nat)"
                 }
             ],
-            "prop": "abs x ≤ abs y ⟷ x ^ (2::nat) <= y ^ (2::nat)",
+            "prop": "abs x ≤ abs y ⟷ x ^ (2::nat) ≤ y ^ (2::nat)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -13548,7 +13544,7 @@
                     "th": "⊢ 0 < x ^ (2::nat) ⟷ ¬(x = 0)"
                 }
             ],
-            "prop": "0 < x ^ (2::nat) <--> ~(x = 0)",
+            "prop": "0 < x ^ (2::nat) ⟷ ¬(x = 0)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -13704,7 +13700,7 @@
                     "th": "⊢ x ^ (2::nat) + y ^ (2::nat) = 0 ⟷ x = 0 ∧ y = 0"
                 }
             ],
-            "prop": "x ^ (2::nat) + y ^ (2::nat) = 0 <--> x = 0 & y = 0",
+            "prop": "x ^ (2::nat) + y ^ (2::nat) = 0 ⟷ x = 0 ∧ y = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -13860,7 +13856,7 @@
                     "th": "⊢ (0::real) ^ n = (if n = 0 then 1 else 0)"
                 }
             ],
-            "prop": "(0::real) ^ n = if n=0 then 1 else 0",
+            "prop": "(0::real) ^ n = (if n = 0 then 1 else 0)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -14275,7 +14271,7 @@
                     "th": "⊢ 0 ≤ x ⟶ x ≤ 1 ⟶ n ≤ m ⟶ x ^ m ≤ x ^ n"
                 }
             ],
-            "prop": "0 <= x --> x <= 1 --> n <= m --> x ^ m <= x ^ n",
+            "prop": "0 ≤ x ⟶ x ≤ 1 ⟶ n ≤ m ⟶ x ^ m ≤ x ^ n",
             "steps": [
                 {
                     "case": "x = 0",
@@ -14435,7 +14431,7 @@
                 "hint_backward"
             ],
             "name": "real_arch_simple",
-            "prop": "?n. x <= of_nat n",
+            "prop": "∃n. x ≤ of_nat n",
             "ty": "thm",
             "vars": {
                 "x": "real"
@@ -14500,7 +14496,7 @@
                     "th": "⊢ ∃a. x < of_nat a"
                 }
             ],
-            "prop": "?n. x < of_nat n",
+            "prop": "∃n. x < of_nat n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -14627,7 +14623,7 @@
                     "th": "⊢ 0 < x ⟶ (∀y. ∃n. y < of_nat n * x)"
                 }
             ],
-            "prop": "0 < x --> !y. ?n. y < of_nat n * x",
+            "prop": "0 < x ⟶ (∀y. ∃n. y < of_nat n * x)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -14860,7 +14856,10 @@
                     "th": "⊢ 0 < e ⟷ (∃n. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e)"
                 }
             ],
-            "prop": "0 < e <--> ?n. ~(n = 0) & 0 < real_inverse (of_nat n) & real_inverse (of_nat n) < e",
+            "prop": [
+                "0 < e ⟷ ",
+                "(∃n. ¬(n = 0) ∧ 0 < real_inverse (of_nat n) ∧ real_inverse (of_nat n) < e)"
+            ],
             "steps": [
                 {
                     "goal_id": "0",
@@ -14962,13 +14961,13 @@
         },
         {
             "name": "real_sgn",
-            "prop": "real_sgn x = if 0 < x then 1 else if x <0 then -1 else 0",
+            "prop": "real_sgn x = (if 0 < x then 1 else if x < 0 then -1 else 0)",
             "ty": "def",
             "type": "real ⇒ real"
         },
         {
             "name": "sqrt",
-            "prop": "sqrt x = THE y. real_sgn y =  real_sgn x & y ^ (2::nat) = abs x",
+            "prop": "sqrt x = (THE y. real_sgn y = real_sgn x ∧ y ^ (2::nat) = abs x)",
             "ty": "def",
             "type": "real ⇒ real"
         }

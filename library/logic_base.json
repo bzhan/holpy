@@ -6,25 +6,19 @@
             "ty": "header"
         },
         {
-            "ascii_op": "&",
             "name": "conj",
             "ty": "def.ax",
-            "type": "bool ⇒ bool ⇒ bool",
-            "unicode_op": "∧"
+            "type": "bool ⇒ bool ⇒ bool"
         },
         {
-            "ascii_op": "|",
             "name": "disj",
             "ty": "def.ax",
-            "type": "bool => bool => bool",
-            "unicode_op": "∨"
+            "type": "bool ⇒ bool ⇒ bool"
         },
         {
-            "ascii_op": "~",
             "name": "neg",
             "ty": "def.ax",
-            "type": "bool => bool",
-            "unicode_op": "¬"
+            "type": "bool ⇒ bool"
         },
         {
             "name": "true",
@@ -39,22 +33,21 @@
         {
             "name": "exists",
             "ty": "def.ax",
-            "type": "('a => bool) => bool"
+            "type": "('a ⇒ bool) ⇒ bool"
         },
         {
             "name": "IF",
             "ty": "def.ax",
-            "type": "bool => 'a => 'a => 'a"
+            "type": "bool ⇒ 'a ⇒ 'a ⇒ 'a"
         },
         {
             "name": "The",
             "ty": "def.ax",
-            "type": "('a => bool) => 'a"
+            "type": "('a ⇒ bool) ⇒ 'a"
         },
         {
-            "attributes": [],
             "name": "exists1",
-            "prop": "exists1 P <--> (∃x. P x ∧ (∀y. P y ⟶ y = x))",
+            "prop": "(exists1 P) ⟷ (∃x. P x ∧ (∀y. P y ⟶ y = x))",
             "ty": "def",
             "type": "('a ⇒ bool) ⇒ bool"
         },
@@ -89,7 +82,7 @@
                 "hint_forward"
             ],
             "name": "conjD2",
-            "prop": "A & B --> B",
+            "prop": "A ∧ B ⟶ B",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool",
@@ -101,7 +94,7 @@
                 "hint_backward"
             ],
             "name": "disjI1",
-            "prop": "A --> A | B",
+            "prop": "A ⟶ A ∨ B",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool",
@@ -113,7 +106,7 @@
                 "hint_backward"
             ],
             "name": "disjI2",
-            "prop": "B --> A | B",
+            "prop": "B ⟶ A ∨ B",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool",
@@ -125,7 +118,7 @@
                 "hint_backward1"
             ],
             "name": "disjE",
-            "prop": "A | B --> (A --> C) --> (B --> C) --> C",
+            "prop": "A ∨ B ⟶ (A ⟶ C) ⟶ (B ⟶ C) ⟶ C",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool",
@@ -138,7 +131,7 @@
                 "hint_backward"
             ],
             "name": "negI",
-            "prop": "(A --> false) --> ~A",
+            "prop": "(A ⟶ false) ⟶ ¬A",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool"
@@ -149,7 +142,7 @@
                 "hint_backward"
             ],
             "name": "negE",
-            "prop": "~A --> A --> false",
+            "prop": "¬A ⟶ A ⟶ false",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool"
@@ -167,7 +160,7 @@
         },
         {
             "name": "falseE",
-            "prop": "false --> A",
+            "prop": "false ⟶ A",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool"
@@ -178,27 +171,26 @@
                 "hint_backward"
             ],
             "name": "exI",
-            "prop": "P a --> ?a. P a",
+            "prop": "P a ⟶ (∃a1. P a1)",
             "ty": "thm.ax",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "a": "'a"
             }
         },
         {
-            "attributes": [],
             "name": "exE",
-            "prop": "(?a. P a) --> (!a. P a --> C) --> C",
+            "prop": "(∃a. P a) ⟶ (∀a. P a ⟶ C) ⟶ C",
             "ty": "thm.ax",
             "vars": {
                 "C": "bool",
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "a": "'a"
             }
         },
         {
             "name": "classical",
-            "prop": "A | ~A",
+            "prop": "A ∨ ¬A",
             "ty": "thm.ax",
             "vars": {
                 "A": "bool"
@@ -209,11 +201,11 @@
                 "hint_backward"
             ],
             "name": "extension",
-            "prop": "(!x. f x = g x) --> f = g",
+            "prop": "(∀x. f x = g x) ⟶ f = g",
             "ty": "thm.ax",
             "vars": {
-                "f": "'a => 'b",
-                "g": "'a => 'b"
+                "f": "'a ⇒ 'b",
+                "g": "'a ⇒ 'b"
             }
         },
         {
@@ -243,12 +235,11 @@
             }
         },
         {
-            "attributes": [],
             "name": "the_equality",
-            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ The (λx. P x) = a",
+            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ (THE x. P x) = a",
             "ty": "thm.ax",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "a": "'a"
             }
         },
@@ -260,7 +251,7 @@
         {
             "name": "_VAR",
             "ty": "def.ax",
-            "type": "'a => bool"
+            "type": "'a ⇒ bool"
         },
         {
             "depth": 0,
@@ -268,7 +259,6 @@
             "ty": "header"
         },
         {
-            "attributes": [],
             "name": "trivial",
             "prop": "A ⟶ A",
             "ty": "thm",
@@ -380,7 +370,7 @@
                     "th": "⊢ (A ⟶ C) ⟶ (¬A ⟶ C) ⟶ C"
                 }
             ],
-            "prop": "(A --> C) --> (~A --> C) --> C",
+            "prop": "(A ⟶ C) ⟶ (¬A ⟶ C) ⟶ C",
             "steps": [
                 {
                     "goal_id": "2",
@@ -455,7 +445,7 @@
                     "th": "⊢ ¬A ⟶ A ⟶ C"
                 }
             ],
-            "prop": "~A --> A --> C",
+            "prop": "¬A ⟶ A ⟶ C",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -463,7 +453,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "contradiction",
             "num_gaps": 0,
             "proof": [
@@ -686,7 +675,7 @@
                     "th": "⊢ (A ⟶ B) ⟶ (B ⟶ A) ⟶ A = B"
                 }
             ],
-            "prop": "(A --> B) --> (B --> A) --> (A = B)",
+            "prop": "(A ⟶ B) ⟶ (B ⟶ A) ⟶ A ⟷ B",
             "ty": "thm",
             "vars": {
                 "A": "bool",
@@ -778,7 +767,7 @@
                     "th": "⊢ ¬x = y ⟶ ¬y = x"
                 }
             ],
-            "prop": "~(x = y) --> ~(y = x)",
+            "prop": "¬(x = y) ⟶ ¬(y = x)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -902,7 +891,7 @@
                     "th": "⊢ x = y ⟷ y = x"
                 }
             ],
-            "prop": "x = y <--> y = x",
+            "prop": "x = y ⟷ y = x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -939,7 +928,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "theI",
             "num_gaps": 0,
             "proof": [
@@ -991,7 +979,7 @@
                     "th": "⊢ P a ⟶ (∀x. P x ⟶ x = a) ⟶ P (THE x. P x)"
                 }
             ],
-            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ P (The (λx. P x))",
+            "prop": "P a ⟶ (∀x. P x ⟶ x = a) ⟶ P (THE x. P x)",
             "steps": [
                 {
                     "goal": "(THE x. P x) = a",
@@ -1013,17 +1001,16 @@
             ],
             "ty": "thm",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "a": "'a"
             }
         },
         {
-            "attributes": [],
             "name": "theI'",
             "prop": "(∃!x. P x) ⟶ P (THE x. P x)",
             "ty": "thm",
             "vars": {
-                "P": "'a => bool"
+                "P": "'a ⇒ bool"
             }
         },
         {
@@ -1034,7 +1021,7 @@
             "prop": "(λx. f x) = f",
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {

@@ -10,28 +10,28 @@
         {
             "name": "member",
             "ty": "def.ax",
-            "type": "'a => 'a set => bool"
+            "type": "'a ⇒ 'a set ⇒ bool"
         },
         {
             "name": "collect",
             "ty": "def.ax",
-            "type": "('a => bool) => 'a set"
+            "type": "('a ⇒ bool) ⇒ 'a set"
         },
         {
             "attributes": [
                 "hint_rewrite"
             ],
             "name": "member_collect",
-            "prop": "member x (collect P) = P x",
+            "prop": "x ∈ collect P ⟷ P x",
             "ty": "thm.ax",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "x": "'a"
             }
         },
         {
             "name": "empty_set",
-            "prop": "empty_set = {x. false}",
+            "prop": "∅ = {x. false}",
             "ty": "def",
             "type": "'a set"
         },
@@ -84,7 +84,7 @@
                     "th": "⊢ ¬x ∈ ∅"
                 }
             ],
-            "prop": "~(member x empty_set)",
+            "prop": "¬(x ∈ ∅)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -286,7 +286,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "member_univ_simp",
             "num_gaps": 0,
             "proof": [
@@ -399,7 +398,7 @@
                 "hint_backward"
             ],
             "name": "member_ext",
-            "prop": "(!x. member x A = member x B) --> A = B",
+            "prop": "(∀x. x ∈ A ⟷ x ∈ B) ⟶ A = B",
             "ty": "thm.ax",
             "vars": {
                 "A": "'a set",
@@ -558,7 +557,7 @@
         },
         {
             "name": "subset",
-            "prop": "subset A B = (!x. member x A --> member x B)",
+            "prop": "A ⊆ B ⟷ (∀x. x ∈ A ⟶ x ∈ B)",
             "ty": "def",
             "type": "'a set ⇒ 'a set ⇒ bool"
         },
@@ -596,7 +595,7 @@
                     "th": "⊢ (∀x. x ∈ A ⟶ x ∈ B) ⟶ A ⊆ B"
                 }
             ],
-            "prop": "(!x. member x A --> member x B) --> subset A B",
+            "prop": "(∀x. x ∈ A ⟶ x ∈ B) ⟶ A ⊆ B",
             "steps": [
                 {
                     "goal_id": "1",
@@ -663,7 +662,7 @@
                     "th": "⊢ A ⊆ B ⟶ x ∈ A ⟶ x ∈ B"
                 }
             ],
-            "prop": "subset A B --> member x A --> member x B",
+            "prop": "A ⊆ B ⟶ x ∈ A ⟶ x ∈ B",
             "steps": [
                 {
                     "fact_ids": [
@@ -1052,7 +1051,7 @@
                     "th": "⊢ A ⊆ B ⟶ B ⊆ A ⟶ A = B"
                 }
             ],
-            "prop": "subset A B --> subset B A --> A = B",
+            "prop": "A ⊆ B ⟶ B ⊆ A ⟶ A = B",
             "steps": [
                 {
                     "goal_id": "2",
@@ -1197,7 +1196,7 @@
                     "th": "⊢ A ⊆ B ⟶ B ⊆ C ⟶ A ⊆ C"
                 }
             ],
-            "prop": "subset A B --> subset B C --> subset A C",
+            "prop": "A ⊆ B ⟶ B ⊆ C ⟶ A ⊆ C",
             "steps": [
                 {
                     "goal_id": "2",
@@ -1235,13 +1234,13 @@
         },
         {
             "name": "inter",
-            "prop": "inter A B = {x. (member x A) & (member x B)}",
+            "prop": "A ∩ B = {x. x ∈ A ∧ x ∈ B}",
             "ty": "def",
             "type": "'a set ⇒ 'a set ⇒ 'a set"
         },
         {
             "name": "union",
-            "prop": "union A B = {x. (member x A) | (member x B)}",
+            "prop": "A ∪ B = {x. x ∈ A ∨ x ∈ B}",
             "ty": "def",
             "type": "'a set ⇒ 'a set ⇒ 'a set"
         },
@@ -1269,7 +1268,7 @@
                     "th": "⊢ x ∈ A ∩ B = (x ∈ A ∧ x ∈ B)"
                 }
             ],
-            "prop": "member x (inter A B) = ((member x A) & (member x B))",
+            "prop": "x ∈ A ∩ B ⟷ x ∈ A ∧ x ∈ B",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1313,7 +1312,7 @@
                     "th": "⊢ x ∈ A ∪ B = (x ∈ A ∨ x ∈ B)"
                 }
             ],
-            "prop": "member x (union A B) = ((member x A) | (member x B))",
+            "prop": "x ∈ A ∪ B ⟷ x ∈ A ∨ x ∈ B",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1668,7 +1667,7 @@
                     "th": "⊢ ∃a. ∀x. ¬f x = a"
                 }
             ],
-            "prop": "∃S. ∀x. ~ f x  = S",
+            "prop": "∃S. ∀x. ¬(f x = S)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1756,7 +1755,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'a set"
+                "f": "'a ⇒ 'a set"
             }
         },
         {
@@ -1764,13 +1763,13 @@
                 "hint_rewrite"
             ],
             "name": "diff",
-            "prop": "diff s t = {x. x ∈ s ∧ ¬x ∈ t}",
+            "prop": "diff s t = {x. x ∈ s ∧ ¬(x ∈ t)}",
             "ty": "def",
             "type": "'a set ⇒ 'a set ⇒ 'a set"
         },
         {
             "name": "insert",
-            "prop": "insert x A = {y. y = x | member y A}",
+            "prop": "insert x A = {y. y = x ∨ y ∈ A}",
             "ty": "def",
             "type": "'a ⇒ 'a set ⇒ 'a set"
         },
@@ -1798,7 +1797,7 @@
                     "th": "⊢ y ∈ insert x A = (y = x ∨ y ∈ A)"
                 }
             ],
-            "prop": "(y ∈ (insert x A)) = (y = x | (y ∈ A))",
+            "prop": "y ∈ insert x A ⟷ y = x ∨ y ∈ A",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1819,7 +1818,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "member_singleton",
             "num_gaps": 0,
             "proof": [
@@ -1960,7 +1958,7 @@
                     "th": "⊢ y ∈ {x} ⟷ y = x"
                 }
             ],
-            "prop": "member y {x} <--> y = x",
+            "prop": "y ∈ {x} ⟷ y = x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2028,7 +2026,7 @@
         },
         {
             "name": "Union",
-            "prop": "Union S = {x. ?A. member x A & member A S}",
+            "prop": "⋃S = {x. ∃A. x ∈ A ∧ A ∈ S}",
             "ty": "def",
             "type": "'a set set ⇒ 'a set"
         },
@@ -2056,7 +2054,7 @@
                     "th": "⊢ x ∈ Union S ⟷ (∃A. x ∈ A ∧ A ∈ S)"
                 }
             ],
-            "prop": "member x (Union S) <--> (?A. member x A & member A S)",
+            "prop": "x ∈ ⋃S ⟷ (∃A. x ∈ A ∧ A ∈ S)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2077,7 +2075,7 @@
         },
         {
             "name": "Inter",
-            "prop": "Inter S = {x. !A. member A S --> member x A}",
+            "prop": "⋂S = {x. ∀A. A ∈ S ⟶ x ∈ A}",
             "ty": "def",
             "type": "'a set set ⇒ 'a set"
         },
@@ -2105,7 +2103,7 @@
                     "th": "⊢ x ∈ Inter S ⟷ (∀A. A ∈ S ⟶ x ∈ A)"
                 }
             ],
-            "prop": "member x (Inter S) <--> (!A. member A S --> member x A)",
+            "prop": "x ∈ ⋂S ⟷ (∀A. A ∈ S ⟶ x ∈ A)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2273,7 +2271,7 @@
                     "th": "⊢ ⋃∅ = (∅::'a set)"
                 }
             ],
-            "prop": "Union (empty_set::'a set set) = empty_set",
+            "prop": "⋃∅ = (∅::'a set)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2494,7 +2492,7 @@
                     "th": "⊢ ⋂∅ = (univ::'a set)"
                 }
             ],
-            "prop": "Inter (empty_set::'a set set) = univ",
+            "prop": "⋂∅ = (univ::'a set)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2642,7 +2640,7 @@
                     "th": "⊢ A ∈ S ⟶ A ⊆ ⋃S"
                 }
             ],
-            "prop": "member A S --> subset A (Union S)",
+            "prop": "A ∈ S ⟶ A ⊆ ⋃S",
             "steps": [
                 {
                     "goal_id": "1",
@@ -2764,7 +2762,7 @@
                     "th": "⊢ A ∈ S ⟶ ⋂S ⊆ A"
                 }
             ],
-            "prop": "member A S --> subset (Inter S) A",
+            "prop": "A ∈ S ⟶ ⋂S ⊆ A",
             "steps": [
                 {
                     "goal_id": "1",
@@ -2926,7 +2924,7 @@
                     "th": "⊢ (∀C. C ∈ S ⟶ A ⊆ C) ⟶ A ⊆ ⋂S"
                 }
             ],
-            "prop": "(!C. member C S --> subset A C) --> subset A (Inter S)",
+            "prop": "(∀C. C ∈ S ⟶ A ⊆ C) ⟶ A ⊆ ⋂S",
             "steps": [
                 {
                     "goal_id": "1",
@@ -3502,7 +3500,7 @@
                     "th": "⊢ ⋃(A ∪ B) = ⋃A ∪ ⋃B"
                 }
             ],
-            "prop": "Union (union A B) = union (Union A) (Union B)",
+            "prop": "⋃(A ∪ B) = ⋃A ∪ ⋃B",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3795,7 +3793,7 @@
                 "hint_rewrite"
             ],
             "name": "lfp",
-            "prop": "lfp h = ⋂{X. h X ⊆ X}",
+            "prop": "lfp h = ⋂({X. h X ⊆ X})",
             "ty": "def",
             "type": "('a set ⇒ 'a set) ⇒ 'a set"
         },
@@ -3851,7 +3849,7 @@
                     "th": "⊢ h A ⊆ A ⟶ lfp h ⊆ A"
                 }
             ],
-            "prop": "subset (h A) A --> subset (lfp h) A",
+            "prop": "h A ⊆ A ⟶ lfp h ⊆ A",
             "steps": [
                 {
                     "goal_id": "1",
@@ -3872,7 +3870,7 @@
             "ty": "thm",
             "vars": {
                 "A": "'a set",
-                "h": "'a set => 'a set"
+                "h": "'a set ⇒ 'a set"
             }
         },
         {
@@ -3969,7 +3967,7 @@
                     "th": "⊢ (∀X. h X ⊆ X ⟶ A ⊆ X) ⟶ A ⊆ lfp h"
                 }
             ],
-            "prop": "(!X. subset (h X) X --> subset A X) --> subset A (lfp h)",
+            "prop": "(∀X. h X ⊆ X ⟶ A ⊆ X) ⟶ A ⊆ lfp h",
             "steps": [
                 {
                     "goal_id": "1",
@@ -4006,7 +4004,7 @@
             "ty": "thm",
             "vars": {
                 "A": "'a set",
-                "h": "'a set => 'a set"
+                "h": "'a set ⇒ 'a set"
             }
         },
         {
@@ -4139,7 +4137,7 @@
                     "th": "⊢ bnd_mono h ⟶ h (lfp h) = lfp h"
                 }
             ],
-            "prop": "bnd_mono h --> h (lfp h) = lfp h",
+            "prop": "bnd_mono h ⟶ h (lfp h) = lfp h",
             "steps": [
                 {
                     "fact_ids": [
@@ -4208,7 +4206,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "h": "'a set => 'a set"
+                "h": "'a set ⇒ 'a set"
             }
         },
         {
@@ -4375,7 +4373,7 @@
                     "th": "⊢ s ∩ t = t ∩ s"
                 }
             ],
-            "prop": "inter s t = inter t s",
+            "prop": "s ∩ t = t ∩ s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4716,7 +4714,7 @@
                     "th": "⊢ s ∪ t = t ∪ s"
                 }
             ],
-            "prop": "union s t = union t s",
+            "prop": "s ∪ t = t ∪ s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4893,7 +4891,7 @@
                     "th": "⊢ diff s t ⊆ s"
                 }
             ],
-            "prop": "subset (diff s t) s",
+            "prop": "diff s t ⊆ s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4941,7 +4939,7 @@
                 "hint_rewrite"
             ],
             "name": "disjoint",
-            "prop": "disjoint s t <--> inter s t = {}",
+            "prop": "disjoint s t ⟷ s ∩ t = ∅",
             "ty": "def",
             "type": "'a set ⇒ 'a set ⇒ bool"
         },
@@ -5270,7 +5268,7 @@
                     "th": "⊢ disjoint s t ⟷ ¬(∃x. x ∈ s ∧ x ∈ t)"
                 }
             ],
-            "prop": "disjoint s t <--> ~(?x. x ∈ s & x ∈ t)",
+            "prop": "disjoint s t ⟷ ¬(∃x. x ∈ s ∧ x ∈ t)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5419,7 +5417,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "finite",
             "rules": [
                 {
@@ -5432,17 +5429,17 @@
                 }
             ],
             "ty": "def.pred",
-            "type": "'a set => bool"
+            "type": "'a set ⇒ bool"
         },
         {
             "attributes": [
                 "hint_backward1"
             ],
             "name": "finite_induct_strong",
-            "prop": "finite s ⟶ P ∅ ⟶ (∀x. ∀s. P s ⟶ ¬x ∈ s ⟶ finite s ⟶ P (insert x s)) ⟶ P s",
+            "prop": "finite s ⟶ P ∅ ⟶ (∀x. ∀s1. P s1 ⟶ ¬(x ∈ s1) ⟶ finite s1 ⟶ P (insert x s1)) ⟶ P s",
             "ty": "thm",
             "vars": {
-                "P": "'a set => bool",
+                "P": "'a set ⇒ bool",
                 "s": "'a set"
             }
         },
@@ -5451,7 +5448,7 @@
                 "hint_backward"
             ],
             "name": "finite_subset",
-            "prop": "finite t & subset s t --> finite s",
+            "prop": "finite t ∧ s ⊆ t ⟶ finite s",
             "ty": "thm",
             "vars": {
                 "s": "'a set",
@@ -5460,10 +5457,10 @@
         },
         {
             "name": "finite_restrict",
-            "prop": "finite s --> finite {x. (member x s) & P x}",
+            "prop": "finite s ⟶ finite ({x. x ∈ s ∧ P x})",
             "ty": "thm",
             "vars": {
-                "P": "'a => bool",
+                "P": "'a ⇒ bool",
                 "s": "'a set"
             }
         },
@@ -5509,7 +5506,7 @@
                     "th": "⊢ y ∈ image f s ⟷ (∃x. y = f x ∧ x ∈ s)"
                 }
             ],
-            "prop": "(y ∈ (image f s)) <--> ?x. (y = f x) & x ∈ s",
+            "prop": "y ∈ image f s ⟷ (∃x. y = f x ∧ x ∈ s)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5529,7 +5526,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
+                "f": "'a ⇒ 'b",
                 "s": "'a set",
                 "y": "'b"
             }
@@ -5542,21 +5539,19 @@
             "prop": [
                 "itset f s b = ",
                 "((THE g. g ∅ = b ∧ ",
-                "    (∀x. ∀s. finite s ⟶ g (insert x s) = (if x ∈ s then g s else f x (g s)))) ",
+                "    (∀x. ∀s1. finite s1 ⟶ g (insert x s1) = (if x ∈ s1 then g s1 else f x (g s1)))) ",
                 "   s)"
             ],
             "ty": "def",
             "type": "('a ⇒ 'b ⇒ 'b) ⇒ 'a set ⇒ 'b ⇒ 'b"
         },
         {
-            "attributes": [],
             "name": "card",
-            "prop": "card s = itset (%x. %n. Suc n) s 0",
+            "prop": "card s = itset (λx. λn. Suc n) s 0",
             "ty": "def",
             "type": "'a set ⇒ nat"
         },
         {
-            "attributes": [],
             "name": "has_size",
             "prop": "has_size s n ⟷ finite s ∧ card s = n",
             "ty": "def",
@@ -5723,7 +5718,7 @@
                     "th": "⊢ image f ∅ = ∅"
                 }
             ],
-            "prop": "image f {} = {}",
+            "prop": "image f ∅ = ∅",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5790,7 +5785,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -6421,7 +6416,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
+                "f": "'a ⇒ 'b",
                 "s": "'a set",
                 "x": "'a"
             }
@@ -6802,7 +6797,7 @@
                     "th": "⊢ image f (s ∪ t) = image f s ∪ image f t"
                 }
             ],
-            "prop": "image f (union s t) = union (image f s) (image f t)",
+            "prop": "image f (s ∪ t) = image f s ∪ image f t",
             "steps": [
                 {
                     "goal_id": "0",
@@ -6952,7 +6947,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
+                "f": "'a ⇒ 'b",
                 "s": "'a set",
                 "t": "'a set"
             }
@@ -7136,7 +7131,7 @@
                     "th": "⊢ image (λx. x) s = s"
                 }
             ],
-            "prop": "image (%x. x) s = s",
+            "prop": "image (λx. x) s = s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -7685,8 +7680,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'b => 'c",
-                "g": "'a => 'b",
+                "f": "'b ⇒ 'c",
+                "g": "'a ⇒ 'b",
                 "s": "'a set"
             }
         },
@@ -7839,7 +7834,7 @@
                     "th": "⊢ s ⊆ t ⟶ image f s ⊆ image f t"
                 }
             ],
-            "prop": "subset s t --> subset (image f s) (image f t)",
+            "prop": "s ⊆ t ⟶ image f s ⊆ image f t",
             "steps": [
                 {
                     "goal_id": "1",
@@ -7907,7 +7902,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
+                "f": "'a ⇒ 'b",
                 "s": "'a set",
                 "t": "'a set"
             }
@@ -7936,27 +7931,22 @@
             ],
             "ty": "thm",
             "vars": {
-                "Q": "'b => bool",
-                "f": "'a => 'b"
+                "Q": "'b ⇒ bool",
+                "f": "'a ⇒ 'b"
             }
         },
         {
             "name": "countable",
             "ty": "def.ax",
-            "type": "'a set => bool"
+            "type": "'a set ⇒ bool"
         },
         {
-            "attributes": [],
             "name": "sup",
-            "prop": [
-                "sup s = THE a. (!x. x ∈ s --> x <= a) &",
-                "!b. (!x. x ∈ s --> x <= b) --> a <= b"
-            ],
+            "prop": "sup s = (THE a. (∀x. x ∈ s ⟶ x ≤ a) ∧ (∀b. (∀x. x ∈ s ⟶ x ≤ b) ⟶ a ≤ b))",
             "ty": "def",
             "type": "real set ⇒ real"
         },
         {
-            "attributes": [],
             "name": "inf",
             "prop": "inf s = (THE a. (∀x. x ∈ s ⟶ a ≤ x) ∧ (∀b. (∀x. x ∈ s ⟶ b ≤ x) ⟶ b ≤ a))",
             "ty": "def",

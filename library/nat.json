@@ -49,7 +49,7 @@
             "name": "of_nat",
             "overloaded": true,
             "ty": "def.ax",
-            "type": "nat => 'a "
+            "type": "nat ⇒ 'a"
         },
         {
             "name": "of_nat",
@@ -68,40 +68,33 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat"
+            "type": "nat ⇒ nat"
         },
         {
-            "ascii_op": "+",
             "name": "plus",
             "overloaded": true,
             "ty": "def.ax",
-            "type": "'a => 'a => 'a"
+            "type": "'a ⇒ 'a ⇒ 'a"
         },
         {
-            "ascii_op": "-",
             "name": "minus",
             "overloaded": true,
             "ty": "def.ax",
-            "type": "'a => 'a => 'a"
+            "type": "'a ⇒ 'a ⇒ 'a"
         },
         {
-            "ascii_op": "*",
             "name": "times",
             "overloaded": true,
             "ty": "def.ax",
-            "type": "'a => 'a => 'a"
+            "type": "'a ⇒ 'a ⇒ 'a"
         },
         {
-            "ascii_op": "^",
             "name": "power",
             "overloaded": true,
             "ty": "def.ax",
-            "type": "'a => 'b => 'a"
+            "type": "'a ⇒ 'b ⇒ 'a"
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "plus",
             "rules": [
                 {
@@ -112,35 +105,33 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => nat"
+            "type": "nat ⇒ nat ⇒ nat"
         },
         {
-            "ascii_op": "*",
             "name": "times",
             "rules": [
                 {
-                    "prop": "0 * (n::nat) = 0"
+                    "prop": "0 * n = 0"
                 },
                 {
                     "prop": "Suc m * n = n + m * n"
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => nat"
+            "type": "nat ⇒ nat ⇒ nat"
         },
         {
-            "ascii_op": "^",
             "name": "power",
             "rules": [
                 {
-                    "prop": "(n::nat) ^ 0 = 1"
+                    "prop": "n ^ (0::nat) = 1"
                 },
                 {
                     "prop": "n ^ Suc m = n * n ^ m"
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => nat"
+            "type": "nat ⇒ nat ⇒ nat"
         },
         {
             "attributes": [
@@ -2068,7 +2059,7 @@
                     "th": "⊢ x + y = x ⟶ y = 0"
                 }
             ],
-            "prop": "x + y = x --> y = 0",
+            "prop": "x + y = x ⟶ y = 0",
             "steps": [
                 {
                     "goal": "x + y = x + 0",
@@ -2138,7 +2129,7 @@
                     "th": "⊢ x + y = y ⟶ x = 0"
                 }
             ],
-            "prop": "x + y = y --> x = 0",
+            "prop": "x + y = y ⟶ x = 0",
             "steps": [
                 {
                     "goal": "x + y = 0 + y",
@@ -2167,7 +2158,7 @@
         },
         {
             "name": "add_is_zero",
-            "prop": "x + y = 0 --> x = 0 & y = 0",
+            "prop": "x + y = 0 ⟶ x = 0 ∧ y = 0",
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -2176,7 +2167,7 @@
         },
         {
             "name": "mult_nonzero",
-            "prop": "x * y = 0 --> x = 0 | y = 0",
+            "prop": "x * y = 0 ⟶ x = 0 ∨ y = 0",
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -2189,7 +2180,6 @@
             "ty": "header"
         },
         {
-            "attributes": [],
             "name": "bit0",
             "prop": "bit0 n = n + n",
             "ty": "def",
@@ -2642,7 +2632,7 @@
         },
         {
             "name": "bit0_nonzero",
-            "prop": "~ m = 0 --> ~ (bit0 m = 0)",
+            "prop": "¬(m = 0) ⟶ ¬(bit0 m = 0)",
             "ty": "thm",
             "vars": {
                 "m": "nat"
@@ -2650,7 +2640,7 @@
         },
         {
             "name": "bit1_nonzero",
-            "prop": "~ bit1 m = 0",
+            "prop": "¬(bit1 m = 0)",
             "ty": "thm",
             "vars": {
                 "m": "nat"
@@ -2658,13 +2648,13 @@
         },
         {
             "name": "one_nonzero",
-            "prop": "~ (1::nat) = 0",
+            "prop": "¬((1::nat) = 0)",
             "ty": "thm",
             "vars": {}
         },
         {
             "name": "bit0_neq",
-            "prop": "~ m = n --> ~ bit0 m = bit0 n",
+            "prop": "¬(m = n) ⟶ ¬(bit0 m = bit0 n)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -2673,7 +2663,7 @@
         },
         {
             "name": "bit1_neq",
-            "prop": "~ m = n --> ~bit1 m = bit1 n",
+            "prop": "¬(m = n) ⟶ ¬(bit1 m = bit1 n)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -2682,7 +2672,7 @@
         },
         {
             "name": "bit0_bit1_neq",
-            "prop": "~ bit0 m = bit1 n",
+            "prop": "¬(bit0 m = bit1 n)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -2691,7 +2681,7 @@
         },
         {
             "name": "bit0_neq_one",
-            "prop": "~ bit0 m = 1",
+            "prop": "¬(bit0 m = 1)",
             "ty": "thm",
             "vars": {
                 "m": "nat"
@@ -2699,7 +2689,7 @@
         },
         {
             "name": "bit1_neq_one",
-            "prop": "~ m = 0 --> ~ bit1 m = 1",
+            "prop": "¬(m = 0) ⟶ ¬(bit1 m = 1)",
             "ty": "thm",
             "vars": {
                 "m": "nat"
@@ -2722,7 +2712,7 @@
                     "th": "⊢ x + y + (y + z) = y * 2 + (x + z)"
                 }
             ],
-            "prop": "(x + y) + (y + z) = y * 2 + (x + z)",
+            "prop": "x + y + (y + z) = y * 2 + (x + z)",
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -2751,7 +2741,7 @@
                     "th": "⊢ ¬((12::nat) = 13)"
                 }
             ],
-            "prop": "~ (12::nat) = 13",
+            "prop": "¬((12::nat) = 13)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2856,7 +2846,7 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "(nat => nat) => nat => nat"
+            "type": "(nat ⇒ nat) ⇒ nat ⇒ nat"
         },
         {
             "name": "Sigma_plus",
@@ -2956,7 +2946,7 @@
                     "th": "⊢ Sigma (λx. f x + g x) n = Sigma f n + Sigma g n"
                 }
             ],
-            "prop": "Sigma (%x. f x + g x) n = Sigma f n + Sigma g n",
+            "prop": "Sigma (λx. f x + g x) n = Sigma f n + Sigma g n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3001,43 +2991,36 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat => nat",
-                "g": "nat => nat",
+                "f": "nat ⇒ nat",
+                "g": "nat ⇒ nat",
                 "n": "nat"
             }
         },
         {
-            "ascii_op": "<=",
             "name": "less_eq",
             "overloaded": true,
             "ty": "def.ax",
-            "type": "'a => 'a => bool"
+            "type": "'a ⇒ 'a ⇒ bool"
         },
         {
-            "ascii_op": "<",
             "name": "less",
             "overloaded": true,
             "ty": "def.ax",
-            "type": "'a => 'a => bool"
+            "type": "'a ⇒ 'a ⇒ bool"
         },
         {
-            "ascii_op": ">=",
             "name": "greater_eq",
-            "prop": "greater_eq m n = less_eq n m",
+            "prop": "m ≥ n ⟷ n ≤ m",
             "ty": "def",
-            "type": "'a => 'a => bool"
+            "type": "'a ⇒ 'a ⇒ bool"
         },
         {
-            "ascii_op": ">",
             "name": "greater",
-            "prop": "greater m n = less n m",
+            "prop": "m > n ⟷ n < m",
             "ty": "def",
-            "type": "'a => 'a => bool"
+            "type": "'a ⇒ 'a ⇒ bool"
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "less_eq",
             "rules": [
                 {
@@ -3048,12 +3031,9 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => bool"
+            "type": "nat ⇒ nat ⇒ bool"
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "less",
             "rules": [
                 {
@@ -3064,7 +3044,7 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => bool"
+            "type": "nat ⇒ nat ⇒ bool"
         },
         {
             "attributes": [
@@ -3200,7 +3180,7 @@
                     "th": "⊢ m < Suc n ⟷ m ≤ n"
                 }
             ],
-            "prop": "m < Suc n <--> m <= n",
+            "prop": "m < Suc n ⟷ m ≤ n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3263,7 +3243,7 @@
                     "th": "⊢ Suc m ≤ Suc n ⟷ m ≤ n"
                 }
             ],
-            "prop": "(Suc m <= Suc n) <--> (m <= n)",
+            "prop": "Suc m ≤ Suc n ⟷ m ≤ n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -3344,7 +3324,7 @@
                 "hint_forward"
             ],
             "name": "lt_imp_le",
-            "prop": "m < n --> m <= n",
+            "prop": "m < n ⟶ m ≤ n",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -3369,7 +3349,7 @@
                 "hint_forward"
             ],
             "name": "le_1_2",
-            "prop": "¬(n = 0) ⟶ 1 <= n",
+            "prop": "¬(n = 0) ⟶ 1 ≤ n",
             "ty": "thm",
             "vars": {
                 "n": "nat"
@@ -3392,7 +3372,7 @@
                 "hint_rewrite"
             ],
             "name": "less_exist",
-            "prop": "m<n <--> (?d. n = m+Suc d)",
+            "prop": "m < n ⟷ (∃d. n = m + Suc d)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -3401,7 +3381,7 @@
         },
         {
             "name": "less_lesseq",
-            "prop": "less m n = (less_eq m n & ~(m = n))",
+            "prop": "m < n ⟷ m ≤ n ∧ ¬(m = n)",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -3409,9 +3389,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "less_lesseqI",
-            "prop": "m <= n --> ~m = n --> m < n",
+            "prop": "m ≤ n ⟶ ¬(m = n) ⟶ m < n",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -3530,7 +3509,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "less_0",
             "prop": "0 < Suc n",
             "ty": "thm",
@@ -3594,7 +3572,6 @@
             }
         },
         {
-            "attributes": [],
             "name": "less_eq_trans",
             "num_gaps": 0,
             "proof": [
@@ -3721,7 +3698,7 @@
                     "th": "⊢ k ≤ m ⟶ m ≤ n ⟶ k ≤ n"
                 }
             ],
-            "prop": "k <= m --> m <= n --> k <= n",
+            "prop": "k ≤ m ⟶ m ≤ n ⟶ k ≤ n",
             "steps": [
                 {
                     "fact_ids": [
@@ -4285,7 +4262,7 @@
                     "th": "⊢ ¬(m ≤ n) ⟷ n < m"
                 }
             ],
-            "prop": "~(m<=n)<-->n<m",
+            "prop": "¬(m ≤ n) ⟷ n < m",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4588,7 +4565,7 @@
                     "th": "⊢ m ≤ m + n"
                 }
             ],
-            "prop": "m <= m + n",
+            "prop": "m ≤ m + n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4759,7 +4736,7 @@
                     "th": "⊢ m < m + n ⟷ 0 < n"
                 }
             ],
-            "prop": "(m < m + n) <--> (0 < n)",
+            "prop": "m < m + n ⟷ 0 < n",
             "steps": [
                 {
                     "goal_id": "0",
@@ -4830,7 +4807,7 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat => nat"
+            "type": "nat ⇒ nat ⇒ nat"
         },
         {
             "name": "nat_minus_0",
@@ -4938,7 +4915,7 @@
                     "th": "⊢ minus 0 x = 0 ∧ minus x 0 = x"
                 }
             ],
-            "prop": "minus 0 x = 0 & minus x 0 = x",
+            "prop": "0 - x = 0 ∧ x - 0 = x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5075,7 +5052,7 @@
                     "th": "⊢ Pre (minus (Suc x) y) = minus x y"
                 }
             ],
-            "prop": "Pre (minus (Suc x) y) = minus x y",
+            "prop": "Pre (Suc x - y) = x - y",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5205,7 +5182,7 @@
                     "th": "⊢ minus (Suc x) (Suc y) = minus x y"
                 }
             ],
-            "prop": "minus (Suc x) (Suc y) = minus x y",
+            "prop": "Suc x - Suc y = x - y",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5313,7 +5290,7 @@
                     "th": "⊢ minus x x = 0"
                 }
             ],
-            "prop": "minus x x = 0",
+            "prop": "x - x = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5423,7 +5400,7 @@
                     "th": "⊢ x + y - y = x"
                 }
             ],
-            "prop": "minus (x + y) y = x",
+            "prop": "x + y - y = x",
             "steps": [
                 {
                     "goal_id": "0",
@@ -5524,7 +5501,7 @@
         },
         {
             "name": "add_subr2",
-            "prop": "minus x (x + y) = 0",
+            "prop": "x - (x + y) = 0",
             "ty": "thm",
             "vars": {
                 "x": "nat",
@@ -5621,7 +5598,7 @@
                     "th": "⊢ y ≤ x ⟶ x - y + y = x"
                 }
             ],
-            "prop": "y <= x --> ((x - y) + y = x)",
+            "prop": "y ≤ x ⟶ x - y + y = x",
             "steps": [
                 {
                     "fact_ids": [
@@ -5799,9 +5776,9 @@
                 "hint_rewrite"
             ],
             "name": "max",
-            "prop": "max m n = if m <= n then n else m",
+            "prop": "max m n = (if m ≤ n then n else m)",
             "ty": "def",
-            "type": "'a => 'a => 'a"
+            "type": "'a ⇒ 'a ⇒ 'a"
         },
         {
             "attributes": [
@@ -5810,10 +5787,9 @@
             "name": "min",
             "prop": "min m n = (if m ≤ n then m else n)",
             "ty": "def",
-            "type": "'a => 'a => 'a"
+            "type": "'a ⇒ 'a ⇒ 'a"
         },
         {
-            "attributes": [],
             "name": "min_simp1",
             "num_gaps": 0,
             "proof": [
@@ -5877,9 +5853,6 @@
             }
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "even",
             "rules": [
                 {
@@ -5890,12 +5863,9 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => bool"
+            "type": "nat ⇒ bool"
         },
         {
-            "attributes": [
-                "hint_rewrite"
-            ],
             "name": "odd",
             "rules": [
                 {
@@ -5906,7 +5876,7 @@
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => bool"
+            "type": "nat ⇒ bool"
         },
         {
             "attributes": [
@@ -6155,7 +6125,7 @@
                     "th": "⊢ even (2 * n + 1) ⟷ false"
                 }
             ],
-            "prop": "even (2*n + 1) ⟷ false",
+            "prop": "even (2 * n + 1) ⟷ false",
             "steps": [
                 {
                     "goal_id": "0",
@@ -6188,12 +6158,12 @@
         {
             "name": "nat_divide",
             "ty": "def.ax",
-            "type": "nat => nat => nat"
+            "type": "nat ⇒ nat ⇒ nat"
         },
         {
             "name": "nat_modulus",
             "ty": "def.ax",
-            "type": "nat => nat => nat"
+            "type": "nat ⇒ nat ⇒ nat"
         },
         {
             "name": "fact",
@@ -6202,11 +6172,11 @@
                     "prop": "fact 0 = 1"
                 },
                 {
-                    "prop": "fact (Suc n) = (Suc n) * fact n"
+                    "prop": "fact (Suc n) = Suc n * fact n"
                 }
             ],
             "ty": "def.ind",
-            "type": "nat => nat"
+            "type": "nat ⇒ nat"
         }
     ],
     "description": "Natural numbers",

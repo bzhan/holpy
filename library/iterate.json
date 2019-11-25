@@ -11,7 +11,7 @@
         },
         {
             "name": "finite_numseg",
-            "prop": "finite {m..n}",
+            "prop": "finite ({m..n})",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -19,9 +19,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "numseg_combine_r",
-            "prop": "m <= p + 1 & p <= n --> (union {m..p} {(p + 1)..n} = {m..n})",
+            "prop": "m ≤ p + 1 ∧ p ≤ n ⟶ {m..p} ∪ {p + 1..n} = {m..n}",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -30,9 +29,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "numseg_combine_l",
-            "prop": "m <= p & p <= n + 1 --> (union {m..(minus p 1)} {p..n} = {m..n})",
+            "prop": "m ≤ p ∧ p ≤ n + 1 ⟶ {m..p - 1} ∪ {p..n} = {m..n}",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -41,9 +39,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "numseg_lrec",
-            "prop": "m <= n --> {m..n} = insert m {(m+1)..n}",
+            "prop": "m ≤ n ⟶ {m..n} = insert m ({m + 1..n})",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -52,7 +49,7 @@
         },
         {
             "name": "numseg_rrec",
-            "prop": "m <= n + 1 --> (insert (n + 1) {m..n} = {m..(n + 1)})",
+            "prop": "m ≤ n + 1 ⟶ insert (n + 1) ({m..n}) = {m..n + 1}",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -61,7 +58,7 @@
         },
         {
             "name": "numseg_rec",
-            "prop": "m <= Suc n --> ({m..(Suc n)} = insert (Suc n) {m..n})",
+            "prop": "m ≤ Suc n ⟶ {m..Suc n} = insert (Suc n) ({m..n})",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -125,7 +122,7 @@
         },
         {
             "name": "member_numseg_0",
-            "prop": "member p {0..n} = (p <= n)",
+            "prop": "p ∈ {0..n} ⟷ p ≤ n",
             "ty": "thm",
             "vars": {
                 "n": "nat",
@@ -134,7 +131,7 @@
         },
         {
             "name": "numseg_empty",
-            "prop": "({m..n} = empty_set) = (n < m)",
+            "prop": "{m..n} = ∅ ⟷ n < m",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -142,9 +139,8 @@
             }
         },
         {
-            "attributes": [],
             "name": "numseg_emptyI",
-            "prop": "n < m --> {m..n} = empty_set",
+            "prop": "n < m ⟶ {m..n} = ∅",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -161,7 +157,7 @@
         },
         {
             "name": "inter_numseg",
-            "prop": "inter {m..n} {p..q} = {(max m p)..(min n q)}",
+            "prop": "{m..n} ∩ {p..q} = {max m p..min n q}",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -172,7 +168,7 @@
         },
         {
             "name": "numseg_add_split",
-            "prop": "m <= n + 1 --> {m..(n + p)} = union {m..n} {(n + 1)..(p + 1)}",
+            "prop": "m ≤ n + 1 ⟶ {m..n + p} = {m..n} ∪ {n + 1..p + 1}",
             "ty": "thm",
             "vars": {
                 "m": "nat",
@@ -184,9 +180,8 @@
             "attributes": [
                 "hint_rewrite"
             ],
-            "hint_backward": "true",
             "name": "neutral",
-            "prop": "neutral op ⟷ THE x. (∀y. op x y = y ∧ op y x = y)",
+            "prop": "neutral op = (THE x. ∀y. op x y = y ∧ op y x = y)",
             "ty": "def",
             "type": "('a ⇒ 'a ⇒ 'a) ⇒ 'a"
         },
@@ -196,8 +191,9 @@
             ],
             "name": "monoidal",
             "prop": [
-                "monoidal op ⟷ ((∀x. ∀y. op x y = op y x) ∧ ",
-                "(∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x))"
+                "monoidal op ⟷ ",
+                "(∀x. ∀y. op x y = op y x) ∧ ",
+                "(∀x. ∀y. ∀z. op x (op y z) = op (op x y) z) ∧ (∀x. op (neutral op) x = x)"
             ],
             "ty": "def",
             "type": "('a ⇒ 'a ⇒ 'a) ⇒ bool"
@@ -547,12 +543,12 @@
                 }
             ],
             "prop": [
-                "monoidal op",
-                "--> (!a. op (neutral op) a = a) &",
-                "(!a. op a (neutral op) = a) &",
-                "(!a. !b. op a b = op b a) &",
-                "(!a. !b. !c. op (op a b) c = op a (op b c)) &",
-                "(!a. !b. !c. op a (op b c) = op b (op a c))"
+                "monoidal op ",
+                "⟶ (∀a. op (neutral op) a = a) ∧ ",
+                "   (∀a. op a (neutral op) = a) ∧ ",
+                "   (∀a. ∀b. op a b = op b a) ∧ ",
+                "   (∀a. ∀b. ∀c. op (op a b) c = op a (op b c)) ∧ ",
+                "   (∀a. ∀b. ∀c. op a (op b c) = op b (op a c))"
             ],
             "steps": [
                 {
@@ -737,7 +733,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "op": "'a => 'a => 'a"
+                "op": "'a ⇒ 'a ⇒ 'a"
             }
         },
         {
@@ -745,7 +741,7 @@
                 "hint_rewrite"
             ],
             "name": "support",
-            "prop": "support op f s = {x. x ∈ s & ~(f x = neutral op)}",
+            "prop": "support op f s = {x. x ∈ s ∧ ¬(f x = neutral op)}",
             "ty": "def",
             "type": "('a ⇒ 'a ⇒ 'a) ⇒ ('b ⇒ 'a) ⇒ 'b set ⇒ 'b set"
         },
@@ -755,10 +751,11 @@
             ],
             "name": "iterate",
             "prop": [
-                "iterate op s f =",
-                "if finite (support op f s)",
-                "then itset (%x. %a. op (f x) a) (support op f s) (neutral op)",
-                "else neutral op"
+                "iterate op s f = ",
+                "(if finite (support op f s) then ",
+                "   itset (λx. λa. op (f x) a) (support op f s) (neutral op)",
+                " else ",
+                "   neutral op)"
             ],
             "ty": "def",
             "type": "('a ⇒ 'a ⇒ 'a) ⇒ 'b set ⇒ ('b ⇒ 'a) ⇒ 'a"
@@ -787,7 +784,7 @@
                     "th": "⊢ x ∈ support op f s ⟷ x ∈ s ∧ ¬(f x = neutral op)"
                 }
             ],
-            "prop": "x ∈ (support op f s) <--> x ∈ s & ~(f x = neutral op)",
+            "prop": "x ∈ support op f s ⟷ x ∈ s ∧ ¬(f x = neutral op)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -804,8 +801,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'b => 'a",
-                "op": "'a => 'a => 'a",
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
                 "s": "'b set",
                 "x": "'b"
             }
@@ -1043,8 +1040,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'b => 'a",
-                "op": "'a => 'a => 'a",
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
                 "s": "'b set"
             }
         },
@@ -1486,7 +1483,7 @@
                     "th": "⊢ (∀x. x ∈ s ⟶ f x = neutral op) ⟷ support op f s = ∅"
                 }
             ],
-            "prop": "(!x. x ∈ s --> f x = neutral op) <--> (support op f s = {})",
+            "prop": "(∀x. x ∈ s ⟶ f x = neutral op) ⟷ support op f s = ∅",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1711,8 +1708,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'b => 'a",
-                "op": "'a => 'a => 'a",
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
                 "s": "'b set"
             }
         },
@@ -1792,7 +1789,7 @@
                     "th": "⊢ support op f s ⊆ s"
                 }
             ],
-            "prop": "subset (support op f s) s",
+            "prop": "support op f s ⊆ s",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1824,8 +1821,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'b => 'a",
-                "op": "'a => 'a => 'a",
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
                 "s": "'b set"
             }
         },
@@ -1862,7 +1859,7 @@
                     "th": "⊢ support op f ∅ = ∅"
                 }
             ],
-            "prop": "support op f {} = {}",
+            "prop": "support op f ∅ = ∅",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1877,8 +1874,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'b => 'a",
-                "op": "'a => 'a => 'a"
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a"
             }
         },
         {
@@ -1887,14 +1884,13 @@
             ],
             "name": "support_insert",
             "prop": [
-                "support op f (insert x s) =",
-                " if f x = neutral op then support op f s",
-                "else insert x (support op f s)"
+                "support op f (insert x s) = ",
+                "(if f x = neutral op then support op f s else insert x (support op f s))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'b => 'a",
-                "op": "'a => 'a => 'a",
+                "f": "'b ⇒ 'a",
+                "op": "'a ⇒ 'a ⇒ 'a",
                 "s": "'b set",
                 "x": "'b"
             }
@@ -1904,7 +1900,7 @@
                 "hint_rewrite"
             ],
             "name": "sum",
-            "prop": "sum = iterate (plus)",
+            "prop": "(sum::'a set ⇒ ('a ⇒ real) ⇒ real) = iterate plus",
             "ty": "def",
             "type": "'a set ⇒ ('a ⇒ real) ⇒ real"
         },
@@ -1913,7 +1909,7 @@
                 "hint_rewrite"
             ],
             "name": "product",
-            "prop": "product = iterate (times)",
+            "prop": "(product::'a set ⇒ ('a ⇒ real) ⇒ real) = iterate times",
             "ty": "def",
             "type": "'a set ⇒ ('a ⇒ real) ⇒ real"
         },
@@ -1941,7 +1937,7 @@
                     "th": "⊢ neutral plus = (0::real)"
                 }
             ],
-            "prop": "neutral ((plus)::real=>real=>real) = 0",
+            "prop": "neutral plus = (0::real)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1995,7 +1991,7 @@
                     "th": "⊢ monoidal (plus::real ⇒ real ⇒ real)"
                 }
             ],
-            "prop": "monoidal (plus::real=>real=>real)",
+            "prop": "monoidal (plus::real ⇒ real ⇒ real)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2143,7 +2139,7 @@
                     "th": "⊢ ¬(finite ({x. x ∈ s ∧ ¬(f x = 0)})) ⟶ sum s f = 0"
                 }
             ],
-            "prop": " ~(finite {x. x ∈ s & ~(f x = 0)}) --> sum s f = 0",
+            "prop": "¬(finite ({x. x ∈ s ∧ ¬(f x = 0)})) ⟶ sum s f = 0",
             "steps": [
                 {
                     "goal_id": "1",
@@ -2181,7 +2177,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2227,7 +2223,7 @@
                     "th": "⊢ sum ∅ f = 0"
                 }
             ],
-            "prop": "sum {} f = 0",
+            "prop": "sum ∅ f = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2244,7 +2240,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real"
+                "f": "'a ⇒ real"
             }
         },
         {
@@ -2253,14 +2249,10 @@
                 "hint_forward"
             ],
             "name": "sum_insert",
-            "prop": [
-                "finite s",
-                "--> (sum (insert x s) f =",
-                "                 if x ∈ s then sum s f else f x + sum s f)"
-            ],
+            "prop": "finite s ⟶ sum (insert x s) f = (if x ∈ s then sum s f else f x + sum s f)",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set",
                 "x": "'a"
             }
@@ -2272,13 +2264,10 @@
                 "hint_forward"
             ],
             "name": "sum_union",
-            "prop": [
-                "finite s & finite t & disjoint s t",
-                "--> (sum (union s t) f = sum s f + sum t f)"
-            ],
+            "prop": "finite s ∧ finite t ∧ disjoint s t ⟶ sum (s ∪ t) f = sum s f + sum t f",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set",
                 "t": "'a set"
             }
@@ -2290,10 +2279,10 @@
                 "hint_forward"
             ],
             "name": "sum_diff",
-            "prop": "finite s ∧ subset t s ⟶ sum (diff s t) f = sum s f - sum t f",
+            "prop": "finite s ∧ t ⊆ s ⟶ sum (diff s t) f = sum s f - sum t f",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set",
                 "t": "'a set"
             }
@@ -2305,10 +2294,10 @@
                 "hint_forward"
             ],
             "name": "sum_incl_excl",
-            "prop": "finite s ∧ finite t ⟶ sum s f + sum t f = sum (s ∪ t) f + sum (inter s t) f",
+            "prop": "finite s ∧ finite t ⟶ sum s f + sum t f = sum (s ∪ t) f + sum (s ∩ t) f",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set",
                 "t": "'a set"
             }
@@ -2378,7 +2367,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2388,11 +2377,11 @@
                 "hint_forward"
             ],
             "name": "sum_add",
-            "prop": "finite s --> (sum s (%x. f x + g x) = sum s f + sum s g)",
+            "prop": "finite s ⟶ sum s (λx. f x + g x) = sum s f + sum s g",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2404,13 +2393,13 @@
             ],
             "name": "sum_add_gen",
             "prop": [
-                "finite {x. x∈s & ~(f x = 0)} & finite {x. x∈s & ~(g x = 0)} ",
+                "finite ({x. x ∈ s ∧ ¬(f x = 0)}) ∧ finite ({x. x ∈ s ∧ ¬(g x = 0)}) ",
                 "⟶ sum s (λx. f x + g x) = sum s f + sum s g"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2420,10 +2409,10 @@
                 "hint_forward"
             ],
             "name": "sum_eq_0",
-            "prop": "(!x. x∈s --> (f x = 0)) --> (sum s f = 0)",
+            "prop": "(∀x. x ∈ s ⟶ f x = 0) ⟶ sum s f = 0",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2460,7 +2449,7 @@
                     "th": "⊢ sum s (λx. 0) = 0"
                 }
             ],
-            "prop": "sum s (%x. 0) = 0",
+            "prop": "sum s (λx. 0) = 0",
             "steps": [
                 {
                     "goal_id": "0",
@@ -2486,7 +2475,7 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2568,7 +2557,7 @@
                     "th": "⊢ sum s (λx. -(f x)) = -(sum s f)"
                 }
             ],
-            "prop": "sum s (λx. -f x) = -sum s f",
+            "prop": "sum s (λx. -(f x)) = -(sum s f)",
             "steps": [
                 {
                     "goal": "!x::real. -x = -1 * x",
@@ -2627,7 +2616,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2714,8 +2703,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2726,11 +2715,11 @@
                 "hint_forward"
             ],
             "name": "sum_le",
-            "prop": "finite s & (!x. x ∈ s --> f x <= g x) ⟶ sum s f <= sum s g",
+            "prop": "finite s ∧ (∀x. x ∈ s ⟶ f x ≤ g x) ⟶ sum s f ≤ sum s g",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2861,8 +2850,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -2977,7 +2966,7 @@
                     "th": "⊢ finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g"
                 }
             ],
-            "prop": "finite s ∧ ~(s = {}) ∧ (!x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g",
+            "prop": "finite s ∧ ¬(s = ∅) ∧ (∀x. x ∈ s ⟶ f x < g x) ⟶ sum s f < sum s g",
             "steps": [
                 {
                     "goal_id": "1",
@@ -3044,8 +3033,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -3152,7 +3141,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -3334,7 +3323,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
+                "f": "'a ⇒ real",
                 "s": "'a set"
             }
         },
@@ -3348,13 +3337,12 @@
             "prop": "finite s ∧ (∀x. x ∈ s ⟶ f x = g x) ⟶ sum s f = sum s g",
             "ty": "thm",
             "vars": {
-                "f": "'a => real",
-                "g": "'a => real",
+                "f": "'a ⇒ real",
+                "g": "'a ⇒ real",
                 "s": "'a set"
             }
         },
         {
-            "attributes": [],
             "name": "polynomial_function",
             "prop": "polynomial_function p ⟷ (∃m. ∃c. ∀x. p x = sum ({0..m}) (λi. c i * x ^ i))",
             "ty": "def",

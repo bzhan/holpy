@@ -10,7 +10,7 @@
                 "hint_rewrite"
             ],
             "name": "fun_upd",
-            "prop": "fun_upd f a b x = (if x = a then b else f x)",
+            "prop": "(f)(a := b) x = (if x = a then b else f x)",
             "ty": "def",
             "type": "('a ⇒ 'b) ⇒ 'a ⇒ 'b ⇒ 'a ⇒ 'b"
         },
@@ -47,7 +47,7 @@
                     "th": "⊢ (f)(a := b) a = b"
                 }
             ],
-            "prop": "fun_upd f a b a = b",
+            "prop": "(f)(a := b) a = b",
             "steps": [
                 {
                     "goal_id": "0",
@@ -78,7 +78,7 @@
             "vars": {
                 "a": "'a",
                 "b": "'b",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -124,7 +124,7 @@
                     "th": "⊢ ¬(c = a) ⟶ (f)(a := b) c = f c"
                 }
             ],
-            "prop": "~(c = a) --> fun_upd f a b c = f c",
+            "prop": "¬(c = a) ⟶ (f)(a := b) c = f c",
             "steps": [
                 {
                     "goal_id": "1",
@@ -146,7 +146,7 @@
                 "a": "'a",
                 "b": "'b",
                 "c": "'a",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -282,7 +282,7 @@
                     "th": "⊢ (f)(a := f a) = f"
                 }
             ],
-            "prop": "fun_upd f a (f a) = f",
+            "prop": "(f)(a := f a) = f",
             "steps": [
                 {
                     "goal_id": "0",
@@ -339,7 +339,7 @@
             "ty": "thm",
             "vars": {
                 "a": "'a",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -474,7 +474,7 @@
                     "th": "⊢ (f)(a := b, a := c) = (f)(a := c)"
                 }
             ],
-            "prop": "fun_upd (fun_upd f a b) a c = fun_upd f a c",
+            "prop": "(f)(a := b, a := c) = (f)(a := c)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -533,7 +533,7 @@
                 "a": "'a",
                 "b": "'b",
                 "c": "'b",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -817,7 +817,7 @@
                     "th": "⊢ ¬c = a ⟶ (f)(a := b, c := d) = (f)(c := d, a := b)"
                 }
             ],
-            "prop": "~c = a --> fun_upd (fun_upd f a b) c d = fun_upd (fun_upd f c d) a b",
+            "prop": "¬(c = a) ⟶ (f)(a := b, c := d) = (f)(c := d, a := b)",
             "steps": [
                 {
                     "goal_id": "1",
@@ -949,7 +949,7 @@
                 "b": "'b",
                 "c": "'a",
                 "d": "'b",
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -973,7 +973,7 @@
                     "th": "⊢ (λx::nat. (0::nat))(1 := 5) 0 = 0"
                 }
             ],
-            "prop": "fun_upd (%x::nat. (0::nat)) 1 5 0 = 0",
+            "prop": "(λx::nat. (0::nat))(1 := 5) 0 = 0",
             "steps": [
                 {
                     "goal": "~((0::nat) = 1)",
@@ -1009,7 +1009,7 @@
                     "th": "⊢ (λx. 0)(1 := 5) 1 = 5"
                 }
             ],
-            "prop": "fun_upd (%x::nat. (0::nat)) 1 5 1 = 5",
+            "prop": "(λx::nat. (0::nat))(1 := 5) 1 = 5",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1053,7 +1053,7 @@
                     "th": "⊢ comp_fun f g x = f (g x)"
                 }
             ],
-            "prop": "comp_fun f g x = f (g x)",
+            "prop": "(f ∘ g) x = f (g x)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1063,13 +1063,12 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'b => 'c",
-                "g": "'a => 'b",
+                "f": "'b ⇒ 'c",
+                "g": "'a ⇒ 'b",
                 "x": "'a"
             }
         },
         {
-            "attributes": [],
             "name": "comp_fun_assoc",
             "num_gaps": 0,
             "proof": [
@@ -1123,7 +1122,7 @@
                     "th": "⊢ (f ∘ g) ∘ h = f ∘ g ∘ h"
                 }
             ],
-            "prop": "comp_fun (comp_fun f g) h = comp_fun f (comp_fun g h)",
+            "prop": "(f ∘ g) ∘ h = f ∘ g ∘ h",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1148,14 +1147,14 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'c => 'd",
-                "g": "'b => 'c",
-                "h": "'a => 'b"
+                "f": "'c ⇒ 'd",
+                "g": "'b ⇒ 'c",
+                "h": "'a ⇒ 'b"
             }
         },
         {
             "name": "injective",
-            "prop": "injective f = (!x. !y. f x = f y --> x = y)",
+            "prop": "injective f ⟷ (∀x. ∀y. f x = f y ⟶ x = y)",
             "ty": "def",
             "type": "('a ⇒ 'b) ⇒ bool"
         },
@@ -1193,7 +1192,7 @@
                     "th": "⊢ (∀x. ∀y. f x = f y ⟶ x = y) ⟶ injective f"
                 }
             ],
-            "prop": "(!x. !y. f x = f y --> x = y) --> injective f",
+            "prop": "(∀x. ∀y. f x = f y ⟶ x = y) ⟶ injective f",
             "steps": [
                 {
                     "goal_id": "1",
@@ -1203,7 +1202,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -1258,7 +1257,7 @@
                     "th": "⊢ injective f ⟶ f x = f y ⟶ x = y"
                 }
             ],
-            "prop": "injective f --> f x = f y --> x = y",
+            "prop": "injective f ⟶ f x = f y ⟶ x = y",
             "steps": [
                 {
                     "fact_ids": [
@@ -1279,14 +1278,14 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
+                "f": "'a ⇒ 'b",
                 "x": "'a",
                 "y": "'a"
             }
         },
         {
             "name": "surjective",
-            "prop": "surjective f = (!y. ?x. f x = y)",
+            "prop": "surjective f ⟷ (∀y. ∃x. f x = y)",
             "ty": "def",
             "type": "('a ⇒ 'b) ⇒ bool"
         },
@@ -1324,7 +1323,7 @@
                     "th": "⊢ (∀y. ∃x. f x = y) ⟶ surjective f"
                 }
             ],
-            "prop": "(!y. ?x. f x = y) --> surjective f",
+            "prop": "(∀y. ∃x. f x = y) ⟶ surjective f",
             "steps": [
                 {
                     "goal_id": "1",
@@ -1334,7 +1333,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b"
+                "f": "'a ⇒ 'b"
             }
         },
         {
@@ -1380,7 +1379,7 @@
                     "th": "⊢ surjective f ⟶ (∃x. f x = y)"
                 }
             ],
-            "prop": "surjective f --> ?x. f x = y",
+            "prop": "surjective f ⟶ (∃x. f x = y)",
             "steps": [
                 {
                     "fact_ids": [
@@ -1400,7 +1399,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
+                "f": "'a ⇒ 'b",
                 "y": "'b"
             }
         },
@@ -1467,7 +1466,7 @@
                     "th": "⊢ injective (id_fun::'a ⇒ 'a)"
                 }
             ],
-            "prop": "injective (id_fun::'a => 'a)",
+            "prop": "injective (id_fun::'a ⇒ 'a)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1551,7 +1550,7 @@
                     "th": "⊢ surjective (id_fun::'a ⇒ 'a)"
                 }
             ],
-            "prop": "surjective (id_fun::'a => 'a)",
+            "prop": "surjective (id_fun::'a ⇒ 'a)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -1690,7 +1689,7 @@
                     "th": "⊢ injective f ⟶ injective g ⟶ injective (g ∘ f)"
                 }
             ],
-            "prop": "injective f --> injective g --> injective (comp_fun g f)",
+            "prop": "injective f ⟶ injective g ⟶ injective (g ∘ f)",
             "steps": [
                 {
                     "goal_id": "2",
@@ -1731,8 +1730,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
-                "g": "'b => 'c"
+                "f": "'a ⇒ 'b",
+                "g": "'b ⇒ 'c"
             }
         },
         {
@@ -1878,7 +1877,7 @@
                     "th": "⊢ surjective f ⟶ surjective g ⟶ surjective (comp_fun g f)"
                 }
             ],
-            "prop": "surjective f --> surjective g --> surjective (comp_fun g f)",
+            "prop": "surjective f ⟶ surjective g ⟶ surjective (g ∘ f)",
             "steps": [
                 {
                     "goal_id": "2",
@@ -1949,8 +1948,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a => 'b",
-                "g": "'b => 'c"
+                "f": "'a ⇒ 'b",
+                "g": "'b ⇒ 'c"
             }
         }
     ],
