@@ -75,6 +75,7 @@ class ExprTest(unittest.TestCase):
     def testNormalize(self):
         test_data = [
             ("2 + 3", "5"),
+            ("x + 0", "x"),
             ("2 * 3", "6"),
             ("2 + 3 * x + 4", "6 + 3 * x"),
             ("2 + x / y + 2 * (x / y) + 3", "5 + 3 * (x / y)"),

@@ -30,7 +30,7 @@ class Linearity(Rule):
     
     INT (a + b) = INT a + INT b,
     INT (c * a) = c * INT a  (where c is a constant).
-
+    INT (c / a) = c * INT 1 / a (where c is a contant)
     """
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
@@ -53,13 +53,13 @@ class CommonIntegral(Rule):
     """Applies common integrals:
 
     INT c = c * x,
-    INT (x + c)^n = (x+c)^(n+1) / (n+1),  (where n != -1, c is a constant)
-    INT 1/(x + c)^(n) = (-n) / (x + c)^(n+1), (where n != 1)
+    INT x^n = x^(n+1) / (n+1),  (where n != -1, c is a constant)
+    INT 1/x^n = (-n) / x^(n+1), (where n != 1)
     INT sin(x) = -cos(x),
     INT cos(x) = sin(x),
-    INT 1/(x + c) = log(x),  (where the range is positive, c is a constant)
+    INT 1/(x + c) = log(x + c),  (where the range is positive, c is a constant)
     INT e^x = e^x
-    INT 1 / (x^2 + 1) = tan^(-1)(x)
+    INT 1 / (x^2 + 1) = arctan(x)
     """
     def eval(self, e):
         if e.ty != expr.INTEGRAL:
@@ -77,46 +77,6 @@ class CommonIntegral(Rule):
                 integral = e.body * Var(e.var)
             return EvalAt(e.var, e.lower, e.upper, integral)
         elif e.body.ty == expr.OP:
-            # if e.body.op == "^":
-            #     x, i = e.body.args
-            #     assert isinstance(i, expr.Const)
-            #     p = x.to_poly()
-            #     if p.degree == 1:
-            #         x = x.normalize()
-            #         if i.ty == expr.CONST and i.val != -1:
-            #             integral = (x ^ Const(i.val + 1)) / Const(i.val + 1)
-            #         elif i.ty == expr.CONST and i.val == -1:
-            #             integral = expr.log(x)
-            #         return EvalAt(e.var, e.lower, e.upper, integral)
-            #     else:
-            #         #raise NotImplementedError
-            #         return e
-            # elif e.body.op == "/":
-            #     n, d = e.body.args
-            #     if n.ty == expr.CONST:
-            #         if d.ty == expr.OP:
-            #             if d.op in ("+", "-"):
-            #                 p = d.to_poly()
-            #                 if p.degree == 1:
-            #                     #consider 1 / (x + c) ^ n, ignore 1 / (x ^ n + c)
-            #                     #1 / (x + c)
-            #                     d = d.normalize()
-            #                     intergal = expr.log(d)
-            #                 # elif p.degree == 2 and d.args[1].val == 1:
-            #                 #     return EvalAt(e.var, e.lower, e.upper, )
-            #             elif d.op == "^":
-            #                 x, i = d.args
-            #                 xp = x.to_poly()
-            #                 if xp.degree == 1:
-            #                     #1 / (x + c) ^ n
-            #                     x = x.normalize()
-            #                     if i.ty == expr.CONST and i.val != 1:
-            #                         integral = expr.Const(1) / (x ^ expr.Const(i.val - 1) * expr.Const(i.val - 1))
-            #                     elif i.ty == expr.CONST and i.val == 1:
-            #                         intergal = expr.log(x)
-            #             return EvalAt(e.var, e.lower, e.upper, n * integral)
-            # else:
-            #     return e
             if e.body.op == "^":
                 a, b = e.body.args
                 if a == Var(e.var) and b.ty == expr.CONST and b.val != -1:
@@ -131,8 +91,8 @@ class CommonIntegral(Rule):
             elif e.body.op == "/":
                 a, b = e.body.args
                 if b.ty == expr.OP:
+                    c, d = b.args
                     if b.op == "^":
-                        c, d = b.args
                         if c == Var(e.var) and d.ty == expr.CONST and d.val != 1:
                             #Integral of 1/x^n is (-n)/x^(n+1)
                             integral = Const(-d.val)/(Var(e.var) ^ Const(d.val + 1))
@@ -140,6 +100,11 @@ class CommonIntegral(Rule):
                         elif c == Var(e.var) and d.ty == expr.CONST and d.val == 1:
                             #Integral of 1/x is log(x)
                             return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
+                    elif b.op in ("+", "-"):
+                        if c == Var(e.var):
+                            return EvalAt(e.var, e.lower, e.upper, expr.log(b))
+                        elif c.ty == expr.OP and c.args[0] == Var(e.var) and c.args[1] == Const(2) and d == expr.Const(1):
+                            return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
             else:
                 return e
 
@@ -259,3 +224,6 @@ class PolynomialDivision(Rule):
             k = k + poly.Polynomial([dividend.monomials[-k.degree]])
             k = poly.Polynomial(tuple(k.monomials[1:]))
         return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(k.monomials))/expr.from_poly(divisor))
+
+
+

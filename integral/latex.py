@@ -72,6 +72,10 @@ def convert_expr(e, mode="large"):
                         if sx == "1":
                             return "%s" % sy
                     return "%s %s" % (sx, sy)
+                elif x.ty == expr.CONST and y.ty == expr.FUN:
+                    if sx == "1":
+                        return "%s" % sy
+                    return "%s %s" % (sx, sy)
                 else:
                     if x.priority() < expr.op_priority[e.op]:
                         sx = "(%s)" % sx
@@ -98,6 +102,8 @@ def convert_expr(e, mode="large"):
             sx = convert_expr(x, mode)
             if len(sx) > 1:
                 sx = "(%s)" % sx
+            if e.func_name == "exp" and e.args[0] == expr.Const(1):
+                return "\\%s" % e.func_name
             return "\\%s{%s}" % (e.func_name, sx)
         else:
             raise NotImplementedError
