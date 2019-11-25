@@ -7,7 +7,7 @@ from imperative import imp
 from imperative.parser import parse_com, process_file
 from syntax import parser
 from syntax import printer
-from logic.basic import Context
+from logic.context import Context
 
 
 class HoareParserTest(unittest.TestCase):

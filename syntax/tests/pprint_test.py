@@ -5,7 +5,7 @@ import unittest
 from logic import basic
 from syntax import parser
 from syntax import pprint
-from logic.basic import Context
+from logic.context import Context
 
 
 class PPrintTest(unittest.TestCase):

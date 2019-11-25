@@ -8,7 +8,7 @@ from logic import basic
 from logic import logic
 from data import nat
 from data import list
-from logic.basic import Context
+from logic.context import Context
 from syntax.infertype import type_infer, infer_printed_type, TypeInferenceException
 
 thy = basic.load_theory('list')

@@ -4,7 +4,7 @@ import json
 from logic import logic
 from logic import basic
 from syntax import parser
-from logic.basic import Context
+from logic.context import Context
 from prover import encode, sat
 
 

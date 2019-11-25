@@ -7,7 +7,7 @@ from data.real import realT
 from data.set import setT
 from data.integral import within, atreal
 from integral import proof
-from logic.basic import Context
+from logic.context import Context
 from syntax import parser
 from syntax import printer
 

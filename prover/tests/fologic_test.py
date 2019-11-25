@@ -6,7 +6,7 @@ from kernel.type import boolT, TFun, TVar
 from logic import basic
 from syntax import parser
 from syntax import printer
-from logic.basic import Context
+from logic.context import Context
 from prover import fologic
 
 
