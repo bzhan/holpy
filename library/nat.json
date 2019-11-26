@@ -5880,6 +5880,338 @@
         },
         {
             "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "not_even",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬true ⟷ false",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬true ⟷ false"
+                },
+                {
+                    "args": "odd_def_1, ¬true ⟷ odd 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬true ⟷ odd 0"
+                },
+                {
+                    "args": "even_def_1, ¬(even 0) ⟷ odd 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(even 0) ⟷ odd 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. ¬(even n) ⟷ odd n ⟶ ¬(even (Suc n)) ⟷ odd (Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "¬(even n) ⟷ odd n",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(even n) ⟷ odd n ⊢ ¬(even n) ⟷ odd n"
+                },
+                {
+                    "args": "¬¬(even n) ⟷ ¬(odd n)",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(even n) ⟷ odd n ⊢ ¬¬(even n) ⟷ ¬(odd n)"
+                },
+                {
+                    "args": "odd_def_2, ¬¬(even n) ⟷ odd (Suc n)",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(even n) ⟷ odd n ⊢ ¬¬(even n) ⟷ odd (Suc n)"
+                },
+                {
+                    "args": "even_def_2, ¬(even (Suc n)) ⟷ odd (Suc n)",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(even n) ⟷ odd n ⊢ ¬(even (Suc n)) ⟷ odd (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. ¬(even n) ⟷ odd n ⟶ ¬(even (Suc n)) ⟷ odd (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. ¬(even n) ⟷ odd n, x: n}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(even n) ⟷ odd n"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(even n) ⟷ odd n"
+                }
+            ],
+            "prop": "~even n <--> odd n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "odd_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "odd_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "not_odd",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "¬false ⟷ true",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ¬false ⟷ true"
+                },
+                {
+                    "args": "even_def_1, ¬false ⟷ even 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬false ⟷ even 0"
+                },
+                {
+                    "args": "odd_def_1, ¬(odd 0) ⟷ even 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ ¬(odd 0) ⟷ even 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ ∀n. ¬(odd n) ⟷ even n ⟶ ¬(odd (Suc n)) ⟷ even (Suc n)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "3.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "¬(odd n) ⟷ even n",
+                    "id": "3.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(odd n) ⟷ even n ⊢ ¬(odd n) ⟷ even n"
+                },
+                {
+                    "args": "¬¬(odd n) ⟷ ¬(even n)",
+                    "id": "3.2",
+                    "prevs": [
+                        "3.1"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "¬(odd n) ⟷ even n ⊢ ¬¬(odd n) ⟷ ¬(even n)"
+                },
+                {
+                    "args": "odd_def_2, ¬(odd (Suc n)) ⟷ ¬(even n)",
+                    "id": "3.3",
+                    "prevs": [
+                        "3.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(odd n) ⟷ even n ⊢ ¬(odd (Suc n)) ⟷ ¬(even n)"
+                },
+                {
+                    "args": "even_def_2, ¬(odd (Suc n)) ⟷ even (Suc n)",
+                    "id": "3.4",
+                    "prevs": [
+                        "3.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬(odd n) ⟷ even n ⊢ ¬(odd (Suc n)) ⟷ even (Suc n)"
+                },
+                {
+                    "args": "",
+                    "id": "3.5",
+                    "prevs": [
+                        "3.0",
+                        "3.1",
+                        "3.4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ∀n. ¬(odd n) ⟷ even n ⟶ ¬(odd (Suc n)) ⟷ even (Suc n)"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. ¬(odd n) ⟷ even n, x: n}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ¬(odd n) ⟷ even n"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ ¬(odd n) ⟷ even n"
+                }
+            ],
+            "prop": "¬(odd n) ⟷ even n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "odd_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_1"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "even_def_2"
+                },
+                {
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "odd_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "3.1"
+                    ],
+                    "goal_id": "3.2",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
                 "hint_rewrite"
             ],
             "name": "arith_even1",
