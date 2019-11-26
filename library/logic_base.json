@@ -1134,6 +1134,148 @@
                 "a": "'a",
                 "b": "'a"
             }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "if_not_P2",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "P",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "P ⊢ P"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P ⊢ ¬P ⟶ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "¬P",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬P ⊢ ¬P"
+                },
+                {
+                    "args": "negE_gen, {}, {A: P, C: (if ¬P then a else b) = b}",
+                    "id": "1.1",
+                    "prevs": [
+                        "1.0",
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "¬P, P ⊢ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "P ⊢ ¬P ⟶ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "P ⊢ ¬¬P ⟶ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "¬¬P",
+                    "id": "2.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬¬P ⊢ ¬¬P"
+                },
+                {
+                    "args": "if_not_P, (if ¬P then a else b) = b",
+                    "id": "2.1",
+                    "prevs": [
+                        "2.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "¬¬P ⊢ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "",
+                    "id": "2.2",
+                    "prevs": [
+                        "2.0",
+                        "2.1"
+                    ],
+                    "rule": "intros",
+                    "th": "P ⊢ ¬¬P ⟶ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "3",
+                    "prevs": [
+                        "1",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "P ⊢ (if ¬P then a else b) = b"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ P ⟶ (if ¬P then a else b) = b"
+                }
+            ],
+            "prop": "P ⟶ (if ¬P then a else b) = b",
+            "steps": [
+                {
+                    "case": "¬P",
+                    "goal_id": "1",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "1.0"
+                    ],
+                    "goal_id": "1.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "negE_gen"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "2.0"
+                    ],
+                    "goal_id": "2.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "P": "bool",
+                "a": "'a",
+                "b": "'a"
+            }
         }
     ],
     "description": "Foundation of higher-order logic",
