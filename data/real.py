@@ -1,8 +1,16 @@
 # Author: Bohua Zhan
 
 from kernel.type import Type, TFun, boolT
-from kernel.term import Const
+from kernel.term import Term, Const
+from kernel.thm import Thm
+from kernel.theory import Method, global_methods
+from kernel import macro
 from data import nat
+from logic.proofterm import ProofTermMacro
+from syntax import pprint, settings
+from server.tactic import MacroTactic
+from util import poly
+
 
 # Basic definitions
 
@@ -72,3 +80,104 @@ def to_binary_real(n):
         return one
     else:
         return of_nat(nat.to_binary(n))
+
+def is_binary_real(t):
+    if t.is_comb() and t.fun.is_const_name("uminus"):
+        return is_binary_real(t.arg)
+    else:
+        return t == zero or t == one or \
+               (t.is_comb() and t.fun.is_const_name("of_nat") and
+                nat.is_binary(t.arg) and nat.from_binary(t.arg) >= 2)
+
+def from_binary_real(t):
+    assert is_binary_real(t), "from_binary_real"
+    if t.is_comb() and t.fun.is_const_name("uminus"):
+        return -from_binary_real(t.arg)
+    if t == zero:
+        return 0
+    elif t == one:
+        return 1
+    else:
+        return nat.from_binary(t.arg)
+
+def convert_to_poly(t):
+    """Convert a term t to polynomial normal form."""
+    if t.is_var():
+        return poly.singleton(t)
+    elif is_binary_real(t):
+        return poly.constant(from_binary_real(t))
+    elif is_plus(t):
+        t1, t2 = t.args
+        return convert_to_poly(t1) + convert_to_poly(t2)
+    elif is_minus(t):
+        t1, t2 = t.args
+        return convert_to_poly(t1) - convert_to_poly(t2)
+    elif is_uminus(t):
+        return -convert_to_poly(t.arg)
+    elif is_times(t):
+        t1, t2 = t.args
+        return convert_to_poly(t1) * convert_to_poly(t2)
+    else:
+        return poly.singleton(t)
+
+class real_norm_macro(ProofTermMacro):
+    """Attempt to prove goal by normalization."""
+
+    def __init__(self):
+        self.level = 0  # proof term not implemented
+        self.sig = Term
+        self.limit = 'real_neg_0'
+
+    def eval(self, thy, goal, pts):
+        assert len(pts) == 0, "real_norm_macro"
+        assert self.can_eval(thy, goal), "real_norm_macro"
+
+        return Thm([], goal)
+
+    def can_eval(self, thy, goal):
+        assert isinstance(goal, Term), "real_norm_macro"
+        if not (goal.is_equals() and goal.lhs.get_type() == realT):
+            return False
+
+        t1, t2 = goal.args
+        return convert_to_poly(t1) == convert_to_poly(t2)
+
+    def get_proof_term(self, thy, goal, pts):
+        raise NotImplementedError
+
+
+class real_norm_method(Method):
+    """Apply real_norm macro."""
+    def __init__(self):
+        self.sig = []
+        self.limit = 'real_neg_0'
+
+    def search(self, state, id, prevs, data=None):
+        if data:
+            return [data]
+
+        if len(prevs) != 0:
+            return []
+
+        cur_th = state.get_proof_item(id).th
+        if real_norm_macro().can_eval(state.thy, cur_th.prop):
+            return [{}]
+        else:
+            return []
+
+    @settings.with_settings
+    def display_step(self, state, data):
+        return pprint.N("real_norm: (solves)")
+
+    def apply(self, state, id, data, prevs):
+        assert len(prevs) == 0, "real_norm_method"
+        state.apply_tactic(id, MacroTactic('real_norm'))
+
+
+macro.global_macros.update({
+    "real_norm": real_norm_macro()
+})
+
+global_methods.update({
+    "real_norm": real_norm_method()
+})
