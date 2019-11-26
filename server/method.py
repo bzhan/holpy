@@ -624,7 +624,7 @@ class induction(Method):
     def __init__(self):
         self.sig = ['theorem', 'var']
         self.limit = None
-
+        self.no_order = True
     def search(self, state, id, prevs, data=None):
         if data:
             return [data]
