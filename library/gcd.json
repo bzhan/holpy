@@ -1178,7 +1178,7 @@
                 "hint_rewrite"
             ],
             "name": "gcd_zero_left",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "divides_zero, {}, {n: n}",
@@ -1195,10 +1195,10 @@
                     "th": "⊢ divides n n"
                 },
                 {
-                    "args": "",
+                    "args": "∀b. divides b 0 ⟶ divides b n ⟶ divides b n",
                     "id": "2",
                     "prevs": [],
-                    "rule": "sorry",
+                    "rule": "trivial",
                     "th": "⊢ ∀b. divides b 0 ⟶ divides b n ⟶ divides b n"
                 },
                 {
@@ -1572,7 +1572,7 @@
         {
             "attributes": [],
             "name": "gcd_equal_left",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "divides m n",
@@ -1589,11 +1589,11 @@
                     "th": "⊢ divides m m"
                 },
                 {
-                    "args": "",
+                    "args": "∀b. divides b m ⟶ divides b n ⟶ divides b m",
                     "id": "2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "divides m n ⊢ ∀b. divides b m ⟶ divides b n ⟶ divides b m"
+                    "rule": "trivial",
+                    "th": "⊢ ∀b. divides b m ⟶ divides b n ⟶ divides b m"
                 },
                 {
                     "args": "gcd_equals",
@@ -1639,7 +1639,7 @@
         {
             "attributes": [],
             "name": "gcd_equal_right",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "divides n m",
@@ -1656,11 +1656,11 @@
                     "th": "⊢ divides n n"
                 },
                 {
-                    "args": "",
+                    "args": "∀b. divides b m ⟶ divides b n ⟶ divides b n",
                     "id": "2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "divides n m ⊢ ∀b. divides b m ⟶ divides b n ⟶ divides b n"
+                    "rule": "trivial",
+                    "th": "⊢ ∀b. divides b m ⟶ divides b n ⟶ divides b n"
                 },
                 {
                     "args": "gcd_equals",
