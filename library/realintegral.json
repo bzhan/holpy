@@ -328,13 +328,15 @@
         },
         {
             "attributes": [
-                "hint_backward"
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
             ],
             "name": "has_real_integral_unique",
-            "prop": "has_real_integral f k1 i ∧ has_real_integral f k2 i ⟶ k1 = k2",
+            "prop": "has_real_integral f k1 i --> has_real_integral f k2 i ⟶ k1 = k2",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "i": "real set",
                 "k1": "real",
                 "k2": "real"
@@ -836,9 +838,9 @@
             "name": "has_real_integral_alt",
             "prop": [
                 "has_real_integral f i s ⟷ ",
-                "(∀a. ∀b. real_integrable_on (λx. if x ∈ s then f x else 0) (real_closed_interval a b)) ∧ ",
+                "(∀a. ∀b. real_integrable_on (λx. if x ∈ s then f x else 0) (real_closed_interval a b)) --> ",
                 "(∀e. 0 < e ",
-                "   ⟶ (∃B. 0 < B ∧ ",
+                "   ⟶ (∃B. 0 < B --> ",
                 "         (∀a. ∀b. real_closed_interval (-B) B ⊆ real_closed_interval a b ",
                 "              ⟶ abs ",
                 "                   (real_integral (real_closed_interval a b) (λx. if x ∈ s then f x else 0) - i) < ",
@@ -846,7 +848,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "i": "real",
                 "s": "real set"
             }
@@ -1197,13 +1199,13 @@
             ],
             "name": "has_real_integral_add",
             "prop": [
-                "has_real_integral f k s ∧ has_real_integral g l s ",
+                "has_real_integral f k s --> has_real_integral g l s ",
                 "⟶ has_real_integral (λx. f x + g x) (k + l) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "k": "real",
                 "l": "real",
                 "s": "real set"
@@ -1217,124 +1219,85 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "has_real_integral f k s ∧ has_real_integral g l s",
+                    "args": "has_real_integral f k s",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "has_real_integral f k s ∧ has_real_integral g l s ⊢ has_real_integral f k s ∧ has_real_integral g l s"
+                    "th": "has_real_integral f k s ⊢ has_real_integral f k s"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "has_real_integral g l s",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "has_real_integral f k s ∧ has_real_integral g l s ⊢ has_real_integral f k s"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "has_real_integral f k s ∧ has_real_integral g l s ⊢ has_real_integral g l s"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_integral g l s ⊢ has_real_integral g l s"
                 },
                 {
                     "args": "has_real_integral_lmul, {}, {c: -(1::real), f: g, k: l, s: s}",
-                    "id": "3",
+                    "id": "2",
                     "prevs": [
-                        "2"
+                        "1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "has_real_integral f k s ∧ has_real_integral g l s ⊢ has_real_integral (λx. -1 * g x) (-1 * l) s"
-                },
-                {
-                    "args": "conjI",
-                    "id": "4",
-                    "prevs": [
-                        "1",
-                        "3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "has_real_integral f k s ∧ has_real_integral g l s ⊢ has_real_integral f k s ∧ has_real_integral (λx. -1 * g x) (-1 * l) s"
+                    "th": "has_real_integral f k s, has_real_integral g l s ⊢ has_real_integral (λx. -1 * g x) (-1 * l) s"
                 },
                 {
                     "args": "has_real_integral_add",
-                    "id": "5",
+                    "id": "3",
                     "prevs": [
-                        "4"
+                        "0",
+                        "2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "has_real_integral f k s ∧ has_real_integral g l s ⊢ has_real_integral (λx. f x + -1 * g x) (k + -1 * l) s"
+                    "th": "has_real_integral f k s, has_real_integral g l s ⊢ has_real_integral (λx. f x + -1 * g x) (k + -1 * l) s"
                 },
                 {
                     "args": "real_poly_neg2, has_real_integral (λx. f x - g x) (k - l) s",
-                    "id": "6",
+                    "id": "4",
                     "prevs": [
-                        "5"
+                        "3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "has_real_integral f k s ∧ has_real_integral g l s ⊢ has_real_integral (λx. f x - g x) (k - l) s"
+                    "th": "has_real_integral f k s, has_real_integral g l s ⊢ has_real_integral (λx. f x - g x) (k - l) s"
                 },
                 {
                     "args": "",
-                    "id": "7",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "6"
+                        "1",
+                        "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ has_real_integral f k s ∧ has_real_integral g l s ⟶ has_real_integral (λx. f x - g x) (k - l) s"
+                    "th": "⊢ has_real_integral f k s ⟶ has_real_integral g l s ⟶ has_real_integral (λx. f x - g x) (k - l) s"
                 }
             ],
             "prop": [
-                "has_real_integral f k s ∧ has_real_integral g l s ",
+                "has_real_integral f k s --> has_real_integral g l s ",
                 "⟶ has_real_integral (λx. f x - g x) (k - l) s"
             ],
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "rewrite_goal",
+                    "sym": "false",
                     "theorem": "real_poly_neg2"
                 },
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_integral_add"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
                 },
                 {
                     "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_integral_lmul"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD1"
                 }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "k": "real",
                 "l": "real",
                 "s": "real set"
@@ -1390,138 +1353,104 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_integrable_on f s ∧ real_integrable_on g s",
+                    "args": "real_integrable_on f s",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ real_integrable_on f s ∧ real_integrable_on g s"
+                    "th": "real_integrable_on f s ⊢ real_integrable_on f s"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "real_integrable_on g s",
                     "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_integrable_on g s ⊢ real_integrable_on g s"
+                },
+                {
+                    "args": "real_integrable_integral, {}, {f: f, i: s}",
+                    "id": "2",
                     "prevs": [
                         "0"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ real_integrable_on f s"
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on f s ⊢ has_real_integral f (real_integral s f) s"
                 },
                 {
-                    "args": "real_integrable_integral",
-                    "id": "2",
+                    "args": "real_integrable_integral, {}, {f: g, i: s}",
+                    "id": "3",
                     "prevs": [
                         "1"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ has_real_integral f (real_integral s f) s"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "3",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ real_integrable_on g s"
-                },
-                {
-                    "args": "real_integrable_integral",
-                    "id": "4",
-                    "prevs": [
-                        "3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ has_real_integral g (real_integral s g) s"
-                },
-                {
-                    "args": "conjI",
-                    "id": "5",
-                    "prevs": [
-                        "2",
-                        "4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ has_real_integral f (real_integral s f) s ∧ has_real_integral g (real_integral s g) s"
+                    "rule": "apply_theorem_for",
+                    "th": "real_integrable_on g s ⊢ has_real_integral g (real_integral s g) s"
                 },
                 {
                     "args": "has_real_integral_add",
-                    "id": "6",
+                    "id": "4",
                     "prevs": [
-                        "5"
+                        "2",
+                        "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ has_real_integral (λx. f x + g x) (real_integral s f + real_integral s g) s"
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ has_real_integral (λx. f x + g x) (real_integral s f + real_integral s g) s"
                 },
                 {
                     "args": "real_integral_unique",
-                    "id": "7",
+                    "id": "5",
                     "prevs": [
-                        "6"
+                        "4"
                     ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ real_integral s (λx. f x + g x) = real_integral s f + real_integral s g"
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ real_integral s (λx. f x + g x) = real_integral s f + real_integral s g"
                 },
                 {
                     "args": "",
-                    "id": "8",
+                    "id": "6",
                     "prevs": [
                         "0",
-                        "7"
+                        "1",
+                        "5"
                     ],
                     "rule": "intros",
-                    "th": "⊢ real_integrable_on f s ∧ real_integrable_on g s ⟶ real_integral s (λx. f x + g x) = real_integral s f + real_integral s g"
+                    "th": "⊢ real_integrable_on f s ⟶ real_integrable_on g s ⟶ real_integral s (λx. f x + g x) = real_integral s f + real_integral s g"
                 }
             ],
             "prop": [
-                "real_integrable_on f s ∧ real_integrable_on g s ",
+                "real_integrable_on f s --> real_integrable_on g s ",
                 "⟶ real_integral s (λx. f x + g x) = real_integral s f + real_integral s g"
             ],
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "real_integral_unique"
                 },
                 {
-                    "goal_id": "1",
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_integrable_integral"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_forward_step",
+                    "theorem": "real_integrable_integral"
+                },
+                {
+                    "goal_id": "4",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_integral_add"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "real_integrable_integral"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "goal_id": "3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "real_integrable_integral"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD2"
                 }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
@@ -1750,138 +1679,98 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_integrable_on f s ∧ real_integrable_on g s",
+                    "args": "real_integrable_on f s",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ real_integrable_on f s ∧ real_integrable_on g s"
+                    "th": "real_integrable_on f s ⊢ real_integrable_on f s"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "real_integrable_on g s",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ real_integrable_on f s"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "real_integrable_on g s ⊢ real_integrable_on g s"
                 },
                 {
                     "args": "real_integrable_integral",
                     "id": "2",
                     "prevs": [
-                        "1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ has_real_integral f (real_integral s f) s"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "3",
-                    "prevs": [
                         "0"
                     ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ real_integrable_on g s"
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ has_real_integral f (real_integral s f) s"
                 },
                 {
                     "args": "real_integrable_integral",
-                    "id": "4",
+                    "id": "3",
                     "prevs": [
-                        "3"
+                        "1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ has_real_integral g (real_integral s g) s"
-                },
-                {
-                    "args": "conjI",
-                    "id": "5",
-                    "prevs": [
-                        "2",
-                        "4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ has_real_integral f (real_integral s f) s ∧ has_real_integral g (real_integral s g) s"
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ has_real_integral g (real_integral s g) s"
                 },
                 {
                     "args": "has_real_integral_sub",
-                    "id": "6",
+                    "id": "4",
                     "prevs": [
-                        "5"
+                        "2",
+                        "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ has_real_integral (λx. f x - g x) (real_integral s f - real_integral s g) s"
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ has_real_integral (λx. f x - g x) (real_integral s f - real_integral s g) s"
                 },
                 {
                     "args": "real_integral_unique",
-                    "id": "7",
+                    "id": "5",
                     "prevs": [
-                        "6"
+                        "4"
                     ],
                     "rule": "apply_theorem",
-                    "th": "real_integrable_on f s ∧ real_integrable_on g s ⊢ real_integral s (λx. f x - g x) = real_integral s f - real_integral s g"
+                    "th": "real_integrable_on f s, real_integrable_on g s ⊢ real_integral s (λx. f x - g x) = real_integral s f - real_integral s g"
                 },
                 {
                     "args": "",
-                    "id": "8",
+                    "id": "6",
                     "prevs": [
                         "0",
-                        "7"
+                        "1",
+                        "5"
                     ],
                     "rule": "intros",
-                    "th": "⊢ real_integrable_on f s ∧ real_integrable_on g s ⟶ real_integral s (λx. f x - g x) = real_integral s f - real_integral s g"
+                    "th": "⊢ real_integrable_on f s ⟶ real_integrable_on g s ⟶ real_integral s (λx. f x - g x) = real_integral s f - real_integral s g"
                 }
             ],
             "prop": [
-                "real_integrable_on f s ∧ real_integrable_on g s ",
+                "real_integrable_on f s --> real_integrable_on g s ",
                 "⟶ real_integral s (λx. f x - g x) = real_integral s f - real_integral s g"
             ],
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "real_integral_unique"
                 },
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "has_real_integral_sub"
                 },
                 {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
                     "theorem": "real_integrable_integral"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD1"
                 },
                 {
                     "goal_id": "3",
                     "method_name": "apply_backward_step",
                     "theorem": "real_integrable_integral"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD2"
                 }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },

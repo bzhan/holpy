@@ -347,11 +347,13 @@ def apply_steps():
     history = []
     for step in data['steps']:
         history.append({
-            'steps_output': method.output_step(state, step, unicode=True, highlight=True),
+            'steps_output': step['method_name'],
             'proof': state.export_proof(state.prf),
             'num_gaps': len(state.rpt.gaps)
         })
         try:
+            step_output = method.output_step(state, step, unicode=True, highlight=True),
+            history[-1]['steps_output'] = step_output
             method.apply_method(state, step)
             state.check_proof(compute_only=True)
         except Exception as e:
