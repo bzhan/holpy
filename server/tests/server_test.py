@@ -614,6 +614,18 @@ class ServerTest(unittest.TestCase):
             lines={'1': "image (f O g) s = t"}
         )
 
+    def testRewriteFact2(self):
+        test_method(self,
+            'logic_base',
+            vars={'P': 'bool', 'a': "'a", 'b': "'a", 'c': "'a"},
+            assms=['(if P then a else b) = c', 'P'],
+            concl='false',
+            method_name='rewrite_fact',
+            args={'theorem': 'if_P'},
+            prevs=[0, 1],
+            lines={'2': 'a = c'}
+        )
+
     def testRewriteFactWithPrev(self):
         test_method(self,
             'nat',
