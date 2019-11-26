@@ -16268,27 +16268,56 @@
                     "th": "0 < -x ⊢ 0 < (if even n then x ^ n else -(x ^ n))"
                 },
                 {
-                    "args": "not_odd",
+                    "args": "not_even",
                     "id": "3.2.3.4",
                     "prevs": [
-                        "3.2.3.3"
+                        "1"
                     ],
                     "rule": "rewrite_fact_sym",
-                    "th": "0 < -x ⊢ 0 < (if ¬(odd n) then x ^ n else -(x ^ n))"
+                    "th": "odd n ⊢ ¬(even n)"
                 },
                 {
-                    "args": "",
+                    "args": "if_not_P",
                     "id": "3.2.3.5",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "x < y, odd n, ¬(n = 0), 0 ≤ y, 0 < -x ⊢ x ^ n < y ^ n"
+                    "prevs": [
+                        "3.2.3.3",
+                        "3.2.3.4"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "odd n, 0 < -x ⊢ 0 < -(x ^ n)"
                 },
                 {
                     "args": "",
                     "id": "3.2.3.6",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "x < y, odd n, ¬(n = 0), 0 ≤ y, 0 < -x ⊢ x ^ n < 0"
+                },
+                {
+                    "args": "conjI",
+                    "id": "3.2.3.7",
+                    "prevs": [
+                        "3.2.3.6",
+                        "3.2.3.2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, odd n, ¬(n = 0), 0 ≤ y, 0 < -x ⊢ x ^ n < 0 ∧ 0 ≤ y ^ n"
+                },
+                {
+                    "args": "real_lte_trans",
+                    "id": "3.2.3.8",
+                    "prevs": [
+                        "3.2.3.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "x < y, odd n, ¬(n = 0), 0 ≤ y, 0 < -x ⊢ x ^ n < y ^ n"
+                },
+                {
+                    "args": "",
+                    "id": "3.2.3.9",
                     "prevs": [
                         "3.2.3.0",
-                        "3.2.3.5"
+                        "3.2.3.8"
                     ],
                     "rule": "intros",
                     "th": "x < y, odd n, ¬(n = 0), 0 ≤ y ⊢ 0 < -x ⟶ x ^ n < y ^ n"
@@ -16489,12 +16518,33 @@
                 },
                 {
                     "fact_ids": [
-                        "3.2.3.3"
+                        "1"
                     ],
                     "goal_id": "3.2.3.4",
                     "method_name": "rewrite_fact",
                     "sym": "true",
-                    "theorem": "not_odd"
+                    "theorem": "not_even"
+                },
+                {
+                    "fact_ids": [
+                        "3.2.3.3",
+                        "3.2.3.4"
+                    ],
+                    "goal_id": "3.2.3.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "if_not_P"
+                },
+                {
+                    "goal_id": "3.2.3.6",
+                    "method_name": "apply_backward_step",
+                    "param_y": "(0::real)",
+                    "theorem": "real_lte_trans"
+                },
+                {
+                    "goal_id": "3.2.3.6",
+                    "method_name": "apply_backward_step",
+                    "theorem": "conjI"
                 }
             ],
             "ty": "thm",
