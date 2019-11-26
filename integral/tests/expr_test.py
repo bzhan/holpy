@@ -90,7 +90,11 @@ class ExprTest(unittest.TestCase):
             ("([x]_x=a,b) + 2 * ([x ^ 2 / 2]_x=a,b) + [x ^ 3 / 3]_x=a,b",
              "-1 * a + -1 * a ^ 2 + -1/3 * a ^ 3 + b + b ^ 2 + 1/3 * b ^ 3"),
             ("x ^ (1/2) * x ^ (1/2) ", "x"),
-            ("2 * (1 + 3)", "8")
+            ("2 * (1 + 3)", "8"),
+            ("arctan(1)", "1/4 * pi"),
+            ("arctan(sqrt(3)/3)", "1/6 * pi"),
+            ("arctan(sqrt(3))", "1/3 * pi"),
+            ("sin(3/4 * pi)", "1/2 * sqrt(2)")
         ]
 
         for s, res in test_data:
