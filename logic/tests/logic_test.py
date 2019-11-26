@@ -226,14 +226,25 @@ class LogicTest(unittest.TestCase):
     def testTrivialMacro(self):
         test_macro(
             self, 'logic_base', 'trivial',
+            vars={'A': 'bool', 'B': 'bool'},
             args='A --> B --> A',
             res='A --> B --> A'
         )
 
+    def testTrivialMacro2(self):
         test_macro(
             self, 'logic_base', 'trivial',
+            vars={'A': 'bool', 'B': 'bool'},
             args='A --> A --> B --> A',
             res='A --> A --> B --> A'
+        )
+
+    def testTrivialMacro3(self):
+        test_macro(
+            self, 'logic_base', 'trivial',
+            vars={'P': "'a => bool", 'Q': "'a => bool"},
+            args='!x. P x --> Q x --> P x',
+            res='!x. P x --> Q x --> P x'
         )
 
     def testApplyFactMacro(self):

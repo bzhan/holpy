@@ -279,8 +279,8 @@ def get_ast_term(thy, t):
         if nat.is_binary_nat(t) or list.is_literal_list(t):
             return 100, ATOM  # Nat atom case
         elif t.is_comb():
-            op_data = operator.get_info_for_fun(thy, t.head)
-            binder_data = operator.get_binder_info_for_fun(thy, t.head)
+            op_data = operator.get_info_for_fun(t.head)
+            binder_data = operator.get_binder_info_for_fun(t.head)
 
             if op_data is not None:
                 if op_data.arity == operator.UNARY:
@@ -379,8 +379,8 @@ def get_ast_term(thy, t):
             return res
 
         elif t.is_comb():
-            op_data = operator.get_info_for_fun(thy, t.head)
-            binder_data = operator.get_binder_info_for_fun(thy, t.head)
+            op_data = operator.get_info_for_fun(t.head)
+            binder_data = operator.get_binder_info_for_fun(t.head)
 
             # First, we take care of the case of operators
             if op_data and op_data.arity == operator.BINARY and t.is_binop():

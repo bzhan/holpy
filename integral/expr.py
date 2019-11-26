@@ -6,6 +6,7 @@ from integral import poly
 from integral.poly import *
 import functools, operator
 from integral import parser
+import sympy
 
 VAR, CONST, OP, FUN, DERIV, INTEGRAL, EVAL_AT = range(7)
 
@@ -198,32 +199,94 @@ class Expr:
             elif self.func_name == "cos":
                 if self.args[0] == Const(0):
                     return poly.constant(1)
-                elif self.args[0] == pi / Const(4):
-                    return poly.singleton(Fun("sqrt", Const(2))).scale(Fraction(1) / Fraction(2))
-                elif self.args[0] == pi / Const(2):
-                    return poly.constant(0)
+                elif self.args[0].ty == OP and self.args[0].op == "/" and \
+                        self.args[0].args[0] == pi and self.args[0].args[1].ty == CONST:
+                    p = parser.parse_expr(str(sympy.cos(sympy.pi/self.args[0].args[1].val)))
+                    return p.to_poly()
+                elif self.args[0].ty == OP and self.args[0].op == "*" and \
+                        self.args[0].args[0].ty == CONST and self.args[0].args[1] == pi:
+                    p = parser.parse_expr(str(sympy.cos(sympy.pi*self.args[0].args[0].val)))
+                    return p.to_poly()
+                elif self.args[0].ty == OP and self.args[0].op == "-" and len(self.args[0].args) == 1:
+                    #cos(-x)
+                    a = self.args[0].args[0]
+                    if a.ty == FUN and a.func_name == "pi":
+                        return poly.constant(-1)
+                    elif a.ty == CONST:
+                        p = parser.parse_expr(str(sympy.cos(-a.val)))
+                        return p.to_poly()
+                    else:
+                        return poly.singleton(self)
+                elif self.args[0] == pi:
+                    return poly.constant(-1)
                 else:
-                    return poly.singleton(self)
+                    return poly.singleton(self)                
             elif self.func_name == "sin":
                 if self.args[0] == Const(0):
                     return poly.constant(0)
-                elif self.args[0] == pi / Const(4):
-                    return poly.singleton(Fun("sqrt", Const(2))).scale(Fraction(1) / Fraction(2))
-                elif self.args[0] == pi / Const(2):
-                    return poly.constant(1)
+                elif self.args[0].ty == OP and self.args[0].op == "/" and \
+                        self.args[0].args[0] == pi and self.args[0].args[1].ty == CONST:
+                    p = parser.parse_expr(str(sympy.sin(sympy.pi/self.args[0].args[1].val)))
+                    return p.to_poly()
+                elif self.args[0].ty == OP and self.args[0].op == "*" and \
+                        self.args[0].args[0].ty == CONST and self.args[0].args[1] == pi:
+                    p = parser.parse_expr(str(sympy.sin(sympy.pi*self.args[0].args[0].val)))
+                    return p.to_poly()
+                elif self.args[0] == pi:
+                    return poly.constant(0)
+                elif self.args[0].ty == OP and self.args[0].op == "-" and len(self.args[0].args) == 1:
+                    a = self.args[0].args[0]
+                    if a.ty == FUN and a.func_name == "pi":
+                        return poly.constant(0)
+                    elif a.ty == CONST:
+                        p = parser.parse_expr(str(sympy.sin(-a.val)))
+                        return p.to_poly()
+                    else:
+                        return poly.singleton(self)
+                else:
+                    return poly.singleton(self)
+            elif self.func_name == "tan":
+                if self.args[0] == Const(0):
+                    raise ValueError
+                elif self.args[0].ty == OP and self.args[0].op == "/" and \
+                        self.args[0].args[0] == pi and self.args[0].args[1].ty == CONST:
+                    p = parser.parse_expr(str(sympy.tan(sympy.pi/self.args[0].args[1].val)))
+                    return p.to_poly()
+                elif self.args[0].ty == OP and self.args[0].op == "*" and \
+                        self.args[0].args[0].ty == CONST and self.args[0].args[1] == pi:
+                    p = parser.parse_expr(str(sympy.tan(sympy.pi*self.args[0].args[0].val)))
+                    return p.to_poly()
+                elif self.args[0] == pi:
+                    #haven't implemented infinitely positive symbol
+                    raise ValueError  
+                elif self.args[0].ty == OP and self.args[0].op == "-" and len(self.args[0].args) == 1:
+                    a = self.args[0].args[0]
+                    if a.ty == FUN and a.func_name == "pi":
+                        raise ValueError
+                    elif a.ty == CONST:
+                        p = parser.parse_expr(str(sympy.tan(-a.val)))
+                        return p.to_poly()
+                    else:
+                        return poly.singleton(self)
                 else:
                     return poly.singleton(self)
             elif self.func_name == "arctan":
-                if self.args[0] == Const(0):
+                arg = self.args[0]
+                if arg == Const(0):
                     return poly.constant(0)
-                elif self.args[0] == Fun("sqrt", Const(3)) / Const(3):
-                    return poly.singleton(Fun("pi")).scale(Fraction(1) / Fraction(6))
-                elif self.args[0] == Const(1):
-                    return poly.singleton(Fun("pi")).scale(Fraction(1) / Fraction(4))
-                elif self.args[0] == Fun("sqrt", Const(3)):
-                    return poly.singleton(Fun("pi")).scale(Fraction(1) / Fraction(3))
-                elif self.args[0] == Const(-1):
-                    return poly.singleton(Fun("pi")).scale(-1 * Fraction(1) / Fraction(4))
+                elif arg.ty == FUN and arg.func_name == "sqrt" and arg.args[0].ty == CONST:
+                    #arctan(sqrt(3))
+                    val = str(sympy.atan(sympy.sqrt(arg.args[0].val)))
+                    return parser.parse_expr(val).to_poly()
+                elif arg.ty == OP and arg.op == "/" and arg.args[0].ty == FUN and \
+                        arg.args[0].func_name == "sqrt" and arg.args[0].args[0].ty == CONST and \
+                            arg.args[1].ty == CONST:
+                    #arctan(sqrt(3)/3)
+                    val = str(sympy.atan(sympy.sqrt(arg.args[0].args[0].val)/arg.args[1].val))
+                    return parser.parse_expr(val).to_poly()
+                elif arg.ty == CONST:
+                    val = str(sympy.atan(arg.val))
+                    return parser.parse_expr(val).to_poly()
                 else:
                     return poly.singleton(self)
             elif self.func_name == "log":
@@ -232,7 +295,6 @@ class Expr:
                 elif self.args[0] == Const(1):
                     return poly.constant(0)
                 elif self.args[0].ty == FUN and self.args[0].func_name == "exp":
-                    print("Wow")
                     return poly.constant(1)
                 else:
                     return poly.singleton(Fun("log", self.args[0].normalize()))
@@ -274,8 +336,10 @@ def from_poly(p):
     if len(p.monomials) == 0:
         return Const(0)
     else:
-        #monos = [from_mono(m) for m in p.monomials]
-        monos = [from_mono(m) for m in p.del_zero_mono().monomials]
+        if p.is_zero_constant():
+            monos = [from_mono(m) for m in p.monomials]
+        else:
+            monos = [from_mono(m) for m in p.del_zero_mono().monomials]
         return sum(monos[1:], monos[0])
 
 def deriv(var, e):
@@ -418,7 +482,7 @@ class Op(Expr):
 class Fun(Expr):
     """Functions."""
     def __init__(self, func_name, *args):
-        assert isinstance(func_name, str) and all(isinstance(arg, Expr) for arg in args)
+        assert isinstance(func_name, str) #and all(isinstance(arg, Expr) for arg in args)
         if len(args) == 0:
             assert func_name in ["pi"]
         elif len(args) == 1:
@@ -543,7 +607,6 @@ class EvalAt(Expr):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
 
 if __name__ == "__main__":
-    problem = "x+0"
+    problem = "cos((2/9) * pi)"
     p = parser.parse_expr(problem)
-    k = p.normalize()
-    print(k)
+    print(p.normalize())
