@@ -9,7 +9,7 @@ from kernel.thm import Thm
 from kernel import theory
 from kernel import macro
 from logic.conv import Conv, then_conv, all_conv, arg_conv, binop_conv, rewr_conv, \
-    top_conv, top_sweep_conv, beta_conv
+    top_conv, top_sweep_conv, beta_conv, has_rewrite
 from logic.proofterm import ProofTerm, ProofTermDeriv, ProofTermMacro, refl
 from logic import matcher
 from util import name
@@ -465,19 +465,17 @@ class rewrite_fact_macro(ProofTermMacro):
         self.limit = None
 
     def get_proof_term(self, thy, args, pts):
-        assert len(pts) == 1 and isinstance(args, str), "rewrite_fact_macro: signature"
+        assert isinstance(args, str), "rewrite_fact_macro: signature"
 
         th_name = args
         eq_pt = ProofTerm.theorem(thy, th_name)
 
-        # eq_pt should be an equality
-        assert eq_pt.prop.is_equals(), "rewrite_fact: theorem is not an equality"
+        assert len(pts) == len(eq_pt.assums) + 1, "rewrite_fact_macro: signature"
 
-        rewr_cv = rewr_conv(th_name, sym=self.sym)
         # Check rewriting using the theorem has an effect
-        assert not top_sweep_conv(rewr_cv).eval(thy, pts[0].prop).is_reflexive(), "rewrite_fact"
+        assert has_rewrite(thy, th_name, pts[0].prop, sym=self.sym, conds=pts[1:]), "rewrite_fact"
 
-        cv = then_conv(top_sweep_conv(rewr_cv),
+        cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, sym=self.sym, conds=pts[1:])),
                        top_conv(beta_conv()))
         return pts[0].on_prop(thy, cv)
 

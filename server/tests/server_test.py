@@ -602,6 +602,17 @@ class ServerTest(unittest.TestCase):
             res=['double_neg', 'eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
         )
 
+    def testRewriteFactThms3(self):
+        self.run_search_thm(
+            'set',
+            vars={'P': 'bool', 'a': "'a", 'b': "'a", 'c': "'a"},
+            assms=['(if P then a else b) = c', 'P'],
+            concl='false',
+            method_name='rewrite_fact',
+            prevs=[0, 1],
+            res=['if_P']
+        )
+
     def testRewriteFact(self):
         test_method(self,
             'set',
@@ -612,6 +623,18 @@ class ServerTest(unittest.TestCase):
             prevs=[0],
             args={'theorem': 'image_combine', 'sym': 'true'},
             lines={'1': "image (f O g) s = t"}
+        )
+
+    def testRewriteFact2(self):
+        test_method(self,
+            'logic_base',
+            vars={'P': 'bool', 'a': "'a", 'b': "'a", 'c': "'a"},
+            assms=['(if P then a else b) = c', 'P'],
+            concl='false',
+            method_name='rewrite_fact',
+            args={'theorem': 'if_P'},
+            prevs=[0, 1],
+            lines={'2': 'a = c'}
         )
 
     def testRewriteFactWithPrev(self):

@@ -1,6 +1,6 @@
 # Author: Bohua Zhan
 
-import io
+import itertools
 import traceback2
 
 from kernel import term
@@ -271,14 +271,20 @@ class ProofState():
         results = []
         all_methods = theory.get_all_methods(self.thy)
         for name in all_methods:
-            res = all_methods[name].search(self, id, prevs)
-            for r in res:
-                r['method_name'] = name
-                r['goal_id'] = str(id)
-                if prevs:
-                    r['fact_ids'] = list(str(id) for id in prevs) 
-                r['display'] = method.output_hint(self, r, highlight=True, unicode=True)
-            results.extend(res)
+            cur_method = all_methods[name]
+            if hasattr(cur_method, 'no_order'):
+                test_prevs = [prevs]
+            else:
+                test_prevs = itertools.permutations(prevs)
+            for perm_prevs in test_prevs:
+                res = cur_method.search(self, id, perm_prevs)
+                for r in res:
+                    r['method_name'] = name
+                    r['goal_id'] = str(id)
+                    if prevs:
+                        r['fact_ids'] = list(str(id) for id in perm_prevs)
+                    r['display'] = method.output_hint(self, r, highlight=True, unicode=True)
+                results.extend(res)
 
         # If there is an element in results that solves the goal,
         # output only results that solves.
