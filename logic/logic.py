@@ -558,16 +558,20 @@ class trivial_macro(ProofTermMacro):
         self.limit = None
 
     def can_eval(self, thy, args):
-        As, C = args.strip_implies()
+        new_names = get_forall_names(args)
+        vars, As, C = strip_all_implies(args, new_names)
         return C in As
 
     def get_proof_term(self, thy, args, pts):
-        As, C = args.strip_implies()
+        new_names = get_forall_names(args)
+        vars, As, C = strip_all_implies(args, new_names)
         assert C in As, "trivial_macro"
 
         pt = ProofTerm.assume(C)
         for A in reversed(As):
             pt = ProofTerm.implies_intr(A, pt)
+        for v in reversed(vars):
+            pt = ProofTerm.forall_intr(v, pt)
         return pt
 
 class resolve_theorem_macro(ProofTermMacro):

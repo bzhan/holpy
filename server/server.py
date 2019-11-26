@@ -147,11 +147,13 @@ class ProofState():
             state.history = []
             for step in data['steps']:
                 state.history.append({
-                    'steps_output': method.output_step(state, step, unicode=True, highlight=True),
+                    'steps_output': step['method_name'],
                     'proof': state.export_proof(state.prf),
                     'num_gaps': len(state.rpt.gaps)
                 })
                 try:
+                    steps_output = method.output_step(state, step, unicode=True, highlight=True)
+                    state.history[-1]['steps_output'] = steps_output
                     method.apply_method(state, step)
                     state.check_proof(compute_only=True)
                 except Exception as e:
