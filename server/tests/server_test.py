@@ -602,6 +602,17 @@ class ServerTest(unittest.TestCase):
             res=['double_neg', 'eq_sym_eq', 'image_combine', 'image_def', 'set_equal_iff']
         )
 
+    def testRewriteFactThms3(self):
+        self.run_search_thm(
+            'set',
+            vars={'P': 'bool', 'a': "'a", 'b': "'a", 'c': "'a"},
+            assms=['(if P then a else b) = c', 'P'],
+            concl='false',
+            method_name='rewrite_fact',
+            prevs=[0, 1],
+            res=['if_P']
+        )
+
     def testRewriteFact(self):
         test_method(self,
             'set',

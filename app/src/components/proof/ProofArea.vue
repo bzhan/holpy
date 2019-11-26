@@ -230,9 +230,12 @@ export default {
       var sigs = this.method_sig[method_name]
       var input = this.current_state()
       input.step.method_name = method_name
-      if (args === undefined) {
-        args = {}
-      }
+
+      // Use information from args, as the order between
+      // fact_ids may be important.
+      input.step.goal_id = args.goal_id
+      if (args.fact_ids !== undefined)
+        input.step.fact_ids = args.fact_ids
 
       var sigList = []
       for (let i = 0; i < sigs.length; i++) {

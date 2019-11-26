@@ -265,6 +265,7 @@ class Z3Method(Method):
     def __init__(self):
         self.sig = []
         self.limit = None
+        self.no_order = True
 
     def search(self, state, id, prevs, data=None):
         if data:
