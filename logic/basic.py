@@ -137,19 +137,6 @@ def get_import_order(filenames, username="master"):
 
     return depend_list
 
-def get_init_theory():
-    """Returns a (fresh copy of) the initial theory. This is an
-    extension of EmptyTheory, adding only the operator data field.
-
-    """
-    # The root theory
-    thy = Theory.EmptyTheory()
-
-    # Operators
-    thy.add_data_type("operator", operator.OperatorTable())
-
-    return thy
-
 
 def parse_item(thy, data):
     """Parse the string elements in the item, replacing it by
@@ -269,7 +256,7 @@ def load_theory_cache(filename, username="master"):
 
     # Load all imported theories
     depend_list = get_import_order(cache['imports'], username)
-    thy = get_init_theory()
+    thy = Theory.EmptyTheory()
     for prev_name in depend_list:
         prev_cache = load_theory_cache(prev_name, username)
         for item in prev_cache['content']:
@@ -318,7 +305,7 @@ def load_theories(filenames, username="master"):
     
     """
     depend_list = get_import_order(filenames, username)
-    thy = get_init_theory()
+    thy = Theory.EmptyTheory()
     for prev_name in depend_list:
         prev_cache = load_theory_cache(prev_name, username)
         for item in prev_cache['content']:
