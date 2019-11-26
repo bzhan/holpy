@@ -231,11 +231,16 @@ export default {
       var input = this.current_state()
       input.step.method_name = method_name
 
-      // Use information from args, as the order between
-      // fact_ids may be important.
-      input.step.goal_id = args.goal_id
-      if (args.fact_ids !== undefined)
-        input.step.fact_ids = args.fact_ids
+      if (args !== undefined) {
+        // Use information from args, as the order between
+        // fact_ids may be important.
+        input.step.goal_id = args.goal_id
+        if (args.fact_ids !== undefined)
+          input.step.fact_ids = args.fact_ids
+      } else {
+        // Case for choosing from the menu.
+        args = {}
+      }
 
       var sigList = []
       for (let i = 0; i < sigs.length; i++) {

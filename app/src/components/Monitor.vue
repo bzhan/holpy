@@ -153,7 +153,7 @@ export default {
       this.num_theories = filelist.length
       this.infos = []
       for (let i = 0; i < filelist.length; i++) {
-        this.checkTheory(filelist[i])
+        await this.checkTheory(filelist[i])
       }
     },
 
