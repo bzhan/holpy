@@ -6212,134 +6212,143 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_backward"
             ],
-            "name": "arith_even1",
+            "name": "even_double",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "even_def_1, even 0 ⟷ true",
+                    "args": "trueI",
                     "id": "0",
                     "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ even 0 ⟷ true"
+                    "rule": "apply_theorem",
+                    "th": "⊢ true"
                 },
                 {
-                    "args": "add_0_right, even (0 + 0) ⟷ true",
+                    "args": "even_def_1, even 0",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ even (0 + 0) ⟷ true"
+                    "th": "⊢ even 0"
+                },
+                {
+                    "args": "add_0_right, even (0 + 0)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even (0 + 0)"
                 },
                 {
                     "args": "",
-                    "id": "2",
+                    "id": "3",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. even (n + n) ⟷ true ⟶ even (Suc n + Suc n) ⟷ true"
+                    "th": "⊢ ∀n. even (n + n) ⟶ even (Suc n + Suc n)"
                 },
                 {
                     "args": "n, nat",
-                    "id": "2.0",
+                    "id": "3.0",
                     "prevs": [],
                     "rule": "variable",
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "even (n + n) ⟷ true",
-                    "id": "2.1",
+                    "args": "even (n + n)",
+                    "id": "3.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "even (n + n) ⟷ true ⊢ even (n + n) ⟷ true"
+                    "th": "even (n + n) ⊢ even (n + n)"
                 },
                 {
-                    "args": "double_neg, ¬¬(even (n + n)) ⟷ true",
-                    "id": "2.2",
+                    "args": "double_neg, ¬¬(even (n + n))",
+                    "id": "3.2",
                     "prevs": [
-                        "2.1"
+                        "3.1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "even (n + n) ⟷ true ⊢ ¬¬(even (n + n)) ⟷ true"
+                    "th": "even (n + n) ⊢ ¬¬(even (n + n))"
                 },
                 {
-                    "args": "even_def_2, ¬(even (Suc (n + n))) ⟷ true",
-                    "id": "2.3",
+                    "args": "even_def_2, ¬(even (Suc (n + n)))",
+                    "id": "3.3",
                     "prevs": [
-                        "2.2"
+                        "3.2"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "even (n + n) ⟷ true ⊢ ¬(even (Suc (n + n))) ⟷ true"
+                    "th": "even (n + n) ⊢ ¬(even (Suc (n + n)))"
                 },
                 {
-                    "args": "nat_plus_def_2, ¬(even (Suc n + n)) ⟷ true",
-                    "id": "2.4",
+                    "args": "nat_plus_def_2, ¬(even (Suc n + n))",
+                    "id": "3.4",
                     "prevs": [
-                        "2.3"
+                        "3.3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "even (n + n) ⟷ true ⊢ ¬(even (Suc n + n)) ⟷ true"
+                    "th": "even (n + n) ⊢ ¬(even (Suc n + n))"
                 },
                 {
-                    "args": "even_def_2, even (Suc (Suc n + n)) ⟷ true",
-                    "id": "2.5",
+                    "args": "even_def_2, even (Suc (Suc n + n))",
+                    "id": "3.5",
                     "prevs": [
-                        "2.4"
+                        "3.4"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "even (n + n) ⟷ true ⊢ even (Suc (Suc n + n)) ⟷ true"
+                    "th": "even (n + n) ⊢ even (Suc (Suc n + n))"
                 },
                 {
-                    "args": "add_Suc_right, even (Suc n + Suc n) ⟷ true",
-                    "id": "2.6",
+                    "args": "add_Suc_right, even (Suc n + Suc n)",
+                    "id": "3.6",
                     "prevs": [
-                        "2.5"
+                        "3.5"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "even (n + n) ⟷ true ⊢ even (Suc n + Suc n) ⟷ true"
+                    "th": "even (n + n) ⊢ even (Suc n + Suc n)"
                 },
                 {
                     "args": "",
-                    "id": "2.7",
+                    "id": "3.7",
                     "prevs": [
-                        "2.0",
-                        "2.1",
-                        "2.6"
+                        "3.0",
+                        "3.1",
+                        "3.6"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. even (n + n) ⟷ true ⟶ even (Suc n + Suc n) ⟷ true"
+                    "th": "⊢ ∀n. even (n + n) ⟶ even (Suc n + Suc n)"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λn. even (n + n) ⟷ true, x: n}",
-                    "id": "3",
-                    "prevs": [
-                        "1",
-                        "2"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ even (n + n) ⟷ true"
-                },
-                {
-                    "args": "mult_2, even (2 * n) ⟷ true",
+                    "args": "nat_induct, {}, {P: λn. even (n + n), x: n}",
                     "id": "4",
                     "prevs": [
+                        "2",
                         "3"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ even (2 * n) ⟷ true"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (n + n)"
                 },
                 {
-                    "args": "",
+                    "args": "mult_2, even (2 * n)",
                     "id": "5",
                     "prevs": [
                         "4"
                     ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ even (2 * n)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
                     "rule": "intros",
-                    "th": "⊢ even (2 * n) ⟷ true"
+                    "th": "⊢ even (2 * n)"
                 }
             ],
-            "prop": "even (2 * n) ⟷ true",
+            "prop": "even (2 * n)",
             "steps": [
                 {
                     "goal_id": "0",
@@ -6366,36 +6375,41 @@
                     "theorem": "even_def_1"
                 },
                 {
-                    "goal_id": "2",
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "trueI"
+                },
+                {
+                    "goal_id": "3",
                     "method_name": "introduction",
                     "names": "n"
                 },
                 {
-                    "goal_id": "2.2",
+                    "goal_id": "3.2",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "add_Suc_right"
                 },
                 {
-                    "goal_id": "2.2",
+                    "goal_id": "3.2",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "even_def_2"
                 },
                 {
-                    "goal_id": "2.2",
+                    "goal_id": "3.2",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "nat_plus_def_2"
                 },
                 {
-                    "goal_id": "2.2",
+                    "goal_id": "3.2",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "even_def_2"
                 },
                 {
-                    "goal_id": "2.2",
+                    "goal_id": "3.2",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "double_neg"
@@ -6408,44 +6422,44 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_backward"
             ],
-            "name": "arith_even2",
+            "name": "odd_double",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "¬true ⟷ false",
+                    "args": "even_double, {}, {n: n}",
                     "id": "0",
                     "prevs": [],
-                    "rule": "z3",
-                    "th": "⊢ ¬true ⟷ false"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (2 * n)"
                 },
                 {
-                    "args": "arith_even1, ¬(even (2 * n)) ⟷ false",
+                    "args": "double_neg, ¬¬(even (2 * n))",
                     "id": "1",
                     "prevs": [
                         "0"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ ¬(even (2 * n)) ⟷ false"
+                    "th": "⊢ ¬¬(even (2 * n))"
                 },
                 {
-                    "args": "even_def_2, even (Suc (2 * n)) ⟷ false",
+                    "args": "even_def_2, ¬(even (Suc (2 * n)))",
                     "id": "2",
                     "prevs": [
                         "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "⊢ even (Suc (2 * n)) ⟷ false"
+                    "th": "⊢ ¬(even (Suc (2 * n)))"
                 },
                 {
-                    "args": "add_1_right, even (2 * n + 1) ⟷ false",
+                    "args": "not_even, odd (Suc (2 * n))",
                     "id": "3",
                     "prevs": [
                         "2"
                     ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ even (2 * n + 1) ⟷ false"
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ odd (Suc (2 * n))"
                 },
                 {
                     "args": "",
@@ -6454,16 +6468,16 @@
                         "3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ even (2 * n + 1) ⟷ false"
+                    "th": "⊢ odd (Suc (2 * n))"
                 }
             ],
-            "prop": "even (2 * n + 1) ⟷ false",
+            "prop": "odd (Suc (2 * n)) ",
             "steps": [
                 {
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "add_1_right"
+                    "sym": "true",
+                    "theorem": "not_even"
                 },
                 {
                     "goal_id": "0",
@@ -6475,11 +6489,12 @@
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": "arith_even1"
+                    "theorem": "double_neg"
                 },
                 {
                     "goal_id": "0",
-                    "method_name": "z3"
+                    "method_name": "apply_backward_step",
+                    "theorem": "even_double"
                 }
             ],
             "ty": "thm",

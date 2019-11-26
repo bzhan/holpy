@@ -7864,7 +7864,7 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": " real_pow_inv, x ^ n * real_inverse y ^ n = x ^ n * real_inverse (y ^ n)",
+                    "args": "real_pow_inv, x ^ n * real_inverse y ^ n = x ^ n * real_inverse (y ^ n)",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
@@ -7916,7 +7916,7 @@
                     "goal_id": "0",
                     "method_name": "rewrite_goal",
                     "sym": "false",
-                    "theorem": " real_pow_inv"
+                    "theorem": "real_pow_inv"
                 }
             ],
             "ty": "thm",
@@ -10054,60 +10054,33 @@
                     "th": "0 ≤ x, x ≤ y, x ^ n ≤ y ^ n ⊢ 0 ≤ x ^ n"
                 },
                 {
-                    "args": "conjI",
+                    "args": "real_le_mul2",
                     "id": "4.3",
                     "prevs": [
+                        "0",
+                        "1",
                         "4.2",
                         "4.1"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 ≤ x, x ≤ y, x ^ n ≤ y ^ n ⊢ 0 ≤ x ^ n ∧ x ^ n ≤ y ^ n"
-                },
-                {
-                    "args": "conjI",
-                    "id": "4.4",
-                    "prevs": [
-                        "1",
-                        "4.3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 ≤ x, x ≤ y, x ^ n ≤ y ^ n ⊢ x ≤ y ∧ 0 ≤ x ^ n ∧ x ^ n ≤ y ^ n"
-                },
-                {
-                    "args": "conjI",
-                    "id": "4.5",
-                    "prevs": [
-                        "0",
-                        "4.4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "0 ≤ x, x ≤ y, x ^ n ≤ y ^ n ⊢ 0 ≤ x ∧ x ≤ y ∧ 0 ≤ x ^ n ∧ x ^ n ≤ y ^ n"
-                },
-                {
-                    "args": "real_le_mul2",
-                    "id": "4.6",
-                    "prevs": [
-                        "4.5"
                     ],
                     "rule": "apply_theorem",
                     "th": "0 ≤ x, x ≤ y, x ^ n ≤ y ^ n ⊢ x * x ^ n ≤ y * y ^ n"
                 },
                 {
                     "args": "real_nat_power_def_2, x ^ Suc n ≤ y ^ Suc n",
-                    "id": "4.7",
+                    "id": "4.4",
                     "prevs": [
-                        "4.6"
+                        "4.3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "0 ≤ x, x ≤ y, x ^ n ≤ y ^ n ⊢ x ^ Suc n ≤ y ^ Suc n"
                 },
                 {
                     "args": "",
-                    "id": "4.8",
+                    "id": "4.5",
                     "prevs": [
                         "4.0",
                         "4.1",
-                        "4.7"
+                        "4.4"
                     ],
                     "rule": "intros",
                     "th": "0 ≤ x, x ≤ y ⊢ ∀n. x ^ n ≤ y ^ n ⟶ x ^ Suc n ≤ y ^ Suc n"
@@ -10172,21 +10145,6 @@
                 {
                     "goal_id": "4.2",
                     "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "4.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "4.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "4.2",
-                    "method_name": "apply_backward_step",
                     "theorem": "real_pow_le"
                 }
             ],
@@ -10217,7 +10175,7 @@
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ (0::real) ≤ 1 ∧ 1 ≤ x ⟶ 1 ^ n ≤ x ^ n"
+                    "th": "⊢ (0::real) ≤ 1 ⟶ 1 ≤ x ⟶ 1 ^ n ≤ x ^ n"
                 },
                 {
                     "args": "real_pow_one",
@@ -10226,7 +10184,7 @@
                         "1"
                     ],
                     "rule": "rewrite_fact",
-                    "th": "⊢ (0::real) ≤ 1 ∧ 1 ≤ x ⟶ 1 ≤ x ^ n"
+                    "th": "⊢ (0::real) ≤ 1 ⟶ 1 ≤ x ⟶ 1 ≤ x ^ n"
                 },
                 {
                     "args": "(0::real) ≤ 1",
@@ -10236,31 +10194,22 @@
                     "th": "⊢ (0::real) ≤ 1"
                 },
                 {
-                    "args": "conjI",
+                    "args": "",
                     "id": "4",
                     "prevs": [
+                        "2",
                         "3",
                         "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "1 ≤ x ⊢ (0::real) ≤ 1 ∧ 1 ≤ x"
-                },
-                {
-                    "args": "",
-                    "id": "5",
-                    "prevs": [
-                        "2",
-                        "4"
                     ],
                     "rule": "apply_fact",
                     "th": "1 ≤ x ⊢ 1 ≤ x ^ n"
                 },
                 {
                     "args": "",
-                    "id": "6",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "5"
+                        "4"
                     ],
                     "rule": "intros",
                     "th": "⊢ 1 ≤ x ⟶ 1 ≤ x ^ n"
@@ -10294,11 +10243,6 @@
                 },
                 {
                     "goal_id": "3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "3",
                     "method_name": "z3"
                 }
             ],
@@ -10318,51 +10262,78 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "0 ≤ x ∧ x ≤ 1",
+                    "args": "0 ≤ x",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "0 ≤ x ∧ x ≤ 1 ⊢ 0 ≤ x ∧ x ≤ 1"
+                    "th": "0 ≤ x ⊢ 0 ≤ x"
                 },
                 {
                     "args": "real_pow_le2, {}, {n: n, x: x, y: (1::real)}",
                     "id": "1",
                     "prevs": [],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ 0 ≤ x ∧ x ≤ 1 ⟶ x ^ n ≤ 1 ^ n"
+                    "th": "⊢ 0 ≤ x ⟶ x ≤ 1 ⟶ x ^ n ≤ 1 ^ n"
+                },
+                {
+                    "args": "x ≤ 1",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ≤ 1 ⊢ x ≤ 1"
+                },
+                {
+                    "args": "real_pow_le2, {}, {n: n, x: x, y: (1::real)}",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "0 ≤ x, x ≤ 1 ⊢ x ^ n ≤ 1 ^ n"
                 },
                 {
                     "args": "real_pow_one",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "rewrite_fact",
-                    "th": "⊢ 0 ≤ x ∧ x ≤ 1 ⟶ x ^ n ≤ 1"
-                },
-                {
-                    "args": "",
-                    "id": "3",
-                    "prevs": [
-                        "2",
-                        "0"
-                    ],
-                    "rule": "apply_fact",
-                    "th": "0 ≤ x ∧ x ≤ 1 ⊢ x ^ n ≤ 1"
-                },
-                {
-                    "args": "",
                     "id": "4",
                     "prevs": [
-                        "0",
                         "3"
                     ],
+                    "rule": "rewrite_fact",
+                    "th": "0 ≤ x, x ≤ 1 ⊢ x ^ n ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "2",
+                        "4"
+                    ],
                     "rule": "intros",
-                    "th": "⊢ 0 ≤ x ∧ x ≤ 1 ⟶ x ^ n ≤ 1"
+                    "th": "⊢ 0 ≤ x ⟶ x ≤ 1 ⟶ x ^ n ≤ 1"
                 }
             ],
-            "prop": "0 ≤ x ∧ x ≤ 1 ⟶ x ^ n ≤ 1",
+            "prop": "0 ≤ x --> x ≤ 1 ⟶ x ^ n ≤ 1",
             "steps": [
+                {
+                    "fact_ids": [
+                        "0",
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "apply_forward_step",
+                    "param_n": "n",
+                    "theorem": "real_pow_le2"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_pow_one"
+                },
                 {
                     "goal_id": "1",
                     "method_name": "apply_forward_step",
@@ -10370,22 +10341,6 @@
                     "param_x": "x",
                     "param_y": "(1::real)",
                     "theorem": "real_pow_le2"
-                },
-                {
-                    "fact_ids": [
-                        "1"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "real_pow_one"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "apply_prev"
                 }
             ],
             "ty": "thm",
@@ -12523,48 +12478,39 @@
                     "th": "⊢ 0 ≤ n"
                 },
                 {
-                    "args": "conjI",
+                    "args": "real_pow_mono",
                     "id": "4",
                     "prevs": [
                         "2",
                         "3"
                     ],
                     "rule": "apply_theorem",
-                    "th": "⊢ (1::real) ≤ 2 ∧ 0 ≤ n"
-                },
-                {
-                    "args": "real_pow_mono",
-                    "id": "5",
-                    "prevs": [
-                        "4"
-                    ],
-                    "rule": "apply_theorem",
                     "th": "⊢ (2::real) ^ (0::nat) ≤ 2 ^ n"
                 },
                 {
                     "args": "conjI",
-                    "id": "6",
+                    "id": "5",
                     "prevs": [
                         "1",
-                        "5"
+                        "4"
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ (1::real) ≤ 2 ^ (0::nat) ∧ (2::real) ^ (0::nat) ≤ 2 ^ n"
                 },
                 {
                     "args": "real_le_trans",
-                    "id": "7",
+                    "id": "6",
                     "prevs": [
-                        "6"
+                        "5"
                     ],
                     "rule": "apply_theorem",
                     "th": "⊢ (1::real) ≤ 2 ^ n"
                 },
                 {
                     "args": "",
-                    "id": "8",
+                    "id": "7",
                     "prevs": [
-                        "7"
+                        "6"
                     ],
                     "rule": "intros",
                     "th": "⊢ (1::real) ≤ 2 ^ n"
@@ -12601,11 +12547,6 @@
                 },
                 {
                     "goal_id": "2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "2",
                     "method_name": "z3"
                 },
                 {
@@ -12625,7 +12566,7 @@
                 "hint_rewrite_sym"
             ],
             "name": "real_pow2_abs",
-            "num_gaps": 0,
+            "num_gaps": 1,
             "proof": [
                 {
                     "args": "",
@@ -12675,53 +12616,42 @@
                     "th": "¬(0 ≤ x) ⊢ ¬(0 ≤ x)"
                 },
                 {
-                    "args": "trueI",
+                    "args": "even_double, {}, {n: (1::nat)}",
                     "id": "1.1",
                     "prevs": [],
-                    "rule": "apply_theorem",
-                    "th": "⊢ true"
-                },
-                {
-                    "args": "arith_even1, even (2 * 1)",
-                    "id": "1.2",
-                    "prevs": [
-                        "1.1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "¬(0 ≤ x) ⊢ even (2 * 1)"
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ even (2 * 1)"
                 },
                 {
                     "args": "mult_1_right, even 2",
-                    "id": "1.3",
+                    "id": "1.2",
                     "prevs": [
-                        "1.2"
+                        "1.1"
                     ],
                     "rule": "rewrite_goal_sym",
                     "th": "¬(0 ≤ x) ⊢ even 2"
                 },
                 {
-                    "args": "if_P, (if even 2 then x ^ (2::nat) else -(x ^ (2::nat))) = x ^ (2::nat)",
-                    "id": "1.4",
-                    "prevs": [
-                        "1.3"
-                    ],
-                    "rule": "rewrite_goal",
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "sorry",
                     "th": "¬(0 ≤ x) ⊢ (if even 2 then x ^ (2::nat) else -(x ^ (2::nat))) = x ^ (2::nat)"
                 },
                 {
                     "args": "real_pow_neg, -x ^ (2::nat) = x ^ (2::nat)",
-                    "id": "1.5",
+                    "id": "1.4",
                     "prevs": [
-                        "1.4"
+                        "1.3"
                     ],
                     "rule": "rewrite_goal",
                     "th": "¬(0 ≤ x) ⊢ -x ^ (2::nat) = x ^ (2::nat)"
                 },
                 {
                     "args": "if_not_P, (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)",
-                    "id": "1.6",
+                    "id": "1.5",
                     "prevs": [
-                        "1.5",
+                        "1.4",
                         "1.0"
                     ],
                     "rule": "rewrite_goal",
@@ -12729,10 +12659,10 @@
                 },
                 {
                     "args": "",
-                    "id": "1.7",
+                    "id": "1.6",
                     "prevs": [
                         "1.0",
-                        "1.6"
+                        "1.5"
                     ],
                     "rule": "intros",
                     "th": "⊢ ¬(0 ≤ x) ⟶ (if 0 ≤ x then x else -x) ^ (2::nat) = x ^ (2::nat)"
@@ -12824,23 +12754,8 @@
                 },
                 {
                     "goal_id": "1.1",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "arith_even1"
-                },
-                {
-                    "goal_id": "1.1",
                     "method_name": "apply_backward_step",
-                    "theorem": "trueI"
-                },
-                {
-                    "fact_ids": [
-                        "1.3"
-                    ],
-                    "goal_id": "1.4",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "if_P"
+                    "theorem": "even_double"
                 }
             ],
             "ty": "thm",
@@ -14221,7 +14136,7 @@
                     "th": "0 ≤ x, x ≤ 1, n ≤ m, ¬(x = 0) ⊢ real_inverse (x ^ n) ≤ real_inverse (x ^ m)"
                 },
                 {
-                    "args": "real_lt_inv2",
+                    "args": "real_le_inv2",
                     "id": "4.8",
                     "prevs": [
                         "4.3",
@@ -14374,7 +14289,7 @@
                 {
                     "goal_id": "4.1",
                     "method_name": "apply_backward_step",
-                    "theorem": "real_lt_inv2"
+                    "theorem": "real_le_inv2"
                 },
                 {
                     "goal_id": "4.1",
