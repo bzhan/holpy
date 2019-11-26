@@ -323,108 +323,82 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_bounded t ∧ s ⊆ t",
+                    "args": "real_bounded t",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "real_bounded t ∧ s ⊆ t ⊢ real_bounded t ∧ s ⊆ t"
+                    "th": "real_bounded t ⊢ real_bounded t"
                 },
                 {
-                    "args": "conjD1, {}, {A: real_bounded t, B: s ⊆ t}",
+                    "args": "s ⊆ t",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "real_bounded t ∧ s ⊆ t ⊢ real_bounded t"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "s ⊆ t ⊢ s ⊆ t"
                 },
                 {
-                    "args": "conjD2, {}, {A: real_bounded t, B: s ⊆ t}",
+                    "args": "real_bounded_def",
                     "id": "2",
                     "prevs": [
                         "0"
                     ],
-                    "rule": "apply_theorem_for",
-                    "th": "real_bounded t ∧ s ⊆ t ⊢ s ⊆ t"
-                },
-                {
-                    "args": "real_bounded_def",
-                    "id": "3",
-                    "prevs": [
-                        "1"
-                    ],
                     "rule": "rewrite_fact",
-                    "th": "real_bounded t ∧ s ⊆ t ⊢ ∃B. ∀x. x ∈ t ⟶ abs x ≤ B"
+                    "th": "real_bounded t ⊢ ∃B. ∀x. x ∈ t ⟶ abs x ≤ B"
                 },
                 {
                     "args": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
-                    "id": "4",
+                    "id": "3",
                     "prevs": [
-                        "3",
-                        "2"
+                        "2",
+                        "1"
                     ],
                     "rule": "z3",
-                    "th": "real_bounded t ∧ s ⊆ t, real_bounded t ∧ s ⊆ t ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
+                    "th": "real_bounded t, s ⊆ t ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
                 },
                 {
                     "args": "real_bounded_def, real_bounded s",
-                    "id": "5",
+                    "id": "4",
                     "prevs": [
-                        "4"
+                        "3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "real_bounded t ∧ s ⊆ t ⊢ real_bounded s"
+                    "th": "real_bounded t, s ⊆ t ⊢ real_bounded s"
                 },
                 {
                     "args": "",
-                    "id": "6",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "5"
+                        "1",
+                        "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ real_bounded t ∧ s ⊆ t ⟶ real_bounded s"
+                    "th": "⊢ real_bounded t ⟶ s ⊆ t ⟶ real_bounded s"
                 }
             ],
-            "prop": "real_bounded t ∧ s ⊆ t ⟶ real_bounded s",
+            "prop": "real_bounded t --> s ⊆ t ⟶ real_bounded s",
             "steps": [
                 {
-                    "goal_id": "1",
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_bounded_def"
+                },
+                {
+                    "goal_id": "3",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "real_bounded_def"
                 },
                 {
                     "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "1",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                },
-                {
-                    "fact_ids": [
+                        "2",
                         "1"
                     ],
                     "goal_id": "3",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "real_bounded_def"
-                },
-                {
-                    "fact_ids": [
-                        "3",
-                        "2"
-                    ],
-                    "goal_id": "4",
                     "method_name": "z3"
                 }
             ],
