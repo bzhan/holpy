@@ -539,7 +539,7 @@ class nat_norm_macro(ProofTermMacro):
 
     def can_eval(self, thy, goal):
         assert isinstance(goal, Term), "nat_norm_macro"
-        if not goal.is_equals():
+        if not (goal.is_equals() and goal.lhs.get_type() == natT):
             return False
 
         t1, t2 = goal.args

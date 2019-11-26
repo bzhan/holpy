@@ -172,6 +172,35 @@ class Term():
         else:
             raise TypeError
 
+    def __le__(self, other):
+        """Fast version of comparison."""
+        if self.ty != other.ty:
+            return self.ty <= other.ty
+        elif self.is_svar() or self.is_var() or self.is_const():
+            return (self.name, self.T) <= (other.name, other.T)
+        elif self.is_comb():
+            return (self.fun, self.arg) <= (other.fun, other.arg)
+        elif self.is_abs():
+            return (self.var_T, self.body) <= (other.var_T, other.body)
+        elif self.is_bound():
+            return self.n <= other.n
+        else:
+            raise TypeError
+
+    def __lt__(self, other):
+        if self.ty != other.ty:
+            return self.ty < other.ty
+        elif self.is_svar() or self.is_var() or self.is_const():
+            return (self.name, self.T) < (other.name, other.T)
+        elif self.is_comb():
+            return (self.fun, self.arg) < (other.fun, other.arg)
+        elif self.is_abs():
+            return (self.var_T, self.body) < (other.var_T, other.body)
+        elif self.is_bound():
+            return self.n < other.n
+        else:
+            raise TypeError        
+
     def __copy__(self):
         """Returns a copy of self. Types are shared, the rest of
         the information are copied.

@@ -151,6 +151,28 @@ class HOLType():
         else:
             raise TypeError
 
+    def __le__(self, other):
+        """Fast version of comparison."""
+        if self.ty != other.ty:
+            return self.ty <= other.ty
+        elif self.is_stvar() or self.is_tvar():
+            return self.name <= other.name
+        elif self.is_type():
+            return (self.name, self.args) <= (other.name, other.args)
+        else:
+            raise TypeError
+
+    def __lt__(self, other):
+        """Fast version of comparison."""
+        if self.ty != other.ty:
+            return self.ty < other.ty
+        elif self.is_stvar() or self.is_tvar():
+            return self.name < other.name
+        elif self.is_type():
+            return (self.name, self.args) < (other.name, other.args)
+        else:
+            raise TypeError
+
     def subst(self, tyinst):
         """Given a dictionary tyinst mapping from names to types,
         simultaneously substitute for the type variables using the
