@@ -23,13 +23,19 @@ class Expr:
         return Op("-", self, other)
 
     def __mul__(self, other):
-        return Op("*", self, other)
+        if self == Const(1):
+            return other
+        else:
+            return Op("*", self, other)
 
     def __truediv__(self, other):
         return Op("/", self, other)
 
     def __xor__(self, other):
-        return Op("^", self, other)
+        if other == Const(1):
+            return self
+        else:
+            return Op("^", self, other)
 
     def __neg__(self):
         return Op("-", self)
@@ -607,6 +613,6 @@ class EvalAt(Expr):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
 
 if __name__ == "__main__":
-    problem = "cos((2/9) * pi)"
+    problem = "cos(x ^ 2)"
     p = parser.parse_expr(problem)
-    print(p.normalize())
+    s = deriv("x", p)

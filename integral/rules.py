@@ -53,11 +53,12 @@ class CommonIntegral(Rule):
     """Applies common integrals:
 
     INT c = c * x,
-    INT x^n = x^(n+1) / (n+1),  (where n != -1, c is a constant)
-    INT 1/x^n = (-n) / x^(n+1), (where n != 1)
+    INT x ^ n = x ^ (n + 1) / (n + 1),  (where n != -1, c is a constant)
+    INT (x + c) ^ n = (x + c) ^ (n + 1) / (n + 1)
+    INT 1 / x ^ n = (-n) / x ^ (n + 1), (where n != 1)
     INT sin(x) = -cos(x),
     INT cos(x) = sin(x),
-    INT 1/(x + c) = log(x + c),  (where the range is positive, c is a constant)
+    INT 1 / (x + c) = log(x + c),  (where the range is positive, c is a constant)
     INT e^x = e^x
     INT 1 / (x^2 + 1) = arctan(x)
     """
@@ -79,32 +80,42 @@ class CommonIntegral(Rule):
         elif e.body.ty == expr.OP:
             if e.body.op == "^":
                 a, b = e.body.args
-                if a == Var(e.var) and b.ty == expr.CONST and b.val != -1:
-                    # Integral of x^n is x^(n+1)/(n+1)
-                    integral = (Var(e.var) ^ Const(b.val + 1)) / Const(b.val + 1)
+                if (a == Var(e.var) or a.op in ("+", "-") and a.args[0] == Var(e.var) and \
+                        a.args[1].ty == expr.CONST) and b.ty == expr.CONST and \
+                            b.val != -1:
+                    # Integral of x ^ n is x ^ (n + 1)/(n + 1)
+                    # Intgeral of (x + c) ^ n = (x + c) ^ (n + 1) / (n + 1)
+                    integral = (a ^ Const(b.val + 1)) / Const(b.val + 1)
                     return EvalAt(e.var, e.lower, e.upper, integral)
-                elif a == Var(e.var) and b.ty == expr.CONST and b.val == -1:
-                    # Integral of x^-1 is log(x)
-                    return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
+                elif (a == Var(e.var) or a.op in ("+", "-") and a.args[0] == Var(e.var) and \
+                        a.args[1].ty == expr.CONST) and b.ty == expr.CONST and b.val == -1:
+                    # Integral of x ^ -1 is log(x)
+                    # Integral of (x + c) ^ -1 is log(x)
+                    return EvalAt(e.var, e.lower, e.upper, expr.log(a))
                 else:
                     return e
             elif e.body.op == "/":
                 a, b = e.body.args
-                if b.ty == expr.OP:
+                if b.ty == expr.OP and a.ty == expr.CONST:
                     c, d = b.args
                     if b.op == "^":
-                        if c == Var(e.var) and d.ty == expr.CONST and d.val != 1:
-                            #Integral of 1/x^n is (-n)/x^(n+1)
-                            integral = Const(-d.val)/(Var(e.var) ^ Const(d.val + 1))
+                        if (c == Var(e.var) or c.op in ("+", "-") and c.args[0] == Var(e.var) and \
+                                c.args[1].ty == expr.CONST) and d.ty == expr.CONST and d.val != 1:
+                            #Integral of 1 / x ^ n is (-n) / x ^ (n + 1)
+                            #Integral of 1 / (x + c) ^ n is (-1) / (n - 1) * x ^ (n - 1)
+                            integral = a * Const(-1) / (Const(d.val - 1) * (c ^ Const(d.val - 1)))
                             return EvalAt(e.var, e.lower, e.upper, integral)
-                        elif c == Var(e.var) and d.ty == expr.CONST and d.val == 1:
-                            #Integral of 1/x is log(x)
-                            return EvalAt(e.var, e.lower, e.upper, expr.log(Var(e.var)))
                     elif b.op in ("+", "-"):
-                        if c == Var(e.var):
-                            return EvalAt(e.var, e.lower, e.upper, expr.log(b))
-                        elif c.ty == expr.OP and c.args[0] == Var(e.var) and c.args[1] == Const(2) and d == expr.Const(1):
-                            return EvalAt(e.var, e.lower, e.upper, expr.arctan(Var(e.var)))
+                        if c == Var(e.var) and d.ty == expr.CONST:
+                            #Integral of 1 / (x + c) is log(x + c)
+                            return EvalAt(e.var, e.lower, e.upper, a * expr.log(b))
+                        elif b.op == "+" and c.ty == expr.OP and c.op == "^" and \
+                                c.args[0] == Var(e.var) and c.args[1] == Const(2) and \
+                                d == expr.Const(1):
+                            #Integral of 1 / x ^ 2 + 1 is arctan(x)
+                            return EvalAt(e.var, e.lower, e.upper, a * expr.arctan(Var(e.var)))
+                elif b == Var(e.var):
+                    return EvalAt(e.var, e.lower, e.upper, a * expr.log(b))
             else:
                 return e
 
@@ -224,6 +235,4 @@ class PolynomialDivision(Rule):
             k = k + poly.Polynomial([dividend.monomials[-k.degree]])
             k = poly.Polynomial(tuple(k.monomials[1:]))
         return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(k.monomials))/expr.from_poly(divisor))
-
-
 

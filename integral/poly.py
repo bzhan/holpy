@@ -22,6 +22,23 @@ def collect_pairs(ps):
             res[v] = c
     return tuple(sorted(((k, v) for k, v in res.items()),reverse=True))
 
+def collect_pairs1(ps):
+    """Reduce a list of pairs by collecting into groups according to
+    first components, and adding the second component for each group.
+
+    It is assumed that the first components are hashable.
+
+    e.g. [("x", 1), ("y", 2), ("x", 3)] => [("x", 4), ("y", 2)]
+
+    """
+    res = {}
+    for v, c in ps:
+        if v in res:
+            res[v] += c
+        else:
+            res[v] = c
+    return tuple(sorted(((k, v) for k, v in res.items())))
+
 class Monomial:
     """Represents a monomial."""
     def __init__(self, coeff, factors):
@@ -38,7 +55,7 @@ class Monomial:
             isinstance(factor[1], (int, Fraction)) for factor in factors), \
             "Unexpected argument for factors: %s" % str(factors)
         self.coeff = coeff
-        self.factors = collect_pairs(factors)
+        self.factors = collect_pairs1(factors)
         self.var = None if self.is_constant() else factors[0][0]
         self.degree = 0 if self.is_constant() else self.factors[0][1]
 

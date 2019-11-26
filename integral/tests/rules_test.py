@@ -42,14 +42,15 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. x ^ 2", "[x ^ 3 / 3]_x=a,b"),
             ("INT x:[a,b]. x ^ 3", "[x ^ 4 / 4]_x=a,b"),
             ("INT x:[a,b]. (x + 2) ^ 3", "[(x + 2) ^ 4 / 4]_x=a,b"),
-            ("INT x:[a,b]. 3 / x ^ 3", "[3 / ((-2) * x ^ 2)]_x=a,b"),
+            ("INT x:[a,b]. 3 / x ^ 3", "[3 * -1 / (2 * x ^ 2)]_x=a,b"),
             ("INT x:[a,b]. x ^ -1", "[log(x)]_x=a,b"),
             ("INT x:[a,b]. (x + 1) ^ -1", "[log(x+1)]_x=a,b"),
-            ("INT x:[a,b]. (x + 2) ^ 2", "[-1/(x+2)]_x=a,b"),
+            ("INT x:[a,b]. (x + 2) ^ (-2)", "[(x + 2) ^ -1 / -1]_x=a,b"),
             ("INT x:[a,b]. 1 / x", "[log(x)]_x=a,b"),
-            ("INT x:[a,b]. 1 / x ^ 2", "(-2)/ x_x=a,b"),
+            ("INT x:[a,b]. 1 / x ^ 2", "[(-1) / x]_x=a,b"),
             ("INT x:[a,b]. sin(x)", "[-cos(x)]_x=a,b"),
-            ("INT x:[a,b]. cos(x)", "[sin(x)]_x=a,b")
+            ("INT x:[a,b]. cos(x)", "[sin(x)]_x=a,b"),
+            ("INT x:[a,b]. 1 / (x ^ 2 + 1)", "[arctan(x)]_x=a,b")
         ]
 
         rule = rules.CommonIntegral()
@@ -103,8 +104,8 @@ class RulesTest(unittest.TestCase):
 
     def testPolynomialDivision(self):
         test_data = [
-        ("(x^3 - 12 * x^2 - 42) / (x-3)", "x ^ 2 + -9 * x + -27 + -123 / (x + -3)"),
-        ("(3*x^4+3*x^2+1)/(x^2 + 1)", "3 * x ^ 2 + 1 / (x ^ 2 + 1)")
+        ("INT x:[4, exp(1) + 3].(x^3 - 12 * x^2 - 42) / (x-3)", "INT x:[4, exp(1) + 3].x ^ 2 + -9 * x + -27 + -123 / (x + -3)"),
+        ("INT x:[-1, 0].(3*x^4+3*x^2+1)/(x^2 + 1)", "INT x:[-1, 0].3 * x ^ 2 + 1 / (x ^ 2 + 1)")
         ]
 
         rule = rules.PolynomialDivision()
