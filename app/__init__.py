@@ -22,6 +22,7 @@ from prover import z3wrapper
 from server.server import ProofState
 from server import monitor
 from imperative.parser2 import cond_parser, com_parser
+import integral
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -766,6 +767,130 @@ def check_theory():
 
     res = monitor.check_theory(filename, username, rewrite=data['rewrite'])
     return jsonify(res)
+
+
+@app.route("/api/integral-open-file", methods=['POST'])
+def integral_open_file():
+    data = json.loads(request.get_data().decode('utf-8'))
+    file_name = "integral/examples/%s.json" % data['filename']
+    with open(file_name, 'r', encoding='utf-8') as f:
+        f_data = json.load(f)
+
+    for item in f_data['content']:
+        problem = integral.parser.parse_expr(item['problem'])
+        item['_problem_latex'] = integral.latex.convert_expr(problem)
+
+    return jsonify(f_data)
+
+@app.route("/api/integral-initialize", methods=['POST'])
+def integral_initialize():
+    data = json.loads(request.get_data().decode('utf-8'))
+    problem = integral.parser.parse_expr(data['problem'])
+    return jsonify({
+        'text': str(problem),
+        'latex': integral.latex.convert_expr(problem),
+        'reason': "Initial"
+    })
+
+@app.route("/api/integral-linearity", methods=['POST'])
+def integral_linearity():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rule = integral.rules.Linearity()
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "Linearity"
+    })
+
+@app.route("/api/integral-simplify", methods=['POST'])
+def integral_simplify():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rule = integral.rules.Simplify()
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "Simplification"
+    })
+
+@app.route("/api/integral-common-integral", methods=['POST'])
+def integral_common_integral():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rule = integral.rules.OnSubterm(integral.rules.CommonIntegral())
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "Common integrals"
+    })
+
+@app.route("/api/integral-substitution", methods=['POST'])
+def integral_substitution():
+    data = json.loads(request.get_data().decode('utf-8'))
+    expr = integral.parser.parse_expr(data['expr'])
+    rule = integral.rules.Substitution(data['var_name'], expr)
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "Substitution",
+        'params': {
+            'var_name': data['var_name'],
+            'expr': data['expr'],
+        },
+        '_latex_reason': "Substitute \\(%s\\) for \\(%s\\)" % (
+            data['var_name'], integral.latex.convert_expr(expr)
+        )
+    })
+
+@app.route("/api/integral-integrate-by-parts", methods=['POST'])
+def integral_integrate_by_parts():
+    data = json.loads(request.get_data().decode('utf-8'))
+    parts_u = integral.parser.parse_expr(data['parts_u'])
+    parts_v = integral.parser.parse_expr(data['parts_v'])
+    rule = integral.rules.IntegrationByParts(parts_u, parts_v)
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "Integrate by parts",
+        'params': {
+            'parts_u': data['parts_u'],
+            'parts_v': data['parts_v'],
+        },
+        '_latex_reason': "Integrate by parts, \\(u = %s, v = %s\\)" % (
+            integral.latex.convert_expr(parts_u), integral.latex.convert_expr(parts_v)
+        )
+    })
+
+@app.route("/api/integral-polynomial-division", methods=['POST'])
+def integral_polynomial_division():
+    data = json.loads(request.get_data().decode('utf-8'))
+    rule = integral.rules.PolynomialDivision()
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    return jsonify({
+        'text': str(new_problem),
+        'latex': integral.latex.convert_expr(new_problem),
+        'reason': "Polynomial division"
+    })
+
+@app.route("/api/integral-save-file", methods=['POST'])
+def integral_save_file():
+    data = json.loads(request.get_data().decode('utf-8'))
+    file_name = "integral/examples/%s.json" % data['filename']
+    with open(file_name, 'w', encoding='utf-8') as f:
+        json.dump({"content": data['content']}, f, indent=4, ensure_ascii=False, sort_keys=True)
+
+    return jsonify({
+        'status': 'success'
+    })
 
 
 # Initialization
