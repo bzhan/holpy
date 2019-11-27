@@ -1700,11 +1700,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_abs",
             "prop": "tendsto_real f l net ⟶ tendsto_real (λx. abs (f x)) (abs l) net",
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "l": "real",
                 "net": "'a net"
             }
@@ -1762,40 +1765,31 @@
                     "th": "tendsto_real (λx. f x ^ n) (l ^ n) net ⊢ tendsto_real (λx. f x ^ n) (l ^ n) net"
                 },
                 {
-                    "args": "conjI",
+                    "args": "reallim_mul",
                     "id": "3.2",
                     "prevs": [
                         "0",
                         "3.1"
                     ],
                     "rule": "apply_theorem",
-                    "th": "tendsto_real f l net, tendsto_real (λx. f x ^ n) (l ^ n) net ⊢ tendsto_real f l net ∧ tendsto_real (λx. f x ^ n) (l ^ n) net"
-                },
-                {
-                    "args": "reallim_mul",
-                    "id": "3.3",
-                    "prevs": [
-                        "3.2"
-                    ],
-                    "rule": "apply_theorem",
                     "th": "tendsto_real f l net, tendsto_real (λx. f x ^ n) (l ^ n) net ⊢ tendsto_real (λx. f x * f x ^ n) (l * l ^ n) net"
                 },
                 {
                     "args": "real_nat_power_def_2, tendsto_real (λx. f x ^ Suc n) (l ^ Suc n) net",
-                    "id": "3.4",
+                    "id": "3.3",
                     "prevs": [
-                        "3.3"
+                        "3.2"
                     ],
                     "rule": "rewrite_goal",
                     "th": "tendsto_real f l net, tendsto_real (λx. f x ^ n) (l ^ n) net ⊢ tendsto_real (λx. f x ^ Suc n) (l ^ Suc n) net"
                 },
                 {
                     "args": "",
-                    "id": "3.5",
+                    "id": "3.4",
                     "prevs": [
                         "3.0",
                         "3.1",
-                        "3.4"
+                        "3.3"
                     ],
                     "rule": "intros",
                     "th": "tendsto_real f l net ⊢ ∀n. tendsto_real (λx. f x ^ n) (l ^ n) net ⟶ tendsto_real (λx. f x ^ Suc n) (l ^ Suc n) net"
@@ -1855,15 +1849,6 @@
                     "goal_id": "3.2",
                     "method_name": "apply_backward_step",
                     "theorem": "reallim_mul"
-                },
-                {
-                    "fact_ids": [
-                        "0",
-                        "3.1"
-                    ],
-                    "goal_id": "3.2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
                 }
             ],
             "ty": "thm",
@@ -1881,7 +1866,7 @@
                 "hint_backward1"
             ],
             "name": "reallim_max",
-            "num_gaps": 1,
+            "num_gaps": 0,
             "proof": [
                 {
                     "args": "tendsto_real f l net",
@@ -1905,19 +1890,70 @@
                     "th": "tendsto_real g m net ⊢ tendsto_real g m net"
                 },
                 {
-                    "args": "",
+                    "args": "reallim_add",
                     "id": "3",
-                    "prevs": [],
-                    "rule": "sorry",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. f x + g x) (l + m) net"
+                },
+                {
+                    "args": "reallim_sub",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. f x - g x) (l - m) net"
+                },
+                {
+                    "args": "reallim_abs",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. abs (f x - g x)) (abs (l - m)) net"
+                },
+                {
+                    "args": "reallim_add",
+                    "id": "6",
+                    "prevs": [
+                        "3",
+                        "5"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. f x + g x + abs (f x - g x)) (l + m + abs (l - m)) net"
+                },
+                {
+                    "args": "reallim_lmul, {a: 'a}, {c: 1 / 2, f: λx. f x + g x + abs (f x - g x), l: l + m + abs (l - m), net: net}",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. 1 / 2 * (f x + g x + abs (f x - g x))) (1 / 2 * (l + m + abs (l - m))) net"
+                },
+                {
+                    "args": "tendsto_real (λx. max (f x) (g x)) (max l m) net",
+                    "id": "8",
+                    "prevs": [
+                        "1",
+                        "7"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
                     "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. max (f x) (g x)) (max l m) net"
                 },
                 {
                     "args": "",
-                    "id": "4",
+                    "id": "9",
                     "prevs": [
                         "0",
                         "2",
-                        "3"
+                        "8"
                     ],
                     "rule": "intros",
                     "th": "⊢ tendsto_real f l net ⟶ tendsto_real g m net ⟶ tendsto_real (λx. max (f x) (g x)) (max l m) net"
@@ -1936,6 +1972,46 @@
                 {
                     "goal_id": "1",
                     "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_lmul"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_add"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_add"
+                },
+                {
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_abs"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_sub"
                 }
             ],
             "ty": "thm",
@@ -3316,11 +3392,12 @@
             }
         },
         {
+            "attributes": [],
             "name": "real_summable_eq_cofinite",
-            "prop": "finite (diff s t ∪ diff t s) ∧ real_summable s f ⟶ real_summable t f",
+            "prop": "finite (diff s t ∪ diff t s) --> real_summable s f ⟶ real_summable t f",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "s": "nat set",
                 "t": "nat set"
             }
@@ -3396,26 +3473,32 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_series_add",
-            "prop": "real_sums x x0 s ∧ real_sums y y0 s ⟶ real_sums (λn. x n + y n) (x0 + y0) s",
+            "prop": "real_sums x x0 s --> real_sums y y0 s ⟶ real_sums (λn. x n + y n) (x0 + y0) s",
             "ty": "thm",
             "vars": {
                 "s": "nat set",
-                "x": "nat ⇒ real",
+                "x": "nat => real",
                 "x0": "real",
-                "y": "nat ⇒ real",
+                "y": "nat => real",
                 "y0": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_series_sub",
-            "prop": "real_sums x x0 s ∧ real_sums y y0 s ⟶ real_sums (λn. x n - y n) (x0 - y0) s",
+            "prop": "real_sums x x0 s --> real_sums y y0 s ⟶ real_sums (λn. x n - y n) (x0 - y0) s",
             "ty": "thm",
             "vars": {
                 "s": "nat set",
-                "x": "nat ⇒ real",
+                "x": "nat => real",
                 "x0": "real",
-                "y": "nat ⇒ real",
+                "y": "nat => real",
                 "y0": "real"
             }
         },
@@ -3463,22 +3546,29 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_sums_eq",
-            "prop": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_sums f l s ⟶ real_sums g l s",
+            "prop": "(∀x. x ∈ s ⟶ f x = g x) --> real_sums f l s ⟶ real_sums g l s",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
-                "g": "nat ⇒ real",
+                "f": "nat => real",
+                "g": "nat => real",
                 "l": "real",
                 "s": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward1",
+                "hint_backward"
+            ],
             "name": "real_series_finite_support",
-            "prop": "finite (s ∩ t) ∧ (∀x. ¬(x ∈ s ∩ t) ⟶ f x = 0) ⟶ real_sums f (sum (s ∩ t) f) t",
+            "prop": "finite (s ∩ t) --> (∀x. ¬(x ∈ s ∩ t) ⟶ f x = 0) ⟶ real_sums f (sum (s ∩ t) f) t",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "s": "nat set",
                 "t": "nat set"
             }
@@ -3511,11 +3601,14 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_series_sum",
-            "prop": "finite s ∧ s ⊆ t ∧ (∀x. ¬(x ∈ s) ⟶ f x = 0) ∧ sum s f = l ⟶ real_sums f l t",
+            "prop": "finite s --> s ⊆ t --> (∀x. ¬(x ∈ s) ⟶ f x = 0) --> sum s f = l ⟶ real_sums f l t",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "l": "real",
                 "s": "nat set",
                 "t": "nat set"
@@ -3559,24 +3652,30 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_partial_sums_le_infsum",
-            "prop": "(∀i. i ∈ s ⟶ 0 ≤ f i) ∧ real_summable s f ⟶ sum (s ∩ {0..n}) f ≤ real_infsum s f",
+            "prop": "(∀i. i ∈ s ⟶ 0 ≤ f i) --> real_summable s f ⟶ sum (s ∩ {0..n}) f ≤ real_infsum s f",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "n": "nat",
                 "s": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_partial_sums_le_infsum_gen",
             "prop": [
-                "finite t ∧ t ⊆ s ∧ (∀i. i ∈ s ⟶ 0 ≤ f i) ∧ real_summable s f ",
+                "finite t --> t ⊆ s --> (∀i. i ∈ s ⟶ 0 ≤ f i) --> real_summable s f ",
                 "⟶ sum t f ≤ real_infsum s f"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "s": "nat set",
                 "t": "nat set"
             }
@@ -3592,58 +3691,72 @@
             }
         },
         {
+            "attributes": [
+                "hint_forward",
+                "hint_backward1"
+            ],
             "name": "real_series_le",
-            "prop": "real_sums f y s ∧ real_sums g z s ∧ (∀i. i ∈ s ⟶ f i ≤ g i) ⟶ y ≤ z",
+            "prop": "real_sums f y s --> real_sums g z s --> (∀i. i ∈ s ⟶ f i ≤ g i) ⟶ y ≤ z",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
-                "g": "nat ⇒ real",
+                "f": "nat => real",
+                "g": "nat => real",
                 "s": "nat set",
                 "y": "real",
                 "z": "real"
             }
         },
         {
+            "attributes": [
+                "hint_forward",
+                "hint_backward1"
+            ],
             "name": "real_series_pos",
-            "prop": "real_sums f y s ∧ (∀i. i ∈ s ⟶ 0 ≤ f i) ⟶ 0 ≤ y",
+            "prop": "real_sums f y s --> (∀i. i ∈ s ⟶ 0 ≤ f i) ⟶ 0 ≤ y",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "s": "nat set",
                 "y": "real"
             }
         },
         {
+            "attributes": [
+                "hint_forward",
+                "hint_backward1"
+            ],
             "name": "real_series_bound",
-            "prop": "real_sums f y s ∧ real_sums g z s ∧ (∀i. i ∈ s ⟶ abs (f i) ≤ g i) ⟶ abs y ≤ z",
+            "prop": "real_sums f y s --> real_sums g z s --> (∀i. i ∈ s ⟶ abs (f i) ≤ g i) ⟶ abs y ≤ z",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
-                "g": "nat ⇒ real",
+                "f": "nat => real",
+                "g": "nat => real",
                 "s": "nat set",
                 "y": "real",
                 "z": "real"
             }
         },
         {
+            "attributes": [],
             "name": "real_series_comparison_bound",
             "prop": [
-                "real_sums g z s ∧ (∀i. i ∈ s ⟶ abs (f i) ≤ g i) ",
+                "real_sums g z s --> (∀i. i ∈ s ⟶ abs (f i) ≤ g i) ",
                 "⟶ (∃y. real_sums f y s ∧ abs y ≤ z)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
-                "g": "nat ⇒ real",
+                "f": "nat => real",
+                "g": "nat => real",
                 "s": "nat set",
                 "z": "real"
             }
         },
         {
+            "attributes": [],
             "name": "real_series_mul",
             "prop": [
-                "real_sums x a (from 0) ∧ ",
-                "real_sums y b (from 0) ∧ ",
+                "real_sums x a (from 0) --> ",
+                "real_sums y b (from 0) --> ",
                 "(real_summable (from 0) (λn. abs (x n)) ∨ real_summable (from 0) (λn. abs (y n))) ",
                 "⟶ real_sums (λn. sum ({0..n}) (λi. x i * y (n - i))) (a * b) (from 0)"
             ],
@@ -3651,15 +3764,19 @@
             "vars": {
                 "a": "real",
                 "b": "real",
-                "x": "nat ⇒ real",
-                "y": "nat ⇒ real"
+                "x": "nat => real",
+                "y": "nat => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_series_mul_unique",
             "prop": [
-                "real_sums x a (from 0) ∧ ",
-                "real_sums y b (from 0) ∧ ",
+                "real_sums x a (from 0) --> ",
+                "real_sums y b (from 0) --> ",
                 "real_sums (λn. sum ({0..n}) (λi. x i * y (n - i))) c (from 0) ",
                 "⟶ a * b = c"
             ],
@@ -3668,8 +3785,8 @@
                 "a": "real",
                 "b": "real",
                 "c": "real",
-                "x": "nat ⇒ real",
-                "y": "nat ⇒ real"
+                "x": "nat => real",
+                "y": "nat => real"
             }
         },
         {
@@ -3681,23 +3798,25 @@
             }
         },
         {
+            "attributes": [],
             "name": "real_summable_add",
-            "prop": "real_summable s x ∧ real_summable s y ⟶ real_summable s (λn. x n + y n)",
+            "prop": "real_summable s x --> real_summable s y ⟶ real_summable s (λn. x n + y n)",
             "ty": "thm",
             "vars": {
                 "s": "nat set",
-                "x": "nat ⇒ real",
-                "y": "nat ⇒ real"
+                "x": "nat => real",
+                "y": "nat => real"
             }
         },
         {
+            "attributes": [],
             "name": "real_summable_sub",
-            "prop": "real_summable s x ∧ real_summable s y ⟶ real_summable s (λn. x n - y n)",
+            "prop": "real_summable s x --> real_summable s y ⟶ real_summable s (λn. x n - y n)",
             "ty": "thm",
             "vars": {
                 "s": "nat set",
-                "x": "nat ⇒ real",
-                "y": "nat ⇒ real"
+                "x": "nat => real",
+                "y": "nat => real"
             }
         },
         {
@@ -3740,32 +3859,45 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_forward",
+                "hint_backward1"
+            ],
             "name": "real_summable_eq",
-            "prop": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_summable s f ⟶ real_summable s g",
+            "prop": "(∀x. x ∈ s ⟶ f x = g x) --> real_summable s f ⟶ real_summable s g",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
-                "g": "nat ⇒ real",
+                "f": "nat => real",
+                "g": "nat => real",
                 "s": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward1",
+                "hint_backward"
+            ],
             "name": "real_series_subset",
-            "prop": "s ⊆ t ∧ real_sums (λi. if i ∈ s then f i else 0) l t ⟶ real_sums f l s",
+            "prop": "s ⊆ t --> real_sums (λi. if i ∈ s then f i else 0) l t ⟶ real_sums f l s",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "l": "real",
                 "s": "nat set",
                 "t": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward1",
+                "hint_backward"
+            ],
             "name": "real_summable_subset",
-            "prop": "s ⊆ t ∧ real_summable t (λi. if i ∈ s then f i else 0) ⟶ real_summable s f",
+            "prop": "s ⊆ t --> real_summable t (λi. if i ∈ s then f i else 0) ⟶ real_summable s f",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "s": "nat set",
                 "t": "nat set"
             }
@@ -3788,44 +3920,60 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward1",
+                "hint_backward"
+            ],
             "name": "real_sums_finite_diff",
-            "prop": "t ⊆ s ∧ finite t ∧ real_sums f l s ⟶ real_sums f (l - sum t f) (diff s t)",
+            "prop": "t ⊆ s --> finite t --> real_sums f l s ⟶ real_sums f (l - sum t f) (diff s t)",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "l": "real",
                 "s": "nat set",
                 "t": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_sums_finite_union",
-            "prop": "finite t ∧ real_sums f l s ⟶ real_sums f (l + sum (diff t s) f) (s ∪ t)",
+            "prop": "finite t --> real_sums f l s ⟶ real_sums f (l + sum (diff t s) f) (s ∪ t)",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "l": "real",
                 "s": "nat set",
                 "t": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_sums_offset",
-            "prop": "real_sums f l (from m) ∧ m < n ⟶ real_sums f (l - sum ({m..n - 1}) f) (from n)",
+            "prop": "real_sums f l (from m) --> m < n ⟶ real_sums f (l - sum ({m..n - 1}) f) (from n)",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "l": "real",
                 "m": "nat",
                 "n": "nat"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_sums_offset_rev",
-            "prop": "real_sums f l (from m) ∧ n < m ⟶ real_sums f (l + sum ({n..m - 1}) f) (from n)",
+            "prop": "real_sums f l (from m) --> n < m ⟶ real_sums f (l + sum ({n..m - 1}) f) (from n)",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "l": "real",
                 "m": "nat",
                 "n": "nat"
@@ -3864,29 +4012,35 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_infsum_add",
             "prop": [
-                "real_summable s x ∧ real_summable s y ",
+                "real_summable s x --> real_summable s y ",
                 "⟶ real_infsum s (λn. x n + y n) = real_infsum s x + real_infsum s y"
             ],
             "ty": "thm",
             "vars": {
                 "s": "nat set",
-                "x": "nat ⇒ real",
-                "y": "nat ⇒ real"
+                "x": "nat => real",
+                "y": "nat => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_infsum_sub",
             "prop": [
-                "real_summable s x ∧ real_summable s y ",
+                "real_summable s x --> real_summable s y ",
                 "⟶ real_infsum s (λn. x n - y n) = real_infsum s x - real_infsum s y"
             ],
             "ty": "thm",
             "vars": {
                 "s": "nat set",
-                "x": "nat ⇒ real",
-                "y": "nat ⇒ real"
+                "x": "nat => real",
+                "y": "nat => real"
             }
         },
         {
@@ -3919,15 +4073,19 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_infsum_eq",
             "prop": [
-                "(∀x. x ∈ s ⟶ f x = g x) ∧ real_summable s f ∧ real_summable s g ",
+                "(∀x. x ∈ s ⟶ f x = g x) --> real_summable s f --> real_summable s g ",
                 "⟶ real_infsum s f = real_infsum s g"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
-                "g": "nat ⇒ real",
+                "f": "nat => real",
+                "g": "nat => real",
                 "s": "nat set"
             }
         },
@@ -3978,63 +4136,83 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_series_comparison",
             "prop": [
-                "(∃l. real_sums g l s) ∧ (∃N. ∀i. i ≥ N ∧ i ∈ s ⟶ abs (f i) ≤ g i) ",
+                "(∃l. real_sums g l s) --> (∃N. ∀i. i ≥ N --> i ∈ s ⟶ abs (f i) ≤ g i) ",
                 "⟶ (∃l. real_sums f l s)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
-                "g": "nat ⇒ real",
+                "f": "nat => real",
+                "g": "nat => real",
                 "s": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_summable_comparison",
             "prop": [
-                "real_summable s g ∧ (∃N. ∀i. i ≥ N ∧ i ∈ s ⟶ abs (f i) ≤ g i) ",
+                "real_summable s g --> (∃N. ∀i. i ≥ N --> i ∈ s ⟶ abs (f i) ≤ g i) ",
                 "⟶ real_summable s f"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
-                "g": "nat ⇒ real",
+                "f": "nat => real",
+                "g": "nat => real",
                 "s": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_series_comparison_uniform",
             "prop": [
-                "(∃l. real_sums g l s) ∧ (∃N. ∀i. ∀x. N ≤ i ∧ i ∈ s ∧ P x ⟶ abs (f x i) ≤ g i) ",
-                "⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀i. ∀x. N ≤ i ∧ P x ⟶ abs (sum (s ∩ {0..i}) (f x) - l x) < e))"
+                "(∃l. real_sums g l s) --> (∃N. ∀i. ∀x. N ≤ i --> i ∈ s --> P x ⟶ abs (f x i) ≤ g i) ",
+                "⟶ (∃l. ∀e. 0 < e ⟶ (∃N. ∀i. ∀x. N ≤ i --> P x ⟶ abs (sum (s ∩ {0..i}) (f x) - l x) < e))"
             ],
             "ty": "thm",
             "vars": {
-                "P": "'a ⇒ bool",
-                "f": "'a ⇒ nat ⇒ real",
-                "g": "nat ⇒ real",
+                "P": "'a => bool",
+                "f": "'a => nat => real",
+                "g": "nat => real",
                 "s": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_summable_pos_subset",
-            "prop": "(∀x. x ∈ t ⟶ 0 ≤ f x) ∧ real_summable t f ∧ s ⊆ t ⟶ real_summable s f",
+            "prop": "(∀x. x ∈ t ⟶ 0 ≤ f x) --> real_summable t f --> s ⊆ t ⟶ real_summable s f",
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "s": "nat set",
                 "t": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_series_ratio",
-            "prop": "c < 1 (∀i. i ≥ N ⟶ abs (f (Suc i)) ≤ c * abs (f i)) ⟶ (∃l. real_sums f l s)",
+            "prop": "c < 1 --> (∀i. i ≥ N ⟶ abs (f (Suc i)) ≤ c * abs (f i)) ⟶ (∃l. real_sums f l s)",
             "ty": "thm",
             "vars": {
                 "N": "nat",
                 "c": "real",
-                "f": "nat ⇒ real",
+                "f": "nat => real",
                 "s": "nat set"
             }
         },
@@ -4051,17 +4229,20 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_series_dirichlet",
             "prop": [
-                "real_bounded ({y. ∀n. y = sum ({m..n}) f}) ∧ ",
+                "real_bounded ({y. ∀n. y = sum ({m..n}) f}) --> ",
                 "(∀i. N ≤ i ⟶ g (Suc i) ≤ g i) ∧ tendsto_real g 0 sequentially ",
                 "⟶ real_summable (from k) (λn. g n * f n)"
             ],
             "ty": "thm",
             "vars": {
                 "N": "nat",
-                "f": "nat ⇒ real",
-                "g": "nat ⇒ real",
+                "f": "nat => real",
+                "g": "nat => real",
                 "k": "nat",
                 "m": "nat"
             }
@@ -4103,52 +4284,68 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_abel_lemma",
             "prop": [
-                "0 ≤ r ∧ r ≤ r0 ∧ (∀n. n ∈ s ⟶ abs (a n) * r0 ^ n ≤ M) ",
+                "0 ≤ r --> r ≤ r0 --> (∀n. n ∈ s ⟶ abs (a n) * r0 ^ n ≤ M) ",
                 "⟶ real_summable s (λk. abs (a k) * r ^ k)"
             ],
             "ty": "thm",
             "vars": {
                 "M": "real",
-                "a": "nat ⇒ real",
+                "a": "nat => real",
                 "r": "real",
                 "r0": "real",
                 "s": "nat set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_power_series_conv_imp_absconv",
             "prop": [
-                "real_summable s (λk. abs (a k) * z ^ k) ∧ abs w ≤ abs z ",
+                "real_summable s (λk. abs (a k) * z ^ k) --> abs w ≤ abs z ",
                 "⟶ real_summable s (λk. abs (a k * w ^ k))"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat ⇒ real",
+                "a": "nat => real",
                 "s": "nat set",
                 "w": "real",
                 "z": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "power_real_series_conv_imp_absconv_weak",
             "prop": [
-                "real_summable s (λk. abs (a k) * z ^ k) ∧ abs w ≤ abs z ",
+                "real_summable s (λk. abs (a k) * z ^ k) --> abs w ≤ abs z ",
                 "⟶ real_summable s (λk. abs (a k) * w ^ k)"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat ⇒ real",
+                "a": "nat => real",
                 "s": "nat set",
                 "w": "real",
                 "z": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_summable_mul_left",
             "prop": [
-                "real_summable (from m) (λk. abs (x k)) ∧ real_summable (from n) y ",
+                "real_summable (from m) (λk. abs (x k)) --> real_summable (from n) y ",
                 "⟶ real_summable (from p) (λk. sum ({0..k}) (λi. x i * y (k - i)))"
             ],
             "ty": "thm",
@@ -4156,14 +4353,18 @@
                 "m": "nat",
                 "n": "nat",
                 "p": "nat",
-                "x": "nat ⇒ real",
-                "y": "nat ⇒ real"
+                "x": "nat => real",
+                "y": "nat => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_summable_mul_right",
             "prop": [
-                "real_summable (from m) x ∧ real_summable (from n) (λk. abs (y k)) ",
+                "real_summable (from m) x --> real_summable (from n) (λk. abs (y k)) ",
                 "⟶ real_summable (from p) (λk. sum ({0..k}) (λi. x i * y (k - i)))"
             ],
             "ty": "thm",
@@ -4171,8 +4372,8 @@
                 "m": "nat",
                 "n": "nat",
                 "p": "nat",
-                "x": "nat ⇒ real",
-                "y": "nat ⇒ real"
+                "x": "nat => real",
+                "y": "nat => real"
             }
         },
         {
@@ -4189,15 +4390,18 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "eventually_atreal",
             "prop": [
                 "eventually p (atreal a) ⟷ ",
-                "(∃d. 0 < d ∧ (∀x. 0 < abs (x - a) ∧ abs (x - a) < d ⟶ p x))"
+                "(∃d. 0 < d ∧ (∀x. 0 < abs (x - a) --> abs (x - a) < d ⟶ p x))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "p": "real ⇒ bool"
+                "p": "real => bool"
             }
         },
         {
@@ -4209,72 +4413,87 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "eventually_withinreal",
             "prop": [
                 "eventually p (within (atreal a) s) ⟷ ",
-                "(∃d. 0 < d ∧ (∀x. x ∈ s ∧ 0 < abs (x - a) ∧ abs (x - a) < d ⟶ p x))"
+                "(∃d. 0 < d ∧ (∀x. x ∈ s --> 0 < abs (x - a) --> abs (x - a) < d ⟶ p x))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "p": "real ⇒ bool",
+                "p": "real => bool",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "eventually_withinreal_le",
             "prop": [
                 "eventually p (within (atreal a) s) ⟷ ",
-                "(∃d. 0 < d ∧ (∀x. x ∈ s ∧ 0 < abs (x - a) ∧ abs (x - a) ≤ d ⟶ p x))"
+                "(∃d. 0 < d ∧ (∀x. x ∈ s --> 0 < abs (x - a) --> abs (x - a) ≤ d ⟶ p x))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "p": "real ⇒ bool",
+                "p": "real => bool",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "reallim_withinreal_le",
             "prop": [
                 "tendsto_real f l (within (atreal a) s) ⟷ ",
                 "(∀e. 0 < e ",
-                "   ⟶ (∃d. 0 < d ∧ (∀x. x ∈ s ∧ 0 < abs (x - a) ∧ abs (x - a) ≤ d ⟶ abs (f x - l) < e)))"
+                "   ⟶ (∃d. 0 < d ∧ (∀x. x ∈ s --> 0 < abs (x - a) --> abs (x - a) ≤ d ⟶ abs (f x - l) < e)))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "l": "real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "reallim_withinreal",
             "prop": [
                 "tendsto_real f l (within (atreal a) s) ⟷ ",
                 "(∀e. 0 < e ",
-                "   ⟶ (∃d. 0 < d ∧ (∀x. x ∈ s ∧ 0 < abs (x - a) ∧ abs (x - a) < d ⟶ abs (f x - l) < e)))"
+                "   ⟶ (∃d. 0 < d ∧ (∀x. x ∈ s --> 0 < abs (x - a) --> abs (x - a) < d ⟶ abs (f x - l) < e)))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "l": "real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "reallim_atreal",
             "prop": [
                 "tendsto_real f l (atreal a) ⟷ ",
                 "(∀e. 0 < e ",
-                "   ⟶ (∃d. 0 < d ∧ (∀x. x ∈ s ∧ 0 < abs (x - a) ∧ abs (x - a) < d ⟶ abs (f x - l) < e)))"
+                "   ⟶ (∃d. 0 < d ∧ (∀x. x ∈ s --> 0 < abs (x - a) --> abs (x - a) < d ⟶ abs (f x - l) < e)))"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "l": "real",
                 "s": "real set"
             }
@@ -4315,15 +4534,19 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "reallim_withinreal_subset",
             "prop": [
-                "tendsto_real f l (within (atreal a) s) ∧ t ⊆ s ",
+                "tendsto_real f l (within (atreal a) s) --> t ⊆ s ",
                 "⟶ tendsto_real f l (within (atreal a) t)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "l": "real",
                 "s": "real set",
                 "t": "real set"
@@ -4362,33 +4585,41 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "reallim_transform_withinreal_set_imp",
             "prop": [
-                "eventually (λx. x ∈ s ⟷ x ∈ t) (atreal a) ∧ ",
+                "eventually (λx. x ∈ s ⟷ x ∈ t) (atreal a) --> ",
                 "tendsto_real f l (within (atreal a) s) ",
                 "⟶ tendsto_real f l (within (atreal a) t)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "l": "real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "reallim_compose_within",
             "prop": [
-                "tendsto_real f y net ∧ ",
-                "eventually (λw. f w ∈ s ∧ (f w = y ⟶ g y = z)) net ∧ ",
+                "tendsto_real f y net --> ",
+                "eventually (λw. f w ∈ s ∧ (f w = y ⟶ g y = z)) net --> ",
                 "tendsto_real g z (within (atreal y) s) ",
                 "⟶ tendsto_real (g ∘ f) z net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "real ⇒ real",
+                "f": "'a => real",
+                "g": "real => real",
                 "net": "'a net",
                 "s": "real set",
                 "y": "real",
@@ -4412,53 +4643,69 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "alternating_sum_bounds",
             "prop": [
-                "(∀n. abs (a (Suc n)) ≤ abs (a n)) ∧ ",
-                "(∀n. even n ⟶ 0 ≤ a n) ∧ (∀n. odd n ⟶ a n ≤ 0) ",
+                "(∀n. abs (a (Suc n)) ≤ abs (a n)) --> ",
+                "(∀n. even n ⟶ 0 ≤ a n) --> (∀n. odd n ⟶ a n ≤ 0) ",
                 "⟶ (∀m. ∀n. (even m ⟶ 0 ≤ sum ({m..n}) a ∧ sum ({m..n}) a ≤ a m) ∧ ",
                 "        (∀m1. ∀n1. odd m1 ⟶ a m1 ≤ sum ({m1..n1}) a ∧ sum ({m1..n1}) a ≤ 0))"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat ⇒ real"
+                "a": "nat => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "alternating_sum_bound",
             "prop": [
-                "(∀n. abs (a (Suc n)) ≤ abs (a n)) ∧ ",
-                "(∀n. even n ⟶ 0 ≤ a n) ∧ (∀n. odd n ⟶ a n ≤ 0) ",
+                "(∀n. abs (a (Suc n)) ≤ abs (a n)) --> ",
+                "(∀n. even n ⟶ 0 ≤ a n) --> (∀n. odd n ⟶ a n ≤ 0) ",
                 "⟶ (∀m. ∀n. abs (sum ({m..n}) a) ≤ abs (a m))"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat ⇒ real"
+                "a": "nat => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_summable_alternating_series",
             "prop": [
-                "(∀n. abs (a (Suc n)) ≤ abs (a n)) ∧ ",
-                "(∀n. even n ⟶ 0 ≤ a n) ∧ (∀n. odd n ⟶ a n ≤ 0) ∧ tendsto_real a 0 sequentially ",
+                "(∀n. abs (a (Suc n)) ≤ abs (a n)) --> ",
+                "(∀n. even n ⟶ 0 ≤ a n) --> (∀n. odd n ⟶ a n ≤ 0) --> tendsto_real a 0 sequentially ",
                 "⟶ real_summable (from m) a"
             ],
             "ty": "thm",
             "vars": {
-                "a": "nat ⇒ real",
+                "a": "nat => real",
                 "m": "nat"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "reallim_within_real_open",
             "prop": [
-                "a ∈ s ∧ real_open s ",
+                "a ∈ s --> real_open s ",
                 "⟶ tendsto_real f l (within (atreal a) s) ⟷ tendsto_real f l (atreal a)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "l": "real",
                 "s": "real set"
             }
@@ -4554,14 +4801,17 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_withinreal1",
             "prop": [
                 "real_continuous f (within (atreal x) s) ⟷ ",
-                "(∀e. 0 < e ⟶ (∃d. 0 < d ∧ (∀x1. x1 ∈ s ∧ abs (x1 - x) < d ⟶ abs (f x1 - f x) < e)))"
+                "(∀e. 0 < e ⟶ (∃d. 0 < d ∧ (∀x1. x1 ∈ s --> abs (x1 - x) < d ⟶ abs (f x1 - f x) < e)))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "x": "real"
             }
@@ -4589,48 +4839,60 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_withinreal_subset",
             "prop": [
-                "real_continuous f (within (atreal x) s) ∧ t ⊆ s ",
+                "real_continuous f (within (atreal x) s) --> t ⊆ s ",
                 "⟶ real_continuous f (within (atreal x) t)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "t": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_transform_withinreal",
             "prop": [
-                "0 < d ∧ ",
-                "x ∈ s ∧ ",
-                "(∀x1. x1 ∈ s ∧ abs (x1 - x) < d ⟶ f x1 = g x1) ∧ ",
+                "0 < d --> ",
+                "x ∈ s --> ",
+                "(∀x1. x1 ∈ s ∧ abs (x1 - x) < d ⟶ f x1 = g x1) --> ",
                 "real_continuous f (within (atreal x) s) ",
                 "⟶ real_continuous g (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
                 "d": "real",
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_transform_atreal",
             "prop": [
-                "0 < d ∧ (∀x1. abs (x1 - x) < d ⟶ f x1 = g x1) ∧ real_continuous f (atreal x) ",
+                "0 < d --> (∀x1. abs (x1 - x) < d ⟶ f x1 = g x1) --> real_continuous f (atreal x) ",
                 "⟶ real_continuous g (atreal x)"
             ],
             "ty": "thm",
             "vars": {
                 "d": "real",
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "x": "real"
             }
         },
@@ -4673,66 +4935,86 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_add",
             "prop": [
-                "real_continuous f net ∧ real_continuous g net ",
+                "real_continuous f net --> real_continuous g net ",
                 "⟶ real_continuous (λx. f x + g x) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_sub",
             "prop": [
-                "real_continuous f net ∧ real_continuous g net ",
+                "real_continuous f net --> real_continuous g net ",
                 "⟶ real_continuous (λx. f x - g x) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_mul",
             "prop": [
-                "real_continuous f net ∧ real_continuous g net ",
+                "real_continuous f net --> real_continuous g net ",
                 "⟶ real_continuous (λx. f x * g x) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_inv",
             "prop": [
-                "real_continuous f net ∧ ¬(f (netlimit net) = 0) ",
+                "real_continuous f net --> ¬(f (netlimit net) = 0) ",
                 "⟶ real_continuous (λx. real_inverse (f x)) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_div",
             "prop": [
-                "real_continuous f net ∧ real_continuous g net ∧ ¬(g (netlimit net) = 0) ",
+                "real_continuous f net --> real_continuous g net --> ¬(g (netlimit net) = 0) ",
                 "⟶ real_continuous (λx. f x / g x) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "net": "'a net"
             }
         },
@@ -4756,28 +5038,38 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_max",
             "prop": [
-                "real_continuous f net ∧ real_continuous g net ",
+                "real_continuous f net --> real_continuous g net ",
                 "⟶ real_continuous (λx. max (f x) (g x)) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_min",
             "prop": [
-                "real_continuous f net ∧ real_continuous g net ",
+                "real_continuous f net --> real_continuous g net ",
                 "⟶ real_continuous (λx. min (f x) (g x)) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "net": "'a net"
             }
         },
@@ -4799,69 +5091,91 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_inv_withinreal",
             "prop": [
-                "real_continuous f (within (atreal a) s) ∧ ¬(f a = 0) ",
+                "real_continuous f (within (atreal a) s) --> ¬(f a = 0) ",
                 "⟶ real_continuous (λx. real_inverse (f x)) (within (atreal a) s)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_inv_atreal",
             "prop": [
-                "real_continuous f (atreal a) ∧ ¬(f a = 0) ",
+                "real_continuous f (atreal a) --> ¬(f a = 0) ",
                 "⟶ real_continuous (λx. real_inverse (f x)) (atreal a)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real"
+                "f": "real => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_div_withinreal",
             "prop": [
-                "real_continuous f (within (atreal a) s) ∧ ",
-                "real_continuous g (within (atreal a) s) ∧ ¬(g a = 0) ",
+                "real_continuous f (within (atreal a) s) --> ",
+                "real_continuous g (within (atreal a) s) --> ¬(g a = 0) ",
                 "⟶ real_continuous (λx. f x / g x) (within (atreal a) s)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_div_atreal",
             "prop": [
-                "real_continuous f (atreal a) ∧ real_continuous g (atreal a) ∧ ¬(g a = 0) ",
+                "real_continuous f (atreal a) --> real_continuous g (atreal a) --> ¬(g a = 0) ",
                 "⟶ real_continuous (λx. f x / g x) (atreal a)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
-                "g": "real ⇒ real"
+                "f": "real => real",
+                "g": "real => real"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1"
+            ],
             "name": "real_continuous_withinreal_compose",
             "prop": [
-                "real_continuous f (within (atreal x) s) ∧ ",
+                "real_continuous f (within (atreal x) s) --> ",
                 "real_continuous g (within (atreal (f x)) (image f s)) ",
                 "⟶ real_continuous (g ∘ f) (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set",
                 "x": "real"
             }
@@ -4902,25 +5216,35 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_on_subset",
-            "prop": "real_continuous_on f s ∧ t ⊆ s ⟶ real_continuous_on f t",
+            "prop": "real_continuous_on f s --> t ⊆ s ⟶ real_continuous_on f t",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_on_compose",
             "prop": [
-                "real_continuous_on f s ∧ real_continuous_on g (image f s) ",
+                "real_continuous_on f s --> real_continuous_on g (image f s) ",
                 "⟶ real_continuous_on (g ∘ f) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
@@ -4971,66 +5295,91 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_on_add",
             "prop": [
-                "real_continuous_on f s ∧ real_continuous_on g s ",
+                "real_continuous_on f s --> real_continuous_on g s ",
                 "⟶ real_continuous_on (λx. f x + g x) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_on_sub",
             "prop": [
-                "real_continuous_on f s ∧ real_continuous_on g s ",
+                "real_continuous_on f s --> real_continuous_on g s ",
                 "⟶ real_continuous_on (λx. f x - g x) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_on_mul",
             "prop": [
-                "real_continuous_on f s ∧ real_continuous_on g s ",
+                "real_continuous_on f s --> real_continuous_on g s ",
                 "⟶ real_continuous_on (λx. f x * g x) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_on_inv",
             "prop": [
-                "real_continuous_on f s ∧ (∀x. x ∈ s ⟶ ¬(f x = 0)) ",
+                "real_continuous_on f s --> (∀x. x ∈ s ⟶ ¬(f x = 0)) ",
                 "⟶ real_continuous_on (λx. real_inverse (f x)) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_on_div",
             "prop": [
-                "real_continuous_on f s ∧ real_continuous_on g s ∧ (∀x. x ∈ s ⟶ ¬(f x = 0)) ",
+                "real_continuous_on f s --> real_continuous_on g s --> (∀x. x ∈ s ⟶ ¬(f x = 0)) ",
                 "⟶ real_continuous_on (λx. f x / g x) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
@@ -5054,165 +5403,183 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_on_max",
             "prop": [
-                "real_continuous_on f s ∧ real_continuous_on g s ",
+                "real_continuous_on f s --> real_continuous_on g s ",
                 "⟶ real_continuous_on (λx. max (f x) (g x)) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_on_min",
             "prop": [
-                "real_continuous_on f s ∧ real_continuous_on g s ",
+                "real_continuous_on f s --> real_continuous_on g s ",
                 "⟶ real_continuous_on (λx. min (f x) (g x)) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_on_eq",
-            "prop": "(∀x. x ∈ s ⟶ f x = g x) ∧ real_continuous_on f s ⟶ real_continuous_on g s",
+            "prop": "(∀x. x ∈ s ⟶ f x = g x) ⟶ real_continuous_on f s ⟶ real_continuous_on g s",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_on_union",
             "prop": [
-                "real_closed s ∧ real_closed t ∧ real_continuous_on f s ∧ real_continuous_on f t ",
+                "real_closed s ⟶ real_closed t ⟶ real_continuous_on f s ⟶ real_continuous_on f t ",
                 "⟶ real_continuous_on f (s ∪ t)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_on_union_open",
             "prop": [
-                "real_open s ∧ real_open t ∧ real_continuous_on f s ∧ real_continuous_on f t ",
+                "real_open s ⟶ real_open t ⟶ real_continuous_on f s ⟶ real_continuous_on f t ",
                 "⟶ real_continuous_on f (s ∪ t)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_on_cases",
             "prop": [
-                "real_closed s ∧ ",
-                "real_closed t ∧ ",
-                "real_continuous_on f s ∧ ",
-                "real_continuous_on f t ∧ (∀x. x ∈ s ∧ ¬(P x) ∨ x ∈ t ∧ P x ⟶ f x = g x) ",
+                "real_closed s ⟶ ",
+                "real_closed t ⟶ ",
+                "real_continuous_on f s ⟶ ",
+                "real_continuous_on f t ⟶ (∀x. x ∈ s ∧ ¬(P x) ∨ x ∈ t ∧ P x ⟶ f x = g x) ",
                 "⟶ real_continuous_on (λx. if P x then f x else g x) (s ∪ t)"
             ],
             "ty": "thm",
             "vars": {
-                "P": "real ⇒ bool",
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "P": "real => bool",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_on_cases_open",
             "prop": [
-                "real_open s ∧ ",
-                "real_open t ∧ ",
-                "real_continuous_on f s ∧ ",
-                "real_continuous_on f t ∧ (∀x. x ∈ s ∧ ¬(P x) ∨ x ∈ t ∧ P x ⟶ f x = g x) ",
+                "real_open s ⟶ ",
+                "real_open t ⟶ ",
+                "real_continuous_on f s ⟶ ",
+                "real_continuous_on f t ⟶ (∀x. x ∈ s ∧ ¬(P x) ∨ x ∈ t ∧ P x ⟶ f x = g x) ",
                 "⟶ real_continuous_on (λx. if P x then f x else g x) (s ∪ t)"
             ],
             "ty": "thm",
             "vars": {
-                "P": "real ⇒ bool",
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "P": "real => bool",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_sum",
             "prop": [
-                "finite s ∧ (∀a. a ∈ s ⟶ real_continuous (f a) net) ",
+                "finite s ⟶ (∀a. a ∈ s ⟶ real_continuous (f a) net) ",
                 "⟶ real_continuous (λx. sum s (λa. f a x)) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ 'b ⇒ real",
+                "f": "'a => 'b => real",
                 "net": "'b net",
                 "s": "'a set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_product",
             "prop": [
-                "finite s ∧ (∀a. a ∈ s ⟶ real_continuous (f a) net) ",
+                "finite s ⟶ (∀a. a ∈ s ⟶ real_continuous (f a) net) ",
                 "⟶ real_continuous (λx. product s (λa. f a x)) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ 'b ⇒ real",
+                "f": "'a => 'b => real",
                 "net": "'b net",
                 "s": "'a set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_on_sum",
             "prop": [
-                "finite s ∧ (∀a. a ∈ s ⟶ real_continuous_on (f a) t) ",
+                "finite s ⟶ (∀a. a ∈ s ⟶ real_continuous_on (f a) t) ",
                 "⟶ real_continuous_on (λx. sum s (λa. f a x)) t"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real ⇒ real",
+                "f": "'a => real => real",
                 "s": "'a set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_on_product",
             "prop": [
-                "finite s ∧ (∀a. a ∈ s ⟶ real_continuous_on (f a) t) ",
+                "finite s ⟶ (∀a. a ∈ s ⟶ real_continuous_on (f a) t) ",
                 "⟶ real_continuous_on (λx. product s (λa. f a x)) t"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real ⇒ real",
+                "f": "'a => real => real",
                 "s": "'a set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "reallim_real_continuous_function",
             "prop": [
-                "real_continuous f (atreal l) ∧ tendsto_real g l net ",
+                "real_continuous f (atreal l) ⟶ tendsto_real g l net ",
                 "⟶ tendsto_real (λx. f (g x)) (f l) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "real => real",
+                "g": "'a => real",
                 "l": "real",
                 "net": "'a net"
             }
@@ -5230,35 +5597,40 @@
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_attains_sup",
             "prop": [
-                "real_compact s ∧ ¬(s = ∅) ∧ real_continuous_on f s ",
+                "real_compact s ⟶ ¬(s = ∅) ⟶ real_continuous_on f s ",
                 "⟶ (∃x. x ∈ s ∧ (∀y. y ∈ s ⟶ f y ≤ f x))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_continuous_attains_inf",
             "prop": [
-                "real_compact s ∧ ¬(s = ∅) ∧ real_continuous_on f s ",
+                "real_compact s ⟶ ¬(s = ∅) ⟶ real_continuous_on f s ",
                 "⟶ (∃x. x ∈ s ∧ (∀y. y ∈ s ⟶ f x ≤ f y))"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_uniformly_continuous_on",
             "prop": [
                 "real_uniformly_continuous_on f s ⟷ ",
                 "(∀e. 0 < e ",
-                "   ⟶ (∃d. 0 < d ∧ (∀x. ∀x1. x ∈ s ∧ x1 ∈ s ∧ abs (x1 - x) < d ⟶ abs (f x1 - f x) < e)))"
+                "   ⟶ (∃d. 0 < d ∧ (∀x. ∀x1. x ∈ s ⟶ x1 ∈ s ⟶ abs (x1 - x) < d ⟶ abs (f x1 - f x) < e)))"
             ],
             "ty": "def",
             "type": "(real ⇒ real) ⇒ real set ⇒ bool"
@@ -5273,38 +5645,43 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_uniformly_continuous_on_sequentially",
             "prop": [
                 "real_uniformly_continuous_on f s ⟷ ",
-                "(∀x. ∀y. (∀n. x n ∈ s) ∧ (∀n. y n ∈ s) ∧ tendsto_real (λn. x n - y n) 0 sequentially ",
+                "(∀x. ∀y. (∀n. x n ∈ s) ⟶ (∀n. y n ∈ s) ⟶ tendsto_real (λn. x n - y n) 0 sequentially ",
                 "     ⟶ tendsto_real (λn. f (x n) - f (y n)) 0 sequentially)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_uniformly_continuous_on_subset",
-            "prop": "real_uniformly_continuous_on f s ∧ t ⊆ s ⟶ real_uniformly_continuous_on f t",
+            "prop": "real_uniformly_continuous_on f s ⟶ t ⊆ s ⟶ real_uniformly_continuous_on f t",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_uniformly_continuous_on_compose",
             "prop": [
-                "real_uniformly_continuous_on f s ∧ real_uniformly_continuous_on g (image f s) ",
+                "real_uniformly_continuous_on f s ⟶ real_uniformly_continuous_on g (image f s) ",
                 "⟶ real_uniformly_continuous_on (g ∘ f) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
@@ -5355,76 +5732,82 @@
             }
         },
         {
+            "attributes": [],
             "name": "real_uniformly_continuous_on_add",
             "prop": [
-                "real_uniformly_continuous_on f s ∧ real_uniformly_continuous_on g s ",
+                "real_uniformly_continuous_on f s ⟶ real_uniformly_continuous_on g s ",
                 "⟶ real_uniformly_continuous_on (λx. f x + g x) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_uniformly_continuous_on_sub",
             "prop": [
-                "real_uniformly_continuous_on f s ∧ real_uniformly_continuous_on g s ",
+                "real_uniformly_continuous_on f s ⟶ real_uniformly_continuous_on g s ",
                 "⟶ real_uniformly_continuous_on (λx. f x - g x) s"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_uniformly_continuous_on_sum",
             "prop": [
-                "finite s ∧ (∀a. a ∈ s ⟶ real_uniformly_continuous_on (f a) t) ",
+                "finite s ⟶ (∀a. a ∈ s ⟶ real_uniformly_continuous_on (f a) t) ",
                 "⟶ real_uniformly_continuous_on (λx. sum s (λa. f a x)) t"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real ⇒ real",
+                "f": "'a => real => real",
                 "s": "'a set",
                 "t": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_compact_uniformly_continuous",
-            "prop": "real_continuous_on f s ∧ real_compact s ⟶ real_uniformly_continuous_on f s",
+            "prop": "real_continuous_on f s ⟶ real_compact s ⟶ real_uniformly_continuous_on f s",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_compact_continuous_image",
-            "prop": "real_continuous_on f s ∧ real_compact s ⟶ real_compact (image f s)",
+            "prop": "real_continuous_on f s ⟶ real_compact s ⟶ real_compact (image f s)",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set"
             }
         },
         {
+            "attributes": [],
             "name": "real_dini",
             "prop": [
-                "real_compact s ∧ ",
-                "(∀n. real_continuous_on (f n) s) ∧ ",
-                "real_continuous_on g s ∧ ",
-                "(∀x. x ∈ s ⟶ tendsto_real (λn. f n x) (g x) sequentially) ∧ ",
+                "real_compact s ⟶ ",
+                "(∀n. real_continuous_on (f n) s) ⟶ ",
+                "real_continuous_on g s ⟶ ",
+                "(∀x. x ∈ s ⟶ tendsto_real (λn. f n x) (g x) sequentially) ⟶ ",
                 "(∀n. ∀x. x ∈ s ⟶ f n x ≤ f (n + 1) x) ",
                 "⟶ (∀e. 0 < e ⟶ eventually (λn. ∀x. x ∈ s ⟶ abs (f n x - g x) < e) sequentially)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "nat ⇒ real ⇒ real",
-                "g": "real ⇒ real",
+                "f": "nat => real => real",
+                "g": "real => real",
                 "s": "real set"
             }
         }
