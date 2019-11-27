@@ -964,11 +964,16 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "reallim_unique",
-            "prop": "¬(trivial_limit net) ∧ tendsto_real f l1 net ∧ tendsto_real f l2 net ⟶ l1 = l2",
+            "prop": "¬(trivial_limit net) --> tendsto_real f l1 net --> tendsto_real f l2 net ⟶ l1 = l2",
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "l1": "real",
                 "l2": "real",
                 "net": "'a net"
@@ -1436,143 +1441,109 @@
             ],
             "name": "reallim_add",
             "prop": [
-                "tendsto_real f l net ∧ tendsto_real g m net ",
+                "tendsto_real f l net --> tendsto_real g m net ",
                 "⟶ tendsto_real (λx. f x + g x) (l + m) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_sub",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "tendsto_real f l net ∧ tendsto_real g m net",
+                    "args": "tendsto_real f l net",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net ∧ tendsto_real g m net"
+                    "th": "tendsto_real f l net ⊢ tendsto_real f l net"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "tendsto_real g m net",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real g m net"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real g m net ⊢ tendsto_real g m net"
                 },
                 {
                     "args": "reallim_neg_eq, tendsto_real (λx. -(g x)) (-m) net",
-                    "id": "3",
+                    "id": "2",
                     "prevs": [
-                        "2"
+                        "1"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(g x)) (-m) net"
-                },
-                {
-                    "args": "conjI",
-                    "id": "4",
-                    "prevs": [
-                        "1",
-                        "3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net ∧ tendsto_real (λx. -(g x)) (-m) net"
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. -(g x)) (-m) net"
                 },
                 {
                     "args": "reallim_add",
-                    "id": "5",
+                    "id": "3",
                     "prevs": [
-                        "4"
+                        "0",
+                        "2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. f x + -(g x)) (l + -m) net"
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. f x + -(g x)) (l + -m) net"
                 },
                 {
                     "args": "real_minus_def, tendsto_real (λx. f x - g x) (l - m) net",
-                    "id": "6",
+                    "id": "4",
                     "prevs": [
-                        "5"
+                        "3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. f x - g x) (l - m) net"
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. f x - g x) (l - m) net"
                 },
                 {
                     "args": "",
-                    "id": "7",
+                    "id": "5",
                     "prevs": [
                         "0",
-                        "6"
+                        "1",
+                        "4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ tendsto_real f l net ∧ tendsto_real g m net ⟶ tendsto_real (λx. f x - g x) (l - m) net"
+                    "th": "⊢ tendsto_real f l net ⟶ tendsto_real g m net ⟶ tendsto_real (λx. f x - g x) (l - m) net"
                 }
             ],
             "prop": [
-                "tendsto_real f l net ∧ tendsto_real g m net ",
+                "tendsto_real f l net --> tendsto_real g m net ",
                 "⟶ tendsto_real (λx. f x - g x) (l - m) net"
             ],
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "real_minus_def"
                 },
                 {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "reallim_add"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
                     "fact_ids": [
                         "0"
                     ],
-                    "goal_id": "1",
+                    "goal_id": "2",
                     "method_name": "apply_backward_step",
-                    "theorem": "conjD1"
+                    "theorem": "reallim_add"
                 },
                 {
                     "goal_id": "2",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "reallim_neg_eq"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD2"
                 }
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
@@ -1586,13 +1557,13 @@
             ],
             "name": "reallim_mul",
             "prop": [
-                "tendsto_real f l net ∧ tendsto_real g m net ",
+                "tendsto_real f l net --> tendsto_real g m net ",
                 "⟶ tendsto_real (λx. f x * g x) (l * m) net"
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
@@ -1605,76 +1576,13 @@
                 "hint_forward"
             ],
             "name": "reallim_inverse",
-            "num_gaps": 1,
-            "proof": [
-                {
-                    "args": "tendsto_real f l net ∧ ¬(l = 0)",
-                    "id": "0",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "tendsto_real f l net ∧ ¬(l = 0) ⊢ tendsto_real f l net ∧ ¬(l = 0)"
-                },
-                {
-                    "args": "conjD1, {}, {A: tendsto_real f l net, B: ¬(l = 0)}",
-                    "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "tendsto_real f l net ∧ ¬(l = 0) ⊢ tendsto_real f l net"
-                },
-                {
-                    "args": "conjD2, {}, {A: tendsto_real f l net, B: ¬(l = 0)}",
-                    "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem_for",
-                    "th": "tendsto_real f l net ∧ ¬(l = 0) ⊢ ¬(l = 0)"
-                },
-                {
-                    "args": "",
-                    "id": "3",
-                    "prevs": [],
-                    "rule": "sorry",
-                    "th": "tendsto_real f l net ∧ ¬(l = 0) ⊢ tendsto_real (λx. real_inverse (f x)) (real_inverse l) net"
-                },
-                {
-                    "args": "",
-                    "id": "4",
-                    "prevs": [
-                        "0",
-                        "3"
-                    ],
-                    "rule": "intros",
-                    "th": "⊢ tendsto_real f l net ∧ ¬(l = 0) ⟶ tendsto_real (λx. real_inverse (f x)) (real_inverse l) net"
-                }
-            ],
             "prop": [
-                "tendsto_real f l net ∧ ¬(l = 0) ",
+                "tendsto_real f l net --> ¬(l = 0) ",
                 "⟶ tendsto_real (λx. real_inverse (f x)) (real_inverse l) net"
-            ],
-            "steps": [
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "1",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "apply_forward_step",
-                    "theorem": "conjD2"
-                }
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "l": "real",
                 "net": "'a net"
             }
@@ -1689,125 +1597,101 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0)",
+                    "args": "tendsto_real f l net",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0)"
+                    "th": "tendsto_real f l net ⊢ tendsto_real f l net"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "tendsto_real g m net",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real f l net"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real g m net ⊢ tendsto_real g m net"
                 },
                 {
-                    "args": "conjD2",
+                    "args": "¬(m = 0)",
                     "id": "2",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real g m net ∧ ¬(m = 0)"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(m = 0) ⊢ ¬(m = 0)"
                 },
                 {
                     "args": "reallim_inverse",
                     "id": "3",
                     "prevs": [
+                        "1",
                         "2"
                     ],
                     "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real (λx. real_inverse (g x)) (real_inverse m) net"
-                },
-                {
-                    "args": "conjI",
-                    "id": "4",
-                    "prevs": [
-                        "1",
-                        "3"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real f l net ∧ tendsto_real (λx. real_inverse (g x)) (real_inverse m) net"
+                    "th": "tendsto_real g m net, ¬(m = 0) ⊢ tendsto_real (λx. real_inverse (g x)) (real_inverse m) net"
                 },
                 {
                     "args": "reallim_mul",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "tendsto_real f l net, tendsto_real g m net, ¬(m = 0) ⊢ tendsto_real (λx. f x * real_inverse (g x)) (l * real_inverse m) net"
+                },
+                {
+                    "args": "real_divide_def, tendsto_real (λx. f x / g x) (l / m) net",
                     "id": "5",
                     "prevs": [
                         "4"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real (λx. f x * real_inverse (g x)) (l * real_inverse m) net"
-                },
-                {
-                    "args": "real_divide_def, tendsto_real (λx. f x / g x) (l / m) net",
-                    "id": "6",
-                    "prevs": [
-                        "5"
-                    ],
                     "rule": "rewrite_goal",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⊢ tendsto_real (λx. f x / g x) (l / m) net"
+                    "th": "tendsto_real f l net, tendsto_real g m net, ¬(m = 0) ⊢ tendsto_real (λx. f x / g x) (l / m) net"
                 },
                 {
                     "args": "",
-                    "id": "7",
+                    "id": "6",
                     "prevs": [
                         "0",
-                        "6"
+                        "1",
+                        "2",
+                        "5"
                     ],
                     "rule": "intros",
-                    "th": "⊢ tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ⟶ tendsto_real (λx. f x / g x) (l / m) net"
+                    "th": "⊢ tendsto_real f l net ⟶ tendsto_real g m net ⟶ ¬(m = 0) ⟶ tendsto_real (λx. f x / g x) (l / m) net"
                 }
             ],
             "prop": [
-                "tendsto_real f l net ∧ tendsto_real g m net ∧ ¬(m = 0) ",
+                "tendsto_real f l net --> tendsto_real g m net --> ¬(m = 0) ",
                 "⟶ tendsto_real (λx. f x / g x) (l / m) net"
             ],
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "3",
                     "method_name": "rewrite_goal",
                     "sym": "false",
                     "theorem": "real_divide_def"
                 },
                 {
-                    "goal_id": "1",
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "3",
                     "method_name": "apply_backward_step",
                     "theorem": "reallim_mul"
                 },
                 {
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
                     "fact_ids": [
-                        "0"
+                        "1",
+                        "2"
                     ],
-                    "goal_id": "1",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD1"
-                },
-                {
-                    "goal_id": "2",
+                    "goal_id": "3",
                     "method_name": "apply_backward_step",
                     "theorem": "reallim_inverse"
-                },
-                {
-                    "fact_ids": [
-                        "0"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjD2"
                 }
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
@@ -1998,11 +1882,11 @@
             "num_gaps": 1,
             "proof": [
                 {
-                    "args": "tendsto_real f l net ∧ tendsto_real g m net",
+                    "args": "tendsto_real f l net",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net ∧ tendsto_real g m net"
+                    "th": "tendsto_real f l net ⊢ tendsto_real f l net"
                 },
                 {
                     "args": "∀x. ∀y. max x y = 1 / 2 * (x + y + abs (x - y))",
@@ -2012,25 +1896,33 @@
                     "th": "⊢ ∀x. ∀y. max x y = 1 / 2 * (x + y + abs (x - y))"
                 },
                 {
-                    "args": "",
+                    "args": "tendsto_real g m net",
                     "id": "2",
                     "prevs": [],
-                    "rule": "sorry",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. max (f x) (g x)) (max l m) net"
+                    "rule": "assume",
+                    "th": "tendsto_real g m net ⊢ tendsto_real g m net"
                 },
                 {
                     "args": "",
                     "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. max (f x) (g x)) (max l m) net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
                     "prevs": [
                         "0",
-                        "2"
+                        "2",
+                        "3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ tendsto_real f l net ∧ tendsto_real g m net ⟶ tendsto_real (λx. max (f x) (g x)) (max l m) net"
+                    "th": "⊢ tendsto_real f l net ⟶ tendsto_real g m net ⟶ tendsto_real (λx. max (f x) (g x)) (max l m) net"
                 }
             ],
             "prop": [
-                "tendsto_real f l net ∧ tendsto_real g m net ",
+                "tendsto_real f l net --> tendsto_real g m net ",
                 "⟶ tendsto_real (λx. max (f x) (g x)) (max l m) net"
             ],
             "steps": [
@@ -2046,8 +1938,8 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
@@ -2060,101 +1952,52 @@
                 "hint_forward"
             ],
             "name": "reallim_min",
-            "num_gaps": 0,
+            "num_gaps": 1,
             "proof": [
                 {
-                    "args": "tendsto_real f l net ∧ tendsto_real g m net",
+                    "args": "tendsto_real f l net",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net ∧ tendsto_real g m net"
+                    "th": "tendsto_real f l net ⊢ tendsto_real f l net"
                 },
                 {
-                    "args": "conjD1",
+                    "args": "tendsto_real g m net",
                     "id": "1",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real f l net"
-                },
-                {
-                    "args": "reallim_neg_eq, tendsto_real (λx. -(f x)) (-l) net",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(f x)) (-l) net"
-                },
-                {
-                    "args": "conjD2",
-                    "id": "3",
-                    "prevs": [
-                        "0"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real g m net"
-                },
-                {
-                    "args": "reallim_neg_eq, tendsto_real (λx. -(g x)) (-m) net",
-                    "id": "4",
-                    "prevs": [
-                        "3"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(g x)) (-m) net"
-                },
-                {
-                    "args": "conjI",
-                    "id": "5",
-                    "prevs": [
-                        "2",
-                        "4"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(f x)) (-l) net ∧ tendsto_real (λx. -(g x)) (-m) net"
-                },
-                {
-                    "args": "reallim_max",
-                    "id": "6",
-                    "prevs": [
-                        "5"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. max (-(f x)) (-(g x))) (max (-l) (-m)) net"
-                },
-                {
-                    "args": "reallim_neg_eq, tendsto_real (λx. -(max (-(f x)) (-(g x)))) (-(max (-l) (-m))) net",
-                    "id": "7",
-                    "prevs": [
-                        "6"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. -(max (-(f x)) (-(g x)))) (-(max (-l) (-m))) net"
-                },
-                {
-                    "args": "real_min_max, tendsto_real (λx. min (f x) (g x)) (min l m) net",
-                    "id": "8",
-                    "prevs": [
-                        "7"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "tendsto_real f l net ∧ tendsto_real g m net ⊢ tendsto_real (λx. min (f x) (g x)) (min l m) net"
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "tendsto_real g m net ⊢ tendsto_real g m net"
                 },
                 {
                     "args": "",
-                    "id": "9",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. -(max (-(f x)) (-(g x)))) (-(max (-l) (-m))) net"
+                },
+                {
+                    "args": "real_min_max, tendsto_real (λx. min (f x) (g x)) (min l m) net",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "tendsto_real f l net, tendsto_real g m net ⊢ tendsto_real (λx. min (f x) (g x)) (min l m) net"
+                },
+                {
+                    "args": "",
+                    "id": "4",
                     "prevs": [
                         "0",
-                        "8"
+                        "1",
+                        "3"
                     ],
                     "rule": "intros",
-                    "th": "⊢ tendsto_real f l net ∧ tendsto_real g m net ⟶ tendsto_real (λx. min (f x) (g x)) (min l m) net"
+                    "th": "⊢ tendsto_real f l net ⟶ tendsto_real g m net ⟶ tendsto_real (λx. min (f x) (g x)) (min l m) net"
                 }
             ],
             "prop": [
-                "tendsto_real f l net ∧ tendsto_real g m net ",
+                "tendsto_real f l net --> tendsto_real g m net ",
                 "⟶ tendsto_real (λx. min (f x) (g x)) (min l m) net"
             ],
             "steps": [
@@ -2207,12 +2050,18 @@
                     "goal_id": "3",
                     "method_name": "apply_backward_step",
                     "theorem": "conjD2"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_min_max"
                 }
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
-                "g": "'a ⇒ real",
+                "f": "'a => real",
+                "g": "'a => real",
                 "l": "real",
                 "m": "real",
                 "net": "'a net"
