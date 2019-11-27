@@ -86,6 +86,21 @@
                     },
                     "reason": "Integrate by parts",
                     "text": "([x * exp(x)]_x=-1,2) - (INT x:[-1,2]. exp(x))"
+                },
+                {
+                    "latex": "-1 * (\\int_{-1}^{2} \\exp{x} \\,\\mathrm{dx}) + 2 \\exp{2} + \\exp{(-1)}",
+                    "reason": "Simplification",
+                    "text": "-1 * (INT x:[-1,2]. exp(x)) + 2 * exp(2) + exp(-1)"
+                },
+                {
+                    "latex": "-1 * (\\left. \\exp{x} \\right\\vert_{x=-1}^{2}) + 2 \\exp{2} + \\exp{(-1)}",
+                    "reason": "Common integrals",
+                    "text": "-1 * ([exp(x)]_x=-1,2) + 2 * exp(2) + exp(-1)"
+                },
+                {
+                    "latex": "\\exp{2} + 2 \\exp{(-1)}",
+                    "reason": "Simplification",
+                    "text": "exp(2) + 2 * exp(-1)"
                 }
             ],
             "name": "Exercise 4",
@@ -168,9 +183,8 @@
             "problem": "INT x:[1,2]. x^2 + 1/x^4"
         },
         {
-            "_problem_latex": "\\int_{\\pi/3}^{\\pi} \\sin{(x + \\frac{\\pi}{3})} \\,\\mathrm{dx}",
             "name": "Exercise 8",
-            "problem": "INT x:[pi/3, pi]. sin(x+pi/3)"
+            "problem": "INT x:[pi/3, pi]. sin(2*x+pi/3)"
         },
         {
             "_problem_latex": "\\int_{4}^{9} \\sqrt[3]{x} * (\\sqrt{x} + 1) \\,\\mathrm{dx}",
@@ -267,6 +281,10 @@
             ],
             "name": "Exercise 11",
             "problem": "INT x:[4, exp(1) + 3]. (x ^ 3 - 12 * x ^ 2 - 42) / (x - 3)"
+        },
+        {
+            "name": "Exercise 12",
+            "problem": "INT x:[0, pi / 2]. sin(x) * cos(x) ^ 3"
         }
     ]
 }

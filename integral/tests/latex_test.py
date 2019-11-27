@@ -17,7 +17,8 @@ class LatexTest(unittest.TestCase):
             ("INT x:[0,pi / 4]. sin(x)", "\int_{0}^{\pi/4} \sin{x} \,\mathrm{dx}"),
             ("x^(1/2)","\sqrt{x}"),
             ("x * (1 + x)", "x * (1 + x)"),
-            ("INT x:[4,9]. x^(1/2) * (1 + x^(1/2))","\int_{4}^{9} \sqrt{x} * (1 + \sqrt{x}) \,\mathrm{dx}")
+            ("INT x:[4,9]. x^(1/2) * (1 + x^(1/2))","\int_{4}^{9} \sqrt{x} * (1 + \sqrt{x}) \,\mathrm{dx}"),
+            ("cos(x) ^ 2", "\cos^{2}x")
         ]
 
         for e, res in test_data:

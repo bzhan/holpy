@@ -29,7 +29,10 @@ class Expr:
             return Op("*", self, other)
 
     def __truediv__(self, other):
-        return Op("/", self, other)
+        if other == Const(1):
+            return self
+        else:
+            return Op("/", self, other)
 
     def __xor__(self, other):
         if other == Const(1):
@@ -346,7 +349,90 @@ def from_poly(p):
             monos = [from_mono(m) for m in p.monomials]
         else:
             monos = [from_mono(m) for m in p.del_zero_mono().monomials]
+        for m in monos:
+            print([m])
+        dc = collect_common_factor(monos)
+        print(dc)
+        common_keys = dc[0].keys()
+        for d in dc:
+            common_keys &= d.keys()
+        print(common_keys)
+        min_dic = {}
+        for k in common_keys:
+            min = dc[0][k]
+            for d in dc:
+                if d[k] < min:
+                    min = d[k]
+            min_dic[k] = min
+        print(min_dic)
+        for k, v in min_dic.items():
+            print(k)
+            collect_common_factor(monos, v, k)
+        for m in monos:
+            print([m])
         return sum(monos[1:], monos[0])
+
+def collect_common_factor(monos, sub = 0, el = None):
+    d = []
+    if sub == 0:
+        for m in monos:
+            res = {}
+            collect(m, res)
+            d.append(res)
+        return d
+    else:
+        for i in range(len(monos)):
+            collect(monos[i], sub = sub, el = el)
+            print("After decrese, ",monos[i])
+
+
+def collect(m, res = {}, sub = 0, el = None):
+    if sub == 0:
+        #collect information
+        if m.ty == VAR:
+            res[m.name] = 1
+        elif m.ty == FUN:
+            res[m] = 1
+        elif m.ty == OP and m.op == "^":
+            if m.args[0].ty == VAR:
+                # x ^ n
+                res[m.args[0].name] = m.args[1].val
+            elif m.args[0].ty == FUN:
+                # sin(x) ^ n
+                res[m.args[0]] = m.args[1].val
+            else:
+                raise NotImplementedError
+        elif m.ty == OP and m.op == "*":
+            collect(m.args[0], res)
+            collect(m.args[1], res)
+    elif sub > 0:
+        #extract common factors
+        if m.ty == VAR and m.name == el:
+            #only exists when factor is 1
+            print("Wow")
+            m = Const(1)
+        elif m.ty == FUN and isinstance(el, Fun) and m == el:
+            #only exists when factor is 1
+            m = Const(1)
+        elif m.ty == OP and m.op == "^":
+            if m.args[0].ty == VAR and m.args[0].name == el:
+                # x ^ n => x ^ (n - sub)
+                m.args[1].val -= sub
+            elif m.args[0].ty == FUN and m.args[0] == el:
+                # sin(x) ^ n => sin(x) ^ (n - sub)
+                m.args[1].val -= sub
+            else:
+                raise NotImplementedError
+        elif m.ty == OP and m.op == "*":
+            if m.args[1].ty == VAR and m.args[1].name == el:
+                #because op'args is a tuple which is immutable
+                m = 0
+                print(m)
+            else:            
+                collect(m.args[0], res, sub, el)
+                collect(m.args[1], res, sub, el)
+    else:
+        raise NotImplementedError
 
 def deriv(var, e):
     """Compute the derivative of e with respect to variable
@@ -400,6 +486,8 @@ def deriv(var, e):
         elif e.func_name == "exp":
             x, = e.args
             return (exp(x) * deriv(var, x)).normalize()
+        elif e.func_name == "pi":
+            return Const(0)
         else:
             raise NotImplementedError
     else:
@@ -613,6 +701,7 @@ class EvalAt(Expr):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
 
 if __name__ == "__main__":
-    problem = "cos(x ^ 2)"
+    problem = "2 * x ^ 2 - 2 *sin(x) * x ^ 4 + x ^ 3 - 9 * x"
     p = parser.parse_expr(problem)
-    s = deriv("x", p)
+    q = p.normalize()
+    print(q)

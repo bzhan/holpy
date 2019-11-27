@@ -38,6 +38,8 @@ def convert_expr(e, mode="large"):
                                 return "\\sqrt{%s}" % sx
                             else:
                                 return "\\sqrt[%s]{%s}" % (y.val.denominator, sx)
+                    elif isinstance(x, expr.Fun) and len(x.args) > 0:
+                        return "\%s^{%s}%s" % (x.func_name, sy, x.args[0])
                 elif e.op in ("+", "-"):
                     if y.ty == expr.CONST:
                         if y.val < 0:

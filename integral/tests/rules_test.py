@@ -94,6 +94,15 @@ class RulesTest(unittest.TestCase):
         e = rules.Simplify().eval(e)
         self.assertEqual(e, parse_expr("1/6 * exp(6) + -1/6"))
 
+    def testSubstitution3(self):
+        e = parse_expr("INT x:[0, pi/2].sin(x) * cos(x) ^ 3")
+        e = rules.Substitution("u", parse_expr("cos(x)")).eval(e)
+        a = e.body.args[0]
+        b = e.body.args[1]
+        print(a.normalize())
+        print(b.normalize())
+        #self.assertEqual(e, parse_expr("INT u:[2/3 * pi, 4/3 * pi]. sin(u)"))
+
     def testIntegrationByParts(self):
         e = parse_expr("INT x:[-1,2]. x * exp(x)")
         e = rules.IntegrationByParts(parse_expr("x"), parse_expr("exp(x)")).eval(e)

@@ -94,7 +94,8 @@ class ExprTest(unittest.TestCase):
             ("arctan(1)", "1/4 * pi"),
             ("arctan(sqrt(3)/3)", "1/6 * pi"),
             ("arctan(sqrt(3))", "1/3 * pi"),
-            ("sin(3/4 * pi)", "1/2 * sqrt(2)")
+            ("sin(3/4 * pi)", "1/2 * sqrt(2)"),
+            ("pi + pi / 3", "4/3 * pi")
         ]
 
         for s, res in test_data:
@@ -124,6 +125,8 @@ class ExprTest(unittest.TestCase):
             ("x * y", "y"),
             ("1 / x", "- 1 / x ^ 2"),
             ("3 * x + 1", "3"),
+            ("x + pi / 3", "1"),
+            ("2 * x + pi / 3", "2"),
             ("sin(x)", "cos(x)"),
             ("sin(x^2)", "2 * x * cos(x^2)"),
             ("cos(x)", "-1 * sin(x)"),
