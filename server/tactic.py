@@ -217,11 +217,9 @@ class rewrite_goal_with_prev(Tactic):
         eq_th = cv.eval(thy, C)
         new_goal = eq_th.prop.rhs
 
-        prevs = [ProofTerm.sorry(Thm(goal.hyps, A)) for A in set(eq_th.hyps) - set(pt.th.hyps)]
+        prevs = list(prevs)
         if not new_goal.is_reflexive():
-            prevs = [pt, ProofTerm.sorry(Thm(goal.hyps, new_goal))] + prevs
-        else:
-            prevs = [pt] + prevs
+            prevs.append(ProofTerm.sorry(Thm(goal.hyps, new_goal)))
         return ProofTermDeriv('rewrite_goal_with_prev', thy, args=C, prevs=prevs)
 
 class apply_prev(Tactic):

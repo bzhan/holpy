@@ -497,6 +497,13 @@ class rewrite_goal_with_prev_macro(ProofTermMacro):
 
         goal = args
         eq_pt = pts[0]
+
+        new_names = get_forall_names(eq_pt.prop)
+        new_vars, _, _ = strip_all_implies(eq_pt.prop, new_names)
+
+        for new_var in new_vars:
+            eq_pt = ProofTerm.forall_elim(new_var, eq_pt)
+
         pts = pts[1:]
 
         cv = then_conv(top_sweep_conv(rewr_conv(eq_pt, sym=self.sym)),
