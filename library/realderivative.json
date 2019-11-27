@@ -100,24 +100,26 @@
             }
         },
         {
+            "attributes": [],
             "name": "real_differentiable_on_imp_differentiable_within",
-            "prop": "real_differentiable_on f s ∧ x ∈ s ⟶ real_differentiable f (within (atreal x) s)",
+            "prop": "real_differentiable_on f s ⟶ x ∈ s ⟶ real_differentiable f (within (atreal x) s)",
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [],
             "name": "real_differentiable_on_imp_differentiable_atreal",
             "prop": [
-                "real_differentiable_on f s ∧ real_open s ∧ x ∈ s ",
+                "real_differentiable_on f s ⟶ real_open s ⟶ x ∈ s ",
                 "⟶ real_differentiable f (atreal x)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "x": "real"
             }
@@ -180,13 +182,14 @@
                 "hint_rewrite"
             ],
             "name": "is_realinterval",
-            "prop": "is_realinterval s ⟷ (∀a. ∀b. ∀c. a ∈ s ∧ b ∈ s ∧ a ≤ c ∧ c ≤ b ⟶ c ∈ s)",
+            "prop": "is_realinterval s ⟷ (∀a. ∀b. ∀c. a ∈ s ⟶ b ∈ s ⟶ a ≤ c ⟶ c ≤ b ⟶ c ∈ s)",
             "ty": "def",
             "type": "real set ⇒ bool"
         },
         {
+            "attributes": [],
             "name": "trivial_limit_within_realinterval",
-            "prop": "is_realinterval s ∧ x ∈ s ⟶ trivial_limit (within (atreal x) s) ⟷ s = {x}",
+            "prop": "is_realinterval s ⟶ x ∈ s ⟶ trivial_limit (within (atreal x) s) ⟷ s = {x}",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -213,27 +216,123 @@
             }
         },
         {
-            "name": "is_realinterval_clauses",
-            "prop": [
-                "is_realinterval ∅ ∧ ",
-                "is_realinterval univ ∧ ",
-                "(∀a. is_realinterval ({x. a < x})) ∧ ",
-                "(∀a. is_realinterval ({x. a ≤ x})) ∧ ",
-                "(∀b. is_realinterval ({x. x < b})) ∧ ",
-                "(∀b. is_realinterval ({x. x ≤ b})) ∧ ",
-                "(∀a. ∀b. is_realinterval ({x. a < x ∧ x < b})) ∧ ",
-                "(∀a. ∀b. is_realinterval ({x. a < x ∧ x ≤ b})) ∧ ",
-                "(∀a. ∀b. is_realinterval ({x. a ≤ x ∧ x < b})) ∧ ",
-                "(∀a. ∀b. is_realinterval ({x. a ≤ x ∧ x ≤ b}))"
+            "attributes": [
+                "hint_backward"
             ],
+            "name": "is_realinterval_emptyset",
+            "prop": "is_realinterval ∅",
             "ty": "thm",
             "vars": {}
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_univ",
+            "prop": "is_realinterval univ",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_clauses_1",
+            "prop": "is_realinterval ({x. a < x})",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_clauses_2",
+            "prop": "is_realinterval ({x. a ≤ x})",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_clauses_3",
+            "prop": "is_realinterval ({x. x < a})",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_clauses_4",
+            "prop": "is_realinterval ({x. x ≤ a})",
+            "ty": "thm",
+            "vars": {
+                "a": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_clauses_5",
+            "prop": "is_realinterval ({x. a < x ∧ x < b})",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_clauses_6",
+            "prop": "is_realinterval ({x. a < x ∧ x <= b})",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_clauses_7",
+            "prop": "is_realinterval ({x. a <= x ∧ x < b})",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_backward"
+            ],
+            "name": "is_realinterval_clauses_8",
+            "prop": "is_realinterval ({x. a <= x ∧ x <= b})",
+            "ty": "thm",
+            "vars": {
+                "a": "real",
+                "b": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_convex",
             "prop": [
                 "is_realinterval s ⟷ ",
-                "(∀x. ∀y. ∀u. ∀v. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ 0 ≤ v ∧ u + v = 1 ⟶ u * x + v * y ∈ s)"
+                "(∀x. ∀y. ∀u. ∀v. x ∈ s ⟶ y ∈ s ⟶ 0 ≤ u ⟶ 0 ≤ v ⟶ u + v = 1 ⟶ u * x + v * y ∈ s)"
             ],
             "ty": "thm",
             "vars": {
@@ -241,10 +340,13 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_convex_alt",
             "prop": [
                 "is_realinterval s ⟷ ",
-                "(∀x. ∀y. ∀u. x ∈ s ∧ y ∈ s ∧ 0 ≤ u ∧ u ≤ 1 ⟶ (1 - u) * x + u * y ∈ s)"
+                "(∀x. ∀y. ∀u. x ∈ s ⟶ y ∈ s ⟶ 0 ≤ u ⟶ u ≤ 1 ⟶ (1 - u) * x + u * y ∈ s)"
             ],
             "ty": "thm",
             "vars": {
@@ -252,8 +354,13 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_midpoint_in_convex",
-            "prop": "is_realinterval s ∧ x ∈ s ∧ y ∈ s ⟶ (x + y) / 2 ∈ s",
+            "prop": "is_realinterval s ⟶ x ∈ s ⟶ y ∈ s ⟶ (x + y) / 2 ∈ s",
             "ty": "thm",
             "vars": {
                 "s": "real set",
@@ -379,16 +486,21 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_continuous_transform_withinreal_set_imp",
             "prop": [
-                "eventually (λx. x ∈ t ⟶ x ∈ s) (atreal a) ∧ ",
+                "eventually (λx. x ∈ t ⟶ x ∈ s) (atreal a) ⟶ ",
                 "real_continuous f (within (atreal a) s) ",
                 "⟶ real_continuous f (within (atreal a) t)"
             ],
             "ty": "thm",
             "vars": {
                 "a": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "s": "real set",
                 "t": "real set"
             }
@@ -396,16 +508,17 @@
         {
             "attributes": [
                 "hint_backward",
-                "hint_forward"
+                "hint_forward",
+                "hint_backward1"
             ],
             "name": "has_real_derivative_within_subset",
             "prop": [
-                "has_real_derivative f f1 (within (atreal x) s) ∧ t ⊆ s ",
+                "has_real_derivative f f1 (within (atreal x) s) ⟶ t ⊆ s ",
                 "⟶ has_real_derivative f f1 (within (atreal x) t)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "s": "real set",
                 "t": "real set",
