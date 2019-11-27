@@ -589,19 +589,8 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
         line: whether arg_type is LINE.
         Return cond for the new rule.
         """
-        i = 0
-        cond = dict()
-        while i < len(rule.concl.args):
-            args = [inst[rule.concl.args[i]] for i in range(i, i + length)]
-            if line:
-                s = ""
-                for j in args:
-                    s = s + "".join(j)
-                cond[s] = facts_pos
-            else:
-                cond["".join(args)] = facts_pos
-            i += length
-        return cond
+        # print("In get cond:", [facts_pos] * int(len(rule.concl.args) / length))
+        return [facts_pos] * int(len(rule.concl.args) / length)
 
     assert isinstance(facts, list)
     assert all(isinstance(fact, Fact) for fact in facts) or all(isinstance(fact, int) for fact in facts)
@@ -632,11 +621,12 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
     arg_type = get_arg_type_by_fact(rule.concl)
 
     for inst in insts:
+        # print(fact)
         if arg_type == LINE:
             if rule.concl.pred_name == "eqangle":
-                cond = get_cond(2, line=True)
+                cond = get_cond(2)
             else:
-                cond = get_cond(1, line=True)
+                cond = get_cond(1)
             concl_args = []
             for i in rule.concl.args:
                 concl_args.extend((inst[i][0], inst[i][1]))
@@ -656,10 +646,14 @@ def apply_rule(rule, facts, *, lines=None, record=False, circles=None, ruleset=N
             if rule_name:
                 new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule_name, cond=cond)
                 # print(new, new.cond)
+                # print('-------------')
+
             # else:
             #     new = Fact(rule.concl.pred_name, concl_args, updated=True, lemma=rule, cond=set(facts))
         else:
             new = Fact(rule.concl.pred_name, concl_args)
+            # print(new)
+            # print('-------------')
 
         if hyps:
             combine_facts_list([new], hyps, lines, circles)
@@ -693,7 +687,6 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ru
 
     new = []
     for seq in itertools.permutations(range(len(hyps)), len(rule.assums)):
-
         flg = not only_updated
         if not flg:
             for i in seq:
@@ -706,15 +699,6 @@ def apply_rule_hyps(rule, hyps, only_updated=False, lines=None, circles=None, ru
                 apply_rule(rule_name, list(seq), lines=lines, circles=circles, record=True, ruleset=ruleset, hyps=hyps)
             else:
                 apply_rule(rule, list(seq), lines=lines, circles=circles, record=True, ruleset=ruleset, hyps=hyps)
-        #
-        # if only_updated:
-        #     updated = [fact for fact in facts if fact.updated]
-        #     if len(updated) > 0:
-        #         if rule_name:
-        #             apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset, hyps=hyps)
-        # else:
-        #     if rule_name:
-        #         apply_rule(rule_name, facts, lines=lines, circles=circles, record=True, ruleset=ruleset, hyps=hyps)
 
 
 def apply_ruleset_hyps(ruleset, hyps, only_updated=False, lines=None, circles=None):
@@ -777,7 +761,7 @@ def in_facts(facts, goal, lines, circles):
     """Check if a fact refers to the similar fact in a list.
     """
     for fact in facts:
-        r = combine_facts(goal, fact, lines, circles)
+        r = combine_facts(fact, goal, lines, circles)
         if r:
             return True
     return False
@@ -796,15 +780,25 @@ def search_fixpoint(ruleset, hyps, lines, circles, concl):
     t = 0
 
     while hyps != prev_hyps or lines != prev_lines or circles != prev_circles:
-    # while t < 2:
+    # while t < 1:
         prev_hyps = copy.copy(hyps)
         prev_lines = copy.copy(lines)
         prev_circles = copy.copy(circles)
         search_step(ruleset, hyps, only_updated=True, lines=lines, circles=circles)
-        if in_facts(hyps, concl, lines, circles):
-            break
-        # t += 1
+        print("-------")
+        r = find_goal_pos(hyps, concl, lines, circles)
+        print(hyps)
+        if r:
+            return r
     return hyps
+
+
+def make_pairs(args):
+    i, l = 0, []
+    while i < len(args):
+        l.append((args[i], args[i + 1]))
+        i += 2
+    return l
 
 
 def combine_facts(fact, goal, lines, circles, fact_pos=None):
@@ -812,7 +806,44 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
     Combine this fact to other fact.
     Return a combined long fact if succeed.
     """
+
+    def get_pos(piece, long):
+        """Check if piece is a segment of long.
+        If it is, return its position in long. """
+        pos = 0
+        l = len(piece)
+        if not long:
+            return False
+        if l == 1:
+            while pos < len(long):
+                if long[pos] == piece:
+                    return pos
+                pos += 1
+        else:
+            while pos < len(long):
+                if long[pos * l: pos * (l + 1)] == piece:
+                    return pos
+                pos += 1
+        return False
+
+    def update_cond(new_list, pos):
+        """Update cond of new_goal. """
+        if not get_pos(new_list[pos], new_goal.args):
+            if new_goal.cond:
+                new_goal.cond.append(fact.cond[pos])
+            else:
+                new_goal.cond = fact.cond[pos]
+
+    def update_recursive(new_list):
+        """Update arguments and cond recursively.
+        Fetch new arguments from new_list and update
+        the arguments and cond of new_goal. """
+        for p in range(len(new_list)):
+            update_cond(new_list, p)
+            new_goal.args.append(new_list[p])
+
     new_goal = copy.deepcopy(goal)
+
     if fact.pred_name != goal.pred_name:
         return False
 
@@ -823,15 +854,11 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
             return goal
         return False
 
-    if fact.pred_name == 'coll':
-        fact_pts = set(fact.args)
-        goal_pts = set(goal.args)
-        new_pts = goal_pts.intersection(fact_pts)
-        if len(fact_pts) + len(goal_pts) - len(new_pts) >= 2:
-            for p in new_pts:
-                if p not in new_goal.cond.keys():
-                    new_goal.cond[p] = fact.cond[p]
-            new_goal.args = goal_pts.union(fact_pts)
+    elif fact.pred_name == 'coll':
+        fact_pts, goal_pts = set(fact.args), set(goal.args)
+        new_pts = list(goal_pts.intersection(fact_pts))
+        if len(fact_pts) + len(goal_pts) - len(new_pts) >= 2:  # Check if there are more than one identical points
+            update_recursive(new_pts)
             return new_goal
         else:
             return False
@@ -840,11 +867,8 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
         fact_circle = get_circle(circles, fact.args[1:], center=fact.args[0])
         goal_circle = get_circle(circles, goal.args[1:], center=goal.args[0])
         if fact_circle.is_same_circle(goal_circle):
-            new_pts = set(fact.args).intersection(set(goal.args))
-            for p in new_pts:
-                if p not in new_goal.cond.keys():
-                    new_goal.cond[p] = fact.cond[p]
-            new_goal.args = set(fact.args).union(set(goal.args))
+            new_pts = list(set(fact.args).difference(set(goal.args)))
+            update_recursive(new_pts)
             return new_goal
         else:
             return False
@@ -853,59 +877,47 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
         fact_circle = get_circle(circles, list(fact.args))
         goal_circle = get_circle(circles, list(goal.args))
         if fact_circle.is_same_circle(goal_circle):
-            new_pts = set(fact.args).intersection(set(goal.args))
-            for p in new_pts:
-                if p not in new_goal.cond.keys():
-                    new_goal.cond[p] = fact.cond[p]
-            new_goal.args = set(fact.args).union(set(goal.args))
+            new_pts = list(set(fact.args).difference(set(goal.args)))
+            update_recursive(new_pts)
             return new_goal
         else:
-            # goal = prev
             return False
 
     elif fact.pred_name in ('eqratio', 'cong'):
-        flg = False
-        i, j = 0, 0
+        flg = False  # if identical part is detected in global
+        i = 0  # pointer of fact
         while i < len(fact.args):
-            t_flg = False
-            j = 0
+            t_flg = False  # If identical part is detected in this recursion. Reset here.
+            j = 0  # pointer of goal
             while j < len(goal.args):
                 if (fact.args[i] == goal.args[j] and fact.args[i + 1] == goal.args[j + 1]) or \
-                        (fact.args[i] == goal.args[j + 1] and fact.args[i + 1] == goal.args[j]):
+                        (fact.args[i] == goal.args[j + 1] and fact.args[i + 1] == goal.args[j]):  # exchange available
                     flg = True
                     t_flg = True
                     break
                 j += 2
-            if not t_flg:
-                s = fact.args[i] + fact.args[i + 1]
-                if s not in new_goal.cond.keys():
-                    new_goal.cond[s] = fact.cond[s]
-                new_goal.args.extend(fact.args[i])
-                new_goal.args.extend(fact.args[i + 1])
+            if not t_flg:  # add not identical part (4 pts) to new_goal
+                if not get_pos([fact.args[i], fact.args[i + 1]], new_goal.args):
+                    if new_goal.cond:
+                        new_goal.cond.append(fact.cond[i])
+                    else:
+                        new_goal.cond = fact.cond[i]
+                    new_goal.cond.append(fact.cond[i + 1])
+                new_goal.args.extend([fact.args[i], fact.args[i + 1]])
             i += 2
-        # if not flg:
-        #     goal = prev
-        if not flg:
+
+        if not flg:  # return False if no identical part at all
             return False
-        # new_goal.cond.append(fact.cond)
         return new_goal
 
     elif fact.pred_name == 'para':
         # Two facts that have the pred_name "para" can be combined
         # if they have at least one identical line.
         # Get all lines in fact and goal.
-        prev_goal_args = copy.copy(goal.args)
-        fact_pts, goal_pts = [], []
-        i = 0
-        while i < len(fact.args):
-            fact_pts.append((fact.args[i], fact.args[i + 1]))
-            i += 2
-        i = 0
-        while i < len(goal.args):
-            goal_pts.append((goal.args[i], goal.args[i + 1]))
-            i += 2
+        fact_pts, goal_pts = make_pairs(fact.args), make_pairs(goal.args)
         fact_lines = [get_line(lines, pair) for pair in fact_pts]
         goal_lines = [get_line(lines, pair) for pair in goal_pts]
+
         flg = False
         for idx, fact_line in enumerate(fact_lines):
             t_flg = False
@@ -914,35 +926,21 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
                     flg = True
                     t_flg = True
                     break
-            if not t_flg:
-                s = fact_pts[idx][0] + fact_pts[idx][1]
-                if s not in new_goal.cond.keys():
-                    new_goal.conds = fact.cond[s]
+            if not t_flg:  # add not identical part (2 pts) to new_goal
+                if not get_pos(list(fact_pts[idx]), new_goal.args):
+                    new_goal.cond.append(fact.cond[idx])
                 new_goal.args.extend(fact_pts[idx])
-        # if not flg:
-        #     goal = prev
         if not flg:
             return False
-        # new_goal.cond.append(fact.cond)
         return new_goal
 
     elif fact.pred_name == "eqangle":
-        # print(fact, ",", goal, end=" -> ")
-        # prev_goal_args = copy.copy(goal.args)
-        fact_pts, goal_pts = [], []
-        i = 0
-        while i < len(fact.args):
-            fact_pts.append((fact.args[i], fact.args[i + 1]))
-            i += 2
-        i = 0
-        while i < len(goal.args):
-            goal_pts.append((goal.args[i], goal.args[i + 1]))
-            i += 2
+        fact_pts, goal_pts = make_pairs(fact.args), make_pairs(goal.args)
         fact_lines = [get_line(lines, pair) for pair in fact_pts]
         goal_lines = [get_line(lines, pair) for pair in goal_pts]
 
         flg = False
-        i, j = 0, 0
+        i = 0
         while i < len(fact_lines):
             t_flg = False
             j = 0
@@ -952,15 +950,15 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
                     t_flg = True
                     break
                 j += 2
-            if not t_flg:
-                # print(fact)
-                # print(goal)
-                # print(new_goal.cond)
-                # print(fact.cond)
-                s = fact_pts[i][0] + fact_pts[i][1] + fact_pts[i + 1][0] + fact_pts[i + 1][1]
-                if s not in new_goal.cond.keys():
-                    new_goal.cond[s] = fact.cond[s]
-                # print(new_goal.cond)
+            if not t_flg:  # add not identical part (4 pts) to new_goal
+                s = [fact_pts[i][0], fact_pts[i][1], fact_pts[i + 1][0], fact_pts[i + 1][1]]
+                if not get_pos(s, new_goal.args):
+                    if new_goal.cond:
+                        # print(fact, fact.cond[int(i / 2)])
+                        new_goal.cond.append(fact.cond[int(i / 2)])
+                        # print("new_goal: ", new_goal, new_goal.cond)
+                    else:
+                        new_goal.cond = fact.cond[int(i / 2)]
                 new_goal.args.extend(fact_pts[i])
                 new_goal.args.extend(fact_pts[i + 1])
             i += 2
@@ -974,16 +972,71 @@ def combine_facts(fact, goal, lines, circles, fact_pos=None):
         return False
 
 
-def find_goal(facts, goal, lines, circles):
+def check_same(fact, goal, lines, circles):
+    """Check if the given fact refers to a same fact as goal. """
+    if fact.pred_name == "perp":
+        fact_lines = [get_line(lines, (fact.args[0], fact.args[1])), get_line(lines, (fact.args[2], fact.args[3]))]
+        goal_lines = [get_line(lines, (goal.args[0], goal.args[1])), get_line(lines, (goal.args[2], goal.args[3]))]
+        if fact_lines == goal_lines:
+            return True
+        return False
+    elif fact.pred_name == 'coll':
+        fact_pts, goal_pts = set(fact.args), set(goal.args)
+        return len(fact_pts) + len(goal_pts) - len(goal_pts.intersection(fact_pts)) >= 2
+    elif fact.pred_name == 'circle':
+        fact_circle = get_circle(circles, fact.args[1:], center=fact.args[0])
+        goal_circle = get_circle(circles, goal.args[1:], center=goal.args[0])
+        return fact_circle.is_same_circle(goal_circle)
+    elif fact.pred_name == 'cyclic':
+        fact_circle = get_circle(circles, list(fact.args))
+        goal_circle = get_circle(circles, list(goal.args))
+        return fact_circle.is_same_circle(goal_circle)
+    elif fact.pred_name in ('eqratio', 'cong'):
+        i = 0  # pointer of fact
+        while i < len(fact.args):
+            j = 0  # pointer of goal
+            while j < len(goal.args):
+                if (fact.args[i] == goal.args[j] and fact.args[i + 1] == goal.args[j + 1]) or \
+                        (fact.args[i] == goal.args[j + 1] and fact.args[i + 1] == goal.args[j]):  # exchange available
+                    return True
+                j += 2
+            i += 2
+        return False
+    elif fact.pred_name == 'para':
+        fact_pts, goal_pts = make_pairs(fact.args), make_pairs(goal.args)
+        fact_lines = [get_line(lines, pair) for pair in fact_pts]
+        goal_lines = [get_line(lines, pair) for pair in goal_pts]
+        for fact_line in fact_lines:
+            for goal_line in goal_lines:
+                if fact_line.is_same_line(goal_line):
+                    return True
+        return False
+    elif fact.pred_name == "eqangle":
+        fact_pts, goal_pts = make_pairs(fact.args), make_pairs(goal.args)
+        fact_lines = [get_line(lines, pair) for pair in fact_pts]
+        goal_lines = [get_line(lines, pair) for pair in goal_pts]
+        i = 0
+        while i < len(fact_lines):
+            j = 0
+            while j < len(goal_lines):
+                if fact_lines[i].is_same_line(goal_lines[j]) and fact_lines[i + 1].is_same_line(goal_lines[j + 1]):
+                    return True
+                j += 2
+            i += 2
+        return False
+
+
+def find_goal_pos(facts, goal, lines, circles):
     """Tries to find the goal among a list of facts. Return the
     fact if it is found. Otherwise return None.
 
     """
-    for fact in facts:
-        if combine_facts(fact, goal, lines, circles):
-            return fact
-
-    return None
+    name = goal.pred_name
+    for i in range(len(facts)):
+        if facts[i].pred_name == name:
+            if check_same(facts[i], goal, lines, circles):
+                return i
+    return False
 
 
 def rewrite_fact(fact):
@@ -1025,7 +1078,4 @@ def print_search(ruleset, facts, concl):
                 s = s + "(hyp)" + rewrite_fact(sub_fact) + ", "
         print(s[:-2])
 
-    for fact in facts:
-        if fact == concl:
-            print_step(fact)
-            break
+    print_step(concl)

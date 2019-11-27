@@ -374,9 +374,9 @@ class ExprTest(unittest.TestCase):
         test_data = [
             # (ruleset, ["cong(D, A, D, B)", "cong(E, A, E, B)", "perp(G, F, D, E)", "coll(A, C, B)", "coll(A, G, E)",
             #            "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
-            #
+
             # (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
-            #
+
             # (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
             #  ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
 
@@ -389,12 +389,12 @@ class ExprTest(unittest.TestCase):
             concl = parser.parse_fact(concl)
             lines = [parser.parse_line(line) for line in lines]
             circles = [parser.parse_circle(circle) for circle in circles]
-            hyps = expr.search_fixpoint(ruleset, hyps, lines, circles, concl)
-            # print('Final: ', hyps)
-            fact = expr.find_goal(hyps, concl, lines, circles)
-            self.assertIsNotNone(fact)
+            r = expr.search_fixpoint(ruleset, hyps, lines, circles, concl)
+            print('Final: ', hyps)
+            # goal_pos = expr.find_goal_pos(hyps, concl, lines, circles)
+            # self.assertIsNotNone(fact)
             print("--- Proof for", concl, "---")
-            expr.print_search(ruleset, hyps, fact)
+            expr.print_search(ruleset, hyps, hyps[r])
 
 
 if __name__ == "__main__":
