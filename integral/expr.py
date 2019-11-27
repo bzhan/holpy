@@ -382,7 +382,7 @@ def collect_common_factor(monos, sub = 0, el = None):
         return d
     else:
         for i in range(len(monos)):
-            collect(monos[i], sub = sub, el = el)
+            monos[i] = collect(monos[i], sub = sub, el = el)
             print("After decrese, ",monos[i])
 
 
@@ -409,28 +409,35 @@ def collect(m, res = {}, sub = 0, el = None):
         #extract common factors
         if m.ty == VAR and m.name == el:
             #only exists when factor is 1
-            print("Wow")
-            m = Const(1)
+            return Const(1)
         elif m.ty == FUN and isinstance(el, Fun) and m == el:
             #only exists when factor is 1
-            m = Const(1)
+            return Const(1)
         elif m.ty == OP and m.op == "^":
             if m.args[0].ty == VAR and m.args[0].name == el:
                 # x ^ n => x ^ (n - sub)
                 m.args[1].val -= sub
+                return m
             elif m.args[0].ty == FUN and m.args[0] == el:
                 # sin(x) ^ n => sin(x) ^ (n - sub)
                 m.args[1].val -= sub
+                return m
             else:
                 raise NotImplementedError
         elif m.ty == OP and m.op == "*":
             if m.args[1].ty == VAR and m.args[1].name == el:
                 #because op'args is a tuple which is immutable
-                m = 0
-                print(m)
-            else:            
-                collect(m.args[0], res, sub, el)
-                collect(m.args[1], res, sub, el)
+                return Const(m.args[0].val)
+            else:
+                print(m.args[0])
+                print(collect(m.args[0], res, sub, el))
+                print(m.args[1])
+                print(collect(m.args[1], res, sub, el))             
+                a = collect(m.args[0], res, sub, el)
+                b = collect(m.args[1], res, sub, el)
+                return a * b
+        else:
+            return m
     else:
         raise NotImplementedError
 
