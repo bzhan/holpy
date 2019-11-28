@@ -177,6 +177,8 @@ class Expr:
                     return poly.singleton(self)
             elif self.op == "^":
                 x, y = self.args
+                if y.ty == CONST and y.val == 0:
+                    return poly.constant(1)
                 if x.ty == CONST and y.ty == CONST:
                     if x.val == 0: 
                         if y.val == 0:
@@ -349,28 +351,33 @@ def from_poly(p):
             monos = [from_mono(m) for m in p.monomials]
         else:
             monos = [from_mono(m) for m in p.del_zero_mono().monomials]
-        for m in monos:
-            print([m])
-        dc = collect_common_factor(monos)
-        print(dc)
-        common_keys = dc[0].keys()
-        for d in dc:
+        return sum(monos[1:], monos[0]) 
+
+def extract(p):
+    """If a polynomial have common factors, extract them from it.
+    """
+    if len(p.monomials) == 0:
+        return Const(0)
+    else:
+        if p.is_zero_constant():
+            monos = [from_mono(m) for m in p.monomials]
+        else:
+            monos = [from_mono(m) for m in p.del_zero_mono().monomials]
+        common_factor = collect_common_factor(monos)
+        common_keys = common_factor[0].keys()
+        for d in common_factor:
             common_keys &= d.keys()
-        print(common_keys)
         min_dic = {}
         for k in common_keys:
-            min = dc[0][k]
-            for d in dc:
+            min = common_factor[0][k]
+            for d in common_factor:
                 if d[k] < min:
                     min = d[k]
             min_dic[k] = min
-        print(min_dic)
         for k, v in min_dic.items():
-            print(k)
             collect_common_factor(monos, v, k)
-        for m in monos:
-            print([m])
-        return sum(monos[1:], monos[0])
+        return monos, min_dic 
+
 
 def collect_common_factor(monos, sub = 0, el = None):
     d = []
@@ -383,20 +390,19 @@ def collect_common_factor(monos, sub = 0, el = None):
     else:
         for i in range(len(monos)):
             monos[i] = collect(monos[i], sub = sub, el = el)
-            print("After decrese, ",monos[i])
 
 
 def collect(m, res = {}, sub = 0, el = None):
     if sub == 0:
         #collect information
         if m.ty == VAR:
-            res[m.name] = 1
+            res[m] = 1
         elif m.ty == FUN:
             res[m] = 1
         elif m.ty == OP and m.op == "^":
             if m.args[0].ty == VAR:
                 # x ^ n
-                res[m.args[0].name] = m.args[1].val
+                res[m.args[0]] = m.args[1].val
             elif m.args[0].ty == FUN:
                 # sin(x) ^ n
                 res[m.args[0]] = m.args[1].val
@@ -407,14 +413,14 @@ def collect(m, res = {}, sub = 0, el = None):
             collect(m.args[1], res)
     elif sub > 0:
         #extract common factors
-        if m.ty == VAR and m.name == el:
+        if m.ty == VAR and m == el:
             #only exists when factor is 1
             return Const(1)
         elif m.ty == FUN and isinstance(el, Fun) and m == el:
             #only exists when factor is 1
             return Const(1)
         elif m.ty == OP and m.op == "^":
-            if m.args[0].ty == VAR and m.args[0].name == el:
+            if m.args[0].ty == VAR and m.args[0] == el:
                 # x ^ n => x ^ (n - sub)
                 m.args[1].val -= sub
                 return m
@@ -423,16 +429,12 @@ def collect(m, res = {}, sub = 0, el = None):
                 m.args[1].val -= sub
                 return m
             else:
-                raise NotImplementedError
+                return m
         elif m.ty == OP and m.op == "*":
-            if m.args[1].ty == VAR and m.args[1].name == el:
+            if m.args[1].ty == VAR and m.args[1] == el:
                 #because op'args is a tuple which is immutable
-                return Const(m.args[0].val)
-            else:
-                print(m.args[0])
-                print(collect(m.args[0], res, sub, el))
-                print(m.args[1])
-                print(collect(m.args[1], res, sub, el))             
+                return m.args[0]
+            else:         
                 a = collect(m.args[0], res, sub, el)
                 b = collect(m.args[1], res, sub, el)
                 return a * b
@@ -706,9 +708,3 @@ class EvalAt(Expr):
 
     def __repr__(self):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
-
-if __name__ == "__main__":
-    problem = "2 * x ^ 2 - 2 *sin(x) * x ^ 4 + x ^ 3 - 9 * x"
-    p = parser.parse_expr(problem)
-    q = p.normalize()
-    print(q)
