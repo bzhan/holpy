@@ -376,7 +376,7 @@ class ExprTest(unittest.TestCase):
             #            "coll(B, F, E)", "coll(D, C, E)"], [], [], "para(A, C, G, F)"),
 
             # (ruleset, ["cong(A, B, B, C, C, D, D, A)"], [], [], "eqangle(A, B, B, D, B, D, A, D)"),
-
+            #
             # (ruleset, ["eqangle(E, F, E, G, D, C, B, C)", "cyclic(E, D, G, B, F, C)"], [],
             #  ["circle(None, E, D, G, B, F, C)"], "cong(D, B, F, G)"),
 
