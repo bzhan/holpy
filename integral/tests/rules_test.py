@@ -14,7 +14,11 @@ class RulesTest(unittest.TestCase):
             ("INT x:[a,b]. x^(1/2) * x^(1/2)",
              "INT x:[a,b]. x"),
             ("INT x:[4, 9]. x^(1/2)*(1+x^(1/2))",
-            "INT x:[4, 9]. x + x^(1/2)")
+            "INT x:[4, 9]. x + x^(1/2)"),
+            ("INT x:[0, pi/2]. (cos(x)^4 * sin(x) ^ 2) /  -(sin(x))",
+            "INT x:[0, pi/2]. -1 * cos(x) ^ 4 * sin(x)"),
+            ("INT x:[a, b]. (x ^ 2 + 2 * x  - x ^ 3 + sin(x)*x) /  (x * y * sin(z))",
+            "INT x:[a, b]. (sin(x) + -1 * x ^ 2 + x + 2) / (y * sin(z))")
         ]
         rule = rules.Simplify()
         for s1, s2 in test_data:
@@ -93,15 +97,6 @@ class RulesTest(unittest.TestCase):
         e = rules.OnSubterm(rules.CommonIntegral()).eval(e)
         e = rules.Simplify().eval(e)
         self.assertEqual(e, parse_expr("1/6 * exp(6) + -1/6"))
-
-    def testSubstitution3(self):
-        e = parse_expr("INT x:[0, pi/2].sin(x) * cos(x) ^ 3")
-        e = rules.Substitution("u", parse_expr("cos(x)")).eval(e)
-        a = e.body.args[0]
-        b = e.body.args[1]
-        print(a.normalize())
-        print(b.normalize())
-        #self.assertEqual(e, parse_expr("INT u:[2/3 * pi, 4/3 * pi]. sin(u)"))
 
     def testIntegrationByParts(self):
         e = parse_expr("INT x:[-1,2]. x * exp(x)")
