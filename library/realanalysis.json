@@ -299,13 +299,6 @@
                     ],
                     "goal_id": "1.3",
                     "method_name": "z3"
-                },
-                {
-                    "fact_ids": [
-                        "1.2"
-                    ],
-                    "goal_id": "1.3",
-                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
@@ -387,16 +380,6 @@
                 {
                     "fact_ids": [
                         "0"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "rewrite_fact",
-                    "sym": "false",
-                    "theorem": "real_bounded_def"
-                },
-                {
-                    "fact_ids": [
-                        "1",
-                        "2"
                     ],
                     "goal_id": "3",
                     "method_name": "z3"
