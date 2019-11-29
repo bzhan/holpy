@@ -901,18 +901,23 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "has_real_derivative_mul_within",
             "prop": [
-                "has_real_derivative f f1 (within (atreal x) s) ∧ ",
+                "has_real_derivative f f1 (within (atreal x) s) ⟶ ",
                 "has_real_derivative g g1 (within (atreal x) s) ",
                 "⟶ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) ",
                 "     (within (atreal x) s)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
-                "g": "real ⇒ real",
+                "g": "real => real",
                 "g1": "real",
                 "s": "real set",
                 "x": "real"
@@ -926,14 +931,14 @@
             ],
             "name": "has_real_derivative_mul_atreal",
             "prop": [
-                "has_real_derivative f f1 (atreal x) ∧ has_real_derivative g g1 (atreal x) ",
+                "has_real_derivative f f1 (atreal x) ⟶ has_real_derivative g g1 (atreal x) ",
                 "⟶ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) (atreal x)"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
-                "g": "real ⇒ real",
+                "g": "real => real",
                 "g1": "real",
                 "x": "real"
             }

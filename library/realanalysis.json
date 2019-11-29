@@ -400,6 +400,14 @@
                     ],
                     "goal_id": "3",
                     "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
