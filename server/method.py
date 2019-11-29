@@ -405,10 +405,14 @@ class introduction(Method):
     def __init__(self):
         self.sig = []
         self.limit = None
+        self.no_order = True
 
     def search(self, state, id, prevs, data=None):
         if data:
             return [data]
+
+        if len(prevs) > 0:
+            return []
 
         goal_th = state.get_proof_item(id).th
         if goal_th.prop.is_all():
