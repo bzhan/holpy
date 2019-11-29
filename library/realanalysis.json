@@ -4375,6 +4375,9 @@
             "type": "real ⇒ real net"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "withinreal_univ",
             "prop": "within (atreal x) univ = atreal x",
             "ty": "thm",

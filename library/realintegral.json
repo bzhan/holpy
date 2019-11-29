@@ -26925,8 +26925,7 @@
                 {
                     "fact_ids": [
                         "0",
-                        "1",
-                        "2"
+                        "1"
                     ],
                     "goal_id": "6",
                     "method_name": "apply_backward_step",
