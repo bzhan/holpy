@@ -11102,183 +11102,37 @@
                     "th": "real_negligible (diff s t ∪ diff t s) ⊢ real_negligible (diff s t ∪ diff t s)"
                 },
                 {
-                    "args": "",
+                    "args": "∀x. x ∈ diff univ (diff s t ∪ diff t s) ⟶ (if x ∈ t then f x else 0) = (if x ∈ s then f x else 0)",
                     "id": "1",
                     "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ ∀f. ∀s. ∀i. has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ"
-                },
-                {
-                    "args": "g, real ⇒ real",
-                    "id": "1.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR g"
-                },
-                {
-                    "args": "a, real set",
-                    "id": "1.1",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR a"
-                },
-                {
-                    "args": "b, real",
-                    "id": "1.2",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR b"
-                },
-                {
-                    "args": "has_real_integral_restrict_univ, has_real_integral g b a ⟷ has_real_integral (λx. if x ∈ a then g x else 0) b univ",
-                    "id": "1.3",
-                    "prevs": [],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ has_real_integral g b a ⟷ has_real_integral (λx. if x ∈ a then g x else 0) b univ"
-                },
-                {
-                    "args": "",
-                    "id": "1.4",
-                    "prevs": [
-                        "1.0",
-                        "1.1",
-                        "1.2",
-                        "1.3"
-                    ],
-                    "rule": "intros",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ ∀f. ∀s. ∀i. has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ"
-                },
-                {
-                    "args": "f",
-                    "id": "2",
-                    "prevs": [
-                        "1"
-                    ],
-                    "rule": "forall_elim",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ ∀s. ∀i. has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ"
-                },
-                {
-                    "args": "s",
-                    "id": "3",
-                    "prevs": [
-                        "2"
-                    ],
-                    "rule": "forall_elim",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ ∀i. has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ"
-                },
-                {
-                    "args": "y",
-                    "id": "4",
-                    "prevs": [
-                        "3"
-                    ],
-                    "rule": "forall_elim",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ has_real_integral f y s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) y univ"
-                },
-                {
-                    "args": "t",
-                    "id": "5",
-                    "prevs": [
-                        "2"
-                    ],
-                    "rule": "forall_elim",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ ∀i. has_real_integral f i t ⟷ has_real_integral (λx. if x ∈ t then f x else 0) i univ"
-                },
-                {
-                    "args": "y",
-                    "id": "6",
-                    "prevs": [
-                        "5"
-                    ],
-                    "rule": "forall_elim",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ has_real_integral f y t ⟷ has_real_integral (λx. if x ∈ t then f x else 0) y univ"
-                },
-                {
-                    "args": "",
-                    "id": "7",
-                    "prevs": [],
-                    "rule": "subproof",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ ∀x. x ∈ diff univ (diff s t ∪ diff t s) ⟶ (if x ∈ t then f x else 0) = (if x ∈ s then f x else 0)"
-                },
-                {
-                    "args": "x, real",
-                    "id": "7.0",
-                    "prevs": [],
-                    "rule": "variable",
-                    "th": "⊢ _VAR x"
-                },
-                {
-                    "args": "x ∈ diff univ (diff s t ∪ diff t s)",
-                    "id": "7.1",
-                    "prevs": [],
-                    "rule": "assume",
-                    "th": "x ∈ diff univ (diff s t ∪ diff t s) ⊢ x ∈ diff univ (diff s t ∪ diff t s)"
-                },
-                {
-                    "args": "(if x ∈ t then f x else 0) = (if x ∈ s then f x else 0)",
-                    "id": "7.2",
-                    "prevs": [
-                        "7.1"
-                    ],
                     "rule": "z3",
-                    "th": "x ∈ diff univ (diff s t ∪ diff t s) ⊢ (if x ∈ t then f x else 0) = (if x ∈ s then f x else 0)"
-                },
-                {
-                    "args": "",
-                    "id": "7.3",
-                    "prevs": [
-                        "7.0",
-                        "7.1",
-                        "7.2"
-                    ],
-                    "rule": "intros",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ ∀x. x ∈ diff univ (diff s t ∪ diff t s) ⟶ (if x ∈ t then f x else 0) = (if x ∈ s then f x else 0)"
-                },
-                {
-                    "args": "conjI",
-                    "id": "8",
-                    "prevs": [
-                        "0",
-                        "7"
-                    ],
-                    "rule": "apply_theorem",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ real_negligible (diff s t ∪ diff t s) ∧ (∀x. x ∈ diff univ (diff s t ∪ diff t s) ⟶ (if x ∈ t then f x else 0) = (if x ∈ s then f x else 0))"
+                    "th": "⊢ ∀x. x ∈ diff univ (diff s t ∪ diff t s) ⟶ (if x ∈ t then f x else 0) = (if x ∈ s then f x else 0)"
                 },
                 {
                     "args": "has_real_integral_spike_eq, {}, {f: λx. if x ∈ s then f x else 0, g: λx. if x ∈ t then f x else 0, s: diff s t ∪ diff t s, t: (univ::real set), y: y}",
-                    "id": "9",
+                    "id": "2",
                     "prevs": [
-                        "8"
+                        "0",
+                        "1"
                     ],
                     "rule": "apply_theorem_for",
                     "th": "real_negligible (diff s t ∪ diff t s) ⊢ has_real_integral (λx. if x ∈ s then f x else 0) y univ ⟷ has_real_integral (λx. if x ∈ t then f x else 0) y univ"
                 },
                 {
-                    "args": "has_real_integral (λx. if x ∈ s then f x else 0) y univ ⟷ has_real_integral f y t",
-                    "id": "10",
+                    "args": "has_real_integral_restrict_univ, has_real_integral f y s ⟷ has_real_integral f y t",
+                    "id": "3",
                     "prevs": [
-                        "6",
-                        "9"
+                        "2"
                     ],
-                    "rule": "rewrite_goal_with_prev",
-                    "th": "real_negligible (diff s t ∪ diff t s) ⊢ has_real_integral (λx. if x ∈ s then f x else 0) y univ ⟷ has_real_integral f y t"
-                },
-                {
-                    "args": "has_real_integral f y s ⟷ has_real_integral f y t",
-                    "id": "11",
-                    "prevs": [
-                        "4",
-                        "10"
-                    ],
-                    "rule": "rewrite_goal_with_prev",
+                    "rule": "rewrite_goal_sym",
                     "th": "real_negligible (diff s t ∪ diff t s) ⊢ has_real_integral f y s ⟷ has_real_integral f y t"
                 },
                 {
                     "args": "",
-                    "id": "12",
+                    "id": "4",
                     "prevs": [
                         "0",
-                        "11"
+                        "3"
                     ],
                     "rule": "intros",
                     "th": "⊢ real_negligible (diff s t ∪ diff t s) ⟶ has_real_integral f y s ⟷ has_real_integral f y t"
@@ -11290,95 +11144,19 @@
             ],
             "steps": [
                 {
-                    "goal": "!f. !s. !i. has_real_integral f i s ⟷ has_real_integral (λx. if x ∈ s then f x else 0) i univ",
                     "goal_id": "1",
-                    "method_name": "cut"
-                },
-                {
-                    "goal_id": "1",
-                    "method_name": "introduction",
-                    "names": "g, a, b"
-                },
-                {
-                    "goal_id": "1.3",
                     "method_name": "rewrite_goal",
+                    "sym": "true",
                     "theorem": "has_real_integral_restrict_univ"
                 },
                 {
-                    "fact_ids": [
-                        "1"
-                    ],
-                    "goal_id": "2",
-                    "method_name": "forall_elim",
-                    "s": "f"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "3",
-                    "method_name": "forall_elim",
-                    "s": "s"
-                },
-                {
-                    "fact_ids": [
-                        "3"
-                    ],
-                    "goal_id": "4",
-                    "method_name": "forall_elim",
-                    "s": "y"
-                },
-                {
-                    "fact_ids": [
-                        "4"
-                    ],
-                    "goal_id": "5",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "fact_ids": [
-                        "2"
-                    ],
-                    "goal_id": "5",
-                    "method_name": "forall_elim",
-                    "s": "t"
-                },
-                {
-                    "fact_ids": [
-                        "5"
-                    ],
-                    "goal_id": "6",
-                    "method_name": "forall_elim",
-                    "s": "y"
-                },
-                {
-                    "fact_ids": [
-                        "6"
-                    ],
-                    "goal_id": "7",
-                    "method_name": "rewrite_goal_with_prev"
-                },
-                {
-                    "goal_id": "7",
+                    "goal_id": "1",
                     "method_name": "apply_backward_step",
-                    "param_s": "(diff s t ∪ diff t s)",
+                    "param_s": "diff s t ∪ diff t s",
                     "theorem": "has_real_integral_spike_eq"
                 },
                 {
-                    "goal_id": "7",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
-                {
-                    "goal_id": "7",
-                    "method_name": "introduction",
-                    "names": "x"
-                },
-                {
-                    "fact_ids": [
-                        "7.1"
-                    ],
-                    "goal_id": "7.2",
+                    "goal_id": "1",
                     "method_name": "z3"
                 }
             ],
@@ -27049,39 +26827,84 @@
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b",
+                    "args": "real_continuous_on f (real_closed_interval c d)",
                     "id": "0",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b ⊢ real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b"
+                    "th": "real_continuous_on f (real_closed_interval c d) ⊢ real_continuous_on f (real_closed_interval c d)"
+                },
+                {
+                    "args": "∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b)) ⊢ ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))"
+                },
+                {
+                    "args": "image g (real_closed_interval a b) ⊆ real_closed_interval c d",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "image g (real_closed_interval a b) ⊆ real_closed_interval c d ⊢ image g (real_closed_interval a b) ⊆ real_closed_interval c d"
+                },
+                {
+                    "args": "a ≤ b",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "a ≤ b ⊢ a ≤ b"
+                },
+                {
+                    "args": "c ≤ d",
+                    "id": "4",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "c ≤ d ⊢ c ≤ d"
+                },
+                {
+                    "args": "g a ≤ g b",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "g a ≤ g b ⊢ g a ≤ g b"
                 },
                 {
                     "args": "has_real_integral_substitution_simple",
-                    "id": "1",
+                    "id": "6",
                     "prevs": [
-                        "0"
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5"
                     ],
                     "rule": "apply_theorem",
-                    "th": "real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b ⊢ has_real_integral (λx. f (g x) * g1 x) (real_integral (real_closed_interval (g a) (g b)) f) (real_closed_interval a b)"
+                    "th": "real_continuous_on f (real_closed_interval c d), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b)), image g (real_closed_interval a b) ⊆ real_closed_interval c d, a ≤ b, c ≤ d, g a ≤ g b ⊢ has_real_integral (λx. f (g x) * g1 x) (real_integral (real_closed_interval (g a) (g b)) f) (real_closed_interval a b)"
                 },
                 {
                     "args": "real_integral_unique",
-                    "id": "2",
+                    "id": "7",
                     "prevs": [
-                        "1"
+                        "6"
                     ],
                     "rule": "apply_theorem",
-                    "th": "real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b ⊢ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) = real_integral (real_closed_interval (g a) (g b)) f"
+                    "th": "real_continuous_on f (real_closed_interval c d), ∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b)), image g (real_closed_interval a b) ⊆ real_closed_interval c d, a ≤ b, c ≤ d, g a ≤ g b ⊢ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) = real_integral (real_closed_interval (g a) (g b)) f"
                 },
                 {
                     "args": "",
-                    "id": "3",
+                    "id": "8",
                     "prevs": [
                         "0",
-                        "2"
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5",
+                        "7"
                     ],
                     "rule": "intros",
-                    "th": "⊢ real_continuous_on f (real_closed_interval c d) ∧ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ∧ image g (real_closed_interval a b) ⊆ real_closed_interval c d ∧ a ≤ b ∧ c ≤ d ∧ g a ≤ g b ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) = real_integral (real_closed_interval (g a) (g b)) f"
+                    "th": "⊢ real_continuous_on f (real_closed_interval c d) ⟶ (∀x. x ∈ real_closed_interval a b ⟶ has_real_derivative g (g1 x) (within (atreal x) (real_closed_interval a b))) ⟶ image g (real_closed_interval a b) ⊆ real_closed_interval c d ⟶ a ≤ b ⟶ c ≤ d ⟶ g a ≤ g b ⟶ real_integral (real_closed_interval a b) (λx. f (g x) * g1 x) = real_integral (real_closed_interval (g a) (g b)) f"
                 }
             ],
             "prop": [
@@ -27095,15 +26918,18 @@
             ],
             "steps": [
                 {
-                    "goal_id": "1",
+                    "goal_id": "6",
                     "method_name": "apply_backward_step",
                     "theorem": "real_integral_unique"
                 },
                 {
-                    "goal_id": "1",
+                    "fact_ids": [
+                        "0",
+                        "1",
+                        "2"
+                    ],
+                    "goal_id": "6",
                     "method_name": "apply_backward_step",
-                    "param_c": "c",
-                    "param_d": "d",
                     "theorem": "has_real_integral_substitution_simple"
                 }
             ],
