@@ -281,7 +281,11 @@ class Z3Method(Method):
         assert z3_loaded, "Z3 method: not installed"
         prev_ths = [state.get_proof_item(prev).th for prev in prevs]
         assms = [prev.prop for prev in prev_ths]
-        goal = state.get_proof_item(id).th.prop
+
+        cur_item = state.get_proof_item(id)
+        assert cur_item.rule == "sorry", "introduction: id is not a gap"
+        goal = cur_item.th.prop
+
         assert solve(state.thy, Term.mk_implies(*(assms + [goal]))), "Z3 method: not solved"
         state.set_line(id, 'z3', args=goal, prevs=prevs)
 

@@ -299,13 +299,6 @@
                     ],
                     "goal_id": "1.3",
                     "method_name": "z3"
-                },
-                {
-                    "fact_ids": [
-                        "1.2"
-                    ],
-                    "goal_id": "1.3",
-                    "method_name": "z3"
                 }
             ],
             "ty": "thm",
@@ -349,11 +342,11 @@
                     "args": "∃B. ∀x. x ∈ s ⟶ abs x ≤ B",
                     "id": "3",
                     "prevs": [
-                        "2",
-                        "1"
+                        "1",
+                        "2"
                     ],
                     "rule": "z3",
-                    "th": "real_bounded t, s ⊆ t ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
+                    "th": "s ⊆ t, real_bounded t ⊢ ∃B. ∀x. x ∈ s ⟶ abs x ≤ B"
                 },
                 {
                     "args": "real_bounded_def, real_bounded s",
@@ -379,6 +372,12 @@
             "prop": "real_bounded t --> s ⊆ t ⟶ real_bounded s",
             "steps": [
                 {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_bounded_def"
+                },
+                {
                     "fact_ids": [
                         "0"
                     ],
@@ -388,15 +387,9 @@
                     "theorem": "real_bounded_def"
                 },
                 {
-                    "goal_id": "3",
-                    "method_name": "rewrite_goal",
-                    "sym": "false",
-                    "theorem": "real_bounded_def"
-                },
-                {
                     "fact_ids": [
-                        "2",
-                        "1"
+                        "1",
+                        "2"
                     ],
                     "goal_id": "3",
                     "method_name": "z3"
@@ -4382,6 +4375,9 @@
             "type": "real ⇒ real net"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "withinreal_univ",
             "prop": "within (atreal x) univ = atreal x",
             "ty": "thm",
