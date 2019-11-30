@@ -20,7 +20,9 @@ grammar = r"""
 
     ?uminus: "-" uminus -> uminus_expr | atom
 
-    ?pow: pow "^" uminus -> pow_expr | uminus
+    ?pow: atom "^" uminus -> pow_expr 
+        | "-" atom "^" uminus -> uminus_pow_expr
+        | uminus
 
     ?times: times "*" pow -> times_expr
         | times "/" pow -> divides_expr | pow
@@ -75,6 +77,9 @@ class ExprTransformer(Transformer):
             return expr.Const(-a.val)
         else:
             return -a
+    
+    def uminus_pow_expr(self, a, b):
+        return -(a ^ b)
 
     def pi_expr(self):
         return expr.pi

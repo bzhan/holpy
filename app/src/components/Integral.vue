@@ -19,6 +19,7 @@
           <b-dropdown-item href="#" v-on:click='substitution'>Substitution</b-dropdown-item>
           <b-dropdown-item href="#" v-on:click='integrateByParts'>Integrate by parts</b-dropdown-item>          
           <b-dropdown-item href="#" v-on:click='polynomialDivision'>Polynomial division</b-dropdown-item>
+          <b-dropdown-item href="#" v-on:click='equationSubst'>Equation Substitution</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -34,7 +35,10 @@
     <div id="calc">
       <div v-for="(step, index) in cur_calc" :key="index">
         <span>Step {{index+1}}:</span>
-        <MathEquation class="calc-equation" v-bind:data="'\\(' + step.latex + '\\)'"/>
+        <MathEquation class="calc-equation"
+          v-on:click.native="transfer(step)"
+          v-bind:data="'\\(' + step.latex + '\\)'"
+          style="cursor:pointer"/>
         <MathEquation class="calc-reason" v-if="'_latex_reason' in step" v-bind:data="step._latex_reason"/>
         <span class="calc-reason" v-else>{{step.reason}}</span>
       </div>
@@ -57,12 +61,23 @@
         </div>
         <div>
           <MathEquation data="u ="/>
-          <input v-model="byparts_data.parts_u" style="margin:0px 5px;width:100px">
           <MathEquation data="v ="/>
           <input v-model="byparts_data.parts_v" style="margin:0px 5px;width:100px">
         </div>
         <div style="margin-top:10px">
           <button v-on:click="doIntegrateByParts">OK</button>
+        </div>
+      </div>
+      <div v-if="query_mode === 'eqsubst'">
+        <div>
+          <MathEquation v-bind:data="'Write the expression that you think is equal to the \\(' + this.equation_data.old_expr.latex + '\\).'"/>
+        </div>
+        <div>
+          <MathEquation data="new ="/>
+          <input v-model="equation_data.new_expr" style="margin:0px 5px;width:100px">
+        </div>
+        <div style="margin-top:10px">
+          <button v-on:click="doEquationSubst">OK</button>
         </div>
       </div>
     </div>
@@ -90,6 +105,8 @@ export default {
       cur_calc: [],        // Current calculation
       query_mode: undefined,  // Currently performing which query
 
+      allow_click_latex: 0,
+
       subst_data: {
         var_name: '',  // name of new variable u
         expr: ''       // expression to substitute for u
@@ -98,6 +115,11 @@ export default {
       byparts_data: {
         parts_u: '',   // value of u
         parts_v: ''    // value of v
+      },
+
+      equation_data: {
+        old_expr: undefined, //old expression
+        new_expr: ''  //new expression
       }
     }
   },
@@ -186,6 +208,12 @@ export default {
       this.cur_calc.push(response.data)
     },
 
+    transfer: function(step) {
+      if (this.allow_click_latex != 0){
+        this.equation_data.old_expr = step
+      }
+    },
+
     substitution: function () {
       if (this.cur_calc.length === 0)
         return;
@@ -204,6 +232,8 @@ export default {
       this.query_mode = undefined
       this.subst_data = {var_name: '', expr: ''}
     },
+
+
 
     integrateByParts: function () {
       if (this.cur_calc.length === 0)
@@ -234,7 +264,30 @@ export default {
       }
       const response = await axios.post("http://127.0.0.1:5000/api/integral-polynomial-division", JSON.stringify(data))
       this.cur_calc.push(response.data)
+    },
+
+    equationSubst: function() {
+      if (this.cur_calc.length === 0)
+        return;
+      this.allow_click_latex = 1
+      this.query_mode = 'eqsubst'
+    },
+
+    doEquationSubst: async function() {
+      const data = {
+        problem: this.cur_calc[this.cur_calc.length - 1].text,
+        old_expr: this.equation_data.old_expr.text,
+        new_expr: this.equation_data.new_expr
+      }
+
+      const response = await axios.post("http://127.0.0.1:5000/api/integral-equation-substitution", JSON.stringify(data))
+      this.cur_calc.push(response.data)
+      this.query_mode = undefined
+      this.equation_data = {old_expr: undefined, new_expr: ''}
+      this.allow_click_latex = 0      
     }
+
+
   },
 
   created: function () {

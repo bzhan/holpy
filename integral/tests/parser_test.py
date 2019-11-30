@@ -36,6 +36,7 @@ class ParserTest(unittest.TestCase):
             ("-1/2", Const(Fraction(-1) / 2)),
             ("0.5", Const(Decimal("0.5"))),
             ("pi", Fun("pi")),
+            ("-x^2", Op("-", Op("^", Var("x"), Const(2))))
         ]
 
         for s, e, in test_data:

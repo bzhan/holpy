@@ -153,7 +153,7 @@ class Expr:
             elif self.op == "*":
                 x, y = self.args
                 if x == Const(0) or y == Const(0):
-                    return poly.constant(0)
+                    return poly.constant(0) 
                 return x.to_poly() * y.to_poly()
             elif self.op == "-" and len(self.args) == 2:
                 x, y = self.args
@@ -317,6 +317,8 @@ class Expr:
             return (upper - lower).normalize().to_poly()
         elif self.ty == INTEGRAL:
             a = self
+            if a.lower == a.upper:
+                return poly.constant(0)
             a.body = a.body.normalize()
             return poly.singleton(a) 
         else:
@@ -585,7 +587,7 @@ class Op(Expr):
 class Fun(Expr):
     """Functions."""
     def __init__(self, func_name, *args):
-        assert isinstance(func_name, str) #and all(isinstance(arg, Expr) for arg in args)
+        assert isinstance(func_name, str) and all(isinstance(arg, Expr) for arg in args)
         if len(args) == 0:
             assert func_name in ["pi"]
         elif len(args) == 1:
@@ -708,3 +710,4 @@ class EvalAt(Expr):
 
     def __repr__(self):
         return "EvalAt(%s,%s,%s,%s)" % (self.var, repr(self.lower), repr(self.upper), repr(self.body))
+

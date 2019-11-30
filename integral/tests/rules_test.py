@@ -98,6 +98,14 @@ class RulesTest(unittest.TestCase):
         e = rules.Simplify().eval(e)
         self.assertEqual(e, parse_expr("1/6 * exp(6) + -1/6"))
 
+    def testEquation(self):
+        test_data = [
+            "sin(x) ^ 3", "sin(x)^2 * sin(x)"
+        ]
+        e = parse_expr("INT x:[0, pi]. sin(x) ^ 3")
+        e = rules.Equation(parse_expr("sin(x) ^ 3"), parse_expr("sin(x) ^ 2 * sin(x)")).eval(e)
+        self.assertEqual(e, parse_expr("INT x:[0, pi]. sin(x) ^ 2 * sin(x)"))
+
     def testIntegrationByParts(self):
         e = parse_expr("INT x:[-1,2]. x * exp(x)")
         e = rules.IntegrationByParts(parse_expr("x"), parse_expr("exp(x)")).eval(e)

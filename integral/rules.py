@@ -2,7 +2,7 @@
 
 from integral import expr
 from integral import poly
-from integral.expr import Var, Const, Fun, EvalAt, Op, Integral
+from integral.expr import Var, Const, Fun, EvalAt, Op, Integral, Expr
 from integral import parser
 import functools, operator
 class Rule:
@@ -27,30 +27,24 @@ class Simplify(Rule):
         e = e.normalize()
         if e.ty == expr.INTEGRAL and e.body.ty == expr.OP and e.body.op == "/":
             old = e
-            e = e.body
-            up = e.args[0].to_poly()
-            down = e.args[1].to_poly()
-            up_monos, up_com = expr.extract(up)
-            down_monos, down_com = expr.extract(down)
-            common_keys = up_com.keys() & down_com.keys()
-            min_dic = {}
-            for key in common_keys:
-                min_dic[key] = up_com[key] if up_com[key] < down_com[key] else down_com[key]
-                up_com[key] -= min_dic[key]
-                down_com[key] -= min_dic[key]
-            if len(min_dic) != 0:
-                upp = [(k ^ Const(v)).normalize() for k, v in up_com.items()]
-                dpp = [(k ^ Const(v)).normalize() for k, v in down_com.items()]
-            upp_1 = Const(1)
-            dpp_1 = Const(1)
-            for k in upp:
-                upp_1 *= k
-            for k in dpp:
-                dpp_1 *= k
-            simp = (sum(up_monos[1:], up_monos[0]) * upp_1).normalize() / (sum(down_monos[1:], down_monos[0]) * dpp_1).normalize()
-            return Integral(old.var, old.lower, old.upper, simp.normalize())
-
-
+            up_monos, up_common     = expr.extract(e.body.args[0].to_poly())
+            down_monos, down_common = expr.extract(e.body.args[1].to_poly())
+            common_item = up_common.keys() & down_common.keys()
+            min_value = {}
+            for key in common_item:
+                min_value[key]    = up_common[key] if up_common[key] < down_common[key] else down_common[key]
+                up_common[key]   -= min_value[key]
+                down_common[key] -= min_value[key]
+            if len(min_value) != 0:
+                #numerartor and denominator have same element.
+                upp   = [(k ^ Const(v)).normalize() for k, v in up_common.items()]
+                dpp   = [(k ^ Const(v)).normalize() for k, v in down_common.items()]
+                upp_1 = functools.reduce(operator.mul, upp[1:], upp[0])
+                dpp_1 = functools.reduce(operator.mul, dpp[1:], dpp[0])
+                simp  = (sum(up_monos[1:], up_monos[0]) * upp_1).normalize() / (sum(down_monos[1:], down_monos[0]) * dpp_1).normalize()
+                return Integral(old.var, old.lower, old.upper, simp.normalize())
+            else:
+                return Integral(old.var, old.lower, old.upper, old.body.args[0].normalize()/old.body.args[1].normalize())
         else:
             return e.normalize()
 
@@ -211,6 +205,21 @@ class Substitution(Rule):
         upper2 = self.var_subst.subst(e.var, e.upper).normalize()
         return expr.Integral(self.var_name, lower2, upper2, body2)
 
+class Equation(Rule):
+    """Apply substictution for equal expressions"""
+    def __init__(self, old_expr, new_expr):
+        assert isinstance(old_expr, Expr) and isinstance(new_expr, Expr)
+        self.old_expr = old_expr
+        self.new_expr = new_expr
+    
+    def eval(self, e):
+        if self.old_expr.normalize() != self.new_expr.normalize():
+            return e
+        else:
+            return Integral(e.var, e.lower, e.upper, self.new_expr)
+
+        
+
 class IntegrationByParts(Rule):
     """Apply integration by parts."""
     def __init__(self, u, v):
@@ -264,3 +273,8 @@ class PolynomialDivision(Rule):
             k = k + poly.Polynomial([dividend.monomials[-k.degree]])
             k = poly.Polynomial(tuple(k.monomials[1:]))
         return expr.Integral(e.var, e.lower, e.upper, expr.from_poly(poly.Polynomial(jieguo)) + expr.from_poly(poly.Polynomial(k.monomials))/expr.from_poly(divisor))
+
+
+equation_table = {
+    "1": "sin(x) ^ 2 + cos(x) ^ 2"
+}

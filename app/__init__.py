@@ -869,6 +869,41 @@ def integral_integrate_by_parts():
         )
     })
 
+@app.route("/api/integral-equation-substitution", methods=['POST'])
+def integral_equation_substitution():
+    data = json.loads(request.get_data().decode('utf-8'))
+    old_expr = integral.parser.parse_expr(data['old_expr']).body
+    new_expr = integral.parser.parse_expr(data['new_expr'])
+    rule = integral.rules.Equation(old_expr, new_expr)
+    problem = integral.parser.parse_expr(data['problem'])
+    new_problem = rule.eval(problem)
+    if new_problem != problem:
+        return jsonify({
+            'text': str(new_problem),
+            'latex': integral.latex.convert_expr(new_problem),
+            'reason': "Integrate by parts",
+            'params': {
+                'old_expr': data['old_expr'],
+                'new_expr': data['new_expr'],
+            },
+            '_latex_reason': "Equation substitution successful, \\( %s\\) = \\(%s\\)" % (
+                integral.latex.convert_expr(old_expr), integral.latex.convert_expr(new_expr)
+            )
+        })
+    else:
+        return jsonify({
+            'text': str(new_problem),
+            'latex': integral.latex.convert_expr(new_problem),
+            'reason': "Integrate by parts",
+            'params': {
+                'old_expr': data['old_expr'],
+                'new_expr': data['new_expr'],
+            },
+            '_latex_reason': "Equation substitution failed, \\( %s\\) != \\(%s\\)" % (
+                integral.latex.convert_expr(old_expr), integral.latex.convert_expr(new_expr)
+            )
+        })
+
 @app.route("/api/integral-polynomial-division", methods=['POST'])
 def integral_polynomial_division():
     data = json.loads(request.get_data().decode('utf-8'))
