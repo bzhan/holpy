@@ -303,7 +303,8 @@
         },
         {
             "attributes": [
-                "hint_rewrite"
+                "hint_rewrite",
+                "hint_rewrite_sym"
             ],
             "name": "add_1_right",
             "num_gaps": 0,
@@ -4797,6 +4798,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "minus",
             "rules": [
                 {
@@ -4810,22 +4814,25 @@
             "type": "nat ⇒ nat ⇒ nat"
         },
         {
-            "name": "nat_minus_0",
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "nat_minus_l0",
             "num_gaps": 0,
             "proof": [
                 {
-                    "args": "nat_minus_def_1, minus 0 0 = 0",
+                    "args": "nat_minus_def_1, (0::nat) - 0 = 0",
                     "id": "0",
                     "prevs": [],
                     "rule": "rewrite_goal",
-                    "th": "⊢ minus 0 0 = 0"
+                    "th": "⊢ (0::nat) - 0 = 0"
                 },
                 {
                     "args": "",
                     "id": "1",
                     "prevs": [],
                     "rule": "subproof",
-                    "th": "⊢ ∀n. minus 0 n = 0 ⟶ minus 0 (Suc n) = 0"
+                    "th": "⊢ ∀n. 0 - n = 0 ⟶ 0 - Suc n = 0"
                 },
                 {
                     "args": "n, nat",
@@ -4835,11 +4842,11 @@
                     "th": "⊢ _VAR n"
                 },
                 {
-                    "args": "minus 0 n = 0",
+                    "args": "0 - n = 0",
                     "id": "1.1",
                     "prevs": [],
                     "rule": "assume",
-                    "th": "minus 0 n = 0 ⊢ minus 0 n = 0"
+                    "th": "0 - n = 0 ⊢ 0 - n = 0"
                 },
                 {
                     "args": "Pre_def_1, Pre 0 = 0",
@@ -4849,23 +4856,23 @@
                     "th": "⊢ Pre 0 = 0"
                 },
                 {
-                    "args": "Pre (minus 0 n) = 0",
+                    "args": "Pre (0 - n) = 0",
                     "id": "1.3",
                     "prevs": [
                         "1.1",
                         "1.2"
                     ],
                     "rule": "rewrite_goal_with_prev",
-                    "th": "minus 0 n = 0 ⊢ Pre (minus 0 n) = 0"
+                    "th": "0 - n = 0 ⊢ Pre (0 - n) = 0"
                 },
                 {
-                    "args": "nat_minus_def_2, minus 0 (Suc n) = 0",
+                    "args": "nat_minus_def_2, 0 - Suc n = 0",
                     "id": "1.4",
                     "prevs": [
                         "1.3"
                     ],
                     "rule": "rewrite_goal",
-                    "th": "minus 0 n = 0 ⊢ minus 0 (Suc n) = 0"
+                    "th": "0 - n = 0 ⊢ 0 - Suc n = 0"
                 },
                 {
                     "args": "",
@@ -4876,57 +4883,30 @@
                         "1.4"
                     ],
                     "rule": "intros",
-                    "th": "⊢ ∀n. minus 0 n = 0 ⟶ minus 0 (Suc n) = 0"
+                    "th": "⊢ ∀n. 0 - n = 0 ⟶ 0 - Suc n = 0"
                 },
                 {
-                    "args": "nat_induct, {}, {P: λx. minus 0 x = 0, x: x}",
+                    "args": "nat_induct, {}, {P: λx::nat. 0 - x = 0, x: x}",
                     "id": "2",
                     "prevs": [
                         "0",
                         "1"
                     ],
                     "rule": "apply_theorem_for",
-                    "th": "⊢ minus 0 x = 0"
+                    "th": "⊢ 0 - x = 0"
                 },
                 {
-                    "args": "eq_refl, {a: nat}, {x: x}",
+                    "args": "",
                     "id": "3",
-                    "prevs": [],
-                    "rule": "apply_theorem_for",
-                    "th": "⊢ x = x"
-                },
-                {
-                    "args": "conjI",
-                    "id": "4",
                     "prevs": [
-                        "2",
-                        "3"
+                        "2"
                     ],
-                    "rule": "apply_theorem",
-                    "th": "⊢ minus 0 x = 0 ∧ x = x"
-                },
-                {
-                    "args": "nat_minus_def_1, minus 0 x = 0 ∧ minus x 0 = x",
-                    "id": "5",
-                    "prevs": [
-                        "4"
-                    ],
-                    "rule": "rewrite_goal",
-                    "th": "⊢ minus 0 x = 0 ∧ minus x 0 = x"
+                    "rule": "intros",
+                    "th": "⊢ 0 - x = 0"
                 }
             ],
-            "prop": "0 - x = 0 ∧ x - 0 = x",
+            "prop": "0 - x = 0",
             "steps": [
-                {
-                    "goal_id": "0",
-                    "method_name": "rewrite_goal",
-                    "theorem": "nat_minus_def_1"
-                },
-                {
-                    "goal_id": "0",
-                    "method_name": "apply_backward_step",
-                    "theorem": "conjI"
-                },
                 {
                     "goal_id": "0",
                     "method_name": "induction",
@@ -4959,11 +4939,6 @@
                     "goal_id": "1.2",
                     "method_name": "rewrite_goal",
                     "theorem": "Pre_def_1"
-                },
-                {
-                    "goal_id": "3",
-                    "method_name": "apply_backward_step",
-                    "theorem": "eq_refl"
                 }
             ],
             "ty": "thm",
@@ -5095,6 +5070,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "nat_minus_suc",
             "num_gaps": 0,
             "proof": [
@@ -5641,6 +5619,74 @@
             "vars": {
                 "x": "nat",
                 "y": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "suc_sub1",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "nat_minus_def_1, n - 0 = n",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ n - 0 = n"
+                },
+                {
+                    "args": "nat_minus_suc, Suc n - Suc 0 = n",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc n - Suc 0 = n"
+                },
+                {
+                    "args": "nat_one_def, Suc n - 1 = n",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ Suc n - 1 = n"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ Suc n - 1 = n"
+                }
+            ],
+            "prop": "Suc n - 1 =n",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_one_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_minus_suc"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "nat_minus_def_1"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
             }
         },
         {

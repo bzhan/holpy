@@ -1421,7 +1421,7 @@
             ],
             "ty": "thm",
             "vars": {
-                "f": "'a ⇒ real",
+                "f": "'a => real",
                 "l": "real",
                 "net": "'a net"
             }

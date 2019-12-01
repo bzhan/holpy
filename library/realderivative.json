@@ -2098,14 +2098,19 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "real_derivative_unique_atreal",
             "prop": [
-                "has_real_derivative f f1 (atreal x) ∧ has_real_derivative f f2 (atreal x) ",
+                "has_real_derivative f f1 (atreal x) ⟶ has_real_derivative f f2 (atreal x) ",
                 "⟶ f1 = f2"
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "f2": "real",
                 "x": "real"
@@ -2113,7 +2118,68 @@
         },
         {
             "name": "has_real_derivative_derivative",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (atreal x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f f1 (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f (THE f11. has_real_derivative f f11 (atreal x)) (atreal x)"
+                },
+                {
+                    "args": "real_derivative_unique_atreal",
+                    "id": "2",
+                    "prevs": [
+                        "1",
+                        "0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ (THE f11. has_real_derivative f f11 (atreal x)) = f1"
+                },
+                {
+                    "args": "real_derivative_def, real_derivative f x = f1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ real_derivative f x = f1"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (atreal x) ⟶ real_derivative f x = f1"
+                }
+            ],
             "prop": "has_real_derivative f f1 (atreal x) ⟶ real_derivative f x = f1",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_derivative_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "param_f": "f",
+                    "param_x": "x",
+                    "theorem": "real_derivative_unique_atreal"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "f": "real ⇒ real",
@@ -2123,9 +2189,148 @@
         },
         {
             "name": "has_real_derivative_differentiable",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x) ⟶ (∃f1. has_real_derivative f f1 (atreal x))"
+                },
+                {
+                    "args": "has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x)",
+                    "id": "0.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x) ⊢ has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x)"
+                },
+                {
+                    "args": "exI, {a: real}, {P: λa1. has_real_derivative f a1 (atreal x), a: THE f1. has_real_derivative f f1 (atreal x)}",
+                    "id": "0.1",
+                    "prevs": [
+                        "0.0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x) ⊢ ∃a1. has_real_derivative f a1 (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "0.2",
+                    "prevs": [
+                        "0.0",
+                        "0.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x) ⟶ (∃f1. has_real_derivative f f1 (atreal x))"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "⊢ (∃f1. has_real_derivative f f1 (atreal x)) ⟶ has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x)"
+                },
+                {
+                    "args": "∃a1. has_real_derivative f a1 (atreal x)",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∃a1. has_real_derivative f a1 (atreal x) ⊢ ∃a1. has_real_derivative f a1 (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "∃a1. has_real_derivative f a1 (atreal x) ⊢ has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "1.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∃f1. has_real_derivative f f1 (atreal x)) ⟶ has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x)"
+                },
+                {
+                    "args": "iffI",
+                    "id": "2",
+                    "prevs": [
+                        "0",
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x) ⟷ (∃f1. has_real_derivative f f1 (atreal x))"
+                },
+                {
+                    "args": "real_differentiable_def, has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x) ⟷ real_differentiable f (atreal x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_derivative f (THE f1. has_real_derivative f f1 (atreal x)) (atreal x) ⟷ real_differentiable f (atreal x)"
+                },
+                {
+                    "args": "real_derivative_def, has_real_derivative f (real_derivative f x) (atreal x) ⟷ real_differentiable f (atreal x)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_derivative f (real_derivative f x) (atreal x) ⟷ real_differentiable f (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f (real_derivative f x) (atreal x) ⟷ real_differentiable f (atreal x)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f (real_derivative f x) (atreal x) ⟷ ",
                 "real_differentiable f (atreal x)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_derivative_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_differentiable_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "iffI"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "0.0"
+                    ],
+                    "goal_id": "0.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "exI"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -2134,6 +2339,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_lmul_within",
             "prop": [
                 "has_real_derivative f f1 (within (atreal x) s) ",
@@ -2142,60 +2350,291 @@
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_rmul_within",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (within (atreal x) s)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative f f1 (within (atreal x) s)"
+                },
+                {
+                    "args": "has_real_derivative_lmul_within, {}, {c: c, f: f, f1: f1, s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative (λx1. c * f x1) (c * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_mult_comm, has_real_derivative (λx1. f x1 * c) (f1 * c) (within (atreal x) s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 * c) (f1 * c) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (within (atreal x) s) ⟶ has_real_derivative (λx1. f x1 * c) (f1 * c) (within (atreal x) s)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f f1 (within (atreal x) s) ",
                 "⟶ has_real_derivative (λx1. f x1 * c) (f1 * c) (within (atreal x) s)"
             ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_lmul_within"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "s": "real set",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_lmul_atreal",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (atreal x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f f1 (atreal x)"
+                },
+                {
+                    "args": "withinreal_univ",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f f1 (within (atreal x) univ)"
+                },
+                {
+                    "args": "has_real_derivative_lmul_within, {}, {c: c, f: f, f1: f1, s: (univ::real set), x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative (λx1. c * f x1) (c * f1) (within (atreal x) univ)"
+                },
+                {
+                    "args": "withinreal_univ, has_real_derivative (λx1. c * f x1) (c * f1) (atreal x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative (λx1. c * f x1) (c * f1) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (atreal x) ⟶ has_real_derivative (λx1. c * f x1) (c * f1) (atreal x)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f f1 (atreal x) ",
                 "⟶ has_real_derivative (λx1. c * f x1) (c * f1) (atreal x)"
             ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "withinreal_univ"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "withinreal_univ"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_lmul_within"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "x": "real"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_rmul_atreal",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (atreal x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f f1 (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_lmul_atreal, {}, {c: c, f: f, f1: f1, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative (λx1. c * f x1) (c * f1) (atreal x)"
+                },
+                {
+                    "args": "real_mult_comm, has_real_derivative (λx1. f x1 * c) (f1 * c) (atreal x)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative (λx1. f x1 * c) (f1 * c) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (atreal x) ⟶ has_real_derivative (λx1. f x1 * c) (f1 * c) (atreal x)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f f1 (atreal x) ",
                 "⟶ has_real_derivative (λx1. f x1 * c) (f1 * c) (atreal x)"
             ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_lmul_atreal"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "x": "real"
             }
         },
         {
             "name": "has_real_derivative_cdiv_within",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (within (atreal x) s)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative f f1 (within (atreal x) s)"
+                },
+                {
+                    "args": "has_real_derivative_rmul_within, {}, {c: real_inverse c, f: f, f1: f1, s: s, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 * real_inverse c) (f1 * real_inverse c) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_divide_def, has_real_derivative (λx1. f x1 / c) (f1 / c) (within (atreal x) s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 / c) (f1 / c) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (within (atreal x) s) ⟶ has_real_derivative (λx1. f x1 / c) (f1 / c) (within (atreal x) s)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f f1 (within (atreal x) s) ",
                 "⟶ has_real_derivative (λx1. f x1 / c) (f1 / c) (within (atreal x) s)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_rmul_within"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -2208,9 +2647,60 @@
         },
         {
             "name": "has_real_derivative_cdiv_atreal",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (atreal x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f f1 (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative_rmul_atreal, {}, {c: real_inverse c, f: f, f1: f1, x: x}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative (λx1. f x1 * real_inverse c) (f1 * real_inverse c) (atreal x)"
+                },
+                {
+                    "args": "real_divide_def, has_real_derivative (λx1. f x1 / c) (f1 / c) (atreal x)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative (λx1. f x1 / c) (f1 / c) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (atreal x) ⟶ has_real_derivative (λx1. f x1 / c) (f1 / c) (atreal x)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f f1 (atreal x) ",
                 "⟶ has_real_derivative (λx1. f x1 / c) (f1 / c) (atreal x)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_divide_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_rmul_atreal"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -2222,16 +2712,242 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_id",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x::real. ∀a. x - (a + (x - a)) = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀x::real. ∀a. x - (a + (x - a)) = 0"
+                },
+                {
+                    "args": "reallim_const, {a: real}, {a: (0::real), net: net}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ tendsto_real (λx. 0) 0 net"
+                },
+                {
+                    "args": "real_mul_rzero, tendsto_real (λx. real_inverse (x - netlimit net) * 0) 0 net",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tendsto_real (λx. real_inverse (x - netlimit net) * 0) 0 net"
+                },
+                {
+                    "args": "tendsto_real (λx. real_inverse (x - netlimit net) * (x - (netlimit net + (x - netlimit net)))) 0 net",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (x - (netlimit net + (x - netlimit net)))) 0 net"
+                },
+                {
+                    "args": "real_mul_lid, tendsto_real (λx. real_inverse (x - netlimit net) * (x - (netlimit net + 1 * (x - netlimit net)))) 0 net",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (x - (netlimit net + 1 * (x - netlimit net)))) 0 net"
+                },
+                {
+                    "args": "has_real_derivative_def, has_real_derivative (λx. x) 1 net",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_derivative (λx. x) 1 net"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative (λx. x) 1 net"
+                }
+            ],
             "prop": "has_real_derivative (λx. x) 1 net",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_real_derivative_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal": "!x::real. !a. x-(a+(x-a))=0",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_const"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "net": "real net"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_const",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "reallim_const, {a: real}, {a: (0::real), net: net}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ tendsto_real (λx. 0) 0 net"
+                },
+                {
+                    "args": "real_mul_rzero, tendsto_real (λx. real_inverse (x + -(netlimit net)) * 0) 0 net",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tendsto_real (λx. real_inverse (x + -(netlimit net)) * 0) 0 net"
+                },
+                {
+                    "args": "real_add_rinv, tendsto_real (λx. real_inverse (x + -(netlimit net)) * (c + -c)) 0 net",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tendsto_real (λx. real_inverse (x + -(netlimit net)) * (c + -c)) 0 net"
+                },
+                {
+                    "args": "real_minus_def, tendsto_real (λx. real_inverse (x - netlimit net) * (c - c)) 0 net",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (c - c)) 0 net"
+                },
+                {
+                    "args": "real_add_rid, tendsto_real (λx. real_inverse (x - netlimit net) * (c - (c + 0))) 0 net",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (c - (c + 0))) 0 net"
+                },
+                {
+                    "args": "real_mul_lzero, tendsto_real (λx. real_inverse (x - netlimit net) * (c - (c + 0 * (x - netlimit net)))) 0 net",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (c - (c + 0 * (x - netlimit net)))) 0 net"
+                },
+                {
+                    "args": "has_real_derivative_def, has_real_derivative (λx. c) 0 net",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ has_real_derivative (λx. c) 0 net"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative (λx. c) 0 net"
+                }
+            ],
             "prop": "has_real_derivative (λx. c) 0 net",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_real_derivative_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rid"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rinv"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_rzero"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "theorem": "reallim_const"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "c": "real",
@@ -2239,41 +2955,422 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_neg",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 net ⊢ has_real_derivative f f1 net"
+                },
+                {
+                    "args": "has_real_derivative_def",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_derivative f f1 net ⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (f x - (f (netlimit net) + f1 * (x - netlimit net)))) 0 net"
+                },
+                {
+                    "args": "reallim_neg_eq",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "has_real_derivative f f1 net ⊢ tendsto_real (λx. -(real_inverse (x - netlimit net) * (f x - (f (netlimit net) + f1 * (x - netlimit net))))) (-0) net"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀c. ∀d. ∀e. a * (-b - (-c + -d * e)) = -(a * (b - (c + d * e)))",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. ∀d. ∀e. a * (-b - (-c + -d * e)) = -(a * (b - (c + d * e)))"
+                },
+                {
+                    "args": "real_neg_0",
+                    "id": "4",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_derivative f f1 net ⊢ tendsto_real (λx. -(real_inverse (x - netlimit net) * (f x - (f (netlimit net) + f1 * (x - netlimit net))))) 0 net"
+                },
+                {
+                    "args": "tendsto_real (λx. real_inverse (x - netlimit net) * (-(f x) - (-(f (netlimit net)) + -f1 * (x - netlimit net)))) 0 net",
+                    "id": "5",
+                    "prevs": [
+                        "3",
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "has_real_derivative f f1 net ⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (-(f x) - (-(f (netlimit net)) + -f1 * (x - netlimit net)))) 0 net"
+                },
+                {
+                    "args": "has_real_derivative_def, has_real_derivative (λx. -(f x)) (-f1) net",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 net ⊢ has_real_derivative (λx. -(f x)) (-f1) net"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "0",
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 net ⟶ has_real_derivative (λx. -(f x)) (-f1) net"
+                }
+            ],
             "prop": "has_real_derivative f f1 net ⟶ has_real_derivative (λx. -(f x)) (-f1) net",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_real_derivative_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_real_derivative_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "reallim_neg_eq"
+                },
+                {
+                    "goal": "!a::real. !b. !c. !d. !e. a * (-b - (-c + -d * e)) = -(a * (b - (c + d * e)))",
+                    "goal_id": "3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "2"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_neg_0"
+                }
+            ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "net": "real net"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "has_real_derivative_add",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 net ⊢ has_real_derivative f f1 net"
+                },
+                {
+                    "args": "has_real_derivative g g1 net",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative g g1 net ⊢ has_real_derivative g g1 net"
+                },
+                {
+                    "args": "has_real_derivative_def",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_derivative f f1 net ⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (f x - (f (netlimit net) + f1 * (x - netlimit net)))) 0 net"
+                },
+                {
+                    "args": "has_real_derivative_def",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_derivative g g1 net ⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (g x - (g (netlimit net) + g1 * (x - netlimit net)))) 0 net"
+                },
+                {
+                    "args": "reallim_add, {a: real}, {f: λx. real_inverse (x - netlimit net) * (f x - (f (netlimit net) + f1 * (x - netlimit net))), g: λx. real_inverse (x - netlimit net) * (g x - (g (netlimit net) + g1 * (x - netlimit net))), l: (0::real), m: (0::real), net: net}",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f f1 net, has_real_derivative g g1 net ⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (f x - (f (netlimit net) + f1 * (x - netlimit net))) + real_inverse (x - netlimit net) * (g x - (g (netlimit net) + g1 * (x - netlimit net)))) (0 + 0) net"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀c. ∀d. ∀e. ∀f. ∀g. ∀h. a - (b + c * (d - e)) + (f - (g + h * (d - e))) = a + f - (b + g + (c + h) * (d - e))",
+                    "id": "5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. ∀d. ∀e. ∀f. ∀g. ∀h. a - (b + c * (d - e)) + (f - (g + h * (d - e))) = a + f - (b + g + (c + h) * (d - e))"
+                },
+                {
+                    "args": "real_add_ldistrib",
+                    "id": "6",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "has_real_derivative f f1 net, has_real_derivative g g1 net ⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (f x - (f (netlimit net) + f1 * (x - netlimit net)) + (g x - (g (netlimit net) + g1 * (x - netlimit net))))) (0 + 0) net"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "has_real_derivative f f1 net, has_real_derivative g g1 net ⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (f x + g x - (f (netlimit net) + g (netlimit net) + (f1 + g1) * (x - netlimit net)))) (0 + 0) net"
+                },
+                {
+                    "args": "real_add_lid",
+                    "id": "8",
+                    "prevs": [
+                        "7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_derivative f f1 net, has_real_derivative g g1 net ⊢ tendsto_real (λx. real_inverse (x - netlimit net) * (f x + g x - (f (netlimit net) + g (netlimit net) + (f1 + g1) * (x - netlimit net)))) 0 net"
+                },
+                {
+                    "args": "has_real_derivative_def, has_real_derivative (λx. f x + g x) (f1 + g1) net",
+                    "id": "9",
+                    "prevs": [
+                        "8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 net, has_real_derivative g g1 net ⊢ has_real_derivative (λx. f x + g x) (f1 + g1) net"
+                },
+                {
+                    "args": "",
+                    "id": "10",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "9"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 net ⟶ has_real_derivative g g1 net ⟶ has_real_derivative (λx. f x + g x) (f1 + g1) net"
+                }
+            ],
             "prop": [
-                "has_real_derivative f f1 net ∧ has_real_derivative g g1 net ",
+                "has_real_derivative f f1 net ⟶ has_real_derivative g g1 net ",
                 "⟶ has_real_derivative (λx. f x + g x) (f1 + g1) net"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "has_real_derivative_def"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_real_derivative_def"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "has_real_derivative_def"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_forward_step",
+                    "theorem": "reallim_add"
+                },
+                {
+                    "goal": "!a::real. !b. !c. !d. !e. !f. !g. !h. (a-(b+c*(d-e)))+(f-(g+h*(d-e)))=(a+f)-((b+g)+(c +h) *(d-e))",
+                    "goal_id": "5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "4"
+                    ],
+                    "goal_id": "6",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_add_ldistrib"
+                },
+                {
+                    "fact_ids": [
+                        "5",
+                        "6"
+                    ],
+                    "goal_id": "7",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "7"
+                    ],
+                    "goal_id": "8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_add_lid"
+                }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
-                "g": "real ⇒ real",
+                "g": "real => real",
                 "g1": "real",
                 "net": "real net"
             }
         },
         {
+            "attributes": [
+                "hint_backward",
+                "hint_backward1",
+                "hint_forward"
+            ],
             "name": "has_real_derivative_sub",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 net",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 net ⊢ has_real_derivative f f1 net"
+                },
+                {
+                    "args": "has_real_derivative g g1 net",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative g g1 net ⊢ has_real_derivative g g1 net"
+                },
+                {
+                    "args": "has_real_derivative_neg",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_derivative f f1 net, has_real_derivative g g1 net ⊢ has_real_derivative (λx. -(g x)) (-g1) net"
+                },
+                {
+                    "args": "has_real_derivative_add",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_derivative f f1 net, has_real_derivative g g1 net ⊢ has_real_derivative (λx. f x + -(g x)) (f1 + -g1) net"
+                },
+                {
+                    "args": "real_minus_def, has_real_derivative (λx. f x - g x) (f1 - g1) net",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 net, has_real_derivative g g1 net ⊢ has_real_derivative (λx. f x - g x) (f1 - g1) net"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 net ⟶ has_real_derivative g g1 net ⟶ has_real_derivative (λx. f x - g x) (f1 - g1) net"
+                }
+            ],
             "prop": [
-                "has_real_derivative f f1 net ∧ has_real_derivative g g1 net ",
+                "has_real_derivative f f1 net ⟶ has_real_derivative g g1 net ",
                 "⟶ has_real_derivative (λx. f x - g x) (f1 - g1) net"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_minus_def"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_add"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_neg"
+                }
             ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
-                "g": "real ⇒ real",
+                "g": "real => real",
                 "g1": "real",
                 "net": "real net"
             }
@@ -2308,9 +3405,109 @@
                 "hint_forward"
             ],
             "name": "has_real_derivative_mul_atreal",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (atreal x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f f1 (atreal x)"
+                },
+                {
+                    "args": "has_real_derivative g g1 (atreal x)",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative g g1 (atreal x) ⊢ has_real_derivative g g1 (atreal x)"
+                },
+                {
+                    "args": "withinreal_univ",
+                    "id": "2",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f f1 (within (atreal x) univ)"
+                },
+                {
+                    "args": "withinreal_univ",
+                    "id": "3",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "has_real_derivative g g1 (atreal x) ⊢ has_real_derivative g g1 (within (atreal x) univ)"
+                },
+                {
+                    "args": "has_real_derivative_mul_within",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_derivative f f1 (atreal x), has_real_derivative g g1 (atreal x) ⊢ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) (within (atreal x) univ)"
+                },
+                {
+                    "args": "withinreal_univ, has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) (atreal x)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "has_real_derivative f f1 (atreal x), has_real_derivative g g1 (atreal x) ⊢ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [
+                        "0",
+                        "1",
+                        "5"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (atreal x) ⟶ has_real_derivative g g1 (atreal x) ⟶ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) (atreal x)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f f1 (atreal x) ⟶ has_real_derivative g g1 (atreal x) ",
                 "⟶ has_real_derivative (λx1. f x1 * g x1) (f x * g1 + f1 * g x) (atreal x)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "withinreal_univ"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "withinreal_univ"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "3",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "withinreal_univ"
+                },
+                {
+                    "fact_ids": [
+                        "2",
+                        "3"
+                    ],
+                    "goal_id": "4",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_mul_within"
+                }
             ],
             "ty": "thm",
             "vars": {
@@ -2322,15 +3519,643 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "has_real_derivative_pow_within",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (within (atreal x) s)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative f f1 (within (atreal x) s)"
+                },
+                {
+                    "args": "has_real_derivative_const, {}, {c: (1::real), net: within (atreal x) s}",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ has_real_derivative (λx1. 1) 0 (within (atreal x) s)"
+                },
+                {
+                    "args": "real_nat_power_def_1, has_real_derivative (λx1. f x1 ^ (0::nat)) 0 (within (atreal x) s)",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 ^ (0::nat)) 0 (within (atreal x) s)"
+                },
+                {
+                    "args": "real_mul_lzero, has_real_derivative (λx1. f x1 ^ (0::nat)) (0 * f1) (within (atreal x) s)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 ^ (0::nat)) (0 * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_mul_lzero, has_real_derivative (λx1. f x1 ^ (0::nat)) (0 * f x ^ ((0::nat) - 1) * f1) (within (atreal x) s)",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 ^ (0::nat)) (0 * f x ^ ((0::nat) - 1) * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_zero_def, has_real_derivative (λx1. f x1 ^ (0::nat)) (of_nat 0 * f x ^ ((0::nat) - 1) * f1) (within (atreal x) s)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 ^ (0::nat)) (of_nat 0 * f x ^ ((0::nat) - 1) * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ ∀n. has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⟶ has_real_derivative (λx1. f x1 ^ Suc n) (of_nat (Suc n) * f x ^ (Suc n - 1) * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "n, nat",
+                    "id": "6.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR n"
+                },
+                {
+                    "args": "has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s)",
+                    "id": "6.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "has_real_derivative_mul_within, {}, {f: f, f1: f1, g: λx1. f x1 ^ n, g1: of_nat n * f x ^ (n - 1) * f1, s: s, x: x}",
+                    "id": "6.2",
+                    "prevs": [
+                        "0",
+                        "6.1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 * f x1 ^ n) (f x * (of_nat n * f x ^ (n - 1) * f1) + f1 * f x ^ n) (within (atreal x) s)"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀c. ∀d. a * (b * c * d) = b * (a * c) * d",
+                    "id": "6.3",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. ∀d. a * (b * c * d) = b * (a * c) * d"
+                },
+                {
+                    "args": "",
+                    "id": "6.4",
+                    "prevs": [
+                        "6.3",
+                        "6.2"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat n * (f x * f x ^ (n - 1)) * f1 + f1 * f x ^ n) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_nat_power_def_2",
+                    "id": "6.5",
+                    "prevs": [
+                        "6.4"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 ^ Suc n) (of_nat n * f x ^ Suc (n - 1) * f1 + f1 * f x ^ n) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "6.6",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ n = 0 ⟶ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "n = 0",
+                    "id": "6.6.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "n = 0 ⊢ n = 0"
+                },
+                {
+                    "args": "eta_conversion, has_real_derivative (λx1. f x1) f1 (within (atreal x) s)",
+                    "id": "6.6.1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), n = 0 ⊢ has_real_derivative (λx1. f x1) f1 (within (atreal x) s)"
+                },
+                {
+                    "args": "real_mul_lid, has_real_derivative (λx1. 1 * f x1) f1 (within (atreal x) s)",
+                    "id": "6.6.2",
+                    "prevs": [
+                        "6.6.1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), n = 0 ⊢ has_real_derivative (λx1. 1 * f x1) f1 (within (atreal x) s)"
+                },
+                {
+                    "args": "real_mult_comm, has_real_derivative (λx1. f x1 * 1) f1 (within (atreal x) s)",
+                    "id": "6.6.3",
+                    "prevs": [
+                        "6.6.2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), n = 0 ⊢ has_real_derivative (λx1. f x1 * 1) f1 (within (atreal x) s)"
+                },
+                {
+                    "args": "real_mul_lid, has_real_derivative (λx1. f x1 * 1) (1 * f1) (within (atreal x) s)",
+                    "id": "6.6.4",
+                    "prevs": [
+                        "6.6.3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), n = 0 ⊢ has_real_derivative (λx1. f x1 * 1) (1 * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_mul_lid, has_real_derivative (λx1. f x1 * 1) (1 * 1 * f1) (within (atreal x) s)",
+                    "id": "6.6.5",
+                    "prevs": [
+                        "6.6.4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), n = 0 ⊢ has_real_derivative (λx1. f x1 * 1) (1 * 1 * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_one_def, has_real_derivative (λx1. f x1 * 1) (of_nat 1 * 1 * f1) (within (atreal x) s)",
+                    "id": "6.6.6",
+                    "prevs": [
+                        "6.6.5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), n = 0 ⊢ has_real_derivative (λx1. f x1 * 1) (of_nat 1 * 1 * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "nat_one_def, has_real_derivative (λx1. f x1 * 1) (of_nat (Suc 0) * 1 * f1) (within (atreal x) s)",
+                    "id": "6.6.7",
+                    "prevs": [
+                        "6.6.6"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), n = 0 ⊢ has_real_derivative (λx1. f x1 * 1) (of_nat (Suc 0) * 1 * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_nat_power_def_1, has_real_derivative (λx1. f x1 * f x1 ^ (0::nat)) (of_nat (Suc 0) * f x ^ (0::nat) * f1) (within (atreal x) s)",
+                    "id": "6.6.8",
+                    "prevs": [
+                        "6.6.7"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), n = 0 ⊢ has_real_derivative (λx1. f x1 * f x1 ^ (0::nat)) (of_nat (Suc 0) * f x ^ (0::nat) * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ n * f1) (within (atreal x) s)",
+                    "id": "6.6.9",
+                    "prevs": [
+                        "6.6.0",
+                        "6.6.8"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "n = 0, has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "6.6.10",
+                    "prevs": [
+                        "6.6.0",
+                        "6.6.9"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ n = 0 ⟶ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "6.7",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ ¬(n = 0) ⟶ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "¬(n = 0)",
+                    "id": "6.7.0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "¬(n = 0) ⊢ ¬(n = 0)"
+                },
+                {
+                    "args": "le_1_2",
+                    "id": "6.7.1",
+                    "prevs": [
+                        "6.7.0"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), ¬(n = 0) ⊢ 1 ≤ n"
+                },
+                {
+                    "args": "sub_add",
+                    "id": "6.7.2",
+                    "prevs": [
+                        "6.7.1"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), ¬(n = 0) ⊢ n - 1 + 1 = n"
+                },
+                {
+                    "args": "add_1_right, Suc (n - 1) = n",
+                    "id": "6.7.3",
+                    "prevs": [
+                        "6.7.2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), ¬(n = 0) ⊢ Suc (n - 1) = n"
+                },
+                {
+                    "args": "",
+                    "id": "6.7.4",
+                    "prevs": [
+                        "6.7.3",
+                        "6.5"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), ¬(n = 0) ⊢ has_real_derivative (λx1. f x1 ^ Suc n) (of_nat n * f x ^ n * f1 + f1 * f x ^ n) (within (atreal x) s)"
+                },
+                {
+                    "args": "∀a::real. ∀b. ∀c. a * b * c + c * b = (a + 1) * b * c",
+                    "id": "6.7.5",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ ∀a::real. ∀b. ∀c. a * b * c + c * b = (a + 1) * b * c"
+                },
+                {
+                    "args": "",
+                    "id": "6.7.6",
+                    "prevs": [
+                        "6.7.5",
+                        "6.7.4"
+                    ],
+                    "rule": "rewrite_fact_with_prev",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), ¬(n = 0) ⊢ has_real_derivative (λx1. f x1 ^ Suc n) ((of_nat n + 1) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_one_def",
+                    "id": "6.7.7",
+                    "prevs": [
+                        "6.7.6"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), ¬(n = 0) ⊢ has_real_derivative (λx1. f x1 ^ Suc n) ((of_nat n + of_nat 1) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_of_nat_add",
+                    "id": "6.7.8",
+                    "prevs": [
+                        "6.7.7"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), ¬(n = 0) ⊢ has_real_derivative (λx1. f x1 ^ Suc n) (of_nat (n + 1) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_nat_power_def_2",
+                    "id": "6.7.9",
+                    "prevs": [
+                        "6.7.8"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), ¬(n = 0) ⊢ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (n + 1) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "add_1_right, has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ n * f1) (within (atreal x) s)",
+                    "id": "6.7.10",
+                    "prevs": [
+                        "6.7.9"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), ¬(n = 0) ⊢ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "6.7.11",
+                    "prevs": [
+                        "6.7.0",
+                        "6.7.10"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ ¬(n = 0) ⟶ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "classical_cases",
+                    "id": "6.8",
+                    "prevs": [
+                        "6.6",
+                        "6.7"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ n * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "suc_sub1, has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ (Suc n - 1) * f1) (within (atreal x) s)",
+                    "id": "6.9",
+                    "prevs": [
+                        "6.8"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 * f x1 ^ n) (of_nat (Suc n) * f x ^ (Suc n - 1) * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "real_nat_power_def_2, has_real_derivative (λx1. f x1 ^ Suc n) (of_nat (Suc n) * f x ^ (Suc n - 1) * f1) (within (atreal x) s)",
+                    "id": "6.10",
+                    "prevs": [
+                        "6.9"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "has_real_derivative f f1 (within (atreal x) s), has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 ^ Suc n) (of_nat (Suc n) * f x ^ (Suc n - 1) * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "6.11",
+                    "prevs": [
+                        "6.0",
+                        "6.1",
+                        "6.10"
+                    ],
+                    "rule": "intros",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ ∀n. has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s) ⟶ has_real_derivative (λx1. f x1 ^ Suc n) (of_nat (Suc n) * f x ^ (Suc n - 1) * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "nat_induct, {}, {P: λn. has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s), x: n}",
+                    "id": "7",
+                    "prevs": [
+                        "5",
+                        "6"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f f1 (within (atreal x) s) ⊢ has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "8",
+                    "prevs": [
+                        "0",
+                        "7"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (within (atreal x) s) ⟶ has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) s)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f f1 (within (atreal x) s) ",
                 "⟶ has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) ",
                 "     (within (atreal x) s)"
             ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "induction",
+                    "theorem": "nat_induct",
+                    "var": "n"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_zero_def"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_const"
+                },
+                {
+                    "goal_id": "6",
+                    "method_name": "introduction",
+                    "names": "n"
+                },
+                {
+                    "goal_id": "6.2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_2"
+                },
+                {
+                    "fact_ids": [
+                        "0",
+                        "6.1"
+                    ],
+                    "goal_id": "6.2",
+                    "method_name": "apply_forward_step",
+                    "theorem": "has_real_derivative_mul_within"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "suc_sub1"
+                },
+                {
+                    "goal": "!a::real. !b. !c. !d. a * (b * c *d) = b * (a * c) * d",
+                    "goal_id": "6.3",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6.3",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "6.3",
+                        "6.2"
+                    ],
+                    "goal_id": "6.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "6.4"
+                    ],
+                    "goal_id": "6.5",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "real_nat_power_def_2"
+                },
+                {
+                    "case": "n=0",
+                    "goal_id": "6.6",
+                    "method_name": "cases"
+                },
+                {
+                    "goal_id": "6.6",
+                    "method_name": "introduction"
+                },
+                {
+                    "fact_ids": [
+                        "6.6.0"
+                    ],
+                    "goal_id": "6.6.1",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "6.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_1"
+                },
+                {
+                    "goal_id": "6.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "nat_one_def"
+                },
+                {
+                    "goal_id": "6.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "6.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "6.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "6.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "6.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "6.6.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eta_conversion"
+                },
+                {
+                    "goal_id": "6.7",
+                    "method_name": "introduction"
+                },
+                {
+                    "goal": "Suc (n-1) = n",
+                    "goal_id": "6.7.1",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6.7.1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "goal_id": "6.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "sub_add"
+                },
+                {
+                    "goal_id": "6.7.1",
+                    "method_name": "apply_backward_step",
+                    "theorem": "le_1_2"
+                },
+                {
+                    "fact_ids": [
+                        "6.7.3",
+                        "6.5"
+                    ],
+                    "goal_id": "6.7.4",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "goal": "!a::real. !b. !c. a * b * c + c * b = (a +1) * b * c",
+                    "goal_id": "6.7.5",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "6.7.5",
+                    "method_name": "z3"
+                },
+                {
+                    "fact_ids": [
+                        "6.7.5",
+                        "6.7.4"
+                    ],
+                    "goal_id": "6.7.6",
+                    "method_name": "rewrite_fact_with_prev"
+                },
+                {
+                    "fact_ids": [
+                        "6.7.6"
+                    ],
+                    "goal_id": "6.7.7",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "6.7.8",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "add_1_right"
+                },
+                {
+                    "fact_ids": [
+                        "6.7.7"
+                    ],
+                    "goal_id": "6.7.8",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_of_nat_add"
+                },
+                {
+                    "fact_ids": [
+                        "6.7.8"
+                    ],
+                    "goal_id": "6.7.9",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "real_nat_power_def_2"
+                }
+            ],
             "ty": "thm",
             "vars": {
-                "f": "real ⇒ real",
+                "f": "real => real",
                 "f1": "real",
                 "n": "nat",
                 "s": "real set",
@@ -2339,9 +4164,78 @@
         },
         {
             "name": "has_real_derivative_pow_atreal",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "has_real_derivative f f1 (atreal x)",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f f1 (atreal x)"
+                },
+                {
+                    "args": "withinreal_univ",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact_sym",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative f f1 (within (atreal x) univ)"
+                },
+                {
+                    "args": "has_real_derivative_pow_within, {}, {f: f, f1: f1, n: n, s: (univ::real set), x: x}",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (within (atreal x) univ)"
+                },
+                {
+                    "args": "withinreal_univ, has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (atreal x)",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "has_real_derivative f f1 (atreal x) ⊢ has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (atreal x)"
+                },
+                {
+                    "args": "",
+                    "id": "4",
+                    "prevs": [
+                        "0",
+                        "3"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ has_real_derivative f f1 (atreal x) ⟶ has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (atreal x)"
+                }
+            ],
             "prop": [
                 "has_real_derivative f f1 (atreal x) ",
                 "⟶ has_real_derivative (λx1. f x1 ^ n) (of_nat n * f x ^ (n - 1) * f1) (atreal x)"
+            ],
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "withinreal_univ"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "true",
+                    "theorem": "withinreal_univ"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "has_real_derivative_pow_within"
+                }
             ],
             "ty": "thm",
             "vars": {
