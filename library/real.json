@@ -16795,10 +16795,62 @@
             }
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "real_sgn",
             "prop": "real_sgn x = (if 0 < x then 1 else if x < 0 then -1 else 0)",
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_sgn_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "(if (0::real) < 0 then (1::real) else if (0::real) < 0 then -1 else 0) = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "z3",
+                    "th": "⊢ (if (0::real) < 0 then (1::real) else if (0::real) < 0 then -1 else 0) = 0"
+                },
+                {
+                    "args": "real_sgn_def, real_sgn 0 = 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ real_sgn 0 = 0"
+                }
+            ],
+            "prop": "real_sgn 0 = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "z3"
+                }
+            ],
+            "ty": "thm",
+            "vars": {}
         },
         {
             "name": "sqrt",

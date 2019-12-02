@@ -13340,6 +13340,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "real_continuous_within_acs_strong",
             "prop": "real_continuous acs (within (atreal x) ({t. abs t ≤ 1}))",
             "ty": "thm",
@@ -13349,13 +13352,187 @@
         },
         {
             "name": "real_continuous_on_acs",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "∀x. x ∈ s ⟶ abs x ≤ 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ ∀x. x ∈ s ⟶ abs x ≤ 1"
+                },
+                {
+                    "args": "",
+                    "id": "1",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ ∀x. x ∈ s ⟶ real_continuous acs (within (atreal x) s)"
+                },
+                {
+                    "args": "x, real",
+                    "id": "1.0",
+                    "prevs": [],
+                    "rule": "variable",
+                    "th": "⊢ _VAR x"
+                },
+                {
+                    "args": "x ∈ s",
+                    "id": "1.1",
+                    "prevs": [],
+                    "rule": "assume",
+                    "th": "x ∈ s ⊢ x ∈ s"
+                },
+                {
+                    "args": "real_continuous_within_acs_strong, {}, {x: x}",
+                    "id": "1.2",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ real_continuous acs (within (atreal x) ({t. abs t ≤ 1}))"
+                },
+                {
+                    "args": "",
+                    "id": "1.3",
+                    "prevs": [],
+                    "rule": "subproof",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1, x ∈ s ⊢ ∀x. x ∈ s ⟶ x ∈ {t. abs t ≤ 1}"
+                },
+                {
+                    "args": "x",
+                    "id": "1.3.0",
+                    "prevs": [
+                        "0",
+                        "1.1"
+                    ],
+                    "rule": "apply_fact_for",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1, x ∈ s ⊢ abs x ≤ 1"
+                },
+                {
+                    "args": "member_collect, x ∈ {t. abs t ≤ 1}",
+                    "id": "1.3.1",
+                    "prevs": [
+                        "1.3.0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1, x ∈ s ⊢ x ∈ {t. abs t ≤ 1}"
+                },
+                {
+                    "args": "",
+                    "id": "1.3.2",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.3.1"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ ∀x. x ∈ s ⟶ x ∈ {t. abs t ≤ 1}"
+                },
+                {
+                    "args": "subsetI",
+                    "id": "1.4",
+                    "prevs": [
+                        "1.3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1, x ∈ s ⊢ s ⊆ {t. abs t ≤ 1}"
+                },
+                {
+                    "args": "real_continuous_withinreal_subset",
+                    "id": "1.5",
+                    "prevs": [
+                        "1.2",
+                        "1.4"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1, x ∈ s ⊢ real_continuous acs (within (atreal x) s)"
+                },
+                {
+                    "args": "",
+                    "id": "1.6",
+                    "prevs": [
+                        "1.0",
+                        "1.1",
+                        "1.5"
+                    ],
+                    "rule": "intros",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ ∀x. x ∈ s ⟶ real_continuous acs (within (atreal x) s)"
+                },
+                {
+                    "args": "real_continuous_on_eq_continuous_within, real_continuous_on acs s",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "∀x. x ∈ s ⟶ abs x ≤ 1 ⊢ real_continuous_on acs s"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "0",
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ (∀x. x ∈ s ⟶ abs x ≤ 1) ⟶ real_continuous_on acs s"
+                }
+            ],
             "prop": "(∀x. x ∈ s ⟶ abs x ≤ 1) ⟶ real_continuous_on acs s",
+            "steps": [
+                {
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_continuous_on_eq_continuous_within"
+                },
+                {
+                    "goal_id": "1",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "param_s": "{t::real. abs t ≤ 1}",
+                    "theorem": "real_continuous_withinreal_subset"
+                },
+                {
+                    "goal_id": "1.2",
+                    "method_name": "apply_backward_step",
+                    "theorem": "real_continuous_within_acs_strong"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "apply_backward_step",
+                    "theorem": "subsetI"
+                },
+                {
+                    "goal_id": "1.3",
+                    "method_name": "introduction",
+                    "names": "x"
+                },
+                {
+                    "goal_id": "1.3.0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "member_collect"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1.3.0",
+                    "method_name": "apply_prev"
+                }
+            ],
             "ty": "thm",
             "vars": {
                 "s": "real set"
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_1_over_n_offset",
             "prop": "tendsto_real (λn. real_inverse (of_nat n + a)) 0 sequentially",
             "ty": "thm",
@@ -13364,12 +13541,18 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_1_over_n",
             "prop": "tendsto_real (λn. real_inverse (of_nat n)) 0 sequentially",
             "ty": "thm",
             "vars": {}
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_1_over_pow",
             "prop": "1 ≤ k ⟶ tendsto_real (λn. real_inverse (of_nat n ^ k)) 0 sequentially",
             "ty": "thm",
@@ -13378,6 +13561,9 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_log_over_n",
             "prop": "tendsto_real (λn. log (of_nat n) / of_nat n) 0 sequentially",
             "ty": "thm",
@@ -13390,6 +13576,9 @@
             "vars": {}
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_pown",
             "prop": "abs x < 1 ⟶ tendsto_real (λn. x ^ n) 0 sequentially",
             "ty": "thm",
@@ -13398,14 +13587,93 @@
             }
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_x_times_log",
             "prop": "tendsto_real (λx. x * log x) 0 (within (atreal 0) ({x. 0 ≤ x}))",
             "ty": "thm",
             "vars": {}
         },
         {
+            "attributes": [
+                "hint_backward"
+            ],
             "name": "reallim_root_refl",
+            "num_gaps": 2,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ ∀n. 1 ≤ n ⟶ exp (log (of_nat n) / of_nat n) = root n (of_nat n)"
+                },
+                {
+                    "args": "exI, {a: nat}, {P: λN. ∀n. N ≤ n ⟶ exp (log (of_nat n) / of_nat n) = root n (of_nat n), a: (1::nat)}",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ ∃a1. ∀n. a1 ≤ n ⟶ exp (log (of_nat n) / of_nat n) = root n (of_nat n)"
+                },
+                {
+                    "args": "eventually_sequentially, eventually (λx. exp (log (of_nat x) / of_nat x) = root x (of_nat x)) sequentially",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ eventually (λx. exp (log (of_nat x) / of_nat x) = root x (of_nat x)) sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ tendsto_real (λn. exp (log (of_nat n) / of_nat n)) 1 sequentially"
+                },
+                {
+                    "args": "reallim_transform_eventually",
+                    "id": "4",
+                    "prevs": [
+                        "2",
+                        "3"
+                    ],
+                    "rule": "apply_theorem",
+                    "th": "⊢ tendsto_real (λx. root x (of_nat x)) 1 sequentially"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ tendsto_real (λx. root x (of_nat x)) 1 sequentially"
+                }
+            ],
             "prop": "tendsto_real (λn. root n (of_nat n)) 1 sequentially",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_backward_step",
+                    "param_f": "(%n. exp (log (of_nat n) / of_nat n))",
+                    "theorem": "reallim_transform_eventually"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "eventually_sequentially"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "inst_exists_goal",
+                    "s": "(1::nat)"
+                }
+            ],
             "ty": "thm",
             "vars": {}
         },

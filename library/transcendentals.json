@@ -12,6 +12,295 @@
             "type": "real ⇒ real"
         },
         {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "real_exp_add",
+            "prop": "exp (x + y) = exp x * exp y",
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_exp_0",
+            "prop": "exp 0 = 1",
+            "ty": "thm",
+            "vars": {}
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_exp_add_mul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "x + y + -x = y",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "real_norm",
+                    "th": "⊢ x + y + -x = y"
+                },
+                {
+                    "args": "exp (x + y + -x) = exp y",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ exp (x + y + -x) = exp y"
+                },
+                {
+                    "args": "real_exp_add, exp (x + y) * exp (-x) = exp y",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ exp (x + y) * exp (-x) = exp y"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ exp (x + y) * exp (-x) = exp y"
+                }
+            ],
+            "prop": "exp (x + y) * exp (-x) = exp y",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_add"
+                },
+                {
+                    "goal": "x + y + -x = y",
+                    "goal_id": "0",
+                    "method_name": "cut"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "real_norm"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_goal_with_prev"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real",
+                "y": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "real_exp_neg_mul",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_exp_0, exp 0 = 1",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ exp 0 = 1"
+                },
+                {
+                    "args": "real_add_rinv, exp (x + -x) = 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ exp (x + -x) = 1"
+                },
+                {
+                    "args": "real_exp_add, exp x * exp (-x) = 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ exp x * exp (-x) = 1"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ exp x * exp (-x) = 1"
+                }
+            ],
+            "prop": "exp x * exp (-x) = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_exp_add"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_add_rinv"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_exp_0"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite",
+                "hint_rewrite_sym"
+            ],
+            "name": "real_exp_neg",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "real_exp_neg_mul, {}, {x: x}",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "apply_theorem_for",
+                    "th": "⊢ exp x * exp (-x) = 1"
+                },
+                {
+                    "args": "eq_sym_eq",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_fact",
+                    "th": "⊢ 1 = exp x * exp (-x)"
+                },
+                {
+                    "args": "",
+                    "id": "2",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ exp (-x) * exp x * exp (-x) = real_inverse (exp x) * exp x * exp (-x)"
+                },
+                {
+                    "args": "real_mult_assoc, exp (-x) * (exp x * exp (-x)) = real_inverse (exp x) * (exp x * exp (-x))",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ exp (-x) * (exp x * exp (-x)) = real_inverse (exp x) * (exp x * exp (-x))"
+                },
+                {
+                    "args": "exp (-x) * 1 = real_inverse (exp x) * 1",
+                    "id": "4",
+                    "prevs": [
+                        "1",
+                        "3"
+                    ],
+                    "rule": "rewrite_goal_with_prev",
+                    "th": "⊢ exp (-x) * 1 = real_inverse (exp x) * 1"
+                },
+                {
+                    "args": "real_mult_comm, 1 * exp (-x) = 1 * real_inverse (exp x)",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 1 * exp (-x) = 1 * real_inverse (exp x)"
+                },
+                {
+                    "args": "real_mul_lid, exp (-x) = real_inverse (exp x)",
+                    "id": "6",
+                    "prevs": [
+                        "5"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ exp (-x) = real_inverse (exp x)"
+                },
+                {
+                    "args": "",
+                    "id": "7",
+                    "prevs": [
+                        "6"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ exp (-x) = real_inverse (exp x)"
+                }
+            ],
+            "prop": "exp (-x)= real_inverse (exp x)",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_mul_lid"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_comm"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "apply_forward_step",
+                    "param_x": "x",
+                    "theorem": "real_exp_neg_mul"
+                },
+                {
+                    "fact_ids": [
+                        "0"
+                    ],
+                    "goal_id": "1",
+                    "method_name": "rewrite_fact",
+                    "sym": "false",
+                    "theorem": "eq_sym_eq"
+                },
+                {
+                    "fact_ids": [
+                        "1"
+                    ],
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal_with_prev"
+                },
+                {
+                    "goal_id": "2",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mult_assoc"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
             "name": "cos",
             "prop": [
                 "cos x = ",
@@ -36,6 +325,29 @@
             "prop": "log y = (THE x. exp x = y)",
             "ty": "def",
             "type": "real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_backward",
+                "hint_forward"
+            ],
+            "name": "exp_log",
+            "prop": "0 < x ⟶ exp (log x) = x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "log_exp",
+            "prop": "log (exp x) = x",
+            "ty": "thm",
+            "vars": {
+                "x": "real"
+            }
         },
         {
             "name": "pi",
@@ -110,10 +422,173 @@
             "type": "real ⇒ real ⇒ real"
         },
         {
+            "attributes": [
+                "hint_rewrite"
+            ],
             "name": "root",
             "prop": "root n x = real_sgn x * exp (log (abs x) / of_nat n)",
             "ty": "def",
             "type": "nat ⇒ real ⇒ real"
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "root_0",
+            "num_gaps": 0,
+            "proof": [
+                {
+                    "args": "real_mul_lzero, 0 * exp (log (abs 0) / of_nat n) = 0",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ 0 * exp (log (abs 0) / of_nat n) = 0"
+                },
+                {
+                    "args": "real_sgn_0, real_sgn 0 * exp (log (abs 0) / of_nat n) = 0",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn 0 * exp (log (abs 0) / of_nat n) = 0"
+                },
+                {
+                    "args": "root_def, root n 0 = 0",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ root n 0 = 0"
+                },
+                {
+                    "args": "",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ root n 0 = 0"
+                }
+            ],
+            "prop": "root n 0 = 0",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_sgn_0"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_mul_lzero"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
+        },
+        {
+            "attributes": [
+                "hint_rewrite"
+            ],
+            "name": "root_1",
+            "num_gaps": 1,
+            "proof": [
+                {
+                    "args": "",
+                    "id": "0",
+                    "prevs": [],
+                    "rule": "sorry",
+                    "th": "⊢ real_sgn 1 * exp (log 1 / of_nat n) = 1"
+                },
+                {
+                    "args": "real_one_def, real_sgn (of_nat 1) * exp (log (of_nat 1) / of_nat n) = of_nat 1",
+                    "id": "1",
+                    "prevs": [
+                        "0"
+                    ],
+                    "rule": "rewrite_goal_sym",
+                    "th": "⊢ real_sgn (of_nat 1) * exp (log (of_nat 1) / of_nat n) = of_nat 1"
+                },
+                {
+                    "args": "real_abs_nat, real_sgn (of_nat 1) * exp (log (abs (of_nat 1)) / of_nat n) = of_nat 1",
+                    "id": "2",
+                    "prevs": [
+                        "1"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn (of_nat 1) * exp (log (abs (of_nat 1)) / of_nat n) = of_nat 1"
+                },
+                {
+                    "args": "real_one_def, real_sgn 1 * exp (log (abs 1) / of_nat n) = 1",
+                    "id": "3",
+                    "prevs": [
+                        "2"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ real_sgn 1 * exp (log (abs 1) / of_nat n) = 1"
+                },
+                {
+                    "args": "root_def, root n 1 = 1",
+                    "id": "4",
+                    "prevs": [
+                        "3"
+                    ],
+                    "rule": "rewrite_goal",
+                    "th": "⊢ root n 1 = 1"
+                },
+                {
+                    "args": "",
+                    "id": "5",
+                    "prevs": [
+                        "4"
+                    ],
+                    "rule": "intros",
+                    "th": "⊢ root n 1 = 1"
+                }
+            ],
+            "prop": "root n 1 = 1",
+            "steps": [
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "root_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_one_def"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "false",
+                    "theorem": "real_abs_nat"
+                },
+                {
+                    "goal_id": "0",
+                    "method_name": "rewrite_goal",
+                    "sym": "true",
+                    "theorem": "real_one_def"
+                }
+            ],
+            "ty": "thm",
+            "vars": {
+                "n": "nat"
+            }
         }
     ],
     "description": "Real transcendentals.",
